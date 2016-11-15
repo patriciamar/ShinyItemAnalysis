@@ -1,0 +1,11 @@
+Package: ShinyItemAnalysis
+Type: Package
+Title: Test and Item Analysis via Shiny
+Version: 0.2.0
+Author: Patricia Martinkova (ICS), Ondrej Leder (CUNI, ICS CAS), Adela Drabinova (CUNI, ICS CAS)
+Maintainer: Patricia Martinkova <martinkova@cs.cas.cz>
+Depends: R (>= 3.2.2)
+Imports: CTT, deltaPlotR, difNLR, ggplot2, gridExtra, ltm, moments, nnet, psychometric, reshape2, shiny, shinyAce
+Description: Interactive shiny application for analysis of educational tests and their items.
+License: GPL-3
+LazyData: yes

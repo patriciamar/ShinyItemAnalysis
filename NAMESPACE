@@ -1,0 +1,17 @@
+exportPattern("^[[:alpha:]]+")
+
+
+
+importFrom(psychometric, item.exam)
+import(CTT,
+       deltaPlotR,
+       difNLR,
+       ggplot2,
+       gridExtra,
+       ltm,
+       moments,
+       nnet,
+       reshape2,
+       shiny,
+       shinyAce
+       )
