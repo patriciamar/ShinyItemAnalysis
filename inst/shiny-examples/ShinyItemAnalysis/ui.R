@@ -22,7 +22,7 @@ fluidPage(titlePanel("TEST AND ITEM ANALYSIS"),
               br(),
               br(),
               #uiOutput("slider"),
-              
+
 
               width = 3
               ),
@@ -165,7 +165,7 @@ fluidPage(titlePanel("TEST AND ITEM ANALYSIS"),
                     )
                   )
                 ),
-                
+
                 #####################
                 # REGRESSION ########
                 #####################
@@ -368,14 +368,14 @@ fluidPage(titlePanel("TEST AND ITEM ANALYSIS"),
                 # SUMMARY
                 tabPanel('Summary',
                   h3('Differential Item Functioning / Item Fairness'),
-                  p('Differential item functioning (DIF) occurs when people from different 
-                    groups (commonly gender or ethnicity) with the same underlying true 
-                    ability have a different probability of answering the item correctly. 
-                    If item functions differently for two groups, it is potentially unfair. 
-                    In general, two type of DIF can be recognized: if the item has different 
-                    difficulty for given two groups with the same discrimination, ', 
-                    strong('uniform'), 'DIF is present (left figure). If the item has different 
-                    discrimination and possibly also different difficulty for given two groups, ', 
+                  p('Differential item functioning (DIF) occurs when people from different
+                    groups (commonly gender or ethnicity) with the same underlying true
+                    ability have a different probability of answering the item correctly.
+                    If item functions differently for two groups, it is potentially unfair.
+                    In general, two type of DIF can be recognized: if the item has different
+                    difficulty for given two groups with the same discrimination, ',
+                    strong('uniform'), 'DIF is present (left figure). If the item has different
+                    discrimination and possibly also different difficulty for given two groups, ',
                     strong('non-uniform'), 'DIF is present (right figure)'),
                   br(),
                   img(src = 'fig_NLR_uniformDIF.png', width = 380, align = "left"),
@@ -386,8 +386,8 @@ fluidPage(titlePanel("TEST AND ITEM ANALYSIS"),
                 # TOTAL SCORES
                 tabPanel("Total Scores",
                   h3("Total Scores"),
-                  p('DIF is not about total scores! Two groups may have the same distribution of total scores, yet, 
-                    some item may function differently for two groups. Also, one of the groups may have signifficantly 
+                  p('DIF is not about total scores! Two groups may have the same distribution of total scores, yet,
+                    some item may function differently for two groups. Also, one of the groups may have signifficantly
                     lower total score, yet, it may happen that there is no DIF item!'),
                   h4("Summary of Total Scores for Groups"),
                   tableOutput('resultsgroup'),
@@ -408,29 +408,29 @@ fluidPage(titlePanel("TEST AND ITEM ANALYSIS"),
                     quantiles of standard normal distributions (so called delta scores) for each item for the two
                     genders in a scatterplot called diagonal plot or delta plot (see Figure). Item is under
                     suspicion of DIF if the delta point considerably departs from the diagonal.'),
-                  
+
                   radioButtons('type_threshold', 'Threshold',
                                list("Fixed", "Normal")
                                ),
-                
+
                   plotOutput('deltaplot'),
                   verbatimTextOutput("dp_text_normal"),
                   br()
                   ),
-                
-                
-                
-                
-                
-                
+
+
+
+
+
+
                 # MANTEL-HAENSZEL
                 tabPanel("Mantel-Haenszel",
                          tabsetPanel(
                          # Summary
-                           tabPanel("Summary", 
+                           tabPanel("Summary",
                                      h3("Mantel-Haenszel Test"),
-                                     p('Mantel-Haenszel test is DIF detection method based on contingency 
-                                       tables that are calculated for each level of total score (Mantel and 
+                                     p('Mantel-Haenszel test is DIF detection method based on contingency
+                                       tables that are calculated for each level of total score (Mantel and
                                        Haenszel, 1959).'),
                                      selectInput("correction_method_MZ_print", "Correction method",
                                                  c("BH" = "BH",
@@ -447,9 +447,9 @@ fluidPage(titlePanel("TEST AND ITEM ANALYSIS"),
                            ),
                            tabPanel('Items',
                                     h3("Mantel-Haenszel Test"),
-                                    p('Mantel-Haenszel test is DIF detection method based on contingency 
-                                       tables that are calculated for each level of total score (Mantel and 
-                                       Haenszel, 1959).'), 
+                                    p('Mantel-Haenszel test is DIF detection method based on contingency
+                                       tables that are calculated for each level of total score (Mantel and
+                                       Haenszel, 1959).'),
                                     h4('Contingency Tables'),
                                     uiOutput("difMHSlider_item"),
                                     uiOutput("difMHSlider_score"),
@@ -524,7 +524,7 @@ fluidPage(titlePanel("TEST AND ITEM ANALYSIS"),
                            )
                            )
                      ),
-                
+
                 # LOGISTIC Z
                 tabPanel("Logistic IRT Z",
                   tabsetPanel(
@@ -543,7 +543,7 @@ fluidPage(titlePanel("TEST AND ITEM ANALYSIS"),
                                      "H0: Uniform DIF vs. H1: No DIF" = 'udif',
                                      "H0: Non-Uniform DIF vs. H1: Uniform DIF" = 'nudif'
                                      ),
-                                   
+
                                    'both'
                                    ),
                       selectInput("correction_method_logzZSummary", "Correction method",
@@ -600,10 +600,10 @@ fluidPage(titlePanel("TEST AND ITEM ANALYSIS"),
                     # Summary
                     tabPanel('Summary',
                       h3('Nonlinear regression'),
-                      p('Nonlinear regression model allows for nonzero lower asymptote - pseudoguessing', 
-                        strong('c.'), 'Similarly to logistic regression, also nonlinear regression allows for 
-                        detection of uniform and non-uniform DIF by adding a group specific intercept', 
-                        strong('bDIF'), '(uniform DIF) and group specific interaction', strong('aDIF'), 
+                      p('Nonlinear regression model allows for nonzero lower asymptote - pseudoguessing',
+                        strong('c.'), 'Similarly to logistic regression, also nonlinear regression allows for
+                        detection of uniform and non-uniform DIF by adding a group specific intercept',
+                        strong('bDIF'), '(uniform DIF) and group specific interaction', strong('aDIF'),
                         '(non-uniform DIF) into the model and by testing for their significance.'),
                       h4("Equation"),
                       ('$$\\mathrm{P}\\left(Y_{ij} = 1 | Z_i, G_i, a_j, b_j, c_j, a_{\\text{DIF}j}, b_{\\text{DIF}j}\\right) =
@@ -631,11 +631,11 @@ fluidPage(titlePanel("TEST AND ITEM ANALYSIS"),
                     # Items
                     tabPanel('Items',
                       h3('Nonlinear regression'),
-                      p('Nonlinear regression model allows for nonzero lower asymptote - pseudoguessing', 
-                        strong('c.'), 'Similarly to logistic regression, also nonlinear regression allows 
-                        for detection of uniform and non-uniform DIF (Drabinova and Martinkova, 2016) by 
-                        adding a group specific intercept', strong('bDIF'), '(uniform DIF) and group specific 
-                        interaction', strong('aDIF'), '(non-uniform DIF) into the model and by testing for 
+                      p('Nonlinear regression model allows for nonzero lower asymptote - pseudoguessing',
+                        strong('c.'), 'Similarly to logistic regression, also nonlinear regression allows
+                        for detection of uniform and non-uniform DIF (Drabinova and Martinkova, 2016) by
+                        adding a group specific intercept', strong('bDIF'), '(uniform DIF) and group specific
+                        interaction', strong('aDIF'), '(non-uniform DIF) into the model and by testing for
                         their significance.'),
                       h4("Plot with Estimated DIF Nonlinear Curve"),
                       radioButtons('type_plot_DIF_NLR', 'Type',
@@ -672,10 +672,10 @@ fluidPage(titlePanel("TEST AND ITEM ANALYSIS"),
                   tabsetPanel(
                     tabPanel('Summary',
                              h3('Lord Test'),
-                             p('Lord test (Lord, 1980) is based on IRT model 
-                                  (1PL, 2PL, or 3PL with the same guessing). It uses the 
-                                  difference between item parameters for the two groups 
-                                  to detect DIF. In statistical terms, Lord statistic is 
+                             p('Lord test (Lord, 1980) is based on IRT model
+                                  (1PL, 2PL, or 3PL with the same guessing). It uses the
+                                  difference between item parameters for the two groups
+                                  to detect DIF. In statistical terms, Lord statistic is
                                   equal to Wald statistic.'),
                              br(),
                              img(src = 'lord_udif.png', width = 380, align = "left"),
@@ -691,10 +691,10 @@ fluidPage(titlePanel("TEST AND ITEM ANALYSIS"),
                              br()),
                   tabPanel('Items',
                            h3('Lord Test'),
-                           p('Lord test (Lord, 1980) is based on IRT model 
-                             (1PL, 2PL, or 3PL with the same guessing). It uses the 
-                             difference between item parameters for the two groups 
-                             to detect DIF. In statistical terms, Lord statistic is 
+                           p('Lord test (Lord, 1980) is based on IRT model
+                             (1PL, 2PL, or 3PL with the same guessing). It uses the
+                             difference between item parameters for the two groups
+                             to detect DIF. In statistical terms, Lord statistic is
                              equal to Wald statistic.'),
                            br(),
                            h3('Plot with Estimated DIF Characteristic Curve'),
@@ -719,8 +719,8 @@ fluidPage(titlePanel("TEST AND ITEM ANALYSIS"),
                          tabsetPanel(
                            tabPanel('Summary',
                                     h3('Raju Test'),
-                                    p('Raju test (Raju, 1988, 1990) is based on IRT 
-                                      model (1PL, 2PL, or 3PL with the same guessing). It 
+                                    p('Raju test (Raju, 1988, 1990) is based on IRT
+                                      model (1PL, 2PL, or 3PL with the same guessing). It
                                       uses the area between the item charateristic curves
                                       for the two groups to detect DIF.'),
                                     br(),
@@ -737,8 +737,8 @@ fluidPage(titlePanel("TEST AND ITEM ANALYSIS"),
                                     br()),
                            tabPanel('Items',
                                     h3('Raju Test'),
-                                    p('Raju test (Raju, 1988, 1990) is based on IRT 
-                                      model (1PL, 2PL, or 3PL with the same guessing). It 
+                                    p('Raju test (Raju, 1988, 1990) is based on IRT
+                                      model (1PL, 2PL, or 3PL with the same guessing). It
                                       uses the area between the item charateristic curves
                                       for the two groups to detect DIF.'),
                                     br(),
@@ -768,7 +768,7 @@ fluidPage(titlePanel("TEST AND ITEM ANALYSIS"),
                 tabPanel("Data",
                   h3("Data"),
                   p('For demonstration purposes, 20-item dataset ' , code("GMAT"),'
-                    and dataset', code("GMATkey"),' from R ', code('library(difNLR)'),' are used. 
+                    and dataset', code("GMATkey"),' from R ', code('library(difNLR)'),' are used.
                     On this page, you may select your own dataset (see below).
                     To return to demonstration dataset, refresh this page in your browser' , strong("(F5)"), '.'),
                   p('Used dataset ', code("GMAT"), ' is generated based on parameters of real Graduate Management
@@ -776,9 +776,10 @@ fluidPage(titlePanel("TEST AND ITEM ANALYSIS"),
                     generated to function differently in uniform and non-uniform way respectively.
                     The data set represents responses of 1,000 subjects to multiple-choice test of 20 items.'),
                   br(),
+                  uiOutput("dataSelect"),
                   h4("Upload your own datasets"),
-                  p('Main dataset should contain responses of individual students (rows) to given items (collumns). 
-                    Header may contain item names, no row names should be included. If responses are in ABC format, 
+                  p('Main dataset should contain responses of individual students (rows) to given items (collumns).
+                    Header may contain item names, no row names should be included. If responses are in ABC format,
                     the key provides correct respomse for each item. If responses are scored 0-1, key is vecor of 1s.'),
                   fluidRow(
                     column(4, offset = 0, fileInput(
@@ -837,7 +838,7 @@ fluidPage(titlePanel("TEST AND ITEM ANALYSIS"),
                             )
                     ),
                   tags$hr(),
-                  h4("Data Check (first 6 respondents only)"),
+                  h4("Data Check"),
                   dataTableOutput('headdata'),
                   h4("Key (correct answers)"),
                   dataTableOutput('key'),
@@ -856,15 +857,15 @@ fluidPage(titlePanel("TEST AND ITEM ANALYSIS"),
                       target = "_blank")),
                   br(),
                   strong('Description'),
-                  p('ShinyItemAnalysis provides analysis of tests and their items. 
-                    It is based on the', a("Shiny", href = "http://www.rstudio.com/shiny/", target = "_blank"), 
+                  p('ShinyItemAnalysis provides analysis of tests and their items.
+                    It is based on the', a("Shiny", href = "http://www.rstudio.com/shiny/", target = "_blank"),
                     'R package. '),
                   br(),
                   strong('Data'),
                   p('For demonstration purposes, practice dataset from', code('library(difNLR)'),'is used. On page',
                     strong("Data"), 'you may select your own dataset '),
                   br(),
-                  strong('List of Packages Used'), 
+                  strong('List of Packages Used'),
                   br(),
                   code('library(CTT)'), br(),
                   code('library(deltaPlotR)'), br(),
@@ -897,7 +898,7 @@ fluidPage(titlePanel("TEST AND ITEM ANALYSIS"),
                   img(src = 'adela.jpg', width = 70),
                   p("Adela Drabinova"),
                   strong('Bug Reports'),
-                  p("If you discover a problem with this application please contact the project maintainer 
+                  p("If you discover a problem with this application please contact the project maintainer
                     at martinkova(at)cs.cas.cz "
                     ),
                   strong('Acknowledgments'),
@@ -908,12 +909,12 @@ fluidPage(titlePanel("TEST AND ITEM ANALYSIS"),
                   br(),
                   strong('License'),
                   p(" Copyright 2016  Patricia Martinkova, Ondrej Leder and Adela Drabinova"),
-                  p(" This program is free software you can redistribute it and or modify it under the terms of the GNU 
+                  p(" This program is free software you can redistribute it and or modify it under the terms of the GNU
                     General Public License as published by the Free Software Foundation either version 3 of the License or
                     at your option any later version."
                     ),
-                  p("This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without 
-                    even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General 
+                  p("This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+                    even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
                     Public License for more details."
                     ),
                   br(),
@@ -927,19 +928,19 @@ fluidPage(titlePanel("TEST AND ITEM ANALYSIS"),
                     strong('References'),
                     br(),
                     br(),
-                    p("Drabinova, A., Martinkova, P. (2016). Detection of Differential Item 
-                      Functioning Based on Non-Linear Regression. Technical Report", 
+                    p("Drabinova, A., Martinkova, P. (2016). Detection of Differential Item
+                      Functioning Based on Non-Linear Regression. Technical Report",
                       a("V-1229", href = "https://goo.gl/R3dpJ5}", target = "_blank"), "."
                       ),
                     p("Lord, F. M. (1980). Applications of Item Response Theory to Practical Testing Problems.
                       Routledge."),
-                    p("Mantel, N., Haenszel, W. (1959). Statistical Aspects of the Analysis of Data from 
+                    p("Mantel, N., Haenszel, W. (1959). Statistical Aspects of the Analysis of Data from
                       Retrospective Studies. Journal of the National Cancer Institute, 22 (4), 719-748."),
-                    p("Swaminathan, H., Rogers, H. J. (1990). Detecting Differential Item 
-                      Functioning Using Logistic Regression Procedures. Journal of Educational 
+                    p("Swaminathan, H., Rogers, H. J. (1990). Detecting Differential Item
+                      Functioning Using Logistic Regression Procedures. Journal of Educational
                       Measurement, 27(4), 361-370."
                       ),
-                    p("Raju, N. S. (1988). The Area between Two Item Characteristic Curves. Psychometrika, 
+                    p("Raju, N. S. (1988). The Area between Two Item Characteristic Curves. Psychometrika,
                       53 (4), 495-502."
                       ),
                     p("Raju, N. S. (1990). Determining the Significance of Estimated Signed and Unsigned Areas
