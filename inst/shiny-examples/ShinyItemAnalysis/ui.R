@@ -705,6 +705,7 @@ fluidPage(titlePanel("TEST AND ITEM ANALYSIS"),
                                         ),
                                         '2PL'
                            ),
+                           uiOutput("difirt_lord_itemSlider"),
                            plotOutput('plot_DIF_IRT_Lord'),
                            h4("Equation"),
                            ('$$\\mathrm{P}\\left(Y_{ij} = 1 | \\theta_i, G_i, a_j, b_j, c_j, a_{\\text{DIF}j}, b_{\\text{DIF}j}\\right) =
@@ -750,6 +751,7 @@ fluidPage(titlePanel("TEST AND ITEM ANALYSIS"),
                                                  ),
                                                  '2PL'
                                     ),
+                                    uiOutput("difirt_raju_itemSlider"),
                                     plotOutput('plot_DIF_IRT_Raju'),
                                     h4("Equation"),
                                     ('$$\\mathrm{P}\\left(Y_{ij} = 1 | \\theta_i, G_i, a_j, b_j, c_j, a_{\\text{DIF}j}, b_{\\text{DIF}j}\\right) =
