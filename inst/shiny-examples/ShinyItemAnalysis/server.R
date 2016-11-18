@@ -39,6 +39,9 @@ key=get("GMATkey")
 # FUNCTIONS ######
 ##################
 
+# Difficulty/Discrimination plot
+source("DDplot.R")
+
 # Distractors analysis
 source("DistractorAnalysis.R")
 source("plotDistractorAnalysis.R")
@@ -103,6 +106,7 @@ function(input, output, session) {
     key=get(paste0(input$dataSelect,"key"))
 
     ifelse (is.null(input$key), k <- key,
+
             {k <- read.csv(input$key$datapath, header = FALSE)
              k <- k[[1]]
             })
@@ -115,6 +119,7 @@ function(input, output, session) {
     test=get(paste0(input$dataSelect,"test"))
 
     ifelse (is.null(input$key), k <- test[ , 21],
+
             {k <- read.csv(input$groups$datapath,header = TRUE)
              k <- k[[1]]})
     as.vector(k)
@@ -273,6 +278,7 @@ function(input, output, session) {
     #updateSliderInput(session, "diflog_irtSlider", value = sliderUpdate$value)
     #updateSliderInput(session, "difnlrSlider", value = sliderUpdate$value)
 
+
    # sliderUpdate$outputValues=c(input$logregSlider,input$zlogregSlider,input$zlogreg_irtSlider,input$nlsSlider, input$multiSlider,
     #                           input$inSlider, input$diflogSlider, input$diflog_irtSlider, input$difnlrSlider)
 
@@ -407,20 +413,30 @@ function(input, output, session) {
   },
   include.rownames = FALSE)
 
-  ##########################
+  ############################
   # TRADITIONAL ANALYSIS #####
-  ##########################
+  ############################
   # * ITEM ANALYSIS #####
   # ** Item Difficulty/Discrimination Graph ######
   output$difplot <- renderPlot({
-
     correct <- correct_answ()
     DDplot(correct)
-
       })
 
   output$uidifplot <- renderUI({
-    plotOutput("difplot", height = 1000)})
+    plotOutput("difplot", height = 1000)
+    })
+
+  # ** Cronbach's alpha ####
+  output$cronbachalpha <- renderTable({
+    correct <- correct_answ()
+    tab <- c(psych::alpha(correct)$total[1], psych::alpha(correct)$total[8])
+    tab <- as.data.frame(tab)
+    colnames(tab) <- c("Estimate", "SD")
+    tab
+  },
+  include.rownames = F,
+  include.colnames = T)
 
   # ** Traditional Item Analysis Table #####
   output$itemexam <- renderTable({
@@ -521,7 +537,7 @@ function(input, output, session) {
     a <- test_answers()
     k <- test_key()
 
-    multiple.answers <- (input$type_combinations_distractor == "Combinations")
+    multiple.answers <- c(input$type_combinations_distractor == "Combinations")
     plotDistractorAnalysis(data = a, key = k, num.group = input$gr, item = input$distractorSlider,
                            multiple.answers = multiple.answers)
   })
@@ -532,7 +548,7 @@ function(input, output, session) {
     k <- test_key()
 
     DA <- DistractorAnalysis(a, k, num.groups = input$gr)[[input$distractorSlider]]
-    df <- dcast(as.data.frame(DA), response ~ score.level, sum, margins = T)
+    df <- dcast(as.data.frame(DA), response ~ score.level, sum, margins = T, value.var = "Freq")
     colnames(df) <- c("Response", paste("Group", 1:input$gr), "Total")
     levels(df$Response)[nrow(df)] <- "Total"
     df
@@ -544,7 +560,7 @@ function(input, output, session) {
     k <- test_key()
 
     DA <- DistractorAnalysis(a, k, num.groups = input$gr, p.table = TRUE)[[input$distractorSlider]]
-    df <- dcast(as.data.frame(DA), response ~ score.level, sum)
+    df <- dcast(as.data.frame(DA), response ~ score.level, sum, value.var = "Freq")
     colnames(df) <- c("Response", paste("Group", 1:input$gr))
     df
   })
@@ -611,7 +627,7 @@ function(input, output, session) {
   # ** Interpretation ####
   output$logisticint <- renderUI({
 
-    b1 <- summary(logistic_reg())$coef[2, 1]
+    b1 <- coef(logistic_reg())[2]
     b1 <- round(b1, 2)
     txt1 <- paste ("<b>", "Interpretation:","</b>")
     txt2 <- paste (
@@ -635,7 +651,6 @@ function(input, output, session) {
 
   output$zlogreg <- renderPlot({
     scaledsc = scale(scored_test())
-
 
     fun <- function(x, b0, b1) {exp(b0 + b1 * x) / (1 + exp(b0 + b1 * x))}
 
@@ -749,7 +764,7 @@ function(input, output, session) {
     cov <- vcov(z_logistic_reg())
     cov <- as.matrix(cov)
     syms <- paste("x", 1:2, sep = "")
-    for (i in 1:4) assign(syms[i], tab_coef_old[i])
+    for (i in 1:2) assign(syms[i], tab_coef_old[i])
     gdashmu <- t(sapply(g, function(form) {
       as.numeric(attr(eval(deriv(form, syms), envir = parent.frame()), "gradient"))
     }))
@@ -936,7 +951,6 @@ function(input, output, session) {
                       y = data.frame(prop.table(table(test_answers()[, input$multiSlider], stotal), 2))[, 3])
     df2$stotal <- as.numeric(levels(df2$stotal))[df2$stotal]
     df2$Var2 <- relevel(df2$Var1, ref = paste(k[input$multiSlider]))
-
 
     ggplot() +
       geom_line(data = df,
