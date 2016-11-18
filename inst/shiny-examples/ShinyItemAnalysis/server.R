@@ -39,6 +39,9 @@ key=get("GMATkey")
 # FUNCTIONS ######
 ##################
 
+# Difficulty/Discrimination plot
+source("DDplot.R")
+
 # Distractors analysis
 source("DistractorAnalysis.R")
 source("plotDistractorAnalysis.R")
@@ -84,6 +87,7 @@ function(input, output, session) {
                  ),
                 selected="GMAT")
     })
+
 
   # LOAD ABCD DATA #####
   test_answers <- reactive ({
@@ -406,59 +410,32 @@ function(input, output, session) {
   },
   include.rownames = FALSE)
 
-  ##########################
+  ############################
   # TRADITIONAL ANALYSIS #####
-  ##########################
+  ############################
   # * ITEM ANALYSIS #####
   # ** Item Difficulty/Discrimination Graph ######
   output$difplot <- renderPlot({
 
-    a <- test_answers()
-    k <- test_key()
     correct <- correct_answ()
+    DDplot(correct)
 
-    col <- c("red", "darkblue")
-
-    difc <- item.exam(correct, discr = T)[, "Difficulty"]
-    disc <- item.exam(correct, discr = T)[, "Discrimination"]
-
-    value <- c(rbind(difc, disc)[, order(difc)])
-    parameter <- rep(c("Difficulty", "Discrimination"), ncol(a))
-    item <- factor(rep(order(difc), rep(2, ncol(a))),
-                   levels = factor(order(difc)))
-
-    pars.trad <- data.frame(item, parameter, value)
-
-    ggplot(pars.trad,
-           aes(x = item, y = value, fill = parameter, color = parameter)) +
-      stat_summary(fun.y = mean,
-                   position = position_dodge(),
-                   geom = "bar",
-                   alpha = 0.7,
-                   aes(width = 0.7)) +
-      geom_hline(yintercept = 0.2) +
-      xlab("Item Number (Ordered by Difficulty)") +
-      ylab("Difficulty/Discrimination") +
-      scale_y_continuous(expand = c(0, 0), limits = c(0, 1)) +
-      scale_fill_manual(breaks = parameter,
-                        values = col) +
-      scale_colour_manual(breaks = parameter,
-                          values = col) +
-      theme_bw() +
-      theme(axis.line  = element_line(colour = "black"),
-            text = element_text(size = 14),
-            panel.grid.major = element_blank(),
-            panel.grid.minor = element_blank(),
-            panel.background = element_blank(),
-            legend.title = element_blank(),
-            legend.position = c(0, 1),
-            legend.justification = c(0, 1),
-            legend.background = element_blank(),
-            legend.key = element_rect(colour = "white"))
       })
 
   output$uidifplot <- renderUI({
-    plotOutput("difplot", height = 1000)})
+    plotOutput("difplot", height = 1000)
+    })
+
+  # ** Cronbach's alpha ####
+  output$cronbachalpha <- renderTable({
+    correct <- correct_answ()
+    tab <- c(psych::alpha(correct)$total[1], psych::alpha(correct)$total[8])
+    tab <- as.data.frame(tab)
+    colnames(tab) <- c("Estimate", "SD")
+    tab
+  },
+  include.rownames = F,
+  include.colnames = T)
 
   # ** Traditional Item Analysis Table #####
   output$itemexam <- renderTable({
@@ -559,7 +536,7 @@ function(input, output, session) {
     a <- test_answers()
     k <- test_key()
 
-    multiple.answers <- (input$type_combinations_distractor == "Combinations")
+    multiple.answers <- c(input$type_combinations_distractor == "Combinations")
     plotDistractorAnalysis(data = a, key = k, num.group = input$gr, item = input$distractorSlider,
                            multiple.answers = multiple.answers)
   })
@@ -570,7 +547,7 @@ function(input, output, session) {
     k <- test_key()
 
     DA <- DistractorAnalysis(a, k, num.groups = input$gr)[[input$distractorSlider]]
-    df <- dcast(as.data.frame(DA), response ~ score.level, sum, margins = T)
+    df <- dcast(as.data.frame(DA), response ~ score.level, sum, margins = T, value.var = "Freq")
     colnames(df) <- c("Response", paste("Group", 1:input$gr), "Total")
     levels(df$Response)[nrow(df)] <- "Total"
     df
@@ -582,7 +559,7 @@ function(input, output, session) {
     k <- test_key()
 
     DA <- DistractorAnalysis(a, k, num.groups = input$gr, p.table = TRUE)[[input$distractorSlider]]
-    df <- dcast(as.data.frame(DA), response ~ score.level, sum)
+    df <- dcast(as.data.frame(DA), response ~ score.level, sum, value.var = "Freq")
     colnames(df) <- c("Response", paste("Group", 1:input$gr))
     df
   })
@@ -649,7 +626,7 @@ function(input, output, session) {
   # ** Interpretation ####
   output$logisticint <- renderUI({
 
-    b1 <- summary(logistic_reg())$coef[2, 1]
+    b1 <- coef(logistic_reg())[2]
     b1 <- round(b1, 2)
     txt1 <- paste ("<b>", "Interpretation:","</b>")
     txt2 <- paste (
@@ -672,7 +649,8 @@ function(input, output, session) {
   })
 
   output$zlogreg <- renderPlot({
-    scaledsc = scale(scored_test())
+    scaledsc <- scale(scored_test())
+
 
     fun <- function(x, b0, b1) {exp(b0 + b1 * x) / (1 + exp(b0 + b1 * x))}
 
@@ -786,7 +764,7 @@ function(input, output, session) {
     cov <- vcov(z_logistic_reg())
     cov <- as.matrix(cov)
     syms <- paste("x", 1:2, sep = "")
-    for (i in 1:4) assign(syms[i], tab_coef_old[i])
+    for (i in 1:2) assign(syms[i], tab_coef_old[i])
     gdashmu <- t(sapply(g, function(form) {
       as.numeric(attr(eval(deriv(form, syms), envir = parent.frame()), "gradient"))
     }))
