@@ -908,6 +908,7 @@ fluidPage(titlePanel("TEST AND ITEM ANALYSIS"),
                                         ),
                                         '2PL'
                            ),
+                           uiOutput("difirt_lord_itemSlider"),
                            plotOutput('plot_DIF_IRT_Lord'),
                            h4("Equation"),
                            ('$$\\mathrm{P}\\left(Y_{ij} = 1 | \\theta_i, G_i, a_j, b_j, c_j, a_{\\text{DIF}j}, b_{\\text{DIF}j}\\right) =
@@ -953,6 +954,7 @@ fluidPage(titlePanel("TEST AND ITEM ANALYSIS"),
                                                  ),
                                                  '2PL'
                                     ),
+                                    uiOutput("difirt_raju_itemSlider"),
                                     plotOutput('plot_DIF_IRT_Raju'),
                                     h4("Equation"),
                                     ('$$\\mathrm{P}\\left(Y_{ij} = 1 | \\theta_i, G_i, a_j, b_j, c_j, a_{\\text{DIF}j}, b_{\\text{DIF}j}\\right) =
@@ -979,6 +981,7 @@ fluidPage(titlePanel("TEST AND ITEM ANALYSIS"),
                     generated to function differently in uniform and non-uniform way respectively.
                     The data set represents responses of 1,000 subjects to multiple-choice test of 20 items.'),
                   br(),
+                  uiOutput("dataSelect"),
                   h4("Upload your own datasets"),
                   p('Main dataset should contain responses of individual students (rows) to given items (collumns).
                     Header may contain item names, no row names should be included. If responses are in ABC format,
@@ -1040,7 +1043,7 @@ fluidPage(titlePanel("TEST AND ITEM ANALYSIS"),
                             )
                     ),
                   tags$hr(),
-                  h4("Data Check (first 6 respondents only)"),
+                  h4("Data Check"),
                   dataTableOutput('headdata'),
                   h4("Key (correct answers)"),
                   dataTableOutput('key'),
