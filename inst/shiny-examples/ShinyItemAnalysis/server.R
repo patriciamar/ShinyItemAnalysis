@@ -188,66 +188,54 @@ function(input, output, session) {
     out
     }, options=list(scrollX=TRUE, pageLength=10))
 
-  # Item slider ####
-  #output$slider <- renderUI({
-  #  a <- test_answers()
-  #
-  #  sliderInput(
-  #    "inSlider", "Item", animate = TRUE, min = 1, max = ncol(a), value = 1, step = 1
-  #  )
-  #})
-
   ##### ITEM SLIDERS #####
-  #output$logregSlider <- renderUI({
-  #  a <- test_answers()
-  #  sliderInput("logregSlider", "Item", animate = TRUE, min = 1, max = ncol(a), value = 1, step = 1)
-  #})
-  output$distractorSlider <- renderUI({
+
+  output$distractorSliderUI <- renderUI({
     a <- test_answers()
     sliderInput("distractorSlider", "Item", animate = TRUE, min = 1, max = ncol(a), value = 1, step = 1)
   })
 
-  output$logregSlider <- renderUI({
+  output$logregSliderUI <- renderUI({
     a <- test_answers()
     sliderInput("logregSlider", "Item", animate = TRUE, min = 1, max = ncol(a), value = 1, step = 1)
   })
 
-  output$zlogregSlider <- renderUI({
+  output$zlogregSliderUI <- renderUI({
     a <- test_answers()
     sliderInput("zlogregSlider", "Item", animate = TRUE, min = 1, max = ncol(a), value = 1, step = 1)
   })
-  output$zlogreg_irtSlider <- renderUI({
+  output$zlogreg_irtSliderUI <- renderUI({
     a <- test_answers()
     sliderInput("zlogreg_irtSlider", "Item", animate = TRUE, min = 1, max = ncol(a), value = 1, step = 1)
   })
-  output$nlsSlider <- renderUI({
+  output$nlsSliderUI <- renderUI({
     a <- test_answers()
     sliderInput("nlsSlider", "Item", animate = TRUE, min = 1, max = ncol(a), value = 1, step = 1)
   })
-  output$multiSlider <- renderUI({
+  output$multiSliderUI <- renderUI({
     a <- test_answers()
     sliderInput("multiSlider", "Item", animate = TRUE, min = 1, max = ncol(a), value = 1, step = 1)
   })
 
-  output$diflogSlider <- renderUI({
+  output$diflogSliderUI <- renderUI({
     a <- test_answers()
     sliderInput("diflogSlider", "Item", animate = TRUE, min = 1, max = ncol(a), value = 1, step = 1)
   })
-  output$diflog_irtSlider <- renderUI({
+  output$diflog_irtSliderUI <- renderUI({
     a <- test_answers()
     sliderInput("diflog_irtSlider", "Item", animate = TRUE, min = 1, max = ncol(a), value = 1, step = 1)
   })
-  output$difnlrSlider <- renderUI({
+  output$difnlrSliderUI <- renderUI({
     a <- test_answers()
     sliderInput("difnlrSlider", "Item", animate = TRUE, min = 1, max = ncol(a), value = 1, step = 1)
   })
 
-  output$difirt_lord_itemSlider <- renderUI({
+  output$difirt_lord_itemSliderUI <- renderUI({
     a <- test_answers()
     sliderInput("difirt_lord_itemSlider", "Item", animate = TRUE, min = 1, max = ncol(a), value = 1, step = 1)
   })
 
-  output$difirt_raju_itemSlider <- renderUI({
+  output$difirt_raju_itemSliderUI <- renderUI({
     a <- test_answers()
     sliderInput("difirt_raju_itemSlider", "Item", animate = TRUE, min = 1, max = ncol(a), value = 1, step = 1)
   })
@@ -303,7 +291,7 @@ function(input, output, session) {
     )
   })
   # * Mantel-Haenszel for item ####
-  output$difMHSlider_item <- renderUI({
+  output$difMHSlider_itemUI <- renderUI({
     a <- test_answers()
     sliderInput("difMHSlider_item", "Item", animate = TRUE,
                 min = 1, max = ncol(a), value = 1, step = 1)
