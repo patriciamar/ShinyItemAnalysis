@@ -4,7 +4,76 @@
 # item item indicator
 # multiple.answers AB BC etc combinations
 
-plotDistractorAnalysis <-  function (data, key, num.groups = 3, item = 1, multiple.answers = T)
+
+
+
+#' Function for graphical representation of item distractor analysis
+#'
+#' @aliases plotDistractorAnalysis
+#'
+#' @description Plots graphical representation of item distractor analysis with proportions and
+#' optional number of groups.
+#'
+#' @param data character: data matrix or data frame. See \strong{Details}.
+#' @param key character: answer key for the items.
+#' @param num.groups numeric: number of groups to that should be respondents splitted.
+#' @param item numeric: the number of item to be plotted.
+#' @param multiple.answers logical: should be all combinations plotted (default) or should be
+#' answers splitted into distractors. See \strong{Details}.
+#'
+#' @usage plotDistractorAnalysis(data, key, num.groups = 3, item = 1, multiple.answers = TRUE)
+#'
+#' @details
+#' This function is graphical representation of \code{DistractorAnalysis} function.
+#' The scores are calculatede using the item data and key. The respondents are then splitted into
+#' the \code{num.groups}-quantiles and the proportion of respondents in each quantile is
+#' reported with respect to their answers, using all reported combinations (default) or distractors.
+#' These proportions are plotted.
+#'
+#' The \code{data} is a matrix or data frame whose rows represents unscored item response from a
+#' multiple-choice test and columns correspond to the items.
+#'
+#' The \code{key} must be a vector of the same length as \code{ncol(data)}.
+#'
+#' If \code{multiple.answers = TRUE} (default) all reported combinations of answers are plotted.
+#' If \code{multiple.answers = FALSE} all combinations are splitted into distractors and only these
+#' are then plotted with correct combination.
+#'
+#' @author
+#' Adela Drabinova \cr
+#' Institute of Computer Science, The Czech Academy of Sciences \cr
+#' Faculty of Mathematics and Physics, Charles University \cr
+#' adela.drabinova@gmail.com \cr
+#'
+#' Patricia Martinkova \cr
+#' Institute of Computer Science, The Czech Academy of Sciences \cr
+#' martinkova@cs.cas.cz \cr
+#'
+#' @examples
+#' \dontrun{
+#' # loading difMedicaltest data set
+#' data(difMedicaltest, package = "difNLR")
+#' data  <- difMedicaltest[, colnames(difMedicaltest) != "gender"]
+#' # loading difMedicalkey
+#' data(difMedicalkey, package = "difNLR")
+#' key  <- difMedicalkey
+#'
+#' # distractor analysis plot for item 1, all combinations
+#' plotDistractorAnalysis(data, key, item = 1)
+#'
+#' # distractor analysis plot for item 1, distractors
+#' plotDistractorAnalysis(data, key, item = 1, multiple.answers = F)
+#'
+#' # distractor analysis plot for item 3, all combinations and 6 groups
+#' plotDistractorAnalysis(data, key, num.group = 6, item = 3)
+#'
+#' }
+#'
+#'
+#' @export
+
+
+plotDistractorAnalysis <-  function (data, key, num.groups = 3, item = 1, multiple.answers = TRUE)
 {
   # distractor analysis
   tabDA <- DistractorAnalysis(data = data, key = key, p.table = TRUE, num.groups = num.groups)
@@ -59,12 +128,12 @@ plotDistractorAnalysis <-  function (data, key, num.groups = 3, item = 1, multip
   shape[CAall] <- 19
 
   # plot
-  ggplot(df, aes(x = score.level,
-                 y = value,
-                 group = response,
-                 colour = response,
-                 linetype = response,
-                 shape = response),
+  ggplot(df, aes_string(x = "score.level",
+                        y = "value",
+                        group = "response",
+                        colour = "response",
+                        linetype = "response",
+                        shape = "response"),
          size = 1) +
     geom_line() +
     geom_point(size = 3) +
