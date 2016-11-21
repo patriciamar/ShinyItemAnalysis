@@ -1,4 +1,3 @@
-# random zmena
 ######################
 # GLOBAL LIBRARY #####
 ######################
@@ -27,15 +26,6 @@ data('GMATkey', package = 'difNLR')
 test=get("GMATtest")
 key=get("GMATkey")
 
-# * sandbox data choosing #####
-
-#do.call(data, args=list(input$dataSelect, package="difNLR"))
-#do.call(data, args=list(paste0(input$dataSelect,"key"), package="difNLR"))
-#do.call(data, args=list(paste0(input$dataSelect,"test"), package="difNLR"))
-#
-#test=get(paste0(input$dataselect,"test"))
-#key=get(paste0(input$dataSelect, "key"))
-
 ##################
 # FUNCTIONS ######
 ##################
@@ -52,9 +42,6 @@ source("plotDIFLogistic.R")
 
 # DIF IRT regression plot
 source("plotDIFirt.R")
-
-
-
 
 #####################
 # SERVER SCRIPT #####
@@ -200,41 +187,41 @@ function(input, output, session) {
     sliderInput("distractorSlider", "Item", animate = TRUE, min = 1, max = ncol(a), value = 1, step = 1)
   })
 
-
   output$logregSliderUI <- renderUI({
-
     a <- test_answers()
     sliderInput("logregSlider", "Item", animate = TRUE, min = 1, max = ncol(a), value = 1, step = 1)
   })
 
   output$zlogregSliderUI <- renderUI({
-
     a <- test_answers()
     sliderInput("zlogregSlider", "Item", animate = TRUE, min = 1, max = ncol(a), value = 1, step = 1)
   })
+
   output$zlogreg_irtSliderUI <- renderUI({
     a <- test_answers()
     sliderInput("zlogreg_irtSlider", "Item", animate = TRUE, min = 1, max = ncol(a), value = 1, step = 1)
   })
+
   output$nlsSliderUI <- renderUI({
     a <- test_answers()
     sliderInput("nlsSlider", "Item", animate = TRUE, min = 1, max = ncol(a), value = 1, step = 1)
   })
+
   output$multiSliderUI <- renderUI({
     a <- test_answers()
     sliderInput("multiSlider", "Item", animate = TRUE, min = 1, max = ncol(a), value = 1, step = 1)
   })
 
-
   output$diflogSliderUI <- renderUI({
-
     a <- test_answers()
     sliderInput("diflogSlider", "Item", animate = TRUE, min = 1, max = ncol(a), value = 1, step = 1)
   })
+
   output$diflog_irtSliderUI <- renderUI({
     a <- test_answers()
     sliderInput("diflog_irtSlider", "Item", animate = TRUE, min = 1, max = ncol(a), value = 1, step = 1)
   })
+
   output$difnlrSliderUI <- renderUI({
     a <- test_answers()
     sliderInput("difnlrSlider", "Item", animate = TRUE, min = 1, max = ncol(a), value = 1, step = 1)
@@ -686,6 +673,11 @@ function(input, output, session) {
 
 
   # * LOGISTIC IRT Z ##### ####
+  # ** Model ####
+  z_logistic_irt_reg <- reactive({
+    scaledsc <- c(scale(scored_test()))
+    model <- glm(correct_answ()[, input$zlogreg_irtSlider] ~ scaledsc, family = "binomial")
+  })
   # ** Plot with estimated logistic curve ####
   output$zlogreg_irt <- renderPlot({
     scaledsc <- scale(scored_test())
@@ -701,8 +693,8 @@ function(input, output, session) {
                  fill = "darkblue",
                  shape = 21, alpha = 0.5) +
       stat_function(fun = fun, geom = "line",
-                    args = list(b0 = coef(z_logistic_reg())[1],
-                                b1 = coef(z_logistic_reg())[2]),
+                    args = list(b0 = coef(z_logistic_irt_reg())[1],
+                                b1 = coef(z_logistic_irt_reg())[2]),
                     size = 1,
                     color = "darkblue") +
       xlab("Standardized Total Score (Z-score)") +
@@ -726,16 +718,17 @@ function(input, output, session) {
   # ** Table of parameters ####
   output$zlogregtab_irt <- renderTable({
 
-    tab_coef_old <- coef(z_logistic_reg())
+    tab_coef_old <- coef(z_logistic_irt_reg())
 
     # delta method
     g <- list( ~ x2,  ~ -x1/x2)
-    cov <- vcov(z_logistic_reg())
+    cov <- vcov(z_logistic_irt_reg())
     cov <- as.matrix(cov)
     syms <- paste("x", 1:2, sep = "")
     for (i in 1:2) assign(syms[i], tab_coef_old[i])
     gdashmu <- t(sapply(g, function(form) {
-      as.numeric(attr(eval(deriv(form, syms), envir = parent.frame()), "gradient"))
+      as.numeric(attr(eval(deriv(form, syms)), "gradient"))
+      # in some shiny v. , envir = parent.frame() in eval() needs to be added
     }))
     new.covar <- gdashmu %*% cov %*% t(gdashmu)
     tab_sd <- sqrt(diag(new.covar))
@@ -753,9 +746,9 @@ function(input, output, session) {
   # ** Interpretation ####
   output$zlogisticint_irt <- renderUI({
 
-    b1 <- summary(z_logistic_reg())$coef[2, 1]
+    b1 <- summary(z_logistic_irt_reg())$coef[2, 1]
     b1 <- round(b1, 2)
-    b0 <- round(summary(z_logistic_reg())$coef[1, 1], 2)
+    b0 <- round(summary(z_logistic_irt_reg())$coef[1, 1], 2)
 
     txt1 <- paste ("<b>", "Interpretation:", "</b>")
     txt2 <-
@@ -1598,7 +1591,8 @@ function(input, output, session) {
     syms <- paste("x", 1:4, sep = "")
     for (i in 1:4) assign(syms[i], tab_coef_old[i])
     gdashmu <- t(sapply(g, function(form) {
-      as.numeric(attr(eval(deriv(form, syms), envir = parent.frame()), "gradient"))
+      as.numeric(attr(eval(deriv(form, syms)), "gradient"))
+      # in some shiny v. , envir = parent.frame() in eval() needs to be added
       }))
     new.covar <- gdashmu %*% cov %*% t(gdashmu)
     tab_sd <- sqrt(diag(new.covar))
