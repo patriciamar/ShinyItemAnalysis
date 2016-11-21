@@ -26,15 +26,6 @@ data('GMATkey', package = 'difNLR')
 test=get("GMATtest")
 key=get("GMATkey")
 
-# * sandbox data choosing #####
-
-#do.call(data, args=list(input$dataSelect, package="difNLR"))
-#do.call(data, args=list(paste0(input$dataSelect,"key"), package="difNLR"))
-#do.call(data, args=list(paste0(input$dataSelect,"test"), package="difNLR"))
-#
-#test=get(paste0(input$dataselect,"test"))
-#key=get(paste0(input$dataSelect, "key"))
-
 ##################
 # FUNCTIONS ######
 ##################
@@ -51,9 +42,6 @@ source("plotDIFLogistic.R")
 
 # DIF IRT regression plot
 source("plotDIFirt.R")
-
-
-
 
 #####################
 # SERVER SCRIPT #####
@@ -79,6 +67,7 @@ function(input, output, session) {
 
   # CHOOSE DATA #####
 
+
   output$dataSelect <- renderUI({
       selectInput("dataSelect", "Select dataset",
                 c("GMAT" = "GMAT",
@@ -102,6 +91,7 @@ function(input, output, session) {
 
   # LOAD KEY #####
   test_key <- reactive({
+
     do.call(data, args=list(paste0(input$dataSelect,"key"), package="difNLR"))
     key=get(paste0(input$dataSelect,"key"))
 
@@ -115,6 +105,7 @@ function(input, output, session) {
 
   # LOAD GROUPS #####
   DIF_groups <- reactive({
+
     do.call(data, args=list(paste0(input$dataSelect,"test"), package="difNLR"))
     test=get(paste0(input$dataSelect,"test"))
 
@@ -188,6 +179,7 @@ function(input, output, session) {
     out
     }, options=list(scrollX=TRUE, pageLength=10))
 
+
   ##### ITEM SLIDERS #####
 
   output$distractorSliderUI <- renderUI({
@@ -204,14 +196,17 @@ function(input, output, session) {
     a <- test_answers()
     sliderInput("zlogregSlider", "Item", animate = TRUE, min = 1, max = ncol(a), value = 1, step = 1)
   })
+
   output$zlogreg_irtSliderUI <- renderUI({
     a <- test_answers()
     sliderInput("zlogreg_irtSlider", "Item", animate = TRUE, min = 1, max = ncol(a), value = 1, step = 1)
   })
+
   output$nlsSliderUI <- renderUI({
     a <- test_answers()
     sliderInput("nlsSlider", "Item", animate = TRUE, min = 1, max = ncol(a), value = 1, step = 1)
   })
+
   output$multiSliderUI <- renderUI({
     a <- test_answers()
     sliderInput("multiSlider", "Item", animate = TRUE, min = 1, max = ncol(a), value = 1, step = 1)
@@ -221,10 +216,12 @@ function(input, output, session) {
     a <- test_answers()
     sliderInput("diflogSlider", "Item", animate = TRUE, min = 1, max = ncol(a), value = 1, step = 1)
   })
+
   output$diflog_irtSliderUI <- renderUI({
     a <- test_answers()
     sliderInput("diflog_irtSlider", "Item", animate = TRUE, min = 1, max = ncol(a), value = 1, step = 1)
   })
+
   output$difnlrSliderUI <- renderUI({
     a <- test_answers()
     sliderInput("difnlrSlider", "Item", animate = TRUE, min = 1, max = ncol(a), value = 1, step = 1)
@@ -240,37 +237,6 @@ function(input, output, session) {
     sliderInput("difirt_raju_itemSlider", "Item", animate = TRUE, min = 1, max = ncol(a), value = 1, step = 1)
   })
 
-
-  ##### Slider update #####
-
-  sliderUpdate=reactiveValues()
-
-  observe({
-    #invalidateLater(1000000, session)
-
-    #if (isnull(input$logregSlider)) {updateSliderInput(session, "logregSlider", value = sliderUpdate$value)}
-
-   #sliderUpdate$entryValues=c(input$inSlider, input$distractorSlider, input$logregSlider,input$zlogregSlider,input$zlogreg_irtSlider,input$nlsSlider, input$multiSlider,
-     #                         input$diflogSlider, input$diflog_irtSlider, input$difnlrSlider)
-   #sliderUpdate$value=as.numeric(names(table(isolate(sliderUpdate$entryValues))[min(table(isolate(sliderUpdate$entryValues)))==table(isolate(sliderUpdate$entryValues))]))
-
-    #updateSliderInput(session, "inSlider", value = sliderUpdate$value)
-    #updateSliderInput(session, "distractorSlider", value = sliderUpdate$value)
-    #updateSliderInput(session, "logregSlider", value = sliderUpdate$value)
-    #updateSliderInput(session, "zlogregSlider", value = sliderUpdate$value)
-    #updateSliderInput(session, "zlogreg_irtSlider", value = sliderUpdate$value)
-    #updateSliderInput(session, "nlsSlider", value = sliderUpdate$value)
-    #updateSliderInput(session, "multiSlider", value = sliderUpdate$value)
-    #updateSliderInput(session, "inSlider", value = sliderUpdate$value)
-    #updateSliderInput(session, "diflogSlider", value = sliderUpdate$value)
-    #updateSliderInput(session, "diflog_irtSlider", value = sliderUpdate$value)
-    #updateSliderInput(session, "difnlrSlider", value = sliderUpdate$value)
-
-
-   # sliderUpdate$outputValues=c(input$logregSlider,input$zlogregSlider,input$zlogreg_irtSlider,input$nlsSlider, input$multiSlider,
-    #                           input$inSlider, input$diflogSlider, input$diflog_irtSlider, input$difnlrSlider)
-
-  })
 
   ########################
   # SLIDER FOR STUDENTS PAGE ######
@@ -407,8 +373,10 @@ function(input, output, session) {
   # * ITEM ANALYSIS #####
   # ** Item Difficulty/Discrimination Graph ######
   output$difplot <- renderPlot({
+
     correct <- correct_answ()
     DDplot(correct)
+
       })
 
   output$uidifplot <- renderUI({
@@ -705,6 +673,11 @@ function(input, output, session) {
 
 
   # * LOGISTIC IRT Z ##### ####
+  # ** Model ####
+  z_logistic_irt_reg <- reactive({
+    scaledsc <- c(scale(scored_test()))
+    model <- glm(correct_answ()[, input$zlogreg_irtSlider] ~ scaledsc, family = "binomial")
+  })
   # ** Plot with estimated logistic curve ####
   output$zlogreg_irt <- renderPlot({
     scaledsc <- scale(scored_test())
@@ -720,8 +693,8 @@ function(input, output, session) {
                  fill = "darkblue",
                  shape = 21, alpha = 0.5) +
       stat_function(fun = fun, geom = "line",
-                    args = list(b0 = coef(z_logistic_reg())[1],
-                                b1 = coef(z_logistic_reg())[2]),
+                    args = list(b0 = coef(z_logistic_irt_reg())[1],
+                                b1 = coef(z_logistic_irt_reg())[2]),
                     size = 1,
                     color = "darkblue") +
       xlab("Standardized Total Score (Z-score)") +
@@ -745,16 +718,17 @@ function(input, output, session) {
   # ** Table of parameters ####
   output$zlogregtab_irt <- renderTable({
 
-    tab_coef_old <- coef(z_logistic_reg())
+    tab_coef_old <- coef(z_logistic_irt_reg())
 
     # delta method
     g <- list( ~ x2,  ~ -x1/x2)
-    cov <- vcov(z_logistic_reg())
+    cov <- vcov(z_logistic_irt_reg())
     cov <- as.matrix(cov)
     syms <- paste("x", 1:2, sep = "")
     for (i in 1:2) assign(syms[i], tab_coef_old[i])
     gdashmu <- t(sapply(g, function(form) {
-      as.numeric(attr(eval(deriv(form, syms), envir = parent.frame()), "gradient"))
+      as.numeric(attr(eval(deriv(form, syms)), "gradient"))
+      # in some shiny v. , envir = parent.frame() in eval() needs to be added
     }))
     new.covar <- gdashmu %*% cov %*% t(gdashmu)
     tab_sd <- sqrt(diag(new.covar))
@@ -772,9 +746,9 @@ function(input, output, session) {
   # ** Interpretation ####
   output$zlogisticint_irt <- renderUI({
 
-    b1 <- summary(z_logistic_reg())$coef[2, 1]
+    b1 <- summary(z_logistic_irt_reg())$coef[2, 1]
     b1 <- round(b1, 2)
-    b0 <- round(summary(z_logistic_reg())$coef[1, 1], 2)
+    b0 <- round(summary(z_logistic_irt_reg())$coef[1, 1], 2)
 
     txt1 <- paste ("<b>", "Interpretation:", "</b>")
     txt2 <-
@@ -925,6 +899,7 @@ function(input, output, session) {
 
     stotal <- c(scale(scored_test()))
 
+
     fitM <- multinom(relevel(as.factor(test_answers()[, input$multiSlider]),
                              ref = paste(k[input$multiSlider])) ~ stotal)
 
@@ -939,6 +914,7 @@ function(input, output, session) {
                       y = data.frame(prop.table(table(test_answers()[, input$multiSlider], stotal), 2))[, 3])
     df2$stotal <- as.numeric(levels(df2$stotal))[df2$stotal]
     df2$Var2 <- relevel(df2$Var1, ref = paste(k[input$multiSlider]))
+
 
     ggplot() +
       geom_line(data = df,
@@ -1007,7 +983,9 @@ function(input, output, session) {
         scores)  is associated with the decrease in the log odds of
         answering the item "
     ,"<b>", row.names(koef)[i], "</b>", "vs.", "<b>",
+
     test_key()[input$multiSlider],
+
     "</b>","in the amount of ",
     "<b>", round(koef[i, 2], 2), "</b>", '<br/>')
     }
@@ -1526,6 +1504,7 @@ function(input, output, session) {
   # ** Table with coefficients ####
   output$tab_coef_DIF_logistic <- renderTable({
 
+
     tab_coef <- model_DIF_logistic_plot()$logitPar[input$diflogSlider, ]
     tab_sd <- model_DIF_logistic_plot()$logitSe[input$diflogSlider, ]
 
@@ -1589,7 +1568,9 @@ function(input, output, session) {
 
     fit <- model_DIF_logistic_IRT_Z_plot()
 
+
     tab_coef_old <- fit$logitPar[input$diflog_irtSlider, ]
+
     tab_coef <- c()
     # a = b1, b = -b0/b1, adif = b3, bdif = -(b1b2-b0b3)/(b1(b1+b3))
     tab_coef[1] <- tab_coef_old[2]
@@ -1610,7 +1591,8 @@ function(input, output, session) {
     syms <- paste("x", 1:4, sep = "")
     for (i in 1:4) assign(syms[i], tab_coef_old[i])
     gdashmu <- t(sapply(g, function(form) {
-      as.numeric(attr(eval(deriv(form, syms), envir = parent.frame()), "gradient"))
+      as.numeric(attr(eval(deriv(form, syms)), "gradient"))
+      # in some shiny v. , envir = parent.frame() in eval() needs to be added
       }))
     new.covar <- gdashmu %*% cov %*% t(gdashmu)
     tab_sd <- sqrt(diag(new.covar))
@@ -1661,13 +1643,17 @@ function(input, output, session) {
 
    output$tab_coef_DIF_NLR <- renderTable({
 
+
      tab_coef <- t(as.table(model_DIF_NLR_plot()$coef[input$difnlrSlider, ]))
+
      tab_sd <- lapply(lapply(model_DIF_NLR_plot()$vcov, diag), `length<-`,
                       max(lengths(lapply(model_DIF_NLR_plot()$vcov, diag))))
      tab_sd <- t(matrix(unlist(tab_sd), nrow = 5))
      tab_sd[is.na(tab_sd)] <- 0
 
+
      tab <- data.frame(tab_coef, tab_sd[input$difnlrSlider, ])
+
      tab <- data.frame(tab[, 3:4])
      rownames(tab) <- c('a', 'b', 'c', 'aDIF', 'bDIF')
      colnames(tab) <- c("Estimate", "SD")
@@ -1682,10 +1668,11 @@ function(input, output, session) {
      group <- DIF_groups()
      data <- correct_answ()
 
-     guess <- ifelse(input$type_print_DIF_IRT_lord == "3PL",
-                     itemPar3PL(data)[, 3], 0)
+     if (input$type_plot_DIF_IRT_lord == "3PL"){
+       guess <- itemPar3PL(data)[, 3]
+     }
 
-     mod <- switch(input$type_print_DIF_IRT_lord,
+     mod <- switch(input$type_plot_DIF_IRT_lord,
                    "1PL" = difLord(Data = data, group = group, focal.name = 1,
                                    model = "1PL",
                                    p.adjust.method = "BH"),
@@ -1703,8 +1690,9 @@ function(input, output, session) {
      group <- DIF_groups()
      data <- correct_answ()
 
-     guess <- ifelse(input$type_print_DIF_IRT_lord == "3PL",
-                     itemPar3PL(data)[, 3], 0)
+     if (input$type_print_DIF_IRT_lord == "3PL"){
+       guess <- itemPar3PL(data)[, 3]
+     }
 
      mod <- switch(input$type_print_DIF_IRT_lord,
                    "1PL" = difLord(Data = data, group = group, focal.name = 1,
@@ -1741,6 +1729,7 @@ function(input, output, session) {
                      "1PL" = 2,
                      "2PL" = 3:4,
                      "3PL" = 3:4)
+
      tab_coef <- c(model_DIF_IRT_Lord_plot()$itemParInit[c(input$difirt_lord_itemSlider,
                                                            m + input$difirt_lord_itemSlider),
                                                          wh_coef])
@@ -1780,10 +1769,11 @@ function(input, output, session) {
      group <- DIF_groups()
      data <- correct_answ()
 
-     guess <- ifelse(input$type_print_DIF_IRT_raju == "3PL",
-                     itemPar3PL(data)[, 3], 0)
+     if (input$type_plot_DIF_IRT_raju == "3PL"){
+       guess <- itemPar3PL(data)[, 3]
+     }
 
-     mod <- switch(input$type_print_DIF_IRT_raju,
+     mod <- switch(input$type_plot_DIF_IRT_raju,
                    "1PL" = difRaju(Data = data, group = group, focal.name = 1,
                                    model = "1PL",
                                    p.adjust.method = "BH"),
@@ -1801,8 +1791,9 @@ function(input, output, session) {
      group <- DIF_groups()
      data <- correct_answ()
 
-     guess <- ifelse(input$type_print_DIF_IRT_raju == "3PL",
-                     itemPar3PL(data)[, 3], 0)
+     if (input$type_print_DIF_IRT_raju == "3PL"){
+       guess <- itemPar3PL(data)[, 3]
+     }
 
      mod <- switch(input$type_print_DIF_IRT_raju,
                    "1PL" = difRaju(Data = data, group = group, focal.name = 1,
@@ -1839,6 +1830,7 @@ function(input, output, session) {
                      "1PL" = 2,
                      "2PL" = 3:4,
                      "3PL" = 3:4)
+
      tab_coef <- c(model_DIF_IRT_Raju_plot()$itemParInit[c(input$difirt_raju_itemSlider, m + input$difirt_raju_itemSlider), wh_coef])
      tab_sd <- c(model_DIF_IRT_Raju_plot()$itemParInit[c(input$difirt_raju_itemSlider, m + input$difirt_raju_itemSlider), wh_sd])
 
