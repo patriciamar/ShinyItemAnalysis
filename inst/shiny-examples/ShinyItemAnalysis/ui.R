@@ -470,7 +470,7 @@ fluidPage(titlePanel("TEST AND ITEM ANALYSIS"),
 
                       br(),
                       br(),
-                      code('# NLR model for item 1'),
+                      code('# multinomial model for item 1'),
                       br(),
                       code('fit <- multinom(relevel(data[, 1], ref = paste(key[1])) ~ stand.score)'),
                       br(),
