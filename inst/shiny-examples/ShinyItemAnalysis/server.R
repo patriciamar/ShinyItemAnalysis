@@ -1714,7 +1714,7 @@ function(input, output, session) {
 
    # ** Plot ####
    output$plot_DIF_IRT_Lord <- renderPlot({
-     plotDIFirt(parameters = tab_coef_DIF_IRT_Lord())
+     plotDIFirt(parameters = tab_coef_DIF_IRT_Lord(), item=input$difirt_lord_itemSlider)
    })
 
    # ** Table with coefficients ####
@@ -1815,7 +1815,7 @@ function(input, output, session) {
 
    # ** Plot ####
    output$plot_DIF_IRT_Raju <- renderPlot({
-     plotDIFirt(parameters = tab_coef_DIF_IRT_Raju(), test = "Raju")
+     plotDIFirt(parameters = tab_coef_DIF_IRT_Raju(), test = "Raju", item=input$difirt_raju_itemSlider)
    })
 
    # ** Table with coefficients ####
