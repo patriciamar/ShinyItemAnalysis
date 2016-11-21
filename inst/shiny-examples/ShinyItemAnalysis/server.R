@@ -1,3 +1,5 @@
+#random jakub zmena
+
 ######################
 # GLOBAL LIBRARY #####
 ######################
