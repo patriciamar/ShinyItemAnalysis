@@ -6,6 +6,7 @@ importFrom(psychometric, item.exam)
 import(CTT,
        deltaPlotR,
        difNLR,
+       difR,
        ggplot2,
        gridExtra,
        ltm,
@@ -15,3 +16,5 @@ import(CTT,
        shiny,
        shinyAce
        )
+importFrom("grDevices", "rainbow")
+importFrom("stats", "aggregate", "quantile", "relevel", "xtabs")
