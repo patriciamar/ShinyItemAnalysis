@@ -24,19 +24,24 @@ library(reshape2)
 data('GMAT', package = 'difNLR')
 data('GMATtest', package = 'difNLR')
 data('GMATkey', package = 'difNLR')
+test=get("GMATtest")
+key=get("GMATkey")
 
 # * sandbox data choosing #####
 
-#do.call(data, args=list("input$dataSelect", package="difNLR"))
-#do.call(data, args=list(paste0("input$dataSelect","key"), package="difNLR"))
-#do.call(data, args=list(paste0("input$dataSelect","test"), package="difNLR"))
-
+#do.call(data, args=list(input$dataSelect, package="difNLR"))
+#do.call(data, args=list(paste0(input$dataSelect,"key"), package="difNLR"))
+#do.call(data, args=list(paste0(input$dataSelect,"test"), package="difNLR"))
+#
 #test=get(paste0(input$dataselect,"test"))
 #key=get(paste0(input$dataSelect, "key"))
 
 ##################
 # FUNCTIONS ######
 ##################
+
+# Difficulty/Discrimination plot
+source("DDplot.R")
 
 # Distractors analysis
 source("DistractorAnalysis.R")
@@ -75,20 +80,23 @@ function(input, output, session) {
 
   # CHOOSE DATA #####
 
-  #output$dataSelect <- renderUI({
 
-  #  selectInput("dataSelect", "Select dataset",
-  #              c("GMAT" = "GMAT",
-  #                "GMAT2" = "GMAT2",
-  #                "Medical" = "difMedical"
-  #               ),
-  #              selected="GMAT")
+  output$dataSelect <- renderUI({
+      selectInput("dataSelect", "Select dataset",
+                c("GMAT" = "GMAT",
+                  "GMAT2" = "GMAT2",
+                  "Medical" = "difMedical"
+                 ),
+                selected="GMAT")
+    })
 
-  #})
 
   # LOAD ABCD DATA #####
   test_answers <- reactive ({
-    ifelse (is.null(input$data), answ <- GMATtest[ , 1:20],
+    do.call(data, args=list(paste0(input$dataSelect,"test"), package="difNLR"))
+    test=get(paste0(input$dataSelect,"test"))
+
+    ifelse (is.null(input$data), answ <- test[ , 1:20],
             answ <- read.csv(input$data$datapath, header = input$header,
                              sep = input$sep, quote = input$quote))
     answ
@@ -96,7 +104,12 @@ function(input, output, session) {
 
   # LOAD KEY #####
   test_key <- reactive({
-    ifelse (is.null(input$key), k <- GMATkey,
+
+    do.call(data, args=list(paste0(input$dataSelect,"key"), package="difNLR"))
+    key=get(paste0(input$dataSelect,"key"))
+
+    ifelse (is.null(input$key), k <- key,
+
             {k <- read.csv(input$key$datapath, header = FALSE)
              k <- k[[1]]
             })
@@ -105,7 +118,12 @@ function(input, output, session) {
 
   # LOAD GROUPS #####
   DIF_groups <- reactive({
-    ifelse (is.null(input$key), k <- GMATtest[ , 21],
+
+    do.call(data, args=list(paste0(input$dataSelect,"test"), package="difNLR"))
+    test=get(paste0(input$dataSelect,"test"))
+
+    ifelse (is.null(input$key), k <- test[ , 21],
+
             {k <- read.csv(input$groups$datapath,header = TRUE)
              k <- k[[1]]})
     as.vector(k)
@@ -132,17 +150,29 @@ function(input, output, session) {
 
   # DATA HEAD ######
    output$headdata <- renderDataTable({
-      test_answers()
+
+      test=test_answers()
+      name <- c()
+      for (i in 1:ncol(test)) {
+        name[i] <- paste("i", i, sep = "")
+      }
+      colnames(test) <- name
+      test
+
      }, options=list(scrollX=TRUE, pageLength=10))
 
   # KEY CONTROL #######
   output$key <- renderDataTable({
-    #t(as.data.frame(test_key()))
-    df<-as.data.frame(cbind.data.frame(seq(1,length(test_key())),as.data.frame(test_key())))
-    colnames(df)=c("item","answer")
-    df
-    #as.data.frame(test_key())
-    }, options=list(pageLength=5))
+
+    key_table=as.data.frame(t(as.data.frame(test_key())))
+    name <- c()
+    for (i in 1:ncol(key_table)) {
+      name[i] <- paste("i", i, sep = "")
+    }
+    colnames(key_table) <- name
+    key_table
+
+    }, options=list(scrollX=TRUE))
 
   # SCORE 0-1 #####
   output$sc01 <- renderDataTable({
@@ -162,90 +192,64 @@ function(input, output, session) {
     out
     }, options=list(scrollX=TRUE, pageLength=10))
 
-  # Item slider ####
-  #output$slider <- renderUI({
-  #  a <- test_answers()
-  #
-  #  sliderInput(
-  #    "inSlider", "Item", animate = TRUE, min = 1, max = ncol(a), value = 1, step = 1
-  #  )
-  #})
 
   ##### ITEM SLIDERS #####
-  #output$logregSlider <- renderUI({
-  #  a <- test_answers()
-  #  sliderInput("logregSlider", "Item", animate = TRUE, min = 1, max = ncol(a), value = 1, step = 1)
-  #})
-  output$distractorSlider <- renderUI({
+
+  output$distractorSliderUI <- renderUI({
     a <- test_answers()
     sliderInput("distractorSlider", "Item", animate = TRUE, min = 1, max = ncol(a), value = 1, step = 1)
   })
 
-  output$logregSlider <- renderUI({
+
+  output$logregSliderUI <- renderUI({
+
     a <- test_answers()
-    sliderInput("inSlider", "Item", animate = TRUE, min = 1, max = ncol(a), value = 1, step = 1)
+    sliderInput("logregSlider", "Item", animate = TRUE, min = 1, max = ncol(a), value = 1, step = 1)
   })
 
-  output$zlogregSlider <- renderUI({
+  output$zlogregSliderUI <- renderUI({
+
     a <- test_answers()
     sliderInput("zlogregSlider", "Item", animate = TRUE, min = 1, max = ncol(a), value = 1, step = 1)
   })
-  output$zlogreg_irtSlider <- renderUI({
+  output$zlogreg_irtSliderUI <- renderUI({
     a <- test_answers()
     sliderInput("zlogreg_irtSlider", "Item", animate = TRUE, min = 1, max = ncol(a), value = 1, step = 1)
   })
-  output$nlsSlider <- renderUI({
+  output$nlsSliderUI <- renderUI({
     a <- test_answers()
     sliderInput("nlsSlider", "Item", animate = TRUE, min = 1, max = ncol(a), value = 1, step = 1)
   })
-  output$multiSlider <- renderUI({
+  output$multiSliderUI <- renderUI({
     a <- test_answers()
     sliderInput("multiSlider", "Item", animate = TRUE, min = 1, max = ncol(a), value = 1, step = 1)
   })
 
-  output$diflogSlider <- renderUI({
+
+  output$diflogSliderUI <- renderUI({
+
     a <- test_answers()
     sliderInput("diflogSlider", "Item", animate = TRUE, min = 1, max = ncol(a), value = 1, step = 1)
   })
-  output$diflog_irtSlider <- renderUI({
+  output$diflog_irtSliderUI <- renderUI({
     a <- test_answers()
     sliderInput("diflog_irtSlider", "Item", animate = TRUE, min = 1, max = ncol(a), value = 1, step = 1)
   })
-  output$difnlrSlider <- renderUI({
+  output$difnlrSliderUI <- renderUI({
     a <- test_answers()
     sliderInput("difnlrSlider", "Item", animate = TRUE, min = 1, max = ncol(a), value = 1, step = 1)
   })
 
-
-  ##### Slider update #####
-
-  sliderUpdate=reactiveValues()
-
-  observe({
-    #invalidateLater(1000000, session)
-
-    #if (isnull(input$logregSlider)) {updateSliderInput(session, "logregSlider", value = sliderUpdate$value)}
-
-   sliderUpdate$entryValues=c(input$inSlider, input$distractorSlider, input$logregSlider,input$zlogregSlider,input$zlogreg_irtSlider,input$nlsSlider, input$multiSlider,
-                              input$diflogSlider, input$diflog_irtSlider, input$difnlrSlider)
-   sliderUpdate$value=as.numeric(names(table(isolate(sliderUpdate$entryValues))[min(table(isolate(sliderUpdate$entryValues)))==table(isolate(sliderUpdate$entryValues))]))
-
-    updateSliderInput(session, "inSlider", value = sliderUpdate$value)
-    updateSliderInput(session, "distractorSlider", value = sliderUpdate$value)
-    updateSliderInput(session, "logregSlider", value = sliderUpdate$value)
-    updateSliderInput(session, "zlogregSlider", value = sliderUpdate$value)
-    updateSliderInput(session, "zlogreg_irtSlider", value = sliderUpdate$value)
-    updateSliderInput(session, "nlsSlider", value = sliderUpdate$value)
-    updateSliderInput(session, "multiSlider", value = sliderUpdate$value)
-    updateSliderInput(session, "inSlider", value = sliderUpdate$value)
-    updateSliderInput(session, "diflogSlider", value = sliderUpdate$value)
-    updateSliderInput(session, "diflog_irtSlider", value = sliderUpdate$value)
-    updateSliderInput(session, "difnlrSlider", value = sliderUpdate$value)
-
-   # sliderUpdate$outputValues=c(input$logregSlider,input$zlogregSlider,input$zlogreg_irtSlider,input$nlsSlider, input$multiSlider,
-    #                           input$inSlider, input$diflogSlider, input$diflog_irtSlider, input$difnlrSlider)
-
+  output$difirt_lord_itemSliderUI <- renderUI({
+    a <- test_answers()
+    sliderInput("difirt_lord_itemSlider", "Item", animate = TRUE, min = 1, max = ncol(a), value = 1, step = 1)
   })
+
+  output$difirt_raju_itemSliderUI <- renderUI({
+    a <- test_answers()
+    sliderInput("difirt_raju_itemSlider", "Item", animate = TRUE, min = 1, max = ncol(a), value = 1, step = 1)
+  })
+
 
   ########################
   # SLIDER FOR STUDENTS PAGE ######
@@ -266,7 +270,7 @@ function(input, output, session) {
     )
   })
   # * Mantel-Haenszel for item ####
-  output$difMHSlider_item <- renderUI({
+  output$difMHSlider_itemUI <- renderUI({
     a <- test_answers()
     sliderInput("difMHSlider_item", "Item", animate = TRUE,
                 min = 1, max = ncol(a), value = 1, step = 1)
@@ -376,59 +380,32 @@ function(input, output, session) {
   },
   include.rownames = FALSE)
 
-  ##########################
+  ############################
   # TRADITIONAL ANALYSIS #####
-  ##########################
+  ############################
   # * ITEM ANALYSIS #####
   # ** Item Difficulty/Discrimination Graph ######
   output$difplot <- renderPlot({
 
-    a <- test_answers()
-    k <- test_key()
     correct <- correct_answ()
+    DDplot(correct)
 
-    col <- c("red", "darkblue")
-
-    difc <- item.exam(correct, discr = T)[, "Difficulty"]
-    disc <- item.exam(correct, discr = T)[, "Discrimination"]
-
-    value <- c(rbind(difc, disc)[, order(difc)])
-    parameter <- rep(c("Difficulty", "Discrimination"), ncol(a))
-    item <- factor(rep(order(difc), rep(2, ncol(a))),
-                   levels = factor(order(difc)))
-
-    pars.trad <- data.frame(item, parameter, value)
-
-    ggplot(pars.trad,
-           aes(x = item, y = value, fill = parameter, color = parameter)) +
-      stat_summary(fun.y = mean,
-                   position = position_dodge(),
-                   geom = "bar",
-                   alpha = 0.7,
-                   aes(width = 0.7)) +
-      geom_hline(yintercept = 0.2) +
-      xlab("Item Number (Ordered by Difficulty)") +
-      ylab("Difficulty/Discrimination") +
-      scale_y_continuous(expand = c(0, 0), limits = c(0, 1)) +
-      scale_fill_manual(breaks = parameter,
-                        values = col) +
-      scale_colour_manual(breaks = parameter,
-                          values = col) +
-      theme_bw() +
-      theme(axis.line  = element_line(colour = "black"),
-            text = element_text(size = 14),
-            panel.grid.major = element_blank(),
-            panel.grid.minor = element_blank(),
-            panel.background = element_blank(),
-            legend.title = element_blank(),
-            legend.position = c(0, 1),
-            legend.justification = c(0, 1),
-            legend.background = element_blank(),
-            legend.key = element_rect(colour = "white"))
       })
 
   output$uidifplot <- renderUI({
-    plotOutput("difplot", height = 1000)})
+    plotOutput("difplot", height = 1000)
+    })
+
+  # ** Cronbach's alpha ####
+  output$cronbachalpha <- renderTable({
+    correct <- correct_answ()
+    tab <- c(psych::alpha(correct)$total[1], psych::alpha(correct)$total[8])
+    tab <- as.data.frame(tab)
+    colnames(tab) <- c("Estimate", "SD")
+    tab
+  },
+  include.rownames = F,
+  include.colnames = T)
 
   # ** Traditional Item Analysis Table #####
   output$itemexam <- renderTable({
@@ -529,7 +506,7 @@ function(input, output, session) {
     a <- test_answers()
     k <- test_key()
 
-    multiple.answers <- (input$type_combinations_distractor == "Combinations")
+    multiple.answers <- c(input$type_combinations_distractor == "Combinations")
     plotDistractorAnalysis(data = a, key = k, num.group = input$gr, item = input$distractorSlider,
                            multiple.answers = multiple.answers)
   })
@@ -540,7 +517,7 @@ function(input, output, session) {
     k <- test_key()
 
     DA <- DistractorAnalysis(a, k, num.groups = input$gr)[[input$distractorSlider]]
-    df <- dcast(as.data.frame(DA), response ~ score.level, sum, margins = T)
+    df <- dcast(as.data.frame(DA), response ~ score.level, sum, margins = T, value.var = "Freq")
     colnames(df) <- c("Response", paste("Group", 1:input$gr), "Total")
     levels(df$Response)[nrow(df)] <- "Total"
     df
@@ -552,7 +529,7 @@ function(input, output, session) {
     k <- test_key()
 
     DA <- DistractorAnalysis(a, k, num.groups = input$gr, p.table = TRUE)[[input$distractorSlider]]
-    df <- dcast(as.data.frame(DA), response ~ score.level, sum)
+    df <- dcast(as.data.frame(DA), response ~ score.level, sum, value.var = "Freq")
     colnames(df) <- c("Response", paste("Group", 1:input$gr))
     df
   })
@@ -565,7 +542,7 @@ function(input, output, session) {
 
   # * LOGISTIC ####
   logistic_reg <- reactive ({
-    model <- glm(correct_answ()[, input$inSlider] ~ scored_test(), family = binomial)
+    model <- glm(correct_answ()[, input$logregSlider] ~ scored_test(), family = binomial)
   })
   # ** Plot with estimated logistic curve ####
   output$logreg <- renderPlot({
@@ -575,7 +552,7 @@ function(input, output, session) {
     fun <- function(x, b0, b1) {exp(b0 + b1 * x) / (1 + exp(b0 + b1 * x))}
 
     df <- data.frame(x = sort(unique(sc)),
-                     y = tapply(correct[, input$inSlider], sc, mean),
+                     y = tapply(correct[, input$logregSlider], sc, mean),
                      size = as.numeric(table(sc)))
 
     ggplot(df, aes(x = x, y = y)) +
@@ -603,7 +580,7 @@ function(input, output, session) {
             legend.background = element_blank(),
             legend.key = element_rect(colour = "white"),
             plot.title = element_text(face = "bold")) +
-      ggtitle(paste("Item", input$inSlider))
+      ggtitle(paste("Item", input$logregSlider))
   })
   # ** Table of parameters ####
   output$logregtab <- renderTable({
@@ -619,7 +596,7 @@ function(input, output, session) {
   # ** Interpretation ####
   output$logisticint <- renderUI({
 
-    b1 <- summary(logistic_reg())$coef[2, 1]
+    b1 <- coef(logistic_reg())[2]
     b1 <- round(b1, 2)
     txt1 <- paste ("<b>", "Interpretation:","</b>")
     txt2 <- paste (
@@ -638,7 +615,7 @@ function(input, output, session) {
   # ** Model ####
   z_logistic_reg <- reactive({
     scaledsc <- c(scale(scored_test()))
-    model <- glm(correct_answ()[, input$inSlider] ~ scaledsc, family = "binomial")
+    model <- glm(correct_answ()[, input$zlogregSlider] ~ scaledsc, family = "binomial")
   })
 
   output$zlogreg <- renderPlot({
@@ -647,7 +624,7 @@ function(input, output, session) {
     fun <- function(x, b0, b1) {exp(b0 + b1 * x) / (1 + exp(b0 + b1 * x))}
 
     df <- data.frame(x = sort(unique(scaledsc)),
-                     y = tapply(correct_answ()[, input$inSlider], scaledsc, mean),
+                     y = tapply(correct_answ()[, input$zlogregSlider], scaledsc, mean),
                      size = as.numeric(table(scaledsc)))
     ggplot(df, aes(x = x, y = y)) +
       geom_point(aes(size = size),
@@ -674,7 +651,7 @@ function(input, output, session) {
               legend.background = element_blank(),
               legend.key = element_rect(colour = "white"),
               plot.title = element_text(face = "bold")) +
-        ggtitle(paste("Item", input$inSlider))
+        ggtitle(paste("Item", input$zlogregSlider))
   })
 
   # * Table of parameters ####
@@ -716,7 +693,7 @@ function(input, output, session) {
     fun <- function(x, b0, b1) {exp(b0 + b1 * x) / (1 + exp(b0 + b1 * x))}
 
     df <- data.frame(x = sort(unique(scaledsc)),
-                     y = tapply(correct_answ()[, input$inSlider], scaledsc, mean),
+                     y = tapply(correct_answ()[, input$zlogreg_irtSlider], scaledsc, mean),
                      size = as.numeric(table(scaledsc)))
     ggplot(df, aes(x = x, y = y)) +
       geom_point(aes(size = size),
@@ -743,7 +720,7 @@ function(input, output, session) {
             legend.background = element_blank(),
             legend.key = element_rect(colour = "white"),
             plot.title = element_text(face = "bold")) +
-      ggtitle(paste("Item", input$inSlider))
+      ggtitle(paste("Item", input$zlogreg_irtSlider))
   })
 
   # ** Table of parameters ####
@@ -756,7 +733,7 @@ function(input, output, session) {
     cov <- vcov(z_logistic_reg())
     cov <- as.matrix(cov)
     syms <- paste("x", 1:2, sep = "")
-    for (i in 1:4) assign(syms[i], tab_coef_old[i])
+    for (i in 1:2) assign(syms[i], tab_coef_old[i])
     gdashmu <- t(sapply(g, function(form) {
       as.numeric(attr(eval(deriv(form, syms), envir = parent.frame()), "gradient"))
     }))
@@ -832,7 +809,7 @@ function(input, output, session) {
     discr <- alpha
     diffi <- b
     guess <- g
-    i <- input$inSlider
+    i <- input$nlsSlider
 
     start <- cbind(discr, diffi, guess)
     colnames(start) <- c("a", "b", "c")
@@ -840,7 +817,7 @@ function(input, output, session) {
     estim_klasik1 <-
       nls(
         correct_answ()[, i] ~ regFce_noDIF(scaledsc, a, b, c),
-        algorithm = "port", start = start[input$inSlider,],
+        algorithm = "port", start = start[input$nlsSlider,],
         lower = c(-20, -20, 0), upper = c(20, 20, 1)
       )
 
@@ -854,7 +831,7 @@ function(input, output, session) {
 
     fun <- function(x, a, b, c){c + (1 - c) / (1 + exp(-a * (x - b)))}
     df <- data.frame(x = sort(unique(scaledsc)),
-                     y = tapply(correct_answ()[, input$inSlider], scaledsc, mean),
+                     y = tapply(correct_answ()[, input$nlsSlider], scaledsc, mean),
                      size = as.numeric(table(scaledsc)))
     ggplot(df, aes(x = x, y = y)) +
       geom_point(aes(size = size),
@@ -882,7 +859,7 @@ function(input, output, session) {
             legend.background = element_blank(),
             legend.key = element_rect(colour = "white"),
             plot.title = element_text(face = "bold")) +
-      ggtitle(paste("Item", input$inSlider))
+      ggtitle(paste("Item", input$nlsSlider))
   })
 
   # Table of parameters
@@ -919,8 +896,8 @@ function(input, output, session) {
     stotal <- c(scale(scored_test()))
     k <- t(as.data.frame(test_key()))
 
-    fitM <- multinom(relevel(as.factor(test_answers()[, input$inSlider]),
-                             ref = paste(k[input$inSlider])) ~ stotal)
+    fitM <- multinom(relevel(as.factor(test_answers()[, input$multiSlider]),
+                             ref = paste(k[input$multiSlider])) ~ stotal)
     fitM
   })
   # ** Plot with estimated curves of multinomial regression ####
@@ -929,20 +906,21 @@ function(input, output, session) {
 
     stotal <- c(scale(scored_test()))
 
-    fitM <- multinom(relevel(as.factor(test_answers()[, input$inSlider]),
-                             ref = paste(k[input$inSlider])) ~ stotal)
+
+    fitM <- multinom(relevel(as.factor(test_answers()[, input$multiSlider]),
+                             ref = paste(k[input$multiSlider])) ~ stotal)
 
     pp <- fitted(fitM)
 
-    stotals <- rep(stotal, length(levels(relevel(as.factor(test_answers()[, input$inSlider]),
-                                                 ref = paste(k[input$inSlider])))))
+    stotals <- rep(stotal, length(levels(relevel(as.factor(test_answers()[, input$multiSlider]),
+                                                 ref = paste(k[input$multiSlider])))))
     df <- cbind(melt(pp), stotals)
 
 
-    df2 <- data.frame(table(test_answers()[, input$inSlider], stotal),
-                      y = data.frame(prop.table(table(test_answers()[, input$inSlider], stotal), 2))[, 3])
+    df2 <- data.frame(table(test_answers()[, input$multiSlider], stotal),
+                      y = data.frame(prop.table(table(test_answers()[, input$multiSlider], stotal), 2))[, 3])
     df2$stotal <- as.numeric(levels(df2$stotal))[df2$stotal]
-    df2$Var2 <- relevel(df2$Var1, ref = paste(k[input$inSlider]))
+    df2$Var2 <- relevel(df2$Var1, ref = paste(k[input$multiSlider]))
 
 
     ggplot() +
@@ -956,7 +934,7 @@ function(input, output, session) {
                  alpha = 0.5, shape = 21) +
 
       ylim(0, 1) +
-      labs(title = paste("Item", input$inSlider),
+      labs(title = paste("Item", input$multiSlider),
            x = "Standardized Total Score",
            y = "Probability of Correct Answer") +
       theme_bw() +
@@ -976,7 +954,7 @@ function(input, output, session) {
     })
 
   output$multieq <- renderUI ({
-    cor_option <- test_key()[input$inSlider]
+    cor_option <- test_key()[input$multiSlider]
     withMathJax(
       sprintf(
         '$$\\mathrm{P}(Y = i|Z, b_{i0}, b_{i1}) = \\frac{e^{\\left( b_{i0} + b_{i1} Z\\right)}}{1 + \\sum_j e^{\\left( b_{j0} + b_{j1} Z\\right)}}, \\\\
@@ -1012,7 +990,9 @@ function(input, output, session) {
         scores)  is associated with the decrease in the log odds of
         answering the item "
     ,"<b>", row.names(koef)[i], "</b>", "vs.", "<b>",
-    test_key()[input$inSlider],
+
+    test_key()[input$multiSlider],
+
     "</b>","in the amount of ",
     "<b>", round(koef[i, 2], 2), "</b>", '<br/>')
     }
@@ -1531,8 +1511,9 @@ function(input, output, session) {
   # ** Table with coefficients ####
   output$tab_coef_DIF_logistic <- renderTable({
 
-    tab_coef <- model_DIF_logistic_plot()$logitPar[input$inSlider, ]
-    tab_sd <- model_DIF_logistic_plot()$logitSe[input$inSlider, ]
+
+    tab_coef <- model_DIF_logistic_plot()$logitPar[input$diflogSlider, ]
+    tab_sd <- model_DIF_logistic_plot()$logitSe[input$diflogSlider, ]
 
     tab <- data.frame(tab_coef, tab_sd)
 
@@ -1594,7 +1575,9 @@ function(input, output, session) {
 
     fit <- model_DIF_logistic_IRT_Z_plot()
 
-    tab_coef_old <- fit$logitPar[input$inSlider, ]
+
+    tab_coef_old <- fit$logitPar[input$diflog_irtSlider, ]
+
     tab_coef <- c()
     # a = b1, b = -b0/b1, adif = b3, bdif = -(b1b2-b0b3)/(b1(b1+b3))
     tab_coef[1] <- tab_coef_old[2]
@@ -1605,11 +1588,11 @@ function(input, output, session) {
 
     # delta method
     g <- list( ~ x2,  ~ -x1/x2, ~ x4, ~ -((x2 * x3 - x1 * x4) / (x2 * (x2 + x4))))
-    if (is.character(fit$DIFitems) | !(input$inSlider %in% fit$DIFitems)){
+    if (is.character(fit$DIFitems) | !(input$diflog_irtSlider %in% fit$DIFitems)){
       cov <- matrix(0, ncol = 4, nrow = 4)
-      cov[1:2, 1:2] <-  fit$cov.M1[[input$inSlider]]
+      cov[1:2, 1:2] <-  fit$cov.M1[[input$diflog_irtSlider]]
     } else {
-      cov <-  fit$cov.M0[[input$inSlider]]
+      cov <-  fit$cov.M0[[input$diflog_irtSlider]]
     }
     cov <- as.matrix(cov)
     syms <- paste("x", 1:4, sep = "")
@@ -1659,20 +1642,24 @@ function(input, output, session) {
 
    # ** Plot ####
    output$plot_DIF_NLR <- renderPlot({
-     plot(model_DIF_NLR_plot(), item = input$inSlider)[[1]] +
+     plot(model_DIF_NLR_plot(), item = input$difnlrSlider)[[1]] +
        theme(text = element_text(size = 14),
              plot.title = element_text(size = 14, face = "bold", vjust = 1.5))
    })
 
    output$tab_coef_DIF_NLR <- renderTable({
 
-     tab_coef <- t(as.table(model_DIF_NLR_plot()$coef[input$inSlider, ]))
+
+     tab_coef <- t(as.table(model_DIF_NLR_plot()$coef[input$difnlrSlider, ]))
+
      tab_sd <- lapply(lapply(model_DIF_NLR_plot()$vcov, diag), `length<-`,
                       max(lengths(lapply(model_DIF_NLR_plot()$vcov, diag))))
      tab_sd <- t(matrix(unlist(tab_sd), nrow = 5))
      tab_sd[is.na(tab_sd)] <- 0
 
-     tab <- data.frame(tab_coef, tab_sd[input$inSlider, ])
+
+     tab <- data.frame(tab_coef, tab_sd[input$difnlrSlider, ])
+
      tab <- data.frame(tab[, 3:4])
      rownames(tab) <- c('a', 'b', 'c', 'aDIF', 'bDIF')
      colnames(tab) <- c("Estimate", "SD")
@@ -1687,10 +1674,11 @@ function(input, output, session) {
      group <- DIF_groups()
      data <- correct_answ()
 
-     guess <- ifelse(input$type_print_DIF_IRT_lord == "3PL",
-                     itemPar3PL(data)[, 3], 0)
+     if (input$type_plot_DIF_IRT_lord == "3PL"){
+       guess <- itemPar3PL(data)[, 3]
+     }
 
-     mod <- switch(input$type_print_DIF_IRT_lord,
+     mod <- switch(input$type_plot_DIF_IRT_lord,
                    "1PL" = difLord(Data = data, group = group, focal.name = 1,
                                    model = "1PL",
                                    p.adjust.method = "BH"),
@@ -1708,8 +1696,9 @@ function(input, output, session) {
      group <- DIF_groups()
      data <- correct_answ()
 
-     guess <- ifelse(input$type_print_DIF_IRT_lord == "3PL",
-                     itemPar3PL(data)[, 3], 0)
+     if (input$type_print_DIF_IRT_lord == "3PL"){
+       guess <- itemPar3PL(data)[, 3]
+     }
 
      mod <- switch(input$type_print_DIF_IRT_lord,
                    "1PL" = difLord(Data = data, group = group, focal.name = 1,
@@ -1746,11 +1735,12 @@ function(input, output, session) {
                      "1PL" = 2,
                      "2PL" = 3:4,
                      "3PL" = 3:4)
-     tab_coef <- c(model_DIF_IRT_Lord_plot()$itemParInit[c(input$inSlider,
-                                                           m + input$inSlider),
+
+     tab_coef <- c(model_DIF_IRT_Lord_plot()$itemParInit[c(input$difirt_lord_itemSlider,
+                                                           m + input$difirt_lord_itemSlider),
                                                          wh_coef])
-     tab_sd <- c(model_DIF_IRT_Lord_plot()$itemParInit[c(input$inSlider,
-                                                         m + input$inSlider),
+     tab_sd <- c(model_DIF_IRT_Lord_plot()$itemParInit[c(input$difirt_lord_itemSlider,
+                                                         m + input$difirt_lord_itemSlider),
                                                        wh_sd])
 
      if (input$type_plot_DIF_IRT_lord == "3PL")
@@ -1785,10 +1775,11 @@ function(input, output, session) {
      group <- DIF_groups()
      data <- correct_answ()
 
-     guess <- ifelse(input$type_print_DIF_IRT_raju == "3PL",
-                     itemPar3PL(data)[, 3], 0)
+     if (input$type_plot_DIF_IRT_raju == "3PL"){
+       guess <- itemPar3PL(data)[, 3]
+     }
 
-     mod <- switch(input$type_print_DIF_IRT_raju,
+     mod <- switch(input$type_plot_DIF_IRT_raju,
                    "1PL" = difRaju(Data = data, group = group, focal.name = 1,
                                    model = "1PL",
                                    p.adjust.method = "BH"),
@@ -1806,8 +1797,9 @@ function(input, output, session) {
      group <- DIF_groups()
      data <- correct_answ()
 
-     guess <- ifelse(input$type_print_DIF_IRT_raju == "3PL",
-                     itemPar3PL(data)[, 3], 0)
+     if (input$type_print_DIF_IRT_raju == "3PL"){
+       guess <- itemPar3PL(data)[, 3]
+     }
 
      mod <- switch(input$type_print_DIF_IRT_raju,
                    "1PL" = difRaju(Data = data, group = group, focal.name = 1,
@@ -1844,8 +1836,9 @@ function(input, output, session) {
                      "1PL" = 2,
                      "2PL" = 3:4,
                      "3PL" = 3:4)
-     tab_coef <- c(model_DIF_IRT_Raju_plot()$itemParInit[c(input$inSlider, m + input$inSlider), wh_coef])
-     tab_sd <- c(model_DIF_IRT_Raju_plot()$itemParInit[c(input$inSlider, m + input$inSlider), wh_sd])
+
+     tab_coef <- c(model_DIF_IRT_Raju_plot()$itemParInit[c(input$difirt_raju_itemSlider, m + input$difirt_raju_itemSlider), wh_coef])
+     tab_sd <- c(model_DIF_IRT_Raju_plot()$itemParInit[c(input$difirt_raju_itemSlider, m + input$difirt_raju_itemSlider), wh_sd])
 
      if (input$type_plot_DIF_IRT_raju == "3PL")
        tab_coef <- tab_coef[-6]
