@@ -1,20 +1,43 @@
 ###############################################################
+# install packages
+###############################################################
+
+install.packages("deltaPlotR")
+install.packages("difNLR")
+install.packages("difR")
+install.packages("ltm")
+install.packages("nnet")
+install.packages("reshape2")
+install.packages("ShinyItemAnalysis")
+
+###############################################################
 # packages
 ###############################################################
 
+library(deltaPlotR)
 library(difNLR)
 library(difR)
 library(ltm)
 library(nnet)
+library(reshape2)
 library(ShinyItemAnalysis)
 
 ###############################################################
 # data
 ###############################################################
-data(GMAT)
-data <- GMAT[, colnames(GMAT) != "group"]
+
+data(difMedical, difMedicaltest, difMedicalkey)
+
+data <- difMedical[, colnames(difMedical) != "gender"]
+group <- difMedical$gender
+
+dataABCD <- difMedicaltest[, colnames(difMedicaltest) != "gender"]
+key <- difMedicalkey
+
 # Total score
 score <- apply(data, 1, sum)
+# Standardized total score
+stand.score <- scale(score)
 
 ###############################################################
 # SUMMARY of total scores
@@ -27,11 +50,16 @@ summary(score)
 hist(score, breaks = 0:ncol(data))
 
 # STANDARD SCORES
-tosc <- sort(unique(score)) # Levels of total score
-perc <- cumsum(prop.table(table(score))) # Percentiles
-sura <- 100 * (tosc / max(score)) # Success rate
-zsco <- sort(unique(scale(score))) # Z-score
-tsco <- 50 + 10 * zsco # T-score
+# Levels of total score
+(tosc <- sort(unique(score)))
+# Percentiles
+(perc <- cumsum(prop.table(table(score))))
+# Success rate
+(sura <- 100 * (tosc / max(score)))
+# Z-score
+(zsco <- sort(unique(scale(score))))
+# T-score
+(tsco <- 50 + 10 * zsco)
 
 ###############################################################
 # TRADITIONAL ANALYSIS
@@ -42,35 +70,26 @@ tsco <- 50 + 10 * zsco # T-score
 DDplot(data)
 # Table
 tab <- round(data.frame(item.exam(data, discr = TRUE)[, c(4, 1, 5, 2, 3)],
-                        psych::alpha(data)$alpha.drop[, 1]), 2)
+                        alphadrop = psych::alpha(data, check.keys = T)$alpha.drop[, 1]), 2)
 tab
 
 # DISTRACTORS
-data(GMATtest)
-data <- GMATtest[, colnames(GMATtest) != "group"]
-data(GMATkey)
-key <- GMATkey
-
 # Combinations - plot for item 1 and 3 groups
-plotDistractorAnalysis(data, key, num.group = 3, item = 1, multiple.answers = T)
+plotDistractorAnalysis(dataABCD, key, num.group = 3, item = 1, multiple.answers = T)
 # Distractors - plot for item 1 and 3 groups
-plotDistractorAnalysis(data, key, num.group = 3, item = 1, multiple.answers = F)
+plotDistractorAnalysis(dataABCD, key, num.group = 3, item = 1, multiple.answers = F)
 # Table with counts and margins - item 1 and 3 groups
-DA <- DistractorAnalysis(data, key, num.groups = 3)[[1]]
+DA <- DistractorAnalysis(dataABCD, key, num.groups = 3)[[1]]
 dcast(as.data.frame(DA), response ~ score.level, sum, margins = T, value.var = "Freq")
 # Table with proportions - item 1 and 3 groups
-DistractorAnalysis(data, key, num.groups = 3, p.table = T)[[1]]
-tab
+DistractorAnalysis(dataABCD, key, num.groups = 3, p.table = T)[[1]]
+
 
 ###############################################################
 # REGRESSION
 ###############################################################
 
 # LOGISTIC
-data(GMAT)
-data <- GMAT[, colnames(GMAT) != "group"]
-score <- apply(data, 1, sum)
-
 # Logistic model for item 1
 fit <- glm(data[, 1] ~ score, family = binomial)
 # Coefficients
@@ -85,8 +104,6 @@ curve(fun(x, b0 = coef(fit)[1], b1 = coef(fit)[2]), 0, 20,
 
 
 # LOGISTIC Z
-stand.score <- scale(apply(data, 1, sum))
-
 # Logistic model for item 1
 fit <- glm(data[, 1] ~ stand.score, family = binomial)
 # Coefficients
@@ -111,7 +128,7 @@ coef
 # NLR model for item 1
 fun <- function(x, a, b, c){c + (1 - c) * exp(a * (x - b)) / (1 + exp(a * (x - b)))}
 fit <- nls(data[, 1] ~ fun(stand.score, a, b, c), algorithm = "port",
-           start = startNLR(data, GMAT[, "group"])[1, 1:3])
+           start = startNLR(data, group)[1, 1:3])
 # Coefficients
 coef(fit)
 # Plot of estimated curve
@@ -125,16 +142,8 @@ curve(fun(x,
 
 
 # MULTINOMIAL
-data(GMAT)
-data.scored <- GMAT[, colnames(GMAT) != "group"]
-stand.score <- scale(apply(data, 1, sum))
-data(GMATtest)
-data <- GMATtest[, colnames(GMATtest) != "group"]
-data(GMATkey)
-key <- GMATkey
-
 # multinomial model for item 1
-fit <- multinom(relevel(data[, 1], ref = paste(key[1])) ~ stand.score)
+fit <- multinom(relevel(dataABCD[, 1], ref = paste(key[1])) ~ stand.score)
 # Coefficients
 coef(fit)
 
@@ -143,8 +152,6 @@ coef(fit)
 ###############################################################
 
 # 1 PL
-data(GMAT)
-data <- GMAT[, colnames(GMAT) != "group"]
 # Model
 fit <- rasch(data)
 # Item Characteristic Curves
@@ -221,7 +228,6 @@ plot(FS ~ STS, data = df,
 ###############################################################
 # TOTAL SCORES
 # Summary
-group <- GMAT[, "group"]
 sc_zero <- apply(data[group == 0, ], 1, sum); summary(sc_zero) # total scores of reference group
 sc_one  <- apply(data[group == 1, ], 1, sum); summary(sc_one)  # total scores of focal group
 # Histograms
@@ -285,10 +291,9 @@ fit$logitPar
 
 # LOGISTIC IRT Z
 # Logistic regression DIF method in IRT parameterization
-scaled.score <- scale(score)
 fit <- difLogistic(Data = data, group = group, focal.name = 1,
                    type = "both",
-                   match = scaled.score,
+                   match = stand.score,
                    p.adjust.method = "BH")
 
 # Plot of characteristic curve for item 1
@@ -306,7 +311,8 @@ coef[2] <- -(coef_old[1] / coef_old[2])
 coef[3] <- coef_old[4]
 coef[4] <- -(coef_old[2] * coef_old[3] + coef_old[1] * coef_old[4] ) /
   (coef_old[2] * (coef_old[2] + coef_old[4]))
-
+names(coef) <- c("a", "b", "aDIF", "bDIF")
+coef
 
 # NONLINEAR Z
 # Nonlinear regression DIF method
