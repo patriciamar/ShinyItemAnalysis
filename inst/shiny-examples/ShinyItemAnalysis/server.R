@@ -345,8 +345,12 @@ function(input, output, session) {
   }
 
   # ** output - Histogram of Total Scores ######
-  output$histogram_totalscores <- renderPlot ({
+  histogram_totalscoresInput<- reactive({
     histogram_totalscores()
+  })
+
+  output$histogram_totalscores <- renderPlot ({
+    histogram_totalscoresInput()
   })
   # ** download button - Histogram of Total Scores ####
   output$DP_histogram_totalscores <- downloadHandler(
@@ -354,7 +358,7 @@ function(input, output, session) {
       paste("plot", input$name, ".png", sep = "")
     },
     content = function(file) {
-      ggsave(file, plot = histogram_totalscores(), device = "png")
+      ggsave(file, plot = histogram_totalscoresInput(), device = "png")
     }
   )
 
@@ -389,12 +393,23 @@ function(input, output, session) {
   ############################
   # * ITEM ANALYSIS #####
   # ** Item Difficulty/Discrimination Graph ######
-  output$difplot <- renderPlot({
-
+  difplotInput <- reactive({
     correct <- correct_answ()
     DDplot(correct)
-
   })
+
+  output$difplot <- renderPlot({
+    difplotInput()
+  })
+
+  output$DP_difplot <- downloadHandler(
+    filename =  function() {
+      paste("plot", input$name, ".png", sep = "")
+    },
+    content = function(file) {
+      ggsave(file, plot = difplotInput(), device = "png")
+    }
+  )
 
   output$uidifplot <- renderUI({
     plotOutput("difplot", height = 1000)
@@ -471,7 +486,7 @@ function(input, output, session) {
 
 
   # ** Distractors histograms by group #####
-  output$hist_distractor_by_group <- renderPlot({
+  hist_distractor_by_groupInput <- reactive({
     a <- test_answers()
     k <- test_key()
     sc <- scored_test()
@@ -505,8 +520,21 @@ function(input, output, session) {
             plot.title = element_text(face = "bold"))
   })
 
+  output$hist_distractor_by_group <- renderPlot({
+    hist_distractor_by_groupInput()
+  })
+
+  output$DP_hist_distractor_by_group <- downloadHandler(
+    filename =  function() {
+      paste("plot", input$name, ".png", sep = "")
+    },
+    content = function(file) {
+      ggsave(file, plot = hist_distractor_by_groupInput(), device = "png")
+    }
+  )
+
   # ** Distractors Plot #####
-  output$graf <- renderPlot({
+  grafInput <- reactive({
     a <- test_answers()
     k <- test_key()
 
@@ -514,6 +542,19 @@ function(input, output, session) {
     plotDistractorAnalysis(data = a, key = k, num.group = input$gr, item = input$distractorSlider,
                            multiple.answers = multiple.answers)
   })
+
+  output$graf <- renderPlot({
+    grafInput()
+  })
+
+  output$DP_graf <- downloadHandler(
+    filename =  function() {
+      paste("plot", input$name, ".png", sep = "")
+    },
+    content = function(file) {
+      ggsave(file, plot = grafInput(), device = "png")
+    }
+  )
 
   # ** Table with Counts ######
   output$tab_counts_distractor <- renderTable({
@@ -549,7 +590,7 @@ function(input, output, session) {
     model <- glm(correct_answ()[, input$logregSlider] ~ scored_test(), family = binomial)
   })
   # ** Plot with estimated logistic curve ####
-  output$logreg <- renderPlot({
+  logregInput <- reactive({
     sc <- scored_test()
     correct <- correct_answ()
 
@@ -586,6 +627,19 @@ function(input, output, session) {
             plot.title = element_text(face = "bold")) +
       ggtitle(paste("Item", input$logregSlider))
   })
+
+  output$logreg <- renderPlot({
+    logregInput()
+  })
+
+  output$DP_logreg <- downloadHandler(
+    filename =  function() {
+      paste("plot", input$name, ".png", sep = "")
+    },
+    content = function(file) {
+      ggsave(file, plot = logregInput(), device = "png")
+    }
+  )
   # ** Table of parameters ####
   output$logregtab <- renderTable({
 
@@ -622,7 +676,7 @@ function(input, output, session) {
     model <- glm(correct_answ()[, input$zlogregSlider] ~ scaledsc, family = "binomial")
   })
 
-  output$zlogreg <- renderPlot({
+  zlogregInput <- reactive({
     scaledsc = scale(scored_test())
 
     fun <- function(x, b0, b1) {exp(b0 + b1 * x) / (1 + exp(b0 + b1 * x))}
@@ -657,6 +711,19 @@ function(input, output, session) {
             plot.title = element_text(face = "bold")) +
       ggtitle(paste("Item", input$zlogregSlider))
   })
+
+  output$zlogreg <- renderPlot({
+    zlogregInput()
+  })
+
+  output$DP_zlogreg <- downloadHandler(
+    filename =  function() {
+      paste("plot", input$name, ".png", sep = "")
+    },
+    content = function(file) {
+      ggsave(file, plot = zlogregInput(), device = "png")
+    }
+  )
 
   # * Table of parameters ####
   output$zlogregtab <- renderTable({
@@ -696,7 +763,7 @@ function(input, output, session) {
     model <- glm(correct_answ()[, input$zlogreg_irtSlider] ~ scaledsc, family = "binomial")
   })
   # ** Plot with estimated logistic curve ####
-  output$zlogreg_irt <- renderPlot({
+  zlogreg_irtInput <- reactive({
     scaledsc <- scale(scored_test())
 
     fun <- function(x, b0, b1) {exp(b0 + b1 * x) / (1 + exp(b0 + b1 * x))}
@@ -731,6 +798,20 @@ function(input, output, session) {
             plot.title = element_text(face = "bold")) +
       ggtitle(paste("Item", input$zlogreg_irtSlider))
   })
+
+  output$zlogreg_irt <- renderPlot({
+    zlogreg_irtInput()
+  })
+
+  output$DP_zlogreg_irt <- downloadHandler(
+    filename =  function() {
+      paste("plot", input$name, ".png", sep = "")
+    },
+    content = function(file) {
+      ggsave(file, plot = zlogreg_irtInput(), device = "png")
+    }
+  )
+
 
   # ** Table of parameters ####
   output$zlogregtab_irt <- renderTable({
@@ -834,9 +915,7 @@ function(input, output, session) {
     estim_klasik1
   })
 
-
-  output$nlsplot <- renderPlot({
-
+  nlsplotInput <- reactive({
     scaledsc = scale(scored_test())
 
     fun <- function(x, a, b, c){c + (1 - c) / (1 + exp(-a * (x - b)))}
@@ -871,6 +950,19 @@ function(input, output, session) {
             plot.title = element_text(face = "bold")) +
       ggtitle(paste("Item", input$nlsSlider))
   })
+
+  output$nlsplot <- renderPlot({
+    nlsplotInput()
+  })
+
+  output$DP_nlsplot <- downloadHandler(
+    filename =  function() {
+      paste("plot", input$name, ".png", sep = "")
+    },
+    content = function(file) {
+      ggsave(file, plot = nlsplotInput(), device = "png")
+    }
+  )
 
   # Table of parameters
   output$nonlinearztab <- renderTable({
@@ -911,7 +1003,7 @@ function(input, output, session) {
     fitM
   })
   # ** Plot with estimated curves of multinomial regression ####
-  output$multiplot <- renderPlot({
+  multiplotInput <- reactive({
     k <- t(as.data.frame(test_key()))
 
     stotal <- c(scale(scored_test()))
@@ -962,6 +1054,19 @@ function(input, output, session) {
             legend.key.width = unit(1, "cm"))
 
   })
+
+  output$multiplot <- renderPlot({
+    multiplotInput()
+  })
+
+  output$DP_multiplot <- downloadHandler(
+    filename =  function() {
+      paste("plot", input$name, ".png", sep = "")
+    },
+    content = function(file) {
+      ggsave(file, plot = multiplotInput(), device = "png")
+    }
+  )
 
   output$multieq <- renderUI ({
     cor_option <- test_key()[input$multiSlider]
@@ -1023,15 +1128,49 @@ function(input, output, session) {
     plot(rasch_model())
   })
 
+  output$DP_rasch <- downloadHandler(
+    filename =  function() {
+      paste("plot", input$name, ".png", sep = "")
+    },
+    content = function(file) {
+      png(file)
+      plot(rasch_model())
+      dev.off()
+    }
+  )
+
   # *** IIC ####
   output$raschiic <- renderPlot({
     plot(rasch_model(), type = "IIC")
   })
 
+  output$DP_raschiic <- downloadHandler(
+    filename =  function() {
+      paste("plot", input$name, ".png", sep = "")
+    },
+    content = function(file) {
+      png(file)
+      plot(rasch_model(), type = "IIC")
+      dev.off()
+      }
+  )
+
   # *** TIF ####
   output$raschtif <- renderPlot({
     plot(rasch_model(),items = 0, type = "IIC")
   })
+
+  output$DP_raschtif <- downloadHandler(
+    filename =  function() {
+      paste("plot", input$name, ".png", sep = "")
+    },
+    content = function(file) {
+      png(file)
+      plot(rasch_model(), type = "IIC")
+      dev.off()
+    }
+  )
+
 
   # *** Table of parameters ####
   output$raschcoef <- renderTable({
@@ -1048,7 +1187,7 @@ function(input, output, session) {
   include.rownames = T)
 
   # *** Factor scores plot ####
-  output$raschFactor <- renderPlot({
+  raschFactorInput <- reactive({
     fit1 <- rasch_model()
     df1  <- ltm::factor.scores(fit1, return.MIvalues = T)$score.dat
     FS   <- as.vector(df1[, "z1"])
@@ -1078,6 +1217,20 @@ function(input, output, session) {
             legend.title.align = 0)
   })
 
+  output$raschFactor <- renderPlot({
+    raschFactorInput()
+  })
+
+  output$DP_raschFactor <- downloadHandler(
+    filename =  function() {
+      paste("plot", input$name, ".png", sep = "")
+    },
+    content = function(file) {
+      ggsave(file, plot = raschFactorInput(), device = "png")
+    }
+  )
+
+
   # ** 2PL ####
   two_param_irt <- reactive({
     fit2PL <- ltm(correct_answ() ~ z1, IRT.param = TRUE)
@@ -1088,15 +1241,48 @@ function(input, output, session) {
     plot(two_param_irt())
   })
 
+  output$DP_twoparam <- downloadHandler(
+    filename =  function() {
+      paste("plot", input$name, ".png", sep = "")
+    },
+    content = function(file) {
+      png(file)
+      plot(two_param_irt())
+      dev.off()
+      }
+  )
+
   # *** IIC ####
   output$twoparamiic <- renderPlot({
     plot(two_param_irt(), type = "IIC")
   })
 
+  output$DP_twoparamiic <- downloadHandler(
+    filename =  function() {
+      paste("plot", input$name, ".png", sep = "")
+    },
+    content = function(file) {
+      png(file)
+      plot(two_param_irt(), type = "IIC")
+      dev.off()
+      }
+  )
+
   # *** TIF ####
   output$twoparamtif <- renderPlot({
     plot(two_param_irt(), items = 0, type = "IIC")
   })
+
+  output$DP_twoparamtif <- downloadHandler(
+    filename =  function() {
+      paste("plot", input$name, ".png", sep = "")
+    },
+    content = function(file) {
+      png(file)
+      plot(two_param_irt(), items = 0, type = "IIC")
+      dev.off()
+      }
+  )
 
   # ** Table of parameters ####
   output$twoparamcoef <- renderTable({
@@ -1113,7 +1299,7 @@ function(input, output, session) {
   include.rownames = T)
 
   # *** Factor scores plot ####
-  output$twoFactor <- renderPlot({
+  twoFactorInput <- reactive({
     fit2 <- two_param_irt()
     df1  <- ltm::factor.scores(fit2, return.MIvalues = T)$score.dat
     FS   <- as.vector(df1[, "z1"])
@@ -1142,6 +1328,21 @@ function(input, output, session) {
             legend.title.align = 0)
   })
 
+  output$twoFactor <- renderPlot({
+    twoFactorInput()
+  })
+
+  output$DP_twoFactor <- downloadHandler(
+    filename =  function() {
+      paste("plot", input$name, ".png", sep = "")
+    },
+    content = function(file) {
+      png(file)
+      plot(two_param_irt(), items = 0, type = "IIC")
+      dev.off()
+    }
+  )
+
   # ** 3PL ####
   three_param_irt <- reactive({
     fit3PL <- tpm(correct_answ(), IRT.param = TRUE)
@@ -1151,15 +1352,48 @@ function(input, output, session) {
     plot(three_param_irt())
   })
 
+  output$DP_threeparam <- downloadHandler(
+    filename =  function() {
+      paste("plot", input$name, ".png", sep = "")
+    },
+    content = function(file) {
+      png(file)
+      plot(three_param_irt())
+      dev.off()
+      }
+  )
+
   # *** IIC ####
   output$threeparamiic <- renderPlot({
     plot(three_param_irt(), type = "IIC")
   })
 
+  output$DP_threeparamiic <- downloadHandler(
+    filename =  function() {
+      paste("plot", input$name, ".png", sep = "")
+    },
+    content = function(file) {
+      png(file)
+      plot(three_param_irt(), type = "IIC")
+      dev.off()
+    }
+  )
+
   # *** TIF ####
   output$threeparamtif <- renderPlot({
     plot(three_param_irt(), items = 0, type = "IIC")
   })
+
+  output$DP_threeparamtif <- downloadHandler(
+    filename =  function() {
+      paste("plot", input$name, ".png", sep = "")
+    },
+    content = function(file) {
+      png(file)
+      plot(three_param_irt(), items = 0, type = "IIC")
+      dev.off()
+    }
+  )
 
   # *** Table of parameters ####
   output$threeparamcoef <- renderTable({
@@ -1177,7 +1411,7 @@ function(input, output, session) {
   include.rownames = T)
 
   # *** Factor scores ####
-  output$threeFactor <- renderPlot({
+  threeFactorInput <- reactive({
     fit3 <- three_param_irt()
     df1  <- ltm::factor.scores(fit3, return.MIvalues = T)$score.dat
     FS   <- as.vector(df1[, "z1"])
@@ -1205,6 +1439,19 @@ function(input, output, session) {
             legend.text.align = 0,
             legend.title.align = 0)
   })
+
+  output$threeFactor <- renderPlot({
+    threeFactorInput()
+  })
+
+  output$DP_threeFactor <- downloadHandler(
+    filename =  function() {
+      paste("plot", input$name, ".png", sep = "")
+    },
+    content = function(file) {
+      ggsave(file, plot = threeFactorInput(), device = "png")
+    }
+  )
 
   ######################
   # DIF/FAIRNESS ####
@@ -1235,7 +1482,7 @@ function(input, output, session) {
   })
 
   # ** Histogram of total score for group = 1 (focal) ####
-  output$histbyscoregroup1 <- renderPlot ({
+  histbyscoregroup1Input <- reactive({
 
     a <- test_answers()
     k <- test_key()
@@ -1278,8 +1525,22 @@ function(input, output, session) {
             plot.title = element_text(face = "bold")) +
       ggtitle("Histogram of Total Scores for Focal Group")
   })
+
+  output$histbyscoregroup1 <- renderPlot ({
+    histbyscoregroup1Input()
+  })
+
+  output$DP_histbyscoregroup1 <- downloadHandler(
+    filename =  function() {
+      paste("plot", input$name, ".png", sep = "")
+    },
+    content = function(file) {
+      ggsave(file, plot = histbyscoregroup1Input(), device = "png")
+    }
+  )
+
   # ** Histogram of total score for group = 0 (reference) ####
-  output$histbyscoregroup0 <- renderPlot ({
+  histbyscoregroup0Input <- reactive ({
 
     a <- test_answers()
     k <- test_key()
@@ -1322,6 +1583,18 @@ function(input, output, session) {
       ggtitle("Histogram of Total Scores for Reference Group")
   })
 
+  output$histbyscoregroup0 <- renderPlot ({
+    histbyscoregroup0Input()
+  })
+
+  output$DP_histbyscoregroup0 <- downloadHandler(
+    filename =  function() {
+      paste("plot", input$name, ".png", sep = "")
+    },
+    content = function(file) {
+      ggsave(file, plot = histbyscoregroup0Input(), device = "png")
+    }
+  )
 
   # * DELTA PLOT ####
   deltaGpurn <- reactive ({
@@ -1337,7 +1610,7 @@ function(input, output, session) {
 
 
   # * Delta plot ####
-  output$deltaplot <- renderPlot({
+  deltaplotInput <- reactive({
     p <- ggplot(data.frame(deltaGpurn()$Deltas),
                 aes(x = X1, y = X2, label = rownames(data.frame(deltaGpurn()$Deltas)))) +
       geom_point() +
@@ -1373,6 +1646,19 @@ function(input, output, session) {
     }
     p
   })
+
+  output$deltaplot <- renderPlot({
+   deltaplotInput()
+  })
+
+  output$DP_deltaplot <- downloadHandler(
+    filename =  function() {
+      paste("plot", input$name, ".png", sep = "")
+    },
+    content = function(file) {
+      ggsave(file, plot = deltaplotInput(), device = "png")
+    }
+  )
 
   # Output
   output$dp_text_normal <- renderPrint({
@@ -1504,7 +1790,7 @@ function(input, output, session) {
   })
 
   # ** Plot ####
-  output$plot_DIF_logistic <- renderPlot({
+  plot_DIF_logisticInput <- reactive({
     group <- DIF_groups()
     data <- correct_answ()
 
@@ -1517,6 +1803,19 @@ function(input, output, session) {
     )
 
   })
+
+  output$plot_DIF_logistic <- renderPlot({
+   plot_DIF_logisticInput()
+  })
+
+  output$DP_plot_DIF_logistic <- downloadHandler(
+    filename =  function() {
+      paste("plot", input$name, ".png", sep = "")
+    },
+    content = function(file) {
+      ggsave(file, plot = plot_DIF_logisticInput(), device = "png")
+    }
+  )
 
   # ** Table with coefficients ####
   output$tab_coef_DIF_logistic <- renderTable({
@@ -1569,7 +1868,7 @@ function(input, output, session) {
   })
 
   # ** Plot ####
-  output$plot_DIF_logistic_IRT_Z <- renderPlot({
+  plot_DIF_logistic_IRT_ZInput <- reactive ({
     group <- DIF_groups()
     data <- correct_answ()
 
@@ -1580,6 +1879,19 @@ function(input, output, session) {
                     IRT = T,
                     p.adjust.method = input$correction_method_logZItems)
   })
+
+  output$plot_DIF_logistic_IRT_Z <- renderPlot({
+    plot_DIF_logistic_IRT_ZInput()
+  })
+
+  output$DP_plot_DIF_logistic_IRT_Z <- downloadHandler(
+    filename =  function() {
+      paste("plot", input$name, ".png", sep = "")
+    },
+    content = function(file) {
+      ggsave(file, plot = plot_DIF_Logistic_IRT_ZInput(), device = "png")
+    }
+  )
 
   output$tab_coef_DIF_logistic_IRT_Z <- renderTable({
 
@@ -1652,11 +1964,24 @@ function(input, output, session) {
   })
 
   # ** Plot ####
-  output$plot_DIF_NLR <- renderPlot({
+  plot_DIF_NLRInput <- reactive({
     plot(model_DIF_NLR_plot(), item = input$difnlrSlider)[[1]] +
       theme(text = element_text(size = 14),
             plot.title = element_text(size = 14, face = "bold", vjust = 1.5))
   })
+
+  output$plot_DIF_NLR <- renderPlot({
+    plot_DIF_NLRInput()
+  })
+
+  output$DP_plot_DIF_NLR <- downloadHandler(
+    filename =  function() {
+      paste("plot", input$name, ".png", sep = "")
+    },
+    content = function(file) {
+      ggsave(file, plot = plot_DIF_NLRInput(), device = "png")
+    }
+  )
 
   output$tab_coef_DIF_NLR <- renderTable({
 
@@ -1733,6 +2058,15 @@ function(input, output, session) {
   output$plot_DIF_IRT_Lord <- renderPlot({
     plotDIFirt(parameters = tab_coef_DIF_IRT_Lord(), item=input$difirt_lord_itemSlider)
   })
+
+  output$DP_plot_DIF_IRT_Lord <- downloadHandler(
+    filename =  function() {
+      paste("plot", input$name, ".png", sep = "")
+    },
+    content = function(file) {
+      ggsave(file, plot = plotDIFirt(parameters = tab_coef_DIF_IRT_Lord(), item=input$difirt_lord_itemSlider), device = "png")
+    }
+  )
 
   # ** Table with coefficients ####
   tab_coef_DIF_IRT_Lord <- reactive({
@@ -1830,10 +2164,21 @@ function(input, output, session) {
     print(model_DIF_IRT_Raju_print())
   })
 
+
+
   # ** Plot ####
   output$plot_DIF_IRT_Raju <- renderPlot({
     plotDIFirt(parameters = tab_coef_DIF_IRT_Raju(), test = "Raju", item=input$difirt_raju_itemSlider)
   })
+
+  output$DP_plot_DIF_IRT_Raju <- downloadHandler(
+    filename =  function() {
+      paste("plot", input$name, ".png", sep = "")
+    },
+    content = function(file) {
+      ggsave(file, plot = plotDIFirt(parameters = tab_coef_DIF_IRT_Raju(), test = "Raju", item=input$difirt_raju_itemSlider), device = "png")
+    }
+  )
 
   # ** Table with coefficients ####
   tab_coef_DIF_IRT_Raju <- reactive({
