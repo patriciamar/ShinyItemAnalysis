@@ -1346,9 +1346,17 @@ total score. Their size is determined by count of respondents who answered item 
                            uiOutput("difirt_lord_itemSliderUI"),
                            plotOutput('plot_DIF_IRT_Lord'),
                            h4("Equation"),
-                           ('$$\\mathrm{P}\\left(Y_{ij} = 1 | \\theta_i, G_i, a_j, b_j, c_j, a_{\\text{DIF}j}, b_{\\text{DIF}j}\\right) =
-                       c_j + \\left(1 - c_j\\right) \\cdot \\frac{e^{\\left(a_j + a_{\\text{DIF}j} G_i\\right)\\left(\\theta_i -\\left(b_j + b_{\\text{DIF}j} G_i\\right)\\right)}}
-                       {1+e^{\\left(a_j + a_{\\text{DIF}j} G_i\\right)\\left(\\theta_i -\\left(b_j + b_{\\text{DIF}j} G_i\\right)\\right)}} $$'),
+                           p('As the parameters are estimated in ', code("difR"), 'package separately for
+                                      groups, there is one equation for each group. Parameters ', strong('aR'), ' and ',
+                             strong('bR'), 'are discrimination and difficulty for reference group. Parameters ', strong('aF'), ' and ',
+                             strong('bF'), 'are discrimination and difficulty for reference group. Parameter ', strong('c'), ' is
+                                      a common guessing parameter.'),
+                           ('$$\\mathrm{P}\\left(Y_{ij} = 1 | \\theta_i, G_i = 0, a_{Rj}, b_{Rj}, c_j\\right) =
+                       c_j + \\left(1 - c_j\\right) \\cdot \\frac{e^{a_{Rj} \\left(\\theta_i - b_{Rj} \\right)}}
+                       {1+e^{a_{Rj} \\left(\\theta_i - b_{Rj} \\right)}} $$'),
+                           ('$$\\mathrm{P}\\left(Y_{ij} = 1 | \\theta_i, G_i = 1, a_{Fj}, b_{Fj}, c_j\\right) =
+                       c_j + \\left(1 - c_j\\right) \\cdot \\frac{e^{a_{Fj} \\left(\\theta_i - b_{Fj} \\right)}}
+                       {1+e^{a_{Fj} \\left(\\theta_i - b_{Fj} \\right)}} $$'),
                            fluidRow(column(12, align = "center", tableOutput('tab_coef_DIF_IRT_Lord'))),
                            br(),
                            div(code('library(difNLR)'),
@@ -1439,9 +1447,17 @@ total score. Their size is determined by count of respondents who answered item 
                                     uiOutput("difirt_raju_itemSliderUI"),
                                     plotOutput('plot_DIF_IRT_Raju'),
                                     h4("Equation"),
-                                    ('$$\\mathrm{P}\\left(Y_{ij} = 1 | \\theta_i, G_i, a_j, b_j, c_j, a_{\\text{DIF}j}, b_{\\text{DIF}j}\\right) =
-                       c_j + \\left(1 - c_j\\right) \\cdot \\frac{e^{\\left(a_j + a_{\\text{DIF}j} G_i\\right)\\left(\\theta_i -\\left(b_j + b_{\\text{DIF}j} G_i\\right)\\right)}}
-                       {1+e^{\\left(a_j + a_{\\text{DIF}j} G_i\\right)\\left(\\theta_i -\\left(b_j + b_{\\text{DIF}j} G_i\\right)\\right)}} $$'),
+                                    p('As the parameters are estimated in ', code("difR"), 'package separately for
+                                      groups, there is one equation for each group. Parameters ', strong('aR'), ' and ',
+                                      strong('bR'), 'are discrimination and difficulty for reference group. Parameters ', strong('aF'), ' and ',
+                                      strong('bF'), 'are discrimination and difficulty for reference group. Parameter ', strong('c'), ' is
+                                      a common guessing parameter.'),
+                                    ('$$\\mathrm{P}\\left(Y_{ij} = 1 | \\theta_i, G_i = 0, a_{Rj}, b_{Rj}, c_j\\right) =
+                       c_j + \\left(1 - c_j\\right) \\cdot \\frac{e^{a_{Rj} \\left(\\theta_i - b_{Rj} \\right)}}
+                       {1+e^{a_{Rj} \\left(\\theta_i - b_{Rj} \\right)}} $$'),
+                                    ('$$\\mathrm{P}\\left(Y_{ij} = 1 | \\theta_i, G_i = 1, a_{Fj}, b_{Fj}, c_j\\right) =
+                       c_j + \\left(1 - c_j\\right) \\cdot \\frac{e^{a_{Fj} \\left(\\theta_i - b_{Fj} \\right)}}
+                       {1+e^{a_{Fj} \\left(\\theta_i - b_{Fj} \\right)}} $$'),
                                     fluidRow(column(12, align = "center", tableOutput('tab_coef_DIF_IRT_Raju'))),
                                     br(),
                                     div(code('library(difNLR)'),
