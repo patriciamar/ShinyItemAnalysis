@@ -3,6 +3,8 @@
 ###############################################################
 
 library(difNLR)
+library(difR)
+library(ltm)
 library(nnet)
 library(ShinyItemAnalysis)
 

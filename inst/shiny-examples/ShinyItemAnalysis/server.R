@@ -30,18 +30,18 @@ key=get("GMATkey")
 # FUNCTIONS ######
 ##################
 
-# # Difficulty/Discrimination plot
-# source("DDplot.R")
-#
-# # Distractors analysis
-# source("DistractorAnalysis.R")
-# source("plotDistractorAnalysis.R")
-#
-# # DIF logistic regression plot
-# source("plotDIFLogistic.R")
-#
-# # DIF IRT regression plot
-# source("plotDIFirt.R")
+# Difficulty/Discrimination plot
+source("DDplot.R")
+
+# Distractors analysis
+source("DistractorAnalysis.R")
+source("plotDistractorAnalysis.R")
+
+# DIF logistic regression plot
+source("plotDIFLogistic.R")
+
+# DIF IRT regression plot
+source("plotDIFirt.R")
 
 #####################
 # SERVER SCRIPT #####
