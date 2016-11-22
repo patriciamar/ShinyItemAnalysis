@@ -1483,12 +1483,20 @@ total score. Their size is determined by count of respondents who answered item 
                   h3("Data"),
                   p('For demonstration purposes, 20-item dataset ' , code("GMAT"),'
                     and dataset', code("GMATkey"),' from R ', code('library(difNLR)'),' are used.
-                    On this page, you may select your own dataset (see below).
-                    To return to demonstration dataset, refresh this page in your browser' , strong("(F5)"), '.'),
+                    On this page, you may select one of three dataset offered in ', code('difNLR'),
+                    'package or you may upload your own dataset (see below). To return to demonstration dataset,
+                    refresh this page in your browser' , strong("(F5)"), '.'),
                   p('Used dataset ', code("GMAT"), ' is generated based on parameters of real Graduate Management
                     Admission Test (GMAT) data set (Kingston et al., 1985). However, first two items were
                     generated to function differently in uniform and non-uniform way respectively.
-                    The data set represents responses of 1,000 subjects to multiple-choice test of 20 items.'),
+                    The data set represents responses of 2,000 subjects to multiple-choice test of 20 items.
+                    The distribution of total scores is the same for both groups. '),
+                  p('Dataset ', code("GMAT2"), ' is also generated based on parameters of GMAT (Kingston et al., 1985). Again,
+                    first two items were generated to function differently in uniform and non-uniform way respectively.
+                    The data set represents responses of 1,000 subjects to multiple-choice test of 20 items. '),
+                  p('Dataset ', code("Medical"), ' is a subset of real admission test to medical school. First item was previously
+                    detected as functioning differently (Vlckova, 2014). The data set represents responses of
+                    1,407 subjects (484 males, 923 females) to multiple-choice test of 20 items. '),
                   br(),
                   uiOutput("dataSelect"),
                   h4("Upload your own datasets"),
@@ -1576,8 +1584,8 @@ total score. Their size is determined by count of respondents who answered item 
                     'R package. '),
                   br(),
                   strong('Data'),
-                  p('For demonstration purposes, practice dataset from', code('library(difNLR)'),'is used. On page',
-                    strong("Data"), 'you may select your own dataset '),
+                  p('For demonstration purposes, practice dataset from', code('library(difNLR)'),'is used.
+                    On page', strong("Data"), 'you may select your own dataset '),
                   br(),
                   strong('List of Packages Used'),
                   br(),
@@ -1635,7 +1643,7 @@ total score. Their size is determined by count of respondents who answered item 
                   br()
                   ),
                   ########################
-                  # ABOUT ################
+                  # REFERENCES ###########
                   ########################
                   tabPanel("References",
                     br(),
@@ -1643,17 +1651,21 @@ total score. Their size is determined by count of respondents who answered item 
                     br(),
                     br(),
                     p('Angoff, W. H., & Ford, S. F. (1973). Item‐Race Interaction on a Test of
-                      Scholastic Aptitude. Journal of Educational Measurement, 10(2), 95-105.'),
+                      Scholastic Aptitude. Journal of Educational Measurement, 10(2), 95-105.'
+                      ),
                     p('Cronbach, L. J. (1951). Coefficient alpha and the internal structure
-                      of tests. psychometrika, 16(3), 297-334.'),
+                      of tests. psychometrika, 16(3), 297-334.'
+                      ),
                     p("Drabinova, A., & Martinkova, P. (2016). Detection of Differential Item
                       Functioning Based on Non-Linear Regression. Technical Report",
                       a("V-1229", href = "https://goo.gl/R3dpJ5}", target = "_blank"), "."
                       ),
                     p("Lord, F. M. (1980). Applications of Item Response Theory to Practical Testing Problems.
-                      Routledge."),
+                      Routledge."
+                      ),
                     p("Mantel, N., & Haenszel, W. (1959). Statistical Aspects of the Analysis of Data from
-                      Retrospective Studies. Journal of the National Cancer Institute, 22 (4), 719-748."),
+                      Retrospective Studies. Journal of the National Cancer Institute, 22 (4), 719-748."
+                      ),
                     p("Swaminathan, H., & Rogers, H. J. (1990). Detecting Differential Item
                       Functioning Using Logistic Regression Procedures. Journal of Educational
                       Measurement, 27(4), 361-370."
@@ -1663,6 +1675,8 @@ total score. Their size is determined by count of respondents who answered item 
                       ),
                     p("Raju, N. S. (1990). Determining the Significance of Estimated Signed and Unsigned Areas
                     between Two Item Response Functions. Applied Psychological Measurement, 14 (2), 197-207."
+                      ),
+                    p("Vlckova, K. (2014). Test and Item Fairness (Unpublished master's thesis)."
                       ),
                     br(),
                     br()
