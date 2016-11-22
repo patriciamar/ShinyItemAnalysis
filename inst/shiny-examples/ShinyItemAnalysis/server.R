@@ -15,6 +15,7 @@ library(nnet)
 library(psych)
 library(psychometric)
 library(reshape2)
+library(stringr)
 
 ###########
 # DATA ####
@@ -70,9 +71,9 @@ function(input, output, session) {
 
   output$dataSelect <- renderUI({
     selectInput("dataSelect", "Select dataset",
-                c("GMAT" = "GMAT",
-                  "GMAT2" = "GMAT2",
-                  "Medical" = "difMedical"
+                c("GMAT" = "GMAT_difNLR",
+                  "GMAT2" = "GMAT2_difNLR",
+                  "Medical" = "difMedical_difNLR"
                 ),
                 selected="GMAT")
   })
@@ -80,10 +81,18 @@ function(input, output, session) {
 
   # LOAD ABCD DATA #####
   test_answers <- reactive ({
-    do.call(data, args=list(paste0(input$dataSelect,"test"), package="difNLR"))
-    test=get(paste0(input$dataSelect,"test"))
+    a=input$dataSelect
+    pos=regexpr("_", a)[1]
+    datasetName=str_sub(a, 1,pos-1)
+    packageName=str_sub(a, pos+1)
 
-    ifelse (is.null(input$data), answ <- test[ , 1:20],
+    do.call(data, args=list(paste0(datasetName,"test"), package=packageName))
+    test=get(paste0(datasetName,"test"))
+
+    do.call(data, args=list(paste0(datasetName,"key"), package=packageName))
+    key=get(paste0(datasetName,"key"))
+
+    ifelse (is.null(input$data), answ <- test[ , 1:length(key)],
             answ <- read.csv(input$data$datapath, header = input$header,
                              sep = input$sep, quote = input$quote))
     answ
@@ -91,9 +100,13 @@ function(input, output, session) {
 
   # LOAD KEY #####
   test_key <- reactive({
+    a=input$dataSelect
+    pos=regexpr("_", a)[1]
+    datasetName=str_sub(a, 1,pos-1)
+    packageName=str_sub(a, pos+1)
 
-    do.call(data, args=list(paste0(input$dataSelect,"key"), package="difNLR"))
-    key=get(paste0(input$dataSelect,"key"))
+    do.call(data, args=list(paste0(datasetName,"key"), package=packageName))
+    key=get(paste0(datasetName,"key"))
 
     ifelse (is.null(input$key), k <- key,
 
@@ -105,11 +118,15 @@ function(input, output, session) {
 
   # LOAD GROUPS #####
   DIF_groups <- reactive({
+    a=input$dataSelect
+    pos=regexpr("_", a)[1]
+    datasetName=str_sub(a, 1,pos-1)
+    packageName=str_sub(a, pos+1)
 
-    do.call(data, args=list(paste0(input$dataSelect,"test"), package="difNLR"))
-    test=get(paste0(input$dataSelect,"test"))
+    do.call(data, args=list(paste0(datasetName,"test"), package=packageName))
+    test=get(paste0(datasetName,"test"))
 
-    ifelse (is.null(input$key), k <- test[ , 21],
+    ifelse (is.null(input$key), k <- test[ , ncol(test)],
 
             {k <- read.csv(input$groups$datapath,header = TRUE)
             k <- k[[1]]})
@@ -1146,7 +1163,7 @@ function(input, output, session) {
 
   # *** Table of parameters ####
   output$threeparamcoef <- renderTable({
-    fit3pl <- tpm(GMAT2[, 1:20], IRT.param = TRUE)
+    fit3pl <- tpm(correct_answ(), IRT.param = TRUE)
     tab <- coef(fit3pl)
     tab <- cbind(tab,
                  sqrt(diag(vcov(fit3pl)))[1:nrow(tab)],
