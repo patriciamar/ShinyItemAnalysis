@@ -1391,7 +1391,7 @@ total score. Their size is determined by count of respondents who answered item 
                                        selected="BH"),
                            uiOutput("difirt_lord_itemSliderUI"),
                            plotOutput('plot_DIF_IRT_Lord'),
-                           downloadButton("DP_DIF_IRT_Lord", label = "Download figure"),
+                           downloadButton("DP_plot_DIF_IRT_Lord", label = "Download figure"),
                            h4("Equation"),
                            p('As the parameters are estimated in ', code("difR"), 'package separately for
                                       groups, there is one equation for each group. Parameters ', strong('aR'), ' and ',
