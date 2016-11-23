@@ -358,7 +358,7 @@ function(input, output, session) {
       paste("plot", input$name, ".png", sep = "")
     },
     content = function(file) {
-      ggsave(file, plot = histogram_totalscoresInput(), device = "png")
+      ggsave(file, plot = histogram_totalscoresInput(), device = "png", height=3, width=9)
     }
   )
 
@@ -407,7 +407,7 @@ function(input, output, session) {
       paste("plot", input$name, ".png", sep = "")
     },
     content = function(file) {
-      ggsave(file, plot = difplotInput(), device = "png")
+      ggsave(file, plot = difplotInput(), device = "png", height=3, width=9)
     }
   )
 
@@ -529,7 +529,7 @@ function(input, output, session) {
       paste("plot", input$name, ".png", sep = "")
     },
     content = function(file) {
-      ggsave(file, plot = hist_distractor_by_groupInput(), device = "png")
+      ggsave(file, plot = hist_distractor_by_groupInput(), device = "png", height=3, width=9)
     }
   )
 
@@ -552,7 +552,7 @@ function(input, output, session) {
       paste("plot", input$name, ".png", sep = "")
     },
     content = function(file) {
-      ggsave(file, plot = grafInput(), device = "png")
+      ggsave(file, plot = grafInput(), device = "png", height=3, width=9)
     }
   )
 
@@ -637,7 +637,7 @@ function(input, output, session) {
       paste("plot", input$name, ".png", sep = "")
     },
     content = function(file) {
-      ggsave(file, plot = logregInput(), device = "png")
+      ggsave(file, plot = logregInput(), device = "png", height=3, width=9)
     }
   )
   # ** Table of parameters ####
@@ -721,7 +721,7 @@ function(input, output, session) {
       paste("plot", input$name, ".png", sep = "")
     },
     content = function(file) {
-      ggsave(file, plot = zlogregInput(), device = "png")
+      ggsave(file, plot = zlogregInput(), device = "png", height=3, width=9)
     }
   )
 
@@ -808,7 +808,7 @@ function(input, output, session) {
       paste("plot", input$name, ".png", sep = "")
     },
     content = function(file) {
-      ggsave(file, plot = zlogreg_irtInput(), device = "png")
+      ggsave(file, plot = zlogreg_irtInput(), device = "png", height=3, width=9)
     }
   )
 
@@ -960,7 +960,7 @@ function(input, output, session) {
       paste("plot", input$name, ".png", sep = "")
     },
     content = function(file) {
-      ggsave(file, plot = nlsplotInput(), device = "png")
+      ggsave(file, plot = nlsplotInput(), device = "png", height=3, width=9)
     }
   )
 
@@ -1064,7 +1064,7 @@ function(input, output, session) {
       paste("plot", input$name, ".png", sep = "")
     },
     content = function(file) {
-      ggsave(file, plot = multiplotInput(), device = "png")
+      ggsave(file, plot = multiplotInput(), device = "png", height=3, width=9)
     }
   )
 
@@ -1133,7 +1133,7 @@ function(input, output, session) {
       paste("plot", input$name, ".png", sep = "")
     },
     content = function(file) {
-      png(file)
+      png(file, height=800, width=1200, res=100)
       plot(rasch_model())
       dev.off()
     }
@@ -1149,7 +1149,7 @@ function(input, output, session) {
       paste("plot", input$name, ".png", sep = "")
     },
     content = function(file) {
-      png(file)
+      png(file, height=800, width=1200, res=100)
       plot(rasch_model(), type = "IIC")
       dev.off()
       }
@@ -1165,8 +1165,8 @@ function(input, output, session) {
       paste("plot", input$name, ".png", sep = "")
     },
     content = function(file) {
-      png(file)
-      plot(rasch_model(), type = "IIC")
+      png(file, height=800, width=1200, res=100)
+      plot(rasch_model(),items = 0, type = "IIC")
       dev.off()
     }
   )
@@ -1226,7 +1226,7 @@ function(input, output, session) {
       paste("plot", input$name, ".png", sep = "")
     },
     content = function(file) {
-      ggsave(file, plot = raschFactorInput(), device = "png")
+      ggsave(file, plot = raschFactorInput(), device = "png", height=3, width=9)
     }
   )
 
@@ -1246,7 +1246,7 @@ function(input, output, session) {
       paste("plot", input$name, ".png", sep = "")
     },
     content = function(file) {
-      png(file)
+      png(file, height=800, width=1200, res=100)
       plot(two_param_irt())
       dev.off()
       }
@@ -1262,7 +1262,7 @@ function(input, output, session) {
       paste("plot", input$name, ".png", sep = "")
     },
     content = function(file) {
-      png(file)
+      png(file, height=800, width=1200, res=100)
       plot(two_param_irt(), type = "IIC")
       dev.off()
       }
@@ -1278,7 +1278,7 @@ function(input, output, session) {
       paste("plot", input$name, ".png", sep = "")
     },
     content = function(file) {
-      png(file)
+      png(file, height=800, width=1200, res=100)
       plot(two_param_irt(), items = 0, type = "IIC")
       dev.off()
       }
@@ -1337,9 +1337,7 @@ function(input, output, session) {
       paste("plot", input$name, ".png", sep = "")
     },
     content = function(file) {
-      png(file)
-      plot(two_param_irt(), items = 0, type = "IIC")
-      dev.off()
+      ggsave(file, plot = twoFactorInput(), device = "png", height=3, width=9)
     }
   )
 
@@ -1357,7 +1355,7 @@ function(input, output, session) {
       paste("plot", input$name, ".png", sep = "")
     },
     content = function(file) {
-      png(file)
+      png(file, height=800, width=1200, res=100)
       plot(three_param_irt())
       dev.off()
       }
@@ -1373,7 +1371,7 @@ function(input, output, session) {
       paste("plot", input$name, ".png", sep = "")
     },
     content = function(file) {
-      png(file)
+      png(file, height=800, width=1200, res=100)
       plot(three_param_irt(), type = "IIC")
       dev.off()
     }
@@ -1389,7 +1387,7 @@ function(input, output, session) {
       paste("plot", input$name, ".png", sep = "")
     },
     content = function(file) {
-      png(file)
+      png(file, height=800, width=1200, res=100)
       plot(three_param_irt(), items = 0, type = "IIC")
       dev.off()
     }
@@ -1449,7 +1447,7 @@ function(input, output, session) {
       paste("plot", input$name, ".png", sep = "")
     },
     content = function(file) {
-      ggsave(file, plot = threeFactorInput(), device = "png")
+      ggsave(file, plot = threeFactorInput(), device = "png", height=3, width=9)
     }
   )
 
@@ -1535,7 +1533,7 @@ function(input, output, session) {
       paste("plot", input$name, ".png", sep = "")
     },
     content = function(file) {
-      ggsave(file, plot = histbyscoregroup1Input(), device = "png")
+      ggsave(file, plot = histbyscoregroup1Input(), device = "png", height=3, width=9)
     }
   )
 
@@ -1592,7 +1590,7 @@ function(input, output, session) {
       paste("plot", input$name, ".png", sep = "")
     },
     content = function(file) {
-      ggsave(file, plot = histbyscoregroup0Input(), device = "png")
+      ggsave(file, plot = histbyscoregroup0Input(), device = "png", height=3, width=9)
     }
   )
 
@@ -1656,7 +1654,7 @@ function(input, output, session) {
       paste("plot", input$name, ".png", sep = "")
     },
     content = function(file) {
-      ggsave(file, plot = deltaplotInput(), device = "png")
+      ggsave(file, plot = deltaplotInput(), device = "png", height=3, width=9)
     }
   )
 
@@ -1813,7 +1811,7 @@ function(input, output, session) {
       paste("plot", input$name, ".png", sep = "")
     },
     content = function(file) {
-      ggsave(file, plot = plot_DIF_logisticInput(), device = "png")
+      ggsave(file, plot = plot_DIF_logisticInput(), device = "png", height=3, width=9)
     }
   )
 
@@ -1889,7 +1887,7 @@ function(input, output, session) {
       paste("plot", input$name, ".png", sep = "")
     },
     content = function(file) {
-      ggsave(file, plot = plot_DIF_Logistic_IRT_ZInput(), device = "png")
+      ggsave(file, plot = plot_DIF_logistic_IRT_ZInput(), device = "png", height=3, width=9)
     }
   )
 
@@ -1979,7 +1977,7 @@ function(input, output, session) {
       paste("plot", input$name, ".png", sep = "")
     },
     content = function(file) {
-      ggsave(file, plot = plot_DIF_NLRInput(), device = "png")
+      ggsave(file, plot = plot_DIF_NLRInput(), device = "png", height=3, width=9)
     }
   )
 
@@ -2064,7 +2062,7 @@ function(input, output, session) {
       paste("plot", input$name, ".png", sep = "")
     },
     content = function(file) {
-      ggsave(file, plot = plotDIFirt(parameters = tab_coef_DIF_IRT_Lord(), item=input$difirt_lord_itemSlider), device = "png")
+      ggsave(file, plot = plotDIFirt(parameters = tab_coef_DIF_IRT_Lord(), item=input$difirt_lord_itemSlider), device = "png", height=3, width=9)
     }
   )
 
@@ -2176,7 +2174,7 @@ function(input, output, session) {
       paste("plot", input$name, ".png", sep = "")
     },
     content = function(file) {
-      ggsave(file, plot = plotDIFirt(parameters = tab_coef_DIF_IRT_Raju(), test = "Raju", item=input$difirt_raju_itemSlider), device = "png")
+      ggsave(file, plot = plotDIFirt(parameters = tab_coef_DIF_IRT_Raju(), test = "Raju", item=input$difirt_raju_itemSlider), device = "png", height=3, width=9)
     }
   )
 
