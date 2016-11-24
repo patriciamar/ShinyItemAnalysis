@@ -23,8 +23,8 @@ library(reshape2)
 data('GMAT', package = 'difNLR')
 data('GMATtest', package = 'difNLR')
 data('GMATkey', package = 'difNLR')
-test=get("GMATtest")
-key=get("GMATkey")
+test <- get("GMATtest")
+key <- get("GMATkey")
 
 ##################
 # FUNCTIONS ######
@@ -1754,7 +1754,49 @@ function(input, output, session) {
 
      tab
    })
+   # ** Equation and interpretation ####
+   output$irteq_lord <- renderUI({
+     type <- input$type_plot_DIF_IRT_lord
+     txt <- switch(type,
+                   '1PL'= paste('As the parameters are estimated separately for groups, there is one
+                                equation for each group. Parameters $\\textbf{bR}$ and $\\textbf{bF}$
+                                are difficulties for reference and focal group. '),
+                   '2PL'= paste('As the parameters are estimated
+                                separately for groups, there is one equation for each group.
+                                Parameters $\\textbf{aR}$ and  $\\textbf{bR}$ are discrimination and
+                                difficulty for reference group. Parameters $\\textbf{aF}$ and  $\\textbf{bF}$
+                                are discrimination and difficulty for reference group. '),
+                   '3PL'= paste('As the parameters are estimated
+                                separately for groups, there is one equation for each group.
+                                Parameters $\\textbf{aR}$ and  $\\textbf{bR}$ are discrimination and
+                                difficulty for reference group. Parameters $\\textbf{aF}$ and  $\\textbf{bF}$
+                                are discrimination and difficulty for reference group.
+                                Parameter $\\textbf{c}$ is a common guessing parameter. '))
+     eqR <- switch(type,
+                   '1PL' = paste('$$\\mathrm{P}\\left(Y_{ij} = 1 | \\theta_i, G_i = 0, b_{Rj}\\right) =
+                                 \\frac{e^{\\theta_i - b_{Rj}}}
+                                 {1+e^{\\theta_i - b_{Rj} }} $$'),
+                   '2PL' = paste('$$\\mathrm{P}\\left(Y_{ij} = 1 | \\theta_i, G_i = 0, a_{Rj}, b_{Rj}\\right) =
+                                 \\frac{e^{a_{Rj} \\left(\\theta_i - b_{Rj} \\right)}}
+                                 {1+e^{a_{Rj} \\left(\\theta_i - b_{Rj} \\right)}} $$'),
+                   '3PL' = paste('$$\\mathrm{P}\\left(Y_{ij} = 1 | \\theta_i, G_i = 0, a_{Rj}, b_{Rj}, c_j\\right) =
+                                 c_j + \\left(1 - c_j\\right) \\cdot \\frac{e^{a_{Rj}
+                                 \\left(\\theta_i - b_{Rj} \\right)}}
+                                 {1+e^{a_{Rj} \\left(\\theta_i - b_{Rj} \\right)}} $$'))
 
+     eqF <- switch(type,
+                   '1PL' = paste('$$\\mathrm{P}\\left(Y_{ij} = 1 | \\theta_i, G_i = 1, b_{Fj}\\right) =
+                                 \\frac{e^{\\theta_i - b_{Fj}}}
+                                 {1+e^{\\theta_i - b_{Rj}}} $$'),
+                   '2PL' = paste('$$\\mathrm{P}\\left(Y_{ij} = 1 | \\theta_i, G_i = 1, a_{Fj}, b_{Fj}\\right) =
+                                 \\frac{e^{a_{Fj} \\left(\\theta_i - b_{Fj} \\right)}}
+                                 {1+e^{a_{Fj} \\left(\\theta_i - b_{Fj} \\right)}} $$'),
+                   '3PL' = paste('$$\\mathrm{P}\\left(Y_{ij} = 1 | \\theta_i, G_i = 1, a_{Fj}, b_{Fj}, c_j\\right) =
+                                 c_j + \\left(1 - c_j\\right) \\cdot \\frac{e^{a_{Fj}
+                                 \\left(\\theta_i - b_{Fj} \\right)}}
+                                 {1+e^{a_{Fj} \\left(\\theta_i - b_{Fj} \\right)}} $$'))
+     withMathJax(paste(txt, eqR, eqF))
+   })
    # ** Table with coefficients output ####
    output$tab_coef_DIF_IRT_Lord <- renderTable({
      tab_coef_DIF_IRT_Lord()
@@ -1850,6 +1892,53 @@ function(input, output, session) {
 
      tab
    })
+
+   # ** Equation and interpretation ####
+   output$irteq_raju <- renderUI({
+     type <- input$type_plot_DIF_IRT_raju
+     txt <- switch(type,
+                   '1PL'= paste('As the parameters are estimated separately for groups, there is one
+                                equation for each group. Parameters $\\textbf{bR}$ and $\\textbf{bF}$
+                                are difficulties for reference and focal group. '),
+                   '2PL'= paste('As the parameters are estimated
+                                separately for groups, there is one equation for each group.
+                                Parameters $\\textbf{aR}$ and  $\\textbf{bR}$ are discrimination and
+                                difficulty for reference group. Parameters $\\textbf{aF}$ and  $\\textbf{bF}$
+                                are discrimination and difficulty for reference group. '),
+                   '3PL'= paste('As the parameters are estimated
+                                separately for groups, there is one equation for each group.
+                                Parameters $\\textbf{aR}$ and  $\\textbf{bR}$ are discrimination and
+                                difficulty for reference group. Parameters $\\textbf{aF}$ and  $\\textbf{bF}$
+                                are discrimination and difficulty for reference group.
+                                Parameter $\\textbf{c}$ is a common guessing parameter. '))
+     eqR <- switch(type,
+                   '1PL' = paste('$$\\mathrm{P}\\left(Y_{ij} = 1 | \\theta_i, G_i = 0, b_{Rj}\\right) =
+                                \\frac{e^{\\theta_i - b_{Rj}}}
+                               {1+e^{\\theta_i - b_{Rj} }} $$'),
+                   '2PL' = paste('$$\\mathrm{P}\\left(Y_{ij} = 1 | \\theta_i, G_i = 0, a_{Rj}, b_{Rj}\\right) =
+                                \\frac{e^{a_{Rj} \\left(\\theta_i - b_{Rj} \\right)}}
+                                {1+e^{a_{Rj} \\left(\\theta_i - b_{Rj} \\right)}} $$'),
+                   '3PL' = paste('$$\\mathrm{P}\\left(Y_{ij} = 1 | \\theta_i, G_i = 0, a_{Rj}, b_{Rj}, c_j\\right) =
+                                c_j + \\left(1 - c_j\\right) \\cdot \\frac{e^{a_{Rj}
+                                \\left(\\theta_i - b_{Rj} \\right)}}
+                                {1+e^{a_{Rj} \\left(\\theta_i - b_{Rj} \\right)}} $$'))
+
+     eqF <- switch(type,
+                   '1PL' = paste('$$\\mathrm{P}\\left(Y_{ij} = 1 | \\theta_i, G_i = 1, b_{Fj}\\right) =
+                                \\frac{e^{\\theta_i - b_{Fj}}}
+                               {1+e^{\\theta_i - b_{Rj}}} $$'),
+                   '2PL' = paste('$$\\mathrm{P}\\left(Y_{ij} = 1 | \\theta_i, G_i = 1, a_{Fj}, b_{Fj}\\right) =
+                                \\frac{e^{a_{Fj} \\left(\\theta_i - b_{Fj} \\right)}}
+                                {1+e^{a_{Fj} \\left(\\theta_i - b_{Fj} \\right)}} $$'),
+                   '3PL' = paste('$$\\mathrm{P}\\left(Y_{ij} = 1 | \\theta_i, G_i = 1, a_{Fj}, b_{Fj}, c_j\\right) =
+                                c_j + \\left(1 - c_j\\right) \\cdot \\frac{e^{a_{Fj}
+                                \\left(\\theta_i - b_{Fj} \\right)}}
+                                {1+e^{a_{Fj} \\left(\\theta_i - b_{Fj} \\right)}} $$'))
+     withMathJax(paste(txt, eqR, eqF))
+
+
+   })
+
 
    # ** Table with coefficients output ####
    output$tab_coef_DIF_IRT_Raju <- renderTable({

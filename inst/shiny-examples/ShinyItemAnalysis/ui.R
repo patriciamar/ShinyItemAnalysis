@@ -1346,17 +1346,18 @@ total score. Their size is determined by count of respondents who answered item 
                            uiOutput("difirt_lord_itemSliderUI"),
                            plotOutput('plot_DIF_IRT_Lord'),
                            h4("Equation"),
-                           p('As the parameters are estimated in ', code("difR"), 'package separately for
-                                      groups, there is one equation for each group. Parameters ', strong('aR'), ' and ',
-                             strong('bR'), 'are discrimination and difficulty for reference group. Parameters ', strong('aF'), ' and ',
-                             strong('bF'), 'are discrimination and difficulty for reference group. Parameter ', strong('c'), ' is
-                                      a common guessing parameter.'),
-                           ('$$\\mathrm{P}\\left(Y_{ij} = 1 | \\theta_i, G_i = 0, a_{Rj}, b_{Rj}, c_j\\right) =
-                       c_j + \\left(1 - c_j\\right) \\cdot \\frac{e^{a_{Rj} \\left(\\theta_i - b_{Rj} \\right)}}
-                       {1+e^{a_{Rj} \\left(\\theta_i - b_{Rj} \\right)}} $$'),
-                           ('$$\\mathrm{P}\\left(Y_{ij} = 1 | \\theta_i, G_i = 1, a_{Fj}, b_{Fj}, c_j\\right) =
-                       c_j + \\left(1 - c_j\\right) \\cdot \\frac{e^{a_{Fj} \\left(\\theta_i - b_{Fj} \\right)}}
-                       {1+e^{a_{Fj} \\left(\\theta_i - b_{Fj} \\right)}} $$'),
+                           uiOutput('irteq_lord'),
+                       #     p('As the parameters are estimated in ', code("difR"), 'package separately for
+                       #                groups, there is one equation for each group. Parameters ', strong('aR'), ' and ',
+                       #       strong('bR'), 'are discrimination and difficulty for reference group. Parameters ', strong('aF'), ' and ',
+                       #       strong('bF'), 'are discrimination and difficulty for reference group. Parameter ', strong('c'), ' is
+                       #                a common guessing parameter.'),
+                       #     ('$$\\mathrm{P}\\left(Y_{ij} = 1 | \\theta_i, G_i = 0, a_{Rj}, b_{Rj}, c_j\\right) =
+                       # c_j + \\left(1 - c_j\\right) \\cdot \\frac{e^{a_{Rj} \\left(\\theta_i - b_{Rj} \\right)}}
+                       # {1+e^{a_{Rj} \\left(\\theta_i - b_{Rj} \\right)}} $$'),
+                       #     ('$$\\mathrm{P}\\left(Y_{ij} = 1 | \\theta_i, G_i = 1, a_{Fj}, b_{Fj}, c_j\\right) =
+                       # c_j + \\left(1 - c_j\\right) \\cdot \\frac{e^{a_{Fj} \\left(\\theta_i - b_{Fj} \\right)}}
+                       # {1+e^{a_{Fj} \\left(\\theta_i - b_{Fj} \\right)}} $$'),
                            fluidRow(column(12, align = "center", tableOutput('tab_coef_DIF_IRT_Lord'))),
                            br(),
                            div(code('library(difNLR)'),
@@ -1447,17 +1448,19 @@ total score. Their size is determined by count of respondents who answered item 
                                     uiOutput("difirt_raju_itemSliderUI"),
                                     plotOutput('plot_DIF_IRT_Raju'),
                                     h4("Equation"),
-                                    p('As the parameters are estimated in ', code("difR"), 'package separately for
-                                      groups, there is one equation for each group. Parameters ', strong('aR'), ' and ',
-                                      strong('bR'), 'are discrimination and difficulty for reference group. Parameters ', strong('aF'), ' and ',
-                                      strong('bF'), 'are discrimination and difficulty for reference group. Parameter ', strong('c'), ' is
-                                      a common guessing parameter.'),
-                                    ('$$\\mathrm{P}\\left(Y_{ij} = 1 | \\theta_i, G_i = 0, a_{Rj}, b_{Rj}, c_j\\right) =
-                       c_j + \\left(1 - c_j\\right) \\cdot \\frac{e^{a_{Rj} \\left(\\theta_i - b_{Rj} \\right)}}
-                       {1+e^{a_{Rj} \\left(\\theta_i - b_{Rj} \\right)}} $$'),
-                                    ('$$\\mathrm{P}\\left(Y_{ij} = 1 | \\theta_i, G_i = 1, a_{Fj}, b_{Fj}, c_j\\right) =
-                       c_j + \\left(1 - c_j\\right) \\cdot \\frac{e^{a_{Fj} \\left(\\theta_i - b_{Fj} \\right)}}
-                       {1+e^{a_{Fj} \\left(\\theta_i - b_{Fj} \\right)}} $$'),
+                                    uiOutput('irteq_raju'),
+                       #              p('As the parameters are estimated in ', code("difR"), 'package separately for
+                       #                groups, there is one equation for each group. Parameters ', strong('aR'), ' and ',
+                       #                strong('bR'), 'are discrimination and difficulty for reference group. Parameters ', strong('aF'), ' and ',
+                       #                strong('bF'), 'are discrimination and difficulty for reference group. Parameter ', strong('c'), ' is
+                       #                a common guessing parameter.'),
+                       #              ('$$\\mathrm{P}\\left(Y_{ij} = 1 | \\theta_i, G_i = 0, a_{Rj}, b_{Rj}, c_j\\right) =
+                       # c_j + \\left(1 - c_j\\right) \\cdot \\frac{e^{a_{Rj} \\left(\\theta_i - b_{Rj} \\right)}}
+                       # {1+e^{a_{Rj} \\left(\\theta_i - b_{Rj} \\right)}} $$'),
+                       #              ('$$\\mathrm{P}\\left(Y_{ij} = 1 | \\theta_i, G_i = 1, a_{Fj}, b_{Fj}, c_j\\right) =
+                       # c_j + \\left(1 - c_j\\right) \\cdot \\frac{e^{a_{Fj} \\left(\\theta_i - b_{Fj} \\right)}}
+                       # {1+e^{a_{Fj} \\left(\\theta_i - b_{Fj} \\right)}} $$'),
+
                                     fluidRow(column(12, align = "center", tableOutput('tab_coef_DIF_IRT_Raju'))),
                                     br(),
                                     div(code('library(difNLR)'),
