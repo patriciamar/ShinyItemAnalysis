@@ -14,7 +14,7 @@
 #' @param p.adjust.method character:  the acronym of the method for p-value adjustment for
 #' multiple comparisons. See Details.
 #'
-#' @usage plotDIFLogistic(data, group, type, item, IRT = F, p.adjust.method = "BH")
+#' @usage plotDIFLogistic(data, group, type = "both", item, IRT = F, p.adjust.method = "BH")
 #'
 #' @details
 #' This function plots characteristic curve of 2PL logistic DIF model.
@@ -32,8 +32,19 @@
 #'
 #' @examples
 #' \dontrun{
+#' # loading libraries
+#' library(difNLR, difR)
 #'
+#'  # loading data based on GMAT
+#' data(GMAT, package = "difNLR")
+#' data  <- GMAT[, colnames(GMAT) != "group"]
+#' group <- GMAT[, "group"]
 #'
+#' # Characteristic curve by logistic regression model
+#' plotDIFLogistic(data, group, item = 1)
+#'
+#' # Characteristic curve by logistic regression model using scaled score
+#' plotDIFLogistic(data, group, item = 1, IRT = T)
 #' }
 #'
 #'
@@ -41,7 +52,7 @@
 
 
 
-plotDIFLogistic <- function(data, group, type, item, IRT = F, p.adjust.method = "BH"){
+plotDIFLogistic <- function(data, group, type = "both", item, IRT = F, p.adjust.method = "BH"){
   if (IRT){
     match <- c(scale(apply(data, 1, sum)))
   } else {
@@ -145,12 +156,7 @@ plotDIFLogistic <- function(data, group, type, item, IRT = F, p.adjust.method = 
     ggtitle(paste("Item", item))
 
   plot_CC
-  # if (IRT){
-  #   print(plot_CC + scale_x_continuous(breaks = ticks,
-  #                                    labels = -2:2))
-  # } else {
-  #   print(plot_CC)
-  # }
+
 }
 
 
