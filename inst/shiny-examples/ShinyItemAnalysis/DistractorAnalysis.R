@@ -60,6 +60,7 @@
 
 DistractorAnalysis <-  function (data, key, p.table = FALSE, num.groups = 3)
 {
+  key <- unlist(key)
   if (!(is.logical(p.table))){
     warning("p.table must be logical.")
   }
