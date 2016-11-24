@@ -3,11 +3,5 @@
 .RData
 .Ruserdata
 .Rbuildignore
+inst/shiny-examples/ShinyItemAnalysis/www/Thumbs.db
 
-<<<<<<< HEAD
-
-inst/shiny-examples/ShinyItemAnalysis/www/Thumbs.db
-=======
-inst/shiny-examples/ShinyItemAnalysis/www/Thumbs.db
-inst/shiny-examples/ShinyItemAnalysis/www/Thumbs.db
->>>>>>> refs/remotes/patriciamar/master
