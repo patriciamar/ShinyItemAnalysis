@@ -816,7 +816,9 @@ total score. Their size is determined by count of respondents who selected given
                     item in the two groups. It displays non-linear transformation of these proportions using
                     quantiles of standard normal distributions (so called delta scores) for each item for the two
                     genders in a scatterplot called diagonal plot or delta plot (see Figure). Item is under
-                    suspicion of DIF if the delta point considerably departs from the diagonal.'),
+                    suspicion of DIF if the delta point considerably departs from the diagonal. The detection
+                    threshold is either fixed to value 1.5 or based on bivariate normal approximation (Magis &
+                    Facon, 2012).'),
 
                   radioButtons('type_threshold', 'Threshold',
                                list("Fixed", "Normal")
@@ -1690,6 +1692,7 @@ total score. Their size is determined by count of respondents who answered item 
                   code('library(reshape2)'), br(),
                   code('library(shiny)'), br(),
                   code('library(shinyAce)'), br(),
+                  code('library(stringr)'), br(),
                   br(),
                   strong('Authors'),
                   br(),
@@ -1752,6 +1755,10 @@ total score. Their size is determined by count of respondents who answered item 
                     p("Lord, F. M. (1980). Applications of Item Response Theory to Practical Testing Problems.
                       Routledge."
                       ),
+                    p("Magis, D., & Facon, B. (2012). Angoff's delta method revisited:
+                      Improving DIF detection under small samples. British Journal of
+                      Mathematical and Statistical Psychology, 65(2), 302-321.
+                      "),
                     p("Mantel, N., & Haenszel, W. (1959). Statistical Aspects of the Analysis of Data from
                       Retrospective Studies. Journal of the National Cancer Institute, 22 (4), 719-748."
                       ),
