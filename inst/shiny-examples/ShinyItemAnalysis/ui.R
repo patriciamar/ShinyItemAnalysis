@@ -1532,7 +1532,8 @@ total score. Their size is determined by count of respondents who answered item 
                     The data set represents responses of 1,000 subjects to multiple-choice test of 20 items. '),
                   p('Dataset ', code("Medical"), ' is a subset of real admission test to medical school. First item was previously
                     detected as functioning differently (Vlckova, 2014). The data set represents responses of
-                    1,407 subjects (484 males, 923 females) to multiple-choice test of 20 items. '),
+                    1,407 subjects (484 males, 923 females) to multiple-choice test of 20 items. For more details see
+                    Drabinova & Martinkova (2016).'),
                   br(),
                   uiOutput("dataSelect"),
                   h4("Upload your own datasets"),
