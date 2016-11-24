@@ -448,8 +448,8 @@ total score. Their size is determined by count of respondents who answered item 
                   given distractors on standardized total score (Z-score).'),
                   br(),
                   h4("Plot with Estimated Curves of Multinomial Regression"),
-                  p('Points represent proportion of correct answer with respect to standardized
-total score. Their size is determined by count of respondents who answered item correctly.'),
+                  p('Points represent proportion of selected option with respect to standardized
+total score. Their size is determined by count of respondents who selected given option.'),
                   uiOutput("multiSliderUI"),
                   plotOutput('multiplot'),
                   h4("Equation"),
