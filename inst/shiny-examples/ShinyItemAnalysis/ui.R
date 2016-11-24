@@ -4,25 +4,45 @@ fluidPage(titlePanel("TEST AND ITEM ANALYSIS"),
           #####################
           sidebarLayout(
             sidebarPanel(
-              p("ShinyItemAnalysis Version 1.0"),
-              # p('Older version 0.1 ',
-              #   a("is available here.", href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV01/",
-              #     target = "_blank")),
+              # online version
+              p(strong("ShinyItemAnalysis Version 1.0")),
+              p("Download ShinyItemAnalysis R package from ",
+                a(strong("CRAN"), href = "https://cran.rstudio.com/web/packages/ShinyItemAnalysis/",
+                  target = "_blank")),
+              br(),
               p("Project was supported by grant funded by Czech Science Foundation under number ",
                 a("GJ15-15856Y",
                   href = "http://www.cs.cas.cz/martinkova/psychometrics.html",
                   target = "_blank")),
-              # p(" Download ShinyItemAnalysis R package from ",
-              #   a("CRAN", href = "https://cran.rstudio.com/web/packages/ShinyItemAnalysis/",
-              #     target = "_blank")),
-              p(" Copyright 2016  Patricia Martinkova, Ondrej Leder and Adela Drabinova"),
-              # p(textOutput('counter')),
-              p("Try ShinyItemAnalysis ",
-                a("online.", href = "https://shiny.cs.cas.cz/ShinyItemAnalysis", target = "_blank")),
+              p(" Copyright 2016  Patricia Martinkova, Ondrej Leder, Adela Drabinova and Jakub Houdek"),
               br(),
+              div(
+                HTML('<p style="color:black; font-size: 9pt">
+                     Older version 0.1 <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV01/">
+                    is available here. </a>
+                     </p>')
+              ),
+              div(
+                HTML('<p style="color:black; font-size: 9pt">
+                     Older version 0.2 <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV02/">
+                    is available here. </a>
+                     </p>')
+              ),
               br(),
-              #uiOutput("slider"),
+              p(textOutput('counter')),
+              br(),
 
+              # # CRAN version
+              # p(strong("ShinyItemAnalysis Version 1.0")),
+              # p("Try ShinyItemAnalysis ",
+              #   a(strong("online"), href = "https://shiny.cs.cas.cz/ShinyItemAnalysis", target = "_blank")),
+              # br(),
+              # p("Project was supported by grant funded by Czech Science Foundation under number ",
+              #   a("GJ15-15856Y",
+              #     href = "http://www.cs.cas.cz/martinkova/psychometrics.html",
+              #     target = "_blank")),
+              # p(" Copyright 2016  Patricia Martinkova, Adela Drabinova, Ondrej Leder and Jakub Houdek"),
+              # br(),
 
               width = 3
               ),
@@ -1671,18 +1691,21 @@ total score. Their size is determined by count of respondents who answered item 
                   br(),
                   strong('Authors'),
                   br(),
+
                   img(src = 'patricia.jpg', width = 70),
-                  p(
-                    a("Patricia Martinkova, Institute of Computer Science, Czech Academy of Sciences",
-                      href = "http://www.cs.cas.cz/martinkova/", target = "_blank")
-                    ),
-                  img(src = 'leder.png', width = 70),
-                  p(
-                    a("Ondrej Leder", href = "https://www.linkedin.com/in/ond%C5%99ej-leder-3864b1119",
-                      target = "_blank")
-                    ),
+                  p(a("Patricia Martinkova, Institute of Computer Science, Czech Academy of Sciences",
+                      href = "http://www.cs.cas.cz/martinkova/", target = "_blank")),
+
                   img(src = 'adela.jpg', width = 70),
                   p("Adela Drabinova"),
+
+                  img(src = 'leder.png', width = 70),
+                  p(a("Ondrej Leder", href = "https://www.linkedin.com/in/ond%C5%99ej-leder-3864b1119",
+                      target = "_blank")),
+
+                  img(src = 'jakub.jpg', width = 70),
+                  p("Jakub Houdek"),
+
                   strong('Bug Reports'),
                   p("If you discover a problem with this application please contact the project maintainer
                     at martinkova(at)cs.cas.cz "
@@ -1694,7 +1717,7 @@ total score. Their size is determined by count of respondents who answered item 
                     ),
                   br(),
                   strong('License'),
-                  p(" Copyright 2016  Patricia Martinkova, Ondrej Leder and Adela Drabinova"),
+                  p(" Copyright 2016  Patricia Martinkova, Adela Drabinova, Ondrej Leder and Jakub Houdek"),
                   p(" This program is free software you can redistribute it and or modify it under the terms of the GNU
                     General Public License as published by the Free Software Foundation either version 3 of the License or
                     at your option any later version."
