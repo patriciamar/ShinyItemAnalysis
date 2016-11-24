@@ -2,8 +2,7 @@ Package: ShinyItemAnalysis
 Type: Package
 Title: Test and Item Analysis via Shiny
 Version: 1.0.0
-Author: Patricia Martinkova (ICS), Ondrej Leder (CUNI, ICS CAS), Adela Drabinova
-    (CUNI, ICS CAS)
+Author: Patricia Martinkova [aut, cre], Adela Drabinova [aut, cre], Ondrej Leder [aut, cre] and Jakub Houdek [aut, cre]
 Maintainer: Patricia Martinkova <martinkova@cs.cas.cz>
 Depends:
     R (>= 3.2.2)
@@ -20,7 +19,8 @@ Imports:
     psychometric,
     reshape2,
     shiny,
-    shinyAce
+    shinyAce,
+    stringr
 Description: Interactive shiny application for analysis of educational tests and
     their items.
 License: GPL-3
