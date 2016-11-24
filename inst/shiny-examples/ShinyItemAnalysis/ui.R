@@ -8,7 +8,7 @@ fluidPage(titlePanel("TEST AND ITEM ANALYSIS"),
               p(strong("ShinyItemAnalysis Version 1.0")),
               p("Download ShinyItemAnalysis R package from ",
                 a(strong("CRAN"), href = "https://cran.rstudio.com/web/packages/ShinyItemAnalysis/",
-                  target = "_blank")),
+                  target = "_blank"), "to run analysis faster!"),
               br(),
               p("Project was supported by grant funded by Czech Science Foundation under number ",
                 a("GJ15-15856Y",
@@ -1406,6 +1406,7 @@ total score. Their size is determined by count of respondents who answered item 
                            plotOutput('plot_DIF_IRT_Lord'),
                            downloadButton("DP_plot_DIF_IRT_Lord", label = "Download figure"),
                            h4("Equation"),
+                           uiOutput('irtint_lord'),
                            uiOutput('irteq_lord'),
                        #     p('As the parameters are estimated in ', code("difR"), 'package separately for
                        #                groups, there is one equation for each group. Parameters ', strong('aR'), ' and ',
@@ -1511,6 +1512,7 @@ total score. Their size is determined by count of respondents who answered item 
                                     plotOutput('plot_DIF_IRT_Raju'),
                                     downloadButton("DP_plot_DIF_IRT_Raju", label = "Download figure"),
                                     h4("Equation"),
+                                    uiOutput('irtint_raju'),
                                     uiOutput('irteq_raju'),
                        #              p('As the parameters are estimated in ', code("difR"), 'package separately for
                        #                groups, there is one equation for each group. Parameters ', strong('aR'), ' and ',
@@ -1578,8 +1580,8 @@ total score. Their size is determined by count of respondents who answered item 
                     first two items were generated to function differently in uniform and non-uniform way respectively.
                     The data set represents responses of 1,000 subjects to multiple-choice test of 20 items. '),
                   p('Dataset ', code("Medical"), ' is a subset of real admission test to medical school. First item was previously
-                    detected as functioning differently (Vlckova, 2014). The data set represents responses of
-                    1,407 subjects (484 males, 923 females) to multiple-choice test of 20 items. For more details see
+                    detected as functioning differently. The data set represents responses of
+                    1,407 subjects (484 males, 923 females) to multiple-choice test of 20 items. For more details of item selection see
                     Drabinova & Martinkova (2016).'),
                   br(),
                   uiOutput("dataSelect"),
@@ -1763,8 +1765,8 @@ total score. Their size is determined by count of respondents who answered item 
                     p("Raju, N. S. (1990). Determining the Significance of Estimated Signed and Unsigned Areas
                     between Two Item Response Functions. Applied Psychological Measurement, 14 (2), 197-207."
                       ),
-                    p("Vlckova, K. (2014). Test and Item Fairness (Unpublished master's thesis)."
-                      ),
+                    # p("Vlckova, K. (2014). Test and Item Fairness (Unpublished master's thesis)."
+                    #   ),
                     br(),
                     br()
                   )
