@@ -14,7 +14,7 @@ import(CTT,
        nnet,
        reshape2,
        shiny,
-       shinyAce
-       )
+       shinyAce,
+       stringr)
 importFrom("grDevices", "rainbow")
 importFrom("stats", "aggregate", "quantile", "relevel", "xtabs")

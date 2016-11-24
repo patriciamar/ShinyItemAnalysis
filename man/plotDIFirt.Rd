@@ -21,8 +21,28 @@ This function plots characteristic curve of DIF IRT model.
 }
 \examples{
 \dontrun{
+# loading libraries
+library(difNLR, difR)
 
+ # loading data based on GMAT
+data(GMAT, package = "difNLR")
+data  <- GMAT[, colnames(GMAT) != "group"]
+group <- GMAT[, "group"]
 
+# Estimation of 2PL IRT model
+fitR <- itemParEst(data[group == 0, ], model = "2PL")
+fitF <- itemParEst(data[group == 1, ], model = "2PL")
+
+# Estimated parameters with sd for item 1
+est <- c(fitR[1, 1:2], fitF[1, 1:2])[c(1, 3, 2, 4)]
+sd <- c(fitR[1, 3:4], fitF[1, 3:4])[c(1, 3, 2, 4)]
+parameters <- data.frame(est, sd)
+
+# Characteristic curve for item 1
+plotDIFirt(parameters, item = 1)
+
+# Characteristic curve for item 1 with highlighted area between curves
+plotDIFirt(parameters, item = 1, test = "Raju")
 }
 
 

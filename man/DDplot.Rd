@@ -10,10 +10,11 @@ DDplot(data)
 \item{data}{numeric: binary data matrix or data frame. See \strong{Details}.}
 }
 \description{
-Plots difficulty and discrimination for items ordered by difficulty
+Plots difficulty and discrimination for items ordered by difficulty.
 }
 \details{
-The \code{data} is a matrix or data frame whose rows represents examinee answers ("1" correct, "0" incorrect) and columns correspond to the items. The \code{group} must be a vector of the same length as \code{nrow(data)}.
+The \code{data} is a matrix or data frame whose rows represents examinee answers
+("1" correct, "0" incorrect) and columns correspond to the items.
 }
 \examples{
 \dontrun{

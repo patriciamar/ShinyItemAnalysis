@@ -4,7 +4,7 @@
 \alias{plotDIFLogistic}
 \title{Function for characteristic curve of 2PL logistic DIF model}
 \usage{
-plotDIFLogistic(data, group, type, item, IRT = F, p.adjust.method = "BH")
+plotDIFLogistic(data, group, type = "both", item, IRT = F, p.adjust.method = "BH")
 }
 \arguments{
 \item{data}{numeric: the data matrix. See Details.}
@@ -30,8 +30,19 @@ This function plots characteristic curve of 2PL logistic DIF model.
 }
 \examples{
 \dontrun{
+# loading libraries
+library(difNLR, difR)
 
+ # loading data based on GMAT
+data(GMAT, package = "difNLR")
+data  <- GMAT[, colnames(GMAT) != "group"]
+group <- GMAT[, "group"]
 
+# Characteristic curve by logistic regression model
+plotDIFLogistic(data, group, item = 1)
+
+# Characteristic curve by logistic regression model using scaled score
+plotDIFLogistic(data, group, item = 1, IRT = T)
 }
 
 
