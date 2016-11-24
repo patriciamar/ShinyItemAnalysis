@@ -1406,6 +1406,7 @@ total score. Their size is determined by count of respondents who answered item 
                            plotOutput('plot_DIF_IRT_Lord'),
                            downloadButton("DP_plot_DIF_IRT_Lord", label = "Download figure"),
                            h4("Equation"),
+                           uiOutput('irtint_lord'),
                            uiOutput('irteq_lord'),
                        #     p('As the parameters are estimated in ', code("difR"), 'package separately for
                        #                groups, there is one equation for each group. Parameters ', strong('aR'), ' and ',
@@ -1511,6 +1512,7 @@ total score. Their size is determined by count of respondents who answered item 
                                     plotOutput('plot_DIF_IRT_Raju'),
                                     downloadButton("DP_plot_DIF_IRT_Raju", label = "Download figure"),
                                     h4("Equation"),
+                                    uiOutput('irtint_raju'),
                                     uiOutput('irteq_raju'),
                        #              p('As the parameters are estimated in ', code("difR"), 'package separately for
                        #                groups, there is one equation for each group. Parameters ', strong('aR'), ' and ',

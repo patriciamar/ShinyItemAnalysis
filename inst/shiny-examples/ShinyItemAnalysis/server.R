@@ -2109,24 +2109,31 @@ function(input, output, session) {
     tab
   })
 
-  # ** Equation and interpretation ####
-  output$irteq_lord <- renderUI({
+  # ** Interpretation ####
+  output$irtint_lord <- renderUI({
     type <- input$type_plot_DIF_IRT_lord
     txt <- switch(type,
                   '1PL'= paste('As the parameters are estimated separately for groups, there is one
-                             equation for each group. Parameters $\\textbf{bR}$ and $\\textbf{bF}$
-                             are difficulties for reference and focal group. '),
+                               equation for each group. Parameters <b> bR </b> and <b> bF </b>
+                               are difficulties for reference and focal group. '),
                   '2PL'= paste('As the parameters are estimated
-                             separately for groups, there is one equation for each group.
-                             Parameters $\\textbf{aR}$ and  $\\textbf{bR}$ are discrimination and
-                             difficulty for reference group. Parameters $\\textbf{aF}$ and  $\\textbf{bF}$
-                             are discrimination and difficulty for reference group. '),
+                               separately for groups, there is one equation for each group.
+                               Parameters <b> aR </b> and <b> bR </b> are discrimination and
+                               difficulty for reference group. Parameters <b> aF </b> and
+                               <b> bF </b>
+                               are discrimination and difficulty for focal group. '),
                   '3PL'= paste('As the parameters are estimated
-                             separately for groups, there is one equation for each group.
-                             Parameters $\\textbf{aR}$ and  $\\textbf{bR}$ are discrimination and
-                             difficulty for reference group. Parameters $\\textbf{aF}$ and  $\\textbf{bF}$
-                             are discrimination and difficulty for reference group.
-                             Parameter $\\textbf{c}$ is a common guessing parameter. '))
+                               separately for groups, there is one equation for each group.
+                               Parameters <b> aR </b> and <b> bR </b> are discrimination and
+                               difficulty for reference group. Parameters <b> aF </b> and <b> bF </b>
+                               are discrimination and difficulty for focal group.
+                               Parameter <b> c </b> is a common guessing parameter. '))
+    HTML(txt)
+  })
+
+  # ** Equation ####
+  output$irteq_lord <- renderUI({
+    type <- input$type_plot_DIF_IRT_lord
     eqR <- switch(type,
                   '1PL' = paste('$$\\mathrm{P}\\left(Y_{ij} = 1 | \\theta_i, G_i = 0, b_{Rj}\\right) =
                               \\frac{e^{\\theta_i - b_{Rj}}}
@@ -2142,7 +2149,7 @@ function(input, output, session) {
     eqF <- switch(type,
                   '1PL' = paste('$$\\mathrm{P}\\left(Y_{ij} = 1 | \\theta_i, G_i = 1, b_{Fj}\\right) =
                               \\frac{e^{\\theta_i - b_{Fj}}}
-                              {1+e^{\\theta_i - b_{Rj}}} $$'),
+                              {1+e^{\\theta_i - b_{Fj}}} $$'),
                   '2PL' = paste('$$\\mathrm{P}\\left(Y_{ij} = 1 | \\theta_i, G_i = 1, a_{Fj}, b_{Fj}\\right) =
                               \\frac{e^{a_{Fj} \\left(\\theta_i - b_{Fj} \\right)}}
                               {1+e^{a_{Fj} \\left(\\theta_i - b_{Fj} \\right)}} $$'),
@@ -2150,7 +2157,7 @@ function(input, output, session) {
                               c_j + \\left(1 - c_j\\right) \\cdot \\frac{e^{a_{Fj}
                               \\left(\\theta_i - b_{Fj} \\right)}}
                               {1+e^{a_{Fj} \\left(\\theta_i - b_{Fj} \\right)}} $$'))
-    withMathJax(paste(txt, eqR, eqF))
+    withMathJax(paste(eqR, eqF))
   })
 
   # ** Table with coefficients output ####
@@ -2231,24 +2238,32 @@ function(input, output, session) {
     }
   )
 
-  # ** Equation and interpretation ####
-  output$irteq_raju <- renderUI({
+  # ** Interpretation ####
+  output$irtint_raju <- renderUI({
     type <- input$type_plot_DIF_IRT_raju
     txt <- switch(type,
                   '1PL'= paste('As the parameters are estimated separately for groups, there is one
-                             equation for each group. Parameters $\\textbf{bR}$ and $\\textbf{bF}$
-                             are difficulties for reference and focal group. '),
+                               equation for each group. Parameters <b> bR </b> and <b> bF </b>
+                               are difficulties for reference and focal group. '),
                   '2PL'= paste('As the parameters are estimated
-                             separately for groups, there is one equation for each group.
-                             Parameters $\\textbf{aR}$ and  $\\textbf{bR}$ are discrimination and
-                             difficulty for reference group. Parameters $\\textbf{aF}$ and  $\\textbf{bF}$
-                             are discrimination and difficulty for reference group. '),
+                               separately for groups, there is one equation for each group.
+                               Parameters <b> aR </b> and <b> bR </b> are discrimination and
+                               difficulty for reference group. Parameters <b> aF </b> and
+                               <b> bF </b>
+                               are discrimination and difficulty for focal group. '),
                   '3PL'= paste('As the parameters are estimated
-                             separately for groups, there is one equation for each group.
-                             Parameters $\\textbf{aR}$ and  $\\textbf{bR}$ are discrimination and
-                             difficulty for reference group. Parameters $\\textbf{aF}$ and  $\\textbf{bF}$
-                             are discrimination and difficulty for reference group.
-                             Parameter $\\textbf{c}$ is a common guessing parameter. '))
+                               separately for groups, there is one equation for each group.
+                               Parameters <b> aR </b> and <b> bR </b> are discrimination and
+                               difficulty for reference group. Parameters <b> aF </b> and <b> bF </b>
+                               are discrimination and difficulty for focal group.
+                               Parameter <b> c </b> is a common guessing parameter. '))
+    HTML(txt)
+  })
+
+
+  # ** Equation  ####
+  output$irteq_raju <- renderUI({
+    type <- input$type_plot_DIF_IRT_raju
     eqR <- switch(type,
                   '1PL' = paste('$$\\mathrm{P}\\left(Y_{ij} = 1 | \\theta_i, G_i = 0, b_{Rj}\\right) =
                               \\frac{e^{\\theta_i - b_{Rj}}}
@@ -2264,7 +2279,7 @@ function(input, output, session) {
     eqF <- switch(type,
                   '1PL' = paste('$$\\mathrm{P}\\left(Y_{ij} = 1 | \\theta_i, G_i = 1, b_{Fj}\\right) =
                               \\frac{e^{\\theta_i - b_{Fj}}}
-                              {1+e^{\\theta_i - b_{Rj}}} $$'),
+                              {1+e^{\\theta_i - b_{Fj}}} $$'),
                   '2PL' = paste('$$\\mathrm{P}\\left(Y_{ij} = 1 | \\theta_i, G_i = 1, a_{Fj}, b_{Fj}\\right) =
                               \\frac{e^{a_{Fj} \\left(\\theta_i - b_{Fj} \\right)}}
                               {1+e^{a_{Fj} \\left(\\theta_i - b_{Fj} \\right)}} $$'),
@@ -2272,7 +2287,7 @@ function(input, output, session) {
                               c_j + \\left(1 - c_j\\right) \\cdot \\frac{e^{a_{Fj}
                               \\left(\\theta_i - b_{Fj} \\right)}}
                               {1+e^{a_{Fj} \\left(\\theta_i - b_{Fj} \\right)}} $$'))
-    withMathJax(paste(txt, eqR, eqF))
+    withMathJax(paste(eqR, eqF))
 
 
   })
