@@ -1578,8 +1578,8 @@ total score. Their size is determined by count of respondents who answered item 
                     first two items were generated to function differently in uniform and non-uniform way respectively.
                     The data set represents responses of 1,000 subjects to multiple-choice test of 20 items. '),
                   p('Dataset ', code("Medical"), ' is a subset of real admission test to medical school. First item was previously
-                    detected as functioning differently (Vlckova, 2014). The data set represents responses of
-                    1,407 subjects (484 males, 923 females) to multiple-choice test of 20 items. For more details see
+                    detected as functioning differently. The data set represents responses of
+                    1,407 subjects (484 males, 923 females) to multiple-choice test of 20 items. For more details of item selection see
                     Drabinova & Martinkova (2016).'),
                   br(),
                   uiOutput("dataSelect"),
@@ -1763,8 +1763,8 @@ total score. Their size is determined by count of respondents who answered item 
                     p("Raju, N. S. (1990). Determining the Significance of Estimated Signed and Unsigned Areas
                     between Two Item Response Functions. Applied Psychological Measurement, 14 (2), 197-207."
                       ),
-                    p("Vlckova, K. (2014). Test and Item Fairness (Unpublished master's thesis)."
-                      ),
+                    # p("Vlckova, K. (2014). Test and Item Fairness (Unpublished master's thesis)."
+                    #   ),
                     br(),
                     br()
                   )
