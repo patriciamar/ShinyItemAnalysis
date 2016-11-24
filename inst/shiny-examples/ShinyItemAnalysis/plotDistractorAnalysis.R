@@ -86,7 +86,7 @@ plotDistractorAnalysis <-  function (data, key, num.groups = 3, item = 1, multip
   x <- melt(x, id = "response")
   x$response <- as.factor(x$response)
   levels(x$response)[which(levels(x$response) == "")] <- "NaN"
-  x$response <- relevel(x$response, key[item])
+  x$response <- relevel(x$response, as.character(key[item]))
 
   if (multiple.answers){
     # all combinations

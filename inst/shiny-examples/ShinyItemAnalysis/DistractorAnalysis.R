@@ -60,6 +60,7 @@
 
 DistractorAnalysis <-  function (data, key, p.table = FALSE, num.groups = 3)
 {
+  key = unlist(key)
   if (!(is.logical(p.table))){
     warning("p.table must be logical.")
   }
@@ -75,7 +76,6 @@ DistractorAnalysis <-  function (data, key, p.table = FALSE, num.groups = 3)
     }
     key <- c(key)
   }
-  if (num.groups)
   score.level <- quantile(scores[, 1], seq(0, 1, by = 1/num.groups))
   score.level <- cut(scores[, 1], score.level, include.lowest = TRUE,
                      labels = paste("Group", 1:num.groups, sep = " "))
