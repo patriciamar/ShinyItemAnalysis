@@ -77,6 +77,7 @@ DDplot <- function(data){
     theme_bw() +
     theme(axis.line  = element_line(colour = "black"),
           text = element_text(size = 14),
+          axis.text.x = element_text(angle = 90, hjust = 1),
           panel.grid.major = element_blank(),
           panel.grid.minor = element_blank(),
           panel.background = element_blank(),
