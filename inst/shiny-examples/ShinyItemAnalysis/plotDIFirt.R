@@ -26,13 +26,32 @@
 #'
 #' @examples
 #' \dontrun{
+#' # loading libraries
+#' library(difNLR, difR)
 #'
+#'  # loading data based on GMAT
+#' data(GMAT, package = "difNLR")
+#' data  <- GMAT[, colnames(GMAT) != "group"]
+#' group <- GMAT[, "group"]
 #'
+#' # Estimation of 2PL IRT model
+#' fitR <- itemParEst(data[group == 0, ], model = "2PL")
+#' fitF <- itemParEst(data[group == 1, ], model = "2PL")
+#'
+#' # Estimated parameters with sd for item 1
+#' est <- c(fitR[1, 1:2], fitF[1, 1:2])[c(1, 3, 2, 4)]
+#' sd <- c(fitR[1, 3:4], fitF[1, 3:4])[c(1, 3, 2, 4)]
+#' parameters <- data.frame(est, sd)
+#'
+#' # Characteristic curve for item 1
+#' plotDIFirt(parameters, item = 1)
+#'
+#' # Characteristic curve for item 1 with highlighted area between curves
+#' plotDIFirt(parameters, item = 1, test = "Raju")
 #' }
 #'
 #'
 #' @export
-
 
 
 plotDIFirt <- function(parameters, test = "Lord", item = 1){
@@ -58,8 +77,10 @@ plotDIFirt <- function(parameters, test = "Lord", item = 1){
   size  <- .8
   linetype <- c(2, 1)
 
-  gg <- ggplot(data.frame(x = 0), mapping = aes_string("x")) +
-    xlim(-3, 3) +
+  df <- data.frame(x = c(-3, 3), y = c(0, 1))
+
+  gg <- ggplot(df, aes_string("x", "y")) +
+    xlim(-3, 3)  +
     ### lines
     stat_function(aes(colour = "Reference", linetype = "Reference"),
                   fun = CC_plot,
@@ -84,7 +105,7 @@ plotDIFirt <- function(parameters, test = "Lord", item = 1){
     ### theme
     xlab("Ability") +
     ylab("Probability of Correct Answer") +
-    scale_y_continuous(expand = c(0, 0), limits = c(0, 1)) +
+    scale_y_continuous(expand = c(0, 0), limits = c(0, 1))  +
     theme_bw() +
     theme(text = element_text(size = 14),
           plot.title = element_text(size = 14, face = "bold", vjust = 1.5),
@@ -115,9 +136,9 @@ plotDIFirt <- function(parameters, test = "Lord", item = 1){
 
     # use the loess data to add the 'ribbon' to plot
     gg <- gg + geom_ribbon(data = df2,
-                                aes(x = x,
-                                    ymin = ymin,
-                                    ymax = ymax),
+                                aes_string(x = "x",
+                                    ymin = "ymin",
+                                    ymax = "ymax"),
                                 fill = "grey",
                                 alpha = 0.4,
                                 inherit.aes = FALSE)
