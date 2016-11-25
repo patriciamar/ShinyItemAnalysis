@@ -407,7 +407,7 @@ function(input, output, session) {
       paste("plot", input$name, ".png", sep = "")
     },
     content = function(file) {
-      ggsave(file, plot = difplotInput(), device = "png", height=3, width=9, dpi=160)
+      ggsave(file, plot = difplotInput(), device = "png", height=4, width=14, dpi=120)
     }
   )
 
