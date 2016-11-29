@@ -375,7 +375,7 @@ function(input, output, session) {
     # percentile
     perc <- cumsum(prop.table(table(sc)))
     # succes rate
-    sura <- (tosc / max(sc)) * 100
+    sura <- (tosc / length(k)) * 100
     # Z score
     zsco <- sort(unique(scale(sc)))
     # T score
