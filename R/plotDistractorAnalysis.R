@@ -75,6 +75,7 @@
 
 plotDistractorAnalysis <-  function (data, key, num.groups = 3, item = 1, multiple.answers = TRUE)
 {
+  key <- unlist(key)
   # distractor analysis
   tabDA <- DistractorAnalysis(data = data, key = key, p.table = TRUE, num.groups = num.groups)
   x <- tabDA[[item]]
@@ -92,7 +93,7 @@ plotDistractorAnalysis <-  function (data, key, num.groups = 3, item = 1, multip
     # all combinations
     df <- x
 
-    CA <- CAall <- key[item]
+    CA <- CAall <- as.character(key[item])
     col <- rainbow(n = length(levels(df$response)))
     names(col) <- levels(df$response)
   } else {
@@ -104,7 +105,7 @@ plotDistractorAnalysis <-  function (data, key, num.groups = 3, item = 1, multip
     # sum over choices
     df <- aggregate(value ~ response + score.level, data = y, sum)
     # adding correct combination
-    CAdf <- x[x$response == key[item], ]
+    CAdf <- x[x$response == as.character(key[item]), ]
     CAdf$response <- paste(key[item], "-correct", sep = "")
     df <- rbind(df, CAdf)
     CA <-  unique(CAdf$response)
