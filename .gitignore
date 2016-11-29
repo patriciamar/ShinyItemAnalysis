@@ -1,0 +1,8 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+.Rbuildignore
+
+inst/shiny-examples/ShinyItemAnalysis/www/Thumbs.db
+inst/shiny-examples/ShinyItemAnalysis/www/Thumbs.db

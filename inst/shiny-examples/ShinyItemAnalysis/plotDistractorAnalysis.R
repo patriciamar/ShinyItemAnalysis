@@ -3,27 +3,95 @@
 # num.groups The number of groups for distractor analysis
 # item item indicator
 # multiple.answers AB BC etc combinations
-plotDistractorAnalysis <-  function (data, key, num.groups = 3, item = 1, multiple.answers = T)
+
+
+
+
+#' Function for graphical representation of item distractor analysis
+#'
+#' @aliases plotDistractorAnalysis
+#'
+#' @description Plots graphical representation of item distractor analysis with proportions and
+#' optional number of groups.
+#'
+#' @param data character: data matrix or data frame. See \strong{Details}.
+#' @param key character: answer key for the items.
+#' @param num.groups numeric: number of groups to that should be respondents splitted.
+#' @param item numeric: the number of item to be plotted.
+#' @param multiple.answers logical: should be all combinations plotted (default) or should be
+#' answers splitted into distractors. See \strong{Details}.
+#'
+#' @usage plotDistractorAnalysis(data, key, num.groups = 3, item = 1, multiple.answers = TRUE)
+#'
+#' @details
+#' This function is graphical representation of \code{DistractorAnalysis} function.
+#' The scores are calculatede using the item data and key. The respondents are then splitted into
+#' the \code{num.groups}-quantiles and the proportion of respondents in each quantile is
+#' reported with respect to their answers, using all reported combinations (default) or distractors.
+#' These proportions are plotted.
+#'
+#' The \code{data} is a matrix or data frame whose rows represents unscored item response from a
+#' multiple-choice test and columns correspond to the items.
+#'
+#' The \code{key} must be a vector of the same length as \code{ncol(data)}.
+#'
+#' If \code{multiple.answers = TRUE} (default) all reported combinations of answers are plotted.
+#' If \code{multiple.answers = FALSE} all combinations are splitted into distractors and only these
+#' are then plotted with correct combination.
+#'
+#' @author
+#' Adela Drabinova \cr
+#' Institute of Computer Science, The Czech Academy of Sciences \cr
+#' Faculty of Mathematics and Physics, Charles University \cr
+#' adela.drabinova@gmail.com \cr
+#'
+#' Patricia Martinkova \cr
+#' Institute of Computer Science, The Czech Academy of Sciences \cr
+#' martinkova@cs.cas.cz \cr
+#'
+#' @examples
+#' \dontrun{
+#' # loading difMedicaltest data set
+#' data(difMedicaltest, package = "difNLR")
+#' data  <- difMedicaltest[, colnames(difMedicaltest) != "gender"]
+#' # loading difMedicalkey
+#' data(difMedicalkey, package = "difNLR")
+#' key  <- difMedicalkey
+#'
+#' # distractor analysis plot for item 1, all combinations
+#' plotDistractorAnalysis(data, key, item = 1)
+#'
+#' # distractor analysis plot for item 1, distractors
+#' plotDistractorAnalysis(data, key, item = 1, multiple.answers = F)
+#'
+#' # distractor analysis plot for item 3, all combinations and 6 groups
+#' plotDistractorAnalysis(data, key, num.group = 6, item = 3)
+#'
+#' }
+#'
+#'
+#' @export
+
+
+plotDistractorAnalysis <-  function (data, key, num.groups = 3, item = 1, multiple.answers = TRUE)
 {
   # distractor analysis
   tabDA <- DistractorAnalysis(data = data, key = key, p.table = TRUE, num.groups = num.groups)
   x <- tabDA[[item]]
   # only rows where is possitive proportion of correct answers
-  dim(x)
   if (dim(x)[2] != 1){
     x <- x[!(apply(x, 1, function(y) all(y == 0))), ]
   }
-  
-  x <- data.frame(x)
-  
+
+  x <- melt(x, id = "response")
   x$response <- as.factor(x$response)
   levels(x$response)[which(levels(x$response) == "")] <- "NaN"
-  x$response <- relevel(x$response, key[item])
-  
+  x$response <- relevel(x$response, as.character(key[item]))
+
   if (multiple.answers){
     # all combinations
     df <- x
-    
+
     CA <- CAall <- key[item]
     col <- rainbow(n = length(levels(df$response)))
     names(col) <- levels(df$response)
@@ -34,24 +102,24 @@ plotDistractorAnalysis <-  function (data, key, num.groups = 3, item = 1, multip
     y <- x[rep(1:nrow(x), nchar(as.character(x$response))), ]
     y$response <- as.factor(unlist(strsplit(as.character(x$response), "")))
     # sum over choices
-    df <- aggregate(Freq ~ response + score.level, data = y, sum)
+    df <- aggregate(value ~ response + score.level, data = y, sum)
     # adding correct combination
     CAdf <- x[x$response == key[item], ]
     CAdf$response <- paste(key[item], "-correct", sep = "")
     df <- rbind(df, CAdf)
     CA <-  unique(CAdf$response)
-    
+
     levels(df$response)[which(levels(df$response) == "x")] <- "NaN"
-    
+
     # plot settings
     col <- rainbow(n = (length(levels(df$response)) + 1))
     names(col) <- levels(df$response)
     col[CA] <- "black"
-    
+
     df$response <- relevel(df$response, CA)
     CAall <- c(CA, unlist(strsplit(as.character(key[item]), "")))
   }
-  
+
   # plot settings
   linetype <- rep(2, length(levels(df$response)))
   shape <- rep(1, length(levels(df$response)))
@@ -60,29 +128,29 @@ plotDistractorAnalysis <-  function (data, key, num.groups = 3, item = 1, multip
   shape[CAall] <- 19
 
   # plot
-  ggplot(df, aes(x = score.level, 
-                 y = Freq, 
-                 group = response, 
-                 colour = response, 
-                 linetype = response,
-                 shape = response),
-         size = 1) + 
-    geom_line() + 
+  ggplot(df, aes_string(x = "score.level",
+                        y = "value",
+                        group = "response",
+                        colour = "response",
+                        linetype = "response",
+                        shape = "response"),
+         size = 1) +
+    geom_line() +
     geom_point(size = 3) +
-    xlab("Group by Total Score") + 
-    ylab("Option Selection Percentage") + 
+    xlab("Group by Total Score") +
+    ylab("Option Selection Percentage") +
     scale_y_continuous(limits = c(0, 1)) +
-    scale_x_discrete(labels = 1:num.groups, expand = c(0, 0.2)) + 
+    scale_x_discrete(labels = 1:num.groups, expand = c(0, 0.2)) +
     scale_linetype_manual(values = linetype) +
-    scale_shape_manual(values = shape) + 
-    scale_color_manual(values = col) + 
+    scale_shape_manual(values = shape) +
+    scale_color_manual(values = col) +
     theme_bw() +
     theme(axis.line  = element_line(colour = "black"),
           text = element_text(size = 14),
           panel.grid.major = element_blank(),
           panel.grid.minor = element_blank(),
           panel.background = element_blank(),
-          legend.title = element_blank(), 
+          legend.title = element_blank(),
           legend.position = c(0, 1),
           legend.justification = c(0, 1),
           legend.background = element_blank(),
@@ -90,5 +158,5 @@ plotDistractorAnalysis <-  function (data, key, num.groups = 3, item = 1, multip
           legend.key.width = unit(1, "cm"),
           plot.title = element_text(face = "bold")) +
     ggtitle(paste("Item", item))
-  
+
 }
