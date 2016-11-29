@@ -532,7 +532,7 @@ fluidPage(titlePanel("TEST AND ITEM ANALYSIS"),
                                     h3("One Parameter Item Response Theory Model"),
                                     p('Item Response Theory (IRT) models are mixed-effect regression models in which
                                       student ability (theta) is assumed to be a random effect and is estimated together with item
-                                      paramters. Ability (theta) is often assumed to follow normal distibution.'),
+                                      parameters. Ability (theta) is often assumed to follow normal distribution.'),
                                     p('In',
                                       strong('1PL IRT model,'), 'all items are assumed to have the same slope in inflection point – the
                                       same discrimination', strong('a.'), 'Items can differ in location of their inflection point – in item difficulty',
@@ -605,7 +605,7 @@ fluidPage(titlePanel("TEST AND ITEM ANALYSIS"),
                                     h3("Two Parameter Item Response Theory Model"),
                                     p('Item Response Theory (IRT) models are mixed-effect regression models in which
                                       student ability (theta) is assumed to be a random effect and is estimated together with item
-                                      paramters. Ability (theta) is often assumed to follow normal distibution.'),
+                                      parameters. Ability (theta) is often assumed to follow normal distribution.'),
                                     p(strong('2PL IRT model,'), 'allows for different slopes in inflection point – different
                                       discriminations', strong('a.'), 'Items can also differ in location of their inflection point – in item difficulty',
                                       strong('b.')),
@@ -677,7 +677,7 @@ fluidPage(titlePanel("TEST AND ITEM ANALYSIS"),
                                     h3("Three Parameter Item Response Theory Model"),
                                     p('Item Response Theory (IRT) models are mixed-effect regression models in which
                                       student ability (theta) is assumed to be a random effect and is estimated together with item
-                                      paramters. Ability (theta) is often assumed to follow normal distibution.'),
+                                      parameters. Ability (theta) is often assumed to follow normal distribution.'),
                                     p(strong('3PL IRT model,'), 'allows for different discriminations of items', strong('a,'),
                                       'different item difficulties',
                                       strong('b,'), 'and allows also for nonzero left asymptote – pseudo-guessing', strong('c.')),
@@ -787,7 +787,7 @@ fluidPage(titlePanel("TEST AND ITEM ANALYSIS"),
                            tabPanel("Total Scores",
                                     h3("Total Scores"),
                                     p('DIF is not about total scores! Two groups may have the same distribution of total scores, yet,
-                                      some item may function differently for two groups. Also, one of the groups may have signifficantly
+                                      some item may function differently for two groups. Also, one of the groups may have significantly
                                       lower total score, yet, it may happen that there is no DIF item!'),
                                     h4("Summary of Total Scores for Groups"),
                                     tableOutput('resultsgroup'),
@@ -1601,7 +1601,7 @@ fluidPage(titlePanel("TEST AND ITEM ANALYSIS"),
                          br(),
                          uiOutput("dataSelect"),
                          h4("Upload your own datasets"),
-                         p('Main dataset should contain responses of individual students (rows) to given items (collumns).
+                         p('Main dataset should contain responses of individual students (rows) to given items (columns).
                            Header may contain item names, no row names should be included. If responses are in ABC format,
                            the key provides correct response for each item. If responses are scored 0-1, key is vector of 1s.
                            Group is 0-1 vector, where 0 represents reference group and 1 represents focal group. Its length
