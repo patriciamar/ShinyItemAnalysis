@@ -18,6 +18,9 @@ The \code{data} is a matrix or data frame whose rows represents examinee answers
 }
 \examples{
 \dontrun{
+# Difficulty/Discrimination plot of 100-item medical admission test
+DDplot(dataMedical)
+
 # loading data based on GMAT
 data(GMAT, package = "difNLR")
 data  <- GMAT[, colnames(GMAT) != "group"]
