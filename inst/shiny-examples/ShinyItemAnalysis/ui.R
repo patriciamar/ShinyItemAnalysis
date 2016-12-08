@@ -1,12 +1,14 @@
-library(shinythemes)
+#library(shinythemes)
 
-ui=tagList(shinythemes::themeSelector(),
+ui=tagList(
+  # BOOTSTRAP THEME SELECTOR FOR SHINY APP (requieres shinythemes package)
+  #shinythemes:themeSelector(),
 navbarPage(title="TEST AND ITEM ANALYSIS",
            collapsible=TRUE,
            footer=list(
              # online version
              div(class="panel-footer",
-                 p(strong("ShinyItemAnalysis Version 1.0")),
+                 p(strong("ShinyItemAnalysis Version 1.1")),
                  p("Download ShinyItemAnalysis R package from ",
                    a(strong("CRAN"), href = "https://cran.rstudio.com/web/packages/ShinyItemAnalysis/",
                      target = "_blank"), "to run analysis faster!"),
@@ -161,7 +163,6 @@ navbarPage(title="TEST AND ITEM ANALYSIS",
                 # TRADITIONAL ANALYSIS ####
                 ###########################
                 navbarMenu('Traditional Analysis',
-               # tabsetPanel(
                   # ITEM ANALYSIS
                   tabPanel("Item Analysis",
                   br(),
@@ -286,7 +287,6 @@ navbarPage(title="TEST AND ITEM ANALYSIS",
                 # REGRESSION ########
                 #####################
                 navbarMenu("Regression",
-
                 # LOGISTIC
                 tabPanel("Logistic",
                   h3("Logistic Regression on Total Scores"),
@@ -781,28 +781,7 @@ total score. Their size is determined by count of respondents who selected given
                 # DIF/FAIRNESS ####
                 ###################
                 navbarMenu("DIF/Fairness",
-                # SUMMARY
-                tabPanel('Summary',
-                  h3('Differential Item Functioning / Item Fairness'),
-                  p('Differential item functioning (DIF) occurs when people from different
-                    groups (commonly gender or ethnicity) with the same underlying true
-                    ability have a different probability of answering the item correctly.
-                    If item functions differently for two groups, it is potentially unfair.
-                    In general, two type of DIF can be recognized: if the item has different
-                    difficulty for given two groups with the same discrimination, ',
-                    strong('uniform'), 'DIF is present (left figure). If the item has different
-                    discrimination and possibly also different difficulty for given two groups, ',
-                    strong('non-uniform'), 'DIF is present (right figure)'),
-                  br(),
-                  fluidRow(
-                    column(6, align="center",
-                      img(src = 'fig_NLR_uniformDIF.png', width = 380)),
-                    column(6, align="center",
-                      img(src = 'fig_NLR_nonuniformDIF.png', width = 380))
-                  ),
-                  br(),
-                  br()
-                  ),
+                "Used methods",
                 # TOTAL SCORES
                 tabPanel("Total Scores",
                   h3("Total Scores"),
@@ -1592,7 +1571,31 @@ total score. Their size is determined by count of respondents who answered item 
                                         code('plotDIFirt(parameters = tab_coef, item = 1, test = "Raju")')),
                                     br())
                            )
-                           )
+                           ),
+                "----",
+                # SUMMARY
+                "Description",
+                tabPanel('About DIF',
+                         h3('Differential Item Functioning / Item Fairness'),
+                         p('Differential item functioning (DIF) occurs when people from different
+                           groups (commonly gender or ethnicity) with the same underlying true
+                           ability have a different probability of answering the item correctly.
+                           If item functions differently for two groups, it is potentially unfair.
+                           In general, two type of DIF can be recognized: if the item has different
+                           difficulty for given two groups with the same discrimination, ',
+                           strong('uniform'), 'DIF is present (left figure). If the item has different
+                           discrimination and possibly also different difficulty for given two groups, ',
+                           strong('non-uniform'), 'DIF is present (right figure)'),
+                         br(),
+                         fluidRow(
+                           column(6, align="center",
+                                  img(src = 'fig_NLR_uniformDIF.png', width = 380)),
+                           column(6, align="center",
+                                  img(src = 'fig_NLR_nonuniformDIF.png', width = 380))
+                         ),
+                         br(),
+                         br()
+                )
                 ),
                 ###################
                 # DATA ############
