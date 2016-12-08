@@ -73,7 +73,8 @@ function(input, output, session) {
     selectInput("dataSelect", "Select dataset",
                 c("GMAT" = "GMAT_difNLR",
                   "GMAT2" = "GMAT2_difNLR",
-                  "Medical" = "difMedical_difNLR"
+                  "Medical 20 DIF" = "difMedical_difNLR",
+                  "Medical 100" = "dataMedical_ShinyItemAnalysis"
                 ),
                 selected="GMAT")
   })
