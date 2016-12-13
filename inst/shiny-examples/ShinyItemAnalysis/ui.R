@@ -8,7 +8,7 @@ navbarPage(title="TEST AND ITEM ANALYSIS",
            footer=list(
              # online version
              div(class="panel-footer",
-                 p(strong("ShinyItemAnalysis Version 1.1")),
+                 p(strong("ShinyItemAnalysis Version 1.1.0")),
                  p("Download ShinyItemAnalysis R package from ",
                    a(strong("CRAN"), href = "https://cran.rstudio.com/web/packages/ShinyItemAnalysis/",
                      target = "_blank"), "to run analysis faster!"),
@@ -31,6 +31,12 @@ navbarPage(title="TEST AND ITEM ANALYSIS",
                        is available here. </a>
                         </p>')
                  ),
+                div(
+                  HTML('<p style="color:black; font-size: 9pt">
+                       Older version 1.0.0 <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV100/">
+                       is available here. </a>
+                       </p>')
+                  ),
                 # br(),
                  p(textOutput('counter'))
                 # br()

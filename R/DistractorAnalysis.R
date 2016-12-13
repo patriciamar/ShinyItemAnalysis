@@ -35,7 +35,17 @@
 #'
 #' @examples
 #' \dontrun{
-#' # loading difMedicaltest data set
+#' # distractor analysis for 100-item medical admission test (dataset dataMedicaltest)
+#' DistractorAnalysis(dataMedicaltest, dataMedicalkey)
+#'
+#' # distractor analysis for dataMedicaltest data set with proportions
+#' DistractorAnalysis(dataMedicaltest, dataMedicalkey, p.table = T)
+#'
+#' # distractor analysis for dataMedicaltest data set for 6 groups
+#' DistractorAnalysis(dataMedicaltest, dataMedicalkey, num.group = 6)
+#'
+#'
+#' # loading 20-item difMedicaltest data set
 #' data(difMedicaltest, package = "difNLR")
 #' data  <- difMedicaltest[, colnames(difMedicaltest) != "gender"]
 #' # loading difMedicalkey
