@@ -242,7 +242,9 @@ navbarPage(title="TEST AND ITEM ANALYSIS",
                     radioButtons('type_combinations_distractor', 'Type',
                                  list("Combinations", "Distractors")
                     ),
-                    uiOutput("distractorSliderUI"),
+                    # uiOutput("distractorSliderUI"),
+                    sliderInput("distractorSlider", "Item Slider", min=1, value=1, max=10,
+                                step=1, animate=TRUE),
                     h4("Distractors Plot"),
                     plotOutput('graf'),
                     downloadButton("DP_graf", label = "Download figure"),
@@ -305,7 +307,9 @@ navbarPage(title="TEST AND ITEM ANALYSIS",
                   h4("Plot with Estimated Logistic Curve"),
                   p('Points represent proportion of correct answer with respect to total score.
   Their size is determined by count of respondents who answered item correctly.'),
-                  uiOutput("logregSliderUI"),
+                 # uiOutput("logregSliderUI"),
+                  sliderInput("logregSlider", "Item Slider", min=1, value=1, max=10,
+                              step=1, animate=TRUE),
                   plotOutput('logreg'),
                   downloadButton("DP_logref", label = "Download figure"),
                   h4("Equation"),
@@ -359,7 +363,9 @@ navbarPage(title="TEST AND ITEM ANALYSIS",
                   h4("Plot with Estimated Logistic Curve"),
                   p('Points represent proportion of correct answer with respect to standardized
 total score. Their size is determined by count of respondents who answered item correctly.'),
-                  uiOutput("zlogregSliderUI"),
+                 # uiOutput("zlogregSliderUI"),
+                  sliderInput("zlogregSlider", "Item Slider", min=1, value=1, max=10,
+                              step=1, animate=TRUE),
                   plotOutput('zlogreg'),
                   downloadButton("DP_zlogreg", label = "Download figure"),
                   h4("Equation"),
@@ -412,7 +418,9 @@ total score. Their size is determined by count of respondents who answered item 
                   h4("Plot with Estimated Logistic Curve"),
                   p('Points represent proportion of correct answer with respect to standardized
 total score. Their size is determined by count of respondents who answered item correctly.'),
-                  uiOutput("zlogreg_irtSliderUI"),
+                  #uiOutput("zlogreg_irtSliderUI"),
+                  sliderInput("zlogreg_irtSlider", "Item Slider", min=1, value=1, max=10,
+                              step=1, animate=TRUE),
                   plotOutput('zlogreg_irt'),
                   downloadButton("DP_zlogreg_irt", label = "Download figure"),
                   h4("Equation"),
@@ -468,7 +476,9 @@ total score. Their size is determined by count of respondents who answered item 
                   h4("Plot with Estimated Nonlinear Curve"),
                   p('Points represent proportion of correct answer with respect to standardized
 total score. Their size is determined by count of respondents who answered item correctly.'),
-                  uiOutput("nlsSliderUI"),
+                 # uiOutput("nlsSliderUI"),
+                  sliderInput("nlsSlider", "Item Slider", min=1, value=1, max=10,
+                              step=1, animate=TRUE),
                   plotOutput('nlsplot'),
                   downloadButton("DP_nlsplot", label = "Download figure"),
                   h4("Equation"),
@@ -517,7 +527,9 @@ total score. Their size is determined by count of respondents who answered item 
                   h4("Plot with Estimated Curves of Multinomial Regression"),
                   p('Points represent proportion of selected option with respect to standardized
 total score. Their size is determined by count of respondents who selected given option.'),
-                  uiOutput("multiSliderUI"),
+                  # uiOutput("multiSliderUI"),
+                  sliderInput("multiSlider", "Item Slider", min=1, value=1, max=10,
+                              step=1, animate=TRUE),
                   plotOutput('multiplot'),
                   downloadButton("DP_multiplot", label = "Download figure"),
                   h4("Equation"),
@@ -797,7 +809,9 @@ total score. Their size is determined by count of respondents who selected given
                   h4("Summary of Total Scores for Groups"),
                   tableOutput('resultsgroup'),
                   h4("Histograms of Total Scores for Groups"),
-                  uiOutput("slider2group"),
+                  #uiOutput("slider2group"),
+                  sliderInput("inSlider2group", "Cut-Score", min=1, value=1, max=10,
+                              step=1, animate=TRUE),
                   p('For selected cut-score, blue part of histogram shows students with total score
                     above the cut-score, grey column shows students with Total Score equal
                     to cut-score and red part of histogram shows students below the cut-score.'),
@@ -1058,7 +1072,9 @@ total score. Their size is determined by count of respondents who answered item 
                                                   "FDR" = "fdr",
                                                   "none" = "none"),
                                                 selected="BH"),
-                                    uiOutput("diflogSliderUI"),
+                                    # uiOutput("diflogSliderUI"),
+                                    sliderInput("diflogSlider", "Item Slider", min=1, value=1, max=10,
+                                                step=1, animate=TRUE),
                                     plotOutput('plot_DIF_logistic'),
                                     downloadButton("DP_plot_DIF_logistic", label = "Download figure"),
                                     h4("Equation"),
@@ -1185,7 +1201,9 @@ total score. Their size is determined by count of respondents who answered item 
                                     "FDR" = "fdr",
                                     "none" = "none"),
                                   selected="BH"),
-                      uiOutput("diflog_irtSliderUI"),
+                      # uiOutput("diflog_irtSliderUI"),
+                      sliderInput("diflog_irtSlider", "Item Slider", min=1, value=1, max=10,
+                                  step=1, animate=TRUE),
                       plotOutput('plot_DIF_logistic_IRT_Z'),
                       downloadButton("DP_plot_DIF_logistic_IRT_Z", label = "Download figure"),
                       h4("Equation"),
@@ -1327,7 +1345,9 @@ total score. Their size is determined by count of respondents who answered item 
                                     "none" = "none"),
                                   selected="BH"),
                       #goback
-                      uiOutput("difnlrSliderUI"),
+                      # uiOutput("difnlrSliderUI"),
+                      sliderInput("difnlrSlider", "Item Slider", min=1, value=1, max=10,
+                                  step=1, animate=TRUE),
                       plotOutput('plot_DIF_NLR'),
                       downloadButton("DP_plot_DIF_NLR", label = "Download figure"),
                       h4("Equation"),
@@ -1422,7 +1442,9 @@ total score. Their size is determined by count of respondents who answered item 
                                         ),
                                         '2PL'
                            ),
-                           uiOutput("difirt_lord_itemSliderUI"),
+                           #uiOutput("difirt_lord_itemSliderUI"),
+                           sliderInput("difirt_lord_itemSlider", "Item Slider", min=1, value=1, max=10,
+                                       step=1, animate=TRUE),
                            plotOutput('plot_DIF_IRT_Lord'),
                            downloadButton("DP_plot_DIF_IRT_Lord", label = "Download figure"),
                            h4("Equation"),
@@ -1528,7 +1550,9 @@ total score. Their size is determined by count of respondents who answered item 
                                                  ),
                                                  '2PL'
                                     ),
-                                    uiOutput("difirt_raju_itemSliderUI"),
+                                    #uiOutput("difirt_raju_itemSliderUI"),
+                                    sliderInput("difirt_raju_itemSlider", "Item Slider", min=1, value=1, max=10,
+                                                step=1, animate=TRUE),
                                     plotOutput('plot_DIF_IRT_Raju'),
                                     downloadButton("DP_plot_DIF_IRT_Raju", label = "Download figure"),
                                     h4("Equation"),
@@ -1695,6 +1719,22 @@ total score. Their size is determined by count of respondents who answered item 
                   h4("Scored Test"),
                   dataTableOutput('sc01')
                   ),
+
+                ########################
+                # REPORTS ##############
+                ########################
+                tabPanel("Reports",
+                         h3("Download Report"),
+                         p("This shiny app also offers an option to download a report in HTML or PDF format. (PDF currently not available)"),
+                         # sliderInput("reportSlider", "Choose item for Report", min=1, value=1, max=10,
+                         #             step=1, animate=TRUE),
+                         radioButtons("report_format", "Format of Report",
+                                     c("HTML" = "html",
+                                       "PDF" = "pdf")),
+                         downloadButton("report", "Generate Report"),
+                         p("Warning: download of Reports takes some time. Please, be patient.")
+                         ),
+
                 ########################
                 # ABOUT ################
                 ########################
@@ -1733,6 +1773,7 @@ total score. Their size is determined by count of respondents who answered item 
                   code('library(shiny)'), br(),
                   code('library(shinyAce)'), br(),
                   code('library(stringr)'), br(),
+                  code('library(rmarkdown)'), br(),
                   br(),
                   strong('Authors'),
                   br(),
