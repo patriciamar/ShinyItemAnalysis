@@ -2275,7 +2275,9 @@ function(input, output, session) {
 
   # ** Plot ####
   plot_DIF_IRT_LordInput <- reactive({
-    plotDIFirt(parameters = tab_coef_DIF_IRT_Lord(), item=input$difirt_lord_itemSlider)
+    fitLord <- model_DIF_IRT_Lord_plot()
+    plotDIFirt(parameters = fitLord$itemParInit,
+               item = input$difirt_lord_itemSlider)
   })
 
   output$plot_DIF_IRT_Lord <- renderPlot({
@@ -2294,7 +2296,15 @@ function(input, output, session) {
   # ** Table with coefficients ####
   tab_coef_DIF_IRT_Lord <- reactive({
 
-    m <- nrow(model_DIF_IRT_Lord_plot()$itemParInit)/2
+    fitLord <- model_DIF_IRT_Lord_plot()
+    m <- nrow(fitLord$itemParInit)/2
+
+    mR <- fitLord$itemParInit[1:m, ]
+    mF <- fitLord$itemParInit[(m+1):(2*m), ]
+    mF <- itemRescale(mR, mF)
+
+    par <- rbind(mR, mF)
+
     wh_coef <- switch(input$type_plot_DIF_IRT_lord,
                       "1PL" = 1,
                       "2PL" = 1:2,
@@ -2304,12 +2314,9 @@ function(input, output, session) {
                     "2PL" = 3:4,
                     "3PL" = 3:4)
 
-    tab_coef <- c(model_DIF_IRT_Lord_plot()$itemParInit[c(input$difirt_lord_itemSlider,
-                                                          m + input$difirt_lord_itemSlider),
-                                                        wh_coef])
-    tab_sd <- c(model_DIF_IRT_Lord_plot()$itemParInit[c(input$difirt_lord_itemSlider,
-                                                        m + input$difirt_lord_itemSlider),
-                                                      wh_sd])
+    item <- input$difirt_lord_itemSlider
+    tab_coef <- c(par[c(item, m + item), wh_coef])
+    tab_sd <- c(par[c(item, m + item), wh_sd])
 
     if (input$type_plot_DIF_IRT_lord == "3PL")
       tab_coef <- tab_coef[-6]
@@ -2442,7 +2449,9 @@ function(input, output, session) {
 
   # ** Plot ####
   plot_DIF_IRT_RajuInput <- reactive({
-    plotDIFirt(parameters = tab_coef_DIF_IRT_Raju(), test = "Raju", item=input$difirt_raju_itemSlider)
+    fitRaju <- model_DIF_IRT_Raju_plot()
+    plotDIFirt(parameters = fitRaju$itemParInit, test = "Raju",
+               item = input$difirt_raju_itemSlider)
   })
 
   output$plot_DIF_IRT_Raju <- renderPlot({
@@ -2515,7 +2524,16 @@ function(input, output, session) {
   # ** Table with coefficients ####
   tab_coef_DIF_IRT_Raju <- reactive({
 
-    m <- nrow(model_DIF_IRT_Raju_plot()$itemParInit)/2
+
+    fitRaju <- model_DIF_IRT_Raju_plot()
+    m <- nrow(fitRaju$itemParInit)/2
+
+    mR <- fitRaju$itemParInit[1:m, ]
+    mF <- fitRaju$itemParInit[(m+1):(2*m), ]
+    mF <- itemRescale(mR, mF)
+
+    par <- rbind(mR, mF)
+
     wh_coef <- switch(input$type_plot_DIF_IRT_raju,
                       "1PL" = 1,
                       "2PL" = 1:2,
@@ -2524,9 +2542,10 @@ function(input, output, session) {
                     "1PL" = 2,
                     "2PL" = 3:4,
                     "3PL" = 3:4)
+    item <- input$difirt_raju_itemSlider
 
-    tab_coef <- c(model_DIF_IRT_Raju_plot()$itemParInit[c(input$difirt_raju_itemSlider, m + input$difirt_raju_itemSlider), wh_coef])
-    tab_sd <- c(model_DIF_IRT_Raju_plot()$itemParInit[c(input$difirt_raju_itemSlider, m + input$difirt_raju_itemSlider), wh_sd])
+    tab_coef <- c(par[c(item, m + item), wh_coef])
+    tab_sd <- c(par[c(item, m + item), wh_sd])
 
     if (input$type_plot_DIF_IRT_raju == "3PL")
       tab_coef <- tab_coef[-6]
