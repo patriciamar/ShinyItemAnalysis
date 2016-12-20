@@ -16,6 +16,7 @@ library(psych)
 library(psychometric)
 library(reshape2)
 library(stringr)
+library(rmarkdown)
 
 ###########
 # DATA ####
@@ -200,61 +201,147 @@ function(input, output, session) {
 
   ##### ITEM SLIDERS #####
 
-  output$distractorSliderUI <- renderUI({
-    a <- test_answers()
-    sliderInput("distractorSlider", "Item", animate = TRUE, min = 1, max = ncol(a), value = 1, step = 1)
-  })
+  # output$distractorSliderUI <- renderUI({
+  #   a <- test_answers()
+  #   sliderInput("distractorSlider", "Item", animate = TRUE, min = 1, max = ncol(a), value = 1, step = 1)
+  # })
+  #
+  # output$logregSliderUI <- renderUI({
+  #   a <- test_answers()
+  #   sliderInput("logregSlider", "Item", animate = TRUE, min = 1, max = ncol(a), value = 1, step = 1)
+  # })
+  #
+  # output$zlogregSliderUI <- renderUI({
+  #   a <- test_answers()
+  #   sliderInput("zlogregSlider", "Item", animate = TRUE, min = 1, max = ncol(a), value = 1, step = 1)
+  # })
+  #
+  # output$zlogreg_irtSliderUI <- renderUI({
+  #   a <- test_answers()
+  #   sliderInput("zlogreg_irtSlider", "Item", animate = TRUE, min = 1, max = ncol(a), value = 1, step = 1)
+  # })
+  #
+  # output$nlsSliderUI <- renderUI({
+  #   a <- test_answers()
+  #   sliderInput("nlsSlider", "Item", animate = TRUE, min = 1, max = ncol(a), value = 1, step = 1)
+  # })
+  #
+  # output$multiSliderUI <- renderUI({
+  #   a <- test_answers()
+  #   sliderInput("multiSlider", "Item", animate = TRUE, min = 1, max = ncol(a), value = 1, step = 1)
+  # })
+  #
+  # output$diflogSliderUI <- renderUI({
+  #   a <- test_answers()
+  #   sliderInput("diflogSlider", "Item", animate = TRUE, min = 1, max = ncol(a), value = 1, step = 1)
+  # })
+  #
+  # output$diflog_irtSliderUI <- renderUI({
+  #   a <- test_answers()
+  #   sliderInput("diflog_irtSlider", "Item", animate = TRUE, min = 1, max = ncol(a), value = 1, step = 1)
+  # })
+  #
+  # output$difnlrSliderUI <- renderUI({
+  #   a <- test_answers()
+  #   sliderInput("difnlrSlider", "Item", animate = TRUE, min = 1, max = ncol(a), value = 1, step = 1)
+  # })
 
-  output$logregSliderUI <- renderUI({
-    a <- test_answers()
-    sliderInput("logregSlider", "Item", animate = TRUE, min = 1, max = ncol(a), value = 1, step = 1)
-  })
+  # output$difirt_lord_itemSliderUI <- renderUI({
+  #   a <- test_answers()
+  #   sliderInput("difirt_lord_itemSlider", "Item", animate = TRUE, min = 1, max = ncol(a), value = 1, step = 1)
+  # })
 
-  output$zlogregSliderUI <- renderUI({
-    a <- test_answers()
-    sliderInput("zlogregSlider", "Item", animate = TRUE, min = 1, max = ncol(a), value = 1, step = 1)
-  })
+  # output$difirt_raju_itemSliderUI <- renderUI({
+  #   a <- test_answers()
+  #   sliderInput("difirt_raju_itemSlider", "Item", animate = TRUE, min = 1, max = ncol(a), value = 1, step = 1)
+  # })
 
-  output$zlogreg_irtSliderUI <- renderUI({
-    a <- test_answers()
-    sliderInput("zlogreg_irtSlider", "Item", animate = TRUE, min = 1, max = ncol(a), value = 1, step = 1)
-  })
+  observe({
+    sliderList<-c(
+      "distractorSlider",
+      "logregSlider",
+      "zlogregSlider",
+      "zlogreg_irtSlider",
+      "nlsSlider",
+      "multiSlider",
+      "diflogSlider",
+      "diflog_irtSlider",
+      "difnlrSlider",
+      "difirt_lord_itemSlider",
+      "difirt_raju_itemSlider",
+      "reportSlider"
+      )
 
-  output$nlsSliderUI <- renderUI({
-    a <- test_answers()
-    sliderInput("nlsSlider", "Item", animate = TRUE, min = 1, max = ncol(a), value = 1, step = 1)
-  })
+    # itemvalue<-c(
+    #   #input$distractorSlider,
+    #   input$logregSlider,
+    #   input$zlogregSlider,
+    #   input$zlogreg_irtSlider,
+    #   input$nlsSlider,
+    #   input$multiSlider,
+    #   input$diflogSlider,
+    #   input$diflog_irtSlider,
+    #   input$difnlrSlider,
+    #   input$difirt_lord_itemSlider,
+    #   input$difirt_raju_itemSlider,
+    #   input$reportSlider
+    #   )
 
-  output$multiSliderUI <- renderUI({
-    a <- test_answers()
-    sliderInput("multiSlider", "Item", animate = TRUE, min = 1, max = ncol(a), value = 1, step = 1)
-  })
+    itemvalueReg<-c(
+      input$logregSlider,
+      input$zlogregSlider,
+      input$zlogreg_irtSlider,
+      input$nlsSlider,
+      input$multiSlider
+    )
+    itemvalueReg<-as.numeric(names(table(itemvalueReg)[min(table(itemvalueReg))==table(itemvalueReg)]))
 
-  output$diflogSliderUI <- renderUI({
-    a <- test_answers()
-    sliderInput("diflogSlider", "Item", animate = TRUE, min = 1, max = ncol(a), value = 1, step = 1)
-  })
+    itemvalueDif<-c(
+      input$diflogSlider,
+      input$diflog_irtSlider,
+      input$difnlrSlider,
+      input$difirt_lord_itemSlider,
+      input$difirt_raju_itemSlider
+    )
+    itemvalueDif<-as.numeric(names(table(itemvalueDif)[min(table(itemvalueDif))==table(itemvalueDif)]))
 
-  output$diflog_irtSliderUI <- renderUI({
-    a <- test_answers()
-    sliderInput("diflog_irtSlider", "Item", animate = TRUE, min = 1, max = ncol(a), value = 1, step = 1)
-  })
 
-  output$difnlrSliderUI <- renderUI({
-    a <- test_answers()
-    sliderInput("difnlrSlider", "Item", animate = TRUE, min = 1, max = ncol(a), value = 1, step = 1)
-  })
+    #itemvalue<-as.numeric(names(table(itemvalue)[min(table(itemvalue))==table(itemvalue)]))
+    #if (itemvalue>ncol(test_answers())) { itemvalue=ncol(test_answers()) }
 
-  output$difirt_lord_itemSliderUI <- renderUI({
-    a <- test_answers()
-    sliderInput("difirt_lord_itemSlider", "Item", animate = TRUE, min = 1, max = ncol(a), value = 1, step = 1)
-  })
+    itemCount = ncol(test_answers())
 
-  output$difirt_raju_itemSliderUI <- renderUI({
-    a <- test_answers()
-    sliderInput("difirt_raju_itemSlider", "Item", animate = TRUE, min = 1, max = ncol(a), value = 1, step = 1)
-  })
+    #updateSliderInput(session = session, inputId = "distractorSlider", max=itemCount, value = itemvalue)
+    updateSliderInput(session = session, inputId = "distractorSlider", max=itemCount)
+    # updateSliderInput(session = session, inputId = "logregSlider", max=itemCount, value = itemvalue)
+    # updateSliderInput(session = session, inputId = "zlogregSlider", max=itemCount, value = itemvalue)
+    # updateSliderInput(session = session, inputId = "zlogreg_irtSlider", max=itemCount, value = itemvalue)
+    # updateSliderInput(session = session, inputId = "nlsSlider", max=itemCount, value = itemvalue)
+    # updateSliderInput(session = session, inputId = "multiSlider", max=itemCount, value = itemvalue)
+    updateSliderInput(session = session, inputId = "logregSlider", max=itemCount, value = itemvalueReg)
+    updateSliderInput(session = session, inputId = "zlogregSlider", max=itemCount, value = itemvalueReg)
+    updateSliderInput(session = session, inputId = "zlogreg_irtSlider", max=itemCount, value = itemvalueReg)
+    updateSliderInput(session = session, inputId = "nlsSlider", max=itemCount, value = itemvalueReg)
+    updateSliderInput(session = session, inputId = "multiSlider", max=itemCount, value = itemvalueReg)
 
+    # updateSliderInput(session = session, inputId = "diflogSlider", max=itemCount, value = itemvalue)
+    # updateSliderInput(session = session, inputId = "diflog_irtSlider", max=itemCount, value = itemvalue)
+    # updateSliderInput(session = session, inputId = "difnlrSlider", max=itemCount, value = itemvalue)
+    # updateSliderInput(session = session, inputId = "difirt_lord_itemSlider", max=itemCount, value = itemvalue)
+    # updateSliderInput(session = session, inputId = "difirt_raju_itemSlider", max=itemCount, value = itemvalue)
+    updateSliderInput(session = session, inputId = "diflogSlider", max=itemCount, value = itemvalueDif)
+    updateSliderInput(session = session, inputId = "diflog_irtSlider", max=itemCount, value = itemvalueDif)
+    updateSliderInput(session = session, inputId = "difnlrSlider", max=itemCount, value = itemvalueDif)
+    updateSliderInput(session = session, inputId = "difirt_lord_itemSlider", max=itemCount, value = itemvalueDif)
+    updateSliderInput(session = session, inputId = "difirt_raju_itemSlider", max=itemCount, value = itemvalueDif)
+
+    # updateSliderInput(session = session, inputId = "reportSlider", max=itemCount, value = itemvalue)
+
+    # lapply(lapply(sliderList, get), FUN=updateSliderInput, session=session, max=itemCount, value=itemvalue))
+
+    updateSliderInput(session = session, inputId = "inSlider2group", max=itemCount, value = round(median(scored_test()[DIF_groups() == 1])))
+
+  })
 
   ########################
   # SLIDER FOR STUDENTS PAGE ######
@@ -287,15 +374,17 @@ function(input, output, session) {
   ########################
   # * TOTAL SCORES #####
   # ** Summary table #####
-  output$results <- renderTable({
-
+  resultsInput <- reactive({
     sc <- scored_test()
 
     tab <- t(data.frame(c(min(sc), max(sc), mean(sc), median(sc), sd(sc),
                           skewness(sc), kurtosis(sc))))
     colnames(tab) <- c("Min", "Max", "Mean", "Median", "SD", "Skewness", "Kurtosis")
     tab
+  })
 
+  output$results <- renderTable({
+    resultsInput()
   },
   digits = 2,
   include.rownames = F,
@@ -428,8 +517,7 @@ function(input, output, session) {
   include.colnames = T)
 
   # ** Traditional Item Analysis Table #####
-  output$itemexam <- renderTable({
-
+  itemexamInput<-reactive({
     a <- test_answers()
     k <- test_key()
     correct <- correct_answ()
@@ -442,7 +530,10 @@ function(input, output, session) {
     colnames(tab) <- c("Item", "Difficulty", "SD", "Discrimination ULI",
                        "Discrimination RIT", "Discrimination RIR", "Alpha Drop")
     tab
+  })
 
+  output$itemexam <- renderTable({
+    itemexamInput()
   },
   include.rownames = FALSE)
 
@@ -542,6 +633,25 @@ function(input, output, session) {
     multiple.answers <- c(input$type_combinations_distractor == "Combinations")
     plotDistractorAnalysis(data = a, key = k, num.group = input$gr, item = input$distractorSlider,
                            multiple.answers = multiple.answers)
+  })
+
+  grafReportInput<-reactive({
+    a <- test_answers()
+    k <- test_key()
+
+    multiple.answers <- c(input$type_combinations_distractor == "Combinations")
+
+    graflist<-list()
+
+    for (i in 1:length(k)) {
+      g<-plotDistractorAnalysis(data = a, key = k, num.group = input$gr, item = i,
+                             multiple.answers = multiple.answers)
+      graflist[[i]]=g
+    }
+
+    #grid.arrange(graflist, ncol=2, main="Distractor Plots")
+    graflist
+
   })
 
   output$graf <- renderPlot({
@@ -1056,6 +1166,63 @@ function(input, output, session) {
 
   })
 
+  multiplotReportInput<-reactive({
+    graflist=list()
+
+    for (i in 1:length(test_key())) {
+      k <- t(as.data.frame(test_key()))
+
+      stotal <- c(scale(scored_test()))
+
+
+      fitM <- multinom(relevel(as.factor(test_answers()[, i]),
+                               ref = paste(k[i])) ~ stotal)
+
+      pp <- fitted(fitM)
+
+      stotals <- rep(stotal, length(levels(relevel(as.factor(test_answers()[, i]),
+                                                   ref = paste(k[i])))))
+      df <- cbind(melt(pp), stotals)
+
+
+      df2 <- data.frame(table(test_answers()[, i], stotal),
+                        y = data.frame(prop.table(table(test_answers()[, i], stotal), 2))[, 3])
+      df2$stotal <- as.numeric(levels(df2$stotal))[df2$stotal]
+      df2$Var2 <- relevel(df2$Var1, ref = paste(k[i]))
+
+
+      g<-ggplot() +
+        geom_line(data = df,
+                  aes(x = stotals , y = value,
+                      colour = Var2, linetype = Var2), size = 1) +
+        geom_point(data = df2,
+                   aes(x = stotal, y = y,
+                       colour = Var2, fill = Var2,
+                       size = Freq),
+                   alpha = 0.5, shape = 21) +
+
+        ylim(0, 1) +
+        labs(title = paste("Item", i),
+             x = "Standardized Total Score",
+             y = "Probability of Correct Answer") +
+        theme_bw() +
+        theme(axis.line  = element_line(colour = "black"),
+              text = element_text(size = 14),
+              panel.grid.major = element_blank(),
+              panel.grid.minor = element_blank(),
+              panel.background = element_blank(),
+              legend.title = element_blank(),
+              legend.position = c(0, 1),
+              legend.justification = c(0, 1),
+              legend.background = element_blank(),
+              legend.key = element_rect(colour = "white"),
+              plot.title = element_text(face = "bold"),
+              legend.key.width = unit(1, "cm"))
+      graflist[[i]]=g
+    }
+    graflist
+  })
+
   output$multiplot <- renderPlot({
     multiplotInput()
   })
@@ -1238,8 +1405,15 @@ function(input, output, session) {
   })
 
   # *** ICC ####
-  output$twoparam <- renderPlot({
+  twoparamInput<-reactive({
     plot(two_param_irt())
+    g<-recordPlot()
+    plot.new()
+    g
+  })
+
+  output$twoparam <- renderPlot({
+    twoparamInput()
   })
 
   output$DP_twoparam <- downloadHandler(
@@ -1254,8 +1428,15 @@ function(input, output, session) {
   )
 
   # *** IIC ####
-  output$twoparamiic <- renderPlot({
+  twoparamiicInput<-reactive({
     plot(two_param_irt(), type = "IIC")
+    g<-recordPlot()
+    plot.new()
+    g
+  })
+
+  output$twoparamiic <- renderPlot({
+    twoparamiicInput()
   })
 
   output$DP_twoparamiic <- downloadHandler(
@@ -1270,8 +1451,15 @@ function(input, output, session) {
   )
 
   # *** TIF ####
-  output$twoparamtif <- renderPlot({
+  twoparamtifInput<-reactive({
     plot(two_param_irt(), items = 0, type = "IIC")
+    g<-recordPlot()
+    plot.new()
+    g
+  })
+
+  output$twoparamtif <- renderPlot({
+    twoparamtifInput()
   })
 
   output$DP_twoparamtif <- downloadHandler(
@@ -1286,7 +1474,7 @@ function(input, output, session) {
   )
 
   # ** Table of parameters ####
-  output$twoparamcoef <- renderTable({
+  twoparamcoefInput <- reactive({
     fit2pl <- two_param_irt()
     tab <- coef(fit2pl)
     tab <- cbind(tab,
@@ -1296,6 +1484,10 @@ function(input, output, session) {
     colnames(tab) <- c("a", "SD(a)", "b", "SD(b)")
     rownames(tab) <- paste("Item", 1:nrow(tab))
     tab
+  })
+
+  output$twoparamcoef <- renderTable({
+    twoparamcoefInput()
   },
   include.rownames = T)
 
@@ -1457,7 +1649,7 @@ function(input, output, session) {
   ######################
   # * TOTAL SCORES ####
   # ** Summary of Total Scores for Groups ####
-  output$resultsgroup <- renderTable({
+  resultsgroupInput<-reactive({
     sc_one  <- scored_test()[DIF_groups() == 1]
     sc_zero <- scored_test()[DIF_groups() == 0]
     tab <- t(data.frame(round(c(min(sc_zero), max(sc_zero), mean(sc_zero), median(sc_zero),
@@ -1467,18 +1659,24 @@ function(input, output, session) {
     colnames(tab) <- c("Min", "Max", "Mean", "Median", "SD", "Skewness", "Kurtosis")
     rownames(tab) <- c("Reference group (0)", "Focal group (1)")
     tab
+  })
+
+  output$resultsgroup <- renderTable({
+    resultsgroupInput()
   },
   digits = 2,
   include.rownames = T,
   include.colnames = T)
 
   # ** Cut score ####
-  output$slider2group <- renderUI({
-    sliderInput(
-      "inSlider2group", "Cut-Score", min = 0, max = ncol(test_answers()),
-      value = round(median(scored_test()[DIF_groups() == 1])), step = 1
-    )
-  })
+  # output$slider2group <- renderUI({
+  #   sliderInput(
+  #     "inSlider2group", "Cut-Score", min = 0, max = ncol(test_answers()),
+  #     value = round(median(scored_test()[DIF_groups() == 1])), step = 1
+  #   )
+  # })
+
+
 
   # ** Histogram of total score for group = 1 (focal) ####
   histbyscoregroup1Input <- reactive({
@@ -1505,24 +1703,25 @@ function(input, output, session) {
       }
     }
 
-    ggplot(df, aes(x = sc)) +
-      geom_histogram(aes(fill = gr), binwidth = 1, color = "black") +
-      scale_fill_manual("", breaks = df$gr, values = col) +
-      labs(x = "Total Score",
-           y = "Number of Students") +
-      scale_y_continuous(expand = c(0, 0),
-                         limits = c(0, max(table(sc)) + 0.01 * nrow(a))) +
-      scale_x_continuous(limits = c(-0.5, ncol(a) + 0.5)) +
-      theme_bw() +
-      theme(legend.title = element_blank(),
-            legend.position = "none",
-            axis.line  = element_line(colour = "black"),
-            panel.grid.major = element_blank(),
-            panel.grid.minor = element_blank(),
-            panel.background = element_blank(),
-            text = element_text(size = 14),
-            plot.title = element_text(face = "bold")) +
-      ggtitle("Histogram of Total Scores for Focal Group")
+    g<-ggplot(df, aes(x = sc)) +
+        geom_histogram(aes(fill = gr), binwidth = 1, color = "black") +
+        scale_fill_manual("", breaks = df$gr, values = col) +
+        labs(x = "Total Score",
+             y = "Number of Students") +
+        scale_y_continuous(expand = c(0, 0),
+                           limits = c(0, max(table(sc)) + 0.01 * nrow(a))) +
+        scale_x_continuous(limits = c(-0.5, ncol(a) + 0.5)) +
+        theme_bw() +
+        theme(legend.title = element_blank(),
+              legend.position = "none",
+              axis.line  = element_line(colour = "black"),
+              panel.grid.major = element_blank(),
+              panel.grid.minor = element_blank(),
+              panel.background = element_blank(),
+              text = element_text(size = 14),
+              plot.title = element_text(face = "bold")) +
+        ggtitle("Histogram of Total Scores for Focal Group")
+    g
   })
 
   output$histbyscoregroup1 <- renderPlot ({
@@ -1562,24 +1761,25 @@ function(input, output, session) {
         col <- c("red", "grey", "blue")
       }
     }
-    ggplot(df, aes(x = sc)) +
-      geom_histogram(aes(fill = gr), binwidth = 1, color = "black") +
-      scale_fill_manual("", breaks = df$gr, values = col) +
-      labs(x = "Total Score",
-           y = "Number of Students") +
-      scale_y_continuous(expand = c(0, 0),
-                         limits = c(0, max(table(sc)) + 0.01 * nrow(a))) +
-      scale_x_continuous(limits = c(-0.5, ncol(a) + 0.5)) +
-      theme_bw() +
-      theme(legend.title = element_blank(),
-            legend.position = "none",
-            axis.line  = element_line(colour = "black"),
-            panel.grid.major = element_blank(),
-            panel.grid.minor = element_blank(),
-            panel.background = element_blank(),
-            text = element_text(size = 14),
-            plot.title = element_text(face = "bold")) +
-      ggtitle("Histogram of Total Scores for Reference Group")
+    g<-ggplot(df, aes(x = sc)) +
+        geom_histogram(aes(fill = gr), binwidth = 1, color = "black") +
+        scale_fill_manual("", breaks = df$gr, values = col) +
+        labs(x = "Total Score",
+             y = "Number of Students") +
+        scale_y_continuous(expand = c(0, 0),
+                           limits = c(0, max(table(sc)) + 0.01 * nrow(a))) +
+        scale_x_continuous(limits = c(-0.5, ncol(a) + 0.5)) +
+        theme_bw() +
+        theme(legend.title = element_blank(),
+              legend.position = "none",
+              axis.line  = element_line(colour = "black"),
+              panel.grid.major = element_blank(),
+              panel.grid.minor = element_blank(),
+              panel.background = element_blank(),
+              text = element_text(size = 14),
+              plot.title = element_text(face = "bold")) +
+        ggtitle("Histogram of Total Scores for Reference Group")
+    g
   })
 
   output$histbyscoregroup0 <- renderPlot ({
@@ -1833,6 +2033,25 @@ function(input, output, session) {
   include.rownames = T,
   include.colnames = T)
 
+  DIF_logistic_plotReport<-reactive({
+    group <- DIF_groups()
+    data <- correct_answ()
+
+    mod <- difLogistic(Data = data, group = group, focal.name = 1,
+                       type = input$type_print_DIF_logistic, p.adjust.method = input$correction_method_logItems)
+    mod$DIFitems
+    graflist = list()
+    for (i in 1:length(mod$DIFitems)) {
+      g<-plotDIFLogistic(data, group,
+                          type = input$type_plot_DIF_logistic,
+                          item =  mod$DIFitems[i],
+                          IRT = F,
+                          p.adjust.method = input$correction_method_logItems
+          )
+      graflist[[i]]<-g
+    }
+    graflist
+  })
 
   # * LOGISTIC IRT Z ####
   # ** Model for plot ####
@@ -2333,7 +2552,52 @@ function(input, output, session) {
   include.rownames = T,
   include.colnames = T)
 
+  # DOWNLOADN REPORT #####
+  formatInput<-reactive({
+    format<-input$report_format
+    format
+  })
 
+  output$report<-downloadHandler(
+    filename=reactive({paste0("report.", input$report_format)}),
+    content=function(file) {
+      reportPath <- file.path(getwd(), paste0("report", formatInput(),".Rmd"))
+      #file.copy("report.Rmd", tempReport, overwrite = TRUE)
+      parameters<-list(a = test_answers(),
+                       k = test_key(),
+                       results = t(resultsInput()),
+                       histogram_totalscores = histogram_totalscoresInput(),
+                       difPlot = difplotInput(),
+                       itemexam = itemexamInput(),
+                       hist_distractor_by_group = hist_distractor_by_groupInput(),
+                       graf = grafReportInput(),
+                       logreg = logregInput(),
+                       zlogreg = zlogregInput(),
+                       zlogreg_irt = zlogreg_irtInput(),
+                       nlsplot = nlsplotInput(),
+                       multiplot = multiplotReportInput(),
+                       twoparam = twoparamInput(),
+                       twoparamiic = twoparamiicInput(),
+                       twoparamtif = twoparamtifInput(),
+                       twoparamcoef = twoparamcoefInput(),
+                       twofactor = twoFactorInput(),
+                       resultsgroup = resultsgroupInput(),
+                       histbyscoregroup0 = histbyscoregroup0Input(),
+                       histbyscoregroup1 = histbyscoregroup1Input(),
+                       deltaplot = deltaplotInput(),
+                       DP_text_normal = deltaGpurn(),
+                       DIF_logistic_plot = DIF_logistic_plotReport(),
+                       DIF_logistic_print = model_DIF_logistic_print(),
+                       plot_DIF_logistic = plot_DIF_logisticInput(),
+                       plot_DIF_logistic_IRT_Z = plot_DIF_logistic_IRT_ZInput(),
+                       plot_DIF_NLR = plot_DIF_NLRInput(),
+                       plot_DIF_IRT_Lord = plot_DIF_IRT_LordInput(),
+                       plot_DIF_IRT_Raju = plot_DIF_IRT_RajuInput()
+      )
+      rmarkdown::render(reportPath, output_file=file,
+                        params = parameters, envir = new.env(parent = globalenv()))
+    }
+  )
 
 
 }
