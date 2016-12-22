@@ -31,6 +31,28 @@
 #' DDplot(dataMedical)
 #' }
 #' @export
+#' @import corrplot
+#' CTT
+#' deltaPlotR
+#' difNLR
+#' difR
+#' foreign
+#' ggplot2
+#' gridExtra
+#' ltm
+#' moments
+#' nnet
+#' psych
+#' reshape2
+#' rmarkdown
+#' shiny
+#' shinyAce
+#' stringr
+#'
+#' @importFrom psychometric item.exam
+#' @importFrom grDevices rainbow
+#' @importFrom stats aggregate quantile relevel xtabs
+
 
 
 DDplot <- function(data){
