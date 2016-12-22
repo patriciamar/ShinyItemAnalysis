@@ -269,6 +269,7 @@ function(input, output, session) {
       "difnlrSlider",
       "difirt_lord_itemSlider",
       "difirt_raju_itemSlider",
+      "ddfSlider",
       "reportSlider"
       )
 
@@ -301,7 +302,8 @@ function(input, output, session) {
       input$diflog_irtSlider,
       input$difnlrSlider,
       input$difirt_lord_itemSlider,
-      input$difirt_raju_itemSlider
+      input$difirt_raju_itemSlider,
+      input$ddfSlider
     )
     itemvalueDif<-as.numeric(names(table(itemvalueDif)[min(table(itemvalueDif))==table(itemvalueDif)]))
 
@@ -334,7 +336,7 @@ function(input, output, session) {
     updateSliderInput(session = session, inputId = "difnlrSlider", max=itemCount, value = itemvalueDif)
     updateSliderInput(session = session, inputId = "difirt_lord_itemSlider", max=itemCount, value = itemvalueDif)
     updateSliderInput(session = session, inputId = "difirt_raju_itemSlider", max=itemCount, value = itemvalueDif)
-
+    updateSliderInput(session = session, inputId = "ddfSlider", max=itemCount, value = itemvalueDif)
     # updateSliderInput(session = session, inputId = "reportSlider", max=itemCount, value = itemvalue)
 
     # lapply(lapply(sliderList, get), FUN=updateSliderInput, session=session, max=itemCount, value=itemvalue))
@@ -2156,66 +2158,79 @@ function(input, output, session) {
 
 
   # * NLR DIF ####
-  # ** Model for plot ####
-  model_DIF_NLR_plot <- reactive({
-    group <- DIF_groups()
-    data <- correct_answ()
-
-    mod <- difNLR(data = data, group = group, type = input$type_plot_DIF_NLR,
-                  p.adjust.method = input$correction_method_nlrItems)
-    mod
-  })
-
   # ** Model for print ####
   model_DIF_NLR_print <- reactive({
     group <- DIF_groups()
     data <- correct_answ()
 
-    mod <- difNLR(data = data, group = group, type = input$type_print_DIF_NLR,
-                  p.adjust.method = input$correction_method_nlrSummary)
+    type <- input$type_print_DIF_NLR
+    adj.method <- input$correction_method_nlrSummary
+    model <- "3PLcg"
+
+    mod <- difNLR(Data = data, group = group, focal.name = 1,
+                  model = model, type = type,
+                  p.adjust.method = adj.method)
     mod
   })
 
   # ** Output print ####
-   output$print_DIF_NLR <- renderPrint({
-     print(model_DIF_NLR_print())
-   })
+  output$print_DIF_NLR <- renderPrint({
+    print(model_DIF_NLR_print())
+  })
+
+  # ** Model for plot ####
+  model_DIF_NLR_plot <- reactive({
+    group <- DIF_groups()
+    data <- correct_answ()
+
+    type <- input$type_plot_DIF_NLR
+    adj.method <- input$correction_method_nlrItems
+    model <- "3PLcg"
+
+    mod <- difNLR(Data = data, group = group, focal.name = 1,
+                  model = model, type = type,
+                  p.adjust.method = adj.method)
+    mod
+  })
 
   # ** Plot ####
   plot_DIF_NLRInput <- reactive({
-    plot(model_DIF_NLR_plot(), item = input$difnlrSlider)[[1]] +
+    fit <- model_DIF_NLR_plot()
+    item <- input$difnlrSlider
+
+    plot(fit, item = item)[[1]] +
       theme(text = element_text(size = 14),
-            plot.title = element_text(size = 14, face = "bold", vjust = 1.5))
+            plot.title = element_text(size = 14, face = "bold",
+                                      vjust = 1.5))
   })
 
+  # ** Output plot ####
   output$plot_DIF_NLR <- renderPlot({
     plot_DIF_NLRInput()
   })
 
+  # ** Plot download ####
   output$DP_plot_DIF_NLR <- downloadHandler(
     filename =  function() {
       paste("plot", input$name, ".png", sep = "")
     },
     content = function(file) {
-      ggsave(file, plot = plot_DIF_NLRInput(), device = "png", height=3, width=9, dpi=160)
+      ggsave(file, plot = plot_DIF_NLRInput(), device = "png",
+             height = 3, width = 9, dpi = 160)
     }
   )
 
+ # ** Table of coefficients ####
   output$tab_coef_DIF_NLR <- renderTable({
+    item <- input$difnlrSlider
+    fit <- model_DIF_NLR_plot()
 
+    tab_coef <- fit$nlrPAR[item, c("a", "b", "aDif", "bDif", "c")]
+    tab_sd <- fit$nlrSE[item, c("a", "b", "aDif", "bDif", "c")]
 
-    tab_coef <- t(as.table(model_DIF_NLR_plot()$coef[input$difnlrSlider, ]))
+    tab <- data.frame(tab_coef, tab_sd)
 
-    tab_sd <- lapply(lapply(model_DIF_NLR_plot()$vcov, diag), `length<-`,
-                     max(lengths(lapply(model_DIF_NLR_plot()$vcov, diag))))
-    tab_sd <- t(matrix(unlist(tab_sd), nrow = 5))
-    tab_sd[is.na(tab_sd)] <- 0
-
-
-    tab <- data.frame(tab_coef, tab_sd[input$difnlrSlider, ])
-
-    tab <- data.frame(tab[, 3:4])
-    rownames(tab) <- c('a', 'b', 'c', 'aDIF', 'bDIF')
+    rownames(tab) <- c('a', 'b', 'aDIF', 'bDIF', 'c')
     colnames(tab) <- c("Estimate", "SD")
 
     tab
@@ -2570,6 +2585,96 @@ function(input, output, session) {
   },
   include.rownames = T,
   include.colnames = T)
+
+  # * DDF ####
+  # ** Model for print ####
+  model_DDF_print <- reactive({
+    group <- DIF_groups()
+    a <- test_answers()
+    k <- test_key()
+
+    adj.method <- input$correction_method_print_DDF
+    type <- input$type_print_DDF
+
+    mod <- ddfMLR(Data = a, group = group, focal.name = 1,
+                  key = k, p.adjust.method = adj.method,
+                  type = type)
+
+    mod
+  })
+
+  # ** Output print ####
+  output$print_DDF <- renderPrint({
+    print(model_DDF_print())
+  })
+
+  # ** Model for plot ####
+  model_DDF_plot <- reactive({
+    group <- DIF_groups()
+    a <- test_answers()
+    k <- test_key()
+
+    adj.method <- input$correction_method_plot_DDF
+    type <- input$type_plot_DDF
+
+    mod <- ddfMLR(Data = a, group = group, focal.name = 1,
+                  key = k, p.adjust.method = adj.method,
+                  type = type)
+
+    mod
+  })
+
+  # ** Plot ####
+  plot_DDFInput <- reactive({
+    fit <- model_DDF_plot()
+    item <- input$ddfSlider
+
+    plot(fit, item = item)
+  })
+
+  # ** Output Plot ####
+  output$plot_DDF <- renderPlot({
+    plot_DDFInput()
+  })
+
+  # ** Plot download ####
+  output$DP_plot_DDF <- downloadHandler(
+    filename =  function() {
+      paste("plot", input$name, ".png", sep = "")
+    },
+    content = function(file) {
+      ggsave(file, plot = plot_DDFInput(), device = "png",
+             height = 3, width = 9, dpi = 160)
+    }
+  )
+
+  # ** Table of coefficients ####
+  output$tab_coef_DDF <- renderTable({
+    item <- input$ddfSlider
+    fit <- model_DDF_plot()
+
+    tab_coef <- fit$mlrPAR[[item]]
+
+    if (ncol(tab_coef) == 2){
+      tab_coef <- data.frame(tab_coef, 0, 0)
+    } else {
+      if (ncol(tab_coef) == 3){
+        tab_coef <- data.frame(tab_coef, 0)
+      }
+    }
+
+    colnames(tab_coef) <- c("Intercept", "S.T. score", "Group", "S.T. score:Group")
+    # tab_sd <- fit$nlrSE[item, c("a", "b", "aDif", "bDif", "c")]
+    #
+    # tab <- data.frame(tab_coef, tab_sd)
+    #
+    # rownames(tab) <- c('a', 'b', 'c', 'aDIF', 'bDIF')
+    # colnames(tab) <- c("Estimate", "SD")
+    #
+    tab_coef
+  },
+  include.rownames = T)
+
 
   # DOWNLOADN REPORT #####
   formatInput<-reactive({
