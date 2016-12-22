@@ -1,23 +1,27 @@
 Package: ShinyItemAnalysis
 Type: Package
 Title: Test and Item Analysis via Shiny
-Version: 1.0.0
+Version: 1.1.0
 Author: Patricia Martinkova [aut, cre], Adela Drabinova [aut, cre], Ondrej Leder [aut, cre] and Jakub Houdek [aut, cre]
 Maintainer: Patricia Martinkova <martinkova@cs.cas.cz>
 Depends:
     R (>= 3.2.2)
 Imports:
+    corrplot,
     CTT,
     deltaPlotR,
     difNLR,
     difR,
+    foreign,
     ggplot2,
     gridExtra,
     ltm,
     moments,
     nnet,
+    psych,
     psychometric,
     reshape2,
+    rmarkdown,
     shiny,
     shinyAce,
     stringr

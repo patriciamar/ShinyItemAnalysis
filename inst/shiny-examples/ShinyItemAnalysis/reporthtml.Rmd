@@ -1,6 +1,8 @@
 ---
 title: "Dynamic report"
-output: html_document
+output:
+  html_document:
+       number_sections: true
 params:
   a: NA
   k: NA
@@ -35,54 +37,108 @@ params:
   itemexam: NA
 ---
 # Summary Report
+
 ```{r echo=FALSE}
 params$results
+```
+```{r echo=FALSE, results="hide"}
 params$histogram_totalscores
 ```
 
+
+\pagebreak
+
+
 # Traditional Analysis Report
-```{r echo=FALSE}
+
+## Item Analysis
+
+```{r echo=FALSE, results="hide"}
 params$difPlot
+```
+```{r echo=FALSE}
 params$itemexam
 ```
 # Regression Report
-```{r echo=FALSE}
+
+## Distractor Analysis
+
+```{r echo=FALSE, results="hide"}
 params$graf
+```
+
+
+\pagebreak
+
+
+# Regression Report
+
+```{r echo=FALSE, results="hide"}
 # params$logreg
 # params$zlogreg
 # params$zlogreg_irt
 # params$nlsplot
-params$multiplot
 ```
+## Multionomial Plots
 
-```{r echo=FALSE}
-# params$plot_DIF_logistic
-# params$plot_DIF_logistic_IRT_Z
-# params$plot_DIF_NLR
+```{r echo=FALSE, results="hide"}
+library(gridExtra)
+params$multiplot
 # params$plot_DIF_IRT_Lord
 # params$plot_DIF_IRT_Raju
 ```
 # IRT Model Report
 
+
+\pagebreak
+
+
+# IRT 2PL Model Report
+
 $\\mathrm{P}\\left(Y_{ij} = 1\\vert \\theta_{i}, a_{j}, b_{j}\\right) =  \\frac{e^{a_{j}\\left(\\theta_{i}-b_{j}\\right) }}{1+e^{a_{j}\\left(\\theta_{i}-b_{j}\\right) }} $
 
-```{r echo=FALSE}
+```{r echo=FALSE, results="hide"}
 params$twoparam
 params$twoparamiic
 params$twoparamtif
+```
+```{r echo=FALSE}
 params$twoparamcoef
+```
+```{r echo=FALSE, results="hide"}
 params$twofactor
 ```
 
+
+\pagebreak
+
+
 # DIF/Fairness Report
 
-```{r echo=FALSE}
+## Total Scores
+
+```{r echo=FALSE, results="hide"}
 params$resultsgroup
 params$histbyscoregroup0
 params$histbyscoregroup1
+```
+
+## Delta Plot
+
+```{r echo=FALSE, results="hide"}
 params$deltaplot
+```
+```{r echo=FALSE}
 params$DP_text_normal
+```
+
+## DIF Logistic Report
+
+```{r echo=FALSE}
 params$DIF_logistic_print
+```
+```{r echo=FALSE, results="hide"}
 params$DIF_logistic_plot
 ```
 
+\pagebreak

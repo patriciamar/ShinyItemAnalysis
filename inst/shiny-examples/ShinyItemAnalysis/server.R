@@ -2,6 +2,7 @@
 # GLOBAL LIBRARY #####
 ######################
 
+library(corrplot)
 library(CTT)
 library(deltaPlotR)
 library(difNLR)
@@ -70,15 +71,15 @@ function(input, output, session) {
   # CHOOSE DATA #####
 
 
-  output$dataSelect <- renderUI({
-    selectInput("dataSelect", "Select dataset",
-                c("GMAT" = "GMAT_difNLR",
-                  "GMAT2" = "GMAT2_difNLR",
-                  "Medical 20 DIF" = "difMedical_difNLR",
-                  "Medical 100" = "dataMedical_ShinyItemAnalysis"
-                ),
-                selected="GMAT")
-  })
+  # output$dataSelect <- renderUI({
+  #   selectInput("dataSelect", "Select dataset",
+  #               c("GMAT" = "GMAT_difNLR",
+  #                 "GMAT2" = "GMAT2_difNLR",
+  #                 "Medical 20 DIF" = "difMedical_difNLR",
+  #                 "Medical 100" = "dataMedical_ShinyItemAnalysis"
+  #               ),
+  #               selected="GMAT")
+  # })
 
 
   # LOAD ABCD DATA #####
@@ -264,15 +265,18 @@ function(input, output, session) {
       "zlogreg_irtSlider",
       "nlsSlider",
       "multiSlider",
+      "difMHSlider",
       "diflogSlider",
       "diflog_irtSlider",
       "difnlrSlider",
       "difirt_lord_itemSlider",
       "difirt_raju_itemSlider",
+      "ddfSlider",
       "reportSlider"
       )
 
     # itemvalue<-c(
+    #   input$difMHSlider,
     #   #input$distractorSlider,
     #   input$logregSlider,
     #   input$zlogregSlider,
@@ -297,11 +301,13 @@ function(input, output, session) {
     itemvalueReg<-as.numeric(names(table(itemvalueReg)[min(table(itemvalueReg))==table(itemvalueReg)]))
 
     itemvalueDif<-c(
+      input$difMHSlider,
       input$diflogSlider,
       input$diflog_irtSlider,
       input$difnlrSlider,
       input$difirt_lord_itemSlider,
-      input$difirt_raju_itemSlider
+      input$difirt_raju_itemSlider,
+      input$ddfSlider
     )
     itemvalueDif<-as.numeric(names(table(itemvalueDif)[min(table(itemvalueDif))==table(itemvalueDif)]))
 
@@ -311,62 +317,80 @@ function(input, output, session) {
 
     itemCount = ncol(test_answers())
 
-    #updateSliderInput(session = session, inputId = "distractorSlider", max=itemCount, value = itemvalue)
-    updateSliderInput(session = session, inputId = "distractorSlider", max=itemCount)
-    # updateSliderInput(session = session, inputId = "logregSlider", max=itemCount, value = itemvalue)
-    # updateSliderInput(session = session, inputId = "zlogregSlider", max=itemCount, value = itemvalue)
-    # updateSliderInput(session = session, inputId = "zlogreg_irtSlider", max=itemCount, value = itemvalue)
-    # updateSliderInput(session = session, inputId = "nlsSlider", max=itemCount, value = itemvalue)
-    # updateSliderInput(session = session, inputId = "multiSlider", max=itemCount, value = itemvalue)
-    updateSliderInput(session = session, inputId = "logregSlider", max=itemCount, value = itemvalueReg)
-    updateSliderInput(session = session, inputId = "zlogregSlider", max=itemCount, value = itemvalueReg)
-    updateSliderInput(session = session, inputId = "zlogreg_irtSlider", max=itemCount, value = itemvalueReg)
-    updateSliderInput(session = session, inputId = "nlsSlider", max=itemCount, value = itemvalueReg)
-    updateSliderInput(session = session, inputId = "multiSlider", max=itemCount, value = itemvalueReg)
+    updateSliderInput(session = session, inputId = "logregSlider", max=itemCount)
+    updateSliderInput(session = session, inputId = "zlogregSlider", max=itemCount)
+    updateSliderInput(session = session, inputId = "zlogreg_irtSlider", max=itemCount)
+    updateSliderInput(session = session, inputId = "nlsSlider", max=itemCount)
+    updateSliderInput(session = session, inputId = "multiSlider", max=itemCount)
+    updateSliderInput(session = session, inputId = "difMHSlider", max=itemCount)
+    updateSliderInput(session = session, inputId = "diflogSlider", max=itemCount)
+    updateSliderInput(session = session, inputId = "diflog_irtSlider", max=itemCount)
+    updateSliderInput(session = session, inputId = "difnlrSlider", max=itemCount)
+    updateSliderInput(session = session, inputId = "difirt_lord_itemSlider", max=itemCount)
+    updateSliderInput(session = session, inputId = "difirt_raju_itemSlider", max=itemCount)
+    updateSliderInput(session = session, inputId = "ddfSlider", max=itemCount)
 
-    # updateSliderInput(session = session, inputId = "diflogSlider", max=itemCount, value = itemvalue)
-    # updateSliderInput(session = session, inputId = "diflog_irtSlider", max=itemCount, value = itemvalue)
-    # updateSliderInput(session = session, inputId = "difnlrSlider", max=itemCount, value = itemvalue)
-    # updateSliderInput(session = session, inputId = "difirt_lord_itemSlider", max=itemCount, value = itemvalue)
-    # updateSliderInput(session = session, inputId = "difirt_raju_itemSlider", max=itemCount, value = itemvalue)
-    updateSliderInput(session = session, inputId = "diflogSlider", max=itemCount, value = itemvalueDif)
-    updateSliderInput(session = session, inputId = "diflog_irtSlider", max=itemCount, value = itemvalueDif)
-    updateSliderInput(session = session, inputId = "difnlrSlider", max=itemCount, value = itemvalueDif)
-    updateSliderInput(session = session, inputId = "difirt_lord_itemSlider", max=itemCount, value = itemvalueDif)
-    updateSliderInput(session = session, inputId = "difirt_raju_itemSlider", max=itemCount, value = itemvalueDif)
+    # #updateSliderInput(session = session, inputId = "distractorSlider", max=itemCount, value = itemvalue)
+    # updateSliderInput(session = session, inputId = "distractorSlider", max=itemCount)
+    # # updateSliderInput(session = session, inputId = "logregSlider", max=itemCount, value = itemvalue)
+    # # updateSliderInput(session = session, inputId = "zlogregSlider", max=itemCount, value = itemvalue)
+    # # updateSliderInput(session = session, inputId = "zlogreg_irtSlider", max=itemCount, value = itemvalue)
+    # # updateSliderInput(session = session, inputId = "nlsSlider", max=itemCount, value = itemvalue)
+    # # updateSliderInput(session = session, inputId = "multiSlider", max=itemCount, value = itemvalue)
+    # updateSliderInput(session = session, inputId = "logregSlider", max=itemCount, value = itemvalueReg)
+    # updateSliderInput(session = session, inputId = "zlogregSlider", max=itemCount, value = itemvalueReg)
+    # updateSliderInput(session = session, inputId = "zlogreg_irtSlider", max=itemCount, value = itemvalueReg)
+    # updateSliderInput(session = session, inputId = "nlsSlider", max=itemCount, value = itemvalueReg)
+    # updateSliderInput(session = session, inputId = "multiSlider", max=itemCount, value = itemvalueReg)
+    #
+    # # updateSliderInput(session = session, inputId = "difMHSlider", max=itemCount, value = itemvalue)
+    # # updateSliderInput(session = session, inputId = "diflogSlider", max=itemCount, value = itemvalue)
+    # # updateSliderInput(session = session, inputId = "diflog_irtSlider", max=itemCount, value = itemvalue)
+    # # updateSliderInput(session = session, inputId = "difnlrSlider", max=itemCount, value = itemvalue)
+    # # updateSliderInput(session = session, inputId = "difirt_lord_itemSlider", max=itemCount, value = itemvalue)
+    # # updateSliderInput(session = session, inputId = "difirt_raju_itemSlider", max=itemCount, value = itemvalue)
+    # updateSliderInput(session = session, inputId = "difMHSlider", max=itemCount, value = itemvalueDif)
+    # updateSliderInput(session = session, inputId = "diflogSlider", max=itemCount, value = itemvalueDif)
+    # updateSliderInput(session = session, inputId = "diflog_irtSlider", max=itemCount, value = itemvalueDif)
+    # updateSliderInput(session = session, inputId = "difnlrSlider", max=itemCount, value = itemvalueDif)
+    # updateSliderInput(session = session, inputId = "difirt_lord_itemSlider", max=itemCount, value = itemvalueDif)
+    # updateSliderInput(session = session, inputId = "difirt_raju_itemSlider", max=itemCount, value = itemvalueDif)
+    # updateSliderInput(session = session, inputId = "ddfSlider", max=itemCount, value = itemvalueDif)
 
     # updateSliderInput(session = session, inputId = "reportSlider", max=itemCount, value = itemvalue)
 
     # lapply(lapply(sliderList, get), FUN=updateSliderInput, session=session, max=itemCount, value=itemvalue))
 
+    updateSliderInput(session = session, inputId = "inSlider2", max=itemCount, value = round(median(scored_test())))
     updateSliderInput(session = session, inputId = "inSlider2group", max=itemCount, value = round(median(scored_test()[DIF_groups() == 1])))
+    updateSliderInput(session = session, inputId = "difMHSlider_score", max=itemCount, value = round(median(scored_test())))
 
   })
 
   ########################
   # SLIDER FOR STUDENTS PAGE ######
   ########################
-  output$slider2 <- renderUI({
-    sliderInput(
-      "inSlider2", "Cut-Score", min = 0, max = ncol(test_answers()),
-      value = round(median(scored_test())), step = 1
-    )
-  })
+  # output$slider2 <- renderUI({
+  #   sliderInput(
+  #     "inSlider2", "Cut-Score", min = 0, max = ncol(test_answers()),
+  #     value = round(median(scored_test())), step = 1
+  #   )
+  # })
 
   # OTHER SLIDERS ####
   # * Mantel-Haenszel for score ####
-  output$difMHSlider_score <- renderUI({
-    sliderInput(
-      "difMHSlider_score", "Cut-Score", min = 0, max = ncol(test_answers()),
-      value = round(median(scored_test())), step = 1
-    )
-  })
-  # * Mantel-Haenszel for item ####
-  output$difMHSlider_itemUI <- renderUI({
-    a <- test_answers()
-    sliderInput("difMHSlider_item", "Item", animate = TRUE,
-                min = 1, max = ncol(a), value = 1, step = 1)
-  })
+  # output$difMHSlider_score <- renderUI({
+  #   sliderInput(
+  #     "difMHSlider_score", "Cut-Score", min = 0, max = ncol(test_answers()),
+  #     value = round(median(scored_test())), step = 1
+  #   )
+  # })
+  # # * Mantel-Haenszel for item ####
+  # output$difMHSlider_itemUI <- renderUI({
+  #   a <- test_answers()
+  #   sliderInput("difMHSlider_item", "Item", animate = TRUE,
+  #               min = 1, max = ncol(a), value = 1, step = 1)
+  # })
 
 
   ########################
@@ -477,6 +501,40 @@ function(input, output, session) {
     tab
   },
   include.rownames = FALSE)
+
+  # * CORRELATION STRUCTURE #####
+
+  corr_structure <- reactive({
+    data <- correct_answ()
+
+    corP <- polychoric(data)
+    corP
+  })
+
+  # ** Correlation plot ######
+  corr_plotInput <- reactive({
+    corP <- corr_structure()
+    corrplot(corP$rho)
+  })
+
+  # ** Output Correlation plot ######
+  output$corr_plot <- renderPlot({
+    corr_plotInput()
+  })
+
+  # ** Scree plot ######
+  scree_plotInput <- reactive({
+    corP <- corr_structure()
+    ev <- eigen(corP$rho)$values
+    plot(1:length(ev),
+         ev, ylab = "Eigen value", xlab = "Item")
+    lines(1:length(ev), ev)
+  })
+
+  # ** Output Scree plot ######
+  output$scree_plot <- renderPlot({
+    scree_plotInput()
+  })
 
   ############################
   # TRADITIONAL ANALYSIS #####
@@ -646,6 +704,7 @@ function(input, output, session) {
     for (i in 1:length(k)) {
       g<-plotDistractorAnalysis(data = a, key = k, num.group = input$gr, item = i,
                              multiple.answers = multiple.answers)
+      g=print(g)$plot
       graflist[[i]]=g
     }
 
@@ -1218,6 +1277,7 @@ function(input, output, session) {
               legend.key = element_rect(colour = "white"),
               plot.title = element_text(face = "bold"),
               legend.key.width = unit(1, "cm"))
+      g=print(g)$plot
       graflist[[i]]=g
     }
     graflist
@@ -2048,6 +2108,7 @@ function(input, output, session) {
                           IRT = F,
                           p.adjust.method = input$correction_method_logItems
           )
+      g=print(g)$plot
       graflist[[i]]<-g
     }
     graflist
@@ -2156,66 +2217,79 @@ function(input, output, session) {
 
 
   # * NLR DIF ####
-  # ** Model for plot ####
-  model_DIF_NLR_plot <- reactive({
-    group <- DIF_groups()
-    data <- correct_answ()
-
-    mod <- difNLR(data = data, group = group, type = input$type_plot_DIF_NLR,
-                  p.adjust.method = input$correction_method_nlrItems)
-    mod
-  })
-
   # ** Model for print ####
   model_DIF_NLR_print <- reactive({
     group <- DIF_groups()
     data <- correct_answ()
 
-    mod <- difNLR(data = data, group = group, type = input$type_print_DIF_NLR,
-                  p.adjust.method = input$correction_method_nlrSummary)
+    type <- input$type_print_DIF_NLR
+    adj.method <- input$correction_method_nlrSummary
+    model <- "3PLcg"
+
+    mod <- difNLR(Data = data, group = group, focal.name = 1,
+                  model = model, type = type,
+                  p.adjust.method = adj.method)
     mod
   })
 
   # ** Output print ####
-   output$print_DIF_NLR <- renderPrint({
-     print(model_DIF_NLR_print())
-   })
+  output$print_DIF_NLR <- renderPrint({
+    print(model_DIF_NLR_print())
+  })
+
+  # ** Model for plot ####
+  model_DIF_NLR_plot <- reactive({
+    group <- DIF_groups()
+    data <- correct_answ()
+
+    type <- input$type_plot_DIF_NLR
+    adj.method <- input$correction_method_nlrItems
+    model <- "3PLcg"
+
+    mod <- difNLR(Data = data, group = group, focal.name = 1,
+                  model = model, type = type,
+                  p.adjust.method = adj.method)
+    mod
+  })
 
   # ** Plot ####
   plot_DIF_NLRInput <- reactive({
-    plot(model_DIF_NLR_plot(), item = input$difnlrSlider)[[1]] +
+    fit <- model_DIF_NLR_plot()
+    item <- input$difnlrSlider
+
+    plot(fit, item = item)[[1]] +
       theme(text = element_text(size = 14),
-            plot.title = element_text(size = 14, face = "bold", vjust = 1.5))
+            plot.title = element_text(size = 14, face = "bold",
+                                      vjust = 1.5))
   })
 
+  # ** Output plot ####
   output$plot_DIF_NLR <- renderPlot({
     plot_DIF_NLRInput()
   })
 
+  # ** Plot download ####
   output$DP_plot_DIF_NLR <- downloadHandler(
     filename =  function() {
       paste("plot", input$name, ".png", sep = "")
     },
     content = function(file) {
-      ggsave(file, plot = plot_DIF_NLRInput(), device = "png", height=3, width=9, dpi=160)
+      ggsave(file, plot = plot_DIF_NLRInput(), device = "png",
+             height = 3, width = 9, dpi = 160)
     }
   )
 
+ # ** Table of coefficients ####
   output$tab_coef_DIF_NLR <- renderTable({
+    item <- input$difnlrSlider
+    fit <- model_DIF_NLR_plot()
 
+    tab_coef <- fit$nlrPAR[item, c("a", "b", "aDif", "bDif", "c")]
+    tab_sd <- fit$nlrSE[item, c("a", "b", "aDif", "bDif", "c")]
 
-    tab_coef <- t(as.table(model_DIF_NLR_plot()$coef[input$difnlrSlider, ]))
+    tab <- data.frame(tab_coef, tab_sd)
 
-    tab_sd <- lapply(lapply(model_DIF_NLR_plot()$vcov, diag), `length<-`,
-                     max(lengths(lapply(model_DIF_NLR_plot()$vcov, diag))))
-    tab_sd <- t(matrix(unlist(tab_sd), nrow = 5))
-    tab_sd[is.na(tab_sd)] <- 0
-
-
-    tab <- data.frame(tab_coef, tab_sd[input$difnlrSlider, ])
-
-    tab <- data.frame(tab[, 3:4])
-    rownames(tab) <- c('a', 'b', 'c', 'aDIF', 'bDIF')
+    rownames(tab) <- c('a', 'b', 'aDIF', 'bDIF', 'c')
     colnames(tab) <- c("Estimate", "SD")
 
     tab
@@ -2275,7 +2349,9 @@ function(input, output, session) {
 
   # ** Plot ####
   plot_DIF_IRT_LordInput <- reactive({
-    plotDIFirt(parameters = tab_coef_DIF_IRT_Lord(), item=input$difirt_lord_itemSlider)
+    fitLord <- model_DIF_IRT_Lord_plot()
+    plotDIFirt(parameters = fitLord$itemParInit,
+               item = input$difirt_lord_itemSlider)
   })
 
   output$plot_DIF_IRT_Lord <- renderPlot({
@@ -2294,7 +2370,15 @@ function(input, output, session) {
   # ** Table with coefficients ####
   tab_coef_DIF_IRT_Lord <- reactive({
 
-    m <- nrow(model_DIF_IRT_Lord_plot()$itemParInit)/2
+    fitLord <- model_DIF_IRT_Lord_plot()
+    m <- nrow(fitLord$itemParInit)/2
+
+    mR <- fitLord$itemParInit[1:m, ]
+    mF <- fitLord$itemParInit[(m+1):(2*m), ]
+    mF <- itemRescale(mR, mF)
+
+    par <- rbind(mR, mF)
+
     wh_coef <- switch(input$type_plot_DIF_IRT_lord,
                       "1PL" = 1,
                       "2PL" = 1:2,
@@ -2304,12 +2388,9 @@ function(input, output, session) {
                     "2PL" = 3:4,
                     "3PL" = 3:4)
 
-    tab_coef <- c(model_DIF_IRT_Lord_plot()$itemParInit[c(input$difirt_lord_itemSlider,
-                                                          m + input$difirt_lord_itemSlider),
-                                                        wh_coef])
-    tab_sd <- c(model_DIF_IRT_Lord_plot()$itemParInit[c(input$difirt_lord_itemSlider,
-                                                        m + input$difirt_lord_itemSlider),
-                                                      wh_sd])
+    item <- input$difirt_lord_itemSlider
+    tab_coef <- c(par[c(item, m + item), wh_coef])
+    tab_sd <- c(par[c(item, m + item), wh_sd])
 
     if (input$type_plot_DIF_IRT_lord == "3PL")
       tab_coef <- tab_coef[-6]
@@ -2442,7 +2523,9 @@ function(input, output, session) {
 
   # ** Plot ####
   plot_DIF_IRT_RajuInput <- reactive({
-    plotDIFirt(parameters = tab_coef_DIF_IRT_Raju(), test = "Raju", item=input$difirt_raju_itemSlider)
+    fitRaju <- model_DIF_IRT_Raju_plot()
+    plotDIFirt(parameters = fitRaju$itemParInit, test = "Raju",
+               item = input$difirt_raju_itemSlider)
   })
 
   output$plot_DIF_IRT_Raju <- renderPlot({
@@ -2515,7 +2598,16 @@ function(input, output, session) {
   # ** Table with coefficients ####
   tab_coef_DIF_IRT_Raju <- reactive({
 
-    m <- nrow(model_DIF_IRT_Raju_plot()$itemParInit)/2
+
+    fitRaju <- model_DIF_IRT_Raju_plot()
+    m <- nrow(fitRaju$itemParInit)/2
+
+    mR <- fitRaju$itemParInit[1:m, ]
+    mF <- fitRaju$itemParInit[(m+1):(2*m), ]
+    mF <- itemRescale(mR, mF)
+
+    par <- rbind(mR, mF)
+
     wh_coef <- switch(input$type_plot_DIF_IRT_raju,
                       "1PL" = 1,
                       "2PL" = 1:2,
@@ -2524,9 +2616,10 @@ function(input, output, session) {
                     "1PL" = 2,
                     "2PL" = 3:4,
                     "3PL" = 3:4)
+    item <- input$difirt_raju_itemSlider
 
-    tab_coef <- c(model_DIF_IRT_Raju_plot()$itemParInit[c(input$difirt_raju_itemSlider, m + input$difirt_raju_itemSlider), wh_coef])
-    tab_sd <- c(model_DIF_IRT_Raju_plot()$itemParInit[c(input$difirt_raju_itemSlider, m + input$difirt_raju_itemSlider), wh_sd])
+    tab_coef <- c(par[c(item, m + item), wh_coef])
+    tab_sd <- c(par[c(item, m + item), wh_sd])
 
     if (input$type_plot_DIF_IRT_raju == "3PL")
       tab_coef <- tab_coef[-6]
@@ -2551,6 +2644,96 @@ function(input, output, session) {
   },
   include.rownames = T,
   include.colnames = T)
+
+  # * DDF ####
+  # ** Model for print ####
+  model_DDF_print <- reactive({
+    group <- DIF_groups()
+    a <- test_answers()
+    k <- test_key()
+
+    adj.method <- input$correction_method_print_DDF
+    type <- input$type_print_DDF
+
+    mod <- ddfMLR(Data = a, group = group, focal.name = 1,
+                  key = k, p.adjust.method = adj.method,
+                  type = type)
+
+    mod
+  })
+
+  # ** Output print ####
+  output$print_DDF <- renderPrint({
+    print(model_DDF_print())
+  })
+
+  # ** Model for plot ####
+  model_DDF_plot <- reactive({
+    group <- DIF_groups()
+    a <- test_answers()
+    k <- test_key()
+
+    adj.method <- input$correction_method_plot_DDF
+    type <- input$type_plot_DDF
+
+    mod <- ddfMLR(Data = a, group = group, focal.name = 1,
+                  key = k, p.adjust.method = adj.method,
+                  type = type)
+
+    mod
+  })
+
+  # ** Plot ####
+  plot_DDFInput <- reactive({
+    fit <- model_DDF_plot()
+    item <- input$ddfSlider
+
+    plot(fit, item = item)
+  })
+
+  # ** Output Plot ####
+  output$plot_DDF <- renderPlot({
+    plot_DDFInput()
+  })
+
+  # ** Plot download ####
+  output$DP_plot_DDF <- downloadHandler(
+    filename =  function() {
+      paste("plot", input$name, ".png", sep = "")
+    },
+    content = function(file) {
+      ggsave(file, plot = plot_DDFInput(), device = "png",
+             height = 3, width = 9, dpi = 160)
+    }
+  )
+
+  # ** Table of coefficients ####
+  output$tab_coef_DDF <- renderTable({
+    item <- input$ddfSlider
+    fit <- model_DDF_plot()
+
+    tab_coef <- fit$mlrPAR[[item]]
+
+    if (ncol(tab_coef) == 2){
+      tab_coef <- data.frame(tab_coef, 0, 0)
+    } else {
+      if (ncol(tab_coef) == 3){
+        tab_coef <- data.frame(tab_coef, 0)
+      }
+    }
+
+    colnames(tab_coef) <- c("Intercept", "S.T. score", "Group", "S.T. score:Group")
+    # tab_sd <- fit$nlrSE[item, c("a", "b", "aDif", "bDif", "c")]
+    #
+    # tab <- data.frame(tab_coef, tab_sd)
+    #
+    # rownames(tab) <- c('a', 'b', 'c', 'aDIF', 'bDIF')
+    # colnames(tab) <- c("Estimate", "SD")
+    #
+    tab_coef
+  },
+  include.rownames = T)
+
 
   # DOWNLOADN REPORT #####
   formatInput<-reactive({
@@ -2590,7 +2773,7 @@ function(input, output, session) {
                        DIF_logistic_print = model_DIF_logistic_print(),
                        plot_DIF_logistic = plot_DIF_logisticInput(),
                        plot_DIF_logistic_IRT_Z = plot_DIF_logistic_IRT_ZInput(),
-                       plot_DIF_NLR = plot_DIF_NLRInput(),
+                       #plot_DIF_NLR = plot_DIF_NLRInput(),
                        plot_DIF_IRT_Lord = plot_DIF_IRT_LordInput(),
                        plot_DIF_IRT_Raju = plot_DIF_IRT_RajuInput()
       )
