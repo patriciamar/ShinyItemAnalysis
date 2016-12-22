@@ -7,6 +7,7 @@ Maintainer: Patricia Martinkova <martinkova@cs.cas.cz>
 Depends:
     R (>= 3.2.2)
 Imports:
+    corrplot,
     CTT,
     deltaPlotR,
     difNLR,
@@ -20,7 +21,8 @@ Imports:
     reshape2,
     shiny,
     shinyAce,
-    stringr
+    stringr,
+    rmarkdown
 Description: Interactive shiny application for analysis of educational tests and
     their items.
 License: GPL-3

@@ -4,20 +4,39 @@
 \alias{plotDIFirt}
 \title{Function for characteristic curve of DIF IRT model}
 \usage{
-plotDIFirt(parameters, test = "Lord", item = 1)
+plotDIFirt(parameters, test = "Lord", item = "all", same.scale = F)
 }
 \arguments{
 \item{parameters}{numeric: data matrix or data frame. See \strong{Details}.}
 
-\item{test}{character: type of statistic to be shown.}
+\item{test}{character: type of statistic to be shown. See \strong{Details}.}
 
-\item{item}{numeric: number of item to be plotted.}
+\item{item}{either character ("all"), or numeric vector, or single number
+corresponding to column indicators. See \strong{Details}.}
+
+\item{same.scale}{logical: are the item \code{parameters} on the same scale?
+(default is "FALSE"). See \strong{Details}.}
 }
 \description{
 Plots characteristic curve of IRT model.
 }
 \details{
 This function plots characteristic curve of DIF IRT model.
+
+The \code{parameters} matrix has a number of rows equal to twice the number
+of items in the data set. The first J rows refer to the item parameter estimates
+in the reference group, while the last J ones correspond to the same items in the
+focal group. The number of columns depends on the selected IRT model: 2 for the 1PL
+model, 5 for the 2PL model, 6 for the constrained 3PL model and 9 for the
+unconstrained 3PL model. The columns of irtParam have to follow the same structure
+as the output of \code{itemParEst}, \code{difLord} or \code{difRaju} command from
+\code{difR} package.
+
+Two possible type of \code{test} statistics can be visualized - \code{"Lord"}
+gives only characteristic curves, \code{"Raju"} also highlights area between
+these curves.
+
+For default option \code{"all"}, all characteristic curves are plotted.
 }
 \examples{
 \dontrun{
@@ -26,26 +45,19 @@ library(difNLR, difR)
 
  # loading data based on GMAT
 data(GMAT, package = "difNLR")
-data  <- GMAT[, colnames(GMAT) != "group"]
-group <- GMAT[, "group"]
 
-# Estimation of 2PL IRT model
-fitR <- itemParEst(data[group == 0, ], model = "2PL")
-fitF <- itemParEst(data[group == 1, ], model = "2PL")
+# Estimation of 2PL IRT model and Lord's statistic
+# by difR package
+fitLord <- difLord(GMAT, group = 21, focal.name = 1, model = "2PL")
+# plot of item 1 and Lord's statistic
+plotDIFirt(fitLord$itemParInit, item = 1)
 
-# Estimated parameters with sd for item 1
-est <- c(fitR[1, 1:2], fitF[1, 1:2])[c(1, 3, 2, 4)]
-sd <- c(fitR[1, 3:4], fitF[1, 3:4])[c(1, 3, 2, 4)]
-parameters <- data.frame(est, sd)
-
-# Characteristic curve for item 1
-plotDIFirt(parameters, item = 1)
-
-# Characteristic curve for item 1 with highlighted area between curves
-plotDIFirt(parameters, item = 1, test = "Raju")
+# Estimation of 2PL IRT model and Raju's statistic
+# by difR package
+fitRaju <- difRaju(GMAT, group = 21, focal.name = 1, model = "2PL")
+# plot of item 1 and Lord's statistic
+plotDIFirt(fitRaju$itemParInit, test = "Raju", item = 1)
 }
-
-
 }
 \author{
 Adela Drabinova \cr
@@ -56,5 +68,12 @@ adela.drabinova@gmail.com \cr
 Patricia Martinkova \cr
 Institute of Computer Science, The Czech Academy of Sciences \cr
 martinkova@cs.cas.cz \cr
+}
+\seealso{
+\code{\link[difR]{itemParEst}}
+
+\code{\link[difR]{difLord}}
+
+\code{\link[difR]{difRaju}}
 }
 

@@ -3,7 +3,8 @@ exportPattern("^[[:alpha:]]+")
 
 
 importFrom(psychometric, item.exam)
-import(CTT,
+import(corrplot,
+       CTT,
        deltaPlotR,
        difNLR,
        difR,

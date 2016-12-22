@@ -2,6 +2,7 @@
 # GLOBAL LIBRARY #####
 ######################
 
+library(corrplot)
 library(CTT)
 library(deltaPlotR)
 library(difNLR)
@@ -479,6 +480,40 @@ function(input, output, session) {
     tab
   },
   include.rownames = FALSE)
+
+  # * CORRELATION STRUCTURE #####
+
+  corr_structure <- reactive({
+    data <- correct_answ()
+
+    corP <- polychoric(data)
+    corP
+  })
+
+  # ** Correlation plot ######
+  corr_plotInput <- reactive({
+    corP <- corr_structure()
+    corrplot(corP$rho)
+  })
+
+  # ** Output Correlation plot ######
+  output$corr_plot <- renderPlot({
+    corr_plotInput()
+  })
+
+  # ** Scree plot ######
+  scree_plotInput <- reactive({
+    corP <- corr_structure()
+    ev <- eigen(corP$rho)$values
+    plot(1:length(ev),
+         ev, ylab = "Eigen value", xlab = "Item")
+    lines(1:length(ev), ev)
+  })
+
+  # ** Output Scree plot ######
+  output$scree_plot <- renderPlot({
+    scree_plotInput()
+  })
 
   ############################
   # TRADITIONAL ANALYSIS #####
