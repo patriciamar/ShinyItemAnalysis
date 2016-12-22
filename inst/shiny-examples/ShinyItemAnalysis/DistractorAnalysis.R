@@ -35,22 +35,17 @@
 #'
 #' @examples
 #' \dontrun{
-#' # loading difMedicaltest data set
-#' data(difMedicaltest, package = "difNLR")
-#' data  <- difMedicaltest[, colnames(difMedicaltest) != "gender"]
-#' # loading difMedicalkey
-#' data(difMedicalkey, package = "difNLR")
-#' key  <- difMedicalkey
+#' # loading 100-item medical admission test data
+#' data(dataMedicaltest, dataMedicalkey)
 #'
-#' # distractor analysis for difMedicaltest data set
-#' DistractorAnalysis(data, key)
+#' # distractor analysis for dataMedicaltest data set
+#' DistractorAnalysis(dataMedicaltest, dataMedicalkey)
 #'
-#' # distractor analysis for difMedicaltest data set with proportions
-#' DistractorAnalysis(data, key, p.table = T)
+#' # distractor analysis for dataMedicaltest data set with proportions
+#' DistractorAnalysis(dataMedicaltest, dataMedicalkey, p.table = T)
 #'
-#' # distractor analysis for difMedicaltest data set for 6 groups
-#' DistractorAnalysis(data, key, num.group = 6)
-#'
+#' # distractor analysis for dataMedicaltest data set for 6 groups
+#' DistractorAnalysis(dataMedicaltest, dataMedicalkey, num.group = 6)
 #' }
 #'
 #'

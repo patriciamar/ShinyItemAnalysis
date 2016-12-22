@@ -51,18 +51,21 @@
 #'
 #' @examples
 #' \dontrun{
+#' # loading data
+#' data(dataMedical, dataMedicaltest, dataMedicalkey)
+#'
 #' # Difficulty/Discriminaton plot for medical admission test
 #' DDplot(dataMedical)
 #' # item 48 is very hard, thus does not discriminate well
 #' # item 57 discriminates well
 #' # item 32 does not discriminate well
 #'
-#' # distractor analysis plot for item 1, distractors only
 #' plotDistractorAnalysis(dataMedicaltest, dataMedicalkey, item = 48, multiple.answers = F)
 #' # correct answer B does not function well
 #' plotDistractorAnalysis(dataMedicaltest, dataMedicalkey, item = 57, multiple.answers = F)
 #' # all options function well, thus the whole item discriminates well
 #' plotDistractorAnalysis(dataMedicaltest, dataMedicalkey, item = 32, multiple.answers = F)
+#' # functions well, thus the whole item discriminates well
 #'
 #' # distractor analysis plot for item 48, 57 and 32, all combinations
 #' plotDistractorAnalysis(dataMedicaltest, dataMedicalkey, item = 48)
@@ -71,24 +74,6 @@
 #'
 #' # distractor analysis plot for item 57, all combinations and 6 groups
 #' plotDistractorAnalysis(dataMedicaltest, dataMedicalkey, num.group = 6, item = 57)
-#'
-#'
-#' # loading difMedicaltest data set
-#' data(difMedicaltest, package = "difNLR")
-#' data  <- difMedicaltest[, colnames(difMedicaltest) != "gender"]
-#' # loading difMedicalkey
-#' data(difMedicalkey, package = "difNLR")
-#' key  <- difMedicalkey
-#'
-#' # distractor analysis plot for item 1, all combinations
-#' plotDistractorAnalysis(data, key, item = 1)
-#'
-#' # distractor analysis plot for item 1, distractors
-#' plotDistractorAnalysis(data, key, item = 1, multiple.answers = F)
-#'
-#' # distractor analysis plot for item 3, all combinations and 6 groups
-#' plotDistractorAnalysis(data, key, num.group = 6, item = 3)
-#'
 #' }
 #'
 #'

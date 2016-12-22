@@ -46,7 +46,7 @@ params$difPlot
 params$itemexam
 ```
 # Regression Report
-```{r echo=FALSE}
+```{r echo=FALSE, results="hide"}
 params$graf
 # params$logreg
 # params$zlogreg
@@ -78,11 +78,20 @@ params$twofactor
 
 ```{r echo=FALSE}
 params$resultsgroup
+```
+
+```{r echo=FALSE, results="hide"}
 params$histbyscoregroup0
 params$histbyscoregroup1
 params$deltaplot
+```
+
+```{r echo=FALSE}
 params$DP_text_normal
 params$DIF_logistic_print
+```
+
+```{r echo=FALSE, results="hide"}
 params$DIF_logistic_plot
 ```
 

@@ -1,12 +1,13 @@
 Package: ShinyItemAnalysis
 Type: Package
 Title: Test and Item Analysis via Shiny
-Version: 1.0.0
+Version: 1.1.0
 Author: Patricia Martinkova [aut, cre], Adela Drabinova [aut, cre], Ondrej Leder [aut, cre] and Jakub Houdek [aut, cre]
 Maintainer: Patricia Martinkova <martinkova@cs.cas.cz>
 Depends:
     R (>= 3.2.2)
 Imports:
+    corrplot,
     CTT,
     deltaPlotR,
     difNLR,
@@ -20,7 +21,8 @@ Imports:
     reshape2,
     shiny,
     shinyAce,
-    stringr
+    stringr,
+    rmarkdown
 Description: Interactive shiny application for analysis of educational tests and
     their items.
 License: GPL-3
