@@ -24,12 +24,11 @@
 #'
 #' @examples
 #' \dontrun{
-#' # loading data based on GMAT
-#' data(GMAT, package = "difNLR")
-#' data  <- GMAT[, colnames(GMAT) != "group"]
+#' # loading 100-item medical admission test data set
+#' data(dataMedical)
 #'
-#' # Difficulty/Discrimination plot
-#' DDplot(data)
+#' # Difficulty/Discrimination plot of dataMedical data set
+#' DDplot(dataMedical)
 #' }
 #' @export
 

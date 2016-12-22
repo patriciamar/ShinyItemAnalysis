@@ -24,15 +24,11 @@
 #'
 #' @examples
 #' \dontrun{
-#' # Difficulty/Discrimination plot of 100-item medical admission test
+#' # loading 100-item medical admission test data set
+#' data(dataMedical)
+#'
+#' # Difficulty/Discrimination plot of dataMedical data set
 #' DDplot(dataMedical)
-#'
-#' # loading data based on GMAT
-#' data(GMAT, package = "difNLR")
-#' data  <- GMAT[, colnames(GMAT) != "group"]
-#'
-#' # Difficulty/Discrimination plot
-#' DDplot(data)
 #' }
 #' @export
 
