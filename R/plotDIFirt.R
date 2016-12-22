@@ -69,7 +69,7 @@
 #' @export
 
 
-plotDIFirt <- function(parameters, test = "Lord", item = 1, same.scale = F){
+plotDIFirt <- function(parameters, test = "Lord", item = "all", same.scale = F){
 
   if (!(test %in% c("Lord", "Raju"))){
     stop("'test' must be either 'Lord' or 'Raju'",

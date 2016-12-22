@@ -12,17 +12,19 @@ Imports:
     deltaPlotR,
     difNLR,
     difR,
+    foreign,
     ggplot2,
     gridExtra,
     ltm,
     moments,
     nnet,
+    psych,
     psychometric,
     reshape2,
+    rmarkdown,
     shiny,
     shinyAce,
-    stringr,
-    rmarkdown
+    stringr
 Description: Interactive shiny application for analysis of educational tests and
     their items.
 License: GPL-3
