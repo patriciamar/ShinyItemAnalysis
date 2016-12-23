@@ -71,15 +71,15 @@ function(input, output, session) {
   # CHOOSE DATA #####
 
 
-  output$dataSelect <- renderUI({
-    selectInput("dataSelect", "Select dataset",
-                c("GMAT" = "GMAT_difNLR",
-                  "GMAT2" = "GMAT2_difNLR",
-                  "Medical 20 DIF" = "difMedical_difNLR",
-                  "Medical 100" = "dataMedical_ShinyItemAnalysis"
-                ),
-                selected="GMAT")
-  })
+  # output$dataSelect <- renderUI({
+  #   selectInput("dataSelect", "Select dataset",
+  #               c("GMAT" = "GMAT_difNLR",
+  #                 "GMAT2" = "GMAT2_difNLR",
+  #                 "Medical 20 DIF" = "difMedical_difNLR",
+  #                 "Medical 100" = "dataMedical_ShinyItemAnalysis"
+  #               ),
+  #               selected="GMAT")
+  # })
 
 
   # LOAD ABCD DATA #####
@@ -265,6 +265,7 @@ function(input, output, session) {
       "zlogreg_irtSlider",
       "nlsSlider",
       "multiSlider",
+      "difMHSlider",
       "diflogSlider",
       "diflog_irtSlider",
       "difnlrSlider",
@@ -275,6 +276,7 @@ function(input, output, session) {
       )
 
     # itemvalue<-c(
+    #   input$difMHSlider,
     #   #input$distractorSlider,
     #   input$logregSlider,
     #   input$zlogregSlider,
@@ -299,6 +301,7 @@ function(input, output, session) {
     itemvalueReg<-as.numeric(names(table(itemvalueReg)[min(table(itemvalueReg))==table(itemvalueReg)]))
 
     itemvalueDif<-c(
+      input$difMHSlider,
       input$diflogSlider,
       input$diflog_irtSlider,
       input$difnlrSlider,
@@ -314,62 +317,80 @@ function(input, output, session) {
 
     itemCount = ncol(test_answers())
 
-    #updateSliderInput(session = session, inputId = "distractorSlider", max=itemCount, value = itemvalue)
-    updateSliderInput(session = session, inputId = "distractorSlider", max=itemCount)
-    # updateSliderInput(session = session, inputId = "logregSlider", max=itemCount, value = itemvalue)
-    # updateSliderInput(session = session, inputId = "zlogregSlider", max=itemCount, value = itemvalue)
-    # updateSliderInput(session = session, inputId = "zlogreg_irtSlider", max=itemCount, value = itemvalue)
-    # updateSliderInput(session = session, inputId = "nlsSlider", max=itemCount, value = itemvalue)
-    # updateSliderInput(session = session, inputId = "multiSlider", max=itemCount, value = itemvalue)
-    updateSliderInput(session = session, inputId = "logregSlider", max=itemCount, value = itemvalueReg)
-    updateSliderInput(session = session, inputId = "zlogregSlider", max=itemCount, value = itemvalueReg)
-    updateSliderInput(session = session, inputId = "zlogreg_irtSlider", max=itemCount, value = itemvalueReg)
-    updateSliderInput(session = session, inputId = "nlsSlider", max=itemCount, value = itemvalueReg)
-    updateSliderInput(session = session, inputId = "multiSlider", max=itemCount, value = itemvalueReg)
+    updateSliderInput(session = session, inputId = "logregSlider", max=itemCount)
+    updateSliderInput(session = session, inputId = "zlogregSlider", max=itemCount)
+    updateSliderInput(session = session, inputId = "zlogreg_irtSlider", max=itemCount)
+    updateSliderInput(session = session, inputId = "nlsSlider", max=itemCount)
+    updateSliderInput(session = session, inputId = "multiSlider", max=itemCount)
+    updateSliderInput(session = session, inputId = "difMHSlider", max=itemCount)
+    updateSliderInput(session = session, inputId = "diflogSlider", max=itemCount)
+    updateSliderInput(session = session, inputId = "diflog_irtSlider", max=itemCount)
+    updateSliderInput(session = session, inputId = "difnlrSlider", max=itemCount)
+    updateSliderInput(session = session, inputId = "difirt_lord_itemSlider", max=itemCount)
+    updateSliderInput(session = session, inputId = "difirt_raju_itemSlider", max=itemCount)
+    updateSliderInput(session = session, inputId = "ddfSlider", max=itemCount)
 
-    # updateSliderInput(session = session, inputId = "diflogSlider", max=itemCount, value = itemvalue)
-    # updateSliderInput(session = session, inputId = "diflog_irtSlider", max=itemCount, value = itemvalue)
-    # updateSliderInput(session = session, inputId = "difnlrSlider", max=itemCount, value = itemvalue)
-    # updateSliderInput(session = session, inputId = "difirt_lord_itemSlider", max=itemCount, value = itemvalue)
-    # updateSliderInput(session = session, inputId = "difirt_raju_itemSlider", max=itemCount, value = itemvalue)
-    updateSliderInput(session = session, inputId = "diflogSlider", max=itemCount, value = itemvalueDif)
-    updateSliderInput(session = session, inputId = "diflog_irtSlider", max=itemCount, value = itemvalueDif)
-    updateSliderInput(session = session, inputId = "difnlrSlider", max=itemCount, value = itemvalueDif)
-    updateSliderInput(session = session, inputId = "difirt_lord_itemSlider", max=itemCount, value = itemvalueDif)
-    updateSliderInput(session = session, inputId = "difirt_raju_itemSlider", max=itemCount, value = itemvalueDif)
-    updateSliderInput(session = session, inputId = "ddfSlider", max=itemCount, value = itemvalueDif)
+    # #updateSliderInput(session = session, inputId = "distractorSlider", max=itemCount, value = itemvalue)
+    # updateSliderInput(session = session, inputId = "distractorSlider", max=itemCount)
+    # # updateSliderInput(session = session, inputId = "logregSlider", max=itemCount, value = itemvalue)
+    # # updateSliderInput(session = session, inputId = "zlogregSlider", max=itemCount, value = itemvalue)
+    # # updateSliderInput(session = session, inputId = "zlogreg_irtSlider", max=itemCount, value = itemvalue)
+    # # updateSliderInput(session = session, inputId = "nlsSlider", max=itemCount, value = itemvalue)
+    # # updateSliderInput(session = session, inputId = "multiSlider", max=itemCount, value = itemvalue)
+    # updateSliderInput(session = session, inputId = "logregSlider", max=itemCount, value = itemvalueReg)
+    # updateSliderInput(session = session, inputId = "zlogregSlider", max=itemCount, value = itemvalueReg)
+    # updateSliderInput(session = session, inputId = "zlogreg_irtSlider", max=itemCount, value = itemvalueReg)
+    # updateSliderInput(session = session, inputId = "nlsSlider", max=itemCount, value = itemvalueReg)
+    # updateSliderInput(session = session, inputId = "multiSlider", max=itemCount, value = itemvalueReg)
+    #
+    # # updateSliderInput(session = session, inputId = "difMHSlider", max=itemCount, value = itemvalue)
+    # # updateSliderInput(session = session, inputId = "diflogSlider", max=itemCount, value = itemvalue)
+    # # updateSliderInput(session = session, inputId = "diflog_irtSlider", max=itemCount, value = itemvalue)
+    # # updateSliderInput(session = session, inputId = "difnlrSlider", max=itemCount, value = itemvalue)
+    # # updateSliderInput(session = session, inputId = "difirt_lord_itemSlider", max=itemCount, value = itemvalue)
+    # # updateSliderInput(session = session, inputId = "difirt_raju_itemSlider", max=itemCount, value = itemvalue)
+    # updateSliderInput(session = session, inputId = "difMHSlider", max=itemCount, value = itemvalueDif)
+    # updateSliderInput(session = session, inputId = "diflogSlider", max=itemCount, value = itemvalueDif)
+    # updateSliderInput(session = session, inputId = "diflog_irtSlider", max=itemCount, value = itemvalueDif)
+    # updateSliderInput(session = session, inputId = "difnlrSlider", max=itemCount, value = itemvalueDif)
+    # updateSliderInput(session = session, inputId = "difirt_lord_itemSlider", max=itemCount, value = itemvalueDif)
+    # updateSliderInput(session = session, inputId = "difirt_raju_itemSlider", max=itemCount, value = itemvalueDif)
+    # updateSliderInput(session = session, inputId = "ddfSlider", max=itemCount, value = itemvalueDif)
+
     # updateSliderInput(session = session, inputId = "reportSlider", max=itemCount, value = itemvalue)
 
     # lapply(lapply(sliderList, get), FUN=updateSliderInput, session=session, max=itemCount, value=itemvalue))
 
+    updateSliderInput(session = session, inputId = "inSlider2", max=itemCount, value = round(median(scored_test())))
     updateSliderInput(session = session, inputId = "inSlider2group", max=itemCount, value = round(median(scored_test()[DIF_groups() == 1])))
+    updateSliderInput(session = session, inputId = "difMHSlider_score", max=itemCount, value = round(median(scored_test())))
 
   })
 
   ########################
   # SLIDER FOR STUDENTS PAGE ######
   ########################
-  output$slider2 <- renderUI({
-    sliderInput(
-      "inSlider2", "Cut-Score", min = 0, max = ncol(test_answers()),
-      value = round(median(scored_test())), step = 1
-    )
-  })
+  # output$slider2 <- renderUI({
+  #   sliderInput(
+  #     "inSlider2", "Cut-Score", min = 0, max = ncol(test_answers()),
+  #     value = round(median(scored_test())), step = 1
+  #   )
+  # })
 
   # OTHER SLIDERS ####
   # * Mantel-Haenszel for score ####
-  output$difMHSlider_score <- renderUI({
-    sliderInput(
-      "difMHSlider_score", "Cut-Score", min = 0, max = ncol(test_answers()),
-      value = round(median(scored_test())), step = 1
-    )
-  })
-  # * Mantel-Haenszel for item ####
-  output$difMHSlider_itemUI <- renderUI({
-    a <- test_answers()
-    sliderInput("difMHSlider_item", "Item", animate = TRUE,
-                min = 1, max = ncol(a), value = 1, step = 1)
-  })
+  # output$difMHSlider_score <- renderUI({
+  #   sliderInput(
+  #     "difMHSlider_score", "Cut-Score", min = 0, max = ncol(test_answers()),
+  #     value = round(median(scored_test())), step = 1
+  #   )
+  # })
+  # # * Mantel-Haenszel for item ####
+  # output$difMHSlider_itemUI <- renderUI({
+  #   a <- test_answers()
+  #   sliderInput("difMHSlider_item", "Item", animate = TRUE,
+  #               min = 1, max = ncol(a), value = 1, step = 1)
+  # })
 
 
   ########################
@@ -683,6 +704,7 @@ function(input, output, session) {
     for (i in 1:length(k)) {
       g<-plotDistractorAnalysis(data = a, key = k, num.group = input$gr, item = i,
                              multiple.answers = multiple.answers)
+      g=print(g)$plot
       graflist[[i]]=g
     }
 
@@ -1255,6 +1277,7 @@ function(input, output, session) {
               legend.key = element_rect(colour = "white"),
               plot.title = element_text(face = "bold"),
               legend.key.width = unit(1, "cm"))
+      g=print(g)$plot
       graflist[[i]]=g
     }
     graflist
@@ -2085,6 +2108,7 @@ function(input, output, session) {
                           IRT = F,
                           p.adjust.method = input$correction_method_logItems
           )
+      g=print(g)$plot
       graflist[[i]]<-g
     }
     graflist
@@ -2749,7 +2773,7 @@ function(input, output, session) {
                        DIF_logistic_print = model_DIF_logistic_print(),
                        plot_DIF_logistic = plot_DIF_logisticInput(),
                        plot_DIF_logistic_IRT_Z = plot_DIF_logistic_IRT_ZInput(),
-                       plot_DIF_NLR = plot_DIF_NLRInput(),
+                       #plot_DIF_NLR = plot_DIF_NLRInput(),
                        plot_DIF_IRT_Lord = plot_DIF_IRT_LordInput(),
                        plot_DIF_IRT_Raju = plot_DIF_IRT_RajuInput()
       )
