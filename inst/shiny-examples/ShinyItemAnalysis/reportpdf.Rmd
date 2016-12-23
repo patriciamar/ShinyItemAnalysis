@@ -41,6 +41,7 @@ params:
 ```{r echo=FALSE}
 params$results
 ```
+
 ```{r echo=FALSE, results="hide"}
 params$histogram_totalscores
 ```
@@ -56,6 +57,7 @@ params$histogram_totalscores
 ```{r echo=FALSE, results="hide"}
 params$difPlot
 ```
+
 ```{r echo=FALSE}
 params$itemexam
 ```
@@ -102,9 +104,11 @@ params$twoparam
 params$twoparamiic
 params$twoparamtif
 ```
+
 ```{r echo=FALSE}
 params$twoparamcoef
 ```
+
 ```{r echo=FALSE, results="hide"}
 params$twofactor
 ```
@@ -128,6 +132,7 @@ params$histbyscoregroup1
 ```{r echo=FALSE, results="hide"}
 params$deltaplot
 ```
+
 ```{r echo=FALSE}
 params$DP_text_normal
 ```
@@ -137,6 +142,7 @@ params$DP_text_normal
 ```{r echo=FALSE}
 params$DIF_logistic_print
 ```
+
 ```{r echo=FALSE, results="hide"}
 params$DIF_logistic_plot
 ```
