@@ -1,19 +1,24 @@
-#' @import corrplot
-#' CTT
-#' deltaPlotR
-#' difNLR
+#' @import difNLR
 #' difR
-#' foreign
 #' ggplot2
-#' gridExtra
-#' ltm
-#' moments
-#' nnet
-#' psych
-#' reshape2
-#' stringr
-#' rmarkdown
+#' shiny
 #'
+#' @importFrom corrplot corrplot
+#' @importFrom CTT score
+#' @importFrom deltaPlotR deltaPlot
+#' @importFrom graphics lines plot plot.new
+#' @importFrom grDevices dev.off png rainbow recordPlot
+#' @importFrom ltm ltm rasch tpm factor.scores
+#' @importFrom moments kurtosis skewness
+#' @importFrom nnet multinom
+#' @importFrom psych alpha polychoric
 #' @importFrom psychometric item.exam
-#' @importFrom grDevices rainbow
-#' @importFrom stats aggregate quantile relevel xtabs
+#' @importFrom reshape2 dcast melt
+#' @importFrom rmarkdown render
+#' @importFrom stats aggregate coef deriv deriv3 fitted glm median nls quantile relevel sd vcov xtabs
+#' @importFrom stringr str_sub
+#' @importFrom utils data read.csv
+
+
+
+# foreign gridExtra shinyAce
