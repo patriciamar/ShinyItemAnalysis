@@ -1,7 +1,8 @@
 ---
-title: "Dynamic report"
-output:
-  html_document:
+title: "Item Analysis Report"
+date: '`r format(Sys.Date(), "%d %B, %Y")`'
+output: 
+    html_document:
        number_sections: true
 params:
   a: NA
@@ -35,15 +36,26 @@ params:
   plot_DIF_IRT_Lord: NA
   plot_DIF_IRT_Raju: NA
   itemexam: NA
+  itemReport: NA
 ---
 # Summary Report
 
-```{r echo=FALSE}
-params$results
-```
 ```{r echo=FALSE, results="hide"}
-params$histogram_totalscores
+library(gridExtra)
+table=params$results
+table=round(table, digits=4)
+colnames(table)=NULL
+table=tableGrob(t(table))
+hist=ggplotGrob(params$histogram_totalscores)
+lay=rbind(c(1,1,1),
+          c(2,2,2),
+          c(2,2,2),
+          c(2,2,2),
+          c(2,2,2))
+grid.arrange(table, hist, ncol=1, top="Basic Summary and Histogram", layout_matrix=lay)
+
 ```
+
 
 
 \pagebreak
@@ -56,55 +68,43 @@ params$histogram_totalscores
 ```{r echo=FALSE, results="hide"}
 params$difPlot
 ```
+
 ```{r echo=FALSE}
-params$itemexam
+#params$itemexam
+table=params$itemexam
+table=format(round(table, 4), nsmall=3)
+colnames(table)=c("Item", "Diff.", "SD", "D. ULI", "D. RIT", "D. RIR", "Alpha Drop")
+rownames(table)=NULL
+#grid.table(table, theme=ttheme_minimal())
+table
 ```
-# Regression Report
 
 ## Distractor Analysis
 
 ```{r echo=FALSE, results="hide"}
-params$graf
+for (i in 1:length(params$graf)) {
+grid.arrange(params$graf[[i]], params$multiplot[[i]], ncol=2, top=paste0("Distractor and Multinomial Plots for item ",i))
+}
 ```
 
 
 \pagebreak
-
-
-# Regression Report
-
-```{r echo=FALSE, results="hide"}
-# params$logreg
-# params$zlogreg
-# params$zlogreg_irt
-# params$nlsplot
-```
-## Multionomial Plots
-
-```{r echo=FALSE, results="hide"}
-library(gridExtra)
-params$multiplot
-# params$plot_DIF_IRT_Lord
-# params$plot_DIF_IRT_Raju
-```
-# IRT Model Report
-
-
-\pagebreak
-
 
 # IRT 2PL Model Report
 
-$\\mathrm{P}\\left(Y_{ij} = 1\\vert \\theta_{i}, a_{j}, b_{j}\\right) =  \\frac{e^{a_{j}\\left(\\theta_{i}-b_{j}\\right) }}{1+e^{a_{j}\\left(\\theta_{i}-b_{j}\\right) }} $
+
+$$ {P}(Y_{ij} = 1|\theta_{i},a_j,b_j) =\frac{e^{a_j(\theta_i-b_j)}}{1+e^{a_j(\theta_i-b_j)}}$$
 
 ```{r echo=FALSE, results="hide"}
 params$twoparam
 params$twoparamiic
 params$twoparamtif
 ```
+
 ```{r echo=FALSE}
 params$twoparamcoef
 ```
+
 ```{r echo=FALSE, results="hide"}
 params$twofactor
 ```
@@ -119,14 +119,12 @@ params$twofactor
 
 ```{r echo=FALSE, results="hide"}
 params$resultsgroup
+g1=params$histbyscoregroup0
+g2=params$histbyscoregroup1
+grid.arrange(g1, g2, ncol=1)
 ```
 
-```{r echo=FALSE, results="hide"}
-params$histbyscoregroup0
-params$histbyscoregroup1
-```
-
-## Delta Plot
+## Delta Plot Report
 
 ```{r echo=FALSE, results="hide"}
 params$deltaplot
@@ -142,8 +140,8 @@ params$DP_text_normal
 params$DIF_logistic_print
 ```
 
-```{r echo=FALSE, results="hide"}
-params$DIF_logistic_plot
+```{r echo=FALSE, results='hide'}
+print(params$DIF_logistic_plot)
 ```
 
 \pagebreak

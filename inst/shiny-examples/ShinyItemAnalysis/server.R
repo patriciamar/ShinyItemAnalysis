@@ -704,13 +704,11 @@ function(input, output, session) {
     for (i in 1:length(k)) {
       g<-plotDistractorAnalysis(data = a, key = k, num.group = input$gr, item = i,
                              multiple.answers = multiple.answers)
-      g=print(g)$plot
+      g=g+ggtitle("\nDistractor Plot")
+      g=ggplotGrob(g)
       graflist[[i]]=g
     }
-
-    #grid.arrange(graflist, ncol=2, main="Distractor Plots")
     graflist
-
   })
 
   output$graf <- renderPlot({
@@ -1277,7 +1275,8 @@ function(input, output, session) {
               legend.key = element_rect(colour = "white"),
               plot.title = element_text(face = "bold"),
               legend.key.width = unit(1, "cm"))
-      g=print(g)$plot
+      g=g+ggtitle("\nMultinomial Plot")
+      g=ggplotGrob(g)
       graflist[[i]]=g
     }
     graflist
@@ -1903,6 +1902,7 @@ function(input, output, session) {
                               y = deltaGpurn()$Deltas[deltaGpurn()$DIFitems, 2]),
                           size = 6, color = "black", shape = 1)
     }
+    p=p+ggtitle("Delta Plot")
     p
   })
 
@@ -2108,7 +2108,8 @@ function(input, output, session) {
                           IRT = F,
                           p.adjust.method = input$correction_method_logItems
           )
-      g=print(g)$plot
+      g=g+ggtitle(paste0("DIF Logistic Plot for Item ", mod$DIFitems[i]))
+      #g=ggplotGrob(g)
       graflist[[i]]<-g
     }
     graflist
@@ -2741,6 +2742,7 @@ function(input, output, session) {
     format
   })
 
+
   output$report<-downloadHandler(
     filename=reactive({paste0("report.", input$report_format)}),
     content=function(file) {
@@ -2776,7 +2778,7 @@ function(input, output, session) {
                        #plot_DIF_NLR = plot_DIF_NLRInput(),
                        plot_DIF_IRT_Lord = plot_DIF_IRT_LordInput(),
                        plot_DIF_IRT_Raju = plot_DIF_IRT_RajuInput()
-      )
+                       )
       rmarkdown::render(reportPath, output_file=file,
                         params = parameters, envir = new.env(parent = globalenv()))
     }
