@@ -266,7 +266,7 @@ function(input, output, session) {
       "zlogreg_irtSlider",
       "nlsSlider",
       "multiSlider",
-      "difMHSlider",
+      "difMHSlider_item",
       "diflogSlider",
       "diflog_irtSlider",
       "difnlrSlider",
@@ -323,7 +323,7 @@ function(input, output, session) {
     updateSliderInput(session = session, inputId = "zlogreg_irtSlider", max=itemCount)
     updateSliderInput(session = session, inputId = "nlsSlider", max=itemCount)
     updateSliderInput(session = session, inputId = "multiSlider", max=itemCount)
-    updateSliderInput(session = session, inputId = "difMHSlider", max=itemCount)
+    updateSliderInput(session = session, inputId = "difMHSlider_item", max=itemCount)
     updateSliderInput(session = session, inputId = "diflogSlider", max=itemCount)
     updateSliderInput(session = session, inputId = "diflog_irtSlider", max=itemCount)
     updateSliderInput(session = session, inputId = "difnlrSlider", max=itemCount)
