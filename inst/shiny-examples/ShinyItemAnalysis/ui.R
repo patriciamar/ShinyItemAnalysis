@@ -1720,7 +1720,6 @@ ui=tagList(
                                                           "FDR" = "fdr",
                                                           "none" = "none"),
                                                         selected = "BH"),
-
                                             sliderInput("ddfSlider", "Item Slider", min = 1, value = 1, max = 10,
                                                         step = 1, animate = TRUE),
                                             plotOutput('plot_DDF'),
@@ -1808,7 +1807,7 @@ ui=tagList(
                                     "Medical 20 DIF" = "difMedical_difNLR",
                                     "Medical 100" = "dataMedical_ShinyItemAnalysis"
                                   ),
-                                  selected="GMAT"),
+                                  selected="GMAT_difNLR"),
                       h4("Upload your own datasets"),
                       p('Main dataset should contain responses of individual students (rows) to given items (collumns).
                         Header may contain item names, no row names should be included. If responses are in ABC format,
@@ -1894,7 +1893,7 @@ ui=tagList(
                                       c("1PL" = "1pl",
                                         "2PL" = "2pl",
                                         "3PL" = "3pl"),
-                                      selected = "1PL"),
+                                      selected = "1pl"),
                          downloadButton("report", "Generate Report"),
                          p(strong("Warning"), ": download of Reports takes some time. Please, be patient.")
                          ),
