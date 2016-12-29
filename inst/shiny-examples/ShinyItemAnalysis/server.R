@@ -1181,7 +1181,8 @@ function(input, output, session) {
     k <- t(as.data.frame(test_key()))
 
     fitM <- multinom(relevel(as.factor(test_answers()[, input$multiSlider]),
-                             ref = paste(k[input$multiSlider])) ~ stotal)
+                             ref = paste(k[input$multiSlider])) ~ stotal,
+                     trace = F)
     fitM
   })
   # ** Plot with estimated curves of multinomial regression ####
@@ -1192,7 +1193,8 @@ function(input, output, session) {
 
 
     fitM <- multinom(relevel(as.factor(test_answers()[, input$multiSlider]),
-                             ref = paste(k[input$multiSlider])) ~ stotal)
+                             ref = paste(k[input$multiSlider])) ~ stotal,
+                     trace = F)
 
     pp <- fitted(fitM)
 
@@ -1247,7 +1249,8 @@ function(input, output, session) {
 
 
       fitM <- multinom(relevel(as.factor(test_answers()[, i]),
-                               ref = paste(k[i])) ~ stotal)
+                               ref = paste(k[i])) ~ stotal,
+                       trace = F)
 
       pp <- fitted(fitM)
 
@@ -1323,13 +1326,14 @@ function(input, output, session) {
 
   # ** Table of parameters ####
   output$multitab <- renderTable({
+    fit <- multinomial_model()
 
-    koef <- as.vector(coef(multinomial_model()))
-    std  <- as.vector(sqrt(diag(vcov(multinomial_model()))))
+    koef <- as.vector(coef(fit))
+    std  <- as.vector(sqrt(diag(vcov(fit))))
     tab  <- cbind(koef, std)
     colnames(tab) <- c("Estimate", "SD")
-    rownames(tab) <- c(paste("b", rownames(coef(multinomial_model())), "0", sep = ""),
-                       paste("b", rownames(coef(multinomial_model())), "1", sep = ""))
+    rownames(tab) <- c(paste("b", rownames(coef(fit)), "0", sep = ""),
+                       paste("b", rownames(coef(fit)), "1", sep = ""))
     tab
   },
   include.rownames = T)
