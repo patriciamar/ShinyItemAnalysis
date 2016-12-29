@@ -1747,7 +1747,7 @@ ui=tagList(
                                                 br(),
                                                 code('# Estimated coefficients of item 1'),
                                                 br(),
-                                                code('fit$nlrPAR[[1]]')),
+                                                code('fit$mlrPAR[[1]]')),
                                             br()
                                             )
                                  )
