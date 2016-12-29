@@ -68,20 +68,6 @@ function(input, output, session) {
   # DATA ADJUSTMENT #######
   #########################
 
-  # CHOOSE DATA #####
-
-
-  # output$dataSelect <- renderUI({
-  #   selectInput("dataSelect", "Select dataset",
-  #               c("GMAT" = "GMAT_difNLR",
-  #                 "GMAT2" = "GMAT2_difNLR",
-  #                 "Medical 20 DIF" = "difMedical_difNLR",
-  #                 "Medical 100" = "dataMedical_ShinyItemAnalysis"
-  #               ),
-  #               selected="GMAT")
-  # })
-
-
   # LOAD ABCD DATA #####
   test_answers <- reactive ({
     a=input$dataSelect
@@ -202,61 +188,6 @@ function(input, output, session) {
 
   ##### ITEM SLIDERS #####
 
-  # output$distractorSliderUI <- renderUI({
-  #   a <- test_answers()
-  #   sliderInput("distractorSlider", "Item", animate = TRUE, min = 1, max = ncol(a), value = 1, step = 1)
-  # })
-  #
-  # output$logregSliderUI <- renderUI({
-  #   a <- test_answers()
-  #   sliderInput("logregSlider", "Item", animate = TRUE, min = 1, max = ncol(a), value = 1, step = 1)
-  # })
-  #
-  # output$zlogregSliderUI <- renderUI({
-  #   a <- test_answers()
-  #   sliderInput("zlogregSlider", "Item", animate = TRUE, min = 1, max = ncol(a), value = 1, step = 1)
-  # })
-  #
-  # output$zlogreg_irtSliderUI <- renderUI({
-  #   a <- test_answers()
-  #   sliderInput("zlogreg_irtSlider", "Item", animate = TRUE, min = 1, max = ncol(a), value = 1, step = 1)
-  # })
-  #
-  # output$nlsSliderUI <- renderUI({
-  #   a <- test_answers()
-  #   sliderInput("nlsSlider", "Item", animate = TRUE, min = 1, max = ncol(a), value = 1, step = 1)
-  # })
-  #
-  # output$multiSliderUI <- renderUI({
-  #   a <- test_answers()
-  #   sliderInput("multiSlider", "Item", animate = TRUE, min = 1, max = ncol(a), value = 1, step = 1)
-  # })
-  #
-  # output$diflogSliderUI <- renderUI({
-  #   a <- test_answers()
-  #   sliderInput("diflogSlider", "Item", animate = TRUE, min = 1, max = ncol(a), value = 1, step = 1)
-  # })
-  #
-  # output$diflog_irtSliderUI <- renderUI({
-  #   a <- test_answers()
-  #   sliderInput("diflog_irtSlider", "Item", animate = TRUE, min = 1, max = ncol(a), value = 1, step = 1)
-  # })
-  #
-  # output$difnlrSliderUI <- renderUI({
-  #   a <- test_answers()
-  #   sliderInput("difnlrSlider", "Item", animate = TRUE, min = 1, max = ncol(a), value = 1, step = 1)
-  # })
-
-  # output$difirt_lord_itemSliderUI <- renderUI({
-  #   a <- test_answers()
-  #   sliderInput("difirt_lord_itemSlider", "Item", animate = TRUE, min = 1, max = ncol(a), value = 1, step = 1)
-  # })
-
-  # output$difirt_raju_itemSliderUI <- renderUI({
-  #   a <- test_answers()
-  #   sliderInput("difirt_raju_itemSlider", "Item", animate = TRUE, min = 1, max = ncol(a), value = 1, step = 1)
-  # })
-
   observe({
     sliderList<-c(
       "distractorSlider",
@@ -275,48 +206,9 @@ function(input, output, session) {
       "reportSlider"
       )
 
-    # itemvalue<-c(
-    #   input$difMHSlider,
-    #   #input$distractorSlider,
-    #   input$logregSlider,
-    #   input$zlogregSlider,
-    #   input$zlogreg_irtSlider,
-    #   input$nlsSlider,
-    #   input$multiSlider,
-    #   input$diflogSlider,
-    #   input$diflog_irtSlider,
-    #   input$difnlrSlider,
-    #   input$difirt_lord_itemSlider,
-    #   input$difirt_raju_itemSlider,
-    #   input$reportSlider
-    #   )
-
-    itemvalueReg<-c(
-      input$logregSlider,
-      input$zlogregSlider,
-      input$zlogreg_irtSlider,
-      input$nlsSlider,
-      input$multiSlider
-    )
-    itemvalueReg<-as.numeric(names(table(itemvalueReg)[min(table(itemvalueReg))==table(itemvalueReg)]))
-
-    itemvalueDif<-c(
-      input$difMHSlider,
-      input$diflogSlider,
-      input$diflog_irtSlider,
-      input$difnlrSlider,
-      input$difirt_lord_itemSlider,
-      input$difirt_raju_itemSlider,
-      input$ddfSlider
-    )
-    itemvalueDif<-as.numeric(names(table(itemvalueDif)[min(table(itemvalueDif))==table(itemvalueDif)]))
-
-
-    #itemvalue<-as.numeric(names(table(itemvalue)[min(table(itemvalue))==table(itemvalue)]))
-    #if (itemvalue>ncol(test_answers())) { itemvalue=ncol(test_answers()) }
-
     itemCount = ncol(test_answers())
 
+    updateSliderInput(session = session, inputId = "distractorSlider", max=itemCount)
     updateSliderInput(session = session, inputId = "logregSlider", max=itemCount)
     updateSliderInput(session = session, inputId = "zlogregSlider", max=itemCount)
     updateSliderInput(session = session, inputId = "zlogreg_irtSlider", max=itemCount)
@@ -330,68 +222,11 @@ function(input, output, session) {
     updateSliderInput(session = session, inputId = "difirt_raju_itemSlider", max=itemCount)
     updateSliderInput(session = session, inputId = "ddfSlider", max=itemCount)
 
-    # #updateSliderInput(session = session, inputId = "distractorSlider", max=itemCount, value = itemvalue)
-    # updateSliderInput(session = session, inputId = "distractorSlider", max=itemCount)
-    # # updateSliderInput(session = session, inputId = "logregSlider", max=itemCount, value = itemvalue)
-    # # updateSliderInput(session = session, inputId = "zlogregSlider", max=itemCount, value = itemvalue)
-    # # updateSliderInput(session = session, inputId = "zlogreg_irtSlider", max=itemCount, value = itemvalue)
-    # # updateSliderInput(session = session, inputId = "nlsSlider", max=itemCount, value = itemvalue)
-    # # updateSliderInput(session = session, inputId = "multiSlider", max=itemCount, value = itemvalue)
-    # updateSliderInput(session = session, inputId = "logregSlider", max=itemCount, value = itemvalueReg)
-    # updateSliderInput(session = session, inputId = "zlogregSlider", max=itemCount, value = itemvalueReg)
-    # updateSliderInput(session = session, inputId = "zlogreg_irtSlider", max=itemCount, value = itemvalueReg)
-    # updateSliderInput(session = session, inputId = "nlsSlider", max=itemCount, value = itemvalueReg)
-    # updateSliderInput(session = session, inputId = "multiSlider", max=itemCount, value = itemvalueReg)
-    #
-    # # updateSliderInput(session = session, inputId = "difMHSlider", max=itemCount, value = itemvalue)
-    # # updateSliderInput(session = session, inputId = "diflogSlider", max=itemCount, value = itemvalue)
-    # # updateSliderInput(session = session, inputId = "diflog_irtSlider", max=itemCount, value = itemvalue)
-    # # updateSliderInput(session = session, inputId = "difnlrSlider", max=itemCount, value = itemvalue)
-    # # updateSliderInput(session = session, inputId = "difirt_lord_itemSlider", max=itemCount, value = itemvalue)
-    # # updateSliderInput(session = session, inputId = "difirt_raju_itemSlider", max=itemCount, value = itemvalue)
-    # updateSliderInput(session = session, inputId = "difMHSlider", max=itemCount, value = itemvalueDif)
-    # updateSliderInput(session = session, inputId = "diflogSlider", max=itemCount, value = itemvalueDif)
-    # updateSliderInput(session = session, inputId = "diflog_irtSlider", max=itemCount, value = itemvalueDif)
-    # updateSliderInput(session = session, inputId = "difnlrSlider", max=itemCount, value = itemvalueDif)
-    # updateSliderInput(session = session, inputId = "difirt_lord_itemSlider", max=itemCount, value = itemvalueDif)
-    # updateSliderInput(session = session, inputId = "difirt_raju_itemSlider", max=itemCount, value = itemvalueDif)
-    # updateSliderInput(session = session, inputId = "ddfSlider", max=itemCount, value = itemvalueDif)
-
-    # updateSliderInput(session = session, inputId = "reportSlider", max=itemCount, value = itemvalue)
-
-    # lapply(lapply(sliderList, get), FUN=updateSliderInput, session=session, max=itemCount, value=itemvalue))
-
     updateSliderInput(session = session, inputId = "inSlider2", max=itemCount, value = round(median(scored_test())))
     updateSliderInput(session = session, inputId = "inSlider2group", max=itemCount, value = round(median(scored_test()[DIF_groups() == 1])))
     updateSliderInput(session = session, inputId = "difMHSlider_score", max=itemCount, value = round(median(scored_test())))
 
   })
-
-  ########################
-  # SLIDER FOR STUDENTS PAGE ######
-  ########################
-  # output$slider2 <- renderUI({
-  #   sliderInput(
-  #     "inSlider2", "Cut-Score", min = 0, max = ncol(test_answers()),
-  #     value = round(median(scored_test())), step = 1
-  #   )
-  # })
-
-  # OTHER SLIDERS ####
-  # * Mantel-Haenszel for score ####
-  # output$difMHSlider_score <- renderUI({
-  #   sliderInput(
-  #     "difMHSlider_score", "Cut-Score", min = 0, max = ncol(test_answers()),
-  #     value = round(median(scored_test())), step = 1
-  #   )
-  # })
-  # # * Mantel-Haenszel for item ####
-  # output$difMHSlider_itemUI <- renderUI({
-  #   a <- test_answers()
-  #   sliderInput("difMHSlider_item", "Item", animate = TRUE,
-  #               min = 1, max = ncol(a), value = 1, step = 1)
-  # })
-
 
   ########################
   # SUMMARY  ####
@@ -1788,16 +1623,6 @@ function(input, output, session) {
   digits = 2,
   include.rownames = T,
   include.colnames = T)
-
-  # ** Cut score ####
-  # output$slider2group <- renderUI({
-  #   sliderInput(
-  #     "inSlider2group", "Cut-Score", min = 0, max = ncol(test_answers()),
-  #     value = round(median(scored_test()[DIF_groups() == 1])), step = 1
-  #   )
-  # })
-
-
 
   # ** Histogram of total score for group = 1 (focal) ####
   histbyscoregroup1Input <- reactive({
