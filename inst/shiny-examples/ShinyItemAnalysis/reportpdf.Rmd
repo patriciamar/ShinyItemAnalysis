@@ -18,11 +18,11 @@ params:
   zlogreg_irt: NA
   nlsplot: NA
   multiplot: NA
-  twoparam: NA
-  twoparamiic: NA
-  twoparamtif: NA
-  twoparamcoef: NA
-  twofactor: NA
+  irt: NA
+  irtiic: NA
+  irttif: NA
+  irtcoef: NA
+  irtfactor: NA
   resultsgroup: NA
   histbyscoregroup0: NA
   histbyscoregroup1: NA
@@ -37,11 +37,13 @@ params:
   plot_DIF_IRT_Raju: NA
   itemexam: NA
   itemReport: NA
+  irt_type: NA
 ---
 # Summary Report
 
 ```{r echo=FALSE, results="hide"}
 library(gridExtra)
+params$irt_report
 table=params$results
 table=round(table, digits=4)
 colnames(table)=NULL
@@ -69,44 +71,71 @@ grid.arrange(table, hist, ncol=1, top="Basic Summary and Histogram", layout_matr
 params$difPlot
 ```
 
-```{r echo=FALSE}
+```{r echo=FALSE, fig.height=8}
 #params$itemexam
 table=params$itemexam
 table=format(round(table, 4), nsmall=3)
 colnames(table)=c("Item", "Diff.", "SD", "D. ULI", "D. RIT", "D. RIR", "Alpha Drop")
 rownames(table)=NULL
-#grid.table(table, theme=ttheme_minimal())
+#grid.table(table)
 table
 ```
 
 ## Distractor Analysis
 
-```{r echo=FALSE, results="hide"}
+```{r echo=FALSE, results="hide", fig.width=10}
 for (i in 1:length(params$graf)) {
-grid.arrange(params$graf[[i]], params$multiplot[[i]], ncol=2, top=paste0("Distractor and Multinomial Plots for item ",i))
+grid.arrange(params$graf[[i]], params$multiplot[[i]], ncol=2, 
+             top=textGrob(paste0("Distractor and Multinomial Plots for item ",i), gp=gpar(fontsize=15))
+             #,heights=unit(1.0, "npc")
+             )
 }
 ```
 
 
 \pagebreak
 
-# IRT 2PL Model Report
-
-
-$$ {P}(Y_{ij} = 1|\theta_{i},a_j,b_j) =\frac{e^{a_j(\theta_i-b_j)}}{1+e^{a_j(\theta_i-b_j)}}$$
 
 ```{r echo=FALSE, results="hide"}
-params$twoparam
-params$twoparamiic
-params$twoparamtif
+if (params$irt_type=="1pl") {
+head="# IRT 1PL (Rasch) Model Report"
+#eq="$$ {P}(Y_{ij} = 1|\theta_{i},a,b_j) =\frac{e^{a(\theta_i-b_j)}}{1+e^{a(\theta_i-b_j)}}$$"
+}
+
+if (params$irt_type=="2pl") {
+head="# IRT 2PL Model Report"
+#eq="$$ {P}(Y_{ij} = 1|\theta_{i},a_j,b_j) = \frac{e^{a_j(\theta_i-b_j)}}{1+e^{a_j(\theta_i-b_j)}}$$"
+}
+
+if (params$irt_type=="3pl") {
+head="# IRT 3PL Model Report"
+#eq="$$ {P}(Y_{ij} = 1|\theta_{i},a_j,b_j, c_j) =c_j + (1+c_j)\cdot\frac{e^{a_j(\theta_i-b_j)}}{1+e^{a_j(\theta_i-b_j)}}$$"
+}
+```
+
+
+`r head`
+
+$$ {P}(Y_{ij} = 1|\theta_{i},a,b_j) =\frac{e^{a(\theta_i-b_j)}}{1+e^{a(\theta_i-b_j)}}$$
+
+$$ {P}(Y_{ij} = 1|\theta_{i},a_j,b_j) = \frac{e^{a_j(\theta_i-b_j)}}{1+e^{a_j(\theta_i-b_j)}}$$
+
+$$ {P}(Y_{ij} = 1|\theta_{i},a_j,b_j, c_j) =c_j + (1+c_j)\cdot\frac{e^{a_j(\theta_i-b_j)}}{1+e^{a_j(\theta_i-b_j)}}$$
+
+```{r echo=FALSE, results="hide"}
+params$irt
+params$irtiic
+params$irttif
 ```
 
 ```{r echo=FALSE}
-params$twoparamcoef
+table=params$irtcoef
+table=round(table,5)
+table
 ```
 
 ```{r echo=FALSE, results="hide"}
-params$twofactor
+params$irtfactor
 ```
 
 
@@ -141,7 +170,7 @@ params$DIF_logistic_print
 ```
 
 ```{r echo=FALSE, results='hide'}
-print(params$DIF_logistic_plot)
+params$DIF_logistic_plot
 ```
 
 \pagebreak

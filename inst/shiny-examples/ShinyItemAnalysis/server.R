@@ -1351,8 +1351,15 @@ function(input, output, session) {
   })
 
   # *** CC ####
-  output$rasch <- renderPlot({
+  raschInput <- reactive({
     plot(rasch_model())
+    g<-recordPlot()
+    plot.new()
+    g
+  })
+
+  output$rasch <- renderPlot({
+    raschInput()
   })
 
   output$DP_rasch <- downloadHandler(
@@ -1367,8 +1374,15 @@ function(input, output, session) {
   )
 
   # *** IIC ####
-  output$raschiic <- renderPlot({
+  raschiicInput<-reactive({
     plot(rasch_model(), type = "IIC")
+    g<-recordPlot()
+    plot.new()
+    g
+  })
+
+  output$raschiic <- renderPlot({
+    raschiicInput()
   })
 
   output$DP_raschiic <- downloadHandler(
@@ -1383,8 +1397,15 @@ function(input, output, session) {
   )
 
   # *** TIF ####
+  raschtifInput<-reactive({
+    plot(rasch_model(), items = 0, type = "IIC")
+    g<-recordPlot()
+    plot.new()
+    g
+  })
+
   output$raschtif <- renderPlot({
-    plot(rasch_model(),items = 0, type = "IIC")
+    raschtifInput()
   })
 
   output$DP_raschtif <- downloadHandler(
@@ -1400,8 +1421,7 @@ function(input, output, session) {
 
 
   # *** Table of parameters ####
-  output$raschcoef <- renderTable({
-
+  raschcoefInput<- reactive({
     tab <- coef(rasch_model())
     tab <- cbind(tab,
                  sqrt(diag(vcov(rasch_model())))[1:nrow(tab)],
@@ -1410,6 +1430,10 @@ function(input, output, session) {
     colnames(tab) <- c("a", "SD(a)", "b", "SD(b)")
     rownames(tab) <- paste("Item", 1:nrow(tab))
     tab
+  })
+
+  output$raschcoef <- renderTable({
+    raschcoefInput()
   },
   include.rownames = T)
 
@@ -1598,8 +1622,15 @@ function(input, output, session) {
     fit3PL <- tpm(correct_answ(), IRT.param = TRUE)
   })
   # ** ICC ####
-  output$threeparam <- renderPlot({
+  threeparamInput<-reactive({
     plot(three_param_irt())
+    g<-recordPlot()
+    plot.new()
+    g
+  })
+
+  output$threeparam <- renderPlot({
+    threeparamInput()
   })
 
   output$DP_threeparam <- downloadHandler(
@@ -1614,8 +1645,15 @@ function(input, output, session) {
   )
 
   # *** IIC ####
-  output$threeparamiic <- renderPlot({
+  threeparamiicInput<-reactive({
     plot(three_param_irt(), type = "IIC")
+    g<-recordPlot()
+    plot.new()
+    g
+  })
+
+  output$threeparamiic <- renderPlot({
+    threeparamiicInput()
   })
 
   output$DP_threeparamiic <- downloadHandler(
@@ -1630,8 +1668,15 @@ function(input, output, session) {
   )
 
   # *** TIF ####
-  output$threeparamtif <- renderPlot({
+  threeparamtifInput<-reactive({
     plot(three_param_irt(), items = 0, type = "IIC")
+    g<-recordPlot()
+    plot.new()
+    g
+  })
+
+  output$threeparamtif <- renderPlot({
+    threeparamtifInput()
   })
 
   output$DP_threeparamtif <- downloadHandler(
@@ -1646,7 +1691,7 @@ function(input, output, session) {
   )
 
   # *** Table of parameters ####
-  output$threeparamcoef <- renderTable({
+  threeparamcoefInput<-reactive({
     fit3pl <- tpm(correct_answ(), IRT.param = TRUE)
     tab <- coef(fit3pl)
     tab <- cbind(tab,
@@ -1657,6 +1702,10 @@ function(input, output, session) {
     colnames(tab) <- c("a", "SD(a)", "b", "SD(b)", "c", "SD(c)")
     rownames(tab) <- paste("Item", 1:nrow(tab))
     tab
+  })
+
+  output$threeparamcoef <- renderTable({
+    threeparamcoefInput()
   },
   include.rownames = T)
 
@@ -2742,6 +2791,55 @@ function(input, output, session) {
     format
   })
 
+  irt_typeInput<-reactive({
+    type=input$irt_type_report
+    type
+  })
+
+  irtInput<-reactive({
+    type = input$irt_type_report
+
+    if (type=="1pl") {out=raschInput()}
+    if (type=="2pl") {out=twoparamInput()}
+    if (type=="3pl") {out=threeparamInput()}
+    out
+  })
+
+  irtiicInput<-reactive({
+    type = input$irt_type_report
+
+    if (type=="1pl") {out=raschiicInput()}
+    if (type=="2pl") {out=twoparamiicInput()}
+    if (type=="3pl") {out=threeparamiicInput()}
+    out
+  })
+
+  irttifInput<-reactive({
+    type = input$irt_type_report
+
+    if (type=="1pl") {out=raschtifInput()}
+    if (type=="2pl") {out=twoparamtifInput()}
+    if (type=="3pl") {out=threeparamtifInput()}
+    out
+  })
+
+  irtcoefInput<-reactive({
+    type = input$irt_type_report
+
+    if (type=="1pl") {out=raschcoefInput()}
+    if (type=="2pl") {out=twoparamcoefInput()}
+    if (type=="3pl") {out=threeparamcoefInput()}
+    out
+  })
+
+  irtfactorInput<-reactive({
+    type = input$irt_type_report
+
+    if (type=="1pl") {out=raschFactorInput()}
+    if (type=="2pl") {out=twoFactorInput()}
+    if (type=="3pl") {out=threeFactorInput()}
+    out
+  })
 
   output$report<-downloadHandler(
     filename=reactive({paste0("report.", input$report_format)}),
@@ -2761,11 +2859,12 @@ function(input, output, session) {
                        zlogreg_irt = zlogreg_irtInput(),
                        nlsplot = nlsplotInput(),
                        multiplot = multiplotReportInput(),
-                       twoparam = twoparamInput(),
-                       twoparamiic = twoparamiicInput(),
-                       twoparamtif = twoparamtifInput(),
-                       twoparamcoef = twoparamcoefInput(),
-                       twofactor = twoFactorInput(),
+                       irt_type = irt_typeInput(),
+                       irt = irtInput(),
+                       irtiic = irtiicInput(),
+                       irttif = irttifInput(),
+                       irtcoef = irtcoefInput(),
+                       irtfactor = irtfactorInput(),
                        resultsgroup = resultsgroupInput(),
                        histbyscoregroup0 = histbyscoregroup0Input(),
                        histbyscoregroup1 = histbyscoregroup1Input(),
