@@ -526,9 +526,22 @@ function(input, output, session) {
   scree_plotInput <- reactive({
     corP <- corr_structure()
     ev <- eigen(corP$rho)$values
-    plot(1:length(ev),
-         ev, ylab = "Eigen value", xlab = "Item")
-    lines(1:length(ev), ev)
+    df <- data.frame(pos = 1:length(ev), ev)
+
+    ggplot(data = df, aes(x = pos, y = ev)) +
+      geom_point() +
+      geom_line() +
+      xlab("Item") + ylab("Eigen value") +
+      scale_x_continuous(breaks = 1:length(ev)) +
+      theme_bw() +
+      theme(legend.title = element_blank(),
+            legend.position = "none",
+            axis.line  = element_line(colour = "black"),
+            panel.grid.major = element_blank(),
+            panel.grid.minor = element_blank(),
+            panel.background = element_blank(),
+            text = element_text(size = 14),
+            plot.title = element_text(face = "bold"))
   })
 
   # ** Output Scree plot ######
