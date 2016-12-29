@@ -1801,7 +1801,7 @@ model = "3PLcg", type = "both", p.adjust.method = "BH")'),
                                 "Medical 20 DIF" = "difMedical_difNLR",
                                 "Medical 100" = "dataMedical_ShinyItemAnalysis"
                               ),
-                              selected="GMAT"),
+                              selected="GMAT_difNLR"),
                   h4("Upload your own datasets"),
                   p('Main dataset should contain responses of individual students (rows) to given items (collumns).
                     Header may contain item names, no row names should be included. If responses are in ABC format,
@@ -1888,7 +1888,7 @@ model = "3PLcg", type = "both", p.adjust.method = "BH")'),
                                       c("1PL" = "1pl",
                                         "2PL" = "2pl",
                                         "3PL" = "3pl"),
-                                      selected = "1PL"),
+                                      selected = "1pl"),
                          downloadButton("report", "Generate Report"),
                          p(strong("Warning"), ": download of Reports takes some time. Please, be patient.")
                          ),
