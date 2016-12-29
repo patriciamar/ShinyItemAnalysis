@@ -1,6 +1,6 @@
 ---
 title: "Item Analysis Report"
-date: '`r format(Sys.Date(), "%d %B, %Y")`'
+date: '`r format(Sys.Date(), "%B %d, %Y")`'
 output: 
     html_document:
        number_sections: true
