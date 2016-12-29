@@ -1877,21 +1877,28 @@ ui=tagList(
                       h4("Scored Test"),
                       dataTableOutput('sc01')
                       ),
+                ########################
+                # REPORTS ##############
+                ########################
+                tabPanel("Reports",
+                         h3("Download Report"),
+                         p("This shiny app also offers an option to download a report in HTML or PDF format."),
+                         p("PDF report creation requires latest version of MiKTeX (or other TeX distribution).
+                           If you don't have the latest installation, please, use the HTML report"),
+                         # sliderInput("reportSlider", "Choose item for Report", min=1, value=1, max=10,
+                         #             step=1, animate=TRUE),
+                         radioButtons("report_format", "Format of Report",
+                                     c("HTML" = "html",
+                                       "PDF" = "pdf")),
+                         radioButtons("irt_type_report", "IRT Model selection",
+                                      c("1PL" = "1pl",
+                                        "2PL" = "2pl",
+                                        "3PL" = "3pl"),
+                                      selected = "1PL"),
+                         downloadButton("report", "Generate Report"),
+                         p(strong("Warning"), ": download of Reports takes some time. Please, be patient.")
+                         ),
 
-             ########################
-             # REPORTS ##############
-             ########################
-             tabPanel("Reports",
-                      h3("Download Report"),
-                      p("This shiny app also offers an option to download a report in HTML or PDF format. (PDF currently not available)"),
-                      # sliderInput("reportSlider", "Choose item for Report", min=1, value=1, max=10,
-                      #             step=1, animate=TRUE),
-                      radioButtons("report_format", "Format of Report",
-                                   c("HTML" = "html",
-                                     "PDF" = "pdf")),
-                      downloadButton("report", "Generate Report"),
-                      p("Warning: download of Reports takes some time. Please, be patient.")
-             ),
 
              ########################
              # ABOUT ################
