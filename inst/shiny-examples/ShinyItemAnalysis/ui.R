@@ -47,6 +47,112 @@ ui=tagList(
              ########################
              # SUMMARY #####
              ########################
+             ###################
+             # DATA ############
+             ###################
+             tabPanel("Data",
+                      h3("Data"),
+                      p('For demonstration purposes, 20-item dataset ' , code("GMAT"),'
+                         and dataset', code("GMATkey"),' from R ', code('difNLR'),' package are used.
+                         On this page, you may select one of four datasets offered from ', code('difNLR'),
+                        ' and ', code('ShinyItemAnalysis'), 'packages or you may upload your own dataset
+                         (see below). To return to demonstration dataset,
+                         refresh this page in your browser' , strong("(F5)"), '.'),
+                      p('Used dataset ', code("GMAT"), ' is generated based on parameters of real Graduate Management
+                        Admission Test (GMAT) data set (Kingston et al., 1985). However, first two items were
+                        generated to function differently in uniform and non-uniform way respectively.
+                        The data set represents responses of 2,000 subjects (1,000 males, 1,000 females) to
+                        multiple-choice test of 20 items. The distribution of total scores is the same for both groups. '),
+                      p('Dataset ', code("GMAT2"), ' is also generated based on parameters of GMAT (Kingston et
+                         al., 1985) from R ', code('difNLR'),' package . Again, first two items were generated
+                         to function differently in uniform and non-uniform way respectively. The data set
+                         represents responses of 1,000 subjects (500 males, 500 females) to multiple-choice test
+                         of 20 items. '),
+                      p('Dataset ', code("Medical 20 DIF"), ' is a subset of real admission test to medical
+                         school from R ', code('difNLR'),' package. First item was previously detected as
+                         functioning differently. The data set represents responses of 1,407 subjects (484 males,
+                         923 females) to multiple-choice test of 20 items. For more details of item selection
+                         see Drabinova & Martinkova (2016).'),
+                      p('Dataset ', code("Medical 100"), ' is a real data set of admission test to medical school
+                         from R ', code('ShinyItemAnalysis'),' package . The data set represents responses of
+                         3,204 subjects to multiple-choice test of 100 items. There is no group membership
+                         variable in the data set hence it is not possible to run DIF or DDF detection procedures. '),
+                      br(),
+                      selectInput("dataSelect", "Select dataset",
+                                  c("GMAT" = "GMAT_difNLR",
+                                    "GMAT2" = "GMAT2_difNLR",
+                                    "Medical 20 DIF" = "difMedical_difNLR",
+                                    "Medical 100" = "dataMedical_ShinyItemAnalysis"
+                                  ),
+                                  selected="GMAT_difNLR"),
+                      h4("Upload your own datasets"),
+                      p('Main dataset should contain responses of individual students (rows) to given items (collumns).
+                        Header may contain item names, no row names should be included. If responses are in unscored ABC format,
+                        the key provides correct response for each item. If responses are scored 0-1, key is vecor of 1s.'),
+                      fluidRow(
+                        column(4, offset = 0, fileInput(
+                          'data', 'Choose data (csv file)',
+                          accept = c('text/csv',
+                                     'text/comma-separated-values',
+                                     'text/tab-separated-values',
+                                     'text/plain',
+                                     '.csv',
+                                     '.tsv'
+                          )
+                        )
+                        ),
+                        column(4, offset = 1, fileInput(
+                          'key', 'Choose key (csv file)',
+                          accept = c('text/csv',
+                                     'text/comma-separated-values',
+                                     'text/tab-separated-values',
+                                     'text/plain',
+                                     '.csv',
+                                     '.tsv'
+                          )
+                        )
+                        ),
+                        column(4, fileInput(
+                          'groups', 'Choose groups for DIF (optional)',
+                          accept = c('text/csv',
+                                     'text/comma-separated-values',
+                                     'text/tab-separated-values',
+                                     'text/plain',
+                                     '.csv',
+                                     '.tsv'
+                          )
+                        )
+                        )
+                      ),
+                      tags$hr(),
+                      h4("Data Specification"),
+                      fluidRow(
+                        column(1, offset = 0, checkboxInput('header', 'Header', TRUE)),
+                        column(3, offset = 1, radioButtons('sep', 'Separator',
+                                                           c(Comma = ',',
+                                                             Semicolon = ';',
+                                                             Tab = '\t'
+                                                           ),
+                                                           ','
+                        )
+                        ),
+                        column (3, offset = 0, radioButtons('quote', 'Quote',
+                                                            c(None = '',
+                                                              'Double Quote' = '"',
+                                                              'Single Quote' = "'"
+                                                            ),
+                                                            '"'
+                        )
+                        )
+                      ),
+                      tags$hr(),
+                      h4("Data Check"),
+                      dataTableOutput('headdata'),
+                      h4("Key (correct answers)"),
+                      dataTableOutput('key'),
+                      h4("Scored Test"),
+                      dataTableOutput('sc01')
+                      ),
              navbarMenu("Summary",
                         # TOTAL SCORES
                         tabPanel("Total Scores",
@@ -1709,104 +1815,6 @@ ui=tagList(
                                  br()
                         )
                         ),
-             ###################
-             # DATA ############
-             ###################
-             tabPanel("Data",
-                      h3("Data"),
-                      p('For demonstration purposes, 20-item dataset ' , code("GMAT"),'
-                        and dataset', code("GMATkey"),' from R ', code('library(difNLR)'),' are used.
-                        On this page, you may select one of three dataset offered in ', code('difNLR'),
-                        'package or you may upload your own dataset (see below). To return to demonstration dataset,
-                        refresh this page in your browser' , strong("(F5)"), '.'),
-                      p('Used dataset ', code("GMAT"), ' is generated based on parameters of real Graduate Management
-                        Admission Test (GMAT) data set (Kingston et al., 1985). However, first two items were
-                        generated to function differently in uniform and non-uniform way respectively.
-                        The data set represents responses of 2,000 subjects to multiple-choice test of 20 items.
-                        The distribution of total scores is the same for both groups. '),
-                      p('Dataset ', code("GMAT2"), ' is also generated based on parameters of GMAT (Kingston et al., 1985). Again,
-                        first two items were generated to function differently in uniform and non-uniform way respectively.
-                        The data set represents responses of 1,000 subjects to multiple-choice test of 20 items. '),
-                      p('Dataset ', code("Medical"), ' is a subset of real admission test to medical school. First item was previously
-                        detected as functioning differently. The data set represents responses of
-                        1,407 subjects (484 males, 923 females) to multiple-choice test of 20 items. For more details of item selection see
-                        Drabinova & Martinkova (2016).'),
-                      br(),
-                      selectInput("dataSelect", "Select dataset",
-                                  c("GMAT" = "GMAT_difNLR",
-                                    "GMAT2" = "GMAT2_difNLR",
-                                    "Medical 20 DIF" = "difMedical_difNLR",
-                                    "Medical 100" = "dataMedical_ShinyItemAnalysis"
-                                  ),
-                                  selected="GMAT_difNLR"),
-                      h4("Upload your own datasets"),
-                      p('Main dataset should contain responses of individual students (rows) to given items (collumns).
-                        Header may contain item names, no row names should be included. If responses are in ABC format,
-                        the key provides correct respomse for each item. If responses are scored 0-1, key is vecor of 1s.'),
-                      fluidRow(
-                        column(4, offset = 0, fileInput(
-                          'data', 'Choose data (csv file)',
-                          accept = c('text/csv',
-                                     'text/comma-separated-values',
-                                     'text/tab-separated-values',
-                                     'text/plain',
-                                     '.csv',
-                                     '.tsv'
-                          )
-                        )
-                        ),
-                        column(4, offset = 1, fileInput(
-                          'key', 'Choose key (csv file)',
-                          accept = c('text/csv',
-                                     'text/comma-separated-values',
-                                     'text/tab-separated-values',
-                                     'text/plain',
-                                     '.csv',
-                                     '.tsv'
-                          )
-                        )
-                        ),
-                        column(4, fileInput(
-                          'groups', 'Choose groups for DIF (optional)',
-                          accept = c('text/csv',
-                                     'text/comma-separated-values',
-                                     'text/tab-separated-values',
-                                     'text/plain',
-                                     '.csv',
-                                     '.tsv'
-                          )
-                        )
-                        )
-                      ),
-                      tags$hr(),
-                      h4("Data Specification"),
-                      fluidRow(
-                        column(1, offset = 0, checkboxInput('header', 'Header', TRUE)),
-                        column(3, offset = 1, radioButtons('sep', 'Separator',
-                                                           c(Comma = ',',
-                                                             Semicolon = ';',
-                                                             Tab = '\t'
-                                                           ),
-                                                           ','
-                        )
-                        ),
-                        column (3, offset = 0, radioButtons('quote', 'Quote',
-                                                            c(None = '',
-                                                              'Double Quote' = '"',
-                                                              'Single Quote' = "'"
-                                                            ),
-                                                            '"'
-                        )
-                        )
-                      ),
-                      tags$hr(),
-                      h4("Data Check"),
-                      dataTableOutput('headdata'),
-                      h4("Key (correct answers)"),
-                      dataTableOutput('key'),
-                      h4("Scored Test"),
-                      dataTableOutput('sc01')
-                      ),
                 ########################
                 # REPORTS ##############
                 ########################
