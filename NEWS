@@ -6,21 +6,32 @@
 
 
 ---------------------------------------------------
-- Changes in ShinyItemAnalysis 1.1.0 (2016-12-22) -
+- Changes in ShinyItemAnalysis 1.1.0 (2016-12-30) -
 ---------------------------------------------------
 
-UPDATES
+MAJOR UPDATES
 
-  o  New overall appearence using shinythemes package
+  o  New overall appearence using shinythemes package.
   o  New datasets 'dataMedical()', 'dataMedicalkey()', 'dataMedicaltest()'
-     were added into the package
-  o  New dataset is offered in example datasets inside the shiny app
-  o  Bug in Distractor plots for uploaded data was fixed
-  o  Calculation of Success Rate in Standard Scores was fixed
-  o  Differential Distractor Functioning detection method was added
+     were added into the package.
+  o  New dataset is offered in example datasets inside the shiny app.
+  o  Bug in Distractor plots for uploaded data was fixed.
+  o  Calculation of Success Rate in Standard Scores was fixed.
+  o  Differential Distractor Functioning detection method was added.
   o  Syntax of difNLR functions was edited to response to new version of
-     package
-  o  Function plotDIFirt() was updated
+     package.
+  o  Function plotDIFirt() was updated.
+  o  Correlation structure section was added including correlation plot
+     and scree plot.
+  o  Pages structure was changed and updated.
+
+MINOR UPDATES
+
+  o Typos were fixed.
+  o Selected R code was updated.
+  o Description of data including uploading own data set was extended.
+  o Description of Standard scores was added.
+  o Lower panel was updated.
 
 ---------------------------------------------------
 - Changes in ShinyItemAnalysis 1.0.0 (2016-11-25) -
