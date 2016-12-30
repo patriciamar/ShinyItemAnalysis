@@ -16,11 +16,11 @@ ui=tagList(
                    p(" Copyright 2016  Patricia Martinkova, Adela Drabinova, Ondrej Leder and Jakub Houdek"),
                    # br(),
                    div(
-                     HTML('<p style="color:black; font-size: 9pt">
+                     HTML('<p style="font-size: 9pt">
                           See older versions:
-                          <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV01/"> 0.1.0 </a>,
-                          <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV02/"> 0.2.0 </a>,
-                          <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV100/"> 1.0.0 </a>
+                          <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV01/"> 0.1.0</a>,
+                          <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV02/"> 0.2.0</a>,
+                          <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV100/"> 1.0.0</a>
                           </p>')
                      ),
                    # br(),
@@ -35,8 +35,106 @@ ui=tagList(
              # mainPanel(
              # tabsetPanel(
              ########################
-             # SUMMARY #####
+             # ABOUT ################
              ########################
+             tabPanel("About",
+                      h4('Description'),
+                      p(code('ShinyItemAnalysis'), ' provides analysis of educational tests (such as admission tests)
+                        and their items including:' ),
+                      tags$ul(
+                        tags$li("Exploration of total and standard scores on ", strong('Summary'), "page. "),
+                        tags$li("Item and distractor analysis on ", strong('Traditional Analysis'), "page. "),
+                        tags$li('Item analysis by logistic models on ', strong('Regression'), "page. "),
+                        tags$li('Item analysis by item response theory models on ', strong('IRT models'), "page. "),
+                        tags$li('Differential item functioning (DIF) and differential distractor functioning (DDF)
+                                methods on ', strong('DIF/Fairness'), "page. ")
+                        ),
+                      p('This application is based on the free statistical software',
+                        a('R', href = 'https://cran.r-project.org/', target = "_blank"),
+                        ' and its ',
+                        a('Shiny', href = 'http://www.rstudio.com/shiny/', target = "_blank"),
+                        'package. '),
+                      p('For all graphical outputs a download button is provided. Moreover, on ', strong('Reports'),
+                        'page HTML or PDF report can be created. Additionaly, all application outputs are
+                        complemented by selected R code hence the similar analysis can be run and modify in R.
+                        You can also download ', code('ShinyItemAnalysis'), ' package from ',
+                        a('CRAN', href = 'https://CRAN.R-project.org/package=ShinyItemAnalysis', target = "_blank"),
+                        'to use it offline or run it faster. '),
+
+                      h4('Data'),
+                      p('For demonstration purposes, 20-item dataset', code('GMAT'),'
+                        from R ', code('difNLR'),' package is used. You can change the dataset (and try your
+                        own one) on page', strong('Data.')),
+
+                      h4('Version'),
+                      p('Current version of ', code('ShinyItemAnalysis'), ' is 1.1.0'),
+                      div(
+                        HTML('<p>
+                             See also older versions:
+                             <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV01/"> 0.1.0</a>,
+                             <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV02/"> 0.2.0</a>,
+                             <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV100/"> 1.0.0</a>
+                             </p>')
+                        ),
+
+                      h4('List of Packages Used'),
+                      code('library(corrplot)'), br(),
+                      code('library(CTT)'), br(),
+                      code('library(deltaPlotR)'), br(),
+                      code('library(difNLR)'), br(),
+                      code('library(difR)'), br(),
+                      code('library(foreign)'), br(),
+                      code('library(ggplot2)'), br(),
+                      code('library(gridExtra)'), br(),
+                      code('library(ltm)'), br(),
+                      code('library(moments)'), br(),
+                      code('library(nnet)'), br(),
+                      code('library(psych)'), br(),
+                      code('library(psychometric)'), br(),
+                      code('library(reshape2)'), br(),
+                      code('library(shiny)'), br(),
+                      code('library(shinyAce)'), br(),
+                      code('library(stringr)'), br(),
+                      code('library(rmarkdown)'), br(),
+
+                      h4('Authors'),
+
+                      img(src = 'patricia.jpg', width = 70),
+                      p(a("Patricia Martinkova, Institute of Computer Science, Czech Academy of Sciences",
+                          href = "http://www.cs.cas.cz/martinkova/", target = "_blank")),
+
+                      img(src = 'adela.jpg', width = 70),
+                      p("Adela Drabinova"),
+
+                      img(src = 'leder.png', width = 70),
+                      p(a("Ondrej Leder", href = "https://www.linkedin.com/in/ond%C5%99ej-leder-3864b1119",
+                          target = "_blank")),
+
+                      img(src = 'jakub.jpg', width = 70),
+                      p("Jakub Houdek"),
+
+                      h4('Bug Reports'),
+                      p("If you discover a problem with this application please contact the project maintainer
+                        at martinkova(at)cs.cas.cz "
+                      ),
+
+                      h4('Acknowledgments'),
+                      p(" Project was supported by grant funded by Czech Science foundation under number ",
+                        a("GJ15-15856Y", href = "http://www.cs.cas.cz/martinkova/psychometrics.html",
+                          target = "_blank")
+                      ),
+
+                      h4('License'),
+                      p(" Copyright 2016  Patricia Martinkova, Adela Drabinova, Ondrej Leder and Jakub Houdek"),
+                      p(" This program is free software you can redistribute it and or modify it under the terms of the GNU
+                        General Public License as published by the Free Software Foundation either version 3 of the License or
+                        at your option any later version."),
+                      p("This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+                        even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
+                        Public License for more details." ),
+                      br(),
+                      br()
+                      ),
              ###################
              # DATA ############
              ###################
@@ -143,14 +241,12 @@ ui=tagList(
                       h4("Scored Test"),
                       dataTableOutput('sc01')
                       ),
+             ########################
+             # SUMMARY #####
+             ########################
              navbarMenu("Summary",
                         # TOTAL SCORES
                         tabPanel("Total Scores",
-                                 br(),
-                                 p(code('ShinyItemAnalysis'), 'provides analysis of educational tests (such as admission tests)
-                                   and its items. For demonstration purposes, 20-item dataset', code('GMAT'),' from
-                                   R ', code('library(difNLR)'),' is used. You can change the dataset
-                                   (and try your own one) on page', strong('Data.')),
                                  h3("Analysis of Total Scores"),
                                  h4("Summary Table"),
                                  tableOutput('results'),
@@ -1825,94 +1921,11 @@ ui=tagList(
                          p(strong("Warning"), ": download of Reports takes some time. Please, be patient.")
                          ),
 
-
-             ########################
-             # ABOUT ################
-             ########################
-             tabPanel("About",
-                      br(),
-                      strong('Version'),
-                      p("ShinyItemAnalysis Version 1.0"),
-                      p('ShinyItemAnalysis Version 0.1 is available',
-                        a("here.", href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV01/",
-                          target = "_blank")),
-                      br(),
-                      strong('Description'),
-                      p('ShinyItemAnalysis provides analysis of tests and their items.
-                        It is based on the', a("Shiny", href = "http://www.rstudio.com/shiny/", target = "_blank"),
-                        'R package. '),
-                      br(),
-                      strong('Data'),
-                      p('For demonstration purposes, practice dataset from', code('library(difNLR)'),'is used.
-                        On page', strong("Data"), 'you may select your own dataset '),
-                      br(),
-                      strong('List of Packages Used'),
-                      br(),
-                      code('library(corrplot)'), br(),
-                      code('library(CTT)'), br(),
-                      code('library(deltaPlotR)'), br(),
-                      code('library(difNLR)'), br(),
-                      code('library(difR)'), br(),
-                      code('library(foreign)'), br(),
-                      code('library(ggplot2)'), br(),
-                      code('library(gridExtra)'), br(),
-                      code('library(ltm)'), br(),
-                      code('library(moments)'), br(),
-                      code('library(nnet)'), br(),
-                      code('library(psych)'), br(),
-                      code('library(psychometric)'), br(),
-                      code('library(reshape2)'), br(),
-                      code('library(shiny)'), br(),
-                      code('library(shinyAce)'), br(),
-                      code('library(stringr)'), br(),
-                      code('library(rmarkdown)'), br(),
-                      br(),
-                      strong('Authors'),
-                      br(),
-
-                      img(src = 'patricia.jpg', width = 70),
-                      p(a("Patricia Martinkova, Institute of Computer Science, Czech Academy of Sciences",
-                          href = "http://www.cs.cas.cz/martinkova/", target = "_blank")),
-
-                      img(src = 'adela.jpg', width = 70),
-                      p("Adela Drabinova"),
-
-                      img(src = 'leder.png', width = 70),
-                      p(a("Ondrej Leder", href = "https://www.linkedin.com/in/ond%C5%99ej-leder-3864b1119",
-                          target = "_blank")),
-
-                      img(src = 'jakub.jpg', width = 70),
-                      p("Jakub Houdek"),
-
-                      strong('Bug Reports'),
-                      p("If you discover a problem with this application please contact the project maintainer
-                        at martinkova(at)cs.cas.cz "
-                      ),
-                      strong('Acknowledgments'),
-                      p(" Project was supported by grant funded by Czech Science foundation under number ",
-                        a("GJ15-15856Y", href = "http://www.cs.cas.cz/martinkova/psychometrics.html",
-                          target = "_blank")
-                      ),
-                      br(),
-                      strong('License'),
-                      p(" Copyright 2016  Patricia Martinkova, Adela Drabinova, Ondrej Leder and Jakub Houdek"),
-                      p(" This program is free software you can redistribute it and or modify it under the terms of the GNU
-                        General Public License as published by the Free Software Foundation either version 3 of the License or
-                        at your option any later version."
-                      ),
-                      p("This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
-                        even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
-                        Public License for more details."
-                      ),
-                      br(),
-                      br()
-                      ),
              ########################
              # REFERENCES ###########
              ########################
              tabPanel("References",
-                      br(),
-                      strong('References'),
+                      h4('References'),
                       br(),
                       br(),
                       p('Angoff, W. H., & Ford, S. F. (1973). Item‐Race Interaction on a Test of
