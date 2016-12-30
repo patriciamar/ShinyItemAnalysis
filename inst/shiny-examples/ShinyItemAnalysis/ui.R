@@ -174,9 +174,13 @@ ui=tagList(
                                   ),
                                   selected="GMAT_difNLR"),
                       h4("Upload your own datasets"),
-                      p('Main dataset should contain responses of individual students (rows) to given items (collumns).
-                        Header may contain item names, no row names should be included. If responses are in unscored ABC format,
-                        the key provides correct response for each item. If responses are scored 0-1, key is vecor of 1s.'),
+                      p('Main dataset should contain responses of individual students (rows) to given items
+                        (columns). Header may contain item names, no row names should be included. If responses
+                        are in unscored ABC format, the key provides correct response for each item. If responses are
+                        scored 0-1, key is vector of 1s. Group is 0-1 vector, where 0 represents reference group
+                        and 1 represents focal group. Its length need to be the same as number of individual
+                        students in main dataset. If the group is not provided then it wont be possible to run DIF and DDF
+                        detection procedures. '),
                       fluidRow(
                         column(4, offset = 0, fileInput(
                           'data', 'Choose data (csv file)',
@@ -267,6 +271,7 @@ ui=tagList(
                                      br(),
                                      code('data  <- GMAT[, colnames(GMAT) != "group"]'),
                                      br(),
+                                     br(),
                                      code('score <- apply(data, 1, sum) # Total score'),
                                      br(),
                                      br(),
@@ -281,6 +286,20 @@ ui=tagList(
                                  ),
                         # STANDARD SCORES
                         tabPanel("Standard Scores",
+                                 h3('Standard Scores'),
+                                 p(strong('Total Score'), 'also known as raw score is a total number of correct
+                                   answers. It can be used to compare individual score to a norm group, e.g. if the mean
+                                   is 12, then individual score can be compared to see if it is below or above this average. ', br(),
+                                   strong('Percentile'), 'indicates the value below which a percentage of observations
+                                   falls, e.g. a individual score at the 80th percentile means that the individual score
+                                   is the same or higher than the scores of 80% of all respondents. ', br(),
+                                   strong('Success Rate'), 'is the percentage of success, e.g. if the maximum points of test
+                                   is equal to 20 and individual score is 12 then success rate is 12/20 = 0.6, i.e. 60%.', br(),
+                                   strong('Z-score'), 'or also standardized score is a linear transformation of total
+                                   score with a mean of 0 and with variance of 1. If X is total score, M its mean and SD its
+                                   standard deviation then Z-score = (X - M) / SD. ', br(),
+                                   strong('T-score'), 'is transformed Z-score with a mean of 50 and standard deviation
+                                   of 10. If Z is Z-score then T-score = (Z * 10) + 50. '),
                                  h4("Table by Score"),
                                  tableOutput('percentile'),
                                  br(),
@@ -291,8 +310,8 @@ ui=tagList(
                                      br(),
                                      code('data  <- GMAT[, colnames(GMAT) != "group"]'),
                                      br(),
-                                     code('score <- apply(data, 1, sum) # Total score'),
                                      br(),
+                                     code('score <- apply(data, 1, sum) # Total score'),
                                      br(),
                                      code('tosc <- sort(unique(score)) # Levels of total score'),
                                      br(),
@@ -333,17 +352,17 @@ ui=tagList(
                                      br(),
                                      code('corrplot(corP$rho)'),
                                      br(),
-                                     code('corP$rho'),
+                                     code('corP$rho # Correlation matrix'),
                                      br(),
                                      br(),
                                      code('# Scree plot'),
                                      br(),
                                      code('plot(1:length(eigen(corP$rho)$values), eigen(corP$rho)$values,
-                                          ylab = "Eigen value")'),
+                                          ylab = "Eigen value", xlab = "Item")'),
                                      br(),
                                      code('lines(1:length(eigen(corP$rho)$values), eigen(corP$rho)$values)'),
                                      br(),
-                                     code('eigen(corP$rho)')),
+                                     code('eigen(corP$rho) # Eigen values and vectors')),
                                  br()
                                  )
                         ),
@@ -358,21 +377,21 @@ ui=tagList(
                                  p('Traditional item analysis uses proportions of correct answers or correlations to estimate item properties.'),
                                  h4("Item Difficulty/Discrimination Graph"),
                                  p("Displayed is difficulty (red) and discrimination (blue)
-                                   for all items. Items are ordered by difficulty. "),
-                                 p(strong("Difficulty"),' of items is estimated as percent of students who answered correctly to that item.'),
-                                 p(strong("Discrimination"),' is described by difference of percent correct
-                                   in upper and lower third of students (Upper-Lower Index, ULI). By rule of thumb it should not be lower than 0.2
-                                   (borderline in the plot), except for very easy or very difficult items.'),
-
+                                   for all items. Items are ordered by difficulty. ", br(),
+                                   strong("Difficulty"),' of items is estimated as percent of students who
+                                   answered correctly to that item.', br(),
+                                   strong("Discrimination"),' is described by difference of percent correct
+                                   in upper and lower third of students (Upper-Lower Index, ULI). By rule of
+                                   thumb it should not be lower than 0.2 (borderline in the plot), except for
+                                   very easy or very difficult items.'),
                                  plotOutput('difplot'),
                                  downloadButton("DP_difplot", label = "Download figure"),
-                                 h4("Traditional Item Analysis"),
-                                 h3("Cronbach's alpha"),
+                                 h4("Cronbach's alpha"),
                                  p("Chronbach's alpha is an estimate of the reliability of a psychometric test. It is a function
                                    of the number of items in a test, the average covariance between item-pairs, and the variance
                                    of the total score (Cronbach, 1951)."),
                                  tableOutput('cronbachalpha'),
-                                 h3("Traditional Item Analysis Table"),
+                                 h4("Traditional Item Analysis Table"),
                                  p(strong('Explanation: Difficulty'), ' - Difficulty of item is estimated as percent
                                    of students who answered correctly to that item. ', strong('SD'),' - standard deviation, ',
                                    strong('RIT'), ' - Pearson correlation between item and Total score, ', strong('RIR'),'
@@ -381,7 +400,7 @@ ui=tagList(
                                  tableOutput('itemexam'),
                                  br(),
                                  h4("Selected R code"),
-                                 div(code('library(difNLR)'),
+                                 div(code('library(difNLR, psych, ShinyItemAnalysis)'),
                                      br(),
                                      code('data(GMAT)'),
                                      br(),
@@ -391,6 +410,12 @@ ui=tagList(
                                      code('# Difficulty and discrimination plot'),
                                      br(),
                                      code('DDplot(data)'),
+                                     br(),
+                                     br(),
+                                     code('# Cronbach alpha'),
+                                     br(),
+                                     code('psych::alpha(data)'),
+                                     br(),
                                      br(),
                                      code('# Table'),
                                      br(),
@@ -435,7 +460,7 @@ ui=tagList(
                                  fluidRow(column(12, align = "center", tableOutput('tab_props_distractor'))),
                                  br(),
                                  h4("Selected R code"),
-                                 div(code('library(difNLR)'),
+                                 div(code('library(difNLR, ShinyItemAnalysis)'),
                                      br(),
                                      code('data(GMATtest)'),
                                      br(),
@@ -708,9 +733,6 @@ ui=tagList(
                                  plotOutput('multiplot'),
                                  downloadButton("DP_multiplot", label = "Download figure"),
                                  h4("Equation"),
-                                 # ('$$\\mathrm{P}(Y = A|Z, b_{A0}, b_{A1}) = \\mathrm{P}(Y = D|Z, b_{D0}, b_{D1})\\cdot e^{\\left( b_{A0} + b_{A1} Z\\right) }$$'),
-                                 # ('$$\\mathrm{P}(Y = B|Z, b_{B0}, b_{B1}) = \\mathrm{P}(Y = D|Z, b_{D0}, b_{D1})\\cdot e^{\\left( b_{B0} + b_{B1} Z\\right) }$$'),
-                                 # ('$$\\mathrm{P}(Y = C|Z, b_{C0}, b_{C1}) = \\mathrm{P}(Y = D|Z, b_{D0}, b_{D1})\\cdot e^{\\left( b_{C0} + b_{C1} Z\\right) }$$'),
                                  uiOutput('multieq'),
                                  h4("Table of parameters"),
                                  fluidRow(column(12, align = "center", tableOutput('multitab'))),
@@ -718,9 +740,7 @@ ui=tagList(
                                  htmlOutput("multiint"),
                                  br(),
                                  h4("Selected R code"),
-                                 div(code('library(difNLR)'),
-                                     br(),
-                                     code('library(nnet)'),
+                                 div(code('library(difNLR, nnet)'),
                                      br(),
                                      code('data(GMAT)'),
                                      br(),
@@ -781,7 +801,9 @@ ui=tagList(
                                  downloadButton("DP_raschFactor", label = "Download figure"),
                                  br(),
                                  h4("Selected R code"),
-                                 div(code('data(GMAT)'),
+                                 div(code('library(difNLR, ltm)'),
+                                     br(),
+                                     code('data(GMAT)'),
                                      br(),
                                      code('data <- GMAT[, colnames(GMAT) != "group"]'),
                                      br(),
@@ -853,7 +875,9 @@ ui=tagList(
                                  downloadButton("DP_twoFactor", label = "Download figure"),
                                  br(),
                                  h4("Selected R code"),
-                                 div(code('data(GMAT)'),
+                                 div(code('library(difNLR, ltm)'),
+                                     br(),
+                                     code('data(GMAT)'),
                                      br(),
                                      code('data <- GMAT[, colnames(GMAT) != "group"]'),
                                      br(),
@@ -925,7 +949,9 @@ ui=tagList(
                                  downloadButton("DP_threeFactor", label = "Download figure"),
                                  br(),
                                  h4("Selected R code"),
-                                 div(code('data(GMAT)'),
+                                 div(code('library(difNLR, ltm)'),
+                                     br(),
+                                     code('data(GMAT)'),
                                      br(),
                                      code('data <- GMAT[, colnames(GMAT) != "group"]'),
                                      br(),
@@ -1035,9 +1061,7 @@ ui=tagList(
                                  verbatimTextOutput("dp_text_normal"),
                                  br(),
                                  h4("Selected R code"),
-                                 div(code('library(difNLR)'),
-                                     br(),
-                                     code('library(deltaPlotR)'),
+                                 div(code('library(difNLR, deltaPlotR)'),
                                      br(),
                                      code('data(GMAT)'),
                                      br(),
@@ -1092,9 +1116,7 @@ ui=tagList(
                                             verbatimTextOutput("print_DIF_MH"),
                                             br(),
                                             h4("Selected R code"),
-                                            div(code('library(difNLR)'),
-                                                br(),
-                                                code('library(deltaPlotR)'),
+                                            div(code('library(difNLR, difR)'),
                                                 br(),
                                                 code('data(GMAT)'),
                                                 br(),
@@ -1125,9 +1147,7 @@ ui=tagList(
                                             uiOutput('ORcalculation'),
                                             br(),
                                             h4("Selected R code"),
-                                            div(code('library(difNLR)'),
-                                                br(),
-                                                code('library(deltaPlotR)'),
+                                            div(code('library(difNLR, difR)'),
                                                 br(),
                                                 code('data(GMAT)'),
                                                 br(),
@@ -1202,9 +1222,7 @@ ui=tagList(
                                             verbatimTextOutput('print_DIF_logistic'),
                                             br(),
                                             h4("Selected R code"),
-                                            div(code('library(difNLR)'),
-                                                br(),
-                                                code('library(difR)'),
+                                            div(code('library(difNLR, difR)'),
                                                 br(),
                                                 code('data(GMAT)'),
                                                 br(),
@@ -1258,9 +1276,7 @@ ui=tagList(
                                             fluidRow(column(12, align = "center", tableOutput('tab_coef_DIF_logistic'))),
                                             br(),
                                             h4("Selected R code"),
-                                            div(code('library(difNLR)'),
-                                                br(),
-                                                code('library(difR)'),
+                                            div(code('library(difNLR, difR)'),
                                                 br(),
                                                 code('data(GMAT)'),
                                                 br(),
@@ -1328,9 +1344,7 @@ ui=tagList(
                                             verbatimTextOutput('print_DIF_logistic_IRT_Z'),
                                             br(),
                                             h4("Selected R code"),
-                                            div(code('library(difNLR)'),
-                                                br(),
-                                                code('library(difR)'),
+                                            div(code('library(difNLR, difR)'),
                                                 br(),
                                                 code('data(GMAT)'),
                                                 br(),
@@ -1388,9 +1402,7 @@ ui=tagList(
                                             fluidRow(column(12, align = "center", tableOutput('tab_coef_DIF_logistic_IRT_Z'))),
                                             br(),
                                             h4("Selected R code"),
-                                            div(code('library(difNLR)'),
-                                                br(),
-                                                code('library(difR)'),
+                                            div(code('library(difNLR, difR)'),
                                                 br(),
                                                 code('data(GMAT)'),
                                                 br(),
@@ -1578,9 +1590,7 @@ ui=tagList(
                                             verbatimTextOutput('print_DIF_IRT_Lord'),
                                             br(),
                                             h4("Selected R code"),
-                                            div(code('library(difNLR)'),
-                                                br(),
-                                                code('library(difR)'),
+                                            div(code('library(difNLR, difR)'),
                                                 br(),
                                                 code('data(GMAT)'),
                                                 br(),
@@ -1621,23 +1631,10 @@ ui=tagList(
                                             h4("Equation"),
                                             uiOutput('irtint_lord'),
                                             uiOutput('irteq_lord'),
-                                            #     p('As the parameters are estimated in ', code("difR"), 'package separately for
-                                            #                groups, there is one equation for each group. Parameters ', strong('aR'), ' and ',
-                                            #       strong('bR'), 'are discrimination and difficulty for reference group. Parameters ', strong('aF'), ' and ',
-                                            #       strong('bF'), 'are discrimination and difficulty for reference group. Parameter ', strong('c'), ' is
-                                            #                a common guessing parameter.'),
-                                            #     ('$$\\mathrm{P}\\left(Y_{ij} = 1 | \\theta_i, G_i = 0, a_{Rj}, b_{Rj}, c_j\\right) =
-                                            # c_j + \\left(1 - c_j\\right) \\cdot \\frac{e^{a_{Rj} \\left(\\theta_i - b_{Rj} \\right)}}
-                                            # {1+e^{a_{Rj} \\left(\\theta_i - b_{Rj} \\right)}} $$'),
-                                            #     ('$$\\mathrm{P}\\left(Y_{ij} = 1 | \\theta_i, G_i = 1, a_{Fj}, b_{Fj}, c_j\\right) =
-                                            # c_j + \\left(1 - c_j\\right) \\cdot \\frac{e^{a_{Fj} \\left(\\theta_i - b_{Fj} \\right)}}
-                                            # {1+e^{a_{Fj} \\left(\\theta_i - b_{Fj} \\right)}} $$'),
                                             fluidRow(column(12, align = "center", tableOutput('tab_coef_DIF_IRT_Lord'))),
                                             br(),
                                             h4("Selected R code"),
-                                            div(code('library(difNLR)'),
-                                                br(),
-                                                code('library(difR)'),
+                                            div(code('library(difNLR, difR)'),
                                                 br(),
                                                 code('data(GMAT)'),
                                                 br(),
@@ -1687,9 +1684,7 @@ ui=tagList(
                                             verbatimTextOutput('print_DIF_IRT_Raju'),
                                             br(),
                                             h4("Selected R code"),
-                                            div(code('library(difNLR)'),
-                                                br(),
-                                                code('library(difR)'),
+                                            div(code('library(difNLR, difR)'),
                                                 br(),
                                                 code('data(GMAT)'),
                                                 br(),
@@ -1728,24 +1723,10 @@ ui=tagList(
                                             h4("Equation"),
                                             uiOutput('irtint_raju'),
                                             uiOutput('irteq_raju'),
-                                            #              p('As the parameters are estimated in ', code("difR"), 'package separately for
-                                            #                groups, there is one equation for each group. Parameters ', strong('aR'), ' and ',
-                                            #                strong('bR'), 'are discrimination and difficulty for reference group. Parameters ', strong('aF'), ' and ',
-                                            #                strong('bF'), 'are discrimination and difficulty for reference group. Parameter ', strong('c'), ' is
-                                            #                a common guessing parameter.'),
-                                            #              ('$$\\mathrm{P}\\left(Y_{ij} = 1 | \\theta_i, G_i = 0, a_{Rj}, b_{Rj}, c_j\\right) =
-                                            # c_j + \\left(1 - c_j\\right) \\cdot \\frac{e^{a_{Rj} \\left(\\theta_i - b_{Rj} \\right)}}
-                                            # {1+e^{a_{Rj} \\left(\\theta_i - b_{Rj} \\right)}} $$'),
-                                            #              ('$$\\mathrm{P}\\left(Y_{ij} = 1 | \\theta_i, G_i = 1, a_{Fj}, b_{Fj}, c_j\\right) =
-                                            # c_j + \\left(1 - c_j\\right) \\cdot \\frac{e^{a_{Fj} \\left(\\theta_i - b_{Fj} \\right)}}
-                                            # {1+e^{a_{Fj} \\left(\\theta_i - b_{Fj} \\right)}} $$'),
-
                                             fluidRow(column(12, align = "center", tableOutput('tab_coef_DIF_IRT_Raju'))),
                                             br(),
                                             h4("Selected R code"),
-                                            div(code('library(difNLR)'),
-                                                br(),
-                                                code('library(difR)'),
+                                            div(code('library(difNLR, difR)'),
                                                 br(),
                                                 code('data(GMAT)'),
                                                 br(),
