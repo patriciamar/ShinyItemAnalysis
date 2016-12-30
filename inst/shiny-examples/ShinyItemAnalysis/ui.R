@@ -17,22 +17,24 @@ ui=tagList(
                    # br(),
                    div(
                      HTML('<p style="color:black; font-size: 9pt">
-                          Older version 0.1 <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV01/">
-                          is available here. </a>
+                          See older versions:
+                          <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV01/"> 0.1.0 </a>,
+                          <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV02/"> 0.2.0 </a>,
+                          <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV100/"> 1.0.0 </a>
                           </p>')
                      ),
-                   div(
-                     HTML('<p style="color:black; font-size: 9pt">
-                          Older version 0.2 <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV02/">
-                          is available here. </a>
-                          </p>')
-                     ),
-                   div(
-                     HTML('<p style="color:black; font-size: 9pt">
-                          Older version 1.0.0 <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV100/">
-                          is available here. </a>
-                          </p>')
-                     ),
+                   # div(
+                   #   HTML('<p style="color:black; font-size: 9pt">
+                   #        Older version 0.2 <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV02/">
+                   #        is available here. </a>
+                   #        </p>')
+                   #   ),
+                   # div(
+                   #   HTML('<p style="color:black; font-size: 9pt">
+                   #        Older version 1.0.0 <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV100/">
+                   #        is available here. </a>
+                   #        </p>')
+                   #   ),
                    # br(),
                    p(textOutput('counter'))
                    # br()
