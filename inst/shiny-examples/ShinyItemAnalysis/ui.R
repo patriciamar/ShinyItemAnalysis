@@ -1,8 +1,4 @@
-#library(shinythemes)
-
 ui=tagList(
-  # BOOTSTRAP THEME SELECTOR FOR SHINY APP (requieres shinythemes package)
-  #shinythemes:themeSelector(),
   navbarPage(title="TEST AND ITEM ANALYSIS",
              collapsible=TRUE,
              footer=list(
@@ -43,53 +39,6 @@ ui=tagList(
                      )
                    ),
              theme="bootstrap.css",
-             #####################
-             # SIDE PANEL UPLOADS####
-             #####################
-             # sidebarLayout(
-             #   sidebarPanel(
-             #     # online version
-             #     p(strong("ShinyItemAnalysis Version 1.0")),
-             #     p("Download ShinyItemAnalysis R package from ",
-             #       a(strong("CRAN"), href = "https://cran.rstudio.com/web/packages/ShinyItemAnalysis/",
-             #         target = "_blank"), "to run analysis faster!"),
-             #     br(),
-             #     p("Project was supported by grant funded by Czech Science Foundation under number ",
-             #       a("GJ15-15856Y",
-             #         href = "http://www.cs.cas.cz/martinkova/psychometrics.html",
-             #         target = "_blank")),
-             #     p(" Copyright 2016  Patricia Martinkova, Ondrej Leder, Adela Drabinova and Jakub Houdek"),
-             #     br(),
-             #     div(
-             #       HTML('<p style="color:black; font-size: 9pt">
-             #            Older version 0.1 <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV01/">
-             #           is available here. </a>
-             #            </p>')
-             #     ),
-             #     div(
-             #       HTML('<p style="color:black; font-size: 9pt">
-             #            Older version 0.2 <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV02/">
-             #           is available here. </a>
-             #            </p>')
-             #     ),
-             #     br(),
-             #     p(textOutput('counter')),
-             #     br(),
-             #
-             #     # # CRAN version
-             #     # p(strong("ShinyItemAnalysis Version 1.0")),
-             #     # p("Try ShinyItemAnalysis ",
-             #     #   a(strong("online"), href = "https://shiny.cs.cas.cz/ShinyItemAnalysis", target = "_blank")),
-             #     # br(),
-             #     # p("Project was supported by grant funded by Czech Science Foundation under number ",
-             #     #   a("GJ15-15856Y",
-             #     #     href = "http://www.cs.cas.cz/martinkova/psychometrics.html",
-             #     #     target = "_blank")),
-             #     # p(" Copyright 2016  Patricia Martinkova, Adela Drabinova, Ondrej Leder and Jakub Houdek"),
-             #     # br(),
-             #
-             #     width = 3
-             #     ),
              #########################
              # MAIN PANEL ####
              #########################
@@ -110,7 +59,6 @@ ui=tagList(
                                  h4("Summary Table"),
                                  tableOutput('results'),
                                  h4("Histogram of Total Score"),
-                                 #uiOutput("slider2"),
                                  sliderInput("inSlider2", "Cut-Score", min = 0, max = 10,
                                              value = 1, step = 1),
                                  p('For selected cut-score, blue part of histogram shows students with total score
@@ -206,7 +154,6 @@ ui=tagList(
                                      code('eigen(corP$rho)')),
                                  br()
                                  )
-                        #)
                         ),
              ###########################
              # TRADITIONAL ANALYSIS ####
@@ -285,7 +232,6 @@ ui=tagList(
                                  radioButtons('type_combinations_distractor', 'Type',
                                               list("Combinations", "Distractors")
                                  ),
-                                 # uiOutput("distractorSliderUI"),
                                  sliderInput("distractorSlider", "Item Slider", min=1, value=1, max=10,
                                              step=1, animate=TRUE),
                                  h4("Distractors Plot"),
@@ -331,7 +277,6 @@ ui=tagList(
                                      code('tab')),
                                  br()
                                  )
-                        # )
                         ),
 
              #####################
@@ -350,7 +295,6 @@ ui=tagList(
                                  h4("Plot with Estimated Logistic Curve"),
                                  p('Points represent proportion of correct answer with respect to total score.
                                    Their size is determined by count of respondents who answered item correctly.'),
-                                 # uiOutput("logregSliderUI"),
                                  sliderInput("logregSlider", "Item Slider", min=1, value=1, max=10,
                                              step=1, animate=TRUE),
                                  plotOutput('logreg'),
@@ -406,7 +350,6 @@ ui=tagList(
                                  h4("Plot with Estimated Logistic Curve"),
                                  p('Points represent proportion of correct answer with respect to standardized
                                    total score. Their size is determined by count of respondents who answered item correctly.'),
-                                 # uiOutput("zlogregSliderUI"),
                                  sliderInput("zlogregSlider", "Item Slider", min=1, value=1, max=10,
                                              step=1, animate=TRUE),
                                  plotOutput('zlogreg'),
@@ -461,7 +404,6 @@ ui=tagList(
                                  h4("Plot with Estimated Logistic Curve"),
                                  p('Points represent proportion of correct answer with respect to standardized
                                    total score. Their size is determined by count of respondents who answered item correctly.'),
-                                 #uiOutput("zlogreg_irtSliderUI"),
                                  sliderInput("zlogreg_irtSlider", "Item Slider", min=1, value=1, max=10,
                                              step=1, animate=TRUE),
                                  plotOutput('zlogreg_irt'),
@@ -519,7 +461,6 @@ ui=tagList(
                                  h4("Plot with Estimated Nonlinear Curve"),
                                  p('Points represent proportion of correct answer with respect to standardized
                                    total score. Their size is determined by count of respondents who answered item correctly.'),
-                                 # uiOutput("nlsSliderUI"),
                                  sliderInput("nlsSlider", "Item Slider", min=1, value=1, max=10,
                                              step=1, animate=TRUE),
                                  plotOutput('nlsplot'),
@@ -570,7 +511,6 @@ ui=tagList(
                                  h4("Plot with Estimated Curves of Multinomial Regression"),
                                  p('Points represent proportion of selected option with respect to standardized
                                    total score. Their size is determined by count of respondents who selected given option.'),
-                                 # uiOutput("multiSliderUI"),
                                  sliderInput("multiSlider", "Item Slider", min=1, value=1, max=10,
                                              step=1, animate=TRUE),
                                  plotOutput('multiplot'),
@@ -852,7 +792,6 @@ ui=tagList(
                                  h4("Summary of Total Scores for Groups"),
                                  tableOutput('resultsgroup'),
                                  h4("Histograms of Total Scores for Groups"),
-                                 #uiOutput("slider2group"),
                                  sliderInput("inSlider2group", "Cut-Score", min=1, value=1, max=10,
                                              step=1, animate=TRUE),
                                  p('For selected cut-score, blue part of histogram shows students with total score
@@ -986,10 +925,8 @@ ui=tagList(
                                               tables that are calculated for each level of total score (Mantel &
                                               Haenszel, 1959).'),
                                             h4('Contingency Tables'),
-                                            #uiOutput("difMHSlider_itemUI"),
                                             sliderInput("difMHSlider_item", "Item", animate = TRUE,
                                                         min = 1, max = 10, value = 1, step = 1),
-                                            #uiOutput("difMHSlider_score"),
                                             sliderInput("difMHSlider_score", "Cut-Score", min = 0, max = 10,
                                                         value = 1, step = 1),
                                             fluidRow(column(12, align = "center", tableOutput('table_DIF_MH'))),
@@ -1119,7 +1056,6 @@ ui=tagList(
                                                           "FDR" = "fdr",
                                                           "none" = "none"),
                                                         selected="BH"),
-                                            # uiOutput("diflogSliderUI"),
                                             sliderInput("diflogSlider", "Item Slider", min=1, value=1, max=10,
                                                         step=1, animate=TRUE),
                                             plotOutput('plot_DIF_logistic'),
@@ -1248,7 +1184,6 @@ ui=tagList(
                                                           "FDR" = "fdr",
                                                           "none" = "none"),
                                                         selected="BH"),
-                                            # uiOutput("diflog_irtSliderUI"),
                                             sliderInput("diflog_irtSlider", "Item Slider", min=1, value=1, max=10,
                                                         step=1, animate=TRUE),
                                             plotOutput('plot_DIF_logistic_IRT_Z'),
@@ -1391,8 +1326,6 @@ ui=tagList(
                                                           "FDR" = "fdr",
                                                           "none" = "none"),
                                                         selected="BH"),
-                                            #goback
-                                            # uiOutput("difnlrSliderUI"),
                                             sliderInput("difnlrSlider", "Item Slider", min=1, value=1, max=10,
                                                         step=1, animate=TRUE),
                                             plotOutput('plot_DIF_NLR'),
@@ -1489,7 +1422,6 @@ ui=tagList(
                                                          ),
                                                          '2PL'
                                             ),
-                                            #uiOutput("difirt_lord_itemSliderUI"),
                                             sliderInput("difirt_lord_itemSlider", "Item Slider", min=1, value=1, max=10,
                                                         step=1, animate=TRUE),
                                             plotOutput('plot_DIF_IRT_Lord'),
@@ -1597,7 +1529,6 @@ ui=tagList(
                                                          ),
                                                          '2PL'
                                             ),
-                                            #uiOutput("difirt_raju_itemSliderUI"),
                                             sliderInput("difirt_raju_itemSlider", "Item Slider", min=1, value=1, max=10,
                                                         step=1, animate=TRUE),
                                             plotOutput('plot_DIF_IRT_Raju'),
@@ -1883,9 +1814,7 @@ ui=tagList(
                          h3("Download Report"),
                          p("This shiny app also offers an option to download a report in HTML or PDF format."),
                          p("PDF report creation requires latest version of MiKTeX (or other TeX distribution).
-                           If you don't have the latest installation, please, use the HTML report"),
-                         # sliderInput("reportSlider", "Choose item for Report", min=1, value=1, max=10,
-                         #             step=1, animate=TRUE),
+                           If you don't have the latest installation, please, use the HTML report."),
                          radioButtons("report_format", "Format of Report",
                                      c("HTML" = "html",
                                        "PDF" = "pdf")),
