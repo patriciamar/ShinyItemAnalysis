@@ -174,9 +174,13 @@ ui=tagList(
                                   ),
                                   selected="GMAT_difNLR"),
                       h4("Upload your own datasets"),
-                      p('Main dataset should contain responses of individual students (rows) to given items (collumns).
-                        Header may contain item names, no row names should be included. If responses are in unscored ABC format,
-                        the key provides correct response for each item. If responses are scored 0-1, key is vecor of 1s.'),
+                      p('Main dataset should contain responses of individual students (rows) to given items
+                        (columns). Header may contain item names, no row names should be included. If responses
+                        are in ABC format, the key provides correct response for each item. If responses are
+                        scored 0-1, key is vector of 1s. Group is 0-1 vector, where 0 represents reference group
+                        and 1 represents focal group. Its length need to be the same as number of individual
+                        students in main dataset. If the group is not provided then it wont be possible to run DIF and DDF
+                        detection procedures. '),
                       fluidRow(
                         column(4, offset = 0, fileInput(
                           'data', 'Choose data (csv file)',
