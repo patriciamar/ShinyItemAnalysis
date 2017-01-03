@@ -384,47 +384,6 @@ ui=tagList(
                                      code('tab')),
                                  br()
                                  ),
-                        # CORRELATION STRUCTURE
-                        tabPanel("Correlation Structure",
-                                 h4("Correlation Plot"),
-                                 p('Correlation plot is a graphical display of a correlation matrix of items. The size
-                                   and shade of circles indicate how much the items are correlated (larger and darker
-                                   circle means larger correlation). The color of circles indicates in which way the
-                                   items are correlated - blue color shows possitive correlation and red color shows
-                                   negative correlation.'),
-                                 plotOutput('corr_plot'),
-                                 br(),
-                                 h4("Scree Plot"),
-                                 p('A scree plot displays the eigenvalues associated with an item in descending order
-                                   versus the number of the item. '),
-                                 plotOutput('scree_plot'),
-                                 h4("Selected R code"),
-                                 div(code('library(corrplot, difNLR, psych)'),
-                                     br(),
-                                     code('data(GMAT)'),
-                                     br(),
-                                     code('data  <- GMAT[, colnames(GMAT) != "group"]'),
-                                     br(),
-                                     br(),
-                                     code('# Correlation plot'),
-                                     br(),
-                                     code('corP <- polychoric(data)'),
-                                     br(),
-                                     code('corrplot(corP$rho)'),
-                                     br(),
-                                     code('corP$rho # Correlation matrix'),
-                                     br(),
-                                     br(),
-                                     code('# Scree plot'),
-                                     br(),
-                                     code('plot(1:length(eigen(corP$rho)$values), eigen(corP$rho)$values,
-                                          ylab = "Eigen value", xlab = "Item")'),
-                                     br(),
-                                     code('lines(1:length(eigen(corP$rho)$values), eigen(corP$rho)$values)'),
-                                     br(),
-                                     code('eigen(corP$rho) # Eigen values and vectors')),
-                                 br()
-                                 ),
                         # DISTRACTORS
                         tabPanel("Distractors",
                                  br(),
@@ -492,6 +451,47 @@ ui=tagList(
                                      code('DistractorAnalysis(data, key, num.groups = 3, p.table = T)[[1]]'),
                                      br(),
                                      code('tab')),
+                                 br()
+                                 ),
+                        # CORRELATION STRUCTURE
+                        tabPanel("Correlation Structure",
+                                 h4("Correlation Plot"),
+                                 p('Correlation plot is a graphical display of a correlation matrix of items. The size
+                                   and shade of circles indicate how much the items are correlated (larger and darker
+                                   circle means larger correlation). The color of circles indicates in which way the
+                                   items are correlated - blue color shows possitive correlation and red color shows
+                                   negative correlation.'),
+                                 plotOutput('corr_plot'),
+                                 br(),
+                                 h4("Scree Plot"),
+                                 p('A scree plot displays the eigenvalues associated with an component or a factor in descending order
+                                   versus the number of the component or factor. '),
+                                 plotOutput('scree_plot'),
+                                 h4("Selected R code"),
+                                 div(code('library(corrplot, difNLR, psych)'),
+                                     br(),
+                                     code('data(GMAT)'),
+                                     br(),
+                                     code('data  <- GMAT[, colnames(GMAT) != "group"]'),
+                                     br(),
+                                     br(),
+                                     code('# Correlation plot'),
+                                     br(),
+                                     code('corP <- polychoric(data)'),
+                                     br(),
+                                     code('corrplot(corP$rho)'),
+                                     br(),
+                                     code('corP$rho # Correlation matrix'),
+                                     br(),
+                                     br(),
+                                     code('# Scree plot'),
+                                     br(),
+                                     code('plot(1:length(eigen(corP$rho)$values), eigen(corP$rho)$values,
+                                          ylab = "Eigen value", xlab = "Component Number")'),
+                                     br(),
+                                     code('lines(1:length(eigen(corP$rho)$values), eigen(corP$rho)$values)'),
+                                     br(),
+                                     code('eigen(corP$rho) # Eigen values and vectors')),
                                  br()
                                  )
                         ),
