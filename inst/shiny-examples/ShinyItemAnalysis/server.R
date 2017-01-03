@@ -367,7 +367,7 @@ function(input, output, session) {
     ggplot(data = df, aes(x = pos, y = ev)) +
       geom_point() +
       geom_line() +
-      xlab("Item") + ylab("Eigen value") +
+      xlab("Component Number") + ylab("Eigen Value") +
       scale_x_continuous(breaks = 1:length(ev)) +
       theme_bw() +
       theme(legend.title = element_blank(),
