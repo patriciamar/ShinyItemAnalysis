@@ -146,7 +146,7 @@ plotDIFLogistic <- function(data, group, type = "both", item, IRT = F, p.adjust.
     theme(legend.box.just = "left",
           legend.justification = c(1, 0),
           legend.position = c(0.97, 0.03),
-          legend.margin = unit(0, "lines"),
+          # legend.margin = unit(0, "lines"),
           legend.box = "vertical",
           legend.key.size = unit(0.9, "cm"),
           legend.key.height = unit(0.8, "line"),

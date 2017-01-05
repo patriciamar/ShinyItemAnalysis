@@ -1,5 +1,5 @@
 ui=tagList(
-  navbarPage(title="TEST AND ITEM ANALYSIS",
+  navbarPage(title="ShinyItemAnalysis - TEST AND ITEM ANALYSIS",
              collapsible=TRUE,
              footer=list(
                # online version
@@ -16,21 +16,11 @@ ui=tagList(
                    p(" Copyright 2016  Patricia Martinkova, Adela Drabinova, Ondrej Leder and Jakub Houdek"),
                    # br(),
                    div(
-                     HTML('<p style="color:black; font-size: 9pt">
-                          Older version 0.1 <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV01/">
-                          is available here. </a>
-                          </p>')
-                     ),
-                   div(
-                     HTML('<p style="color:black; font-size: 9pt">
-                          Older version 0.2 <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV02/">
-                          is available here. </a>
-                          </p>')
-                     ),
-                   div(
-                     HTML('<p style="color:black; font-size: 9pt">
-                          Older version 1.0.0 <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV100/">
-                          is available here. </a>
+                     HTML('<p style="font-size: 9pt">
+                          See older versions:
+                          <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV01/"> 0.1.0</a>,
+                          <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV02/"> 0.2.0</a>,
+                          <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV100/"> 1.0.0</a>
                           </p>')
                      ),
                    # br(),
@@ -45,16 +35,222 @@ ui=tagList(
              # mainPanel(
              # tabsetPanel(
              ########################
+             # ABOUT ################
+             ########################
+             tabPanel("About",
+                      h4('Description'),
+                      p(code('ShinyItemAnalysis'), ' provides analysis of educational tests (such as admission tests)
+                        and their items including:' ),
+                      tags$ul(
+                        tags$li("Exploration of total and standard scores on ", strong('Summary'), "page. "),
+                        tags$li("Item and distractor analysis on ", strong('Traditional Analysis'), "page. "),
+                        tags$li('Item analysis by logistic models on ', strong('Regression'), "page. "),
+                        tags$li('Item analysis by item response theory models on ', strong('IRT models'), "page. "),
+                        tags$li('Differential item functioning (DIF) and differential distractor functioning (DDF)
+                                methods on ', strong('DIF/Fairness'), "page. ")
+                        ),
+                      p('This application is based on the free statistical software',
+                        a('R', href = 'https://cran.r-project.org/', target = "_blank"),
+                        ' and its ',
+                        a('Shiny', href = 'http://www.rstudio.com/shiny/', target = "_blank"),
+                        'package. '),
+                      p('For all graphical outputs a download button is provided. Moreover, on ', strong('Reports'),
+                        'page HTML or PDF report can be created. Additionaly, all application outputs are
+                        complemented by selected R code hence the similar analysis can be run and modify in R.
+                        You can also download ', code('ShinyItemAnalysis'), ' package from ',
+                        a('CRAN', href = 'https://CRAN.R-project.org/package=ShinyItemAnalysis', target = "_blank"),
+                        'to use it offline or run it faster. '),
+
+                      h4('Data'),
+                      p('For demonstration purposes, 20-item dataset', code('GMAT'),'
+                        from R ', code('difNLR'),' package is used. You can change the dataset (and try your
+                        own one) on page', strong('Data.')),
+
+                      h4('Version'),
+                      p('Current version of ', code('ShinyItemAnalysis'), ' is 1.1.0'),
+                      div(
+                        HTML('<p>
+                             See also older versions:
+                             <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV01/"> 0.1.0</a>,
+                             <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV02/"> 0.2.0</a>,
+                             <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV100/"> 1.0.0</a>
+                             </p>')
+                        ),
+
+                      h4('List of Packages Used'),
+                      code('library(corrplot)'), br(),
+                      code('library(CTT)'), br(),
+                      code('library(deltaPlotR)'), br(),
+                      code('library(difNLR)'), br(),
+                      code('library(difR)'), br(),
+                      code('library(foreign)'), br(),
+                      code('library(ggplot2)'), br(),
+                      code('library(gridExtra)'), br(),
+                      code('library(ltm)'), br(),
+                      code('library(moments)'), br(),
+                      code('library(nnet)'), br(),
+                      code('library(psych)'), br(),
+                      code('library(psychometric)'), br(),
+                      code('library(reshape2)'), br(),
+                      code('library(shiny)'), br(),
+                      code('library(shinyAce)'), br(),
+                      code('library(stringr)'), br(),
+                      code('library(rmarkdown)'), br(),
+
+                      h4('Authors'),
+
+                      img(src = 'patricia.jpg', width = 70),
+                      p(a("Patricia Martinkova, Institute of Computer Science, Czech Academy of Sciences",
+                          href = "http://www.cs.cas.cz/martinkova/", target = "_blank")),
+
+                      img(src = 'adela.jpg', width = 70),
+                      p("Adela Drabinova"),
+
+                      img(src = 'leder.png', width = 70),
+                      p(a("Ondrej Leder", href = "https://www.linkedin.com/in/ond%C5%99ej-leder-3864b1119",
+                          target = "_blank")),
+
+                      img(src = 'jakub.jpg', width = 70),
+                      p("Jakub Houdek"),
+
+                      h4('Bug Reports'),
+                      p("If you discover a problem with this application please contact the project maintainer
+                        at martinkova(at)cs.cas.cz "
+                      ),
+
+                      h4('Acknowledgments'),
+                      p(" Project was supported by grant funded by Czech Science foundation under number ",
+                        a("GJ15-15856Y", href = "http://www.cs.cas.cz/martinkova/psychometrics.html",
+                          target = "_blank")
+                      ),
+
+                      h4('License'),
+                      p(" Copyright 2016  Patricia Martinkova, Adela Drabinova, Ondrej Leder and Jakub Houdek"),
+                      p(" This program is free software you can redistribute it and or modify it under the terms of the GNU
+                        General Public License as published by the Free Software Foundation either version 3 of the License or
+                        at your option any later version."),
+                      p("This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+                        even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
+                        Public License for more details." ),
+                      br(),
+                      br()
+                      ),
+             ###################
+             # DATA ############
+             ###################
+             tabPanel("Data",
+                      h3("Data"),
+                      p('For demonstration purposes, 20-item dataset ' , code("GMAT"),'
+                         and dataset', code("GMATkey"),' from R ', code('difNLR'),' package are used.
+                         On this page, you may select one of four datasets offered from ', code('difNLR'),
+                        ' and ', code('ShinyItemAnalysis'), 'packages or you may upload your own dataset
+                         (see below). To return to demonstration dataset,
+                         refresh this page in your browser' , strong("(F5)"), '.'),
+                      p('Used dataset ', code("GMAT"), ' is generated based on parameters of real Graduate Management
+                        Admission Test (GMAT) data set (Kingston et al., 1985). However, first two items were
+                        generated to function differently in uniform and non-uniform way respectively.
+                        The data set represents responses of 2,000 subjects (1,000 males, 1,000 females) to
+                        multiple-choice test of 20 items. The distribution of total scores is the same for both groups. '),
+                      p('Dataset ', code("GMAT2"), ' is also generated based on parameters of GMAT (Kingston et
+                         al., 1985) from R ', code('difNLR'),' package . Again, first two items were generated
+                         to function differently in uniform and non-uniform way respectively. The data set
+                         represents responses of 1,000 subjects (500 males, 500 females) to multiple-choice test
+                         of 20 items. '),
+                      p('Dataset ', code("Medical 20 DIF"), ' is a subset of real admission test to medical
+                         school from R ', code('difNLR'),' package. First item was previously detected as
+                         functioning differently. The data set represents responses of 1,407 subjects (484 males,
+                         923 females) to multiple-choice test of 20 items. For more details of item selection
+                         see Drabinova & Martinkova (2016).'),
+                      p('Dataset ', code("Medical 100"), ' is a real data set of admission test to medical school
+                         from R ', code('ShinyItemAnalysis'),' package . The data set represents responses of
+                         3,204 subjects to multiple-choice test of 100 items. There is no group membership
+                         variable in the data set hence it is not possible to run DIF or DDF detection procedures. '),
+                      br(),
+                      selectInput("dataSelect", "Select dataset",
+                                  c("GMAT" = "GMAT_difNLR",
+                                    "GMAT2" = "GMAT2_difNLR",
+                                    "Medical 20 DIF" = "difMedical_difNLR",
+                                    "Medical 100" = "dataMedical_ShinyItemAnalysis"
+                                  ),
+                                  selected="GMAT_difNLR"),
+                      h4("Upload your own datasets"),
+                      p('Main dataset should contain responses of individual students (rows) to given items
+                        (columns). Header may contain item names, no row names should be included. If responses
+                        are in unscored ABC format, the key provides correct response for each item. If responses are
+                        scored 0-1, key is vector of 1s. Group is 0-1 vector, where 0 represents reference group
+                        and 1 represents focal group. Its length need to be the same as number of individual
+                        students in main dataset. If the group is not provided then it wont be possible to run DIF and DDF
+                        detection procedures. '),
+                      fluidRow(
+                        column(4, offset = 0, fileInput(
+                          'data', 'Choose data (csv file)',
+                          accept = c('text/csv',
+                                     'text/comma-separated-values',
+                                     'text/tab-separated-values',
+                                     'text/plain',
+                                     '.csv',
+                                     '.tsv'
+                          )
+                        )
+                        ),
+                        column(4, offset = 1, fileInput(
+                          'key', 'Choose key (csv file)',
+                          accept = c('text/csv',
+                                     'text/comma-separated-values',
+                                     'text/tab-separated-values',
+                                     'text/plain',
+                                     '.csv',
+                                     '.tsv'
+                          )
+                        )
+                        ),
+                        column(4, fileInput(
+                          'groups', 'Choose groups for DIF (optional)',
+                          accept = c('text/csv',
+                                     'text/comma-separated-values',
+                                     'text/tab-separated-values',
+                                     'text/plain',
+                                     '.csv',
+                                     '.tsv'
+                          )
+                        )
+                        )
+                      ),
+                      tags$hr(),
+                      h4("Data Specification"),
+                      fluidRow(
+                        column(1, offset = 0, checkboxInput('header', 'Header', TRUE)),
+                        column(3, offset = 1, radioButtons('sep', 'Separator',
+                                                           c(Comma = ',',
+                                                             Semicolon = ';',
+                                                             Tab = '\t'
+                                                           ),
+                                                           ','
+                        )
+                        ),
+                        column (3, offset = 0, radioButtons('quote', 'Quote',
+                                                            c(None = '',
+                                                              'Double Quote' = '"',
+                                                              'Single Quote' = "'"
+                                                            ),
+                                                            '"'
+                        )
+                        )
+                      ),
+                      tags$hr(),
+                      h4("Data Check"),
+                      dataTableOutput('headdata'),
+                      h4("Key (correct answers)"),
+                      dataTableOutput('key'),
+                      h4("Scored Test"),
+                      dataTableOutput('sc01')
+                      ),
+             ########################
              # SUMMARY #####
              ########################
              navbarMenu("Summary",
                         # TOTAL SCORES
                         tabPanel("Total Scores",
-                                 br(),
-                                 p(code('ShinyItemAnalysis'), 'provides analysis of educational tests (such as admission tests)
-                                   and its items. For demonstration purposes, 20-item dataset', code('GMAT'),' from
-                                   R ', code('library(difNLR)'),' is used. You can change the dataset
-                                   (and try your own one) on page', strong('Data.')),
                                  h3("Analysis of Total Scores"),
                                  h4("Summary Table"),
                                  tableOutput('results'),
@@ -75,6 +271,7 @@ ui=tagList(
                                      br(),
                                      code('data  <- GMAT[, colnames(GMAT) != "group"]'),
                                      br(),
+                                     br(),
                                      code('score <- apply(data, 1, sum) # Total score'),
                                      br(),
                                      br(),
@@ -89,6 +286,20 @@ ui=tagList(
                                  ),
                         # STANDARD SCORES
                         tabPanel("Standard Scores",
+                                 h3('Standard Scores'),
+                                 p(strong('Total Score'), 'also known as raw score is a total number of correct
+                                   answers. It can be used to compare individual score to a norm group, e.g. if the mean
+                                   is 12, then individual score can be compared to see if it is below or above this average. ', br(),
+                                   strong('Percentile'), 'indicates the value below which a percentage of observations
+                                   falls, e.g. a individual score at the 80th percentile means that the individual score
+                                   is the same or higher than the scores of 80% of all respondents. ', br(),
+                                   strong('Success Rate'), 'is the percentage of success, e.g. if the maximum points of test
+                                   is equal to 20 and individual score is 12 then success rate is 12/20 = 0.6, i.e. 60%.', br(),
+                                   strong('Z-score'), 'or also standardized score is a linear transformation of total
+                                   score with a mean of 0 and with variance of 1. If X is total score, M its mean and SD its
+                                   standard deviation then Z-score = (X - M) / SD. ', br(),
+                                   strong('T-score'), 'is transformed Z-score with a mean of 50 and standard deviation
+                                   of 10. If Z is Z-score then T-score = (Z * 10) + 50. '),
                                  h4("Table by Score"),
                                  tableOutput('percentile'),
                                  br(),
@@ -99,8 +310,8 @@ ui=tagList(
                                      br(),
                                      code('data  <- GMAT[, colnames(GMAT) != "group"]'),
                                      br(),
-                                     code('score <- apply(data, 1, sum) # Total score'),
                                      br(),
+                                     code('score <- apply(data, 1, sum) # Total score'),
                                      br(),
                                      code('tosc <- sort(unique(score)) # Levels of total score'),
                                      br(),
@@ -112,48 +323,7 @@ ui=tagList(
                                      br(),
                                      code('tsco <- 50 + 10 * zsco # T-score')),
                                  br()
-                        ),
-                        # CORRELATION STRUCTURE
-                        tabPanel("Correlation Structure",
-                                 h4("Correlation Plot"),
-                                 p('Correlation plot is a graphical display of a correlation matrix of items. The size
-                                   and shade of circles indicate how much the items are correlated (larger and darker
-                                   circle means larger correlation). The color of circles indicates in which way the
-                                   items are correlated - blue color shows possitive correlation and red color shows
-                                   negative correlation.'),
-                                 plotOutput('corr_plot'),
-                                 br(),
-                                 h4("Scree Plot"),
-                                 p('A scree plot displays the eigenvalues associated with an item in descending order
-                                   versus the number of the item. '),
-                                 plotOutput('scree_plot'),
-                                 h4("Selected R code"),
-                                 div(code('library(corrplot, difNLR, psych)'),
-                                     br(),
-                                     code('data(GMAT)'),
-                                     br(),
-                                     code('data  <- GMAT[, colnames(GMAT) != "group"]'),
-                                     br(),
-                                     br(),
-                                     code('# Correlation plot'),
-                                     br(),
-                                     code('corP <- polychoric(data)'),
-                                     br(),
-                                     code('corrplot(corP$rho)'),
-                                     br(),
-                                     code('corP$rho'),
-                                     br(),
-                                     br(),
-                                     code('# Scree plot'),
-                                     br(),
-                                     code('plot(1:length(eigen(corP$rho)$values), eigen(corP$rho)$values,
-                                          ylab = "Eigen value")'),
-                                     br(),
-                                     code('lines(1:length(eigen(corP$rho)$values), eigen(corP$rho)$values)'),
-                                     br(),
-                                     code('eigen(corP$rho)')),
-                                 br()
-                                 )
+                        )
                         ),
              ###########################
              # TRADITIONAL ANALYSIS ####
@@ -166,21 +336,21 @@ ui=tagList(
                                  p('Traditional item analysis uses proportions of correct answers or correlations to estimate item properties.'),
                                  h4("Item Difficulty/Discrimination Graph"),
                                  p("Displayed is difficulty (red) and discrimination (blue)
-                                   for all items. Items are ordered by difficulty. "),
-                                 p(strong("Difficulty"),' of items is estimated as percent of students who answered correctly to that item.'),
-                                 p(strong("Discrimination"),' is described by difference of percent correct
-                                   in upper and lower third of students (Upper-Lower Index, ULI). By rule of thumb it should not be lower than 0.2
-                                   (borderline in the plot), except for very easy or very difficult items.'),
-
+                                   for all items. Items are ordered by difficulty. ", br(),
+                                   strong("Difficulty"),' of items is estimated as percent of students who
+                                   answered correctly to that item.', br(),
+                                   strong("Discrimination"),' is described by difference of percent correct
+                                   in upper and lower third of students (Upper-Lower Index, ULI). By rule of
+                                   thumb it should not be lower than 0.2 (borderline in the plot), except for
+                                   very easy or very difficult items.'),
                                  plotOutput('difplot'),
                                  downloadButton("DP_difplot", label = "Download figure"),
-                                 h4("Traditional Item Analysis"),
-                                 h3("Cronbach's alpha"),
+                                 h4("Cronbach's alpha"),
                                  p("Chronbach's alpha is an estimate of the reliability of a psychometric test. It is a function
                                    of the number of items in a test, the average covariance between item-pairs, and the variance
                                    of the total score (Cronbach, 1951)."),
                                  tableOutput('cronbachalpha'),
-                                 h3("Traditional Item Analysis Table"),
+                                 h4("Traditional Item Analysis Table"),
                                  p(strong('Explanation: Difficulty'), ' - Difficulty of item is estimated as percent
                                    of students who answered correctly to that item. ', strong('SD'),' - standard deviation, ',
                                    strong('RIT'), ' - Pearson correlation between item and Total score, ', strong('RIR'),'
@@ -189,7 +359,7 @@ ui=tagList(
                                  tableOutput('itemexam'),
                                  br(),
                                  h4("Selected R code"),
-                                 div(code('library(difNLR)'),
+                                 div(code('library(difNLR, psych, ShinyItemAnalysis)'),
                                      br(),
                                      code('data(GMAT)'),
                                      br(),
@@ -199,6 +369,12 @@ ui=tagList(
                                      code('# Difficulty and discrimination plot'),
                                      br(),
                                      code('DDplot(data)'),
+                                     br(),
+                                     br(),
+                                     code('# Cronbach alpha'),
+                                     br(),
+                                     code('psych::alpha(data)'),
+                                     br(),
                                      br(),
                                      code('# Table'),
                                      br(),
@@ -243,7 +419,7 @@ ui=tagList(
                                  fluidRow(column(12, align = "center", tableOutput('tab_props_distractor'))),
                                  br(),
                                  h4("Selected R code"),
-                                 div(code('library(difNLR)'),
+                                 div(code('library(difNLR, ShinyItemAnalysis)'),
                                      br(),
                                      code('data(GMATtest)'),
                                      br(),
@@ -275,6 +451,47 @@ ui=tagList(
                                      code('DistractorAnalysis(data, key, num.groups = 3, p.table = T)[[1]]'),
                                      br(),
                                      code('tab')),
+                                 br()
+                                 ),
+                        # CORRELATION STRUCTURE
+                        tabPanel("Correlation Structure",
+                                 h4("Correlation Plot"),
+                                 p('Correlation plot is a graphical display of a correlation matrix of items. The size
+                                   and shade of circles indicate how much the items are correlated (larger and darker
+                                   circle means larger correlation). The color of circles indicates in which way the
+                                   items are correlated - blue color shows possitive correlation and red color shows
+                                   negative correlation.'),
+                                 plotOutput('corr_plot'),
+                                 br(),
+                                 h4("Scree Plot"),
+                                 p('A scree plot displays the eigenvalues associated with an component or a factor in descending order
+                                   versus the number of the component or factor. '),
+                                 plotOutput('scree_plot'),
+                                 h4("Selected R code"),
+                                 div(code('library(corrplot, difNLR, psych)'),
+                                     br(),
+                                     code('data(GMAT)'),
+                                     br(),
+                                     code('data  <- GMAT[, colnames(GMAT) != "group"]'),
+                                     br(),
+                                     br(),
+                                     code('# Correlation plot'),
+                                     br(),
+                                     code('corP <- polychoric(data)'),
+                                     br(),
+                                     code('corrplot(corP$rho)'),
+                                     br(),
+                                     code('corP$rho # Correlation matrix'),
+                                     br(),
+                                     br(),
+                                     code('# Scree plot'),
+                                     br(),
+                                     code('plot(1:length(eigen(corP$rho)$values), eigen(corP$rho)$values,
+                                          ylab = "Eigen value", xlab = "Component Number")'),
+                                     br(),
+                                     code('lines(1:length(eigen(corP$rho)$values), eigen(corP$rho)$values)'),
+                                     br(),
+                                     code('eigen(corP$rho) # Eigen values and vectors')),
                                  br()
                                  )
                         ),
@@ -516,9 +733,6 @@ ui=tagList(
                                  plotOutput('multiplot'),
                                  downloadButton("DP_multiplot", label = "Download figure"),
                                  h4("Equation"),
-                                 # ('$$\\mathrm{P}(Y = A|Z, b_{A0}, b_{A1}) = \\mathrm{P}(Y = D|Z, b_{D0}, b_{D1})\\cdot e^{\\left( b_{A0} + b_{A1} Z\\right) }$$'),
-                                 # ('$$\\mathrm{P}(Y = B|Z, b_{B0}, b_{B1}) = \\mathrm{P}(Y = D|Z, b_{D0}, b_{D1})\\cdot e^{\\left( b_{B0} + b_{B1} Z\\right) }$$'),
-                                 # ('$$\\mathrm{P}(Y = C|Z, b_{C0}, b_{C1}) = \\mathrm{P}(Y = D|Z, b_{D0}, b_{D1})\\cdot e^{\\left( b_{C0} + b_{C1} Z\\right) }$$'),
                                  uiOutput('multieq'),
                                  h4("Table of parameters"),
                                  fluidRow(column(12, align = "center", tableOutput('multitab'))),
@@ -526,9 +740,7 @@ ui=tagList(
                                  htmlOutput("multiint"),
                                  br(),
                                  h4("Selected R code"),
-                                 div(code('library(difNLR)'),
-                                     br(),
-                                     code('library(nnet)'),
+                                 div(code('library(difNLR, nnet)'),
                                      br(),
                                      code('data(GMAT)'),
                                      br(),
@@ -589,7 +801,9 @@ ui=tagList(
                                  downloadButton("DP_raschFactor", label = "Download figure"),
                                  br(),
                                  h4("Selected R code"),
-                                 div(code('data(GMAT)'),
+                                 div(code('library(difNLR, ltm)'),
+                                     br(),
+                                     code('data(GMAT)'),
                                      br(),
                                      code('data <- GMAT[, colnames(GMAT) != "group"]'),
                                      br(),
@@ -661,7 +875,9 @@ ui=tagList(
                                  downloadButton("DP_twoFactor", label = "Download figure"),
                                  br(),
                                  h4("Selected R code"),
-                                 div(code('data(GMAT)'),
+                                 div(code('library(difNLR, ltm)'),
+                                     br(),
+                                     code('data(GMAT)'),
                                      br(),
                                      code('data <- GMAT[, colnames(GMAT) != "group"]'),
                                      br(),
@@ -733,7 +949,9 @@ ui=tagList(
                                  downloadButton("DP_threeFactor", label = "Download figure"),
                                  br(),
                                  h4("Selected R code"),
-                                 div(code('data(GMAT)'),
+                                 div(code('library(difNLR, ltm)'),
+                                     br(),
+                                     code('data(GMAT)'),
                                      br(),
                                      code('data <- GMAT[, colnames(GMAT) != "group"]'),
                                      br(),
@@ -843,9 +1061,7 @@ ui=tagList(
                                  verbatimTextOutput("dp_text_normal"),
                                  br(),
                                  h4("Selected R code"),
-                                 div(code('library(difNLR)'),
-                                     br(),
-                                     code('library(deltaPlotR)'),
+                                 div(code('library(difNLR, deltaPlotR)'),
                                      br(),
                                      code('data(GMAT)'),
                                      br(),
@@ -900,9 +1116,7 @@ ui=tagList(
                                             verbatimTextOutput("print_DIF_MH"),
                                             br(),
                                             h4("Selected R code"),
-                                            div(code('library(difNLR)'),
-                                                br(),
-                                                code('library(deltaPlotR)'),
+                                            div(code('library(difNLR, difR)'),
                                                 br(),
                                                 code('data(GMAT)'),
                                                 br(),
@@ -933,9 +1147,7 @@ ui=tagList(
                                             uiOutput('ORcalculation'),
                                             br(),
                                             h4("Selected R code"),
-                                            div(code('library(difNLR)'),
-                                                br(),
-                                                code('library(deltaPlotR)'),
+                                            div(code('library(difNLR, difR)'),
                                                 br(),
                                                 code('data(GMAT)'),
                                                 br(),
@@ -1010,9 +1222,7 @@ ui=tagList(
                                             verbatimTextOutput('print_DIF_logistic'),
                                             br(),
                                             h4("Selected R code"),
-                                            div(code('library(difNLR)'),
-                                                br(),
-                                                code('library(difR)'),
+                                            div(code('library(difNLR, difR)'),
                                                 br(),
                                                 code('data(GMAT)'),
                                                 br(),
@@ -1066,9 +1276,7 @@ ui=tagList(
                                             fluidRow(column(12, align = "center", tableOutput('tab_coef_DIF_logistic'))),
                                             br(),
                                             h4("Selected R code"),
-                                            div(code('library(difNLR)'),
-                                                br(),
-                                                code('library(difR)'),
+                                            div(code('library(difNLR, difR)'),
                                                 br(),
                                                 code('data(GMAT)'),
                                                 br(),
@@ -1136,9 +1344,7 @@ ui=tagList(
                                             verbatimTextOutput('print_DIF_logistic_IRT_Z'),
                                             br(),
                                             h4("Selected R code"),
-                                            div(code('library(difNLR)'),
-                                                br(),
-                                                code('library(difR)'),
+                                            div(code('library(difNLR, difR)'),
                                                 br(),
                                                 code('data(GMAT)'),
                                                 br(),
@@ -1196,9 +1402,7 @@ ui=tagList(
                                             fluidRow(column(12, align = "center", tableOutput('tab_coef_DIF_logistic_IRT_Z'))),
                                             br(),
                                             h4("Selected R code"),
-                                            div(code('library(difNLR)'),
-                                                br(),
-                                                code('library(difR)'),
+                                            div(code('library(difNLR, difR)'),
                                                 br(),
                                                 code('data(GMAT)'),
                                                 br(),
@@ -1386,9 +1590,7 @@ ui=tagList(
                                             verbatimTextOutput('print_DIF_IRT_Lord'),
                                             br(),
                                             h4("Selected R code"),
-                                            div(code('library(difNLR)'),
-                                                br(),
-                                                code('library(difR)'),
+                                            div(code('library(difNLR, difR)'),
                                                 br(),
                                                 code('data(GMAT)'),
                                                 br(),
@@ -1429,23 +1631,10 @@ ui=tagList(
                                             h4("Equation"),
                                             uiOutput('irtint_lord'),
                                             uiOutput('irteq_lord'),
-                                            #     p('As the parameters are estimated in ', code("difR"), 'package separately for
-                                            #                groups, there is one equation for each group. Parameters ', strong('aR'), ' and ',
-                                            #       strong('bR'), 'are discrimination and difficulty for reference group. Parameters ', strong('aF'), ' and ',
-                                            #       strong('bF'), 'are discrimination and difficulty for reference group. Parameter ', strong('c'), ' is
-                                            #                a common guessing parameter.'),
-                                            #     ('$$\\mathrm{P}\\left(Y_{ij} = 1 | \\theta_i, G_i = 0, a_{Rj}, b_{Rj}, c_j\\right) =
-                                            # c_j + \\left(1 - c_j\\right) \\cdot \\frac{e^{a_{Rj} \\left(\\theta_i - b_{Rj} \\right)}}
-                                            # {1+e^{a_{Rj} \\left(\\theta_i - b_{Rj} \\right)}} $$'),
-                                            #     ('$$\\mathrm{P}\\left(Y_{ij} = 1 | \\theta_i, G_i = 1, a_{Fj}, b_{Fj}, c_j\\right) =
-                                            # c_j + \\left(1 - c_j\\right) \\cdot \\frac{e^{a_{Fj} \\left(\\theta_i - b_{Fj} \\right)}}
-                                            # {1+e^{a_{Fj} \\left(\\theta_i - b_{Fj} \\right)}} $$'),
                                             fluidRow(column(12, align = "center", tableOutput('tab_coef_DIF_IRT_Lord'))),
                                             br(),
                                             h4("Selected R code"),
-                                            div(code('library(difNLR)'),
-                                                br(),
-                                                code('library(difR)'),
+                                            div(code('library(difNLR, difR)'),
                                                 br(),
                                                 code('data(GMAT)'),
                                                 br(),
@@ -1495,9 +1684,7 @@ ui=tagList(
                                             verbatimTextOutput('print_DIF_IRT_Raju'),
                                             br(),
                                             h4("Selected R code"),
-                                            div(code('library(difNLR)'),
-                                                br(),
-                                                code('library(difR)'),
+                                            div(code('library(difNLR, difR)'),
                                                 br(),
                                                 code('data(GMAT)'),
                                                 br(),
@@ -1536,24 +1723,10 @@ ui=tagList(
                                             h4("Equation"),
                                             uiOutput('irtint_raju'),
                                             uiOutput('irteq_raju'),
-                                            #              p('As the parameters are estimated in ', code("difR"), 'package separately for
-                                            #                groups, there is one equation for each group. Parameters ', strong('aR'), ' and ',
-                                            #                strong('bR'), 'are discrimination and difficulty for reference group. Parameters ', strong('aF'), ' and ',
-                                            #                strong('bF'), 'are discrimination and difficulty for reference group. Parameter ', strong('c'), ' is
-                                            #                a common guessing parameter.'),
-                                            #              ('$$\\mathrm{P}\\left(Y_{ij} = 1 | \\theta_i, G_i = 0, a_{Rj}, b_{Rj}, c_j\\right) =
-                                            # c_j + \\left(1 - c_j\\right) \\cdot \\frac{e^{a_{Rj} \\left(\\theta_i - b_{Rj} \\right)}}
-                                            # {1+e^{a_{Rj} \\left(\\theta_i - b_{Rj} \\right)}} $$'),
-                                            #              ('$$\\mathrm{P}\\left(Y_{ij} = 1 | \\theta_i, G_i = 1, a_{Fj}, b_{Fj}, c_j\\right) =
-                                            # c_j + \\left(1 - c_j\\right) \\cdot \\frac{e^{a_{Fj} \\left(\\theta_i - b_{Fj} \\right)}}
-                                            # {1+e^{a_{Fj} \\left(\\theta_i - b_{Fj} \\right)}} $$'),
-
                                             fluidRow(column(12, align = "center", tableOutput('tab_coef_DIF_IRT_Raju'))),
                                             br(),
                                             h4("Selected R code"),
-                                            div(code('library(difNLR)'),
-                                                br(),
-                                                code('library(difR)'),
+                                            div(code('library(difNLR, difR)'),
                                                 br(),
                                                 code('data(GMAT)'),
                                                 br(),
@@ -1678,7 +1851,7 @@ ui=tagList(
                                                 br(),
                                                 code('# Estimated coefficients of item 1'),
                                                 br(),
-                                                code('fit$nlrPAR[[1]]')),
+                                                code('fit$mlrPAR[[1]]')),
                                             br()
                                             )
                                  )
@@ -1709,104 +1882,6 @@ ui=tagList(
                                  br()
                         )
                         ),
-             ###################
-             # DATA ############
-             ###################
-             tabPanel("Data",
-                      h3("Data"),
-                      p('For demonstration purposes, 20-item dataset ' , code("GMAT"),'
-                        and dataset', code("GMATkey"),' from R ', code('library(difNLR)'),' are used.
-                        On this page, you may select one of three dataset offered in ', code('difNLR'),
-                        'package or you may upload your own dataset (see below). To return to demonstration dataset,
-                        refresh this page in your browser' , strong("(F5)"), '.'),
-                      p('Used dataset ', code("GMAT"), ' is generated based on parameters of real Graduate Management
-                        Admission Test (GMAT) data set (Kingston et al., 1985). However, first two items were
-                        generated to function differently in uniform and non-uniform way respectively.
-                        The data set represents responses of 2,000 subjects to multiple-choice test of 20 items.
-                        The distribution of total scores is the same for both groups. '),
-                      p('Dataset ', code("GMAT2"), ' is also generated based on parameters of GMAT (Kingston et al., 1985). Again,
-                        first two items were generated to function differently in uniform and non-uniform way respectively.
-                        The data set represents responses of 1,000 subjects to multiple-choice test of 20 items. '),
-                      p('Dataset ', code("Medical"), ' is a subset of real admission test to medical school. First item was previously
-                        detected as functioning differently. The data set represents responses of
-                        1,407 subjects (484 males, 923 females) to multiple-choice test of 20 items. For more details of item selection see
-                        Drabinova & Martinkova (2016).'),
-                      br(),
-                      selectInput("dataSelect", "Select dataset",
-                                  c("GMAT" = "GMAT_difNLR",
-                                    "GMAT2" = "GMAT2_difNLR",
-                                    "Medical 20 DIF" = "difMedical_difNLR",
-                                    "Medical 100" = "dataMedical_ShinyItemAnalysis"
-                                  ),
-                                  selected="GMAT_difNLR"),
-                      h4("Upload your own datasets"),
-                      p('Main dataset should contain responses of individual students (rows) to given items (collumns).
-                        Header may contain item names, no row names should be included. If responses are in ABC format,
-                        the key provides correct respomse for each item. If responses are scored 0-1, key is vecor of 1s.'),
-                      fluidRow(
-                        column(4, offset = 0, fileInput(
-                          'data', 'Choose data (csv file)',
-                          accept = c('text/csv',
-                                     'text/comma-separated-values',
-                                     'text/tab-separated-values',
-                                     'text/plain',
-                                     '.csv',
-                                     '.tsv'
-                          )
-                        )
-                        ),
-                        column(4, offset = 1, fileInput(
-                          'key', 'Choose key (csv file)',
-                          accept = c('text/csv',
-                                     'text/comma-separated-values',
-                                     'text/tab-separated-values',
-                                     'text/plain',
-                                     '.csv',
-                                     '.tsv'
-                          )
-                        )
-                        ),
-                        column(4, fileInput(
-                          'groups', 'Choose groups for DIF (optional)',
-                          accept = c('text/csv',
-                                     'text/comma-separated-values',
-                                     'text/tab-separated-values',
-                                     'text/plain',
-                                     '.csv',
-                                     '.tsv'
-                          )
-                        )
-                        )
-                      ),
-                      tags$hr(),
-                      h4("Data Specification"),
-                      fluidRow(
-                        column(1, offset = 0, checkboxInput('header', 'Header', TRUE)),
-                        column(3, offset = 1, radioButtons('sep', 'Separator',
-                                                           c(Comma = ',',
-                                                             Semicolon = ';',
-                                                             Tab = '\t'
-                                                           ),
-                                                           ','
-                        )
-                        ),
-                        column (3, offset = 0, radioButtons('quote', 'Quote',
-                                                            c(None = '',
-                                                              'Double Quote' = '"',
-                                                              'Single Quote' = "'"
-                                                            ),
-                                                            '"'
-                        )
-                        )
-                      ),
-                      tags$hr(),
-                      h4("Data Check"),
-                      dataTableOutput('headdata'),
-                      h4("Key (correct answers)"),
-                      dataTableOutput('key'),
-                      h4("Scored Test"),
-                      dataTableOutput('sc01')
-                      ),
                 ########################
                 # REPORTS ##############
                 ########################
@@ -1827,94 +1902,11 @@ ui=tagList(
                          p(strong("Warning"), ": download of Reports takes some time. Please, be patient.")
                          ),
 
-
-             ########################
-             # ABOUT ################
-             ########################
-             tabPanel("About",
-                      br(),
-                      strong('Version'),
-                      p("ShinyItemAnalysis Version 1.0"),
-                      p('ShinyItemAnalysis Version 0.1 is available',
-                        a("here.", href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV01/",
-                          target = "_blank")),
-                      br(),
-                      strong('Description'),
-                      p('ShinyItemAnalysis provides analysis of tests and their items.
-                        It is based on the', a("Shiny", href = "http://www.rstudio.com/shiny/", target = "_blank"),
-                        'R package. '),
-                      br(),
-                      strong('Data'),
-                      p('For demonstration purposes, practice dataset from', code('library(difNLR)'),'is used.
-                        On page', strong("Data"), 'you may select your own dataset '),
-                      br(),
-                      strong('List of Packages Used'),
-                      br(),
-                      code('library(corrplot)'), br(),
-                      code('library(CTT)'), br(),
-                      code('library(deltaPlotR)'), br(),
-                      code('library(difNLR)'), br(),
-                      code('library(difR)'), br(),
-                      code('library(foreign)'), br(),
-                      code('library(ggplot2)'), br(),
-                      code('library(gridExtra)'), br(),
-                      code('library(ltm)'), br(),
-                      code('library(moments)'), br(),
-                      code('library(nnet)'), br(),
-                      code('library(psych)'), br(),
-                      code('library(psychometric)'), br(),
-                      code('library(reshape2)'), br(),
-                      code('library(shiny)'), br(),
-                      code('library(shinyAce)'), br(),
-                      code('library(stringr)'), br(),
-                      code('library(rmarkdown)'), br(),
-                      br(),
-                      strong('Authors'),
-                      br(),
-
-                      img(src = 'patricia.jpg', width = 70),
-                      p(a("Patricia Martinkova, Institute of Computer Science, Czech Academy of Sciences",
-                          href = "http://www.cs.cas.cz/martinkova/", target = "_blank")),
-
-                      img(src = 'adela.jpg', width = 70),
-                      p("Adela Drabinova"),
-
-                      img(src = 'leder.png', width = 70),
-                      p(a("Ondrej Leder", href = "https://www.linkedin.com/in/ond%C5%99ej-leder-3864b1119",
-                          target = "_blank")),
-
-                      img(src = 'jakub.jpg', width = 70),
-                      p("Jakub Houdek"),
-
-                      strong('Bug Reports'),
-                      p("If you discover a problem with this application please contact the project maintainer
-                        at martinkova(at)cs.cas.cz "
-                      ),
-                      strong('Acknowledgments'),
-                      p(" Project was supported by grant funded by Czech Science foundation under number ",
-                        a("GJ15-15856Y", href = "http://www.cs.cas.cz/martinkova/psychometrics.html",
-                          target = "_blank")
-                      ),
-                      br(),
-                      strong('License'),
-                      p(" Copyright 2016  Patricia Martinkova, Adela Drabinova, Ondrej Leder and Jakub Houdek"),
-                      p(" This program is free software you can redistribute it and or modify it under the terms of the GNU
-                        General Public License as published by the Free Software Foundation either version 3 of the License or
-                        at your option any later version."
-                      ),
-                      p("This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
-                        even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
-                        Public License for more details."
-                      ),
-                      br(),
-                      br()
-                      ),
              ########################
              # REFERENCES ###########
              ########################
              tabPanel("References",
-                      br(),
-                      strong('References'),
+                      h4('References'),
                       br(),
                       br(),
                       p('Angoff, W. H., & Ford, S. F. (1973). Item‐Race Interaction on a Test of

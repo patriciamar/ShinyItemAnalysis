@@ -34,6 +34,7 @@
 #' @import difNLR
 #' difR
 #' shiny
+#' grid
 #'
 #' @importFrom corrplot corrplot
 #' @importFrom CTT score

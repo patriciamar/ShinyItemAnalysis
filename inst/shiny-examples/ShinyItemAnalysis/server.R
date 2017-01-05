@@ -9,6 +9,7 @@ library(difNLR)
 library(difR)
 library(foreign)
 library(ggplot2)
+library(grid)
 library(gridExtra)
 library(ltm)
 library(moments)
@@ -366,7 +367,7 @@ function(input, output, session) {
     ggplot(data = df, aes(x = pos, y = ev)) +
       geom_point() +
       geom_line() +
-      xlab("Item") + ylab("Eigen value") +
+      xlab("Component Number") + ylab("Eigen Value") +
       scale_x_continuous(breaks = 1:length(ev)) +
       theme_bw() +
       theme(legend.title = element_blank(),
@@ -1015,7 +1016,8 @@ function(input, output, session) {
     k <- t(as.data.frame(test_key()))
 
     fitM <- multinom(relevel(as.factor(test_answers()[, input$multiSlider]),
-                             ref = paste(k[input$multiSlider])) ~ stotal)
+                             ref = paste(k[input$multiSlider])) ~ stotal,
+                     trace = F)
     fitM
   })
   # ** Plot with estimated curves of multinomial regression ####
@@ -1026,7 +1028,8 @@ function(input, output, session) {
 
 
     fitM <- multinom(relevel(as.factor(test_answers()[, input$multiSlider]),
-                             ref = paste(k[input$multiSlider])) ~ stotal)
+                             ref = paste(k[input$multiSlider])) ~ stotal,
+                     trace = F)
 
     pp <- fitted(fitM)
 
@@ -1081,7 +1084,8 @@ function(input, output, session) {
 
 
       fitM <- multinom(relevel(as.factor(test_answers()[, i]),
-                               ref = paste(k[i])) ~ stotal)
+                               ref = paste(k[i])) ~ stotal,
+                       trace = F)
 
       pp <- fitted(fitM)
 
@@ -1157,13 +1161,14 @@ function(input, output, session) {
 
   # ** Table of parameters ####
   output$multitab <- renderTable({
+    fit <- multinomial_model()
 
-    koef <- as.vector(coef(multinomial_model()))
-    std  <- as.vector(sqrt(diag(vcov(multinomial_model()))))
+    koef <- as.vector(coef(fit))
+    std  <- as.vector(sqrt(diag(vcov(fit))))
     tab  <- cbind(koef, std)
     colnames(tab) <- c("Estimate", "SD")
-    rownames(tab) <- c(paste("b", rownames(coef(multinomial_model())), "0", sep = ""),
-                       paste("b", rownames(coef(multinomial_model())), "1", sep = ""))
+    rownames(tab) <- c(paste("b", rownames(coef(fit)), "0", sep = ""),
+                       paste("b", rownames(coef(fit)), "1", sep = ""))
     tab
   },
   include.rownames = T)
@@ -1309,7 +1314,7 @@ function(input, output, session) {
       theme(legend.box.just = "left",
             legend.justification = c(1, 0),
             legend.position = c(1, 0),
-            legend.margin = unit(0, "lines"),
+            # legend.margin = unit(0, "lines"),
             legend.box = "vertical",
             legend.key.size = unit(1, "lines"),
             legend.text.align = 0,
@@ -1445,7 +1450,7 @@ function(input, output, session) {
       theme(legend.box.just = "left",
             legend.justification = c(1, 0),
             legend.position = c(1, 0),
-            legend.margin = unit(0, "lines"),
+            # legend.margin = unit(0, "lines"),
             legend.box = "vertical",
             legend.key.size = unit(1, "lines"),
             legend.text.align = 0,
@@ -1580,7 +1585,7 @@ function(input, output, session) {
       theme(legend.box.just = "left",
             legend.justification = c(1, 0),
             legend.position = c(1, 0),
-            legend.margin = unit(0, "lines"),
+            # legend.margin = unit(0, "lines"),
             legend.box = "vertical",
             legend.key.size = unit(1, "lines"),
             legend.text.align = 0,
