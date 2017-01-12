@@ -1557,6 +1557,7 @@ ui=tagList(
                                             h4("Plot with Estimated DIF Logistic Curve"),
                                             p('Points represent proportion of correct answer with respect to standardized
                                               total score. Their size is determined by count of respondents who answered item correctly.'),
+                                            p('NOTE: Plots and tables are based on DIF logistic procedure without any correction method. '),
                                             radioButtons('type_plot_DIF_logistic', 'Type',
                                                          c("H0: Any DIF vs. H1: No DIF" = 'both',
                                                            "H0: Uniform DIF vs. H1: No DIF" = 'udif',
@@ -1681,6 +1682,7 @@ ui=tagList(
                                             h4("Plot with Estimated DIF Logistic Curve"),
                                             p('Points represent proportion of correct answer with respect to standardized
                                               total score. Their size is determined by count of respondents who answered item correctly.'),
+                                            p('NOTE: Plots and tables are based on DIF logistic procedure without any correction method. '),
                                             radioButtons('type_plot_DIF_logistic_IRT_Z', 'Type',
                                                          c("H0: Any DIF vs. H1: No DIF" = 'both',
                                                            "H0: Uniform DIF vs. H1: No DIF" = 'udif',
@@ -1885,8 +1887,13 @@ ui=tagList(
                                               to detect DIF. In statistical terms, Lord statistic is
                                               equal to Wald statistic.'),
                                             br(),
-                                            img(src = 'lord_udif.png', width = 380, align = "left"),
-                                            img(src = 'lord_nudif.png', width = 380, align = "right"),
+                                            fluidRow(
+                                              column(6, align="center",
+                                                     img(src = 'lord_udif.png', width = 380)),
+                                              column(6, align="center",
+                                                     img(src = 'lord_nudif.png', width = 380))
+                                            ),
+                                            br(),
                                             radioButtons('type_print_DIF_IRT_lord', 'Model',
                                                          c("1PL" = '1PL',
                                                            "2PL" = '2PL',
@@ -1924,6 +1931,7 @@ ui=tagList(
                                               equal to Wald statistic.'),
                                             br(),
                                             h3('Plot with Estimated DIF Characteristic Curve'),
+                                            p('NOTE: Plots and tables are based on larger DIF IRT model. '),
                                             radioButtons('type_plot_DIF_IRT_lord', 'Model',
                                                          c("1PL" = '1PL',
                                                            "2PL" = '2PL',
@@ -1979,8 +1987,13 @@ ui=tagList(
                                               uses the area between the item charateristic curves
                                               for the two groups to detect DIF.'),
                                             br(),
-                                            img(src = 'raju_udif.png', width = 380, align = "left"),
-                                            img(src = 'raju_nudif.png', width = 380, align = "right"),
+                                            fluidRow(
+                                              column(6, align="center",
+                                                     img(src = 'raju_udif.png', width = 380)),
+                                              column(6, align="center",
+                                                     img(src = 'raju_nudif.png', width = 380))
+                                            ),
+                                            br(),
                                             radioButtons('type_print_DIF_IRT_raju', 'Model',
                                                          c("1PL" = '1PL',
                                                            "2PL" = '2PL',
@@ -2016,6 +2029,7 @@ ui=tagList(
                                               for the two groups to detect DIF.'),
                                             br(),
                                             h3('Plot with Estimated DIF Characteristic Curve'),
+                                            p('NOTE: Plots and tables are based on larger DIF IRT model. '),
                                             radioButtons('type_plot_DIF_IRT_raju', 'Model',
                                                          c("1PL" = '1PL',
                                                            "2PL" = '2PL',
