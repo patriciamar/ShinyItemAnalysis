@@ -12,12 +12,14 @@ library(ggplot2)
 library(grid)
 library(gridExtra)
 library(ltm)
+library(mirt)
 library(moments)
 library(nnet)
 library(psych)
 library(psychometric)
 library(reshape2)
 library(stringr)
+library(ShinyItemAnalysis)
 library(rmarkdown)
 
 ###########
@@ -1605,6 +1607,602 @@ function(input, output, session) {
     }
   )
 
+  ###############################
+  # * IRT MODELS WITH MIRT ######
+  ###############################
+
+  # ** RASCH ####
+  rasch_model_mirt <- reactive({
+    fitRasch <- mirt(correct_answ(), model = 1, itemtype = "Rasch", SE = T)
+  })
+
+  # *** CC ####
+  raschInput_mirt <- reactive({
+    plot(rasch_model_mirt(), type = "trace", facet_items = F)
+    # g <- recordPlot()
+    # plot.new()
+    # g
+  })
+
+  output$rasch_mirt <- renderPlot({
+    raschInput_mirt()
+  })
+
+  output$DP_rasch_mirt <- downloadHandler(
+    filename =  function() {
+      paste("plot", input$name, ".png", sep = "")
+    },
+    content = function(file) {
+      png(file, height = 800, width = 1200, res = 100)
+      plot(rasch_model_mirt(), type = "trace", facet_items = F)
+      dev.off()
+    }
+  )
+
+  # *** IIC ####
+  raschiicInput_mirt <- reactive({
+    plot(rasch_model_mirt(), type = "infotrace", facet_items = F)
+    # g <- recordPlot()
+    # plot.new()
+    # g
+  })
+
+  output$raschiic_mirt <- renderPlot({
+    raschiicInput_mirt()
+  })
+
+  output$DP_raschiic_mirt <- downloadHandler(
+    filename =  function() {
+      paste("plot", input$name, ".png", sep = "")
+    },
+    content = function(file) {
+      png(file, height = 800, width = 1200, res = 100)
+      plot(rasch_model_mirt(), type = "infotrace", facet_items = F)
+      dev.off()
+    }
+  )
+
+  # *** TIF ####
+  raschtifInput_mirt <- reactive({
+    plot(rasch_model_mirt(), type = "infoSE")
+    # g <- recordPlot()
+    # plot.new()
+    # g
+  })
+
+  output$raschtif_mirt <- renderPlot({
+    raschtifInput_mirt()
+  })
+
+  output$DP_raschtif_mirt <- downloadHandler(
+    filename =  function() {
+      paste("plot", input$name, ".png", sep = "")
+    },
+    content = function(file) {
+      png(file, height = 800, width = 1200, res = 100)
+      plot(rasch_model_mirt(), type = "infoSE")
+      dev.off()
+    }
+  )
+
+
+  # *** Table of parameters ####
+  raschcoefInput_mirt <- reactive({
+    fit <- rasch_model_mirt()
+    coeftab <- coef(fit)
+    tab <- cbind(sapply(1:(length(coeftab) - 1), function(i) coeftab[[i]][1, "d"]),
+                 sqrt(diag(vcov(fit)))[1:(length(coeftab) - 1)])
+    colnames(tab) <- c("b", "SD(b)")
+    rownames(tab) <- paste("Item", 1:nrow(tab))
+    tab <- round(tab, 3)
+    tab
+  })
+
+  output$raschcoef_mirt <- renderTable({
+    raschcoefInput_mirt()
+  },
+  include.rownames = T)
+
+  # *** Factor scores plot ####
+  raschFactorInput_mirt <- reactive({
+
+    fs <- as.vector(fscores(rasch_model_mirt()))
+    sts <- as.vector(scale(apply(correct_answ(), 1, sum)))
+
+    df <- data.frame(fs, sts)
+
+    ggplot(df, aes_string("sts", "fs")) +
+      geom_point(size = 3) +
+      labs(x = "Standardized total score", y = "Factor score") +
+      theme_bw() +
+      theme(text = element_text(size = 14),
+            plot.title = element_text(face = "bold", vjust = 1.5),
+            axis.line = element_line(colour = "black"),
+            panel.grid.major = element_blank(),
+            panel.grid.minor = element_blank(),
+            panel.background = element_blank()) +
+      theme(legend.box.just = "left",
+            legend.justification = c(1, 0),
+            legend.position = c(1, 0),
+            legend.box = "vertical",
+            legend.key.size = unit(1, "lines"),
+            legend.text.align = 0,
+            legend.title.align = 0)
+  })
+
+  output$raschFactor_mirt <- renderPlot({
+    raschFactorInput_mirt()
+  })
+
+  output$DP_raschFactor_mirt <- downloadHandler(
+    filename =  function() {
+      paste("plot", input$name, ".png", sep = "")
+    },
+    content = function(file) {
+      ggsave(file, plot = raschFactorInput_mirt(), device = "png",
+             height = 3, width = 9, dpi = 160)
+    }
+  )
+
+
+  # ** 1PL IRT ####
+  one_param_irt_mirt <- reactive({
+    data <- correct_answ()
+    fit1PL <- mirt(data, model = 1, itemtype = "2PL",
+                   constrain = list((1:ncol(data)) + seq(0, (ncol(data) - 1)*3, 3)),
+                   SE = T)
+  })
+
+  # *** CC ####
+  oneparamirtInput_mirt <- reactive({
+    plot(one_param_irt_mirt(), type = "trace", facet_items = F)
+    # g <- recordPlot()
+    # plot.new()
+    # g
+  })
+
+  output$oneparamirt_mirt <- renderPlot({
+    oneparamirtInput_mirt()
+  })
+
+  output$DP_oneparamirt_mirt <- downloadHandler(
+    filename =  function() {
+      paste("plot", input$name, ".png", sep = "")
+    },
+    content = function(file) {
+      png(file, height = 800, width = 1200, res = 100)
+      plot(one_param_irt_mirt(), type = "trace", facet_items = F)
+      dev.off()
+    }
+  )
+
+  # *** IIC ####
+  oneparamirtiicInput_mirt <- reactive({
+    plot(one_param_irt_mirt(), type = "infotrace", facet_items = F)
+    # g <- recordPlot()
+    # plot.new()
+    # g
+  })
+
+  output$oneparamirtiic_mirt <- renderPlot({
+    oneparamirtiicInput_mirt()
+  })
+
+  output$DP_oneparamirtiic_mirt <- downloadHandler(
+    filename =  function() {
+      paste("plot", input$name, ".png", sep = "")
+    },
+    content = function(file) {
+      png(file, height = 800, width = 1200, res = 100)
+      plot(one_param_irt_mirt(), type = "infotrace", facet_items = F)
+      dev.off()
+    }
+  )
+
+  # *** TIF ####
+  oneparamirttifInput_mirt <- reactive({
+    plot(one_param_irt_mirt(), type = "infoSE")
+    # g <- recordPlot()
+    # plot.new()
+    # g
+  })
+
+  output$oneparamirttif_mirt <- renderPlot({
+    oneparamirttifInput_mirt()
+  })
+
+  output$DP_oneparamirttif_mirt <- downloadHandler(
+    filename =  function() {
+      paste("plot", input$name, ".png", sep = "")
+    },
+    content = function(file) {
+      png(file, height = 800, width = 1200, res = 100)
+      plot(one_param_irt_mirt(), type = "infoSE")
+      dev.off()
+    }
+  )
+
+
+  # *** Table of parameters ####
+  oneparamirtcoefInput_mirt <- reactive({
+    fit <- one_param_irt_mirt()
+    coeftab <- coef(fit)
+    tab <- cbind(
+      sapply(1:(length(coeftab) - 1), function(i) coeftab[[i]][1, "a1"]),
+      rep(sqrt(diag(vcov(fit)))[1], (length(coeftab) - 1)),
+      sapply(1:(length(coeftab) - 1), function(i) coeftab[[i]][1, "d"]),
+                 sqrt(diag(vcov(fit)))[2:(length(coeftab))])
+    colnames(tab) <- c("a", "SD(a)", "b", "SD(b)")
+    rownames(tab) <- paste("Item", 1:nrow(tab))
+    tab <- round(tab, 3)
+    tab
+  })
+
+  output$oneparamirtcoef_mirt <- renderTable({
+    oneparamirtcoefInput_mirt()
+  },
+  include.rownames = T)
+
+  # *** Factor scores plot ####
+  oneparamirtFactorInput_mirt <- reactive({
+
+    fs <- as.vector(fscores(one_param_irt_mirt()))
+    sts <- as.vector(scale(apply(correct_answ(), 1, sum)))
+
+    df <- data.frame(fs, sts)
+
+    ggplot(df, aes_string("sts", "fs")) +
+      geom_point(size = 3) +
+      labs(x = "Standardized total score", y = "Factor score") +
+      theme_bw() +
+      theme(text = element_text(size = 14),
+            plot.title = element_text(face = "bold", vjust = 1.5),
+            axis.line = element_line(colour = "black"),
+            panel.grid.major = element_blank(),
+            panel.grid.minor = element_blank(),
+            panel.background = element_blank()) +
+      theme(legend.box.just = "left",
+            legend.justification = c(1, 0),
+            legend.position = c(1, 0),
+            legend.box = "vertical",
+            legend.key.size = unit(1, "lines"),
+            legend.text.align = 0,
+            legend.title.align = 0)
+  })
+
+  output$oneparamirtFactor_mirt <- renderPlot({
+    oneparamirtFactorInput_mirt()
+  })
+
+  output$DP_oneparamirtFactor_mirt <- downloadHandler(
+    filename =  function() {
+      paste("plot", input$name, ".png", sep = "")
+    },
+    content = function(file) {
+      ggsave(file, plot = oneparamirtFactorInput_mirt(), device = "png",
+             height = 3, width = 9, dpi = 160)
+    }
+  )
+
+  # ** 2PL IRT ####
+  two_param_irt_mirt <- reactive({
+    data <- correct_answ()
+    fit2PL <- mirt(data, model = 1, itemtype = "2PL",
+                   constrain = NULL,
+                   SE = T)
+  })
+
+  # *** CC ####
+  twoparamirtInput_mirt <- reactive({
+    plot(two_param_irt_mirt(), type = "trace", facet_items = F)
+    # g <- recordPlot()
+    # plot.new()
+    # g
+  })
+
+  output$twoparamirt_mirt <- renderPlot({
+    twoparamirtInput_mirt()
+  })
+
+  output$DP_twoparamirt_mirt <- downloadHandler(
+    filename =  function() {
+      paste("plot", input$name, ".png", sep = "")
+    },
+    content = function(file) {
+      png(file, height = 800, width = 1200, res = 100)
+      plot(two_param_irt_mirt(), type = "trace", facet_items = F)
+      dev.off()
+    }
+  )
+
+  # *** IIC ####
+  twoparamirtiicInput_mirt <- reactive({
+    plot(two_param_irt_mirt(), type = "infotrace", facet_items = F)
+    # g <- recordPlot()
+    # plot.new()
+    # g
+  })
+
+  output$twoparamirtiic_mirt <- renderPlot({
+    twoparamirtiicInput_mirt()
+  })
+
+  output$DP_twoparamirtiic_mirt <- downloadHandler(
+    filename =  function() {
+      paste("plot", input$name, ".png", sep = "")
+    },
+    content = function(file) {
+      png(file, height = 800, width = 1200, res = 100)
+      plot(two_param_irt_mirt(), type = "infotrace", facet_items = F)
+      dev.off()
+    }
+  )
+
+  # *** TIF ####
+  twoparamirttifInput_mirt <- reactive({
+    plot(two_param_irt_mirt(), type = "infoSE")
+    # g <- recordPlot()
+    # plot.new()
+    # g
+  })
+
+  output$twoparamirttif_mirt <- renderPlot({
+    twoparamirttifInput_mirt()
+  })
+
+  output$DP_twoparamirttif_mirt <- downloadHandler(
+    filename =  function() {
+      paste("plot", input$name, ".png", sep = "")
+    },
+    content = function(file) {
+      png(file, height = 800, width = 1200, res = 100)
+      plot(two_param_irt_mirt(), type = "infoSE")
+      dev.off()
+    }
+  )
+
+
+  # *** Table of parameters ####
+  twoparamirtcoefInput_mirt <- reactive({
+    fit <- two_param_irt_mirt()
+    coeftab <- coef(fit)
+    tab <- cbind(
+      sapply(1:(length(coeftab) - 1), function(i) coeftab[[i]][1, "a1"]),
+      sqrt(diag(vcov(fit)))[seq(1, (2*length(coeftab) - 2), 2)],
+      sapply(1:(length(coeftab) - 1), function(i) coeftab[[i]][1, "d"]),
+      sqrt(diag(vcov(fit)))[seq(2, (2*length(coeftab) - 2), 2)])
+    colnames(tab) <- c("a", "SD(a)", "b", "SD(b)")
+    rownames(tab) <- paste("Item", 1:nrow(tab))
+    tab <- round(tab, 3)
+    tab
+  })
+
+  output$twoparamirtcoef_mirt <- renderTable({
+    twoparamirtcoefInput_mirt()
+  },
+  include.rownames = T)
+
+  # *** Factor scores plot ####
+  twoparamirtFactorInput_mirt <- reactive({
+
+    fs <- as.vector(fscores(two_param_irt_mirt()))
+    sts <- as.vector(scale(apply(correct_answ(), 1, sum)))
+
+    df <- data.frame(fs, sts)
+
+    ggplot(df, aes_string("sts", "fs")) +
+      geom_point(size = 3) +
+      labs(x = "Standardized total score", y = "Factor score") +
+      theme_bw() +
+      theme(text = element_text(size = 14),
+            plot.title = element_text(face = "bold", vjust = 1.5),
+            axis.line = element_line(colour = "black"),
+            panel.grid.major = element_blank(),
+            panel.grid.minor = element_blank(),
+            panel.background = element_blank()) +
+      theme(legend.box.just = "left",
+            legend.justification = c(1, 0),
+            legend.position = c(1, 0),
+            legend.box = "vertical",
+            legend.key.size = unit(1, "lines"),
+            legend.text.align = 0,
+            legend.title.align = 0)
+  })
+
+  output$twoparamirtFactor_mirt <- renderPlot({
+    twoparamirtFactorInput_mirt()
+  })
+
+  output$DP_twoparamirtFactor_mirt <- downloadHandler(
+    filename =  function() {
+      paste("plot", input$name, ".png", sep = "")
+    },
+    content = function(file) {
+      ggsave(file, plot = twoparamirtFactorInput_mirt(), device = "png",
+             height = 3, width = 9, dpi = 160)
+    }
+  )
+
+  # ** 3PL IRT ####
+  three_param_irt_mirt <- reactive({
+    data <- correct_answ()
+    fit3PL <- mirt(data, model = 1, itemtype = "3PL",
+                   constrain = NULL,
+                   SE = T, technical = list(NCYCLES = 2000))
+  })
+
+  # *** CC ####
+  threeparamirtInput_mirt <- reactive({
+    plot(three_param_irt_mirt(), type = "trace", facet_items = F)
+    # g <- recordPlot()
+    # plot.new()
+    # g
+  })
+
+  output$threeparamirt_mirt <- renderPlot({
+    threeparamirtInput_mirt()
+  })
+
+  output$DP_threeparamirt_mirt <- downloadHandler(
+    filename =  function() {
+      paste("plot", input$name, ".png", sep = "")
+    },
+    content = function(file) {
+      png(file, height = 800, width = 1200, res = 100)
+      plot(three_param_irt_mirt(), type = "trace", facet_items = F)
+      dev.off()
+    }
+  )
+
+  # *** IIC ####
+  threeparamirtiicInput_mirt <- reactive({
+    plot(three_param_irt_mirt(), type = "infotrace", facet_items = F)
+    # g <- recordPlot()
+    # plot.new()
+    # g
+  })
+
+  output$threeparamirtiic_mirt <- renderPlot({
+    threeparamirtiicInput_mirt()
+  })
+
+  output$DP_threeparamirtiic_mirt <- downloadHandler(
+    filename =  function() {
+      paste("plot", input$name, ".png", sep = "")
+    },
+    content = function(file) {
+      png(file, height = 800, width = 1200, res = 100)
+      plot(three_param_irt_mirt(), type = "infotrace", facet_items = F)
+      dev.off()
+    }
+  )
+
+  # *** TIF ####
+  threeparamirttifInput_mirt <- reactive({
+    plot(three_param_irt_mirt(), type = "infoSE")
+    # g <- recordPlot()
+    # plot.new()
+    # g
+  })
+
+  output$threeparamirttif_mirt <- renderPlot({
+    threeparamirttifInput_mirt()
+  })
+
+  output$DP_threeparamirttif_mirt <- downloadHandler(
+    filename =  function() {
+      paste("plot", input$name, ".png", sep = "")
+    },
+    content = function(file) {
+      png(file, height = 800, width = 1200, res = 100)
+      plot(three_param_irt_mirt(), type = "infoSE")
+      dev.off()
+    }
+  )
+
+
+  # *** Table of parameters ####
+  threeparamirtcoefInput_mirt <- reactive({
+    fit <- three_param_irt_mirt()
+    coeftab <- coef(fit)
+    tab <- cbind(
+      sapply(1:(length(coeftab) - 1), function(i) coeftab[[i]][1, "a1"]),
+      sqrt(diag(vcov(fit)))[seq(1, (3*length(coeftab) - 3), 3)],
+      sapply(1:(length(coeftab) - 1), function(i) coeftab[[i]][1, "d"]),
+      sqrt(diag(vcov(fit)))[seq(2, (3*length(coeftab) - 3), 3)],
+      sapply(1:(length(coeftab) - 1), function(i) coeftab[[i]][1, "g"]),
+      sqrt(diag(vcov(fit)))[seq(3, (3*length(coeftab) - 3), 3)]
+    )
+    colnames(tab) <- c("a", "SD(a)", "b", "SD(b)", "c", "SD(c)")
+    rownames(tab) <- paste("Item", 1:nrow(tab))
+    tab <- round(tab, 3)
+    tab
+  })
+
+  output$threeparamirtcoef_mirt <- renderTable({
+    threeparamirtcoefInput_mirt()
+  },
+  include.rownames = T)
+
+  # *** Factor scores plot ####
+  threeparamirtFactorInput_mirt <- reactive({
+
+    fs <- as.vector(fscores(three_param_irt_mirt()))
+    sts <- as.vector(scale(apply(correct_answ(), 1, sum)))
+
+    df <- data.frame(fs, sts)
+
+    ggplot(df, aes_string("sts", "fs")) +
+      geom_point(size = 3) +
+      labs(x = "Standardized total score", y = "Factor score") +
+      theme_bw() +
+      theme(text = element_text(size = 14),
+            plot.title = element_text(face = "bold", vjust = 1.5),
+            axis.line = element_line(colour = "black"),
+            panel.grid.major = element_blank(),
+            panel.grid.minor = element_blank(),
+            panel.background = element_blank()) +
+      theme(legend.box.just = "left",
+            legend.justification = c(1, 0),
+            legend.position = c(1, 0),
+            legend.box = "vertical",
+            legend.key.size = unit(1, "lines"),
+            legend.text.align = 0,
+            legend.title.align = 0)
+  })
+
+  output$threeparamirtFactor_mirt <- renderPlot({
+    threeparamirtFactorInput_mirt()
+  })
+
+  output$DP_threeparamirtFactor_mirt <- downloadHandler(
+    filename =  function() {
+      paste("plot", input$name, ".png", sep = "")
+    },
+    content = function(file) {
+      ggsave(file, plot = threeparamirtFactorInput_mirt(), device = "png",
+             height = 3, width = 9, dpi = 160)
+    }
+  )
+
+  # ** IRT COMPARISON ####
+  irtcomparisonInput <- reactive({
+    fit1PL <- one_param_irt_mirt()
+    fit2PL <- two_param_irt_mirt()
+    fit3PL <- three_param_irt_mirt()
+
+    models <- list(fit1PL = fit1PL,
+                   fit2PL = fit2PL,
+                   fit3PL = fit3PL)
+
+    df <- data.frame(anova(models[[1]], models[[2]], verbose = F))
+    df <- rbind(df,
+                data.frame(anova(models[[2]], models[[3]], verbose = F)))
+    df <- round(df[c(1, 2, 4), ], 3)
+    nam <- c("1PL", "2PL", "3PL")
+
+    if (all(df[, 8] > 0.05)){
+      hv <- "1PL"
+    } else {
+      p <- which(df[, 8] < 0.05)
+      hv <- nam[p[length(p)]]
+    }
+
+    df <- rbind(df,
+                c(nam[sapply(1:4, function(i) which(df[, i] == min(df[, i])))],
+                  rep("", 3),
+                  hv))
+
+
+    rownames(df) <- c(nam, "BEST")
+    df
+  })
+
+  output$irtcomparison <- renderTable({
+    irtcomparisonInput()
+  },
+  include.rownames = T)
+
   ######################
   # DIF/FAIRNESS ####
   ######################
@@ -1921,7 +2519,8 @@ function(input, output, session) {
     data <- correct_answ()
 
     mod <- difLogistic(Data = data, group = group, focal.name = 1,
-                       type = input$type_plot_DIF_logistic, p.adjust.method = input$correction_method_logItems)
+                       type = input$type_plot_DIF_logistic,
+                       p.adjust.method = input$correction_method_logItems)
     mod
   })
 
@@ -1931,7 +2530,8 @@ function(input, output, session) {
     data <- correct_answ()
 
     mod <- difLogistic(Data = data, group = group, focal.name = 1,
-                       type = input$type_print_DIF_logistic, p.adjust.method = input$correction_method_logSummary)
+                       type = input$type_print_DIF_logistic,
+                       p.adjust.method = input$correction_method_logSummary)
     mod
   })
 
