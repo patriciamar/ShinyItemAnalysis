@@ -1613,7 +1613,8 @@ function(input, output, session) {
 
   # ** RASCH ####
   rasch_model_mirt <- reactive({
-    fitRasch <- mirt(correct_answ(), model = 1, itemtype = "Rasch", SE = T)
+    fitRasch <- mirt(correct_answ(), model = 1, itemtype = "Rasch",
+                     SE = T, verbose = F)
   })
 
   # *** CC ####
@@ -1750,7 +1751,7 @@ function(input, output, session) {
     data <- correct_answ()
     fit1PL <- mirt(data, model = 1, itemtype = "2PL",
                    constrain = list((1:ncol(data)) + seq(0, (ncol(data) - 1)*3, 3)),
-                   SE = T)
+                   SE = T, verbose = F)
   })
 
   # *** CC ####
@@ -1889,7 +1890,7 @@ function(input, output, session) {
     data <- correct_answ()
     fit2PL <- mirt(data, model = 1, itemtype = "2PL",
                    constrain = NULL,
-                   SE = T)
+                   SE = T, verbose = F)
   })
 
   # *** CC ####
@@ -2028,7 +2029,8 @@ function(input, output, session) {
     data <- correct_answ()
     fit3PL <- mirt(data, model = 1, itemtype = "3PL",
                    constrain = NULL,
-                   SE = T, technical = list(NCYCLES = 2000))
+                   SE = T, technical = list(NCYCLES = 2000),
+                   verbose = F)
   })
 
   # *** CC ####
@@ -2780,7 +2782,7 @@ function(input, output, session) {
     tab_coef <- fit$nlrPAR[item, c("a", "b", "aDif", "bDif", "c")]
     tab_sd <- fit$nlrSE[item, c("a", "b", "aDif", "bDif", "c")]
 
-    tab <- data.frame(tab_coef, tab_sd)
+    tab <- t(rbind(tab_coef, tab_sd))
 
     rownames(tab) <- c('a', 'b', 'aDIF', 'bDIF', 'c')
     colnames(tab) <- c("Estimate", "SD")
