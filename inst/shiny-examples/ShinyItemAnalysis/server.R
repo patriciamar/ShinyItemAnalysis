@@ -19,6 +19,7 @@ library(psychometric)
 library(reshape2)
 library(stringr)
 library(rmarkdown)
+library(ShinyItemAnalysis)
 
 ###########
 # DATA ####
@@ -53,6 +54,10 @@ source("plotDIFirt.R")
 
 function(input, output, session) {
 
+
+  dataset<-reactiveValues()
+
+
   ######################
   ### hits counter #####
   ######################
@@ -71,57 +76,131 @@ function(input, output, session) {
 
   # LOAD ABCD DATA #####
   test_answers <- reactive ({
-    a=input$dataSelect
-    pos=regexpr("_", a)[1]
-    datasetName=str_sub(a, 1,pos-1)
-    packageName=str_sub(a, pos+1)
+    if (is.null(input$data)) {
+      a=input$dataSelect
+      pos=regexpr("_", a)[1]
+      datasetName=str_sub(a, 1,pos-1)
+      packageName=str_sub(a, pos+1)
 
-    do.call(data, args=list(paste0(datasetName,"test"), package=packageName))
-    test=get(paste0(datasetName,"test"))
+      do.call(data, args=list(paste0(datasetName,"test"), package=packageName))
+      test=get(paste0(datasetName,"test"))
 
-    do.call(data, args=list(paste0(datasetName,"key"), package=packageName))
-    key=get(paste0(datasetName,"key"))
+      do.call(data, args=list(paste0(datasetName,"key"), package=packageName))
+      key=get(paste0(datasetName,"key"))
 
-    ifelse (is.null(input$data), answ <- test[ , 1:length(key)],
-            answ <- read.csv(input$data$datapath, header = input$header,
-                             sep = input$sep, quote = input$quote))
-    answ
+      test = test[,1:length(key)]
+      dataset$answers = test
+    } else {
+      test = dataset$answers
+    }
+    test
   })
 
   # LOAD KEY #####
   test_key <- reactive({
-    a=input$dataSelect
-    pos=regexpr("_", a)[1]
-    datasetName=str_sub(a, 1,pos-1)
-    packageName=str_sub(a, pos+1)
+    if (is.null(input$key)) {
+      a=input$dataSelect
+      pos=regexpr("_", a)[1]
+      datasetName=str_sub(a, 1,pos-1)
+      packageName=str_sub(a, pos+1)
 
-    do.call(data, args=list(paste0(datasetName,"key"), package=packageName))
-    key=get(paste0(datasetName,"key"))
-
-    ifelse (is.null(input$key), k <- key,
-
-            {k <- read.csv(input$key$datapath, header = FALSE)
-            k <- k[[1]]
-            })
-    k
+      do.call(data, args=list(paste0(datasetName,"key"), package=packageName))
+      key=get(paste0(datasetName,"key"))
+      dataset$key = key
+    } else {
+      key=dataset$key
+    }
+    key
   })
 
   # LOAD GROUPS #####
   DIF_groups <- reactive({
-    a=input$dataSelect
-    pos=regexpr("_", a)[1]
-    datasetName=str_sub(a, 1,pos-1)
-    packageName=str_sub(a, pos+1)
+    if (is.null(input$groups)) {
+      a=input$dataSelect
+      pos=regexpr("_", a)[1]
+      datasetName=str_sub(a, 1,pos-1)
+      packageName=str_sub(a, pos+1)
 
-    do.call(data, args=list(paste0(datasetName,"test"), package=packageName))
-    test=get(paste0(datasetName,"test"))
+      do.call(data, args=list(paste0(datasetName,"test"), package=packageName))
+      test=get(paste0(datasetName,"test"))
 
-    ifelse (is.null(input$key), k <- test[ , ncol(test)],
-
-            {k <- read.csv(input$groups$datapath,header = TRUE)
-            k <- k[[1]]})
-    as.vector(k)
+      group = test[, ncol(test)]
+      dataset$group = group
+    } else {
+      group = dataset$group
+    }
+    group
   })
+
+  # SUBMIT BUTTON #####
+
+  observeEvent(
+    eventExpr = input$submitButton,
+    handlerExpr = {
+      print(isolate(test_answers()))
+      print(isolate(test_key()))
+      print(isolate(DIF_groups()))
+
+      # print(test_key())
+      #
+      # print(dim(test_key()))
+      # print(dim(isolate(test_key())))
+      #
+      # print(typeof(test_key()))
+      # print(typeof(isolate(test_key())))
+      #
+      # print(class(test_key()))
+      # print(class(isolate(test_key())))
+
+      print(row.names(test_answers()))
+
+      key=NULL
+      answ=NULL
+      k=NULL
+      group=NULL
+
+      ifelse (is.null(input$key), key <- test_key(),
+              {key <- read.csv(input$key$datapath, header = FALSE)
+              key <- as.character(key[[1]])
+              })
+
+      ifelse (is.null(input$data), answ <- test[ , 1:length(key)],
+              answ <- read.csv(input$data$datapath, header = input$header,
+                               sep = input$sep, quote = input$quote))
+
+      if (!is.null(input$groups)) {
+        group <- read.csv(input$groups$datapath, header = TRUE)
+        group <- as.vector(group[[1]])
+      }
+
+      dataset$answers<-answ
+      dataset$key<-key
+      dataset$group<-group
+
+      print(answ)
+      print(key)
+      print(group)
+
+      # print(typeof(key))
+      # print(typeof(dataset$key))
+      # print(typeof(isolate(dataset$key)))
+      #
+      # print(class(key))
+      # print(class(dataset$key))
+      # print(class(isolate(dataset$key)))
+      #
+      # print(dim(key))
+      # print(dim(dataset$key))
+      # print(dim(isolate(dataset$key)))
+      #
+      # print(as.vector(key))
+      # print(as.character(key))
+      # print(as.vector(as.character(key)))
+
+      print(row.names(answ))
+
+    }
+  )
 
   # TOTAL SCORE CALCULATION #####
   scored_test <- reactive({
@@ -2202,13 +2281,13 @@ function(input, output, session) {
     mod <- switch(input$type_plot_DIF_IRT_lord,
                   "1PL" = difLord(Data = data, group = group, focal.name = 1,
                                   model = "1PL",
-                                  p.adjust.method = input$correction_method_IRT_LordItems),
+                                  p.adjust.method = input$correction_method_DIF_IRT_lordItems),
                   "2PL" = difLord(Data = data, group = group, focal.name = 1,
                                   model = "2PL",
-                                  p.adjust.method = input$correction_method_IRT_LordItems),
+                                  p.adjust.method = input$correction_method_DIF_IRT_lordItems),
                   "3PL" = difLord(Data = data, group = group, focal.name = 1,
                                   model = "3PL", c = guess,
-                                  p.adjust.method = input$correction_method_IRT_LordItems))
+                                  p.adjust.method = input$correction_method_DIF_IRT_lordItems))
     mod
   })
 
@@ -2224,13 +2303,13 @@ function(input, output, session) {
     mod <- switch(input$type_print_DIF_IRT_lord,
                   "1PL" = difLord(Data = data, group = group, focal.name = 1,
                                   model = "1PL",
-                                  p.adjust.method = input$correction_method_IRT_LordSummary),
+                                  p.adjust.method = input$correction_method_DIF_IRT_lordSummary),
                   "2PL" = difLord(Data = data, group = group, focal.name = 1,
                                   model = "2PL",
-                                  p.adjust.method = input$correction_method_IRT_LordSummary),
+                                  p.adjust.method = input$correction_method_DIF_IRT_lordSummary),
                   "3PL" = difLord(Data = data, group = group, focal.name = 1,
                                   model = "3PL", c = guess,
-                                  p.adjust.method = input$correction_method_IRT_LordSummary))
+                                  p.adjust.method = input$correction_method_DIF_IRT_lordSummary))
     mod
   })
 
@@ -2375,13 +2454,13 @@ function(input, output, session) {
     mod <- switch(input$type_plot_DIF_IRT_raju,
                   "1PL" = difRaju(Data = data, group = group, focal.name = 1,
                                   model = "1PL",
-                                  p.adjust.method = input$correction_method_IRT_RajuItems),
+                                  p.adjust.method = input$correction_method_DIF_IRT_rajuItems),
                   "2PL" = difRaju(Data = data, group = group, focal.name = 1,
                                   model = "2PL",
-                                  p.adjust.method = input$correction_method_IRT_RajuItems),
+                                  p.adjust.method = input$correction_method_DIF_IRT_rajuItems),
                   "3PL" = difRaju(Data = data, group = group, focal.name = 1,
                                   model = "3PL", c = guess,
-                                  p.adjust.method = input$correction_method_IRT_RajuItems))
+                                  p.adjust.method = input$correction_method_DIF_IRT_rajuItems))
     mod
   })
 
@@ -2397,13 +2476,13 @@ function(input, output, session) {
     mod <- switch(input$type_print_DIF_IRT_raju,
                   "1PL" = difRaju(Data = data, group = group, focal.name = 1,
                                   model = "1PL",
-                                  p.adjust.method = input$correction_method_IRT_RajuSummary),
+                                  p.adjust.method = input$correction_method_DIF_IRT_rajuSummary),
                   "2PL" = difRaju(Data = data, group = group, focal.name = 1,
                                   model = "2PL",
-                                  p.adjust.method = input$correction_method_IRT_RajuSummary),
+                                  p.adjust.method = input$correction_method_DIF_IRT_rajuSummary),
                   "3PL" = difRaju(Data = data, group = group, focal.name = 1,
                                   model = "3PL", c = guess,
-                                  p.adjust.method = input$correction_method_IRT_RajuSummary))
+                                  p.adjust.method = input$correction_method_DIF_IRT_rajuSummary))
     mod
   })
 

@@ -182,7 +182,7 @@ ui=tagList(
                         students in main dataset. If the group is not provided then it wont be possible to run DIF and DDF
                         detection procedures. '),
                       fluidRow(
-                        column(4, offset = 0, fileInput(
+                        column(3, offset = 0, fileInput(
                           'data', 'Choose data (csv file)',
                           accept = c('text/csv',
                                      'text/comma-separated-values',
@@ -193,7 +193,7 @@ ui=tagList(
                           )
                         )
                         ),
-                        column(4, offset = 1, fileInput(
+                        column(3, fileInput(
                           'key', 'Choose key (csv file)',
                           accept = c('text/csv',
                                      'text/comma-separated-values',
@@ -204,7 +204,7 @@ ui=tagList(
                           )
                         )
                         ),
-                        column(4, fileInput(
+                        column(3, fileInput(
                           'groups', 'Choose groups for DIF (optional)',
                           accept = c('text/csv',
                                      'text/comma-separated-values',
@@ -214,7 +214,8 @@ ui=tagList(
                                      '.tsv'
                           )
                         )
-                        )
+                        ),
+                        column(3, offset = 1, actionButton(inputId = "submitButton", label = "Sumbit Data"))
                       ),
                       tags$hr(),
                       h4("Data Specification"),
@@ -1587,6 +1588,15 @@ ui=tagList(
                                                          ),
                                                          '2PL'
                                             ),
+                                            selectInput("correction_method_DIF_IRT_lordSummary", "Correction method",
+                                                        c("BH" = "BH",
+                                                          "Holm" = "holm",
+                                                          "Hochberg" = "hochberg",
+                                                          "Hommel" = "hommel",
+                                                          "BY" = "BY",
+                                                          "FDR" = "fdr",
+                                                          "none" = "none"),
+                                                        selected="BH"),
                                             verbatimTextOutput('print_DIF_IRT_Lord'),
                                             br(),
                                             h4("Selected R code"),
@@ -1624,6 +1634,15 @@ ui=tagList(
                                                          ),
                                                          '2PL'
                                             ),
+                                            selectInput("correction_method_DIF_IRT_lordItems", "Correction method",
+                                                        c("BH" = "BH",
+                                                          "Holm" = "holm",
+                                                          "Hochberg" = "hochberg",
+                                                          "Hommel" = "hommel",
+                                                          "BY" = "BY",
+                                                          "FDR" = "fdr",
+                                                          "none" = "none"),
+                                                        selected="BH"),
                                             sliderInput("difirt_lord_itemSlider", "Item Slider", min=1, value=1, max=10,
                                                         step=1, animate=TRUE),
                                             plotOutput('plot_DIF_IRT_Lord'),
@@ -1681,6 +1700,15 @@ ui=tagList(
                                                          ),
                                                          '2PL'
                                             ),
+                                            selectInput("correction_method_DIF_IRT_rajuSummary", "Correction method",
+                                                        c("BH" = "BH",
+                                                          "Holm" = "holm",
+                                                          "Hochberg" = "hochberg",
+                                                          "Hommel" = "hommel",
+                                                          "BY" = "BY",
+                                                          "FDR" = "fdr",
+                                                          "none" = "none"),
+                                                        selected="BH"),
                                             verbatimTextOutput('print_DIF_IRT_Raju'),
                                             br(),
                                             h4("Selected R code"),
@@ -1716,6 +1744,15 @@ ui=tagList(
                                                          ),
                                                          '2PL'
                                             ),
+                                            selectInput("correction_method_DIF_IRT_rajuItems", "Correction method",
+                                                        c("BH" = "BH",
+                                                          "Holm" = "holm",
+                                                          "Hochberg" = "hochberg",
+                                                          "Hommel" = "hommel",
+                                                          "BY" = "BY",
+                                                          "FDR" = "fdr",
+                                                          "none" = "none"),
+                                                        selected="BH"),
                                             sliderInput("difirt_raju_itemSlider", "Item Slider", min=1, value=1, max=10,
                                                         step=1, animate=TRUE),
                                             plotOutput('plot_DIF_IRT_Raju'),
