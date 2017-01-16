@@ -2117,9 +2117,10 @@ ui=tagList(
                                    # Summary
                                    tabPanel('Summary',
                                             h3('Differential Distractor Functioning with Multinomial Log-linear Regression Model'),
-                                            p('Here will be description...'),
-                                            h4("Equation"),
-                                            p('Here will be equation...'),
+                                            p('Differential Distractor Functioning (DDF) occurs when people from different
+                                              groups but with the same knowledge have different probability of selecting
+                                              at least one distractor choice. DDF is here examined by Multinomial Log-linear
+                                              Regression model with Z-score and group membership as covariates. '),
                                             radioButtons('type_print_DDF', 'Type',
                                                          c("H0: Any DIF vs. H1: No DIF" = 'both',
                                                            "H0: Uniform DIF vs. H1: No DIF" = 'udif',
@@ -2161,7 +2162,10 @@ ui=tagList(
                                    # Items
                                    tabPanel('Items',
                                             h3('Differential Distractor Functioning with Multinomial Log-linear Regression Model'),
-                                            p('Here will be description...'),
+                                            p('Differential Distractor Functioning (DDF) occurs when people from different
+                                              groups but with the same knowledge have different probability of selecting
+                                              at least one distractor choice. DDF is here examined by Multinomial Log-linear
+                                              Regression model with Z-score and group membership as covariates. '),
                                             h4("Plot with Estimated DDF Curves"),
                                             p('Points represent proportion of selected answer with respect to standardized
                                               total score. Size of points is determined by count of respondents who chose particular
@@ -2187,7 +2191,8 @@ ui=tagList(
                                             plotOutput('plot_DDF'),
                                             downloadButton("DP_plot_DDF", label = "Download figure"),
                                             h4("Equation"),
-                                            p('Here will be equation'),
+                                            uiOutput('DDFeq'),
+                                            h4("Table of parameters"),
                                             fluidRow(column(12, align = "center", tableOutput('tab_coef_DDF'))),
                                             br(),
                                             h4("Selected R code"),
