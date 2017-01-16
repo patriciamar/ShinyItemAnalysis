@@ -21,7 +21,6 @@ library(reshape2)
 library(stringr)
 library(ShinyItemAnalysis)
 library(rmarkdown)
-library(ShinyItemAnalysis)
 
 ###########
 # DATA ####
@@ -1138,7 +1137,7 @@ function(input, output, session) {
       ylim(0, 1) +
       labs(title = paste("Item", input$multiSlider),
            x = "Standardized Total Score",
-           y = "Probability of Correct Answer") +
+           y = "Probability of Answer") +
       theme_bw() +
       theme(axis.line  = element_line(colour = "black"),
             text = element_text(size = 14),
@@ -1194,7 +1193,7 @@ function(input, output, session) {
         ylim(0, 1) +
         labs(title = paste("Item", i),
              x = "Standardized Total Score",
-             y = "Probability of Correct Answer") +
+             y = "Probability of Answer") +
         theme_bw() +
         theme(axis.line  = element_line(colour = "black"),
               text = element_text(size = 14),
@@ -3296,17 +3295,31 @@ function(input, output, session) {
       }
     }
 
-    colnames(tab_coef) <- c("Intercept", "S.T. score", "Group", "S.T. score:Group")
-    # tab_sd <- fit$nlrSE[item, c("a", "b", "aDif", "bDif", "c")]
-    #
-    # tab <- data.frame(tab_coef, tab_sd)
-    #
-    # rownames(tab) <- c('a', 'b', 'c', 'aDIF', 'bDIF')
-    # colnames(tab) <- c("Estimate", "SD")
-    #
+    colnames(tab_coef) <- c("b0", "b1", "b2", "b3")
+
     tab_coef
   },
   include.rownames = T)
+
+  # ** Equation ####
+  output$DDFeq <- renderUI ({
+    item <- input$ddfSlider
+    key <- test_key()
+
+    cor_option <- key[item]
+    withMathJax(
+      sprintf(
+        '$$\\text{For item } %s \\text{ are corresponding equations of multinomial model given by: } \\\\
+           \\mathrm{P}(Y_{i} = %s|Z_i, G_i, b_{l0}, b_{l1}, b_{l2}, b_{l3}, l = 1,\\dots,K-1) =
+           \\frac{1}{1 + \\sum_l e^{\\left( b_{l0} + b_{l1} Z_i + b_{l2} G_i + b_{l3} Z_i:G_i\\right)}}, \\\\
+\\mathrm{P}(Y_{i} = k|Z_i, G_i, b_{l0}, b_{l1}, b_{l2}, b_{l3}, l = 1,\\dots,K-1) =
+           \\frac{e^{\\left( b_{k0} + b_{k1} Z_i + b_{k2} G_i + b_{k3} Z_i:G_i\\right)}}
+                 {1 + \\sum_l e^{\\left( b_{l0} + b_{l1} Z_i + b_{l2} G_i + b_{l3} Z_i:G_i\\right)}}, \\\\
+        \\text{where } %s \\text{ is the correct answer and } k \\text{ is one of the wrong options.}$$',
+        item, cor_option, cor_option, cor_option, cor_option
+      )
+    )
+  })
 
 
   # DOWNLOADN REPORT #####
