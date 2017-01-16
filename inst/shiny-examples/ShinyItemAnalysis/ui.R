@@ -2121,6 +2121,17 @@ ui=tagList(
                                               groups but with the same knowledge have different probability of selecting
                                               at least one distractor choice. DDF is here examined by Multinomial Log-linear
                                               Regression model with Z-score and group membership as covariates. '),
+                                            h4('Equation'),
+                                            p('For ', strong('K'), ' possible test choices is the probability of the correct answer for
+                                               person ', strong('i'), ' with standardized total score ', strong('Z'), ' and group
+                                              membership ', strong('G'),' in item ', strong('j'), 'given by the following equation: '),
+                                            ('$$\\mathrm{P}(Y_{ij} = K|Z_i, G_i, b_{jl0}, b_{jl1}, b_{jl2}, b_{jl3}, l = 1, \\dots, K-1) =
+                                             \\frac{1}{1 + \\sum_l e^{\\left( b_{il0} + b_{il1} Z + b_{il2} G + b_{il3} Z:G\\right)}}$$'),
+                                            p('The probability of choosing distractor ', strong('k'), ' is then given by: '),
+                                            ('$$\\mathrm{P}(Y_{ij} = k|Z_i, G_i, b_{jl0}, b_{jl1}, b_{jl2}, b_{jl3}, l = 1, \\dots, K-1) =
+                                             \\frac{e^{\\left( b_{jk0} + b_{jk1} Z_i + b_{jk2} G_i + b_{jk3} Z_i:G_i\\right)}}
+                                                   {1 + \\sum_l e^{\\left( b_{jl0} + b_{jl1} Z_i + b_{jl2} G_i + b_{jl3} Z_i:G_i\\right)}}$$'),
+                                            br(),
                                             radioButtons('type_print_DDF', 'Type',
                                                          c("H0: Any DIF vs. H1: No DIF" = 'both',
                                                            "H0: Uniform DIF vs. H1: No DIF" = 'udif',

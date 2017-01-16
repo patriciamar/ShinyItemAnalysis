@@ -1,7 +1,7 @@
 ######################
 # GLOBAL LIBRARY #####
 ######################
-library(ShinyItemAnalysis)
+
 library(corrplot)
 library(CTT)
 library(deltaPlotR)
@@ -19,9 +19,8 @@ library(psych)
 library(psychometric)
 library(reshape2)
 library(stringr)
-#
+library(ShinyItemAnalysis)
 library(rmarkdown)
-# library(ShinyItemAnalysis)
 
 ###########
 # DATA ####
@@ -3296,13 +3295,13 @@ function(input, output, session) {
       }
     }
 
-    colnames(tab_coef) <- c("Intercept", "Z-score", "Group", "Z-score:Group")
+    colnames(tab_coef) <- c("b0", "b1", "b2", "b3")
 
     tab_coef
   },
   include.rownames = T)
 
-
+  # ** Equation ####
   output$DDFeq <- renderUI ({
     item <- input$ddfSlider
     key <- test_key()
@@ -3310,10 +3309,14 @@ function(input, output, session) {
     cor_option <- key[item]
     withMathJax(
       sprintf(
-        '$$\\mathrm{P}(Y = i|Z, b_{i0}, b_{i1}) = \\frac{e^{\\left( b_{i0} + b_{i1} Z + b_{i2} G + b_{i3} Z:G\\right)}}{1 + \\sum_j e^{\\left( b_{j0} + b_{i1} Z + b_{j2} G + b_{j3} Z:G\\right)}}, \\\\
-        \\mathrm{P}(Y = %s|Z, b_{i0}, b_{i1}) = \\frac{1}{1 + \\sum_j e^{\\left( b_{j0} + b_{j1} Z + b_{j2} G + b_{j3} Z:G\\right)}}, \\\\
-        \\text{where } i \\text{ is one of the wrong options and } %s \\text{ is the correct one.}$$',
-        cor_option, cor_option, cor_option, cor_option
+        '$$\\text{For item } %s \\text{ are corresponding equations of multinomial model given by: } \\\\
+           \\mathrm{P}(Y_{i} = %s|Z_i, G_i, b_{l0}, b_{l1}, b_{l2}, b_{l3}, l = 1,\\dots,K-1) =
+           \\frac{1}{1 + \\sum_l e^{\\left( b_{l0} + b_{l1} Z_i + b_{l2} G_i + b_{l3} Z_i:G_i\\right)}}, \\\\
+\\mathrm{P}(Y_{i} = k|Z_i, G_i, b_{l0}, b_{l1}, b_{l2}, b_{l3}, l = 1,\\dots,K-1) =
+           \\frac{e^{\\left( b_{k0} + b_{k1} Z_i + b_{k2} G_i + b_{k3} Z_i:G_i\\right)}}
+                 {1 + \\sum_l e^{\\left( b_{l0} + b_{l1} Z_i + b_{l2} G_i + b_{l3} Z_i:G_i\\right)}}, \\\\
+        \\text{where } %s \\text{ is the correct answer and } k \\text{ is one of the wrong options.}$$',
+        item, cor_option, cor_option, cor_option, cor_option
       )
     )
   })
