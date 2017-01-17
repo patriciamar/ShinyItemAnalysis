@@ -13,7 +13,8 @@
 #' stat_function stat_summary theme theme_bw unit xlab xlim ylab ylim
 #' @importFrom graphics lines plot plot.new
 #' @importFrom grDevices dev.off png rainbow recordPlot
-#' @importFrom ltm ltm rasch tpm factor.scores
+#' @importFrom ltm ltm rasch tpm
+#' @importFrom mirt fscores mirt
 #' @importFrom moments kurtosis skewness
 #' @importFrom nnet multinom
 #' @importFrom psych alpha polychoric

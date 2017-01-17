@@ -7,10 +7,10 @@ library(CTT)
 library(deltaPlotR)
 library(difNLR)
 library(difR)
-library(foreign)
+# library(foreign)
 library(ggplot2)
 library(grid)
-library(gridExtra)
+# library(gridExtra)
 library(ltm)
 library(mirt)
 library(moments)
@@ -60,7 +60,7 @@ function(input, output, session) {
 
 
   ######################
-  ### hits counter #####
+  ### HITS COUNTER #####
   ######################
   output$counter <- renderText({
     if (!file.exists("counter.Rdata"))
@@ -134,7 +134,6 @@ function(input, output, session) {
   })
 
   # SUBMIT BUTTON #####
-
   observeEvent(
     eventExpr = input$submitButton,
     handlerExpr = {
