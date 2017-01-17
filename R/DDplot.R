@@ -46,7 +46,8 @@
 #' stat_function stat_summary theme theme_bw unit xlab xlim ylab ylim
 #' @importFrom graphics lines plot plot.new
 #' @importFrom grDevices dev.off png rainbow recordPlot
-#' @importFrom ltm ltm rasch tpm factor.scores
+#' @importFrom ltm ltm rasch tpm
+#' @importFrom mirt fscores mirt
 #' @importFrom moments kurtosis skewness
 #' @importFrom nnet multinom
 #' @importFrom psych alpha polychoric
@@ -56,6 +57,7 @@
 #' @importFrom stats aggregate coef deriv deriv3 fitted glm median nls quantile relevel sd vcov xtabs
 #' @importFrom stringr str_sub
 #' @importFrom utils data read.csv
+
 
 DDplot <- function(data){
   if (is.matrix(data) | is.data.frame(data)) {
