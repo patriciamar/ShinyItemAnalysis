@@ -1131,7 +1131,13 @@ function(input, output, session) {
     start <- cbind(discr, diffi, guess)
     colnames(start) <- c("a", "b", "c")
 
-    fit2PL <- lapply(1:20, function(i) glm(Data[, i] ~ scaledsc))
+    # fit2PL <- lapply(1:20, function(i) glm(Data[, i] ~ scaledsc, family = "binomial"))
+
+    fit2PL <- lapply(1:20, function(i) nls(Data[, i] ~  regFce_noDIF(scaledsc, a, b, c = 0),
+                                           algorithm = "port", start = start[i, 1:2],
+                                           lower = c(-Inf, -Inf),
+                                           upper = c(Inf, Inf)))
+
     fit3PL <- lapply(1:20, function(i) nls(Data[, i] ~  regFce_noDIF(scaledsc, a, b, c),
                                            algorithm = "port", start = start[i,],
                                            lower = c(-Inf, -Inf, 0),
