@@ -83,17 +83,19 @@ ui=tagList(
                       code('library(deltaPlotR)'), br(),
                       code('library(difNLR)'), br(),
                       code('library(difR)'), br(),
-                      code('library(foreign)'), br(),
+                      # code('library(foreign)'), br(),
                       code('library(ggplot2)'), br(),
-                      code('library(gridExtra)'), br(),
+                      code('library(grid)'), br(),
+                      # code('library(gridExtra)'), br(),
                       code('library(ltm)'), br(),
+                      code('library(mirt)'), br(),
                       code('library(moments)'), br(),
                       code('library(nnet)'), br(),
                       code('library(psych)'), br(),
                       code('library(psychometric)'), br(),
                       code('library(reshape2)'), br(),
                       code('library(shiny)'), br(),
-                      code('library(shinyAce)'), br(),
+                      # code('library(shinyAce)'), br(),
                       code('library(stringr)'), br(),
                       code('library(rmarkdown)'), br(),
 
@@ -694,9 +696,9 @@ ui=tagList(
                                      br(),
                                      code('data(GMAT)'),
                                      br(),
-                                     code('data  <- GMAT[, colnames(GMAT) != "group"]'),
+                                     code('Data  <- GMAT[, colnames(GMAT) != "group"]'),
                                      br(),
-                                     code('stand.score  <- scale(apply(data, 1, sum))'),
+                                     code('stand.score  <- scale(apply(Data, 1, sum))'),
                                      br(),
                                      br(),
                                      code('# NLR model for item 1'),
@@ -704,7 +706,7 @@ ui=tagList(
                                      code('fun <- function(x, a, b, c){c + (1 - c) * exp(a * (x - b)) / (1 + exp(a * (x - b)))}'),
                                      br(),
                                      code('fit <- nls(data[, 1] ~ fun(stand.score, a, b, c), algorithm = "port",
-                                          start = startNLR(data, GMAT[, "group"])[1, 1:3])'),
+                                          start = startNLR(data, GMAT[, "group"], model = "3PLcg")[1, 1:3])'),
                                      br(),
                                      code('# Coefficients'),
                                      br(),
@@ -718,6 +720,67 @@ ui=tagList(
                                           ylim = c(0, 1))')),
                                  br()
                                  ),
+                        "----",
+                        # MODELS COMPARISON
+                        tabPanel("Models comparison",
+                                 h3("Logistic Regression Models Selection"),
+                                 p('Here you can compare classic 2PL logistic regression model to non-linear model
+                                   item by item using some information criterions: '),
+                                 tags$ul(
+                                   tags$li(strong('AIC'), 'is the Akaike information criterion, '),
+                                   tags$li(strong('BIC'), 'is the Bayesian information criterion, ')
+                                 ),
+                                 p('Another approach to nested models can be likelihood ratio chi-squared test.
+                                   Significance level is set to 0.05. As tests are performed item by item, it is
+                                   possible to use multiple comparison correction method. '),
+                                 selectInput("correction_method_regrmodels", "Correction method",
+                                             c("BH" = "BH",
+                                               "Holm" = "holm",
+                                               "Hochberg" = "hochberg",
+                                               "Hommel" = "hommel",
+                                               "BY" = "BY",
+                                               "FDR" = "fdr",
+                                               "none" = "none"),
+                                             selected="BH"),
+                                 p('Rows ', strong('BEST'), 'indicate which model has the lowest value of criterion, or is the largest
+                                   significant model by likelihood ratio test.'),
+                                 fluidRow(column(12, align = "center", tableOutput('regr_comp_table'))),
+                                 br(),
+                                 div(code('library(difNLR, lmtest)'),
+                                     br(),
+                                     code('data(GMAT)'),
+                                     br(),
+                                     code('Data  <- GMAT[, colnames(GMAT) != "group"]'),
+                                     br(),
+                                     code('stand.score  <- scale(apply(Data, 1, sum))'),
+                                     br(),
+                                     br(),
+                                     code('# Fitting models'),
+                                     br(),
+                                     code('fun <- function(x, a, b, c){c + (1 - c) * exp(a * (x - b)) / (1 + exp(a * (x - b)))}'),
+                                     br(),
+                                     code('# 2PL model for item 1'),
+                                     br(),
+                                     code('fit2PL <- nls(Data[, 1] ~ fun(stand.score, a, b, c = 0), algorithm = "port",
+                                          start = startNLR(Data, GMAT[, "group"], model = "3PLcg")[1, 1:2])'),
+                                     br(),
+                                     code('# 3PL model for item 1'),
+                                     br(),
+                                     code('fit3PL <- nls(Data[, 1] ~ fun(stand.score, a, b, c), algorithm = "port",
+                                          start = startNLR(Data, GMAT[, "group"], model = "3PLcg")[1, 1:3])'),
+                                     br(),
+                                     br(),
+                                     code('# Comparison'),
+                                     br(),
+                                     code('AIC(fit2PL); AIC(fit3PL)'),
+                                     br(),
+                                     code('BIC(fit2PL); BIC(fit3PL)'),
+                                     br(),
+                                     code('lrtest(fit2PL, fit3PL)'),
+                                     br()),
+                                 br()
+                                 ),
+                        "----",
                         # MULTINOMIAL
                         tabPanel("Multinomial",
                                  h3("Multinomial Regression on Standardized Total Scores"),
@@ -1255,6 +1318,8 @@ ui=tagList(
                                      code('plot(fs ~ sts)')),
                                  br()
                                  ),
+                        "----",
+                        # MODELS COMPARISON
                         tabPanel("Models comparison ",
                                  h3("Item Response Theory Models Selection"),
                                  p('Item Response Theory (IRT) models are mixed-effect regression models in which
@@ -2117,9 +2182,21 @@ ui=tagList(
                                    # Summary
                                    tabPanel('Summary',
                                             h3('Differential Distractor Functioning with Multinomial Log-linear Regression Model'),
-                                            p('Here will be description...'),
-                                            h4("Equation"),
-                                            p('Here will be equation...'),
+                                            p('Differential Distractor Functioning (DDF) occurs when people from different
+                                              groups but with the same knowledge have different probability of selecting
+                                              at least one distractor choice. DDF is here examined by Multinomial Log-linear
+                                              Regression model with Z-score and group membership as covariates. '),
+                                            h4('Equation'),
+                                            p('For ', strong('K'), ' possible test choices is the probability of the correct answer for
+                                               person ', strong('i'), ' with standardized total score ', strong('Z'), ' and group
+                                              membership ', strong('G'),' in item ', strong('j'), 'given by the following equation: '),
+                                            ('$$\\mathrm{P}(Y_{ij} = K|Z_i, G_i, b_{jl0}, b_{jl1}, b_{jl2}, b_{jl3}, l = 1, \\dots, K-1) =
+                                             \\frac{1}{1 + \\sum_l e^{\\left( b_{il0} + b_{il1} Z + b_{il2} G + b_{il3} Z:G\\right)}}$$'),
+                                            p('The probability of choosing distractor ', strong('k'), ' is then given by: '),
+                                            ('$$\\mathrm{P}(Y_{ij} = k|Z_i, G_i, b_{jl0}, b_{jl1}, b_{jl2}, b_{jl3}, l = 1, \\dots, K-1) =
+                                             \\frac{e^{\\left( b_{jk0} + b_{jk1} Z_i + b_{jk2} G_i + b_{jk3} Z_i:G_i\\right)}}
+                                                   {1 + \\sum_l e^{\\left( b_{jl0} + b_{jl1} Z_i + b_{jl2} G_i + b_{jl3} Z_i:G_i\\right)}}$$'),
+                                            br(),
                                             radioButtons('type_print_DDF', 'Type',
                                                          c("H0: Any DIF vs. H1: No DIF" = 'both',
                                                            "H0: Uniform DIF vs. H1: No DIF" = 'udif',
@@ -2161,7 +2238,10 @@ ui=tagList(
                                    # Items
                                    tabPanel('Items',
                                             h3('Differential Distractor Functioning with Multinomial Log-linear Regression Model'),
-                                            p('Here will be description...'),
+                                            p('Differential Distractor Functioning (DDF) occurs when people from different
+                                              groups but with the same knowledge have different probability of selecting
+                                              at least one distractor choice. DDF is here examined by Multinomial Log-linear
+                                              Regression model with Z-score and group membership as covariates. '),
                                             h4("Plot with Estimated DDF Curves"),
                                             p('Points represent proportion of selected answer with respect to standardized
                                               total score. Size of points is determined by count of respondents who chose particular
@@ -2187,7 +2267,8 @@ ui=tagList(
                                             plotOutput('plot_DDF'),
                                             downloadButton("DP_plot_DDF", label = "Download figure"),
                                             h4("Equation"),
-                                            p('Here will be equation'),
+                                            uiOutput('DDFeq'),
+                                            h4("Table of parameters"),
                                             fluidRow(column(12, align = "center", tableOutput('tab_coef_DDF'))),
                                             br(),
                                             h4("Selected R code"),

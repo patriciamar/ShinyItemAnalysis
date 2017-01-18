@@ -7,10 +7,10 @@ library(CTT)
 library(deltaPlotR)
 library(difNLR)
 library(difR)
-library(foreign)
+# library(foreign)
 library(ggplot2)
 library(grid)
-library(gridExtra)
+# library(gridExtra)
 library(ltm)
 library(mirt)
 library(moments)
@@ -21,7 +21,6 @@ library(reshape2)
 library(stringr)
 library(ShinyItemAnalysis)
 library(rmarkdown)
-library(ShinyItemAnalysis)
 
 ###########
 # DATA ####
@@ -61,7 +60,7 @@ function(input, output, session) {
 
 
   ######################
-  ### hits counter #####
+  ### HITS COUNTER #####
   ######################
   output$counter <- renderText({
     if (!file.exists("counter.Rdata"))
@@ -135,7 +134,6 @@ function(input, output, session) {
   })
 
   # SUBMIT BUTTON #####
-
   observeEvent(
     eventExpr = input$submitButton,
     handlerExpr = {
@@ -860,6 +858,7 @@ function(input, output, session) {
     scaledsc <- c(scale(scored_test()))
     model <- glm(correct_answ()[, input$zlogreg_irtSlider] ~ scaledsc, family = "binomial")
   })
+
   # ** Plot with estimated logistic curve ####
   zlogreg_irtInput <- reactive({
     scaledsc <- scale(scored_test())
@@ -913,12 +912,12 @@ function(input, output, session) {
 
   # ** Table of parameters ####
   output$zlogregtab_irt <- renderTable({
-
-    tab_coef_old <- coef(z_logistic_irt_reg())
+    fit <- z_logistic_irt_reg()
+    tab_coef_old <- coef(fit)
 
     # delta method
     g <- list( ~ x2,  ~ -x1/x2)
-    cov <- vcov(z_logistic_irt_reg())
+    cov <- vcov(fit)
     cov <- as.matrix(cov)
     syms <- paste("x", 1:2, sep = "")
     for (i in 1:2) assign(syms[i], tab_coef_old[i])
@@ -941,10 +940,11 @@ function(input, output, session) {
 
   # ** Interpretation ####
   output$zlogisticint_irt <- renderUI({
+    fit <- z_logistic_irt_reg()
 
-    b1 <- summary(z_logistic_irt_reg())$coef[2, 1]
+    b1 <- summary(fit)$coef[2, 1]
     b1 <- round(b1, 2)
-    b0 <- round(summary(z_logistic_irt_reg())$coef[1, 1], 2)
+    b0 <- round(summary(fit)$coef[1, 1], 2)
 
     txt1 <- paste ("<b>", "Interpretation:", "</b>")
     txt2 <-
@@ -1006,7 +1006,7 @@ function(input, output, session) {
     estim_klasik1 <-
       nls(
         correct_answ()[, i] ~ regFce_noDIF(scaledsc, a, b, c),
-        algorithm = "port", start = start[input$nlsSlider,],
+        algorithm = "port", start = start[i, ],
         lower = c(-20, -20, 0), upper = c(20, 20, 1)
       )
 
@@ -1064,10 +1064,11 @@ function(input, output, session) {
 
   # Table of parameters
   output$nonlinearztab <- renderTable({
+    fit <- nls_model()
 
-    tabulka <- summary(nls_model())$parameters[, 1:2]
-    colnames(tabulka) <- c("Estimate", "SD")
-    tabulka
+    tab <- summary(fit)$parameters[, 1:2]
+    colnames(tab) <- c("Estimate", "SD")
+    tab
   },
   include.rownames = T,
   include.colnames = T
@@ -1075,9 +1076,10 @@ function(input, output, session) {
 
   # ** Interpretation ####
   output$nonlinearint <- renderUI({
+    fit <- nls_model()
 
-    a <- round(summary(nls_model())$coef[1, 1], 2)
-    b <- round(summary(nls_model())$coef[2, 1], 2)
+    a <- round(summary(fit)$coef[1, 1], 2)
+    b <- round(summary(fit)$coef[2, 1], 2)
 
     txt1 <- paste ("<b>", "Interpretation:", "</b>")
     txt2 <- paste (
@@ -1087,42 +1089,128 @@ function(input, output, session) {
     )
     txt3 <- paste ("<b>", a, "</b>")
     HTML(paste(txt1, txt2, txt3))
-
   })
+
+  # * MODEL COMPARISON ######
+  regr_comp_tableInput <- reactive({
+    Data <- correct_answ()
+    scaledsc <- c(scale(scored_test()))
+
+
+    regFce_noDIF <- deriv3(
+      ~ c + (1 - c) / (1 + exp(-a * (x - b))),
+      namevec = c("a", "b", "c"),
+      function.arg = function(x, a, b, c) {}
+    )
+
+    Q3 <- cut(scaledsc, quantile(scaledsc, (0:3) / 3),
+              c("I", "II", "III"),
+              include.lowest = TRUE)
+
+    x <- cbind(mean(scaledsc[Q3 == "I"]),
+               apply(Data[Q3 == "I",], 2, mean))
+    y <- cbind(mean(scaledsc[Q3 == "III"]),
+               apply(Data[Q3 == "III",], 2, mean))
+    u1 <- y[, 1] - x[, 1]
+    u2 <- y[, 2] - x[, 2]
+    ### intercept of line
+    c <- -(-u1 * y[, 2] + u2 * y[, 1]) / u1
+    ### slope of line
+    t <- u2 / u1
+    g <- apply(cbind(0, t * (-4) + c), 1, max)
+
+    b <- ((1 + g) / 2 - c) / t
+
+    alpha <- 4 * t / (1 - g)
+
+    discr <- alpha
+    diffi <- b
+    guess <- g
+
+
+    start <- cbind(discr, diffi, guess)
+    colnames(start) <- c("a", "b", "c")
+
+    # fit2PL <- lapply(1:20, function(i) glm(Data[, i] ~ scaledsc, family = "binomial"))
+
+    fit2PL <- lapply(1:20, function(i) nls(Data[, i] ~  regFce_noDIF(scaledsc, a, b, c = 0),
+                                           algorithm = "port", start = start[i, 1:2],
+                                           lower = c(-Inf, -Inf),
+                                           upper = c(Inf, Inf)))
+
+    fit3PL <- lapply(1:20, function(i) nls(Data[, i] ~  regFce_noDIF(scaledsc, a, b, c),
+                                           algorithm = "port", start = start[i,],
+                                           lower = c(-Inf, -Inf, 0),
+                                           upper = c(Inf, Inf, 1)))
+
+    bestAIC <- ifelse(sapply(fit2PL, AIC) < sapply(fit3PL, AIC), "2PL", "3PL")
+    bestBIC <- ifelse(sapply(fit2PL, BIC) < sapply(fit3PL, BIC), "2PL", "3PL")
+
+    LRstat <- -2 * (sapply(fit2PL, logLik) - sapply(fit3PL, logLik))
+    LRdf <- 1
+    LRpval <- 1 - pchisq(LRstat, LRdf)
+    LRpval <- p.adjust(LRpval, method = input$correction_method_regrmodels)
+    bestLR <- ifelse(LRpval < 0.05, "3PL", "2PL")
+
+
+    tab <- rbind(sprintf("%.2f", round(sapply(fit2PL, AIC), 2)),
+                 sprintf("%.2f", round(sapply(fit3PL, AIC), 2)),
+                 sprintf("%.2f", round(sapply(fit2PL, BIC), 2)),
+                 sprintf("%.2f", round(sapply(fit3PL, BIC), 2)),
+                 sprintf("%.2f", round(LRstat, 3)),
+                 ifelse(round(LRpval, 3) < 0.001, "<0.001", sprintf("%.3f", round(LRpval, 3))),
+                 bestAIC,
+                 bestBIC,
+                 bestLR)
+
+    rownames(tab) <- c("AIC 2PL", "AIC 3PL", "BIC 2PL", "BIC 3PL", "LR X2", "LR p-value",
+                       "BEST AIC", "BEST BIC", "BEST LR")
+
+    tab
+  })
+
+  # Table to print
+  output$regr_comp_table <- renderTable({
+    tab <- regr_comp_tableInput()
+    tab
+  },
+  include.rownames = T,
+  include.colnames = T
+  )
 
   # * MULTINOMIAL ######
   # ** Model ####
   multinomial_model <- reactive({
     stotal <- c(scale(scored_test()))
     k <- t(as.data.frame(test_key()))
+    i <- input$multiSlider
 
-    fitM <- multinom(relevel(as.factor(test_answers()[, input$multiSlider]),
-                             ref = paste(k[input$multiSlider])) ~ stotal,
+    fitM <- multinom(relevel(as.factor(test_answers()[, i]),
+                             ref = paste(k[i])) ~ stotal,
                      trace = F)
     fitM
   })
+
   # ** Plot with estimated curves of multinomial regression ####
   multiplotInput <- reactive({
+
     k <- t(as.data.frame(test_key()))
-
+    data <- test_answers()
     stotal <- c(scale(scored_test()))
+    i <- input$multiSlider
 
-
-    fitM <- multinom(relevel(as.factor(test_answers()[, input$multiSlider]),
-                             ref = paste(k[input$multiSlider])) ~ stotal,
+    fitM <- multinom(relevel(as.factor(data[, i]),
+                             ref = paste(k[i])) ~ stotal,
                      trace = F)
 
     pp <- fitted(fitM)
-
-    stotals <- rep(stotal, length(levels(relevel(as.factor(test_answers()[, input$multiSlider]),
-                                                 ref = paste(k[input$multiSlider])))))
+    stotals <- rep(stotal, length(levels(relevel(as.factor(data[, i]),
+                                                 ref = paste(k[i])))))
     df <- cbind(melt(pp), stotals)
-
-
-    df2 <- data.frame(table(test_answers()[, input$multiSlider], stotal),
-                      y = data.frame(prop.table(table(test_answers()[, input$multiSlider], stotal), 2))[, 3])
+    df2 <- data.frame(table(data[, i], stotal),
+                      y = data.frame(prop.table(table(data[, i], stotal), 2))[, 3])
     df2$stotal <- as.numeric(levels(df2$stotal))[df2$stotal]
-    df2$Var2 <- relevel(df2$Var1, ref = paste(k[input$multiSlider]))
+    df2$Var2 <- relevel(df2$Var1, ref = paste(k[i]))
 
 
     ggplot() +
@@ -1136,9 +1224,9 @@ function(input, output, session) {
                  alpha = 0.5, shape = 21) +
 
       ylim(0, 1) +
-      labs(title = paste("Item", input$multiSlider),
+      labs(title = paste("Item", i),
            x = "Standardized Total Score",
-           y = "Probability of Correct Answer") +
+           y = "Probability of Answer") +
       theme_bw() +
       theme(axis.line  = element_line(colour = "black"),
             text = element_text(size = 14),
@@ -1152,7 +1240,6 @@ function(input, output, session) {
             legend.key = element_rect(colour = "white"),
             plot.title = element_text(face = "bold"),
             legend.key.width = unit(1, "cm"))
-
   })
 
   multiplotReportInput<-reactive({
@@ -1194,7 +1281,7 @@ function(input, output, session) {
         ylim(0, 1) +
         labs(title = paste("Item", i),
              x = "Standardized Total Score",
-             y = "Probability of Correct Answer") +
+             y = "Probability of Answer") +
         theme_bw() +
         theme(axis.line  = element_line(colour = "black"),
               text = element_text(size = 14),
@@ -3296,17 +3383,31 @@ function(input, output, session) {
       }
     }
 
-    colnames(tab_coef) <- c("Intercept", "S.T. score", "Group", "S.T. score:Group")
-    # tab_sd <- fit$nlrSE[item, c("a", "b", "aDif", "bDif", "c")]
-    #
-    # tab <- data.frame(tab_coef, tab_sd)
-    #
-    # rownames(tab) <- c('a', 'b', 'c', 'aDIF', 'bDIF')
-    # colnames(tab) <- c("Estimate", "SD")
-    #
+    colnames(tab_coef) <- c("b0", "b1", "b2", "b3")
+
     tab_coef
   },
   include.rownames = T)
+
+  # ** Equation ####
+  output$DDFeq <- renderUI ({
+    item <- input$ddfSlider
+    key <- test_key()
+
+    cor_option <- key[item]
+    withMathJax(
+      sprintf(
+        '$$\\text{For item } %s \\text{ are corresponding equations of multinomial model given by: } \\\\
+           \\mathrm{P}(Y_{i} = %s|Z_i, G_i, b_{l0}, b_{l1}, b_{l2}, b_{l3}, l = 1,\\dots,K-1) =
+           \\frac{1}{1 + \\sum_l e^{\\left( b_{l0} + b_{l1} Z_i + b_{l2} G_i + b_{l3} Z_i:G_i\\right)}}, \\\\
+\\mathrm{P}(Y_{i} = k|Z_i, G_i, b_{l0}, b_{l1}, b_{l2}, b_{l3}, l = 1,\\dots,K-1) =
+           \\frac{e^{\\left( b_{k0} + b_{k1} Z_i + b_{k2} G_i + b_{k3} Z_i:G_i\\right)}}
+                 {1 + \\sum_l e^{\\left( b_{l0} + b_{l1} Z_i + b_{l2} G_i + b_{l3} Z_i:G_i\\right)}}, \\\\
+        \\text{where } %s \\text{ is the correct answer and } k \\text{ is one of the wrong options.}$$',
+        item, cor_option, cor_option, cor_option, cor_option
+      )
+    )
+  })
 
 
   # DOWNLOADN REPORT #####
