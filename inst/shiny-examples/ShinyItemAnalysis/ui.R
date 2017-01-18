@@ -720,6 +720,33 @@ ui=tagList(
                                           ylim = c(0, 1))')),
                                  br()
                                  ),
+                        # MODELS COMPARISON
+                        tabPanel("Models comparison",
+                                 h3("Logistic Regression Models Selection"),
+                                 p('Here you can compare classic 2PL logistic regression model to non-linear model
+                                   item by item using some information criterions: '),
+                                 tags$ul(
+                                   tags$li(strong('AIC'), 'is the Akaike information criterion, '),
+                                   tags$li(strong('BIC'), 'is the Bayesian information criterion, ')
+                                 ),
+                                 p('Another approach to nested models can be likelihood ratio chi-squared test.
+                                   Significance level is set to 0.05. As tests are performed item by item, it is
+                                   possible to use multiple comparison correction method. '),
+                                 selectInput("correction_method_regrmodels", "Correction method",
+                                             c("BH" = "BH",
+                                               "Holm" = "holm",
+                                               "Hochberg" = "hochberg",
+                                               "Hommel" = "hommel",
+                                               "BY" = "BY",
+                                               "FDR" = "fdr",
+                                               "none" = "none"),
+                                             selected="BH"),
+                                 p('Rows ', strong('BEST'), 'indicate which model has the lowest value of criterion, or is the largest
+                                   significant model by likelihood ratio test.'),
+                                 fluidRow(column(12, align = "center", tableOutput('regr_comp_table'))),
+                                 br(),
+                                 br()
+                                 ),
                         # MULTINOMIAL
                         tabPanel("Multinomial",
                                  h3("Multinomial Regression on Standardized Total Scores"),
