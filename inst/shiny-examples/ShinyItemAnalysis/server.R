@@ -638,7 +638,7 @@ function(input, output, session) {
     for (i in 1:length(k)) {
       g<-plotDistractorAnalysis(data = a, key = k, num.group = input$gr, item = i,
                              multiple.answers = multiple.answers)
-      g=g+ggtitle("\nDistractor Plot")
+      g=g+ggtitle(paste("\nDistractor Plot for Item", i))
       g=ggplotGrob(g)
       graflist[[i]]=g
     }
@@ -1301,7 +1301,7 @@ function(input, output, session) {
               legend.key = element_rect(colour = "white"),
               plot.title = element_text(face = "bold"),
               legend.key.width = unit(1, "cm"))
-      g=g+ggtitle("\nMultinomial Plot")
+      g=g+ggtitle(paste("\nMultinomial Plot for Item", i))
       g=ggplotGrob(g)
       graflist[[i]]=g
     }
@@ -3358,6 +3358,28 @@ function(input, output, session) {
     plot(fit, item = item)
   })
 
+  plot_DDFReportInput<-reactive({
+    group <- DIF_groups()
+    a <- test_answers()
+    k <- test_key()
+
+    adj.method <- input$correction_method_plot_DDF
+    type <- input$type_plot_DDF
+
+    mod <- ddfMLR(Data = a, group = group, focal.name = 1,
+                  key = k, p.adjust.method = adj.method,
+                  type = type)
+
+    graflist = list()
+    for (i in 1:length(mod$DDFitems)) {
+      g<-plot(mod, item = mod$DDFitems[[i]], title = paste("\nDDF Multinomial Plot for Item", i))
+      #g=ggplotGrob(g)
+      graflist[[i]]<-g
+    }
+    graflist
+  })
+
+
   # ** Output Plot ####
   output$plot_DDF <- renderPlot({
     plot_DDFInput()
@@ -3481,6 +3503,8 @@ function(input, output, session) {
                        k = test_key(),
                        results = t(resultsInput()),
                        histogram_totalscores = histogram_totalscoresInput(),
+                       corr_plot = corr_plotInput(),
+                       scree_plot = scree_plotInput(),
                        difPlot = difplotInput(),
                        itemexam = itemexamInput(),
                        hist_distractor_by_group = hist_distractor_by_groupInput(),
@@ -3507,7 +3531,9 @@ function(input, output, session) {
                        plot_DIF_logistic_IRT_Z = plot_DIF_logistic_IRT_ZInput(),
                        #plot_DIF_NLR = plot_DIF_NLRInput(),
                        plot_DIF_IRT_Lord = plot_DIF_IRT_LordInput(),
-                       plot_DIF_IRT_Raju = plot_DIF_IRT_RajuInput()
+                       plot_DIF_IRT_Raju = plot_DIF_IRT_RajuInput(),
+                       model_DDF_print = model_DDF_print(),
+                       plot_DDFReportInput = plot_DDFReportInput()
                        )
       rmarkdown::render(reportPath, output_file=file,
                         params = parameters, envir = new.env(parent = globalenv()))
