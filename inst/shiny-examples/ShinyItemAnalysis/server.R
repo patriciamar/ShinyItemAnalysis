@@ -58,6 +58,9 @@ function(input, output, session) {
 
   dataset<-reactiveValues()
 
+  dataset$answers<-NULL
+  dataset$key<-NULL
+  dataset$group<-NULL
 
   ######################
   ### HITS COUNTER #####
@@ -99,7 +102,7 @@ function(input, output, session) {
 
   # LOAD KEY #####
   test_key <- reactive({
-    if (is.null(input$key)) {
+    if ((is.null(input$key)) & (is.null(dataset$key))) {
       a=input$dataSelect
       pos=regexpr("_", a)[1]
       datasetName=str_sub(a, 1,pos-1)
@@ -109,6 +112,20 @@ function(input, output, session) {
       key=get(paste0(datasetName,"key"))
       dataset$key = key
     } else {
+      if (length(dataset$key) == 1) {
+        if (dataset$key == "missing"){
+          validate(
+            need(dataset$key != "missing", "Key is missing!"),
+            errorClass = "error_key_missing"
+          )
+        }
+      } else {
+        validate(
+          need(ncol(dataset$answers) == length(dataset$key), "Length of key is not the same as
+               number of items in the main data set!"),
+          errorClass = "error_dimension"
+          )
+      }
       key=dataset$key
     }
     key
@@ -116,7 +133,7 @@ function(input, output, session) {
 
   # LOAD GROUPS #####
   DIF_groups <- reactive({
-    if (is.null(input$groups)) {
+    if (is.null(input$groups) & (is.null(dataset$group))) {
       a=input$dataSelect
       pos=regexpr("_", a)[1]
       datasetName=str_sub(a, 1,pos-1)
@@ -128,76 +145,65 @@ function(input, output, session) {
       group = test[, ncol(test)]
       dataset$group = group
     } else {
+      if (length(dataset$group) == 1){
+        if (dataset$group == "missing"){
+          validate(
+            need(dataset$group != "missing",
+                 "Group is missing! DIF and DDF analyses are not available!"),
+            errorClass = "warning_group_missing"
+          )
+        }
+      } else {
+        validate(
+          need(nrow(dataset$answers) == length(dataset$group), "Length of group is not the same as
+             number of observation in the main data set!"),
+          errorClass = "error_dimension"
+        )
+      }
       group = dataset$group
     }
     group
   })
 
   # SUBMIT BUTTON #####
+
   observeEvent(
     eventExpr = input$submitButton,
     handlerExpr = {
-      print(isolate(test_answers()))
-      print(isolate(test_key()))
-      print(isolate(DIF_groups()))
-
-      # print(test_key())
-      #
-      # print(dim(test_key()))
-      # print(dim(isolate(test_key())))
-      #
-      # print(typeof(test_key()))
-      # print(typeof(isolate(test_key())))
-      #
-      # print(class(test_key()))
-      # print(class(isolate(test_key())))
-
-      print(row.names(test_answers()))
 
       key=NULL
       answ=NULL
       k=NULL
       group=NULL
 
-      ifelse (is.null(input$key), key <- test_key(),
-              {key <- read.csv(input$key$datapath, header = FALSE)
-              key <- as.character(key[[1]])
-              })
-
-      ifelse (is.null(input$data), answ <- test[ , 1:length(key)],
-              answ <- read.csv(input$data$datapath, header = input$header,
-                               sep = input$sep, quote = input$quote))
-
-      if (!is.null(input$groups)) {
-        group <- read.csv(input$groups$datapath, header = TRUE)
-        group <- as.vector(group[[1]])
+      if (is.null(input$data)){
+        key <- test_key()
+        answ <- test[ , 1:length(key)]
+        group <- DIF_groups()
+      } else {
+        answ <- read.csv(input$data$datapath, header = input$header,
+                         sep = input$sep, quote = input$quote)
+        if (is.null(input$key)){
+          key <- "missing"
+        } else {
+          key <- read.csv(input$key$datapath, header = input$header)
+          key <- as.character(key[[1]])
+        }
+        if (is.null(input$groups)){
+          print(group)
+          group <- "missing"
+          print(group)
+        } else {
+          print(group)
+          group <- read.csv(input$groups$datapath, header = input$header)
+          group <- as.vector(group[[1]])
+          print(group)
+        }
       }
 
       dataset$answers<-answ
       dataset$key<-key
       dataset$group<-group
-
-      print(answ)
-      print(key)
-      print(group)
-
-      # print(typeof(key))
-      # print(typeof(dataset$key))
-      # print(typeof(isolate(dataset$key)))
-      #
-      # print(class(key))
-      # print(class(dataset$key))
-      # print(class(isolate(dataset$key)))
-      #
-      # print(dim(key))
-      # print(dim(dataset$key))
-      # print(dim(isolate(dataset$key)))
-      #
-      # print(as.vector(key))
-      # print(as.character(key))
-      # print(as.vector(as.character(key)))
-
-      print(row.names(answ))
 
     }
   )
