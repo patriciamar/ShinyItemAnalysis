@@ -3402,18 +3402,36 @@ function(input, output, session) {
     fit <- model_DDF_plot()
 
     tab_coef <- fit$mlrPAR[[item]]
+    tab_se <- fit$mlrSE[[item]]
+    tab_se <- matrix(tab_se, ncol = ncol(tab_coef), byrow = T)
 
     if (ncol(tab_coef) == 2){
       tab_coef <- data.frame(tab_coef, 0, 0)
+      tab_se <- data.frame(tab_se, 0, 0)
     } else {
       if (ncol(tab_coef) == 3){
         tab_coef <- data.frame(tab_coef, 0)
+        tab_se <- data.frame(tab_se, 0)
       }
     }
 
-    colnames(tab_coef) <- c("b0", "b1", "b2", "b3")
 
-    tab_coef
+    colnames(tab_se) <- colnames(tab_coef) <- c("b0", "b1", "b2", "b3")
+    rownames(tab_se) <- rownames(tab_coef)
+
+    tab_coef <- data.frame(tab_coef, answ = rownames(tab_coef))
+    tab_se <- data.frame(tab_se, answ = rownames(tab_se))
+
+    df1 <- melt(tab_coef, id = "answ")
+    df2 <- melt(tab_se, id = "answ")
+    tab <- data.frame(df1$value,
+                      df2$value)
+
+    rownames(tab) <- paste(substr(df1$variable, 1, 1),
+                           df1$answ,
+                           substr(df1$variable, 2, 2), sep = "")
+    colnames(tab) <- c("Estimate", "SD")
+    tab
   },
   include.rownames = T)
 

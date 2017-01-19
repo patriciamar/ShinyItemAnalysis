@@ -117,12 +117,13 @@ ui=tagList(
 
                       h4('Bug Reports'),
                       p("If you discover a problem with this application please contact the project maintainer
-                        at martinkova(at)cs.cas.cz "
+                        at martinkova(at)cs.cas.cz or use ", a("GitHub.", href = "https://github.com/patriciamar/ShinyItemAnalysis/issues",
+                                                               target = "_blank")
                       ),
 
                       h4('Acknowledgments'),
                       p(" Project was supported by grant funded by Czech Science foundation under number ",
-                        a("GJ15-15856Y", href = "http://www.cs.cas.cz/martinkova/psychometrics.html",
+                        a("GJ15-15856Y.", href = "http://www.cs.cas.cz/martinkova/psychometrics.html",
                           target = "_blank")
                       ),
 
@@ -217,7 +218,7 @@ ui=tagList(
                           )
                         )
                         ),
-                        column(3, offset = 1, actionButton(inputId = "submitButton", label = "Sumbit Data"))
+                        column(3, offset = 1, actionButton(inputId = "submitButton", label = "Submit Data"))
                       ),
                       tags$hr(),
                       h4("Data Specification"),
