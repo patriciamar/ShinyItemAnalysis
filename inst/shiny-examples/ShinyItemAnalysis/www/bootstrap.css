@@ -6899,3 +6899,12 @@ button.close {
 .panel-info .panel-title {
   color: #fff;
 }
+.shiny-output-error-error_key_missing {
+    color: red;
+}
+.shiny-output-error-warning_group_missing {
+    color: orange;
+}
+.shiny-output-error-error_dimension {
+    color: red;
+}

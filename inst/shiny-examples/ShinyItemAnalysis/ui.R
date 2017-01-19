@@ -178,11 +178,11 @@ ui=tagList(
                       h4("Upload your own datasets"),
                       p('Main dataset should contain responses of individual students (rows) to given items
                         (columns). Header may contain item names, no row names should be included. If responses
-                        are in unscored ABC format, the key provides correct response for each item. If responses are
+                        are in unscored ABCD format, the key provides correct response for each item. If responses are
                         scored 0-1, key is vector of 1s. Group is 0-1 vector, where 0 represents reference group
                         and 1 represents focal group. Its length need to be the same as number of individual
                         students in main dataset. If the group is not provided then it wont be possible to run DIF and DDF
-                        detection procedures. '),
+                        detection procedures. In all data sets header should be either included or excluded. '),
                       fluidRow(
                         column(3, offset = 0, fileInput(
                           'data', 'Choose data (csv file)',
@@ -458,9 +458,11 @@ ui=tagList(
                                  ),
                         # CORRELATION STRUCTURE
                         tabPanel("Correlation Structure",
-                                 h4("Correlation Plot"),
-                                 p('Correlation plot is a graphical display of a correlation matrix of items. The size
-                                   and shade of circles indicate how much the items are correlated (larger and darker
+                                 h3("Correlation Structure"),
+                                 h4("Polychoric Correlation Heat Map"),
+                                 p('Polychoric Correlation Heat Map is a correlation plot which displays a polychoric
+                                    correlations of items. The size and shade of circles indicate how much the
+                                    items are correlated (larger and darker
                                    circle means larger correlation). The color of circles indicates in which way the
                                    items are correlated - blue color shows possitive correlation and red color shows
                                    negative correlation.'),
