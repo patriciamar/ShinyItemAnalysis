@@ -2377,9 +2377,212 @@ function(input, output, session) {
   },
   include.rownames = T)
 
-  ######################
+
+
+  # ** BOCKS NOMINAL MODEL ####
+  adj_data_bock <- reactive({
+    a <- test_answers()
+    k <- as.factor(test_key())
+
+    m <- ncol(a)
+    lev <- unlist(lapply(1:m, function(i) levels(a[, i])))
+    lev <- c(lev, levels(k))
+    lev <- unique(lev)
+    lev_num <- as.numeric(as.factor(lev))
+
+
+    lev_k_num <- sapply(1:length(levels(k)),
+                    function(i) lev_num[levels(k)[i] == lev])
+
+    lev_a_num <- lapply(1:m, function(i)
+                                sapply(1:length(levels(a[, i])),
+                                       function(j) lev_num[levels(a[, i])[j] == lev]))
+
+    levels(k) <- lev_k_num
+    k <- as.numeric(paste(k))
+
+
+    for (i in 1:m){
+      levels(a[, i]) <- lev_a_num[[i]]
+      a[, i] <- as.numeric(paste(a[, i]))
+    }
+
+    list(data = a, key = k)
+  })
+
+
+  bock_irt_mirt <- reactive({
+    data <- adj_data_bock()$data
+    key <- adj_data_bock()$key
+
+
+    sv <- mirt(data, 1, 'nominal', pars = 'values', verbose = F)
+    head(sv)
+
+    # set all values to 0 and estimated
+    sv$value[grepl('ak', sv$name)] <- 0
+    sv$est[grepl('ak', sv$name)] <- TRUE
+
+    nms <- colnames(data)
+    for(i in 1:length(nms)){
+
+      #set highest category based on key fixed to 3
+      pick <- paste0('ak', key[i] - 1)
+      index <- sv$item == nms[i] & pick == sv$name
+      sv[index, 'value'] <- 3
+      sv[index, 'est'] <- FALSE
+
+      # set arbitrary lowest category fixed at 0
+      if(pick == 'ak0') pick2 <- 'ak3'
+      else pick2 <- paste0('ak', key[i] - 2)
+      index2 <- sv$item == nms[i] & pick2 == sv$name
+      sv[index2, 'est'] <- FALSE
+    }
+
+    fit <- mirt(data, 1, 'nominal', pars = sv, SE = T, verbose = F)
+    fit
+  })
+
+  # *** CC ####
+  bock_CC_Input <- reactive({
+    plot(bock_irt_mirt(), type = "trace", facet_items = F)
+  })
+  output$bock_CC <- renderPlot({
+    bock_CC_Input()
+  })
+  output$DP_bock_CC <- downloadHandler(
+    filename =  function() {
+      paste("plot", input$name, ".png", sep = "")
+    },
+    content = function(file) {
+      png(file, height = 800, width = 1200, res = 100)
+      plot(bock_irt_mirt(), type = "trace", facet_items = F)
+      dev.off()
+    }
+  )
+
+  # *** IIC ####
+  bock_IIC_Input <- reactive({
+    plot(bock_irt_mirt(), type = "infotrace", facet_items = F)
+    # g <- recordPlot()
+    # plot.new()
+    # g
+  })
+  output$bock_IIC <- renderPlot({
+    bock_IIC_Input()
+  })
+  output$DP_bock_IIC <- downloadHandler(
+    filename =  function() {
+      paste("plot", input$name, ".png", sep = "")
+    },
+    content = function(file) {
+      png(file, height = 800, width = 1200, res = 100)
+      plot(bock_irt_mirt(), type = "infotrace", facet_items = F)
+      dev.off()
+    }
+  )
+
+  # *** TIF ####
+  bock_TIF_Input <- reactive({
+    plot(bock_irt_mirt(), type = "infoSE")
+    # g <- recordPlot()
+    # plot.new()
+    # g
+  })
+  output$bock_TIF <- renderPlot({
+    bock_TIF_Input()
+  })
+  output$DP_bock_TIF <- downloadHandler(
+    filename =  function() {
+      paste("plot", input$name, ".png", sep = "")
+    },
+    content = function(file) {
+      png(file, height = 800, width = 1200, res = 100)
+      plot(bock_irt_mirt(), type = "infoSE")
+      dev.off()
+    }
+  )
+
+
+  # *** Table of parameters ####
+  bock_coef_Input <- reactive({
+    fit <- bock_irt_mirt()
+
+    coeftab <- coef(fit, printSE = T)
+    m <- length(coeftab) - 1
+
+    dims <- sapply(coeftab, dim)[, -(m+1)]
+    if (length(unique(dims[2, ])) == 1){
+      partab <- t(sapply(1:m, function(i) coeftab[[i]][1, ]))
+      setab <- t(sapply(1:m, function(i) coeftab[[i]][2, ]))
+      n <- ncol(partab)
+      tab <- c()
+      for (i in 1:n){
+        tab <- cbind(tab, partab[, i], setab[, i])
+      }
+      namPAR <- colnames(partab)
+      namSE <- paste("SE(", colnames(partab), ")", sep = "")
+
+      colnames(tab) <- c(sapply(1:n, function(i) c(namPAR[i], namSE[i])))
+      rownames(tab) <- paste("Item", 1:m)
+    } else {
+      tab <- "Something is wrong.."
+    }
+
+
+    tab
+  })
+
+  output$bock_coef <- renderTable({
+    bock_coef_Input()
+  },
+  include.rownames = T,
+  include.colnames = T)
+
+  # *** Factor scores plot ####
+  bock_factor_Input <- reactive({
+
+    fs <- as.vector(fscores(bock_irt_mirt()))
+    sts <- as.vector(scale(apply(correct_answ(), 1, sum)))
+
+    df <- data.frame(fs, sts)
+
+    ggplot(df, aes_string("sts", "fs")) +
+      geom_point(size = 3) +
+      labs(x = "Standardized total score", y = "Factor score") +
+      theme_bw() +
+      theme(text = element_text(size = 14),
+            plot.title = element_text(face = "bold", vjust = 1.5),
+            axis.line = element_line(colour = "black"),
+            panel.grid.major = element_blank(),
+            panel.grid.minor = element_blank(),
+            panel.background = element_blank()) +
+      theme(legend.box.just = "left",
+            legend.justification = c(1, 0),
+            legend.position = c(1, 0),
+            legend.box = "vertical",
+            legend.key.size = unit(1, "lines"),
+            legend.text.align = 0,
+            legend.title.align = 0)
+  })
+  output$bock_factor <- renderPlot({
+    bock_factor_Input()
+  })
+  output$DP_bock_factor <- downloadHandler(
+    filename =  function() {
+      paste("plot", input$name, ".png", sep = "")
+    },
+    content = function(file) {
+      ggsave(file, plot = bock_factor_Input(), device = "png",
+             height = 3, width = 9, dpi = 160)
+    }
+  )
+
+
+
+  ###################
   # DIF/FAIRNESS ####
-  ######################
+  ###################
   # * TOTAL SCORES ####
   # ** Summary of Total Scores for Groups ####
   resultsgroupInput<-reactive({
