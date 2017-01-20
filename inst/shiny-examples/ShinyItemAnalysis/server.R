@@ -102,7 +102,9 @@ function(input, output, session) {
 
   # LOAD KEY #####
   test_key <- reactive({
-    if ((is.null(input$key)) & (is.null(dataset$key))) {
+    print(input$key)
+    print(dataset$key)
+    if ((is.null(input$key)) | (is.null(dataset$key))) {
       a=input$dataSelect
       pos=regexpr("_", a)[1]
       datasetName=str_sub(a, 1,pos-1)
@@ -133,7 +135,7 @@ function(input, output, session) {
 
   # LOAD GROUPS #####
   DIF_groups <- reactive({
-    if (is.null(input$groups) & (is.null(dataset$group))) {
+    if (is.null(input$groups) | (is.null(dataset$group))) {
       a=input$dataSelect
       pos=regexpr("_", a)[1]
       datasetName=str_sub(a, 1,pos-1)
