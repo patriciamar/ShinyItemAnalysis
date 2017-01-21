@@ -56,7 +56,7 @@ ui=tagList(
                         'package. '),
                       p('For all graphical outputs a download button is provided. Moreover, on ', strong('Reports'),
                         'page HTML or PDF report can be created. Additionaly, all application outputs are
-                        complemented by selected R code hence the similar analysis can be run and modify in R.
+                        complemented by selected R code hence the similar analysis can be run and modified in R.
                         You can also download ', code('ShinyItemAnalysis'), ' package from ',
                         a('CRAN', href = 'https://CRAN.R-project.org/package=ShinyItemAnalysis', target = "_blank"),
                         'to use it offline or run it faster. '),
@@ -117,12 +117,13 @@ ui=tagList(
 
                       h4('Bug Reports'),
                       p("If you discover a problem with this application please contact the project maintainer
-                        at martinkova(at)cs.cas.cz "
+                        at martinkova(at)cs.cas.cz or use ", a("GitHub.", href = "https://github.com/patriciamar/ShinyItemAnalysis/issues",
+                                                               target = "_blank")
                       ),
 
                       h4('Acknowledgments'),
                       p(" Project was supported by grant funded by Czech Science foundation under number ",
-                        a("GJ15-15856Y", href = "http://www.cs.cas.cz/martinkova/psychometrics.html",
+                        a("GJ15-15856Y.", href = "http://www.cs.cas.cz/martinkova/psychometrics.html",
                           target = "_blank")
                       ),
 
@@ -178,11 +179,11 @@ ui=tagList(
                       h4("Upload your own datasets"),
                       p('Main dataset should contain responses of individual students (rows) to given items
                         (columns). Header may contain item names, no row names should be included. If responses
-                        are in unscored ABC format, the key provides correct response for each item. If responses are
+                        are in unscored ABCD format, the key provides correct response for each item. If responses are
                         scored 0-1, key is vector of 1s. Group is 0-1 vector, where 0 represents reference group
                         and 1 represents focal group. Its length need to be the same as number of individual
                         students in main dataset. If the group is not provided then it wont be possible to run DIF and DDF
-                        detection procedures. '),
+                        detection procedures. In all data sets header should be either included or excluded. '),
                       fluidRow(
                         column(3, offset = 0, fileInput(
                           'data', 'Choose data (csv file)',
@@ -217,7 +218,7 @@ ui=tagList(
                           )
                         )
                         ),
-                        column(3, offset = 1, actionButton(inputId = "submitButton", label = "Sumbit Data"))
+                        column(3, offset = 1, actionButton(inputId = "submitButton", label = "Submit Data"))
                       ),
                       tags$hr(),
                       h4("Data Specification"),
@@ -458,9 +459,11 @@ ui=tagList(
                                  ),
                         # CORRELATION STRUCTURE
                         tabPanel("Correlation Structure",
-                                 h4("Correlation Plot"),
-                                 p('Correlation plot is a graphical display of a correlation matrix of items. The size
-                                   and shade of circles indicate how much the items are correlated (larger and darker
+                                 h3("Correlation Structure"),
+                                 h4("Polychoric Correlation Heat Map"),
+                                 p('Polychoric Correlation Heat Map is a correlation plot which displays a polychoric
+                                    correlations of items. The size and shade of circles indicate how much the
+                                    items are correlated (larger and darker
                                    circle means larger correlation). The color of circles indicates in which way the
                                    items are correlated - blue color shows possitive correlation and red color shows
                                    negative correlation.'),
@@ -1367,6 +1370,73 @@ ui=tagList(
                                      br(),
                                      code('anova(fit2PL, fit3PL)')),
                                  br()
+                                 ),
+                        "----",
+                        # BOCK'S NOMINAL MODEL
+                        tabPanel("Bock's nominal model",
+                                 h3("Bock's Nominal IRT Model"),
+                                 p('The nominal response model (NRM) was introduced by Bock (1972) as a way to model
+                                   responses to items with two or more nominal categories. This model is suitable for
+                                   multiple-choice items with no particular ordering of distractors. The correct answer
+                                   represent the highest category, in terms of the measured latent trait. '),
+                                 h4('Equation'),
+                                 withMathJax('For ', strong('K'), ' possible test choices is the probability of the choice ', strong('k'), ' for
+                                   person ', strong('i'), ' with latent trait', strong('\\(\\theta\\)'), ' in item ', strong('j'),
+                                   'given by the following equation: '),
+                                 ('$$\\mathrm{P}(Y_{ij} = k|\\theta_i, a_{j1}, al_{j(l-1)}, d_{jl0}, d_{jl1}, l = 1, \\dots, K) =
+                                             \\frac{e^{(ak_{j(k-1)} * a_{j1} * \\theta_i + d_{j(k-1)})}}{\\sum_l e^{(al_{j(l-1)} * a_{j1} * \\theta_i + d_{j(l-1)})}}$$'),
+                                 br(),
+                                 h4("Item Characteristic Curves"),
+                                 plotOutput('bock_CC'),
+                                 downloadButton("DP_bock_CC", label = "Download figure"),
+                                 h4("Item information curves"),
+                                 plotOutput('bock_IIC'),
+                                 downloadButton("DP_bock_IIC", label = "Download figure"),
+                                 h4("Test information function"),
+                                 plotOutput('bock_TIF'),
+                                 downloadButton("DP_bock_TIF", label = "Download figure"),
+                                 h4("Table of parameters"),
+                                 tableOutput('bock_coef'),
+                                 h4('Factor Scores vs. Standardized Total Scores'),
+                                 plotOutput('bock_factor'),
+                                 downloadButton("DP_bock_factor", label = "Download figure"),
+                                 br(),
+                                 h4("Selected R code"),
+                                 div(code('library(difNLR, mirt)'),
+                                     br(),
+                                     code('data(GMAT)'),
+                                     br(),
+                                     code('data <- GMAT[, colnames(GMAT) != "group"]'),
+                                     br(),
+                                     br(),
+                                     code('# Model'),
+                                     br(),
+                                     code('fit <- mirt(data, model = 1, itemtype = "nominal")'),
+                                     br(),
+                                     code('# Item Characteristic Curves'),
+                                     br(),
+                                     code('plot(fit, type = "trace", facet_items = F)'),
+                                     br(),
+                                     code('# Item Information Curves'),
+                                     br(),
+                                     code('plot(fit, type = "infotrace", facet_items = F)'),
+                                     br(),
+                                     code('# Test Information Function'),
+                                     br(),
+                                     code('plot(fit, type = "infoSE")'),
+                                     br(),
+                                     code('# Coefficients'),
+                                     br(),
+                                     code('coef(fit)'),
+                                     br(),
+                                     code('# Factor scores vs Standardized total scores'),
+                                     br(),
+                                     code('fs <- as.vector(fscores(fit))'),
+                                     br(),
+                                     code('sts <- as.vector(scale(apply(data, 1, sum)))'),
+                                     br(),
+                                     code('plot(fs ~ sts)')),
+                                 br()
                                  )
                                  ),
              ###################
@@ -1706,7 +1776,7 @@ ui=tagList(
 
                                                          'both'
                                             ),
-                                            selectInput("correction_method_logzZSummary", "Correction method",
+                                            selectInput("correction_method_logZSummary", "Correction method",
                                                         c("BH" = "BH",
                                                           "Holm" = "holm",
                                                           "Hochberg" = "hochberg",

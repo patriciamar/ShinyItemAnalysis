@@ -56,8 +56,11 @@ source("plotDIFirt.R")
 function(input, output, session) {
 
 
-  dataset<-reactiveValues()
+  dataset <- reactiveValues()
 
+  dataset$answers <- NULL
+  dataset$key <- NULL
+  dataset$group <- NULL
 
   ######################
   ### HITS COUNTER #####
@@ -99,7 +102,7 @@ function(input, output, session) {
 
   # LOAD KEY #####
   test_key <- reactive({
-    if (is.null(input$key)) {
+    if ((is.null(input$key)) | (is.null(dataset$key))) {
       a=input$dataSelect
       pos=regexpr("_", a)[1]
       datasetName=str_sub(a, 1,pos-1)
@@ -109,6 +112,20 @@ function(input, output, session) {
       key=get(paste0(datasetName,"key"))
       dataset$key = key
     } else {
+      if (length(dataset$key) == 1) {
+        if (dataset$key == "missing"){
+          validate(
+            need(dataset$key != "missing", "Key is missing!"),
+            errorClass = "error_key_missing"
+          )
+        }
+      } else {
+        validate(
+          need(ncol(dataset$answers) == length(dataset$key), "Length of key is not the same as
+               number of items in the main data set!"),
+          errorClass = "error_dimension"
+          )
+      }
       key=dataset$key
     }
     key
@@ -116,7 +133,7 @@ function(input, output, session) {
 
   # LOAD GROUPS #####
   DIF_groups <- reactive({
-    if (is.null(input$groups)) {
+    if (is.null(input$data) | (is.null(dataset$group))) {
       a=input$dataSelect
       pos=regexpr("_", a)[1]
       datasetName=str_sub(a, 1,pos-1)
@@ -125,79 +142,78 @@ function(input, output, session) {
       do.call(data, args=list(paste0(datasetName,"test"), package=packageName))
       test=get(paste0(datasetName,"test"))
 
-      group = test[, ncol(test)]
+      if (datasetName == "dataMedical"){
+        group <- NULL
+        validate(
+          need(!is.null(group),
+               "Sorry, for this dataset group is not available. DIF and DDF analyses are not possible!"),
+          errorClass = "warning_group_missing"
+        )
+      } else {
+        group <- test[, ncol(test)]
+      }
       dataset$group = group
     } else {
+      if (length(dataset$group) == 1){
+        if (dataset$group == "missing"){
+          validate(
+            need(dataset$group != "missing",
+                 "Group is missing! DIF and DDF analyses are not available!"),
+            errorClass = "warning_group_missing"
+          )
+        }
+      } else {
+        validate(
+          need(nrow(dataset$answers) == length(dataset$group), "Length of group is not the same as
+             number of observation in the main data set!"),
+          errorClass = "error_dimension"
+        )
+      }
       group = dataset$group
     }
+    # group <- as.numeric(paste(as.factor(group)))
     group
   })
 
   # SUBMIT BUTTON #####
+
   observeEvent(
     eventExpr = input$submitButton,
     handlerExpr = {
-      print(isolate(test_answers()))
-      print(isolate(test_key()))
-      print(isolate(DIF_groups()))
-
-      # print(test_key())
-      #
-      # print(dim(test_key()))
-      # print(dim(isolate(test_key())))
-      #
-      # print(typeof(test_key()))
-      # print(typeof(isolate(test_key())))
-      #
-      # print(class(test_key()))
-      # print(class(isolate(test_key())))
-
-      print(row.names(test_answers()))
 
       key=NULL
       answ=NULL
       k=NULL
       group=NULL
 
-      ifelse (is.null(input$key), key <- test_key(),
-              {key <- read.csv(input$key$datapath, header = FALSE)
-              key <- as.character(key[[1]])
-              })
-
-      ifelse (is.null(input$data), answ <- test[ , 1:length(key)],
-              answ <- read.csv(input$data$datapath, header = input$header,
-                               sep = input$sep, quote = input$quote))
-
-      if (!is.null(input$groups)) {
-        group <- read.csv(input$groups$datapath, header = TRUE)
-        group <- as.vector(group[[1]])
+      if (is.null(input$data)){
+        key <- test_key()
+        answ <- test[ , 1:length(key)]
+        group <- DIF_groups()
+      } else {
+        answ <- read.csv(input$data$datapath, header = input$header,
+                         sep = input$sep, quote = input$quote)
+        if (is.null(input$key)){
+          key <- "missing"
+        } else {
+          key <- read.csv(input$key$datapath, header = input$header)
+          key <- as.character(key[[1]])
+        }
+        if (is.null(input$groups)){
+          print(group)
+          group <- "missing"
+          print(group)
+        } else {
+          print(group)
+          group <- read.csv(input$groups$datapath, header = input$header)
+          group <- as.vector(group[[1]])
+          print(group)
+        }
       }
 
       dataset$answers<-answ
       dataset$key<-key
       dataset$group<-group
-
-      print(answ)
-      print(key)
-      print(group)
-
-      # print(typeof(key))
-      # print(typeof(dataset$key))
-      # print(typeof(isolate(dataset$key)))
-      #
-      # print(class(key))
-      # print(class(dataset$key))
-      # print(class(isolate(dataset$key)))
-      #
-      # print(dim(key))
-      # print(dim(dataset$key))
-      # print(dim(isolate(dataset$key)))
-      #
-      # print(as.vector(key))
-      # print(as.character(key))
-      # print(as.vector(as.character(key)))
-
-      print(row.names(answ))
 
     }
   )
@@ -1096,6 +1112,7 @@ function(input, output, session) {
     Data <- correct_answ()
     scaledsc <- c(scale(scored_test()))
 
+    m <- ncol(Data)
 
     regFce_noDIF <- deriv3(
       ~ c + (1 - c) / (1 + exp(-a * (x - b))),
@@ -1131,14 +1148,14 @@ function(input, output, session) {
     start <- cbind(discr, diffi, guess)
     colnames(start) <- c("a", "b", "c")
 
-    # fit2PL <- lapply(1:20, function(i) glm(Data[, i] ~ scaledsc, family = "binomial"))
+    # fit2PL <- lapply(1:m, function(i) glm(Data[, i] ~ scaledsc, family = "binomial"))
 
-    fit2PL <- lapply(1:20, function(i) nls(Data[, i] ~  regFce_noDIF(scaledsc, a, b, c = 0),
+    fit2PL <- lapply(1:m, function(i) nls(Data[, i] ~  regFce_noDIF(scaledsc, a, b, c = 0),
                                            algorithm = "port", start = start[i, 1:2],
                                            lower = c(-Inf, -Inf),
                                            upper = c(Inf, Inf)))
 
-    fit3PL <- lapply(1:20, function(i) nls(Data[, i] ~  regFce_noDIF(scaledsc, a, b, c),
+    fit3PL <- lapply(1:m, function(i) nls(Data[, i] ~  regFce_noDIF(scaledsc, a, b, c),
                                            algorithm = "port", start = start[i,],
                                            lower = c(-Inf, -Inf, 0),
                                            upper = c(Inf, Inf, 1)))
@@ -2371,9 +2388,212 @@ function(input, output, session) {
   },
   include.rownames = T)
 
-  ######################
+
+
+  # ** BOCKS NOMINAL MODEL ####
+  adj_data_bock <- reactive({
+    a <- test_answers()
+    k <- as.factor(test_key())
+
+    m <- ncol(a)
+    lev <- unlist(lapply(1:m, function(i) levels(a[, i])))
+    lev <- c(lev, levels(k))
+    lev <- unique(lev)
+    lev_num <- as.numeric(as.factor(lev))
+
+
+    lev_k_num <- sapply(1:length(levels(k)),
+                    function(i) lev_num[levels(k)[i] == lev])
+
+    lev_a_num <- lapply(1:m, function(i)
+                                sapply(1:length(levels(a[, i])),
+                                       function(j) lev_num[levels(a[, i])[j] == lev]))
+
+    levels(k) <- lev_k_num
+    k <- as.numeric(paste(k))
+
+
+    for (i in 1:m){
+      levels(a[, i]) <- lev_a_num[[i]]
+      a[, i] <- as.numeric(paste(a[, i]))
+    }
+
+    list(data = a, key = k)
+  })
+
+
+  bock_irt_mirt <- reactive({
+    data <- adj_data_bock()$data
+    key <- adj_data_bock()$key
+
+
+    sv <- mirt(data, 1, 'nominal', pars = 'values', verbose = F)
+    head(sv)
+
+    # set all values to 0 and estimated
+    sv$value[grepl('ak', sv$name)] <- 0
+    sv$est[grepl('ak', sv$name)] <- TRUE
+
+    nms <- colnames(data)
+    for(i in 1:length(nms)){
+
+      #set highest category based on key fixed to 3
+      pick <- paste0('ak', key[i] - 1)
+      index <- sv$item == nms[i] & pick == sv$name
+      sv[index, 'value'] <- 3
+      sv[index, 'est'] <- FALSE
+
+      # set arbitrary lowest category fixed at 0
+      if(pick == 'ak0') pick2 <- 'ak3'
+      else pick2 <- paste0('ak', key[i] - 2)
+      index2 <- sv$item == nms[i] & pick2 == sv$name
+      sv[index2, 'est'] <- FALSE
+    }
+
+    fit <- mirt(data, 1, 'nominal', pars = sv, SE = T, verbose = F)
+    fit
+  })
+
+  # *** CC ####
+  bock_CC_Input <- reactive({
+    plot(bock_irt_mirt(), type = "trace", facet_items = F)
+  })
+  output$bock_CC <- renderPlot({
+    bock_CC_Input()
+  })
+  output$DP_bock_CC <- downloadHandler(
+    filename =  function() {
+      paste("plot", input$name, ".png", sep = "")
+    },
+    content = function(file) {
+      png(file, height = 800, width = 1200, res = 100)
+      plot(bock_irt_mirt(), type = "trace", facet_items = F)
+      dev.off()
+    }
+  )
+
+  # *** IIC ####
+  bock_IIC_Input <- reactive({
+    plot(bock_irt_mirt(), type = "infotrace", facet_items = F)
+    # g <- recordPlot()
+    # plot.new()
+    # g
+  })
+  output$bock_IIC <- renderPlot({
+    bock_IIC_Input()
+  })
+  output$DP_bock_IIC <- downloadHandler(
+    filename =  function() {
+      paste("plot", input$name, ".png", sep = "")
+    },
+    content = function(file) {
+      png(file, height = 800, width = 1200, res = 100)
+      plot(bock_irt_mirt(), type = "infotrace", facet_items = F)
+      dev.off()
+    }
+  )
+
+  # *** TIF ####
+  bock_TIF_Input <- reactive({
+    plot(bock_irt_mirt(), type = "infoSE")
+    # g <- recordPlot()
+    # plot.new()
+    # g
+  })
+  output$bock_TIF <- renderPlot({
+    bock_TIF_Input()
+  })
+  output$DP_bock_TIF <- downloadHandler(
+    filename =  function() {
+      paste("plot", input$name, ".png", sep = "")
+    },
+    content = function(file) {
+      png(file, height = 800, width = 1200, res = 100)
+      plot(bock_irt_mirt(), type = "infoSE")
+      dev.off()
+    }
+  )
+
+
+  # *** Table of parameters ####
+  bock_coef_Input <- reactive({
+    fit <- bock_irt_mirt()
+
+    coeftab <- coef(fit, printSE = T)
+    m <- length(coeftab) - 1
+
+    dims <- sapply(coeftab, dim)[, -(m+1)]
+    if (length(unique(dims[2, ])) == 1){
+      partab <- t(sapply(1:m, function(i) coeftab[[i]][1, ]))
+      setab <- t(sapply(1:m, function(i) coeftab[[i]][2, ]))
+      n <- ncol(partab)
+      tab <- c()
+      for (i in 1:n){
+        tab <- cbind(tab, partab[, i], setab[, i])
+      }
+      namPAR <- colnames(partab)
+      namSE <- paste("SE(", colnames(partab), ")", sep = "")
+
+      colnames(tab) <- c(sapply(1:n, function(i) c(namPAR[i], namSE[i])))
+      rownames(tab) <- paste("Item", 1:m)
+    } else {
+      tab <- "Something is wrong.."
+    }
+
+
+    tab
+  })
+
+  output$bock_coef <- renderTable({
+    bock_coef_Input()
+  },
+  include.rownames = T,
+  include.colnames = T)
+
+  # *** Factor scores plot ####
+  bock_factor_Input <- reactive({
+
+    fs <- as.vector(fscores(bock_irt_mirt()))
+    sts <- as.vector(scale(apply(correct_answ(), 1, sum)))
+
+    df <- data.frame(fs, sts)
+
+    ggplot(df, aes_string("sts", "fs")) +
+      geom_point(size = 3) +
+      labs(x = "Standardized total score", y = "Factor score") +
+      theme_bw() +
+      theme(text = element_text(size = 14),
+            plot.title = element_text(face = "bold", vjust = 1.5),
+            axis.line = element_line(colour = "black"),
+            panel.grid.major = element_blank(),
+            panel.grid.minor = element_blank(),
+            panel.background = element_blank()) +
+      theme(legend.box.just = "left",
+            legend.justification = c(1, 0),
+            legend.position = c(1, 0),
+            legend.box = "vertical",
+            legend.key.size = unit(1, "lines"),
+            legend.text.align = 0,
+            legend.title.align = 0)
+  })
+  output$bock_factor <- renderPlot({
+    bock_factor_Input()
+  })
+  output$DP_bock_factor <- downloadHandler(
+    filename =  function() {
+      paste("plot", input$name, ".png", sep = "")
+    },
+    content = function(file) {
+      ggsave(file, plot = bock_factor_Input(), device = "png",
+             height = 3, width = 9, dpi = 160)
+    }
+  )
+
+
+
+  ###################
   # DIF/FAIRNESS ####
-  ######################
+  ###################
   # * TOTAL SCORES ####
   # ** Summary of Total Scores for Groups ####
   resultsgroupInput<-reactive({
@@ -3396,18 +3616,36 @@ function(input, output, session) {
     fit <- model_DDF_plot()
 
     tab_coef <- fit$mlrPAR[[item]]
+    tab_se <- fit$mlrSE[[item]]
+    tab_se <- matrix(tab_se, ncol = ncol(tab_coef), byrow = T)
 
     if (ncol(tab_coef) == 2){
       tab_coef <- data.frame(tab_coef, 0, 0)
+      tab_se <- data.frame(tab_se, 0, 0)
     } else {
       if (ncol(tab_coef) == 3){
         tab_coef <- data.frame(tab_coef, 0)
+        tab_se <- data.frame(tab_se, 0)
       }
     }
 
-    colnames(tab_coef) <- c("b0", "b1", "b2", "b3")
 
-    tab_coef
+    colnames(tab_se) <- colnames(tab_coef) <- c("b0", "b1", "b2", "b3")
+    rownames(tab_se) <- rownames(tab_coef)
+
+    tab_coef <- data.frame(tab_coef, answ = rownames(tab_coef))
+    tab_se <- data.frame(tab_se, answ = rownames(tab_se))
+
+    df1 <- melt(tab_coef, id = "answ")
+    df2 <- melt(tab_se, id = "answ")
+    tab <- data.frame(df1$value,
+                      df2$value)
+
+    rownames(tab) <- paste(substr(df1$variable, 1, 1),
+                           df1$answ,
+                           substr(df1$variable, 2, 2), sep = "")
+    colnames(tab) <- c("Estimate", "SD")
+    tab
   },
   include.rownames = T)
 
