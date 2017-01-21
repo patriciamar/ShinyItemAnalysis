@@ -56,7 +56,7 @@ ui=tagList(
                         'package. '),
                       p('For all graphical outputs a download button is provided. Moreover, on ', strong('Reports'),
                         'page HTML or PDF report can be created. Additionaly, all application outputs are
-                        complemented by selected R code hence the similar analysis can be run and modify in R.
+                        complemented by selected R code hence the similar analysis can be run and modified in R.
                         You can also download ', code('ShinyItemAnalysis'), ' package from ',
                         a('CRAN', href = 'https://CRAN.R-project.org/package=ShinyItemAnalysis', target = "_blank"),
                         'to use it offline or run it faster. '),
@@ -1776,7 +1776,7 @@ ui=tagList(
 
                                                          'both'
                                             ),
-                                            selectInput("correction_method_logzZSummary", "Correction method",
+                                            selectInput("correction_method_logZSummary", "Correction method",
                                                         c("BH" = "BH",
                                                           "Holm" = "holm",
                                                           "Hochberg" = "hochberg",
