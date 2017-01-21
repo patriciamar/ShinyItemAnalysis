@@ -56,11 +56,11 @@ source("plotDIFirt.R")
 function(input, output, session) {
 
 
-  dataset <- reactiveValues()
+  dataset<-reactiveValues()
 
-  dataset$answers <- NULL
-  dataset$key <- NULL
-  dataset$group <- NULL
+  dataset$answers<-NULL
+  dataset$key<-NULL
+  dataset$group<-NULL
 
   ######################
   ### HITS COUNTER #####
@@ -102,6 +102,8 @@ function(input, output, session) {
 
   # LOAD KEY #####
   test_key <- reactive({
+    print(input$key)
+    print(dataset$key)
     if ((is.null(input$key)) | (is.null(dataset$key))) {
       a=input$dataSelect
       pos=regexpr("_", a)[1]
@@ -133,7 +135,7 @@ function(input, output, session) {
 
   # LOAD GROUPS #####
   DIF_groups <- reactive({
-    if (is.null(input$data) | (is.null(dataset$group))) {
+    if (is.null(input$groups) | (is.null(dataset$group))) {
       a=input$dataSelect
       pos=regexpr("_", a)[1]
       datasetName=str_sub(a, 1,pos-1)
@@ -142,16 +144,7 @@ function(input, output, session) {
       do.call(data, args=list(paste0(datasetName,"test"), package=packageName))
       test=get(paste0(datasetName,"test"))
 
-      if (datasetName == "dataMedical"){
-        group <- NULL
-        validate(
-          need(!is.null(group),
-               "Sorry, for this dataset group is not available. DIF and DDF analyses are not possible!"),
-          errorClass = "warning_group_missing"
-        )
-      } else {
-        group <- test[, ncol(test)]
-      }
+      group = test[, ncol(test)]
       dataset$group = group
     } else {
       if (length(dataset$group) == 1){
@@ -171,7 +164,6 @@ function(input, output, session) {
       }
       group = dataset$group
     }
-    # group <- as.numeric(paste(as.factor(group)))
     group
   })
 
@@ -1112,7 +1104,6 @@ function(input, output, session) {
     Data <- correct_answ()
     scaledsc <- c(scale(scored_test()))
 
-    m <- ncol(Data)
 
     regFce_noDIF <- deriv3(
       ~ c + (1 - c) / (1 + exp(-a * (x - b))),
@@ -1148,14 +1139,14 @@ function(input, output, session) {
     start <- cbind(discr, diffi, guess)
     colnames(start) <- c("a", "b", "c")
 
-    # fit2PL <- lapply(1:m, function(i) glm(Data[, i] ~ scaledsc, family = "binomial"))
+    # fit2PL <- lapply(1:20, function(i) glm(Data[, i] ~ scaledsc, family = "binomial"))
 
-    fit2PL <- lapply(1:m, function(i) nls(Data[, i] ~  regFce_noDIF(scaledsc, a, b, c = 0),
+    fit2PL <- lapply(1:20, function(i) nls(Data[, i] ~  regFce_noDIF(scaledsc, a, b, c = 0),
                                            algorithm = "port", start = start[i, 1:2],
                                            lower = c(-Inf, -Inf),
                                            upper = c(Inf, Inf)))
 
-    fit3PL <- lapply(1:m, function(i) nls(Data[, i] ~  regFce_noDIF(scaledsc, a, b, c),
+    fit3PL <- lapply(1:20, function(i) nls(Data[, i] ~  regFce_noDIF(scaledsc, a, b, c),
                                            algorithm = "port", start = start[i,],
                                            lower = c(-Inf, -Inf, 0),
                                            upper = c(Inf, Inf, 1)))
