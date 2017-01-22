@@ -49,12 +49,15 @@ params:
   irt_type: NA
   model_DDF_print: NA
   plot_DDFReportInput: NA
+  isGroupPresent: NA
+  groupie: NA
 ---
 # Summary Report
 
 ## Summary of Total Scores
 
 ```{r echo=FALSE, results="hide"}
+
 library(gridExtra)
 params$irt_report
 table=params$results
@@ -74,8 +77,7 @@ grid.arrange(table, hist, ncol=1, top="Basic Summary and Histogram", layout_matr
 ## Correlation Structure
 
 ```{r echo=FALSE, fig.height=4}
-
-corrplot(params$corr_plot, title="Polychoric Correlation Heat Map")
+corrplot(params$corr_plot)
 #grid.arrange(corrplot(params$corr_plot), top="Polychoric Correlation Heat Map")
 params$scree_plot+ggtitle("Scree Plot")
 ```
@@ -170,43 +172,65 @@ grid.arrange(tableGrob(table), top="Estimates of Parameters")
 
 # DIF/Fairness Report
 
-## Total Scores
+`r if(!params$isGroupPresent){"Group Vector is not present. DIF and DDF Report could not be generated!"}`
+
+`r if(params$isGroupPresent) {"## Total Scores"}`
+
+```{r echo=FALSE}
+if(params$isGroupPresent){
+params$resultsgroup
+}
+```
 
 ```{r echo=FALSE, results="hide"}
-params$resultsgroup
+
+if(params$isGroupPresent){
 g1=params$histbyscoregroup0
 g2=params$histbyscoregroup1
 grid.arrange(g1, g2, ncol=1)
+}
 ```
 
-## Delta Plot Report
+`r if(params$isGroupPresent) {"## Delta Plot Report"}`
 
 ```{r echo=FALSE, results="hide"}
+if(params$isGroupPresent){
 params$deltaplot
+}
 ```
 
 ```{r echo=FALSE}
+if(params$isGroupPresent){
 params$DP_text_normal
+}
 ```
 
-## DIF Logistic Report
+`r if(params$isGroupPresent) {"## DIF Logistic Report"}`
 
 ```{r echo=FALSE}
+if(params$isGroupPresent){
 params$DIF_logistic_print
+}
 ```
 
 ```{r echo=FALSE, results='hide', fig.height=4.2}
+if(params$isGroupPresent){
 params$DIF_logistic_plot
+}
 ```
 
-## DDF
+`r if(params$isGroupPresent) {"## DDF"}`
 
 ```{r echo=FALSE}
+if(params$isGroupPresent){
 print(params$model_DDF_print)
+}
 ```
 
 ```{r echo=FALSE, results='hide', fig.height=4.2}
+if(params$isGroupPresent){
 params$plot_DDFReportInput
+}
 ```
 
 \pagebreak
