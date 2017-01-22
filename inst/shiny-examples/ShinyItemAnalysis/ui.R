@@ -1,4 +1,5 @@
 ui=tagList(
+  useShinyjs(),
   navbarPage(title="ShinyItemAnalysis - TEST AND ITEM ANALYSIS",
              collapsible=TRUE,
              footer=list(
@@ -1383,7 +1384,7 @@ ui=tagList(
                                  withMathJax('For ', strong('K'), ' possible test choices is the probability of the choice ', strong('k'), ' for
                                    person ', strong('i'), ' with latent trait', strong('\\(\\theta\\)'), ' in item ', strong('j'),
                                    'given by the following equation: '),
-                                 ('$$\\mathrm{P}(Y_{ij} = k|\\theta_i, a_{j1}, al_{j(l-1)}, d_{jl0}, d_{jl1}, l = 1, \\dots, K) =
+                                 ('$$\\mathrm{P}(Y_{ij} = k|\\theta_i, a_{j1}, al_{j(l-1)}, d_{j(l-1)}, l = 1, \\dots, K) =
                                              \\frac{e^{(ak_{j(k-1)} * a_{j1} * \\theta_i + d_{j(k-1)})}}{\\sum_l e^{(al_{j(l-1)} * a_{j1} * \\theta_i + d_{j(l-1)})}}$$'),
                                  br(),
                                  h4("Item Characteristic Curves"),
@@ -1396,6 +1397,7 @@ ui=tagList(
                                  plotOutput('bock_TIF'),
                                  downloadButton("DP_bock_TIF", label = "Download figure"),
                                  h4("Table of parameters"),
+                                 textOutput("bock_coef_warning"),
                                  tableOutput('bock_coef'),
                                  h4('Factor Scores vs. Standardized Total Scores'),
                                  plotOutput('bock_factor'),
@@ -2397,8 +2399,9 @@ ui=tagList(
                 tabPanel("Reports",
                          h3("Download Report"),
                          p("This shiny app also offers an option to download a report in HTML or PDF format."),
-                         p("PDF report creation requires latest version of MiKTeX (or other TeX distribution).
-                           If you don't have the latest installation, please, use the HTML report."),
+                         p("PDF report creation requires latest version of",
+                           a("MiKTeX", href = "https://miktex.org/howto/install-miktex", target = "_blank"),
+                           "(or other TeX distribution). If you don't have the latest installation, please, use the HTML report."),
                          radioButtons("report_format", "Format of Report",
                                      c("HTML" = "html",
                                        "PDF" = "pdf")),

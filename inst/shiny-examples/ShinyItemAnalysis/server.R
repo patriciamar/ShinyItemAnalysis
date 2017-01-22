@@ -2517,6 +2517,23 @@ function(input, output, session) {
 
 
   # *** Table of parameters ####
+  output$bock_coef_warning <- renderText({
+    fit <- bock_irt_mirt()
+
+    coeftab <- coef(fit, printSE = T)
+    m <- length(coeftab) - 1
+
+    dims <- sapply(coeftab, dim)[, -(m+1)]
+    print(length(unique(dims[2, ])))
+    if (length(unique(dims[2, ])) == 1){
+      hide("bock_coef_warning")
+    } else {
+      show("bock_coef_warning")
+    }
+    paste("Sorry, for this dataset table is not available!")
+
+  })
+
   bock_coef_Input <- reactive({
     fit <- bock_irt_mirt()
 
@@ -2538,9 +2555,8 @@ function(input, output, session) {
       colnames(tab) <- c(sapply(1:n, function(i) c(namPAR[i], namSE[i])))
       rownames(tab) <- paste("Item", 1:m)
     } else {
-      tab <- "Something is wrong.."
+      tab <- NULL
     }
-
 
     tab
   })
