@@ -144,6 +144,7 @@ function(input, output, session) {
 
       if (datasetName == "dataMedical"){
         group <- NULL
+        dataset$group <- NULL
         validate(
           need(!is.null(group),
                "Sorry, for this dataset group is not available. DIF and DDF analyses are not possible!"),
@@ -2981,16 +2982,20 @@ function(input, output, session) {
                        type = input$type_print_DIF_logistic, p.adjust.method = input$correction_method_logItems)
     mod$DIFitems
     graflist = list()
-    for (i in 1:length(mod$DIFitems)) {
-      g<-plotDIFLogistic(data, group,
-                          type = input$type_plot_DIF_logistic,
-                          item =  mod$DIFitems[i],
-                          IRT = F,
-                          p.adjust.method = input$correction_method_logItems
-          )
-      g=g+ggtitle(paste0("DIF Logistic Plot for Item ", mod$DIFitems[i]))
-      #g=ggplotGrob(g)
-      graflist[[i]]<-g
+    if (mod$DIFitems[1]!="No DIF item detected") {
+      for (i in 1:length(mod$DIFitems)) {
+        g<-plotDIFLogistic(data, group,
+                            type = input$type_plot_DIF_logistic,
+                            item =  mod$DIFitems[i],
+                            IRT = F,
+                            p.adjust.method = input$correction_method_logItems
+            )
+        g=g+ggtitle(paste0("DIF Logistic Plot for Item ", mod$DIFitems[i]))
+        #g=ggplotGrob(g)
+        graflist[[i]]<-g
+      }
+    } else {
+      graflist=0
     }
     graflist
   })
@@ -3585,11 +3590,15 @@ function(input, output, session) {
                   type = type)
 
     graflist = list()
-    for (i in 1:length(mod$DDFitems)) {
-      g<-plot(mod, item = mod$DDFitems[[i]], title = paste("\nDDF Multinomial Plot for Item", i))
-      #g=ggplotGrob(g)
-      graflist[[i]]<-g
-    }
+   # if (mod$DIFitems[[1]]!="No DDF item detected"){
+      for (i in 1:length(mod$DDFitems)) {
+        g<-plot(mod, item = mod$DDFitems[[i]], title = paste("\nDDF Multinomial Plot for Item", i))
+        #g=ggplotGrob(g)
+        graflist[[i]]<-g
+      }
+    #} else {
+     # graflist=0
+    #}
     graflist
   })
 
@@ -3726,9 +3735,19 @@ function(input, output, session) {
     out
   })
 
+  groupPresent<-reactive({
+    if (length(dataset$group)>1) {
+      groupLogical=TRUE
+    } else {
+      groupLogical=FALSE
+    }
+    groupLogical
+  })
+
   output$report<-downloadHandler(
     filename=reactive({paste0("report.", input$report_format)}),
     content=function(file) {
+
       reportPath <- file.path(getwd(), paste0("report", formatInput(),".Rmd"))
       #file.copy("report.Rmd", tempReport, overwrite = TRUE)
       parameters<-list(a = test_answers(),
@@ -3752,20 +3771,21 @@ function(input, output, session) {
                        irttif = irttifInput(),
                        irtcoef = irtcoefInput(),
                        irtfactor = irtfactorInput(),
-                       resultsgroup = resultsgroupInput(),
-                       histbyscoregroup0 = histbyscoregroup0Input(),
-                       histbyscoregroup1 = histbyscoregroup1Input(),
-                       deltaplot = deltaplotInput(),
-                       DP_text_normal = deltaGpurn(),
-                       DIF_logistic_plot = DIF_logistic_plotReport(),
-                       DIF_logistic_print = model_DIF_logistic_print(),
-                       plot_DIF_logistic = plot_DIF_logisticInput(),
-                       plot_DIF_logistic_IRT_Z = plot_DIF_logistic_IRT_ZInput(),
-                       #plot_DIF_NLR = plot_DIF_NLRInput(),
-                       plot_DIF_IRT_Lord = plot_DIF_IRT_LordInput(),
-                       plot_DIF_IRT_Raju = plot_DIF_IRT_RajuInput(),
-                       model_DDF_print = model_DDF_print(),
-                       plot_DDFReportInput = plot_DDFReportInput()
+                       isGroupPresent = groupPresent(),
+                       resultsgroup = {if (groupPresent()) {resultsgroupInput()}},
+                       histbyscoregroup0 = {if (groupPresent()) {histbyscoregroup0Input()}},
+                       histbyscoregroup1 = {if (groupPresent()) {histbyscoregroup1Input()}},
+                       deltaplot = {if (groupPresent()) {deltaplotInput()}},
+                       DP_text_normal = {if (groupPresent()) {deltaGpurn()}},
+                       DIF_logistic_plot = {if (groupPresent()) {DIF_logistic_plotReport()}},
+                       DIF_logistic_print = {if (groupPresent()) {model_DIF_logistic_print()}},
+                       plot_DIF_logistic = {if (groupPresent()) {plot_DIF_logisticInput()}},
+                       plot_DIF_logistic_IRT_Z = {if (groupPresent()) {plot_DIF_logistic_IRT_ZInput()}},
+                       #plot_DIF_NLR = {if (groupPresent()) {plot_DIF_NLRInput()}},
+                       plot_DIF_IRT_Lord = {if (groupPresent()) {plot_DIF_IRT_LordInput()}},
+                       plot_DIF_IRT_Raju = {if (groupPresent()) {plot_DIF_IRT_RajuInput()}},
+                       model_DDF_print = {if (groupPresent()) {model_DDF_print()}},
+                       plot_DDFReportInput = {if (groupPresent()) {plot_DDFReportInput()}}
                        )
       rmarkdown::render(reportPath, output_file=file,
                         params = parameters, envir = new.env(parent = globalenv()))
