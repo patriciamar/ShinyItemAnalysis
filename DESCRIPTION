@@ -22,6 +22,7 @@ Imports:
     reshape2,
     rmarkdown,
     shiny,
+    shinyjs,
     stringr,
     WrightMap
 Description: Interactive shiny application for analysis of educational tests and
