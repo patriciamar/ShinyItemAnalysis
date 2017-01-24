@@ -1888,6 +1888,19 @@ function(input, output, session) {
   },
   include.rownames = T)
 
+  # *** Factor scores correlation ####
+  raschFactorCorInput_mirt <- reactive({
+    fs <- as.vector(fscores(rasch_model_mirt()))
+    sts <- as.vector(scale(apply(correct_answ(), 1, sum)))
+
+    cor <- cor(fs, sts)
+    cor
+  })
+  output$raschFactorCor_mirt <- renderText({
+    paste("The pearson correlation coefficient between standardized total score (Z-score)
+          and factor score estimated by IRT model is", round(raschFactorCorInput_mirt(), 3))
+  })
+
   # *** Factor scores plot ####
   raschFactorInput_mirt <- reactive({
 
@@ -2028,6 +2041,20 @@ function(input, output, session) {
   },
   include.rownames = T)
 
+
+  # *** Factor scores correlation ####
+  oneparamirtFactorCorInput_mirt <- reactive({
+
+    fs <- as.vector(fscores(one_param_irt_mirt()))
+    sts <- as.vector(scale(apply(correct_answ(), 1, sum)))
+
+    cor <- cor(fs, sts)
+    cor
+  })
+  output$oneparamirtFactorCor_mirt <- renderText({
+    paste("The pearson correlation coefficient between standardized total score (Z-score)
+          and factor score estimated by IRT model is", round(oneparamirtFactorCorInput_mirt(), 3))
+  })
   # *** Factor scores plot ####
   oneparamirtFactorInput_mirt <- reactive({
 
@@ -2166,7 +2193,20 @@ function(input, output, session) {
     twoparamirtcoefInput_mirt()
   },
   include.rownames = T)
+  # *** Factor scores correlation ####
+  twoparamirtFactorCorInput_mirt <- reactive({
 
+    fs <- as.vector(fscores(two_param_irt_mirt()))
+    sts <- as.vector(scale(apply(correct_answ(), 1, sum)))
+
+    cor <- cor(fs, sts)
+    cor
+  })
+
+  output$twoparamirtFactorCor_mirt <- renderText({
+    paste("The pearson correlation coefficient between standardized total score (Z-score)
+          and factor score estimated by IRT model is", round(twoparamirtFactorCorInput_mirt(), 3))
+  })
   # *** Factor scores plot ####
   twoparamirtFactorInput_mirt <- reactive({
 
@@ -2310,6 +2350,21 @@ function(input, output, session) {
   },
   include.rownames = T)
 
+
+
+  # *** Factor scores plot ####
+  threeparamirtFactorCorInput_mirt <- reactive({
+
+    fs <- as.vector(fscores(three_param_irt_mirt()))
+    sts <- as.vector(scale(apply(correct_answ(), 1, sum)))
+
+    cor <- cor(fs, sts)
+    cor
+  })
+  output$threeparamirtFactorCor_mirt <- renderText({
+    paste("The pearson correlation coefficient between standardized total score (Z-score)
+          and factor score estimated by IRT model is", round(threeparamirtFactorCorInput_mirt(), 3))
+  })
   # *** Factor scores plot ####
   threeparamirtFactorInput_mirt <- reactive({
 
