@@ -35,7 +35,7 @@
 #' difR
 #' shiny
 #' grid
-#'
+#' WrightMap
 #' @importFrom corrplot corrplot
 #' @importFrom CTT score
 #' @importFrom deltaPlotR deltaPlot

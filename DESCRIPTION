@@ -22,7 +22,8 @@ Imports:
     reshape2,
     rmarkdown,
     shiny,
-    stringr
+    stringr,
+    WrightMap
 Description: Interactive shiny application for analysis of educational tests and
     their items.
 License: GPL-3
