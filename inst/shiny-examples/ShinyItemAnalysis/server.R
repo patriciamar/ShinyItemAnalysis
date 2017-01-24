@@ -20,6 +20,7 @@ library(psychometric)
 library(reshape2)
 library(stringr)
 library(ShinyItemAnalysis)
+library(shinyjs)
 library(rmarkdown)
 library(WrightMap)
 
@@ -1883,9 +1884,13 @@ function(input, output, session) {
     coeftab <- coef(fit)
     tab <- cbind(sapply(1:(length(coeftab) - 1), function(i) coeftab[[i]][1, "d"]),
                  sqrt(diag(vcov(fit)))[1:(length(coeftab) - 1)])
-    colnames(tab) <- c("b", "SD(b)")
     rownames(tab) <- paste("Item", 1:nrow(tab))
     tab <- round(tab, 3)
+
+    itemfittab <- round(itemfit(fit)[, 2:4], 3)
+    tab <- data.frame(tab, itemfittab)
+    colnames(tab) <- c("b", "SD(b)", "SX2-value", "df", "p-value")
+
     tab
   })
 
@@ -2060,8 +2065,12 @@ function(input, output, session) {
       rep(sqrt(diag(vcov(fit)))[1], (length(coeftab) - 1)),
       sapply(1:(length(coeftab) - 1), function(i) coeftab[[i]][1, "d"]),
                  sqrt(diag(vcov(fit)))[2:(length(coeftab))])
-    colnames(tab) <- c("a", "SD(a)", "b", "SD(b)")
     rownames(tab) <- paste("Item", 1:nrow(tab))
+
+    itemfittab <- itemfit(fit)[, 2:4]
+    tab <- data.frame(tab, itemfittab)
+    colnames(tab) <- c("a", "SD(a)", "b", "SD(b)", "SX2-value", "df", "p-value")
+
     tab <- round(tab, 3)
     tab
   })
@@ -2240,8 +2249,13 @@ function(input, output, session) {
       sqrt(diag(vcov(fit)))[seq(1, (2*length(coeftab) - 2), 2)],
       sapply(1:(length(coeftab) - 1), function(i) coeftab[[i]][1, "d"]),
       sqrt(diag(vcov(fit)))[seq(2, (2*length(coeftab) - 2), 2)])
-    colnames(tab) <- c("a", "SD(a)", "b", "SD(b)")
+
     rownames(tab) <- paste("Item", 1:nrow(tab))
+
+    itemfittab <- itemfit(fit)[, 2:4]
+    tab <- data.frame(tab, itemfittab)
+    colnames(tab) <- c("a", "SD(a)", "b", "SD(b)", "SX2-value", "df", "p-value")
+
     tab <- round(tab, 3)
     tab
   })
@@ -2396,8 +2410,12 @@ function(input, output, session) {
       sapply(1:(length(coeftab) - 1), function(i) coeftab[[i]][1, "g"]),
       sqrt(diag(vcov(fit)))[seq(3, (3*length(coeftab) - 3), 3)]
     )
-    colnames(tab) <- c("a", "SD(a)", "b", "SD(b)", "c", "SD(c)")
     rownames(tab) <- paste("Item", 1:nrow(tab))
+
+    itemfittab <- itemfit(fit)[, 2:4]
+    tab <- data.frame(tab, itemfittab)
+    colnames(tab) <- c("a", "SD(a)", "b", "SD(b)", "c", "SD(c)", "SX2-value", "df", "p-value")
+
     tab <- round(tab, 3)
     tab
   })
