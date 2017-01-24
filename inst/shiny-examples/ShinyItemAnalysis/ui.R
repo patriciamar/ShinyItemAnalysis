@@ -1,3 +1,13 @@
+######################
+# GLOBAL LIBRARY #####
+######################
+
+require(shinyjs)
+
+###########
+# UI #####
+##########
+
 ui=tagList(
   useShinyjs(),
   navbarPage(title="ShinyItemAnalysis - TEST AND ITEM ANALYSIS",
