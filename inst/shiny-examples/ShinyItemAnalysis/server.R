@@ -21,6 +21,7 @@ library(reshape2)
 library(stringr)
 library(ShinyItemAnalysis)
 library(rmarkdown)
+library(WrightMap)
 
 ###########
 # DATA ####
@@ -48,6 +49,11 @@ source("plotDIFLogistic.R")
 
 # DIF IRT regression plot
 source("plotDIFirt.R")
+
+# WrightMap
+source("wrightMap.R")
+source("itemClassic.R")
+source("personHist.R")
 
 #####################
 # SERVER SCRIPT #####
@@ -1888,6 +1894,19 @@ function(input, output, session) {
   },
   include.rownames = T)
 
+  # *** Factor scores correlation ####
+  raschFactorCorInput_mirt <- reactive({
+    fs <- as.vector(fscores(rasch_model_mirt()))
+    sts <- as.vector(scale(apply(correct_answ(), 1, sum)))
+
+    cor <- cor(fs, sts)
+    cor
+  })
+  output$raschFactorCor_mirt <- renderText({
+    paste("The pearson correlation coefficient between standardized total score (Z-score)
+          and factor score estimated by IRT model is", round(raschFactorCorInput_mirt(), 3))
+  })
+
   # *** Factor scores plot ####
   raschFactorInput_mirt <- reactive({
 
@@ -1929,6 +1948,33 @@ function(input, output, session) {
     }
   )
 
+
+  # *** Wright Map ####
+  raschWrightMapInput_mirt <- reactive({
+
+    fs <- as.vector(fscores(rasch_model_mirt()))
+
+    fit <- rasch_model_mirt()
+    coeftab <- coef(fit)
+    b <- sapply(1:(length(coeftab) - 1), function(i) coeftab[[i]][1, "d"])
+    names(b) <- paste("Item", 1:(length(coeftab) - 1))
+
+    wrightMap(fs, b, item.side = itemClassic)
+  })
+
+  output$raschWrightMap_mirt<- renderPlot({
+    raschWrightMapInput_mirt()
+  })
+  output$DP_raschWM_mirt <- downloadHandler(
+    filename =  function() {
+      paste("plot", input$name, ".png", sep = "")
+    },
+    content = function(file) {
+      png(file, height = 800, width = 1200, res = 100)
+      raschWrightMapInput_mirt()
+      dev.off()
+    }
+  )
 
   # ** 1PL IRT ####
   one_param_irt_mirt <- reactive({
@@ -1987,9 +2033,6 @@ function(input, output, session) {
   # *** TIF ####
   oneparamirttifInput_mirt <- reactive({
     plot(one_param_irt_mirt(), type = "infoSE")
-    # g <- recordPlot()
-    # plot.new()
-    # g
   })
 
   output$oneparamirttif_mirt <- renderPlot({
@@ -2028,6 +2071,20 @@ function(input, output, session) {
   },
   include.rownames = T)
 
+
+  # *** Factor scores correlation ####
+  oneparamirtFactorCorInput_mirt <- reactive({
+
+    fs <- as.vector(fscores(one_param_irt_mirt()))
+    sts <- as.vector(scale(apply(correct_answ(), 1, sum)))
+
+    cor <- cor(fs, sts)
+    cor
+  })
+  output$oneparamirtFactorCor_mirt <- renderText({
+    paste("The pearson correlation coefficient between standardized total score (Z-score)
+          and factor score estimated by IRT model is", round(oneparamirtFactorCorInput_mirt(), 3))
+  })
   # *** Factor scores plot ####
   oneparamirtFactorInput_mirt <- reactive({
 
@@ -2066,6 +2123,33 @@ function(input, output, session) {
     content = function(file) {
       ggsave(file, plot = oneparamirtFactorInput_mirt(), device = "png",
              height = 3, width = 9, dpi = 160)
+    }
+  )
+
+  # *** Wright Map ####
+  oneparamirtWrightMapInput_mirt <- reactive({
+    fit <- one_param_irt_mirt()
+    fs <- as.vector(fscores(fit))
+
+    coeftab <- coef(fit)
+    b <- sapply(1:(length(coeftab) - 1), function(i) coeftab[[i]][1, "d"])
+    names(b) <- paste("Item", 1:(length(coeftab) - 1))
+
+    wrightMap(fs, b, item.side = itemClassic)
+  })
+
+  output$oneparamirtWrightMap_mirt<- renderPlot({
+    oneparamirtWrightMapInput_mirt()
+  })
+
+  output$DP_oneparamirtWM_mirt <- downloadHandler(
+    filename =  function() {
+      paste("plot", input$name, ".png", sep = "")
+    },
+    content = function(file) {
+      png(file, height = 800, width = 1200, res = 100)
+      oneparamirtWrightMapInput_mirt()
+      dev.off()
     }
   )
 
@@ -2166,7 +2250,20 @@ function(input, output, session) {
     twoparamirtcoefInput_mirt()
   },
   include.rownames = T)
+  # *** Factor scores correlation ####
+  twoparamirtFactorCorInput_mirt <- reactive({
 
+    fs <- as.vector(fscores(two_param_irt_mirt()))
+    sts <- as.vector(scale(apply(correct_answ(), 1, sum)))
+
+    cor <- cor(fs, sts)
+    cor
+  })
+
+  output$twoparamirtFactorCor_mirt <- renderText({
+    paste("The pearson correlation coefficient between standardized total score (Z-score)
+          and factor score estimated by IRT model is", round(twoparamirtFactorCorInput_mirt(), 3))
+  })
   # *** Factor scores plot ####
   twoparamirtFactorInput_mirt <- reactive({
 
@@ -2310,6 +2407,21 @@ function(input, output, session) {
   },
   include.rownames = T)
 
+
+
+  # *** Factor scores plot ####
+  threeparamirtFactorCorInput_mirt <- reactive({
+
+    fs <- as.vector(fscores(three_param_irt_mirt()))
+    sts <- as.vector(scale(apply(correct_answ(), 1, sum)))
+
+    cor <- cor(fs, sts)
+    cor
+  })
+  output$threeparamirtFactorCor_mirt <- renderText({
+    paste("The pearson correlation coefficient between standardized total score (Z-score)
+          and factor score estimated by IRT model is", round(threeparamirtFactorCorInput_mirt(), 3))
+  })
   # *** Factor scores plot ####
   threeparamirtFactorInput_mirt <- reactive({
 
