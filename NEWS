@@ -6,7 +6,7 @@
 
 
 ---------------------------------------------------
-- Changes in ShinyItemAnalysis 1.1.0 (2016-01-17) -
+- Changes in ShinyItemAnalysis 1.1.0 (2016-01-24) -
 ---------------------------------------------------
 
 MAJOR UPDATES
@@ -26,6 +26,7 @@ MAJOR UPDATES
   o  Pages structure was changed and updated.
   o  IRT models are now fitted by mirt package.
   o  Subsection IRT models comparison was added into IRT models section.
+  o  Wrigh maps were added for Rasch and 1PL IRT model.
 
 MINOR UPDATES
 
@@ -35,6 +36,8 @@ MINOR UPDATES
   o Description of Standard scores was added.
   o Lower panel was updated.
   o Rasch model was added into IRT models section.
+  o Pearson correlation coefficient of factor scores and Z-scores were
+    added for IRT models
 
 ---------------------------------------------------
 - Changes in ShinyItemAnalysis 1.0.0 (2016-11-25) -
