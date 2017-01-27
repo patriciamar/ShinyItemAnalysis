@@ -1112,7 +1112,7 @@ function(input, output, session) {
   })
 
   # * MODEL COMPARISON ######
-  regr_comp_tableInput <- reactive({
+  output$regr_comp_table <- renderDataTable({
     Data <- correct_answ()
     scaledsc <- c(scale(scored_test()))
 
@@ -1187,16 +1187,10 @@ function(input, output, session) {
     rownames(tab) <- c("AIC 2PL", "AIC 3PL", "BIC 2PL", "BIC 3PL", "LR X2", "LR p-value",
                        "BEST AIC", "BEST BIC", "BEST LR")
 
-    tab
-  })
-
-  # Table to print
-  output$regr_comp_table <- renderTable({
-    tab <- regr_comp_tableInput()
+    tab <- as.data.frame(tab)
     tab
   },
-  include.rownames = T,
-  include.colnames = T
+  options = list(scrollX = TRUE, aoColumnDefs = list(sClass="alignRight"))
   )
 
   # * MULTINOMIAL ######

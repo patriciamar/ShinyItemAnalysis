@@ -743,8 +743,8 @@ ui=tagList(
                                  p('Here you can compare classic 2PL logistic regression model to non-linear model
                                    item by item using some information criterions: '),
                                  tags$ul(
-                                   tags$li(strong('AIC'), 'is the Akaike information criterion, '),
-                                   tags$li(strong('BIC'), 'is the Bayesian information criterion, ')
+                                   tags$li(strong('AIC'), 'is the Akaike information criterion (Akaike, 1974), '),
+                                   tags$li(strong('BIC'), 'is the Bayesian information criterion ')
                                  ),
                                  p('Another approach to nested models can be likelihood ratio chi-squared test.
                                    Significance level is set to 0.05. As tests are performed item by item, it is
@@ -760,7 +760,7 @@ ui=tagList(
                                              selected="BH"),
                                  p('Rows ', strong('BEST'), 'indicate which model has the lowest value of criterion, or is the largest
                                    significant model by likelihood ratio test.'),
-                                 fluidRow(column(12, align = "center", tableOutput('regr_comp_table'))),
+                                 dataTableOutput('regr_comp_table'),
                                  br(),
                                  div(code('library(difNLR, lmtest)'),
                                      br(),
@@ -1087,7 +1087,7 @@ ui=tagList(
                                    student ability (theta) is assumed to be a random effect and is estimated together with item
                                    paramters. Ability (theta) is often assumed to follow normal distibution.'),
                                  p('In',
-                                   strong('Rasch IRT model,'), 'all items are assumed to have the same slope in inflection point – the
+                                   strong('Rasch IRT model,'), '(Rasch, 1960) all items are assumed to have the same slope in inflection point – the
                                    same discrimination', strong('a'), 'which is fixed to value of 1. Items can differ in location of their inflection point – in item difficulty',
                                    strong('b.')),
                                  h4("Equation"),
@@ -1102,12 +1102,17 @@ ui=tagList(
                                  plotOutput('raschtif_mirt'),
                                  downloadButton("DP_raschtif_mirt", label = "Download figure"),
                                  h4("Table of parameters with item fit statistics"),
+                                 p('Estimates of parameters are completed by SX2 item fit statistics (Ames & Penfield, 2015)'),
                                  tableOutput('raschcoef_mirt'),
                                  h4('Factor Scores vs. Standardized Total Scores'),
                                  textOutput('raschFactorCor_mirt'),
                                  plotOutput('raschFactor_mirt'),
                                  downloadButton("DP_raschFactor_mirt", label = "Download figure"),
                                  h4('Wright Map'),
+                                 p('Wright map (Wilson, 2005; Wright & Stone, 1979), also called item-person map, is a graphical tool
+                                   to display person estimates and item parameters. The person side
+                                   (left) represents histogram of estimated knowledge of students.
+                                   The item side (right) displays estimates of difficulty of particular items. '),
                                  plotOutput('raschWrightMap_mirt'),
                                  downloadButton('DP_raschWM_mirt', label = "Download figure"),
                                  br(),
@@ -1181,12 +1186,17 @@ ui=tagList(
                                  plotOutput('oneparamirttif_mirt'),
                                  downloadButton("DP_oneparamirttif_mirt", label = "Download figure"),
                                  h4("Table of parameters with item fit statistics"),
+                                 p('Estimates of parameters are completed by SX2 item fit statistics (Ames & Penfield, 2015)'),
                                  tableOutput('oneparamirtcoef_mirt'),
                                  h4('Factor Scores vs. Standardized Total Scores'),
                                  textOutput('oneparamirtFactorCor_mirt'),
                                  plotOutput('oneparamirtFactor_mirt'),
                                  downloadButton("DP_oneparamirtFactor_mirt", label = "Download figure"),
                                  h4('Wright Map'),
+                                 p('Wright map (Wilson, 2005; Wright & Stone, 1979), also called item-person map, is a graphical tool
+                                   to display person estimates and item parameters. The person side
+                                   (left) represents histogram of estimated knowledge of students.
+                                   The item side (right) displays estimates of difficulty of particular items. '),
                                  plotOutput('oneparamirtWrightMap_mirt'),
                                  downloadButton('DP_oneparamirtWM_mirt', label = "Download figure"),
                                  br(),
@@ -1259,6 +1269,7 @@ ui=tagList(
                                  plotOutput('twoparamirttif_mirt'),
                                  downloadButton("DP_twoparamirttif_mirt", label = "Download figure"),
                                  h4("Table of parameters with item fit statistics"),
+                                 p('Estimates of parameters are completed by SX2 item fit statistics (Ames & Penfield, 2015)'),
                                  tableOutput('twoparamirtcoef_mirt'),
                                  h4('Factor Scores vs. Standardized Total Scores'),
                                  textOutput('twoparamirtFactorCor_mirt'),
@@ -1327,6 +1338,7 @@ ui=tagList(
                                  plotOutput('threeparamirttif_mirt'),
                                  downloadButton("DP_threeparamirttif_mirt", label = "Download figure"),
                                  h4("Table of parameters with item fit statistics"),
+                                 p('Estimates of parameters are completed by SX2 item fit statistics (Ames & Penfield, 2015)'),
                                  tableOutput('threeparamirtcoef_mirt'),
                                  h4('Factor Scores vs. Standardized Total Scores'),
                                  textOutput('threeparamirtFactorCor_mirt'),
@@ -2473,36 +2485,44 @@ ui=tagList(
                       h4('References'),
                       br(),
                       br(),
+                      p('Akaike, H. (1974). A New Look at the Statistical Model Identification. IEEE Transactions
+                        on Automatic Control, 19(6), 716-723.', a('See online.',
+                                                                  href = "http://ieeexplore.ieee.org/abstract/document/1100705/",
+                                                                  target = "_blank")),
+                      p('Ames, A. J., & Penfield, R. D. (2015). An NCME Instructional Module on Item-Fit
+                        Statistics for Item Response Theory Models. Educational Measurement: Issues and
+                        Practice, 34(3), 39-48.', a("See online.",
+                                                    href = "http://onlinelibrary.wiley.com/doi/10.1111/emip.12067/full",
+                                                    target = "_blank")),
                       p('Angoff, W. H., & Ford, S. F. (1973). Item‐Race Interaction on a Test of
-                        Scholastic Aptitude. Journal of Educational Measurement, 10(2), 95-105.'
-                      ),
+                        Scholastic Aptitude. Journal of Educational Measurement, 10(2), 95-105.'),
+                      p('Bock, R. D. (1972). Estimating Item Parameters and Latent Ability when
+                        Responses Are Scored in Two or More Nominal Categories. Psychometrika,
+                        37(1), 29-51.', a("See online.",
+                                          href = "http://link.springer.com/article/10.1007/BF02291411",
+                                          target = "_blank")),
                       p('Cronbach, L. J. (1951). Coefficient alpha and the internal structure
-                        of tests. psychometrika, 16(3), 297-334.'
-                      ),
+                        of tests. psychometrika, 16(3), 297-334.'),
                       p("Drabinova, A., & Martinkova, P. (2016). Detection of Differential Item
                         Functioning Based on Non-Linear Regression. Technical Report",
-                        a("V-1229", href = "https://goo.gl/R3dpJ5}", target = "_blank"), "."
-                      ),
+                        a("V-1229", href = "https://goo.gl/R3dpJ5", target = "_blank"), "."),
                       p("Lord, F. M. (1980). Applications of Item Response Theory to Practical Testing Problems.
-                        Routledge."
-                      ),
+                        Routledge."),
                       p("Magis, D., & Facon, B. (2012). Angoff's delta method revisited:
                         Improving DIF detection under small samples. British Journal of
-                        Mathematical and Statistical Psychology, 65(2), 302-321.
-                        "),
+                        Mathematical and Statistical Psychology, 65(2), 302-321."),
                       p("Mantel, N., & Haenszel, W. (1959). Statistical Aspects of the Analysis of Data from
-                        Retrospective Studies. Journal of the National Cancer Institute, 22 (4), 719-748."
-                      ),
+                        Retrospective Studies. Journal of the National Cancer Institute, 22 (4), 719-748."),
                       p("Swaminathan, H., & Rogers, H. J. (1990). Detecting Differential Item
                         Functioning Using Logistic Regression Procedures. Journal of Educational
-                        Measurement, 27(4), 361-370."
-                      ),
+                        Measurement, 27(4), 361-370."),
                       p("Raju, N. S. (1988). The Area between Two Item Characteristic Curves. Psychometrika,
-                        53 (4), 495-502."
-                      ),
+                        53 (4), 495-502."),
                       p("Raju, N. S. (1990). Determining the Significance of Estimated Signed and Unsigned Areas
-                        between Two Item Response Functions. Applied Psychological Measurement, 14 (2), 197-207."
-                      ),
+                        between Two Item Response Functions. Applied Psychological Measurement, 14 (2), 197-207."),
+                      p('Rasch, G. (1960) Probabilistic Models for Some Intelligence and Attainment Tests. Copenhagen: Paedagogiske Institute.'),
+                      p("Wilson, M. (2005). Constructing Measures: An Item Response Modeling Approach."),
+                      p("Wright, B. D., & Stone, M. H. (1979). Best Test Design. Chicago: Mesa Press."),
                       # p("Vlckova, K. (2014). Test and Item Fairness (Unpublished master's thesis)."
                       #   ),
                       br(),
