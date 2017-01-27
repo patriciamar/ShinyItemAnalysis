@@ -1,3 +1,13 @@
+######################
+# GLOBAL LIBRARY #####
+######################
+
+require(shinyjs)
+
+###########
+# UI #####
+##########
+
 ui=tagList(
   useShinyjs(),
   navbarPage(title="ShinyItemAnalysis - TEST AND ITEM ANALYSIS",
@@ -96,9 +106,11 @@ ui=tagList(
                       code('library(psychometric)'), br(),
                       code('library(reshape2)'), br(),
                       code('library(shiny)'), br(),
+                      code('library(shinyjs)'), br(),
                       # code('library(shinyAce)'), br(),
                       code('library(stringr)'), br(),
                       code('library(rmarkdown)'), br(),
+                      code('library(WrightMap)'), br(),
 
                       h4('Authors'),
 
