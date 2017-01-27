@@ -743,8 +743,8 @@ ui=tagList(
                                  p('Here you can compare classic 2PL logistic regression model to non-linear model
                                    item by item using some information criterions: '),
                                  tags$ul(
-                                   tags$li(strong('AIC'), 'is the Akaike information criterion, '),
-                                   tags$li(strong('BIC'), 'is the Bayesian information criterion, ')
+                                   tags$li(strong('AIC'), 'is the Akaike information criterion (Akaike, 1974), '),
+                                   tags$li(strong('BIC'), 'is the Bayesian information criterion ')
                                  ),
                                  p('Another approach to nested models can be likelihood ratio chi-squared test.
                                    Significance level is set to 0.05. As tests are performed item by item, it is
@@ -760,7 +760,7 @@ ui=tagList(
                                              selected="BH"),
                                  p('Rows ', strong('BEST'), 'indicate which model has the lowest value of criterion, or is the largest
                                    significant model by likelihood ratio test.'),
-                                 fluidRow(column(12, align = "center", tableOutput('regr_comp_table'))),
+                                 dataTableOutput('regr_comp_table'),
                                  br(),
                                  div(code('library(difNLR, lmtest)'),
                                      br(),
@@ -2485,6 +2485,10 @@ ui=tagList(
                       h4('References'),
                       br(),
                       br(),
+                      p('Akaike, H. (1974). A New Look at the Statistical Model Identification. IEEE Transactions
+                        on Automatic Control, 19(6), 716-723.', a('See online.',
+                                                                  href = "http://ieeexplore.ieee.org/abstract/document/1100705/",
+                                                                  target = "_blank")),
                       p('Ames, A. J., & Penfield, R. D. (2015). An NCME Instructional Module on Item-Fit
                         Statistics for Item Response Theory Models. Educational Measurement: Issues and
                         Practice, 34(3), 39-48.', a("See online.",
