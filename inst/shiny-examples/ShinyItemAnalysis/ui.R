@@ -91,6 +91,7 @@ ui=tagList(
                       h4('List of Packages Used'),
                       code('library(corrplot)'), br(),
                       code('library(CTT)'), br(),
+                      code('library(DT)'), br(),
                       code('library(deltaPlotR)'), br(),
                       code('library(difNLR)'), br(),
                       code('library(difR)'), br(),
@@ -744,7 +745,7 @@ ui=tagList(
                                    item by item using some information criterions: '),
                                  tags$ul(
                                    tags$li(strong('AIC'), 'is the Akaike information criterion (Akaike, 1974), '),
-                                   tags$li(strong('BIC'), 'is the Bayesian information criterion ')
+                                   tags$li(strong('BIC'), 'is the Bayesian information criterion (Schwarz, 1978)')
                                  ),
                                  p('Another approach to nested models can be likelihood ratio chi-squared test.
                                    Significance level is set to 0.05. As tests are performed item by item, it is
@@ -1395,10 +1396,10 @@ ui=tagList(
                                    paramters. Ability (theta) is often assumed to follow normal distibution.'),
                                  p('IRT models can be compared by several information criterions: '),
                                  tags$ul(
-                                   tags$li(strong('AIC'), 'is the Akaike information criterion, '),
+                                   tags$li(strong('AIC'), 'is the Akaike information criterion (Akaike, 1974), '),
                                    tags$li(strong('AICc'), 'is AIC with a correction for finite sample size, '),
                                    tags$li(strong('SABIC'), 'is the Sample-sized adjusted BIC criterion, '),
-                                   tags$li(strong('BIC'), 'is the Bayesian information criterion.')
+                                   tags$li(strong('BIC'), 'is the Bayesian information criterion (Schwarz, 1978).')
                                  ),
                                  p('Another approach to compare IRT models can be likelihood ratio chi-squared test.
                                    Significance level is set to 0.05.'),
@@ -2520,7 +2521,12 @@ ui=tagList(
                         53 (4), 495-502."),
                       p("Raju, N. S. (1990). Determining the Significance of Estimated Signed and Unsigned Areas
                         between Two Item Response Functions. Applied Psychological Measurement, 14 (2), 197-207."),
-                      p('Rasch, G. (1960) Probabilistic Models for Some Intelligence and Attainment Tests. Copenhagen: Paedagogiske Institute.'),
+                      p('Rasch, G. (1960) Probabilistic Models for Some Intelligence and Attainment Tests.
+                        Copenhagen: Paedagogiske Institute.'),
+                      p('Schwarz, G. (1978). Estimating the Dimension of a Model. The Annals of Statistics,
+                        6(2), 461-464.', a('See online.',
+                                           href = "https://projecteuclid.org/euclid.aos/1176344136",
+                                           target = "_blank")),
                       p("Wilson, M. (2005). Constructing Measures: An Item Response Modeling Approach."),
                       p("Wright, B. D., & Stone, M. H. (1979). Best Test Design. Chicago: Mesa Press."),
                       # p("Vlckova, K. (2014). Test and Item Fairness (Unpublished master's thesis)."
