@@ -4,8 +4,8 @@
 
 require(corrplot)
 require(CTT)
-require(DT)
 require(deltaPlotR)
+require(DT)
 require(difNLR)
 require(difR)
 require(ggplot2)
@@ -17,10 +17,10 @@ require(nnet)
 require(psych)
 require(psychometric)
 require(reshape2)
-require(stringr)
+require(rmarkdown)
 require(ShinyItemAnalysis)
 require(shinyjs)
-require(rmarkdown)
+require(stringr)
 require(WrightMap)
 
 ###########
