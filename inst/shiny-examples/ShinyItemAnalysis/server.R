@@ -4,6 +4,7 @@
 
 require(corrplot)
 require(CTT)
+require(DT)
 require(deltaPlotR)
 require(difNLR)
 require(difR)
@@ -1187,11 +1188,20 @@ function(input, output, session) {
     rownames(tab) <- c("AIC 2PL", "AIC 3PL", "BIC 2PL", "BIC 3PL", "LR X2", "LR p-value",
                        "BEST AIC", "BEST BIC", "BEST LR")
 
-    tab <- as.data.frame(tab)
+
+
+    tab <- datatable(tab, rownames = T,
+                      options = list(
+                        autoWidth = T,
+                        container = sketch,
+                        columnDefs = list(list(width = '80px', targets = list(0)),
+                                          list(width = '60px', targets = list(1:ncol(tab))),
+                                          list(className = 'dt-center', targets = "_all"),
+                                          list(dom = 't')),
+                        scrollX = T
+                      ))
     tab
-  },
-  options = list(scrollX = TRUE, aoColumnDefs = list(sClass="alignRight"))
-  )
+  })
 
   # * MULTINOMIAL ######
   # ** Model ####
