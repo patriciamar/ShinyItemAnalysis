@@ -1836,7 +1836,8 @@ function(input, output, session) {
 
   # *** CC ####
   raschInput_mirt <- reactive({
-    plot(rasch_model_mirt(), type = "trace", facet_items = F)
+    g<-plot(rasch_model_mirt(), type = "trace", facet_items = F)
+    g
     # g <- recordPlot()
     # plot.new()
     # g
@@ -1852,14 +1853,15 @@ function(input, output, session) {
     },
     content = function(file) {
       png(file, height = 800, width = 1200, res = 100)
-      plot(rasch_model_mirt(), type = "trace", facet_items = F)
+      print(raschInput_mirt())
       dev.off()
     }
   )
 
   # *** IIC ####
   raschiicInput_mirt <- reactive({
-    plot(rasch_model_mirt(), type = "infotrace", facet_items = F)
+    g<-plot(rasch_model_mirt(), type = "infotrace", facet_items = F)
+    g
     # g <- recordPlot()
     # plot.new()
     # g
@@ -1875,14 +1877,15 @@ function(input, output, session) {
     },
     content = function(file) {
       png(file, height = 800, width = 1200, res = 100)
-      plot(rasch_model_mirt(), type = "infotrace", facet_items = F)
+      print(raschiicInput_mirt())
       dev.off()
     }
   )
 
   # *** TIF ####
   raschtifInput_mirt <- reactive({
-    plot(rasch_model_mirt(), type = "infoSE")
+    g<-plot(rasch_model_mirt(), type = "infoSE")
+    g
     # g <- recordPlot()
     # plot.new()
     # g
@@ -1898,7 +1901,7 @@ function(input, output, session) {
     },
     content = function(file) {
       png(file, height = 800, width = 1200, res = 100)
-      plot(rasch_model_mirt(), type = "infoSE")
+      print(raschtifInput_mirt())
       dev.off()
     }
   )
@@ -1991,6 +1994,7 @@ function(input, output, session) {
     names(b) <- paste("Item", 1:(length(coeftab) - 1))
 
     wrightMap(fs, b, item.side = itemClassic)
+
   })
 
   output$raschWrightMap_mirt<- renderPlot({
@@ -2001,8 +2005,17 @@ function(input, output, session) {
       paste("plot", input$name, ".png", sep = "")
     },
     content = function(file) {
+      fs <- as.vector(fscores(rasch_model_mirt()))
+
+      fit <- rasch_model_mirt()
+      coeftab <- coef(fit)
+      b <- sapply(1:(length(coeftab) - 1), function(i) coeftab[[i]][1, "d"])
+      names(b) <- paste("Item", 1:(length(coeftab) - 1))
+
+      print(class(raschWrightMapInput_mirt()))
+
       png(file, height = 800, width = 1200, res = 100)
-      raschWrightMapInput_mirt()
+      wrightMap(fs, b, item.side = itemClassic)
       dev.off()
     }
   )
@@ -2017,7 +2030,8 @@ function(input, output, session) {
 
   # *** CC ####
   oneparamirtInput_mirt <- reactive({
-    plot(one_param_irt_mirt(), type = "trace", facet_items = F)
+    g<-plot(one_param_irt_mirt(), type = "trace", facet_items = F)
+    g
     # g <- recordPlot()
     # plot.new()
     # g
@@ -2033,7 +2047,7 @@ function(input, output, session) {
     },
     content = function(file) {
       png(file, height = 800, width = 1200, res = 100)
-      plot(one_param_irt_mirt(), type = "trace", facet_items = F)
+      print(oneparamirtInput_mirt())
       dev.off()
     }
   )
@@ -2056,7 +2070,7 @@ function(input, output, session) {
     },
     content = function(file) {
       png(file, height = 800, width = 1200, res = 100)
-      plot(one_param_irt_mirt(), type = "infotrace", facet_items = F)
+      print(oneparamirtiicInput_mirt())
       dev.off()
     }
   )
@@ -2076,7 +2090,7 @@ function(input, output, session) {
     },
     content = function(file) {
       png(file, height = 800, width = 1200, res = 100)
-      plot(one_param_irt_mirt(), type = "infoSE")
+      print(oneparamirttifInput_mirt())
       dev.off()
     }
   )
@@ -2182,8 +2196,15 @@ function(input, output, session) {
       paste("plot", input$name, ".png", sep = "")
     },
     content = function(file) {
+      fit <- one_param_irt_mirt()
+      fs <- as.vector(fscores(fit))
+
+      coeftab <- coef(fit)
+      b <- sapply(1:(length(coeftab) - 1), function(i) coeftab[[i]][1, "d"])
+      names(b) <- paste("Item", 1:(length(coeftab) - 1))
+
       png(file, height = 800, width = 1200, res = 100)
-      oneparamirtWrightMapInput_mirt()
+      wrightMap(fs, b, item.side = itemClassic)
       dev.off()
     }
   )
@@ -2214,7 +2235,7 @@ function(input, output, session) {
     },
     content = function(file) {
       png(file, height = 800, width = 1200, res = 100)
-      plot(two_param_irt_mirt(), type = "trace", facet_items = F)
+      print(twoparamirtInput_mirt())
       dev.off()
     }
   )
@@ -2237,7 +2258,7 @@ function(input, output, session) {
     },
     content = function(file) {
       png(file, height = 800, width = 1200, res = 100)
-      plot(two_param_irt_mirt(), type = "infotrace", facet_items = F)
+      print(twoparamirtiicInput_mirt())
       dev.off()
     }
   )
@@ -2260,7 +2281,7 @@ function(input, output, session) {
     },
     content = function(file) {
       png(file, height = 800, width = 1200, res = 100)
-      plot(two_param_irt_mirt(), type = "infoSE")
+      print(twoparamirttifInput_mirt())
       dev.off()
     }
   )
@@ -2372,7 +2393,7 @@ function(input, output, session) {
     },
     content = function(file) {
       png(file, height = 800, width = 1200, res = 100)
-      plot(three_param_irt_mirt(), type = "trace", facet_items = F)
+      print(threeparamirtInput_mirt())
       dev.off()
     }
   )
@@ -2395,7 +2416,7 @@ function(input, output, session) {
     },
     content = function(file) {
       png(file, height = 800, width = 1200, res = 100)
-      plot(three_param_irt_mirt(), type = "infotrace", facet_items = F)
+      print(threeparamirtiicInput_mirt())
       dev.off()
     }
   )
@@ -2418,7 +2439,7 @@ function(input, output, session) {
     },
     content = function(file) {
       png(file, height = 800, width = 1200, res = 100)
-      plot(three_param_irt_mirt(), type = "infoSE")
+      print(threeparamirttifInput_mirt())
       dev.off()
     }
   )
