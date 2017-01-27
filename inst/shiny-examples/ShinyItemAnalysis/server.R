@@ -267,7 +267,6 @@ function(input, output, session) {
     }
     colnames(key_table) <- name
     key_table
-
   },
   rownames = F,
   options=list(scrollX=TRUE))
@@ -1191,10 +1190,14 @@ function(input, output, session) {
                  bestBIC,
                  bestLR)
 
-    rownames(tab) <- c("AIC 2PL", "AIC 3PL", "BIC 2PL", "BIC 3PL", "LR X2", "LR p-value",
+
+
+    tab <- as.data.frame(tab)
+    colnames(tab) <- paste("i", 1:ncol(tab))
+    rownames(tab) <- c("AIC 2PL", "AIC 3PL",
+                       "BIC 2PL", "BIC 3PL",
+                       "Chisq-value", "p-value",
                        "BEST AIC", "BEST BIC", "BEST LR")
-
-
 
     tab <- datatable(tab, rownames = T,
                       options = list(
