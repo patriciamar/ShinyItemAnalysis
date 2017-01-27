@@ -3857,46 +3857,46 @@ function(input, output, session) {
 
   irtInput<-reactive({
     type = input$irt_type_report
-
-    if (type=="1pl") {out=raschInput()}
-    if (type=="2pl") {out=twoparamInput()}
-    if (type=="3pl") {out=threeparamInput()}
+    if (type=="rasch"){out=raschInput_mirt()}
+    if (type=="1pl") {out=oneparamirtInput_mirt()}
+    if (type=="2pl") {out=twoparamirtInput_mirt()}
+    if (type=="3pl") {out=threeparamirtInput_mirt()}
     out
   })
 
   irtiicInput<-reactive({
     type = input$irt_type_report
-
-    if (type=="1pl") {out=raschiicInput()}
-    if (type=="2pl") {out=twoparamiicInput()}
-    if (type=="3pl") {out=threeparamiicInput()}
+    if (type=="rasch"){out=raschirtiicInput_mirt()}
+    if (type=="1pl") {out=oneparamirtiicInput_mirt()}
+    if (type=="2pl") {out=twoparamirtiicInput_mirt()}
+    if (type=="3pl") {out=threeparamirtiicInput_mirt()}
     out
   })
 
   irttifInput<-reactive({
     type = input$irt_type_report
-
-    if (type=="1pl") {out=raschtifInput()}
-    if (type=="2pl") {out=twoparamtifInput()}
-    if (type=="3pl") {out=threeparamtifInput()}
+    if (type=="rasch"){out=raschtifInput_mirt()}
+    if (type=="1pl") {out=oneparamirttifInput_mirt()}
+    if (type=="2pl") {out=twoparamirttifInpu_mirt()}
+    if (type=="3pl") {out=threeparamirttifInput_mirt()}
     out
   })
 
   irtcoefInput<-reactive({
     type = input$irt_type_report
-
-    if (type=="1pl") {out=raschcoefInput()}
-    if (type=="2pl") {out=twoparamcoefInput()}
-    if (type=="3pl") {out=threeparamcoefInput()}
+    if (type=="rasch"){out=raschcoefInput_mirt()}
+    if (type=="1pl") {out=oneparamirtcoefInput_mirt()}
+    if (type=="2pl") {out=twoparamirtcoefInput_mirt()}
+    if (type=="3pl") {out=threeparamirtcoefInput_mirt()}
     out
   })
 
   irtfactorInput<-reactive({
     type = input$irt_type_report
-
-    if (type=="1pl") {out=raschFactorInput()}
-    if (type=="2pl") {out=twoFactorInput()}
-    if (type=="3pl") {out=threeFactorInput()}
+    if (type=="rasch"){out=raschFactorInput_mirt()}
+    if (type=="1pl") {out=oneparamirtFactorInput_mirt()}
+    if (type=="2pl") {out=twoparamirtFactorInput_mirt()}
+    if (type=="3pl") {out=threeparamirtFactorInput_mirt()}
     out
   })
 

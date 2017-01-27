@@ -121,8 +121,12 @@ grid.arrange(params$graf[[i]], params$multiplot[[i]], ncol=2
 #IRT Model
 
 ```{r echo=FALSE, results="hide"}
+if (params$irt_type=="rasch") {
+  head=" Rasch Model Report"
+}
+
 if (params$irt_type=="1pl") {
-head=" 1PL IRT (Rasch) Model Report"
+head=" 1PL IRT Model Report"
 eq="$ {P}(Y_{ij} = 1|\theta_{i},a,b_j) =\frac{e^{a(\theta_i-b_j)}}{1+e^{a(\theta_i-b_j)}} $"
 }
 
@@ -140,6 +144,9 @@ head=" 3PL IRT Model Report"
 
 
 Available Models:
+
+Rasch Model
+$$ {P}(Y_{ij} = 1|\theta_{i},b_j) =\frac{e^{(\theta_i-b_j)}}{1+e^{(\theta_i-b_j)}} $$
 
 1PL IRT Model
 $$ {P}(Y_{ij} = 1|\theta_{i},a,b_j) =\frac{e^{a(\theta_i-b_j)}}{1+e^{a(\theta_i-b_j)}}$$
