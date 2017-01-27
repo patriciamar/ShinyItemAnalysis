@@ -253,7 +253,9 @@ function(input, output, session) {
     colnames(test) <- name
     test
 
-  }, options=list(scrollX=TRUE, pageLength=10))
+  },
+  rownames = F,
+  options=list(scrollX=TRUE, pageLength=10))
 
   # KEY CONTROL #######
   output$key <- renderDataTable({
@@ -266,7 +268,9 @@ function(input, output, session) {
     colnames(key_table) <- name
     key_table
 
-  }, options=list(scrollX=TRUE))
+  },
+  rownames = F,
+  options=list(scrollX=TRUE))
 
   # SCORE 0-1 #####
   output$sc01 <- renderDataTable({
@@ -284,7 +288,9 @@ function(input, output, session) {
 
     out <- (cbind(correct,sc))
     out
-  }, options=list(scrollX=TRUE, pageLength=10))
+  },
+  rownames = F,
+  options=list(scrollX=TRUE, pageLength=10))
 
 
   ##### ITEM SLIDERS #####
@@ -1193,7 +1199,6 @@ function(input, output, session) {
     tab <- datatable(tab, rownames = T,
                       options = list(
                         autoWidth = T,
-                        container = sketch,
                         columnDefs = list(list(width = '80px', targets = list(0)),
                                           list(width = '60px', targets = list(1:ncol(tab))),
                                           list(className = 'dt-center', targets = "_all"),
@@ -1224,14 +1229,21 @@ function(input, output, session) {
     stotal <- c(scale(scored_test()))
     i <- input$multiSlider
 
+    data <- sapply(1:ncol(data), function(i) as.factor(data[, i]))
+
     fitM <- multinom(relevel(as.factor(data[, i]),
                              ref = paste(k[i])) ~ stotal,
                      trace = F)
 
     pp <- fitted(fitM)
+    if(ncol(pp) == 1){
+      pp <- cbind(pp, 1 - pp)
+      colnames(pp) <- c("0", "1")
+    }
     stotals <- rep(stotal, length(levels(relevel(as.factor(data[, i]),
                                                  ref = paste(k[i])))))
     df <- cbind(melt(pp), stotals)
+    df$Var2 <- relevel(as.factor(df$Var2), ref = paste(k[i]))
     df2 <- data.frame(table(data[, i], stotal),
                       y = data.frame(prop.table(table(data[, i], stotal), 2))[, 3])
     df2$stotal <- as.numeric(levels(df2$stotal))[df2$stotal]
@@ -1372,18 +1384,32 @@ function(input, output, session) {
     koef <- summary(multinomial_model())$coefficients
     txt  <- c()
 
-    for (i in 1:nrow(koef)){
-      txt[i] <- paste (
-        "A one-unit increase in the z-score (one SD increase in original
+    if(is.null(dim(koef))){
+      m <- length(koef)
+      txt <-  paste (
+        "A one-unit increase in the Z-score (one SD increase in original
         scores)  is associated with the decrease in the log odds of
         answering the item "
-        ,"<b>", row.names(koef)[i], "</b>", "vs.", "<b>",
+        ,"<b> 0 </b>", "vs.", "<b> 1 </b>", " in the amount of ",
+        "<b>", round(koef[2], 2), "</b>", '<br/>')
+    } else {
+      m <- nrow(koef)
+      for (i in 1:m){
+        txt[i] <- paste (
+          "A one-unit increase in the Z-score (one SD increase in original
+        scores)  is associated with the decrease in the log odds of
+        answering the item "
+          ,"<b>", row.names(koef)[i], "</b>", "vs.", "<b>",
 
-        test_key()[input$multiSlider],
+          test_key()[input$multiSlider],
 
-        "</b>","in the amount of ",
-        "<b>", round(koef[i, 2], 2), "</b>", '<br/>')
+          "</b>","in the amount of ",
+          "<b>", round(koef[i, 2], 2), "</b>", '<br/>')
+      }
     }
+
+
+
     HTML(paste(txt))
   })
 
