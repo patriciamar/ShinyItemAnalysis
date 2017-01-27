@@ -3898,7 +3898,7 @@ function(input, output, session) {
 
   irtiicInput<-reactive({
     type = input$irt_type_report
-    if (type=="rasch"){out=raschirtiicInput_mirt()}
+    if (type=="rasch"){out=raschiicInput_mirt()}
     if (type=="1pl") {out=oneparamirtiicInput_mirt()}
     if (type=="2pl") {out=twoparamirtiicInput_mirt()}
     if (type=="3pl") {out=threeparamirtiicInput_mirt()}
