@@ -1281,31 +1281,35 @@ function(input, output, session) {
 
   multiplotReportInput<-reactive({
     graflist=list()
+    key <- test_key()
+    k <- t(as.data.frame(test_key()))
+    data <- test_answers()
+    data <- sapply(1:ncol(data), function(i) as.factor(data[, i]))
+    stotal <- c(scale(scored_test()))
 
-    for (i in 1:length(test_key())) {
-      k <- t(as.data.frame(test_key()))
+    for (i in 1:length(key)) {
 
-      stotal <- c(scale(scored_test()))
-
-
-      fitM <- multinom(relevel(as.factor(test_answers()[, i]),
+      fitM <- multinom(relevel(as.factor(data[, i]),
                                ref = paste(k[i])) ~ stotal,
                        trace = F)
 
-      pp <- fitted(fitM)
 
-      stotals <- rep(stotal, length(levels(relevel(as.factor(test_answers()[, i]),
+      pp <- fitted(fitM)
+      if(ncol(pp) == 1){
+        pp <- cbind(pp, 1 - pp)
+        colnames(pp) <- c("0", "1")
+      }
+      stotals <- rep(stotal, length(levels(relevel(as.factor(data[, i]),
                                                    ref = paste(k[i])))))
       df <- cbind(melt(pp), stotals)
-
-
-      df2 <- data.frame(table(test_answers()[, i], stotal),
-                        y = data.frame(prop.table(table(test_answers()[, i], stotal), 2))[, 3])
+      df$Var2 <- relevel(as.factor(df$Var2), ref = paste(k[i]))
+      df2 <- data.frame(table(data[, i], stotal),
+                        y = data.frame(prop.table(table(data[, i], stotal), 2))[, 3])
       df2$stotal <- as.numeric(levels(df2$stotal))[df2$stotal]
       df2$Var2 <- relevel(df2$Var1, ref = paste(k[i]))
 
 
-      g<-ggplot() +
+      g <- ggplot() +
         geom_line(data = df,
                   aes(x = stotals , y = value,
                       colour = Var2, linetype = Var2), size = 1) +
