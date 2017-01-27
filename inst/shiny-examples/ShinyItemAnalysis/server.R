@@ -202,24 +202,22 @@ function(input, output, session) {
         if (is.null(input$key)){
           key <- "missing"
         } else {
-          key <- read.csv(input$key$datapath, header = input$header)
-          key <- as.character(key[[1]])
+          key <- read.csv(input$key$datapath, header = input$header,
+                          sep = input$sep)
+          key <- as.character(unlist(key))
         }
         if (is.null(input$groups)){
-          print(group)
           group <- "missing"
-          print(group)
         } else {
-          print(group)
-          group <- read.csv(input$groups$datapath, header = input$header)
-          group <- as.vector(group[[1]])
-          print(group)
+          group <- read.csv(input$groups$datapath, header = input$header,
+                            sep = input$sep)
+          group <- unlist(group)
         }
       }
 
-      dataset$answers<-answ
-      dataset$key<-key
-      dataset$group<-group
+      dataset$answers <- answ
+      dataset$key <- key
+      dataset$group <- group
 
     }
   )
