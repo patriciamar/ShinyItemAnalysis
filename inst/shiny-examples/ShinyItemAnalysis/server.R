@@ -2645,7 +2645,7 @@ function(input, output, session) {
     },
     content = function(file) {
       png(file, height = 800, width = 1200, res = 100)
-      plot(bock_irt_mirt(), type = "trace", facet_items = F)
+      print(bock_CC_Input())
       dev.off()
     }
   )
@@ -2666,7 +2666,7 @@ function(input, output, session) {
     },
     content = function(file) {
       png(file, height = 800, width = 1200, res = 100)
-      plot(bock_irt_mirt(), type = "infotrace", facet_items = F)
+      print(bock_IIC_Input())
       dev.off()
     }
   )
@@ -2687,7 +2687,7 @@ function(input, output, session) {
     },
     content = function(file) {
       png(file, height = 800, width = 1200, res = 100)
-      plot(bock_irt_mirt(), type = "infoSE")
+      print(bock_TIF_Input())
       dev.off()
     }
   )
