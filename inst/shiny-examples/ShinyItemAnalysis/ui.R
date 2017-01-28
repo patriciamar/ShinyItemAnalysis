@@ -349,7 +349,6 @@ ui=tagList(
              navbarMenu('Traditional analysis',
                         # ITEM ANALYSIS
                         tabPanel("Item analysis",
-                                 br(),
                                  h3("Traditional item analysis"),
                                  p('Traditional item analysis uses proportions of correct answers or correlations to estimate item properties.'),
                                  h4("Item difficulty/discrimination graph"),
@@ -800,7 +799,7 @@ ui=tagList(
                         "----",
                         # MULTINOMIAL
                         tabPanel("Multinomial",
-                                 h3("Multinomial Regression on standardized total scores"),
+                                 h3("Multinomial regression on standardized total scores"),
                                  p('Various regression models may be fitted to describe
                                    item properties in more detail.',
                                    strong('Multinomial regression'),'allows for simultaneous modelling of probability of choosing
