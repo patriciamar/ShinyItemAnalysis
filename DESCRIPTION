@@ -15,6 +15,7 @@ Imports:
     difR,
     ggplot2,
     grid,
+    gtable,
     ltm,
     mirt,
     moments,
