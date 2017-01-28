@@ -2,6 +2,7 @@
 # GLOBAL LIBRARY #####
 ######################
 
+require(DT)
 require(shinyjs)
 
 ###########
@@ -254,11 +255,11 @@ ui=tagList(
                       ),
                       tags$hr(),
                       h4("Data Check"),
-                      dataTableOutput('headdata'),
+                      DT::dataTableOutput('headdata'),
                       h4("Key (correct answers)"),
-                      dataTableOutput('key'),
+                      DT::dataTableOutput('key'),
                       h4("Scored Test"),
-                      dataTableOutput('sc01')
+                      DT::dataTableOutput('sc01')
                       ),
              ########################
              # SUMMARY #####
@@ -756,9 +757,10 @@ ui=tagList(
                                                "FDR" = "fdr",
                                                "none" = "none"),
                                              selected="BH"),
+                                 h4("Table of comparison statistics"),
                                  p('Rows ', strong('BEST'), 'indicate which model has the lowest value of criterion, or is the largest
                                    significant model by likelihood ratio test.'),
-                                 dataTableOutput('regr_comp_table'),
+                                 DT::dataTableOutput('regr_comp_table'),
                                  br(),
                                  div(code('library(difNLR, lmtest)'),
                                      br(),
@@ -1400,9 +1402,9 @@ ui=tagList(
                                  ),
                                  p('Another approach to compare IRT models can be likelihood ratio chi-squared test.
                                    Significance level is set to 0.05.'),
+                                 h4("Table of comparison statistics"),
                                  p('Row ', strong('BEST'), 'indicates which model has the lowest value of criterion, or is the largest
                                    significant model by likelihood ratio test.'),
-                                 h4("Table"),
                                  tableOutput('irtcomparison'),
                                  tags$style(type = "text/css", "#irtcomparison tr:last-child {font-weight:bold;}"),
                                  br(),
