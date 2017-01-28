@@ -50,7 +50,7 @@ ui=tagList(
              # ABOUT ################
              ########################
              tabPanel("About",
-                      h4('Description'),
+                      h3('Description'),
                       p(code('ShinyItemAnalysis'), ' provides analysis of educational tests (such as admission tests)
                         and their items including:' ),
                       tags$ul(
@@ -89,7 +89,7 @@ ui=tagList(
                              </p>')
                         ),
 
-                      h4('List of Packages Used'),
+                      h4('List of packages used'),
                       code('library(corrplot)'), br(),
                       code('library(CTT)'), br(),
                       code('library(deltaPlotR)'), br(),
@@ -98,6 +98,8 @@ ui=tagList(
                       code('library(difR)'), br(),
                       code('library(ggplot2)'), br(),
                       code('library(grid)'), br(),
+                      code('library(gridExtra)'), br(),
+                      code('library(latticeExtra)'), br(),
                       code('library(ltm)'), br(),
                       code('library(mirt)'), br(),
                       code('library(moments)'), br(),
@@ -127,7 +129,7 @@ ui=tagList(
                       img(src = 'jakub.jpg', width = 70),
                       p("Jakub Houdek"),
 
-                      h4('Bug Reports'),
+                      h4('Bug reports'),
                       p("If you discover a problem with this application please contact the project maintainer
                         at martinkova(at)cs.cas.cz or use ", a("GitHub.", href = "https://github.com/patriciamar/ShinyItemAnalysis/issues",
                                                                target = "_blank")
@@ -233,7 +235,7 @@ ui=tagList(
                         column(3, offset = 1, actionButton(inputId = "submitButton", label = "Submit Data"))
                       ),
                       tags$hr(),
-                      h4("Data Specification"),
+                      h4("Data specification"),
                       fluidRow(
                         column(1, offset = 0, checkboxInput('header', 'Header', TRUE)),
                         column(3, offset = 1, radioButtons('sep', 'Separator',
@@ -254,11 +256,11 @@ ui=tagList(
                         )
                       ),
                       tags$hr(),
-                      h4("Data Check"),
+                      h4("Data check"),
                       DT::dataTableOutput('headdata'),
                       h4("Key (correct answers)"),
                       DT::dataTableOutput('key'),
-                      h4("Scored Test"),
+                      h4("Scored test"),
                       DT::dataTableOutput('sc01')
                       ),
              ########################
@@ -266,11 +268,11 @@ ui=tagList(
              ########################
              navbarMenu("Summary",
                         # TOTAL SCORES
-                        tabPanel("Total Scores",
-                                 h3("Analysis of Total Scores"),
-                                 h4("Summary Table"),
+                        tabPanel("Total scores",
+                                 h3("Analysis of total scores"),
+                                 h4("Summary table"),
                                  tableOutput('results'),
-                                 h4("Histogram of Total Score"),
+                                 h4("Histogram of total score"),
                                  sliderInput("inSlider2", "Cut-Score", min = 0, max = 10,
                                              value = 1, step = 1),
                                  p('For selected cut-score, blue part of histogram shows students with total score
@@ -301,8 +303,8 @@ ui=tagList(
                                  br()
                                  ),
                         # STANDARD SCORES
-                        tabPanel("Standard Scores",
-                                 h3('Standard Scores'),
+                        tabPanel("Standard scores",
+                                 h3('Standard scores'),
                                  p(strong('Total Score'), 'also known as raw score is a total number of correct
                                    answers. It can be used to compare individual score to a norm group, e.g. if the mean
                                    is 12, then individual score can be compared to see if it is below or above this average. ', br(),
@@ -316,7 +318,7 @@ ui=tagList(
                                    standard deviation then Z-score = (X - M) / SD. ', br(),
                                    strong('T-score'), 'is transformed Z-score with a mean of 50 and standard deviation
                                    of 10. If Z is Z-score then T-score = (Z * 10) + 50. '),
-                                 h4("Table by Score"),
+                                 h4("Table by score"),
                                  tableOutput('percentile'),
                                  br(),
                                  h4("Selected R code"),
@@ -344,13 +346,13 @@ ui=tagList(
              ###########################
              # TRADITIONAL ANALYSIS ####
              ###########################
-             navbarMenu('Traditional Analysis',
+             navbarMenu('Traditional analysis',
                         # ITEM ANALYSIS
-                        tabPanel("Item Analysis",
+                        tabPanel("Item analysis",
                                  br(),
-                                 h3("Traditional Item Analysis"),
+                                 h3("Traditional item analysis"),
                                  p('Traditional item analysis uses proportions of correct answers or correlations to estimate item properties.'),
-                                 h4("Item Difficulty/Discrimination Graph"),
+                                 h4("Item difficulty/discrimination graph"),
                                  p("Displayed is difficulty (red) and discrimination (blue)
                                    for all items. Items are ordered by difficulty. ", br(),
                                    strong("Difficulty"),' of items is estimated as percent of students who
@@ -366,7 +368,7 @@ ui=tagList(
                                    of the number of items in a test, the average covariance between item-pairs, and the variance
                                    of the total score (Cronbach, 1951)."),
                                  tableOutput('cronbachalpha'),
-                                 h4("Traditional Item Analysis Table"),
+                                 h4("Traditional item analysis table"),
                                  p(strong('Explanation: Difficulty'), ' - Difficulty of item is estimated as percent
                                    of students who answered correctly to that item. ', strong('SD'),' - standard deviation, ',
                                    strong('RIT'), ' - Pearson correlation between item and Total score, ', strong('RIR'),'
@@ -402,13 +404,11 @@ ui=tagList(
                                  ),
                         # DISTRACTORS
                         tabPanel("Distractors",
-                                 br(),
-                                 p('Traditional item analysis uses proportions of correct answers or correlations to estimate item properties.'),
-                                 h3("Distractor Analysis"),
+                                 h3("Distractor analysis"),
                                  p('In distractor analysis, we are interested in how test takers select
                                    the correct answer and how the distractors (wrong answers) were able
                                    to function effectively by drawing the test takers away from the correct answer.'),
-
+                                 h4('Histogram of total scores'),
                                  htmlOutput("text_distractor"),
                                  br(),
                                  sliderInput('gr','Number of groups:',
@@ -421,17 +421,17 @@ ui=tagList(
                                  plotOutput('hist_distractor_by_group'),
                                  downloadButton("DP_hist_distractor_by_group", label = "Download figure"),
                                  br(),
+                                 h4("Distractors plot"),
                                  radioButtons('type_combinations_distractor', 'Type',
                                               list("Combinations", "Distractors")
                                  ),
                                  sliderInput("distractorSlider", "Item Slider", min=1, value=1, max=10,
                                              step=1, animate=TRUE),
-                                 h4("Distractors Plot"),
                                  plotOutput('graf'),
                                  downloadButton("DP_graf", label = "Download figure"),
-                                 h4("Table with Counts"),
+                                 h4("Table with counts"),
                                  fluidRow(column(12, align = "center", tableOutput('tab_counts_distractor'))),
-                                 h4("Table with Proportions"),
+                                 h4("Table with proportions"),
                                  fluidRow(column(12, align = "center", tableOutput('tab_props_distractor'))),
                                  br(),
                                  h4("Selected R code"),
@@ -470,10 +470,10 @@ ui=tagList(
                                  br()
                                  ),
                         # CORRELATION STRUCTURE
-                        tabPanel("Correlation Structure",
-                                 h3("Correlation Structure"),
-                                 h4("Polychoric Correlation Heat Map"),
-                                 p('Polychoric Correlation Heat Map is a correlation plot which displays a polychoric
+                        tabPanel("Correlation structure",
+                                 h3("Correlation structure"),
+                                 h4("Polychoric correlation heat map"),
+                                 p('Polychoric correlation heat map is a correlation plot which displays a polychoric
                                     correlations of items. The size and shade of circles indicate how much the
                                     items are correlated (larger and darker
                                    circle means larger correlation). The color of circles indicates in which way the
@@ -481,7 +481,7 @@ ui=tagList(
                                    negative correlation.'),
                                  plotOutput('corr_plot'),
                                  br(),
-                                 h4("Scree Plot"),
+                                 h4("Scree plot"),
                                  p('A scree plot displays the eigenvalues associated with an component or a factor in descending order
                                    versus the number of the component or factor. '),
                                  plotOutput('scree_plot'),
@@ -520,14 +520,14 @@ ui=tagList(
              navbarMenu("Regression",
                         # LOGISTIC
                         tabPanel("Logistic",
-                                 h3("Logistic Regression on Total Scores"),
+                                 h3("Logistic regression on total scores"),
                                  p('Various regression models may be fitted to describe
                                    item properties in more detail.',
                                    strong('Logistic regression'),'can model dependency of probability of correct answer on total score by
                                    s-shaped logistic curve. Parameter', strong( "b0"),' describes horizontal position of the fitted curve,
                                    parameter ', strong( 'b1'),' describes its slope.'),
                                  br(),
-                                 h4("Plot with Estimated Logistic Curve"),
+                                 h4("Plot with estimated logistic curve"),
                                  p('Points represent proportion of correct answer with respect to total score.
                                    Their size is determined by count of respondents who answered item correctly.'),
                                  sliderInput("logregSlider", "Item Slider", min=1, value=1, max=10,
@@ -574,7 +574,7 @@ ui=tagList(
                                  ),
                         # LOGISTIC Z
                         tabPanel("Logistic Z",
-                                 h3("Logistic Regression on Standardized Total Scores"),
+                                 h3("Logistic regression on standardized total scores"),
                                  p('Various regression models may be fitted to describe
                                    item properties in more detail.',
                                    strong('Logistic regression'), 'can model dependency of probability of correct answer on
@@ -582,7 +582,7 @@ ui=tagList(
                                    horizontal position of the fitted curve (difficulty), parameter ', strong('b1'),' describes its slope at
                                    inflection point (discrimination). '),
                                  br(),
-                                 h4("Plot with Estimated Logistic Curve"),
+                                 h4("Plot with estimated logistic curve"),
                                  p('Points represent proportion of correct answer with respect to standardized
                                    total score. Their size is determined by count of respondents who answered item correctly.'),
                                  sliderInput("zlogregSlider", "Item Slider", min=1, value=1, max=10,
@@ -627,7 +627,7 @@ ui=tagList(
                                  ),
                         # LOGISTIC IRT Z
                         tabPanel("Logistic IRT Z",
-                                 h3("Logistic Regression on Standardized Total Scores"),
+                                 h3("Logistic regression on standardized total scores with IRT parameterization"),
                                  p('Various regression models may be fitted to describe
                                    item properties in more detail.',
                                    strong('Logistic regression'), 'can model dependency of probability of correct answer on
@@ -636,7 +636,7 @@ ui=tagList(
                                    Parameter', strong('b') , 'describes horizontal position of the fitted curve (difficulty),
                                    parameter' , strong('a') , ' describes its slope at inflection point (discrimination). '),
                                  br(),
-                                 h4("Plot with Estimated Logistic Curve"),
+                                 h4("Plot with estimated logistic curve"),
                                  p('Points represent proportion of correct answer with respect to standardized
                                    total score. Their size is determined by count of respondents who answered item correctly.'),
                                  sliderInput("zlogreg_irtSlider", "Item Slider", min=1, value=1, max=10,
@@ -684,7 +684,7 @@ ui=tagList(
 
                         # NONLINEAR Z
                         tabPanel("Nonlinear IRT Z",
-                                 h3("Nonlinear Regression on Standardized Total Scores"),
+                                 h3("Nonlinear regression on standardized total scores"),
                                  p('Various regression models may be fitted to describe
                                    item properties in more detail.',
                                    strong('Nonlinear regression'), 'can model dependency of probability of correct answer on
@@ -693,7 +693,7 @@ ui=tagList(
                                    parameter ',strong( 'a'), ' describes its slope at inflection point (discrimination). This model allows for nonzero lower left asymptote ',strong( 'c'),'
                                    (pseudo-guessing). '),
                                  br(),
-                                 h4("Plot with Estimated Nonlinear Curve"),
+                                 h4("Plot with estimated nonlinear curve"),
                                  p('Points represent proportion of correct answer with respect to standardized
                                    total score. Their size is determined by count of respondents who answered item correctly.'),
                                  sliderInput("nlsSlider", "Item Slider", min=1, value=1, max=10,
@@ -738,7 +738,7 @@ ui=tagList(
                         "----",
                         # MODELS COMPARISON
                         tabPanel("Models comparison",
-                                 h3("Logistic Regression Models Selection"),
+                                 h3("Logistic regression models selection"),
                                  p('Here you can compare classic 2PL logistic regression model to non-linear model
                                    item by item using some information criterions: '),
                                  tags$ul(
@@ -762,6 +762,7 @@ ui=tagList(
                                    significant model by likelihood ratio test.'),
                                  DT::dataTableOutput('regr_comp_table'),
                                  br(),
+                                 h4("Selected R code"),
                                  div(code('library(difNLR, lmtest)'),
                                      br(),
                                      code('data(GMAT)'),
@@ -799,13 +800,13 @@ ui=tagList(
                         "----",
                         # MULTINOMIAL
                         tabPanel("Multinomial",
-                                 h3("Multinomial Regression on Standardized Total Scores"),
+                                 h3("Multinomial Regression on standardized total scores"),
                                  p('Various regression models may be fitted to describe
                                    item properties in more detail.',
                                    strong('Multinomial regression'),'allows for simultaneous modelling of probability of choosing
                                    given distractors on standardized total score (Z-score).'),
                                  br(),
-                                 h4("Plot with Estimated Curves of Multinomial Regression"),
+                                 h4("Plot with estimated curves of multinomial regression"),
                                  p('Points represent proportion of selected option with respect to standardized
                                    total score. Their size is determined by count of respondents who selected given option.'),
                                  sliderInput("multiSlider", "Item Slider", min=1, value=1, max=10,
@@ -865,7 +866,7 @@ ui=tagList(
                                    ',strong('Rasch model,'),'assumes discrimination', strong('a'), 'is equal to 1.'),
                                  h4("Equation"),
                                  ('$$\\mathrm{P}\\left(Y_{ij} = 1\\vert \\theta_{i}, a, b_{j} \\right) =  \\frac{e^{a\\left(\\theta_{i}-b_{j}\\right) }}{1+e^{a\\left(\\theta_{i}-b_{j}\\right) }} $$'),
-                                 h4("Item Characteristic Curves"),
+                                 h4("Item characteristic curves"),
                                  plotOutput('rasch'),
                                  downloadButton("DP_rasch", label = "Download figure"),
                                  h4("Item information curves"),
@@ -876,7 +877,7 @@ ui=tagList(
                                  downloadButton("DP_raschtif", label = "Download figure"),
                                  h4("Table of parameters"),
                                  tableOutput('raschcoef'),
-                                 h4('Factor Scores vs. Standardized Total Scores'),
+                                 h4('Scatter plot of factor scores and standardized total scores'),
                                  plotOutput('raschFactor'),
                                  downloadButton("DP_raschFactor", label = "Download figure"),
                                  br(),
@@ -939,7 +940,7 @@ ui=tagList(
                                  h4("Equation"),
                                  ('$$\\mathrm{P}\\left(Y_{ij} = 1\\vert \\theta_{i}, a_{j}, b_{j}\\right) =  \\frac{e^{a_{j}\\left(\\theta_{i}-b_{j}\\right) }}{1+e^{a_{j}\\left(\\theta_{i}-b_{j}\\right) }} $$'),
 
-                                 h4("Item Characteristic Curves"),
+                                 h4("Item characteristic curves"),
                                  plotOutput('twoparam'),
                                  downloadButton("DP_twoparam", label = "Download figure"),
                                  h4("Item information curves"),
@@ -950,7 +951,7 @@ ui=tagList(
                                  downloadButton("DP_twoparamtif", label = "Download figure"),
                                  h4("Table of parameters"),
                                  tableOutput('twoparamcoef'),
-                                 h4('Factor Scores vs. Standardized Total Scores'),
+                                 h4('Scatter plot of factor scores and standardized total scores'),
                                  plotOutput('twoFactor'),
                                  downloadButton("DP_twoFactor", label = "Download figure"),
                                  br(),
@@ -1024,7 +1025,7 @@ ui=tagList(
                                  downloadButton("DP_threeparamtif", label = "Download figure"),
                                  h4("Table of parameters"),
                                  tableOutput("threeparamcoef"),
-                                 h4('Factor Scores vs. Standardized Total Scores'),
+                                 h4('Scatter plot of factor scores and standardized total scores'),
                                  plotOutput('threeFactor'),
                                  downloadButton("DP_threeFactor", label = "Download figure"),
                                  br(),
@@ -1092,7 +1093,7 @@ ui=tagList(
                                    strong('b.')),
                                  h4("Equation"),
                                  ('$$\\mathrm{P}\\left(Y_{ij} = 1\\vert \\theta_{i}, b_{j} \\right) =  \\frac{e^{\\left(\\theta_{i}-b_{j}\\right) }}{1+e^{\\left(\\theta_{i}-b_{j}\\right) }} $$'),
-                                 h4("Item Characteristic Curves"),
+                                 h4("Item characteristic curves"),
                                  plotOutput('rasch_mirt'),
                                  downloadButton("DP_rasch_mirt", label = "Download figure"),
                                  h4("Item information curves"),
@@ -1104,11 +1105,11 @@ ui=tagList(
                                  h4("Table of parameters with item fit statistics"),
                                  p('Estimates of parameters are completed by SX2 item fit statistics (Ames & Penfield, 2015)'),
                                  tableOutput('raschcoef_mirt'),
-                                 h4('Factor Scores vs. Standardized Total Scores'),
+                                 h4('Scatter plot of factor scores and standardized total scores'),
                                  textOutput('raschFactorCor_mirt'),
                                  plotOutput('raschFactor_mirt'),
                                  downloadButton("DP_raschFactor_mirt", label = "Download figure"),
-                                 h4('Wright Map'),
+                                 h4('Wright map'),
                                  p('Wright map (Wilson, 2005; Wright & Stone, 1979), also called item-person map, is a graphical tool
                                    to display person estimates and item parameters. The person side
                                    (left) represents histogram of estimated knowledge of students.
@@ -1176,7 +1177,7 @@ ui=tagList(
                                    strong('b.')),
                                  h4("Equation"),
                                  ('$$\\mathrm{P}\\left(Y_{ij} = 1\\vert \\theta_{i}, a, b_{j} \\right) =  \\frac{e^{a\\left(\\theta_{i}-b_{j}\\right) }}{1+e^{a\\left(\\theta_{i}-b_{j}\\right) }} $$'),
-                                 h4("Item Characteristic Curves"),
+                                 h4("Item characteristic curves"),
                                  plotOutput('oneparamirt_mirt'),
                                  downloadButton("DP_oneparamirt_mirt", label = "Download figure"),
                                  h4("Item information curves"),
@@ -1186,13 +1187,14 @@ ui=tagList(
                                  plotOutput('oneparamirttif_mirt'),
                                  downloadButton("DP_oneparamirttif_mirt", label = "Download figure"),
                                  h4("Table of parameters with item fit statistics"),
-                                 p('Estimates of parameters are completed by SX2 item fit statistics (Ames & Penfield, 2015)'),
+                                 p('Estimates of parameters are completed by SX2 item fit statistics
+                                   (Ames & Penfield, 2015)'),
                                  tableOutput('oneparamirtcoef_mirt'),
-                                 h4('Factor Scores vs. Standardized Total Scores'),
+                                 h4('Scatter plot of factor scores and standardized total scores'),
                                  textOutput('oneparamirtFactorCor_mirt'),
                                  plotOutput('oneparamirtFactor_mirt'),
                                  downloadButton("DP_oneparamirtFactor_mirt", label = "Download figure"),
-                                 h4('Wright Map'),
+                                 h4('Wright map'),
                                  p('Wright map (Wilson, 2005; Wright & Stone, 1979), also called item-person map, is a graphical tool
                                    to display person estimates and item parameters. The person side
                                    (left) represents histogram of estimated knowledge of students.
@@ -1259,7 +1261,7 @@ ui=tagList(
                                    strong('b.')),
                                  h4("Equation"),
                                  ('$$\\mathrm{P}\\left(Y_{ij} = 1\\vert \\theta_{i}, a_{j}, b_{j}\\right) =  \\frac{e^{a_{j}\\left(\\theta_{i}-b_{j}\\right) }}{1+e^{a_{j}\\left(\\theta_{i}-b_{j}\\right) }} $$'),
-                                 h4("Item Characteristic Curves"),
+                                 h4("Item characteristic curves"),
                                  plotOutput('twoparamirt_mirt'),
                                  downloadButton("DP_twoparamirt_mirt", label = "Download figure"),
                                  h4("Item information curves"),
@@ -1271,7 +1273,7 @@ ui=tagList(
                                  h4("Table of parameters with item fit statistics"),
                                  p('Estimates of parameters are completed by SX2 item fit statistics (Ames & Penfield, 2015)'),
                                  tableOutput('twoparamirtcoef_mirt'),
-                                 h4('Factor Scores vs. Standardized Total Scores'),
+                                 h4('Scatter plot of factor scores and standardized total scores'),
                                  textOutput('twoparamirtFactorCor_mirt'),
                                  plotOutput('twoparamirtFactor_mirt'),
                                  downloadButton("DP_twoparamirtFactor_mirt", label = "Download figure"),
@@ -1328,7 +1330,7 @@ ui=tagList(
                                    strong('b,'), 'and allows also for nonzero left asymptote – pseudo-guessing', strong('c.')),
                                  h4("Equation"),
                                  ('$$\\mathrm{P}\\left(Y_{ij} = 1\\vert \\theta_{i}, a_{j}, b_{j}, c_{j} \\right) = c_{j} + \\left(1 - c_{j}\\right) \\cdot \\frac{e^{a_{j}\\left(\\theta_{i}-b_{j}\\right) }}{1+e^{a_{j}\\left(\\theta_{i}-b_{j}\\right) }} $$'),
-                                 h4("Item Characteristic Curves"),
+                                 h4("Item characteristic curves"),
                                  plotOutput('threeparamirt_mirt'),
                                  downloadButton("DP_threeparamirt_mirt", label = "Download figure"),
                                  h4("Item information curves"),
@@ -1340,7 +1342,7 @@ ui=tagList(
                                  h4("Table of parameters with item fit statistics"),
                                  p('Estimates of parameters are completed by SX2 item fit statistics (Ames & Penfield, 2015)'),
                                  tableOutput('threeparamirtcoef_mirt'),
-                                 h4('Factor Scores vs. Standardized Total Scores'),
+                                 h4('Scatter plot of factor scores and standardized total scores'),
                                  textOutput('threeparamirtFactorCor_mirt'),
                                  plotOutput('threeparamirtFactor_mirt'),
                                  downloadButton("DP_threeparamirtFactor_mirt", label = "Download figure"),
@@ -1389,7 +1391,7 @@ ui=tagList(
                         "----",
                         # MODELS COMPARISON
                         tabPanel("Models comparison ",
-                                 h3("Item Response Theory Models Selection"),
+                                 h3("Item Response Theory Models selection"),
                                  p('Item Response Theory (IRT) models are mixed-effect regression models in which
                                    student ability (theta) is assumed to be a random effect and is estimated together with item
                                    paramters. Ability (theta) is often assumed to follow normal distibution.'),
@@ -1439,7 +1441,7 @@ ui=tagList(
                         "----",
                         # BOCK'S NOMINAL MODEL
                         tabPanel("Bock's nominal model",
-                                 h3("Bock's Nominal IRT Model"),
+                                 h3("Bock's Nominal Item Response Theory Model"),
                                  p('The nominal response model (NRM) was introduced by Bock (1972) as a way to model
                                    responses to items with two or more nominal categories. This model is suitable for
                                    multiple-choice items with no particular ordering of distractors. The correct answer
@@ -1451,7 +1453,7 @@ ui=tagList(
                                  ('$$\\mathrm{P}(Y_{ij} = k|\\theta_i, a_{j1}, al_{j(l-1)}, d_{j(l-1)}, l = 1, \\dots, K) =
                                              \\frac{e^{(ak_{j(k-1)} * a_{j1} * \\theta_i + d_{j(k-1)})}}{\\sum_l e^{(al_{j(l-1)} * a_{j1} * \\theta_i + d_{j(l-1)})}}$$'),
                                  br(),
-                                 h4("Item Characteristic Curves"),
+                                 h4("Item characteristic curves"),
                                  plotOutput('bock_CC'),
                                  downloadButton("DP_bock_CC", label = "Download figure"),
                                  h4("Item information curves"),
@@ -1463,7 +1465,7 @@ ui=tagList(
                                  h4("Table of parameters"),
                                  textOutput("bock_coef_warning"),
                                  tableOutput('bock_coef'),
-                                 h4('Factor Scores vs. Standardized Total Scores'),
+                                 h4('Scatter plot of factor scores and standardized total scores'),
                                  plotOutput('bock_factor'),
                                  downloadButton("DP_bock_factor", label = "Download figure"),
                                  br(),
@@ -1511,14 +1513,14 @@ ui=tagList(
              navbarMenu("DIF/Fairness",
                         "Used methods",
                         # TOTAL SCORES
-                        tabPanel("Total Scores",
-                                 h3("Total Scores"),
+                        tabPanel("Total scores",
+                                 h3("Total scores"),
                                  p('DIF is not about total scores! Two groups may have the same distribution of total scores, yet,
                                    some item may function differently for two groups. Also, one of the groups may have signifficantly
                                    lower total score, yet, it may happen that there is no DIF item!'),
-                                 h4("Summary of Total Scores for Groups"),
+                                 h4("Summary of total scores for groups"),
                                  tableOutput('resultsgroup'),
-                                 h4("Histograms of Total Scores for Groups"),
+                                 h4("Histograms of total scores for groups"),
                                  sliderInput("inSlider2group", "Cut-Score", min=1, value=1, max=10,
                                              step=1, animate=TRUE),
                                  p('For selected cut-score, blue part of histogram shows students with total score
@@ -1551,8 +1553,8 @@ ui=tagList(
                                  br()
                                  ),
                         # DELTA PLOTS
-                        tabPanel("Delta Plots",
-                                 h3("Delta Plot"),
+                        tabPanel("Delta plots",
+                                 h3("Delta plot"),
                                  p('Delta plot (Angoff & Ford, 1973) compares the proportions of correct answers per
                                    item in the two groups. It displays non-linear transformation of these proportions using
                                    quantiles of standard normal distributions (so called delta scores) for each item for the two
@@ -1567,6 +1569,8 @@ ui=tagList(
 
                                  plotOutput('deltaplot'),
                                  downloadButton("DP_deltaplot", label = "Download figure"),
+                                 br(),
+                                 br(),
                                  verbatimTextOutput("dp_text_normal"),
                                  br(),
                                  h4("Selected R code"),
@@ -1608,7 +1612,7 @@ ui=tagList(
                                  tabsetPanel(
                                    # Summary
                                    tabPanel("Summary",
-                                            h3("Mantel-Haenszel Test"),
+                                            h3("Mantel-Haenszel test"),
                                             p('Mantel-Haenszel test is DIF detection method based on contingency
                                               tables that are calculated for each level of total score (Mantel &
                                               Haenszel, 1959).'),
@@ -1643,11 +1647,11 @@ ui=tagList(
                                             br()
                                             ),
                                    tabPanel('Items',
-                                            h3("Mantel-Haenszel Test"),
+                                            h3("Mantel-Haenszel test"),
                                             p('Mantel-Haenszel test is DIF detection method based on contingency
                                               tables that are calculated for each level of total score (Mantel &
                                               Haenszel, 1959).'),
-                                            h4('Contingency Tables'),
+                                            h4('Contingency tables and odds ratio calculation'),
                                             sliderInput("difMHSlider_item", "Item", animate = TRUE,
                                                         min = 1, max = 10, value = 1, step = 1),
                                             sliderInput("difMHSlider_score", "Cut-Score", min = 0, max = 10,
@@ -1705,7 +1709,7 @@ ui=tagList(
                                  tabsetPanel(
                                    # Summary
                                    tabPanel('Summary',
-                                            h3('Logistic regression'),
+                                            h3('Logistic regression on total scores'),
                                             p('Logistic regression allows for detection of uniform and non-uniform DIF (Swaminathan & Rogers, 1990) by adding a group
                                               specific intercept', strong('b2'), '(uniform DIF) and group specific interaction', strong('b3'), '(non-uniform DIF) into model and
                                               by testing for their significance.'),
@@ -1752,11 +1756,11 @@ ui=tagList(
                                             ),
                                    # Items
                                    tabPanel('Items',
-                                            h3('Logistic regression'),
+                                            h3('Logistic regression on total scores'),
                                             p('Logistic regression allows for detection of uniform and non-uniform DIF by adding a group
                                               specific intercept', strong('b2'), '(uniform DIF) and group specific interaction', strong('b3'), '(non-uniform DIF) into model and
                                               by testing for their significance.'),
-                                            h4("Plot with Estimated DIF Logistic Curve"),
+                                            h4("Plot with estimated DIF logistic curve"),
                                             p('Points represent proportion of correct answer with respect to standardized
                                               total score. Their size is determined by count of respondents who answered item correctly.'),
                                             p('NOTE: Plots and tables are based on DIF logistic procedure without any correction method. '),
@@ -1826,7 +1830,7 @@ ui=tagList(
                                  tabsetPanel(
                                    # Summary
                                    tabPanel('Summary',
-                                            h3('Logistic regression'),
+                                            h3('Logistic regression on standardized total scores with IRT parameterization'),
                                             p('Logistic regression allows for detection of uniform and non-uniform DIF (Swaminathan & Rogers, 1990) by adding a group
                                               specific intercept', strong('bDIF'), '(uniform DIF) and group specific interaction', strong('aDIF'), '(non-uniform DIF) into model and
                                               by testing for their significance.'),
@@ -1877,11 +1881,11 @@ ui=tagList(
                                             ),
                                    # Items
                                    tabPanel('Items',
-                                            h3('Logistic regression'),
+                                            h3('Logistic regression on standardized total scores with IRT parameterization'),
                                             p('Logistic regression allows for detection of uniform and non-uniform DIF by adding a group
                                               specific intercept', strong('bDIF'), '(uniform DIF) and group specific interaction', strong('aDIF'), '(non-uniform DIF) into model and
                                               by testing for their significance.'),
-                                            h4("Plot with Estimated DIF Logistic Curve"),
+                                            h4("Plot with estimated DIF logistic curve"),
                                             p('Points represent proportion of correct answer with respect to standardized
                                               total score. Their size is determined by count of respondents who answered item correctly.'),
                                             p('NOTE: Plots and tables are based on DIF logistic procedure without any correction method. '),
@@ -1967,7 +1971,7 @@ ui=tagList(
                                  tabsetPanel(
                                    # Summary
                                    tabPanel('Summary',
-                                            h3('Nonlinear regression'),
+                                            h3('Nonlinear regression on standardized total scores'),
                                             p('Nonlinear regression model allows for nonzero lower asymptote - pseudoguessing',
                                               strong('c.'), 'Similarly to logistic regression, also nonlinear regression allows for
                                               detection of uniform and non-uniform DIF by adding a group specific intercept',
@@ -2015,14 +2019,14 @@ ui=tagList(
                                             ),
                                    # Items
                                    tabPanel('Items',
-                                            h3('Nonlinear regression'),
+                                            h3('Nonlinear regression on standardized total scores'),
                                             p('Nonlinear regression model allows for nonzero lower asymptote - pseudoguessing',
                                               strong('c.'), 'Similarly to logistic regression, also nonlinear regression allows
                                               for detection of uniform and non-uniform DIF (Drabinova & Martinkova, 2016) by
                                               adding a group specific intercept', strong('bDIF'), '(uniform DIF) and group specific
                                               interaction', strong('aDIF'), '(non-uniform DIF) into the model and by testing for
                                               their significance.'),
-                                            h4("Plot with Estimated DIF Nonlinear Curve"),
+                                            h4("Plot with estimated DIF nonlinear curve"),
                                             p('Points represent proportion of correct answer with respect to standardized
                                               total score. Their size is determined by count of respondents who answered item correctly.'),
                                             radioButtons('type_plot_DIF_NLR', 'Type',
@@ -2082,7 +2086,7 @@ ui=tagList(
                         tabPanel("IRT Lord",
                                  tabsetPanel(
                                    tabPanel('Summary',
-                                            h3('Lord Test'),
+                                            h3('Lord test for IRT models'),
                                             p('Lord test (Lord, 1980) is based on IRT model
                                               (1PL, 2PL, or 3PL with the same guessing). It uses the
                                               difference between item parameters for the two groups
@@ -2134,14 +2138,14 @@ ui=tagList(
                                             br()
                                             ),
                                    tabPanel('Items',
-                                            h3('Lord Test'),
+                                            h3('Lord test for IRT models'),
                                             p('Lord test (Lord, 1980) is based on IRT model
                                               (1PL, 2PL, or 3PL with the same guessing). It uses the
                                               difference between item parameters for the two groups
                                               to detect DIF. In statistical terms, Lord statistic is
                                               equal to Wald statistic.'),
                                             br(),
-                                            h3('Plot with Estimated DIF Characteristic Curve'),
+                                            h4('Plot with estimated DIF characteristic curve'),
                                             p('NOTE: Plots and tables are based on larger DIF IRT model. '),
                                             radioButtons('type_plot_DIF_IRT_lord', 'Model',
                                                          c("1PL" = '1PL',
@@ -2166,6 +2170,7 @@ ui=tagList(
                                             h4("Equation"),
                                             uiOutput('irtint_lord'),
                                             uiOutput('irteq_lord'),
+                                            h4("Table of parameters"),
                                             fluidRow(column(12, align = "center", tableOutput('tab_coef_DIF_IRT_Lord'))),
                                             br(),
                                             h4("Selected R code"),
@@ -2201,7 +2206,7 @@ ui=tagList(
                         tabPanel("IRT Raju",
                                  tabsetPanel(
                                    tabPanel('Summary',
-                                            h3('Raju Test'),
+                                            h3('Raju test for IRT models'),
                                             p('Raju test (Raju, 1988, 1990) is based on IRT
                                               model (1PL, 2PL, or 3PL with the same guessing). It
                                               uses the area between the item charateristic curves
@@ -2251,13 +2256,13 @@ ui=tagList(
                                                 code('fit')),
                                             br()),
                                    tabPanel('Items',
-                                            h3('Raju Test'),
+                                            h3('Raju test for IRT models'),
                                             p('Raju test (Raju, 1988, 1990) is based on IRT
                                               model (1PL, 2PL, or 3PL with the same guessing). It
                                               uses the area between the item charateristic curves
                                               for the two groups to detect DIF.'),
                                             br(),
-                                            h3('Plot with Estimated DIF Characteristic Curve'),
+                                            h4('Plot with estimated DIF characteristic curve'),
                                             p('NOTE: Plots and tables are based on larger DIF IRT model. '),
                                             radioButtons('type_plot_DIF_IRT_raju', 'Model',
                                                          c("1PL" = '1PL',
@@ -2282,6 +2287,7 @@ ui=tagList(
                                             h4("Equation"),
                                             uiOutput('irtint_raju'),
                                             uiOutput('irteq_raju'),
+                                            h4("Table of parameters"),
                                             fluidRow(column(12, align = "center", tableOutput('tab_coef_DIF_IRT_Raju'))),
                                             br(),
                                             h4("Selected R code"),
@@ -2317,7 +2323,7 @@ ui=tagList(
                                  tabsetPanel(
                                    # Summary
                                    tabPanel('Summary',
-                                            h3('Differential Distractor Functioning with Multinomial Log-linear Regression Model'),
+                                            h3('Differential Distractor Functioning with multinomial log-linear regression Model'),
                                             p('Differential Distractor Functioning (DDF) occurs when people from different
                                               groups but with the same knowledge have different probability of selecting
                                               at least one distractor choice. DDF is here examined by Multinomial Log-linear
@@ -2373,12 +2379,12 @@ ui=tagList(
                                    ),
                                    # Items
                                    tabPanel('Items',
-                                            h3('Differential Distractor Functioning with Multinomial Log-linear Regression Model'),
+                                            h3('Differential Distractor Functioning with multinomial log-linear regression model'),
                                             p('Differential Distractor Functioning (DDF) occurs when people from different
                                               groups but with the same knowledge have different probability of selecting
                                               at least one distractor choice. DDF is here examined by Multinomial Log-linear
                                               Regression model with Z-score and group membership as covariates. '),
-                                            h4("Plot with Estimated DDF Curves"),
+                                            h4("Plot with estimated DDF curves"),
                                             p('Points represent proportion of selected answer with respect to standardized
                                               total score. Size of points is determined by count of respondents who chose particular
                                               answer.'),
@@ -2461,7 +2467,7 @@ ui=tagList(
                 # REPORTS ##############
                 ########################
                 tabPanel("Reports",
-                         h3("Download Report"),
+                         h3("Download report"),
                          p("This shiny app also offers an option to download a report in HTML or PDF format."),
                          p("PDF report creation requires latest version of",
                            a("MiKTeX", href = "https://miktex.org/howto/install-miktex", target = "_blank"),
@@ -2483,9 +2489,7 @@ ui=tagList(
              # REFERENCES ###########
              ########################
              tabPanel("References",
-                      h4('References'),
-                      br(),
-                      br(),
+                      h3('References'),
                       p('Akaike, H. (1974). A New Look at the Statistical Model Identification. IEEE Transactions
                         on Automatic Control, 19(6), 716-723.', a('See online.',
                                                                   href = "http://ieeexplore.ieee.org/abstract/document/1100705/",
@@ -2495,7 +2499,7 @@ ui=tagList(
                         Practice, 34(3), 39-48.', a("See online.",
                                                     href = "http://onlinelibrary.wiley.com/doi/10.1111/emip.12067/full",
                                                     target = "_blank")),
-                      p('Angoff, W. H., & Ford, S. F. (1973). Item‐Race Interaction on a Test of
+                      p('Angoff, W. H., & Ford, S. F. (1973). Item-Race Interaction on a Test of
                         Scholastic Aptitude. Journal of Educational Measurement, 10(2), 95-105.'),
                       p('Bock, R. D. (1972). Estimating Item Parameters and Latent Ability when
                         Responses Are Scored in Two or More Nominal Categories. Psychometrika,
