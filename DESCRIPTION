@@ -23,6 +23,7 @@ Imports:
     nnet,
     psych,
     psychometric,
+    Rcpp,
     reshape2,
     rmarkdown,
     scales,
