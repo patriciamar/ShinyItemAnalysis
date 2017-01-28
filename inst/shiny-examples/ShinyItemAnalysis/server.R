@@ -243,7 +243,7 @@ function(input, output, session) {
   })
 
   # DATA HEAD ######
-  output$headdata <- renderDataTable({
+  output$headdata <- DT::renderDataTable({
 
     test=test_answers()
     name <- c()
@@ -258,7 +258,7 @@ function(input, output, session) {
   options=list(scrollX=TRUE, pageLength=10))
 
   # KEY CONTROL #######
-  output$key <- renderDataTable({
+  output$key <- DT::renderDataTable({
 
     key_table=as.data.frame(t(as.data.frame(test_key())))
     name <- c()
@@ -272,7 +272,7 @@ function(input, output, session) {
   options=list(scrollX=TRUE))
 
   # SCORE 0-1 #####
-  output$sc01 <- renderDataTable({
+  output$sc01 <- DT::renderDataTable({
     a <- test_answers()
     k <- test_key()
 
@@ -1118,7 +1118,7 @@ function(input, output, session) {
   })
 
   # * MODEL COMPARISON ######
-  output$regr_comp_table <- renderDataTable({
+  output$regr_comp_table <- DT::renderDataTable({
     Data <- correct_answ()
     scaledsc <- c(scale(scored_test()))
 
@@ -1199,15 +1199,13 @@ function(input, output, session) {
                        "Chisq-value", "p-value",
                        "BEST AIC", "BEST BIC", "BEST LR")
 
-    tab <- datatable(tab, rownames = T,
-                      options = list(
-                        autoWidth = T,
-                        columnDefs = list(list(width = '80px', targets = list(0)),
-                                          list(width = '60px', targets = list(1:ncol(tab))),
-                                          list(className = 'dt-center', targets = "_all"),
-                                          list(dom = 't')),
-                        scrollX = T
-                      ))
+    tab <- DT::datatable(tab, rownames = T,
+                         options = list(autoWidth = T,
+                                        columnDefs = list(list(width = '80px', targets = list(0)),
+                                                          list(width = '60px', targets = list(1:ncol(tab))),
+                                                          list(className = 'dt-center', targets = "_all"),
+                                                          list(dom = 't')),
+                                        scrollX = T))
     tab
   })
 
