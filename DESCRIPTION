@@ -25,6 +25,7 @@ Imports:
     psychometric,
     reshape2,
     rmarkdown,
+    scales,
     shiny,
     shinyjs,
     stringr,
