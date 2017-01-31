@@ -9,7 +9,7 @@
 #' @author
 #' Cestmir Stuka \cr
 #' First Faculty of Medicine, Charles University in Prague \cr
-#' 
+#'
 #' Martin Vejrazka \cr
 #' First Faculty of Medicine, Charles University in Prague \cr
 #'
@@ -19,11 +19,12 @@
 #'
 #' Jakub Houdek \cr
 #' Institute of Computer Science, The Czech Academy of Sciences \cr
+#' The Faculty of Informatics and Statistics, University of Economics, Prague \cr
 #' houdek.james@gmail.com \cr
 #'
 #' @references
 #' Stuka, C. Vejrazka, M., Martinkova, P. Komenda, M. and Stepanek, L. (2016). The Use of  Test and Item Analisis for Improvement of Tests. Workshop held at conference MEFANET, 2016, Brno, Czech Republic.
-#' 
+#'
 #' @keywords datasets
 #'
 #' @seealso \code{\link{dataMedicaltest}}, \code{\link{dataMedicalkey}}

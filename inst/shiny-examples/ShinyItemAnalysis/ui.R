@@ -343,13 +343,59 @@ ui=tagList(
                                  br()
                         )
                         ),
+             ############################
+             # CORRELATION STRUCTURE ####
+             ############################
+             navbarMenu('Correlation structure',
+                        tabPanel("Correlation structure",
+                                  h3("Correlation structure"),
+                                  h4("Polychoric correlation heat map"),
+                                  p('Polychoric correlation heat map is a correlation plot which displays a polychoric
+                                     correlations of items. The size and shade of circles indicate how much the
+                                     items are correlated (larger and darker
+                                     circle means larger correlation). The color of circles indicates in which way the
+                                     items are correlated - blue color shows possitive correlation and red color shows
+                                     negative correlation.'),
+                                 plotOutput('corr_plot'),
+                                 br(),
+                                 h4("Scree plot"),
+                                 p('A scree plot displays the eigenvalues associated with an component or a factor in descending order
+                                    versus the number of the component or factor. '),
+                                 plotOutput('scree_plot'),
+                                 h4("Selected R code"),
+                                 div(code('library(corrplot, difNLR, psych)'),
+                                     br(),
+                                     code('data(GMAT)'),
+                                     br(),
+                                     code('data  <- GMAT[, colnames(GMAT) != "group"]'),
+                                     br(),
+                                     br(),
+                                     code('# Correlation plot'),
+                                     br(),
+                                     code('corP <- polychoric(data)'),
+                                     br(),
+                                     code('corrplot(corP$rho)'),
+                                     br(),
+                                     code('corP$rho # Correlation matrix'),
+                                     br(),
+                                     br(),
+                                     code('# Scree plot'),
+                                     br(),
+                                     code('plot(1:length(eigen(corP$rho)$values), eigen(corP$rho)$values,
+                                          ylab = "Eigen value", xlab = "Component Number")'),
+                                     br(),
+                                     code('lines(1:length(eigen(corP$rho)$values), eigen(corP$rho)$values)'),
+                                     br(),
+                                     code('eigen(corP$rho) # Eigen values and vectors')),
+                                 br()
+                        )
+                        ),
              ###########################
              # TRADITIONAL ANALYSIS ####
              ###########################
              navbarMenu('Traditional analysis',
                         # ITEM ANALYSIS
                         tabPanel("Item analysis",
-                                 br(),
                                  h3("Traditional item analysis"),
                                  p('Traditional item analysis uses proportions of correct answers or correlations to estimate item properties.'),
                                  h4("Item difficulty/discrimination graph"),
@@ -467,49 +513,6 @@ ui=tagList(
                                      code('DistractorAnalysis(data, key, num.groups = 3, p.table = T)[[1]]'),
                                      br(),
                                      code('tab')),
-                                 br()
-                                 ),
-                        # CORRELATION STRUCTURE
-                        tabPanel("Correlation structure",
-                                 h3("Correlation structure"),
-                                 h4("Polychoric correlation heat map"),
-                                 p('Polychoric correlation heat map is a correlation plot which displays a polychoric
-                                    correlations of items. The size and shade of circles indicate how much the
-                                    items are correlated (larger and darker
-                                   circle means larger correlation). The color of circles indicates in which way the
-                                   items are correlated - blue color shows possitive correlation and red color shows
-                                   negative correlation.'),
-                                 plotOutput('corr_plot'),
-                                 br(),
-                                 h4("Scree plot"),
-                                 p('A scree plot displays the eigenvalues associated with an component or a factor in descending order
-                                   versus the number of the component or factor. '),
-                                 plotOutput('scree_plot'),
-                                 h4("Selected R code"),
-                                 div(code('library(corrplot, difNLR, psych)'),
-                                     br(),
-                                     code('data(GMAT)'),
-                                     br(),
-                                     code('data  <- GMAT[, colnames(GMAT) != "group"]'),
-                                     br(),
-                                     br(),
-                                     code('# Correlation plot'),
-                                     br(),
-                                     code('corP <- polychoric(data)'),
-                                     br(),
-                                     code('corrplot(corP$rho)'),
-                                     br(),
-                                     code('corP$rho # Correlation matrix'),
-                                     br(),
-                                     br(),
-                                     code('# Scree plot'),
-                                     br(),
-                                     code('plot(1:length(eigen(corP$rho)$values), eigen(corP$rho)$values,
-                                          ylab = "Eigen value", xlab = "Component Number")'),
-                                     br(),
-                                     code('lines(1:length(eigen(corP$rho)$values), eigen(corP$rho)$values)'),
-                                     br(),
-                                     code('eigen(corP$rho) # Eigen values and vectors')),
                                  br()
                                  )
                         ),
@@ -800,7 +803,7 @@ ui=tagList(
                         "----",
                         # MULTINOMIAL
                         tabPanel("Multinomial",
-                                 h3("Multinomial Regression on standardized total scores"),
+                                 h3("Multinomial regression on standardized total scores"),
                                  p('Various regression models may be fitted to describe
                                    item properties in more detail.',
                                    strong('Multinomial regression'),'allows for simultaneous modelling of probability of choosing
