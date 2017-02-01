@@ -11,7 +11,7 @@ data(dataMedical)
 }
 \description{
 The \code{dataMedical} data set consists of the responses of 3,204 subjects
-to admission test to medical school in the Czech republic.
+to admission test to a medical school.
 It contains 100 items. A correct answer is coded as 1 and incorrect answer as 0.
 }
 \author{
