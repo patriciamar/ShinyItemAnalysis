@@ -293,6 +293,16 @@ function(input, output, session) {
   rownames = F,
   options=list(scrollX=TRUE, pageLength=10))
 
+  # GROUP CONTROL #######
+  output$group <- DT::renderDataTable({
+    group_table <- t(as.data.frame(DIF_groups()))
+    colnames(group_table) <- 1:ncol(group_table)
+
+    group_table
+
+  },
+  rownames = F,
+  options = list(scrollX = TRUE))
 
   ##### ITEM SLIDERS #####
 
@@ -465,6 +475,18 @@ function(input, output, session) {
     corr_plotInput()
   })
 
+  # ** DB Correlation plot ####
+  output$DP_corr_plot <- downloadHandler(
+    filename =  function() {
+      paste("plot", input$name, ".png", sep = "")
+    },
+    content = function(file) {
+      png(file, height = 800, width = 800, res = 100)
+      corr_plotInput()
+      dev.off()
+    }
+  )
+
   # ** Scree plot ######
   scree_plotInput <- reactive({
     corP <- corr_structure()
@@ -491,6 +513,16 @@ function(input, output, session) {
   output$scree_plot <- renderPlot({
     scree_plotInput()
   })
+
+  # ** DB Scree plot ####
+  output$DP_scree_plot <- downloadHandler(
+    filename =  function() {
+      paste("plot", input$name, ".png", sep = "")
+    },
+    content = function(file) {
+      ggsave(file, plot = scree_plotInput(), device = "png", height = 3, width = 9, dpi = 160)
+    }
+  )
 
   ############################
   # TRADITIONAL ANALYSIS #####
@@ -2037,11 +2069,8 @@ function(input, output, session) {
 
   # *** CC ####
   oneparamirtInput_mirt <- reactive({
-    g<-plot(one_param_irt_mirt(), type = "trace", facet_items = F)
+    g <- plot(one_param_irt_mirt(), type = "trace", facet_items = F)
     g
-    # g <- recordPlot()
-    # plot.new()
-    # g
   })
 
   output$oneparamirt_mirt <- renderPlot({
@@ -2062,9 +2091,6 @@ function(input, output, session) {
   # *** IIC ####
   oneparamirtiicInput_mirt <- reactive({
     plot(one_param_irt_mirt(), type = "infotrace", facet_items = F)
-    # g <- recordPlot()
-    # plot.new()
-    # g
   })
 
   output$oneparamirtiic_mirt <- renderPlot({
