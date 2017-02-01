@@ -11,6 +11,7 @@ An interactive Shiny application for running Item Analysis.
 }
 \examples{
 \dontrun{
+rm(list = ls())
 startShinyItemAnalysis()
 }
 }

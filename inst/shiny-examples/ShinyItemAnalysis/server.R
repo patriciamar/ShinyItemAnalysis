@@ -15,6 +15,7 @@ require(latticeExtra)
 require(ltm)
 require(mirt)
 require(moments)
+require(msm)
 require(nnet)
 require(psych)
 require(psychometric)
@@ -1899,11 +1900,8 @@ function(input, output, session) {
 
   # *** IIC ####
   raschiicInput_mirt <- reactive({
-    g<-plot(rasch_model_mirt(), type = "infotrace", facet_items = F)
+    g <- plot(rasch_model_mirt(), type = "infotrace", facet_items = F)
     g
-    # g <- recordPlot()
-    # plot.new()
-    # g
   })
 
   output$raschiic_mirt <- renderPlot({
@@ -1923,11 +1921,8 @@ function(input, output, session) {
 
   # *** TIF ####
   raschtifInput_mirt <- reactive({
-    g<-plot(rasch_model_mirt(), type = "infoSE")
+    g <- plot(rasch_model_mirt(), type = "infoSE")
     g
-    # g <- recordPlot()
-    # plot.new()
-    # g
   })
 
   output$raschtif_mirt <- renderPlot({
@@ -1949,14 +1944,19 @@ function(input, output, session) {
   # *** Table of parameters ####
   raschcoefInput_mirt <- reactive({
     fit <- rasch_model_mirt()
-    coeftab <- coef(fit)
-    tab <- cbind(sapply(1:(length(coeftab) - 1), function(i) coeftab[[i]][1, "d"]),
-                 sqrt(diag(vcov(fit)))[1:(length(coeftab) - 1)])
-    rownames(tab) <- paste("Item", 1:nrow(tab))
+
+    par_tab <- coef(fit, IRTpars = T, simplify = T)$items[, "b"]
+    se_list <- coef(fit, printSE = T)
+    se_tab <- sapply(1:length(par_tab), function(i) se_list[[i]]["SE", "d"])
+
+    tab <- cbind(par_tab, se_tab)
+
     tab <- round(tab, 3)
 
     itemfittab <- round(itemfit(fit)[, 2:4], 3)
     tab <- data.frame(tab, itemfittab)
+
+    rownames(tab) <- paste("Item", 1:nrow(tab))
     colnames(tab) <- c("b", "SD(b)", "SX2-value", "df", "p-value")
 
     tab
@@ -2132,16 +2132,29 @@ function(input, output, session) {
   # *** Table of parameters ####
   oneparamirtcoefInput_mirt <- reactive({
     fit <- one_param_irt_mirt()
-    coeftab <- coef(fit)
-    tab <- cbind(
-      sapply(1:(length(coeftab) - 1), function(i) coeftab[[i]][1, "a1"]),
-      rep(sqrt(diag(vcov(fit)))[1], (length(coeftab) - 1)),
-      sapply(1:(length(coeftab) - 1), function(i) coeftab[[i]][1, "d"]),
-                 sqrt(diag(vcov(fit)))[2:(length(coeftab))])
-    rownames(tab) <- paste("Item", 1:nrow(tab))
+
+    par_tab <- coef(fit, IRTpars = T, simplify = T)$items[, c("a", "b")]
+
+    parvec <- extract.mirt(fit, 'parvec')
+    vcov <- vcov(fit)
+
+    se_tab <- c()
+    for (item in 1:nrow(par_tab)){
+      pick <- c(1, item + 1)
+      ad <- parvec[pick]
+      v <- vcov[pick, pick]
+
+      SEs <- deltamethod(list(~ x1, ~ -x2/x1), ad, v)
+      names(SEs) <- c('a', 'b')
+      se_tab <- rbind(se_tab, SEs)
+    }
+
+    tab <- cbind(par_tab, se_tab)[, c(1, 3, 2, 4)]
 
     itemfittab <- itemfit(fit)[, 2:4]
     tab <- data.frame(tab, itemfittab)
+
+    rownames(tab) <- paste("Item", 1:nrow(tab))
     colnames(tab) <- c("a", "SD(a)", "b", "SD(b)", "SX2-value", "df", "p-value")
 
     tab <- round(tab, 3)
@@ -2299,9 +2312,6 @@ function(input, output, session) {
   # *** TIF ####
   twoparamirttifInput_mirt <- reactive({
     plot(two_param_irt_mirt(), type = "infoSE")
-    # g <- recordPlot()
-    # plot.new()
-    # g
   })
 
   output$twoparamirttif_mirt <- renderPlot({
@@ -2323,17 +2333,29 @@ function(input, output, session) {
   # *** Table of parameters ####
   twoparamirtcoefInput_mirt <- reactive({
     fit <- two_param_irt_mirt()
-    coeftab <- coef(fit)
-    tab <- cbind(
-      sapply(1:(length(coeftab) - 1), function(i) coeftab[[i]][1, "a1"]),
-      sqrt(diag(vcov(fit)))[seq(1, (2*length(coeftab) - 2), 2)],
-      sapply(1:(length(coeftab) - 1), function(i) coeftab[[i]][1, "d"]),
-      sqrt(diag(vcov(fit)))[seq(2, (2*length(coeftab) - 2), 2)])
 
-    rownames(tab) <- paste("Item", 1:nrow(tab))
+    par_tab <- coef(fit, IRTpars = T, simplify = T)$items[, c("a", "b")]
+
+    parvec <- extract.mirt(fit, 'parvec')
+    vcov <- vcov(fit)
+
+    se_tab <- c()
+    for (item in seq(1, 2*nrow(par_tab), 2)){
+      pick <- c(item, item + 1)
+      ad <- parvec[pick]
+      v <- vcov[pick, pick]
+
+      SEs <- deltamethod(list(~ x1, ~ -x2/x1), ad, v)
+      names(SEs) <- c('a', 'b')
+      se_tab <- rbind(se_tab, SEs)
+    }
+
+    tab <- cbind(par_tab, se_tab)[, c(1, 3, 2, 4)]
 
     itemfittab <- itemfit(fit)[, 2:4]
     tab <- data.frame(tab, itemfittab)
+
+    rownames(tab) <- paste("Item", 1:nrow(tab))
     colnames(tab) <- c("a", "SD(a)", "b", "SD(b)", "SX2-value", "df", "p-value")
 
     tab <- round(tab, 3)
@@ -2411,9 +2433,6 @@ function(input, output, session) {
   # *** CC ####
   threeparamirtInput_mirt <- reactive({
     plot(three_param_irt_mirt(), type = "trace", facet_items = F)
-    # g <- recordPlot()
-    # plot.new()
-    # g
   })
 
   output$threeparamirt_mirt <- renderPlot({
@@ -2434,9 +2453,6 @@ function(input, output, session) {
   # *** IIC ####
   threeparamirtiicInput_mirt <- reactive({
     plot(three_param_irt_mirt(), type = "infotrace", facet_items = F)
-    # g <- recordPlot()
-    # plot.new()
-    # g
   })
 
   output$threeparamirtiic_mirt <- renderPlot({
@@ -2457,9 +2473,6 @@ function(input, output, session) {
   # *** TIF ####
   threeparamirttifInput_mirt <- reactive({
     plot(three_param_irt_mirt(), type = "infoSE")
-    # g <- recordPlot()
-    # plot.new()
-    # g
   })
 
   output$threeparamirttif_mirt <- renderPlot({
@@ -2481,19 +2494,29 @@ function(input, output, session) {
   # *** Table of parameters ####
   threeparamirtcoefInput_mirt <- reactive({
     fit <- three_param_irt_mirt()
-    coeftab <- coef(fit)
-    tab <- cbind(
-      sapply(1:(length(coeftab) - 1), function(i) coeftab[[i]][1, "a1"]),
-      sqrt(diag(vcov(fit)))[seq(1, (3*length(coeftab) - 3), 3)],
-      sapply(1:(length(coeftab) - 1), function(i) coeftab[[i]][1, "d"]),
-      sqrt(diag(vcov(fit)))[seq(2, (3*length(coeftab) - 3), 3)],
-      sapply(1:(length(coeftab) - 1), function(i) coeftab[[i]][1, "g"]),
-      sqrt(diag(vcov(fit)))[seq(3, (3*length(coeftab) - 3), 3)]
-    )
-    rownames(tab) <- paste("Item", 1:nrow(tab))
+
+    par_tab <- coef(fit, IRTpars = T, simplify = T)$items[, c("a", "b", "g")]
+
+    parvec <- extract.mirt(fit, 'parvec')
+    vcov <- vcov(fit)
+
+    se_tab <- c()
+    for (item in seq(1, 3*nrow(par_tab), 3)){
+      pick <- c(item, item + 1, item + 2)
+      ad <- parvec[pick]
+      v <- vcov[pick, pick]
+
+      SEs <- deltamethod(list(~ x1, ~ -x2/x1, ~ x3), ad, v)
+      names(SEs) <- c('a', 'b', 'c')
+      se_tab <- rbind(se_tab, SEs)
+    }
+
+    tab <- cbind(par_tab, se_tab)[, c(1, 4, 2, 5, 3, 6)]
 
     itemfittab <- itemfit(fit)[, 2:4]
     tab <- data.frame(tab, itemfittab)
+
+    rownames(tab) <- paste("Item", 1:nrow(tab))
     colnames(tab) <- c("a", "SD(a)", "b", "SD(b)", "c", "SD(c)", "SX2-value", "df", "p-value")
 
     tab <- round(tab, 3)
@@ -2638,8 +2661,7 @@ function(input, output, session) {
     key <- adj_data_bock()$key
 
 
-    sv <- mirt(data, 1, 'nominal', pars = 'values', verbose = F)
-    head(sv)
+    sv <- mirt(data, 1, 'nominal', pars = 'values', verbose = F, SE = T)
 
     # set all values to 0 and estimated
     sv$value[grepl('ak', sv$name)] <- 0
@@ -2686,9 +2708,6 @@ function(input, output, session) {
   # *** IIC ####
   bock_IIC_Input <- reactive({
     plot(bock_irt_mirt(), type = "infotrace", facet_items = F)
-    # g <- recordPlot()
-    # plot.new()
-    # g
   })
   output$bock_IIC <- renderPlot({
     bock_IIC_Input()
@@ -2707,9 +2726,6 @@ function(input, output, session) {
   # *** TIF ####
   bock_TIF_Input <- reactive({
     plot(bock_irt_mirt(), type = "infoSE")
-    # g <- recordPlot()
-    # plot.new()
-    # g
   })
   output$bock_TIF <- renderPlot({
     bock_TIF_Input()
@@ -2750,10 +2766,16 @@ function(input, output, session) {
     coeftab <- coef(fit, printSE = T)
     m <- length(coeftab) - 1
 
+    print(coeftab)
     dims <- sapply(coeftab, dim)[, -(m+1)]
     if (length(unique(dims[2, ])) == 1){
       partab <- t(sapply(1:m, function(i) coeftab[[i]][1, ]))
-      setab <- t(sapply(1:m, function(i) coeftab[[i]][2, ]))
+      if (unique(dims[1, ]) == 1){
+        setab <- matrix(NA, nrow = m, ncol = ncol(partab))
+      } else {
+        setab <- t(sapply(1:m, function(i) coeftab[[i]][2, ]))
+      }
+
       n <- ncol(partab)
       tab <- c()
       for (i in 1:n){
@@ -3395,9 +3417,16 @@ function(input, output, session) {
   output$tab_coef_DIF_NLR <- renderTable({
     item <- input$difnlrSlider
     fit <- model_DIF_NLR_plot()
+    DIFitems <- fit$DIFitems
 
-    tab_coef <- fit$nlrPAR[item, c("a", "b", "aDif", "bDif", "c")]
-    tab_sd <- fit$nlrSE[item, c("a", "b", "aDif", "bDif", "c")]
+    if (DIFitems == "No DIF item detected"){
+      tab_coef <- unlist(c(fit$nlrPAR[item, c("a", "b")], 0, 0, fit$nlrPAR[item, "c"]))
+      tab_sd <- unlist(c(fit$nlrSE[item, c("a", "b")], 0, 0, fit$nlrSE[item, "c"]))
+    } else {
+      tab_coef <- fit$nlrPAR[item, c("a", "b", "aDif", "bDif", "c")]
+      tab_sd <- fit$nlrSE[item, c("a", "b", "aDif", "bDif", "c")]
+    }
+
 
     tab <- t(rbind(tab_coef, tab_sd))
 
