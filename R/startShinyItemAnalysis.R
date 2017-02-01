@@ -28,6 +28,7 @@
 #'
 #' @examples
 #' \dontrun{
+#' rm(list = ls())
 #' startShinyItemAnalysis()
 #' }
 #' @export

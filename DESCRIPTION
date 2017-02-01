@@ -20,6 +20,7 @@ Imports:
     ltm,
     mirt,
     moments,
+    msm,
     nnet,
     psych,
     psychometric,

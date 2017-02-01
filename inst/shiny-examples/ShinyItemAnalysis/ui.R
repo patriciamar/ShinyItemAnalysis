@@ -136,6 +136,7 @@ ui=tagList(
                       code('library(ltm)'), br(),
                       code('library(mirt)'), br(),
                       code('library(moments)'), br(),
+                      code('library(msm)'), br(),
                       code('library(nnet)'), br(),
                       code('library(psych)'), br(),
                       code('library(psychometric)'), br(),
@@ -916,7 +917,7 @@ ui=tagList(
              navbarMenu("IRT models",
                         # 1PL (RASCH)
                         tabPanel("1PL (Rasch)",
-                                 h3("One Parameter Item Response Theory Model"),
+                                 h3("One parameter Item Response Theory model"),
                                  p('Item Response Theory (IRT) models are mixed-effect regression models in which
                                    student ability (theta) is assumed to be a random effect and is estimated together with item
                                    paramters. Ability (theta) is often assumed to follow normal distibution.'),
@@ -997,7 +998,7 @@ ui=tagList(
                                  ),
                         # 2PL
                         tabPanel("2PL ",
-                                 h3("Two Parameter Item Response Theory Model"),
+                                 h3("Two parameter Item Response Theory model"),
                                  p('Item Response Theory (IRT) models are mixed-effect regression models in which
                                    student ability (theta) is assumed to be a random effect and is estimated together with item
                                    paramters. Ability (theta) is often assumed to follow normal distibution.'),
@@ -1073,7 +1074,7 @@ ui=tagList(
                                  ),
                         # 3PL
                         tabPanel("3PL ",
-                                 h3("Three Parameter Item Response Theory Model"),
+                                 h3("Three parameter Item Response Theory model"),
                                  p('Item Response Theory (IRT) models are mixed-effect regression models in which
                                    student ability (theta) is assumed to be a random effect and is estimated together with item
                                    paramters. Ability (theta) is often assumed to follow normal distibution.'),
@@ -1154,7 +1155,7 @@ ui=tagList(
              navbarMenu("IRT models with mirt",
                         # RASCH
                         tabPanel("Rasch",
-                                 h3("Rasch Item Response Theory Model"),
+                                 h3("Rasch Item Response Theory model"),
                                  p('Item Response Theory (IRT) models are mixed-effect regression models in which
                                    student ability (theta) is assumed to be a random effect and is estimated together with item
                                    paramters. Ability (theta) is often assumed to follow normal distibution.'),
@@ -1218,7 +1219,9 @@ ui=tagList(
                                      br(),
                                      code('# Coefficients'),
                                      br(),
-                                     code('coef(fit)'),
+                                     code('coef(fit, simplify = TRUE)'),
+                                     br(),
+                                     code('coef(fit, IRTpars = TRUE, simplify = TRUE)'),
                                      br(),
                                      code('# Item fit statistics'),
                                      br(),
@@ -1242,7 +1245,7 @@ ui=tagList(
                                  ),
                         # 1 PL IRT
                         tabPanel("1PL",
-                                 h3("One Parameter Item Response Theory Model"),
+                                 h3("One parameter Item Response Theory model"),
                                  p('Item Response Theory (IRT) models are mixed-effect regression models in which
                                    student ability (theta) is assumed to be a random effect and is estimated together with item
                                    paramters. Ability (theta) is often assumed to follow normal distibution.'),
@@ -1307,7 +1310,9 @@ ui=tagList(
                                      br(),
                                      code('# Coefficients'),
                                      br(),
-                                     code('coef(fit)'),
+                                     code('coef(fit, simplify = TRUE)'),
+                                     br(),
+                                     code('coef(fit, IRTpars = TRUE, simplify = TRUE)'),
                                      br(),
                                      code('# Item fit statistics'),
                                      br(),
@@ -1331,7 +1336,7 @@ ui=tagList(
                                  ),
                         # 2PL
                         tabPanel("2PL ",
-                                 h3("Two Parameter Item Response Theory Model"),
+                                 h3("Two parameter Item Response Theory model"),
                                  p('Item Response Theory (IRT) models are mixed-effect regression models in which
                                    student ability (theta) is assumed to be a random effect and is estimated together with item
                                    paramters. Ability (theta) is often assumed to follow normal distibution.'),
@@ -1385,7 +1390,9 @@ ui=tagList(
                                      br(),
                                      code('# Coefficients'),
                                      br(),
-                                     code('coef(fit)'),
+                                     code('coef(fit, simplify = TRUE)'),
+                                     br(),
+                                     code('coef(fit, IRTpars = TRUE, simplify = TRUE)'),
                                      br(),
                                      code('# Item fit statistics'),
                                      br(),
@@ -1402,7 +1409,7 @@ ui=tagList(
                                  ),
                         # 3PL
                         tabPanel("3PL ",
-                                 h3("Three Parameter Item Response Theory Model"),
+                                 h3("Three parameter Item Response Theory model"),
                                  p('Item Response Theory (IRT) models are mixed-effect regression models in which
                                    student ability (theta) is assumed to be a random effect and is estimated together with item
                                    paramters. Ability (theta) is often assumed to follow normal distibution.'),
@@ -1456,7 +1463,9 @@ ui=tagList(
                                      br(),
                                      code('# Coefficients'),
                                      br(),
-                                     code('coef(fit)'),
+                                     code('coef(fit, simplify = TRUE)'),
+                                     br(),
+                                     code('coef(fit, IRTpars = TRUE, simplify = TRUE)'),
                                      br(),
                                      code('# Item fit statistics'),
                                      br(),
@@ -1472,9 +1481,9 @@ ui=tagList(
                                  br()
                                  ),
                         "----",
-                        # MODELS COMPARISON
-                        tabPanel("Models comparison ",
-                                 h3("Item Response Theory Models selection"),
+                        # MODEL COMPARISON
+                        tabPanel("Model comparison ",
+                                 h3("Item Response Theory model selection"),
                                  p('Item Response Theory (IRT) models are mixed-effect regression models in which
                                    student ability (theta) is assumed to be a random effect and is estimated together with item
                                    paramters. Ability (theta) is often assumed to follow normal distibution.'),
@@ -1526,7 +1535,7 @@ ui=tagList(
                         "----",
                         # BOCK'S NOMINAL MODEL
                         tabPanel("Bock's nominal model",
-                                 h3("Bock's Nominal Item Response Theory Model"),
+                                 h3("Bock's nominal Item Response Theory model"),
                                  p('The nominal response model (NRM) was introduced by Bock (1972) as a way to model
                                    responses to items with two or more nominal categories. This model is suitable for
                                    multiple-choice items with no particular ordering of distractors. The correct answer
@@ -1582,7 +1591,9 @@ ui=tagList(
                                      br(),
                                      code('# Coefficients'),
                                      br(),
-                                     code('coef(fit)'),
+                                     code('coef(fit, simplify = TRUE)'),
+                                     br(),
+                                     code('coef(fit, IRTpars = TRUE, simplify = TRUE)'),
                                      br(),
                                      code('# Factor scores vs Standardized total scores'),
                                      br(),
