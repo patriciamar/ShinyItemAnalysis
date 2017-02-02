@@ -5,10 +5,13 @@
 require(corrplot)
 require(CTT)
 require(deltaPlotR)
+require(DT)
 require(difNLR)
 require(difR)
 require(ggplot2)
 require(grid)
+require(gridExtra)
+require(latticeExtra)
 require(ltm)
 require(mirt)
 require(moments)
@@ -16,10 +19,10 @@ require(nnet)
 require(psych)
 require(psychometric)
 require(reshape2)
-require(stringr)
+require(rmarkdown)
 require(ShinyItemAnalysis)
 require(shinyjs)
-require(rmarkdown)
+require(stringr)
 require(WrightMap)
 
 ###########
@@ -202,24 +205,22 @@ function(input, output, session) {
         if (is.null(input$key)){
           key <- "missing"
         } else {
-          key <- read.csv(input$key$datapath, header = input$header)
-          key <- as.character(key[[1]])
+          key <- read.csv(input$key$datapath, header = input$header,
+                          sep = input$sep)
+          key <- as.character(unlist(key))
         }
         if (is.null(input$groups)){
-          print(group)
           group <- "missing"
-          print(group)
         } else {
-          print(group)
-          group <- read.csv(input$groups$datapath, header = input$header)
-          group <- as.vector(group[[1]])
-          print(group)
+          group <- read.csv(input$groups$datapath, header = input$header,
+                            sep = input$sep)
+          group <- unlist(group)
         }
       }
 
-      dataset$answers<-answ
-      dataset$key<-key
-      dataset$group<-group
+      dataset$answers <- answ
+      dataset$key <- key
+      dataset$group <- group
 
     }
   )
@@ -244,7 +245,7 @@ function(input, output, session) {
   })
 
   # DATA HEAD ######
-  output$headdata <- renderDataTable({
+  output$headdata <- DT::renderDataTable({
 
     test=test_answers()
     name <- c()
@@ -254,10 +255,12 @@ function(input, output, session) {
     colnames(test) <- name
     test
 
-  }, options=list(scrollX=TRUE, pageLength=10))
+  },
+  rownames = F,
+  options=list(scrollX=TRUE, pageLength=10))
 
   # KEY CONTROL #######
-  output$key <- renderDataTable({
+  output$key <- DT::renderDataTable({
 
     key_table=as.data.frame(t(as.data.frame(test_key())))
     name <- c()
@@ -266,11 +269,12 @@ function(input, output, session) {
     }
     colnames(key_table) <- name
     key_table
-
-  }, options=list(scrollX=TRUE))
+  },
+  rownames = F,
+  options=list(scrollX=TRUE))
 
   # SCORE 0-1 #####
-  output$sc01 <- renderDataTable({
+  output$sc01 <- DT::renderDataTable({
     a <- test_answers()
     k <- test_key()
 
@@ -285,7 +289,9 @@ function(input, output, session) {
 
     out <- (cbind(correct,sc))
     out
-  }, options=list(scrollX=TRUE, pageLength=10))
+  },
+  rownames = F,
+  options=list(scrollX=TRUE, pageLength=10))
 
 
   ##### ITEM SLIDERS #####
@@ -1114,7 +1120,7 @@ function(input, output, session) {
   })
 
   # * MODEL COMPARISON ######
-  regr_comp_tableInput <- reactive({
+  output$regr_comp_table <- DT::renderDataTable({
     Data <- correct_answ()
     scaledsc <- c(scale(scored_test()))
 
@@ -1186,20 +1192,24 @@ function(input, output, session) {
                  bestBIC,
                  bestLR)
 
-    rownames(tab) <- c("AIC 2PL", "AIC 3PL", "BIC 2PL", "BIC 3PL", "LR X2", "LR p-value",
+
+
+    tab <- as.data.frame(tab)
+    colnames(tab) <- paste("i", 1:ncol(tab))
+    rownames(tab) <- c("AIC 2PL", "AIC 3PL",
+                       "BIC 2PL", "BIC 3PL",
+                       "Chisq-value", "p-value",
                        "BEST AIC", "BEST BIC", "BEST LR")
 
+    tab <- DT::datatable(tab, rownames = T,
+                         options = list(autoWidth = T,
+                                        columnDefs = list(list(width = '80px', targets = list(0)),
+                                                          list(width = '60px', targets = list(1:ncol(tab))),
+                                                          list(className = 'dt-center', targets = "_all"),
+                                                          list(dom = 't')),
+                                        scrollX = T))
     tab
   })
-
-  # Table to print
-  output$regr_comp_table <- renderTable({
-    tab <- regr_comp_tableInput()
-    tab
-  },
-  include.rownames = T,
-  include.colnames = T
-  )
 
   # * MULTINOMIAL ######
   # ** Model ####
@@ -1222,14 +1232,21 @@ function(input, output, session) {
     stotal <- c(scale(scored_test()))
     i <- input$multiSlider
 
+    data <- sapply(1:ncol(data), function(i) as.factor(data[, i]))
+
     fitM <- multinom(relevel(as.factor(data[, i]),
                              ref = paste(k[i])) ~ stotal,
                      trace = F)
 
     pp <- fitted(fitM)
+    if(ncol(pp) == 1){
+      pp <- cbind(pp, 1 - pp)
+      colnames(pp) <- c("0", "1")
+    }
     stotals <- rep(stotal, length(levels(relevel(as.factor(data[, i]),
                                                  ref = paste(k[i])))))
     df <- cbind(melt(pp), stotals)
+    df$Var2 <- relevel(as.factor(df$Var2), ref = paste(k[i]))
     df2 <- data.frame(table(data[, i], stotal),
                       y = data.frame(prop.table(table(data[, i], stotal), 2))[, 3])
     df2$stotal <- as.numeric(levels(df2$stotal))[df2$stotal]
@@ -1267,31 +1284,35 @@ function(input, output, session) {
 
   multiplotReportInput<-reactive({
     graflist=list()
+    key <- test_key()
+    k <- t(as.data.frame(test_key()))
+    data <- test_answers()
+    data <- sapply(1:ncol(data), function(i) as.factor(data[, i]))
+    stotal <- c(scale(scored_test()))
 
-    for (i in 1:length(test_key())) {
-      k <- t(as.data.frame(test_key()))
+    for (i in 1:length(key)) {
 
-      stotal <- c(scale(scored_test()))
-
-
-      fitM <- multinom(relevel(as.factor(test_answers()[, i]),
+      fitM <- multinom(relevel(as.factor(data[, i]),
                                ref = paste(k[i])) ~ stotal,
                        trace = F)
 
-      pp <- fitted(fitM)
 
-      stotals <- rep(stotal, length(levels(relevel(as.factor(test_answers()[, i]),
+      pp <- fitted(fitM)
+      if(ncol(pp) == 1){
+        pp <- cbind(pp, 1 - pp)
+        colnames(pp) <- c("0", "1")
+      }
+      stotals <- rep(stotal, length(levels(relevel(as.factor(data[, i]),
                                                    ref = paste(k[i])))))
       df <- cbind(melt(pp), stotals)
-
-
-      df2 <- data.frame(table(test_answers()[, i], stotal),
-                        y = data.frame(prop.table(table(test_answers()[, i], stotal), 2))[, 3])
+      df$Var2 <- relevel(as.factor(df$Var2), ref = paste(k[i]))
+      df2 <- data.frame(table(data[, i], stotal),
+                        y = data.frame(prop.table(table(data[, i], stotal), 2))[, 3])
       df2$stotal <- as.numeric(levels(df2$stotal))[df2$stotal]
       df2$Var2 <- relevel(df2$Var1, ref = paste(k[i]))
 
 
-      g<-ggplot() +
+      g <- ggplot() +
         geom_line(data = df,
                   aes(x = stotals , y = value,
                       colour = Var2, linetype = Var2), size = 1) +
@@ -1370,18 +1391,32 @@ function(input, output, session) {
     koef <- summary(multinomial_model())$coefficients
     txt  <- c()
 
-    for (i in 1:nrow(koef)){
-      txt[i] <- paste (
-        "A one-unit increase in the z-score (one SD increase in original
+    if(is.null(dim(koef))){
+      m <- length(koef)
+      txt <-  paste (
+        "A one-unit increase in the Z-score (one SD increase in original
         scores)  is associated with the decrease in the log odds of
         answering the item "
-        ,"<b>", row.names(koef)[i], "</b>", "vs.", "<b>",
+        ,"<b> 0 </b>", "vs.", "<b> 1 </b>", " in the amount of ",
+        "<b>", round(koef[2], 2), "</b>", '<br/>')
+    } else {
+      m <- nrow(koef)
+      for (i in 1:m){
+        txt[i] <- paste (
+          "A one-unit increase in the Z-score (one SD increase in original
+        scores)  is associated with the decrease in the log odds of
+        answering the item "
+          ,"<b>", row.names(koef)[i], "</b>", "vs.", "<b>",
 
-        test_key()[input$multiSlider],
+          test_key()[input$multiSlider],
 
-        "</b>","in the amount of ",
-        "<b>", round(koef[i, 2], 2), "</b>", '<br/>')
+          "</b>","in the amount of ",
+          "<b>", round(koef[i, 2], 2), "</b>", '<br/>')
+      }
     }
+
+
+
     HTML(paste(txt))
   })
 
@@ -2617,7 +2652,7 @@ function(input, output, session) {
     },
     content = function(file) {
       png(file, height = 800, width = 1200, res = 100)
-      plot(bock_irt_mirt(), type = "trace", facet_items = F)
+      print(bock_CC_Input())
       dev.off()
     }
   )
@@ -2638,7 +2673,7 @@ function(input, output, session) {
     },
     content = function(file) {
       png(file, height = 800, width = 1200, res = 100)
-      plot(bock_irt_mirt(), type = "infotrace", facet_items = F)
+      print(bock_IIC_Input())
       dev.off()
     }
   )
@@ -2659,7 +2694,7 @@ function(input, output, session) {
     },
     content = function(file) {
       png(file, height = 800, width = 1200, res = 100)
-      plot(bock_irt_mirt(), type = "infoSE")
+      print(bock_TIF_Input())
       dev.off()
     }
   )
@@ -3866,7 +3901,7 @@ function(input, output, session) {
 
   irtiicInput<-reactive({
     type = input$irt_type_report
-    if (type=="rasch"){out=raschirtiicInput_mirt()}
+    if (type=="rasch"){out=raschiicInput_mirt()}
     if (type=="1pl") {out=oneparamirtiicInput_mirt()}
     if (type=="2pl") {out=twoparamirtiicInput_mirt()}
     if (type=="3pl") {out=threeparamirtiicInput_mirt()}
