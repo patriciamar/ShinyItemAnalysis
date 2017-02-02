@@ -482,11 +482,13 @@ function(input, output, session) {
       paste("plot", input$name, ".png", sep = "")
     },
     content = function(file) {
+
       data <- correct_answ()
       corP <- polychoric(data)
 
       png(file, height = 800, width = 800, res = 100)
       corrplot(corP$rho)
+
       dev.off()
     }
   )
@@ -2235,6 +2237,7 @@ function(input, output, session) {
 
     wrightMap(fs, b, item.side = itemClassic)
   })
+
 
   oneparamirtWrightMapReportInput_mirt <- reactive({
     fit <- one_param_irt_mirt()
@@ -4037,7 +4040,6 @@ function(input, output, session) {
                        zlogreg_irt = zlogreg_irtInput(),
                        nlsplot = nlsplotInput(),
                        multiplot = multiplotReportInput(),
-                       wrightMap = oneparamirtWrightMapReportInput_mirt(),
                        irt_type = irt_typeInput(),
                        irt = irtInput(),
                        irtiic = irtiicInput(),
