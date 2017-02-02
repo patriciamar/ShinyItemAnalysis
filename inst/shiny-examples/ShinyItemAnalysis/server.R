@@ -3987,7 +3987,7 @@ function(input, output, session) {
     type = input$irt_type_report
     if (type=="rasch"){out=raschtifInput_mirt()}
     if (type=="1pl") {out=oneparamirttifInput_mirt()}
-    if (type=="2pl") {out=twoparamirttifInpu_mirt()}
+    if (type=="2pl") {out=twoparamirttifInput_mirt()}
     if (type=="3pl") {out=threeparamirttifInput_mirt()}
     out
   })
@@ -4040,6 +4040,7 @@ function(input, output, session) {
                        zlogreg_irt = zlogreg_irtInput(),
                        nlsplot = nlsplotInput(),
                        multiplot = multiplotReportInput(),
+                       wrightMap = oneparamirtWrightMapReportInput_mirt(),
                        irt_type = irt_typeInput(),
                        irt = irtInput(),
                        irtiic = irtiicInput(),
