@@ -480,6 +480,7 @@ ui=tagList(
                                    items are correlated - blue color shows possitive correlation and red color shows
                                    negative correlation.'),
                                  plotOutput('corr_plot'),
+                                 downloadButton("DP_corr_plot", label = "Download figure"),
                                  br(),
                                  h4("Scree plot"),
                                  p('A scree plot displays the eigenvalues associated with an component or a factor in descending order

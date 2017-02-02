@@ -465,6 +465,22 @@ function(input, output, session) {
     corr_plotInput()
   })
 
+  output$DP_corr_plot <- downloadHandler(
+    filename =  function() {
+      paste("plot", input$name, ".png", sep = "")
+    },
+    content = function(file) {
+
+      data <- correct_answ()
+      corP <- polychoric(data)
+
+
+      png(file, height=800, width=1200, res=100)
+      corrplot(corP$rho)
+      dev.off()
+    }
+  )
+
   # ** Scree plot ######
   scree_plotInput <- reactive({
     corP <- corr_structure()
@@ -2196,6 +2212,22 @@ function(input, output, session) {
 
   output$oneparamirtWrightMap_mirt<- renderPlot({
     oneparamirtWrightMapInput_mirt()
+  })
+
+  oneparamirtWrightMapReportInput_mirt<-reactive({
+    fit <- one_param_irt_mirt()
+    fs <- as.vector(fscores(fit))
+
+    coeftab <- coef(fit)
+    b <- sapply(1:(length(coeftab) - 1), function(i) coeftab[[i]][1, "d"])
+    names(b) <- paste("Item", 1:(length(coeftab) - 1))
+
+    list<-list()
+
+    list$fs=fs
+    list$b=b
+
+    list
   })
 
   output$DP_oneparamirtWM_mirt <- downloadHandler(
@@ -3965,6 +3997,7 @@ function(input, output, session) {
                        zlogreg_irt = zlogreg_irtInput(),
                        nlsplot = nlsplotInput(),
                        multiplot = multiplotReportInput(),
+                       wrightMap = oneparamirtWrightMapReportInput_mirt(),
                        irt_type = irt_typeInput(),
                        irt = irtInput(),
                        irtiic = irtiicInput(),
