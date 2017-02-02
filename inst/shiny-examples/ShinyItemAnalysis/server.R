@@ -482,8 +482,13 @@ function(input, output, session) {
       paste("plot", input$name, ".png", sep = "")
     },
     content = function(file) {
+
+      data <- correct_answ()
+      corP <- polychoric(data)
+
       png(file, height = 800, width = 800, res = 100)
-      corr_plotInput()
+      corrplot(corP$rho)
+
       dev.off()
     }
   )
@@ -2231,6 +2236,21 @@ function(input, output, session) {
     names(b) <- paste("Item", 1:(length(coeftab) - 1))
 
     wrightMap(fs, b, item.side = itemClassic)
+  })
+
+
+  oneparamirtWrightMapReportInput_mirt <- reactive({
+    fit <- one_param_irt_mirt()
+    fs <- as.vector(fscores(fit))
+
+    coeftab <- coef(fit)
+    b <- sapply(1:(length(coeftab) - 1), function(i) coeftab[[i]][1, "d"])
+    names(b) <- paste("Item", 1:(length(coeftab) - 1))
+
+    list<-list()
+    list$fs<-fs
+    list$b<-b
+    list
   })
 
   output$oneparamirtWrightMap_mirt<- renderPlot({
