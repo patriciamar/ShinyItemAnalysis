@@ -5,9 +5,9 @@
 require(DT)
 require(shinyjs)
 
-###########
-# UI #####
-##########
+######################
+# UI #################
+######################
 
 ui=tagList(
   useShinyjs(),
@@ -15,19 +15,17 @@ ui=tagList(
              collapsible=TRUE,
              footer=list(
                ############################################
-               # ONLINE VERSION
+               # !! ONLINE VERSION ####
                div(class="panel-footer",
                    p(strong("ShinyItemAnalysis Version 1.1.0")),
                    p("Download ShinyItemAnalysis R package from ",
                      a(strong("CRAN"), href = "https://cran.rstudio.com/web/packages/ShinyItemAnalysis/",
                        target = "_blank"), "to run analysis faster!"),
-                   # br(),
                    p("Project was supported by grant funded by Czech Science Foundation under number ",
                      a("GJ15-15856Y",
                        href = "http://www.cs.cas.cz/martinkova/psychometrics.html",
                        target = "_blank")),
-                   p(" Copyright 2017  Patricia Martinkova, Adela Drabinova, Ondrej Leder and Jakub Houdek"),
-                   # br(),
+                   p("Copyright 2017  Patricia Martinkova, Adela Drabinova, Ondrej Leder and Jakub Houdek"),
                    div(
                      HTML('<p style="font-size: 9pt">
                           See older versions:
@@ -36,24 +34,20 @@ ui=tagList(
                           <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV100/"> 1.0.0</a>
                           </p>')
                      ),
-                   # br(),
                    p(textOutput('counter'))
-                   # br()
                      )
                ############################################
-               # PACKAGE VERSION
+               # !! PACKAGE VERSION ####
                # div(class="panel-footer",
                #     p(strong("ShinyItemAnalysis Version 1.1.0")),
                #     p("You can also try ", code('ShinyItemAnalysis'),
                #       a('online!', href = "https://shiny.cs.cas.cz/ShinyItemAnalysis/",
                #         target = "_blank")),
-               #     # br(),
                #     p("Project was supported by grant funded by Czech Science Foundation under number ",
                #       a("GJ15-15856Y",
                #         href = "http://www.cs.cas.cz/martinkova/psychometrics.html",
                #         target = "_blank")),
-               #     p(" Copyright 2017  Patricia Martinkova, Adela Drabinova, Ondrej Leder and Jakub Houdek"),
-               #     # br(),
+               #     p("Copyright 2017  Patricia Martinkova, Adela Drabinova, Ondrej Leder and Jakub Houdek"),
                #     div(
                #       HTML('<p style="font-size: 9pt">
                #            See older versions:
@@ -66,14 +60,12 @@ ui=tagList(
                ############################################
                    ),
              theme="bootstrap.css",
-             #########################
-             # MAIN PANEL ####
-             #########################
-             # mainPanel(
-             # tabsetPanel(
-             ########################
-             # ABOUT ################
-             ########################
+             ######################
+             # MAIN PANEL #########
+             ######################
+             ######################
+             # ABOUT ##############
+             ######################
              tabPanel("About",
                       h3('Description'),
                       p(code('ShinyItemAnalysis'), ' provides analysis of educational tests (such as admission tests)
@@ -95,11 +87,12 @@ ui=tagList(
                         'page HTML or PDF report can be created. Additionaly, all application outputs are
                         complemented by selected R code hence the similar analysis can be run and modified in R.'),
                       ############################################
-                      # ONLINE VERSION
+                      # !! ONLINE VERSION ####
                       p('You can also download ', code('ShinyItemAnalysis'), ' package from ',
                         a('CRAN', href = 'https://CRAN.R-project.org/package=ShinyItemAnalysis', target = "_blank"),
                         'to use it offline or run it faster. '),
-                      # PACKAGE VERSION
+                      ############################################
+                      # !! PACKAGE VERSION ####
                       # p('You can also try ', code('ShinyItemAnalysis'), ' application ',
                       #   a('online!', href = 'https://shiny.cs.cas.cz/ShinyItemAnalysis/', target = "_blank")),
                       ############################################
@@ -108,8 +101,7 @@ ui=tagList(
                         from R ', code('difNLR'),' package is used. Other three datasets are available: ',
                         code('GMAT2'), 'and', code('Medical 20 DIF'), 'from', code('difNLR'), 'package and ',
                         code('Medical 100'), 'from', code('ShinyItemAnalysis'), 'package.
-                        You can change the dataset (and try your
-                        own one) on page', strong('Data.')),
+                        You can change the dataset (and try your own one) on page', strong('Data.')),
 
                       h4('Version'),
                       p('Current version of ', code('ShinyItemAnalysis'), ' is 1.1.0'),
@@ -148,36 +140,30 @@ ui=tagList(
                       code('library(WrightMap)'), br(),
 
                       h4('Authors'),
-
                       img(src = 'patricia.jpg', width = 70),
                       p(a("Patricia Martinkova, Institute of Computer Science, Czech Academy of Sciences",
                           href = "http://www.cs.cas.cz/martinkova/", target = "_blank")),
-
                       img(src = 'adela.jpg', width = 70),
                       p("Adela Drabinova"),
-
                       img(src = 'leder.png', width = 70),
                       p(a("Ondrej Leder", href = "https://www.linkedin.com/in/ond%C5%99ej-leder-3864b1119",
                           target = "_blank")),
-
                       img(src = 'jakub.jpg', width = 70),
                       p("Jakub Houdek"),
 
                       h4('Bug reports'),
                       p("If you discover a problem with this application please contact the project maintainer
                         at martinkova(at)cs.cas.cz or use ", a("GitHub.", href = "https://github.com/patriciamar/ShinyItemAnalysis/issues",
-                                                               target = "_blank")
-                      ),
+                                                               target = "_blank")),
 
                       h4('Acknowledgments'),
                       p(" Project was supported by grant funded by Czech Science foundation under number ",
                         a("GJ15-15856Y.", href = "http://www.cs.cas.cz/martinkova/psychometrics.html",
-                          target = "_blank")
-                      ),
+                          target = "_blank")),
 
                       h4('License'),
-                      p(" Copyright 2016  Patricia Martinkova, Adela Drabinova, Ondrej Leder and Jakub Houdek"),
-                      p(" This program is free software you can redistribute it and or modify it under the terms of the GNU
+                      p("Copyright 2016  Patricia Martinkova, Adela Drabinova, Ondrej Leder and Jakub Houdek"),
+                      p("This program is free software you can redistribute it and or modify it under the terms of the GNU
                         General Public License as published by the Free Software Foundation either version 3 of the License or
                         at your option any later version."),
                       p("This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
@@ -300,10 +286,10 @@ ui=tagList(
                       DT::dataTableOutput('group')
                       ),
              ########################
-             # SUMMARY #####
+             # SUMMARY ##############
              ########################
              navbarMenu("Summary",
-                        # TOTAL SCORES
+                        # * TOTAL SCORES ####
                         tabPanel("Total scores",
                                  h3("Analysis of total scores"),
                                  h4("Summary table"),
@@ -338,7 +324,7 @@ ui=tagList(
                                      code('hist(score, breaks = 0:ncol(data)) ')),
                                  br()
                                  ),
-                        # STANDARD SCORES
+                        # * STANDARD SCORES ####
                         tabPanel("Standard scores",
                                  h3('Standard scores'),
                                  p(strong('Total Score'), 'also known as raw score is a total number of correct
@@ -434,7 +420,7 @@ ui=tagList(
              # TRADITIONAL ANALYSIS ####
              ###########################
              navbarMenu('Traditional analysis',
-                        # ITEM ANALYSIS
+                        # * ITEM ANALYSIS ####
                         tabPanel("Item analysis",
                                  h3("Traditional item analysis"),
                                  p('Traditional item analysis uses proportions of correct answers or correlations to estimate item properties.'),
@@ -496,7 +482,7 @@ ui=tagList(
                                      code('tab')),
                                  br()
                                  ),
-                        # DISTRACTORS
+                        # * DISTRACTORS ####
                         tabPanel("Distractors",
                                  h3("Distractor analysis"),
                                  p('In distractor analysis, we are interested in how test takers select
@@ -572,7 +558,7 @@ ui=tagList(
              # REGRESSION ########
              #####################
              navbarMenu("Regression",
-                        # LOGISTIC
+                        # * LOGISTIC ####
                         tabPanel("Logistic",
                                  h3("Logistic regression on total scores"),
                                  p('Various regression models may be fitted to describe
@@ -626,7 +612,7 @@ ui=tagList(
                                           ylim = c(0, 1))')),
                                  br()
                                  ),
-                        # LOGISTIC Z
+                        # * LOGISTIC Z ####
                         tabPanel("Logistic Z",
                                  h3("Logistic regression on standardized total scores"),
                                  p('Various regression models may be fitted to describe
@@ -679,7 +665,7 @@ ui=tagList(
                                           ylim = c(0, 1))')),
                                  br()
                                  ),
-                        # LOGISTIC IRT Z
+                        # * LOGISTIC IRT Z ####
                         tabPanel("Logistic IRT Z",
                                  h3("Logistic regression on standardized total scores with IRT parameterization"),
                                  p('Various regression models may be fitted to describe
@@ -736,7 +722,7 @@ ui=tagList(
                                  br()
                                  ),
 
-                        # NONLINEAR Z
+                        # * NONLINEAR Z ####
                         tabPanel("Nonlinear IRT Z",
                                  h3("Nonlinear regression on standardized total scores"),
                                  p('Various regression models may be fitted to describe
@@ -790,7 +776,7 @@ ui=tagList(
                                  br()
                                  ),
                         "----",
-                        # MODELS COMPARISON
+                        # * MODELS COMPARISON ####
                         tabPanel("Model comparison",
                                  h3("Logistic regression model selection"),
                                  p('Here you can compare classic 2PL logistic regression model to non-linear model
@@ -858,7 +844,7 @@ ui=tagList(
                                  br()
                                  ),
                         "----",
-                        # MULTINOMIAL
+                        # * MULTINOMIAL ####
                         tabPanel("Multinomial",
                                  h3("Multinomial regression on standardized total scores"),
                                  p('Various regression models may be fitted to describe
@@ -915,7 +901,7 @@ ui=tagList(
              # IRT MODELS ######
              ###################
              navbarMenu("IRT models",
-                        # 1PL (RASCH)
+                        # * 1PL (RASCH) ####
                         tabPanel("1PL (Rasch)",
                                  h3("One parameter Item Response Theory model"),
                                  p('Item Response Theory (IRT) models are mixed-effect regression models in which
@@ -996,7 +982,7 @@ ui=tagList(
                                           ylab = "Factor score")')),
                                  br()
                                  ),
-                        # 2PL
+                        # * 2PL ####
                         tabPanel("2PL ",
                                  h3("Two parameter Item Response Theory model"),
                                  p('Item Response Theory (IRT) models are mixed-effect regression models in which
@@ -1072,7 +1058,7 @@ ui=tagList(
                                           ylab = "Factor score")')),
                                  br()
                                  ),
-                        # 3PL
+                        # * 3PL ####
                         tabPanel("3PL ",
                                  h3("Three parameter Item Response Theory model"),
                                  p('Item Response Theory (IRT) models are mixed-effect regression models in which
@@ -1153,7 +1139,7 @@ ui=tagList(
              # IRT MODELS WITH MIRT ######
              #############################
              navbarMenu("IRT models with mirt",
-                        # RASCH
+                        # * RASCH ####
                         tabPanel("Rasch",
                                  h3("Rasch Item Response Theory model"),
                                  p('Item Response Theory (IRT) models are mixed-effect regression models in which
@@ -1243,7 +1229,7 @@ ui=tagList(
                                      code('wrightMap(fs, b, item.side = itemClassic)')),
                                  br()
                                  ),
-                        # 1 PL IRT
+                        # * 1 PL IRT ####
                         tabPanel("1PL",
                                  h3("One parameter Item Response Theory model"),
                                  p('Item Response Theory (IRT) models are mixed-effect regression models in which
@@ -1334,7 +1320,7 @@ ui=tagList(
                                      code('wrightMap(fs, b, item.side = itemClassic)')),
                                  br()
                                  ),
-                        # 2PL
+                        # * 2PL ####
                         tabPanel("2PL ",
                                  h3("Two parameter Item Response Theory model"),
                                  p('Item Response Theory (IRT) models are mixed-effect regression models in which
@@ -1407,7 +1393,7 @@ ui=tagList(
                                      code('plot(fs ~ sts)')),
                                  br()
                                  ),
-                        # 3PL
+                        # * 3PL ####
                         tabPanel("3PL ",
                                  h3("Three parameter Item Response Theory model"),
                                  p('Item Response Theory (IRT) models are mixed-effect regression models in which
@@ -1481,7 +1467,7 @@ ui=tagList(
                                  br()
                                  ),
                         "----",
-                        # MODEL COMPARISON
+                        # * MODEL COMPARISON ####
                         tabPanel("Model comparison ",
                                  h3("Item Response Theory model selection"),
                                  p('Item Response Theory (IRT) models are mixed-effect regression models in which
@@ -1533,7 +1519,7 @@ ui=tagList(
                                  br()
                                  ),
                         "----",
-                        # BOCK'S NOMINAL MODEL
+                        # * BOCK'S NOMINAL MODEL ####
                         tabPanel("Bock's nominal model",
                                  h3("Bock's nominal Item Response Theory model"),
                                  p('The nominal response model (NRM) was introduced by Bock (1972) as a way to model
@@ -1610,7 +1596,7 @@ ui=tagList(
              ###################
              navbarMenu("DIF/Fairness",
                         "Used methods",
-                        # TOTAL SCORES
+                        # * TOTAL SCORES ####
                         tabPanel("Total scores",
                                  h3("Total scores"),
                                  p('DIF is not about total scores! Two groups may have the same distribution of total scores, yet,
@@ -1650,7 +1636,7 @@ ui=tagList(
                                      code('hist(sc_one, breaks = 0:20)')),
                                  br()
                                  ),
-                        # DELTA PLOTS
+                        # * DELTA PLOTS ####
                         tabPanel("Delta plots",
                                  h3("Delta plot"),
                                  p('Delta plot (Angoff & Ford, 1973) compares the proportions of correct answers per
@@ -1707,7 +1693,7 @@ ui=tagList(
                                      code('diagPlot(deltascores, thr.draw = T)')),
                                  br()
                                  ),
-                        # MANTEL-HAENSZEL
+                        # * MANTEL-HAENSZEL ####
                         tabPanel("Mantel-Haenszel",
                                  tabsetPanel(
                                    # Summary
@@ -1808,10 +1794,10 @@ ui=tagList(
                                             )
                         )
                         ),
-                        # LOGISTIC
+                        # * LOGISTIC ####
                         tabPanel("Logistic",
                                  tabsetPanel(
-                                   # Summary
+                                   # ** Summary ####
                                    tabPanel('Summary',
                                             h3('Logistic regression on total scores'),
                                             p('Logistic regression allows for detection of uniform and non-uniform DIF (Swaminathan & Rogers, 1990) by adding a group
@@ -1860,7 +1846,7 @@ ui=tagList(
                                                 code('fit')),
                                             br()
                                             ),
-                                   # Items
+                                   # ** Items ####
                                    tabPanel('Items',
                                             h3('Logistic regression on total scores'),
                                             p('Logistic regression allows for detection of uniform and non-uniform DIF by adding a group
@@ -1933,10 +1919,10 @@ ui=tagList(
                                    )
                                  ),
 
-                        # LOGISTIC Z
+                        # * LOGISTIC Z ####
                         tabPanel("Logistic IRT Z",
                                  tabsetPanel(
-                                   # Summary
+                                   # ** Summary ####
                                    tabPanel('Summary',
                                             h3('Logistic regression on standardized total scores with IRT parameterization'),
                                             p('Logistic regression allows for detection of uniform and non-uniform DIF (Swaminathan & Rogers, 1990) by adding a group
@@ -1989,7 +1975,7 @@ ui=tagList(
                                                 code('fit')),
                                             br()
                                             ),
-                                   # Items
+                                   # ** Items ####
                                    tabPanel('Items',
                                             h3('Logistic regression on standardized total scores with IRT parameterization'),
                                             p('Logistic regression allows for detection of uniform and non-uniform DIF by adding a group
@@ -2078,10 +2064,10 @@ ui=tagList(
                                                 )
                                             )
                                    ),
-                        # NONLINEAR Z
+                        # * NONLINEAR Z ####
                         tabPanel("Nonlinear Z",
                                  tabsetPanel(
-                                   # Summary
+                                   # ** Summary ####
                                    tabPanel('Summary',
                                             h3('Nonlinear regression on standardized total scores'),
                                             p('Nonlinear regression model allows for nonzero lower asymptote - pseudoguessing',
@@ -2129,7 +2115,7 @@ ui=tagList(
                                                 code('fit')),
                                             br()
                                             ),
-                                   # Items
+                                   # ** Items ####
                                    tabPanel('Items',
                                             h3('Nonlinear regression on standardized total scores'),
                                             p('Nonlinear regression model allows for nonzero lower asymptote - pseudoguessing',
@@ -2194,9 +2180,10 @@ ui=tagList(
                                             )
                                             )
                         ),
-                        # IRT LORD
+                        # * IRT LORD ####
                         tabPanel("IRT Lord",
                                  tabsetPanel(
+                                   # ** Summary ####
                                    tabPanel('Summary',
                                             h3('Lord test for IRT models'),
                                             p('Lord test (Lord, 1980) is based on IRT model
@@ -2251,6 +2238,7 @@ ui=tagList(
                                                 code('fit')),
                                             br()
                                             ),
+                                   # ** Items ####
                                    tabPanel('Items',
                                             h3('Lord test for IRT models'),
                                             p('Lord test (Lord, 1980) is based on IRT model
@@ -2318,9 +2306,10 @@ ui=tagList(
                                             )
                                    )
                                    ),
-                        # IRT RAJU
+                        # * IRT RAJU ####
                         tabPanel("IRT Raju",
                                  tabsetPanel(
+                                   # ** Summary ####
                                    tabPanel('Summary',
                                             h3('Raju test for IRT models'),
                                             p('Raju test (Raju, 1988, 1990) is based on IRT
@@ -2373,6 +2362,7 @@ ui=tagList(
                                                 br(),
                                                 code('fit')),
                                             br()),
+                                   # ** Items ####
                                    tabPanel('Items',
                                             h3('Raju test for IRT models'),
                                             p('Raju test (Raju, 1988, 1990) is based on IRT
@@ -2438,10 +2428,10 @@ ui=tagList(
                                             br())
                                    )
                                    ),
-                        # DDF
+                        # * DDF ####
                         tabPanel("DDF",
                                  tabsetPanel(
-                                   # Summary
+                                   # ** Summary ####
                                    tabPanel('Summary',
                                             h3('Differential Distractor Functioning with multinomial log-linear regression Model'),
                                             p('Differential Distractor Functioning (DDF) occurs when people from different
@@ -2497,7 +2487,7 @@ ui=tagList(
                                                 code('fit')),
                                             br()
                                    ),
-                                   # Items
+                                   # ** Items ####
                                    tabPanel('Items',
                                             h3('Differential Distractor Functioning with multinomial log-linear regression model'),
                                             p('Differential Distractor Functioning (DDF) occurs when people from different
@@ -2559,7 +2549,7 @@ ui=tagList(
                                  ),
 
                         "----",
-                        # SUMMARY
+                        # * SUMMARY ####
                         "Description",
                         tabPanel('About DIF',
                                  h3('Differential Item Functioning / Item Fairness'),
