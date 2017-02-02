@@ -27,6 +27,7 @@ params:
   zlogreg_irt: NA
   nlsplot: NA
   multiplot: NA
+  wrightMap: NA
   irt: NA
   irtiic: NA
   irttif: NA
