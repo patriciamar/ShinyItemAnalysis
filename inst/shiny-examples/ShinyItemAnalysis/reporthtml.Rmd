@@ -52,6 +52,8 @@ params:
   isGroupPresent: NA
   groupie: NA
 ---
+\pagebreak
+
 # Summary Report
 
 ## Summary of Total Scores
@@ -122,39 +124,39 @@ grid.arrange(params$graf[[i]], params$multiplot[[i]], ncol=2
 
 ```{r echo=FALSE, results="hide"}
 if (params$irt_type=="rasch") {
-  head=" Rasch Model Report"
+  head=" Rasch model"
 }
 
 if (params$irt_type=="1pl") {
-head=" 1PL IRT Model Report"
+head=" 1PL IRT model"
 eq="$ {P}(Y_{ij} = 1|\theta_{i},a,b_j) =\frac{e^{a(\theta_i-b_j)}}{1+e^{a(\theta_i-b_j)}} $"
 }
 
 if (params$irt_type=="2pl") {
-head=" 2PL IRT Model Report"
+head=" 2PL IRT model"
 eq="$$ {P}(Y_{ij} = 1|\theta_{i},a_j,b_j) = \frac{e^{a_j(\theta_i-b_j)}}{1+e^{a_j(\theta_i-b_j)}}$$"
 }
 
 if (params$irt_type=="3pl") {
-head=" 3PL IRT Model Report"
+head=" 3PL IRT model"
 #eq="$$ {P}(Y_{ij} = 1|\theta_{i},a_j,b_j, c_j) =c_j + (1+c_j)\cdot\frac{e^{a_j(\theta_i-b_j)}}{1+e^{a_j(\theta_i-b_j)}}$$"
 }
 ```
 
 
 
-Available Models:
+Available models:
 
-Rasch Model
+Rasch model
 $$ {P}(Y_{ij} = 1|\theta_{i},b_j) =\frac{e^{(\theta_i-b_j)}}{1+e^{(\theta_i-b_j)}} $$
 
-1PL IRT Model
+1PL IRT model
 $$ {P}(Y_{ij} = 1|\theta_{i},a,b_j) =\frac{e^{a(\theta_i-b_j)}}{1+e^{a(\theta_i-b_j)}}$$
 
-2PL IRT Model
+2PL IRT model
 $$ {P}(Y_{ij} = 1|\theta_{i},a_j,b_j) = \frac{e^{a_j(\theta_i-b_j)}}{1+e^{a_j(\theta_i-b_j)}}$$
 
-3PL IRT Model
+3PL IRT model
 $$ {P}(Y_{ij} = 1|\theta_{i},a_j,b_j, c_j) =c_j + (1+c_j)\cdot\frac{e^{a_j(\theta_i-b_j)}}{1+e^{a_j(\theta_i-b_j)}}$$
 
 Selected Model:`r head`
@@ -169,7 +171,7 @@ params$irtfactor
 ```{r echo=FALSE, fig.height=6}
 table=params$irtcoef
 table=round(table,5)
-grid.arrange(tableGrob(table), top="Estimates of Parameters")
+grid.arrange(tableGrob(table), top="Parameter Estimates and Item Fit")
 ```
 
 
@@ -198,7 +200,7 @@ grid.arrange(g1, g2, ncol=1)
 }
 ```
 
-`r if(params$isGroupPresent) {"## Delta Plot Report"}`
+`r if(params$isGroupPresent) {"## DIF Detection Using Delta Plot"}`
 
 ```{r echo=FALSE, results="hide"}
 if(params$isGroupPresent){
@@ -212,7 +214,7 @@ params$DP_text_normal
 }
 ```
 
-`r if(params$isGroupPresent) {"## DIF Logistic Report"}`
+`r if(params$isGroupPresent) {"## DIF Detection Using Logistic Regression"}`
 
 ```{r echo=FALSE}
 if(params$isGroupPresent){
@@ -226,7 +228,7 @@ params$DIF_logistic_plot
 }
 ```
 
-`r if(params$isGroupPresent) {"## DDF"}`
+`r if(params$isGroupPresent) {"## DDF Detection Using Multinomial Regression"}`
 
 ```{r echo=FALSE}
 if(params$isGroupPresent){
