@@ -6,7 +6,7 @@
 
 
 ---------------------------------------------------
-- Changes in ShinyItemAnalysis 1.1.0 (2016-01-27) -
+- Changes in ShinyItemAnalysis 1.1.0 (2016-02-02) -
 ---------------------------------------------------
 
 MAJOR UPDATES
@@ -25,9 +25,11 @@ MAJOR UPDATES
      and scree plot.
   o  Pages structure was changed and updated.
   o  IRT models are now fitted by mirt package.
-  o  Subsection IRT models comparison was added into IRT models section.
+  o  Subsection IRT model selection was added into IRT models section.
   o  Wrigh maps were added for Rasch and 1PL IRT model.
   o  Bug in data upload was fixed.
+  o  Subsection regression model selection was added into Regression
+     section.
 
 
 MINOR UPDATES
@@ -42,6 +44,8 @@ MINOR UPDATES
      added for IRT models
   o  Reference list was expanded.
   o  Bug in multinomial regression for scored data was fixed.
+  o  Bug in DDF for datasets withou DIF items was fixed.
+  o  Selected code was updated.
 
 ---------------------------------------------------
 - Changes in ShinyItemAnalysis 1.0.0 (2016-11-25) -
