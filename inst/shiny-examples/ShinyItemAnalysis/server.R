@@ -4040,7 +4040,6 @@ function(input, output, session) {
                        zlogreg_irt = zlogreg_irtInput(),
                        nlsplot = nlsplotInput(),
                        multiplot = multiplotReportInput(),
-                       wrightMap = oneparamirtWrightMapReportInput_mirt(),
                        irt_type = irt_typeInput(),
                        irt = irtInput(),
                        irtiic = irtiicInput(),
