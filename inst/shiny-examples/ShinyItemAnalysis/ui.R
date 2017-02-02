@@ -11,6 +11,7 @@ require(shinyjs)
 
 ui=tagList(
   useShinyjs(),
+  #tags$head(includeScript("google-analytics.js")),
   navbarPage(title="ShinyItemAnalysis - TEST AND ITEM ANALYSIS",
              collapsible=TRUE,
              footer=list(
