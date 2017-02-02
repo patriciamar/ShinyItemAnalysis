@@ -27,6 +27,7 @@ params:
   zlogreg_irt: NA
   nlsplot: NA
   multiplot: NA
+  wrightMap: NA
   irt: NA
   irtiic: NA
   irttif: NA
@@ -143,7 +144,13 @@ head=" 3PL IRT model"
 }
 ```
 
+Wright (Item-Person) Map using 1PL IRT Model
 
+```{r echo=FALSE, results="hide", fig.height=5, fig.width=10}
+wrightMap(params$wrightMap[[1]], params$wrightMap[[2]], item.side=itemClassic)
+```
+
+\pagebreak
 
 Available models:
 
@@ -161,7 +168,7 @@ $$ {P}(Y_{ij} = 1|\theta_{i},a_j,b_j, c_j) =c_j + (1+c_j)\cdot\frac{e^{a_j(\thet
 
 Selected model:`r head`
 
-```{r echo=FALSE, results="hide", fig.height=4}
+```{r echo=FALSE, results="hide", fig.height=3}
 params$irt
 params$irtiic
 params$irttif
