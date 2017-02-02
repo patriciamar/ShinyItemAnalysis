@@ -5,28 +5,27 @@
 require(DT)
 require(shinyjs)
 
-###########
-# UI #####
-##########
+######################
+# UI #################
+######################
 
 ui=tagList(
   useShinyjs(),
   navbarPage(title="ShinyItemAnalysis - TEST AND ITEM ANALYSIS",
              collapsible=TRUE,
              footer=list(
-               # online version
+               ############################################
+               # !! ONLINE VERSION ####
                div(class="panel-footer",
                    p(strong("ShinyItemAnalysis Version 1.1.0")),
                    p("Download ShinyItemAnalysis R package from ",
                      a(strong("CRAN"), href = "https://cran.rstudio.com/web/packages/ShinyItemAnalysis/",
                        target = "_blank"), "to run analysis faster!"),
-                   # br(),
                    p("Project was supported by grant funded by Czech Science Foundation under number ",
                      a("GJ15-15856Y",
                        href = "http://www.cs.cas.cz/martinkova/psychometrics.html",
                        target = "_blank")),
-                   p(" Copyright 2016  Patricia Martinkova, Adela Drabinova, Ondrej Leder and Jakub Houdek"),
-                   # br(),
+                   p("Copyright 2017  Patricia Martinkova, Adela Drabinova, Ondrej Leder and Jakub Houdek"),
                    div(
                      HTML('<p style="font-size: 9pt">
                           See older versions:
@@ -35,20 +34,38 @@ ui=tagList(
                           <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV100/"> 1.0.0</a>
                           </p>')
                      ),
-                   # br(),
                    p(textOutput('counter'))
-                   # br()
                      )
+               ############################################
+               # !! PACKAGE VERSION ####
+               # div(class="panel-footer",
+               #     p(strong("ShinyItemAnalysis Version 1.1.0")),
+               #     p("You can also try ", code('ShinyItemAnalysis'),
+               #       a('online!', href = "https://shiny.cs.cas.cz/ShinyItemAnalysis/",
+               #         target = "_blank")),
+               #     p("Project was supported by grant funded by Czech Science Foundation under number ",
+               #       a("GJ15-15856Y",
+               #         href = "http://www.cs.cas.cz/martinkova/psychometrics.html",
+               #         target = "_blank")),
+               #     p("Copyright 2017  Patricia Martinkova, Adela Drabinova, Ondrej Leder and Jakub Houdek"),
+               #     div(
+               #       HTML('<p style="font-size: 9pt">
+               #            See older versions:
+               #            <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV01/"> 0.1.0</a>,
+               #            <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV02/"> 0.2.0</a>,
+               #            <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV100/"> 1.0.0</a>
+               #            </p>')
+               #       )
+               #       )
+               ############################################
                    ),
              theme="bootstrap.css",
-             #########################
-             # MAIN PANEL ####
-             #########################
-             # mainPanel(
-             # tabsetPanel(
-             ########################
-             # ABOUT ################
-             ########################
+             ######################
+             # MAIN PANEL #########
+             ######################
+             ######################
+             # ABOUT ##############
+             ######################
              tabPanel("About",
                       h3('Description'),
                       p(code('ShinyItemAnalysis'), ' provides analysis of educational tests (such as admission tests)
@@ -68,15 +85,23 @@ ui=tagList(
                         'package. '),
                       p('For all graphical outputs a download button is provided. Moreover, on ', strong('Reports'),
                         'page HTML or PDF report can be created. Additionaly, all application outputs are
-                        complemented by selected R code hence the similar analysis can be run and modified in R.
-                        You can also download ', code('ShinyItemAnalysis'), ' package from ',
+                        complemented by selected R code hence the similar analysis can be run and modified in R.'),
+                      ############################################
+                      # !! ONLINE VERSION ####
+                      p('You can also download ', code('ShinyItemAnalysis'), ' package from ',
                         a('CRAN', href = 'https://CRAN.R-project.org/package=ShinyItemAnalysis', target = "_blank"),
                         'to use it offline or run it faster. '),
-
+                      ############################################
+                      # !! PACKAGE VERSION ####
+                      # p('You can also try ', code('ShinyItemAnalysis'), ' application ',
+                      #   a('online!', href = 'https://shiny.cs.cas.cz/ShinyItemAnalysis/', target = "_blank")),
+                      ############################################
                       h4('Data'),
-                      p('For demonstration purposes, 20-item dataset', code('GMAT'),'
-                        from R ', code('difNLR'),' package is used. You can change the dataset (and try your
-                        own one) on page', strong('Data.')),
+                      p('For demonstration purposes, by default, 20-item dataset', code('GMAT'),'
+                        from R ', code('difNLR'),' package is used. Other three datasets are available: ',
+                        code('GMAT2'), 'and', code('Medical 20 DIF'), 'from', code('difNLR'), 'package and ',
+                        code('Medical 100'), 'from', code('ShinyItemAnalysis'), 'package.
+                        You can change the dataset (and try your own one) on page', strong('Data.')),
 
                       h4('Version'),
                       p('Current version of ', code('ShinyItemAnalysis'), ' is 1.1.0'),
@@ -103,6 +128,7 @@ ui=tagList(
                       code('library(ltm)'), br(),
                       code('library(mirt)'), br(),
                       code('library(moments)'), br(),
+                      code('library(msm)'), br(),
                       code('library(nnet)'), br(),
                       code('library(psych)'), br(),
                       code('library(psychometric)'), br(),
@@ -114,36 +140,30 @@ ui=tagList(
                       code('library(WrightMap)'), br(),
 
                       h4('Authors'),
-
                       img(src = 'patricia.jpg', width = 70),
                       p(a("Patricia Martinkova, Institute of Computer Science, Czech Academy of Sciences",
                           href = "http://www.cs.cas.cz/martinkova/", target = "_blank")),
-
                       img(src = 'adela.jpg', width = 70),
                       p("Adela Drabinova"),
-
                       img(src = 'leder.png', width = 70),
                       p(a("Ondrej Leder", href = "https://www.linkedin.com/in/ond%C5%99ej-leder-3864b1119",
                           target = "_blank")),
-
                       img(src = 'jakub.jpg', width = 70),
                       p("Jakub Houdek"),
 
                       h4('Bug reports'),
                       p("If you discover a problem with this application please contact the project maintainer
                         at martinkova(at)cs.cas.cz or use ", a("GitHub.", href = "https://github.com/patriciamar/ShinyItemAnalysis/issues",
-                                                               target = "_blank")
-                      ),
+                                                               target = "_blank")),
 
                       h4('Acknowledgments'),
                       p(" Project was supported by grant funded by Czech Science foundation under number ",
                         a("GJ15-15856Y.", href = "http://www.cs.cas.cz/martinkova/psychometrics.html",
-                          target = "_blank")
-                      ),
+                          target = "_blank")),
 
                       h4('License'),
-                      p(" Copyright 2016  Patricia Martinkova, Adela Drabinova, Ondrej Leder and Jakub Houdek"),
-                      p(" This program is free software you can redistribute it and or modify it under the terms of the GNU
+                      p("Copyright 2016  Patricia Martinkova, Adela Drabinova, Ondrej Leder and Jakub Houdek"),
+                      p("This program is free software you can redistribute it and or modify it under the terms of the GNU
                         General Public License as published by the Free Software Foundation either version 3 of the License or
                         at your option any later version."),
                       p("This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
@@ -261,13 +281,15 @@ ui=tagList(
                       h4("Key (correct answers)"),
                       DT::dataTableOutput('key'),
                       h4("Scored test"),
-                      DT::dataTableOutput('sc01')
+                      DT::dataTableOutput('sc01'),
+                      h4("Group vector"),
+                      DT::dataTableOutput('group')
                       ),
              ########################
-             # SUMMARY #####
+             # SUMMARY ##############
              ########################
              navbarMenu("Summary",
-                        # TOTAL SCORES
+                        # * TOTAL SCORES ####
                         tabPanel("Total scores",
                                  h3("Analysis of total scores"),
                                  h4("Summary table"),
@@ -302,7 +324,7 @@ ui=tagList(
                                      code('hist(score, breaks = 0:ncol(data)) ')),
                                  br()
                                  ),
-                        # STANDARD SCORES
+                        # * STANDARD SCORES ####
                         tabPanel("Standard scores",
                                  h3('Standard scores'),
                                  p(strong('Total Score'), 'also known as raw score is a total number of correct
@@ -343,13 +365,63 @@ ui=tagList(
                                  br()
                         )
                         ),
+             ############################
+             # CORRELATION STRUCTURE ####
+             ############################
+             tabPanel("Correlation structure",
+                      h3("Correlation structure"),
+                      h4("Polychoric correlation heat map"),
+                      p('Polychoric correlation heat map is a correlation plot which displays a polychoric
+                                     correlations of items. The size and shade of circles indicate how much the
+                                     items are correlated (larger and darker
+                                     circle means larger correlation). The color of circles indicates in which way the
+                                     items are correlated - blue color shows possitive correlation and red color shows
+                                     negative correlation.'),
+                      plotOutput('corr_plot'),
+                      downloadButton("DP_corr_plot", label = "Download figure"),
+                      br(),
+                      h4("Scree plot"),
+                      p('A scree plot displays the eigenvalues associated with an component or a factor in descending order
+                                    versus the number of the component or factor. '),
+                                 plotOutput('scree_plot'),
+                      downloadButton("DP_scree_plot", label = "Download figure"),
+                      h4("Selected R code"),
+                      div(code('library(corrplot)'),
+                          br(),
+                          code('library(difNLR)'),
+                          br(),
+                          code('library(psych)'),
+                          br(),
+                                     code('data(GMAT)'),
+                                     br(),
+                                     code('data  <- GMAT[, colnames(GMAT) != "group"]'),
+                                     br(),
+                                     br(),
+                                     code('# Correlation plot'),
+                                     br(),
+                                     code('corP <- polychoric(data)'),
+                                     br(),
+                                     code('corrplot(corP$rho)'),
+                                     br(),
+                                     code('corP$rho # Correlation matrix'),
+                                     br(),
+                                     br(),
+                                     code('# Scree plot'),
+                                     br(),
+                                     code('plot(1:length(eigen(corP$rho)$values), eigen(corP$rho)$values,
+                                          ylab = "Eigen value", xlab = "Component Number")'),
+                                     br(),
+                                     code('lines(1:length(eigen(corP$rho)$values), eigen(corP$rho)$values)'),
+                                     br(),
+                                     code('eigen(corP$rho) # Eigen values and vectors')),
+                                 br()
+                        ),
              ###########################
              # TRADITIONAL ANALYSIS ####
              ###########################
              navbarMenu('Traditional analysis',
-                        # ITEM ANALYSIS
+                        # * ITEM ANALYSIS ####
                         tabPanel("Item analysis",
-                                 br(),
                                  h3("Traditional item analysis"),
                                  p('Traditional item analysis uses proportions of correct answers or correlations to estimate item properties.'),
                                  h4("Item difficulty/discrimination graph"),
@@ -377,7 +449,13 @@ ui=tagList(
                                  tableOutput('itemexam'),
                                  br(),
                                  h4("Selected R code"),
-                                 div(code('library(difNLR, psych, ShinyItemAnalysis)'),
+                                 div(code('library(difNLR)'),
+                                     br(),
+                                     code('library(psych)'),
+                                     br(),
+                                     code('library(psychometric)'),
+                                     br(),
+                                     code('library(ShinyItemAnalysis)'),
                                      br(),
                                      code('data(GMAT)'),
                                      br(),
@@ -399,28 +477,23 @@ ui=tagList(
                                      code('tab <- round(data.frame(item.exam(data, discr = TRUE)[, c(4, 1, 5, 2, 3)],
                                           psych::alpha(data)$alpha.drop[, 1]), 2)'),
                                      br(),
+                                     code('colnames(tab) <- c("Difficulty", "SD", "Dsicrimination ULI", "Discrimination RIT", "Discrimination RIR", "Alpha Drop")'),
+                                     br(),
                                      code('tab')),
                                  br()
                                  ),
-                        # DISTRACTORS
+                        # * DISTRACTORS ####
                         tabPanel("Distractors",
                                  h3("Distractor analysis"),
                                  p('In distractor analysis, we are interested in how test takers select
                                    the correct answer and how the distractors (wrong answers) were able
                                    to function effectively by drawing the test takers away from the correct answer.'),
-                                 h4('Histogram of total scores'),
-                                 htmlOutput("text_distractor"),
-                                 br(),
                                  sliderInput('gr','Number of groups:',
                                              min   = 1,
                                              max   = 5,
                                              value = 3
                                  ),
-                                 fluidRow(column(12, align = "center", tableOutput('tab_distractor_by_group'))),
-                                 br(),
-                                 plotOutput('hist_distractor_by_group'),
-                                 downloadButton("DP_hist_distractor_by_group", label = "Download figure"),
-                                 br(),
+                                 htmlOutput("text_distractor"),
                                  h4("Distractors plot"),
                                  radioButtons('type_combinations_distractor', 'Type',
                                               list("Combinations", "Distractors")
@@ -429,13 +502,23 @@ ui=tagList(
                                              step=1, animate=TRUE),
                                  plotOutput('graf'),
                                  downloadButton("DP_graf", label = "Download figure"),
+                                 br(),
                                  h4("Table with counts"),
                                  fluidRow(column(12, align = "center", tableOutput('tab_counts_distractor'))),
                                  h4("Table with proportions"),
                                  fluidRow(column(12, align = "center", tableOutput('tab_props_distractor'))),
                                  br(),
+                                 h4('Histogram of total scores'),
+                                 plotOutput('hist_distractor_by_group'),
+                                 downloadButton("DP_hist_distractor_by_group", label = "Download figure"),
+                                 br(),
+                                 h4('Table of total scores by groups'),
+                                 fluidRow(column(12, align = "center", tableOutput('tab_distractor_by_group'))),
+                                 br(),
                                  h4("Selected R code"),
-                                 div(code('library(difNLR, ShinyItemAnalysis)'),
+                                 div(code('library(difNLR)'),
+                                     br(),
+                                     code('library(ShinyItemAnalysis)'),
                                      br(),
                                      code('data(GMATtest)'),
                                      br(),
@@ -519,7 +602,7 @@ ui=tagList(
              # REGRESSION ########
              #####################
              navbarMenu("Regression",
-                        # LOGISTIC
+                        # * LOGISTIC ####
                         tabPanel("Logistic",
                                  h3("Logistic regression on total scores"),
                                  p('Various regression models may be fitted to describe
@@ -573,7 +656,7 @@ ui=tagList(
                                           ylim = c(0, 1))')),
                                  br()
                                  ),
-                        # LOGISTIC Z
+                        # * LOGISTIC Z ####
                         tabPanel("Logistic Z",
                                  h3("Logistic regression on standardized total scores"),
                                  p('Various regression models may be fitted to describe
@@ -626,7 +709,7 @@ ui=tagList(
                                           ylim = c(0, 1))')),
                                  br()
                                  ),
-                        # LOGISTIC IRT Z
+                        # * LOGISTIC IRT Z ####
                         tabPanel("Logistic IRT Z",
                                  h3("Logistic regression on standardized total scores with IRT parameterization"),
                                  p('Various regression models may be fitted to describe
@@ -683,7 +766,7 @@ ui=tagList(
                                  br()
                                  ),
 
-                        # NONLINEAR Z
+                        # * NONLINEAR Z ####
                         tabPanel("Nonlinear IRT Z",
                                  h3("Nonlinear regression on standardized total scores"),
                                  p('Various regression models may be fitted to describe
@@ -737,9 +820,9 @@ ui=tagList(
                                  br()
                                  ),
                         "----",
-                        # MODELS COMPARISON
-                        tabPanel("Models comparison",
-                                 h3("Logistic regression models selection"),
+                        # * MODELS COMPARISON ####
+                        tabPanel("Model comparison",
+                                 h3("Logistic regression model selection"),
                                  p('Here you can compare classic 2PL logistic regression model to non-linear model
                                    item by item using some information criterions: '),
                                  tags$ul(
@@ -764,7 +847,7 @@ ui=tagList(
                                  DT::dataTableOutput('regr_comp_table'),
                                  br(),
                                  h4("Selected R code"),
-                                 div(code('library(difNLR, lmtest)'),
+                                 div(code('library(difNLR)'),
                                      br(),
                                      code('data(GMAT)'),
                                      br(),
@@ -794,14 +877,20 @@ ui=tagList(
                                      br(),
                                      code('BIC(fit2PL); BIC(fit3PL)'),
                                      br(),
-                                     code('lrtest(fit2PL, fit3PL)'),
+                                     code('LRstat <- -2 * (sapply(fit2PL, logLik) - sapply(fit3PL, logLik))'),
+                                     br(),
+                                     code('LRdf <- 1'),
+                                     br(),
+                                     code('LRpval <- 1 - pchisq(LRstat, LRdf)'),
+                                     br(),
+                                     code('LRpval <- p.adjust(LRpval, method = "BH")'),
                                      br()),
                                  br()
                                  ),
                         "----",
-                        # MULTINOMIAL
+                        # * MULTINOMIAL ####
                         tabPanel("Multinomial",
-                                 h3("Multinomial Regression on standardized total scores"),
+                                 h3("Multinomial regression on standardized total scores"),
                                  p('Various regression models may be fitted to describe
                                    item properties in more detail.',
                                    strong('Multinomial regression'),'allows for simultaneous modelling of probability of choosing
@@ -822,7 +911,9 @@ ui=tagList(
                                  htmlOutput("multiint"),
                                  br(),
                                  h4("Selected R code"),
-                                 div(code('library(difNLR, nnet)'),
+                                 div(code('library(difNLR)'),
+                                     br(),
+                                     code('library(nnet)'),
                                      br(),
                                      code('data(GMAT)'),
                                      br(),
@@ -854,9 +945,9 @@ ui=tagList(
              # IRT MODELS ######
              ###################
              navbarMenu("IRT models",
-                        # 1PL (RASCH)
+                        # * 1PL (RASCH) ####
                         tabPanel("1PL (Rasch)",
-                                 h3("One Parameter Item Response Theory Model"),
+                                 h3("One parameter Item Response Theory model"),
                                  p('Item Response Theory (IRT) models are mixed-effect regression models in which
                                    student ability (theta) is assumed to be a random effect and is estimated together with item
                                    paramters. Ability (theta) is often assumed to follow normal distibution.'),
@@ -883,7 +974,9 @@ ui=tagList(
                                  downloadButton("DP_raschFactor", label = "Download figure"),
                                  br(),
                                  h4("Selected R code"),
-                                 div(code('library(difNLR, ltm)'),
+                                 div(code('library(difNLR)'),
+                                     br(),
+                                     code('library(ltm)'),
                                      br(),
                                      code('data(GMAT)'),
                                      br(),
@@ -893,6 +986,10 @@ ui=tagList(
                                      code('# Model'),
                                      br(),
                                      code('fit <- rasch(data)'),
+                                     br(),
+                                     code('# for Rasch model use'),
+                                     br(),
+                                     code('# fit <- rasch(data, constraint = cbind(ncol(data) + 1, 1))'),
                                      br(),
                                      code('# Item Characteristic Curves'),
                                      br(),
@@ -929,9 +1026,9 @@ ui=tagList(
                                           ylab = "Factor score")')),
                                  br()
                                  ),
-                        # 2PL
+                        # * 2PL ####
                         tabPanel("2PL ",
-                                 h3("Two Parameter Item Response Theory Model"),
+                                 h3("Two parameter Item Response Theory model"),
                                  p('Item Response Theory (IRT) models are mixed-effect regression models in which
                                    student ability (theta) is assumed to be a random effect and is estimated together with item
                                    paramters. Ability (theta) is often assumed to follow normal distibution.'),
@@ -957,7 +1054,9 @@ ui=tagList(
                                  downloadButton("DP_twoFactor", label = "Download figure"),
                                  br(),
                                  h4("Selected R code"),
-                                 div(code('library(difNLR, ltm)'),
+                                 div(code('library(difNLR)'),
+                                     br(),
+                                     code('library(ltm)'),
                                      br(),
                                      code('data(GMAT)'),
                                      br(),
@@ -966,7 +1065,7 @@ ui=tagList(
                                      br(),
                                      code('# Model'),
                                      br(),
-                                     code('fit <- ltm(data ~ z1)'),
+                                     code('fit <- ltm(data ~ z1, IRT.param = TRUE)'),
                                      br(),
                                      code('# Item Characteristic Curves'),
                                      br(),
@@ -1003,9 +1102,9 @@ ui=tagList(
                                           ylab = "Factor score")')),
                                  br()
                                  ),
-                        # 3PL
+                        # * 3PL ####
                         tabPanel("3PL ",
-                                 h3("Three Parameter Item Response Theory Model"),
+                                 h3("Three parameter Item Response Theory model"),
                                  p('Item Response Theory (IRT) models are mixed-effect regression models in which
                                    student ability (theta) is assumed to be a random effect and is estimated together with item
                                    paramters. Ability (theta) is often assumed to follow normal distibution.'),
@@ -1031,7 +1130,9 @@ ui=tagList(
                                  downloadButton("DP_threeFactor", label = "Download figure"),
                                  br(),
                                  h4("Selected R code"),
-                                 div(code('library(difNLR, ltm)'),
+                                 div(code('library(difNLR)'),
+                                     br(),
+                                     code('library(ltm)'),
                                      br(),
                                      code('data(GMAT)'),
                                      br(),
@@ -1040,7 +1141,7 @@ ui=tagList(
                                      br(),
                                      code('# Model'),
                                      br(),
-                                     code('fit <- tpm(data)'),
+                                     code('fit <- tpm(data, IRT.param = TRUE)'),
                                      br(),
                                      code('# Item Characteristic Curves'),
                                      br(),
@@ -1082,9 +1183,9 @@ ui=tagList(
              # IRT MODELS WITH MIRT ######
              #############################
              navbarMenu("IRT models with mirt",
-                        # RASCH
+                        # * RASCH ####
                         tabPanel("Rasch",
-                                 h3("Rasch Item Response Theory Model"),
+                                 h3("Rasch Item Response Theory model"),
                                  p('Item Response Theory (IRT) models are mixed-effect regression models in which
                                    student ability (theta) is assumed to be a random effect and is estimated together with item
                                    paramters. Ability (theta) is often assumed to follow normal distibution.'),
@@ -1119,7 +1220,11 @@ ui=tagList(
                                  downloadButton('DP_raschWM_mirt', label = "Download figure"),
                                  br(),
                                  h4("Selected R code"),
-                                 div(code('library(difNLR, mirt, WrightMap)'),
+                                 div(code('library(difNLR)'),
+                                     br(),
+                                     code('library(mirt)'),
+                                     br(),
+                                     code('library(WrightMap)'),
                                      br(),
                                      code('data(GMAT)'),
                                      br(),
@@ -1144,7 +1249,9 @@ ui=tagList(
                                      br(),
                                      code('# Coefficients'),
                                      br(),
-                                     code('coef(fit)'),
+                                     code('coef(fit, simplify = TRUE)'),
+                                     br(),
+                                     code('coef(fit, IRTpars = TRUE, simplify = TRUE)'),
                                      br(),
                                      code('# Item fit statistics'),
                                      br(),
@@ -1166,9 +1273,9 @@ ui=tagList(
                                      code('wrightMap(fs, b, item.side = itemClassic)')),
                                  br()
                                  ),
-                        # 1 PL IRT
+                        # * 1 PL IRT ####
                         tabPanel("1PL",
-                                 h3("One Parameter Item Response Theory Model"),
+                                 h3("One parameter Item Response Theory model"),
                                  p('Item Response Theory (IRT) models are mixed-effect regression models in which
                                    student ability (theta) is assumed to be a random effect and is estimated together with item
                                    paramters. Ability (theta) is often assumed to follow normal distibution.'),
@@ -1204,7 +1311,11 @@ ui=tagList(
                                  downloadButton('DP_oneparamirtWM_mirt', label = "Download figure"),
                                  br(),
                                  h4("Selected R code"),
-                                 div(code('library(difNLR, mirt, WrightMap)'),
+                                 div(code('library(difNLR)'),
+                                     br(),
+                                     code('library(mirt)'),
+                                     br(),
+                                     code('library(WrightMap)'),
                                      br(),
                                      code('data(GMAT)'),
                                      br(),
@@ -1229,7 +1340,9 @@ ui=tagList(
                                      br(),
                                      code('# Coefficients'),
                                      br(),
-                                     code('coef(fit)'),
+                                     code('coef(fit, simplify = TRUE)'),
+                                     br(),
+                                     code('coef(fit, IRTpars = TRUE, simplify = TRUE)'),
                                      br(),
                                      code('# Item fit statistics'),
                                      br(),
@@ -1251,9 +1364,9 @@ ui=tagList(
                                      code('wrightMap(fs, b, item.side = itemClassic)')),
                                  br()
                                  ),
-                        # 2PL
+                        # * 2PL ####
                         tabPanel("2PL ",
-                                 h3("Two Parameter Item Response Theory Model"),
+                                 h3("Two parameter Item Response Theory model"),
                                  p('Item Response Theory (IRT) models are mixed-effect regression models in which
                                    student ability (theta) is assumed to be a random effect and is estimated together with item
                                    paramters. Ability (theta) is often assumed to follow normal distibution.'),
@@ -1280,7 +1393,9 @@ ui=tagList(
                                  downloadButton("DP_twoparamirtFactor_mirt", label = "Download figure"),
                                  br(),
                                  h4("Selected R code"),
-                                 div(code('library(difNLR, mirt)'),
+                                 div(code('library(difNLR)'),
+                                     br(),
+                                     code('library(mirt)'),
                                      br(),
                                      code('data(GMAT)'),
                                      br(),
@@ -1305,7 +1420,9 @@ ui=tagList(
                                      br(),
                                      code('# Coefficients'),
                                      br(),
-                                     code('coef(fit)'),
+                                     code('coef(fit, simplify = TRUE)'),
+                                     br(),
+                                     code('coef(fit, IRTpars = TRUE, simplify = TRUE)'),
                                      br(),
                                      code('# Item fit statistics'),
                                      br(),
@@ -1320,9 +1437,9 @@ ui=tagList(
                                      code('plot(fs ~ sts)')),
                                  br()
                                  ),
-                        # 3PL
+                        # * 3PL ####
                         tabPanel("3PL ",
-                                 h3("Three Parameter Item Response Theory Model"),
+                                 h3("Three parameter Item Response Theory model"),
                                  p('Item Response Theory (IRT) models are mixed-effect regression models in which
                                    student ability (theta) is assumed to be a random effect and is estimated together with item
                                    paramters. Ability (theta) is often assumed to follow normal distibution.'),
@@ -1349,7 +1466,9 @@ ui=tagList(
                                  downloadButton("DP_threeparamirtFactor_mirt", label = "Download figure"),
                                  br(),
                                  h4("Selected R code"),
-                                 div(code('library(difNLR, mirt)'),
+                                 div(code('library(difNLR)'),
+                                     br(),
+                                     code('library(mirt)'),
                                      br(),
                                      code('data(GMAT)'),
                                      br(),
@@ -1374,7 +1493,9 @@ ui=tagList(
                                      br(),
                                      code('# Coefficients'),
                                      br(),
-                                     code('coef(fit)'),
+                                     code('coef(fit, simplify = TRUE)'),
+                                     br(),
+                                     code('coef(fit, IRTpars = TRUE, simplify = TRUE)'),
                                      br(),
                                      code('# Item fit statistics'),
                                      br(),
@@ -1390,9 +1511,9 @@ ui=tagList(
                                  br()
                                  ),
                         "----",
-                        # MODELS COMPARISON
-                        tabPanel("Models comparison ",
-                                 h3("Item Response Theory Models selection"),
+                        # * MODEL COMPARISON ####
+                        tabPanel("Model comparison ",
+                                 h3("Item Response Theory model selection"),
                                  p('Item Response Theory (IRT) models are mixed-effect regression models in which
                                    student ability (theta) is assumed to be a random effect and is estimated together with item
                                    paramters. Ability (theta) is often assumed to follow normal distibution.'),
@@ -1412,7 +1533,9 @@ ui=tagList(
                                  tags$style(type = "text/css", "#irtcomparison tr:last-child {font-weight:bold;}"),
                                  br(),
                                  h4("Selected R code"),
-                                 div(code('library(difNLR, mirt)'),
+                                 div(code('library(difNLR)'),
+                                     br(),
+                                     code('library(mirt)'),
                                      br(),
                                      code('data(GMAT)'),
                                      br(),
@@ -1440,9 +1563,9 @@ ui=tagList(
                                  br()
                                  ),
                         "----",
-                        # BOCK'S NOMINAL MODEL
+                        # * BOCK'S NOMINAL MODEL ####
                         tabPanel("Bock's nominal model",
-                                 h3("Bock's Nominal Item Response Theory Model"),
+                                 h3("Bock's nominal Item Response Theory model"),
                                  p('The nominal response model (NRM) was introduced by Bock (1972) as a way to model
                                    responses to items with two or more nominal categories. This model is suitable for
                                    multiple-choice items with no particular ordering of distractors. The correct answer
@@ -1471,7 +1594,9 @@ ui=tagList(
                                  downloadButton("DP_bock_factor", label = "Download figure"),
                                  br(),
                                  h4("Selected R code"),
-                                 div(code('library(difNLR, mirt)'),
+                                 div(code('library(difNLR)'),
+                                     br(),
+                                     code('library(mirt)'),
                                      br(),
                                      code('data(GMAT)'),
                                      br(),
@@ -1496,7 +1621,9 @@ ui=tagList(
                                      br(),
                                      code('# Coefficients'),
                                      br(),
-                                     code('coef(fit)'),
+                                     code('coef(fit, simplify = TRUE)'),
+                                     br(),
+                                     code('coef(fit, IRTpars = TRUE, simplify = TRUE)'),
                                      br(),
                                      code('# Factor scores vs Standardized total scores'),
                                      br(),
@@ -1513,7 +1640,7 @@ ui=tagList(
              ###################
              navbarMenu("DIF/Fairness",
                         "Used methods",
-                        # TOTAL SCORES
+                        # * TOTAL SCORES ####
                         tabPanel("Total scores",
                                  h3("Total scores"),
                                  p('DIF is not about total scores! Two groups may have the same distribution of total scores, yet,
@@ -1553,7 +1680,7 @@ ui=tagList(
                                      code('hist(sc_one, breaks = 0:20)')),
                                  br()
                                  ),
-                        # DELTA PLOTS
+                        # * DELTA PLOTS ####
                         tabPanel("Delta plots",
                                  h3("Delta plot"),
                                  p('Delta plot (Angoff & Ford, 1973) compares the proportions of correct answers per
@@ -1575,7 +1702,9 @@ ui=tagList(
                                  verbatimTextOutput("dp_text_normal"),
                                  br(),
                                  h4("Selected R code"),
-                                 div(code('library(difNLR, deltaPlotR)'),
+                                 div(code('library(deltaPlotR)'),
+                                     br(),
+                                     code('library(difNLR)'),
                                      br(),
                                      code('data(GMAT)'),
                                      br(),
@@ -1608,7 +1737,7 @@ ui=tagList(
                                      code('diagPlot(deltascores, thr.draw = T)')),
                                  br()
                                  ),
-                        # MANTEL-HAENSZEL
+                        # * MANTEL-HAENSZEL ####
                         tabPanel("Mantel-Haenszel",
                                  tabsetPanel(
                                    # Summary
@@ -1630,7 +1759,9 @@ ui=tagList(
                                             verbatimTextOutput("print_DIF_MH"),
                                             br(),
                                             h4("Selected R code"),
-                                            div(code('library(difNLR, difR)'),
+                                            div(code('library(difNLR)'),
+                                                br(),
+                                                code('library(difR)'),
                                                 br(),
                                                 code('data(GMAT)'),
                                                 br(),
@@ -1661,7 +1792,9 @@ ui=tagList(
                                             uiOutput('ORcalculation'),
                                             br(),
                                             h4("Selected R code"),
-                                            div(code('library(difNLR, difR)'),
+                                            div(code('library(difNLR)'),
+                                                br(),
+                                                code('library(difR)'),
                                                 br(),
                                                 code('data(GMAT)'),
                                                 br(),
@@ -1705,10 +1838,10 @@ ui=tagList(
                                             )
                         )
                         ),
-                        # LOGISTIC
+                        # * LOGISTIC ####
                         tabPanel("Logistic",
                                  tabsetPanel(
-                                   # Summary
+                                   # ** Summary ####
                                    tabPanel('Summary',
                                             h3('Logistic regression on total scores'),
                                             p('Logistic regression allows for detection of uniform and non-uniform DIF (Swaminathan & Rogers, 1990) by adding a group
@@ -1736,7 +1869,9 @@ ui=tagList(
                                             verbatimTextOutput('print_DIF_logistic'),
                                             br(),
                                             h4("Selected R code"),
-                                            div(code('library(difNLR, difR)'),
+                                            div(code('library(difNLR)'),
+                                                br(),
+                                                code('library(difR)'),
                                                 br(),
                                                 code('data(GMAT)'),
                                                 br(),
@@ -1755,7 +1890,7 @@ ui=tagList(
                                                 code('fit')),
                                             br()
                                             ),
-                                   # Items
+                                   # ** Items ####
                                    tabPanel('Items',
                                             h3('Logistic regression on total scores'),
                                             p('Logistic regression allows for detection of uniform and non-uniform DIF by adding a group
@@ -1791,7 +1926,9 @@ ui=tagList(
                                             fluidRow(column(12, align = "center", tableOutput('tab_coef_DIF_logistic'))),
                                             br(),
                                             h4("Selected R code"),
-                                            div(code('library(difNLR, difR)'),
+                                            div(code('library(difNLR)'),
+                                                br(),
+                                                code('library(difR)'),
                                                 br(),
                                                 code('data(GMAT)'),
                                                 br(),
@@ -1826,10 +1963,10 @@ ui=tagList(
                                    )
                                  ),
 
-                        # LOGISTIC Z
+                        # * LOGISTIC Z ####
                         tabPanel("Logistic IRT Z",
                                  tabsetPanel(
-                                   # Summary
+                                   # ** Summary ####
                                    tabPanel('Summary',
                                             h3('Logistic regression on standardized total scores with IRT parameterization'),
                                             p('Logistic regression allows for detection of uniform and non-uniform DIF (Swaminathan & Rogers, 1990) by adding a group
@@ -1859,7 +1996,9 @@ ui=tagList(
                                             verbatimTextOutput('print_DIF_logistic_IRT_Z'),
                                             br(),
                                             h4("Selected R code"),
-                                            div(code('library(difNLR, difR)'),
+                                            div(code('library(difNLR)'),
+                                                br(),
+                                                code('library(difR)'),
                                                 br(),
                                                 code('data(GMAT)'),
                                                 br(),
@@ -1880,7 +2019,7 @@ ui=tagList(
                                                 code('fit')),
                                             br()
                                             ),
-                                   # Items
+                                   # ** Items ####
                                    tabPanel('Items',
                                             h3('Logistic regression on standardized total scores with IRT parameterization'),
                                             p('Logistic regression allows for detection of uniform and non-uniform DIF by adding a group
@@ -1918,7 +2057,9 @@ ui=tagList(
                                             fluidRow(column(12, align = "center", tableOutput('tab_coef_DIF_logistic_IRT_Z'))),
                                             br(),
                                             h4("Selected R code"),
-                                            div(code('library(difNLR, difR)'),
+                                            div(code('library(difNLR)'),
+                                                br(),
+                                                code('library(difR)'),
                                                 br(),
                                                 code('data(GMAT)'),
                                                 br(),
@@ -1967,10 +2108,10 @@ ui=tagList(
                                                 )
                                             )
                                    ),
-                        # NONLINEAR Z
+                        # * NONLINEAR Z ####
                         tabPanel("Nonlinear Z",
                                  tabsetPanel(
-                                   # Summary
+                                   # ** Summary ####
                                    tabPanel('Summary',
                                             h3('Nonlinear regression on standardized total scores'),
                                             p('Nonlinear regression model allows for nonzero lower asymptote - pseudoguessing',
@@ -2018,7 +2159,7 @@ ui=tagList(
                                                 code('fit')),
                                             br()
                                             ),
-                                   # Items
+                                   # ** Items ####
                                    tabPanel('Items',
                                             h3('Nonlinear regression on standardized total scores'),
                                             p('Nonlinear regression model allows for nonzero lower asymptote - pseudoguessing',
@@ -2083,9 +2224,10 @@ ui=tagList(
                                             )
                                             )
                         ),
-                        # IRT LORD
+                        # * IRT LORD ####
                         tabPanel("IRT Lord",
                                  tabsetPanel(
+                                   # ** Summary ####
                                    tabPanel('Summary',
                                             h3('Lord test for IRT models'),
                                             p('Lord test (Lord, 1980) is based on IRT model
@@ -2120,7 +2262,9 @@ ui=tagList(
                                             verbatimTextOutput('print_DIF_IRT_Lord'),
                                             br(),
                                             h4("Selected R code"),
-                                            div(code('library(difNLR, difR)'),
+                                            div(code('library(difNLR)'),
+                                                br(),
+                                                code('library(difR)'),
                                                 br(),
                                                 code('data(GMAT)'),
                                                 br(),
@@ -2138,6 +2282,7 @@ ui=tagList(
                                                 code('fit')),
                                             br()
                                             ),
+                                   # ** Items ####
                                    tabPanel('Items',
                                             h3('Lord test for IRT models'),
                                             p('Lord test (Lord, 1980) is based on IRT model
@@ -2175,7 +2320,9 @@ ui=tagList(
                                             fluidRow(column(12, align = "center", tableOutput('tab_coef_DIF_IRT_Lord'))),
                                             br(),
                                             h4("Selected R code"),
-                                            div(code('library(difNLR, difR)'),
+                                            div(code('library(difNLR)'),
+                                                br(),
+                                                code('library(difR)'),
                                                 br(),
                                                 code('data(GMAT)'),
                                                 br(),
@@ -2203,9 +2350,10 @@ ui=tagList(
                                             )
                                    )
                                    ),
-                        # IRT RAJU
+                        # * IRT RAJU ####
                         tabPanel("IRT Raju",
                                  tabsetPanel(
+                                   # ** Summary ####
                                    tabPanel('Summary',
                                             h3('Raju test for IRT models'),
                                             p('Raju test (Raju, 1988, 1990) is based on IRT
@@ -2239,7 +2387,9 @@ ui=tagList(
                                             verbatimTextOutput('print_DIF_IRT_Raju'),
                                             br(),
                                             h4("Selected R code"),
-                                            div(code('library(difNLR, difR)'),
+                                            div(code('library(difNLR)'),
+                                                br(),
+                                                code('library(difR)'),
                                                 br(),
                                                 code('data(GMAT)'),
                                                 br(),
@@ -2256,6 +2406,7 @@ ui=tagList(
                                                 br(),
                                                 code('fit')),
                                             br()),
+                                   # ** Items ####
                                    tabPanel('Items',
                                             h3('Raju test for IRT models'),
                                             p('Raju test (Raju, 1988, 1990) is based on IRT
@@ -2292,7 +2443,9 @@ ui=tagList(
                                             fluidRow(column(12, align = "center", tableOutput('tab_coef_DIF_IRT_Raju'))),
                                             br(),
                                             h4("Selected R code"),
-                                            div(code('library(difNLR, difR)'),
+                                            div(code('library(difNLR)'),
+                                                br(),
+                                                code('library(difR)'),
                                                 br(),
                                                 code('data(GMAT)'),
                                                 br(),
@@ -2319,10 +2472,10 @@ ui=tagList(
                                             br())
                                    )
                                    ),
-                        # DDF
+                        # * DDF ####
                         tabPanel("DDF",
                                  tabsetPanel(
-                                   # Summary
+                                   # ** Summary ####
                                    tabPanel('Summary',
                                             h3('Differential Distractor Functioning with multinomial log-linear regression Model'),
                                             p('Differential Distractor Functioning (DDF) occurs when people from different
@@ -2378,7 +2531,7 @@ ui=tagList(
                                                 code('fit')),
                                             br()
                                    ),
-                                   # Items
+                                   # ** Items ####
                                    tabPanel('Items',
                                             h3('Differential Distractor Functioning with multinomial log-linear regression model'),
                                             p('Differential Distractor Functioning (DDF) occurs when people from different
@@ -2440,7 +2593,7 @@ ui=tagList(
                                  ),
 
                         "----",
-                        # SUMMARY
+                        # * SUMMARY ####
                         "Description",
                         tabPanel('About DIF',
                                  h3('Differential Item Functioning / Item Fairness'),
