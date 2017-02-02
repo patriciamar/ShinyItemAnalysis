@@ -144,13 +144,7 @@ head=" 3PL IRT model"
 }
 ```
 
-Wright (Item-Person) Map using 1PL IRT Model
 
-```{r echo=FALSE, results="hide", fig.height=5, fig.width=10}
-wrightMap(params$wrightMap[[1]], params$wrightMap[[2]], item.side=itemClassic)
-```
-
-\pagebreak
 
 Available models:
 
@@ -166,11 +160,24 @@ $$ {P}(Y_{ij} = 1|\theta_{i},a_j,b_j) = \frac{e^{a_j(\theta_i-b_j)}}{1+e^{a_j(\t
 3PL IRT model
 $$ {P}(Y_{ij} = 1|\theta_{i},a_j,b_j, c_j) =c_j + (1+c_j)\cdot\frac{e^{a_j(\theta_i-b_j)}}{1+e^{a_j(\theta_i-b_j)}}$$
 
-Selected Model:`r head`
+**Wright (Item-Person) Map using 1PL IRT Model**
 
-```{r echo=FALSE, results="hide", fig.height=3}
+```{r echo=FALSE, results="hide", fig.height=5, fig.width=10}
+wrightMap(params$wrightMap[[1]], params$wrightMap[[2]], item.side=itemClassic)
+```
+
+\pagebreak
+
+**Selected model:`r head`**
+
+```{r echo=FALSE, results="hide", fig.height=4}
 params$irt
 params$irtiic
+```
+
+\pagebreak
+
+```{r echo=FALSE, results="hide", fig.height=4}
 params$irttif
 params$irtfactor
 ```

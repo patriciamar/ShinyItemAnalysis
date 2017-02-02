@@ -476,19 +476,16 @@ function(input, output, session) {
     corr_plotInput()
   })
 
-
   # ** DB Correlation plot ####
-
   output$DP_corr_plot <- downloadHandler(
     filename =  function() {
       paste("plot", input$name, ".png", sep = "")
     },
     content = function(file) {
-      
       data <- correct_answ()
       corP <- polychoric(data)
 
-      png(file, height=800, width=1200, res=100)
+      png(file, height = 800, width = 800, res = 100)
       corrplot(corP$rho)
       dev.off()
     }
@@ -2239,11 +2236,7 @@ function(input, output, session) {
     wrightMap(fs, b, item.side = itemClassic)
   })
 
-  output$oneparamirtWrightMap_mirt<- renderPlot({
-    oneparamirtWrightMapInput_mirt()
-  })
-
-  oneparamirtWrightMapReportInput_mirt<-reactive({
+  oneparamirtWrightMapReportInput_mirt <- reactive({
     fit <- one_param_irt_mirt()
     fs <- as.vector(fscores(fit))
 
@@ -2252,11 +2245,13 @@ function(input, output, session) {
     names(b) <- paste("Item", 1:(length(coeftab) - 1))
 
     list<-list()
-
-    list$fs=fs
-    list$b=b
-
+    list$fs<-fs
+    list$b<-b
     list
+  })
+
+  output$oneparamirtWrightMap_mirt<- renderPlot({
+    oneparamirtWrightMapInput_mirt()
   })
 
   output$DP_oneparamirtWM_mirt <- downloadHandler(
