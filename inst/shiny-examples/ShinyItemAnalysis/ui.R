@@ -11,39 +11,18 @@ require(shinyjs)
 
 ui=tagList(
   useShinyjs(),
-  #tags$head(includeScript("google-analytics.js")),
+  # !! ONLINE VERSION ####
+  # tags$head(includeScript("google-analytics.js")),
   navbarPage(title="ShinyItemAnalysis - TEST AND ITEM ANALYSIS",
              collapsible=TRUE,
              footer=list(
                ############################################
                # !! ONLINE VERSION ####
-               div(class="panel-footer",
-                   p(strong("ShinyItemAnalysis Version 1.1.0")),
-                   p("Download ShinyItemAnalysis R package from ",
-                     a(strong("CRAN"), href = "https://cran.rstudio.com/web/packages/ShinyItemAnalysis/",
-                       target = "_blank"), "to run analysis faster!"),
-                   p("Project was supported by grant funded by Czech Science Foundation under number ",
-                     a("GJ15-15856Y",
-                       href = "http://www.cs.cas.cz/martinkova/psychometrics.html",
-                       target = "_blank")),
-                   p("Copyright 2017  Patricia Martinkova, Adela Drabinova, Ondrej Leder and Jakub Houdek"),
-                   div(
-                     HTML('<p style="font-size: 9pt">
-                          See older versions:
-                          <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV01/"> 0.1.0</a>,
-                          <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV02/"> 0.2.0</a>,
-                          <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV100/"> 1.0.0</a>
-                          </p>')
-                     ),
-                   p(textOutput('counter'))
-                     )
-               ############################################
-               # !! PACKAGE VERSION ####
                # div(class="panel-footer",
                #     p(strong("ShinyItemAnalysis Version 1.1.0")),
-               #     p("You can also try ", code('ShinyItemAnalysis'),
-               #       a('online!', href = "https://shiny.cs.cas.cz/ShinyItemAnalysis/",
-               #         target = "_blank")),
+               #     p("Download ShinyItemAnalysis R package from ",
+               #       a(strong("CRAN"), href = "https://cran.rstudio.com/web/packages/ShinyItemAnalysis/",
+               #         target = "_blank"), "to run analysis faster!"),
                #     p("Project was supported by grant funded by Czech Science Foundation under number ",
                #       a("GJ15-15856Y",
                #         href = "http://www.cs.cas.cz/martinkova/psychometrics.html",
@@ -56,8 +35,30 @@ ui=tagList(
                #            <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV02/"> 0.2.0</a>,
                #            <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV100/"> 1.0.0</a>
                #            </p>')
+               #       ),
+               #     p(textOutput('counter'))
                #       )
-               #       )
+               ############################################
+               # !! PACKAGE VERSION ####
+               div(class="panel-footer",
+                   p(strong("ShinyItemAnalysis Version 1.1.0")),
+                   p("You can also try ", code('ShinyItemAnalysis'),
+                     a('online!', href = "https://shiny.cs.cas.cz/ShinyItemAnalysis/",
+                       target = "_blank")),
+                   p("Project was supported by grant funded by Czech Science Foundation under number ",
+                     a("GJ15-15856Y",
+                       href = "http://www.cs.cas.cz/martinkova/psychometrics.html",
+                       target = "_blank")),
+                   p("Copyright 2017  Patricia Martinkova, Adela Drabinova, Ondrej Leder and Jakub Houdek"),
+                   div(
+                     HTML('<p style="font-size: 9pt">
+                          See older versions:
+                          <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV01/"> 0.1.0</a>,
+                          <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV02/"> 0.2.0</a>,
+                          <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV100/"> 1.0.0</a>
+                          </p>')
+                     )
+                     )
                ############################################
                    ),
              theme="bootstrap.css",
@@ -88,14 +89,14 @@ ui=tagList(
                         'page HTML or PDF report can be created. Additionaly, all application outputs are
                         complemented by selected R code hence the similar analysis can be run and modified in R.'),
                       ############################################
-                      # !! ONLINE VERSION ####
-                      p('You can also download ', code('ShinyItemAnalysis'), ' package from ',
-                        a('CRAN', href = 'https://CRAN.R-project.org/package=ShinyItemAnalysis', target = "_blank"),
-                        'to use it offline or run it faster. '),
+                      # # !! ONLINE VERSION ####
+                      # p('You can also download ', code('ShinyItemAnalysis'), ' package from ',
+                      #   a('CRAN', href = 'https://CRAN.R-project.org/package=ShinyItemAnalysis', target = "_blank"),
+                      #   'to use it offline or run it faster. '),
                       ############################################
                       # !! PACKAGE VERSION ####
-                      # p('You can also try ', code('ShinyItemAnalysis'), ' application ',
-                      #   a('online!', href = 'https://shiny.cs.cas.cz/ShinyItemAnalysis/', target = "_blank")),
+                      p('You can also try ', code('ShinyItemAnalysis'), ' application ',
+                        a('online!', href = 'https://shiny.cs.cas.cz/ShinyItemAnalysis/', target = "_blank")),
                       ############################################
                       h4('Data'),
                       p('For demonstration purposes, by default, 20-item dataset', code('GMAT'),'
@@ -2644,12 +2645,8 @@ ui=tagList(
                                            target = "_blank")),
                       p("Wilson, M. (2005). Constructing Measures: An Item Response Modeling Approach."),
                       p("Wright, B. D., & Stone, M. H. (1979). Best Test Design. Chicago: Mesa Press."),
-                      # p("Vlckova, K. (2014). Test and Item Fairness (Unpublished master's thesis)."
-                      #   ),
                       br(),
                       br()
                       )
-             #)
-             #)
                       )
                       )
