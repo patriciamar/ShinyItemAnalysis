@@ -575,7 +575,7 @@ ui=tagList(
                                  sliderInput("logregSlider", "Item Slider", min=1, value=1, max=10,
                                              step=1, animate=TRUE),
                                  plotOutput('logreg'),
-                                 downloadButton("DP_logref", label = "Download figure"),
+                                 downloadButton("DP_logreg", label = "Download figure"),
                                  h4("Equation"),
                                  withMathJax(),
                                  ('$$\\mathrm{P}(Y = 1|X, b_0, b_1) = \\mathrm{E}(Y|X, b_0, b_1) = \\frac{e^{\\left( b_{0} + b_1 X\\right)}}{1+e^{\\left( b_{0} + b_1 X\\right) }} $$'),
