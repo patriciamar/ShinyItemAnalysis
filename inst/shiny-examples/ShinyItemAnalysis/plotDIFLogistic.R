@@ -84,9 +84,9 @@ plotDIFLogistic <- function(data, group, type = "both", item, IRT = F, p.adjust.
   size  <- .8
   linetype <- c(2, 1)
   if (IRT){
-    xlab <- "Standardized Total Score (Z-score)"
+    xlab <- "Standardized total score (Z-score)"
   } else {
-    xlab <- "Total Score"
+    xlab <- "Total score"
   }
 
 
@@ -133,7 +133,7 @@ plotDIFLogistic <- function(data, group, type = "both", item, IRT = F, p.adjust.
                           values = linetype) +
     ### theme
     xlab(xlab) +
-    ylab("Probability of Correct Answer") +
+    ylab("Probability of correct answer") +
     scale_y_continuous(expand = c(0, 0), limits = c(0, 1)) +
     theme_bw() +
     theme(text = element_text(size = 14),

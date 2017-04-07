@@ -4,6 +4,20 @@
         *                                                             *
         ***************************************************************
 
+---------------------------------------------------
+- Changes in ShinyItemAnalysis 1.1.1 (2017-04-07) -
+---------------------------------------------------
+
+MAJOR UPDATES
+
+  o ShinyItemAnalysis can now handle missing values.
+  o Bug in WrightMap was fixed.
+  o Pearson's correlation coefficient between factor scores and
+    standardized total score was added for Bock's nominal IRT model.
+
+MINOR UPDATES
+
+  o CITATION file was added.
 
 ---------------------------------------------------
 - Changes in ShinyItemAnalysis 1.1.0 (2016-02-02) -
