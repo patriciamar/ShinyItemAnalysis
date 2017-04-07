@@ -36,6 +36,9 @@ data('GMATkey', package = 'difNLR')
 test <- get("GMATtest")
 key <- get("GMATkey")
 
+# maximum upload size set to 30MB
+options(shiny.maxRequestSize=30*1024^2)
+
 ##################
 # FUNCTIONS ######
 ##################

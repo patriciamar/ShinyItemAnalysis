@@ -18,6 +18,7 @@ MAJOR UPDATES
 MINOR UPDATES
 
   o CITATION file was added.
+  o Maximum upload size was set to 30MB.
 
 ---------------------------------------------------
 - Changes in ShinyItemAnalysis 1.1.0 (2016-02-02) -
