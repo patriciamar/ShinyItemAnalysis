@@ -145,8 +145,8 @@ plotDistractorAnalysis <-  function (data, key, num.groups = 3, item = 1, multip
          size = 1) +
     geom_line() +
     geom_point(size = 3) +
-    xlab("Group by Total Score") +
-    ylab("Option Selection Percentage") +
+    xlab("Group by total score") +
+    ylab("Option selection percentage") +
     scale_y_continuous(limits = c(0, 1)) +
     scale_x_discrete(labels = 1:num.groups, expand = c(0, 0.2)) +
     scale_linetype_manual(values = linetype) +

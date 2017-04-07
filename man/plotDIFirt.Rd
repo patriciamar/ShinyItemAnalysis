@@ -59,6 +59,13 @@ fitRaju <- difRaju(GMAT, group = 21, focal.name = 1, model = "2PL")
 plotDIFirt(fitRaju$itemParInit, test = "Raju", item = 1)
 }
 }
+\seealso{
+\code{\link[difR]{itemParEst}}
+
+\code{\link[difR]{difLord}}
+
+\code{\link[difR]{difRaju}}
+}
 \author{
 Adela Drabinova \cr
 Institute of Computer Science, The Czech Academy of Sciences \cr
@@ -69,11 +76,3 @@ Patricia Martinkova \cr
 Institute of Computer Science, The Czech Academy of Sciences \cr
 martinkova@cs.cas.cz \cr
 }
-\seealso{
-\code{\link[difR]{itemParEst}}
-
-\code{\link[difR]{difLord}}
-
-\code{\link[difR]{difRaju}}
-}
-

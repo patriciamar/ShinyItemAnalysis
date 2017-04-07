@@ -341,9 +341,9 @@ function(input, output, session) {
     updateSliderInput(session = session, inputId = "difirt_raju_itemSlider", max=itemCount)
     updateSliderInput(session = session, inputId = "ddfSlider", max=itemCount)
 
-    updateSliderInput(session = session, inputId = "inSlider2", max=itemCount, value = round(median(scored_test())))
-    updateSliderInput(session = session, inputId = "inSlider2group", max=itemCount, value = round(median(scored_test()[DIF_groups() == 1])))
-    updateSliderInput(session = session, inputId = "difMHSlider_score", max=itemCount, value = round(median(scored_test())))
+    updateSliderInput(session = session, inputId = "inSlider2", max=itemCount, value = round(median(scored_test(), na.rm = T)))
+    updateSliderInput(session = session, inputId = "inSlider2group", max=itemCount, value = round(median(scored_test()[DIF_groups() == 1], na.rm = T)))
+    updateSliderInput(session = session, inputId = "difMHSlider_score", max=itemCount, value = round(median(scored_test(), na.rm = T)))
 
   })
 
@@ -355,8 +355,13 @@ function(input, output, session) {
   resultsInput <- reactive({
     sc <- scored_test()
 
-    tab <- t(data.frame(c(min(sc), max(sc), mean(sc), median(sc), sd(sc),
-                          skewness(sc), kurtosis(sc))))
+    tab <- t(data.frame(c(min(sc, na.rm = T),
+                          max(sc, na.rm = T),
+                          mean(sc, na.rm = T),
+                          median(sc, na.rm = T),
+                          sd(sc, na.rm = T),
+                          skewness(sc, na.rm = T),
+                          kurtosis(sc, na.rm = T))))
     colnames(tab) <- c("Min", "Max", "Mean", "Median", "SD", "Skewness", "Kurtosis")
     tab
   })
@@ -383,10 +388,10 @@ function(input, output, session) {
                               breaks = unique(c(0, bin - 1, bin, ncol(a))),
                               include.lowest = T))
 
-    if (bin < min(sc)){
+    if (bin < min(sc, na.rm = T)){
       col <- "blue"
     } else {
-      if (bin == min(sc)){
+      if (bin == min(sc, na.rm = T)){
         col <- c("grey", "blue")
       } else {
         col <- c("red", "grey", "blue")
@@ -396,8 +401,8 @@ function(input, output, session) {
     ggplot(df, aes(x = sc)) +
       geom_histogram(aes(fill = gr), binwidth = 1, color = "black") +
       scale_fill_manual("", breaks = df$gr, values = col) +
-      labs(x = "Total Score",
-           y = "Number of Students") +
+      labs(x = "Total score",
+           y = "Number of students") +
       scale_y_continuous(expand = c(0, 0),
                          limits = c(0, max(table(sc)) + 0.01 * nrow(a))) +
       scale_x_continuous(limits = c(-0.5, ncol(a) + 0.5)) +
@@ -450,7 +455,7 @@ function(input, output, session) {
     tsco <- 50 + 10 * zsco
 
     tab <- round(data.frame(tosc, perc, sura, zsco, tsco), 2)
-    colnames(tab) <- c("Total Score", "Percentile", "Success Rate", "Z-score", "T-score")
+    colnames(tab) <- c("Total score", "Percentile", "Success rate", "Z-score", "T-score")
 
     tab
   },
@@ -502,7 +507,7 @@ function(input, output, session) {
     ggplot(data = df, aes(x = pos, y = ev)) +
       geom_point() +
       geom_line() +
-      xlab("Component Number") + ylab("Eigen Value") +
+      xlab("Component number") + ylab("Eigen value") +
       scale_x_continuous(breaks = 1:length(ev)) +
       theme_bw() +
       theme(legend.title = element_blank(),
@@ -611,15 +616,16 @@ function(input, output, session) {
   output$tab_distractor_by_group <- renderTable({
     sc <- scored_test()
 
-    score.level <- quantile(sc, seq(0, 1, by = 1/input$gr))
+    score.level <- quantile(sc, seq(0, 1, by = 1/input$gr), na.rm = T)
     tab <- table(cut(sc,
                      score.level,
                      include.lowest = T,
                      labels = score.level[-1]))
-
     tab <- t(data.frame(tab))
+    tab <- matrix(round(as.numeric(tab), 2), nrow = 2)
 
-    rownames(tab) <- c('Max Points', 'Count')
+
+    rownames(tab) <- c('Max points', 'Count')
     colnames(tab) <- paste('Group', 1:input$gr)
 
     tab
@@ -636,7 +642,7 @@ function(input, output, session) {
     sc <- scored_test()
 
     df <- data.frame(sc,
-                     gr = cut(sc, quantile(sc, seq(0, 1, by = 1/input$gr)),
+                     gr = cut(sc, quantile(sc, seq(0, 1, by = 1/input$gr), na.rm = T),
                               include.lowest = T))
     col <- c("darkred", "red", "orange", "gold", "green3")
     col <- switch(input$gr,
@@ -648,8 +654,8 @@ function(input, output, session) {
     ggplot(df, aes(x = sc)) +
       geom_histogram(aes(fill = gr), binwidth = 1, color = "black") +
       scale_fill_manual("", breaks = df$gr, values = col) +
-      labs(x = "Total Score",
-           y = "Number of Students") +
+      labs(x = "Total score",
+           y = "Number of students") +
       scale_y_continuous(expand = c(0, 0),
                          limits = c(0, max(table(sc)) + 0.01 * nrow(a))) +
       scale_x_continuous(limits = c(-0.5, ncol(a) + 0.5)) +
@@ -698,7 +704,7 @@ function(input, output, session) {
     for (i in 1:length(k)) {
       g<-plotDistractorAnalysis(data = a, key = k, num.group = input$gr, item = i,
                              multiple.answers = multiple.answers)
-      g=g+ggtitle(paste("\nDistractor Plot for Item", i))
+      g=g+ggtitle(paste("\nDistractor plot for item", i))
       g=ggplotGrob(g)
       graflist[[i]]=g
     }
@@ -772,8 +778,8 @@ function(input, output, session) {
                                 b1 = coef(logistic_reg())[2]),
                     size = 1,
                     color = "darkblue") +
-      xlab("Total Score") +
-      ylab("Probability of Correct Answer") +
+      xlab("Total score") +
+      ylab("Probability of correct answer") +
       scale_y_continuous(limits = c(0, 1)) +
       theme_bw() +
       theme(axis.line  = element_line(colour = "black"),
@@ -856,8 +862,8 @@ function(input, output, session) {
                                 b1 = coef(z_logistic_reg())[2]),
                     size = 1,
                     color = "darkblue") +
-      xlab("Standardized Total Score (Z-score)") +
-      ylab("Probability of Correct Answer") +
+      xlab("Standardized total score (Z-score)") +
+      ylab("Probability of correct answer") +
       scale_y_continuous(limits = c(0, 1)) +
       theme_bw() +
       theme(axis.line  = element_line(colour = "black"),
@@ -944,8 +950,8 @@ function(input, output, session) {
                                 b1 = coef(z_logistic_irt_reg())[2]),
                     size = 1,
                     color = "darkblue") +
-      xlab("Standardized Total Score (Z-score)") +
-      ylab("Probability of Correct Answer") +
+      xlab("Standardized total score (Z-score)") +
+      ylab("Probability of correct answer") +
       scale_y_continuous(limits = c(0, 1)) +
       theme_bw() +
       theme(axis.line  = element_line(colour = "black"),
@@ -1028,27 +1034,21 @@ function(input, output, session) {
   # * NONLINEAR IRT Z #####
   # ** Plot with estimated nonlinear curve ####
   nls_model <- reactive({
-    regFce_noDIF <- deriv3(
-      ~ c + (1 - c) / (1 + exp(-a * (x - b))),
-      namevec = c("a", "b", "c"),
-      function.arg = function(x, a, b, c) {}
-    )
-    regFce_klasik <- deriv3(
-      ~ c + (1 - c) / (1 + exp(-(b0 + b1 * x))),
-      namevec = c("b0", "b1", "c"),
-      function.arg = function(x, b0, b1, c) {}
-    )
-
+    data <- correct_answ()
     scaledsc <- scale(scored_test())
 
-    Q3 <- cut(scaledsc, quantile(scaledsc, (0:3) / 3),
+    glr <- deriv3( ~ c + (1 - c) / (1 + exp(-a * (x - b))),
+                  namevec = c("a", "b", "c"),
+                  function.arg = function(x, a, b, c) {})
+
+    Q3 <- cut(scaledsc, quantile(scaledsc, (0:3) / 3, na.rm = T),
               c("I", "II", "III"),
               include.lowest = TRUE)
 
-    x <- cbind(mean(scaledsc[Q3 == "I"]),
-               apply(correct_answ()[Q3 == "I",], 2, mean))
-    y <- cbind(mean(scaledsc[Q3 == "III"]),
-               apply(correct_answ()[Q3 == "III",], 2, mean))
+    x <- cbind(mean(scaledsc[Q3 == "I"], na.rm = T),
+               apply(data[Q3 == "I",], 2, function(x){mean(x, na.rm = T)}))
+    y <- cbind(mean(scaledsc[Q3 == "III"], na.rm = T),
+               apply(data[Q3 == "III",], 2, function(x){mean(x, na.rm = T)}))
     u1 <- y[, 1] - x[, 1]
     u2 <- y[, 2] - x[, 2]
     ### intercept of line
@@ -1069,22 +1069,22 @@ function(input, output, session) {
     start <- cbind(discr, diffi, guess)
     colnames(start) <- c("a", "b", "c")
 
-    estim_klasik1 <-
-      nls(
-        correct_answ()[, i] ~ regFce_noDIF(scaledsc, a, b, c),
-        algorithm = "port", start = start[i, ],
-        lower = c(-20, -20, 0), upper = c(20, 20, 1)
-      )
-
-    estim_klasik1
+    fit <- nls(data[, i] ~ glr(scaledsc, a, b, c),
+               algorithm = "port", start = start[i, ],
+               lower = c(-Inf, -Inf, 0), upper = c(Inf, Inf, 1))
+    fit
   })
 
   nlsplotInput <- reactive({
-    scaledsc = scale(scored_test())
+    scaledsc <- scale(scored_test())
+    i <- input$nlsSlider
+    data <- correct_answ()
+    fit <- nls_model()
 
     fun <- function(x, a, b, c){c + (1 - c) / (1 + exp(-a * (x - b)))}
+
     df <- data.frame(x = sort(unique(scaledsc)),
-                     y = tapply(correct_answ()[, input$nlsSlider], scaledsc, mean),
+                     y = tapply(data[, i], scaledsc, mean),
                      size = as.numeric(table(scaledsc)))
     ggplot(df, aes(x = x, y = y)) +
       geom_point(aes(size = size),
@@ -1092,13 +1092,13 @@ function(input, output, session) {
                  fill = "darkblue",
                  shape = 21, alpha = 0.5) +
       stat_function(fun = fun, geom = "line",
-                    args = list(a = coef(nls_model())[1],
-                                b = coef(nls_model())[2],
-                                c = coef(nls_model())[3]),
+                    args = list(a = coef(fit)[1],
+                                b = coef(fit)[2],
+                                c = coef(fit)[3]),
                     size = 1,
                     color = "darkblue") +
-      xlab("Standardized Total Score (Z-score)") +
-      ylab("Probability of Correct Answer") +
+      xlab("Standardized total score (Z-score)") +
+      ylab("Probability of correct answer") +
       scale_y_continuous(limits = c(0, 1)) +
       theme_bw() +
       theme(axis.line  = element_line(colour = "black"),
@@ -1124,7 +1124,7 @@ function(input, output, session) {
       paste("plot", input$name, ".png", sep = "")
     },
     content = function(file) {
-      ggsave(file, plot = nlsplotInput(), device = "png", height=3, width=9, dpi=160)
+      ggsave(file, plot = nlsplotInput(), device = "png", height = 3, width = 9, dpi = 160)
     }
   )
 
@@ -1164,20 +1164,18 @@ function(input, output, session) {
 
     m <- ncol(Data)
 
-    regFce_noDIF <- deriv3(
-      ~ c + (1 - c) / (1 + exp(-a * (x - b))),
-      namevec = c("a", "b", "c"),
-      function.arg = function(x, a, b, c) {}
-    )
+    glr <- deriv3( ~ c + (1 - c) / (1 + exp(-a * (x - b))),
+                   namevec = c("a", "b", "c"),
+                   function.arg = function(x, a, b, c) {})
 
-    Q3 <- cut(scaledsc, quantile(scaledsc, (0:3) / 3),
+    Q3 <- cut(scaledsc, quantile(scaledsc, (0:3) / 3, na.rm = T),
               c("I", "II", "III"),
               include.lowest = TRUE)
 
-    x <- cbind(mean(scaledsc[Q3 == "I"]),
-               apply(Data[Q3 == "I",], 2, mean))
-    y <- cbind(mean(scaledsc[Q3 == "III"]),
-               apply(Data[Q3 == "III",], 2, mean))
+    x <- cbind(mean(scaledsc[Q3 == "I"], na.rm = T),
+               apply(Data[Q3 == "I",], 2, function(x){mean(x, na.rm = T)}))
+    y <- cbind(mean(scaledsc[Q3 == "III"], na.rm = T),
+               apply(Data[Q3 == "III",], 2, function(x){mean(x, na.rm = T)}))
     u1 <- y[, 1] - x[, 1]
     u2 <- y[, 2] - x[, 2]
     ### intercept of line
@@ -1194,43 +1192,49 @@ function(input, output, session) {
     diffi <- b
     guess <- g
 
-
     start <- cbind(discr, diffi, guess)
     colnames(start) <- c("a", "b", "c")
 
-    # fit2PL <- lapply(1:m, function(i) glm(Data[, i] ~ scaledsc, family = "binomial"))
-
-    fit2PL <- lapply(1:m, function(i) nls(Data[, i] ~  regFce_noDIF(scaledsc, a, b, c = 0),
+    fit2PL <- lapply(1:m, function(i) tryCatch(nls(Data[, i] ~  glr(scaledsc, a, b, c = 0),
                                            algorithm = "port", start = start[i, 1:2],
                                            lower = c(-Inf, -Inf),
-                                           upper = c(Inf, Inf)))
+                                           upper = c(Inf, Inf)), error = function(e) {
+                                             cat("ERROR : ", conditionMessage(e), "\n")}))
 
-    fit3PL <- lapply(1:m, function(i) nls(Data[, i] ~  regFce_noDIF(scaledsc, a, b, c),
-                                           algorithm = "port", start = start[i,],
+    fit3PL <- lapply(1:m, function(i) tryCatch(nls(Data[, i] ~  glr(scaledsc, a, b, c),
+                                           algorithm = "port", start = start[i, ],
                                            lower = c(-Inf, -Inf, 0),
-                                           upper = c(Inf, Inf, 1)))
+                                           upper = c(Inf, Inf, 1)), error = function(e) {
+                                             cat("ERROR : ", conditionMessage(e), "\n")}))
 
-    bestAIC <- ifelse(sapply(fit2PL, AIC) < sapply(fit3PL, AIC), "2PL", "3PL")
-    bestBIC <- ifelse(sapply(fit2PL, BIC) < sapply(fit3PL, BIC), "2PL", "3PL")
+    whok <- !c(sapply(fit3PL, is.null) | sapply(fit2PL, is.null))
+    AIC2PL <- AIC3PL <- BIC2PL <- BIC3PL <- rep(NA, m)
 
-    LRstat <- -2 * (sapply(fit2PL, logLik) - sapply(fit3PL, logLik))
+    AIC2PL[whok] <- sapply(fit2PL[whok], AIC)
+    AIC3PL[whok] <- sapply(fit3PL[whok], AIC)
+    BIC2PL[whok] <- sapply(fit2PL[whok], BIC)
+    BIC3PL[whok] <- sapply(fit3PL[whok], BIC)
+
+    bestAIC <- bestBIC <- rep(NA, m)
+    bestAIC[whok] <- ifelse(AIC2PL[whok] < AIC3PL[whok], "2PL", "3PL")
+    bestBIC[whok] <- ifelse(BIC2PL[whok] < BIC3PL[whok], "2PL", "3PL")
+
+    LRstat <- LRpval <- rep(NA, m)
+    LRstat[whok] <- -2 * (sapply(fit2PL[whok], logLik) - sapply(fit3PL[whok], logLik))
     LRdf <- 1
-    LRpval <- 1 - pchisq(LRstat, LRdf)
+    LRpval[whok] <- 1 - pchisq(LRstat[whok], LRdf)
     LRpval <- p.adjust(LRpval, method = input$correction_method_regrmodels)
     bestLR <- ifelse(LRpval < 0.05, "3PL", "2PL")
 
-
-    tab <- rbind(sprintf("%.2f", round(sapply(fit2PL, AIC), 2)),
-                 sprintf("%.2f", round(sapply(fit3PL, AIC), 2)),
-                 sprintf("%.2f", round(sapply(fit2PL, BIC), 2)),
-                 sprintf("%.2f", round(sapply(fit3PL, BIC), 2)),
+    tab <- rbind(sprintf("%.2f", round(AIC2PL, 2)),
+                 sprintf("%.2f", round(AIC3PL, 2)),
+                 sprintf("%.2f", round(BIC2PL, 2)),
+                 sprintf("%.2f", round(BIC3PL, 2)),
                  sprintf("%.2f", round(LRstat, 3)),
                  ifelse(round(LRpval, 3) < 0.001, "<0.001", sprintf("%.3f", round(LRpval, 3))),
                  bestAIC,
                  bestBIC,
                  bestLR)
-
-
 
     tab <- as.data.frame(tab)
     colnames(tab) <- paste("i", 1:ncol(tab))
@@ -1255,8 +1259,9 @@ function(input, output, session) {
     stotal <- c(scale(scored_test()))
     k <- t(as.data.frame(test_key()))
     i <- input$multiSlider
+    data <- test_answers()
 
-    fitM <- multinom(relevel(as.factor(test_answers()[, i]),
+    fitM <- multinom(relevel(as.factor(data[, i]),
                              ref = paste(k[i])) ~ stotal,
                      trace = F)
     fitM
@@ -1264,7 +1269,6 @@ function(input, output, session) {
 
   # ** Plot with estimated curves of multinomial regression ####
   multiplotInput <- reactive({
-
     k <- t(as.data.frame(test_key()))
     data <- test_answers()
     stotal <- c(scale(scored_test()))
@@ -1281,7 +1285,7 @@ function(input, output, session) {
       pp <- cbind(pp, 1 - pp)
       colnames(pp) <- c("0", "1")
     }
-    stotals <- rep(stotal, length(levels(relevel(as.factor(data[, i]),
+    stotals <- rep(stotal[!is.na(stotal)], length(levels(relevel(as.factor(data[, i]),
                                                  ref = paste(k[i])))))
     df <- cbind(melt(pp), stotals)
     df$Var2 <- relevel(as.factor(df$Var2), ref = paste(k[i]))
@@ -1303,8 +1307,8 @@ function(input, output, session) {
 
       ylim(0, 1) +
       labs(title = paste("Item", i),
-           x = "Standardized Total Score",
-           y = "Probability of Answer") +
+           x = "Standardized total score",
+           y = "Probability of answer") +
       theme_bw() +
       theme(axis.line  = element_line(colour = "black"),
             text = element_text(size = 14),
@@ -1321,7 +1325,7 @@ function(input, output, session) {
   })
 
   multiplotReportInput<-reactive({
-    graflist=list()
+    graflist <- list()
     key <- test_key()
     k <- t(as.data.frame(test_key()))
     data <- test_answers()
@@ -1334,13 +1338,12 @@ function(input, output, session) {
                                ref = paste(k[i])) ~ stotal,
                        trace = F)
 
-
       pp <- fitted(fitM)
       if(ncol(pp) == 1){
         pp <- cbind(pp, 1 - pp)
         colnames(pp) <- c("0", "1")
       }
-      stotals <- rep(stotal, length(levels(relevel(as.factor(data[, i]),
+      stotals <- rep(stotal[!is.na(stotal)], length(levels(relevel(as.factor(data[, i]),
                                                    ref = paste(k[i])))))
       df <- cbind(melt(pp), stotals)
       df$Var2 <- relevel(as.factor(df$Var2), ref = paste(k[i]))
@@ -1348,7 +1351,6 @@ function(input, output, session) {
                         y = data.frame(prop.table(table(data[, i], stotal), 2))[, 3])
       df2$stotal <- as.numeric(levels(df2$stotal))[df2$stotal]
       df2$Var2 <- relevel(df2$Var1, ref = paste(k[i]))
-
 
       g <- ggplot() +
         geom_line(data = df,
@@ -1362,8 +1364,8 @@ function(input, output, session) {
 
         ylim(0, 1) +
         labs(title = paste("Item", i),
-             x = "Standardized Total Score",
-             y = "Probability of Answer") +
+             x = "Standardized total score",
+             y = "Probability of answer") +
         theme_bw() +
         theme(axis.line  = element_line(colour = "black"),
               text = element_text(size = 14),
@@ -1377,7 +1379,7 @@ function(input, output, session) {
               legend.key = element_rect(colour = "white"),
               plot.title = element_text(face = "bold"),
               legend.key.width = unit(1, "cm"))
-      g=g+ggtitle(paste("\nMultinomial Plot for Item", i))
+      g=g+ggtitle(paste("\nMultinomial plot for item", i))
       g=ggplotGrob(g)
       graflist[[i]]=g
     }
@@ -1452,9 +1454,6 @@ function(input, output, session) {
           "<b>", round(koef[i, 2], 2), "</b>", '<br/>')
       }
     }
-
-
-
     HTML(paste(txt))
   })
 
@@ -1470,7 +1469,7 @@ function(input, output, session) {
   # *** CC ####
   raschInput <- reactive({
     plot(rasch_model())
-    g<-recordPlot()
+    g <- recordPlot()
     plot.new()
     g
   })
@@ -1484,7 +1483,7 @@ function(input, output, session) {
       paste("plot", input$name, ".png", sep = "")
     },
     content = function(file) {
-      png(file, height=800, width=1200, res=100)
+      png(file, height = 800, width = 1200, res = 100)
       plot(rasch_model())
       dev.off()
     }
@@ -1507,7 +1506,7 @@ function(input, output, session) {
       paste("plot", input$name, ".png", sep = "")
     },
     content = function(file) {
-      png(file, height=800, width=1200, res=100)
+      png(file, height = 800, width = 1200, res = 100)
       plot(rasch_model(), type = "IIC")
       dev.off()
       }
@@ -1530,12 +1529,11 @@ function(input, output, session) {
       paste("plot", input$name, ".png", sep = "")
     },
     content = function(file) {
-      png(file, height=800, width=1200, res=100)
+      png(file, height = 800, width = 1200, res = 100)
       plot(rasch_model(),items = 0, type = "IIC")
       dev.off()
     }
   )
-
 
   # *** Table of parameters ####
   raschcoefInput<- reactive({
@@ -1578,7 +1576,6 @@ function(input, output, session) {
       theme(legend.box.just = "left",
             legend.justification = c(1, 0),
             legend.position = c(1, 0),
-            # legend.margin = unit(0, "lines"),
             legend.box = "vertical",
             legend.key.size = unit(1, "lines"),
             legend.text.align = 0,
@@ -1594,10 +1591,9 @@ function(input, output, session) {
       paste("plot", input$name, ".png", sep = "")
     },
     content = function(file) {
-      ggsave(file, plot = raschFactorInput(), device = "png", height=3, width=9, dpi=160)
+      ggsave(file, plot = raschFactorInput(), device = "png", height = 3, width = 9, dpi = 160)
     }
   )
-
 
   # ** 2PL ####
   two_param_irt <- reactive({
@@ -1607,7 +1603,7 @@ function(input, output, session) {
   # *** ICC ####
   twoparamInput<-reactive({
     plot(two_param_irt())
-    g<-recordPlot()
+    g <- recordPlot()
     plot.new()
     g
   })
@@ -1621,7 +1617,7 @@ function(input, output, session) {
       paste("plot", input$name, ".png", sep = "")
     },
     content = function(file) {
-      png(file, height=800, width=1200, res=100)
+      png(file, height = 800, width = 1200, res = 100)
       plot(two_param_irt())
       dev.off()
       }
@@ -1630,7 +1626,7 @@ function(input, output, session) {
   # *** IIC ####
   twoparamiicInput<-reactive({
     plot(two_param_irt(), type = "IIC")
-    g<-recordPlot()
+    g <- recordPlot()
     plot.new()
     g
   })
@@ -1644,7 +1640,7 @@ function(input, output, session) {
       paste("plot", input$name, ".png", sep = "")
     },
     content = function(file) {
-      png(file, height=800, width=1200, res=100)
+      png(file, height = 800, width = 1200, res = 100)
       plot(two_param_irt(), type = "IIC")
       dev.off()
       }
@@ -1653,7 +1649,7 @@ function(input, output, session) {
   # *** TIF ####
   twoparamtifInput<-reactive({
     plot(two_param_irt(), items = 0, type = "IIC")
-    g<-recordPlot()
+    g <- recordPlot()
     plot.new()
     g
   })
@@ -1667,7 +1663,7 @@ function(input, output, session) {
       paste("plot", input$name, ".png", sep = "")
     },
     content = function(file) {
-      png(file, height=800, width=1200, res=100)
+      png(file, height = 800, width = 1200, res = 100)
       plot(two_param_irt(), items = 0, type = "IIC")
       dev.off()
       }
@@ -1730,7 +1726,7 @@ function(input, output, session) {
       paste("plot", input$name, ".png", sep = "")
     },
     content = function(file) {
-      ggsave(file, plot = twoFactorInput(), device = "png", height=3, width=9, dpi=160)
+      ggsave(file, plot = twoFactorInput(), device = "png", height = 3, width = 9, dpi = 160)
     }
   )
 
@@ -1755,7 +1751,7 @@ function(input, output, session) {
       paste("plot", input$name, ".png", sep = "")
     },
     content = function(file) {
-      png(file, height=800, width=1200, res=100)
+      png(file, height = 800, width = 1200, res = 100)
       plot(three_param_irt())
       dev.off()
       }
@@ -1764,7 +1760,7 @@ function(input, output, session) {
   # *** IIC ####
   threeparamiicInput<-reactive({
     plot(three_param_irt(), type = "IIC")
-    g<-recordPlot()
+    g <- recordPlot()
     plot.new()
     g
   })
@@ -1778,7 +1774,7 @@ function(input, output, session) {
       paste("plot", input$name, ".png", sep = "")
     },
     content = function(file) {
-      png(file, height=800, width=1200, res=100)
+      png(file, height = 800, width = 1200, res = 100)
       plot(three_param_irt(), type = "IIC")
       dev.off()
     }
@@ -1787,7 +1783,7 @@ function(input, output, session) {
   # *** TIF ####
   threeparamtifInput<-reactive({
     plot(three_param_irt(), items = 0, type = "IIC")
-    g<-recordPlot()
+    g <- recordPlot()
     plot.new()
     g
   })
@@ -1801,7 +1797,7 @@ function(input, output, session) {
       paste("plot", input$name, ".png", sep = "")
     },
     content = function(file) {
-      png(file, height=800, width=1200, res=100)
+      png(file, height = 800, width = 1200, res = 100)
       plot(three_param_irt(), items = 0, type = "IIC")
       dev.off()
     }
@@ -1849,7 +1845,6 @@ function(input, output, session) {
       theme(legend.box.just = "left",
             legend.justification = c(1, 0),
             legend.position = c(1, 0),
-            # legend.margin = unit(0, "lines"),
             legend.box = "vertical",
             legend.key.size = unit(1, "lines"),
             legend.text.align = 0,
@@ -1881,11 +1876,8 @@ function(input, output, session) {
 
   # *** CC ####
   raschInput_mirt <- reactive({
-    g<-plot(rasch_model_mirt(), type = "trace", facet_items = F)
+    g <- plot(rasch_model_mirt(), type = "trace", facet_items = F)
     g
-    # g <- recordPlot()
-    # plot.new()
-    # g
   })
 
   output$rasch_mirt <- renderPlot({
@@ -1945,7 +1937,6 @@ function(input, output, session) {
     }
   )
 
-
   # *** Table of parameters ####
   raschcoefInput_mirt <- reactive({
     fit <- rasch_model_mirt()
@@ -1958,11 +1949,14 @@ function(input, output, session) {
 
     tab <- round(tab, 3)
 
-    itemfittab <- round(itemfit(fit)[, 2:4], 3)
-    tab <- data.frame(tab, itemfittab)
-
+    if(!is.null(tryCatch(round(itemfit(fit)[, 2:4], 3), error = function(e) {
+      cat("ERROR : ", conditionMessage(e), "\n")}))){
+      tab <- data.frame(tab, round(itemfit(fit)[, 2:4], 3))
+      colnames(tab) <- c("b", "SD(b)", "SX2-value", "df", "p-value")
+    } else {
+      colnames(tab) <- c("b", "SD(b)")
+    }
     rownames(tab) <- paste("Item", 1:nrow(tab))
-    colnames(tab) <- c("b", "SD(b)", "SX2-value", "df", "p-value")
 
     tab
   })
@@ -1977,7 +1971,9 @@ function(input, output, session) {
     fs <- as.vector(fscores(rasch_model_mirt()))
     sts <- as.vector(scale(apply(correct_answ(), 1, sum)))
 
-    cor <- cor(fs, sts)
+    whok <- !(is.na(fs) | is.na(sts))
+
+    cor <- cor(fs[whok], sts[whok])
     cor
   })
   output$raschFactorCor_mirt <- renderText({
@@ -2029,13 +2025,11 @@ function(input, output, session) {
 
   # *** Wright Map ####
   raschWrightMapInput_mirt <- reactive({
-
-    fs <- as.vector(fscores(rasch_model_mirt()))
-
     fit <- rasch_model_mirt()
-    coeftab <- coef(fit)
-    b <- sapply(1:(length(coeftab) - 1), function(i) coeftab[[i]][1, "d"])
-    names(b) <- paste("Item", 1:(length(coeftab) - 1))
+    fs <- as.vector(fscores(fit))
+
+    b <- coef(fit, IRTpars = T, simplify = T)$items[, "b"]
+    names(b) <- paste("Item", 1:length(b))
 
     wrightMap(fs, b, item.side = itemClassic)
 
@@ -2044,19 +2038,17 @@ function(input, output, session) {
   output$raschWrightMap_mirt<- renderPlot({
     raschWrightMapInput_mirt()
   })
+
   output$DP_raschWM_mirt <- downloadHandler(
     filename =  function() {
       paste("plot", input$name, ".png", sep = "")
     },
     content = function(file) {
       fs <- as.vector(fscores(rasch_model_mirt()))
-
       fit <- rasch_model_mirt()
-      coeftab <- coef(fit)
-      b <- sapply(1:(length(coeftab) - 1), function(i) coeftab[[i]][1, "d"])
-      names(b) <- paste("Item", 1:(length(coeftab) - 1))
 
-      print(class(raschWrightMapInput_mirt()))
+      b <- coef(fit, IRTpars = T, simplify = T)$items[, "b"]
+      names(b) <- paste("Item", 1:length(b))
 
       png(file, height = 800, width = 1200, res = 100)
       wrightMap(fs, b, item.side = itemClassic)
@@ -2156,11 +2148,14 @@ function(input, output, session) {
 
     tab <- cbind(par_tab, se_tab)[, c(1, 3, 2, 4)]
 
-    itemfittab <- itemfit(fit)[, 2:4]
-    tab <- data.frame(tab, itemfittab)
-
+    if(!is.null(tryCatch(round(itemfit(fit)[, 2:4], 3), error = function(e) {
+      cat("ERROR : ", conditionMessage(e), "\n")}, finally = ""))){
+      tab <- data.frame(tab, round(itemfit(fit)[, 2:4], 3))
+      colnames(tab) <- c("a", "SD(a)", "b", "SD(b)", "SX2-value", "df", "p-value")
+    } else {
+      colnames(tab) <- c("a", "SD(a)", "b", "SD(b)")
+    }
     rownames(tab) <- paste("Item", 1:nrow(tab))
-    colnames(tab) <- c("a", "SD(a)", "b", "SD(b)", "SX2-value", "df", "p-value")
 
     tab <- round(tab, 3)
     tab
@@ -2178,7 +2173,9 @@ function(input, output, session) {
     fs <- as.vector(fscores(one_param_irt_mirt()))
     sts <- as.vector(scale(apply(correct_answ(), 1, sum)))
 
-    cor <- cor(fs, sts)
+    whok <- !(is.na(fs) | is.na(sts))
+
+    cor <- cor(fs[whok], sts[whok])
     cor
   })
   output$oneparamirtFactorCor_mirt <- renderText({
@@ -2231,9 +2228,8 @@ function(input, output, session) {
     fit <- one_param_irt_mirt()
     fs <- as.vector(fscores(fit))
 
-    coeftab <- coef(fit)
-    b <- sapply(1:(length(coeftab) - 1), function(i) coeftab[[i]][1, "d"])
-    names(b) <- paste("Item", 1:(length(coeftab) - 1))
+    b <- coef(fit, IRTpars = T, simplify = T)$items[, "b"]
+    names(b) <- paste("Item", 1:length(b))
 
     wrightMap(fs, b, item.side = itemClassic)
   })
@@ -2243,13 +2239,13 @@ function(input, output, session) {
     fit <- one_param_irt_mirt()
     fs <- as.vector(fscores(fit))
 
-    coeftab <- coef(fit)
-    b <- sapply(1:(length(coeftab) - 1), function(i) coeftab[[i]][1, "d"])
-    names(b) <- paste("Item", 1:(length(coeftab) - 1))
+    b <- coef(fit, IRTpars = T, simplify = T)$items[, "b"]
+    names(b) <- paste("Item", 1:length(b))
 
-    list<-list()
-    list$fs<-fs
-    list$b<-b
+    list <- list()
+    list$fs <- fs
+    list$b <- b
+
     list
   })
 
@@ -2265,8 +2261,7 @@ function(input, output, session) {
       fit <- one_param_irt_mirt()
       fs <- as.vector(fscores(fit))
 
-      coeftab <- coef(fit)
-      b <- sapply(1:(length(coeftab) - 1), function(i) coeftab[[i]][1, "d"])
+      b <- coef(fit, IRTpars = T, simplify = T)$items[, "b"]
       names(b) <- paste("Item", 1:(length(coeftab) - 1))
 
       png(file, height = 800, width = 1200, res = 100)
@@ -2286,9 +2281,6 @@ function(input, output, session) {
   # *** CC ####
   twoparamirtInput_mirt <- reactive({
     plot(two_param_irt_mirt(), type = "trace", facet_items = F)
-    # g <- recordPlot()
-    # plot.new()
-    # g
   })
 
   output$twoparamirt_mirt <- renderPlot({
@@ -2309,9 +2301,6 @@ function(input, output, session) {
   # *** IIC ####
   twoparamirtiicInput_mirt <- reactive({
     plot(two_param_irt_mirt(), type = "infotrace", facet_items = F)
-    # g <- recordPlot()
-    # plot.new()
-    # g
   })
 
   output$twoparamirtiic_mirt <- renderPlot({
@@ -2349,7 +2338,6 @@ function(input, output, session) {
     }
   )
 
-
   # *** Table of parameters ####
   twoparamirtcoefInput_mirt <- reactive({
     fit <- two_param_irt_mirt()
@@ -2372,11 +2360,14 @@ function(input, output, session) {
 
     tab <- cbind(par_tab, se_tab)[, c(1, 3, 2, 4)]
 
-    itemfittab <- itemfit(fit)[, 2:4]
-    tab <- data.frame(tab, itemfittab)
-
+    if(!is.null(tryCatch(round(itemfit(fit)[, 2:4], 3), error = function(e) {
+      cat("ERROR : ", conditionMessage(e), "\n")}, finally = ""))){
+      tab <- data.frame(tab, round(itemfit(fit)[, 2:4], 3))
+      colnames(tab) <- c("a", "SD(a)", "b", "SD(b)", "SX2-value", "df", "p-value")
+    } else {
+      colnames(tab) <- c("a", "SD(a)", "b", "SD(b)")
+    }
     rownames(tab) <- paste("Item", 1:nrow(tab))
-    colnames(tab) <- c("a", "SD(a)", "b", "SD(b)", "SX2-value", "df", "p-value")
 
     tab <- round(tab, 3)
     tab
@@ -2392,7 +2383,9 @@ function(input, output, session) {
     fs <- as.vector(fscores(two_param_irt_mirt()))
     sts <- as.vector(scale(apply(correct_answ(), 1, sum)))
 
-    cor <- cor(fs, sts)
+    whok <- !(is.na(fs) | is.na(sts))
+
+    cor <- cor(fs[whok], sts[whok])
     cor
   })
 
@@ -2533,11 +2526,14 @@ function(input, output, session) {
 
     tab <- cbind(par_tab, se_tab)[, c(1, 4, 2, 5, 3, 6)]
 
-    itemfittab <- itemfit(fit)[, 2:4]
-    tab <- data.frame(tab, itemfittab)
-
+    if(!is.null(tryCatch(round(itemfit(fit)[, 2:4], 3), error = function(e) {
+      cat("ERROR : ", conditionMessage(e), "\n")}, finally = ""))){
+      tab <- data.frame(tab, round(itemfit(fit)[, 2:4], 3))
+      colnames(tab) <- c("a", "SD(a)", "b", "SD(b)", "c", "SD(c)", "SX2-value", "df", "p-value")
+    } else {
+      colnames(tab) <- c("a", "SD(a)", "b", "SD(b)", "c", "SD(c)")
+    }
     rownames(tab) <- paste("Item", 1:nrow(tab))
-    colnames(tab) <- c("a", "SD(a)", "b", "SD(b)", "c", "SD(c)", "SX2-value", "df", "p-value")
 
     tab <- round(tab, 3)
     tab
@@ -2556,7 +2552,9 @@ function(input, output, session) {
     fs <- as.vector(fscores(three_param_irt_mirt()))
     sts <- as.vector(scale(apply(correct_answ(), 1, sum)))
 
-    cor <- cor(fs, sts)
+    whok <- !(is.na(fs) | is.na(sts))
+
+    cor <- cor(fs[whok], sts[whok])
     cor
   })
   output$threeparamirtFactorCor_mirt <- renderText({
@@ -2628,7 +2626,7 @@ function(input, output, session) {
     }
 
     df <- rbind(df,
-                c(nam[sapply(1:4, function(i) which(df[, i] == min(df[, i])))],
+                c(nam[sapply(1:4, function(i) which(df[, i] == min(df[, i], na.rm = T)))],
                   rep("", 3),
                   hv))
 
@@ -2858,6 +2856,22 @@ function(input, output, session) {
     }
   )
 
+  # *** Factor scores correlation ####
+  bockFactorCorInput_mirt <- reactive({
+
+    fs <- as.vector(fscores(bock_irt_mirt()))
+    sts <- as.vector(scale(apply(correct_answ(), 1, sum)))
+
+    whok <- !(is.na(fs) | is.na(sts))
+
+    cor <- cor(fs[whok], sts[whok])
+    cor
+  })
+
+  output$bockFactorCorInput_mirt <- renderText({
+    paste("The pearson correlation coefficient between standardized total score (Z-score)
+          and factor score estimated by Bock's nominal IRT model is", round(bockFactorCorInput_mirt(), 3))
+  })
 
 
   ###################
@@ -2868,10 +2882,20 @@ function(input, output, session) {
   resultsgroupInput<-reactive({
     sc_one  <- scored_test()[DIF_groups() == 1]
     sc_zero <- scored_test()[DIF_groups() == 0]
-    tab <- t(data.frame(round(c(min(sc_zero), max(sc_zero), mean(sc_zero), median(sc_zero),
-                                sd(sc_zero), skewness(sc_zero), kurtosis(sc_zero)), 2),
-                        round(c(min(sc_one), max(sc_one), mean(sc_one), median(sc_one),
-                                sd(sc_one), skewness(sc_one), kurtosis(sc_one)), 2)))
+    tab <- t(data.frame(round(c(min(sc_zero, na.rm = T),
+                                max(sc_zero, na.rm = T),
+                                mean(sc_zero, na.rm = T),
+                                median(sc_zero, na.rm = T),
+                                sd(sc_zero, na.rm = T),
+                                skewness(sc_zero, na.rm = T),
+                                kurtosis(sc_zero, na.rm = T)), 2),
+                        round(c(min(sc_one, na.rm = T),
+                                max(sc_one, na.rm = T),
+                                mean(sc_one, na.rm = T),
+                                median(sc_one, na.rm = T),
+                                sd(sc_one, na.rm = T),
+                                skewness(sc_one, na.rm = T),
+                                kurtosis(sc_one, na.rm = T)), 2)))
     colnames(tab) <- c("Min", "Max", "Mean", "Median", "SD", "Skewness", "Kurtosis")
     rownames(tab) <- c("Reference group (0)", "Focal group (1)")
     tab
@@ -2899,10 +2923,10 @@ function(input, output, session) {
                               breaks = unique(c(0, bin - 1, bin, ncol(a))),
                               include.lowest = T))
 
-    if (bin < min(sc)){
+    if (bin < min(sc, na.rm = T)){
       col <- "blue"
     } else {
-      if (bin == min(sc)){
+      if (bin == min(sc, na.rm = T)){
         col <- c("grey", "blue")
       } else {
         col <- c("red", "grey", "blue")
@@ -2912,8 +2936,8 @@ function(input, output, session) {
     g<-ggplot(df, aes(x = sc)) +
         geom_histogram(aes(fill = gr), binwidth = 1, color = "black") +
         scale_fill_manual("", breaks = df$gr, values = col) +
-        labs(x = "Total Score",
-             y = "Number of Students") +
+        labs(x = "Total score",
+             y = "Number of students") +
         scale_y_continuous(expand = c(0, 0),
                            limits = c(0, max(table(sc)) + 0.01 * nrow(a))) +
         scale_x_continuous(limits = c(-0.5, ncol(a) + 0.5)) +
@@ -2926,7 +2950,7 @@ function(input, output, session) {
               panel.background = element_blank(),
               text = element_text(size = 14),
               plot.title = element_text(face = "bold")) +
-        ggtitle("Histogram of Total Scores for Focal Group")
+        ggtitle("Histogram of total scores for focal group")
     g
   })
 
@@ -2958,10 +2982,10 @@ function(input, output, session) {
                               breaks = unique(c(0, bin - 1, bin, ncol(a))),
                               include.lowest = T))
 
-    if (bin < min(sc)){
+    if (bin < min(sc, na.rm = T)){
       col <- "blue"
     } else {
-      if (bin == min(sc)){
+      if (bin == min(sc, na.rm = T)){
         col <- c("grey", "blue")
       } else {
         col <- c("red", "grey", "blue")
@@ -2970,8 +2994,8 @@ function(input, output, session) {
     g<-ggplot(df, aes(x = sc)) +
         geom_histogram(aes(fill = gr), binwidth = 1, color = "black") +
         scale_fill_manual("", breaks = df$gr, values = col) +
-        labs(x = "Total Score",
-             y = "Number of Students") +
+        labs(x = "Total score",
+             y = "Number of students") +
         scale_y_continuous(expand = c(0, 0),
                            limits = c(0, max(table(sc)) + 0.01 * nrow(a))) +
         scale_x_continuous(limits = c(-0.5, ncol(a) + 0.5)) +
@@ -2984,7 +3008,7 @@ function(input, output, session) {
               panel.background = element_blank(),
               text = element_text(size = 14),
               plot.title = element_text(face = "bold")) +
-        ggtitle("Histogram of Total Scores for Reference Group")
+        ggtitle("Histogram of total scores for reference group")
     g
   })
 
@@ -3034,8 +3058,8 @@ function(input, output, session) {
                   size = 1) +
       labs(x = "Reference group",
            y = "Focal group") +
-      xlim(min(deltaGpurn()$Deltas) - 0.5, max(deltaGpurn()$Deltas) + 0.5) +
-      ylim(min(deltaGpurn()$Deltas) - 0.5, max(deltaGpurn()$Deltas) + 0.5) +
+      xlim(min(deltaGpurn()$Deltas, na.rm = T) - 0.5, max(deltaGpurn()$Deltas, na.rm = T) + 0.5) +
+      ylim(min(deltaGpurn()$Deltas, na.rm = T) - 0.5, max(deltaGpurn()$Deltas, na.rm = T) + 0.5) +
       theme_bw() +
       theme(legend.title = element_blank(),
             axis.line  = element_line(colour = "black"),
@@ -3049,7 +3073,7 @@ function(input, output, session) {
                               y = deltaGpurn()$Deltas[deltaGpurn()$DIFitems, 2]),
                           size = 6, color = "black", shape = 1)
     }
-    p=p+ggtitle("Delta Plot")
+    p=p+ggtitle("Delta plot")
     p
   })
 
@@ -3109,7 +3133,7 @@ function(input, output, session) {
     df <- data.frame(data[, input$difMHSlider_item], group)
     colnames(df) <- c("Answer", "Group")
     df$Answer <- relevel(factor(df$Answer, labels = c("Incorrect", "Correct")), "Correct")
-    df$Group <- factor(df$Group, labels = c("Reference Group", "Focal Group"))
+    df$Group <- factor(df$Group, labels = c("Reference group", "Focal group"))
 
 
     df <- df[total == input$difMHSlider_score, ]
@@ -3166,9 +3190,6 @@ function(input, output, session) {
     )
   })
 
-
-
-
   # * LOGISTIC  ####
   # ** Model for plot ####
   model_DIF_logistic_plot <- reactive({
@@ -3209,7 +3230,6 @@ function(input, output, session) {
                     IRT = F,
                     p.adjust.method = input$correction_method_logItems
     )
-
   })
 
   output$plot_DIF_logistic <- renderPlot({
@@ -3258,7 +3278,7 @@ function(input, output, session) {
                             IRT = F,
                             p.adjust.method = input$correction_method_logItems
             )
-        g=g+ggtitle(paste0("DIF Logistic Plot for Item ", mod$DIFitems[i]))
+        g=g+ggtitle(paste0("DIF logistic plot for item ", mod$DIFitems[i]))
         #g=ggplotGrob(g)
         graflist[[i]]<-g
       }

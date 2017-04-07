@@ -66,7 +66,7 @@ DDplot <- function(data){
                  alpha = 0.7,
                  width = 0.8) +
     geom_hline(yintercept = 0.2) +
-    xlab("Item Number (Ordered by Difficulty)") +
+    xlab("Item number (ordered by difficulty)") +
     ylab("Difficulty/Discrimination") +
     scale_y_continuous(expand = c(0, 0), limits = c(0, 1)) +
     scale_fill_manual(breaks = parameter,
