@@ -3024,7 +3024,8 @@ function(input, output, session) {
       paste("plot", input$name, ".png", sep = "")
     },
     content = function(file) {
-      ggsave(file, plot = histbyscoregroup0Input(), device = "png", height=3, width=9, dpi=160)
+      ggsave(file, plot = histbyscoregroup0Input(), device = "png",
+             height = 3, width = 9, dpi = 160)
     }
   )
 
@@ -3043,26 +3044,29 @@ function(input, output, session) {
 
   # * Delta plot ####
   deltaplotInput <- reactive({
-    p <- ggplot(data.frame(deltaGpurn()$Deltas),
-                aes(x = X1, y = X2, label = rownames(data.frame(deltaGpurn()$Deltas)))) +
+    dp <- deltaGpurn()
+    df <- data.frame(dp$Deltas)
+
+    p <- ggplot(df,
+                aes(x = X1, y = X2, label = rownames(df))) +
       geom_point() +
       geom_text(hjust = 0, nudge_x = 0.05) +
-      geom_abline(intercept = deltaGpurn()$axis.par[1], slope = deltaGpurn()$axis.par[2],
+      geom_abline(intercept = dp$axis.par[1], slope = dp$axis.par[2],
                   size = 1) +
-      geom_abline(intercept = deltaGpurn()$axis.par[1] + deltaGpurn()$thr * sqrt(deltaGpurn()$axis.par[2]^2 + 1),
-                  slope = deltaGpurn()$axis.par[2],
+      geom_abline(intercept = dp$axis.par[1] + dp$thr * sqrt(dp$axis.par[2]^2 + 1),
+                  slope = dp$axis.par[2],
                   color = "red",
                   linetype = "dashed",
                   size = 1) +
-      geom_abline(intercept = deltaGpurn()$axis.par[1] - deltaGpurn()$thr * sqrt(deltaGpurn()$axis.par[2]^2 + 1),
-                  slope = deltaGpurn()$axis.par[2],
+      geom_abline(intercept = dp$axis.par[1] - dp$thr * sqrt(dp$axis.par[2]^2 + 1),
+                  slope = dp$axis.par[2],
                   color = "red",
                   linetype = "dashed",
                   size = 1) +
       labs(x = "Reference group",
            y = "Focal group") +
-      xlim(min(deltaGpurn()$Deltas, na.rm = T) - 0.5, max(deltaGpurn()$Deltas, na.rm = T) + 0.5) +
-      ylim(min(deltaGpurn()$Deltas, na.rm = T) - 0.5, max(deltaGpurn()$Deltas, na.rm = T) + 0.5) +
+      xlim(min(dp$Deltas, na.rm = T) - 0.5, max(dp$Deltas, na.rm = T) + 0.5) +
+      ylim(min(dp$Deltas, na.rm = T) - 0.5, max(dp$Deltas, na.rm = T) + 0.5) +
       theme_bw() +
       theme(legend.title = element_blank(),
             axis.line  = element_line(colour = "black"),
@@ -3071,12 +3075,13 @@ function(input, output, session) {
             panel.background = element_blank(),
             text = element_text(size = 14),
             plot.title = element_text(face = "bold"))
-    if (is.numeric(deltaGpurn()$DIFitems)){
-      p <- p + geom_point(aes(x = deltaGpurn()$Deltas[deltaGpurn()$DIFitems, 1],
-                              y = deltaGpurn()$Deltas[deltaGpurn()$DIFitems, 2]),
+    if (is.numeric(dp$DIFitems)){
+      df2 <- df[dp$DIFitems, ]
+      p <- p + geom_point(data = df2,
+                          aes(x = X1, y = X2, label = rownames(df2)),
                           size = 6, color = "black", shape = 1)
     }
-    p=p+ggtitle("Delta plot")
+    p <- p + ggtitle("Delta plot")
     p
   })
 
@@ -3089,7 +3094,8 @@ function(input, output, session) {
       paste("plot", input$name, ".png", sep = "")
     },
     content = function(file) {
-      ggsave(file, plot = deltaplotInput(), device = "png", height=3, width=9, dpi=160)
+      ggsave(file, plot = deltaplotInput(), device = "png",
+             height = 3, width = 9, dpi = 160)
     }
   )
 
