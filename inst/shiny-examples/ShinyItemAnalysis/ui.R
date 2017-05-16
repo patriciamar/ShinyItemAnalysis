@@ -2596,7 +2596,8 @@ ui=tagList(
                                       c("Rasch" = "rasch",
                                         "1PL" = "1pl",
                                         "2PL" = "2pl",
-                                        "3PL" = "3pl"),
+                                        "3PL" = "3pl",
+                                        "None" = "none"),
                                       selected = "1pl"),
                          downloadButton("report", "Generate Report"),
                          p(strong("Warning"), ": download of Reports takes some time. Please, be patient.")
