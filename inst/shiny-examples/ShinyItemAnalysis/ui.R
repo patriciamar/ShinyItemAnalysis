@@ -19,7 +19,7 @@ ui=tagList(
                ############################################
                # !! ONLINE VERSION ####
                # div(class="panel-footer",
-               #     p(strong("ShinyItemAnalysis Version 1.1.0")),
+               #     p(strong("ShinyItemAnalysis Version 1.1.1")),
                #     p("Download ShinyItemAnalysis R package from ",
                #       a(strong("CRAN"), href = "https://cran.rstudio.com/web/packages/ShinyItemAnalysis/",
                #         target = "_blank"), "to run analysis faster!"),
@@ -41,7 +41,7 @@ ui=tagList(
                ############################################
                # !! PACKAGE VERSION ####
                div(class="panel-footer",
-                   p(strong("ShinyItemAnalysis Version 1.1.0")),
+                   p(strong("ShinyItemAnalysis Version 1.1.1")),
                    p("You can also try ", code('ShinyItemAnalysis'),
                      a('online!', href = "https://shiny.cs.cas.cz/ShinyItemAnalysis/",
                        target = "_blank")),
@@ -83,7 +83,7 @@ ui=tagList(
                       p('This application is based on the free statistical software',
                         a('R', href = 'https://cran.r-project.org/', target = "_blank"),
                         ' and its ',
-                        a('Shiny', href = 'http://www.rstudio.com/shiny/', target = "_blank"),
+                        a('shiny', href = 'http://www.rstudio.com/shiny/', target = "_blank"),
                         'package. '),
                       p('For all graphical outputs a download button is provided. Moreover, on ', strong('Reports'),
                         'page HTML or PDF report can be created. Additionaly, all application outputs are
@@ -106,7 +106,7 @@ ui=tagList(
                         You can change the dataset (and try your own one) on page', strong('Data.')),
 
                       h4('Version'),
-                      p('Current version of ', code('ShinyItemAnalysis'), ' is 1.1.0'),
+                      p('Current version of ', code('ShinyItemAnalysis'), ' is 1.1.1'),
                       div(
                         HTML('<p>
                              See also older versions:
@@ -164,7 +164,7 @@ ui=tagList(
                           target = "_blank")),
 
                       h4('License'),
-                      p("Copyright 2016  Patricia Martinkova, Adela Drabinova, Ondrej Leder and Jakub Houdek"),
+                      p("Copyright 2017  Patricia Martinkova, Adela Drabinova, Ondrej Leder and Jakub Houdek"),
                       p("This program is free software you can redistribute it and or modify it under the terms of the GNU
                         General Public License as published by the Free Software Foundation either version 3 of the License or
                         at your option any later version."),
@@ -1148,7 +1148,7 @@ ui=tagList(
                                    student ability (theta) is assumed to be a random effect and is estimated together with item
                                    paramters. Ability (theta) is often assumed to follow normal distibution.'),
                                  p('In',
-                                   strong('Rasch IRT model,'), '(Rasch, 1960) all items are assumed to have the same slope in inflection point – the
+                                   strong('Rasch IRT model'), '(Rasch, 1960), all items are assumed to have the same slope in inflection point – the
                                    same discrimination', strong('a'), 'which is fixed to value of 1. Items can differ in location of their inflection point – in item difficulty',
                                    strong('b.')),
                                  h4("Equation"),
@@ -1163,7 +1163,8 @@ ui=tagList(
                                  plotOutput('raschtif_mirt'),
                                  downloadButton("DP_raschtif_mirt", label = "Download figure"),
                                  h4("Table of parameters with item fit statistics"),
-                                 p('Estimates of parameters are completed by SX2 item fit statistics (Ames & Penfield, 2015)'),
+                                 p('Estimates of parameters are completed by SX2 item fit statistics (Ames & Penfield, 2015).
+                                   SX2 is computed only when no missing data are present. In such a case consider using imputed dataset!'),
                                  tableOutput('raschcoef_mirt'),
                                  h4('Scatter plot of factor scores and standardized total scores'),
                                  textOutput('raschFactorCor_mirt'),
@@ -1238,7 +1239,7 @@ ui=tagList(
                                    student ability (theta) is assumed to be a random effect and is estimated together with item
                                    paramters. Ability (theta) is often assumed to follow normal distibution.'),
                                  p('In',
-                                   strong('1PL IRT model,'), 'all items are assumed to have the same slope in inflection point – the
+                                   strong('1PL IRT model'), ', all items are assumed to have the same slope in inflection point – the
                                    same discrimination', strong('a'), '. Items can differ in location of their inflection point – in item difficulty',
                                    strong('b.')),
                                  h4("Equation"),
@@ -1254,7 +1255,8 @@ ui=tagList(
                                  downloadButton("DP_oneparamirttif_mirt", label = "Download figure"),
                                  h4("Table of parameters with item fit statistics"),
                                  p('Estimates of parameters are completed by SX2 item fit statistics
-                                   (Ames & Penfield, 2015)'),
+                                   (Ames & Penfield, 2015). SX2 is computed only when no missing data are present.
+                                   In such a case consider using imputed dataset!'),
                                  tableOutput('oneparamirtcoef_mirt'),
                                  h4('Scatter plot of factor scores and standardized total scores'),
                                  textOutput('oneparamirtFactorCor_mirt'),
@@ -1328,7 +1330,7 @@ ui=tagList(
                                  p('Item Response Theory (IRT) models are mixed-effect regression models in which
                                    student ability (theta) is assumed to be a random effect and is estimated together with item
                                    paramters. Ability (theta) is often assumed to follow normal distibution.'),
-                                 p(strong('2PL IRT model,'), 'allows for different slopes in inflection point – different
+                                 p(strong('2PL IRT model'), ' allows for different slopes in inflection point – different
                                    discriminations', strong('a.'), 'Items can also differ in location of their inflection point – in item difficulty',
                                    strong('b.')),
                                  h4("Equation"),
@@ -1343,7 +1345,8 @@ ui=tagList(
                                  plotOutput('twoparamirttif_mirt'),
                                  downloadButton("DP_twoparamirttif_mirt", label = "Download figure"),
                                  h4("Table of parameters with item fit statistics"),
-                                 p('Estimates of parameters are completed by SX2 item fit statistics (Ames & Penfield, 2015)'),
+                                 p('Estimates of parameters are completed by SX2 item fit statistics (Ames & Penfield, 2015).
+                                   SX2 is computed only when no missing data are present. In such a case consider using imputed dataset!'),
                                  tableOutput('twoparamirtcoef_mirt'),
                                  h4('Scatter plot of factor scores and standardized total scores'),
                                  textOutput('twoparamirtFactorCor_mirt'),
@@ -1401,7 +1404,7 @@ ui=tagList(
                                  p('Item Response Theory (IRT) models are mixed-effect regression models in which
                                    student ability (theta) is assumed to be a random effect and is estimated together with item
                                    paramters. Ability (theta) is often assumed to follow normal distibution.'),
-                                 p(strong('3PL IRT model,'), 'allows for different discriminations of items', strong('a,'),
+                                 p(strong('3PL IRT model'), ' allows for different discriminations of items', strong('a,'),
                                    'different item difficulties',
                                    strong('b,'), 'and allows also for nonzero left asymptote – pseudo-guessing', strong('c.')),
                                  h4("Equation"),
@@ -1416,7 +1419,8 @@ ui=tagList(
                                  plotOutput('threeparamirttif_mirt'),
                                  downloadButton("DP_threeparamirttif_mirt", label = "Download figure"),
                                  h4("Table of parameters with item fit statistics"),
-                                 p('Estimates of parameters are completed by SX2 item fit statistics (Ames & Penfield, 2015)'),
+                                 p('Estimates of parameters are completed by SX2 item fit statistics (Ames & Penfield, 2015).
+                                   SX2 is computed only when no missing data are present. In such a case consider using imputed dataset!'),
                                  tableOutput('threeparamirtcoef_mirt'),
                                  h4('Scatter plot of factor scores and standardized total scores'),
                                  textOutput('threeparamirtFactorCor_mirt'),
@@ -1548,6 +1552,7 @@ ui=tagList(
                                  textOutput("bock_coef_warning"),
                                  tableOutput('bock_coef'),
                                  h4('Scatter plot of factor scores and standardized total scores'),
+                                 textOutput('bockFactorCorInput_mirt'),
                                  plotOutput('bock_factor'),
                                  downloadButton("DP_bock_factor", label = "Download figure"),
                                  br(),

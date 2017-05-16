@@ -11,6 +11,12 @@ data(dataMedicaltest)
 \description{
 The \code{dataMedicaltest} data set consists of the responses of 3,204 subjects to multiple-choice admission test to medical school. It contains 100 items, possible answers were A, B, C, D, while any combination of these can be correct.
 }
+\references{
+Stuka, C. Vejrazka, M., Martinkova, P. Komenda, M. and Stepanek, L. (2016). The Use of  Test and Item Analisis for Improvement of Tests. Workshop held at conference MEFANET, 2016, Brno, Czech Republic.
+}
+\seealso{
+\code{\link{dataMedical}}, \code{\link{dataMedicalkey}}
+}
 \author{
 Cestmir Stuka \cr
 First Faculty of Medicine, Charles University in Prague \cr
@@ -27,11 +33,4 @@ Institute of Computer Science, The Czech Academy of Sciences \cr
 The Faculty of Informatics and Statistics, University of Economics, Prague \cr
 houdek.james@gmail.com \cr#'
 }
-\references{
-Stuka, C. Vejrazka, M., Martinkova, P. Komenda, M. and Stepanek, L. (2016). The Use of  Test and Item Analisis for Improvement of Tests. Workshop held at conference MEFANET, 2016, Brno, Czech Republic.
-}
-\seealso{
-\code{\link{dataMedical}}, \code{\link{dataMedicalkey}}
-}
 \keyword{datasets}
-
