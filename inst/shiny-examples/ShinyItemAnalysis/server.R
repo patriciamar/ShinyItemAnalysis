@@ -3971,6 +3971,8 @@ function(input, output, session) {
     if (type=="1pl") {out=oneparamirtInput_mirt()}
     if (type=="2pl") {out=twoparamirtInput_mirt()}
     if (type=="3pl") {out=threeparamirtInput_mirt()}
+    if (type=="none") {out=""}
+
     out
   })
 
@@ -3980,6 +3982,8 @@ function(input, output, session) {
     if (type=="1pl") {out=oneparamirtiicInput_mirt()}
     if (type=="2pl") {out=twoparamirtiicInput_mirt()}
     if (type=="3pl") {out=threeparamirtiicInput_mirt()}
+    if (type=="none") {out=""}
+
     out
   })
 
@@ -3989,6 +3993,8 @@ function(input, output, session) {
     if (type=="1pl") {out=oneparamirttifInput_mirt()}
     if (type=="2pl") {out=twoparamirttifInput_mirt()}
     if (type=="3pl") {out=threeparamirttifInput_mirt()}
+    if (type=="none") {out=""}
+
     out
   })
 
@@ -3998,6 +4004,8 @@ function(input, output, session) {
     if (type=="1pl") {out=oneparamirtcoefInput_mirt()}
     if (type=="2pl") {out=twoparamirtcoefInput_mirt()}
     if (type=="3pl") {out=threeparamirtcoefInput_mirt()}
+    if (type=="none") {out=""}
+
     out
   })
 
@@ -4007,6 +4015,8 @@ function(input, output, session) {
     if (type=="1pl") {out=oneparamirtFactorInput_mirt()}
     if (type=="2pl") {out=twoparamirtFactorInput_mirt()}
     if (type=="3pl") {out=threeparamirtFactorInput_mirt()}
+    if (type=="none") {out=""}
+
     out
   })
 
