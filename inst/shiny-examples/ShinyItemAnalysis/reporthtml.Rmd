@@ -51,6 +51,7 @@ params:
   model_DDF_print: NA
   plot_DDFReportInput: NA
   isGroupPresent: NA
+  dif_type: NA
   groupie: NA
 ---
 \pagebreak
@@ -77,12 +78,16 @@ grid.arrange(table, hist, ncol=1, top="Basic Summary and Histogram", layout_matr
 
 ```
 
-## Correlation Structure
+**`r if (params$corr_plot != "") {"## Correlation Structure"}`**
 
 ```{r echo=FALSE, fig.height=4}
-#corrplot(params$corr_plot)
+if (params$corr_plot != "") {
+  corrplot(params$corr_plot)
+  params$scree_plot+ggtitle("Scree Plot")
+}
+
 #grid.arrange(corrplot(params$corr_plot), top="Polychoric Correlation Heat Map")
-#params$scree_plot+ggtitle("Scree Plot")
+
 ```
 
 
@@ -164,10 +169,12 @@ $$ {P}(Y_{ij} = 1|\theta_{i},a_j,b_j) = \frac{e^{a_j(\theta_i-b_j)}}{1+e^{a_j(\t
 3PL IRT model
 $$ {P}(Y_{ij} = 1|\theta_{i},a_j,b_j, c_j) =c_j + (1+c_j)\cdot\frac{e^{a_j(\theta_i-b_j)}}{1+e^{a_j(\theta_i-b_j)}}$$
 
-**Wright (Item-Person) Map using 1PL IRT Model**
+**`r if (params$wrightMap!="") {"Wright (Item-Person) Map using 1PL IRT Model"}`**
 
 ```{r echo=FALSE, results="hide", fig.height=5, fig.width=10}
-wrightMap(params$wrightMap[[1]], params$wrightMap[[2]], item.side=itemClassic)
+if (params$wrightMap!="") {
+  wrightMap(params$wrightMap[[1]], params$wrightMap[[2]], item.side=itemClassic)
+}
 ```
 
 \pagebreak
@@ -221,45 +228,57 @@ grid.arrange(g1, g2, ncol=1)
 }
 ```
 
-`r if(params$isGroupPresent) {"## DIF Detection Using Delta Plot"}`
+`r if(params$isGroupPresent & params$dif_type>=1) {"## DIF Detection Using Delta Plot"}`
 
 ```{r echo=FALSE, results="hide"}
-if(params$isGroupPresent){
-params$deltaplot
+if (params$dif_type>=1) {
+  if(params$isGroupPresent){
+  params$deltaplot
+  }
 }
 ```
 
 ```{r echo=FALSE}
-if(params$isGroupPresent){
-params$DP_text_normal
+if (params$dif_type>=1) {
+  if(params$isGroupPresent){
+  params$DP_text_normal
+  }
 }
 ```
 
-`r if(params$isGroupPresent) {"## DIF Detection Using Logistic Regression"}`
+`r if(params$isGroupPresent & params$dif_type>=2) {"## DIF Detection Using Logistic Regression"}`
 
 ```{r echo=FALSE}
-if(params$isGroupPresent){
-params$DIF_logistic_print
+if (params$dif_type>=2) {
+ if(params$isGroupPresent){
+  params$DIF_logistic_print
+  } 
 }
 ```
 
 ```{r echo=FALSE, results='hide', fig.height=4.2}
-if(params$isGroupPresent){
-params$DIF_logistic_plot
+if (params$dif_type>=2) {
+  if(params$isGroupPresent){
+  params$DIF_logistic_plot
+  }
 }
 ```
 
-`r if(params$isGroupPresent) {"## DDF Detection Using Multinomial Regression"}`
+`r if(params$isGroupPresent & params$dif_type>=2) {"## DDF Detection Using Multinomial Regression"}`
 
 ```{r echo=FALSE}
-if(params$isGroupPresent){
-print(params$model_DDF_print)
+if (params$dif_type>=3) {
+  if(params$isGroupPresent){
+  print(params$model_DDF_print)
+  }
 }
 ```
 
 ```{r echo=FALSE, results='hide', fig.height=4.2}
-if(params$isGroupPresent){
-params$plot_DDFReportInput
+if (params$dif_type>=3) {
+  if(params$isGroupPresent){
+  params$plot_DDFReportInput
+  }
 }
 ```
 
