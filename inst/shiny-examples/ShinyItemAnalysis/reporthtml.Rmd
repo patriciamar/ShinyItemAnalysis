@@ -80,9 +80,9 @@ grid.arrange(table, hist, ncol=1, top="Basic Summary and Histogram", layout_matr
 ## Correlation Structure
 
 ```{r echo=FALSE, fig.height=4}
-corrplot(params$corr_plot)
+#corrplot(params$corr_plot)
 #grid.arrange(corrplot(params$corr_plot), top="Polychoric Correlation Heat Map")
-params$scree_plot+ggtitle("Scree Plot")
+#params$scree_plot+ggtitle("Scree Plot")
 ```
 
 
@@ -142,6 +142,10 @@ if (params$irt_type=="3pl") {
 head=" 3PL IRT model"
 #eq="$$ {P}(Y_{ij} = 1|\theta_{i},a_j,b_j, c_j) =c_j + (1+c_j)\cdot\frac{e^{a_j(\theta_i-b_j)}}{1+e^{a_j(\theta_i-b_j)}}$$"
 }
+
+if (params$irt_type=="none") {
+head=" None"
+}
 ```
 
 
@@ -183,9 +187,12 @@ params$irtfactor
 ```
 
 ```{r echo=FALSE, fig.height=6}
-table=params$irtcoef
-table=round(table,5)
-grid.arrange(tableGrob(table), top="Parameter Estimates and Item Fit")
+if (params$irt_type!="none") {
+  table=params$irtcoef
+  table=round(table,5)
+  grid.arrange(tableGrob(table), top="Parameter Estimates and Item Fit")
+}
+
 ```
 
 
