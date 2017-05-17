@@ -80,9 +80,9 @@ grid.arrange(table, hist, ncol=1, top="Basic Summary and Histogram", layout_matr
 ## Correlation Structure
 
 ```{r echo=FALSE, fig.height=4}
-corrplot(params$corr_plot)
+#corrplot(params$corr_plot)
 #grid.arrange(corrplot(params$corr_plot), top="Polychoric Correlation Heat Map")
-params$scree_plot+ggtitle("Scree Plot")
+#params$scree_plot+ggtitle("Scree Plot")
 ```
 
 
