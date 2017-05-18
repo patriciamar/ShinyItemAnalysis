@@ -109,6 +109,7 @@ function(input, output, session) {
     } else {
       test = dataset$answers
     }
+    # colnames(test) <- paste("Item", 1:length(key))
     test
   })
 
@@ -117,7 +118,7 @@ function(input, output, session) {
     if ((is.null(input$key)) | (is.null(dataset$key))) {
       a=input$dataSelect
       pos=regexpr("_", a)[1]
-      datasetName=str_sub(a, 1,pos-1)
+      datasetName=str_sub(a, 1, pos-1)
       packageName=str_sub(a, pos+1)
 
       do.call(data, args=list(paste0(datasetName,"key"), package=packageName))
@@ -140,6 +141,7 @@ function(input, output, session) {
       }
       key=dataset$key
     }
+    # names(key) <- paste("Item", 1:length(key))
     key
   })
 
@@ -148,23 +150,25 @@ function(input, output, session) {
     if (is.null(input$data) | (is.null(dataset$group))) {
       a=input$dataSelect
       pos=regexpr("_", a)[1]
-      datasetName=str_sub(a, 1,pos-1)
+      datasetName=str_sub(a, 1, pos-1)
       packageName=str_sub(a, pos+1)
 
       do.call(data, args=list(paste0(datasetName,"test"), package=packageName))
       test=get(paste0(datasetName,"test"))
 
-      if (datasetName == "dataMedical"){
-        group <- NULL
-        dataset$group <- NULL
-        validate(
-          need(!is.null(group),
-               "Sorry, for this dataset group is not available. DIF and DDF analyses are not possible!"),
-          errorClass = "warning_group_missing"
-        )
-      } else {
-        group <- test[, ncol(test)]
-      }
+      group <- test[, ncol(test)]
+
+      # if (datasetName == "dataMedical"){
+      #   group <- NULL
+      #   dataset$group <- NULL
+      #   validate(
+      #     need(!is.null(group),
+      #          "Sorry, for this dataset group is not available. DIF and DDF analyses are not possible!"),
+      #     errorClass = "warning_group_missing"
+      #   )
+      # } else {
+      #   group <- test[, ncol(test)]
+      # }
       dataset$group = group
     } else {
       if (length(dataset$group) == 1){
@@ -184,7 +188,6 @@ function(input, output, session) {
       }
       group = dataset$group
     }
-    # group <- as.numeric(paste(as.factor(group)))
     group
   })
 
@@ -199,6 +202,8 @@ function(input, output, session) {
       k=NULL
       group=NULL
 
+
+
       if (is.null(input$data)){
         key <- test_key()
         answ <- test[ , 1:length(key)]
@@ -206,12 +211,22 @@ function(input, output, session) {
       } else {
         answ <- read.csv(input$data$datapath, header = input$header,
                          sep = input$sep, quote = input$quote)
+
+        # if (!input$itemnam){
+        #   nam <- colnames(answ)
+        # } else {
+        #   nam <- paste("Item", 1:length(key))
+        # }
+        # dim(answ)
+        # nam
+        # colnames(answ) <- nam
         if (is.null(input$key)){
           key <- "missing"
         } else {
           key <- read.csv(input$key$datapath, header = input$header,
                           sep = input$sep)
           key <- as.character(unlist(key))
+          # names(key) <- nam
         }
         if (is.null(input$groups)){
           group <- "missing"
@@ -228,6 +243,24 @@ function(input, output, session) {
 
     }
   )
+
+  # ITEM NUMBERS AND NAMES #####
+  item_numbers <- reactive({
+    if (!input$itemnam){
+      nam <- 1:ncol(test_answers())
+    } else {
+      nam <- colnames(test_answers())
+    }
+    nam
+  })
+  item_names <- reactive({
+    if (!input$itemnam){
+      nam <- paste("Item", 1:ncol(test_answers()))
+    } else {
+      nam <- colnames(test_answers())
+    }
+    nam
+  })
 
   # TOTAL SCORE CALCULATION #####
   scored_test <- reactive({
@@ -252,11 +285,11 @@ function(input, output, session) {
   output$headdata <- DT::renderDataTable({
 
     test=test_answers()
-    name <- c()
-    for (i in 1:ncol(test)) {
-      name[i] <- paste("i", i, sep = "")
-    }
-    colnames(test) <- name
+    # name <- c()
+    # for (i in 1:ncol(test)) {
+    #   name[i] <- paste("Item", i, sep = " ")
+    # }
+    colnames(test) <- item_names()
     test
 
   },
@@ -267,11 +300,11 @@ function(input, output, session) {
   output$key <- DT::renderDataTable({
 
     key_table=as.data.frame(t(as.data.frame(test_key())))
-    name <- c()
-    for (i in 1:ncol(key_table)) {
-      name[i] <- paste("i", i, sep = "")
-    }
-    colnames(key_table) <- name
+    # name <- c()
+    # for (i in 1:ncol(key_table)) {
+    #   name[i] <- paste("Item", i, sep = " ")
+    # }
+    colnames(key_table) <- item_names()
     key_table
   },
   rownames = F,
@@ -285,13 +318,14 @@ function(input, output, session) {
     sc <- data.frame(scored_test())
     colnames(sc) <- "Score"
     correct <- correct_answ()
-    name <- c()
-    for (i in 1:ncol(a)) {
-      name[i] <- paste("i", i, sep = "")
-    }
-    colnames(correct) <- name
+    # name <- c()
+    # for (i in 1:ncol(a)) {
+    #   name[i] <- paste("Item", i, sep = " ")
+    # }
+    # colnames(correct) <- name
 
-    out <- (cbind(correct,sc))
+    out <- (cbind(correct, sc))
+    colnames(out) <- c(item_names(), "Score")
     out
   },
   rownames = F,
@@ -542,10 +576,11 @@ function(input, output, session) {
   # TRADITIONAL ANALYSIS #####
   ############################
   # * ITEM ANALYSIS #####
-  # ** Item Difficulty/Discrimination Graph ######
+
+  # ** Difficulty/Discrimination Graph ######
   difplotInput <- reactive({
     correct <- correct_answ()
-    DDplot(correct)
+    DDplot(correct, item.names = item_numbers())
   })
 
   output$difplot <- renderPlot({
@@ -557,7 +592,8 @@ function(input, output, session) {
       paste("plot", input$name, ".png", sep = "")
     },
     content = function(file) {
-      ggsave(file, plot = difplotInput(), device = "png", height=4, width=14, dpi=120)
+      ggsave(file, plot = difplotInput(), device = "png",
+             height = 4, width = 14, dpi = 120)
     }
   )
 
@@ -582,9 +618,10 @@ function(input, output, session) {
     k <- test_key()
     correct <- correct_answ()
 
-    alphadrop <- psych::alpha (correct)$alpha.drop[, 1]
+
+    alphadrop <- psych::alpha(correct)$alpha.drop[, 1]
     tab <- item.exam(correct, discr = TRUE)[, 1:5]
-    tab <- cbind(c(1:ncol(test_answers())),
+    tab <- cbind(item_numbers(),
                  tab[, c(4, 1, 5, 2, 3)],
                  alphadrop)
     colnames(tab) <- c("Item", "Difficulty", "SD", "Discrimination ULI",
@@ -626,7 +663,6 @@ function(input, output, session) {
                      labels = score.level[-1]))
     tab <- t(data.frame(tab))
     tab <- matrix(round(as.numeric(tab), 2), nrow = 2)
-
 
     rownames(tab) <- c('Max points', 'Count')
     colnames(tab) <- paste('Group', 1:input$gr)
@@ -691,8 +727,12 @@ function(input, output, session) {
     a <- test_answers()
     k <- test_key()
 
+    i <- input$distractorSlider
     multiple.answers <- c(input$type_combinations_distractor == "Combinations")
-    plotDistractorAnalysis(data = a, key = k, num.group = input$gr, item = input$distractorSlider,
+
+    plotDistractorAnalysis(data = a, key = k, num.group = input$gr,
+                           item = i,
+                           item.name = item_names()[i],
                            multiple.answers = multiple.answers)
   })
 
@@ -702,14 +742,16 @@ function(input, output, session) {
 
     multiple.answers <- c(input$type_combinations_distractor == "Combinations")
 
-    graflist<-list()
+    graflist <- list()
 
     for (i in 1:length(k)) {
-      g<-plotDistractorAnalysis(data = a, key = k, num.group = input$gr, item = i,
-                             multiple.answers = multiple.answers)
-      g=g+ggtitle(paste("\nDistractor plot for item", i))
-      g=ggplotGrob(g)
-      graflist[[i]]=g
+      g <- plotDistractorAnalysis(data = a, key = k, num.group = input$gr,
+                                  item = i,
+                                  item.name = item_names()[i],
+                                  multiple.answers = multiple.answers)
+      # g = g + ggtitle(paste("\nDistractor plot for item", i))
+      g = ggplotGrob(g)
+      graflist[[i]] = g
     }
     graflist
   })
@@ -723,7 +765,8 @@ function(input, output, session) {
       paste("plot", input$name, ".png", sep = "")
     },
     content = function(file) {
-      ggsave(file, plot = grafInput(), device = "png", height=3, width=9, dpi=160)
+      ggsave(file, plot = grafInput(), device = "png",
+             height = 3, width = 9, dpi = 160)
     }
   )
 
@@ -796,7 +839,7 @@ function(input, output, session) {
             legend.background = element_blank(),
             legend.key = element_rect(colour = "white"),
             plot.title = element_text(face = "bold")) +
-      ggtitle(paste("Item", input$logregSlider))
+      ggtitle(item_names()[input$logregSlider])
   })
 
   output$logreg <- renderPlot({
@@ -808,7 +851,8 @@ function(input, output, session) {
       paste("plot", input$name, ".png", sep = "")
     },
     content = function(file) {
-      ggsave(file, plot = logregInput(), device = "png", height=3, width=9, dpi=160)
+      ggsave(file, plot = logregInput(), device = "png",
+             height = 3, width = 9, dpi = 160)
     }
   )
   # ** Table of parameters ####
@@ -1240,7 +1284,7 @@ function(input, output, session) {
                  bestLR)
 
     tab <- as.data.frame(tab)
-    colnames(tab) <- paste("i", 1:ncol(tab))
+    colnames(tab) <- paste("Item", 1:ncol(tab))
     rownames(tab) <- c("AIC 2PL", "AIC 3PL",
                        "BIC 2PL", "BIC 3PL",
                        "Chisq-value", "p-value",

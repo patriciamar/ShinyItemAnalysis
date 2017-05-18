@@ -259,7 +259,9 @@ ui=tagList(
                       tags$hr(),
                       h4("Data specification"),
                       fluidRow(
-                        column(1, offset = 0, checkboxInput('header', 'Header', TRUE)),
+                        column(2, offset = 0,
+                               checkboxInput('header', 'Header', TRUE),
+                               checkboxInput('itemnam', 'Keep items names', FALSE)),
                         column(3, offset = 1, radioButtons('sep', 'Separator',
                                                            c(Comma = ',',
                                                              Semicolon = ';',
@@ -2585,7 +2587,7 @@ ui=tagList(
                 ########################
                 tabPanel("Reports",
                          h3("Download report"),
-                         p("This shiny app also offers an option to download a report in HTML or PDF format."),
+                         p(code("ShinyItemAnalysis"), " also offers an option to download a report in HTML or PDF format."),
                          p("PDF report creation requires latest version of",
                            a("MiKTeX", href = "https://miktex.org/howto/install-miktex", target = "_blank"),
                            "(or other TeX distribution). If you don't have the latest installation, please, use the HTML report."),
@@ -2610,7 +2612,7 @@ ui=tagList(
                                         "Multinomial regression" = 3),
                                       selected = 0),
                          downloadButton("report", "Generate Report"),
-                         p(strong("Warning"), ": download of Reports takes some time. Please, be patient.")
+                         p(strong("Warning"), ": Download of reports takes some time. Please, be patient.")
                          ),
 
              ########################
