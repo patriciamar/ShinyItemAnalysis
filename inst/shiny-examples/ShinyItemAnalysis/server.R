@@ -2239,17 +2239,23 @@ function(input, output, session) {
 
 
   oneparamirtWrightMapReportInput_mirt <- reactive({
-    fit <- one_param_irt_mirt()
-    fs <- as.vector(fscores(fit))
+    if (input$irt_type_report!="none") {
+      fit <- one_param_irt_mirt()
+      fs <- as.vector(fscores(fit))
 
-    b <- coef(fit, IRTpars = T, simplify = T)$items[, "b"]
-    names(b) <- paste("Item", 1:length(b))
+      b <- coef(fit, IRTpars = T, simplify = T)$items[, "b"]
+      names(b) <- paste("Item", 1:length(b))
 
-    list <- list()
-    list$fs <- fs
-    list$b <- b
+      list <- list()
+      list$fs <- fs
+      list$b <- b
 
-    list
+      list
+    } else {
+      list <- ""
+      list
+    }
+
   })
 
   output$oneparamirtWrightMap_mirt<- renderPlot({
@@ -4000,6 +4006,8 @@ function(input, output, session) {
     if (type=="1pl") {out=oneparamirtInput_mirt()}
     if (type=="2pl") {out=twoparamirtInput_mirt()}
     if (type=="3pl") {out=threeparamirtInput_mirt()}
+    if (type=="none") {out=""}
+
     out
   })
 
@@ -4009,6 +4017,8 @@ function(input, output, session) {
     if (type=="1pl") {out=oneparamirtiicInput_mirt()}
     if (type=="2pl") {out=twoparamirtiicInput_mirt()}
     if (type=="3pl") {out=threeparamirtiicInput_mirt()}
+    if (type=="none") {out=""}
+
     out
   })
 
@@ -4018,6 +4028,8 @@ function(input, output, session) {
     if (type=="1pl") {out=oneparamirttifInput_mirt()}
     if (type=="2pl") {out=twoparamirttifInput_mirt()}
     if (type=="3pl") {out=threeparamirttifInput_mirt()}
+    if (type=="none") {out=""}
+
     out
   })
 
@@ -4027,6 +4039,8 @@ function(input, output, session) {
     if (type=="1pl") {out=oneparamirtcoefInput_mirt()}
     if (type=="2pl") {out=twoparamirtcoefInput_mirt()}
     if (type=="3pl") {out=threeparamirtcoefInput_mirt()}
+    if (type=="none") {out=""}
+
     out
   })
 
@@ -4036,6 +4050,8 @@ function(input, output, session) {
     if (type=="1pl") {out=oneparamirtFactorInput_mirt()}
     if (type=="2pl") {out=twoparamirtFactorInput_mirt()}
     if (type=="3pl") {out=threeparamirtFactorInput_mirt()}
+    if (type=="none") {out=""}
+
     out
   })
 
@@ -4058,8 +4074,8 @@ function(input, output, session) {
                        k = test_key(),
                        results = t(resultsInput()),
                        histogram_totalscores = histogram_totalscoresInput(),
-                       corr_plot = corr_plotInput(),
-                       scree_plot = scree_plotInput(),
+                       corr_plot = {if (input$corr_report != "none") {corr_plotInput()} else {""}},
+                       scree_plot = {if (input$corr_report != "none") {scree_plotInput()} else {""}},
                        difPlot = difplotInput(),
                        itemexam = itemexamInput(),
                        hist_distractor_by_group = hist_distractor_by_groupInput(),
@@ -4077,20 +4093,21 @@ function(input, output, session) {
                        irtcoef = irtcoefInput(),
                        irtfactor = irtfactorInput(),
                        isGroupPresent = groupPresent(),
+                       dif_type = input$dif_type_report,
                        resultsgroup = {if (groupPresent()) {resultsgroupInput()}},
                        histbyscoregroup0 = {if (groupPresent()) {histbyscoregroup0Input()}},
                        histbyscoregroup1 = {if (groupPresent()) {histbyscoregroup1Input()}},
-                       deltaplot = {if (groupPresent()) {deltaplotInput()}},
-                       DP_text_normal = {if (groupPresent()) {deltaGpurn()}},
-                       DIF_logistic_plot = {if (groupPresent()) {DIF_logistic_plotReport()}},
-                       DIF_logistic_print = {if (groupPresent()) {model_DIF_logistic_print()}},
+                       deltaplot = {if (groupPresent()) {if (input$dif_type_report>=1) {deltaplotInput()}}},
+                       DP_text_normal = {if (groupPresent()) {if (input$dif_type_report>=1) {deltaGpurn()}}},
+                       DIF_logistic_plot = {if (groupPresent()) {if (input$dif_type_report>=2) {DIF_logistic_plotReport()}}},
+                       DIF_logistic_print = {if (groupPresent()) {if (input$dif_type_report>=2) {model_DIF_logistic_print()}}},
                        plot_DIF_logistic = {if (groupPresent()) {plot_DIF_logisticInput()}},
                        plot_DIF_logistic_IRT_Z = {if (groupPresent()) {plot_DIF_logistic_IRT_ZInput()}},
                        #plot_DIF_NLR = {if (groupPresent()) {plot_DIF_NLRInput()}},
                        plot_DIF_IRT_Lord = {if (groupPresent()) {plot_DIF_IRT_LordInput()}},
                        plot_DIF_IRT_Raju = {if (groupPresent()) {plot_DIF_IRT_RajuInput()}},
-                       model_DDF_print = {if (groupPresent()) {model_DDF_print()}},
-                       plot_DDFReportInput = {if (groupPresent()) {plot_DDFReportInput()}}
+                       model_DDF_print = {if (groupPresent()) {if (input$dif_type_report>=3) {model_DDF_print()}}},
+                       plot_DDFReportInput = {if (groupPresent()) {if (input$dif_type_report>=3) {plot_DDFReportInput()}}}
                        )
       rmarkdown::render(reportPath, output_file=file,
                         params = parameters, envir = new.env(parent = globalenv()))
