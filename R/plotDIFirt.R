@@ -8,10 +8,11 @@
 #' @param test character: type of statistic to be shown. See \strong{Details}.
 #' @param item either character ("all"), or numeric vector, or single number
 #' corresponding to column indicators. See \strong{Details}.
+#' @param item.name character: the name of item.
 #' @param same.scale logical: are the item \code{parameters} on the same scale?
 #' (default is "FALSE"). See \strong{Details}.
 #'
-#' @usage plotDIFirt(parameters, test = "Lord", item = "all", same.scale = F)
+#' @usage plotDIFirt(parameters, test = "Lord", item = "all", item.name, same.scale = F)
 #'
 #' @details
 #' This function plots characteristic curve of DIF IRT model.
@@ -69,7 +70,8 @@
 #' @export
 
 
-plotDIFirt <- function(parameters, test = "Lord", item = "all", same.scale = F){
+plotDIFirt <- function(parameters, test = "Lord", item = "all", item.name, same.scale = F){
+
 
   if (!(test %in% c("Lord", "Raju"))){
     stop("'test' must be either 'Lord' or 'Raju'",
@@ -106,6 +108,10 @@ plotDIFirt <- function(parameters, test = "Lord", item = "all", same.scale = F){
     items <- 1:m
   } else {
     items <- item
+  }
+
+  if (missing(item.name)){
+    item.name <- paste("Item", items)
   }
 
   mR <- parameters[1:m, ]
@@ -185,7 +191,7 @@ plotDIFirt <- function(parameters, test = "Lord", item = "all", same.scale = F){
                       legend.text.align = 0,
                       legend.title.align = 0,
                       legend.key = element_rect(colour = "white")) +
-                ggtitle(paste("Item", item))
+                ggtitle(item.name[i])
 
 
   if (test == "Raju"){
