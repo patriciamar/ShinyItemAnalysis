@@ -5,8 +5,9 @@
 #' @description Plots difficulty and discrimination for items ordered by difficulty.
 #'
 #' @param data numeric: binary data matrix or data frame. See \strong{Details}.
+#' @param item.names character: the names of items.
 #'
-#' @usage DDplot(data)
+#' @usage DDplot(data, item.names)
 #'
 #' @details
 #' The \code{data} is a matrix or data frame whose rows represents examinee answers

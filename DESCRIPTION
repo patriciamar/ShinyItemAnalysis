@@ -3,7 +3,7 @@ Type: Package
 Title: Test and Item Analysis via Shiny
 Version: 1.1.1
 Author: Patricia Martinkova [aut, cre], Adela Drabinova [aut, cre], Ondrej Leder [aut], Jakub Houdek [aut], Cestmir Stuka [ctb] and Martin Vejrazka [ctb]
-Authors@R: c(person("Patricia", "Martinkova", role = c("aut", "cre"), email = "martinkova@cs.cas.cz"), person("Adela", "Drabinova", role = c("aut", "cre")), person("Ondrej", "Leder", role = "aut"), person("Jakub", "Houdek", role = "aut"), person("Cestmir", "Stuka", role = "ctb"), person("Martin", "Vejrazka", role = "ctb"))
+Authors@R: c(person("Patricia", "Martinkova", role = c("aut", "cre"), email = "martinkova@cs.cas.cz"), person("Adela", "Drabinova", role = c("aut")), person("Ondrej", "Leder", role = "aut"), person("Jakub", "Houdek", role = "aut"), person("Cestmir", "Stuka", role = "ctb"), person("Martin", "Vejrazka", role = "ctb"))
 Maintainer: Patricia Martinkova <martinkova@cs.cas.cz>
 Depends:
     R (>= 3.3.2)
