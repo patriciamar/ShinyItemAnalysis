@@ -256,6 +256,10 @@ ui=tagList(
                         and 1 represents focal group. Its length need to be the same as number of individual
                         students in main dataset. If the group is not provided then it wont be possible to run DIF and DDF
                         detection procedures. In all data sets header should be either included or excluded. '),
+                      p('Columns of dataset are by default renamed to Item and number of particular column. If you
+                        want to keep your own names, check box below. '),
+                      p('Missing values in scored dataset are by default evaluated as 0. If you want to keep them as missing,
+                        check box below.'),
                       fluidRow(
                         column(3, offset = 0, fileInput(
                           'data', 'Choose data (csv file)',
@@ -295,9 +299,10 @@ ui=tagList(
                       tags$hr(),
                       h4("Data specification"),
                       fluidRow(
-                        column(2, offset = 0,
+                        column(3, offset = 0,
                                checkboxInput('header', 'Header', TRUE),
-                               checkboxInput('itemnam', 'Keep items names', FALSE)),
+                               checkboxInput('itemnam', 'Keep items names', FALSE),
+                               checkboxInput('missval', 'Keep missing values', FALSE)),
                         column(3, offset = 1, radioButtons('sep', 'Separator',
                                                            c(Comma = ',',
                                                              Semicolon = ';',

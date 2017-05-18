@@ -34,6 +34,6 @@ Imports:
 Description: Interactive shiny application for analysis of educational tests and
     their items.
 License: GPL-3
-LazyData: yes
+LazyData: TRUE
 RoxygenNote: 6.0.1
 BugReports: https://github.com/patriciamar/ShinyItemAnalysis/issues

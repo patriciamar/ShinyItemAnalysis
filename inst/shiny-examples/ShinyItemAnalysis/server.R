@@ -93,18 +93,19 @@ function(input, output, session) {
   # LOAD ABCD DATA #####
   test_answers <- reactive ({
     if (is.null(input$data)) {
-      a=input$dataSelect
-      pos=regexpr("_", a)[1]
-      datasetName=str_sub(a, 1,pos-1)
-      packageName=str_sub(a, pos+1)
+      a = input$dataSelect
+      pos = regexpr("_", a)[1]
+      datasetName = str_sub(a, 1, pos - 1)
+      packageName = str_sub(a, pos + 1)
 
-      do.call(data, args=list(paste0(datasetName,"test"), package=packageName))
-      test=get(paste0(datasetName,"test"))
+      do.call(data, args = list(paste0(datasetName, "test"), package = packageName))
+      test = get(paste0(datasetName, "test"))
 
-      do.call(data, args=list(paste0(datasetName,"key"), package=packageName))
-      key=get(paste0(datasetName,"key"))
+      do.call(data, args = list(paste0(datasetName, "key"), package = packageName))
+      key = get(paste0(datasetName, "key"))
+      key = unlist(key)
 
-      test = test[,1:length(key)]
+      test = test[, 1:length(key)]
       dataset$answers = test
     } else {
       test = dataset$answers
@@ -116,14 +117,16 @@ function(input, output, session) {
   # LOAD KEY #####
   test_key <- reactive({
     if ((is.null(input$key)) | (is.null(dataset$key))) {
-      a=input$dataSelect
-      pos=regexpr("_", a)[1]
-      datasetName=str_sub(a, 1, pos-1)
-      packageName=str_sub(a, pos+1)
+      a = input$dataSelect
+      pos = regexpr("_", a)[1]
+      datasetName = str_sub(a, 1, pos - 1)
+      packageName = str_sub(a, pos + 1)
 
-      do.call(data, args=list(paste0(datasetName,"key"), package=packageName))
-      key=get(paste0(datasetName,"key"))
+      do.call(data, args = list(paste0(datasetName, "key"), package = packageName))
+      key = get(paste0(datasetName, "key"))
+      key = unlist(key)
       dataset$key = key
+
     } else {
       if (length(dataset$key) == 1) {
         if (dataset$key == "missing"){
@@ -139,7 +142,7 @@ function(input, output, session) {
           errorClass = "error_dimension"
           )
       }
-      key=dataset$key
+      key = dataset$key
     }
     # names(key) <- paste("Item", 1:length(key))
     key
@@ -148,13 +151,13 @@ function(input, output, session) {
   # LOAD GROUPS #####
   DIF_groups <- reactive({
     if (is.null(input$data) | (is.null(dataset$group))) {
-      a=input$dataSelect
-      pos=regexpr("_", a)[1]
-      datasetName=str_sub(a, 1, pos-1)
-      packageName=str_sub(a, pos+1)
+      a = input$dataSelect
+      pos = regexpr("_", a)[1]
+      datasetName = str_sub(a, 1, pos - 1)
+      packageName = str_sub(a, pos + 1)
 
-      do.call(data, args=list(paste0(datasetName,"test"), package=packageName))
-      test=get(paste0(datasetName,"test"))
+      do.call(data, args = list(paste0(datasetName, "test"), package = packageName))
+      test = get(paste0(datasetName, "test"))
 
       group <- test[, ncol(test)]
 
@@ -181,7 +184,8 @@ function(input, output, session) {
         }
       } else {
         validate(
-          need(nrow(dataset$answers) == length(dataset$group), "Length of group is not the same as
+          need(nrow(dataset$answers) == length(dataset$group),
+            "Length of group is not the same as
              number of observation in the main data set!"),
           errorClass = "error_dimension"
         )
@@ -192,17 +196,13 @@ function(input, output, session) {
   })
 
   # SUBMIT BUTTON #####
-
   observeEvent(
     eventExpr = input$submitButton,
     handlerExpr = {
-
-      key=NULL
-      answ=NULL
-      k=NULL
-      group=NULL
-
-
+      key = NULL
+      answ = NULL
+      k = NULL
+      group = NULL
 
       if (is.null(input$data)){
         key <- test_key()
@@ -211,7 +211,6 @@ function(input, output, session) {
       } else {
         answ <- read.csv(input$data$datapath, header = input$header,
                          sep = input$sep, quote = input$quote)
-
         # if (!input$itemnam){
         #   nam <- colnames(answ)
         # } else {
@@ -236,11 +235,9 @@ function(input, output, session) {
           group <- unlist(group)
         }
       }
-
       dataset$answers <- answ
       dataset$key <- key
       dataset$group <- group
-
     }
   )
 
@@ -262,16 +259,21 @@ function(input, output, session) {
     nam
   })
 
-  # TOTAL SCORE CALCULATION #####
-  scored_test <- reactive({
-    sc <- score(test_answers(), test_key())$score
-    sc
-  })
-
   # CORRECT ANSWER CLASSIFICATION #####
   correct_answ <- reactive({
     correct <- score(test_answers(), test_key(), output.scored = TRUE)$scored
+
+    if (!(input$itemnam)){
+      correct[is.na(correct)] <- 0
+    }
+
     correct
+  })
+
+  # TOTAL SCORE CALCULATION #####
+  scored_test <- reactive({
+    sc <- apply(correct_answ(), 1, sum)
+    sc
   })
 
   # DATA #####
