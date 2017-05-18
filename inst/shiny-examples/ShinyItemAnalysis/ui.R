@@ -10,6 +10,23 @@ require(shinyjs)
 ######################
 
 ui=tagList(
+  
+  tags$head(
+    
+    tags$link(rel = "stylesheet",
+              type = "text/css",
+              href = "style.css"),
+    
+    tags$script(type = "text/javascript",
+                src = "busy.js")
+    
+  ),
+  
+  div(class = "busy",
+      p("Application is busy..."),
+      img(src = "free_busy_indicator.gif", height = 50, width = 50)
+  ),
+  
   useShinyjs(),
   # !! ONLINE VERSION ####
   # tags$head(includeScript("google-analytics.js")),
@@ -20,6 +37,12 @@ ui=tagList(
                # !! ONLINE VERSION ####
                # div(class="panel-footer",
                #     p(strong("ShinyItemAnalysis Version 1.1.1")),
+               #     p(
+               #       "You can try ", code('ShinyItemAnalysis'), " online ",
+               #       HTML('<a href = "http://shiny.cs.cas.cz/ShinyItemAnalysis/" id="first_tooltip">here</a>'),
+               #       " or ",
+               #       HTML('<a href = "http://shiny.statest.cz:3838/ShinyItemAnalysis/" id="second_tooltip">here</a>!')
+               #     ),
                #     p("Download ShinyItemAnalysis R package from ",
                #       a(strong("CRAN"), href = "https://cran.rstudio.com/web/packages/ShinyItemAnalysis/",
                #         target = "_blank"), "to run analysis faster!"),
@@ -34,7 +57,12 @@ ui=tagList(
                #            <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV01/"> 0.1.0</a>,
                #            <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV02/"> 0.2.0</a>,
                #            <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV100/"> 1.0.0</a>
-               #            </p>')
+               #            </p>
+               #            <script>
+               #             $("#first_tooltip").attr("title", "Institute of Computer Science, Czech Academy of Sciences");
+               #             $("#second_tooltip").attr("title", "First Faculty of Medicine, Charles University");
+               #            </script>'               
+               #          )
                #       ),
                #     p(textOutput('counter'))
                #       )
@@ -42,9 +70,12 @@ ui=tagList(
                # !! PACKAGE VERSION ####
                div(class="panel-footer",
                    p(strong("ShinyItemAnalysis Version 1.1.1")),
-                   p("You can also try ", code('ShinyItemAnalysis'),
-                     a('online!', href = "https://shiny.cs.cas.cz/ShinyItemAnalysis/",
-                       target = "_blank")),
+                   p(
+                     "You can also try ", code('ShinyItemAnalysis'), " online ",
+                     HTML('<a href = "http://shiny.cs.cas.cz/ShinyItemAnalysis/" id="first_tooltip">here</a>'),
+                     " or ",
+                     HTML('<a href = "http://shiny.statest.cz:3838/ShinyItemAnalysis/" id="second_tooltip">here</a>!')
+                   ),
                    p("Project was supported by grant funded by Czech Science Foundation under number ",
                      a("GJ15-15856Y",
                        href = "http://www.cs.cas.cz/martinkova/psychometrics.html",
@@ -56,9 +87,14 @@ ui=tagList(
                           <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV01/"> 0.1.0</a>,
                           <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV02/"> 0.2.0</a>,
                           <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV100/"> 1.0.0</a>
-                          </p>')
+                          </p>
+                          <script>
+                           $("#first_tooltip").attr("title", "Institute of Computer Science, Czech Academy of Sciences");
+                           $("#second_tooltip").attr("title", "First Faculty of Medicine, Charles University");
+                          </script>'
+                        )
                      )
-                     )
+                  )
                ############################################
                    ),
              theme="bootstrap.css",
