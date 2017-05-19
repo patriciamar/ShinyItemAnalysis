@@ -13,7 +13,7 @@
 #' @param multiple.answers logical: should be all combinations plotted (default) or should be
 #' answers splitted into distractors. See \strong{Details}.
 #'
-#' @usage plotDistractorAnalysis(data, key, num.groups = 3, item = 1, multiple.answers = TRUE)
+#' @usage plotDistractorAnalysis(data, key, num.groups = 3, item = 1, item.name, multiple.answers = TRUE)
 #'
 #' @details
 #' This function is graphical representation of \code{DistractorAnalysis} function.

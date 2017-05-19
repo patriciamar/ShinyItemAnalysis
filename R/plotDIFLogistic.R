@@ -16,7 +16,8 @@
 #' multiple comparisons. See Details.
 #' @param purify logical: if item purification may be applied.
 #'
-#' @usage plotDIFLogistic(data, group, type = "both", item, item.name, IRT = F, p.adjust.method = "none", purify = F)
+#' @usage plotDIFLogistic(data, group, type = "both", item, item.name,
+#' IRT = F, p.adjust.method = "none", purify = F)
 #'
 #' @details
 #' This function plots characteristic curve of 2PL logistic DIF model.

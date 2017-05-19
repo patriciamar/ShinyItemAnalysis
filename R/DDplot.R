@@ -5,6 +5,7 @@
 #' @description Plots difficulty and discrimination for items ordered by difficulty.
 #'
 #' @param data numeric: binary data matrix or data frame. See \strong{Details}.
+#' @param item.names character: the names of items.
 #'
 #' @usage DDplot(data, item.names)
 #'
