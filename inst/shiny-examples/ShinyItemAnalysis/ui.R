@@ -10,23 +10,23 @@ require(shinyjs)
 ######################
 
 ui=tagList(
-  
+
   tags$head(
-    
+
     tags$link(rel = "stylesheet",
               type = "text/css",
               href = "style.css"),
-    
+
     tags$script(type = "text/javascript",
                 src = "busy.js")
-    
+
   ),
-  
+
   div(class = "busy",
       p("Application is busy..."),
       img(src = "free_busy_indicator.gif", height = 50, width = 50)
   ),
-  
+
   useShinyjs(),
   # !! ONLINE VERSION ####
   # tags$head(includeScript("google-analytics.js")),
@@ -36,7 +36,7 @@ ui=tagList(
                ############################################
                # !! ONLINE VERSION ####
                # div(class="panel-footer",
-               #     p(strong("ShinyItemAnalysis Version 1.1.1")),
+               #     p(strong("ShinyItemAnalysis Version 1.1.2")),
                #     p(
                #       "You can try ", code('ShinyItemAnalysis'), " online ",
                #       HTML('<a href = "http://shiny.cs.cas.cz/ShinyItemAnalysis/" id="first_tooltip">here</a>'),
@@ -61,7 +61,7 @@ ui=tagList(
                #            <script>
                #             $("#first_tooltip").attr("title", "Institute of Computer Science, Czech Academy of Sciences");
                #             $("#second_tooltip").attr("title", "First Faculty of Medicine, Charles University");
-               #            </script>'               
+               #            </script>'
                #          )
                #       ),
                #     p(textOutput('counter'))
@@ -69,12 +69,12 @@ ui=tagList(
                ############################################
                # !! PACKAGE VERSION ####
                div(class="panel-footer",
-                   p(strong("ShinyItemAnalysis Version 1.1.1")),
+                   p(strong("ShinyItemAnalysis Version 1.1.2")),
                    p(
-                     "You can also try ", code('ShinyItemAnalysis'), " online ",
-                     HTML('<a href = "http://shiny.cs.cas.cz/ShinyItemAnalysis/" id="first_tooltip">here</a>'),
-                     " or ",
-                     HTML('<a href = "http://shiny.statest.cz:3838/ShinyItemAnalysis/" id="second_tooltip">here</a>!')
+                     "You can also try ", code('ShinyItemAnalysis'),
+                     HTML('<a href = "http://shiny.cs.cas.cz/ShinyItemAnalysis/" id = "first_tooltip">online!</a>'),
+                     " Or you can also use another",
+                     HTML('<a href = "http://shiny.statest.cz:3838/ShinyItemAnalysis/" id = "second_tooltip">mirror.</a>')
                    ),
                    p("Project was supported by grant funded by Czech Science Foundation under number ",
                      a("GJ15-15856Y",
@@ -142,7 +142,7 @@ ui=tagList(
                         You can change the dataset (and try your own one) on page', strong('Data.')),
 
                       h4('Version'),
-                      p('Current version of ', code('ShinyItemAnalysis'), ' is 1.1.1'),
+                      p('Current version of ', code('ShinyItemAnalysis'), ' is 1.1.2'),
                       div(
                         HTML('<p>
                              See also older versions:
@@ -238,8 +238,8 @@ ui=tagList(
                          see Drabinova & Martinkova (2016).'),
                       p('Dataset ', code("Medical 100"), ' is a real data set of admission test to medical school
                          from R ', code('ShinyItemAnalysis'),' package . The data set represents responses of
-                         3,204 subjects to multiple-choice test of 100 items. There is no group membership
-                         variable in the data set hence it is not possible to run DIF or DDF detection procedures. '),
+                         2,392 subjects (750 males, 1,633 females and 9 subjects without gender specification)
+                         to multiple-choice test of 100 items. '),
                       br(),
                       selectInput("dataSelect", "Select dataset",
                                   c("GMAT" = "GMAT_difNLR",
