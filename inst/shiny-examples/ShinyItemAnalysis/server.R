@@ -110,7 +110,6 @@ function(input, output, session) {
     } else {
       test = dataset$answers
     }
-    # colnames(test) <- paste("Item", 1:length(key))
     test
   })
 
@@ -144,7 +143,6 @@ function(input, output, session) {
       }
       key = dataset$key
     }
-    # names(key) <- paste("Item", 1:length(key))
     key
   })
 
@@ -161,17 +159,6 @@ function(input, output, session) {
 
       group <- test[, ncol(test)]
 
-      # if (datasetName == "dataMedical"){
-      #   group <- NULL
-      #   dataset$group <- NULL
-      #   validate(
-      #     need(!is.null(group),
-      #          "Sorry, for this dataset group is not available. DIF and DDF analyses are not possible!"),
-      #     errorClass = "warning_group_missing"
-      #   )
-      # } else {
-      #   group <- test[, ncol(test)]
-      # }
       dataset$group = group
     } else {
       if (length(dataset$group) == 1){
@@ -211,14 +198,6 @@ function(input, output, session) {
       } else {
         answ <- read.csv(input$data$datapath, header = input$header,
                          sep = input$sep, quote = input$quote)
-        # if (!input$itemnam){
-        #   nam <- colnames(answ)
-        # } else {
-        #   nam <- paste("Item", 1:length(key))
-        # }
-        # dim(answ)
-        # nam
-        # colnames(answ) <- nam
         if (is.null(input$key)){
           key <- "missing"
         } else {
@@ -262,11 +241,9 @@ function(input, output, session) {
   # CORRECT ANSWER CLASSIFICATION #####
   correct_answ <- reactive({
     correct <- score(test_answers(), test_key(), output.scored = TRUE)$scored
-
     if (!(input$itemnam)){
       correct[is.na(correct)] <- 0
     }
-
     correct
   })
 
@@ -288,53 +265,42 @@ function(input, output, session) {
     test = test_answers()
     colnames(test) <- item_names()
     test
-
   },
   rownames = F,
-  options=list(scrollX=TRUE, pageLength=10))
+  options=list(scrollX = TRUE, pageLength = 10))
 
   # KEY CONTROL #######
   output$key <- DT::renderDataTable({
-
-    key_table=as.data.frame(t(as.data.frame(test_key())))
-    # name <- c()
-    # for (i in 1:ncol(key_table)) {
-    #   name[i] <- paste("Item", i, sep = " ")
-    # }
+    key_table = as.data.frame(t(as.data.frame(test_key())))
     colnames(key_table) <- item_names()
     key_table
   },
   rownames = F,
-  options=list(scrollX=TRUE))
+  options = list(scrollX = TRUE))
 
   # SCORE 0-1 #####
   output$sc01 <- DT::renderDataTable({
     a <- test_answers()
     k <- test_key()
 
+    # total score
     sc <- data.frame(scored_test())
     colnames(sc) <- "Score"
+    # scored data
     correct <- correct_answ()
-    # name <- c()
-    # for (i in 1:ncol(a)) {
-    #   name[i] <- paste("Item", i, sep = " ")
-    # }
-    # colnames(correct) <- name
 
-    out <- (cbind(correct, sc))
+    out <- cbind(correct, sc)
     colnames(out) <- c(item_names(), "Score")
     out
   },
   rownames = F,
-  options=list(scrollX=TRUE, pageLength=10))
+  options = list(scrollX = TRUE, pageLength = 10))
 
   # GROUP CONTROL #######
   output$group <- DT::renderDataTable({
     group_table <- t(as.data.frame(DIF_groups()))
     colnames(group_table) <- 1:ncol(group_table)
-
     group_table
-
   },
   rownames = F,
   options = list(scrollX = TRUE))
@@ -465,7 +431,8 @@ function(input, output, session) {
       paste("plot", input$name, ".png", sep = "")
     },
     content = function(file) {
-      ggsave(file, plot = histogram_totalscoresInput(), device = "png", height=3, width=9, dpi=160)
+      ggsave(file, plot = histogram_totalscoresInput(), device = "png",
+             height = 3, width = 9, dpi = 160)
     }
   )
 
@@ -565,7 +532,8 @@ function(input, output, session) {
       paste("plot", input$name, ".png", sep = "")
     },
     content = function(file) {
-      ggsave(file, plot = scree_plotInput(), device = "png", height = 3, width = 9, dpi = 160)
+      ggsave(file, plot = scree_plotInput(), device = "png",
+             height = 3, width = 9, dpi = 160)
     }
   )
 
@@ -610,17 +578,16 @@ function(input, output, session) {
   include.colnames = T)
 
   # ** Traditional Item Analysis Table #####
-  itemexamInput<-reactive({
+  itemexamInput <- reactive({
     a <- test_answers()
     k <- test_key()
     correct <- correct_answ()
 
-
     alphadrop <- psych::alpha(correct)$alpha.drop[, 1]
     tab <- item.exam(correct, discr = TRUE)[, 1:5]
-    tab <- cbind(item_numbers(),
-                 tab[, c(4, 1, 5, 2, 3)],
-                 alphadrop)
+    tab <- data.frame(item_numbers(),
+                      tab[, c(4, 1, 5, 2, 3)],
+                      alphadrop)
     colnames(tab) <- c("Item", "Difficulty", "SD", "Discrimination ULI",
                        "Discrimination RIT", "Discrimination RIR", "Alpha Drop")
     tab
@@ -723,10 +690,9 @@ function(input, output, session) {
   grafInput <- reactive({
     a <- test_answers()
     k <- test_key()
-
     i <- input$distractorSlider
-    multiple.answers <- c(input$type_combinations_distractor == "Combinations")
 
+    multiple.answers <- c(input$type_combinations_distractor == "Combinations")
     plotDistractorAnalysis(data = a, key = k, num.group = input$gr,
                            item = i,
                            item.name = item_names()[i],
@@ -746,7 +712,6 @@ function(input, output, session) {
                                   item = i,
                                   item.name = item_names()[i],
                                   multiple.answers = multiple.answers)
-      # g = g + ggtitle(paste("\nDistractor plot for item", i))
       g = ggplotGrob(g)
       graflist[[i]] = g
     }
@@ -1021,7 +986,8 @@ function(input, output, session) {
       paste("plot", input$name, ".png", sep = "")
     },
     content = function(file) {
-      ggsave(file, plot = zlogreg_irtInput(), device = "png", height=3, width=9, dpi=160)
+      ggsave(file, plot = zlogreg_irtInput(), device = "png",
+             height = 3, width = 9, dpi = 160)
     }
   )
 
@@ -1306,8 +1272,11 @@ function(input, output, session) {
     i <- input$multiSlider
     data <- test_answers()
 
-    fitM <- multinom(relevel(as.factor(data[, i]),
-                             ref = paste(k[i])) ~ stotal,
+    dfhw <- data.frame(data[, i], stotal)
+    dfhw <- dfhw[complete.cases(dfhw), ]
+
+    fitM <- multinom(relevel(as.factor(dfhw[, 1]),
+                             ref = paste(k[i])) ~ dfhw[, 2],
                      trace = F)
     fitM
   })
@@ -1321,8 +1290,11 @@ function(input, output, session) {
 
     data <- sapply(1:ncol(data), function(i) as.factor(data[, i]))
 
-    fitM <- multinom(relevel(as.factor(data[, i]),
-                             ref = paste(k[i])) ~ stotal,
+    dfhw <- data.frame(data[, i], stotal)
+    dfhw <- dfhw[complete.cases(dfhw), ]
+
+    fitM <- multinom(relevel(as.factor(dfhw[, 1]),
+                             ref = paste(k[i])) ~ dfhw[, 2],
                      trace = F)
 
     pp <- fitted(fitM)
@@ -1330,8 +1302,7 @@ function(input, output, session) {
       pp <- cbind(pp, 1 - pp)
       colnames(pp) <- c("0", "1")
     }
-    stotals <- rep(stotal[!is.na(stotal)], length(levels(relevel(as.factor(data[, i]),
-                                                 ref = paste(k[i])))))
+    stotals <- rep(dfhw[, 2], length(levels(dfhw[, 1])))
     df <- cbind(melt(pp), stotals)
     df$Var2 <- relevel(as.factor(df$Var2), ref = paste(k[i]))
     df2 <- data.frame(table(data[, i], stotal),
@@ -1378,9 +1349,11 @@ function(input, output, session) {
     stotal <- c(scale(scored_test()))
 
     for (i in 1:length(key)) {
+      dfhw <- data.frame(data[, i], stotal)
+      dfhw <- dfhw[complete.cases(dfhw), ]
 
-      fitM <- multinom(relevel(as.factor(data[, i]),
-                               ref = paste(k[i])) ~ stotal,
+      fitM <- multinom(relevel(as.factor(dfhw[, 1]),
+                               ref = paste(k[i])) ~ dfhw[, 2],
                        trace = F)
 
       pp <- fitted(fitM)
@@ -1388,8 +1361,8 @@ function(input, output, session) {
         pp <- cbind(pp, 1 - pp)
         colnames(pp) <- c("0", "1")
       }
-      stotals <- rep(stotal[!is.na(stotal)], length(levels(relevel(as.factor(data[, i]),
-                                                   ref = paste(k[i])))))
+
+      stotals <- rep(dfhw[, 2], length(levels(dfhw[, 1])))
       df <- cbind(melt(pp), stotals)
       df$Var2 <- relevel(as.factor(df$Var2), ref = paste(k[i]))
       df2 <- data.frame(table(data[, i], stotal),
