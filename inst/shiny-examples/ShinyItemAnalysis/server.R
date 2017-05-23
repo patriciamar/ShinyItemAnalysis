@@ -110,6 +110,12 @@ function(input, output, session) {
     } else {
       test = dataset$answers
     }
+    # if (!input$itemnam){
+    #   nam <- paste("Item", 1:ncol(test))
+    # } else {
+    #   nam <- colnames(test)
+    # }
+    # colnames(test) <- nam
     test
   })
 
@@ -143,6 +149,12 @@ function(input, output, session) {
       }
       key = dataset$key
     }
+    # if (!input$itemnam){
+    #   nam <- paste("Item", 1:ncol(test_answers()))
+    # } else {
+    #   nam <- colnames(test_answers())
+    # }
+    # names(key) <- nam
     key
   })
 
@@ -204,7 +216,6 @@ function(input, output, session) {
           key <- read.csv(input$key$datapath, header = input$header,
                           sep = input$sep)
           key <- as.character(unlist(key))
-          # names(key) <- nam
         }
         if (is.null(input$groups)){
           group <- "missing"
@@ -241,7 +252,7 @@ function(input, output, session) {
   # CORRECT ANSWER CLASSIFICATION #####
   correct_answ <- reactive({
     correct <- score(test_answers(), test_key(), output.scored = TRUE)$scored
-    if (!(input$itemnam)){
+    if (!(input$missval)){
       correct[is.na(correct)] <- 0
     }
     correct
@@ -340,10 +351,12 @@ function(input, output, session) {
     updateSliderInput(session = session, inputId = "difirt_lord_itemSlider", max=itemCount)
     updateSliderInput(session = session, inputId = "difirt_raju_itemSlider", max=itemCount)
     updateSliderInput(session = session, inputId = "ddfSlider", max=itemCount)
-
-    updateSliderInput(session = session, inputId = "inSlider2", max=itemCount, value = round(median(scored_test(), na.rm = T)))
-    updateSliderInput(session = session, inputId = "inSlider2group", max=itemCount, value = round(median(scored_test()[DIF_groups() == 1], na.rm = T)))
-    updateSliderInput(session = session, inputId = "difMHSlider_score", max=itemCount, value = round(median(scored_test(), na.rm = T)))
+    updateSliderInput(session = session, inputId = "inSlider2", max=itemCount,
+                      value = round(median(scored_test(), na.rm = T)))
+    updateSliderInput(session = session, inputId = "inSlider2group", max=itemCount,
+                      value = round(median(scored_test()[DIF_groups() == 1], na.rm = T)))
+    updateSliderInput(session = session, inputId = "difMHSlider_score", max=itemCount,
+                      value = round(median(scored_test(), na.rm = T)))
 
   })
 
@@ -3951,7 +3964,7 @@ function(input, output, session) {
     fit <- model_DDF_plot()
     item <- input$ddfSlider
 
-    g <- plot(fit, item = item)[[1]]
+    g <- plot(fit, item = item)[[item]]
     g + theme(text = element_text(size = 14),
               plot.title = element_text(size = 14, face = "bold",
                                         vjust = 1.5)) +
@@ -3973,8 +3986,8 @@ function(input, output, session) {
     graflist = list()
    # if (mod$DIFitems[[1]]!="No DDF item detected"){
       for (i in 1:length(mod$DDFitems)) {
-        g <- plot(mod, item = mod$DDFitems[[i]],
-                  title = paste("\nDDF Multinomial plot for item", item_numbers()[i]))
+        g <- plot(mod, item = mod$DDFitems[[i]])[[i]] +
+          ggtitle(paste("\nDDF Multinomial plot for item", item_numbers()[i]))
         graflist[[i]] <- g
       }
     #} else {
