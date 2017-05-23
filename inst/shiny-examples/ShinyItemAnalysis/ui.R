@@ -37,15 +37,10 @@ ui=tagList(
                # !! ONLINE VERSION ####
                # div(class="panel-footer",
                #     p(strong("ShinyItemAnalysis Version 1.1.2")),
-               #     p(
-               #       "You can try ", code('ShinyItemAnalysis'), " online ",
-               #       HTML('<a href = "http://shiny.cs.cas.cz/ShinyItemAnalysis/" id="first_tooltip">here</a>'),
-               #       " or ",
-               #       HTML('<a href = "http://shiny.statest.cz:3838/ShinyItemAnalysis/" id="second_tooltip">here</a>!')
-               #     ),
-               #     p("Download ShinyItemAnalysis R package from ",
+               #     p("Download ", code('ShinyItemAnalysis'), " R package from ",
                #       a(strong("CRAN"), href = "https://cran.rstudio.com/web/packages/ShinyItemAnalysis/",
                #         target = "_blank"), "to run analysis faster!"),
+               #     p("Or you can also try another ", a(strong("mirror!"), href = "http://shiny.cs.cas.cz/ShinyItemAnalysis/", id = "second_tooltip")),
                #     p("Project was supported by grant funded by Czech Science Foundation under number ",
                #       a("GJ15-15856Y",
                #         href = "http://www.cs.cas.cz/martinkova/psychometrics.html",
@@ -71,11 +66,12 @@ ui=tagList(
                div(class="panel-footer",
                    p(strong("ShinyItemAnalysis Version 1.1.2")),
                    p(
-                     "You can also try ", code('ShinyItemAnalysis'),
-                     HTML('<a href = "http://shiny.cs.cas.cz/ShinyItemAnalysis/" id = "first_tooltip">online!</a>'),
-                     " Or you can also use another",
-                     HTML('<a href = "http://shiny.statest.cz:3838/ShinyItemAnalysis/" id = "second_tooltip">mirror.</a>')
-                   ),
+                     "You can also try ", code('ShinyItemAnalysis'), a(strong("online!"),
+                                                                       href = "http://shiny.cs.cas.cz/ShinyItemAnalysis/",
+                                                                       id = "first_tooltip"),
+                     "Or you can also use another ", a(strong("mirror."),
+                                                       href = "http://shiny.statest.cz:3838/ShinyItemAnalysis/",
+                                                       id = "second_tooltip")),
                    p("Project was supported by grant funded by Czech Science Foundation under number ",
                      a("GJ15-15856Y",
                        href = "http://www.cs.cas.cz/martinkova/psychometrics.html",
