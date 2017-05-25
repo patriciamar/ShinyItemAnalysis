@@ -5,7 +5,7 @@
         ***************************************************************
 
 ---------------------------------------------------
-- Changes in ShinyItemAnalysis 1.1.2 (2017-05-19) -
+- Changes in ShinyItemAnalysis 1.1.3 (2017-05-25) -
 ---------------------------------------------------
 
 MAJOR UPDATES
@@ -21,9 +21,13 @@ MAJOR UPDATES
     with total score, Lord's test and Raju's test.
   o Default option of p-values adjustments in DIF detection methods
     was set to 'none'.
+  o We have new contributor - Lubomir Stepanek!
   o New online mirror was added.
   o Busy indicator and tooltips were added.
-  o We have new contributor - Lubomir Stepanek!
+  o IRT models are now fitted only by mirt package.
+  o Training plots of characteristic curves were added into IRT models
+    section.
+  o Structure of application was mildy updated.
 
 MINOR UPDATES
 
@@ -32,6 +36,7 @@ MINOR UPDATES
   o Item names were fixed and unified.
   o Some typos were fixed.
   o Readme file was updated.
+  o Reports were slightly updated.
 
 ---------------------------------------------------
 - Changes in ShinyItemAnalysis 1.1.0 (2016-02-02) -
