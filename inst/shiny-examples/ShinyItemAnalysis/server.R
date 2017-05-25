@@ -3352,7 +3352,7 @@ function(input, output, session) {
                              p.adjust.method = input$correction_method_logItems,
                              purify = input$puri_LR
             )
-        g = g + ggtitle(paste0("DIF logistic plot for item ", item_numbers()[i]))
+        g = g + ggtitle(paste0("DIF logistic plot for item ", item_numbers()[mod$DIFitems[i]]))
         graflist[[i]] <- g
       }
     } else {
@@ -3971,7 +3971,7 @@ function(input, output, session) {
       ggtitle(item_names()[item])
   })
 
-  plot_DDFReportInput<-reactive({
+  plot_DDFReportInput <- reactive({
     group <- DIF_groups()
     a <- test_answers()
     k <- test_key()
@@ -3986,8 +3986,8 @@ function(input, output, session) {
     graflist = list()
    # if (mod$DIFitems[[1]]!="No DDF item detected"){
       for (i in 1:length(mod$DDFitems)) {
-        g <- plot(mod, item = mod$DDFitems[[i]])[[i]] +
-          ggtitle(paste("\nDDF Multinomial plot for item", item_numbers()[i]))
+        g <- plot(mod, item = mod$DDFitems[i])[[1]] +
+          ggtitle(paste("\nDDF multinomial plot for item", item_numbers[mod$DDFitems[i]]))
         graflist[[i]] <- g
       }
     #} else {
