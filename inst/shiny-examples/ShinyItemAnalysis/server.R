@@ -110,6 +110,12 @@ function(input, output, session) {
     } else {
       test = dataset$answers
     }
+    # if (!input$itemnam){
+    #   nam <- paste("Item", 1:ncol(test))
+    # } else {
+    #   nam <- colnames(test)
+    # }
+    # colnames(test) <- nam
     test
   })
 
@@ -143,6 +149,12 @@ function(input, output, session) {
       }
       key = dataset$key
     }
+    # if (!input$itemnam){
+    #   nam <- paste("Item", 1:ncol(test_answers()))
+    # } else {
+    #   nam <- colnames(test_answers())
+    # }
+    # names(key) <- nam
     key
   })
 
@@ -204,7 +216,6 @@ function(input, output, session) {
           key <- read.csv(input$key$datapath, header = input$header,
                           sep = input$sep)
           key <- as.character(unlist(key))
-          # names(key) <- nam
         }
         if (is.null(input$groups)){
           group <- "missing"
@@ -241,7 +252,7 @@ function(input, output, session) {
   # CORRECT ANSWER CLASSIFICATION #####
   correct_answ <- reactive({
     correct <- score(test_answers(), test_key(), output.scored = TRUE)$scored
-    if (!(input$itemnam)){
+    if (!(input$missval)){
       correct[is.na(correct)] <- 0
     }
     correct
@@ -340,10 +351,12 @@ function(input, output, session) {
     updateSliderInput(session = session, inputId = "difirt_lord_itemSlider", max=itemCount)
     updateSliderInput(session = session, inputId = "difirt_raju_itemSlider", max=itemCount)
     updateSliderInput(session = session, inputId = "ddfSlider", max=itemCount)
-
-    updateSliderInput(session = session, inputId = "inSlider2", max=itemCount, value = round(median(scored_test(), na.rm = T)))
-    updateSliderInput(session = session, inputId = "inSlider2group", max=itemCount, value = round(median(scored_test()[DIF_groups() == 1], na.rm = T)))
-    updateSliderInput(session = session, inputId = "difMHSlider_score", max=itemCount, value = round(median(scored_test(), na.rm = T)))
+    updateSliderInput(session = session, inputId = "inSlider2", max=itemCount,
+                      value = round(median(scored_test(), na.rm = T)))
+    updateSliderInput(session = session, inputId = "inSlider2group", max=itemCount,
+                      value = round(median(scored_test()[DIF_groups() == 1], na.rm = T)))
+    updateSliderInput(session = session, inputId = "difMHSlider_score", max=itemCount,
+                      value = round(median(scored_test(), na.rm = T)))
 
   })
 
@@ -1476,413 +1489,413 @@ function(input, output, session) {
   })
 
 
-  ######################
-  # * IRT MODELS ######
-  ######################
-  # ** 1 PL (RASCH) ####
-  rasch_model <- reactive({
-    fitRasch <- rasch(correct_answ())
-  })
-
-  # *** CC ####
-  raschInput <- reactive({
-    plot(rasch_model())
-    g <- recordPlot()
-    plot.new()
-    g
-  })
-
-  output$rasch <- renderPlot({
-    raschInput()
-  })
-
-  output$DP_rasch <- downloadHandler(
-    filename =  function() {
-      paste("plot", input$name, ".png", sep = "")
-    },
-    content = function(file) {
-      png(file, height = 800, width = 1200, res = 100)
-      plot(rasch_model())
-      dev.off()
-    }
-  )
-
-  # *** IIC ####
-  raschiicInput<-reactive({
-    plot(rasch_model(), type = "IIC")
-    g <- recordPlot()
-    plot.new()
-    g
-  })
-
-  output$raschiic <- renderPlot({
-    raschiicInput()
-  })
-
-  output$DP_raschiic <- downloadHandler(
-    filename =  function() {
-      paste("plot", input$name, ".png", sep = "")
-    },
-    content = function(file) {
-      png(file, height = 800, width = 1200, res = 100)
-      plot(rasch_model(), type = "IIC")
-      dev.off()
-      }
-  )
-
-  # *** TIF ####
-  raschtifInput<-reactive({
-    plot(rasch_model(), items = 0, type = "IIC")
-    g <- recordPlot()
-    plot.new()
-    g
-  })
-
-  output$raschtif <- renderPlot({
-    raschtifInput()
-  })
-
-  output$DP_raschtif <- downloadHandler(
-    filename =  function() {
-      paste("plot", input$name, ".png", sep = "")
-    },
-    content = function(file) {
-      png(file, height = 800, width = 1200, res = 100)
-      plot(rasch_model(), items = 0, type = "IIC")
-      dev.off()
-    }
-  )
-
-  # *** Table of parameters ####
-  raschcoefInput<- reactive({
-    tab <- coef(rasch_model())
-    tab <- cbind(tab,
-                 sqrt(diag(vcov(rasch_model())))[1:nrow(tab)],
-                 rep(sqrt(diag(vcov(rasch_model())))[nrow(tab) + 1], nrow(tab)))
-    tab <- tab[, c(2, 4, 1, 3)]
-    colnames(tab) <- c("a", "SD(a)", "b", "SD(b)")
-    rownames(tab) <- item_names()
-    tab
-  })
-
-  output$raschcoef <- renderTable({
-    raschcoefInput()
-  },
-  include.rownames = T)
-
-  # *** Factor scores plot ####
-  raschFactorInput <- reactive({
-    fit1 <- rasch_model()
-    df1  <- ltm::factor.scores(fit1, return.MIvalues = T)$score.dat
-    FS   <- as.vector(df1[, "z1"])
-    df2  <- df1
-    df2$Obs <- df2$Exp <- df2$z1 <- df2$se.z1 <- NULL
-    STS <- as.vector(scale(apply(df2, 1, sum)))
-    df  <- data.frame(FS, STS)
-
-
-    ggplot(df, aes_string("STS", "FS")) +
-      geom_point(size = 3) +
-      labs(x = "Standardized total score", y = "Factor score") +
-      theme_bw() +
-      theme(text = element_text(size = 14),
-            plot.title = element_text(face = "bold", vjust = 1.5),
-            axis.line  = element_line(colour = "black"),
-            panel.grid.major = element_blank(),
-            panel.grid.minor = element_blank(),
-            panel.background = element_blank()) +
-      theme(legend.box.just = "left",
-            legend.justification = c(1, 0),
-            legend.position = c(1, 0),
-            legend.box = "vertical",
-            legend.key.size = unit(1, "lines"),
-            legend.text.align = 0,
-            legend.title.align = 0)
-  })
-
-  output$raschFactor <- renderPlot({
-    raschFactorInput()
-  })
-
-  output$DP_raschFactor <- downloadHandler(
-    filename =  function() {
-      paste("plot", input$name, ".png", sep = "")
-    },
-    content = function(file) {
-      ggsave(file, plot = raschFactorInput(), device = "png",
-             height = 3, width = 9, dpi = 160)
-    }
-  )
-
-  # ** 2PL ####
-  two_param_irt <- reactive({
-    fit2PL <- ltm(correct_answ() ~ z1, IRT.param = TRUE)
-  })
-
-  # *** ICC ####
-  twoparamInput<-reactive({
-    plot(two_param_irt())
-    g <- recordPlot()
-    plot.new()
-    g
-  })
-
-  output$twoparam <- renderPlot({
-    twoparamInput()
-  })
-
-  output$DP_twoparam <- downloadHandler(
-    filename =  function() {
-      paste("plot", input$name, ".png", sep = "")
-    },
-    content = function(file) {
-      png(file, height = 800, width = 1200, res = 100)
-      plot(two_param_irt())
-      dev.off()
-      }
-  )
-
-  # *** IIC ####
-  twoparamiicInput<-reactive({
-    plot(two_param_irt(), type = "IIC")
-    g <- recordPlot()
-    plot.new()
-    g
-  })
-
-  output$twoparamiic <- renderPlot({
-    twoparamiicInput()
-  })
-
-  output$DP_twoparamiic <- downloadHandler(
-    filename =  function() {
-      paste("plot", input$name, ".png", sep = "")
-    },
-    content = function(file) {
-      png(file, height = 800, width = 1200, res = 100)
-      plot(two_param_irt(), type = "IIC")
-      dev.off()
-      }
-  )
-
-  # *** TIF ####
-  twoparamtifInput<-reactive({
-    plot(two_param_irt(), items = 0, type = "IIC")
-    g <- recordPlot()
-    plot.new()
-    g
-  })
-
-  output$twoparamtif <- renderPlot({
-    twoparamtifInput()
-  })
-
-  output$DP_twoparamtif <- downloadHandler(
-    filename =  function() {
-      paste("plot", input$name, ".png", sep = "")
-    },
-    content = function(file) {
-      png(file, height = 800, width = 1200, res = 100)
-      plot(two_param_irt(), items = 0, type = "IIC")
-      dev.off()
-      }
-  )
-
-  # ** Table of parameters ####
-  twoparamcoefInput <- reactive({
-    fit2pl <- two_param_irt()
-    tab <- coef(fit2pl)
-    tab <- cbind(tab,
-                 sqrt(diag(vcov(fit2pl)))[1:nrow(tab)],
-                 sqrt(diag(vcov(fit2pl)))[(nrow(tab) + 1):(2 * nrow(tab))])
-    tab <- tab[, c(2, 4, 1, 3)]
-    colnames(tab) <- c("a", "SD(a)", "b", "SD(b)")
-    rownames(tab) <- item_names()
-    tab
-  })
-
-  output$twoparamcoef <- renderTable({
-    twoparamcoefInput()
-  },
-  include.rownames = T)
-
-  # *** Factor scores plot ####
-  twoFactorInput <- reactive({
-    fit2 <- two_param_irt()
-    df1  <- ltm::factor.scores(fit2, return.MIvalues = T)$score.dat
-    FS   <- as.vector(df1[, "z1"])
-    df2  <- df1
-    df2$Obs <- df2$Exp <- df2$z1 <- df2$se.z1 <- NULL
-    STS  <- as.vector(scale(apply(df2, 1, sum)))
-    df   <- data.frame(FS, STS)
-
-    ggplot(df, aes_string("STS", "FS")) +
-      geom_point(size = 3) +
-      labs(x = "Standardized total score", y = "Factor score") +
-      theme_bw() +
-      theme(text = element_text(size = 14),
-            plot.title = element_text(face = "bold", vjust = 1.5),
-            axis.line  = element_line(colour = "black"),
-            panel.grid.major = element_blank(),
-            panel.grid.minor = element_blank(),
-            panel.background = element_blank()) +
-      theme(legend.box.just = "left",
-            legend.justification = c(1, 0),
-            legend.position = c(1, 0),
-            legend.box = "vertical",
-            legend.key.size = unit(1, "lines"),
-            legend.text.align = 0,
-            legend.title.align = 0)
-  })
-
-  output$twoFactor <- renderPlot({
-    twoFactorInput()
-  })
-
-  output$DP_twoFactor <- downloadHandler(
-    filename =  function() {
-      paste("plot", input$name, ".png", sep = "")
-    },
-    content = function(file) {
-      ggsave(file, plot = twoFactorInput(), device = "png",
-             height = 3, width = 9, dpi = 160)
-    }
-  )
-
-  # ** 3PL ####
-  three_param_irt <- reactive({
-    fit3PL <- tpm(correct_answ(), IRT.param = TRUE)
-  })
-  # ** ICC ####
-  threeparamInput<-reactive({
-    plot(three_param_irt())
-    g<-recordPlot()
-    plot.new()
-    g
-  })
-
-  output$threeparam <- renderPlot({
-    threeparamInput()
-  })
-
-  output$DP_threeparam <- downloadHandler(
-    filename =  function() {
-      paste("plot", input$name, ".png", sep = "")
-    },
-    content = function(file) {
-      png(file, height = 800, width = 1200, res = 100)
-      plot(three_param_irt())
-      dev.off()
-      }
-  )
-
-  # *** IIC ####
-  threeparamiicInput<-reactive({
-    plot(three_param_irt(), type = "IIC")
-    g <- recordPlot()
-    plot.new()
-    g
-  })
-
-  output$threeparamiic <- renderPlot({
-    threeparamiicInput()
-  })
-
-  output$DP_threeparamiic <- downloadHandler(
-    filename =  function() {
-      paste("plot", input$name, ".png", sep = "")
-    },
-    content = function(file) {
-      png(file, height = 800, width = 1200, res = 100)
-      plot(three_param_irt(), type = "IIC")
-      dev.off()
-    }
-  )
-
-  # *** TIF ####
-  threeparamtifInput<-reactive({
-    plot(three_param_irt(), items = 0, type = "IIC")
-    g <- recordPlot()
-    plot.new()
-    g
-  })
-
-  output$threeparamtif <- renderPlot({
-    threeparamtifInput()
-  })
-
-  output$DP_threeparamtif <- downloadHandler(
-    filename =  function() {
-      paste("plot", input$name, ".png", sep = "")
-    },
-    content = function(file) {
-      png(file, height = 800, width = 1200, res = 100)
-      plot(three_param_irt(), items = 0, type = "IIC")
-      dev.off()
-    }
-  )
-
-  # *** Table of parameters ####
-  threeparamcoefInput<-reactive({
-    fit3pl <- tpm(correct_answ(), IRT.param = TRUE)
-    tab <- coef(fit3pl)
-    tab <- cbind(tab,
-                 sqrt(diag(vcov(fit3pl)))[1:nrow(tab)],
-                 sqrt(diag(vcov(fit3pl)))[(nrow(tab) + 1):(2 * nrow(tab))],
-                 sqrt(diag(vcov(fit3pl)))[(2 * nrow(tab) + 1):(3 * nrow(tab))])
-    tab <- tab[, c(3, 6, 2, 5, 1, 4)]
-    colnames(tab) <- c("a", "SD(a)", "b", "SD(b)", "c", "SD(c)")
-    rownames(tab) <- item_names()
-    tab
-  })
-
-  output$threeparamcoef <- renderTable({
-    threeparamcoefInput()
-  },
-  include.rownames = T)
-
-  # *** Factor scores ####
-  threeFactorInput <- reactive({
-    fit3 <- three_param_irt()
-    df1  <- ltm::factor.scores(fit3, return.MIvalues = T)$score.dat
-    FS   <- as.vector(df1[, "z1"])
-    df2  <- df1
-    df2$Obs <- df2$Exp <- df2$z1 <- df2$se.z1 <- NULL
-    STS  <- as.vector(scale(apply(df2, 1, sum)))
-    df   <- data.frame(FS, STS)
-
-    ggplot(df, aes_string("STS", "FS")) +
-      geom_point(size = 3) +
-      labs(x = "Standardized total score", y = "Factor score") +
-      theme_bw() +
-      theme(text = element_text(size = 14),
-            plot.title = element_text(face = "bold", vjust = 1.5),
-            axis.line  = element_line(colour = "black"),
-            panel.grid.major = element_blank(),
-            panel.grid.minor = element_blank(),
-            panel.background = element_blank()) +
-      theme(legend.box.just = "left",
-            legend.justification = c(1, 0),
-            legend.position = c(1, 0),
-            legend.box = "vertical",
-            legend.key.size = unit(1, "lines"),
-            legend.text.align = 0,
-            legend.title.align = 0)
-  })
-
-  output$threeFactor <- renderPlot({
-    threeFactorInput()
-  })
-
-  output$DP_threeFactor <- downloadHandler(
-    filename =  function() {
-      paste("plot", input$name, ".png", sep = "")
-    },
-    content = function(file) {
-      ggsave(file, plot = threeFactorInput(), device = "png",
-             height = 3, width = 9, dpi = 160)
-    }
-  )
+  # ######################
+  # # * IRT MODELS ######
+  # ######################
+  # # ** 1 PL (RASCH) ####
+  # rasch_model <- reactive({
+  #   fitRasch <- rasch(correct_answ())
+  # })
+  #
+  # # *** CC ####
+  # raschInput <- reactive({
+  #   plot(rasch_model())
+  #   g <- recordPlot()
+  #   plot.new()
+  #   g
+  # })
+  #
+  # output$rasch <- renderPlot({
+  #   raschInput()
+  # })
+  #
+  # output$DP_rasch <- downloadHandler(
+  #   filename =  function() {
+  #     paste("plot", input$name, ".png", sep = "")
+  #   },
+  #   content = function(file) {
+  #     png(file, height = 800, width = 1200, res = 100)
+  #     plot(rasch_model())
+  #     dev.off()
+  #   }
+  # )
+  #
+  # # *** IIC ####
+  # raschiicInput<-reactive({
+  #   plot(rasch_model(), type = "IIC")
+  #   g <- recordPlot()
+  #   plot.new()
+  #   g
+  # })
+  #
+  # output$raschiic <- renderPlot({
+  #   raschiicInput()
+  # })
+  #
+  # output$DP_raschiic <- downloadHandler(
+  #   filename =  function() {
+  #     paste("plot", input$name, ".png", sep = "")
+  #   },
+  #   content = function(file) {
+  #     png(file, height = 800, width = 1200, res = 100)
+  #     plot(rasch_model(), type = "IIC")
+  #     dev.off()
+  #     }
+  # )
+  #
+  # # *** TIF ####
+  # raschtifInput<-reactive({
+  #   plot(rasch_model(), items = 0, type = "IIC")
+  #   g <- recordPlot()
+  #   plot.new()
+  #   g
+  # })
+  #
+  # output$raschtif <- renderPlot({
+  #   raschtifInput()
+  # })
+  #
+  # output$DP_raschtif <- downloadHandler(
+  #   filename =  function() {
+  #     paste("plot", input$name, ".png", sep = "")
+  #   },
+  #   content = function(file) {
+  #     png(file, height = 800, width = 1200, res = 100)
+  #     plot(rasch_model(), items = 0, type = "IIC")
+  #     dev.off()
+  #   }
+  # )
+  #
+  # # *** Table of parameters ####
+  # raschcoefInput<- reactive({
+  #   tab <- coef(rasch_model())
+  #   tab <- cbind(tab,
+  #                sqrt(diag(vcov(rasch_model())))[1:nrow(tab)],
+  #                rep(sqrt(diag(vcov(rasch_model())))[nrow(tab) + 1], nrow(tab)))
+  #   tab <- tab[, c(2, 4, 1, 3)]
+  #   colnames(tab) <- c("a", "SD(a)", "b", "SD(b)")
+  #   rownames(tab) <- item_names()
+  #   tab
+  # })
+  #
+  # output$raschcoef <- renderTable({
+  #   raschcoefInput()
+  # },
+  # include.rownames = T)
+  #
+  # # *** Factor scores plot ####
+  # raschFactorInput <- reactive({
+  #   fit1 <- rasch_model()
+  #   df1  <- ltm::factor.scores(fit1, return.MIvalues = T)$score.dat
+  #   FS   <- as.vector(df1[, "z1"])
+  #   df2  <- df1
+  #   df2$Obs <- df2$Exp <- df2$z1 <- df2$se.z1 <- NULL
+  #   STS <- as.vector(scale(apply(df2, 1, sum)))
+  #   df  <- data.frame(FS, STS)
+  #
+  #
+  #   ggplot(df, aes_string("STS", "FS")) +
+  #     geom_point(size = 3) +
+  #     labs(x = "Standardized total score", y = "Factor score") +
+  #     theme_bw() +
+  #     theme(text = element_text(size = 14),
+  #           plot.title = element_text(face = "bold", vjust = 1.5),
+  #           axis.line  = element_line(colour = "black"),
+  #           panel.grid.major = element_blank(),
+  #           panel.grid.minor = element_blank(),
+  #           panel.background = element_blank()) +
+  #     theme(legend.box.just = "left",
+  #           legend.justification = c(1, 0),
+  #           legend.position = c(1, 0),
+  #           legend.box = "vertical",
+  #           legend.key.size = unit(1, "lines"),
+  #           legend.text.align = 0,
+  #           legend.title.align = 0)
+  # })
+  #
+  # output$raschFactor <- renderPlot({
+  #   raschFactorInput()
+  # })
+  #
+  # output$DP_raschFactor <- downloadHandler(
+  #   filename =  function() {
+  #     paste("plot", input$name, ".png", sep = "")
+  #   },
+  #   content = function(file) {
+  #     ggsave(file, plot = raschFactorInput(), device = "png",
+  #            height = 3, width = 9, dpi = 160)
+  #   }
+  # )
+  #
+  # # ** 2PL ####
+  # two_param_irt <- reactive({
+  #   fit2PL <- ltm(correct_answ() ~ z1, IRT.param = TRUE)
+  # })
+  #
+  # # *** ICC ####
+  # twoparamInput<-reactive({
+  #   plot(two_param_irt())
+  #   g <- recordPlot()
+  #   plot.new()
+  #   g
+  # })
+  #
+  # output$twoparam <- renderPlot({
+  #   twoparamInput()
+  # })
+  #
+  # output$DP_twoparam <- downloadHandler(
+  #   filename =  function() {
+  #     paste("plot", input$name, ".png", sep = "")
+  #   },
+  #   content = function(file) {
+  #     png(file, height = 800, width = 1200, res = 100)
+  #     plot(two_param_irt())
+  #     dev.off()
+  #     }
+  # )
+  #
+  # # *** IIC ####
+  # twoparamiicInput<-reactive({
+  #   plot(two_param_irt(), type = "IIC")
+  #   g <- recordPlot()
+  #   plot.new()
+  #   g
+  # })
+  #
+  # output$twoparamiic <- renderPlot({
+  #   twoparamiicInput()
+  # })
+  #
+  # output$DP_twoparamiic <- downloadHandler(
+  #   filename =  function() {
+  #     paste("plot", input$name, ".png", sep = "")
+  #   },
+  #   content = function(file) {
+  #     png(file, height = 800, width = 1200, res = 100)
+  #     plot(two_param_irt(), type = "IIC")
+  #     dev.off()
+  #     }
+  # )
+  #
+  # # *** TIF ####
+  # twoparamtifInput<-reactive({
+  #   plot(two_param_irt(), items = 0, type = "IIC")
+  #   g <- recordPlot()
+  #   plot.new()
+  #   g
+  # })
+  #
+  # output$twoparamtif <- renderPlot({
+  #   twoparamtifInput()
+  # })
+  #
+  # output$DP_twoparamtif <- downloadHandler(
+  #   filename =  function() {
+  #     paste("plot", input$name, ".png", sep = "")
+  #   },
+  #   content = function(file) {
+  #     png(file, height = 800, width = 1200, res = 100)
+  #     plot(two_param_irt(), items = 0, type = "IIC")
+  #     dev.off()
+  #     }
+  # )
+  #
+  # # ** Table of parameters ####
+  # twoparamcoefInput <- reactive({
+  #   fit2pl <- two_param_irt()
+  #   tab <- coef(fit2pl)
+  #   tab <- cbind(tab,
+  #                sqrt(diag(vcov(fit2pl)))[1:nrow(tab)],
+  #                sqrt(diag(vcov(fit2pl)))[(nrow(tab) + 1):(2 * nrow(tab))])
+  #   tab <- tab[, c(2, 4, 1, 3)]
+  #   colnames(tab) <- c("a", "SD(a)", "b", "SD(b)")
+  #   rownames(tab) <- item_names()
+  #   tab
+  # })
+  #
+  # output$twoparamcoef <- renderTable({
+  #   twoparamcoefInput()
+  # },
+  # include.rownames = T)
+  #
+  # # *** Factor scores plot ####
+  # twoFactorInput <- reactive({
+  #   fit2 <- two_param_irt()
+  #   df1  <- ltm::factor.scores(fit2, return.MIvalues = T)$score.dat
+  #   FS   <- as.vector(df1[, "z1"])
+  #   df2  <- df1
+  #   df2$Obs <- df2$Exp <- df2$z1 <- df2$se.z1 <- NULL
+  #   STS  <- as.vector(scale(apply(df2, 1, sum)))
+  #   df   <- data.frame(FS, STS)
+  #
+  #   ggplot(df, aes_string("STS", "FS")) +
+  #     geom_point(size = 3) +
+  #     labs(x = "Standardized total score", y = "Factor score") +
+  #     theme_bw() +
+  #     theme(text = element_text(size = 14),
+  #           plot.title = element_text(face = "bold", vjust = 1.5),
+  #           axis.line  = element_line(colour = "black"),
+  #           panel.grid.major = element_blank(),
+  #           panel.grid.minor = element_blank(),
+  #           panel.background = element_blank()) +
+  #     theme(legend.box.just = "left",
+  #           legend.justification = c(1, 0),
+  #           legend.position = c(1, 0),
+  #           legend.box = "vertical",
+  #           legend.key.size = unit(1, "lines"),
+  #           legend.text.align = 0,
+  #           legend.title.align = 0)
+  # })
+  #
+  # output$twoFactor <- renderPlot({
+  #   twoFactorInput()
+  # })
+  #
+  # output$DP_twoFactor <- downloadHandler(
+  #   filename =  function() {
+  #     paste("plot", input$name, ".png", sep = "")
+  #   },
+  #   content = function(file) {
+  #     ggsave(file, plot = twoFactorInput(), device = "png",
+  #            height = 3, width = 9, dpi = 160)
+  #   }
+  # )
+  #
+  # # ** 3PL ####
+  # three_param_irt <- reactive({
+  #   fit3PL <- tpm(correct_answ(), IRT.param = TRUE)
+  # })
+  # # ** ICC ####
+  # threeparamInput<-reactive({
+  #   plot(three_param_irt())
+  #   g<-recordPlot()
+  #   plot.new()
+  #   g
+  # })
+  #
+  # output$threeparam <- renderPlot({
+  #   threeparamInput()
+  # })
+  #
+  # output$DP_threeparam <- downloadHandler(
+  #   filename =  function() {
+  #     paste("plot", input$name, ".png", sep = "")
+  #   },
+  #   content = function(file) {
+  #     png(file, height = 800, width = 1200, res = 100)
+  #     plot(three_param_irt())
+  #     dev.off()
+  #     }
+  # )
+  #
+  # # *** IIC ####
+  # threeparamiicInput<-reactive({
+  #   plot(three_param_irt(), type = "IIC")
+  #   g <- recordPlot()
+  #   plot.new()
+  #   g
+  # })
+  #
+  # output$threeparamiic <- renderPlot({
+  #   threeparamiicInput()
+  # })
+  #
+  # output$DP_threeparamiic <- downloadHandler(
+  #   filename =  function() {
+  #     paste("plot", input$name, ".png", sep = "")
+  #   },
+  #   content = function(file) {
+  #     png(file, height = 800, width = 1200, res = 100)
+  #     plot(three_param_irt(), type = "IIC")
+  #     dev.off()
+  #   }
+  # )
+  #
+  # # *** TIF ####
+  # threeparamtifInput<-reactive({
+  #   plot(three_param_irt(), items = 0, type = "IIC")
+  #   g <- recordPlot()
+  #   plot.new()
+  #   g
+  # })
+  #
+  # output$threeparamtif <- renderPlot({
+  #   threeparamtifInput()
+  # })
+  #
+  # output$DP_threeparamtif <- downloadHandler(
+  #   filename =  function() {
+  #     paste("plot", input$name, ".png", sep = "")
+  #   },
+  #   content = function(file) {
+  #     png(file, height = 800, width = 1200, res = 100)
+  #     plot(three_param_irt(), items = 0, type = "IIC")
+  #     dev.off()
+  #   }
+  # )
+  #
+  # # *** Table of parameters ####
+  # threeparamcoefInput<-reactive({
+  #   fit3pl <- tpm(correct_answ(), IRT.param = TRUE)
+  #   tab <- coef(fit3pl)
+  #   tab <- cbind(tab,
+  #                sqrt(diag(vcov(fit3pl)))[1:nrow(tab)],
+  #                sqrt(diag(vcov(fit3pl)))[(nrow(tab) + 1):(2 * nrow(tab))],
+  #                sqrt(diag(vcov(fit3pl)))[(2 * nrow(tab) + 1):(3 * nrow(tab))])
+  #   tab <- tab[, c(3, 6, 2, 5, 1, 4)]
+  #   colnames(tab) <- c("a", "SD(a)", "b", "SD(b)", "c", "SD(c)")
+  #   rownames(tab) <- item_names()
+  #   tab
+  # })
+  #
+  # output$threeparamcoef <- renderTable({
+  #   threeparamcoefInput()
+  # },
+  # include.rownames = T)
+  #
+  # # *** Factor scores ####
+  # threeFactorInput <- reactive({
+  #   fit3 <- three_param_irt()
+  #   df1  <- ltm::factor.scores(fit3, return.MIvalues = T)$score.dat
+  #   FS   <- as.vector(df1[, "z1"])
+  #   df2  <- df1
+  #   df2$Obs <- df2$Exp <- df2$z1 <- df2$se.z1 <- NULL
+  #   STS  <- as.vector(scale(apply(df2, 1, sum)))
+  #   df   <- data.frame(FS, STS)
+  #
+  #   ggplot(df, aes_string("STS", "FS")) +
+  #     geom_point(size = 3) +
+  #     labs(x = "Standardized total score", y = "Factor score") +
+  #     theme_bw() +
+  #     theme(text = element_text(size = 14),
+  #           plot.title = element_text(face = "bold", vjust = 1.5),
+  #           axis.line  = element_line(colour = "black"),
+  #           panel.grid.major = element_blank(),
+  #           panel.grid.minor = element_blank(),
+  #           panel.background = element_blank()) +
+  #     theme(legend.box.just = "left",
+  #           legend.justification = c(1, 0),
+  #           legend.position = c(1, 0),
+  #           legend.box = "vertical",
+  #           legend.key.size = unit(1, "lines"),
+  #           legend.text.align = 0,
+  #           legend.title.align = 0)
+  # })
+  #
+  # output$threeFactor <- renderPlot({
+  #   threeFactorInput()
+  # })
+  #
+  # output$DP_threeFactor <- downloadHandler(
+  #   filename =  function() {
+  #     paste("plot", input$name, ".png", sep = "")
+  #   },
+  #   content = function(file) {
+  #     ggsave(file, plot = threeFactorInput(), device = "png",
+  #            height = 3, width = 9, dpi = 160)
+  #   }
+  # )
 
   ###############################
   # * IRT MODELS WITH MIRT ######
@@ -2899,6 +2912,39 @@ function(input, output, session) {
           and factor score estimated by Bock's nominal IRT model is", round(bockFactorCorInput_mirt(), 3))
   })
 
+  # * CHARACTERISTIC CURVES
+
+  ccIRT_plot_Input <- reactive({
+    a <- input$ccIRTSlider_a
+    b <- input$ccIRTSlider_b
+    c <- input$ccIRTSlider_c
+    d <- input$ccIRTSlider_d
+
+    ccirt <- function(theta, a, b, c, d){
+      return(c + (d - c)/(1 + exp(-a*(theta - b))))
+    }
+
+    g <- ggplot(data = data.frame(x = 0), mapping = aes(x = x)) +
+          stat_function(fun = ccirt, args = list(a = a, b = b, c = c, d = d),
+                        color = "red") +
+          xlim(-4, 4) +
+          xlab("Ability") +
+          ylab("Probability of correct answer") +
+          theme_bw() +
+          ylim(0, 1) +
+          theme(text = element_text(size = 14),
+                plot.title = element_text(size = 14, face = "bold", vjust = 1.5),
+                axis.line  = element_line(colour = "black"),
+                panel.grid.major = element_blank(),
+                panel.grid.minor = element_blank(),
+                plot.background = element_rect(fill = "transparent", colour = NA))
+    g
+
+  })
+
+  output$ccIRT_plot <- renderPlot({
+    ccIRT_plot_Input()
+  })
 
   ###################
   # DIF/FAIRNESS ####
@@ -3339,7 +3385,7 @@ function(input, output, session) {
                              p.adjust.method = input$correction_method_logItems,
                              purify = input$puri_LR
             )
-        g = g + ggtitle(paste0("DIF logistic plot for item ", item_numbers()[i]))
+        g = g + ggtitle(paste0("DIF logistic plot for item ", item_numbers()[mod$DIFitems[i]]))
         graflist[[i]] <- g
       }
     } else {
@@ -3951,14 +3997,14 @@ function(input, output, session) {
     fit <- model_DDF_plot()
     item <- input$ddfSlider
 
-    g <- plot(fit, item = item)[[1]]
+    g <- plot(fit, item = item)[[item]]
     g + theme(text = element_text(size = 14),
               plot.title = element_text(size = 14, face = "bold",
                                         vjust = 1.5)) +
       ggtitle(item_names()[item])
   })
 
-  plot_DDFReportInput<-reactive({
+  plot_DDFReportInput <- reactive({
     group <- DIF_groups()
     a <- test_answers()
     k <- test_key()
@@ -3973,8 +4019,8 @@ function(input, output, session) {
     graflist = list()
    # if (mod$DIFitems[[1]]!="No DDF item detected"){
       for (i in 1:length(mod$DDFitems)) {
-        g <- plot(mod, item = mod$DDFitems[[i]],
-                  title = paste("\nDDF Multinomial plot for item", item_numbers()[i]))
+        g <- plot(mod, item = mod$DDFitems[i])[[1]] +
+          ggtitle(paste("\nDDF multinomial plot for item", item_numbers[mod$DDFitems[i]]))
         graflist[[i]] <- g
       }
     #} else {
@@ -4135,54 +4181,101 @@ function(input, output, session) {
     groupLogical
   })
 
-  output$report<-downloadHandler(
-    filename=reactive({paste0("report.", input$report_format)}),
-    content=function(file) {
-
-      reportPath <- file.path(getwd(), paste0("report", formatInput(),".Rmd"))
-      #file.copy("report.Rmd", tempReport, overwrite = TRUE)
-      parameters<-list(a = test_answers(),
-                       k = test_key(),
-                       results = t(resultsInput()),
-                       histogram_totalscores = histogram_totalscoresInput(),
-                       corr_plot = {if (input$corr_report != "none") {corr_plotInput()} else {""}},
-                       scree_plot = {if (input$corr_report != "none") {scree_plotInput()} else {""}},
-                       difPlot = difplotInput(),
-                       itemexam = itemexamInput(),
-                       hist_distractor_by_group = hist_distractor_by_groupInput(),
-                       graf = grafReportInput(),
-                       logreg = logregInput(),
-                       zlogreg = zlogregInput(),
-                       zlogreg_irt = zlogreg_irtInput(),
-                       nlsplot = nlsplotInput(),
-                       multiplot = multiplotReportInput(),
-                       wrightMap = oneparamirtWrightMapReportInput_mirt(),
-                       irt_type = irt_typeInput(),
-                       irt = irtInput(),
-                       irtiic = irtiicInput(),
-                       irttif = irttifInput(),
-                       irtcoef = irtcoefInput(),
-                       irtfactor = irtfactorInput(),
-                       isGroupPresent = groupPresent(),
-                       dif_type = input$dif_type_report,
-                       resultsgroup = {if (groupPresent()) {resultsgroupInput()}},
-                       histbyscoregroup0 = {if (groupPresent()) {histbyscoregroup0Input()}},
-                       histbyscoregroup1 = {if (groupPresent()) {histbyscoregroup1Input()}},
-                       deltaplot = {if (groupPresent()) {if (input$dif_type_report>=1) {deltaplotInput()}}},
-                       DP_text_normal = {if (groupPresent()) {if (input$dif_type_report>=1) {deltaGpurn()}}},
-                       DIF_logistic_plot = {if (groupPresent()) {if (input$dif_type_report>=2) {DIF_logistic_plotReport()}}},
-                       DIF_logistic_print = {if (groupPresent()) {if (input$dif_type_report>=2) {model_DIF_logistic_print()}}},
-                       plot_DIF_logistic = {if (groupPresent()) {plot_DIF_logisticInput()}},
-                       plot_DIF_logistic_IRT_Z = {if (groupPresent()) {plot_DIF_logistic_IRT_ZInput()}},
-                       #plot_DIF_NLR = {if (groupPresent()) {plot_DIF_NLRInput()}},
-                       plot_DIF_IRT_Lord = {if (groupPresent()) {plot_DIF_IRT_LordInput()}},
-                       plot_DIF_IRT_Raju = {if (groupPresent()) {plot_DIF_IRT_RajuInput()}},
-                       model_DDF_print = {if (groupPresent()) {if (input$dif_type_report>=3) {model_DDF_print()}}},
-                       plot_DDFReportInput = {if (groupPresent()) {if (input$dif_type_report>=3) {plot_DDFReportInput()}}}
-                       )
-      rmarkdown::render(reportPath, output_file=file,
-                        params = parameters, envir = new.env(parent = globalenv()))
+  output$report <- downloadHandler(
+    
+      filename = function(){
+          paste("report.", as.character(input$report_format), sep = "")
+      },
+    
+      content = function(file){
+      
+          my_path <- normalizePath(
+              paste(
+                  "report",
+                  as.character(input$report_format),
+                  ".Rmd",
+                  sep = ""
+              )
+          )
+          
+          temp_working_directory <- setwd(tempdir())
+      
+          on.exit(setwd(temp_working_directory))
+      
+          file.copy(
+              my_path,
+              paste(
+                  "report",
+                  as.character(input$report_format),
+                  ".Rmd",
+                  sep = ""
+              )
+          )
+                
+          parameters <- list(
+              a = test_answers(),
+              k = test_key(),
+              results = t(resultsInput()),
+              histogram_totalscores = histogram_totalscoresInput(),
+              corr_plot = {if (input$corr_report != "none") {corr_plotInput()} else {""}},
+              scree_plot = {if (input$corr_report != "none") {scree_plotInput()} else {""}},
+              difPlot = difplotInput(),
+              itemexam = itemexamInput(),
+              hist_distractor_by_group = hist_distractor_by_groupInput(),
+              graf = grafReportInput(),
+              logreg = logregInput(),
+              zlogreg = zlogregInput(),
+              zlogreg_irt = zlogreg_irtInput(),
+              nlsplot = nlsplotInput(),
+              multiplot = multiplotReportInput(),
+              wrightMap = oneparamirtWrightMapReportInput_mirt(),
+              irt_type = irt_typeInput(),
+              irt = irtInput(),
+              irtiic = irtiicInput(),
+              irttif = irttifInput(),
+              irtcoef = irtcoefInput(),
+              irtfactor = irtfactorInput(),
+              isGroupPresent = groupPresent(),
+              dif_type = input$dif_type_report,
+              resultsgroup = {if (groupPresent()) {resultsgroupInput()}},
+              histbyscoregroup0 = {if (groupPresent()) {histbyscoregroup0Input()}},
+              histbyscoregroup1 = {if (groupPresent()) {histbyscoregroup1Input()}},
+              deltaplot = {if (groupPresent()) {if (input$dif_type_report>=1) {deltaplotInput()}}},
+              DP_text_normal = {if (groupPresent()) {if (input$dif_type_report>=1) {deltaGpurn()}}},
+              DIF_logistic_plot = {if (groupPresent()) {if (input$dif_type_report>=2) {DIF_logistic_plotReport()}}},
+              DIF_logistic_print = {if (groupPresent()) {if (input$dif_type_report>=2) {model_DIF_logistic_print()}}},
+              plot_DIF_logistic = {if (groupPresent()) {plot_DIF_logisticInput()}},
+              plot_DIF_logistic_IRT_Z = {if (groupPresent()) {plot_DIF_logistic_IRT_ZInput()}},
+              #plot_DIF_NLR = {if (groupPresent()) {plot_DIF_NLRInput()}},
+              plot_DIF_IRT_Lord = {if (groupPresent()) {plot_DIF_IRT_LordInput()}},
+              plot_DIF_IRT_Raju = {if (groupPresent()) {plot_DIF_IRT_RajuInput()}},
+              model_DDF_print = {if (groupPresent()) {if (input$dif_type_report>=3) {model_DDF_print()}}},
+              plot_DDFReportInput = {if (groupPresent()) {if (input$dif_type_report>=3) {plot_DDFReportInput()}}}
+          )
+          
+          output <- rmarkdown::render(
+              paste(
+                  "report",
+                  as.character(input$report_format),
+                  ".Rmd",
+                  sep = ""
+              ),
+              output_format = eval(
+                  parse(
+                      text = paste(
+                          as.character(input$report_format),
+                          "_document()",
+                          sep = ""
+                      )
+                  )
+              ),
+              params = parameters
+          )
+          
+          file.rename(output, file)
+          
     }
+	
   )
 
 
