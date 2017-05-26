@@ -4181,54 +4181,101 @@ function(input, output, session) {
     groupLogical
   })
 
-  output$report<-downloadHandler(
-    filename=reactive({paste0("report.", input$report_format)}),
-    content=function(file) {
-
-      reportPath <- file.path(getwd(), paste0("report", formatInput(),".Rmd"))
-      #file.copy("report.Rmd", tempReport, overwrite = TRUE)
-      parameters<-list(a = test_answers(),
-                       k = test_key(),
-                       results = t(resultsInput()),
-                       histogram_totalscores = histogram_totalscoresInput(),
-                       corr_plot = {if (input$corr_report != "none") {corr_plotInput()} else {""}},
-                       scree_plot = {if (input$corr_report != "none") {scree_plotInput()} else {""}},
-                       difPlot = difplotInput(),
-                       itemexam = itemexamInput(),
-                       hist_distractor_by_group = hist_distractor_by_groupInput(),
-                       graf = grafReportInput(),
-                       logreg = logregInput(),
-                       zlogreg = zlogregInput(),
-                       zlogreg_irt = zlogreg_irtInput(),
-                       nlsplot = nlsplotInput(),
-                       multiplot = multiplotReportInput(),
-                       wrightMap = oneparamirtWrightMapReportInput_mirt(),
-                       irt_type = irt_typeInput(),
-                       irt = irtInput(),
-                       irtiic = irtiicInput(),
-                       irttif = irttifInput(),
-                       irtcoef = irtcoefInput(),
-                       irtfactor = irtfactorInput(),
-                       isGroupPresent = groupPresent(),
-                       dif_type = input$dif_type_report,
-                       resultsgroup = {if (groupPresent()) {resultsgroupInput()}},
-                       histbyscoregroup0 = {if (groupPresent()) {histbyscoregroup0Input()}},
-                       histbyscoregroup1 = {if (groupPresent()) {histbyscoregroup1Input()}},
-                       deltaplot = {if (groupPresent()) {if (input$dif_type_report>=1) {deltaplotInput()}}},
-                       DP_text_normal = {if (groupPresent()) {if (input$dif_type_report>=1) {deltaGpurn()}}},
-                       DIF_logistic_plot = {if (groupPresent()) {if (input$dif_type_report>=2) {DIF_logistic_plotReport()}}},
-                       DIF_logistic_print = {if (groupPresent()) {if (input$dif_type_report>=2) {model_DIF_logistic_print()}}},
-                       plot_DIF_logistic = {if (groupPresent()) {plot_DIF_logisticInput()}},
-                       plot_DIF_logistic_IRT_Z = {if (groupPresent()) {plot_DIF_logistic_IRT_ZInput()}},
-                       #plot_DIF_NLR = {if (groupPresent()) {plot_DIF_NLRInput()}},
-                       plot_DIF_IRT_Lord = {if (groupPresent()) {plot_DIF_IRT_LordInput()}},
-                       plot_DIF_IRT_Raju = {if (groupPresent()) {plot_DIF_IRT_RajuInput()}},
-                       model_DDF_print = {if (groupPresent()) {if (input$dif_type_report>=3) {model_DDF_print()}}},
-                       plot_DDFReportInput = {if (groupPresent()) {if (input$dif_type_report>=3) {plot_DDFReportInput()}}}
-                       )
-      rmarkdown::render(reportPath, output_file=file,
-                        params = parameters, envir = new.env(parent = globalenv()))
+  output$report <- downloadHandler(
+    
+      filename = function(){
+          paste("report.", as.character(input$report_format), sep = "")
+      },
+    
+      content = function(file){
+      
+          my_path <- normalizePath(
+              paste(
+                  "report",
+                  as.character(input$report_format),
+                  ".Rmd",
+                  sep = ""
+              )
+          )
+          
+          temp_working_directory <- setwd(tempdir())
+      
+          on.exit(setwd(temp_working_directory))
+      
+          file.copy(
+              my_path,
+              paste(
+                  "report",
+                  as.character(input$report_format),
+                  ".Rmd",
+                  sep = ""
+              )
+          )
+                
+          parameters <- list(
+              a = test_answers(),
+              k = test_key(),
+              results = t(resultsInput()),
+              histogram_totalscores = histogram_totalscoresInput(),
+              corr_plot = {if (input$corr_report != "none") {corr_plotInput()} else {""}},
+              scree_plot = {if (input$corr_report != "none") {scree_plotInput()} else {""}},
+              difPlot = difplotInput(),
+              itemexam = itemexamInput(),
+              hist_distractor_by_group = hist_distractor_by_groupInput(),
+              graf = grafReportInput(),
+              logreg = logregInput(),
+              zlogreg = zlogregInput(),
+              zlogreg_irt = zlogreg_irtInput(),
+              nlsplot = nlsplotInput(),
+              multiplot = multiplotReportInput(),
+              wrightMap = oneparamirtWrightMapReportInput_mirt(),
+              irt_type = irt_typeInput(),
+              irt = irtInput(),
+              irtiic = irtiicInput(),
+              irttif = irttifInput(),
+              irtcoef = irtcoefInput(),
+              irtfactor = irtfactorInput(),
+              isGroupPresent = groupPresent(),
+              dif_type = input$dif_type_report,
+              resultsgroup = {if (groupPresent()) {resultsgroupInput()}},
+              histbyscoregroup0 = {if (groupPresent()) {histbyscoregroup0Input()}},
+              histbyscoregroup1 = {if (groupPresent()) {histbyscoregroup1Input()}},
+              deltaplot = {if (groupPresent()) {if (input$dif_type_report>=1) {deltaplotInput()}}},
+              DP_text_normal = {if (groupPresent()) {if (input$dif_type_report>=1) {deltaGpurn()}}},
+              DIF_logistic_plot = {if (groupPresent()) {if (input$dif_type_report>=2) {DIF_logistic_plotReport()}}},
+              DIF_logistic_print = {if (groupPresent()) {if (input$dif_type_report>=2) {model_DIF_logistic_print()}}},
+              plot_DIF_logistic = {if (groupPresent()) {plot_DIF_logisticInput()}},
+              plot_DIF_logistic_IRT_Z = {if (groupPresent()) {plot_DIF_logistic_IRT_ZInput()}},
+              #plot_DIF_NLR = {if (groupPresent()) {plot_DIF_NLRInput()}},
+              plot_DIF_IRT_Lord = {if (groupPresent()) {plot_DIF_IRT_LordInput()}},
+              plot_DIF_IRT_Raju = {if (groupPresent()) {plot_DIF_IRT_RajuInput()}},
+              model_DDF_print = {if (groupPresent()) {if (input$dif_type_report>=3) {model_DDF_print()}}},
+              plot_DDFReportInput = {if (groupPresent()) {if (input$dif_type_report>=3) {plot_DDFReportInput()}}}
+          )
+          
+          output <- rmarkdown::render(
+              paste(
+                  "report",
+                  as.character(input$report_format),
+                  ".Rmd",
+                  sep = ""
+              ),
+              output_format = eval(
+                  parse(
+                      text = paste(
+                          as.character(input$report_format),
+                          "_document()",
+                          sep = ""
+                      )
+                  )
+              ),
+              params = parameters
+          )
+          
+          file.rename(output, file)
+          
     }
+	
   )
 
 
