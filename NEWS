@@ -5,7 +5,7 @@
         ***************************************************************
 
 ---------------------------------------------------
-- Changes in ShinyItemAnalysis 1.1.1 (2017-04-07) -
+- Changes in ShinyItemAnalysis 1.1.2 (2017-05-19) -
 ---------------------------------------------------
 
 MAJOR UPDATES
@@ -14,11 +14,24 @@ MAJOR UPDATES
   o Bug in WrightMap was fixed.
   o Pearson's correlation coefficient between factor scores and
     standardized total score was added for Bock's nominal IRT model.
+  o New options for reports were added. Be default no IRT models and
+    no graphs of correlation structure are fitted.
+  o Option of item purification was added into some DIF detection
+    methods - Delta plot method, Mantel-Haneszel, Logistic regression
+    with total score, Lord's test and Raju's test.
+  o Default option of p-values adjustments in DIF detection methods
+    was set to 'none'.
+  o New online mirror was added.
+  o Busy indicator and tooltips were added.
+  o We have new contributor - Lubomir Stepanek!
 
 MINOR UPDATES
 
   o CITATION file was added.
   o Maximum upload size was set to 30MB.
+  o Item names were fixed and unified.
+  o Some typos were fixed.
+  o Readme file was updated.
 
 ---------------------------------------------------
 - Changes in ShinyItemAnalysis 1.1.0 (2016-02-02) -

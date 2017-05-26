@@ -9,12 +9,14 @@
 #' @param type character: a character string specifying which DIF effects must be tested.
 #' Possible values are "both" (default), "udif" and "nudif". See Details.
 #' @param item numeric: number of item to be plotted
+#' @param item.name character: the name of item.
 #' @param IRT logical: if IRT parameterization (\code{TRUE}, default) or classic logistic
 #' parameterization (\code{FALSE}) may be applied.
 #' @param p.adjust.method character:  the acronym of the method for p-value adjustment for
 #' multiple comparisons. See Details.
+#' @param purify logical: if item purification may be applied.
 #'
-#' @usage plotDIFLogistic(data, group, type = "both", item, IRT = F, p.adjust.method = "BH")
+#' @usage plotDIFLogistic(data, group, type = "both", item, item.name, IRT = F, p.adjust.method = "none", purify = F)
 #'
 #' @details
 #' This function plots characteristic curve of 2PL logistic DIF model.
@@ -52,14 +54,16 @@
 
 
 
-plotDIFLogistic <- function(data, group, type = "both", item, IRT = F, p.adjust.method = "BH"){
+plotDIFLogistic <- function(data, group, type = "both", item, item.name,
+                            IRT = F, p.adjust.method = "none", purify = F){
   if (IRT){
     match <- c(scale(apply(data, 1, sum)))
   } else {
     match <- "score"
   }
   fit <- difR::difLogistic(Data = data, group = group, focal.name = 1, type = type,
-                     match = match, p.adjust.method = p.adjust.method)
+                           match = match, p.adjust.method = p.adjust.method,
+                           purify = purify)
 
   LR_plot <- function(x, group, beta0, beta1, beta2, beta3){
     return(1/(1 + exp(-(beta0 + beta1*x + beta2*group + beta3*x*group))))
@@ -89,6 +93,9 @@ plotDIFLogistic <- function(data, group, type = "both", item, IRT = F, p.adjust.
     xlab <- "Total score"
   }
 
+  if (missing(item.name)){
+    item.name <- paste("Item", item)
+  }
 
   hv_R <- data.frame(X1 = as.numeric(levels(as.factor(score_R))),
                      X2 = tapply(data[group == 0, item], as.factor(score_R), mean))
@@ -103,7 +110,7 @@ plotDIFLogistic <- function(data, group, type = "both", item, IRT = F, p.adjust.
   plot_CC <- ggplot(hv, aes_string("X1", "X2")) +
     ### points
     geom_point(aes_string(colour = "Group", fill = "Group",
-                   size = "size"),
+                          size = "size"),
                alpha = alpha, shape = shape) +
     ### lines
     stat_function(aes(colour = "Reference", linetype = "Reference"),
@@ -153,7 +160,7 @@ plotDIFLogistic <- function(data, group, type = "both", item, IRT = F, p.adjust.
           legend.text.align = 0,
           legend.title.align = 0,
           legend.key = element_rect(colour = "white")) +
-    ggtitle(paste("Item", item))
+    ggtitle(item.name)
 
   plot_CC
 

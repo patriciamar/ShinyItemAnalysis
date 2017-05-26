@@ -10,6 +10,23 @@ require(shinyjs)
 ######################
 
 ui=tagList(
+
+  tags$head(
+
+    tags$link(rel = "stylesheet",
+              type = "text/css",
+              href = "style.css"),
+
+    tags$script(type = "text/javascript",
+                src = "busy.js")
+
+  ),
+
+  div(class = "busy",
+      p("Application is busy..."),
+      img(src = "free_busy_indicator.gif", height = 50, width = 50)
+  ),
+
   useShinyjs(),
   # !! ONLINE VERSION ####
   # tags$head(includeScript("google-analytics.js")),
@@ -19,7 +36,13 @@ ui=tagList(
                ############################################
                # !! ONLINE VERSION ####
                # div(class="panel-footer",
-               #     p(strong("ShinyItemAnalysis Version 1.1.1")),
+               #     p(strong("ShinyItemAnalysis Version 1.1.2")),
+               #     p(
+               #       "You can try ", code('ShinyItemAnalysis'), " online ",
+               #       HTML('<a href = "http://shiny.cs.cas.cz/ShinyItemAnalysis/" id="first_tooltip">here</a>'),
+               #       " or ",
+               #       HTML('<a href = "http://shiny.statest.cz:3838/ShinyItemAnalysis/" id="second_tooltip">here</a>!')
+               #     ),
                #     p("Download ShinyItemAnalysis R package from ",
                #       a(strong("CRAN"), href = "https://cran.rstudio.com/web/packages/ShinyItemAnalysis/",
                #         target = "_blank"), "to run analysis faster!"),
@@ -34,17 +57,25 @@ ui=tagList(
                #            <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV01/"> 0.1.0</a>,
                #            <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV02/"> 0.2.0</a>,
                #            <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV100/"> 1.0.0</a>
-               #            </p>')
+               #            </p>
+               #            <script>
+               #             $("#first_tooltip").attr("title", "Institute of Computer Science, Czech Academy of Sciences");
+               #             $("#second_tooltip").attr("title", "First Faculty of Medicine, Charles University");
+               #            </script>'
+               #          )
                #       ),
                #     p(textOutput('counter'))
                #       )
                ############################################
                # !! PACKAGE VERSION ####
                div(class="panel-footer",
-                   p(strong("ShinyItemAnalysis Version 1.1.1")),
-                   p("You can also try ", code('ShinyItemAnalysis'),
-                     a('online!', href = "https://shiny.cs.cas.cz/ShinyItemAnalysis/",
-                       target = "_blank")),
+                   p(strong("ShinyItemAnalysis Version 1.1.2")),
+                   p(
+                     "You can also try ", code('ShinyItemAnalysis'),
+                     HTML('<a href = "http://shiny.cs.cas.cz/ShinyItemAnalysis/" id = "first_tooltip">online!</a>'),
+                     " Or you can also use another",
+                     HTML('<a href = "http://shiny.statest.cz:3838/ShinyItemAnalysis/" id = "second_tooltip">mirror.</a>')
+                   ),
                    p("Project was supported by grant funded by Czech Science Foundation under number ",
                      a("GJ15-15856Y",
                        href = "http://www.cs.cas.cz/martinkova/psychometrics.html",
@@ -56,9 +87,14 @@ ui=tagList(
                           <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV01/"> 0.1.0</a>,
                           <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV02/"> 0.2.0</a>,
                           <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV100/"> 1.0.0</a>
-                          </p>')
+                          </p>
+                          <script>
+                           $("#first_tooltip").attr("title", "Institute of Computer Science, Czech Academy of Sciences");
+                           $("#second_tooltip").attr("title", "First Faculty of Medicine, Charles University");
+                          </script>'
+                        )
                      )
-                     )
+                  )
                ############################################
                    ),
              theme="bootstrap.css",
@@ -106,7 +142,7 @@ ui=tagList(
                         You can change the dataset (and try your own one) on page', strong('Data.')),
 
                       h4('Version'),
-                      p('Current version of ', code('ShinyItemAnalysis'), ' is 1.1.1'),
+                      p('Current version of ', code('ShinyItemAnalysis'), ' is 1.1.2'),
                       div(
                         HTML('<p>
                              See also older versions:
@@ -202,8 +238,8 @@ ui=tagList(
                          see Drabinova & Martinkova (2016).'),
                       p('Dataset ', code("Medical 100"), ' is a real data set of admission test to medical school
                          from R ', code('ShinyItemAnalysis'),' package . The data set represents responses of
-                         3,204 subjects to multiple-choice test of 100 items. There is no group membership
-                         variable in the data set hence it is not possible to run DIF or DDF detection procedures. '),
+                         2,392 subjects (750 males, 1,633 females and 9 subjects without gender specification)
+                         to multiple-choice test of 100 items. '),
                       br(),
                       selectInput("dataSelect", "Select dataset",
                                   c("GMAT" = "GMAT_difNLR",
@@ -220,6 +256,10 @@ ui=tagList(
                         and 1 represents focal group. Its length need to be the same as number of individual
                         students in main dataset. If the group is not provided then it wont be possible to run DIF and DDF
                         detection procedures. In all data sets header should be either included or excluded. '),
+                      p('Columns of dataset are by default renamed to Item and number of particular column. If you
+                        want to keep your own names, check box below. '),
+                      p('Missing values in scored dataset are by default evaluated as 0. If you want to keep them as missing,
+                        check box below.'),
                       fluidRow(
                         column(3, offset = 0, fileInput(
                           'data', 'Choose data (csv file)',
@@ -259,7 +299,10 @@ ui=tagList(
                       tags$hr(),
                       h4("Data specification"),
                       fluidRow(
-                        column(1, offset = 0, checkboxInput('header', 'Header', TRUE)),
+                        column(3, offset = 0,
+                               checkboxInput('header', 'Header', TRUE),
+                               checkboxInput('itemnam', 'Keep items names', FALSE),
+                               checkboxInput('missval', 'Keep missing values', FALSE)),
                         column(3, offset = 1, radioButtons('sep', 'Separator',
                                                            c(Comma = ',',
                                                              Semicolon = ';',
@@ -500,8 +543,9 @@ ui=tagList(
                                  radioButtons('type_combinations_distractor', 'Type',
                                               list("Combinations", "Distractors")
                                  ),
-                                 sliderInput("distractorSlider", "Item Slider", min=1, value=1, max=10,
-                                             step=1, animate=TRUE),
+                                 sliderInput("distractorSlider", "Item",
+                                             min = 1, value = 1, max = 10,
+                                             step = 1, animate = TRUE),
                                  plotOutput('graf'),
                                  downloadButton("DP_graf", label = "Download figure"),
                                  br(),
@@ -572,8 +616,9 @@ ui=tagList(
                                  h4("Plot with estimated logistic curve"),
                                  p('Points represent proportion of correct answer with respect to total score.
                                    Their size is determined by count of respondents who answered item correctly.'),
-                                 sliderInput("logregSlider", "Item Slider", min=1, value=1, max=10,
-                                             step=1, animate=TRUE),
+                                 sliderInput("logregSlider", "Item",
+                                             min = 1, value = 1, max = 10,
+                                             step = 1, animate = TRUE),
                                  plotOutput('logreg'),
                                  downloadButton("DP_logreg", label = "Download figure"),
                                  h4("Equation"),
@@ -627,8 +672,9 @@ ui=tagList(
                                  h4("Plot with estimated logistic curve"),
                                  p('Points represent proportion of correct answer with respect to standardized
                                    total score. Their size is determined by count of respondents who answered item correctly.'),
-                                 sliderInput("zlogregSlider", "Item Slider", min=1, value=1, max=10,
-                                             step=1, animate=TRUE),
+                                 sliderInput("zlogregSlider", "Item",
+                                             min = 1, value = 1, max = 10,
+                                             step = 1, animate = TRUE),
                                  plotOutput('zlogreg'),
                                  downloadButton("DP_zlogreg", label = "Download figure"),
                                  h4("Equation"),
@@ -681,8 +727,9 @@ ui=tagList(
                                  h4("Plot with estimated logistic curve"),
                                  p('Points represent proportion of correct answer with respect to standardized
                                    total score. Their size is determined by count of respondents who answered item correctly.'),
-                                 sliderInput("zlogreg_irtSlider", "Item Slider", min=1, value=1, max=10,
-                                             step=1, animate=TRUE),
+                                 sliderInput("zlogreg_irtSlider", "Item",
+                                             min = 1, value = 1, max = 10,
+                                             step = 1, animate = TRUE),
                                  plotOutput('zlogreg_irt'),
                                  downloadButton("DP_zlogreg_irt", label = "Download figure"),
                                  h4("Equation"),
@@ -738,8 +785,9 @@ ui=tagList(
                                  h4("Plot with estimated nonlinear curve"),
                                  p('Points represent proportion of correct answer with respect to standardized
                                    total score. Their size is determined by count of respondents who answered item correctly.'),
-                                 sliderInput("nlsSlider", "Item Slider", min=1, value=1, max=10,
-                                             step=1, animate=TRUE),
+                                 sliderInput("nlsSlider", "Item",
+                                             min = 1, value = 1, max = 10,
+                                             step = 1, animate = TRUE),
                                  plotOutput('nlsplot'),
                                  downloadButton("DP_nlsplot", label = "Download figure"),
                                  h4("Equation"),
@@ -857,8 +905,9 @@ ui=tagList(
                                  h4("Plot with estimated curves of multinomial regression"),
                                  p('Points represent proportion of selected option with respect to standardized
                                    total score. Their size is determined by count of respondents who selected given option.'),
-                                 sliderInput("multiSlider", "Item Slider", min=1, value=1, max=10,
-                                             step=1, animate=TRUE),
+                                 sliderInput("multiSlider", "Item",
+                                             min = 1, value = 1, max = 10,
+                                             step = 1, animate = TRUE),
                                  plotOutput('multiplot'),
                                  downloadButton("DP_multiplot", label = "Download figure"),
                                  h4("Equation"),
@@ -1657,7 +1706,15 @@ ui=tagList(
                                  radioButtons('type_threshold', 'Threshold',
                                               list("Fixed", "Normal")
                                  ),
-
+                                 checkboxInput('puri_DP', 'Item purification', FALSE),
+                                 conditionalPanel(
+                                   condition = "input.puri_DP",
+                                   selectInput("puri_DP_type", "Purification method",
+                                             c("IPP1" = "IPP1",
+                                               "IPP2" = "IPP2",
+                                               "IPP3" = "IPP3"
+                                               ),
+                                             selected = "IPP1")),
                                  plotOutput('deltaplot'),
                                  downloadButton("DP_deltaplot", label = "Download figure"),
                                  br(),
@@ -1691,7 +1748,7 @@ ui=tagList(
                                      code('# Delta scores with normal threshold'),
                                      br(),
                                      code('deltascores <- deltaPlot(data.frame(data, group), group = "group",
-                                          focal.name = 1, thr = "norm")'),
+                                          focal.name = 1, thr = "norm", purify = F)'),
                                      br(),
                                      code('deltascores'),
                                      br(),
@@ -1718,7 +1775,8 @@ ui=tagList(
                                                           "FDR" = "fdr",
                                                           "none" = "none"
                                                         ),
-                                                        selected="BH"),
+                                                        selected = "none"),
+                                            checkboxInput('puri_MH', 'Item purification', FALSE),
                                             verbatimTextOutput("print_DIF_MH"),
                                             br(),
                                             h4("Selected R code"),
@@ -1736,7 +1794,7 @@ ui=tagList(
                                                 code('# Mantel-Haenszel test'),
                                                 br(),
                                                 code('fit <- difMH(Data = data, group = group, focal.name = 1,
-                                                     p.adjust.method = "BH")'),
+                                                     p.adjust.method = "none", purify = F)'),
                                                 br(),
                                                 code('fit')),
                                             br()
@@ -1794,7 +1852,7 @@ ui=tagList(
                                                 code('# Mantel-Haenszel estimate of OR'),
                                                 br(),
                                                 code('fit <- difMH(Data = data, group = group, focal.name = 1,
-                                                     p.adjust.method = "BH")'),
+                                                     p.adjust.method = "none", purify = F)'),
                                                 br(),
                                                 code('fit$alphaMH')),
                                             br()
@@ -1828,7 +1886,8 @@ ui=tagList(
                                                           "FDR" = "fdr",
                                                           "none" = "none"
                                                         ),
-                                                        selected="BH"),
+                                                        selected = "none"),
+                                            checkboxInput('puri_LR', 'Item purification', FALSE),
                                             verbatimTextOutput('print_DIF_logistic'),
                                             br(),
                                             h4("Selected R code"),
@@ -1848,7 +1907,8 @@ ui=tagList(
                                                 br(),
                                                 code('fit <- difLogistic(Data = data, group = group, focal.name = 1,
                                                      type = "both",
-                                                     p.adjust.method = "BH")'),
+                                                     p.adjust.method = "none",
+                                                     purify = F)'),
                                                 br(),
                                                 code('fit')),
                                             br()
@@ -1878,9 +1938,11 @@ ui=tagList(
                                                           "BY" = "BY",
                                                           "FDR" = "fdr",
                                                           "none" = "none"),
-                                                        selected="BH"),
-                                            sliderInput("diflogSlider", "Item Slider", min=1, value=1, max=10,
-                                                        step=1, animate=TRUE),
+                                                        selected = "none"),
+                                            checkboxInput('puri_LR_plot', 'Item purification', FALSE),
+                                            sliderInput("diflogSlider", "Item",
+                                                        min = 1, value = 1, max = 10,
+                                                        step = 1, animate = TRUE),
                                             plotOutput('plot_DIF_logistic'),
                                             downloadButton("DP_plot_DIF_logistic", label = "Download figure"),
                                             h4("Equation"),
@@ -1905,7 +1967,7 @@ ui=tagList(
                                                 br(),
                                                 code('fit <- difLogistic(Data = data, group = group, focal.name = 1,
                                                      type = "both",
-                                                     p.adjust.method = "BH")'),
+                                                     p.adjust.method = "none", purify = F)'),
                                                 br(),
                                                 code('fit'),
                                                 br(),
@@ -1916,7 +1978,8 @@ ui=tagList(
                                                      type = "both",
                                                      item =  1,
                                                      IRT = F,
-                                                     p.adjust.method = "BH")'),
+                                                     p.adjust.method = "none",
+                                                     purify = F)'),
                                                 br(),
                                                 code('# Coefficients'),
                                                 br(),
@@ -1955,7 +2018,8 @@ ui=tagList(
                                                           "BY" = "BY",
                                                           "FDR" = "fdr",
                                                           "none" = "none"),
-                                                        selected="BH"),
+                                                        selected = "none"),
+                                            #checkboxInput('puri_LR_IRT', 'Item purification', FALSE),
                                             verbatimTextOutput('print_DIF_logistic_IRT_Z'),
                                             br(),
                                             h4("Selected R code"),
@@ -1977,7 +2041,8 @@ ui=tagList(
                                                 code('fit <- difLogistic(Data = data, group = group, focal.name = 1,
                                                      type = "both",
                                                      match = scaled.score,
-                                                     p.adjust.method = "BH")'),
+                                                     p.adjust.method = "none",
+                                                     purify = F)'),
                                                 br(),
                                                 code('fit')),
                                             br()
@@ -2007,9 +2072,11 @@ ui=tagList(
                                                           "BY" = "BY",
                                                           "FDR" = "fdr",
                                                           "none" = "none"),
-                                                        selected="BH"),
-                                            sliderInput("diflog_irtSlider", "Item Slider", min=1, value=1, max=10,
-                                                        step=1, animate=TRUE),
+                                                        selected = "none"),
+                                            # checkboxInput('puri_LR_IRT_plot', 'Item purification', FALSE),
+                                            sliderInput("diflog_irtSlider", "Item",
+                                                        min = 1, value = 1, max = 10,
+                                                        step = 1, animate = TRUE),
                                             plotOutput('plot_DIF_logistic_IRT_Z'),
                                             downloadButton("DP_plot_DIF_logistic_IRT_Z", label = "Download figure"),
                                             h4("Equation"),
@@ -2038,7 +2105,8 @@ ui=tagList(
                                                 code('fit <- difLogistic(Data = data, group = group, focal.name = 1,
                                                      type = "both",
                                                      match = scaled.score,
-                                                     p.adjust.method = "BH")'),
+                                                     p.adjust.method = "none",
+                                                     purify = F)'),
                                                 br(),
                                                 code('fit'),
                                                 br(),
@@ -2101,7 +2169,8 @@ ui=tagList(
                                                           "BY" = "BY",
                                                           "FDR" = "fdr",
                                                           "none" = "none"),
-                                                        selected="BH"),
+                                                        selected = "none"),
+                                            # checkboxInput('puri_NLR', 'Item purification', FALSE),
                                             verbatimTextOutput('print_DIF_NLR'),
                                             br(),
                                             h4("Selected R code"),
@@ -2117,7 +2186,7 @@ ui=tagList(
                                                 code('# Nonlinear regression DIF method'),
                                                 br(),
                                                 code('fit <- difNLR(Data = Data, group = group, focal.name = 1,
-                                                     model = "3PLcg", type = "both", p.adjust.method = "BH")'),
+                                                     model = "3PLcg", type = "both", p.adjust.method = "none")'),
                                                 br(),
                                                 code('fit')),
                                             br()
@@ -2149,9 +2218,11 @@ ui=tagList(
                                                           "BY" = "BY",
                                                           "FDR" = "fdr",
                                                           "none" = "none"),
-                                                        selected="BH"),
-                                            sliderInput("difnlrSlider", "Item Slider", min=1, value=1, max=10,
-                                                        step=1, animate=TRUE),
+                                                        selected = "none"),
+                                            #checkboxInput('puri_NLR_plot', 'Item purification', FALSE),
+                                            sliderInput("difnlrSlider", "Item",
+                                                        min = 1, value = 1, max = 10,
+                                                        step = 1, animate = TRUE),
                                             plotOutput('plot_DIF_NLR'),
                                             downloadButton("DP_plot_DIF_NLR", label = "Download figure"),
                                             h4("Equation"),
@@ -2174,7 +2245,7 @@ ui=tagList(
                                                 code('# Nonlinear regression DIF method'),
                                                 br(),
                                                 code('fit <- difNLR(Data = Data, group = group, focal.name = 1,
-                                                     model = "3PLcg", type = "both", p.adjust.method = "BH")'),
+                                                     model = "3PLcg", type = "both", p.adjust.method = "none")'),
                                                 br(),
                                                 code('# Plot of characteristic curve of item 1'),
                                                 br(),
@@ -2221,7 +2292,8 @@ ui=tagList(
                                                           "BY" = "BY",
                                                           "FDR" = "fdr",
                                                           "none" = "none"),
-                                                        selected="BH"),
+                                                        selected = "none"),
+                                            checkboxInput('puri_Lord', 'Item purification', FALSE),
                                             verbatimTextOutput('print_DIF_IRT_Lord'),
                                             br(),
                                             h4("Selected R code"),
@@ -2240,7 +2312,7 @@ ui=tagList(
                                                 br(),
                                                 code('fit <- difLord(Data = data, group = group, focal.name = 1,
                                                      model = "2PL",
-                                                     p.adjust.method = "BH")'),
+                                                     p.adjust.method = "none", purify = F)'),
                                                 br(),
                                                 code('fit')),
                                             br()
@@ -2271,9 +2343,11 @@ ui=tagList(
                                                           "BY" = "BY",
                                                           "FDR" = "fdr",
                                                           "none" = "none"),
-                                                        selected="BH"),
-                                            sliderInput("difirt_lord_itemSlider", "Item Slider", min=1, value=1, max=10,
-                                                        step=1, animate=TRUE),
+                                                        selected = "none"),
+                                            checkboxInput('puri_Lord_plot', 'Item purification', FALSE),
+                                            sliderInput("difirt_lord_itemSlider", "Item",
+                                                        min = 1, value = 1, max = 10,
+                                                        step = 1, animate = TRUE),
                                             plotOutput('plot_DIF_IRT_Lord'),
                                             downloadButton("DP_plot_DIF_IRT_Lord", label = "Download figure"),
                                             h4("Equation"),
@@ -2298,7 +2372,7 @@ ui=tagList(
                                                 br(),
                                                 code('fit <- difLord(Data = data, group = group, focal.name = 1,
                                                      model = "2PL",
-                                                     p.adjust.method = "BH")'),
+                                                     p.adjust.method = "none", purify = F)'),
                                                 br(),
                                                 code('fit'),
                                                 br(),
@@ -2346,7 +2420,8 @@ ui=tagList(
                                                           "BY" = "BY",
                                                           "FDR" = "fdr",
                                                           "none" = "none"),
-                                                        selected="BH"),
+                                                        selected = "none"),
+                                            checkboxInput('puri_Raju', 'Item purification', FALSE),
                                             verbatimTextOutput('print_DIF_IRT_Raju'),
                                             br(),
                                             h4("Selected R code"),
@@ -2365,7 +2440,7 @@ ui=tagList(
                                                 br(),
                                                 code('fit <- difRaju(Data = data, group = group, focal.name = 1,
                                                      model = "2PL",
-                                                     p.adjust.method = "BH")'),
+                                                     p.adjust.method = "none", purify = F)'),
                                                 br(),
                                                 code('fit')),
                                             br()),
@@ -2394,9 +2469,11 @@ ui=tagList(
                                                           "BY" = "BY",
                                                           "FDR" = "fdr",
                                                           "none" = "none"),
-                                                        selected="BH"),
-                                            sliderInput("difirt_raju_itemSlider", "Item Slider", min=1, value=1, max=10,
-                                                        step=1, animate=TRUE),
+                                                        selected = "none"),
+                                            checkboxInput('puri_Raju_plot', 'Item purification', FALSE),
+                                            sliderInput("difirt_raju_itemSlider", "Item",
+                                                        min = 1, value = 1, max = 10,
+                                                        step = 1, animate = TRUE),
                                             plotOutput('plot_DIF_IRT_Raju'),
                                             downloadButton("DP_plot_DIF_IRT_Raju", label = "Download figure"),
                                             h4("Equation"),
@@ -2421,7 +2498,7 @@ ui=tagList(
                                                 br(),
                                                 code('fit <- difRaju(Data = data, group = group, focal.name = 1,
                                                      model = "2PL",
-                                                     p.adjust.method = "BH")'),
+                                                     p.adjust.method = "none", purify = F)'),
                                                 br(),
                                                 code('fit'),
                                                 br(),
@@ -2471,7 +2548,7 @@ ui=tagList(
                                                           "BY" = "BY",
                                                           "FDR" = "fdr",
                                                           "none" = "none"),
-                                                        selected = "BH"),
+                                                        selected = "none"),
                                             verbatimTextOutput('print_DDF'),
                                             br(),
                                             h4("Selected R code"),
@@ -2489,7 +2566,7 @@ ui=tagList(
                                                 code('# DDF with difNLR package'),
                                                 br(),
                                                 code('fit <- ddfMLR(Data, group, focal.name = 1, key, type = "both",
-                                                     p.adjust.method = "BH")'),
+                                                     p.adjust.method = "none")'),
                                                 br(),
                                                 code('fit')),
                                             br()
@@ -2520,8 +2597,9 @@ ui=tagList(
                                                           "BY" = "BY",
                                                           "FDR" = "fdr",
                                                           "none" = "none"),
-                                                        selected = "BH"),
-                                            sliderInput("ddfSlider", "Item Slider", min = 1, value = 1, max = 10,
+                                                        selected = "none"),
+                                            sliderInput("ddfSlider", "Item",
+                                                        min = 1, value = 1, max = 10,
                                                         step = 1, animate = TRUE),
                                             plotOutput('plot_DDF'),
                                             downloadButton("DP_plot_DDF", label = "Download figure"),
@@ -2545,7 +2623,7 @@ ui=tagList(
                                                 code('# DDF with difNLR package'),
                                                 br(),
                                                 code('fit <- ddfMLR(Data, group, focal.name = 1, key, type = "both",
-                                                     p.adjust.method = "BH")'),
+                                                     p.adjust.method = "none")'),
                                                 br(),
                                                 code('# Estimated coefficients of item 1'),
                                                 br(),
@@ -2585,32 +2663,32 @@ ui=tagList(
                 ########################
                 tabPanel("Reports",
                          h3("Download report"),
-                         p("This shiny app also offers an option to download a report in HTML or PDF format."),
+                         p(code("ShinyItemAnalysis"), " also offers an option to download a report in HTML or PDF format."),
                          p("PDF report creation requires latest version of",
                            a("MiKTeX", href = "https://miktex.org/howto/install-miktex", target = "_blank"),
                            "(or other TeX distribution). If you don't have the latest installation, please, use the HTML report."),
-                         radioButtons("report_format", "Format of Report",
+                         radioButtons("report_format", "Format of report",
                                      c("HTML" = "html",
                                        "PDF" = "pdf")),
                          radioButtons("corr_report", "Correlation structure",
                                       c("None" = "none",
                                         "Corrplot + Screeplot" = "corrplotscreeplot"),
                                       selected = "none"),
-                         radioButtons("irt_type_report", "IRT Model selection",
+                         radioButtons("irt_type_report", "IRT model selection",
                                       c("None" = "none",
                                         "Rasch" = "rasch",
                                         "1PL" = "1pl",
                                         "2PL" = "2pl",
                                         "3PL" = "3pl"),
                                       selected = "none"),
-                         radioButtons("dif_type_report", "DIF Model selection",
+                         radioButtons("dif_type_report", "DIF model selection",
                                       c("None" = 0,
                                         "Delta plot" = 1,
                                         "Logistic regression" = 2,
                                         "Multinomial regression" = 3),
                                       selected = 0),
                          downloadButton("report", "Generate Report"),
-                         p(strong("Warning"), ": download of Reports takes some time. Please, be patient.")
+                         p(strong("Warning"), ": Download of reports takes some time. Please, be patient.")
                          ),
 
              ########################

@@ -4,7 +4,8 @@
 \alias{plotDistractorAnalysis}
 \title{Function for graphical representation of item distractor analysis}
 \usage{
-plotDistractorAnalysis(data, key, num.groups = 3, item = 1, multiple.answers = TRUE)
+plotDistractorAnalysis(data, key, num.groups = 3, item = 1,
+item.name, multiple.answers = TRUE)
 }
 \arguments{
 \item{data}{character: data matrix or data frame. See \strong{Details}.}
@@ -14,6 +15,8 @@ plotDistractorAnalysis(data, key, num.groups = 3, item = 1, multiple.answers = T
 \item{num.groups}{numeric: number of groups to that should be respondents splitted.}
 
 \item{item}{numeric: the number of item to be plotted.}
+
+\item{item.name}{character: the name of item.}
 
 \item{multiple.answers}{logical: should be all combinations plotted (default) or should be
 answers splitted into distractors. See \strong{Details}.}

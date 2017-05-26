@@ -4,7 +4,7 @@
 \alias{plotDIFirt}
 \title{Function for characteristic curve of DIF IRT model}
 \usage{
-plotDIFirt(parameters, test = "Lord", item = "all", same.scale = F)
+plotDIFirt(parameters, test = "Lord", item = "all", item.name, same.scale = F)
 }
 \arguments{
 \item{parameters}{numeric: data matrix or data frame. See \strong{Details}.}
@@ -13,6 +13,8 @@ plotDIFirt(parameters, test = "Lord", item = "all", same.scale = F)
 
 \item{item}{either character ("all"), or numeric vector, or single number
 corresponding to column indicators. See \strong{Details}.}
+
+\item{item.name}{character: the name of item.}
 
 \item{same.scale}{logical: are the item \code{parameters} on the same scale?
 (default is "FALSE"). See \strong{Details}.}

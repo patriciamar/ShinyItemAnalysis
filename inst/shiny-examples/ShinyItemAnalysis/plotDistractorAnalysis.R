@@ -1,12 +1,3 @@
-# data The unscored item response from a multiple-choice test
-# key The answer key for the items
-# num.groups The number of groups for distractor analysis
-# item item indicator
-# multiple.answers AB BC etc combinations
-
-
-
-
 #' Function for graphical representation of item distractor analysis
 #'
 #' @aliases plotDistractorAnalysis
@@ -18,10 +9,11 @@
 #' @param key character: answer key for the items.
 #' @param num.groups numeric: number of groups to that should be respondents splitted.
 #' @param item numeric: the number of item to be plotted.
+#' @param item.name character: the name of item.
 #' @param multiple.answers logical: should be all combinations plotted (default) or should be
 #' answers splitted into distractors. See \strong{Details}.
 #'
-#' @usage plotDistractorAnalysis(data, key, num.groups = 3, item = 1, multiple.answers = TRUE)
+#' @usage plotDistractorAnalysis(data, key, num.groups = 3, item = 1, item.name, multiple.answers = TRUE)
 #'
 #' @details
 #' This function is graphical representation of \code{DistractorAnalysis} function.
@@ -80,7 +72,7 @@
 #' @export
 
 
-plotDistractorAnalysis <-  function (data, key, num.groups = 3, item = 1, multiple.answers = TRUE)
+plotDistractorAnalysis <-  function (data, key, num.groups = 3, item = 1, item.name, multiple.answers = TRUE)
 {
   key <- unlist(key)
   # distractor analysis
@@ -128,6 +120,10 @@ plotDistractorAnalysis <-  function (data, key, num.groups = 3, item = 1, multip
     CAall <- c(CA, unlist(strsplit(as.character(key[item]), "")))
   }
 
+  if (missing(item.name)){
+    item.name <- paste("Item", item)
+  }
+
   # plot settings
   linetype <- rep(2, length(levels(df$response)))
   shape <- rep(1, length(levels(df$response)))
@@ -165,6 +161,6 @@ plotDistractorAnalysis <-  function (data, key, num.groups = 3, item = 1, multip
           legend.key = element_rect(colour = "white"),
           legend.key.width = unit(1, "cm"),
           plot.title = element_text(face = "bold")) +
-    ggtitle(paste("Item", item))
+    ggtitle(item.name)
 
 }
