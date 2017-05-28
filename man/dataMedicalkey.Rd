@@ -33,6 +33,11 @@ martinkova@cs.cas.cz \cr
 Jakub Houdek \cr
 Institute of Computer Science, The Czech Academy of Sciences \cr
 The Faculty of Informatics and Statistics, University of Economics, Prague \cr
-houdek.james@gmail.com \cr#'
+houdek.james@gmail.com \cr
+
+Adela Drabinova \cr
+Institute of Computer Science, The Czech Academy of Sciences \cr
+Faculty of Mathematics and Physics, Charles University \cr
+adela.drabinova@gmail.com \cr
 }
 \keyword{datasets}

@@ -4,17 +4,20 @@
 \alias{DDplot}
 \title{Graphical representation of difficulty and discrimination in item analysis}
 \usage{
-DDplot(data)
+DDplot(data, item.names)
 }
 \arguments{
 \item{data}{numeric: binary data matrix or data frame. See \strong{Details}.}
+
+\item{item.names}{character: the names of items.}
 }
 \description{
 Plots difficulty and discrimination for items ordered by difficulty.
 }
 \details{
 The \code{data} is a matrix or data frame whose rows represents examinee answers
-("1" correct, "0" incorrect) and columns correspond to the items.
+("1" correct, "0" incorrect) and columns correspond to the items. The \code{item.names}
+argument stands for names of items. If not specified, the names of dataset columns are used.
 }
 \examples{
 \dontrun{

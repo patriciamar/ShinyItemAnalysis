@@ -4,7 +4,8 @@
 \alias{plotDIFLogistic}
 \title{Function for characteristic curve of 2PL logistic DIF model}
 \usage{
-plotDIFLogistic(data, group, type = "both", item, IRT = F, p.adjust.method = "BH")
+plotDIFLogistic(data, group, type = "both", item, item.name,
+IRT = F, p.adjust.method = "none", purify = F)
 }
 \arguments{
 \item{data}{numeric: the data matrix. See Details.}
@@ -16,11 +17,15 @@ Possible values are "both" (default), "udif" and "nudif". See Details.}
 
 \item{item}{numeric: number of item to be plotted}
 
+\item{item.name}{character: the name of item.}
+
 \item{IRT}{logical: if IRT parameterization (\code{TRUE}, default) or classic logistic
 parameterization (\code{FALSE}) may be applied.}
 
 \item{p.adjust.method}{character:  the acronym of the method for p-value adjustment for
 multiple comparisons. See Details.}
+
+\item{purify}{logical: if item purification may be applied.}
 }
 \description{
 Plots characteristic curve of 2PL logistic DIF model
