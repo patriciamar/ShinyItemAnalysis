@@ -2841,26 +2841,121 @@ ui=tagList(
                          p("PDF report creation requires latest version of",
                            a("MiKTeX", href = "https://miktex.org/howto/install-miktex", target = "_blank"),
                            "(or other TeX distribution). If you don't have the latest installation, please, use the HTML report."),
-                         radioButtons("report_format", "Format of report",
-                                     c("HTML" = "html",
-                                       "PDF" = "pdf")),
-                         radioButtons("corr_report", "Correlation structure",
-                                      c("None" = "none",
-                                        "Corrplot + Screeplot" = "corrplotscreeplot"),
-                                      selected = "none"),
-                         radioButtons("irt_type_report", "IRT model selection",
-                                      c("None" = "none",
-                                        "Rasch" = "rasch",
-                                        "1PL" = "1pl",
-                                        "2PL" = "2pl",
-                                        "3PL" = "3pl"),
-                                      selected = "none"),
-                         radioButtons("dif_type_report", "DIF model selection",
-                                      c("None" = 0,
-                                        "Delta plot" = 1,
-                                        "Logistic regression" = 2,
-                                        "Multinomial regression" = 3),
-                                      selected = 0),
+
+
+                         fluidRow(
+                           column(2,
+                                  radioButtons("report_format", "Format of report",
+                                               c("HTML" = "html",
+                                                 "PDF" = "pdf"))
+                           ),
+                           column(2,
+                                  radioButtons("default_settings", "Use default settings",
+                                               c("Yes" = "yes",
+                                                 "No" = "no"),
+                                               selected = "yes")
+                           )
+                         ),
+                         fluidRow(
+                           column(4,
+                                  radioButtons("corr_report", "Correlation structure",
+                                               c("None" = "none",
+                                                 "Corrplot + Screeplot" = "corrplotscreeplot"),
+                                               selected = "none")
+                           )
+                         ),
+                         fluidRow(
+                           conditionalPanel(condition = "input.default_settings=='no'",
+                                            column(1, p(strong("Distractors plot")),
+                                                   radioButtons('type_combinations_distractor_report', 'Type',
+                                                                list("Combinations", "Distractors")
+                                                   )
+                                            )
+                           )
+                         ),
+                         fluidRow(
+                           column(4,
+                                  radioButtons("irt_type_report", "IRT model selection",
+                                               c("None" = "none",
+                                                 "Rasch" = "rasch",
+                                                 "1PL" = "1pl",
+                                                 "2PL" = "2pl",
+                                                 "3PL" = "3pl"),
+                                               selected = "none")
+                           )
+                         ),
+
+                           fluidRow(
+                             column(2,
+                                    radioButtons("dif_type_report", "DIF model selection",
+                                                 c("None" = 0,
+                                                   "Delta plot" = 1,
+                                                   "Logistic regression" = 2,
+                                                   "Multinomial regression" = 3),
+                                                 selected = 0)
+                             ),
+                             conditionalPanel(condition = "input.default_settings=='no'",
+                             conditionalPanel(condition = "input.dif_type_report>=1",
+                               column(2, p(strong("Delta plot settings")),
+                                      radioButtons('type_threshold_report', 'Threshold',
+                                                   list("Fixed", "Normal")
+                                      ),
+                                      checkboxInput('puri_DP_report', 'Item purification', FALSE),
+                                      conditionalPanel(
+                                        condition = "input.puri_DP_report",
+                                        selectInput("puri_DP_type_report", "Purification method",
+                                                    c("IPP1" = "IPP1",
+                                                      "IPP2" = "IPP2",
+                                                      "IPP3" = "IPP3"
+                                                    ),
+                                                    selected = "IPP1")
+                                      )
+                               )
+                             ),
+                             conditionalPanel(condition = "input.dif_type_report>=2",
+                               column(2, p(strong("Logistic regression settings")),
+                                      radioButtons('type_print_DIF_logistic_report', 'Type',
+                                                   c("H0: Any DIF vs. H1: No DIF" = 'both',
+                                                     "H0: Uniform DIF vs. H1: No DIF" = 'udif',
+                                                     "H0: Non-Uniform DIF vs. H1: Uniform DIF" = 'nudif'
+                                                   ),
+                                                   'both'
+                                      ),
+                                      selectInput("correction_method_log_report", "Correction method",
+                                                  c("BH" = "BH",
+                                                    "Holm" = "holm",
+                                                    "Hochberg" = "hochberg",
+                                                    "Hommel" = "hommel",
+                                                    "BY" = "BY",
+                                                    "FDR" = "fdr",
+                                                    "none" = "none"
+                                                  ),
+                                                  selected = "none"),
+                                      checkboxInput('puri_LR_report', 'Item purification', FALSE)
+                               )
+                             ),
+                             conditionalPanel(condition = "input.dif_type_report>=3",
+                               column(2, p(strong("Multinomial regression settings")),
+                                      radioButtons('type_DDF_report', 'Type',
+                                                   c("H0: Any DIF vs. H1: No DIF" = 'both',
+                                                     "H0: Uniform DIF vs. H1: No DIF" = 'udif',
+                                                     "H0: Non-Uniform DIF vs. H1: Uniform DIF" = 'nudif'
+                                                   ),
+                                                   'both'
+                                      ),
+                                      selectInput("correction_method_DDF_report", "Correction method",
+                                                  c("BH" = "BH",
+                                                    "Holm" = "holm",
+                                                    "Hochberg" = "hochberg",
+                                                    "Hommel" = "hommel",
+                                                    "BY" = "BY",
+                                                    "FDR" = "fdr",
+                                                    "none" = "none"),
+                                                  selected = "none")
+                               )
+                            )
+                           )
+                         ),
                          downloadButton("report", "Generate Report"),
                          p(strong("Warning"), ": Download of reports takes some time. Please, be patient.")
                          ),
