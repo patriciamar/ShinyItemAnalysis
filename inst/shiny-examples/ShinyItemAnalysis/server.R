@@ -37,7 +37,7 @@ test <- get("GMATtest")
 key <- get("GMATkey")
 
 # maximum upload size set to 30MB
-options(shiny.maxRequestSize=30*1024^2)
+options(shiny.maxRequestSize = 30*1024^2)
 
 ##################
 # FUNCTIONS ######
@@ -66,7 +66,6 @@ source("personHist.R")
 #####################
 
 function(input, output, session) {
-
 
   dataset <- reactiveValues()
 
@@ -110,12 +109,6 @@ function(input, output, session) {
     } else {
       test = dataset$answers
     }
-    # if (!input$itemnam){
-    #   nam <- paste("Item", 1:ncol(test))
-    # } else {
-    #   nam <- colnames(test)
-    # }
-    # colnames(test) <- nam
     test
   })
 
@@ -149,12 +142,6 @@ function(input, output, session) {
       }
       key = dataset$key
     }
-    # if (!input$itemnam){
-    #   nam <- paste("Item", 1:ncol(test_answers()))
-    # } else {
-    #   nam <- colnames(test_answers())
-    # }
-    # names(key) <- nam
     key
   })
 
