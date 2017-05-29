@@ -106,7 +106,7 @@ ui=tagList(
                         and their items including:' ),
                       tags$ul(
                         tags$li("Exploration of total and standard scores on ", strong('Summary'), "page. "),
-                        tags$li("Item and distractor analysis on ", strong('Traditional Analysis'), "page. "),
+                        tags$li("Item and distractor analysis on ", strong('Item analysis'), "page. "),
                         tags$li('Item analysis by logistic models on ', strong('Regression'), "page. "),
                         tags$li('Item analysis by item response theory models on ', strong('IRT models'), "page. "),
                         tags$li('Differential item functioning (DIF) and differential distractor functioning (DDF)
@@ -770,14 +770,14 @@ ui=tagList(
 
                         # * NONLINEAR Z ####
                         tabPanel("Nonlinear IRT Z",
-                                 h3("Nonlinear regression on standardized total scores"),
+                                 h3("Nonlinear regression on standardized total scores with IRT parameterization"),
                                  p('Various regression models may be fitted to describe
                                    item properties in more detail.',
                                    strong('Nonlinear regression'), 'can model dependency of probability of correct answer on
                                    standardized total score (Z-score) by s-shaped logistic curve. The IRT parametrization used here corresponds
                                    to the parametrization used in IRT models. Parameter ', strong( 'b'),' describes horizontal position of the fitted curve (difficulty),
-                                   parameter ',strong( 'a'), ' describes its slope at inflection point (discrimination). This model allows for nonzero lower left asymptote ',strong( 'c'),'
-                                   (pseudo-guessing). '),
+                                   parameter ',strong( 'a'), ' describes its slope at inflection point (discrimination). This model allows for nonzero lower left
+                                   asymptote ', strong( 'c'), ' (pseudo-guessing). '),
                                  br(),
                                  h4("Plot with estimated nonlinear curve"),
                                  p('Points represent proportion of correct answer with respect to standardized
@@ -2314,11 +2314,11 @@ ui=tagList(
                                             )
                                    ),
                         # * NONLINEAR Z ####
-                        tabPanel("Nonlinear Z",
+                        tabPanel("Nonlinear IRT Z",
                                  tabsetPanel(
                                    # ** Summary ####
                                    tabPanel('Summary',
-                                            h3('Nonlinear regression on standardized total scores'),
+                                            h3('Nonlinear regression on standardized total scores with IRT parameterization'),
                                             p('Nonlinear regression model allows for nonzero lower asymptote - pseudoguessing',
                                               strong('c.'), 'Similarly to logistic regression, also nonlinear regression allows for
                                               detection of uniform and non-uniform DIF by adding a group specific intercept',
@@ -2367,7 +2367,7 @@ ui=tagList(
                                             ),
                                    # ** Items ####
                                    tabPanel('Items',
-                                            h3('Nonlinear regression on standardized total scores'),
+                                            h3('Nonlinear regression on standardized total scores with IRT parameterization'),
                                             p('Nonlinear regression model allows for nonzero lower asymptote - pseudoguessing',
                                               strong('c.'), 'Similarly to logistic regression, also nonlinear regression allows
                                               for detection of uniform and non-uniform DIF (Drabinova & Martinkova, 2016) by
@@ -2691,7 +2691,7 @@ ui=tagList(
                                  tabsetPanel(
                                    # ** Summary ####
                                    tabPanel('Summary',
-                                            h3('Differential Distractor Functioning with multinomial log-linear regression Model'),
+                                            h3('Differential Distractor Functioning with multinomial log-linear regression model'),
                                             p('Differential Distractor Functioning (DDF) occurs when people from different
                                               groups but with the same knowledge have different probability of selecting
                                               at least one distractor choice. DDF is here examined by Multinomial Log-linear

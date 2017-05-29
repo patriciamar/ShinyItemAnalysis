@@ -4156,18 +4156,11 @@ function(input, output, session) {
                   key = k, p.adjust.method = adj.method_report,
                   type = type_report)
 
-    # adj.method <- input$correction_method_plot_DDF
-    # type <- input$type_plot_DDF
-    #
-    # mod <- ddfMLR(Data = a, group = group, focal.name = 1,
-    #               key = k, p.adjust.method = adj.method,
-    #               type = type)
-
     graflist = list()
    # if (mod$DIFitems[[1]]!="No DDF item detected"){
       for (i in 1:length(mod$DDFitems)) {
         g <- plot(mod, item = mod$DDFitems[i])[[1]] +
-          ggtitle(paste("\nDDF multinomial plot for item", item_numbers[mod$DDFitems[i]]))
+          ggtitle(paste("\nDDF multinomial plot for item", item_numbers()[mod$DDFitems[i]]))
         graflist[[i]] <- g
       }
     #} else {

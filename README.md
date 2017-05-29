@@ -10,7 +10,7 @@ Test and item analysis via shiny.
  * DIF and DDF detection methods.
 It also offers some training data sets but you can also upload your own data. Moreover it is also possible to generate reports. 
 
-`ShinyItemAnalysis` is available online [**online**](https://shiny.cs.cas.cz/ShinyItemAnalysis/) and can be also downloaded from [**CRAN**](https://cran.rstudio.com/web/packages/ShinyItemAnalysis/).
+`ShinyItemAnalysis` is available [**online**](https://shiny.cs.cas.cz/ShinyItemAnalysis/) and can be also downloaded from [**CRAN**](https://cran.rstudio.com/web/packages/ShinyItemAnalysis/).
 
 ## Installation
 ```
@@ -29,7 +29,7 @@ It's very easy to run ShinyItemAnalysis:
 rm(list = ls())
 startShinyItemAnalysis()
 ```
-You can also try it online [**online**](https://shiny.cs.cas.cz/ShinyItemAnalysis/)!
+You can also try it [**online**](https://shiny.cs.cas.cz/ShinyItemAnalysis/)!
 
 ## Getting help
 If you find any bug or just need help with `ShinyItemAnalysis` you can leave your message as an issue here or directly contact us at martinkova@cs.cas.cz
