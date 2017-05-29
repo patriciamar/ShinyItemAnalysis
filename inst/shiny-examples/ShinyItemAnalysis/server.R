@@ -716,7 +716,12 @@ function(input, output, session) {
     a <- test_answers()
     k <- test_key()
 
-    multiple.answers <- c(input$type_combinations_distractor == "Combinations")
+    if (input$default_settings=="yes") {
+      multiple.answers_report <- c(input$type_combinations_distractor == "Combinations")
+    } else {
+      multiple.answers_report <- c(input$type_combinations_distractor_report == "Combinations")
+    }
+
 
     graflist <- list()
 
@@ -724,7 +729,7 @@ function(input, output, session) {
       g <- plotDistractorAnalysis(data = a, key = k, num.group = input$gr,
                                   item = i,
                                   item.name = item_names()[i],
-                                  multiple.answers = multiple.answers)
+                                  multiple.answers = multiple.answers_report)
       g = ggplotGrob(g)
       graflist[[i]] = g
     }
@@ -3114,10 +3119,88 @@ function(input, output, session) {
     )
   })
 
+  deltaGpurn_report <- reactive({
+    if (input$default_settings=="yes"){
+      type_threshold_report = input$type_threshold
+      purify_report = input$puri_DP
+      purType_report = input$puri_DP_type
+    } else {
+      type_threshold_report = input$type_threshold_report
+      purify_report = input$puri_DP_report
+      purType_report = input$puri_DP_type_report
+    }
+
+    switch(type_threshold_report,
+           "Fixed" = deltaPlot(DPdata(), group = "group",
+                               focal.name = 1,
+                               thr = 1.5,
+                               purify = purify_report,
+                               purType = purType_report),
+           "Normal"= deltaPlot(DPdata(), group = "group",
+                               focal.name = 1,
+                               thr = "norm",
+                               purify = purify_report,
+                               purType = purType_report)
+    )
+  })
 
   # * Delta plot ####
   deltaplotInput <- reactive({
     dp <- deltaGpurn()
+    df <- data.frame(dp$Deltas)
+    df$nam <- item_numbers()
+
+    par <- dp$axis.par
+    thr <- dp$thr
+
+    if (length(par) > 2){
+      par <- par[length(par)/2, ]
+    }
+
+    if (length(thr) > 1){
+      thr <- thr[length(thr)]
+    }
+
+    p <- ggplot(df,
+                aes(x = X1, y = X2, label = nam)) +
+      geom_point() +
+      geom_text(hjust = 0, nudge_x = 0.05) +
+      geom_abline(intercept = par[1], slope = par[2],
+                  size = 1) +
+      geom_abline(intercept = par[1] + thr * sqrt(par[2]^2 + 1),
+                  slope = par[2],
+                  color = "red",
+                  linetype = "dashed",
+                  size = 1) +
+      geom_abline(intercept = par[1] - thr * sqrt(par[2]^2 + 1),
+                  slope = par[2],
+                  color = "red",
+                  linetype = "dashed",
+                  size = 1) +
+      labs(x = "Reference group",
+           y = "Focal group") +
+      xlim(min(dp$Deltas, na.rm = T) - 0.5, max(dp$Deltas, na.rm = T) + 0.5) +
+      ylim(min(dp$Deltas, na.rm = T) - 0.5, max(dp$Deltas, na.rm = T) + 0.5) +
+      theme_bw() +
+      theme(legend.title = element_blank(),
+            axis.line  = element_line(colour = "black"),
+            panel.grid.major = element_blank(),
+            panel.grid.minor = element_blank(),
+            panel.background = element_blank(),
+            text = element_text(size = 14),
+            plot.title = element_text(face = "bold"))
+    if (is.numeric(dp$DIFitems)){
+      df2 <- df[dp$DIFitems, ]
+      p <- p + geom_point(data = df2,
+                          aes(x = X1, y = X2, label = nam),
+                          size = 6, color = "black", shape = 1)
+    }
+    p <- p + ggtitle("Delta plot")
+    p
+  })
+
+  deltaplotInput_report<-reactive({
+    dp <- deltaGpurn_report()
     df <- data.frame(dp$Deltas)
     df$nam <- item_numbers()
 
@@ -3313,6 +3396,28 @@ function(input, output, session) {
     mod
   })
 
+  model_DIF_logistic_print_report <- reactive({
+    group <- DIF_groups()
+    data <- correct_answ()
+
+    if (input$default_settings=="yes") {
+      type_report = input$type_print_DIF_logistic
+      p.adjust.method_report = input$correction_method_logSummary
+      purify_report = input$puri_LR
+    } else {
+      type_report = input$type_print_DIF_logistic_report
+      p.adjust.method_report = input$correction_method_log_report
+      purify_report = input$puri_LR_report
+    }
+
+    mod <- difLogistic(Data = data, group = group, focal.name = 1,
+                       type = type_report,
+                       p.adjust.method = p.adjust.method_report,
+                       purify = purify_report)
+    mod
+  })
+
+
   # ** Output print ####
   output$print_DIF_logistic <- renderPrint({
     print(model_DIF_logistic_print())
@@ -3370,20 +3475,30 @@ function(input, output, session) {
     group <- DIF_groups()
     data <- correct_answ()
 
+    if (input$default_settings=="yes") {
+      type_report = input$type_print_DIF_logistic
+      p.adjust.method_report = input$correction_method_logItems
+      purify_report = input$puri_LR
+    } else {
+      type_report = input$type_print_DIF_logistic_report
+      p.adjust.method_report = input$correction_method_log_report
+      purify_report = input$puri_LR_report
+    }
+
     mod <- difLogistic(Data = data, group = group, focal.name = 1,
-                       type = input$type_print_DIF_logistic,
-                       p.adjust.method = input$correction_method_logItems,
-                       purify = input$puri_LR)
+                       type = type_report,
+                       p.adjust.method = p.adjust.method_report,
+                       purify = purify_report)
     # mod$DIFitems
     graflist = list()
     if (mod$DIFitems[1]!="No DIF item detected") {
       for (i in 1:length(mod$DIFitems)) {
         g <- plotDIFLogistic(data, group,
-                             type = input$type_plot_DIF_logistic,
+                             type = type_report,
                              item =  mod$DIFitems[i],
                              IRT = F,
-                             p.adjust.method = input$correction_method_logItems,
-                             purify = input$puri_LR
+                             p.adjust.method = p.adjust.method_report,
+                             purify = purify_report
             )
         g = g + ggtitle(paste0("DIF logistic plot for item ", item_numbers()[mod$DIFitems[i]]))
         graflist[[i]] <- g
@@ -3971,6 +4086,26 @@ function(input, output, session) {
     fit
   })
 
+  model_DDF_print_report <- reactive({
+    group <- DIF_groups()
+    a <- test_answers()
+    k <- test_key()
+
+    if (input$default_settings=="yes") {
+      adj.method <- input$correction_method_print_DDF
+      type <- input$type_print_DDF
+    } else {
+      adj.method <- input$correction_method_DDF_report
+      type <- input$type_DDF_report
+    }
+
+    fit <- ddfMLR(Data = a, group = group, focal.name = 1,
+                  key = k, p.adjust.method = adj.method,
+                  type = type)
+
+    fit
+  })
+
   # ** Output print ####
   output$print_DDF <- renderPrint({
     print(model_DDF_print())
@@ -4009,12 +4144,24 @@ function(input, output, session) {
     a <- test_answers()
     k <- test_key()
 
-    adj.method <- input$correction_method_plot_DDF
-    type <- input$type_plot_DDF
+    if (input$default_settings=="yes") {
+      adj.method_report <- input$correction_method_plot_DDF
+      type_report <- input$type_plot_DDF
+    } else {
+      adj.method_report <- input$correction_method_DDF_report
+      type_report <- input$type_DDF_report
+    }
 
     mod <- ddfMLR(Data = a, group = group, focal.name = 1,
-                  key = k, p.adjust.method = adj.method,
-                  type = type)
+                  key = k, p.adjust.method = adj.method_report,
+                  type = type_report)
+
+    # adj.method <- input$correction_method_plot_DDF
+    # type <- input$type_plot_DDF
+    #
+    # mod <- ddfMLR(Data = a, group = group, focal.name = 1,
+    #               key = k, p.adjust.method = adj.method,
+    #               type = type)
 
     graflist = list()
    # if (mod$DIFitems[[1]]!="No DDF item detected"){
@@ -4214,16 +4361,16 @@ function(input, output, session) {
                        resultsgroup = {if (groupPresent()) {resultsgroupInput()}},
                        histbyscoregroup0 = {if (groupPresent()) {histbyscoregroup0Input()}},
                        histbyscoregroup1 = {if (groupPresent()) {histbyscoregroup1Input()}},
-                       deltaplot = {if (groupPresent()) {if (input$dif_type_report>=1) {deltaplotInput()}}},
-                       DP_text_normal = {if (groupPresent()) {if (input$dif_type_report>=1) {deltaGpurn()}}},
+                       deltaplot = {if (groupPresent()) {if (input$dif_type_report>=1) {deltaplotInput_report()}}},
+                       DP_text_normal = {if (groupPresent()) {if (input$dif_type_report>=1) {deltaGpurn_report()}}},
                        DIF_logistic_plot = {if (groupPresent()) {if (input$dif_type_report>=2) {DIF_logistic_plotReport()}}},
-                       DIF_logistic_print = {if (groupPresent()) {if (input$dif_type_report>=2) {model_DIF_logistic_print()}}},
-                       plot_DIF_logistic = {if (groupPresent()) {plot_DIF_logisticInput()}},
-                       plot_DIF_logistic_IRT_Z = {if (groupPresent()) {plot_DIF_logistic_IRT_ZInput()}},
+                       DIF_logistic_print = {if (groupPresent()) {if (input$dif_type_report>=2) {model_DIF_logistic_print_report()}}},
+                       #plot_DIF_logistic = {if (groupPresent()) {plot_DIF_logisticInput()}},
+                       #plot_DIF_logistic_IRT_Z = {if (groupPresent()) {plot_DIF_logistic_IRT_ZInput()}},
                        #plot_DIF_NLR = {if (groupPresent()) {plot_DIF_NLRInput()}},
-                       plot_DIF_IRT_Lord = {if (groupPresent()) {plot_DIF_IRT_LordInput()}},
-                       plot_DIF_IRT_Raju = {if (groupPresent()) {plot_DIF_IRT_RajuInput()}},
-                       model_DDF_print = {if (groupPresent()) {if (input$dif_type_report>=3) {model_DDF_print()}}},
+                       #plot_DIF_IRT_Lord = {if (groupPresent()) {plot_DIF_IRT_LordInput()}},
+                       #plot_DIF_IRT_Raju = {if (groupPresent()) {plot_DIF_IRT_RajuInput()}},
+                       model_DDF_print = {if (groupPresent()) {if (input$dif_type_report>=3) {model_DDF_print_report()}}},
                        plot_DDFReportInput = {if (groupPresent()) {if (input$dif_type_report>=3) {plot_DDFReportInput()}}}
                        )
       rmarkdown::render(reportPath, output_file=file,
