@@ -10,9 +10,7 @@ require(shinyjs)
 ######################
 
 ui=tagList(
-
   tags$head(
-
     tags$link(rel = "stylesheet",
               type = "text/css",
               href = "style.css"),
@@ -30,13 +28,14 @@ ui=tagList(
   useShinyjs(),
   # !! ONLINE VERSION ####
   # tags$head(includeScript("google-analytics.js")),
-  navbarPage(title="ShinyItemAnalysis - Test and item analysis",
-             collapsible=TRUE,
-             footer=list(
+  navbarPage(title = 'ShinyItemAnalysis - Test and item analysis',
+             windowTitle = 'ShinyItemAnalysis',
+             collapsible = TRUE,
+             footer = list(
                ############################################
                # !! ONLINE VERSION ####
-               # div(class="panel-footer",
-               #     p(strong("ShinyItemAnalysis Version 1.1.3")),
+               # div(class = "panel-footer",
+               #     p(strong("ShinyItemAnalysis version 1.1.3")),
                #     p("Download ", code('ShinyItemAnalysis'), " R package from ",
                #       a(strong("CRAN"), href = "https://cran.rstudio.com/web/packages/ShinyItemAnalysis/",
                #         target = "_blank"), "to run analysis faster!"),
@@ -63,8 +62,8 @@ ui=tagList(
                #       )
                ############################################
                # !! PACKAGE VERSION ####
-               div(class="panel-footer",
-                   p(strong("ShinyItemAnalysis Version 1.1.3")),
+               div(class = "panel-footer",
+                   p(strong("ShinyItemAnalysis version 1.1.3")),
                    p(
                      "You can also try ", code('ShinyItemAnalysis'), a(strong("online!"),
                                                                        href = "http://shiny.cs.cas.cz/ShinyItemAnalysis/",
@@ -93,10 +92,11 @@ ui=tagList(
                   )
                ############################################
                    ),
-             theme="bootstrap.css",
+             theme = "bootstrap.css",
              ######################
              # MAIN PANEL #########
              ######################
+
              ######################
              # ABOUT ##############
              ######################
@@ -138,13 +138,13 @@ ui=tagList(
                         You can change the dataset (and try your own one) on page', strong('Data.')),
 
                       h4('Version'),
-                      p('Current version of ', code('ShinyItemAnalysis'), ' is 1.1.3'),
+                      p('Current version of ', code('ShinyItemAnalysis'), ' is 1.1.3.'),
                       div(
                         HTML('<p>
                              See also older versions:
                              <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV01/"> 0.1.0</a>,
                              <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV02/"> 0.2.0</a>,
-                             <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV100/"> 1.0.0</a>
+                             <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV100/"> 1.0.0</a>.
                              </p>')
                         ),
 
@@ -233,7 +233,7 @@ ui=tagList(
                          923 females) to multiple-choice test of 20 items. For more details of item selection
                          see Drabinova & Martinkova (2016).'),
                       p('Dataset ', code("Medical 100"), ' is a real data set of admission test to medical school
-                         from R ', code('ShinyItemAnalysis'),' package . The data set represents responses of
+                         from R ', code('ShinyItemAnalysis'),' package. The data set represents responses of
                          2,392 subjects (750 males, 1,633 females and 9 subjects without gender specification)
                          to multiple-choice test of 100 items. '),
                       br(),
@@ -336,11 +336,11 @@ ui=tagList(
                                  h4("Summary table"),
                                  tableOutput('results'),
                                  h4("Histogram of total score"),
-                                 sliderInput("inSlider2", "Cut-Score", min = 0, max = 10,
+                                 sliderInput("inSlider2", "Cut-score", min = 0, max = 10,
                                              value = 1, step = 1),
                                  p('For selected cut-score, blue part of histogram shows students with total score
-                                   above the cut-score, grey column shows students with Total Score equal
-                                   to cut-score and red part of histogram shows students below the cut-score.'),
+                                   above the cut-score, grey column shows students with total score equal
+                                   to the cut-score and red part of histogram shows students below the cut-score.'),
                                  plotOutput('histogram_totalscores'),
                                  downloadButton("DP_histogram_totalscores", label = "Download figure"),
                                  br(),
@@ -1835,8 +1835,8 @@ ui=tagList(
                                  h4("Summary of total scores for groups"),
                                  tableOutput('resultsgroup'),
                                  h4("Histograms of total scores for groups"),
-                                 sliderInput("inSlider2group", "Cut-Score", min=1, value=1, max=10,
-                                             step=1, animate=TRUE),
+                                 sliderInput("inSlider2group", "Cut-score", min = 1, value = 1, max = 10,
+                                             step = 1, animate = TRUE),
                                  p('For selected cut-score, blue part of histogram shows students with total score
                                    above the cut-score, grey column shows students with Total Score equal
                                    to cut-score and red part of histogram shows students below the cut-score.'),
@@ -1981,7 +1981,7 @@ ui=tagList(
                                             h4('Contingency tables and odds ratio calculation'),
                                             sliderInput("difMHSlider_item", "Item", animate = TRUE,
                                                         min = 1, max = 10, value = 1, step = 1),
-                                            sliderInput("difMHSlider_score", "Cut-Score", min = 0, max = 10,
+                                            sliderInput("difMHSlider_score", "Cut-score", min = 0, max = 10,
                                                         value = 1, step = 1),
                                             fluidRow(column(12, align = "center", tableOutput('table_DIF_MH'))),
                                             uiOutput('ORcalculation'),
