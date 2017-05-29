@@ -1805,20 +1805,33 @@ ui=tagList(
                         "----",
                         "Training",
                         # * ITEM PLOTS ####
-                        tabPanel("Characteristic curves",
-                                 h3("Characteristic curves"),
+                        tabPanel("Characteristic and information curves",
+                                 h3("Characteristic and information curves"),
+                                 p('Here you can explore behaviour of item characteristic curve \\(\\mathrm{P}\\left(\\theta\\right)\\) and item
+                                   information function \\(\\mathrm{I}\\left(\\theta\\right)\\) in 4PL IRT model. '),
+                                 h4("Equations"),
+                                 ('$$\\mathrm{P}\\left(\\theta \\vert a, b, c, d \\right) = c + \\left(d - c\\right) \\cdot \\frac{e^{a\\left(\\theta-b\\right) }}{1+e^{a\\left(\\theta-b\\right) }} $$'),
+                                 ('$$\\mathrm{I}\\left(\\theta \\vert a, b, c, d \\right) = a^2 \\cdot \\left(d - c\\right) \\cdot \\frac{e^{a\\left(\\theta-b\\right) }}{\\left[1+e^{a\\left(\\theta-b\\right)}\\right]^2} $$'),
+                                 h4("Parameters"),
                                  p('Select parameters ', strong('a'), '(discrimination), ', strong('b'), '(difficulty), ',
-                                   strong('c'), '(guessing) and ', strong('d'), '(inattention) to explore behaviour of
-                                   characteristic curves in 4PL IRT model. '),
-                                 sliderInput("ccIRTSlider_a", "a - discrimination", min = -4, max = 4,
-                                             value = 1),
-                                 sliderInput("ccIRTSlider_b", "b - difficulty", min = -4, max = 4,
-                                             value = 0),
-                                 sliderInput("ccIRTSlider_c", "c - guessing", min = 0, max = 1,
-                                             value = 0),
-                                 sliderInput("ccIRTSlider_d", "d - inattention", min = 0, max = 1,
-                                             value = 1),
-                                 plotOutput('ccIRT_plot')
+                                   strong('c'), '(guessing) and ', strong('d'), '(inattention). By constraining a = 1, c = 0, d = 1 you get
+                                   Rasch model. With option c = 0 and d = 1 you get 2PL model and with option d = 1 3PL model.'),
+                                 fluidRow(
+                                   column(2, offset = 0,
+                                          sliderInput("ccIRTSlider_a", "a - discrimination", min = -4, max = 4,
+                                                      value = 1),
+                                          sliderInput("ccIRTSlider_b", "b - difficulty", min = -4, max = 4,
+                                                      value = 0)),
+                                   column(2, offset = 1,
+                                          sliderInput("ccIRTSlider_c", "c - guessing", min = 0, max = 1,
+                                                      value = 0),
+                                          sliderInput("ccIRTSlider_d", "d - inattention", min = 0, max = 1,
+                                                      value = 1))),
+
+                                 plotOutput('ccIRT_plot'),
+                                 downloadButton("DB_ccIRT", label = "Download figure"),
+                                 plotOutput('iccIRT_plot'),
+                                 downloadButton("DB_iccIRT", label = "Download figure")
                                  )
                                  ),
              ###################

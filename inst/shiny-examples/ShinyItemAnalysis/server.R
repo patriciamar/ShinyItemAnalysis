@@ -2904,8 +2904,8 @@ function(input, output, session) {
           and factor score estimated by Bock's nominal IRT model is", round(bockFactorCorInput_mirt(), 3))
   })
 
-  # * CHARACTERISTIC CURVES
-
+  # * CHARACTERISTIC CURVES ####
+  # ** CC ###
   ccIRT_plot_Input <- reactive({
     a <- input$ccIRTSlider_a
     b <- input$ccIRTSlider_b
@@ -2929,7 +2929,8 @@ function(input, output, session) {
                 axis.line  = element_line(colour = "black"),
                 panel.grid.major = element_blank(),
                 panel.grid.minor = element_blank(),
-                plot.background = element_rect(fill = "transparent", colour = NA))
+                plot.background = element_rect(fill = "transparent", colour = NA)) +
+          ggtitle("Item characteristic curve")
     g
 
   })
@@ -2937,6 +2938,58 @@ function(input, output, session) {
   output$ccIRT_plot <- renderPlot({
     ccIRT_plot_Input()
   })
+
+  output$DB_ccIRT <- downloadHandler(
+    filename =  function() {
+      paste("plot", input$name, ".png", sep = "")
+    },
+    content = function(file) {
+      ggsave(file, plot = ccIRT_plot_Input(), device = "png",
+             height = 3, width = 9, dpi = 160)
+    }
+  )
+
+  # ** ICC ###
+  iccIRT_plot_Input <- reactive({
+    a <- input$ccIRTSlider_a
+    b <- input$ccIRTSlider_b
+    c <- input$ccIRTSlider_c
+    d <- input$ccIRTSlider_d
+
+  iccirt <- function(theta, a, b, c, d){
+    return((d - c)*a^2*exp(a*(theta - b))/(1 + exp(a*(theta - b)))^2)
+  }
+
+  g <- ggplot(data = data.frame(x = 0), mapping = aes(x = x)) +
+        stat_function(fun = iccirt, args = list(a = a, b = b, c = c, d = d),
+                      color = "red") +
+        xlim(-4, 4) +
+        xlab("Ability") +
+        ylab("Information") +
+        theme_bw() +
+        theme(text = element_text(size = 14),
+              plot.title = element_text(size = 14, face = "bold", vjust = 1.5),
+              axis.line  = element_line(colour = "black"),
+              panel.grid.major = element_blank(),
+              panel.grid.minor = element_blank(),
+              plot.background = element_rect(fill = "transparent", colour = NA)) +
+        ggtitle("Item information function")
+  g
+  })
+
+  output$iccIRT_plot <- renderPlot({
+    iccIRT_plot_Input()
+  })
+
+  output$DB_iccIRT <- downloadHandler(
+    filename =  function() {
+      paste("plot", input$name, ".png", sep = "")
+    },
+    content = function(file) {
+      ggsave(file, plot = iccIRT_plot_Input(), device = "png",
+             height = 3, width = 9, dpi = 160)
+    }
+  )
 
   ###################
   # DIF/FAIRNESS ####
@@ -2997,24 +3050,24 @@ function(input, output, session) {
       }
     }
 
-    g<-ggplot(df, aes(x = sc)) +
-        geom_histogram(aes(fill = gr), binwidth = 1, color = "black") +
-        scale_fill_manual("", breaks = df$gr, values = col) +
-        labs(x = "Total score",
-             y = "Number of students") +
-        scale_y_continuous(expand = c(0, 0),
-                           limits = c(0, max(table(sc)) + 0.01 * nrow(a))) +
-        scale_x_continuous(limits = c(-0.5, ncol(a) + 0.5)) +
-        theme_bw() +
-        theme(legend.title = element_blank(),
-              legend.position = "none",
-              axis.line  = element_line(colour = "black"),
-              panel.grid.major = element_blank(),
-              panel.grid.minor = element_blank(),
-              panel.background = element_blank(),
-              text = element_text(size = 14),
-              plot.title = element_text(face = "bold")) +
-        ggtitle("Histogram of total scores for focal group")
+    g <- ggplot(df, aes(x = sc)) +
+          geom_histogram(aes(fill = gr), binwidth = 1, color = "black") +
+          scale_fill_manual("", breaks = df$gr, values = col) +
+          labs(x = "Total score",
+               y = "Number of students") +
+          scale_y_continuous(expand = c(0, 0),
+                             limits = c(0, max(table(sc)) + 0.01 * nrow(a))) +
+          scale_x_continuous(limits = c(-0.5, ncol(a) + 0.5)) +
+          theme_bw() +
+          theme(legend.title = element_blank(),
+                legend.position = "none",
+                axis.line  = element_line(colour = "black"),
+                panel.grid.major = element_blank(),
+                panel.grid.minor = element_blank(),
+                panel.background = element_blank(),
+                text = element_text(size = 14),
+                plot.title = element_text(face = "bold")) +
+          ggtitle("Histogram of total scores for focal group")
     g
   })
 
