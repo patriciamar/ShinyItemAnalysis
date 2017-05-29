@@ -2,7 +2,7 @@
 #'
 #' @aliases startShinyItemAnalysis
 #'
-#' @description An interactive Shiny application for running Item Analysis.
+#' @description An interactive shiny application for running test and item analysis.
 #'
 #' @usage startShinyItemAnalysis()
 #'
