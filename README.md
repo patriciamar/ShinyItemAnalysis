@@ -34,3 +34,6 @@ You can also try it [**online**](https://shiny.cs.cas.cz/ShinyItemAnalysis/)!
 
 ## Getting help
 If you find any bug or just need help with `ShinyItemAnalysis` you can leave your message as an issue here or directly contact us at martinkova@cs.cas.cz
+
+## License
+This program is free software and you can redistribute it and or modify it under the terms of the [GNU GPL 3](https://www.gnu.org/licenses/gpl-3.0.en.html).
