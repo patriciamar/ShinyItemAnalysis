@@ -4,8 +4,8 @@
 \alias{plotDistractorAnalysis}
 \title{Function for graphical representation of item distractor analysis}
 \usage{
-plotDistractorAnalysis(data, key, num.groups = 3, item = 1,
-item.name, multiple.answers = TRUE)
+plotDistractorAnalysis(data, key, num.groups = 3, item = 1, item.name,
+multiple.answers = TRUE, matching = NULL)
 }
 \arguments{
 \item{data}{character: data matrix or data frame. See \strong{Details}.}
@@ -20,6 +20,9 @@ item.name, multiple.answers = TRUE)
 
 \item{multiple.answers}{logical: should be all combinations plotted (default) or should be
 answers splitted into distractors. See \strong{Details}.}
+
+\item{matching}{numeric: numeric vector. If not provided, total score is calculated and
+distractor analysis is performed based on it.}
 }
 \description{
 Plots graphical representation of item distractor analysis with proportions and

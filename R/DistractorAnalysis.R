@@ -9,8 +9,10 @@
 #' @param p.table logical: should the function return the proportions. If \code{FALSE} (default)
 #' the counts are returned.
 #' @param num.groups numeric: number of groups to that should be respondents splitted.
+#' @param matching numeric: numeric vector. If not provided, total score is calculated and
+#' distractor analysis is performed based on it.
 #'
-#' @usage DistractorAnalysis(data, key, p.table = FALSE, num.groups = 3)
+#' @usage DistractorAnalysis(data, key, p.table = FALSE, num.groups = 3, matching = NULL)
 #'
 #' @details
 #' This function is adapted version of \code{distractor.analysis} function from \code{CTT} package.
@@ -53,28 +55,60 @@
 
 
 
-DistractorAnalysis <-  function (data, key, p.table = FALSE, num.groups = 3)
+DistractorAnalysis <-  function (data, key, p.table = FALSE, num.groups = 3, matching = NULL)
 {
-  key <- unlist(key)
+
   if (!(is.logical(p.table))){
     warning("p.table must be logical.")
   }
   data <- as.data.frame(data)
-  if (length(key) == 1)
-    key <- c(rep(key, ncol(data)))
-  scores <- as.data.frame(score(data, key)$score)
+
   if (missing(key))
     warning("Answer key is not provided")
   else {
     if (!length(key) == ncol(data)) {
       warning("Answer key is not provided or some item keys are missing.")
     }
-    key <- c(key)
+    key <- unlist(key)
   }
 
-  score.level <- quantile(scores[, 1], seq(0, 1, by = 1/num.groups), na.rm = T)
-  score.level <- cut(scores[, 1], score.level, include.lowest = TRUE,
-                     labels = paste("Group", 1:num.groups, sep = " "))
+  if (length(key) == 1)
+    key <- c(rep(key, ncol(data)))
+
+  if (is.null(matching)){
+    scored.data <- CTT::score(data, key, output.scored = T)$scored
+    scored.data[is.na(scored.data)] <- 0
+    scores <- apply(scored.data, 1, sum)
+    score.level <- quantile(scores, seq(0, 1, by = 1/num.groups), na.rm = T)
+    while (length(unique(score.level)) <= num.groups){
+      num.groups <- num.groups - 1
+      score.level <- quantile(matching, seq(0, 1, by = 1/num.groups), na.rm = T)
+    }
+    score.level <- cut(scores, score.level, include.lowest = TRUE,
+                       labels = paste("Group", 1:num.groups, sep = " "))
+  } else {
+    scores <- matching
+    score.level <- quantile(matching, seq(0, 1, by = 1/num.groups), na.rm = T)
+    if (length(unique(score.level)) <= num.groups){
+      if (length(unique(scores)) <= num.groups){
+        score.level <- as.factor(matching)
+        levels(score.level) <- paste("Group", 1:length(unique(matching)), sep = " ")
+        warning(paste('Matching variable is probably discrete. Its cut is based on its factors (', length(unique(matching)), ").", sep = ""))
+      } else {
+        while (length(unique(score.level)) <= num.groups){
+          num.groups <- num.groups - 1
+          score.level <- quantile(matching, seq(0, 1, by = 1/num.groups), na.rm = T)
+        }
+        score.level <- cut(matching, score.level, include.lowest = TRUE,
+                           labels = paste("Group", 1:num.groups, sep = " "))
+        warning(paste('The cut of matching variable was not unique. The number of groups was decreased to ', num.groups, ".", sep = ""))
+      }
+    } else {
+      score.level <- cut(matching, score.level, include.lowest = TRUE,
+                         labels = paste("Group", 1:num.groups, sep = " "))
+    }
+  }
+
   itemtab <- function(response) {
     xtabs( ~ response + score.level)
   }

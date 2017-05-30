@@ -5,7 +5,7 @@
         ***************************************************************
 
 ---------------------------------------------------
-- Changes in ShinyItemAnalysis 1.1.3 (2017-05-29) -
+- Changes in ShinyItemAnalysis 1.1.4 (2017-05-30) -
 ---------------------------------------------------
 
 MAJOR UPDATES
@@ -32,6 +32,11 @@ MAJOR UPDATES
     were updated. Group variable was added.
   o Reports are now described in detail.
   o The settings of reports are now also offered in Report section.
+  o Now it is possible to upload predictive outcome.
+  o Validity analysis of predictive outcome is now included on Validity
+    page in Predictive validity section.
+  o Functions 'DistractorAnalysis()' and 'plotDistractorAnalysis()' were
+    extended by 'matching' argument.
 
 MINOR UPDATES
 
