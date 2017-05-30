@@ -35,7 +35,7 @@ ui=tagList(
                ############################################
                # !! ONLINE VERSION ####
                # div(class = "panel-footer",
-               #     p(strong("ShinyItemAnalysis version 1.1.3")),
+               #     p(strong("ShinyItemAnalysis version 1.1.4")),
                #     p("Download ", code('ShinyItemAnalysis'), " R package from ",
                #       a(strong("CRAN"), href = "https://cran.rstudio.com/web/packages/ShinyItemAnalysis/",
                #         target = "_blank"), "to run analysis faster!"),
@@ -63,7 +63,7 @@ ui=tagList(
                ############################################
                # !! PACKAGE VERSION ####
                div(class = "panel-footer",
-                   p(strong("ShinyItemAnalysis version 1.1.3")),
+                   p(strong("ShinyItemAnalysis version 1.1.4")),
                    p(
                      "You can also try ", code('ShinyItemAnalysis'), a(strong("online!"),
                                                                        href = "http://shiny.cs.cas.cz/ShinyItemAnalysis/",
@@ -138,7 +138,7 @@ ui=tagList(
                         You can change the dataset (and try your own one) on page', strong('Data.')),
 
                       h4('Version'),
-                      p('Current version of ', code('ShinyItemAnalysis'), ' is 1.1.3.'),
+                      p('Current version of ', code('ShinyItemAnalysis'), ' is 1.1.4.'),
                       div(
                         HTML('<p>
                              See also older versions:
@@ -245,13 +245,20 @@ ui=tagList(
                                   ),
                                   selected="GMAT_difNLR"),
                       h4("Upload your own datasets"),
-                      p('Main dataset should contain responses of individual students (rows) to given items
+                      p('Main ', strong('data'), ' file should contain responses of individual students (rows) to given items
                         (columns). Header may contain item names, no row names should be included. If responses
-                        are in unscored ABCD format, the key provides correct response for each item. If responses are
-                        scored 0-1, key is vector of 1s. Group is 0-1 vector, where 0 represents reference group
+                        are in unscored ABCD format, the ', strong('key'), ' provides correct response for each item. If responses are
+                        scored 0-1, key is vector of 1s.', strong('Group'), ' is 0-1 vector, where 0 represents reference group
                         and 1 represents focal group. Its length need to be the same as number of individual
                         students in main dataset. If the group is not provided then it wont be possible to run DIF and DDF
-                        detection procedures. In all data sets header should be either included or excluded. '),
+                        detection procedures on ', strong('DIF/Fairness'), ' page. ', strong('Predictive outcome'), 'is either
+                        discrete or continuous vector which
+                        should be predicted by the measurement (e.g. future study success or future GPA in case of
+                        admission tests). Again, its length need to be the same as number of individual
+                        students in main dataset. If the predictive outcome is not provided then it wont be possible to run
+                        validity analysis in ', strong('Predictive validity'), ' section on ', strong('Validity'), ' page.
+
+                        In all data sets header should be either included or excluded. '),
                       p('Columns of dataset are by default renamed to Item and number of particular column. If you
                         want to keep your own names, check box below. '),
                       p('Missing values in scored dataset are by default evaluated as 0. If you want to keep them as missing,
@@ -290,7 +297,19 @@ ui=tagList(
                           )
                         )
                         ),
-                        column(3, offset = 1, actionButton(inputId = "submitButton", label = "Submit Data"))
+                        column(3, fileInput(
+                          'predictive_outcome', 'Choose predictive outcome (optional)',
+                          accept = c('text/csv',
+                                     'text/comma-separated-values',
+                                     'text/tab-separated-values',
+                                     'text/plain',
+                                     '.csv',
+                                     '.tsv'
+                          )
+                        )
+                        )),
+                      fluidRow(
+                        column(2, offset = 0, actionButton(inputId = "submitButton", label = "Submit Data"))
                       ),
                       tags$hr(),
                       h4("Data specification"),
@@ -324,7 +343,12 @@ ui=tagList(
                       h4("Scored test"),
                       DT::dataTableOutput('sc01'),
                       h4("Group vector"),
-                      DT::dataTableOutput('group')
+                      DT::dataTableOutput('group'),
+                      h4("Predictive outcome vector"),
+                      DT::dataTableOutput('predout'),
+                      br(),
+                      br(),
+                      br()
                       ),
              ########################
              # SUMMARY ##############
@@ -406,10 +430,11 @@ ui=tagList(
                                  br()
                         )
                         ),
-             ############################
-             # CORRELATION STRUCTURE ####
-             ############################
+             ###############
+             # VALIDITY ####
+             ###############
              navbarMenu("Validity",
+                        # * CORRELATION STRUCTURE ####
                          tabPanel("Correlation structure",
                                   h3("Correlation structure"),
                                   h4("Polychoric correlation heat map"),
@@ -457,10 +482,61 @@ ui=tagList(
                                                  br(),
                                                  code('eigen(corP$rho) # Eigen values and vectors')),
                                              br()
-                                    )),
-             ###########################
+                                    ),
+                        # * PREDICTIVE VALIDITY ####
+                        tabPanel('Predictive validity',
+                                 tabsetPanel(
+                                   # ** Summary ####
+                                   tabPanel('Summary',
+                                            h3('Predictive validity'),
+                                            p('This section requires outcome variable which should be predicted by the mesurement
+                                               (e.g. future study success or future GPA in case of admission tests). This outcome variable
+                                              can be uploaded in ', strong('Data'), 'section. Then you can explore how data predict this
+                                              variable. '),
+                                            h4('Descriptive plots of predictive outcome on total score'),
+                                            p('Total scores are plotted according to predictive outcome. Boxplot or scatterplot is displayed
+                                              depending on outcome variable - whether it is discrete or continuous. Scatterplot is
+                                              provided with red linear regression line. '),
+                                            plotOutput('validity_plot'),
+                                            downloadButton("DB_validity_plot", label = "Download figure"),
+                                            h4('Correlation of predictive outcome and total score'),
+                                            p('Test for association between total score and predictive outcome based on Pearsons product moment
+                                              correlation coefficient (PPC). The null hypothesis is that correlation is 0. '),
+                                            tableOutput('validity_table'),
+                                            htmlOutput('validity_table_interpretation'),
+                                            br()
+                                            ),
+                                   # ** Items ####
+                                   tabPanel('Items',
+                                            h3('Predictive validity'),
+                                            p('This section requires outcome variable which should be predicted by the mesurement
+                                               (e.g. future study success or future GPA in case of admission tests). This outcome variable
+                                              can be uploaded in ', strong('Data'), 'section. Here you can explore how data predict this
+                                              variable item by item. '),
+                                            p('In distractor analysis based on predictive outcome, we are interested in how test takers
+                                              select the correct answer and how the distractors (wrong answers) with respect to group based
+                                              on predictive outcome.'),
+                                            sliderInput('validity_group', 'Number of groups:',
+                                                        min   = 1,
+                                                        max   = 5,
+                                                        value = 3),
+                                            htmlOutput("validity_distractor_text"),
+                                            h4('Distractor plot'),
+                                            radioButtons('type_validity_combinations_distractor', 'Type',
+                                                         list("Combinations", "Distractors")),
+                                            sliderInput("validitydistractorSlider", "Item",
+                                                        min = 1, value = 1, max = 10,
+                                                        step = 1, animate = TRUE),
+                                            plotOutput('validity_distractor_plot'),
+                                            downloadButton("DB_validity_distractor_plot", label = "Download figure"),
+                                            br(),
+                                            br()
+                                   )
+                                            ))),
+
+             ####################
              # ITEM ANALYSIS ####
-             ###########################
+             ####################
              navbarMenu('Item analysis',
                         # * TRADITIONAL ITEM ANALYSIS ####
                         tabPanel("Traditional item analysis",

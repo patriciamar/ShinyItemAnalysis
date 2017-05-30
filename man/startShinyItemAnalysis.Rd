@@ -7,7 +7,7 @@
 startShinyItemAnalysis()
 }
 \description{
-An interactive Shiny application for running Item Analysis.
+An interactive shiny application for running test and item analysis.
 }
 \examples{
 \dontrun{

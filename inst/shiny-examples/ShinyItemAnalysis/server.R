@@ -171,14 +171,42 @@ function(input, output, session) {
       } else {
         validate(
           need(nrow(dataset$answers) == length(dataset$group),
-            "Length of group is not the same as
-             number of observation in the main data set!"),
+            "Length of group is not the same as number of observation in the main data set!"),
           errorClass = "error_dimension"
         )
       }
       group = dataset$group
     }
     group
+  })
+
+  # LOAD PREDICTIVE OUTCOME #####
+  predictive_outcome <- reactive({
+    if (is.null(input$data) | (is.null(dataset$predictive_outcome))) {
+      validate(
+        need(dataset$predictive_outcome != "missing",
+             "Sorry, for this dataset predictive outcome is not available!"),
+        errorClass = "warning_predictive_outcome_missing"
+      )
+    } else {
+      if (length(dataset$predictive_outcome) == 1){
+        if (dataset$predictive_outcome == "missing"){
+          validate(
+            need(dataset$predictive_outcome != "missing",
+                 "Predictive outcome is missing! Predictive validity analysis is not available!"),
+            errorClass = "warning_predictive_outcome_missing"
+          )
+        }
+      } else {
+        validate(
+          need(nrow(dataset$answers) == length(dataset$predictive_outcome),
+               "Length of predictive outcome is not the same as number of observation in the main data set!"),
+          errorClass = "error_dimension"
+        )
+      }
+      predictive_outcome = dataset$predictive_outcome
+    }
+    predictive_outcome
   })
 
   # SUBMIT BUTTON #####
@@ -189,11 +217,13 @@ function(input, output, session) {
       answ = NULL
       k = NULL
       group = NULL
+      predictive_outcome = NULL
 
       if (is.null(input$data)){
         key <- test_key()
         answ <- test[ , 1:length(key)]
         group <- DIF_groups()
+        predictive_outcome <- predictive_outcome()
       } else {
         answ <- read.csv(input$data$datapath, header = input$header,
                          sep = input$sep, quote = input$quote)
@@ -211,10 +241,18 @@ function(input, output, session) {
                             sep = input$sep)
           group <- unlist(group)
         }
+        if (is.null(input$predictive_outcome)){
+          predictive_outcome <- "missing"
+        } else {
+          predictive_outcome <- read.csv(input$predictive_outcome$datapath, header = input$header,
+                                         sep = input$sep)
+          predictive_outcome <- unlist(predictive_outcome)
+        }
       }
       dataset$answers <- answ
       dataset$key <- key
       dataset$group <- group
+      dataset$predictive_outcome <- predictive_outcome
     }
   )
 
@@ -303,10 +341,20 @@ function(input, output, session) {
   rownames = F,
   options = list(scrollX = TRUE))
 
+  # PREDICTIVE OUTCOME CONTROL #######
+  output$predout <- DT::renderDataTable({
+    predout_table <- t(as.data.frame(predictive_outcome()))
+    colnames(predout_table) <- 1:ncol(predout_table)
+    predout_table
+  },
+  rownames = F,
+  options = list(scrollX = TRUE))
+
   ##### ITEM SLIDERS #####
 
   observe({
     sliderList<-c(
+      "validitydistractorSlider",
       "distractorSlider",
       "logregSlider",
       "zlogregSlider",
@@ -325,6 +373,7 @@ function(input, output, session) {
 
     itemCount = ncol(test_answers())
 
+    updateSliderInput(session = session, inputId = "validitydistractorSlider", max=itemCount)
     updateSliderInput(session = session, inputId = "distractorSlider", max=itemCount)
     updateSliderInput(session = session, inputId = "logregSlider", max=itemCount)
     updateSliderInput(session = session, inputId = "zlogregSlider", max=itemCount)
@@ -347,9 +396,10 @@ function(input, output, session) {
 
   })
 
-  ########################
+  ###############
   # SUMMARY  ####
-  ########################
+  ###############
+
   # * TOTAL SCORES #####
   # ** Summary table #####
   resultsInput <- reactive({
@@ -462,8 +512,11 @@ function(input, output, session) {
   },
   include.rownames = FALSE)
 
-  # * CORRELATION STRUCTURE #####
+  ################
+  # VALIDITY #####
+  ################
 
+  # * CORRELATION STRUCTURE #####
   corr_structure <- reactive({
     data <- correct_answ()
 
@@ -533,6 +586,180 @@ function(input, output, session) {
     },
     content = function(file) {
       ggsave(file, plot = scree_plotInput(), device = "png",
+             height = 3, width = 9, dpi = 160)
+    }
+  )
+
+  # * PREDICTIVE VALIDITY #####
+
+  # ** Boxplot ####
+  validity_plot_boxplot_Input <- reactive({
+    ts <- scored_test()
+    po <- predictive_outcome()
+
+    df <- data.frame(ts, po)
+
+    g <- ggplot(df, aes(y = ts, x = as.factor(po), fill = as.factor(po))) +
+          geom_boxplot() +
+          geom_jitter(shape = 16, position = position_jitter(0.2)) +
+          scale_fill_brewer(palette = "Blues") +
+          xlab("Validity group") +
+          ylab("Total score") +
+          coord_flip() +
+          theme_bw() +
+          theme(legend.title = element_blank(),
+                legend.position = "none",
+                axis.line  = element_line(colour = "black"),
+                panel.grid.major = element_blank(),
+                panel.grid.minor = element_blank(),
+                panel.background = element_blank(),
+                text = element_text(size = 14),
+                plot.title = element_text(face = "bold"))
+    g
+  })
+
+  # ** Scatterplot ####
+  validity_plot_scatter_Input <- reactive({
+    ts <- scored_test()
+    po <- predictive_outcome()
+
+    size <- as.factor(po)
+    levels(size) <- table(po)
+    size <- as.numeric(as.character(size))
+
+    df <- data.frame(ts, po, size)
+
+    g <- ggplot(df, aes(y = po, x = ts, size = size)) +
+          geom_point(color = "black") +
+          geom_smooth(method = lm,
+                      se = FALSE,
+                      color = "red",
+                      show.legend = FALSE) +
+          xlab("Total score") +
+          ylab("Validity variable") +
+          theme_bw() +
+          theme(legend.title = element_blank(),
+                legend.justification = c(1,0),
+                legend.position = c(1,0),
+                axis.line  = element_line(colour = "black"),
+                panel.grid.major = element_blank(),
+                panel.grid.minor = element_blank(),
+                panel.background = element_blank(),
+                text = element_text(size = 14),
+                plot.title = element_text(face = "bold"))
+    g
+  })
+
+  # ** Validity descriptive plot ####
+  validity_plot_Input <- reactive({
+    po <- predictive_outcome()
+
+    ## this is fixed value to recognize discrete variable
+    k <- 6
+    if (length(unique(po)) <= length(po)/k){
+      g <- validity_plot_boxplot_Input()
+    } else {
+      g <- validity_plot_scatter_Input()
+    }
+    g
+  })
+
+  # ** Output validity descriptive plot ####
+  output$validity_plot <- renderPlot({
+    validity_plot_Input()
+  })
+
+  # ** DB validity descriptive plot ####
+  output$DB_validity_plot <- downloadHandler(
+    filename =  function() {
+      paste("plot", input$name, ".png", sep = "")
+    },
+    content = function(file) {
+      ggsave(file, plot = validity_plot_Input(), device = "png",
+             height = 3, width = 9, dpi = 160)
+    }
+  )
+
+  # ** Validity correlation table ####
+  validity_table_Input <- reactive({
+    ts <- scored_test()
+    po <- predictive_outcome()
+
+    ct <- cor.test(ts, po)
+    tab <- c(round(ct$estimate, 2), round(ct$statistic, 2),
+             round(ct$parameter), round(ct$p.value, 3))
+    names(tab) <- c("PCC", "t-value", "df", "p-value")
+
+    tab
+  })
+
+  # * Output validity correlation table ####
+  output$validity_table <- renderTable({
+    validity_table_Input()
+  },
+  include.rownames = TRUE,
+  include.colnames = FALSE)
+
+  # ** Interpretation ####
+  output$validity_table_interpretation <- renderUI({
+    tab <- validity_table_Input()
+    p.val <- tab["p-value"]
+    pcc <- tab["PCC"]
+
+    txt1 <- paste ("<b>", "Interpretation:","</b>")
+    txt2 <- ifelse(pcc > 0, "positively", "negatively")
+    txt3 <- ifelse(p.val < 0.05,
+                   paste("The p-value is less than 0.05, thus we reject null hypotheses -
+                         total score and predictive outcome are", txt2, "correlated."),
+                   "The p-value is larger than 0.05, thus we don't reject null hypotheses -
+                   total score and predictive outcome are not correlated.")
+    HTML(paste(txt1, txt3))
+  })
+
+  # ** Validity distractor text #####
+  output$validity_distractor_text <- renderUI({
+
+    txt1 <- paste ('Respondents are divided into ')
+    txt2 <- paste ("<b>", input$validity_group, "</b>")
+    txt3 <- paste ("groups by their predictive outcome. Subsequently, we display percentage
+                   of students in each group who selected given answer (correct answer or distractor).
+                   The correct answer should be more often selected by strong students than by students
+                   with lower total score, i.e."
+    )
+    txt4 <- paste ("<b>",'solid line should be increasing.',"</b>")
+    txt5 <- paste('The distractor should work in opposite direction, i.e. ')
+    txt6 <- paste ("<b>",'dotted lines should be decreasing.',"<b>")
+    HTML(paste(txt1, txt2, txt3, txt4, txt5, txt6))
+  })
+
+  # ** Validity distractors plot #####
+  validity_distractor_plot_Input <- reactive({
+    a <- test_answers()
+    k <- test_key()
+    i <- input$validitydistractorSlider
+    po <- predictive_outcome()
+    num.group <- input$validity_group
+
+    multiple.answers <- c(input$type_validity_combinations_distractor == "Combinations")
+    plotDistractorAnalysis(data = a, key = k, num.group = num.group,
+                           item = i,
+                           item.name = item_names()[i],
+                           multiple.answers = multiple.answers,
+                           matching = po)
+  })
+
+  # ** Output validity distractors plot #####
+  output$validity_distractor_plot <- renderPlot({
+    validity_distractor_plot_Input()
+  })
+
+  # ** DB validity distractors plot #####
+  output$DB_validity_distractor_plot <- downloadHandler(
+    filename =  function() {
+      paste("plot", input$name, ".png", sep = "")
+    },
+    content = function(file) {
+      ggsave(file, plot = validity_distractor_plot_Input(), device = "png",
              height = 3, width = 9, dpi = 160)
     }
   )
