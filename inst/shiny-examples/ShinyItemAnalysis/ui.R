@@ -1,23 +1,21 @@
-######################
+#%%%%%%%%%%%%%%%%%%%%%
 # GLOBAL LIBRARY #####
-######################
+#%%%%%%%%%%%%%%%%%%%%%
 
 require(DT)
 require(shinyjs)
 
-######################
+#%%%%%%%%%%%%%%%%%%%%%
 # UI #################
-######################
+#%%%%%%%%%%%%%%%%%%%%%
 
-ui=tagList(
-  tags$head(
-    tags$link(rel = "stylesheet",
-              type = "text/css",
-              href = "style.css"),
-
-    tags$script(type = "text/javascript",
-                src = "busy.js")
-
+ui = tagList(
+  tags$head(tags$link(rel = "stylesheet",
+                      type = "text/css",
+                      href = "style.css"),
+            tags$script(type = "text/javascript",
+                        src = "busy.js"),
+            tags$style(type = "text/css", "body {padding-top: 70px}")
   ),
 
   div(class = "busy",
@@ -26,13 +24,18 @@ ui=tagList(
   ),
 
   useShinyjs(),
+
+  #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   # !! ONLINE VERSION ####
   # tags$head(includeScript("google-analytics.js")),
+  #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   navbarPage(title = 'ShinyItemAnalysis - Test and item analysis',
              windowTitle = 'ShinyItemAnalysis',
+             position = 'fixed-top',
+             selected = 'About',
              collapsible = TRUE,
              footer = list(
-               ############################################
+               #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                # !! ONLINE VERSION ####
                # div(class = "panel-footer",
                #     p(strong("ShinyItemAnalysis version 1.1.4")),
@@ -60,12 +63,11 @@ ui=tagList(
                #       ),
                #     p(textOutput('counter'))
                #       )
-               ############################################
+               #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                # !! PACKAGE VERSION ####
                div(class = "panel-footer",
                    p(strong("ShinyItemAnalysis version 1.1.4")),
-                   p(
-                     "You can also try ", code('ShinyItemAnalysis'), a(strong("online!"),
+                   p("You can also try ", code('ShinyItemAnalysis'), a(strong("online!"),
                                                                        href = "http://shiny.cs.cas.cz/ShinyItemAnalysis/",
                                                                        id = "first_tooltip"),
                      "Or you can also use another ", a(strong("mirror."),
@@ -90,16 +92,16 @@ ui=tagList(
                         )
                      )
                   )
-               ############################################
+               #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                    ),
              theme = "bootstrap.css",
-             ######################
+             #%%%%%%%%%%%%%%%%%%%%%
              # MAIN PANEL #########
-             ######################
+             #%%%%%%%%%%%%%%%%%%%%%
 
-             ######################
+             #%%%%%%%%%%%%%%%%%%%%%
              # ABOUT ##############
-             ######################
+             #%%%%%%%%%%%%%%%%%%%%%
              tabPanel("About",
                       h3('Description'),
                       p(code('ShinyItemAnalysis'), ' provides analysis of educational tests (such as admission tests)
@@ -120,16 +122,16 @@ ui=tagList(
                       p('For all graphical outputs a download button is provided. Moreover, on ', strong('Reports'),
                         'page HTML or PDF report can be created. Additionaly, all application outputs are
                         complemented by selected R code hence the similar analysis can be run and modified in R.'),
-                      ############################################
+                      #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                       # # !! ONLINE VERSION ####
                       # p('You can also download ', code('ShinyItemAnalysis'), ' package from ',
                       #   a('CRAN', href = 'https://CRAN.R-project.org/package=ShinyItemAnalysis', target = "_blank"),
                       #   'to use it offline or run it faster. '),
-                      ############################################
+                      #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                       # !! PACKAGE VERSION ####
                       p('You can also try ', code('ShinyItemAnalysis'), ' application ',
                         a('online!', href = 'https://shiny.cs.cas.cz/ShinyItemAnalysis/', target = "_blank")),
-                      ############################################
+                      #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                       h4('Data'),
                       p('For demonstration purposes, by default, 20-item dataset', code('GMAT'),'
                         from R ', code('difNLR'),' package is used. Other three datasets are available: ',
@@ -206,9 +208,9 @@ ui=tagList(
                       br(),
                       br()
                       ),
-             ###################
-             # DATA ############
-             ###################
+             #%%%%%%%%%%%%%%%%%%%%%
+             # DATA ###############
+             #%%%%%%%%%%%%%%%%%%%%%
              tabPanel("Data",
                       h3("Data"),
                       p('For demonstration purposes, 20-item dataset ' , code("GMAT"),'
@@ -248,17 +250,17 @@ ui=tagList(
                       p('Main ', strong('data'), ' file should contain responses of individual students (rows) to given items
                         (columns). Header may contain item names, no row names should be included. If responses
                         are in unscored ABCD format, the ', strong('key'), ' provides correct response for each item. If responses are
-                        scored 0-1, key is vector of 1s.', strong('Group'), ' is 0-1 vector, where 0 represents reference group
+                        scored 0-1, key is vector of 1s.'),
+                      p(strong('Group'), ' is 0-1 vector, where 0 represents reference group
                         and 1 represents focal group. Its length need to be the same as number of individual
                         students in main dataset. If the group is not provided then it wont be possible to run DIF and DDF
-                        detection procedures on ', strong('DIF/Fairness'), ' page. ', strong('Predictive outcome'), 'is either
-                        discrete or continuous vector which
-                        should be predicted by the measurement (e.g. future study success or future GPA in case of
-                        admission tests). Again, its length need to be the same as number of individual
-                        students in main dataset. If the predictive outcome is not provided then it wont be possible to run
-                        validity analysis in ', strong('Predictive validity'), ' section on ', strong('Validity'), ' page.
-
-                        In all data sets header should be either included or excluded. '),
+                        detection procedures on ', strong('DIF/Fairness'), ' page. '),
+                      p(strong('Criterion variable'), ' is either
+                        discrete or continuous vector (e.g. future study success or future GPA in case of admission tests) which
+                        should be predicted by the measurement . Again, its length need to be the same as number of individual
+                        students in main dataset. If the criterion variable is not provided then it wont be possible to run
+                        validity analysis in ', strong('Predictive validity'), ' section on ', strong('Validity'), ' page.'),
+                      p('In all data sets header should be either included or excluded. '),
                       p('Columns of dataset are by default renamed to Item and number of particular column. If you
                         want to keep your own names, check box below. '),
                       p('Missing values in scored dataset are by default evaluated as 0. If you want to keep them as missing,
@@ -298,7 +300,7 @@ ui=tagList(
                         )
                         ),
                         column(3, fileInput(
-                          'predictive_outcome', 'Choose predictive outcome (optional)',
+                          'predictive_outcome', 'Choose criterion variable (optional)',
                           accept = c('text/csv',
                                      'text/comma-separated-values',
                                      'text/tab-separated-values',
@@ -350,9 +352,9 @@ ui=tagList(
                       br(),
                       br()
                       ),
-             ########################
-             # SUMMARY ##############
-             ########################
+             #%%%%%%%%%%%%%%%%%%%%%
+             # SUMMARY ############
+             #%%%%%%%%%%%%%%%%%%%%%
              navbarMenu("Summary",
                         # * TOTAL SCORES ####
                         tabPanel("Total scores",
@@ -430,9 +432,9 @@ ui=tagList(
                                  br()
                         )
                         ),
-             ###############
-             # VALIDITY ####
-             ###############
+             #%%%%%%%%%%%%%%%%%%%%%
+             # VALIDITY ###########
+             #%%%%%%%%%%%%%%%%%%%%%
              navbarMenu("Validity",
                         # * CORRELATION STRUCTURE ####
                          tabPanel("Correlation structure",
@@ -489,18 +491,18 @@ ui=tagList(
                                    # ** Summary ####
                                    tabPanel('Summary',
                                             h3('Predictive validity'),
-                                            p('This section requires outcome variable which should be predicted by the mesurement
-                                               (e.g. future study success or future GPA in case of admission tests). This outcome variable
+                                            p('This section requires criterion variable (e.g. future study success or future GPA in case
+                                              of admission tests) which should be predicted by the measurement. This outcome variable
                                               can be uploaded in ', strong('Data'), 'section. Then you can explore how data predict this
                                               variable. '),
-                                            h4('Descriptive plots of predictive outcome on total score'),
-                                            p('Total scores are plotted according to predictive outcome. Boxplot or scatterplot is displayed
+                                            h4('Descriptive plots of criterion variable on total score'),
+                                            p('Total scores are plotted according to criterion variable. Boxplot or scatterplot is displayed
                                               depending on outcome variable - whether it is discrete or continuous. Scatterplot is
                                               provided with red linear regression line. '),
                                             plotOutput('validity_plot'),
                                             downloadButton("DB_validity_plot", label = "Download figure"),
-                                            h4('Correlation of predictive outcome and total score'),
-                                            p('Test for association between total score and predictive outcome based on Pearsons product moment
+                                            h4('Correlation of criterion variable and total score'),
+                                            p('Test for association between total score and criterion variable based on Pearsons product moment
                                               correlation coefficient (PPC). The null hypothesis is that correlation is 0. '),
                                             tableOutput('validity_table'),
                                             htmlOutput('validity_table_interpretation'),
@@ -509,13 +511,13 @@ ui=tagList(
                                    # ** Items ####
                                    tabPanel('Items',
                                             h3('Predictive validity'),
-                                            p('This section requires outcome variable which should be predicted by the mesurement
-                                               (e.g. future study success or future GPA in case of admission tests). This outcome variable
+                                            p('This section requires criterion variable (e.g. future study success or future GPA in case
+                                              of admission tests) which should be predicted by the measurement. This outcome variable
                                               can be uploaded in ', strong('Data'), 'section. Here you can explore how data predict this
                                               variable item by item. '),
-                                            p('In distractor analysis based on predictive outcome, we are interested in how test takers
+                                            p('In distractor analysis based on criterion variable, we are interested in how test takers
                                               select the correct answer and how the distractors (wrong answers) with respect to group based
-                                              on predictive outcome.'),
+                                              on criterion variable.'),
                                             sliderInput('validity_group', 'Number of groups:',
                                                         min   = 1,
                                                         max   = 5,
@@ -534,9 +536,9 @@ ui=tagList(
                                    )
                                             ))),
 
-             ####################
-             # ITEM ANALYSIS ####
-             ####################
+             #%%%%%%%%%%%%%%%%%%%%%
+             # ITEM ANALYSIS ######
+             #%%%%%%%%%%%%%%%%%%%%%
              navbarMenu('Item analysis',
                         # * TRADITIONAL ITEM ANALYSIS ####
                         tabPanel("Traditional item analysis",
@@ -673,9 +675,9 @@ ui=tagList(
                                  )
                         ),
 
-             #####################
-             # REGRESSION ########
-             #####################
+             #%%%%%%%%%%%%%%%%%%%%%
+             # REGRESSION #########
+             #%%%%%%%%%%%%%%%%%%%%%
              navbarMenu("Regression",
                         # * LOGISTIC ####
                         tabPanel("Logistic",
@@ -1021,9 +1023,9 @@ ui=tagList(
                                  br()
                                  )
                         ),
-             # ###################
-             # # IRT MODELS ######
-             # ###################
+             # #%%%%%%%%%%%%%%%%%%%%%
+             # # IRT MODELS #########
+             # #%%%%%%%%%%%%%%%%%%%%%
              # navbarMenu("IRT models",
              #            # * 1PL (RASCH) ####
              #            tabPanel("1PL (Rasch)",
@@ -1259,9 +1261,9 @@ ui=tagList(
              #                     br()
              #                     )
              #                     ),
-             ###################
-             # IRT MODELS ######
-             ###################
+             #%%%%%%%%%%%%%%%%%%%%%
+             # IRT MODELS #########
+             #%%%%%%%%%%%%%%%%%%%%%
              navbarMenu("IRT models",
                         "Used methods",
                         # * RASCH ####
@@ -1910,9 +1912,9 @@ ui=tagList(
                                  downloadButton("DB_iccIRT", label = "Download figure")
                                  )
                                  ),
-             ###################
-             # DIF/FAIRNESS ####
-             ###################
+             #%%%%%%%%%%%%%%%%%%%%%
+             # DIF/FAIRNESS #######
+             #%%%%%%%%%%%%%%%%%%%%%
              navbarMenu("DIF/Fairness",
                         "Used methods",
                         # * TOTAL SCORES ####
@@ -2921,9 +2923,9 @@ ui=tagList(
                                  br()
                         )
                         ),
-                ########################
-                # REPORTS ##############
-                ########################
+                #%%%%%%%%%%%%%%%%%%%%%
+                # REPORTS ############
+                #%%%%%%%%%%%%%%%%%%%%%
                 tabPanel("Reports",
                          h3("Download report"),
                          p(code("ShinyItemAnalysis"), " also offers an option to download a report in HTML or PDF format."),
@@ -3062,9 +3064,9 @@ ui=tagList(
                          br()
                          ),
 
-             ########################
-             # REFERENCES ###########
-             ########################
+             #%%%%%%%%%%%%%%%%%%%%%
+             # REFERENCES #########
+             #%%%%%%%%%%%%%%%%%%%%%
              tabPanel("References",
                       h3('References'),
                       p('Akaike, H. (1974). A New Look at the Statistical Model Identification. IEEE Transactions

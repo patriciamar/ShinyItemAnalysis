@@ -710,9 +710,10 @@ function(input, output, session) {
     txt2 <- ifelse(pcc > 0, "positively", "negatively")
     txt3 <- ifelse(p.val < 0.05,
                    paste("The p-value is less than 0.05, thus we reject null hypotheses -
-                         total score and predictive outcome are", txt2, "correlated."),
+                         total score and criterion variable are", txt2, "correlated."),
                    "The p-value is larger than 0.05, thus we don't reject null hypotheses -
-                   total score and predictive outcome are not correlated.")
+                   we cannot conclude that a significant correlation between total score
+                   and criterion variable exists.")
     HTML(paste(txt1, txt3))
   })
 
