@@ -76,16 +76,16 @@ lay = rbind(c(1, 1, 1),
 grid.arrange(table, hist, ncol = 1, top = "Basic summary and histogram", layout_matrix = lay)
 ```
 
-**`r if (params$corr_plot != "") {"## Correlation structure"}`**
+`r if (params$corr_plot != "") {"## Correlation structure"}`
 
 ```{r corr-plot, echo = FALSE, fig.height = 4}
-if (params$corr_plot != "") {
+if (any(params$corr_plot != "")) {
   corrplot(params$corr_plot)
 }
 ```
 
 ```{r scree-plot, echo = FALSE, fig.height = 4}
-if (params$corr_plot != "") {
+if (any(params$corr_plot != "")) {
   params$scree_plot + ggtitle("Scree plot")
 }
 ```
@@ -122,7 +122,7 @@ for (i in 1:length(params$graf)){
 
 \pagebreak
 
-#IRT model
+# IRT model
 
 ```{r irt-eq, echo = FALSE, results = "hide"}
 if (params$irt_type == "rasch") {
@@ -277,7 +277,7 @@ if (params$dif_type >= 3) {
 
 # Session Info
 
-```{r echo=FALSE}
+```{r session-info, echo = FALSE}
 sessionInfo()
 ```
 

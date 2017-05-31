@@ -6908,6 +6908,6 @@ button.close {
 .shiny-output-error-error_dimension {
     color: red;
 }
-.shiny-output-error-warning_predictive_outcome_missing {
+.shiny-output-error-warning_criterion_variable_missing {
     color: orange;
 }

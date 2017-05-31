@@ -1,6 +1,6 @@
-######################
+#%%%%%%%%%%%%%%%%%%%%%
 # GLOBAL LIBRARY #####
-######################
+#%%%%%%%%%%%%%%%%%%%%%
 
 require(corrplot)
 require(CTT)
@@ -26,9 +26,9 @@ require(shinyjs)
 require(stringr)
 require(WrightMap)
 
-###########
-# DATA ####
-###########
+#%%%%%%%%%%%%%%%%%%%%%
+# DATA ###############
+#%%%%%%%%%%%%%%%%%%%%%
 
 data('GMAT', package = 'difNLR')
 data('GMATtest', package = 'difNLR')
@@ -39,9 +39,9 @@ key <- get("GMATkey")
 # maximum upload size set to 30MB
 options(shiny.maxRequestSize = 30*1024^2)
 
-##################
-# FUNCTIONS ######
-##################
+#%%%%%%%%%%%%%%%%%%%%%
+# FUNCTIONS ##########
+#%%%%%%%%%%%%%%%%%%%%%
 
 # Difficulty/Discrimination plot
 source("DDplot.R")
@@ -61,9 +61,9 @@ source("wrightMap.R")
 source("itemClassic.R")
 source("personHist.R")
 
-#####################
-# SERVER SCRIPT #####
-#####################
+#%%%%%%%%%%%%%%%%%%%%%
+# SERVER SCRIPT ######
+#%%%%%%%%%%%%%%%%%%%%%
 
 function(input, output, session) {
 
@@ -73,9 +73,9 @@ function(input, output, session) {
   dataset$key <- NULL
   dataset$group <- NULL
 
-  ######################
+  #%%%%%%%%%%%%%%%%%%%%%
   ### HITS COUNTER #####
-  ######################
+  #%%%%%%%%%%%%%%%%%%%%%
   output$counter <- renderText({
     if (!file.exists("counter.Rdata"))
     {counter <- 0}
@@ -85,9 +85,9 @@ function(input, output, session) {
     paste0("Hits:", counter)
   })
 
-  #########################
-  # DATA ADJUSTMENT #######
-  #########################
+  #%%%%%%%%%%%%%%%%%%%%%
+  # DATA ADJUSTMENT ####
+  #%%%%%%%%%%%%%%%%%%%%%
 
   # LOAD ABCD DATA #####
   test_answers <- reactive ({
@@ -180,33 +180,33 @@ function(input, output, session) {
     group
   })
 
-  # LOAD PREDICTIVE OUTCOME #####
-  predictive_outcome <- reactive({
-    if (is.null(input$data) | (is.null(dataset$predictive_outcome))) {
+  # LOAD CRITERION VARIABLE #####
+  criterion_variable <- reactive({
+    if (is.null(input$data) | (is.null(dataset$criterion_variable))) {
       validate(
-        need(dataset$predictive_outcome != "missing",
-             "Sorry, for this dataset predictive outcome is not available!"),
-        errorClass = "warning_predictive_outcome_missing"
+        need(dataset$criterion_variable != "missing",
+             "Sorry, for this dataset criterion variable is not available!"),
+        errorClass = "warning_criterion_variable_missing"
       )
     } else {
-      if (length(dataset$predictive_outcome) == 1){
-        if (dataset$predictive_outcome == "missing"){
+      if (length(dataset$criterion_variable) == 1){
+        if (dataset$criterion_variable == "missing"){
           validate(
-            need(dataset$predictive_outcome != "missing",
-                 "Predictive outcome is missing! Predictive validity analysis is not available!"),
-            errorClass = "warning_predictive_outcome_missing"
+            need(dataset$criterion_variable != "missing",
+                 "Criterion variable is missing! Predictive validity analysis is not available!"),
+            errorClass = "warning_criterion_variable_missing"
           )
         }
       } else {
         validate(
-          need(nrow(dataset$answers) == length(dataset$predictive_outcome),
-               "Length of predictive outcome is not the same as number of observation in the main data set!"),
+          need(nrow(dataset$answers) == length(dataset$criterion_variable),
+               "Length of criterion variable is not the same as number of observation in the main data set!"),
           errorClass = "error_dimension"
         )
       }
-      predictive_outcome = dataset$predictive_outcome
+      criterion_variable = dataset$criterion_variable
     }
-    predictive_outcome
+    criterion_variable
   })
 
   # SUBMIT BUTTON #####
@@ -217,13 +217,13 @@ function(input, output, session) {
       answ = NULL
       k = NULL
       group = NULL
-      predictive_outcome = NULL
+      criterion_variable = NULL
 
       if (is.null(input$data)){
         key <- test_key()
         answ <- test[ , 1:length(key)]
         group <- DIF_groups()
-        predictive_outcome <- predictive_outcome()
+        criterion_variable <- criterion_variable()
       } else {
         answ <- read.csv(input$data$datapath, header = input$header,
                          sep = input$sep, quote = input$quote)
@@ -241,18 +241,18 @@ function(input, output, session) {
                             sep = input$sep)
           group <- unlist(group)
         }
-        if (is.null(input$predictive_outcome)){
-          predictive_outcome <- "missing"
+        if (is.null(input$criterion_variable)){
+          criterion_variable <- "missing"
         } else {
-          predictive_outcome <- read.csv(input$predictive_outcome$datapath, header = input$header,
+          criterion_variable <- read.csv(input$criterion_variable$datapath, header = input$header,
                                          sep = input$sep)
-          predictive_outcome <- unlist(predictive_outcome)
+          criterion_variable <- unlist(criterion_variable)
         }
       }
       dataset$answers <- answ
       dataset$key <- key
       dataset$group <- group
-      dataset$predictive_outcome <- predictive_outcome
+      dataset$criterion_variable <- criterion_variable
     }
   )
 
@@ -303,7 +303,8 @@ function(input, output, session) {
     test
   },
   rownames = F,
-  options=list(scrollX = TRUE, pageLength = 10))
+  options = list(scrollX = TRUE,
+                 pageLength = 10))
 
   # KEY CONTROL #######
   output$key <- DT::renderDataTable({
@@ -330,7 +331,8 @@ function(input, output, session) {
     out
   },
   rownames = F,
-  options = list(scrollX = TRUE, pageLength = 10))
+  options = list(scrollX = TRUE,
+                 pageLength = 10))
 
   # GROUP CONTROL #######
   output$group <- DT::renderDataTable({
@@ -341,17 +343,16 @@ function(input, output, session) {
   rownames = F,
   options = list(scrollX = TRUE))
 
-  # PREDICTIVE OUTCOME CONTROL #######
-  output$predout <- DT::renderDataTable({
-    predout_table <- t(as.data.frame(predictive_outcome()))
-    colnames(predout_table) <- 1:ncol(predout_table)
-    predout_table
+  # CRITERION VARIABLE CONTROL #######
+  output$critvar <- DT::renderDataTable({
+    critvar_table <- t(as.data.frame(criterion_variable()))
+    colnames(critvar_table) <- 1:ncol(critvar_table)
+    critvar_table
   },
   rownames = F,
   options = list(scrollX = TRUE))
 
   ##### ITEM SLIDERS #####
-
   observe({
     sliderList<-c(
       "validitydistractorSlider",
@@ -373,36 +374,36 @@ function(input, output, session) {
 
     itemCount = ncol(test_answers())
 
-    updateSliderInput(session = session, inputId = "validitydistractorSlider", max=itemCount)
-    updateSliderInput(session = session, inputId = "distractorSlider", max=itemCount)
-    updateSliderInput(session = session, inputId = "logregSlider", max=itemCount)
-    updateSliderInput(session = session, inputId = "zlogregSlider", max=itemCount)
-    updateSliderInput(session = session, inputId = "zlogreg_irtSlider", max=itemCount)
-    updateSliderInput(session = session, inputId = "nlsSlider", max=itemCount)
-    updateSliderInput(session = session, inputId = "multiSlider", max=itemCount)
-    updateSliderInput(session = session, inputId = "difMHSlider_item", max=itemCount)
-    updateSliderInput(session = session, inputId = "diflogSlider", max=itemCount)
-    updateSliderInput(session = session, inputId = "diflog_irtSlider", max=itemCount)
-    updateSliderInput(session = session, inputId = "difnlrSlider", max=itemCount)
-    updateSliderInput(session = session, inputId = "difirt_lord_itemSlider", max=itemCount)
-    updateSliderInput(session = session, inputId = "difirt_raju_itemSlider", max=itemCount)
-    updateSliderInput(session = session, inputId = "ddfSlider", max=itemCount)
-    updateSliderInput(session = session, inputId = "inSlider2", max=itemCount,
+    updateSliderInput(session = session, inputId = "validitydistractorSlider", max = itemCount)
+    updateSliderInput(session = session, inputId = "distractorSlider", max = itemCount)
+    updateSliderInput(session = session, inputId = "logregSlider", max = itemCount)
+    updateSliderInput(session = session, inputId = "zlogregSlider", max = itemCount)
+    updateSliderInput(session = session, inputId = "zlogreg_irtSlider", max = itemCount)
+    updateSliderInput(session = session, inputId = "nlsSlider", max = itemCount)
+    updateSliderInput(session = session, inputId = "multiSlider", max = itemCount)
+    updateSliderInput(session = session, inputId = "difMHSlider_item", max = itemCount)
+    updateSliderInput(session = session, inputId = "diflogSlider", max = itemCount)
+    updateSliderInput(session = session, inputId = "diflog_irtSlider", max = itemCount)
+    updateSliderInput(session = session, inputId = "difnlrSlider", max = itemCount)
+    updateSliderInput(session = session, inputId = "difirt_lord_itemSlider", max = itemCount)
+    updateSliderInput(session = session, inputId = "difirt_raju_itemSlider", max = itemCount)
+    updateSliderInput(session = session, inputId = "ddfSlider", max = itemCount)
+    updateSliderInput(session = session, inputId = "inSlider2", max = itemCount,
                       value = round(median(scored_test(), na.rm = T)))
-    updateSliderInput(session = session, inputId = "inSlider2group", max=itemCount,
+    updateSliderInput(session = session, inputId = "inSlider2group", max = itemCount,
                       value = round(median(scored_test()[DIF_groups() == 1], na.rm = T)))
-    updateSliderInput(session = session, inputId = "difMHSlider_score", max=itemCount,
+    updateSliderInput(session = session, inputId = "difMHSlider_score", max = itemCount,
                       value = round(median(scored_test(), na.rm = T)))
 
   })
 
-  ###############
-  # SUMMARY  ####
-  ###############
+  #%%%%%%%%%%%%%%%%%%%%%
+  # SUMMARY  ###########
+  #%%%%%%%%%%%%%%%%%%%%%
 
   # * TOTAL SCORES #####
-  # ** Summary table #####
-  resultsInput <- reactive({
+  # ** Total scores summary table ######
+  totalscores_table_Input <- reactive({
     sc <- scored_test()
 
     tab <- t(data.frame(c(min(sc, na.rm = T),
@@ -416,17 +417,17 @@ function(input, output, session) {
     tab
   })
 
-  output$results <- renderTable({
-    resultsInput()
+  # ** Output total scores summary table ######
+  output$totalscores_table <- renderTable({
+    totalscores_table_Input()
   },
   digits = 2,
   include.rownames = F,
   include.colnames = T
   )
 
-  # ** Histogram of Total Scores ######
-  histogram_totalscores <- function()
-  {
+  # ** Histogram of total scores ######
+  totalscores_histogram_Input<- reactive({
     a <- test_answers()
     k <- test_key()
     sc <- scored_test()
@@ -465,31 +466,27 @@ function(input, output, session) {
             panel.background = element_blank(),
             text = element_text(size = 14),
             plot.title = element_text(face = "bold"))
-  }
-
-  # ** output - Histogram of Total Scores ######
-  histogram_totalscoresInput<- reactive({
-    histogram_totalscores()
   })
 
-  output$histogram_totalscores <- renderPlot ({
-    histogram_totalscoresInput()
+  # ** Output histogram of total scores ######
+  output$totalscores_histogram <- renderPlot ({
+    totalscores_histogram_Input()
   })
-  # ** download button - Histogram of Total Scores ####
-  output$DP_histogram_totalscores <- downloadHandler(
+
+  # ** DB histogram of total scores ####
+  output$DB_totalscores_histogram <- downloadHandler(
     filename =  function() {
       paste("plot", input$name, ".png", sep = "")
     },
     content = function(file) {
-      ggsave(file, plot = histogram_totalscoresInput(), device = "png",
+      ggsave(file, plot = totalscores_histogram_Input(), device = "png",
              height = 3, width = 9, dpi = 160)
     }
   )
 
   # * STANDARD SCORES #####
-  # ** Table by Score ######
-  output$percentile <- renderTable({
-
+  # ** Table for scores ######
+  scores_tables_Input <- reactive({
     a  <- test_answers()
     k  <- test_key()
     sc <- scored_test()
@@ -509,14 +506,20 @@ function(input, output, session) {
     colnames(tab) <- c("Total score", "Percentile", "Success rate", "Z-score", "T-score")
 
     tab
+  })
+
+  # ** Output table for scores ######
+  output$scores_tables <- renderTable({
+    scores_tables_Input()
   },
   include.rownames = FALSE)
 
-  ################
-  # VALIDITY #####
-  ################
+  #%%%%%%%%%%%%%%%%%%%%%
+  # VALIDITY ###########
+  #%%%%%%%%%%%%%%%%%%%%%
 
   # * CORRELATION STRUCTURE #####
+  # ** Polychoric correlation matrix ######
   corr_structure <- reactive({
     data <- correct_answ()
 
@@ -525,18 +528,18 @@ function(input, output, session) {
   })
 
   # ** Correlation plot ######
-  corr_plotInput <- reactive({
+  corr_plot_Input <- reactive({
     corP <- corr_structure()
     corrplot(corP$rho)
   })
 
-  # ** Output Correlation plot ######
+  # ** Output correlation plot ######
   output$corr_plot <- renderPlot({
-    corr_plotInput()
+    corr_plot_Input()
   })
 
-  # ** DB Correlation plot ####
-  output$DP_corr_plot <- downloadHandler(
+  # ** DB correlation plot ####
+  output$DB_corr_plot <- downloadHandler(
     filename =  function() {
       paste("plot", input$name, ".png", sep = "")
     },
@@ -547,13 +550,12 @@ function(input, output, session) {
 
       png(file, height = 800, width = 800, res = 100)
       corrplot(corP$rho)
-
       dev.off()
     }
   )
 
   # ** Scree plot ######
-  scree_plotInput <- reactive({
+  scree_plot_Input <- reactive({
     corP <- corr_structure()
     ev <- eigen(corP$rho)$values
     df <- data.frame(pos = 1:length(ev), ev)
@@ -574,32 +576,31 @@ function(input, output, session) {
             plot.title = element_text(face = "bold"))
   })
 
-  # ** Output Scree plot ######
+  # ** Output scree plot ######
   output$scree_plot <- renderPlot({
-    scree_plotInput()
+    scree_plot_Input()
   })
 
-  # ** DB Scree plot ####
-  output$DP_scree_plot <- downloadHandler(
+  # ** DB scree plot ####
+  output$DB_scree_plot <- downloadHandler(
     filename =  function() {
       paste("plot", input$name, ".png", sep = "")
     },
     content = function(file) {
-      ggsave(file, plot = scree_plotInput(), device = "png",
+      ggsave(file, plot = scree_plot_Input(), device = "png",
              height = 3, width = 9, dpi = 160)
     }
   )
 
   # * PREDICTIVE VALIDITY #####
-
-  # ** Boxplot ####
+  # ** Validity boxplot ####
   validity_plot_boxplot_Input <- reactive({
     ts <- scored_test()
-    po <- predictive_outcome()
+    cv <- criterion_variable()
 
-    df <- data.frame(ts, po)
+    df <- data.frame(ts, cv)
 
-    g <- ggplot(df, aes(y = ts, x = as.factor(po), fill = as.factor(po))) +
+    g <- ggplot(df, aes(y = ts, x = as.factor(cv), fill = as.factor(cv))) +
           geom_boxplot() +
           geom_jitter(shape = 16, position = position_jitter(0.2)) +
           scale_fill_brewer(palette = "Blues") +
@@ -618,18 +619,18 @@ function(input, output, session) {
     g
   })
 
-  # ** Scatterplot ####
+  # ** Validity scatterplot ####
   validity_plot_scatter_Input <- reactive({
     ts <- scored_test()
-    po <- predictive_outcome()
+    cv <- criterion_variable()
 
-    size <- as.factor(po)
-    levels(size) <- table(po)
+    size <- as.factor(cv)
+    levels(size) <- table(cv)
     size <- as.numeric(as.character(size))
 
-    df <- data.frame(ts, po, size)
+    df <- data.frame(ts, cv, size)
 
-    g <- ggplot(df, aes(y = po, x = ts, size = size)) +
+    g <- ggplot(df, aes(y = cv, x = ts, size = size)) +
           geom_point(color = "black") +
           geom_smooth(method = lm,
                       se = FALSE,
@@ -652,11 +653,11 @@ function(input, output, session) {
 
   # ** Validity descriptive plot ####
   validity_plot_Input <- reactive({
-    po <- predictive_outcome()
+    cv <- criterion_variable()
 
     ## this is fixed value to recognize discrete variable
     k <- 6
-    if (length(unique(po)) <= length(po)/k){
+    if (length(unique(cv)) <= length(cv)/k){
       g <- validity_plot_boxplot_Input()
     } else {
       g <- validity_plot_scatter_Input()
@@ -683,9 +684,9 @@ function(input, output, session) {
   # ** Validity correlation table ####
   validity_table_Input <- reactive({
     ts <- scored_test()
-    po <- predictive_outcome()
+    cv <- criterion_variable()
 
-    ct <- cor.test(ts, po)
+    ct <- cor.test(ts, cv)
     tab <- c(round(ct$estimate, 2), round(ct$statistic, 2),
              round(ct$parameter), round(ct$p.value, 3))
     names(tab) <- c("PCC", "t-value", "df", "p-value")
@@ -722,7 +723,7 @@ function(input, output, session) {
 
     txt1 <- paste ('Respondents are divided into ')
     txt2 <- paste ("<b>", input$validity_group, "</b>")
-    txt3 <- paste ("groups by their predictive outcome. Subsequently, we display percentage
+    txt3 <- paste ("groups by their criterion variable. Subsequently, we display percentage
                    of students in each group who selected given answer (correct answer or distractor).
                    The correct answer should be more often selected by strong students than by students
                    with lower total score, i.e."
@@ -738,7 +739,7 @@ function(input, output, session) {
     a <- test_answers()
     k <- test_key()
     i <- input$validitydistractorSlider
-    po <- predictive_outcome()
+    cv <- criterion_variable()
     num.group <- input$validity_group
 
     multiple.answers <- c(input$type_validity_combinations_distractor == "Combinations")
@@ -746,7 +747,7 @@ function(input, output, session) {
                            item = i,
                            item.name = item_names()[i],
                            multiple.answers = multiple.answers,
-                           matching = po)
+                           matching = cv)
   })
 
   # ** Output validity distractors plot #####
@@ -765,48 +766,53 @@ function(input, output, session) {
     }
   )
 
-  ############################
+  #%%%%%%%%%%%%%%%%%%%%%%%%%%%
   # TRADITIONAL ANALYSIS #####
-  ############################
-  # * ITEM ANALYSIS #####
+  #%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-  # ** Difficulty/Discrimination Graph ######
-  difplotInput <- reactive({
+  # * ITEM ANALYSIS #####
+  # ** Difficulty/Discrimination plot ######
+  DDplot_Input <- reactive({
     correct <- correct_answ()
     DDplot(correct, item.names = item_numbers())
   })
 
-  output$difplot <- renderPlot({
-    difplotInput()
+  # ** Output Difficulty/Discrimination plot ######
+  output$DDplot <- renderPlot({
+    DDplot_Input()
   })
 
-  output$DP_difplot <- downloadHandler(
+  # ** DB Difficulty/Discrimination plot ######
+  output$DB_DDplot <- downloadHandler(
     filename =  function() {
       paste("plot", input$name, ".png", sep = "")
     },
     content = function(file) {
-      ggsave(file, plot = difplotInput(), device = "png",
+      ggsave(file, plot = DDplot_Input(), device = "png",
              height = 4, width = 14, dpi = 120)
     }
   )
 
-  output$uidifplot <- renderUI({
-    plotOutput("difplot", height = 1000)
-  })
-
-  # ** Cronbach's alpha ####
-  output$cronbachalpha <- renderTable({
+  # ** Cronbach's alpha table ####
+  cronbachalpha_table_Input <- reactive({
     correct <- correct_answ()
     tab <- c(psych::alpha(correct)$total[1], psych::alpha(correct)$total[8])
+
     tab <- as.data.frame(tab)
     colnames(tab) <- c("Estimate", "SD")
+
     tab
+  })
+
+  # ** Output Cronbach's alpha table ####
+  output$cronbachalpha_table <- renderTable({
+    cronbachalpha_table_Input()
   },
   include.rownames = F,
   include.colnames = T)
 
-  # ** Traditional Item Analysis Table #####
-  itemexamInput <- reactive({
+  # ** Traditional item analysis table #####
+  itemanalysis_table_Input <- reactive({
     a <- test_answers()
     k <- test_key()
     correct <- correct_answ()
@@ -821,16 +827,16 @@ function(input, output, session) {
     tab
   })
 
-  output$itemexam <- renderTable({
-    itemexamInput()
+  # ** Output traditional item analysis table #####
+  output$itemanalysis_table <- renderTable({
+    itemanalysis_table_Input()
   },
   include.rownames = FALSE)
 
 
   # * DISTRACTORS #####
   # ** Distractor text #####
-  output$text_distractor <- renderUI({
-
+  output$distractor_text <- renderUI({
     txt1 <- paste ('Respondents are divided into ')
     txt2 <- paste ("<b>", input$gr, "</b>")
     txt3 <- paste ("groups by their total score. Subsequently, we display percentage
@@ -844,11 +850,12 @@ function(input, output, session) {
     HTML(paste(txt1, txt2, txt3, txt4, txt5, txt6))
   })
 
-  # ** Distractor Analysis Table ######
-  output$tab_distractor_by_group <- renderTable({
+  # ** Distractor analysis table by group ######
+  distractor_table_group_Input <- reactive({
     sc <- scored_test()
+    num.group <- input$gr
 
-    score.level <- quantile(sc, seq(0, 1, by = 1/input$gr), na.rm = T)
+    score.level <- quantile(sc, seq(0, 1, by = 1/num.group), na.rm = T)
     tab <- table(cut(sc,
                      score.level,
                      include.lowest = T,
@@ -857,17 +864,20 @@ function(input, output, session) {
     tab <- matrix(round(as.numeric(tab), 2), nrow = 2)
 
     rownames(tab) <- c('Max points', 'Count')
-    colnames(tab) <- paste('Group', 1:input$gr)
+    colnames(tab) <- paste('Group', 1:num.group)
 
     tab
+  })
+  # ** Output distractor analysis table by group ######
+  output$distractor_table_group <- renderTable({
+    distractor_table_group_Input()
   },
   include.colnames = TRUE,
   include.rownames = TRUE)
 
 
-
   # ** Distractors histograms by group #####
-  hist_distractor_by_groupInput <- reactive({
+  distractor_histogram_Input <- reactive({
     a <- test_answers()
     k <- test_key()
     sc <- scored_test()
@@ -901,21 +911,23 @@ function(input, output, session) {
             plot.title = element_text(face = "bold"))
   })
 
-  output$hist_distractor_by_group <- renderPlot({
-    hist_distractor_by_groupInput()
+  # ** Output distractors histograms by group #####
+  output$distractor_histogram <- renderPlot({
+    distractor_histogram_Input()
   })
 
-  output$DP_hist_distractor_by_group <- downloadHandler(
+  # ** DB distractors histograms by group #####
+  output$DB_distractor_histogram <- downloadHandler(
     filename =  function() {
       paste("plot", input$name, ".png", sep = "")
     },
     content = function(file) {
-      ggsave(file, plot = hist_distractor_by_groupInput(), device = "png", height=3, width=9, dpi=160)
+      ggsave(file, plot = distractor_histogram_Input(), device = "png", height=3, width=9, dpi=160)
     }
   )
 
-  # ** Distractors Plot #####
-  grafInput <- reactive({
+  # ** Distractors plot #####
+  distractor_plot_Input <- reactive({
     a <- test_answers()
     k <- test_key()
     i <- input$distractorSlider
@@ -927,16 +939,31 @@ function(input, output, session) {
                            multiple.answers = multiple.answers)
   })
 
-  grafReportInput<-reactive({
+  # ** Output distractors plot #####
+  output$distractor_plot <- renderPlot({
+    distractor_plot_Input()
+  })
+
+  # ** DB distractors plot #####
+  output$DB_distractor_plot <- downloadHandler(
+    filename =  function() {
+      paste("plot", input$name, ".png", sep = "")
+    },
+    content = function(file) {
+      ggsave(file, plot = distractor_plot_Input(), device = "png",
+             height = 3, width = 9, dpi = 160)
+    }
+  )
+  # ** Report distractors plot #####
+  report_distractor_plot <- reactive({
     a <- test_answers()
     k <- test_key()
 
-    if (input$default_settings=="yes") {
+    if (input$default_settings == "yes") {
       multiple.answers_report <- c(input$type_combinations_distractor == "Combinations")
     } else {
       multiple.answers_report <- c(input$type_combinations_distractor_report == "Combinations")
     }
-
 
     graflist <- list()
 
@@ -951,48 +978,46 @@ function(input, output, session) {
     graflist
   })
 
-  output$graf <- renderPlot({
-    grafInput()
-  })
-
-  output$DP_graf <- downloadHandler(
-    filename =  function() {
-      paste("plot", input$name, ".png", sep = "")
-    },
-    content = function(file) {
-      ggsave(file, plot = grafInput(), device = "png",
-             height = 3, width = 9, dpi = 160)
-    }
-  )
-
-  # ** Table with Counts ######
-  output$tab_counts_distractor <- renderTable({
+  # ** Distractor table with counts ######
+  distractor_table_counts_Input <- reactive({
     a <- test_answers()
     k <- test_key()
+    num.group <- input$gr
+    item <- input$distractorSlider
 
-    DA <- DistractorAnalysis(a, k, num.groups = input$gr)[[input$distractorSlider]]
+    DA <- DistractorAnalysis(a, k, num.groups = num.group)[[item]]
     df <- dcast(as.data.frame(DA), response ~ score.level, sum, margins = T, value.var = "Freq")
-    colnames(df) <- c("Response", paste("Group", 1:input$gr), "Total")
+    colnames(df) <- c("Response", paste("Group", 1:num.group), "Total")
     levels(df$Response)[nrow(df)] <- "Total"
     df
   })
 
-  # ** Table with Proportions #####
-  output$tab_props_distractor <- renderTable({
+  # ** Output distractor table with counts ######
+  output$distractor_table_counts <- renderTable({
+    distractor_table_counts_Input()
+  })
+
+  # ** Distractor table with proportions #####
+  distractor_table_proportions_Input <- reactive({
     a <- test_answers()
     k <- test_key()
+    num.group <- input$gr
+    item <- input$distractorSlider
 
-    DA <- DistractorAnalysis(a, k, num.groups = input$gr, p.table = TRUE)[[input$distractorSlider]]
+    DA <- DistractorAnalysis(a, k, num.groups = num.group, p.table = TRUE)[[item]]
     df <- dcast(as.data.frame(DA), response ~ score.level, sum, value.var = "Freq")
-    colnames(df) <- c("Response", paste("Group", 1:input$gr))
+    colnames(df) <- c("Response", paste("Group", 1:num.group))
     df
   })
 
+  # ** Output distractor table with proportions #####
+  output$distractor_table_proportions_Input <- renderTable({
+    distractor_table_proportions_Input()
+  })
 
-  ######################
-  # REGRESSION ####
-  ######################
-
+  #%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  # REGRESSION ###############
+  #%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
   # * LOGISTIC ####
   logistic_reg <- reactive ({
@@ -4597,19 +4622,25 @@ function(input, output, session) {
       #file.copy("report.Rmd", tempReport, overwrite = TRUE)
       parameters<-list(a = test_answers(),
                        k = test_key(),
-                       results = t(resultsInput()),
-                       histogram_totalscores = histogram_totalscoresInput(),
-                       corr_plot = {if (input$corr_report != "none") {corr_plotInput()} else {""}},
-                       scree_plot = {if (input$corr_report != "none") {scree_plotInput()} else {""}},
-                       difPlot = difplotInput(),
-                       itemexam = itemexamInput(),
-                       hist_distractor_by_group = hist_distractor_by_groupInput(),
-                       graf = grafReportInput(),
+                       # total scores
+                       results = t(totalscores_table_Input()),
+                       histogram_totalscores = totalscores_histogram_Input(),
+                       # correlation structure
+                       corr_plot = {if (input$corr_report != "none") {corr_plot_Input()} else {""}},
+                       scree_plot = {if (input$corr_report != "none") {scree_plot_Input()} else {""}},
+                       # item analysis
+                       difPlot = DDplot_Input(),
+                       itemexam = itemanalysis_table_Input(),
+                       # distractors
+                       hist_distractor_by_group = distractor_histogram_Input(),
+                       graf = report_distractor_plot(),
+                       # regression
                        logreg = logregInput(),
                        zlogreg = zlogregInput(),
                        zlogreg_irt = zlogreg_irtInput(),
                        nlsplot = nlsplotInput(),
                        multiplot = multiplotReportInput(),
+                       # irt
                        wrightMap = oneparamirtWrightMapReportInput_mirt(),
                        irt_type = irt_typeInput(),
                        irt = irtInput(),
@@ -4617,6 +4648,7 @@ function(input, output, session) {
                        irttif = irttifInput(),
                        irtcoef = irtcoefInput(),
                        irtfactor = irtfactorInput(),
+                       # DIF
                        isGroupPresent = groupPresent(),
                        dif_type = input$dif_type_report,
                        resultsgroup = {if (groupPresent()) {resultsgroupInput()}},
