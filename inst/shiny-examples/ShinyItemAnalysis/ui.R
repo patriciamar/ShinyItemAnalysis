@@ -3057,7 +3057,7 @@ ui = tagList(
                          p(strong("Recommendation: "), "Report generation can be faster and more reliable when you first check
                            sections of intended contents. For example, if you wish to include a ", strong("3PL IRT"),
                            " model, you can first visit ", strong("IRT models"), "section and ", strong("3PL"), " subsection."),
-                         p(strong("Warning: "), "Download of reports takes some time. Please, be patient."),
+                         #p(strong("Warning: "), "Download of reports takes some time. Please, be patient."),
                          downloadButton("report", "Generate Report"),
                          br(),
                          br(),
