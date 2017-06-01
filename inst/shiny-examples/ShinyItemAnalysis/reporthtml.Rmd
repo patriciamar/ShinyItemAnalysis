@@ -56,9 +56,9 @@ params:
 ---
 \pagebreak
 
-# Summary Report
+# Summary report
 
-## Summary of Total Scores
+## Summary of total scores
 
 ```{r total-scores, echo = FALSE, results = "hide"}
 library(gridExtra)
@@ -76,17 +76,17 @@ lay = rbind(c(1, 1, 1),
 grid.arrange(table, hist, ncol = 1, top = "Basic summary and histogram", layout_matrix = lay)
 ```
 
-**`r if (params$corr_plot != "") {"## Correlation structure"}`**
+`r if (params$corr_plot != "") {"## Correlation structure"}`
 
 ```{r corr-plot, echo = FALSE, fig.height = 4}
-if (params$corr_plot != "") {
+if (any(params$corr_plot != "")) {
   corrplot(params$corr_plot)
 }
 ```
 
 ```{r scree-plot, echo = FALSE, fig.height = 4}
-if (params$corr_plot != "") {
-  params$scree_plot+ggtitle("Scree plot")
+if (any(params$corr_plot != "")) {
+  params$scree_plot + ggtitle("Scree plot")
 }
 ```
 
@@ -94,9 +94,9 @@ if (params$corr_plot != "") {
 \pagebreak
 
 
-# Traditional Item Analysis Report
+# Traditional item analysis report
 
-## Item Analysis
+## Item analysis
 
 ```{r DD-plot, echo = FALSE, results = "hide"}
 params$difPlot
@@ -122,7 +122,7 @@ for (i in 1:length(params$graf)){
 
 \pagebreak
 
-#IRT model
+# IRT model
 
 ```{r irt-eq, echo = FALSE, results = "hide"}
 if (params$irt_type == "rasch") {
@@ -165,7 +165,7 @@ $$ {P}(Y_{ij} = 1|\theta_{i},a_j,b_j) = \frac{e^{a_j(\theta_i-b_j)}}{1+e^{a_j(\t
 3PL IRT model
 $$ {P}(Y_{ij} = 1|\theta_{i},a_j,b_j, c_j) =c_j + (1+c_j)\cdot\frac{e^{a_j(\theta_i-b_j)}}{1+e^{a_j(\theta_i-b_j)}}$$
 
-**`r if (params$wrightMap!="") {"Wright (Item-Person) Map using 1PL IRT Model"}`**
+**`r if (params$wrightMap!="") {"Wright (item-person) map using 1PL IRT model"}`**
 
 ```{r wright-map, echo = FALSE, results = "hide", fig.height = 5, fig.width = 10}
 if (params$wrightMap != "") {
@@ -205,33 +205,32 @@ if (params$irt_type != "none") {
 
 `r if(params$isGroupPresent) {"## Total scores"}`
 
-```{r echo=FALSE}
+```{r table-by-group, echo = FALSE}
 if(params$isGroupPresent){
 params$resultsgroup
 }
 ```
 
-```{r echo=FALSE, results="hide"}
-
+```{r hist-by-group, echo = FALSE, results = "hide"}
 if(params$isGroupPresent){
-g1=params$histbyscoregroup0
-g2=params$histbyscoregroup1
-grid.arrange(g1, g2, ncol=1)
+g1 = params$histbyscoregroup0
+g2 = params$histbyscoregroup1
+grid.arrange(g1, g2, ncol = 1)
 }
 ```
 
 `r if(params$isGroupPresent & params$dif_type>=1) {"## DIF detection using delta plot"}`
 
-```{r echo=FALSE, results="hide"}
-if (params$dif_type>=1) {
+```{r delta-plot, echo = FALSE, results = "hide"}
+if (params$dif_type >= 1) {
   if(params$isGroupPresent){
   params$deltaplot
   }
 }
 ```
 
-```{r echo=FALSE}
-if (params$dif_type>=1) {
+```{r delta-plot-output, echo = FALSE}
+if (params$dif_type >= 1) {
   if(params$isGroupPresent){
   params$DP_text_normal
   }
@@ -240,16 +239,16 @@ if (params$dif_type>=1) {
 
 `r if(params$isGroupPresent & params$dif_type>=2) {"## DIF detection using logistic regression"}`
 
-```{r echo=FALSE}
-if (params$dif_type>=2) {
+```{r dif-logistic-output, echo = FALSE}
+if (params$dif_type >= 2) {
  if(params$isGroupPresent){
   params$DIF_logistic_print
   } 
 }
 ```
 
-```{r echo=FALSE, results='hide', fig.height=4.2}
-if (params$dif_type>=2) {
+```{r dif-logistic-plot, echo = FALSE, results = 'hide', fig.height = 4.2}
+if (params$dif_type >= 2) {
   if(params$isGroupPresent){
   params$DIF_logistic_plot
   }
@@ -258,16 +257,16 @@ if (params$dif_type>=2) {
 
 `r if(params$isGroupPresent & params$dif_type>=2) {"## DDF detection using multinomial regression"}`
 
-```{r echo=FALSE}
-if (params$dif_type>=3) {
+```{r ddf-multi-output, echo = FALSE}
+if (params$dif_type >= 3) {
   if(params$isGroupPresent){
   print(params$model_DDF_print)
   }
 }
 ```
 
-```{r echo=FALSE, results='hide', fig.height=4.2}
-if (params$dif_type>=3) {
+```{r ddf-multi-plot, echo = FALSE, results = 'hide', fig.height = 4.2}
+if (params$dif_type >= 3) {
   if(params$isGroupPresent){
   params$plot_DDFReportInput
   }
@@ -278,7 +277,7 @@ if (params$dif_type>=3) {
 
 # Session Info
 
-```{r echo=FALSE}
+```{r session-info, echo = FALSE}
 sessionInfo()
 ```
 

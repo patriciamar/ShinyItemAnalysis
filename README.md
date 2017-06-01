@@ -10,7 +10,7 @@ Test and item analysis via shiny.
  * DIF and DDF detection methods.
 It also offers some training data sets but you can also upload your own data. Moreover it is also possible to generate reports. 
 
-`ShinyItemAnalysis` is available online [**online**](https://shiny.cs.cas.cz/ShinyItemAnalysis/) and can be also downloaded from [**CRAN**](https://cran.rstudio.com/web/packages/ShinyItemAnalysis/).
+`ShinyItemAnalysis` is available [**online**](https://shiny.cs.cas.cz/ShinyItemAnalysis/) and can be also downloaded from [**CRAN**](https://cran.rstudio.com/web/packages/ShinyItemAnalysis/).
 
 ## Installation
 ```
@@ -21,15 +21,19 @@ install.packages("ShinyItemAnalysis")
 # install.packages("devtools")
 devtools::install_github("patriciamar/ShinyItemAnalysis")
 ```
+## Version
+Current version available on [**CRAN**](https://CRAN.R-project.org/package=ShinyItemAnalysis) is 1.1.0. Version available [**online**](https://shiny.cs.cas.cz/ShinyItemAnalysis/) is 1.1.3. The newest development version available on [**GitHub**](https://github.com/patriciamar/ShinyItemAnalysis) is 1.1.4.
 
 ## Usage
-
-It's very easy to run ShinyItemAnalysis:
+It's very easy to run `ShinyItemAnalysis`:
 ```
 rm(list = ls())
 startShinyItemAnalysis()
 ```
-You can also try it online [**online**](https://shiny.cs.cas.cz/ShinyItemAnalysis/)!
+You can also try it [**online**](https://shiny.cs.cas.cz/ShinyItemAnalysis/)!
 
 ## Getting help
 If you find any bug or just need help with `ShinyItemAnalysis` you can leave your message as an issue here or directly contact us at martinkova@cs.cas.cz
+
+## License
+This program is free software and you can redistribute it and or modify it under the terms of the [GNU GPL 3](https://www.gnu.org/licenses/gpl-3.0.en.html).

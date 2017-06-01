@@ -12,9 +12,11 @@
 #' @param item.name character: the name of item.
 #' @param multiple.answers logical: should be all combinations plotted (default) or should be
 #' answers splitted into distractors. See \strong{Details}.
+#' @param matching numeric: numeric vector. If not provided, total score is calculated and
+#' distractor analysis is performed based on it.
 #'
-#' @usage plotDistractorAnalysis(data, key, num.groups = 3, item = 1,
-#' item.name, multiple.answers = TRUE)
+#' @usage plotDistractorAnalysis(data, key, num.groups = 3, item = 1, item.name,
+#' multiple.answers = TRUE, matching = NULL)
 #'
 #' @details
 #' This function is graphical representation of \code{DistractorAnalysis} function.
@@ -73,11 +75,11 @@
 #' @export
 
 
-plotDistractorAnalysis <-  function (data, key, num.groups = 3, item = 1, item.name, multiple.answers = TRUE)
+plotDistractorAnalysis <-  function (data, key, num.groups = 3, item = 1, item.name, multiple.answers = TRUE, matching = NULL)
 {
   key <- unlist(key)
   # distractor analysis
-  tabDA <- DistractorAnalysis(data = data, key = key, p.table = TRUE, num.groups = num.groups)
+  tabDA <- DistractorAnalysis(data = data, key = key, p.table = TRUE, num.groups = num.groups, matching = matching)
   x <- tabDA[[item]]
   # only rows where is possitive proportion of correct answers
   if (dim(x)[2] != 1){
@@ -131,6 +133,7 @@ plotDistractorAnalysis <-  function (data, key, num.groups = 3, item = 1, item.n
   names(linetype) <- names(shape) <- levels(df$response)
   linetype[CAall] <- 1
   shape[CAall] <- 19
+  xlab <- ifelse(is.null(matching), "Group by total score", "Group by validity variable")
 
   # plot
   ggplot(df, aes_string(x = "score.level",
@@ -142,7 +145,7 @@ plotDistractorAnalysis <-  function (data, key, num.groups = 3, item = 1, item.n
          size = 1) +
     geom_line() +
     geom_point(size = 3) +
-    xlab("Group by total score") +
+    xlab(xlab) +
     ylab("Option selection percentage") +
     scale_y_continuous(limits = c(0, 1)) +
     scale_x_discrete(labels = 1:num.groups, expand = c(0, 0.2)) +
