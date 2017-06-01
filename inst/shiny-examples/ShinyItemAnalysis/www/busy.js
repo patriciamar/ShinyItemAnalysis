@@ -10,3 +10,11 @@ setInterval(function(){
   }
 }, 100)
 
+$(function() {
+
+	$('#report').click(function() {
+		alert('Downloading of reports takes some time. Please, be patient. Please do not change the settings of application before the download is completed.');
+		/*setInterval();*/
+	});
+	
+});
