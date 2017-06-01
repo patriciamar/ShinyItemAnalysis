@@ -15,7 +15,7 @@ ui = tagList(
                       href = "style.css"),
             tags$script(type = "text/javascript",
                         src = "busy.js"),
-            tags$style(type = "text/css", "body {padding-top: 70px}")
+            tags$style(type = "text/css", "body {padding-top: 110px}")
   ),
 
   div(class = "busy",
