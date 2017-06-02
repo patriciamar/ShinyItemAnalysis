@@ -17,6 +17,7 @@ Imports:
     ggplot2 (>= 2.2.1),
     grid,
     gridExtra,
+    knitr,
     latticeExtra,
     ltm,
     mirt (>= 1.24),
@@ -30,7 +31,8 @@ Imports:
     shiny,
     shinyjs,
     stringr,
-    WrightMap
+    WrightMap,
+    xtable
 Description: Interactive shiny application for analysis of educational tests and
     their items.
 License: GPL-3
