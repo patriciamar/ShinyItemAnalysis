@@ -133,7 +133,7 @@ plotDistractorAnalysis <-  function (data, key, num.groups = 3, item = 1, item.n
   names(linetype) <- names(shape) <- levels(df$response)
   linetype[CAall] <- 1
   shape[CAall] <- 19
-  xlab <- ifelse(is.null(matching), "Group by total score", "Group by validity variable")
+  xlab <- ifelse(is.null(matching), "Group by total score", "Group by criterion variable")
 
   # plot
   ggplot(df, aes_string(x = "score.level",

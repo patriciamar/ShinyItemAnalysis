@@ -93,7 +93,7 @@ DistractorAnalysis <-  function (data, key, p.table = FALSE, num.groups = 3, mat
       if (length(unique(scores)) <= num.groups){
         score.level <- as.factor(matching)
         levels(score.level) <- paste("Group", 1:length(unique(matching)), sep = " ")
-        warning(paste('Matching variable is probably discrete. Its cut is based on its factors (', length(unique(matching)), ").", sep = ""))
+        warning(paste('Critetion variable is probably discrete. Its cut is based on its factors (', length(unique(matching)), ").", sep = ""))
       } else {
         while (length(unique(score.level)) <= num.groups){
           num.groups <- num.groups - 1
@@ -101,7 +101,7 @@ DistractorAnalysis <-  function (data, key, p.table = FALSE, num.groups = 3, mat
         }
         score.level <- cut(matching, score.level, include.lowest = TRUE,
                            labels = paste("Group", 1:num.groups, sep = " "))
-        warning(paste('The cut of matching variable was not unique. The number of groups was decreased to ', num.groups, ".", sep = ""))
+        warning(paste('The cut of criterion variable was not unique. The number of groups was decreased to ', num.groups, ".", sep = ""))
       }
     } else {
       score.level <- cut(matching, score.level, include.lowest = TRUE,
