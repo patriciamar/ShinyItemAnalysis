@@ -1654,7 +1654,7 @@ function(input, output, session) {
               legend.key = element_rect(colour = "white"),
               plot.title = element_text(face = "bold"),
               legend.key.width = unit(1, "cm"))
-      g = g + ggtitle(paste("\nMultinomial plot for item", item_numbers()[i]))
+      g = g + ggtitle(paste("Multinomial plot for item", item_numbers()[i]))
       g = ggplotGrob(g)
       graflist[[i]] = g
     }
@@ -4614,6 +4614,76 @@ function(input, output, session) {
     groupLogical
   })
 
+  reportContent<-reactive({
+    observeEvent(input$generate, ignoreInit = TRUE, {
+      print("start")
+
+      print("end")
+    })
+
+  })
+
+  observeEvent(input$generate, {
+    withProgress(message = "Creating content", value=0, style = "notification", {
+    list(a = test_answers(),
+         k = test_key(),
+         # total scores
+         incProgress(0.05),
+         results = t(totalscores_table_Input()),
+         histogram_totalscores = totalscores_histogram_Input(),
+         incProgress(0.05),
+         # correlation structure
+         corr_plot = {if (input$corr_report != "none") {corr_plot_Input()} else {""}},
+         scree_plot = {if (input$corr_report != "none") {scree_plot_Input()} else {""}},
+         incProgress(0.05),
+         # item analysis
+         difPlot = DDplot_Input(),
+         itemexam = itemanalysis_table_Input(),
+         incProgress(0.05),
+         # distractors
+         hist_distractor_by_group = distractor_histogram_Input(),
+         graf = report_distractor_plot(),
+         incProgress(0.1),
+         # regression
+         logreg = logregInput(),
+         zlogreg = zlogregInput(),
+         zlogreg_irt = zlogreg_irtInput(),
+         nlsplot = nlsplotInput(),
+         multiplot = multiplotReportInput(),
+         incProgress(0.15),
+         # irt
+         wrightMap = oneparamirtWrightMapReportInput_mirt(),
+         irt_type = irt_typeInput(),
+         irt = irtInput(),
+         irtiic = irtiicInput(),
+         irttif = irttifInput(),
+         irtcoef = irtcoefInput(),
+         irtfactor = irtfactorInput(),
+         incProgress(0.25),
+         # DIF
+         isGroupPresent = groupPresent(),
+         dif_type = input$dif_type_report,
+         resultsgroup = {if (groupPresent()) {resultsgroupInput()}},
+         histbyscoregroup0 = {if (groupPresent()) {histbyscoregroup0Input()}},
+         histbyscoregroup1 = {if (groupPresent()) {histbyscoregroup1Input()}},
+         deltaplot = {if (groupPresent()) {if (input$dif_type_report>=1) {deltaplotInput_report()}}},
+         DP_text_normal = {if (groupPresent()) {if (input$dif_type_report>=1) {deltaGpurn_report()}}},
+         DIF_logistic_plot = {if (groupPresent()) {if (input$dif_type_report>=2) {DIF_logistic_plotReport()}}},
+         DIF_logistic_print = {if (groupPresent()) {if (input$dif_type_report>=2) {model_DIF_logistic_print_report()}}},
+         #plot_DIF_logistic = {if (groupPresent()) {plot_DIF_logisticInput()}},
+         #plot_DIF_logistic_IRT_Z = {if (groupPresent()) {plot_DIF_logistic_IRT_ZInput()}},
+         #plot_DIF_NLR = {if (groupPresent()) {plot_DIF_NLRInput()}},
+         #plot_DIF_IRT_Lord = {if (groupPresent()) {plot_DIF_IRT_LordInput()}},
+         #plot_DIF_IRT_Raju = {if (groupPresent()) {plot_DIF_IRT_RajuInput()}},
+         model_DDF_print = {if (groupPresent()) {if (input$dif_type_report>=3) {model_DDF_print_report()}}},
+         plot_DDFReportInput = {if (groupPresent()) {if (input$dif_type_report>=3) {plot_DDFReportInput()}}},
+         incProgress(0.3)
+    )
+    })
+  })
+
+  reportContentList<-isolate(reportContent())
+
   output$report<-downloadHandler(
     filename=reactive({paste0("report.", input$report_format)}),
     content=function(file) {
@@ -4665,7 +4735,7 @@ function(input, output, session) {
                        #plot_DIF_IRT_Raju = {if (groupPresent()) {plot_DIF_IRT_RajuInput()}},
                        model_DDF_print = {if (groupPresent()) {if (input$dif_type_report>=3) {model_DDF_print_report()}}},
                        plot_DDFReportInput = {if (groupPresent()) {if (input$dif_type_report>=3) {plot_DDFReportInput()}}}
-                       )
+      )
       rmarkdown::render(reportPath, output_file=file,
                         params = parameters, envir = new.env(parent = globalenv()))
     }
