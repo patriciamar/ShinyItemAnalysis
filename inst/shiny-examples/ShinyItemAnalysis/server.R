@@ -604,7 +604,7 @@ function(input, output, session) {
           geom_boxplot() +
           geom_jitter(shape = 16, position = position_jitter(0.2)) +
           scale_fill_brewer(palette = "Blues") +
-          xlab("Validity group") +
+          xlab("Criterion group") +
           ylab("Total score") +
           coord_flip() +
           theme_bw() +
@@ -637,7 +637,7 @@ function(input, output, session) {
                       color = "red",
                       show.legend = FALSE) +
           xlab("Total score") +
-          ylab("Validity variable") +
+          ylab("Criterion variable") +
           theme_bw() +
           theme(legend.title = element_blank(),
                 legend.justification = c(1,0),
@@ -686,10 +686,9 @@ function(input, output, session) {
     ts <- scored_test()
     cv <- criterion_variable()
 
-    ct <- cor.test(ts, cv)
-    tab <- c(round(ct$estimate, 2), round(ct$statistic, 2),
-             round(ct$parameter), round(ct$p.value, 3))
-    names(tab) <- c("PCC", "t-value", "df", "p-value")
+    ct <- cor.test(ts, cv, method = "spearman", exact = F)
+    tab <- c(round(ct$estimate, 2), round(ct$statistic, 2), round(ct$p.value, 3))
+    names(tab) <- c("Rho", "S-value", "p-value")
 
     tab
   })
@@ -705,10 +704,10 @@ function(input, output, session) {
   output$validity_table_interpretation <- renderUI({
     tab <- validity_table_Input()
     p.val <- tab["p-value"]
-    pcc <- tab["PCC"]
+    rho <- tab["Rho"]
 
     txt1 <- paste ("<b>", "Interpretation:","</b>")
-    txt2 <- ifelse(pcc > 0, "positively", "negatively")
+    txt2 <- ifelse(rho > 0, "positively", "negatively")
     txt3 <- ifelse(p.val < 0.05,
                    paste("The p-value is less than 0.05, thus we reject null hypotheses -
                          total score and criterion variable are", txt2, "correlated."),
@@ -766,6 +765,43 @@ function(input, output, session) {
     }
   )
 
+  # ** Validity correlation table for items ####
+  validity_table_item_Input <- reactive({
+    correct <- correct_answ()
+    cv <- criterion_variable()
+    i <- input$validitydistractorSlider
+
+    ct <- cor.test(correct[, i], cv, method = "spearman", exact = F)
+    tab <- c(round(ct$estimate, 2), round(ct$statistic, 2), round(ct$p.value, 3))
+    names(tab) <- c("Rho", "S-value", "p-value")
+
+    tab
+  })
+
+  # ** Output validity correlation table for items ####
+  output$validity_table_item <- renderTable({
+    validity_table_item_Input()
+  },
+  include.rownames = TRUE,
+  include.colnames = FALSE)
+
+  # ** Interpretation ####
+  output$validity_table_item_interpretation <- renderUI({
+    tab <- validity_table_item_Input()
+    p.val <- tab["p-value"]
+    rho <- tab["Rho"]
+    i <- input$validitydistractorSlider
+
+    txt1 <- paste ("<b>", "Interpretation:","</b>")
+    txt2 <- ifelse(rho > 0, "positively", "negatively")
+    txt3 <- ifelse(p.val < 0.05,
+                   paste("The p-value is less than 0.05, thus we reject null hypotheses -
+                         total score and criterion variable are", txt2, "correlated."),
+                   paste("The p-value is larger than 0.05, thus we don't reject null hypotheses -
+                   we cannot conclude that a significant correlation between scored item", i,
+                   "and criterion variable exists."))
+    HTML(paste(txt1, txt3))
+  })
   #%%%%%%%%%%%%%%%%%%%%%%%%%%%
   # TRADITIONAL ANALYSIS #####
   #%%%%%%%%%%%%%%%%%%%%%%%%%%%
