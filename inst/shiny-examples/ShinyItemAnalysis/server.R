@@ -972,6 +972,9 @@ function(input, output, session) {
                                   item = i,
                                   item.name = item_names()[i],
                                   multiple.answers = multiple.answers_report)
+      g = g +
+          ggtitle(paste("Distractor plot for item", item_numbers()[i])) +
+          theme(text = element_text(size = 12))
       g = ggplotGrob(g)
       graflist[[i]] = g
     }
@@ -1654,7 +1657,9 @@ function(input, output, session) {
               legend.key = element_rect(colour = "white"),
               plot.title = element_text(face = "bold"),
               legend.key.width = unit(1, "cm"))
-      g = g + ggtitle(paste("\nMultinomial plot for item", item_numbers()[i]))
+      g = g +
+          ggtitle(paste("Multinomial plot for item", item_numbers()[i])) +
+          theme(text = element_text(size = 12))
       g = ggplotGrob(g)
       graflist[[i]] = g
     }
@@ -3793,7 +3798,8 @@ function(input, output, session) {
                              p.adjust.method = p.adjust.method_report,
                              purify = purify_report
             )
-        g = g + ggtitle(paste0("DIF logistic plot for item ", item_numbers()[mod$DIFitems[i]]))
+        g = g + ggtitle(paste0("DIF logistic plot for item ", item_numbers()[mod$DIFitems[i]])) +
+          theme(text = element_text(size = 10), plot.title = element_text(size = 10, face = "bold"))
         graflist[[i]] <- g
       }
     } else {
@@ -4453,7 +4459,11 @@ function(input, output, session) {
    # if (mod$DIFitems[[1]]!="No DDF item detected"){
       for (i in 1:length(mod$DDFitems)) {
         g <- plot(mod, item = mod$DDFitems[i])[[1]] +
-          ggtitle(paste("\nDDF multinomial plot for item", item_numbers()[mod$DDFitems[i]]))
+                theme(text = element_text(size = 10),
+                      plot.title = element_text(size = 10, face = "bold",
+                                                  vjust = 1.5)) +
+                ggtitle(paste("\nDDF multinomial plot for item",
+                              item_numbers()[mod$DDFitems[i]]))
         graflist[[i]] <- g
       }
     #} else {
