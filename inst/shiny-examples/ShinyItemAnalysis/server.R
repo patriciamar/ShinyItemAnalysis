@@ -156,7 +156,11 @@ function(input, output, session) {
       do.call(data, args = list(paste0(datasetName, "test"), package = packageName))
       test = get(paste0(datasetName, "test"))
 
-      group <- test[, ncol(test)]
+      if (datasetName == "GMAT"){
+        group <- test[, "group"]
+      } else {
+        group <- test[, ncol(test)]
+      }
 
       dataset$group = group
     } else {
@@ -183,6 +187,22 @@ function(input, output, session) {
   # LOAD CRITERION VARIABLE #####
   criterion_variable <- reactive({
     if (is.null(input$data) | (is.null(dataset$criterion_variable))) {
+      a = input$dataSelect
+      pos = regexpr("_", a)[1]
+      datasetName = str_sub(a, 1, pos - 1)
+      packageName = str_sub(a, pos + 1)
+
+      do.call(data, args = list(paste0(datasetName, "test"), package = packageName))
+      test = get(paste0(datasetName, "test"))
+
+      if (datasetName == "GMAT"){
+        criterion_variable <- test[, "criterion"]
+      } else {
+        criterion_variable <- "missing"
+      }
+
+      dataset$criterion_variable = criterion_variable
+
       validate(
         need(dataset$criterion_variable != "missing",
              "Sorry, for this dataset criterion variable is not available!"),
@@ -796,7 +816,7 @@ function(input, output, session) {
     txt2 <- ifelse(rho > 0, "positively", "negatively")
     txt3 <- ifelse(p.val < 0.05,
                    paste("The p-value is less than 0.05, thus we reject null hypotheses -
-                         total score and criterion variable are", txt2, "correlated."),
+                         scored item", i, "and criterion variable are", txt2, "correlated."),
                    paste("The p-value is larger than 0.05, thus we don't reject null hypotheses -
                    we cannot conclude that a significant correlation between scored item", i,
                    "and criterion variable exists."))
