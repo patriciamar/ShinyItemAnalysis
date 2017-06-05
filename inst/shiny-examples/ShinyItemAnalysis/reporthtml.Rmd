@@ -213,9 +213,6 @@ if (params$irt_type != "none") {
 }
 ```
 
-\pagebreak
-\newpage
-
 **************
 
 # DIF/Fairness report
@@ -231,7 +228,7 @@ if(params$isGroupPresent){
 }
 ```
 
-```{r hist-by-group, echo = FALSE, fig.align = 'center'}
+```{r hist-by-group, echo = FALSE, fig.height = 8, fig.align = 'center'}
 if(params$isGroupPresent){
   g1 = params$histbyscoregroup0 + theme(text = element_text(size = 10), plot.title = element_text(face = "bold"))
   g2 = params$histbyscoregroup1 + theme(text = element_text(size = 10), plot.title = element_text(face = "bold"))
@@ -241,20 +238,20 @@ if(params$isGroupPresent){
 
 `r if(params$isGroupPresent & params$dif_type>=1) {"## DIF detection using Delta plot"}`
 
-```{r delta-plot, echo = FALSE, results = "hide", fig.align = 'center'}
+```{r delta-plot-output, echo = FALSE}
+if (params$dif_type >= 1) {
+  if(params$isGroupPresent){
+  params$DP_text_normal
+  }
+}
+```
+
+```{r delta-plot, echo = FALSE, results = "hide", fig.height = 4, fig.align = 'center'}
 if (params$dif_type >= 1) {
   if(params$isGroupPresent){
     print(params$deltaplot +
               geom_text(size = 0.1) +
               theme(text = element_text(size = 10), plot.title = element_text(face = "bold")))
-  }
-}
-```
-
-```{r delta-plot-output, echo = FALSE}
-if (params$dif_type >= 1) {
-  if(params$isGroupPresent){
-  params$DP_text_normal
   }
 }
 ```
@@ -269,7 +266,7 @@ if (params$dif_type >= 2) {
 }
 ```
 
-```{r dif-logistic-plot, echo = FALSE, results = 'hide', fig.height = 4.2, fig.align = 'center'}
+```{r dif-logistic-plot, echo = FALSE, results = 'hide', fig.height = 4, fig.align = 'center'}
 if (params$dif_type >= 2) {
   if(params$isGroupPresent){
   params$DIF_logistic_plot
@@ -287,7 +284,7 @@ if (params$dif_type >= 3) {
 }
 ```
 
-```{r ddf-multi-plot, echo = FALSE, results = 'hide', fig.height = 4.2, fig.align = 'center'}
+```{r ddf-multi-plot, echo = FALSE, results = 'hide', fig.height = 4, fig.align = 'center'}
 if (params$dif_type >= 3) {
   if(params$isGroupPresent){
   params$plot_DDFReportInput

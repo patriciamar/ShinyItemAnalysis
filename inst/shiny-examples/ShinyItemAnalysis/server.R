@@ -11,6 +11,7 @@ require(difR)
 require(ggplot2)
 require(grid)
 require(gridExtra)
+require(knitr)
 require(latticeExtra)
 require(ltm)
 require(mirt)
@@ -25,6 +26,7 @@ require(ShinyItemAnalysis)
 require(shinyjs)
 require(stringr)
 require(WrightMap)
+require(xtable)
 
 #%%%%%%%%%%%%%%%%%%%%%
 # DATA ###############
@@ -3855,7 +3857,8 @@ function(input, output, session) {
                              purify = purify_report
             )
         g = g + ggtitle(paste0("DIF logistic plot for item ", item_numbers()[mod$DIFitems[i]])) +
-          theme(text = element_text(size = 10), plot.title = element_text(size = 10, face = "bold"))
+          theme(text = element_text(size = 12),
+                plot.title = element_text(size = 12, face = "bold"))
         graflist[[i]] <- g
       }
     } else {
@@ -4487,7 +4490,7 @@ function(input, output, session) {
     fit <- model_DDF_plot()
     item <- input$ddfSlider
 
-    g <- plot(fit, item = item)[[item]]
+    g <- plot(fit, item = item)[[1]]
     g + theme(text = element_text(size = 14),
               plot.title = element_text(size = 14, face = "bold",
                                         vjust = 1.5)) +
@@ -4515,8 +4518,8 @@ function(input, output, session) {
    # if (mod$DIFitems[[1]]!="No DDF item detected"){
       for (i in 1:length(mod$DDFitems)) {
         g <- plot(mod, item = mod$DDFitems[i])[[1]] +
-                theme(text = element_text(size = 10),
-                      plot.title = element_text(size = 10, face = "bold",
+                theme(text = element_text(size = 12),
+                      plot.title = element_text(size = 12, face = "bold",
                                                   vjust = 1.5)) +
                 ggtitle(paste("\nDDF multinomial plot for item",
                               item_numbers()[mod$DDFitems[i]]))
