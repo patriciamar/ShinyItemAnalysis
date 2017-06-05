@@ -15,7 +15,7 @@ ui = tagList(
                       href = "style.css"),
             tags$script(type = "text/javascript",
                         src = "busy.js"),
-            tags$style(type = "text/css", "body {padding-top: 70px}")
+            tags$style(type = "text/css", "body {padding-top: 110px}")
   ),
 
   div(class = "busy",
@@ -502,8 +502,8 @@ ui = tagList(
                                             plotOutput('validity_plot'),
                                             downloadButton("DB_validity_plot", label = "Download figure"),
                                             h4('Correlation of criterion variable and total score'),
-                                            p('Test for association between total score and criterion variable based on Pearsons product moment
-                                              correlation coefficient (PPC). The null hypothesis is that correlation is 0. '),
+                                            p('Test for association between total score and criterion variable based on Spearmans rho.
+                                              The null hypothesis is that correlation is 0. '),
                                             tableOutput('validity_table'),
                                             htmlOutput('validity_table_interpretation'),
                                             br()
@@ -531,6 +531,9 @@ ui = tagList(
                                                         step = 1, animate = TRUE),
                                             plotOutput('validity_distractor_plot'),
                                             downloadButton("DB_validity_distractor_plot", label = "Download figure"),
+                                            h4('Correlation of criterion variable and scored item'),
+                                            tableOutput('validity_table_item'),
+                                            htmlOutput('validity_table_item_interpretation'),
                                             br(),
                                             br()
                                    )
@@ -3057,7 +3060,8 @@ ui = tagList(
                          p(strong("Recommendation: "), "Report generation can be faster and more reliable when you first check
                            sections of intended contents. For example, if you wish to include a ", strong("3PL IRT"),
                            " model, you can first visit ", strong("IRT models"), "section and ", strong("3PL"), " subsection."),
-                         p(strong("Warning: "), "Download of reports takes some time. Please, be patient."),
+
+                         #p(strong("Warning: "), "Download of reports takes some time. Please, be patient."),
                          actionButton("generate", "Generate report"),
                          downloadButton("report", "Downloadeport"),
                          br(),
