@@ -710,7 +710,7 @@ function(input, output, session) {
 
     ct <- cor.test(ts, cv, method = "spearman", exact = F)
     tab <- c(round(ct$estimate, 2), round(ct$statistic, 2), round(ct$p.value, 3))
-    names(tab) <- c("Rho", "S-value", "p-value")
+    names(tab) <- c(HTML("&rho;"), "S-value", "p-value")
 
     tab
   })
@@ -720,7 +720,8 @@ function(input, output, session) {
     validity_table_Input()
   },
   include.rownames = TRUE,
-  include.colnames = FALSE)
+  include.colnames = FALSE,
+  sanitize.text.function = function(x) x)
 
   # ** Interpretation ####
   output$validity_table_interpretation <- renderUI({
@@ -795,7 +796,7 @@ function(input, output, session) {
 
     ct <- cor.test(correct[, i], cv, method = "spearman", exact = F)
     tab <- c(round(ct$estimate, 2), round(ct$statistic, 2), round(ct$p.value, 3))
-    names(tab) <- c("Rho", "S-value", "p-value")
+    names(tab) <- c(HTML("&rho;"), "S-value", "p-value")
 
     tab
   })
@@ -805,7 +806,8 @@ function(input, output, session) {
     validity_table_item_Input()
   },
   include.rownames = TRUE,
-  include.colnames = FALSE)
+  include.colnames = FALSE,
+  sanitize.text.function = function(x) x)
 
   # ** Interpretation ####
   output$validity_table_item_interpretation <- renderUI({
