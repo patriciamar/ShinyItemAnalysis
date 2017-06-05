@@ -504,8 +504,9 @@ ui = tagList(
                                             plotOutput('validity_plot'),
                                             downloadButton("DB_validity_plot", label = "Download figure"),
                                             h4('Correlation of criterion variable and total score'),
-                                            p('Test for association between total score and criterion variable based on Spearmans rho.
-                                              The null hypothesis is that correlation is 0. '),
+                                            p('Test for association between total score and criterion variable is based on Spearman`s \\(\\rho\\).
+                                              This rank-based measure have been recommended if data does not necessarily come from bivariate normal
+                                              distribution. The null hypothesis is that correlation is 0. '),
                                             tableOutput('validity_table'),
                                             htmlOutput('validity_table_interpretation'),
                                             h4("Selected R code"),
@@ -564,6 +565,9 @@ ui = tagList(
                                             plotOutput('validity_distractor_plot'),
                                             downloadButton("DB_validity_distractor_plot", label = "Download figure"),
                                             h4('Correlation of criterion variable and scored item'),
+                                            p('Test for association between scored item and criterion variable is based on Spearman`s \\(\\rho\\).
+                                              This rank-based measure have been recommended if data does not necessarily come from bivariate normal
+                                              distribution. The null hypothesis is that correlation is 0. '),
                                             tableOutput('validity_table_item'),
                                             htmlOutput('validity_table_item_interpretation'),
                                             h4("Selected R code"),
@@ -3118,7 +3122,7 @@ ui = tagList(
 
                          #p(strong("Warning: "), "Download of reports takes some time. Please, be patient."),
                          actionButton("generate", "Generate report"),
-                         downloadButton("report", "Downloadeport"),
+                         downloadButton("report", "Download report"),
                          br(),
                          br(),
                          br()

@@ -11,6 +11,7 @@ require(difR)
 require(ggplot2)
 require(grid)
 require(gridExtra)
+require(knitr)
 require(latticeExtra)
 require(ltm)
 require(mirt)
@@ -25,6 +26,7 @@ require(ShinyItemAnalysis)
 require(shinyjs)
 require(stringr)
 require(WrightMap)
+require(xtable)
 
 #%%%%%%%%%%%%%%%%%%%%%
 # DATA ###############
@@ -708,7 +710,7 @@ function(input, output, session) {
 
     ct <- cor.test(ts, cv, method = "spearman", exact = F)
     tab <- c(round(ct$estimate, 2), round(ct$statistic, 2), round(ct$p.value, 3))
-    names(tab) <- c("Rho", "S-value", "p-value")
+    names(tab) <- c(HTML("&rho;"), "S-value", "p-value")
 
     tab
   })
@@ -718,7 +720,8 @@ function(input, output, session) {
     validity_table_Input()
   },
   include.rownames = TRUE,
-  include.colnames = FALSE)
+  include.colnames = FALSE,
+  sanitize.text.function = function(x) x)
 
   # ** Interpretation ####
   output$validity_table_interpretation <- renderUI({
@@ -793,7 +796,7 @@ function(input, output, session) {
 
     ct <- cor.test(correct[, i], cv, method = "spearman", exact = F)
     tab <- c(round(ct$estimate, 2), round(ct$statistic, 2), round(ct$p.value, 3))
-    names(tab) <- c("Rho", "S-value", "p-value")
+    names(tab) <- c(HTML("&rho;"), "S-value", "p-value")
 
     tab
   })
@@ -803,7 +806,8 @@ function(input, output, session) {
     validity_table_item_Input()
   },
   include.rownames = TRUE,
-  include.colnames = FALSE)
+  include.colnames = FALSE,
+  sanitize.text.function = function(x) x)
 
   # ** Interpretation ####
   output$validity_table_item_interpretation <- renderUI({
@@ -3855,7 +3859,8 @@ function(input, output, session) {
                              purify = purify_report
             )
         g = g + ggtitle(paste0("DIF logistic plot for item ", item_numbers()[mod$DIFitems[i]])) +
-          theme(text = element_text(size = 10), plot.title = element_text(size = 10, face = "bold"))
+          theme(text = element_text(size = 12),
+                plot.title = element_text(size = 12, face = "bold"))
         graflist[[i]] <- g
       }
     } else {
@@ -4487,7 +4492,7 @@ function(input, output, session) {
     fit <- model_DDF_plot()
     item <- input$ddfSlider
 
-    g <- plot(fit, item = item)[[item]]
+    g <- plot(fit, item = item)[[1]]
     g + theme(text = element_text(size = 14),
               plot.title = element_text(size = 14, face = "bold",
                                         vjust = 1.5)) +
@@ -4515,8 +4520,8 @@ function(input, output, session) {
    # if (mod$DIFitems[[1]]!="No DDF item detected"){
       for (i in 1:length(mod$DDFitems)) {
         g <- plot(mod, item = mod$DDFitems[i])[[1]] +
-                theme(text = element_text(size = 10),
-                      plot.title = element_text(size = 10, face = "bold",
+                theme(text = element_text(size = 12),
+                      plot.title = element_text(size = 12, face = "bold",
                                                   vjust = 1.5)) +
                 ggtitle(paste("\nDDF multinomial plot for item",
                               item_numbers()[mod$DDFitems[i]]))
@@ -4605,7 +4610,7 @@ function(input, output, session) {
   })
 
 
-  # DOWNLOADN REPORT #####
+  # DOWNLOAD REPORT #####
   formatInput<-reactive({
     format<-input$report_format
     format
@@ -4672,10 +4677,10 @@ function(input, output, session) {
   })
 
   groupPresent<-reactive({
-    if (length(dataset$group)>1) {
-      groupLogical=TRUE
+    if (length(dataset$group) > 1) {
+      groupLogical = TRUE
     } else {
-      groupLogical=FALSE
+      groupLogical = FALSE
     }
     groupLogical
   })
@@ -4690,7 +4695,7 @@ function(input, output, session) {
   })
 
   observeEvent(input$generate, {
-    withProgress(message = "Creating content", value=0, style = "notification", {
+    withProgress(message = "Creating content", value = 0, style = "notification", {
     list(a = test_answers(),
          k = test_key(),
          # total scores
@@ -4748,14 +4753,14 @@ function(input, output, session) {
     })
   })
 
-  reportContentList<-isolate(reportContent())
+  reportContentList <- isolate(reportContent())
 
-  output$report<-downloadHandler(
-    filename=reactive({paste0("report.", input$report_format)}),
-    content=function(file) {
+  output$report <- downloadHandler(
+    filename = reactive({paste0("report.", input$report_format)}),
+    content = function(file) {
 
-      reportPath <- file.path(getwd(), paste0("report", formatInput(),".Rmd"))
-      #file.copy("report.Rmd", tempReport, overwrite = TRUE)
+      reportPath <- file.path(getwd(), paste0("report", formatInput(), ".Rmd"))
+      # file.copy("report.Rmd", tempReport, overwrite = TRUE)
       parameters<-list(a = test_answers(),
                        k = test_key(),
                        # total scores
@@ -4802,7 +4807,7 @@ function(input, output, session) {
                        model_DDF_print = {if (groupPresent()) {if (input$dif_type_report>=3) {model_DDF_print_report()}}},
                        plot_DDFReportInput = {if (groupPresent()) {if (input$dif_type_report>=3) {plot_DDFReportInput()}}}
       )
-      rmarkdown::render(reportPath, output_file=file,
+      rmarkdown::render(reportPath, output_file = file,
                         params = parameters, envir = new.env(parent = globalenv()))
     }
   )

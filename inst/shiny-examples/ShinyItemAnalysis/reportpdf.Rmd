@@ -72,21 +72,21 @@ colnames(table) = NULL
 print(xtable(t(table), digits = c(0, 0, 0, 3, 0, 3, 3, 3), align = rep('c', 8)), booktabs = T, comment = F, include.rownames = F)
 ```
 
-```{r total-scores-histogram, echo = FALSE,  fig.height = 4}
-params$histogram_totalscores + ggtitle('Histogram of total scores') + theme(text = element_text(size = 10), plot.title = element_text(face = "bold"))
+```{r total-scores-histogram, echo = FALSE, fig.height = 4.5, fig.width = 11}
+params$histogram_totalscores + ggtitle('Histogram of total scores') + theme(text = element_text(size = 12), plot.title = element_text(face = "bold"))
 ```
 
 `r if (any(params$corr_plot != "")) {"## Correlation structure"}`
 
-```{r corr-plot, echo = FALSE, fig.height = 4}
+```{r corr-plot, echo = FALSE, fig.height = 4, fig.width = 9}
 if (any(params$corr_plot != "")) {
   corrplot(params$corr_plot, tl.cex = 0.7)
 }
 ```
 
-```{r scree-plot, echo = FALSE, fig.height = 4}
+```{r scree-plot, echo = FALSE, fig.height = 4.5, fig.width = 11}
 if (any(params$corr_plot != "")) {
-  params$scree_plot + ggtitle("Scree plot") + theme(text = element_text(size = 10), plot.title = element_text(face = "bold"))
+  params$scree_plot + ggtitle("Scree plot") + theme(text = element_text(size = 12), plot.title = element_text(face = "bold"))
 }
 ```
 
@@ -97,8 +97,8 @@ if (any(params$corr_plot != "")) {
 
 ## Item analysis
 
-```{r DD-plot, echo = FALSE, fig.height = 4}
-params$difPlot + ggtitle('Difficulty/Discrimination plot') + theme(text = element_text(size = 10), plot.title = element_text(face = "bold"))
+```{r DD-plot, echo = FALSE, fig.height = 4.5, fig.width = 11}
+params$difPlot + ggtitle('Difficulty/Discrimination plot') + theme(text = element_text(size = 12), plot.title = element_text(face = "bold"))
 ```
 
 **Traditional item analysis table**
@@ -166,7 +166,8 @@ $$ {P}(Y_{ij} = 1|\theta_{i},a_j,b_j) = \frac{e^{a_j(\theta_i-b_j)}}{1+e^{a_j(\t
 $$ {P}(Y_{ij} = 1|\theta_{i},a_j,b_j, c_j) =c_j + (1+c_j)\cdot\frac{e^{a_j(\theta_i-b_j)}}{1+e^{a_j(\theta_i-b_j)}}$$
 
 **`r if (any(params$wrightMap!="")) {"Wright (item-person) map using 1PL IRT model"}`**
-```{r wright-map, echo = FALSE, results = "hide", fig.height = 5, fig.width = 10}
+
+```{r wright-map, echo = FALSE, results = "hide", fig.height = 5.5, fig.width = 11}
 if (any(params$wrightMap != "")) {
   wrightMap(params$wrightMap[[1]], params$wrightMap[[2]], item.side = itemClassic)
 }
@@ -176,26 +177,33 @@ if (any(params$wrightMap != "")) {
 
 **Selected model:`r head`**
 
-```{r irt-1, echo = FALSE, results = "hide", fig.height = 4}
+```{r irt-0, echo = FALSE, results = "hide", fig.height = 4.5, fig.width = 11}
 if (params$irt_type != "none") {
   params$irt
+}
+```
+
+```{r irt-1, echo = FALSE, results = "hide", fig.height = 4.5, fig.width = 11}
+if (params$irt_type != "none") {
   params$irtiic
 }
 ```
 
 `r if (any(params$wrightMap!="")) {"\\pagebreak"}`
 
-```{r irt-2, echo = FALSE, fig.height = 4}
+```{r irt-2, echo = FALSE, results = "hide", fig.height = 4.5, fig.width = 11}
 if (params$irt_type != "none") {
   params$irttif
 }
 ```
 
-```{r irt-3, echo = FALSE, fig.height = 4}
+```{r irt-3, echo = FALSE, results = "hide", fig.height = 4.5, fig.width = 11}
 if (params$irt_type != "none") {
   params$irtfactor + ggtitle('Scatterplot of factor scores and standardized total scores') + theme(text = element_text(size = 10), plot.title = element_text(face = "bold"))
 }
 ```
+
+`r if (any(params$wrightMap!="")) {"\\pagebreak"}`
 
 **`r if (params$irt_type != "none") {"Parameter estimates and item fit"}`**
 ```{r irt-estim, echo = FALSE, results = "asis"}
@@ -208,7 +216,6 @@ if (params$irt_type != "none") {
 ```
 
 \pagebreak
-\newpage
 
 # DIF/Fairness report
 
@@ -223,7 +230,7 @@ if(params$isGroupPresent){
 }
 ```
 
-```{r hist-by-group, echo = FALSE}
+```{r hist-by-group, echo = FALSE, fig.height = 9, fig.width = 11}
 if(params$isGroupPresent){
   g1 = params$histbyscoregroup0 + theme(text = element_text(size = 10), plot.title = element_text(face = "bold"))
   g2 = params$histbyscoregroup1 + theme(text = element_text(size = 10), plot.title = element_text(face = "bold"))
@@ -233,20 +240,20 @@ if(params$isGroupPresent){
 
 `r if(params$isGroupPresent & params$dif_type >= 1) {"## DIF detection using delta plot"}`
 
-```{r delta-plot, echo = FALSE}
-if (params$dif_type >= 1) {
-  if(params$isGroupPresent){
-    print(params$deltaplot +
-            geom_text(size = 0.1) +
-            theme(text = element_text(size = 10), plot.title = element_text(face = "bold")))
-  }
-}
-```
-
 ```{r delta-plot-output, echo = FALSE}
 if (params$dif_type >= 1) {
   if(params$isGroupPresent){
     params$DP_text_normal
+  }
+}
+```
+
+```{r delta-plot, echo = FALSE, fig.height = 4.5, fig.width = 11}
+if (params$dif_type >= 1) {
+  if(params$isGroupPresent){
+    print(params$deltaplot +
+            geom_text(size = 0.1) +
+            theme(text = element_text(size = 12), plot.title = element_text(face = "bold")))
   }
 }
 ```
@@ -260,7 +267,7 @@ if (params$dif_type >= 2) {
 }
 ```
 
-```{r dif-logistic-plot, echo = FALSE, results = 'hide', fig.height = 4.2}
+```{r dif-logistic-plot, echo = FALSE, results = 'hide', fig.height = 4.5, fig.width = 11}
 if (params$dif_type >= 2) {
   if(params$isGroupPresent){
     params$DIF_logistic_plot
@@ -277,7 +284,7 @@ if (params$dif_type >= 3) {
 }
 ```
 
-```{r ddf-multi-plot, echo = FALSE, results = "hide", fig.height = 4.2}
+```{r ddf-multi-plot, echo = FALSE, results = "hide", fig.height = 4.5, fig.width = 11}
 if (params$dif_type >= 3) {
   if(params$isGroupPresent){
     params$plot_DDFReportInput
