@@ -3122,7 +3122,7 @@ ui = tagList(
 
                          #p(strong("Warning: "), "Download of reports takes some time. Please, be patient."),
                          actionButton("generate", "Generate report"),
-                         downloadButton("report", "Downloadeport"),
+                         downloadButton("report", "Download report"),
                          br(),
                          br(),
                          br()

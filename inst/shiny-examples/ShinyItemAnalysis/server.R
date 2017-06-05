@@ -4610,7 +4610,7 @@ function(input, output, session) {
   })
 
 
-  # DOWNLOADN REPORT #####
+  # DOWNLOAD REPORT #####
   formatInput<-reactive({
     format<-input$report_format
     format
@@ -4677,10 +4677,10 @@ function(input, output, session) {
   })
 
   groupPresent<-reactive({
-    if (length(dataset$group)>1) {
-      groupLogical=TRUE
+    if (length(dataset$group) > 1) {
+      groupLogical = TRUE
     } else {
-      groupLogical=FALSE
+      groupLogical = FALSE
     }
     groupLogical
   })
@@ -4695,7 +4695,7 @@ function(input, output, session) {
   })
 
   observeEvent(input$generate, {
-    withProgress(message = "Creating content", value=0, style = "notification", {
+    withProgress(message = "Creating content", value = 0, style = "notification", {
     list(a = test_answers(),
          k = test_key(),
          # total scores
@@ -4753,14 +4753,14 @@ function(input, output, session) {
     })
   })
 
-  reportContentList<-isolate(reportContent())
+  reportContentList <- isolate(reportContent())
 
-  output$report<-downloadHandler(
-    filename=reactive({paste0("report.", input$report_format)}),
-    content=function(file) {
+  output$report <- downloadHandler(
+    filename = reactive({paste0("report.", input$report_format)}),
+    content = function(file) {
 
-      reportPath <- file.path(getwd(), paste0("report", formatInput(),".Rmd"))
-      #file.copy("report.Rmd", tempReport, overwrite = TRUE)
+      reportPath <- file.path(getwd(), paste0("report", formatInput(), ".Rmd"))
+      # file.copy("report.Rmd", tempReport, overwrite = TRUE)
       parameters<-list(a = test_answers(),
                        k = test_key(),
                        # total scores
@@ -4807,7 +4807,7 @@ function(input, output, session) {
                        model_DDF_print = {if (groupPresent()) {if (input$dif_type_report>=3) {model_DDF_print_report()}}},
                        plot_DDFReportInput = {if (groupPresent()) {if (input$dif_type_report>=3) {plot_DDFReportInput()}}}
       )
-      rmarkdown::render(reportPath, output_file=file,
+      rmarkdown::render(reportPath, output_file = file,
                         params = parameters, envir = new.env(parent = globalenv()))
     }
   )
