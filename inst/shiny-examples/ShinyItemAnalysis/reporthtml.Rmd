@@ -185,9 +185,14 @@ if (any(params$wrightMap != "")) {
 
 **Selected model:`r head`**
 
-```{r irt-1, echo = FALSE, results = "hide", fig.height = 4}
+```{r irt-0, echo = FALSE, results = "hide", fig.height = 4}
 if (params$irt_type != "none") {
   params$irt
+}
+```
+
+```{r irt-1, echo = FALSE, results = "hide", fig.height = 4}
+if (params$irt_type != "none") {
   params$irtiic
 }
 ```
@@ -216,9 +221,6 @@ if (params$irt_type != "none") {
 }
 ```
 
-\pagebreak
-\newpage
-
 **************
 
 # DIF/Fairness report
@@ -236,7 +238,8 @@ if (params$histCheck) {
 }
 ```
 
-```{r hist-by-group, echo = FALSE, fig.align = 'center'}
+
+```{r hist-by-group, echo = FALSE, fig.height = 8, fig.align = 'center'}
 if (params$histCheck) {
   if(params$isGroupPresent){
     g1 = params$histbyscoregroup0 + theme(text = element_text(size = 10), plot.title = element_text(face = "bold"))
@@ -248,20 +251,22 @@ if (params$histCheck) {
 
 `r if(params$isGroupPresent & params$deltaplotCheck) {"## DIF detection using Delta plot"}`
 
-```{r delta-plot, echo = FALSE}
-if (params$deltaplotCheck) {
-  if(params$isGroupPresent){
-    print(params$deltaplot +
-            geom_text(size = 0.1) +
-            theme(text = element_text(size = 10), plot.title = element_text(face = "bold")))
-  }
-}
-```
 
 ```{r delta-plot-output, echo = FALSE}
 if (params$deltaplotCheck) {
   if(params$isGroupPresent){
     params$DP_text_normal
+  }
+}
+```
+
+
+```{r delta-plot, echo = FALSE, results = "hide", fig.height = 4, fig.align = 'center'}
+if (params$deltaplotCheck) {
+  if(params$isGroupPresent){
+    print(params$deltaplot +
+            geom_text(size = 0.1) +
+            theme(text = element_text(size = 10), plot.title = element_text(face = "bold")))
   }
 }
 ```
@@ -275,7 +280,8 @@ if (params$logregCheck) {
 }
 ```
 
-```{r dif-logistic-plot, echo = FALSE, results = 'hide', fig.height = 4.2, fig.align = 'center'}
+
+```{r dif-logistic-plot, echo = FALSE, results = 'hide', fig.height = 4, fig.align = 'center'}
 if (params$logregCheck) {
   if(params$isGroupPresent){
     params$DIF_logistic_plot
@@ -292,7 +298,8 @@ if (params$multiCheck) {
 }
 ```
 
-```{r ddf-multi-plot, echo = FALSE, results = 'hide', fig.height = 4.2, fig.align = 'center'}
+
+```{r ddf-multi-plot, echo = FALSE, results = 'hide', fig.height = 4, fig.align = 'center'}
 if (params$multiCheck) {
   if(params$isGroupPresent){
     params$plot_DDFReportInput

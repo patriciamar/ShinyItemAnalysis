@@ -5,38 +5,48 @@
         ***************************************************************
 
 ---------------------------------------------------
-- Changes in ShinyItemAnalysis 1.1.4 (2017-05-30) -
+- Changes in ShinyItemAnalysis 1.1.5 (2017-06-06) -
 ---------------------------------------------------
 
 MAJOR UPDATES
 
   o ShinyItemAnalysis can now handle missing values.
   o Bug in WrightMap was fixed.
-  o Pearson's correlation coefficient between factor scores and
-    standardized total score was added for Bock's nominal IRT model.
-  o New options for reports were added. By default no IRT models and
-    no graphs of correlation structure are fitted.
-  o Option of item purification was added into some DIF detection
-    methods - Delta plot method, Mantel-Haneszel, Logistic regression
-    with total score, Lord's test and Raju's test.
-  o Default option of p-values adjustments in DIF detection methods
-    was set to 'none'.
   o We have new contributor - Lubomir Stepanek!
   o New online mirror was added.
   o Busy indicator and tooltips were added.
-  o IRT models are now fitted only by mirt package.
-  o Training plots of item characteristic and information curves were
-    added into IRT models section.
   o Structure of application was mildy updated.
   o Datasets 'dataMedical()', 'dataMedicalkey()', 'dataMedicaltest()'
-    were updated. Group variable was added.
-  o Reports are now described in detail.
-  o The settings of reports are now also offered in Report section.
-  o Now it is possible to upload predictive outcome.
-  o Validity analysis of predictive outcome is now included on Validity
-    page in Predictive validity section.
-  o Functions 'DistractorAnalysis()' and 'plotDistractorAnalysis()' were
-    extended by 'matching' argument.
+    were updated. Group variable and criterion variable were added.
+  o The newest versions of some packages are now required ('difNLR v 1.0.2',
+    'difR v 4.7', 'ggplot2 v 2.2.1', 'mirt v 1.24', 'shiny 1.0.3' and
+    'shinyjs v 0.9').
+
+  * DIF/Fairness
+    o Option of item purification was added into some DIF detection
+      methods - Delta plot method, Mantel-Haneszel, Logistic regression
+      with total score, Lord's test and Raju's test.
+    o Default option of p-values adjustments in DIF detection methods
+      was set to 'none'.
+  * IRT models
+    o IRT models are now fitted only by mirt package.
+    o Training plots of item characteristic and information curves were
+      added into IRT models section.
+    o Pearson's correlation coefficient between factor scores and
+      standardized total score was added for Bock's nominal IRT model.
+  * Reports
+    o New options for reports were added. By default no IRT models and
+      no graphs of correlation structure are fitted.
+    o Reports are now described in detail.
+    o The settings of reports are now also offered in Report section.
+  * Validity analysis:
+    o Validity analysis of predictive outcome is now included on Validity
+      page in Predictive validity section.
+    o Now it is possible to upload predictive outcome.
+    o Dataset 'GMAT' and 'GMATtest' from 'difNLR' package include now criterion
+      variable which can be used in Predictive validity section.
+    o Functions 'DistractorAnalysis()' and 'plotDistractorAnalysis()' were
+      extended by 'matching' argument.
 
 MINOR UPDATES
 
@@ -48,6 +58,9 @@ MINOR UPDATES
   o Reports design was slightly updated.
   o Code was slightly updated to correspond to new versions of packages
     difNLR, mirt and ggplot2.
+  o Selected code was updated.
+  o Package dependencies were updated (packages 'knitr' and 'xtable' are
+    now used in report generation).
 
 ---------------------------------------------------
 - Changes in ShinyItemAnalysis 1.1.0 (2016-02-02) -

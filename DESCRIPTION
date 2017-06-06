@@ -12,11 +12,12 @@ Imports:
     CTT,
     deltaPlotR,
     DT,
-    difNLR,
+    difNLR (>= 1.0.2),
     difR (>= 4.7),
     ggplot2 (>= 2.2.1),
     grid,
     gridExtra,
+    knitr,
     latticeExtra,
     ltm,
     mirt (>= 1.24),
@@ -27,10 +28,11 @@ Imports:
     psychometric,
     reshape2,
     rmarkdown,
-    shiny,
-    shinyjs,
+    shiny (>= 1.0.3),
+    shinyjs (>= 0.9),
     stringr,
-    WrightMap
+    WrightMap,
+    xtable
 Description: Interactive shiny application for analysis of educational tests and
     their items.
 License: GPL-3

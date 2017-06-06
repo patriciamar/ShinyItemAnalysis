@@ -57,7 +57,7 @@
 #' @importFrom reshape2 dcast melt
 #' @importFrom rmarkdown render
 #' @importFrom shinyjs show hide useShinyjs
-#' @importFrom stats aggregate coef deriv deriv3 fitted glm median nls quantile relevel sd vcov xtabs
+#' @importFrom stats aggregate coef complete.cases deriv deriv3 fitted glm median nls quantile relevel sd vcov xtabs
 #' @importFrom stringr str_sub
 #' @importFrom utils data read.csv
 
