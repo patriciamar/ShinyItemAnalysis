@@ -53,7 +53,10 @@ params:
   model_DDF_print: NA
   plot_DDFReportInput: NA
   isGroupPresent: NA
-  dif_type: NA
+  histCheck: NA
+  deltaplotCheck: NA
+  logregCheck: NA
+  multiCheck: NA
   groupie: NA
 ---
 
@@ -214,27 +217,31 @@ if (params$irt_type != "none") {
 
 `r if(!params$isGroupPresent){"Group vector is not present. DIF and DDF Report could not be generated!"}`
 
-`r if(params$isGroupPresent) {"## Total scores"}`
+`r if(params$isGroupPresent & params$histCheck) {"## Total scores"}`
 
 **Summary table of total scores in reference and focal group**
 ```{r table-by-group, echo = FALSE, results = "asis"}
-if(params$isGroupPresent){
-  print(xtable(params$resultsgroup, digits = c(0, 0, 0, 3, 0, 3, 3, 3), aling = rep('c', 8)), booktabs = T, comment = F)
+if (params$histCheck) {
+  if(params$isGroupPresent){
+    print(xtable(params$resultsgroup, digits = c(0, 0, 0, 3, 0, 3, 3, 3), aling = rep('c', 8)), booktabs = T, comment = F)
+  }
 }
 ```
 
 ```{r hist-by-group, echo = FALSE}
-if(params$isGroupPresent){
-  g1 = params$histbyscoregroup0 + theme(text = element_text(size = 10), plot.title = element_text(face = "bold"))
-  g2 = params$histbyscoregroup1 + theme(text = element_text(size = 10), plot.title = element_text(face = "bold"))
-  grid.arrange(g1, g2, ncol = 1)
+if (params$histCheck) {
+  if(params$isGroupPresent){
+    g1 = params$histbyscoregroup0 + theme(text = element_text(size = 10), plot.title = element_text(face = "bold"))
+    g2 = params$histbyscoregroup1 + theme(text = element_text(size = 10), plot.title = element_text(face = "bold"))
+    grid.arrange(g1, g2, ncol = 1)
+  }
 }
 ```
 
-`r if(params$isGroupPresent & params$dif_type >= 1) {"## DIF detection using delta plot"}`
+`r if(params$isGroupPresent & params$deltaplotCheck) {"## DIF detection using delta plot"}`
 
 ```{r delta-plot, echo = FALSE}
-if (params$dif_type >= 1) {
+if (params$deltaplotCheck) {
   if(params$isGroupPresent){
     print(params$deltaplot +
             geom_text(size = 0.1) +
@@ -244,16 +251,16 @@ if (params$dif_type >= 1) {
 ```
 
 ```{r delta-plot-output, echo = FALSE}
-if (params$dif_type >= 1) {
+if (params$deltaplotCheck) {
   if(params$isGroupPresent){
     params$DP_text_normal
   }
 }
 ```
 
-`r if(params$isGroupPresent & params$dif_type >= 2) {"## DIF detection using logistic regression"}`
+`r if(params$isGroupPresent & params$logregCheck) {"## DIF detection using logistic regression"}`
 ```{r dif-logistic-output, echo = FALSE}
-if (params$dif_type >= 2) {
+if (params$logregCheck) {
  if(params$isGroupPresent){
   print(params$DIF_logistic_print)
   } 
@@ -261,16 +268,16 @@ if (params$dif_type >= 2) {
 ```
 
 ```{r dif-logistic-plot, echo = FALSE, results = 'hide', fig.height = 4.2}
-if (params$dif_type >= 2) {
+if (params$logregCheck) {
   if(params$isGroupPresent){
     params$DIF_logistic_plot
   }
 }
 ```
 
-`r if(params$isGroupPresent & params$dif_type >= 2) {"## DDF detection Using multinomial regression"}`
+`r if(params$isGroupPresent & params$multiCheck) {"## DDF detection Using multinomial regression"}`
 ```{r ddf-multi-output, echo = FALSE}
-if (params$dif_type >= 3) {
+if (params$multiCheck) {
   if(params$isGroupPresent){
     print(params$model_DDF_print) 
   }
@@ -278,7 +285,7 @@ if (params$dif_type >= 3) {
 ```
 
 ```{r ddf-multi-plot, echo = FALSE, results = "hide", fig.height = 4.2}
-if (params$dif_type >= 3) {
+if (params$multiCheck) {
   if(params$isGroupPresent){
     params$plot_DDFReportInput
   }
