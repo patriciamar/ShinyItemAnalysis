@@ -2960,7 +2960,7 @@ ui = tagList(
                            )
                          ),
                          fluidRow(
-                           conditionalPanel(condition = "!input.customizeCheck",
+                           conditionalPanel(condition = "input.customizeCheck",
                                             column(1, p(strong("Distractors plot")),
                                                    radioButtons('type_combinations_distractor_report', 'Type',
                                                                 list("Combinations", "Distractors")
@@ -2988,7 +2988,7 @@ ui = tagList(
                                     checkboxInput("logregCheck", "Logistic regression", FALSE),
                                     checkboxInput("multiCheck", "Multinomial regression", FALSE)
                              ),
-                             conditionalPanel(condition = "!input.customizeCheck",
+                             conditionalPanel(condition = "input.customizeCheck",
                              conditionalPanel(condition = "input.deltaplotCheck",
                                column(2, p(strong("Delta plot settings")),
                                       radioButtons('type_threshold_report', 'Threshold',
