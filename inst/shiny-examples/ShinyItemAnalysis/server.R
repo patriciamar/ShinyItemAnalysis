@@ -1038,7 +1038,7 @@ function(input, output, session) {
     a <- test_answers()
     k <- test_key()
 
-    if (input$default_settings == "yes") {
+    if (!input$customizeCheck) {
       multiple.answers_report <- c(input$type_combinations_distractor == "Combinations")
     } else {
       multiple.answers_report <- c(input$type_combinations_distractor_report == "Combinations")
@@ -3082,7 +3082,7 @@ function(input, output, session) {
   })
 
   deltaGpurn_report <- reactive({
-    if (input$default_settings=="yes"){
+    if (!input$customizeCheck){
       type_threshold_report = input$type_threshold
       purify_report = input$puri_DP
       purType_report = input$puri_DP_type
@@ -3362,7 +3362,7 @@ function(input, output, session) {
     group <- DIF_groups()
     data <- correct_answ()
 
-    if (input$default_settings=="yes") {
+    if (!input$customizeCheck) {
       type_report = input$type_print_DIF_logistic
       p.adjust.method_report = input$correction_method_logSummary
       purify_report = input$puri_LR
@@ -3437,7 +3437,7 @@ function(input, output, session) {
     group <- DIF_groups()
     data <- correct_answ()
 
-    if (input$default_settings=="yes") {
+    if (!input$customizeCheck) {
       type_report = input$type_print_DIF_logistic
       p.adjust.method_report = input$correction_method_logItems
       purify_report = input$puri_LR
@@ -4055,7 +4055,7 @@ function(input, output, session) {
     a <- test_answers()
     k <- test_key()
 
-    if (input$default_settings=="yes") {
+    if (!input$customizeCheck) {
       adj.method <- input$correction_method_print_DDF
       type <- input$type_print_DDF
     } else {
@@ -4108,7 +4108,7 @@ function(input, output, session) {
     a <- test_answers()
     k <- test_key()
 
-    if (input$default_settings=="yes") {
+    if (!input$customizeCheck) {
       adj.method_report <- input$correction_method_plot_DDF
       type_report <- input$type_plot_DDF
     } else {
@@ -4289,14 +4289,7 @@ function(input, output, session) {
     groupLogical
   })
 
-  reportContent<-reactive({
-    observeEvent(input$generate, ignoreInit = TRUE, {
-      print("start")
 
-      print("end")
-    })
-
-  })
 
   observeEvent(input$generate, {
     withProgress(message = "Creating content", value = 0, style = "notification", {
@@ -4337,27 +4330,28 @@ function(input, output, session) {
          incProgress(0.25),
          # DIF
          isGroupPresent = groupPresent(),
-         dif_type = input$dif_type_report,
-         resultsgroup = {if (groupPresent()) {resultsgroupInput()}},
-         histbyscoregroup0 = {if (groupPresent()) {histbyscoregroup0Input()}},
-         histbyscoregroup1 = {if (groupPresent()) {histbyscoregroup1Input()}},
-         deltaplot = {if (groupPresent()) {if (input$dif_type_report>=1) {deltaplotInput_report()}}},
-         DP_text_normal = {if (groupPresent()) {if (input$dif_type_report>=1) {deltaGpurn_report()}}},
-         DIF_logistic_plot = {if (groupPresent()) {if (input$dif_type_report>=2) {DIF_logistic_plotReport()}}},
-         DIF_logistic_print = {if (groupPresent()) {if (input$dif_type_report>=2) {model_DIF_logistic_print_report()}}},
+         histCheck = input$histCheck,
+         resultsgroup = {if (groupPresent()) {if (input$histCheck) {resultsgroupInput()}}},
+         histbyscoregroup0 = {if (groupPresent()) {if (input$histCheck) {histbyscoregroup0Input()}}},
+         histbyscoregroup1 = {if (groupPresent()) {if (input$histCheck) {histbyscoregroup1Input()}}},
+         deltaplotCheck = input$deltaplotCheck,
+         deltaplot = {if (groupPresent()) {if (input$deltaplotCheck) {deltaplotInput_report()}}},
+         DP_text_normal = {if (groupPresent()) {if (input$deltaplotCheck) {deltaGpurn_report()}}},
+         logregCheck = input$logregCheck,
+         DIF_logistic_plot = {if (groupPresent()) {if (input$logregCheck) {DIF_logistic_plotReport()}}},
+         DIF_logistic_print = {if (groupPresent()) {if (input$logregCheck) {model_DIF_logistic_print_report()}}},
          #plot_DIF_logistic = {if (groupPresent()) {plot_DIF_logisticInput()}},
          #plot_DIF_logistic_IRT_Z = {if (groupPresent()) {plot_DIF_logistic_IRT_ZInput()}},
          #plot_DIF_NLR = {if (groupPresent()) {plot_DIF_NLRInput()}},
          #plot_DIF_IRT_Lord = {if (groupPresent()) {plot_DIF_IRT_LordInput()}},
          #plot_DIF_IRT_Raju = {if (groupPresent()) {plot_DIF_IRT_RajuInput()}},
-         model_DDF_print = {if (groupPresent()) {if (input$dif_type_report>=3) {model_DDF_print_report()}}},
-         plot_DDFReportInput = {if (groupPresent()) {if (input$dif_type_report>=3) {plot_DDFReportInput()}}},
+         multiCheck = input$multiCheck,
+         model_DDF_print = {if (groupPresent()) {if (input$multiCheck) {model_DDF_print_report()}}},
+         plot_DDFReportInput = {if (groupPresent()) {if (input$multiCheck) {plot_DDFReportInput()}}},
          incProgress(0.3)
     )
     })
   })
-
-  reportContentList <- isolate(reportContent())
 
   output$report <- downloadHandler(
     filename = reactive({paste0("report.", input$report_format)}),
@@ -4395,21 +4389,24 @@ function(input, output, session) {
                        irtfactor = irtfactorInput(),
                        # DIF
                        isGroupPresent = groupPresent(),
-                       dif_type = input$dif_type_report,
-                       resultsgroup = {if (groupPresent()) {resultsgroupInput()}},
-                       histbyscoregroup0 = {if (groupPresent()) {histbyscoregroup0Input()}},
-                       histbyscoregroup1 = {if (groupPresent()) {histbyscoregroup1Input()}},
-                       deltaplot = {if (groupPresent()) {if (input$dif_type_report>=1) {deltaplotInput_report()}}},
-                       DP_text_normal = {if (groupPresent()) {if (input$dif_type_report>=1) {deltaGpurn_report()}}},
-                       DIF_logistic_plot = {if (groupPresent()) {if (input$dif_type_report>=2) {DIF_logistic_plotReport()}}},
-                       DIF_logistic_print = {if (groupPresent()) {if (input$dif_type_report>=2) {model_DIF_logistic_print_report()}}},
+                       histCheck = input$histCheck,
+                       resultsgroup = {if (groupPresent()) {if (input$histCheck) {resultsgroupInput()}}},
+                       histbyscoregroup0 = {if (groupPresent()) {if (input$histCheck) {histbyscoregroup0Input()}}},
+                       histbyscoregroup1 = {if (groupPresent()) {if (input$histCheck) {histbyscoregroup1Input()}}},
+                       deltaplotCheck = input$deltaplotCheck,
+                       deltaplot = {if (groupPresent()) {if (input$deltaplotCheck) {deltaplotInput_report()}}},
+                       DP_text_normal = {if (groupPresent()) {if (input$deltaplotCheck) {deltaGpurn_report()}}},
+                       logregCheck = input$logregCheck,
+                       DIF_logistic_plot = {if (groupPresent()) {if (input$logregCheck) {DIF_logistic_plotReport()}}},
+                       DIF_logistic_print = {if (groupPresent()) {if (input$logregCheck) {model_DIF_logistic_print_report()}}},
                        #plot_DIF_logistic = {if (groupPresent()) {plot_DIF_logisticInput()}},
                        #plot_DIF_logistic_IRT_Z = {if (groupPresent()) {plot_DIF_logistic_IRT_ZInput()}},
                        #plot_DIF_NLR = {if (groupPresent()) {plot_DIF_NLRInput()}},
                        #plot_DIF_IRT_Lord = {if (groupPresent()) {plot_DIF_IRT_LordInput()}},
                        #plot_DIF_IRT_Raju = {if (groupPresent()) {plot_DIF_IRT_RajuInput()}},
-                       model_DDF_print = {if (groupPresent()) {if (input$dif_type_report>=3) {model_DDF_print_report()}}},
-                       plot_DDFReportInput = {if (groupPresent()) {if (input$dif_type_report>=3) {plot_DDFReportInput()}}}
+                       multiCheck = input$multiCheck,
+                       model_DDF_print = {if (groupPresent()) {if (input$multiCheck) {model_DDF_print_report()}}},
+                       plot_DDFReportInput = {if (groupPresent()) {if (input$multiCheck) {plot_DDFReportInput()}}}
       )
       rmarkdown::render(reportPath, output_file = file,
                         params = parameters, envir = new.env(parent = globalenv()))
