@@ -31,7 +31,8 @@
 #' adela.drabinova@gmail.com \cr
 #'
 #' @references
-#' Stuka, C. Vejrazka, M., Martinkova, P. Komenda, M. and Stepanek, L. (2016). The Use of  Test and Item Analisis for Improvement of Tests. Workshop held at conference MEFANET, 2016, Brno, Czech Republic.
+#' Stuka, C. Vejrazka, M., Martinkova, P. Komenda, M. and Stepanek, L. (2016). The Use of Test and Item Analisis for
+#' Improvement of Tests. Workshop held at conference MEFANET, 2016, Brno, Czech Republic.
 #'
 #' @keywords datasets
 #'
@@ -40,6 +41,7 @@
 #' @format A \code{dataMedical} data frame consists of 2,392 observations on
 #' the following 101 variables. The first 100 columns represent dichotomously scored
 #' items of the test. The 101st column is vector of gender membership; values 0 and 1
-#' refer to males and females.
+#' refer to males and females. The 102nd columns in criterion variable; value 1 means
+#' that student study standardly, 0 otherwise (e.g. leaving or interrupting studies).
 "dataMedical"
 

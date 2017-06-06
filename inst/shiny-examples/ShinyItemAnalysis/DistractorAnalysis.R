@@ -53,8 +53,6 @@
 #'
 #' @export
 
-
-
 DistractorAnalysis <-  function (data, key, p.table = FALSE, num.groups = 3, matching = NULL)
 {
 
@@ -89,23 +87,28 @@ DistractorAnalysis <-  function (data, key, p.table = FALSE, num.groups = 3, mat
   } else {
     scores <- matching
     score.level <- quantile(matching, seq(0, 1, by = 1/num.groups), na.rm = T)
-    if (length(unique(score.level)) <= num.groups){
-      if (length(unique(scores)) <= num.groups){
-        score.level <- as.factor(matching)
-        levels(score.level) <- paste("Group", 1:length(unique(matching)), sep = " ")
-        warning(paste('Critetion variable is probably discrete. Its cut is based on its factors (', length(unique(matching)), ").", sep = ""))
-      } else {
+
+    k <- 6
+    if (length(levels(as.factor(scores))) <= length(scores)/k){
+      score.level <- as.factor(scores)
+      num.groups <- length(levels(scores))
+      levels(score.level) <- paste("Group", 1:length(levels(score.level)), sep = " ")
+      warning(paste('Critetion variable is probably discrete. Its cut is based on
+                    its factors (', length(levels(score.level)), ").", sep = ""))
+    } else {
+      if (length(unique(score.level)) <= num.groups){
         while (length(unique(score.level)) <= num.groups){
           num.groups <- num.groups - 1
-          score.level <- quantile(matching, seq(0, 1, by = 1/num.groups), na.rm = T)
+          score.level <- quantile(scores, seq(0, 1, by = 1/num.groups), na.rm = T)
         }
-        score.level <- cut(matching, score.level, include.lowest = TRUE,
+        score.level <- cut(scores, score.level, include.lowest = TRUE,
                            labels = paste("Group", 1:num.groups, sep = " "))
-        warning(paste('The cut of criterion variable was not unique. The number of groups was decreased to ', num.groups, ".", sep = ""))
+        warning(paste('The cut of criterion variable was not unique. The number of
+                      groups was decreased to ', num.groups, ".", sep = ""))
+      } else {
+        score.level <- cut(scores, score.level, include.lowest = TRUE,
+                           labels = paste("Group", 1:num.groups, sep = " "))
       }
-    } else {
-      score.level <- cut(matching, score.level, include.lowest = TRUE,
-                         labels = paste("Group", 1:num.groups, sep = " "))
     }
   }
 
