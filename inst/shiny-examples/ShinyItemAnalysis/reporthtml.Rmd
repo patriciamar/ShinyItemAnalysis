@@ -182,9 +182,14 @@ if (any(params$wrightMap != "")) {
 
 **Selected model:`r head`**
 
-```{r irt-1, echo = FALSE, results = "hide", fig.height = 4}
+```{r irt-0, echo = FALSE, results = "hide", fig.height = 4}
 if (params$irt_type != "none") {
   params$irt
+}
+```
+
+```{r irt-1, echo = FALSE, results = "hide", fig.height = 4}
+if (params$irt_type != "none") {
   params$irtiic
 }
 ```

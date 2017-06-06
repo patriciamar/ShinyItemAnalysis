@@ -87,6 +87,7 @@ plotDistractorAnalysis <-  function (data, key, num.groups = 3, item = 1, item.n
   }
 
   x <- melt(x, id = "response")
+  x <- x[complete.cases(x), ]
   x$response <- as.factor(x$response)
   levels(x$response)[which(levels(x$response) == "")] <- "NaN"
   x$response <- relevel(x$response, as.character(key[item]))
