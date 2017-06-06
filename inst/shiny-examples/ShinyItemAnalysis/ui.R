@@ -23,13 +23,14 @@ ui = tagList(
       img(src = "free_busy_indicator.gif", height = 50, width = 50)
   ),
 
-  useShinyjs(),
+  shinyjs::useShinyjs(),
 
   #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   # !! ONLINE VERSION ####
   # tags$head(includeScript("google-analytics.js")),
   #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  navbarPage(title = 'ShinyItemAnalysis - Test and item analysis',
+  navbarPage(title = div(HTML('<font size = "5"> ShinyItemAnalysis </font>
+                               <font size = "2"> Test and item analysis </font> </p>')),
              windowTitle = 'ShinyItemAnalysis',
              position = 'fixed-top',
              selected = 'About',
