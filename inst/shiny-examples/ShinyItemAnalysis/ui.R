@@ -2933,8 +2933,8 @@ ui = tagList(
                            a("MiKTeX", href = "https://miktex.org/howto/install-miktex", target = "_blank"),
                            "(or other TeX distribution). If you don't have the latest installation, please, use the HTML report."),
                          h4("Settings of report"),
-                         p("There is an option whether to use default settings. By checking ",strong("yes"), "report generation
-                           will use settings from each section that is supposed to be included in the report."),
+                         p("There is an option whether to use customize settings. By checking the",strong("Customize settings"), "report generation
+                           will use local settings from each section that is supposed to be included in the report."),
                          fluidRow(
                            column(2,
                                   radioButtons("report_format", "Format of report",
@@ -3053,9 +3053,9 @@ ui = tagList(
                          p(strong("Recommendation: "), "Report generation can be faster and more reliable when you first check
                            sections of intended contents. For example, if you wish to include a ", strong("3PL IRT"),
                            " model, you can first visit ", strong("IRT models"), "section and ", strong("3PL"), " subsection."),
-                         p(strong("Warning: "), "Download of reports takes some time. Please, be patient."),
+                         #p(strong("Warning: "), "Download of reports takes some time. Please, be patient."),
                          actionButton("generate", "Generate report"),
-                         downloadButton("report", "Downloadeport"),
+                         downloadButton("report", "Download report"),
                          br(),
                          br(),
                          br()
