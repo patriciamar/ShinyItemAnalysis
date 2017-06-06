@@ -15,7 +15,7 @@ ui = tagList(
                       href = "style.css"),
             tags$script(type = "text/javascript",
                         src = "busy.js"),
-            tags$style(type = "text/css", "body {padding-top: 110px}")
+            tags$style(type = "text/css", "body {padding-top: 70px}")
   ),
 
   div(class = "busy",
@@ -2758,8 +2758,8 @@ ui = tagList(
                            a("MiKTeX", href = "https://miktex.org/howto/install-miktex", target = "_blank"),
                            "(or other TeX distribution). If you don't have the latest installation, please, use the HTML report."),
                          h4("Settings of report"),
-                         p("There is an option whether to use default settings. By checking ",strong("yes"), "report generation
-                           will use settings from each section that is supposed to be included in the report."),
+                         p("There is an option whether to use customize settings. By checking the",strong("Customize settings"), "report generation
+                           will use local settings from each section that is supposed to be included in the report."),
                          fluidRow(
                            column(2,
                                   radioButtons("report_format", "Format of report",
@@ -2767,10 +2767,7 @@ ui = tagList(
                                                  "PDF" = "pdf"))
                            ),
                            column(2,
-                                  radioButtons("default_settings", "Use default settings",
-                                               c("Yes" = "yes",
-                                                 "No" = "no"),
-                                               selected = "yes")
+                                  checkboxInput("customizeCheck", "Customize settings", FALSE)
                            )
                          ),
                          h4("Content of report"),
@@ -2788,7 +2785,7 @@ ui = tagList(
                            )
                          ),
                          fluidRow(
-                           conditionalPanel(condition = "input.default_settings=='no'",
+                           conditionalPanel(condition = "input.customizeCheck",
                                             column(1, p(strong("Distractors plot")),
                                                    radioButtons('type_combinations_distractor_report', 'Type',
                                                                 list("Combinations", "Distractors")
@@ -2810,15 +2807,14 @@ ui = tagList(
 
                            fluidRow(
                              column(2,
-                                    radioButtons("dif_type_report", "DIF method selection",
-                                                 c("None" = 0,
-                                                   "Delta plot" = 1,
-                                                   "Logistic regression" = 2,
-                                                   "Multinomial regression" = 3),
-                                                 selected = 0)
+                                    p(strong("DIF method selection")),
+                                    checkboxInput("histCheck", "Histograms by group", FALSE),
+                                    checkboxInput("deltaplotCheck", "Delta plot", FALSE),
+                                    checkboxInput("logregCheck", "Logistic regression", FALSE),
+                                    checkboxInput("multiCheck", "Multinomial regression", FALSE)
                              ),
-                             conditionalPanel(condition = "input.default_settings=='no'",
-                             conditionalPanel(condition = "input.dif_type_report>=1",
+                             conditionalPanel(condition = "input.customizeCheck",
+                             conditionalPanel(condition = "input.deltaplotCheck",
                                column(2, p(strong("Delta plot settings")),
                                       radioButtons('type_threshold_report', 'Threshold',
                                                    list("Fixed", "Normal")
@@ -2835,7 +2831,7 @@ ui = tagList(
                                       )
                                )
                              ),
-                             conditionalPanel(condition = "input.dif_type_report>=2",
+                             conditionalPanel(condition = "input.logregCheck",
                                column(2, p(strong("Logistic regression settings")),
                                       radioButtons('type_print_DIF_logistic_report', 'Type',
                                                    c("H0: Any DIF vs. H1: No DIF" = 'both',
@@ -2857,7 +2853,7 @@ ui = tagList(
                                       checkboxInput('puri_LR_report', 'Item purification', FALSE)
                                )
                              ),
-                             conditionalPanel(condition = "input.dif_type_report>=3",
+                             conditionalPanel(condition = "input.multiCheck",
                                column(2, p(strong("Multinomial regression settings")),
                                       radioButtons('type_DDF_report', 'Type',
                                                    c("H0: Any DIF vs. H1: No DIF" = 'both',
@@ -2882,7 +2878,6 @@ ui = tagList(
                          p(strong("Recommendation: "), "Report generation can be faster and more reliable when you first check
                            sections of intended contents. For example, if you wish to include a ", strong("3PL IRT"),
                            " model, you can first visit ", strong("IRT models"), "section and ", strong("3PL"), " subsection."),
-
                          #p(strong("Warning: "), "Download of reports takes some time. Please, be patient."),
                          actionButton("generate", "Generate report"),
                          downloadButton("report", "Download report"),
