@@ -141,7 +141,18 @@ ui = tagList(
                         You can change the dataset (and try your own one) on page', strong('Data.')),
 
                       h4('Version'),
-                      p('Current version of ', code('ShinyItemAnalysis'), ' is 1.1.5.'),
+                      #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                      # !! CRAN VERSION ####
+                      # p('Current version of ', code('ShinyItemAnalysis'), ' is 1.1.5.'),
+                      #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                      # !! ONLINE AND GIT VERSION ####
+                      p('Current version of ', code('ShinyItemAnalysis'), ' available on ',
+                        a(strong('CRAN'), href = 'https://CRAN.R-project.org/package=ShinyItemAnalysis', target = "_blank"), 'is 1.1.5.
+                        Version available',
+                        a(strong('online'), href = 'https://shiny.cs.cas.cz/ShinyItemAnalysis/', target = "_blank"), 'is 1.1.5.
+                        The newest development version available on ',
+                        a(strong('GitHub'), href = 'https://github.com/patriciamar/ShinyItemAnalysis', target = "_blank"), 'is 1.1.5.'),
+                      #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                       div(
                         HTML('<p>
                              See also older versions:
@@ -179,16 +190,41 @@ ui = tagList(
                       code('library(xtable)'), br(),
 
                       h4('Authors'),
-                      img(src = 'patricia.jpg', width = 70),
-                      p(a("Patricia Martinkova, Institute of Computer Science, Czech Academy of Sciences",
-                          href = "http://www.cs.cas.cz/martinkova/", target = "_blank")),
-                      img(src = 'adela.jpg', width = 70),
-                      p("Adela Drabinova"),
-                      img(src = 'leder.png', width = 70),
-                      p(a("Ondrej Leder", href = "https://www.linkedin.com/in/ond%C5%99ej-leder-3864b1119",
-                          target = "_blank")),
-                      img(src = 'jakub.jpg', width = 70),
-                      p("Jakub Houdek"),
+
+                      fluidRow(
+                        column(1, align = "center",
+                               img(src = 'patricia_new.png', width = 75)),
+                        column(1, align = "center",
+                               img(src = 'adela_new.png', width = 75)),
+                        column(1, align = "center",
+                               img(src = 'leder.png', width = 75)),
+                        column(1, align = "center",
+                               img(src = 'jakub_new.png', width = 75))
+                      ),
+                      fluidRow(
+                        column(1, align = "center",
+                               a(HTML("Patricia <br> Martinkova"),
+                                 href = "http://www.cs.cas.cz/martinkova/",
+                                 target = "_blank")),
+                        column(1, align = "center",
+                               HTML("Adela <br> Drabinova")),
+                        column(1, align = "center",
+                               a(HTML("Ondrej <br> Leder"),
+                                 href = "https://www.linkedin.com/in/ond%C5%99ej-leder-3864b1119",
+                                 target = "_blank")),
+                        column(1, align = "center",
+                               HTML("Jakub <br> Houdek"))
+                      ),
+                      # img(src = 'patricia.jpg', width = 70),
+                      # p(a("Patricia Martinkova, Institute of Computer Science, Czech Academy of Sciences",
+                      #     href = "http://www.cs.cas.cz/martinkova/", target = "_blank")),
+                      # img(src = 'adela.jpg', width = 70),
+                      # p("Adela Drabinova"),
+                      # img(src = 'leder.png', width = 70),
+                      # p(a("Ondrej Leder", href = "https://www.linkedin.com/in/ond%C5%99ej-leder-3864b1119",
+                      #     target = "_blank")),
+                      # img(src = 'jakub.jpg', width = 70),
+                      # p("Jakub Houdek"),
 
                       h4('Bug reports'),
                       p("If you discover a problem with this application please contact the project maintainer
