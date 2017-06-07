@@ -19,7 +19,10 @@ ui = tagList(
                        "body {padding-top: 110px; padding-left: 80px; padding-right: 80px; }"),
             tags$link(rel = "stylesheet",
                       type = "text/css",
-                      href = "flag-icon.css")
+                      href = "flag-icon.css"),
+			tags$link(rel = "stylesheet",
+                      type = "text/css",
+                      href = "mobile_device_paddings.css")
             ),
 
   div(class = "busy",
