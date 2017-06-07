@@ -124,7 +124,7 @@ ui = tagList(
                         'page HTML or PDF report can be created. Additionaly, all application outputs are
                         complemented by selected R code hence the similar analysis can be run and modified in R.'),
                       #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-                      # # !! ONLINE VERSION ####
+                      # !! ONLINE VERSION ####
                       # p('You can also download ', code('ShinyItemAnalysis'), ' package from ',
                       #   a('CRAN', href = 'https://CRAN.R-project.org/package=ShinyItemAnalysis', target = "_blank"),
                       #   'to use it offline or run it faster. '),
@@ -2753,13 +2753,14 @@ ui = tagList(
                 #%%%%%%%%%%%%%%%%%%%%%
                 tabPanel("Reports",
                          h3("Download report"),
-                         p(code("ShinyItemAnalysis"), " also offers an option to download a report in HTML or PDF format."),
-                         p("PDF report creation requires latest version of",
-                           a("MiKTeX", href = "https://miktex.org/howto/install-miktex", target = "_blank"),
-                           "(or other TeX distribution). If you don't have the latest installation, please, use the HTML report."),
                          h4("Settings of report"),
-                         p("There is an option whether to use customize settings. By checking the",strong("Customize settings"), "report generation
-                           will use local settings from each section that is supposed to be included in the report."),
+                         p(code("ShinyItemAnalysis"), " offers an option to download a report in HTML or PDF format. PDF report
+                           creation requires latest version of", a("MiKTeX", href = "https://miktex.org/howto/install-miktex",
+                                                                   target = "_blank"),
+                           "(or other TeX distribution). If you don't have the latest installation, please, use the HTML report."),
+                         p("There is an option whether to use customize settings. By checking the", strong("Customize settings"),
+                           "local settings will be offered and use for each selected section of report. Otherwise the settings
+                           will be taken from pages of application."),
                          fluidRow(
                            column(2,
                                   radioButtons("report_format", "Format of report",
@@ -2772,10 +2773,7 @@ ui = tagList(
                          ),
                          h4("Content of report"),
                          p("Reports by default contain summary of total scores, item analysis,
-                           distractors plots for each item and multinomial regression plots for each item. In case that
-                           group vector is available, histograms of total score by group are also plotted."),
-                         p("With choice of logistic regression in DIF method, also delta plot is included. With choice of multinomial
-                           regression, both previous DIF methods (delta plot and logistic regression) are incorporated. "),
+                           distractors plots for each item and multinomial regression plots for each item. "),
                          fluidRow(
                            column(4,
                                   radioButtons("corr_report", "Correlation structure",
