@@ -15,12 +15,16 @@ ui = tagList(
                       href = "style.css"),
             tags$script(type = "text/javascript",
                         src = "busy.js"),
-            tags$style(type = "text/css", "body {padding-top: 70px}")
-  ),
+            tags$style(type = "text/css",
+                       "body {padding-top: 110px; padding-left: 80px; padding-right: 80px; }"),
+            tags$link(rel = "stylesheet",
+                      type = "text/css",
+                      href = "flag-icon.css")
+            ),
 
   div(class = "busy",
-      p("Application is busy..."),
-      img(src = "free_busy_indicator.gif", height = 50, width = 50)
+      p("Loading"),
+      img(src = "busy_indicator.gif", height = 100, width = 100)
   ),
 
   shinyjs::useShinyjs(),
@@ -39,16 +43,22 @@ ui = tagList(
                #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                # !! ONLINE VERSION ####
                # div(class = "panel-footer",
-               #     p(strong("ShinyItemAnalysis version 1.1.5")),
-               #     p("Download ", code('ShinyItemAnalysis'), " R package from ",
+               #    p(HTML('<font size = "4"> ShinyItemAnalysis </font>
+               #            <font size = "2"> Test and item analysis | Version 1.1.5 </font> </p>')),
+               #     p("You can also download it as R package from ",
                #       a(strong("CRAN"), href = "https://cran.rstudio.com/web/packages/ShinyItemAnalysis/",
-               #         target = "_blank"), "to run analysis faster!"),
-               #     p("Or you can also try another ", a(strong("mirror!"), href = "http://shiny.cs.cas.cz/ShinyItemAnalysis/", id = "second_tooltip")),
+               #         target = "_blank"), "to run analysis faster! Or you can try other mirrors: ",
+               #       HTML('<a href = https://patriciamar.shinyapps.io/ShinyItemAnalysis/
+               #                id = second_mirror>
+               #                 <span class="flag-icon flag-icon-us"></span> </a>',
+               #            '<a href = http://shiny.statest.cz:3838/ShinyItemAnalysis/
+               #                 id = third_mirror>
+               #                <span class="flag-icon flag-icon-cz"></span> </a>')),
                #     p("Project was supported by grant funded by Czech Science Foundation under number ",
                #       a("GJ15-15856Y",
                #         href = "http://www.cs.cas.cz/martinkova/psychometrics.html",
                #         target = "_blank")),
-               #     p("Copyright 2017  Patricia Martinkova, Adela Drabinova, Ondrej Leder and Jakub Houdek"),
+               #     HTML("&copy; 2017  Patricia Martinkova, Adela Drabinova, Ondrej Leder and Jakub Houdek"),
                #     div(
                #       HTML('<p style="font-size: 9pt">
                #            See older versions:
@@ -57,8 +67,8 @@ ui = tagList(
                #            <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV100/"> 1.0.0</a>
                #            </p>
                #            <script>
-               #             $("#first_tooltip").attr("title", "Institute of Computer Science, Czech Academy of Sciences");
-               #             $("#second_tooltip").attr("title", "First Faculty of Medicine, Charles University");
+               #             $("#second_mirror").attr("title", "Amazon Technologies Inc.");
+               #             $("#third_mirror").attr("title", "First Faculty of Medicine, Charles University");
                #            </script>'
                #          )
                #       ),
@@ -67,18 +77,23 @@ ui = tagList(
                #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                # !! PACKAGE VERSION ####
                div(class = "panel-footer",
-                   p(strong("ShinyItemAnalysis version 1.1.5")),
-                   p("You can also try ", code('ShinyItemAnalysis'), a(strong("online!"),
-                                                                       href = "http://shiny.cs.cas.cz/ShinyItemAnalysis/",
-                                                                       id = "first_tooltip"),
-                     "Or you can also use another ", a(strong("mirror."),
-                                                       href = "http://shiny.statest.cz:3838/ShinyItemAnalysis/",
-                                                       id = "second_tooltip")),
+                   p(HTML('<font size = "4"> ShinyItemAnalysis </font>
+                           <font size = "2"> Test and item analysis | Version 1.1.5 </font> </p>')),
+                   p("You can also try it ", a(strong("online!"),
+                                               href = "http://shiny.cs.cas.cz/ShinyItemAnalysis/",
+                                               id = "first_mirror"),
+                      "Or you can try other mirrors: ",
+                      HTML('<a href = https://patriciamar.shinyapps.io/ShinyItemAnalysis/
+                               id = second_mirror>
+                               <span class="flag-icon flag-icon-us"></span> </a>',
+                          '<a href = http://shiny.statest.cz:3838/ShinyItemAnalysis/
+                               id = third_mirror>
+                               <span class="flag-icon flag-icon-cz"></span> </a>')),
                    p("Project was supported by grant funded by Czech Science Foundation under number ",
                      a("GJ15-15856Y",
                        href = "http://www.cs.cas.cz/martinkova/psychometrics.html",
                        target = "_blank")),
-                   p("Copyright 2017  Patricia Martinkova, Adela Drabinova, Ondrej Leder and Jakub Houdek"),
+                   HTML("&copy; 2017  Patricia Martinkova, Adela Drabinova, Ondrej Leder and Jakub Houdek"),
                    div(
                      HTML('<p style="font-size: 9pt">
                           See older versions:
@@ -87,8 +102,9 @@ ui = tagList(
                           <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV100/"> 1.0.0</a>
                           </p>
                           <script>
-                           $("#first_tooltip").attr("title", "Institute of Computer Science, Czech Academy of Sciences");
-                           $("#second_tooltip").attr("title", "First Faculty of Medicine, Charles University");
+                           $("#first_mirror").attr("title", "Institute of Computer Science, Czech Academy of Sciences");
+                           $("#second_mirror").attr("title", "Amazon Technologies Inc.");
+                           $("#third_mirror").attr("title", "First Faculty of Medicine, Charles University");
                           </script>'
                         )
                      )
@@ -124,14 +140,14 @@ ui = tagList(
                         'page HTML or PDF report can be created. Additionaly, all application outputs are
                         complemented by selected R code hence the similar analysis can be run and modified in R.'),
                       #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-                      # !! ONLINE VERSION ####
-                      # p('You can also download ', code('ShinyItemAnalysis'), ' package from ',
-                      #   a('CRAN', href = 'https://CRAN.R-project.org/package=ShinyItemAnalysis', target = "_blank"),
-                      #   'to use it offline or run it faster. '),
-                      #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-                      # !! PACKAGE VERSION ####
-                      p('You can also try ', code('ShinyItemAnalysis'), ' application ',
-                        a('online!', href = 'https://shiny.cs.cas.cz/ShinyItemAnalysis/', target = "_blank")),
+                      # # !! ONLINE VERSION ####
+                      # # p('You can also download ', code('ShinyItemAnalysis'), ' package from ',
+                      # #   a('CRAN', href = 'https://CRAN.R-project.org/package=ShinyItemAnalysis', target = "_blank"),
+                      # #   'to use it offline or run it faster. '),
+                      # #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                      # # !! PACKAGE VERSION ####
+                      # p('You can also try ', code('ShinyItemAnalysis'), ' application ',
+                      #   a('online!', href = 'https://shiny.cs.cas.cz/ShinyItemAnalysis/', target = "_blank")),
                       #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                       h4('Data'),
                       p('For demonstration purposes, by default, 20-item dataset', code('GMAT'),'
@@ -161,6 +177,23 @@ ui = tagList(
                              <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV100/"> 1.0.0</a>.
                              </p>')
                         ),
+                      h4('Mirrors'),
+                      p('Application is available ',
+                          a('online.',
+                            href = 'https://shiny.cs.cas.cz/ShinyItemAnalysis/',
+                            id = 'first_mirror'),
+                        'In case of busy server, you can try other mirrors: ',
+                        HTML('<a href = https://patriciamar.shinyapps.io/ShinyItemAnalysis/
+                                 id = second_mirror>
+                                 <span class="flag-icon flag-icon-us"></span> </a>',
+                             '<a href = http://shiny.statest.cz:3838/ShinyItemAnalysis/
+                                 id = third_mirror>
+                                 <span class="flag-icon flag-icon-cz"></span> </a>',
+                             '<script>
+                                $("#first_mirror").attr("title", "Institute of Computer Science, Czech Academy of Sciences");
+                                $("#second_mirror").attr("title", "Amazon Technologies Inc.");
+                                $("#third_mirror").attr("title", "First Faculty of Medicine, Charles University");
+                              </script>')),
 
                       h4('List of packages used'),
                       code('library(corrplot)'), br(),
@@ -237,13 +270,12 @@ ui = tagList(
                           target = "_blank")),
 
                       h4('License'),
-                      p("Copyright 2017  Patricia Martinkova, Adela Drabinova, Ondrej Leder and Jakub Houdek"),
-                      p("This program is free software you can redistribute it and or modify it under the terms of the GNU
-                        General Public License as published by the Free Software Foundation either version 3 of the License or
-                        at your option any later version."),
-                      p("This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
-                        even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
-                        Public License for more details." ),
+                      p("This program is free software and you can redistribute it and or modify it under the terms
+                         of the", a("GNU GPL 3", href = "https://www.gnu.org/licenses/gpl-3.0.en.html"), "as published
+                         by the Free Software Foundation. This program is distributed in the hope that it will be useful,
+                         but without any warranty; without even the implied warranty of merchantability of fitness for a
+                         particular purpose." ),
+                      HTML("&copy; 2017  Patricia Martinkova, Adela Drabinova, Ondrej Leder and Jakub Houdek"),
                       br(),
                       br()
                       ),
@@ -2968,7 +3000,6 @@ ui = tagList(
                                            target = "_blank")),
                       p("Wilson, M. (2005). Constructing Measures: An Item Response Modeling Approach."),
                       p("Wright, B. D., & Stone, M. H. (1979). Best Test Design. Chicago: Mesa Press."),
-                      br(),
                       br()
                       )
                       )
