@@ -20,7 +20,7 @@ ui = tagList(
             tags$link(rel = "stylesheet",
                       type = "text/css",
                       href = "flag-icon.css"),
-			tags$link(rel = "stylesheet",
+            tags$link(rel = "stylesheet",
                       type = "text/css",
                       href = "mobile_device_paddings.css")
             ),
