@@ -12,9 +12,9 @@ setInterval(function(){
 
 $(function() {
 
-    $('#report').click(function() {
+    $('#generate').click(function() {
         alert(
-          'Downloading of reports takes some time. Please, be patient. Please do not change the settings of application before the download is completed. \n \n (Press "OK" to start report generating.)'
+          'Generating of reports takes some time. Please, be patient. Please do not change the settings of application before the download is completed. A download button will occure when the report is ready. \n \n (Press "OK" to start report generating.)'
         );
         /*setInterval();*/
     });
