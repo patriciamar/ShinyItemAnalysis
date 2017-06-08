@@ -2962,8 +2962,14 @@ ui = tagList(
                            sections of intended contents. For example, if you wish to include a ", strong("3PL IRT"),
                            " model, you can first visit ", strong("IRT models"), "section and ", strong("3PL"), " subsection."),
                          #p(strong("Warning: "), "Download of reports takes some time. Please, be patient."),
-                         actionButton("generate", "Generate report"),
-                         downloadButton("report", "Download report"),
+                         fluidRow(
+                           column(width = 3,
+                             splitLayout(
+                               actionButton("generate", "Generate report"),
+                               uiOutput("download_report_button")
+                             )
+                           )
+                         ),
                          br(),
                          br(),
                          br()
