@@ -2889,9 +2889,9 @@ ui = tagList(
                          ),
 
                            fluidRow(
-                             column(2,
+                             column(3,
                                     p(strong("DIF method selection")),
-                                    checkboxInput("histCheck", "Histograms by group", FALSE),
+                                    checkboxInput("histCheck", "None - histograms by group only", FALSE),
                                     checkboxInput("deltaplotCheck", "Delta plot", FALSE),
                                     checkboxInput("logregCheck", "Logistic regression", FALSE),
                                     checkboxInput("multiCheck", "Multinomial regression", FALSE)
