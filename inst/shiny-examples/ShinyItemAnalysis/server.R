@@ -752,6 +752,7 @@ function(input, output, session) {
 
   # ** Validity distractor text #####
   output$validity_distractor_text <- renderUI({
+    cv <- criterion_variable()
 
     ## this is fixed value to recognize discrete variable
     k <- 6
