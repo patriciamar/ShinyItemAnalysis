@@ -760,6 +760,11 @@ ui = tagList(
                                  br(),
                                  h4("Table with counts"),
                                  fluidRow(column(12, align = "center", tableOutput('distractor_table_counts'))),
+                                 plotOutput("item_response_patterns_distribution_plot"),
+                                 downloadButton(
+                                   "item_response_patterns_distribution_plot_download",
+                                   label = "Download figure"
+                                 ),
                                  h4("Table with proportions"),
                                  fluidRow(column(12, align = "center", tableOutput('distractor_table_proportions'))),
                                  br(),
@@ -769,6 +774,15 @@ ui = tagList(
                                  br(),
                                  h4('Table of total scores by groups'),
                                  fluidRow(column(12, align = "center", tableOutput('distractor_table_group'))),
+                                 br(),
+                                 h4("Diagram of custom discrimination"),
+                                 uiOutput("distractor_double_slider"),
+                                 htmlOutput("custom_DD_plot_text"),
+                                 plotOutput("custom_DD_plot"),
+                                 downloadButton(
+                                   "custom_DD_plot_download",
+                                   label = "Download figure"
+                                 ),
                                  br(),
                                  h4("Selected R code"),
                                  div(code('library(difNLR)'),
