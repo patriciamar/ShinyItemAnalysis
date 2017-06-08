@@ -4618,7 +4618,18 @@ function(input, output, session) {
          incProgress(0.3)
     )
     })
+    
+    output$download_report_button <- renderUI({
+      
+      if(is.null(input$generate)){return(NULL)}
+      downloadButton("report", "Download report")
+      
+    })
+    
   })
+  
+
+  
 
   output$report <- downloadHandler(
     filename = reactive({paste0("report.", input$report_format)}),
