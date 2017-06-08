@@ -34,7 +34,7 @@ ui = tagList(
 
   #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   # !! ONLINE VERSION ####
-  # tags$head(includeScript("google-analytics.js")),
+  tags$head(includeScript("google-analytics.js")),
   #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   navbarPage(title = div(HTML('<font size = "5"> ShinyItemAnalysis </font>
                                <font size = "2"> Test and item analysis </font> </p>')),
