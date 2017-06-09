@@ -111,7 +111,10 @@ plotDIFirt <- function(parameters, test = "Lord", item = "all", item.name, same.
   }
 
   if (missing(item.name)){
-    item.name <- paste("Item", items)
+    item.names <- paste("Item", 1:m)
+  } else {
+    item.names <- rep(NA, m)
+    item.names[items] <- item.name
   }
 
   mR <- parameters[1:m, ]
@@ -191,7 +194,7 @@ plotDIFirt <- function(parameters, test = "Lord", item = "all", item.name, same.
             legend.text.align = 0,
             legend.title.align = 0,
             legend.key = element_rect(colour = "white")) +
-      ggtitle(item.name[i])
+      ggtitle(item.names[i])
 
 
     if (test == "Raju"){
