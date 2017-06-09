@@ -849,7 +849,7 @@ function(input, output, session) {
   #%%%%%%%%%%%%%%%%%%%%%%%%%%%
   # TRADITIONAL ANALYSIS #####
   #%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  
+
 
 
   # * ITEM ANALYSIS #####
@@ -1096,28 +1096,28 @@ function(input, output, session) {
   })
 
   # ** Output distractor table with proportions #####
-  output$distractor_table_proportions_Input <- renderTable({
+  output$distractor_table_proportions <- renderTable({
     distractor_table_proportions_Input()
   })
-  
+
   ## "item response patterns distribution plot" -------------------------------------
   item_response_patterns_distribution_plot_Input_f <- function(){
-    
-    my_data <- setNames(          
+
+    my_data <- setNames(
       distractor_table_counts_Input()[, "Total"],
       as.character(distractor_table_counts_Input()[, "Response"])
     )
-    
+
     my_data <- my_data[names(my_data) != "Total"]
-    
+
     if(
       input$type_combinations_distractor != "Combinations"
     ){
       my_data <- my_data[nchar(gsub("X", "", names(my_data))) == 1]
     }
-    
+
     par(mar = c(4.1, 4.1, 2.1, 0.1), xpd = TRUE)
-    
+
     barplot(
       my_data / sum(my_data),
       col = "lightgrey",
@@ -1126,9 +1126,9 @@ function(input, output, session) {
       ylab = "Item Response Pattern Relative Frequency",
       cex.lab = 1.2
     )
-    
+
     box()
-    
+
     mtext(
       text = paste("Item ", item_numbers()[input$distractorSlider], sep = ""),
       side = 3,
@@ -1137,26 +1137,26 @@ function(input, output, session) {
       font = 2,
       cex = 1.3
     )
-    
+
   }
-  
+
   item_response_patterns_distribution_plot_Input <- reactive({
     item_response_patterns_distribution_plot_Input_f()
   })
-  
-  
+
+
   ## rendering of "item response patterns distribution plot" ------------------------
   output$item_response_patterns_distribution_plot <- renderPlot({
-      
+
     item_response_patterns_distribution_plot_Input()
-      
+
   })
-  
-  
+
+
   ## "item response patterns distribution plot" downloading handler -----------------
-  
+
   output$item_response_patterns_distribution_plot_download <- downloadHandler(
-    
+
     filename =  function() {
       paste(
         "item_response_patterns_distribution_plot_item_",
@@ -1165,9 +1165,9 @@ function(input, output, session) {
         sep = ""
       )
     },
-    
+
     content = function(file) {
-      
+
       png(
         filename = file,
         height = 5,
@@ -1175,20 +1175,20 @@ function(input, output, session) {
         units = "in",
         res = 600
       )
-      
+
       item_response_patterns_distribution_plot_Input_f()
-      
+
       dev.off()
-      
+
     }
-    
+
   )
-  
-  
+
+
   ## double slider for min and max index of group ---------------------------------
-  
+
   output$distractor_double_slider <- renderUI({
-    
+
     sliderInput(
       "range",
       "Which two groups to compare:",
@@ -1197,43 +1197,43 @@ function(input, output, session) {
       step = 1,
       value = c(1, min(3, input$gr))
     )
-    
+
   })
-  
-  
+
+
   ## "item response patterns distribution plot" -------------------------------------
   custom_DD_plot_Input_f <- function(){
-    
+
     item_distractor_table_counts <- function(my_item_index){
       a <- test_answers()
       k <- test_key()
       num.group <- input$gr
       item <- my_item_index
-      
+
       DA <- DistractorAnalysis(a, k, num.groups = num.group)[[item]]
       df <- dcast(as.data.frame(DA), response ~ score.level, sum, margins = T, value.var = "Freq")
       colnames(df) <- c("Response", paste("Group", 1:num.group), "Total")
       levels(df$Response)[nrow(df)] <- "Total"
       df
     }
-    
+
     my_parameters <- lapply(
       1:length(test_key()),
       function(i){
         my_table <- item_distractor_table_counts(i)
-        
+
         my_difficulty_proportions <- my_table[
           my_table[, "Response"] == as.character(test_key())[i], "Total"
           ] / my_table[
             my_table[, "Response"] == "Total", "Total"
             ]
-        
+
         my_discrimination_proportions <- my_table[
           my_table[, "Response"] == as.character(test_key())[i], -c(1, dim(my_table)[2])
           ] / my_table[
             my_table[, "Response"] == "Total", -c(1, dim(my_table)[2])
             ]
-        
+
         return(c(
           unlist((my_difficulty_proportions)),
           unlist((my_discrimination_proportions[
@@ -1244,12 +1244,12 @@ function(input, output, session) {
         ))
       }
     )
-    
+
     my_parameters <- setNames(
       my_parameters,
       1:length(test_key())
     )
-    
+
     barplot(
       rbind(
         unlist(lapply(my_parameters, "[[", 1))[order(unlist(lapply(my_parameters, "[[", 1)))],
@@ -1264,13 +1264,13 @@ function(input, output, session) {
       xaxt = "n",
       cex.lab = 1.2
     )
-    
+
     axis(
       1,
       at = seq(2, 2 + 3 * (length(my_parameters) - 1), by = 3),
       labels = 1:length(test_key()), cex.lab = 1.2
     )
-    
+
     legend(
       x = "topleft",
       legend = c(
@@ -1282,49 +1282,49 @@ function(input, output, session) {
       bg = "white",
       title = expression(bold("legend")),
       bty = "n"
-      
+
     )
-    
-    
+
+
   }
-  
+
   ## "item response patterns distribution plot" reactive -------------------------------
   custom_DD_plot_Input <- reactive({
-    
+
     if(is.null(test_answers())){return(NULL)}
     if(is.null(test_key())){return(NULL)}
     if(is.null(input$gr)){return(NULL)}
     if(is.null(input$range)){return(NULL)}
-    
-    
+
+
     custom_DD_plot_Input_f()
-    
+
   })
-  
-  
+
+
   ## "item response patterns distribution plot"  rendering ------------------------------
   output$custom_DD_plot <- renderPlot({
-    
+
     if(is.null(test_answers())){return(NULL)}
     if(is.null(test_key())){return(NULL)}
     if(is.null(input$gr)){return(NULL)}
     if(is.null(input$range)){return(NULL)}
     if(is.null(custom_DD_plot_Input())){return(NULL)}
-    
+
     custom_DD_plot_Input()
-    
+
   })
-  
-  
+
+
   ## "item response patterns distribution plot" download handler ------------------------
   output$custom_DD_plot_download <- downloadHandler(
-    
+
     filename =  function() {
       "custom_DD_plot_item.png"
     },
-    
+
     content = function(file) {
-      
+
       png(
         filename = file,
         height = 5,
@@ -1332,23 +1332,23 @@ function(input, output, session) {
         units = "in",
         res = 600
       )
-      
+
       custom_DD_plot_Input_f()
-      
+
       dev.off()
-      
+
     }
-    
+
   )
-  
+
   output$custom_DD_plot_text <- renderUI({
-    
+
     if(is.null(test_answers())){return(NULL)}
     if(is.null(test_key())){return(NULL)}
     if(is.null(input$gr)){return(NULL)}
     if(is.null(input$range)){return(NULL)}
     if(is.null(custom_DD_plot_Input())){return(NULL)}
-    
+
     HTML(paste(
       "Discrimination is here a difference between the difficulty recorded in the ",
       "<b>", input$range[[2]], "</b>",
@@ -1359,11 +1359,11 @@ function(input, output, session) {
       " group.",
       sep = ""
     ))
-    
+
   })
-  
-  
-  
+
+
+
   #%%%%%%%%%%%%%%%%%%%%%%%%%%%
   # REGRESSION ###############
   #%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -4618,18 +4618,18 @@ function(input, output, session) {
          incProgress(0.3)
     )
     })
-    
+
     output$download_report_button <- renderUI({
-      
+
       if(is.null(input$generate)){return(NULL)}
       downloadButton("report", "Download report")
-      
-    })
-    
-  })
-  
 
-  
+    })
+
+  })
+
+
+
 
   output$report <- downloadHandler(
     filename = reactive({paste0("report.", input$report_format)}),
