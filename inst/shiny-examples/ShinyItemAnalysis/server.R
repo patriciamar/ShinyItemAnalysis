@@ -3996,7 +3996,7 @@ function(input, output, session) {
     item <- input$difirt_lord_itemSlider
 
     plotDIFirt(parameters = fitLord$itemParInit,
-               item = item, item.name = item_names()[item])
+               item = item, item.name = item_names()[item])[[item]]
   })
 
   output$plot_DIF_IRT_Lord <- renderPlot({
@@ -4179,7 +4179,7 @@ function(input, output, session) {
     item <- input$difirt_raju_itemSlider
 
     plotDIFirt(parameters = fitRaju$itemParInit, test = "Raju",
-                    item = item, item.name = item_names()[item])
+                    item = item, item.name = item_names()[item])[[item]]
   })
 
   output$plot_DIF_IRT_Raju <- renderPlot({
