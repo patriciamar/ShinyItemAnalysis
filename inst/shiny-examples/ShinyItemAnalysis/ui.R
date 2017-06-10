@@ -218,41 +218,24 @@ ui = tagList(
                       code('library(xtable)'), br(),
 
                       h4('Authors'),
-
                       fluidRow(
                         column(1, align = "center",
-                               img(src = 'patricia_new.png', width = 75)),
-                        column(1, align = "center",
-                               img(src = 'adela_new.png', width = 75)),
-                        column(1, align = "center",
-                               img(src = 'leder.png', width = 75)),
-                        column(1, align = "center",
-                               img(src = 'jakub_new.png', width = 75))
-                      ),
-                      fluidRow(
-                        column(1, align = "center",
+                               img(src = 'patricia_new.png', width = 75),
                                a(HTML("Patricia <br> Martinkova"),
                                  href = "http://www.cs.cas.cz/martinkova/",
                                  target = "_blank")),
                         column(1, align = "center",
+                               img(src = 'adela_new.png', width = 75),
                                HTML("Adela <br> Drabinova")),
                         column(1, align = "center",
+                               img(src = 'leder.png', width = 75),
                                a(HTML("Ondrej <br> Leder"),
                                  href = "https://www.linkedin.com/in/ond%C5%99ej-leder-3864b1119",
                                  target = "_blank")),
                         column(1, align = "center",
+                               img(src = 'jakub_new.png', width = 75),
                                HTML("Jakub <br> Houdek"))
                       ),
-                      # img(src = 'patricia.jpg', width = 70),
-                      # p(a("Patricia Martinkova, Institute of Computer Science, Czech Academy of Sciences",
-                      #     href = "http://www.cs.cas.cz/martinkova/", target = "_blank")),
-                      # img(src = 'adela.jpg', width = 70),
-                      # p("Adela Drabinova"),
-                      # img(src = 'leder.png', width = 70),
-                      # p(a("Ondrej Leder", href = "https://www.linkedin.com/in/ond%C5%99ej-leder-3864b1119",
-                      #     target = "_blank")),
-                      # img(src = 'jakub.jpg', width = 70),
-                      # p("Jakub Houdek"),
 
                       h4('Bug reports'),
                       p("If you discover a problem with this application please contact the project maintainer
