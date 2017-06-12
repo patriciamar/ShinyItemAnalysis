@@ -164,23 +164,27 @@ ui = tagList(
                          a('0.2.0, ', href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV02/", target = "_blank"),
                          a('1.0.0. ', href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV100/", target = "_blank")),
 
-                      h4('Mirrors'),
-                      p('Application is available ',
-                          a('online.',
-                            href = 'https://shiny.cs.cas.cz/ShinyItemAnalysis/',
-                            id = 'first_mirror2', target = "_blank"),
-                        'In case of busy server, you can try other mirrors: ',
-                        HTML('<a href = https://patriciamar.shinyapps.io/ShinyItemAnalysis/
-                                 id = second_mirror2>
-                                 <span class="flag-icon flag-icon-us"></span> </a>',
-                             '<a href = http://shiny.statest.cz:3838/ShinyItemAnalysis/
-                                 id = third_mirror2>
-                                 <span class="flag-icon flag-icon-cz"></span> </a>',
-                             '<script>
-                                $("#first_mirror2").attr("title", "Institute of Computer Science, Czech Academy of Sciences");
-                                $("#second_mirror2").attr("title", "Amazon Technologies Inc.");
-                                $("#third_mirror2").attr("title", "First Faculty of Medicine, Charles University");
-                              </script>')),
+                      h4('Availability'),
+                      p('Application can be downloaded as R package from ',
+                        a('CRAN. ',
+                          href = 'https://CRAN.R-project.org/package=ShinyItemAnalysis',
+                          target = '_blank'),
+                        'It is also available online at ',
+                        a('Czech Academy of Sciences ',
+                          href = 'https://shiny.cs.cas.cz/ShinyItemAnalysis/',
+                          target = "_blank"), '(CZ).',
+                        'In case of busy server you can try other mirrors: ',
+                        a('University of Washington',
+                          href = 'https://rstudio.stat.washington.edu/shiny/ShinyItemAnalysis/',
+                          target = "_blank"), '(USA), ',
+                        a('Charles University',
+                          href = 'http://shiny.statest.cz:3838/ShinyItemAnalysis/',
+                          target = "_blank"), '(CZ) ',
+                        'or',
+                        a('shinyapps.io',
+                          href = 'https://patriciamar.shinyapps.io/ShinyItemAnalysis/',
+                          target = "_blank"), '(USA).'
+                        ),
 
                       h4('List of packages used'),
                       code('library(corrplot)'), br(),
@@ -209,7 +213,7 @@ ui = tagList(
                       code('library(WrightMap)'), br(),
                       code('library(xtable)'), br(),
 
-                      h4('Authors'),
+                      h4('Authors and contributors'),
                       fluidRow(
                         column(1, align = "center",
                                img(src = 'patricia_new.png', width = 75),
@@ -218,7 +222,9 @@ ui = tagList(
                                  target = "_blank")),
                         column(1, align = "center",
                                img(src = 'adela_new.png', width = 75),
-                               HTML("Adela <br> Drabinova")),
+                               a(HTML("Adela <br> Drabinova"),
+                                 href = "https://github.com/drabinova",
+                                 target = "_blank")),
                         column(1, align = "center",
                                img(src = 'leder.png', width = 75),
                                a(HTML("Ondrej <br> Leder"),
@@ -226,7 +232,10 @@ ui = tagList(
                                  target = "_blank")),
                         column(1, align = "center",
                                img(src = 'jakub_new.png', width = 75),
-                               HTML("Jakub <br> Houdek"))
+                               HTML("Jakub <br> Houdek")),
+                        column(1, align = "center",
+                              img(src = 'lubos.jpg', width = 75),
+                              HTML("Lubomir <br> Stepanek"))
                       ),
 
                       h4('Bug reports'),
