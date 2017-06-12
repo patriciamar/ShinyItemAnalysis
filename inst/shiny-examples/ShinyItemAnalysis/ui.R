@@ -129,6 +129,7 @@ ui = tagList(
                         and their items including:' ),
                       tags$ul(
                         tags$li("Exploration of total and standard scores on ", strong('Summary'), "page. "),
+                        tags$li("Correlation structure and predictive validity analysis on ", strong('Validity'), "page. "),
                         tags$li("Item and distractor analysis on ", strong('Item analysis'), "page. "),
                         tags$li('Item analysis by logistic models on ', strong('Regression'), "page. "),
                         tags$li('Item analysis by item response theory models on ', strong('IRT models'), "page. "),
