@@ -52,10 +52,10 @@ ui = tagList(
                #       a(strong("CRAN"), href = "https://cran.rstudio.com/web/packages/ShinyItemAnalysis/", target = "_blank"),
                #       "to run analysis faster! Or you can try other mirrors: ",
                #       HTML('<a href = https://patriciamar.shinyapps.io/ShinyItemAnalysis/
-               #                id = second_mirror, target = "_blank">
+               #                id = second_mirror>
                #                 <span class = "flag-icon flag-icon-us"> </span> </a>',
                #            '<a href = http://shiny.statest.cz:3838/ShinyItemAnalysis/
-               #                 id = third_mirror, target = "_blank">
+               #                 id = third_mirror>
                #                <span class = "flag-icon flag-icon-cz"> </span> </a>')),
                #     p("Project was supported by grant funded by Czech Science Foundation under number ",
                #       a("GJ15-15856Y",
@@ -88,10 +88,10 @@ ui = tagList(
                        id = 'first_mirror', target = "_blank"),
                      'Or you can try other mirrors: ',
                      HTML('<a href = https://patriciamar.shinyapps.io/ShinyItemAnalysis/
-                                 id = second_mirror>, target = "_blank"
+                                 id = second_mirror>
                                  <span class = "flag-icon flag-icon-us"> </span> </a>',
                           '<a href = http://shiny.statest.cz:3838/ShinyItemAnalysis/
-                                 id = third_mirror, target = "_blank">
+                                 id = third_mirror>
                                  <span class = "flag-icon flag-icon-cz"> </span> </a>')),
                    p("Project was supported by grant funded by Czech Science Foundation under number ",
                      a("GJ15-15856Y",
@@ -163,18 +163,18 @@ ui = tagList(
                       p('Application is available ',
                           a('online.',
                             href = 'https://shiny.cs.cas.cz/ShinyItemAnalysis/',
-                            id = 'first_mirror', target = "_blank"),
+                            id = 'first_mirror2', target = "_blank"),
                         'In case of busy server, you can try other mirrors: ',
                         HTML('<a href = https://patriciamar.shinyapps.io/ShinyItemAnalysis/
-                                 id = second_mirror, target = "_blank">
+                                 id = second_mirror2>
                                  <span class="flag-icon flag-icon-us"></span> </a>',
                              '<a href = http://shiny.statest.cz:3838/ShinyItemAnalysis/
-                                 id = third_mirror, target = "_blank">
+                                 id = third_mirror2>
                                  <span class="flag-icon flag-icon-cz"></span> </a>',
                              '<script>
-                                $("#first_mirror").attr("title", "Institute of Computer Science, Czech Academy of Sciences");
-                                $("#second_mirror").attr("title", "Amazon Technologies Inc.");
-                                $("#third_mirror").attr("title", "First Faculty of Medicine, Charles University");
+                                $("#first_mirror2").attr("title", "Institute of Computer Science, Czech Academy of Sciences");
+                                $("#second_mirror2").attr("title", "Amazon Technologies Inc.");
+                                $("#third_mirror2").attr("title", "First Faculty of Medicine, Charles University");
                               </script>')),
 
                       h4('List of packages used'),
@@ -226,20 +226,25 @@ ui = tagList(
 
                       h4('Bug reports'),
                       p("If you discover a problem with this application please contact the project maintainer
-                        at martinkova(at)cs.cas.cz or use ", a("GitHub.", href = "https://github.com/patriciamar/ShinyItemAnalysis/issues",
+                        at martinkova(at)cs.cas.cz or use ", a("GitHub.",
+                                                               href = "https://github.com/patriciamar/ShinyItemAnalysis/issues",
                                                                target = "_blank")),
 
                       h4('Acknowledgments'),
                       p(" Project was supported by grant funded by Czech Science foundation under number ",
-                        a("GJ15-15856Y.", href = "http://www.cs.cas.cz/martinkova/psychometrics.html",
+                        a("GJ15-15856Y.",
+                          href = "http://www.cs.cas.cz/martinkova/psychometrics.html",
                           target = "_blank")),
 
                       h4('License'),
                       p("This program is free software and you can redistribute it and or modify it under the terms
-                         of the", a("GNU GPL 3", href = "https://www.gnu.org/licenses/gpl-3.0.en.html", target = "_blank"), "as published
-                         by the Free Software Foundation. This program is distributed in the hope that it will be useful,
-                         but without any warranty; without even the implied warranty of merchantability of fitness for a
-                         particular purpose." ),
+                         of the",
+                        a("GNU GPL 3",
+                          href = "https://www.gnu.org/licenses/gpl-3.0.en.html",
+                          target = "_blank"),
+                        "as published by the Free Software Foundation. This program is distributed in the hope that
+                         it will be useful, but without any warranty; without even the implied warranty of
+                         merchantability of fitness for a particular purpose." ),
                       HTML("&copy; 2017  Patricia Martinkova, Adela Drabinova, Ondrej Leder and Jakub Houdek"),
                       br(),
                       br()
@@ -259,7 +264,11 @@ ui = tagList(
                         Admission Test (GMAT) data set (Kingston et al., 1985). However, first two items were
                         generated to function differently in uniform and non-uniform way respectively.
                         The data set represents responses of 2,000 subjects (1,000 males, 1,000 females) to
-                        multiple-choice test of 20 items. The distribution of total scores is the same for both groups. '),
+                        multiple-choice test of 20 items. The distribution of total scores is the same for both groups.
+                        See ', a('Martinkova, et al. (2017) ',
+                                 href = "http://www.lifescied.org/content/16/2/rm2.full.pdf+html?with-ds=yes",
+                                 target = "_blank"),
+                        'for further discussion. '),
                       p('Dataset ', code("GMAT2"), ' is also generated based on parameters of GMAT (Kingston et
                          al., 1985) from R ', code('difNLR'),' package . Again, first two items were generated
                          to function differently in uniform and non-uniform way respectively. The data set
@@ -2970,6 +2979,12 @@ ui = tagList(
                         Mathematical and Statistical Psychology, 65(2), 302-321."),
                       p("Mantel, N., & Haenszel, W. (1959). Statistical Aspects of the Analysis of Data from
                         Retrospective Studies. Journal of the National Cancer Institute, 22 (4), 719-748."),
+                      p("Martinkova, P., Drabinova, A., Liaw, Y. L., Sanders, E. A., McFarland, J. L., & Price, R. M.
+                        (2017). Checking equity: Why differential item functioning analysis should be a routine part
+                        of developing conceptual assessments. CBE-Life Sciences Education, 16(2). ",
+                        a('See online.',
+                          href = "http://www.lifescied.org/content/16/2/rm2.full.pdf+html?with-ds=yes",
+                          target = "_blank")),
                       p("Swaminathan, H., & Rogers, H. J. (1990). Detecting Differential Item
                         Functioning Using Logistic Regression Procedures. Journal of Educational
                         Measurement, 27(4), 361-370."),
@@ -2989,3 +3004,4 @@ ui = tagList(
                       )
                       )
                       )
+
