@@ -134,7 +134,8 @@ ui = tagList(
                       p('See also older versions: ',
                          a('0.1.0, ', href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV01/", target = "_blank"),
                          a('0.2.0, ', href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV02/", target = "_blank"),
-                         a('1.0.0. ', href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV100/", target = "_blank")),
+                         a('1.0.0, ', href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV100/", target = "_blank"),
+                         a('1.1.0. ', href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV110/", target = "_blank")),
 
                       h4('List of packages used'),
                       code('library(corrplot)'), br(),
