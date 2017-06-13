@@ -34,7 +34,7 @@ ui = tagList(
 
   #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   # !! ONLINE VERSION ####
-  # tags$head(includeScript("google-analytics.js")),
+  tags$head(includeScript("google-analytics.js")),
   #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   navbarPage(title = div(HTML('<font size = "5"> ShinyItemAnalysis </font>
                                <font size = "2"> Test and item analysis </font> </p>')),
@@ -2884,7 +2884,7 @@ ui = tagList(
                                                  "1PL" = "1pl",
                                                  "2PL" = "2pl",
                                                  "3PL" = "3pl"),
-                                               selected = "none")
+                                               selected = "1pl")
                            )
                          ),
 
@@ -2962,8 +2962,14 @@ ui = tagList(
                            sections of intended contents. For example, if you wish to include a ", strong("3PL IRT"),
                            " model, you can first visit ", strong("IRT models"), "section and ", strong("3PL"), " subsection."),
                          #p(strong("Warning: "), "Download of reports takes some time. Please, be patient."),
-                         actionButton("generate", "Generate report"),
-                         downloadButton("report", "Download report"),
+                         fluidRow(
+                           column(width = 4,
+                             splitLayout(
+                               actionButton("generate", "Generate report"),
+                               uiOutput("download_report_button")
+                             )
+                           )
+                         ),
                          br(),
                          br(),
                          br()
