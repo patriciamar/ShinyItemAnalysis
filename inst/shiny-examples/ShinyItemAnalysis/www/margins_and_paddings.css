@@ -40,9 +40,9 @@
     
     .clear{
       clear:both;
-      height:120px;
+      height:130px;
     }
-    
+        
     .navbar-fixed-top, .navbar-fixed-bottom, .navbar-static-top {
       margin-left:0;
       margin-right:0;
