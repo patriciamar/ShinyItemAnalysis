@@ -26,8 +26,7 @@ ui = tagList(
                       href = "flag-icon.css"),
             tags$link(rel = "stylesheet",
                       type = "text/css",
-                      href = "mobile_device_paddings.css"),
-            tags$link(rel = "shortcut icon", href = "Rlogo.png")
+                      href = "mobile_device_paddings.css")
             ),
 
   div(class = "busy",
