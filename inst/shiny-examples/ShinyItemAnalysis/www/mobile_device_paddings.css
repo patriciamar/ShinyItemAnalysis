@@ -7,6 +7,10 @@
     body {
       padding:0;
     }
+    
+    h3 {
+      padding-top:95px;
+    }
 
     .navbar-fixed-top, .navbar-fixed-bottom, .navbar-static-top {
       margin-left:0;
