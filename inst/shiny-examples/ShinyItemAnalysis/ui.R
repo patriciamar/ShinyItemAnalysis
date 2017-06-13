@@ -20,14 +20,16 @@ ui = tagList(
             tags$script(type = "text/javascript",
                         src = "report_downloading_message.js"),
             tags$style(type = "text/css",
-                       "body {padding-top: 110px; padding-left: 80px; padding-right: 80px; }"),
+                       "body {padding-top: 110px; padding-left: 80px; padding-right: 80px; padding-bottom: 80px; }"),
             tags$link(rel = "stylesheet",
                       type = "text/css",
                       href = "flag-icon.css"),
             tags$link(rel = "stylesheet",
                       type = "text/css",
                       href = "mobile_device_paddings.css"),
-            tags$link(rel = "shortcut icon", href = "Rlogo.png")
+            tags$link(rel = "shortcut icon", href = "Rlogo.png"),
+            tags$style(type = "text/css",
+                       ".panel-footer {position: fixed; right: 0; bottom: 0; left: 0;}")
             ),
 
   div(class = "busy",
