@@ -72,6 +72,7 @@ MINOR UPDATES
   o Package dependencies were updated (packages 'knitr' and 'xtable' are
     now used in report generation).
   o Minor bug in DIF IRT (Lord and Raju) plots and downloads was fixed.
+  o Designs of footer and navigation bar were updated.
 
 ---------------------------------------------------
 - Changes in ShinyItemAnalysis 1.1.0 (2016-02-02) -
