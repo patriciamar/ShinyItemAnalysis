@@ -30,14 +30,19 @@
 
     .container {
       padding:0;
-      margin:0;
+      margin:0;      
     }
 
     body {
       padding:0;
       padding-top:150px;
     }
-
+    
+    .clear{
+      clear:both;
+      height:120px;
+    }
+    
     .navbar-fixed-top, .navbar-fixed-bottom, .navbar-static-top {
       margin-left:0;
       margin-right:0;
