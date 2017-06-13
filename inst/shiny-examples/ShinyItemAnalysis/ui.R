@@ -24,7 +24,7 @@ ui = tagList(
                       href = "flag-icon.css"),
             tags$link(rel = "stylesheet",
                       type = "text/css",
-                      href = "margin_and_paddings.css"),
+                      href = "margins_and_paddings.css"),
             tags$link(rel = "shortcut icon", href = "Rlogo.png"),
             tags$style(type = "text/css",
                        ".panel-footer {position: fixed; right: 0; bottom: 0; left: 0;}")
@@ -48,6 +48,7 @@ ui = tagList(
              selected = 'About',
              collapsible = TRUE,
              footer = list(
+               div(class = "clear"),
                div(class = "panel-footer",
                    HTML('<p> <font size = "4"> ShinyItemAnalysis </font>
                              <font size = "2"> Test and item analysis | Version 1.2.0 </font>
