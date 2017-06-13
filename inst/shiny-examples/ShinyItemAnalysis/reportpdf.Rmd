@@ -110,9 +110,8 @@ table = params$itemexam
 tab = format(round(table[, -1], 4), nsmall = 3)
 table = data.frame(table[, 1], tab)
 colnames(table) = c("Item", "Diff.", "SD", "D. ULI", "D. RIT", "D. RIR", "Alpha Drop")
-rownames(table) = NULL
 
-print(xtable(table, digits = c(0, 0, 4, 4, 4, 4, 4, 4), align = rep('c', 8)), booktabs = T, comment = F)
+print(xtable(table, digits = c(0, 0, 4, 4, 4, 4, 4, 4), align = rep('c', 8)), booktabs = T, comment = F, include.rownames = FALSE)
 ```
 
 ## Distractor analysis
