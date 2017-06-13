@@ -1,5 +1,5 @@
 @media (min-width: 1051px) {
-    
+
     body {
       padding-top:110px;
       padding-left:80px;
@@ -10,7 +10,7 @@
 }
 
 @media (max-width: 1050px) {
-    
+
     body {
       padding-top:150px;
       padding-left:80px;
@@ -21,7 +21,7 @@
 }
 
 @media (max-width: 768px) {
-     
+
     .container-fluid {
       padding:0;
       margin:0;
@@ -48,5 +48,5 @@
       margin-right:0;
       margin-bottom:0;
     }
-    
+
 }
