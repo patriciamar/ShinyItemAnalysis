@@ -111,18 +111,50 @@ ui = tagList(
                         'It is also available online at ',
                         a('Czech Academy of Sciences ',
                           href = 'https://shiny.cs.cas.cz/ShinyItemAnalysis/',
-                          target = "_blank"), '(CZ).',
+                          target = "_blank"),
+                        HTML(
+                          paste(
+                            "<a href='https://shiny.cs.cas.cz/ShinyItemAnalysis/' target='_blank'>",
+                            "<img src='Flag_of_the_Czech_Republic.png' height='12' border='0' align='middle'>",
+                            "</a>.",
+                            sep = ""
+                          )
+                        ),
                         'In case of busy server you can try other mirrors: ',
                         a('University of Washington',
                           href = 'https://rstudio.stat.washington.edu/shiny/ShinyItemAnalysis/',
-                          target = "_blank"), '(USA), ',
+                          target = "_blank"),
+                        HTML(
+                          paste(
+                            "<a href='https://rstudio.stat.washington.edu/shiny/ShinyItemAnalysis/' target='_blank'>",
+                            "<img src='Flag_of_the_United_States.png' height='12' border='0' align='middle'>",
+                            "</a>,",
+                            sep = ""
+                          )
+                        ),
                         a('Charles University',
                           href = 'http://shiny.statest.cz:3838/ShinyItemAnalysis/',
-                          target = "_blank"), '(CZ) ',
+                          target = "_blank"),
+                        HTML(
+                          paste(
+                            "<a href='http://shiny.statest.cz:3838/ShinyItemAnalysis/' target='_blank'>",
+                            "<img src='Flag_of_the_Czech_Republic.png' height='12' border='0' align='middle'>",
+                            "</a>",
+                            sep = ""
+                          )
+                        ),
                         'or',
                         a('shinyapps.io',
                           href = 'https://patriciamar.shinyapps.io/ShinyItemAnalysis/',
-                          target = "_blank"), '(USA).'
+                          target = "_blank"),
+                        HTML(
+                          paste(
+                            "<a href='https://patriciamar.shinyapps.io/ShinyItemAnalysis/' target='_blank'>",
+                            "<img src='Flag_of_the_United_States.png' height='12' border='0' align='middle'>",
+                            "</a>.",
+                            sep = ""
+                          )
+                        )
                       ),
 
                       h4('Version'),
