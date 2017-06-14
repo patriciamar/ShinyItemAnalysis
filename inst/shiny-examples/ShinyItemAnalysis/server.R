@@ -3820,11 +3820,14 @@ function(input, output, session) {
 
     # delta method
     g <- list( ~ x2,  ~ -x1/x2, ~ x4, ~ -((x2 * x3 - x1 * x4) / (x2 * (x2 + x4))))
-    if (is.character(fit$DIFitems) | !(input$diflog_irtSlider %in% fit$DIFitems)){
+    if (is.character(fit$DIFitems) | !(i %in% fit$DIFitems)){
+      d <- dim(fit$cov.M1[[i]])[1]
       cov <- matrix(0, ncol = 4, nrow = 4)
-      cov[1:2, 1:2] <-  fit$cov.M1[[i]]
+      cov[1:d, 1:d] <-  fit$cov.M1[[i]]
     } else {
-      cov <-  fit$cov.M0[[i]]
+      d <- dim(fit$cov.M0[[i]])[1]
+      cov <- matrix(0, ncol = 4, nrow = 4)
+      cov[1:d, 1:d] <-  fit$cov.M0[[i]]
     }
     cov <- as.matrix(cov)
     syms <- paste("x", 1:4, sep = "")
@@ -3917,16 +3920,13 @@ function(input, output, session) {
     fit <- model_DIF_NLR_plot()
     DIFitems <- fit$DIFitems
 
-    if (DIFitems == "No DIF item detected"){
-      tab_coef <- unlist(c(fit$nlrPAR[item, c("a", "b")], 0, 0, fit$nlrPAR[item, "c"]))
-      tab_sd <- unlist(c(fit$nlrSE[item, c("a", "b")], 0, 0, fit$nlrSE[item, "c"]))
-    } else {
-      tab_coef <- fit$nlrPAR[item, c("a", "b", "aDif", "bDif", "c")]
-      tab_sd <- fit$nlrSE[item, c("a", "b", "aDif", "bDif", "c")]
-    }
+    tab_coef <- tab_sd <- rep(0, 5)
+    names(tab_coef) <- names(tab_sd) <- c("a", "b", "aDif", "bDif", "c")
+
+    tab_coef[names(fit$nlrPAR[item, ])] <- fit$nlrPAR[item, ]
+    tab_sd[names(fit$nlrSE[item, ])] <- fit$nlrSE[item, ]
 
     tab <- t(rbind(tab_coef, tab_sd))
-
     rownames(tab) <- c('a', 'b', 'aDIF', 'bDIF', 'c')
     colnames(tab) <- c("Estimate", "SD")
 
