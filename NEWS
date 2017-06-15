@@ -29,6 +29,8 @@ MAJOR UPDATES
       with total score, Lord's test and Raju's test.
     o Default option of p-values adjustments in DIF detection methods
       was set to 'none'.
+    o Bugs in DIF Logistic IRT Z and DIF Nonlinear IRT Z tables of parameters
+      were fixed.
   * IRT models
     o IRT models are now fitted only by mirt package.
     o Training plots of item characteristic and information curves were
@@ -73,6 +75,10 @@ MINOR UPDATES
     now used in report generation).
   o Minor bug in DIF IRT (Lord and Raju) plots and downloads was fixed.
   o Designs of footer and navigation bar were updated.
+  o The version for small media was designed.
+  o Weblink for version 1.1.0 was created.
+  o Reference list was expanded and links to online versions of articles
+    were added.
 
 ---------------------------------------------------
 - Changes in ShinyItemAnalysis 1.1.0 (2016-02-02) -

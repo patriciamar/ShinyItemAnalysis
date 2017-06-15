@@ -53,10 +53,15 @@ ui = tagList(
                    HTML('<p> <font size = "4"> ShinyItemAnalysis </font>
                              <font size = "2"> Test and item analysis | Version 1.2.0 </font>
                              <span style = "float:right">
-                                <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysis/" target="_blank"> <img src = "web_icon.png", style = "width: 25px;"> </a>
-                                <a href = "https://github.com/patriciamar/ShinyItemAnalysis/" target="_blank"> <img src = "github_icon.png", style = "width: 25px;"> </a>
-                                <a href = "https://CRAN.R-project.org/package=ShinyItemAnalysis/" target="_blank"> <img src = "cran_icon.png", style = "width: 25px;"> </a>
-                             </span> </p>'),
+                                <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysis/" id = "tooltipweb" target="_blank"> <img src = "web_icon.png", style = "width: 25px;"> </a>
+                                <a href = "https://github.com/patriciamar/ShinyItemAnalysis/" id = "tooltipgithub" target="_blank"> <img src = "github_icon.png", style = "width: 25px;"> </a>
+                                <a href = "https://CRAN.R-project.org/package=ShinyItemAnalysis/" id = "tooltipcran" target="_blank"> <img src = "cran_icon.png", style = "width: 25px;"> </a>
+                             </span> </p>
+                         <script>
+                           $("#tooltipweb").attr("title", "Web");
+                           $("#tooltipgithub").attr("title", "GitHub");
+                           $("#tooltipcran").attr("title", "CRAN");
+                         </script>'),
                    p(HTML('&copy; 2017  Patricia Martinkova, Adela Drabinova, Ondrej Leder and Jakub Houdek'
                    ),
                     #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -115,7 +120,7 @@ ui = tagList(
                         HTML(
                           paste(
                             "<a href='https://shiny.cs.cas.cz/ShinyItemAnalysis/' target='_blank'>",
-                            "<img src='Flag_of_the_Czech_Republic.png' height='12' border='0' align='middle'>",
+                            "<img src='Flag_of_the_Czech_Republic.png' height='16' border='0' align='middle'>",
                             "</a>.",
                             sep = ""
                           )
@@ -127,7 +132,7 @@ ui = tagList(
                         HTML(
                           paste(
                             "<a href='https://rstudio.stat.washington.edu/shiny/ShinyItemAnalysis/' target='_blank'>",
-                            "<img src='Flag_of_the_United_States.png' height='12' border='0' align='middle'>",
+                            "<img src='Flag_of_the_United_States.png' height='16' border='0' align='middle'>",
                             "</a>,",
                             sep = ""
                           )
@@ -138,7 +143,7 @@ ui = tagList(
                         HTML(
                           paste(
                             "<a href='http://shiny.statest.cz:3838/ShinyItemAnalysis/' target='_blank'>",
-                            "<img src='Flag_of_the_Czech_Republic.png' height='12' border='0' align='middle'>",
+                            "<img src='Flag_of_the_Czech_Republic.png' height='16' border='0' align='middle'>",
                             "</a>",
                             sep = ""
                           )
@@ -150,7 +155,7 @@ ui = tagList(
                         HTML(
                           paste(
                             "<a href='https://patriciamar.shinyapps.io/ShinyItemAnalysis/' target='_blank'>",
-                            "<img src='Flag_of_the_United_States.png' height='12' border='0' align='middle'>",
+                            "<img src='Flag_of_the_United_States.png' height='16' border='0' align='middle'>",
                             "</a>.",
                             sep = ""
                           )
@@ -2955,37 +2960,55 @@ ui = tagList(
                                                     href = "http://onlinelibrary.wiley.com/doi/10.1111/emip.12067/full",
                                                     target = "_blank")),
                       p('Angoff, W. H., & Ford, S. F. (1973). Item-Race Interaction on a Test of
-                        Scholastic Aptitude. Journal of Educational Measurement, 10(2), 95-105.'),
+                        Scholastic Aptitude. Journal of Educational Measurement, 10(2), 95-105.',
+                        a("See online.",
+                          href = "https://www.jstor.org/stable/1433905?seq=1#page_scan_tab_contents",
+                          target = "_blank")),
                       p('Bock, R. D. (1972). Estimating Item Parameters and Latent Ability when
                         Responses Are Scored in Two or More Nominal Categories. Psychometrika,
                         37(1), 29-51.', a("See online.",
                                           href = "http://link.springer.com/article/10.1007/BF02291411",
                                           target = "_blank")),
-                      p('Cronbach, L. J. (1951). Coefficient alpha and the internal structure
-                        of tests. psychometrika, 16(3), 297-334.'),
+                      p('Cronbach, L. J. (1951). Coefficient Alpha and the Internal Structure
+                        of Tests. Psychometrika, 16(3), 297-334.', a("See online.",
+                                                                     href = "https://link.springer.com/article/10.1007/BF02310555",
+                                                                     target = "_blank")),
                       p("Drabinova, A., & Martinkova, P. (2016). Detection of Differential Item
                         Functioning Based on Non-Linear Regression. Technical Report",
                         a("V-1229", href = "https://goo.gl/R3dpJ5", target = "_blank"), "."),
                       p("Lord, F. M. (1980). Applications of Item Response Theory to Practical Testing Problems.
                         Routledge."),
-                      p("Magis, D., & Facon, B. (2012). Angoff's delta method revisited:
-                        Improving DIF detection under small samples. British Journal of
-                        Mathematical and Statistical Psychology, 65(2), 302-321."),
+                      p("Magis, D., & Facon, B. (2012). Angoff's Delta Method Revisited:
+                        Improving DIF Detection under Small Samples. British Journal of
+                        Mathematical and Statistical Psychology, 65(2), 302-321.", a("See online.",
+                                                                                     href = "https://www.ncbi.nlm.nih.gov/pubmed/22500570",
+                                                                                     target = "_blank")),
                       p("Mantel, N., & Haenszel, W. (1959). Statistical Aspects of the Analysis of Data from
-                        Retrospective Studies. Journal of the National Cancer Institute, 22 (4), 719-748."),
+                        Retrospective Studies. Journal of the National Cancer Institute, 22 (4), 719-748.", a("See online.",
+                                                                                                              href = "http://www.medicine.mcgill.ca/epidemiology/hanley/c634/stratified/Mantel_Haenszel_1.pdf",
+                                                                                                              target = "_blank")),
                       p("Martinkova, P., Drabinova, A., Liaw, Y. L., Sanders, E. A., McFarland, J. L., & Price, R. M.
-                        (2017). Checking equity: Why differential item functioning analysis should be a routine part
-                        of developing conceptual assessments. CBE-Life Sciences Education, 16(2). ",
+                        (2017). Checking Equity: Why Differential Item Functioning Analysis Should Be a Routine Part
+                        of Developing Conceptual Assessments. CBE-Life Sciences Education, 16(2). ",
                         a('See online.',
                           href = "http://www.lifescied.org/content/16/2/rm2.full.pdf+html?with-ds=yes",
                           target = "_blank")),
                       p("Swaminathan, H., & Rogers, H. J. (1990). Detecting Differential Item
                         Functioning Using Logistic Regression Procedures. Journal of Educational
-                        Measurement, 27(4), 361-370."),
+                        Measurement, 27(4), 361-370.",
+                        a('See online.',
+                          href = "https://www.jstor.org/stable/1434855?seq=1#page_scan_tab_contents",
+                          target = "_blank")),
                       p("Raju, N. S. (1988). The Area between Two Item Characteristic Curves. Psychometrika,
-                        53 (4), 495-502."),
+                        53 (4), 495-502.",
+                        a('See online.',
+                          href = "https://link.springer.com/article/10.1007/BF02294403",
+                          target = "_blank")),
                       p("Raju, N. S. (1990). Determining the Significance of Estimated Signed and Unsigned Areas
-                        between Two Item Response Functions. Applied Psychological Measurement, 14 (2), 197-207."),
+                        between Two Item Response Functions. Applied Psychological Measurement, 14 (2), 197-207.",
+                        a('See online.',
+                          href = "http://journals.sagepub.com/doi/abs/10.1177/014662169001400208",
+                          target = "_blank")),
                       p('Rasch, G. (1960) Probabilistic Models for Some Intelligence and Attainment Tests.
                         Copenhagen: Paedagogiske Institute.'),
                       p('Schwarz, G. (1978). Estimating the Dimension of a Model. The Annals of Statistics,
