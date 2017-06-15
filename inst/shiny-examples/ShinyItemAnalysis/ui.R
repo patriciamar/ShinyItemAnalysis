@@ -53,10 +53,15 @@ ui = tagList(
                    HTML('<p> <font size = "4"> ShinyItemAnalysis </font>
                              <font size = "2"> Test and item analysis | Version 1.2.0 </font>
                              <span style = "float:right">
-                                <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysis/" target="_blank"> <img src = "web_icon.png", style = "width: 25px;"> </a>
-                                <a href = "https://github.com/patriciamar/ShinyItemAnalysis/" target="_blank"> <img src = "github_icon.png", style = "width: 25px;"> </a>
-                                <a href = "https://CRAN.R-project.org/package=ShinyItemAnalysis/" target="_blank"> <img src = "cran_icon.png", style = "width: 25px;"> </a>
-                             </span> </p>'),
+                                <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysis/" id = "tooltipweb" target="_blank"> <img src = "web_icon.png", style = "width: 25px;"> </a>
+                                <a href = "https://github.com/patriciamar/ShinyItemAnalysis/" id = "tooltipgithub" target="_blank"> <img src = "github_icon.png", style = "width: 25px;"> </a>
+                                <a href = "https://CRAN.R-project.org/package=ShinyItemAnalysis/" id = "tooltipcran" target="_blank"> <img src = "cran_icon.png", style = "width: 25px;"> </a>
+                             </span> </p>
+                         <script>
+                           $("#tooltipweb").attr("title", "Web");
+                           $("#tooltipgithub").attr("title", "GitHub");
+                           $("#tooltipcran").attr("title", "CRAN");
+                         </script>'),
                    p(HTML('&copy; 2017  Patricia Martinkova, Adela Drabinova, Ondrej Leder and Jakub Houdek'
                    ),
                     #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
