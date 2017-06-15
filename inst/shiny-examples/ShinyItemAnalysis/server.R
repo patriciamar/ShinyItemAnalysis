@@ -1258,7 +1258,7 @@ function(input, output, session) {
       beside = TRUE,
       space = c(0.0, 1.0),
       col = c("red", "blue"),
-      xlab = "Item numbers",
+      xlab = "Item (ordered by difficulty)",
       ylim = c(0, 1),
       horiz = FALSE,
       xaxt = "n",
@@ -1268,7 +1268,7 @@ function(input, output, session) {
     axis(
       1,
       at = seq(2, 2 + 3 * (length(my_parameters) - 1), by = 3),
-      labels = 1:length(test_key()), cex.lab = 1.2
+      labels = c(item_numbers())[order(unlist(lapply(my_parameters, "[[", 1)))], cex.lab = 1.2
     )
 
     legend(
