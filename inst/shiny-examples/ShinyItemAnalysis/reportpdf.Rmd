@@ -166,6 +166,7 @@ $$ {P}(Y_{ij} = 1|\theta_{i},a_j,b_j) = \frac{e^{a_j(\theta_i-b_j)}}{1+e^{a_j(\t
 
 3PL IRT model
 $$ {P}(Y_{ij} = 1|\theta_{i},a_j,b_j, c_j) =c_j + (1+c_j)\cdot\frac{e^{a_j(\theta_i-b_j)}}{1+e^{a_j(\theta_i-b_j)}}$$
+`r if (any(params$wrightMap!="")) {"\\vspace{3em}"}`
 
 **`r if (any(params$wrightMap!="")) {"Wright (item-person) map using 1PL IRT model"}`**
 
@@ -191,23 +192,15 @@ if (params$irt_type != "none") {
 }
 ```
 
-`r if (any(params$wrightMap!="")) {"\\pagebreak"}`
-
 ```{r irt-2, echo = FALSE, results = "hide", fig.height = 4.5, fig.width = 11}
 if (params$irt_type != "none") {
   params$irttif
 }
 ```
 
-```{r irt-3, echo = FALSE, results = "hide", fig.height = 4.5, fig.width = 11}
-if (params$irt_type != "none") {
-  params$irtfactor + ggtitle('Scatterplot of factor scores and standardized total scores') + theme(text = element_text(size = 10), plot.title = element_text(face = "bold"))
-}
-```
-
 `r if (any(params$wrightMap!="")) {"\\pagebreak"}`
+`r if (params$irt_type != "none") {"\\textbf{Parameter estimates and item fit}"}`
 
-**`r if (params$irt_type != "none") {"Parameter estimates and item fit"}`**
 ```{r irt-estim, echo = FALSE, results = "asis"}
 if (params$irt_type != "none") {
   table = params$irtcoef
@@ -217,15 +210,27 @@ if (params$irt_type != "none") {
 }
 ```
 
-\pagebreak
+`r if (params$irt_type != "none") {"\\vspace{2em}"}`
+`r if (params$irt_type != "none") {"**Ability estimates**"}`
 
-# DIF/Fairness report
+```{r irt-3, echo = FALSE, results = "hide", fig.height = 4.5, fig.width = 11}
+if (params$irt_type != "none") {
+  params$irtfactor + ggtitle('Scatterplot of factor scores and standardized total scores') + theme(text = element_text(size = 10), plot.title = element_text(face = "bold"))
+}
+```
 
-`r if(!params$isGroupPresent){"Group vector is not present. DIF and DDF Report could not be generated!"}`
+
+`r if (any(c(params$histCheck, params$deltaplotCheck, params$logregCheck, params$multiCheck)) & params$isGroupPresent) {"\\pagebreak"}`
+
+
+`r if(any(c(params$histCheck, params$deltaplotCheck, params$logregCheck, params$multiCheck))) {"# DIF/Fairness report"}`
+
+`r if(any(c(params$histCheck, params$deltaplotCheck, params$logregCheck, params$multiCheck)) & !params$isGroupPresent){"Group vector is not present. DIF and DDF Report could not be generated!"}`
 
 `r if(params$isGroupPresent & params$histCheck) {"## Total scores"}`
 
-**Summary table of total scores in reference and focal group**
+`r if(params$isGroupPresent & params$histCheck) {"**Summary table of total scores in reference and focal group**"}`
+
 ```{r table-by-group, echo = FALSE, results = "asis"}
 if (params$histCheck) {
   if(params$isGroupPresent){
