@@ -37,10 +37,8 @@ ui = tagList(
 
   shinyjs::useShinyjs(),
 
-  #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  # !! ONLINE VERSION ####
   tags$head(includeScript("google-analytics.js")),
-  #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
   navbarPage(title = div(HTML('<font size = "5"> ShinyItemAnalysis </font>
                                <font size = "2"> Test and item analysis </font> </p>')),
              windowTitle = 'ShinyItemAnalysis',
@@ -64,13 +62,9 @@ ui = tagList(
                          </script>'),
                    p(HTML('&copy; 2017  Patricia Martinkova, Adela Drabinova, Ondrej Leder and Jakub Houdek'
                    ),
-                    #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-                    # !! ONLINE VERSION ####
-                    # HTML('<span style = "float:right">'),
-                    #     textOutput('counter', inline = T),
-                    # HTML('</span>'),
-                    #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-                    HTML('')))),
+                    HTML('<span style = "float:right">'),
+                        textOutput('counter', inline = T),
+                    HTML('</span>')))),
              theme = "bootstrap.css",
              #%%%%%%%%%%%%%%%%%%%%%
              # MAIN PANEL #########
