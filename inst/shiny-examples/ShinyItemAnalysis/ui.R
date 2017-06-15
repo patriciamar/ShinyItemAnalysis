@@ -169,6 +169,27 @@ ui = tagList(
                          a('1.0.0, ', href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV100/", target = "_blank"),
                          a('1.1.0. ', href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV110/", target = "_blank")),
 
+                      h4('Authors and contributors'),
+                      
+                      fluidRow(
+                        column(1, align = "center",
+                               img(src = 'patricia_new.png', width = 75),
+                               HTML("<figcaption><a href='http://www.cs.cas.cz/martinkova/' target='_blank'>Patricia<br>Martinkova</a></figcaption>")),
+                        column(1, align = "center",
+                               img(src = 'adela_new.png', width = 75),
+                               HTML("<figcaption>Adela<br>Drabinova</figcaption>")),
+                        column(1, align = "center",
+                               img(src = 'leder.png', width = 75),
+                               HTML("<figcaption><a href='https://www.linkedin.com/in/ond%C5%99ej-leder-3864b1119' target='_blank'>Ondrej<br>Leder</a></figcaption>")),
+                        column(1, align = "center",
+                               img(src = 'jakub_new.png', width = 75),
+                               HTML("<figcaption>Jakub<br>Houdek</figcaption>")),
+                        column(1, align = "center",
+                               img(src = 'Lubos.jpg', width = 75),
+                               HTML("<figcaption>Lubomir<br>Stepanek</figcaption>"))
+                      ),
+                      
+                      
                       h4('List of packages used'),
                       code('library(corrplot)'), br(),
                       code('library(CTT)'), br(),
@@ -195,27 +216,6 @@ ui = tagList(
                       code('library(stringr)'), br(),
                       code('library(WrightMap)'), br(),
                       code('library(xtable)'), br(),
-
-
-                      h4('Authors and contributors'),
-
-                      fluidRow(
-                        column(1, align = "center",
-                               img(src = 'patricia_new.png', width = 75),
-                               HTML("<figcaption><a href='http://www.cs.cas.cz/martinkova/' target='_blank'>Patricia<br>Martinkova</a></figcaption>")),
-                        column(1, align = "center",
-                               img(src = 'adela_new.png', width = 75),
-                               HTML("<figcaption>Adela<br>Drabinova</figcaption>")),
-                        column(1, align = "center",
-                               img(src = 'leder.png', width = 75),
-                               HTML("<figcaption><a href='https://www.linkedin.com/in/ond%C5%99ej-leder-3864b1119' target='_blank'>Ondrej<br>Leder</a></figcaption>")),
-                        column(1, align = "center",
-                               img(src = 'jakub_new.png', width = 75),
-                               HTML("<figcaption>Jakub<br>Houdek</figcaption>")),
-                        column(1, align = "center",
-                               img(src = 'Lubos.jpg', width = 75),
-                               HTML("<figcaption>Lubomir<br>Stepanek</figcaption>"))
-                      ),
 
 
                       h4('Bug reports'),
@@ -253,7 +253,10 @@ ui = tagList(
                         ' and ', code('ShinyItemAnalysis'), 'packages or you may upload your own dataset
                          (see below). To return to demonstration dataset,
                          refresh this page in your browser' , strong("(F5)"), '.'),
-                      p('Used dataset ', code("GMAT"), ' is generated based on parameters of real Graduate Management
+                      p('Used dataset ', code("GMAT"), a(' (Martinkova, et al., 2017) ',
+                                 href = "http://www.lifescied.org/content/16/2/rm2.full.pdf+html?with-ds=yes",
+                        target = "_blank"),
+                        ' is generated based on parameters of real Graduate Management
                         Admission Test (GMAT) data set (Kingston et al., 1985). However, first two items were
                         generated to function differently in uniform and non-uniform way respectively.
                         The data set represents responses of 2,000 subjects (1,000 males, 1,000 females) to
@@ -262,12 +265,12 @@ ui = tagList(
                                  href = "http://www.lifescied.org/content/16/2/rm2.full.pdf+html?with-ds=yes",
                                  target = "_blank"),
                         'for further discussion. '),
-                      p('Dataset ', code("GMAT2"), ' is also generated based on parameters of GMAT (Kingston et
+                      p('Dataset ', code("GMAT2"), ' (Drabinova & Martinkova, 2016) is also generated based on parameters of GMAT (Kingston et
                          al., 1985) from R ', code('difNLR'),' package . Again, first two items were generated
                          to function differently in uniform and non-uniform way respectively. The data set
                          represents responses of 1,000 subjects (500 males, 500 females) to multiple-choice test
                          of 20 items. '),
-                      p('Dataset ', code("Medical 20 DIF"), ' is a subset of real admission test to medical
+                      p('Dataset ', code("Medical 20 DIF"), ' (Drabinova & Martinkova, 2016) is a subset of real admission test to medical
                          school from R ', code('difNLR'),' package. First item was previously detected as
                          functioning differently. The data set represents responses of 1,407 subjects (484 males,
                          923 females) to multiple-choice test of 20 items. For more details of item selection
@@ -295,8 +298,8 @@ ui = tagList(
                         detection procedures on ', strong('DIF/Fairness'), ' page. '),
                       p(strong('Criterion variable'), ' is either
                         discrete or continuous vector (e.g. future study success or future GPA in case of admission tests) which
-                        should be predicted by the measurement . Again, its length need to be the same as number of individual
-                        students in main dataset. If the criterion variable is not provided then it wont be possible to run
+                        should be predicted by the measurement. Again, its length needs to be the same as number of individual
+                        students in the main dataset. If the criterion variable is not provided then it wont be possible to run
                         validity analysis in ', strong('Predictive validity'), ' section on ', strong('Validity'), ' page.'),
                       p('In all data sets header should be either included or excluded. '),
                       p('Columns of dataset are by default renamed to Item and number of particular column. If you
