@@ -5,15 +5,16 @@
         ***************************************************************
 
 ---------------------------------------------------
-- Changes in ShinyItemAnalysis 1.1.5 (2017-06-06) -
+- Changes in ShinyItemAnalysis 1.2.0 (2017-06-15) -
 ---------------------------------------------------
 
 MAJOR UPDATES
 
-  o ShinyItemAnalysis can now handle missing values.
+  o ShinyItemAnalysis can now handle missing values. Newly there is
+    an option to handle NA values as zeros in scored data.
   o Bug in WrightMap was fixed.
   o We have new contributor - Lubomir Stepanek!
-  o New online mirror was added.
+  o New online mirrors were added.
   o Busy indicator and tooltips were added.
   o Structure of application was mildy updated.
   o Datasets 'dataMedical()', 'dataMedicalkey()', 'dataMedicaltest()'
@@ -39,6 +40,10 @@ MAJOR UPDATES
       no graphs of correlation structure are fitted.
     o Reports are now described in detail.
     o The settings of reports are now also offered in Report section.
+    o Generation of reports is now done part by part. Once it is finished,
+      the download button is offered.
+    o Message boxs with warning for generation and download of reports
+      were added.
   * Validity analysis:
     o Validity analysis of predictive outcome is now included on Validity
       page in Predictive validity section.
@@ -47,6 +52,11 @@ MAJOR UPDATES
       variable which can be used in Predictive validity section.
     o Functions 'DistractorAnalysis()' and 'plotDistractorAnalysis()' were
       extended by 'matching' argument.
+  * Item analysis
+    o Barplot of answer selection proportion was added into Distractor
+      subsection.
+    o Diagram of custom discrimination - new version of DD plot - was
+      added into Distractor subsection.
 
 MINOR UPDATES
 
@@ -61,6 +71,8 @@ MINOR UPDATES
   o Selected code was updated.
   o Package dependencies were updated (packages 'knitr' and 'xtable' are
     now used in report generation).
+  o Minor bug in DIF IRT (Lord and Raju) plots and downloads was fixed.
+  o Designs of footer and navigation bar were updated.
 
 ---------------------------------------------------
 - Changes in ShinyItemAnalysis 1.1.0 (2016-02-02) -

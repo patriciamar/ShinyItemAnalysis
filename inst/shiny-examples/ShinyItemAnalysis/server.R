@@ -3153,6 +3153,7 @@ function(input, output, session) {
         stat_function(fun = iccirt, args = list(a = a, b = b, c = c, d = d),
                       color = "red") +
         xlim(-4, 4) +
+        ylim(0, 4) +
         xlab("Ability") +
         ylab("Information") +
         theme_bw() +
@@ -3180,9 +3181,9 @@ function(input, output, session) {
     }
   )
 
-  ###################
+  #%%%%%%%%%%%%%%%%%%
   # DIF/FAIRNESS ####
-  ###################
+  #%%%%%%%%%%%%%%%%%%
   # * TOTAL SCORES ####
   # ** Summary of Total Scores for Groups ####
   resultsgroupInput<-reactive({

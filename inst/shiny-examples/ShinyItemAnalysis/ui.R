@@ -15,14 +15,19 @@ ui = tagList(
                       href = "style.css"),
             tags$script(type = "text/javascript",
                         src = "busy.js"),
-            tags$style(type = "text/css",
-                       "body {padding-top: 110px; padding-left: 80px; padding-right: 80px; }"),
+            tags$script(type = "text/javascript",
+                        src = "report_generating_message.js"),
+            tags$script(type = "text/javascript",
+                        src = "report_downloading_message.js"),
             tags$link(rel = "stylesheet",
                       type = "text/css",
                       href = "flag-icon.css"),
             tags$link(rel = "stylesheet",
                       type = "text/css",
-                      href = "mobile_device_paddings.css")
+                      href = "margins_and_paddings.css"),
+            tags$link(rel = "shortcut icon", href = "Rlogo.png"),
+            tags$style(type = "text/css",
+                       ".panel-footer {position: fixed; right: 0; bottom: 0; left: 0;}")
             ),
 
   div(class = "busy",
@@ -43,77 +48,24 @@ ui = tagList(
              selected = 'About',
              collapsible = TRUE,
              footer = list(
-               #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-               # !! ONLINE VERSION ####
-               # div(class = "panel-footer",
-               #    p(HTML('<font size = "4"> ShinyItemAnalysis </font>
-               #            <font size = "2"> Test and item analysis | Version 1.1.5 </font> </p>')),
-               #     p("You can also download it as R package from ",
-               #       a(strong("CRAN"), href = "https://cran.rstudio.com/web/packages/ShinyItemAnalysis/",
-               #         target = "_blank"), "to run analysis faster! Or you can try other mirrors: ",
-               #       HTML('<a href = https://patriciamar.shinyapps.io/ShinyItemAnalysis/
-               #                id = second_mirror>
-               #                 <span class="flag-icon flag-icon-us"></span> </a>',
-               #            '<a href = http://shiny.statest.cz:3838/ShinyItemAnalysis/
-               #                 id = third_mirror>
-               #                <span class="flag-icon flag-icon-cz"></span> </a>')),
-               #     p("Project was supported by grant funded by Czech Science Foundation under number ",
-               #       a("GJ15-15856Y",
-               #         href = "http://www.cs.cas.cz/martinkova/psychometrics.html",
-               #         target = "_blank")),
-               #     HTML("&copy; 2017  Patricia Martinkova, Adela Drabinova, Ondrej Leder and Jakub Houdek"),
-               #     div(
-               #       HTML('<p style="font-size: 9pt">
-               #            See older versions:
-               #            <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV01/"> 0.1.0</a>,
-               #            <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV02/"> 0.2.0</a>,
-               #            <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV100/"> 1.0.0</a>
-               #            </p>
-               #            <script>
-               #             $("#second_mirror").attr("title", "Amazon Technologies Inc.");
-               #             $("#third_mirror").attr("title", "First Faculty of Medicine, Charles University");
-               #            </script>'
-               #          )
-               #       ),
-               #     p(textOutput('counter'))
-               #       )
-               #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-               # !! PACKAGE VERSION ####
+               div(class = "clear"),
                div(class = "panel-footer",
-                   p(HTML('<font size = "4"> ShinyItemAnalysis </font>
-                           <font size = "2"> Test and item analysis | Version 1.1.5 </font> </p>')),
-                   p("You can also try it ", a(strong("online!"),
-                                               href = "http://shiny.cs.cas.cz/ShinyItemAnalysis/",
-                                               id = "first_mirror"),
-                      "Or you can try other mirrors: ",
-                      HTML('<a href = https://patriciamar.shinyapps.io/ShinyItemAnalysis/
-                               id = second_mirror>
-                               <span class="flag-icon flag-icon-us"></span> </a>',
-                          '<a href = http://shiny.statest.cz:3838/ShinyItemAnalysis/
-                               id = third_mirror>
-                               <span class="flag-icon flag-icon-cz"></span> </a>')),
-                   p("Project was supported by grant funded by Czech Science Foundation under number ",
-                     a("GJ15-15856Y",
-                       href = "http://www.cs.cas.cz/martinkova/psychometrics.html",
-                       target = "_blank")),
-                   HTML("&copy; 2017  Patricia Martinkova, Adela Drabinova, Ondrej Leder and Jakub Houdek"),
-                   div(
-                     HTML('<p style="font-size: 9pt">
-                          See older versions:
-                          <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV01/"> 0.1.0</a>,
-                          <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV02/"> 0.2.0</a>,
-                          <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV100/"> 1.0.0</a>
-                          </p>
-                          <script>
-                           $("#first_mirror").attr("title", "Institute of Computer Science, Czech Academy of Sciences");
-                           $("#second_mirror").attr("title", "Amazon Technologies Inc.");
-                           $("#third_mirror").attr("title", "First Faculty of Medicine, Charles University");
-                          </script>'
-                        )
-                     )
-                  )
-               #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                   HTML('<p> <font size = "4"> ShinyItemAnalysis </font>
+                             <font size = "2"> Test and item analysis | Version 1.2.0 </font>
+                             <span style = "float:right">
+                                <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysis/" target="_blank"> <img src = "web_icon.png", style = "width: 25px;"> </a>
+                                <a href = "https://github.com/patriciamar/ShinyItemAnalysis/" target="_blank"> <img src = "github_icon.png", style = "width: 25px;"> </a>
+                                <a href = "https://CRAN.R-project.org/package=ShinyItemAnalysis/" target="_blank"> <img src = "cran_icon.png", style = "width: 25px;"> </a>
+                             </span> </p>'),
+                   p(HTML('&copy; 2017  Patricia Martinkova, Adela Drabinova, Ondrej Leder and Jakub Houdek'
                    ),
+                    #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                    # !! ONLINE VERSION ####
+                    # HTML('<span style = "float:right">'),
+                    #     textOutput('counter', inline = T),
+                    # HTML('</span>'),
+                    #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                    HTML('')))),
              theme = "bootstrap.css",
              #%%%%%%%%%%%%%%%%%%%%%
              # MAIN PANEL #########
@@ -128,6 +80,7 @@ ui = tagList(
                         and their items including:' ),
                       tags$ul(
                         tags$li("Exploration of total and standard scores on ", strong('Summary'), "page. "),
+                        tags$li("Correlation structure and predictive validity analysis on ", strong('Validity'), "page. "),
                         tags$li("Item and distractor analysis on ", strong('Item analysis'), "page. "),
                         tags$li('Item analysis by logistic models on ', strong('Regression'), "page. "),
                         tags$li('Item analysis by item response theory models on ', strong('IRT models'), "page. "),
@@ -142,16 +95,7 @@ ui = tagList(
                       p('For all graphical outputs a download button is provided. Moreover, on ', strong('Reports'),
                         'page HTML or PDF report can be created. Additionaly, all application outputs are
                         complemented by selected R code hence the similar analysis can be run and modified in R.'),
-                      #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-                      # # !! ONLINE VERSION ####
-                      # # p('You can also download ', code('ShinyItemAnalysis'), ' package from ',
-                      # #   a('CRAN', href = 'https://CRAN.R-project.org/package=ShinyItemAnalysis', target = "_blank"),
-                      # #   'to use it offline or run it faster. '),
-                      # #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-                      # # !! PACKAGE VERSION ####
-                      # p('You can also try ', code('ShinyItemAnalysis'), ' application ',
-                      #   a('online!', href = 'https://shiny.cs.cas.cz/ShinyItemAnalysis/', target = "_blank")),
-                      #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
                       h4('Data'),
                       p('For demonstration purposes, by default, 20-item dataset', code('GMAT'),'
                         from R ', code('difNLR'),' package is used. Other three datasets are available: ',
@@ -159,44 +103,40 @@ ui = tagList(
                         code('Medical 100'), 'from', code('ShinyItemAnalysis'), 'package.
                         You can change the dataset (and try your own one) on page', strong('Data.')),
 
+                      h4('Availability'),
+                      p('Application can be downloaded as R package from ',
+                        a('CRAN. ',
+                          href = 'https://CRAN.R-project.org/package=ShinyItemAnalysis',
+                          target = '_blank'),
+                        'It is also available online at ',
+                        a('Czech Academy of Sciences ',
+                          href = 'https://shiny.cs.cas.cz/ShinyItemAnalysis/',
+                          target = "_blank"), '(CZ).',
+                        'In case of busy server you can try other mirrors: ',
+                        a('University of Washington',
+                          href = 'https://rstudio.stat.washington.edu/shiny/ShinyItemAnalysis/',
+                          target = "_blank"), '(USA), ',
+                        a('Charles University',
+                          href = 'http://shiny.statest.cz:3838/ShinyItemAnalysis/',
+                          target = "_blank"), '(CZ) ',
+                        'or',
+                        a('shinyapps.io',
+                          href = 'https://patriciamar.shinyapps.io/ShinyItemAnalysis/',
+                          target = "_blank"), '(USA).'
+                      ),
+
                       h4('Version'),
-                      #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-                      # !! CRAN VERSION ####
-                      # p('Current version of ', code('ShinyItemAnalysis'), ' is 1.1.5.'),
-                      #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-                      # !! ONLINE AND GIT VERSION ####
                       p('Current version of ', code('ShinyItemAnalysis'), ' available on ',
-                        a(strong('CRAN'), href = 'https://CRAN.R-project.org/package=ShinyItemAnalysis', target = "_blank"), 'is 1.1.5.
+                        a('CRAN', href = 'https://CRAN.R-project.org/package=ShinyItemAnalysis', target = "_blank"), 'is 1.2.0.
                         Version available',
-                        a(strong('online'), href = 'https://shiny.cs.cas.cz/ShinyItemAnalysis/', target = "_blank"), 'is 1.1.5.
+                        a('online', href = 'https://shiny.cs.cas.cz/ShinyItemAnalysis/', target = "_blank"), 'is 1.2.0.
                         The newest development version available on ',
-                        a(strong('GitHub'), href = 'https://github.com/patriciamar/ShinyItemAnalysis', target = "_blank"), 'is 1.1.5.'),
-                      #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-                      div(
-                        HTML('<p>
-                             See also older versions:
-                             <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV01/"> 0.1.0</a>,
-                             <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV02/"> 0.2.0</a>,
-                             <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV100/"> 1.0.0</a>.
-                             </p>')
-                        ),
-                      h4('Mirrors'),
-                      p('Application is available ',
-                          a('online.',
-                            href = 'https://shiny.cs.cas.cz/ShinyItemAnalysis/',
-                            id = 'first_mirror'),
-                        'In case of busy server, you can try other mirrors: ',
-                        HTML('<a href = https://patriciamar.shinyapps.io/ShinyItemAnalysis/
-                                 id = second_mirror>
-                                 <span class="flag-icon flag-icon-us"></span> </a>',
-                             '<a href = http://shiny.statest.cz:3838/ShinyItemAnalysis/
-                                 id = third_mirror>
-                                 <span class="flag-icon flag-icon-cz"></span> </a>',
-                             '<script>
-                                $("#first_mirror").attr("title", "Institute of Computer Science, Czech Academy of Sciences");
-                                $("#second_mirror").attr("title", "Amazon Technologies Inc.");
-                                $("#third_mirror").attr("title", "First Faculty of Medicine, Charles University");
-                              </script>')),
+                        a('GitHub', href = 'https://github.com/patriciamar/ShinyItemAnalysis', target = "_blank"), 'is 1.2.0.'),
+                      p('See also older versions: ',
+                         a('0.1.0, ', href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV01/", target = "_blank"),
+                         a('0.2.0, ', href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV02/", target = "_blank"),
+                         a('1.0.0, ', href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV100/", target = "_blank"),
+                         a('1.1.0. ', href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV110/", target = "_blank")),
 
                       h4('List of packages used'),
                       code('library(corrplot)'), br(),
@@ -225,60 +165,49 @@ ui = tagList(
                       code('library(WrightMap)'), br(),
                       code('library(xtable)'), br(),
 
-                      h4('Authors'),
+
+                      h4('Authors and contributors'),
 
                       fluidRow(
                         column(1, align = "center",
-                               img(src = 'patricia_new.png', width = 75)),
+                               img(src = 'patricia_new.png', width = 75),
+                               HTML("<figcaption><a href='http://www.cs.cas.cz/martinkova/' target='_blank'>Patricia<br>Martinkova</a></figcaption>")),
                         column(1, align = "center",
-                               img(src = 'adela_new.png', width = 75)),
+                               img(src = 'adela_new.png', width = 75),
+                               HTML("<figcaption>Adela<br>Drabinova</figcaption>")),
                         column(1, align = "center",
-                               img(src = 'leder.png', width = 75)),
+                               img(src = 'leder.png', width = 75),
+                               HTML("<figcaption><a href='https://www.linkedin.com/in/ond%C5%99ej-leder-3864b1119' target='_blank'>Ondrej<br>Leder</a></figcaption>")),
                         column(1, align = "center",
-                               img(src = 'jakub_new.png', width = 75))
+                               img(src = 'jakub_new.png', width = 75),
+                               HTML("<figcaption>Jakub<br>Houdek</figcaption>")),
+                        column(1, align = "center",
+                               img(src = 'Lubos.jpg', width = 75),
+                               HTML("<figcaption>Lubomir<br>Stepanek</figcaption>"))
                       ),
-                      fluidRow(
-                        column(1, align = "center",
-                               a(HTML("Patricia <br> Martinkova"),
-                                 href = "http://www.cs.cas.cz/martinkova/",
-                                 target = "_blank")),
-                        column(1, align = "center",
-                               HTML("Adela <br> Drabinova")),
-                        column(1, align = "center",
-                               a(HTML("Ondrej <br> Leder"),
-                                 href = "https://www.linkedin.com/in/ond%C5%99ej-leder-3864b1119",
-                                 target = "_blank")),
-                        column(1, align = "center",
-                               HTML("Jakub <br> Houdek"))
-                      ),
-                      # img(src = 'patricia.jpg', width = 70),
-                      # p(a("Patricia Martinkova, Institute of Computer Science, Czech Academy of Sciences",
-                      #     href = "http://www.cs.cas.cz/martinkova/", target = "_blank")),
-                      # img(src = 'adela.jpg', width = 70),
-                      # p("Adela Drabinova"),
-                      # img(src = 'leder.png', width = 70),
-                      # p(a("Ondrej Leder", href = "https://www.linkedin.com/in/ond%C5%99ej-leder-3864b1119",
-                      #     target = "_blank")),
-                      # img(src = 'jakub.jpg', width = 70),
-                      # p("Jakub Houdek"),
+
 
                       h4('Bug reports'),
                       p("If you discover a problem with this application please contact the project maintainer
-                        at martinkova(at)cs.cas.cz or use ", a("GitHub.", href = "https://github.com/patriciamar/ShinyItemAnalysis/issues",
+                        at martinkova(at)cs.cas.cz or use ", a("GitHub.",
+                                                               href = "https://github.com/patriciamar/ShinyItemAnalysis/issues",
                                                                target = "_blank")),
 
                       h4('Acknowledgments'),
                       p(" Project was supported by grant funded by Czech Science foundation under number ",
-                        a("GJ15-15856Y.", href = "http://www.cs.cas.cz/martinkova/psychometrics.html",
+                        a("GJ15-15856Y.",
+                          href = "http://www.cs.cas.cz/martinkova/psychometrics.html",
                           target = "_blank")),
 
                       h4('License'),
                       p("This program is free software and you can redistribute it and or modify it under the terms
-                         of the", a("GNU GPL 3", href = "https://www.gnu.org/licenses/gpl-3.0.en.html"), "as published
-                         by the Free Software Foundation. This program is distributed in the hope that it will be useful,
-                         but without any warranty; without even the implied warranty of merchantability of fitness for a
-                         particular purpose." ),
-                      HTML("&copy; 2017  Patricia Martinkova, Adela Drabinova, Ondrej Leder and Jakub Houdek"),
+                         of the",
+                        a("GNU GPL 3",
+                          href = "https://www.gnu.org/licenses/gpl-3.0.en.html",
+                          target = "_blank"),
+                        "as published by the Free Software Foundation. This program is distributed in the hope that
+                         it will be useful, but without any warranty; without even the implied warranty of
+                         merchantability of fitness for a particular purpose." ),
                       br(),
                       br()
                       ),
@@ -297,7 +226,11 @@ ui = tagList(
                         Admission Test (GMAT) data set (Kingston et al., 1985). However, first two items were
                         generated to function differently in uniform and non-uniform way respectively.
                         The data set represents responses of 2,000 subjects (1,000 males, 1,000 females) to
-                        multiple-choice test of 20 items. The distribution of total scores is the same for both groups. '),
+                        multiple-choice test of 20 items. The distribution of total scores is the same for both groups.
+                        See ', a('Martinkova, et al. (2017) ',
+                                 href = "http://www.lifescied.org/content/16/2/rm2.full.pdf+html?with-ds=yes",
+                                 target = "_blank"),
+                        'for further discussion. '),
                       p('Dataset ', code("GMAT2"), ' is also generated based on parameters of GMAT (Kingston et
                          al., 1985) from R ', code('difNLR'),' package . Again, first two items were generated
                          to function differently in uniform and non-uniform way respectively. The data set
@@ -3008,6 +2941,12 @@ ui = tagList(
                         Mathematical and Statistical Psychology, 65(2), 302-321."),
                       p("Mantel, N., & Haenszel, W. (1959). Statistical Aspects of the Analysis of Data from
                         Retrospective Studies. Journal of the National Cancer Institute, 22 (4), 719-748."),
+                      p("Martinkova, P., Drabinova, A., Liaw, Y. L., Sanders, E. A., McFarland, J. L., & Price, R. M.
+                        (2017). Checking equity: Why differential item functioning analysis should be a routine part
+                        of developing conceptual assessments. CBE-Life Sciences Education, 16(2). ",
+                        a('See online.',
+                          href = "http://www.lifescied.org/content/16/2/rm2.full.pdf+html?with-ds=yes",
+                          target = "_blank")),
                       p("Swaminathan, H., & Rogers, H. J. (1990). Detecting Differential Item
                         Functioning Using Logistic Regression Procedures. Journal of Educational
                         Measurement, 27(4), 361-370."),
@@ -3027,3 +2966,4 @@ ui = tagList(
                       )
                       )
                       )
+
