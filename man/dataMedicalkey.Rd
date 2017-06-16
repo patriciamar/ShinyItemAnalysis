@@ -14,7 +14,8 @@ The \code{dataMedicalkey} is a vector of factors representing correct answers of
 \code{dataMedicaltest} data set.
 }
 \references{
-Stuka, C. Vejrazka, M., Martinkova, P. Komenda, M. and Stepanek, L. (2016). The Use of  Test and Item Analisis for Improvement of Tests. Workshop held at conference MEFANET, 2016, Brno, Czech Republic.
+Stuka, C. Vejrazka, M., Martinkova, P. Komenda, M. & Stepanek, L. (2016). The Use of  Test and Item Analisis for
+Improvement of Tests. Workshop held at conference MEFANET, 2016, Brno, Czech Republic.
 }
 \seealso{
 \code{\link{dataMedical}}, \code{\link{dataMedicaltest}}
