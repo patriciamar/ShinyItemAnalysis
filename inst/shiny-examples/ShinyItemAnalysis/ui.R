@@ -120,17 +120,17 @@ ui = tagList(
                           )
                         ),
                         'In case of busy server you can try other mirrors: ',
-                        a('University of Washington',
-                          href = 'https://rstudio.stat.washington.edu/shiny/ShinyItemAnalysis/',
-                          target = "_blank"),
-                        HTML(
-                          paste(
-                            "<a href='https://rstudio.stat.washington.edu/shiny/ShinyItemAnalysis/' target='_blank'>",
-                            "<img src='Flag_of_the_United_States.png' height='16' border='0' align='middle'>",
-                            "</a>,",
-                            sep = ""
-                          )
-                        ),
+                        # a('University of Washington',
+                        #   href = 'https://rstudio.stat.washington.edu/shiny/ShinyItemAnalysis/',
+                        #   target = "_blank"),
+                        # HTML(
+                        #   paste(
+                        #     "<a href='https://rstudio.stat.washington.edu/shiny/ShinyItemAnalysis/' target='_blank'>",
+                        #     "<img src='Flag_of_the_United_States.png' height='16' border='0' align='middle'>",
+                        #     "</a>,",
+                        #     sep = ""
+                        #   )
+                        # ),
                         a('Charles University',
                           href = 'http://shiny.statest.cz:3838/ShinyItemAnalysis/',
                           target = "_blank"),
@@ -170,7 +170,7 @@ ui = tagList(
                          a('1.1.0. ', href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV110/", target = "_blank")),
 
                       h4('Authors and contributors'),
-                      
+
                       fluidRow(
                         column(1, align = "center",
                                img(src = 'patricia_new.png', width = 75),
@@ -188,8 +188,8 @@ ui = tagList(
                                img(src = 'Lubos.jpg', width = 75),
                                HTML("<figcaption>Lubomir<br>Stepanek</figcaption>"))
                       ),
-                      
-                      
+
+
                       h4('List of packages used'),
                       code('library(corrplot)'), br(),
                       code('library(CTT)'), br(),

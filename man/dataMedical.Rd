@@ -19,7 +19,7 @@ a medical school. It contains 100 items. A correct answer is coded as 1 and inco
 answer as 0. Missing answers were evaluated as incorrect, i.e. 0.
 }
 \references{
-Stuka, C. Vejrazka, M., Martinkova, P. Komenda, M. and Stepanek, L. (2016). The Use of Test and Item Analisis for
+Stuka, C. Vejrazka, M., Martinkova, P. Komenda, M. & Stepanek, L. (2016). The Use of Test and Item Analisis for
 Improvement of Tests. Workshop held at conference MEFANET, 2016, Brno, Czech Republic.
 }
 \seealso{
