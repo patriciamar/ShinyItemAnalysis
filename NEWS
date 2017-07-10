@@ -5,6 +5,16 @@
         ***************************************************************
 
 ---------------------------------------------------
+- Changes in ShinyItemAnalysis 1.2.1 (2017-07-10) -
+---------------------------------------------------
+
+MAJOR UPDATES
+
+  o Several bugs were fixed:
+     - Interpretation of regression models was fixed.
+     - Interpretation of text about correlation in Predictive validity was fixed.
+
+---------------------------------------------------
 - Changes in ShinyItemAnalysis 1.2.0 (2017-06-15) -
 ---------------------------------------------------
 
