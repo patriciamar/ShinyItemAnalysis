@@ -19,7 +19,7 @@ admission test to a medical school. It contains 100 items, possible answers
 were A, B, C, D, while any combination of these can be correct.
 }
 \references{
-Stuka, C. Vejrazka, M., Martinkova, P. Komenda, M. and Stepanek, L. (2016). The Use of  Test and Item Analisis for
+Stuka, C. Vejrazka, M., Martinkova, P. Komenda, M. & Stepanek, L. (2016). The Use of  Test and Item Analisis for
 Improvement of Tests. Workshop held at conference MEFANET, 2016, Brno, Czech Republic.
 }
 \seealso{

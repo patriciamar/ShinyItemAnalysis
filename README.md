@@ -10,7 +10,7 @@ Test and item analysis via shiny.
  * DIF and DDF detection methods.
 It also offers some training data sets but you can also upload your own data. Moreover it is also possible to generate reports. 
 
-`ShinyItemAnalysis` is available [**online**](https://shiny.cs.cas.cz/ShinyItemAnalysis/) and can be also downloaded from [**CRAN**](https://cran.rstudio.com/web/packages/ShinyItemAnalysis/).
+`ShinyItemAnalysis` is available [**online**](https://shiny.cs.cas.cz/ShinyItemAnalysis/) and can be also downloaded from [**CRAN**](https://CRAN.R-project.org/package=ShinyItemAnalysis).
 
 ## Installation
 ```
