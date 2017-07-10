@@ -722,6 +722,10 @@ function(input, output, session) {
     tab <- c(round(ct$estimate, 2), round(ct$statistic, 2), round(ct$p.value, 3))
     names(tab) <- c(HTML("&rho;"), "S-value", "p-value")
 
+    if (tab[3] == 0.00){
+      tab[3] <- "<0.01"
+    }
+
     tab
   })
 
@@ -737,15 +741,15 @@ function(input, output, session) {
   output$validity_table_interpretation <- renderUI({
     tab <- validity_table_Input()
     p.val <- tab["p-value"]
-    rho <- tab["Rho"]
+    rho <- tab[1]
 
     txt1 <- paste ("<b>", "Interpretation:","</b>")
     txt2 <- ifelse(rho > 0, "positively", "negatively")
     txt3 <- ifelse(p.val < 0.05,
-                   paste("The p-value is less than 0.05, thus we reject null hypotheses -
-                         total score and criterion variable are", txt2, "correlated."),
-                   "The p-value is larger than 0.05, thus we don't reject null hypotheses -
-                   we cannot conclude that a significant correlation between total score
+                   paste("The p-value is less than 0.05, thus we reject null hypotheses.
+                         Total score and criterion variable are", txt2, "correlated."),
+                   "The p-value is larger than 0.05, thus we don't reject null hypotheses.
+                   We cannot conclude that a significant correlation between total score
                    and criterion variable exists.")
     HTML(paste(txt1, txt3))
   })
@@ -817,6 +821,9 @@ function(input, output, session) {
     ct <- cor.test(correct[, i], cv, method = "spearman", exact = F)
     tab <- c(round(ct$estimate, 2), round(ct$statistic, 2), round(ct$p.value, 3))
     names(tab) <- c(HTML("&rho;"), "S-value", "p-value")
+    if (tab[3] == 0.00){
+      tab[3] <- "<0.01"
+    }
 
     tab
   })
@@ -833,16 +840,16 @@ function(input, output, session) {
   output$validity_table_item_interpretation <- renderUI({
     tab <- validity_table_item_Input()
     p.val <- tab["p-value"]
-    rho <- tab["Rho"]
+    rho <- tab[1]
     i <- input$validitydistractorSlider
 
     txt1 <- paste ("<b>", "Interpretation:","</b>")
     txt2 <- ifelse(rho > 0, "positively", "negatively")
     txt3 <- ifelse(p.val < 0.05,
-                   paste("The p-value is less than 0.05, thus we reject null hypotheses -
-                         scored item", i, "and criterion variable are", txt2, "correlated."),
-                   paste("The p-value is larger than 0.05, thus we don't reject null hypotheses -
-                   we cannot conclude that a significant correlation between scored item", i,
+                   paste("The p-value is less than 0.05, thus we reject null hypotheses.
+                         Scored item", i, "and criterion variable are", txt2, "correlated."),
+                   paste("The p-value is larger than 0.05, thus we don't reject null hypotheses.
+                   We cannot conclude that a significant correlation between scored item", i,
                    "and criterion variable exists."))
     HTML(paste(txt1, txt3))
   })
