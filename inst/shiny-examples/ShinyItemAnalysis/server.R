@@ -1448,13 +1448,14 @@ function(input, output, session) {
     b1 <- coef(logistic_reg())[2]
     b1 <- round(b1, 2)
     txt1 <- paste ("<b>", "Interpretation:","</b>")
+    txt0 <- ifelse(b1 < 0, "decrease", "increase")
     txt2 <- paste (
       "A one-unit increase in the total
-      score is associated with the increase in the log
+      score is associated with the", txt0, " in the log
       odds of answering the item correctly
       vs. not correctly in the amount of"
     )
-    txt3 <- paste ("<b>", b1, "</b>")
+    txt3 <- paste ("<b>", abs(b1), "</b>")
     HTML(paste(txt1, txt2, txt3))
   })
 
@@ -1535,14 +1536,15 @@ function(input, output, session) {
     b0 <- round(summary(z_logistic_reg())$coef[1, 1], 2)
 
     txt1 <- paste ("<b>", "Interpretation:", "</b>")
+    txt0 <- ifelse(b1 < 0, "decrease", "increase")
     txt2 <-
       paste (
-        "A one-unit increase in the z-score (one SD increase in original scores)
-        is associated with the increase in the log
+        "A one-unit increase in the Z-score (one SD increase in original
+        scores) is associated with the", txt0, " in the log
         odds of answering the item correctly
         vs. not correctly in the amount of"
       )
-    txt3 <- paste ("<b>", b1, "</b>")
+    txt3 <- paste ("<b>", abs(b1), "</b>")
     HTML(paste(txt1, txt2, txt3))
   })
 
@@ -1643,14 +1645,15 @@ function(input, output, session) {
     b0 <- round(summary(fit)$coef[1, 1], 2)
 
     txt1 <- paste ("<b>", "Interpretation:", "</b>")
+    txt0 <- ifelse(b1 < 0, "decrease", "increase")
     txt2 <-
       paste (
-        "A one-unit increase in the z-score (one SD increase in original scores)
-        is associated with the increase in the log
+        "A one-unit increase in the Z-score (one SD increase in original
+        scores) is associated with the", txt0, " in the log
         odds of answering the item correctly
         vs. not correctly in the amount of"
       )
-    txt3 <- paste ("<b>", b1, "</b>")
+    txt3 <- paste ("<b>", abs(b1), "</b>")
     HTML(paste(txt1, txt2, txt3))
   })
 
@@ -1773,12 +1776,15 @@ function(input, output, session) {
     b <- round(summary(fit)$coef[2, 1], 2)
 
     txt1 <- paste ("<b>", "Interpretation:", "</b>")
-    txt2 <- paste (
-      "A one-unit increase in the z-score (one SD increase in original scores) is associated
-      with the increase in the log odds of answering the item correctly vs. not correctly
-      in the amount of "
-    )
-    txt3 <- paste ("<b>", a, "</b>")
+    txt0 <- ifelse(a < 0, "decrease", "increase")
+    txt2 <-
+      paste (
+        "A one-unit increase in the Z-score (one SD increase in original
+        scores) is associated with the", txt0, " in the log
+        odds of answering the item correctly
+        vs. not correctly in the amount of"
+      )
+    txt3 <- paste ("<b>", abs(a), "</b>")
     HTML(paste(txt1, txt2, txt3))
   })
 
@@ -2067,25 +2073,27 @@ function(input, output, session) {
 
     if(is.null(dim(koef))){
       m <- length(koef)
+      txt0 <- ifelse(koef[2] < 0, "decrease", "increase")
       txt <-  paste (
         "A one-unit increase in the Z-score (one SD increase in original
-        scores)  is associated with the decrease in the log odds of
+        scores)  is associated with the ", txt0, " in the log odds of
         answering the item "
         ,"<b> 0 </b>", "vs.", "<b> 1 </b>", " in the amount of ",
-        "<b>", round(koef[2], 2), "</b>", '<br/>')
+        "<b>", abs(round(koef[2], 2)), "</b>", '<br/>')
     } else {
       m <- nrow(koef)
       for (i in 1:m){
+        txt0 <- ifelse(koef[i, 2] < 0, "decrease", "increase")
         txt[i] <- paste (
           "A one-unit increase in the Z-score (one SD increase in original
-        scores)  is associated with the decrease in the log odds of
+        scores)  is associated with the ", txt0, " in the log odds of
         answering the item "
           ,"<b>", row.names(koef)[i], "</b>", "vs.", "<b>",
 
           test_key()[input$multiSlider],
 
           "</b>","in the amount of ",
-          "<b>", round(koef[i, 2], 2), "</b>", '<br/>')
+          "<b>", abs(round(koef[i, 2], 2)), "</b>", '<br/>')
       }
     }
     HTML(paste(txt))
