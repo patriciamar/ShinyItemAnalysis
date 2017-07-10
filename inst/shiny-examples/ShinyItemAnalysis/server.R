@@ -6,6 +6,7 @@ require(corrplot)
 require(CTT)
 require(deltaPlotR)
 require(DT)
+require(data.table)
 require(difNLR)
 require(difR)
 require(ggplot2)
@@ -32,11 +33,11 @@ require(xtable)
 # DATA ###############
 #%%%%%%%%%%%%%%%%%%%%%
 
-data('GMAT', package = 'difNLR')
-data('GMATtest', package = 'difNLR')
-data('GMATkey', package = 'difNLR')
-test <- get("GMATtest")
-key <- get("GMATkey")
+# data('GMAT', package = 'difNLR')
+# data('GMATtest', package = 'difNLR')
+# data('GMATkey', package = 'difNLR')
+# test <- data.table(get("GMATtest"))
+# key <- data.table(get("GMATkey"))
 
 # maximum upload size set to 30MB
 options(shiny.maxRequestSize = 30*1024^2)
@@ -102,16 +103,16 @@ function(input, output, session) {
       do.call(data, args = list(paste0(datasetName, "test"), package = packageName))
       test = get(paste0(datasetName, "test"))
 
-      do.call(data, args = list(paste0(datasetName, "key"), package = packageName))
-      key = get(paste0(datasetName, "key"))
-      key = unlist(key)
+      # do.call(data, args = list(paste0(datasetName, "key"), package = packageName))
+      # key = get(paste0(datasetName, "key"))
+      key = test_key()
 
       test = test[, 1:length(key)]
       dataset$answers = test
     } else {
       test = dataset$answers
     }
-    test
+    data.table(test)
   })
 
   # LOAD KEY #####
@@ -144,7 +145,7 @@ function(input, output, session) {
       }
       key = dataset$key
     }
-    key
+    unlist(key)
   })
 
   # LOAD GROUPS #####
@@ -156,7 +157,7 @@ function(input, output, session) {
       packageName = str_sub(a, pos + 1)
 
       do.call(data, args = list(paste0(datasetName, "test"), package = packageName))
-      test = get(paste0(datasetName, "test"))
+      test = data.table(get(paste0(datasetName, "test")))
 
       if (datasetName == "GMAT"){
         group <- test[, "group"]
@@ -164,7 +165,7 @@ function(input, output, session) {
         if (datasetName == "dataMedical"){
           group <- test[, "gender"]
         } else {
-          group <- test[, ncol(test)]
+          group <- test[, ncol(test), with = FALSE]
         }
       }
 
@@ -199,16 +200,12 @@ function(input, output, session) {
       packageName = str_sub(a, pos + 1)
 
       do.call(data, args = list(paste0(datasetName, "test"), package = packageName))
-      test = get(paste0(datasetName, "test"))
+      test = data.table(get(paste0(datasetName, "test")))
 
-      if (datasetName == "GMAT"){
+      if (datasetName == "GMAT" | datasetName == "dataMedical"){
         criterion_variable <- test[, "criterion"]
       } else {
-        if (datasetName == "dataMedical"){
-          criterion_variable <- test[, "criterion"]
-        } else {
-          criterion_variable <- "missing"
-        }
+        criterion_variable <- "missing"
       }
 
       dataset$criterion_variable = criterion_variable
@@ -236,10 +233,10 @@ function(input, output, session) {
       }
       criterion_variable = dataset$criterion_variable
     }
-    criterion_variable
+    unlist(criterion_variable)
   })
 
-  # SUBMIT BUTTON #####
+  # LOADING DATA FROM CSV #####
   observeEvent(
     eventExpr = input$submitButton,
     handlerExpr = {
@@ -251,7 +248,7 @@ function(input, output, session) {
 
       if (is.null(input$data)){
         key <- test_key()
-        answ <- test[ , 1:length(key)]
+        answ <- test[ , 1:length(key), with = FALSE]
         group <- DIF_groups()
         criterion_variable <- criterion_variable()
       } else {
@@ -279,7 +276,7 @@ function(input, output, session) {
           criterion_variable <- unlist(criterion_variable)
         }
       }
-      dataset$answers <- answ
+      dataset$answers <- data.table(answ)
       dataset$key <- key
       dataset$group <- group
       dataset$criterion_variable <- criterion_variable
@@ -306,10 +303,17 @@ function(input, output, session) {
 
   # CORRECT ANSWER CLASSIFICATION #####
   correct_answ <- reactive({
-    correct <- score(test_answers(), test_key(), output.scored = TRUE)$scored
+    test <- test_answers()
+    key <- unlist(test_key())
+
+    df.key <- data.table(matrix(rep(key, dim(test)[1]),
+                                ncol = dim(test)[2], nrow = dim(test)[1], byrow = T))
+    correct <- data.table(matrix(as.numeric(test == df.key),
+                          ncol = dim(test)[2], nrow = dim(test)[1]))
     if (!(input$missval)){
       correct[is.na(correct)] <- 0
     }
+    colnames(correct) <- item_names()
     correct
   })
 
@@ -321,66 +325,77 @@ function(input, output, session) {
 
   # DATA #####
   DPdata <- reactive ({
-    dataset <- data.frame(correct_answ(), DIF_groups())
+    dataset <- data.table(correct_answ(), DIF_groups())
     colnames(dataset) <- c(item_names(), 'group')
     dataset
   })
 
   # DATA HEAD ######
   output$headdata <- DT::renderDataTable({
-    test = test_answers()
-    colnames(test) <- item_names()
-    test
+    data_table <- test_answers()
+    colnames(data_table) <- item_names()
+    data_table
   },
   rownames = F,
   options = list(scrollX = TRUE,
-                 pageLength = 10))
+                 pageLength = 6,
+                 server = TRUE,
+                 scrollCollapse = TRUE,
+                 dom = 'tipr'))
 
   # KEY CONTROL #######
   output$key <- DT::renderDataTable({
-    key_table = as.data.frame(t(as.data.frame(test_key())))
+    key_table <- as.data.table(t(test_key()))
     colnames(key_table) <- item_names()
     key_table
   },
   rownames = F,
-  options = list(scrollX = TRUE))
+  options = list(scrollX = TRUE,
+                 server = TRUE,
+                 scrollCollapse = TRUE,
+                 dom = 'tipr'))
 
   # SCORE 0-1 #####
   output$sc01 <- DT::renderDataTable({
-    a <- test_answers()
-    k <- test_key()
-
     # total score
-    sc <- data.frame(scored_test())
-    colnames(sc) <- "Score"
+    sc <- data.table(scored_test())
     # scored data
     correct <- correct_answ()
 
-    out <- cbind(correct, sc)
-    colnames(out) <- c(item_names(), "Score")
-    out
+    scored_table <- data.table(correct, sc)
+    colnames(scored_table) <- c(item_names(), "Score")
+    scored_table
   },
   rownames = F,
   options = list(scrollX = TRUE,
-                 pageLength = 10))
+                 pageLength = 6,
+                 server = TRUE,
+                 scrollCollapse = TRUE,
+                 dom = 'tipr'))
 
   # GROUP CONTROL #######
   output$group <- DT::renderDataTable({
-    group_table <- t(as.data.frame(DIF_groups()))
+    group_table <- t(DIF_groups())
     colnames(group_table) <- 1:ncol(group_table)
     group_table
   },
   rownames = F,
-  options = list(scrollX = TRUE))
+  options = list(scrollX = TRUE,
+                 server = TRUE,
+                 scrollCollapse = TRUE,
+                 dom = 'tipr'))
 
   # CRITERION VARIABLE CONTROL #######
   output$critvar <- DT::renderDataTable({
-    critvar_table <- t(as.data.frame(criterion_variable()))
+    critvar_table <- t(criterion_variable())
     colnames(critvar_table) <- 1:ncol(critvar_table)
     critvar_table
   },
   rownames = F,
-  options = list(scrollX = TRUE))
+  options = list(scrollX = TRUE,
+                 server = TRUE,
+                 scrollCollapse = TRUE,
+                 dom = 'tipr'))
 
   ##### ITEM SLIDERS #####
   observe({
@@ -436,7 +451,7 @@ function(input, output, session) {
   totalscores_table_Input <- reactive({
     sc <- scored_test()
 
-    tab <- t(data.frame(c(min(sc, na.rm = T),
+    tab <- t(data.table(c(min(sc, na.rm = T),
                           max(sc, na.rm = T),
                           mean(sc, na.rm = T),
                           median(sc, na.rm = T),
@@ -464,7 +479,7 @@ function(input, output, session) {
 
     bin <- as.numeric(input$inSlider2)
 
-    df <- data.frame(sc,
+    df <- data.table(sc,
                      gr = cut(sc,
                               breaks = unique(c(0, bin - 1, bin, ncol(a))),
                               include.lowest = T))
@@ -532,7 +547,7 @@ function(input, output, session) {
     # T score
     tsco <- 50 + 10 * zsco
 
-    tab <- round(data.frame(tosc, perc, sura, zsco, tsco), 2)
+    tab <- round(data.table(tosc, perc, sura, zsco, tsco), 2)
     colnames(tab) <- c("Total score", "Percentile", "Success rate", "Z-score", "T-score")
 
     tab
@@ -588,7 +603,7 @@ function(input, output, session) {
   scree_plot_Input <- reactive({
     corP <- corr_structure()
     ev <- eigen(corP$rho)$values
-    df <- data.frame(pos = 1:length(ev), ev)
+    df <- data.table(pos = 1:length(ev), ev)
 
     ggplot(data = df, aes(x = pos, y = ev)) +
       geom_point() +
@@ -626,9 +641,9 @@ function(input, output, session) {
   # ** Validity boxplot ####
   validity_plot_boxplot_Input <- reactive({
     ts <- scored_test()
-    cv <- criterion_variable()
+    cv <- unlist(criterion_variable())
 
-    df <- data.frame(ts, cv)
+    df <- data.table(ts, cv)
     df <- df[complete.cases(df), ]
 
     g <- ggplot(df, aes(y = ts, x = as.factor(cv), fill = as.factor(cv))) +
@@ -653,13 +668,13 @@ function(input, output, session) {
   # ** Validity scatterplot ####
   validity_plot_scatter_Input <- reactive({
     ts <- scored_test()
-    cv <- criterion_variable()
+    cv <- unlist(criterion_variable())
 
     size <- as.factor(cv)
     levels(size) <- table(cv)
     size <- as.numeric(as.character(size))
 
-    df <- data.frame(ts, cv, size)
+    df <- data.table(ts, cv, size)
     df <- df[complete.cases(df), ]
 
     g <- ggplot(df, aes(y = cv, x = ts, size = size)) +
@@ -818,7 +833,7 @@ function(input, output, session) {
     cv <- criterion_variable()
     i <- input$validitydistractorSlider
 
-    ct <- cor.test(correct[, i], cv, method = "spearman", exact = F)
+    ct <- cor.test(unlist(correct[, i, with = F]), cv, method = "spearman", exact = F)
     tab <- c(round(ct$estimate, 2), round(ct$statistic, 2), round(ct$p.value, 3))
     names(tab) <- c(HTML("&rho;"), "S-value", "p-value")
     if (tab[3] == 0.00){
@@ -887,7 +902,7 @@ function(input, output, session) {
     correct <- correct_answ()
     tab <- c(psych::alpha(correct)$total[1], psych::alpha(correct)$total[8])
 
-    tab <- as.data.frame(tab)
+    tab <- as.data.table(tab)
     colnames(tab) <- c("Estimate", "SD")
 
     tab
@@ -908,7 +923,7 @@ function(input, output, session) {
 
     alphadrop <- psych::alpha(correct)$alpha.drop[, 1]
     tab <- item.exam(correct, discr = TRUE)[, 1:5]
-    tab <- data.frame(item_numbers(),
+    tab <- data.table(item_numbers(),
                       tab[, c(4, 1, 5, 2, 3)],
                       alphadrop)
     colnames(tab) <- c("Item", "Difficulty", "SD", "Discrimination ULI",
@@ -971,7 +986,7 @@ function(input, output, session) {
     k <- test_key()
     sc <- scored_test()
 
-    df <- data.frame(sc,
+    df <- data.table(sc,
                      gr = cut(sc, quantile(sc, seq(0, 1, by = 1/input$gr), na.rm = T),
                               include.lowest = T))
     col <- c("darkred", "red", "orange", "gold", "green3")
@@ -1377,16 +1392,18 @@ function(input, output, session) {
 
   # * LOGISTIC ####
   logistic_reg <- reactive ({
-    model <- glm(correct_answ()[, input$logregSlider] ~ scored_test(), family = binomial)
+    dim(correct_answ()[, input$logregSlider, with = F])
+    length(scored_test())
+    model <- glm(data.frame(correct_answ())[, input$logregSlider] ~ scored_test(), family = binomial)
   })
   # ** Plot with estimated logistic curve ####
   logregInput <- reactive({
     sc <- scored_test()
-    correct <- correct_answ()
+    correct <- data.frame(correct_answ())
 
     fun <- function(x, b0, b1) {exp(b0 + b1 * x) / (1 + exp(b0 + b1 * x))}
 
-    df <- data.frame(x = sort(unique(sc)),
+    df <- data.table(x = sort(unique(sc)),
                      y = tapply(correct[, input$logregSlider], sc, mean),
                      size = as.numeric(table(sc)))
 
@@ -1465,7 +1482,7 @@ function(input, output, session) {
   # ** Model ####
   z_logistic_reg <- reactive({
     scaledsc <- c(scale(scored_test()))
-    model <- glm(correct_answ()[, input$zlogregSlider] ~ scaledsc, family = "binomial")
+    model <- glm(correct_answ()[, input$zlogregSlider, with = F] ~ scaledsc, family = "binomial")
   })
 
   zlogregInput <- reactive({
@@ -1473,8 +1490,8 @@ function(input, output, session) {
 
     fun <- function(x, b0, b1) {exp(b0 + b1 * x) / (1 + exp(b0 + b1 * x))}
 
-    df <- data.frame(x = sort(unique(scaledsc)),
-                     y = tapply(correct_answ()[, input$zlogregSlider], scaledsc, mean),
+    df <- data.table(x = sort(unique(scaledsc)),
+                     y = tapply(correct_answ()[, input$zlogregSlider, with = F], scaledsc, mean),
                      size = as.numeric(table(scaledsc)))
     ggplot(df, aes(x = x, y = y)) +
       geom_point(aes(size = size),
@@ -1562,7 +1579,7 @@ function(input, output, session) {
 
     fun <- function(x, b0, b1) {exp(b0 + b1 * x) / (1 + exp(b0 + b1 * x))}
 
-    df <- data.frame(x = sort(unique(scaledsc)),
+    df <- data.table(x = sort(unique(scaledsc)),
                      y = tapply(correct_answ()[, input$zlogreg_irtSlider], scaledsc, mean),
                      size = as.numeric(table(scaledsc)))
     ggplot(df, aes(x = x, y = y)) +
@@ -1710,7 +1727,7 @@ function(input, output, session) {
 
     fun <- function(x, a, b, c){c + (1 - c) / (1 + exp(-a * (x - b)))}
 
-    df <- data.frame(x = sort(unique(scaledsc)),
+    df <- data.table(x = sort(unique(scaledsc)),
                      y = tapply(data[, i], scaledsc, mean),
                      size = as.numeric(table(scaledsc)))
     ggplot(df, aes(x = x, y = y)) +
@@ -1867,7 +1884,7 @@ function(input, output, session) {
                  bestBIC,
                  bestLR)
 
-    tab <- as.data.frame(tab)
+    tab <- as.data.table(tab)
     colnames(tab) <- item_names()
     rownames(tab) <- c("AIC 2PL", "AIC 3PL",
                        "BIC 2PL", "BIC 3PL",
@@ -1888,11 +1905,11 @@ function(input, output, session) {
   # ** Model ####
   multinomial_model <- reactive({
     stotal <- c(scale(scored_test()))
-    k <- t(as.data.frame(test_key()))
+    k <- t(as.data.table(test_key()))
     i <- input$multiSlider
     data <- test_answers()
 
-    dfhw <- data.frame(data[, i], stotal)
+    dfhw <- data.table(data[, i], stotal)
     dfhw <- dfhw[complete.cases(dfhw), ]
 
     fitM <- multinom(relevel(as.factor(dfhw[, 1]),
@@ -1903,14 +1920,14 @@ function(input, output, session) {
 
   # ** Plot with estimated curves of multinomial regression ####
   multiplotInput <- reactive({
-    k <- t(as.data.frame(test_key()))
+    k <- t(as.data.table(test_key()))
     data <- test_answers()
     stotal <- c(scale(scored_test()))
     i <- input$multiSlider
 
     data <- sapply(1:ncol(data), function(i) as.factor(data[, i]))
 
-    dfhw <- data.frame(data[, i], stotal)
+    dfhw <- data.table(data[, i], stotal)
     dfhw <- dfhw[complete.cases(dfhw), ]
 
     fitM <- multinom(relevel(as.factor(dfhw[, 1]),
@@ -1925,8 +1942,8 @@ function(input, output, session) {
     stotals <- rep(dfhw[, 2], length(levels(dfhw[, 1])))
     df <- cbind(melt(pp), stotals)
     df$Var2 <- relevel(as.factor(df$Var2), ref = paste(k[i]))
-    df2 <- data.frame(table(data[, i], stotal),
-                      y = data.frame(prop.table(table(data[, i], stotal), 2))[, 3])
+    df2 <- data.table(table(data[, i], stotal),
+                      y = data.table(prop.table(table(data[, i], stotal), 2))[, 3])
     df2$stotal <- as.numeric(levels(df2$stotal))[df2$stotal]
     df2$Var2 <- relevel(df2$Var1, ref = paste(k[i]))
 
@@ -1963,13 +1980,13 @@ function(input, output, session) {
   multiplotReportInput<-reactive({
     graflist <- list()
     key <- test_key()
-    k <- t(as.data.frame(test_key()))
+    k <- t(as.data.table(test_key()))
     data <- test_answers()
     data <- sapply(1:ncol(data), function(i) as.factor(data[, i]))
     stotal <- c(scale(scored_test()))
 
     for (i in 1:length(key)) {
-      dfhw <- data.frame(data[, i], stotal)
+      dfhw <- data.table(data[, i], stotal)
       dfhw <- dfhw[complete.cases(dfhw), ]
 
       fitM <- multinom(relevel(as.factor(dfhw[, 1]),
@@ -1985,8 +2002,8 @@ function(input, output, session) {
       stotals <- rep(dfhw[, 2], length(levels(dfhw[, 1])))
       df <- cbind(melt(pp), stotals)
       df$Var2 <- relevel(as.factor(df$Var2), ref = paste(k[i]))
-      df2 <- data.frame(table(data[, i], stotal),
-                        y = data.frame(prop.table(table(data[, i], stotal), 2))[, 3])
+      df2 <- data.table(table(data[, i], stotal),
+                        y = data.table(prop.table(table(data[, i], stotal), 2))[, 3])
       df2$stotal <- as.numeric(levels(df2$stotal))[df2$stotal]
       df2$Var2 <- relevel(df2$Var1, ref = paste(k[i]))
 
