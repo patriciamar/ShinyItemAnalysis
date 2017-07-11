@@ -11,6 +11,7 @@ Depends:
 Imports:
     corrplot,
     CTT,
+    data.table,
     deltaPlotR,
     DT,
     difNLR (>= 1.0.3),
