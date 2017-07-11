@@ -49,7 +49,7 @@ ui = tagList(
                div(class = "clear"),
                div(class = "panel-footer",
                    HTML('<p> <font size = "4"> ShinyItemAnalysis </font>
-                             <font size = "2"> Test and item analysis | Version 1.2.1 </font>
+                             <font size = "2"> Test and item analysis | Version 1.2.0 </font>
                              <span style = "float:right">
                                 <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysis/" id = "tooltipweb" target="_blank"> <img src = "web_icon.png", style = "width: 25px;"> </a>
                                 <a href = "https://github.com/patriciamar/ShinyItemAnalysis/" id = "tooltipgithub" target="_blank"> <img src = "github_icon.png", style = "width: 25px;"> </a>
@@ -160,9 +160,9 @@ ui = tagList(
                       p('Current version of ', code('ShinyItemAnalysis'), ' available on ',
                         a('CRAN', href = 'https://CRAN.R-project.org/package=ShinyItemAnalysis', target = "_blank"), 'is 1.2.0.
                         Version available',
-                        a('online', href = 'https://shiny.cs.cas.cz/ShinyItemAnalysis/', target = "_blank"), 'is 1.2.1.
+                        a('online', href = 'https://shiny.cs.cas.cz/ShinyItemAnalysis/', target = "_blank"), 'is 1.2.0.
                         The newest development version available on ',
-                        a('GitHub', href = 'https://github.com/patriciamar/ShinyItemAnalysis', target = "_blank"), 'is 1.2.1.'),
+                        a('GitHub', href = 'https://github.com/patriciamar/ShinyItemAnalysis', target = "_blank"), 'is 1.2.0.'),
                       p('See also older versions: ',
                          a('0.1.0, ', href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV01/", target = "_blank"),
                          a('0.2.0, ', href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV02/", target = "_blank"),
@@ -193,6 +193,7 @@ ui = tagList(
                       h4('List of packages used'),
                       code('library(corrplot)'), br(),
                       code('library(CTT)'), br(),
+                      code('library(data.table)'), br(),
                       code('library(deltaPlotR)'), br(),
                       code('library(DT)'), br(),
                       code('library(difNLR)'), br(),
@@ -1036,7 +1037,7 @@ ui = tagList(
                                                "BY" = "BY",
                                                "FDR" = "fdr",
                                                "none" = "none"),
-                                             selected="BH"),
+                                             selected="none"),
                                  h4("Table of comparison statistics"),
                                  p('Rows ', strong('BEST'), 'indicate which model has the lowest value of criterion, or is the largest
                                    significant model by likelihood ratio test.'),
