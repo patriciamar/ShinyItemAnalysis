@@ -1808,10 +1808,10 @@ ui = tagList(
                                           sliderInput("ccIRTSlider_d", "d - inattention", min = 0, max = 1,
                                                       value = 1))),
 
-                                 plotOutput('ccIRT_plot'),
-                                 downloadButton("DB_ccIRT", label = "Download figure"),
-                                 plotOutput('iccIRT_plot'),
-                                 downloadButton("DB_iccIRT", label = "Download figure")
+                                 splitLayout(cellWidths = c("50%", "50%"), plotOutput('ccIRT_plot'), plotOutput('iccIRT_plot')),
+                                 splitLayout(cellWidths = c("50%", "50%"), downloadButton("DB_ccIRT", label = "Download figure"), downloadButton("DB_iccIRT", label = "Download figure")),
+                                 br(),
+                                 br()
                                  )
                                  ),
              #%%%%%%%%%%%%%%%%%%%%%
@@ -1833,10 +1833,9 @@ ui = tagList(
                                  p('For selected cut-score, blue part of histogram shows students with total score
                                    above the cut-score, grey column shows students with Total Score equal
                                    to cut-score and red part of histogram shows students below the cut-score.'),
-                                 plotOutput('histbyscoregroup0'),
-                                 downloadButton("DP_histbyscoregroup0", label = "Download figure"),
-                                 plotOutput('histbyscoregroup1'),
-                                 downloadButton("DP_histbyscoregroup1", label = "Download figure"),
+                                 splitLayout(cellWidths = c("50%", "50%"), plotOutput('histbyscoregroup0'),plotOutput('histbyscoregroup1')),
+                                 splitLayout(cellWidths = c("50%", "50%"), downloadButton("DP_histbyscoregroup0", label = "Download figure"),
+                                 downloadButton("DP_histbyscoregroup1", label = "Download figure")),
                                  br(),
                                  h4("Selected R code"),
                                  div(code('library(difNLR)'),
