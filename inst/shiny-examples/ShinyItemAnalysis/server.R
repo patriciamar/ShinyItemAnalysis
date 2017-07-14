@@ -331,10 +331,10 @@ function(input, output, session) {
   })
 
   # DATA HEAD ######
-  output$headdata_print<-renderPrint({
+  output$headdata_print<-renderTable({
     data_table <- test_answers()
     colnames(data_table) <- item_names()
-    print(head(data_table))
+    head(data_table)
   })
 
   #output$headdata <- DT::renderDataTable({
@@ -352,10 +352,10 @@ function(input, output, session) {
 
   # KEY CONTROL #######
 
-  output$key_print<-renderPrint({
+  output$key_print<-renderTable({
     key_table <- as.data.table(t(test_key()))
     colnames(key_table) <- item_names()
-    print(key_table)
+    key_table
   })
 
   #output$key <- DT::renderDataTable({
@@ -371,7 +371,7 @@ function(input, output, session) {
                  dom = 'tipr'))
 
   # SCORE 0-1 #####
-  output$sc01_print<-renderPrint({
+  output$sc01_print<-renderTable({
     # total score
     sc <- data.table(scored_test())
     # scored data
@@ -379,7 +379,7 @@ function(input, output, session) {
 
     scored_table <- data.table(correct, sc)
     colnames(scored_table) <- c(item_names(), "Score")
-    print(scored_table)
+    head(scored_table)
   })
 
   #output$sc01 <- DT::renderDataTable({
@@ -401,10 +401,10 @@ function(input, output, session) {
                  dom = 'tipr'))
 
   # GROUP CONTROL #######
-  output$group_print<-renderPrint({
+  output$group_print<-renderTable({
     group_table <- t(DIF_groups())
     colnames(group_table) <- 1:ncol(group_table)
-    print(group_table[1,])
+    group_table
   })
 
   #output$group <- DT::renderDataTable({
@@ -420,10 +420,10 @@ function(input, output, session) {
                  dom = 'tipr'))
 
   # CRITERION VARIABLE CONTROL #######
-  output$critvar_print<-renderPrint({
+  output$critvar_print<-renderTable({
     critvar_table <- t(criterion_variable())
     colnames(critvar_table) <- 1:ncol(critvar_table)
-    print(critvar_table[1,])
+    critvar_table
   })
 
   #output$critvar <- DT::renderDataTable({
