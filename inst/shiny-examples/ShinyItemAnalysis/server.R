@@ -331,6 +331,12 @@ function(input, output, session) {
   })
 
   # DATA HEAD ######
+  output$headdata_print<-renderPrint({
+    data_table <- test_answers()
+    colnames(data_table) <- item_names()
+    print(head(data_table))
+  })
+
   #output$headdata <- DT::renderDataTable({
   output$headdata <- shiny::renderDataTable({
     data_table <- test_answers()
@@ -345,6 +351,13 @@ function(input, output, session) {
                  dom = 'tipr'))
 
   # KEY CONTROL #######
+
+  output$key_print<-renderPrint({
+    key_table <- as.data.table(t(test_key()))
+    colnames(key_table) <- item_names()
+    print(key_table)
+  })
+
   #output$key <- DT::renderDataTable({
   output$key <- shiny::renderDataTable({
     key_table <- as.data.table(t(test_key()))
@@ -358,6 +371,17 @@ function(input, output, session) {
                  dom = 'tipr'))
 
   # SCORE 0-1 #####
+  output$sc01_print<-renderPrint({
+    # total score
+    sc <- data.table(scored_test())
+    # scored data
+    correct <- correct_answ()
+
+    scored_table <- data.table(correct, sc)
+    colnames(scored_table) <- c(item_names(), "Score")
+    print(scored_table)
+  })
+
   #output$sc01 <- DT::renderDataTable({
   output$sc01 <- shiny::renderDataTable({
     # total score
@@ -377,6 +401,12 @@ function(input, output, session) {
                  dom = 'tipr'))
 
   # GROUP CONTROL #######
+  output$group_print<-renderPrint({
+    group_table <- t(DIF_groups())
+    colnames(group_table) <- 1:ncol(group_table)
+    print(group_table[1,])
+  })
+
   #output$group <- DT::renderDataTable({
   output$group <- shiny::renderDataTable({
     group_table <- t(DIF_groups())
@@ -390,6 +420,12 @@ function(input, output, session) {
                  dom = 'tipr'))
 
   # CRITERION VARIABLE CONTROL #######
+  output$critvar_print<-renderPrint({
+    critvar_table <- t(criterion_variable())
+    colnames(critvar_table) <- 1:ncol(critvar_table)
+    print(critvar_table[1,])
+  })
+
   #output$critvar <- DT::renderDataTable({
   output$critvar <- shiny::renderDataTable({
     critvar_table <- t(criterion_variable())
