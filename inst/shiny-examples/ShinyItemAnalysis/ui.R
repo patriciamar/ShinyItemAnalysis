@@ -246,8 +246,14 @@ ui = tagList(
              #%%%%%%%%%%%%%%%%%%%%%
              # DATA ###############
              #%%%%%%%%%%%%%%%%%%%%%
+
+
              tabPanel("Data",
+               tabsetPanel(
+               # ** Summary ####
+               tabPanel("Data",
                       h3("Data"),
+                      h4("Training datasets"),
                       p('For demonstration purposes, 20-item dataset ' , code("GMAT"),'
                          and dataset', code("GMATkey"),' from R ', code('difNLR'),' package are used.
                          On this page, you may select one of four datasets offered from ', code('difNLR'),
@@ -288,6 +294,7 @@ ui = tagList(
                                     "Medical 100" = "dataMedical_ShinyItemAnalysis"
                                   ),
                                   selected="GMAT_difNLR"),
+                      tags$hr(),
                       h4("Upload your own datasets"),
                       p('Main ', strong('data'), ' file should contain responses of individual students (rows) to given items
                         (columns). Header may contain item names, no row names should be included. If responses
@@ -302,11 +309,9 @@ ui = tagList(
                         should be predicted by the measurement. Again, its length needs to be the same as number of individual
                         students in the main dataset. If the criterion variable is not provided then it wont be possible to run
                         validity analysis in ', strong('Predictive validity'), ' section on ', strong('Validity'), ' page.'),
-                      p('In all data sets header should be either included or excluded. '),
-                      p('Columns of dataset are by default renamed to Item and number of particular column. If you
-                        want to keep your own names, check box below. '),
-                      p('Missing values in scored dataset are by default evaluated as 0. If you want to keep them as missing,
-                        check box below.'),
+                      p('In all data sets', strong('header'), 'should be either included or excluded. Columns of dataset are by default renamed to Item and number of particular column. If you
+                        want to keep your own names, check box ', strong('Keep items names'), 'below. Missing values in scored dataset are by default evaluated as 0. If you want to keep them as missing,
+                        check box' , strong('Keep missing values'), 'below.'),
                       fluidRow(
                         column(3, offset = 0, fileInput(
                           'data', 'Choose data (csv file)',
@@ -379,36 +384,40 @@ ui = tagList(
                         )
                         )
                       ),
-                      tags$hr(),
-                      h4("Data check"),
-                      tableOutput("headdata_print"),
+                      br(),
+                      br()),
+               tabPanel("Data exploration",
+                      h3("Data exploration"),
+                      p("Here you can explore uploaded dataset. Rendering of tables can take some time."),
+                      h4("Main dataset"),
+                      # tableOutput("headdata_print"),
                       # verbatimTextOutput("headdata_print"),
-                      #DT::dataTableOutput('headdata'),
+                      DT::dataTableOutput('headdata'),
                       #shiny::dataTableOutput('headdata'),
                       h4("Key (correct answers)"),
-                      tableOutput("key_print"),
+                      # tableOutput("key_print"),
                       # verbatimTextOutput("key_print"),
-                      #DT::dataTableOutput('key'),
+                      DT::dataTableOutput('key'),
                       #shiny::dataTableOutput('key'),
                       h4("Scored test"),
-                      tableOutput("sc01_print"),
+                      # tableOutput("sc01_print"),
                       # verbatimTextOutput("sc01_print"),
-                      #DT::dataTableOutput('sc01'),
+                      DT::dataTableOutput('sc01'),
                       #shiny::dataTableOutput('sc01'),
                       h4("Group vector"),
-                      tableOutput("group_print"),
+                      # tableOutput("group_print"),
                       # verbatimTextOutput("group_print"),
-                      #DT::dataTableOutput('group'),
+                      DT::dataTableOutput('group'),
                       #shiny::dataTableOutput('group'),
                       h4("Criterion variable vector"),
-                      tableOutput("critvar_print"),
+                      # tableOutput("critvar_print"),
                       # verbatimTextOutput("critvar_print"),
-                      #DT::dataTableOutput('critvar'),
+                      DT::dataTableOutput('critvar'),
                       #shiny::dataTableOutput('critvar'),
                       br(),
                       br(),
                       br()
-                      ),
+                      ))),
              #%%%%%%%%%%%%%%%%%%%%%
              # SUMMARY ############
              #%%%%%%%%%%%%%%%%%%%%%
