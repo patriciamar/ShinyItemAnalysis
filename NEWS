@@ -5,6 +5,21 @@
         ***************************************************************
 
 ---------------------------------------------------
+- Changes in ShinyItemAnalysis 1.2.1 (2017-07-10) -
+---------------------------------------------------
+
+MAJOR UPDATES
+
+  o Several bugs were fixed:
+     - Interpretation of regression models was fixed.
+     - Interpretation of text about correlation in Predictive validity was fixed.
+  o ShinyItemAnalysis now used also 'data.table' package.
+
+MINOR UPDATES
+
+  o Lest three rows in regression comparison table are now bold.
+
+---------------------------------------------------
 - Changes in ShinyItemAnalysis 1.2.0 (2017-06-15) -
 ---------------------------------------------------
 

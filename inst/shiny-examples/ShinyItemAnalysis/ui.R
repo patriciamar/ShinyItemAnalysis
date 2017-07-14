@@ -193,6 +193,7 @@ ui = tagList(
                       h4('List of packages used'),
                       code('library(corrplot)'), br(),
                       code('library(CTT)'), br(),
+                      code('library(data.table)'), br(),
                       code('library(deltaPlotR)'), br(),
                       code('library(DT)'), br(),
                       code('library(difNLR)'), br(),
@@ -1041,7 +1042,7 @@ ui = tagList(
                                                "BY" = "BY",
                                                "FDR" = "fdr",
                                                "none" = "none"),
-                                             selected="BH"),
+                                             selected="none"),
                                  h4("Table of comparison statistics"),
                                  p('Rows ', strong('BEST'), 'indicate which model has the lowest value of criterion, or is the largest
                                    significant model by likelihood ratio test.'),
