@@ -616,7 +616,9 @@ function(input, output, session) {
   # ** Correlation plot ######
   corr_plot_Input <- reactive({
     corP <- corr_structure()
-    corrplot(corP$rho)
+    corP <- corP$rho
+    tlcex <- max(ifelse(dim(corP)[1] < 30, 1, 0.9 - (dim(corP)[1] - 30)*0.05), 0.5)
+    corrplot(corP, tl.cex = tlcex)
   })
 
   # ** Output correlation plot ######
@@ -631,11 +633,12 @@ function(input, output, session) {
     },
     content = function(file) {
 
-      data <- correct_answ()
-      corP <- polychoric(data)
+      corP <- corr_structure()
+      corP <- corP$rho
+      tlcex <- max(ifelse(dim(corP)[1] < 30, 1, 0.9 - (dim(corP)[1] - 30)*0.05), 0.5)
 
       png(file, height = 800, width = 800, res = 100)
-      corrplot(corP$rho)
+      corrplot(corP, tl.cex = tlcex)
       dev.off()
     }
   )
@@ -650,7 +653,7 @@ function(input, output, session) {
       geom_point() +
       geom_line() +
       xlab("Component number") + ylab("Eigen value") +
-      scale_x_continuous(breaks = 1:length(ev)) +
+      scale_x_continuous(breaks = 1:length(ev), expand = c(0.01, 0.01)) +
       theme_bw() +
       theme(legend.title = element_blank(),
             legend.position = "none",
