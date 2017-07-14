@@ -331,12 +331,13 @@ function(input, output, session) {
   })
 
   # DATA HEAD ######
-  output$headdata <- DT::renderDataTable({
+  #output$headdata <- DT::renderDataTable({
+  output$headdata <- shiny::renderDataTable({
     data_table <- test_answers()
     colnames(data_table) <- item_names()
     data_table
   },
-  rownames = F,
+  #rownames = F,
   options = list(scrollX = TRUE,
                  pageLength = 6,
                  server = TRUE,
@@ -344,19 +345,21 @@ function(input, output, session) {
                  dom = 'tipr'))
 
   # KEY CONTROL #######
-  output$key <- DT::renderDataTable({
+  #output$key <- DT::renderDataTable({
+  output$key <- shiny::renderDataTable({
     key_table <- as.data.table(t(test_key()))
     colnames(key_table) <- item_names()
     key_table
   },
-  rownames = F,
+  #rownames = F,
   options = list(scrollX = TRUE,
                  server = TRUE,
                  scrollCollapse = TRUE,
                  dom = 'tipr'))
 
   # SCORE 0-1 #####
-  output$sc01 <- DT::renderDataTable({
+  #output$sc01 <- DT::renderDataTable({
+  output$sc01 <- shiny::renderDataTable({
     # total score
     sc <- data.table(scored_test())
     # scored data
@@ -366,7 +369,7 @@ function(input, output, session) {
     colnames(scored_table) <- c(item_names(), "Score")
     scored_table
   },
-  rownames = F,
+  #rownames = F,
   options = list(scrollX = TRUE,
                  pageLength = 6,
                  server = TRUE,
@@ -374,24 +377,26 @@ function(input, output, session) {
                  dom = 'tipr'))
 
   # GROUP CONTROL #######
-  output$group <- DT::renderDataTable({
+  #output$group <- DT::renderDataTable({
+  output$group <- shiny::renderDataTable({
     group_table <- t(DIF_groups())
     colnames(group_table) <- 1:ncol(group_table)
     group_table
   },
-  rownames = F,
+  #rownames = F,
   options = list(scrollX = TRUE,
                  server = TRUE,
                  scrollCollapse = TRUE,
                  dom = 'tipr'))
 
   # CRITERION VARIABLE CONTROL #######
-  output$critvar <- DT::renderDataTable({
+  #output$critvar <- DT::renderDataTable({
+  output$critvar <- shiny::renderDataTable({
     critvar_table <- t(criterion_variable())
     colnames(critvar_table) <- 1:ncol(critvar_table)
     critvar_table
   },
-  rownames = F,
+  #rownames = F,
   options = list(scrollX = TRUE,
                  server = TRUE,
                  scrollCollapse = TRUE,
