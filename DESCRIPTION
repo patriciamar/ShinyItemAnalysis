@@ -1,8 +1,8 @@
 Package: ShinyItemAnalysis
 Type: Package
 Title: Test and Item Analysis via Shiny
-Version: 1.2.0
-Date: 2017-06-15
+Version: 1.2.1
+Date: 2017-07-10
 Author: Patricia Martinkova [aut, cre], Adela Drabinova [aut], Ondrej Leder [aut], Jakub Houdek [aut], Lubomir Stepanek [ctb]
 Authors@R: c(person("Patricia", "Martinkova", role = c("aut", "cre"), email = "martinkova@cs.cas.cz"), person("Adela", "Drabinova", role = c("aut")), person("Ondrej", "Leder", role = "aut"), person("Jakub", "Houdek", role = "aut"), person("Lubomir", "Stepanek", role = "ctb"))
 Maintainer: Patricia Martinkova <martinkova@cs.cas.cz>
@@ -11,6 +11,7 @@ Depends:
 Imports:
     corrplot,
     CTT,
+    data.table,
     deltaPlotR,
     DT,
     difNLR (>= 1.0.3),
