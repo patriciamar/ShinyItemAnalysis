@@ -327,26 +327,30 @@ function(input, output, session) {
   })
 
   # DATA HEAD ######
-  output$headdata <- DT::renderDataTable({
+  #output$headdata <- DT::renderDataTable({
+  output$headdata <- shiny::renderDataTable({
     test = test_answers()
     colnames(test) <- item_names()
+    apply(test, 1:2, as.character)
     test
   },
-  rownames = F,
+  #rownames = F,
   options = list(scrollX = TRUE,
                  pageLength = 10))
 
   # KEY CONTROL #######
-  output$key <- DT::renderDataTable({
+  #output$key <- DT::renderDataTable({
+  output$key <- shiny::renderDataTable({
     key_table = as.data.frame(t(as.data.frame(test_key())))
     colnames(key_table) <- item_names()
     key_table
   },
-  rownames = F,
+  #rownames = F,
   options = list(scrollX = TRUE))
 
   # SCORE 0-1 #####
-  output$sc01 <- DT::renderDataTable({
+  #output$sc01 <- DT::renderDataTable({
+  output$sc01 <- shiny::renderDataTable({
     a <- test_answers()
     k <- test_key()
 
@@ -358,28 +362,30 @@ function(input, output, session) {
 
     out <- cbind(correct, sc)
     colnames(out) <- c(item_names(), "Score")
-    out
+    apply(out, 1:2, as.numeric)
   },
-  rownames = F,
+  #rownames = F,
   options = list(scrollX = TRUE,
                  pageLength = 10))
 
   # GROUP CONTROL #######
-  output$group <- DT::renderDataTable({
+  #output$group <- DT::renderDataTable({
+  output$group <- shiny::renderDataTable({
     group_table <- t(as.data.frame(DIF_groups()))
     colnames(group_table) <- 1:ncol(group_table)
     group_table
   },
-  rownames = F,
+  #rownames = F,
   options = list(scrollX = TRUE))
 
   # CRITERION VARIABLE CONTROL #######
-  output$critvar <- DT::renderDataTable({
+  #output$critvar <- DT::renderDataTable({
+  output$critvar <- shiny::renderDataTable({
     critvar_table <- t(as.data.frame(criterion_variable()))
     colnames(critvar_table) <- 1:ncol(critvar_table)
     critvar_table
   },
-  rownames = F,
+  #rownames = F,
   options = list(scrollX = TRUE))
 
   ##### ITEM SLIDERS #####
