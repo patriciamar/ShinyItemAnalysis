@@ -77,7 +77,8 @@ output$DB_scree_plot <- downloadHandler(
     paste("fig_ScreePlot.png", sep = "")
   },
   content = function(file) {
-    ggsave(file, plot = scree_plot_Input() + theme(text = element_text(size = 12)), device = "png",
+    ggsave(file, plot = scree_plot_Input() + theme(text = element_text(size = 10)),
+           device = "png",
            height = 3, width = 9, dpi = 300)
   }
 )
@@ -174,7 +175,8 @@ output$DB_validity_plot <- downloadHandler(
     paste("fig_CriterionVariable_", type, ".png", sep = "")
   },
   content = function(file) {
-    ggsave(file, plot = validity_plot_Input() + theme(text = element_text(size = 12)), device = "png",
+    ggsave(file, plot = validity_plot_Input() + theme(text = element_text(size = 10)),
+           device = "png",
            height = 3, width = 9, dpi = 300)
   }
 )
@@ -273,7 +275,7 @@ output$DB_validity_distractor_plot <- downloadHandler(
     paste("fig_DistractorsValidityPlot.png", sep = "")
   },
   content = function(file) {
-    ggsave(file, plot = validity_distractor_plot_Input() + theme(text = element_text(size = 12)),
+    ggsave(file, plot = validity_distractor_plot_Input() + theme(text = element_text(size = 10)),
            device = "png",
            height = 3, width = 9, dpi = 300)
   }

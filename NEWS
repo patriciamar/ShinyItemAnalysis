@@ -30,6 +30,7 @@ MAJOR UPDATES
      - 'Summary' - Summary.R
      - 'Validity'- Validity.R
      - 'Traditional analysis' - TraditionalAnalysis.R
+     - 'Regression' - Regression.R
 
 MINOR UPDATES
 
@@ -40,10 +41,11 @@ MINOR UPDATES
     available on 'Traditional item analysis' subpage.
   o Item patterns frequency plot is now made with 'ggplot2' package.
   o Names of downloaded plots were customized and their resolution was
-    increased in some pages:
-     - Summary (both Total scores and Standard scores)
-     - Validity (both Correlation structure and Predictive validity)
-     - Item analysis (both Traditional item analysis and Distractors)
+    increased and size of text was descreased in some pages:
+     - Summary
+     - Validity
+     - Item analysis
+     - Regression
 
 
 ---------------------------------------------------

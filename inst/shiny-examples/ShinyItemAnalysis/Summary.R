@@ -83,7 +83,7 @@ output$DB_totalscores_histogram <- downloadHandler(
     paste("fig_TotalScores_histogram.png", sep = "")
   },
   content = function(file) {
-    ggsave(file, plot = totalscores_histogram_Input() + theme(text = element_text(size = 12)),
+    ggsave(file, plot = totalscores_histogram_Input() + theme(text = element_text(size = 10)),
            device = "png",
            height = 3, width = 9, dpi = 300)
   }

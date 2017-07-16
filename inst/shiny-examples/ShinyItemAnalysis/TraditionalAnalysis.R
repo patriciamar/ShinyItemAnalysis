@@ -54,7 +54,8 @@ output$DB_DDplot <- downloadHandler(
   },
   content = function(file) {
     ggsave(file,
-           plot = DDplot_Input() + theme(text = element_text(size = 12)), device = "png",
+           plot = DDplot_Input() + theme(text = element_text(size = 10)),
+           device = "png",
            height = 5, width = 14, dpi = 300)
   }
 )
@@ -176,7 +177,7 @@ output$DB_distractor_plot <- downloadHandler(
     paste("fig_DistractorPlot_", item_names()[input$distractorSlider], ".png", sep = "")
   },
   content = function(file) {
-    ggsave(file, plot = distractor_plot_Input() + theme(text = element_text(size = 12)),
+    ggsave(file, plot = distractor_plot_Input() + theme(text = element_text(size = 10)),
            device = "png",
            height = 3, width = 9, dpi = 300)
   }
@@ -288,7 +289,7 @@ output$DB_distractor_barplot_item_response_patterns <- downloadHandler(
     paste("fig_ItemResponsePatterns_", item_names()[input$distractorSlider], ".png", sep = "")
   },
   content = function(file) {
-    ggsave(file, plot = distractor_barplot_item_response_patterns_Input() + theme(text = element_text(size = 12)),
+    ggsave(file, plot = distractor_barplot_item_response_patterns_Input() + theme(text = element_text(size = 10)),
            device = "png",
            height = 3, width = 9, dpi = 300)
   }
@@ -340,7 +341,7 @@ output$DB_distractor_histogram <- downloadHandler(
     paste("fig_HistrogramByDistractorGroups.png", sep = "")
   },
   content = function(file) {
-    ggsave(file, plot = distractor_histogram_Input() + theme(text = element_text(size = 12)),
+    ggsave(file, plot = distractor_histogram_Input() + theme(text = element_text(size = 10)),
            device = "png",
            height = 3, width = 9, dpi = 300)
   }
