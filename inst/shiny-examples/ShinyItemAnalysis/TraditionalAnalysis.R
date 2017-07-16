@@ -1,9 +1,9 @@
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-# TRADITIONAL ANALYSIS #####
+# TRADITIONAL ANALYSIS ######
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-# * ITEM ANALYSIS #####
+# * ITEM ANALYSIS ######
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # ** Double slider inicialization for DD plot ######
 observe({
@@ -60,7 +60,7 @@ output$DB_DDplot <- downloadHandler(
   }
 )
 
-# ** Cronbach's alpha table ####
+# ** Cronbach's alpha table ######
 cronbachalpha_table_Input <- reactive({
   correct <- correct_answ()
   tab <- c(psych::alpha(correct)$total[1], psych::alpha(correct)$total[8])
@@ -71,7 +71,7 @@ cronbachalpha_table_Input <- reactive({
   tab
 })
 
-# ** Output Cronbach's alpha table ####
+# ** Output Cronbach's alpha table ######
 output$cronbachalpha_table <- renderTable({
   cronbachalpha_table_Input()
 },
@@ -106,7 +106,7 @@ output$itemanalysis_table_text <- renderUI({
   ))
 })
 
-# ** Traditional item analysis table #####
+# ** Traditional item analysis table ######
 itemanalysis_table_Input <- reactive({
   a <- test_answers()
   k <- test_key()
@@ -128,17 +128,17 @@ itemanalysis_table_Input <- reactive({
   tab
 })
 
-# ** Output traditional item analysis table #####
+# ** Output traditional item analysis table ######
 output$itemanalysis_table <- renderTable({
   itemanalysis_table_Input()
 },
 include.rownames = FALSE)
 
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-# * DISTRACTORS #####
+# * DISTRACTORS ######
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-# ** Distractor text #####
+# ** Distractor text ######
 output$distractor_text <- renderUI({
   txt1 <- paste ('Respondents are divided into ')
   txt2 <- paste ("<b>", input$gr, "</b>")
@@ -153,7 +153,7 @@ output$distractor_text <- renderUI({
   HTML(paste(txt1, txt2, txt3, txt4, txt5, txt6))
 })
 
-# ** Distractors plot #####
+# ** Distractors plot ######
 distractor_plot_Input <- reactive({
   a <- test_answers()
   k <- test_key()
@@ -166,12 +166,12 @@ distractor_plot_Input <- reactive({
                          multiple.answers = multiple.answers)
 })
 
-# ** Output distractors plot #####
+# ** Output distractors plot ######
 output$distractor_plot <- renderPlot({
   distractor_plot_Input()
 })
 
-# ** DB distractors plot #####
+# ** DB distractors plot ######
 output$DB_distractor_plot <- downloadHandler(
   filename =  function() {
     paste("fig_DistractorPlot_", item_names()[input$distractorSlider], ".png", sep = "")
@@ -182,7 +182,7 @@ output$DB_distractor_plot <- downloadHandler(
            height = 3, width = 9, dpi = 300)
   }
 )
-# ** Report distractors plot #####
+# ** Report distractors plot ######
 report_distractor_plot <- reactive({
   a <- test_answers()
   k <- test_key()
@@ -229,7 +229,7 @@ output$distractor_table_counts <- renderTable({
   distractor_table_counts_Input()
 })
 
-# ** Distractor table with proportions #####
+# ** Distractor table with proportions ######
 distractor_table_proportions_Input <- reactive({
   a <- test_answers()
   k <- test_key()
@@ -242,12 +242,12 @@ distractor_table_proportions_Input <- reactive({
   df
 })
 
-# ** Output distractor table with proportions #####
+# ** Output distractor table with proportions ######
 output$distractor_table_proportions <- renderTable({
   distractor_table_proportions_Input()
 })
 
-# ** Item response patterns barplot #####
+# ** Item response patterns barplot ######
 distractor_barplot_item_response_patterns_Input <- reactive({
   a <- test_answers()
   k <- test_key()
@@ -278,12 +278,12 @@ distractor_barplot_item_response_patterns_Input <- reactive({
     ggtitle(item_names()[item])
 
 })
-# ** Output item response patterns barplot #####
+# ** Output item response patterns barplot ######
 output$distractor_barplot_item_response_patterns <- renderPlot({
   distractor_barplot_item_response_patterns_Input()
 })
 
-# ** DB item response patterns barplot #####
+# ** DB item response patterns barplot ######
 output$DB_distractor_barplot_item_response_patterns <- downloadHandler(
   filename =  function() {
     paste("fig_ItemResponsePatterns_", item_names()[input$distractorSlider], ".png", sep = "")
@@ -295,7 +295,7 @@ output$DB_distractor_barplot_item_response_patterns <- downloadHandler(
   }
 )
 
-# ** Distractors histograms by group #####
+# ** Distractors histograms by group ######
 distractor_histogram_Input <- reactive({
   a <- test_answers()
   k <- test_key()
@@ -330,12 +330,12 @@ distractor_histogram_Input <- reactive({
           plot.title = element_text(face = "bold"))
 })
 
-# ** Output distractors histograms by group #####
+# ** Output distractors histograms by group ######
 output$distractor_histogram <- renderPlot({
   distractor_histogram_Input()
 })
 
-# ** DB distractors histograms by group #####
+# ** DB distractors histograms by group ######
 output$DB_distractor_histogram <- downloadHandler(
   filename =  function() {
     paste("fig_HistrogramByDistractorGroups.png", sep = "")

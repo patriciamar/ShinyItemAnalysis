@@ -1,9 +1,9 @@
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-# VALIDITY ###########
+# VALIDITY ######
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-# * CORRELATION STRUCTURE #####
+# * CORRELATION STRUCTURE ######
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 # ** Polychoric correlation matrix ######
@@ -27,7 +27,7 @@ output$corr_plot <- renderPlot({
   corr_plot_Input()
 })
 
-# ** DB correlation plot ####
+# ** DB correlation plot ######
 output$DB_corr_plot <- downloadHandler(
   filename =  function() {
     paste("fig_CorrelationPlot.png", sep = "")
@@ -71,7 +71,7 @@ output$scree_plot <- renderPlot({
   scree_plot_Input()
 })
 
-# ** DB scree plot ####
+# ** DB scree plot ######
 output$DB_scree_plot <- downloadHandler(
   filename =  function() {
     paste("fig_ScreePlot.png", sep = "")
@@ -84,10 +84,10 @@ output$DB_scree_plot <- downloadHandler(
 )
 
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-# * PREDICTIVE VALIDITY #####
+# * PREDICTIVE VALIDITY ######
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-# ** Validity boxplot ####
+# ** Validity boxplot ######
 validity_plot_boxplot_Input <- reactive({
   ts <- scored_test()
   cv <- unlist(criterion_variable())
@@ -114,7 +114,7 @@ validity_plot_boxplot_Input <- reactive({
   g
 })
 
-# ** Validity scatterplot ####
+# ** Validity scatterplot ######
 validity_plot_scatter_Input <- reactive({
   ts <- scored_test()
   cv <- unlist(criterion_variable())
@@ -147,7 +147,7 @@ validity_plot_scatter_Input <- reactive({
   g
 })
 
-# ** Validity descriptive plot ####
+# ** Validity descriptive plot ######
 validity_plot_Input <- reactive({
   cv <- criterion_variable()
 
@@ -161,12 +161,12 @@ validity_plot_Input <- reactive({
   g
 })
 
-# ** Output validity descriptive plot ####
+# ** Output validity descriptive plot ######
 output$validity_plot <- renderPlot({
   validity_plot_Input()
 })
 
-# ** DB validity descriptive plot ####
+# ** DB validity descriptive plot ######
 output$DB_validity_plot <- downloadHandler(
   filename =  function() {
     cv <- criterion_variable()
@@ -181,7 +181,7 @@ output$DB_validity_plot <- downloadHandler(
   }
 )
 
-# ** Validity correlation table ####
+# ** Validity correlation table ######
 validity_table_Input <- reactive({
   ts <- scored_test()
   cv <- criterion_variable()
@@ -197,7 +197,7 @@ validity_table_Input <- reactive({
   tab
 })
 
-# * Output validity correlation table ####
+# * Output validity correlation table ######
 output$validity_table <- renderTable({
   validity_table_Input()
 },
@@ -205,7 +205,7 @@ include.rownames = TRUE,
 include.colnames = FALSE,
 sanitize.text.function = function(x) x)
 
-# ** Interpretation ####
+# ** Interpretation ######
 output$validity_table_interpretation <- renderUI({
   tab <- validity_table_Input()
   p.val <- tab["p-value"]
@@ -222,7 +222,7 @@ output$validity_table_interpretation <- renderUI({
   HTML(paste(txt1, txt3))
 })
 
-# ** Validity distractor text #####
+# ** Validity distractor text ######
 output$validity_distractor_text <- renderUI({
   cv <- criterion_variable()
 
@@ -248,7 +248,7 @@ output$validity_distractor_text <- renderUI({
   HTML(paste(txt1, txt2, txt3, txt4, txt5, txt6))
 })
 
-# ** Validity distractors plot #####
+# ** Validity distractors plot ######
 validity_distractor_plot_Input <- reactive({
   a <- test_answers()
   k <- test_key()
@@ -264,12 +264,12 @@ validity_distractor_plot_Input <- reactive({
                          matching = cv)
 })
 
-# ** Output validity distractors plot #####
+# ** Output validity distractors plot ######
 output$validity_distractor_plot <- renderPlot({
   validity_distractor_plot_Input()
 })
 
-# ** DB validity distractors plot #####
+# ** DB validity distractors plot ######
 output$DB_validity_distractor_plot <- downloadHandler(
   filename =  function() {
     paste("fig_DistractorsValidityPlot.png", sep = "")
@@ -281,7 +281,7 @@ output$DB_validity_distractor_plot <- downloadHandler(
   }
 )
 
-# ** Validity correlation table for items ####
+# ** Validity correlation table for items ######
 validity_table_item_Input <- reactive({
   correct <- correct_answ()
   cv <- criterion_variable()
@@ -297,7 +297,7 @@ validity_table_item_Input <- reactive({
   tab
 })
 
-# ** Output validity correlation table for items ####
+# ** Output validity correlation table for items ######
 output$validity_table_item <- renderTable({
   validity_table_item_Input()
 },

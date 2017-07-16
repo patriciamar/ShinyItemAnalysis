@@ -1,14 +1,16 @@
-###############################
-# * IRT MODELS WITH MIRT ######
-###############################
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+# IRT MODELS WITH MIRT ######
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-# ** RASCH ####
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+# * RASCH ######
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 rasch_model_mirt <- reactive({
   fitRasch <- mirt(correct_answ(), model = 1, itemtype = "Rasch",
                    SE = T, verbose = F)
 })
 
-# *** CC ####
+# *** CC ######
 raschInput_mirt <- reactive({
   g <- plot(rasch_model_mirt(), type = "trace", facet_items = F)
   g
@@ -29,7 +31,7 @@ output$DP_rasch_mirt <- downloadHandler(
   }
 )
 
-# *** IIC ####
+# *** IIC ######
 raschiicInput_mirt <- reactive({
   g <- plot(rasch_model_mirt(), type = "infotrace", facet_items = F)
   g
@@ -50,7 +52,7 @@ output$DP_raschiic_mirt <- downloadHandler(
   }
 )
 
-# *** TIF ####
+# *** TIF ######
 raschtifInput_mirt <- reactive({
   g <- plot(rasch_model_mirt(), type = "infoSE")
   g
@@ -71,7 +73,7 @@ output$DP_raschtif_mirt <- downloadHandler(
   }
 )
 
-# *** Table of parameters ####
+# *** Table of parameters ######
 raschcoefInput_mirt <- reactive({
   fit <- rasch_model_mirt()
 
@@ -100,7 +102,7 @@ output$raschcoef_mirt <- renderTable({
 },
 include.rownames = T)
 
-# *** Factor scores correlation ####
+# *** Factor scores correlation ######
 raschFactorCorInput_mirt <- reactive({
   fs <- as.vector(fscores(rasch_model_mirt()))
   sts <- as.vector(scale(apply(correct_answ(), 1, sum)))
@@ -115,7 +117,7 @@ output$raschFactorCor_mirt <- renderText({
         and factor score estimated by IRT model is", round(raschFactorCorInput_mirt(), 3))
 })
 
-# *** Factor scores plot ####
+# *** Factor scores plot ######
 raschFactorInput_mirt <- reactive({
 
   fs <- as.vector(fscores(rasch_model_mirt()))
@@ -156,7 +158,7 @@ output$DP_raschFactor_mirt <- downloadHandler(
   }
 )
 
-# *** Wright Map ####
+# *** Wright Map ######
 raschWrightMapInput_mirt <- reactive({
   fit <- rasch_model_mirt()
   fs <- as.vector(fscores(fit))
@@ -189,7 +191,10 @@ output$DP_raschWM_mirt <- downloadHandler(
   }
 )
 
-# ** 1PL IRT ####
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+# * 1PL IRT ######
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 one_param_irt_mirt <- reactive({
   data <- correct_answ()
   fit1PL <- mirt(data, model = 1, itemtype = "2PL",
@@ -218,7 +223,7 @@ output$DP_oneparamirt_mirt <- downloadHandler(
   }
 )
 
-# *** IIC ####
+# *** IIC ######
 oneparamirtiicInput_mirt <- reactive({
   plot(one_param_irt_mirt(), type = "infotrace", facet_items = F)
 })
@@ -238,7 +243,7 @@ output$DP_oneparamirtiic_mirt <- downloadHandler(
   }
 )
 
-# *** TIF ####
+# *** TIF ######
 oneparamirttifInput_mirt <- reactive({
   plot(one_param_irt_mirt(), type = "infoSE")
 })
@@ -259,7 +264,7 @@ output$DP_oneparamirttif_mirt <- downloadHandler(
 )
 
 
-# *** Table of parameters ####
+# *** Table of parameters ######
 oneparamirtcoefInput_mirt <- reactive({
   fit <- one_param_irt_mirt()
 
@@ -300,7 +305,7 @@ output$oneparamirtcoef_mirt <- renderTable({
 include.rownames = T)
 
 
-# *** Factor scores correlation ####
+# *** Factor scores correlation ######
 oneparamirtFactorCorInput_mirt <- reactive({
 
   fs <- as.vector(fscores(one_param_irt_mirt()))
@@ -315,7 +320,7 @@ output$oneparamirtFactorCor_mirt <- renderText({
   paste("The Pearson correlation coefficient between standardized total score (Z-score)
         and factor score estimated by IRT model is", round(oneparamirtFactorCorInput_mirt(), 3))
 })
-# *** Factor scores plot ####
+# *** Factor scores plot ######
 oneparamirtFactorInput_mirt <- reactive({
 
   fs <- as.vector(fscores(one_param_irt_mirt()))
@@ -356,7 +361,7 @@ output$DP_oneparamirtFactor_mirt <- downloadHandler(
   }
 )
 
-# *** Wright Map ####
+# *** Wright Map ######
 oneparamirtWrightMapInput_mirt <- reactive({
   fit <- one_param_irt_mirt()
   fs <- as.vector(fscores(fit))
@@ -409,7 +414,9 @@ output$DP_oneparamirtWM_mirt <- downloadHandler(
   }
 )
 
-# ** 2PL IRT ####
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+# * 2PL IRT ######
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 two_param_irt_mirt <- reactive({
   data <- correct_answ()
   fit2PL <- mirt(data, model = 1, itemtype = "2PL",
@@ -417,7 +424,7 @@ two_param_irt_mirt <- reactive({
                  SE = T, verbose = F)
 })
 
-# *** CC ####
+# *** CC ######
 twoparamirtInput_mirt <- reactive({
   plot(two_param_irt_mirt(), type = "trace", facet_items = F)
 })
@@ -437,7 +444,7 @@ output$DP_twoparamirt_mirt <- downloadHandler(
   }
 )
 
-# *** IIC ####
+# *** IIC ######
 twoparamirtiicInput_mirt <- reactive({
   plot(two_param_irt_mirt(), type = "infotrace", facet_items = F)
 })
@@ -457,7 +464,7 @@ output$DP_twoparamirtiic_mirt <- downloadHandler(
   }
 )
 
-# *** TIF ####
+# *** TIF ######
 twoparamirttifInput_mirt <- reactive({
   plot(two_param_irt_mirt(), type = "infoSE")
 })
@@ -477,7 +484,7 @@ output$DP_twoparamirttif_mirt <- downloadHandler(
   }
 )
 
-# *** Table of parameters ####
+# *** Table of parameters ######
 twoparamirtcoefInput_mirt <- reactive({
   fit <- two_param_irt_mirt()
 
@@ -516,7 +523,7 @@ output$twoparamirtcoef_mirt <- renderTable({
   twoparamirtcoefInput_mirt()
 },
 include.rownames = T)
-# *** Factor scores correlation ####
+# *** Factor scores correlation ######
 twoparamirtFactorCorInput_mirt <- reactive({
 
   fs <- as.vector(fscores(two_param_irt_mirt()))
@@ -532,7 +539,7 @@ output$twoparamirtFactorCor_mirt <- renderText({
   paste("The Pearson correlation coefficient between standardized total score (Z-score)
         and factor score estimated by IRT model is", round(twoparamirtFactorCorInput_mirt(), 3))
 })
-# *** Factor scores plot ####
+# *** Factor scores plot ######
 twoparamirtFactorInput_mirt <- reactive({
 
   fs <- as.vector(fscores(two_param_irt_mirt()))
@@ -573,7 +580,10 @@ output$DP_twoparamirtFactor_mirt <- downloadHandler(
   }
 )
 
-# ** 3PL IRT ####
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+# * 3PL IRT ######
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 three_param_irt_mirt <- reactive({
   data <- correct_answ()
   fit3PL <- mirt(data, model = 1, itemtype = "3PL",
@@ -582,7 +592,7 @@ three_param_irt_mirt <- reactive({
                  verbose = F)
 })
 
-# *** CC ####
+# *** CC ######
 threeparamirtInput_mirt <- reactive({
   plot(three_param_irt_mirt(), type = "trace", facet_items = F)
 })
@@ -602,7 +612,7 @@ output$DP_threeparamirt_mirt <- downloadHandler(
   }
 )
 
-# *** IIC ####
+# *** IIC ######
 threeparamirtiicInput_mirt <- reactive({
   plot(three_param_irt_mirt(), type = "infotrace", facet_items = F)
 })
@@ -622,7 +632,7 @@ output$DP_threeparamirtiic_mirt <- downloadHandler(
   }
 )
 
-# *** TIF ####
+# *** TIF ######
 threeparamirttifInput_mirt <- reactive({
   plot(three_param_irt_mirt(), type = "infoSE")
 })
@@ -643,7 +653,7 @@ output$DP_threeparamirttif_mirt <- downloadHandler(
 )
 
 
-# *** Table of parameters ####
+# *** Table of parameters ######
 threeparamirtcoefInput_mirt <- reactive({
   fit <- three_param_irt_mirt()
 
@@ -683,7 +693,7 @@ output$threeparamirtcoef_mirt <- renderTable({
 },
 include.rownames = T)
 
-# *** Factor scores plot ####
+# *** Factor scores plot ######
 threeparamirtFactorCorInput_mirt <- reactive({
 
   fs <- as.vector(fscores(three_param_irt_mirt()))
@@ -739,7 +749,10 @@ output$DP_threeparamirtFactor_mirt <- downloadHandler(
   }
 )
 
-# ** IRT COMPARISON ####
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+# * IRT COMPARISON ######
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 irtcomparisonInput <- reactive({
   fit1PL <- one_param_irt_mirt()
   fit2PL <- two_param_irt_mirt()
@@ -777,7 +790,10 @@ output$irtcomparison <- renderTable({
 },
 include.rownames = T)
 
-# ** BOCKS NOMINAL MODEL ####
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+# * BOCKS NOMINAL MODEL ######
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 adj_data_bock <- reactive({
   a <- test_answers()
   k <- as.factor(test_key())
@@ -841,7 +857,7 @@ bock_irt_mirt <- reactive({
   fit
 })
 
-# *** CC ####
+# *** CC ######
 bock_CC_Input <- reactive({
   plot(bock_irt_mirt(), type = "trace", facet_items = F)
 })
@@ -859,7 +875,7 @@ output$DP_bock_CC <- downloadHandler(
   }
 )
 
-# *** IIC ####
+# *** IIC ######
 bock_IIC_Input <- reactive({
   plot(bock_irt_mirt(), type = "infotrace", facet_items = F)
 })
@@ -877,7 +893,7 @@ output$DP_bock_IIC <- downloadHandler(
   }
 )
 
-# *** TIF ####
+# *** TIF ######
 bock_TIF_Input <- reactive({
   plot(bock_irt_mirt(), type = "infoSE")
 })
@@ -895,7 +911,7 @@ output$DP_bock_TIF <- downloadHandler(
   }
 )
 
-# *** Table of parameters ####
+# *** Table of parameters ######
 output$bock_coef_warning <- renderText({
   fit <- bock_irt_mirt()
 
@@ -952,7 +968,7 @@ output$bock_coef <- renderTable({
 include.rownames = T,
 include.colnames = T)
 
-# *** Factor scores plot ####
+# *** Factor scores plot ######
 bock_factor_Input <- reactive({
 
   fs <- as.vector(fscores(bock_irt_mirt()))
@@ -991,7 +1007,7 @@ output$DP_bock_factor <- downloadHandler(
   }
 )
 
-# *** Factor scores correlation ####
+# *** Factor scores correlation ######
 bockFactorCorInput_mirt <- reactive({
 
   fs <- as.vector(fscores(bock_irt_mirt()))
@@ -1008,8 +1024,11 @@ output$bockFactorCorInput_mirt <- renderText({
         and factor score estimated by Bock's nominal IRT model is", round(bockFactorCorInput_mirt(), 3))
 })
 
-# * CHARACTERISTIC CURVES ####
-# ** CC ###
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+# * TRAINING ######
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+# ** CC ######
 ccIRT_plot_Input <- reactive({
   a <- input$ccIRTSlider_a
   b <- input$ccIRTSlider_b
@@ -1053,7 +1072,7 @@ output$DB_ccIRT <- downloadHandler(
   }
 )
 
-# ** ICC ###
+# ** ICC ######
 iccIRT_plot_Input <- reactive({
   a <- input$ccIRTSlider_a
   b <- input$ccIRTSlider_b

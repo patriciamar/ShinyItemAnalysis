@@ -1,12 +1,12 @@
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-# REGRESSION ###############
+# REGRESSION ######
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-# * LOGISTIC ####
+# * LOGISTIC ######
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-# ** Model of logistic regression ####
+# ** Model of logistic regression ######
 logreg_model <- reactive ({
   item <- input$logregSlider
   data <- correct_answ()
@@ -15,7 +15,7 @@ logreg_model <- reactive ({
   model <- glm(unlist(data[, item, with = F]) ~ total_score, family = binomial)
 })
 
-# ** Plot with estimated logistic curve ####
+# ** Plot with estimated logistic curve ######
 logreg_plot_Input <- reactive({
   total_score <- scored_test()
   data <- correct_answ()
@@ -56,12 +56,12 @@ logreg_plot_Input <- reactive({
     ggtitle(item_names()[item])
 })
 
-# ** Output estimated logistic curve ####
+# ** Output estimated logistic curve ######
 output$logreg_plot <- renderPlot({
   logreg_plot_Input()
 })
 
-# ** DB estimated logistic curve ####
+# ** DB estimated logistic curve ######
 output$DB_logreg_plot <- downloadHandler(
   filename =  function() {
     paste("fit_LogisticRegressionCurve_", item_names()[input$logregSlider], ".png", sep = "")
@@ -73,7 +73,7 @@ output$DB_logreg_plot <- downloadHandler(
   }
 )
 
-# ** Table of estimated parameters of logistic curve ####
+# ** Table of estimated parameters of logistic curve ######
 output$logreg_table <- renderTable({
 
   tab <- summary(logreg_model())$coef[1:2, 1:2]
@@ -85,7 +85,7 @@ output$logreg_table <- renderTable({
 include.rownames = T,
 include.colnames = T)
 
-# ** Interpretation of estimated parameters of logistic curve ####
+# ** Interpretation of estimated parameters of logistic curve ######
 output$logreg_interpretation <- renderUI({
   b1 <- coef(logreg_model())[2]
   b1 <- round(b1, 2)
@@ -104,10 +104,10 @@ output$logreg_interpretation <- renderUI({
 
 
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-# * LOGISTIC Z #####
+# * LOGISTIC Z ######
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-# ** Model of logistic regression on Z-scores ####
+# ** Model of logistic regression on Z-scores ######
 z_logreg_model <- reactive({
   zscore <- c(scale(scored_test()))
   item <- input$zlogregSlider
@@ -116,7 +116,7 @@ z_logreg_model <- reactive({
   model <- glm(unlist(data[, item, with = F]) ~ zscore, family = "binomial")
 })
 
-# ** Plot of logistic regression on Z-scores ####
+# ** Plot of logistic regression on Z-scores ######
 z_logreg_plot_Input <- reactive({
   zscore <- c(scale(scored_test()))
   item <- input$zlogregSlider
@@ -156,12 +156,12 @@ z_logreg_plot_Input <- reactive({
     ggtitle(item_names()[item])
 })
 
-# ** Output plot of logistic regression on Z-scores ####
+# ** Output plot of logistic regression on Z-scores ######
 output$z_logreg_plot <- renderPlot({
   z_logreg_plot_Input()
 })
 
-# ** DB for plot of logistic regression on Z-scores ####
+# ** DB for plot of logistic regression on Z-scores ######
 output$DB_z_logreg_plot <- downloadHandler(
   filename =  function() {
     paste("fit_LogisticRegressionCurve_Zscores_", item_names()[input$zlogregSlider], ".png", sep = "")
@@ -173,7 +173,7 @@ output$DB_z_logreg_plot <- downloadHandler(
   }
 )
 
-# ** Table of estimated parameters of logistic regression on Z-scores ####
+# ** Table of estimated parameters of logistic regression on Z-scores ######
 output$z_logreg_table <- renderTable({
 
   tab <- summary(z_logreg_model())$coef[1:2, 1:2]
@@ -184,7 +184,7 @@ output$z_logreg_table <- renderTable({
 include.rownames = T,
 include.colnames = T)
 
-# * Interpretation of estimated parameters of logistic regression on Z-scores ####
+# * Interpretation of estimated parameters of logistic regression on Z-scores ######
 output$z_logreg_interpretation <- renderUI({
   fit <- z_logreg_model()
 
@@ -205,10 +205,10 @@ output$z_logreg_interpretation <- renderUI({
 })
 
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-# * LOGISTIC IRT Z #####
+# * LOGISTIC IRT Z ######
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-# ** Model for logistic regression on Z scores with IRT param. ####
+# ** Model for logistic regression on Z scores with IRT param. ######
 z_logreg_irt_model <- reactive({
   zscore <- c(scale(scored_test()))
   item <- input$zlogreg_irtSlider
@@ -217,7 +217,7 @@ z_logreg_irt_model <- reactive({
   model <- glm(unlist(data[, item, with = F]) ~ zscore, family = "binomial")
 })
 
-# ** Plot with estimated logistic curve on Z scores with IRT param. ####
+# ** Plot with estimated logistic curve on Z scores with IRT param. ######
 z_logreg_irt_plot_Input <- reactive({
   zscore <- scale(scored_test())
   item <- input$zlogreg_irtSlider
@@ -257,12 +257,12 @@ z_logreg_irt_plot_Input <- reactive({
     ggtitle(item_names()[item])
 })
 
-# ** Output plot with estimated logistic curve on Z scores with IRT param. ####
+# ** Output plot with estimated logistic curve on Z scores with IRT param. ######
 output$z_logreg_irt_plot <- renderPlot({
   z_logreg_irt_plot_Input()
 })
 
-# ** DB plot with estimated logistic curve on Z scores with IRT param. ####
+# ** DB plot with estimated logistic curve on Z scores with IRT param. ######
 output$DB_z_logreg_irt_plot <- downloadHandler(
   filename =  function() {
     paste("fit_LogisticRegressionCurve_Zscores_IRT_", item_names()[input$zlogreg_irtSlider], ".png", sep = "")
@@ -274,7 +274,7 @@ output$DB_z_logreg_irt_plot <- downloadHandler(
   }
 )
 
-# ** Table of estimated parameters of logistic curve on Z scores with IRT param. ####
+# ** Table of estimated parameters of logistic curve on Z scores with IRT param. ######
 output$z_logreg_irt_table <- renderTable({
   fit <- z_logreg_irt_model()
   tab_coef_old <- coef(fit)
@@ -301,7 +301,7 @@ output$z_logreg_irt_table <- renderTable({
 },
 include.rownames = T)
 
-# ** Interpretation of estimated parameters of logistic curve on Z scores with IRT param. ####
+# ** Interpretation of estimated parameters of logistic curve on Z scores with IRT param. ######
 output$z_logreg_irt_interpretation <- renderUI({
   fit <- z_logreg_irt_model()
 
@@ -322,10 +322,10 @@ output$z_logreg_irt_interpretation <- renderUI({
 })
 
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-# * NONLINEAR IRT Z #####
+# * NONLINEAR IRT Z ######
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-# ** Model of nonlinear curve ####
+# ** Model of nonlinear curve ######
 nlr_model <- reactive({
   data <- correct_answ()
   zscore <- scale(scored_test())
@@ -368,7 +368,7 @@ nlr_model <- reactive({
   fit
 })
 
-# ** Plot of estimated nonlinear curve ####
+# ** Plot of estimated nonlinear curve ######
 nlr_plot_Input <- reactive({
   zscore <- scale(scored_test())
   item <- input$nlsSlider
@@ -409,12 +409,12 @@ nlr_plot_Input <- reactive({
     ggtitle(item_names()[item])
 })
 
-# ** Output plot of estimated nonlinear curve ####
+# ** Output plot of estimated nonlinear curve ######
 output$nlr_plot <- renderPlot({
   nlr_plot_Input()
 })
 
-# ** DB plot of estimated nonlinear curve ####
+# ** DB plot of estimated nonlinear curve ######
 output$DB_nlr_plot <- downloadHandler(
   filename =  function() {
     paste("fit_NonlinearRegressionCurve_Zscores_IRT_", item_names()[input$nlsSlider], ".png", sep = "")
@@ -426,7 +426,7 @@ output$DB_nlr_plot <- downloadHandler(
   }
 )
 
-# Table of estimated parameters of nonlinear curve ####
+# Table of estimated parameters of nonlinear curve ######
 output$nlr_table <- renderTable({
   fit <- nlr_model()
 
@@ -438,7 +438,7 @@ include.rownames = T,
 include.colnames = T
 )
 
-# ** Interpretation of estimated parameters of nonlinear curve ####
+# ** Interpretation of estimated parameters of nonlinear curve ######
 output$nlr_interpretation <- renderUI({
   fit <- nlr_model()
 
@@ -565,7 +565,7 @@ output$regr_comp_table <- DT::renderDataTable({
 # * MULTINOMIAL ######
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-# ** Model for multinomial regression ####
+# ** Model for multinomial regression ######
 multi_model <- reactive({
   zscore <- c(scale(scored_test()))
   key <- t(as.data.table(test_key()))
@@ -581,7 +581,7 @@ multi_model <- reactive({
   fitM
 })
 
-# ** Plot with estimated curves of multinomial regression ####
+# ** Plot with estimated curves of multinomial regression ######
 multi_plot_Input <- reactive({
   key <- t(as.data.table(test_key()))
   data <- test_answers()
@@ -643,7 +643,7 @@ multi_plot_Input <- reactive({
     ggtitle(item_names()[item])
 })
 
-# ** Reports: Plot with estimated curves of multinomial regression ####
+# ** Reports: Plot with estimated curves of multinomial regression ######
 multiplotReportInput<-reactive({
   graflist <- list()
   key <- unlist(test_key())
@@ -707,12 +707,12 @@ multiplotReportInput<-reactive({
   graflist
 })
 
-# ** Output plot with estimated curves of multinomial regression ####
+# ** Output plot with estimated curves of multinomial regression ######
 output$multi_plot <- renderPlot({
   multi_plot_Input()
 })
 
-# ** DB plot with estimated curves of multinomial regression ####
+# ** DB plot with estimated curves of multinomial regression ######
 output$DB_multi_plot <- downloadHandler(
   filename =  function() {
     paste("fig_MultinomialRegressionCurve_", item_names()[input$multiSlider], ".png", sep = "")
@@ -724,7 +724,7 @@ output$DB_multi_plot <- downloadHandler(
   }
 )
 
-# ** Equation of multinomial regression ####
+# ** Equation of multinomial regression ######
 output$multi_equation <- renderUI ({
   cor_option <- test_key()[input$multiSlider]
   withMathJax(
@@ -737,7 +737,7 @@ output$multi_equation <- renderUI ({
   )
 })
 
-# ** Table of parameters of curves of multinomial regression ####
+# ** Table of parameters of curves of multinomial regression ######
 output$multi_table <- renderTable({
   fit <- multi_model()
 
@@ -751,7 +751,7 @@ output$multi_table <- renderTable({
 },
 include.rownames = T)
 
-# ** Interpretation of parameters of curves of multinomial regression ####
+# ** Interpretation of parameters of curves of multinomial regression ######
 output$multi_interpretation <- renderUI({
 
   koef <- summary(multi_model())$coefficients
