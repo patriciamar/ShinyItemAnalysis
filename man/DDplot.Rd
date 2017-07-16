@@ -4,7 +4,7 @@
 \alias{DDplot}
 \title{Graphical representation of difficulty and (generalized) discrimination in item analysis}
 \usage{
-DDplot(data, item.names)
+DDplot(data, item.names, k = 3, l = 1, u = 3)
 }
 \arguments{
 \item{data}{numeric: binary data matrix or data frame. See \strong{Details}.}
