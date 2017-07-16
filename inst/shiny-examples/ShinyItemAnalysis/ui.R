@@ -460,13 +460,13 @@ ui = tagList(
                         # * STANDARD SCORES ####
                         tabPanel("Standard scores",
                                  h3('Standard scores'),
-                                 p(strong('Total Score'), 'also known as raw score is a total number of correct
+                                 p(strong('Total score'), 'also known as raw score is a total number of correct
                                    answers. It can be used to compare individual score to a norm group, e.g. if the mean
                                    is 12, then individual score can be compared to see if it is below or above this average. ', br(),
                                    strong('Percentile'), 'indicates the value below which a percentage of observations
                                    falls, e.g. a individual score at the 80th percentile means that the individual score
                                    is the same or higher than the scores of 80% of all respondents. ', br(),
-                                   strong('Success Rate'), 'is the percentage of success, e.g. if the maximum points of test
+                                   strong('Success rate'), 'is the percentage of success, e.g. if the maximum points of test
                                    is equal to 20 and individual score is 12 then success rate is 12/20 = 0.6, i.e. 60%.', br(),
                                    strong('Z-score'), 'or also standardized score is a linear transformation of total
                                    score with a mean of 0 and with variance of 1. If X is total score, M its mean and SD its
@@ -615,12 +615,14 @@ ui = tagList(
                                             p('In distractor analysis based on criterion variable, we are interested in how test takers
                                               select the correct answer and how the distractors (wrong answers) with respect to group based
                                               on criterion variable.'),
+                                            h4('Distractor plot'),
+                                            htmlOutput("validity_distractor_text"),
                                             sliderInput('validity_group', 'Number of groups:',
                                                         min   = 1,
                                                         max   = 5,
                                                         value = 3),
-                                            htmlOutput("validity_distractor_text"),
-                                            h4('Distractor plot'),
+                                            p('With option ', strong('Combinations'), 'all item selection patterns are plotted (e.g. AB, ACD, BC). With
+                                              option', strong('Distractors'), 'answers are splitted into distractors (e.g. A, B, C, D).'),
                                             radioButtons('type_validity_combinations_distractor', 'Type',
                                                          list("Combinations", "Distractors")),
                                             sliderInput("validitydistractorSlider", "Item",

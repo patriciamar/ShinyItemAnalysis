@@ -26,8 +26,10 @@ MAJOR UPDATES
   o Traditional analysis table was extended by adding column
     with generalized
     discrimination. This is done also in reports.
-  o Page 'Traditional analysis' has now its own source code called
-    TraditionalAnalysis.R
+  o Some pages has now their own source code files:
+     - 'Summary' - Summary.R
+     - 'Validity'- Validity.R
+     - 'Traditional analysis' - TraditionalAnalysis.R
 
 MINOR UPDATES
 
@@ -37,8 +39,12 @@ MINOR UPDATES
   o Generalized DD plot was removed from 'Distractor' subpage. It is now
     available on 'Traditional item analysis' subpage.
   o Item patterns frequency plot is now made with 'ggplot2' package.
-  o Names of downloaded plots were customized in some pages:
+  o Names of downloaded plots were customized and their resolution was
+    increased in some pages:
+     - Summary (both Total scores and Standard scores)
+     - Validity (both Correlation structure and Predictive validity)
      - Item analysis (both Traditional item analysis and Distractors)
+
 
 ---------------------------------------------------
 - Changes in ShinyItemAnalysis 1.2.0 (2017-06-15) -
