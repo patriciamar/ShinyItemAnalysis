@@ -675,10 +675,23 @@ ui = tagList(
                                    for all items. Items are ordered by difficulty. ", br(),
                                    strong("Difficulty"),' of items is estimated as percent of students who
                                    answered correctly to that item.', br(),
-                                   strong("Discrimination"),' is described by difference of percent correct
+                                   strong("Discrimination"),' is by default described by difference of percent correct
                                    in upper and lower third of students (Upper-Lower Index, ULI). By rule of
                                    thumb it should not be lower than 0.2 (borderline in the plot), except for
-                                   very easy or very difficult items.'),
+                                   very easy or very difficult items. Discrimination can be customized (see also Martinkova, Stepanek, et al.
+                                   (2017)) by changing number of groups and by changing which groups should be compared: '),
+                                 sliderInput('DDplotNumGroupsSlider','Number of groups:',
+                                             min   = 1,
+                                             max   = 5,
+                                             value = 3
+                                 ),
+                                 sliderInput("DDplotRangeSlider", "Which two groups to compare:",
+                                             min = 1,
+                                             max = 3,
+                                             step = 1,
+                                             value = c(1, 3)),
+                                 htmlOutput("DDplot_text"),
+                                 br(),
                                  plotOutput('DDplot'),
                                  downloadButton("DB_DDplot", label = "Download figure"),
                                  h4("Cronbach's alpha"),
@@ -687,11 +700,7 @@ ui = tagList(
                                    of the total score (Cronbach, 1951)."),
                                  tableOutput('cronbachalpha_table'),
                                  h4("Traditional item analysis table"),
-                                 p(strong('Explanation: Difficulty'), ' - Difficulty of item is estimated as percent
-                                   of students who answered correctly to that item. ', strong('SD'),' - standard deviation, ',
-                                   strong('RIT'), ' - Pearson correlation between item and Total score, ', strong('RIR'),'
-                                   - Pearson correlation between item and rest of items, ', strong('ULI'),'
-                                   - Upper-Lower Index, ', strong('Alpha Drop'),' - Cronbach\'s alpha of test without given item.'),
+                                 htmlOutput("itemanalysis_table_text"),
                                  tableOutput('itemanalysis_table'),
                                  br(),
                                  h4("Selected R code"),
@@ -710,7 +719,7 @@ ui = tagList(
                                      br(),
                                      code('# Difficulty and discrimination plot'),
                                      br(),
-                                     code('DDplot(data)'),
+                                     code('DDplot(data, k = 3, l = 1, u = 3)'),
                                      br(),
                                      br(),
                                      code('# Cronbach alpha'),
@@ -721,9 +730,9 @@ ui = tagList(
                                      code('# Table'),
                                      br(),
                                      code('tab <- round(data.frame(item.exam(data, discr = TRUE)[, c(4, 1, 5, 2, 3)],
-                                          psych::alpha(data)$alpha.drop[, 1]), 2)'),
+                                          psych::alpha(data)$alpha.drop[, 1], gDiscrim(data, k = 3, l = 1, u = 3)), 2)'),
                                      br(),
-                                     code('colnames(tab) <- c("Difficulty", "SD", "Dsicrimination ULI", "Discrimination RIT", "Discrimination RIR", "Alpha Drop")'),
+                                     code('colnames(tab) <- c("Difficulty", "SD", "Dsicrimination ULI", "Discrimination RIT", "Discrimination RIR", "Alpha Drop", "Customized Discrimination")'),
                                      br(),
                                      code('tab')),
                                  br()
@@ -734,13 +743,15 @@ ui = tagList(
                                  p('In distractor analysis, we are interested in how test takers select
                                    the correct answer and how the distractors (wrong answers) were able
                                    to function effectively by drawing the test takers away from the correct answer.'),
+                                 h4("Distractors plot"),
+                                 htmlOutput("distractor_text"),
                                  sliderInput('gr','Number of groups:',
                                              min   = 1,
                                              max   = 5,
                                              value = 3
                                  ),
-                                 htmlOutput("distractor_text"),
-                                 h4("Distractors plot"),
+                                 p('With option ', strong('Combinations'), 'all item selection patterns are plotted (e.g. AB, ACD, BC). With
+                                   option', strong('Distractors'), 'answers are splitted into distractors (e.g. A, B, C, D).'),
                                  radioButtons('type_combinations_distractor', 'Type',
                                               list("Combinations", "Distractors")
                                  ),
@@ -752,29 +763,22 @@ ui = tagList(
                                  br(),
                                  h4("Table with counts"),
                                  fluidRow(column(12, align = "center", tableOutput('distractor_table_counts'))),
-                                 plotOutput("item_response_patterns_distribution_plot"),
-                                 downloadButton(
-                                   "item_response_patterns_distribution_plot_download",
-                                   label = "Download figure"
-                                 ),
                                  h4("Table with proportions"),
                                  fluidRow(column(12, align = "center", tableOutput('distractor_table_proportions'))),
                                  br(),
+                                 h4('Barplot of item response patterns'),
+                                 plotOutput("distractor_barplot_item_response_patterns"),
+                                 downloadButton(
+                                   "DB_distractor_barplot_item_response_patterns",
+                                   label = "Download figure"
+                                 ),
                                  h4('Histogram of total scores'),
                                  plotOutput('distractor_histogram'),
                                  downloadButton("DB_distractor_histogram", label = "Download figure"),
                                  br(),
                                  h4('Table of total scores by groups'),
-                                 fluidRow(column(12, align = "center", tableOutput('distractor_table_group'))),
+                                 fluidRow(column(12, align = "center", tableOutput('distractor_table_total_score_by_group'))),
                                  br(),
-                                 h4("Diagram of custom discrimination"),
-                                 uiOutput("distractor_double_slider"),
-                                 htmlOutput("custom_DD_plot_text"),
-                                 plotOutput("custom_DD_plot"),
-                                 downloadButton(
-                                   "custom_DD_plot_download",
-                                   label = "Download figure"
-                                 ),
                                  br(),
                                  h4("Selected R code"),
                                  div(code('library(difNLR)'),
@@ -3014,6 +3018,9 @@ ui = tagList(
                         a('See online.',
                           href = "http://www.lifescied.org/content/16/2/rm2.full.pdf+html?with-ds=yes",
                           target = "_blank")),
+                      p("Martinkova, P., Stepanek, L., Drabinova, A., Houdek, J., Vejrazka, M., & Stuka, C. (2017).
+                        Semi-real-time analyses of item characteristics for medical school admission tests. In: Proceedings of
+                        the 2017 Federated Conference on Computer Science and Information Systems. Accepted."),
                       p("Swaminathan, H., & Rogers, H. J. (1990). Detecting Differential Item
                         Functioning Using Logistic Regression Procedures. Journal of Educational
                         Measurement, 27(4), 361-370.",

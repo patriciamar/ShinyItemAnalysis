@@ -5,20 +5,40 @@
         ***************************************************************
 
 ---------------------------------------------------
-- Changes in ShinyItemAnalysis 1.2.1 (2017-07-14) -
+- Changes in ShinyItemAnalysis 1.2.1 (2017-07-16) -
 ---------------------------------------------------
 
 MAJOR UPDATES
 
   o Several bugs were fixed:
      - Interpretation of regression models was fixed.
-     - Interpretation of text about correlation in Predictive validity was fixed.
-     - Bug in uploading data Medical 100 was fixed.
+     - Interpretation of text about correlation in Predictive validity
+       was fixed.
   o ShinyItemAnalysis now used also 'data.table' package.
+  o Data page was divided into two subpages to avoid long rendering
+    of tables.
+    when changing datasets.
+  o Function 'gDiscrim' to calculate generalized discrimination was
+    implemented.
+  o Function 'DDplot' was edited to be able to handle generalized
+    discrimination.
+    Double slider was added into 'Traditional analysis page'.
+  o Traditional analysis table was extended by adding column
+    with generalized
+    discrimination. This is done also in reports.
+  o Page 'Traditional analysis' has now its own source code called
+    TraditionalAnalysis.R
 
 MINOR UPDATES
 
-  o Lest three rows in regression comparison table are now bold.
+  o Last three rows in regression comparison table are now bold.
+  o Reference list was extended.
+  o The subpage 'Distractors' of 'Item analysis' page was mildly edited.
+  o Generalized DD plot was removed from 'Distractor' subpage. It is now
+    available on 'Traditional item analysis' subpage.
+  o Item patterns frequency plot is now made with 'ggplot2' package.
+  o Names of downloaded plots were customized in some pages:
+     - Item analysis (both Traditional item analysis and Distractors)
 
 ---------------------------------------------------
 - Changes in ShinyItemAnalysis 1.2.0 (2017-06-15) -
