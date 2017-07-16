@@ -1,6 +1,6 @@
-#%%%%%%%%%%%%%%%%%%%%%
-# GLOBAL LIBRARY #####
-#%%%%%%%%%%%%%%%%%%%%%
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+# GLOBAL LIBRARY ######
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 require(corrplot)
 require(CTT)
@@ -29,9 +29,9 @@ require(stringr)
 require(WrightMap)
 require(xtable)
 
-#%%%%%%%%%%%%%%%%%%%%%
-# DATA ###############
-#%%%%%%%%%%%%%%%%%%%%%
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+# DATA ######
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 # data('GMAT', package = 'difNLR')
 # data('GMATtest', package = 'difNLR')
@@ -42,9 +42,9 @@ require(xtable)
 # maximum upload size set to 30MB
 options(shiny.maxRequestSize = 30*1024^2)
 
-#%%%%%%%%%%%%%%%%%%%%%
-# FUNCTIONS ##########
-#%%%%%%%%%%%%%%%%%%%%%
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+# FUNCTIONS ######
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 # Difficulty/Discrimination plot
 source("DDplot.R")
@@ -64,9 +64,9 @@ source("wrightMap.R")
 source("itemClassic.R")
 source("personHist.R")
 
-#%%%%%%%%%%%%%%%%%%%%%
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # SERVER SCRIPT ######
-#%%%%%%%%%%%%%%%%%%%%%
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function(input, output, session) {
 
@@ -76,9 +76,9 @@ function(input, output, session) {
   dataset$key <- NULL
   dataset$group <- NULL
 
-  #%%%%%%%%%%%%%%%%%%%%%
-  ### HITS COUNTER #####
-  #%%%%%%%%%%%%%%%%%%%%%
+  #%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  ### HITS COUNTER ######
+  #%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   output$counter <- renderText({
     if (!file.exists("counter.Rdata"))
     {counter <- 0}
@@ -88,11 +88,11 @@ function(input, output, session) {
     paste0("Hits:", counter)
   })
 
-  #%%%%%%%%%%%%%%%%%%%%%
-  # DATA ADJUSTMENT ####
-  #%%%%%%%%%%%%%%%%%%%%%
+  #%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  # DATA ADJUSTMENT ######
+  #%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-  # LOAD ABCD DATA #####
+  # LOAD ABCD DATA ######
   test_answers <- reactive ({
     if (is.null(input$data)) {
       a = input$dataSelect
@@ -115,7 +115,7 @@ function(input, output, session) {
     data.table(test)
   })
 
-  # LOAD KEY #####
+  # LOAD KEY ######
   test_key <- reactive({
     if ((is.null(input$key)) | (is.null(dataset$key))) {
       a = input$dataSelect
@@ -148,7 +148,7 @@ function(input, output, session) {
     unlist(key)
   })
 
-  # LOAD GROUPS #####
+  # LOAD GROUPS ######
   DIF_groups <- reactive({
     if (is.null(input$data) | (is.null(dataset$group))) {
       a = input$dataSelect
@@ -191,7 +191,7 @@ function(input, output, session) {
     group
   })
 
-  # LOAD CRITERION VARIABLE #####
+  # LOAD CRITERION VARIABLE ######
   criterion_variable <- reactive({
     if (is.null(input$data) | (is.null(dataset$criterion_variable))) {
       a = input$dataSelect
@@ -236,7 +236,7 @@ function(input, output, session) {
     unlist(criterion_variable)
   })
 
-  # LOADING DATA FROM CSV #####
+  # LOADING DATA FROM CSV ######
   observeEvent(
     eventExpr = input$submitButton,
     handlerExpr = {
@@ -283,7 +283,7 @@ function(input, output, session) {
     }
   )
 
-  # ITEM NUMBERS AND NAMES #####
+  # ITEM NUMBERS AND NAMES ######
   item_numbers <- reactive({
     if (!input$itemnam){
       nam <- 1:ncol(test_answers())
@@ -301,7 +301,7 @@ function(input, output, session) {
     nam
   })
 
-  # CORRECT ANSWER CLASSIFICATION #####
+  # CORRECT ANSWER CLASSIFICATION ######
   correct_answ <- reactive({
     test <- test_answers()
     key <- unlist(test_key())
@@ -317,13 +317,13 @@ function(input, output, session) {
     correct
   })
 
-  # TOTAL SCORE CALCULATION #####
+  # TOTAL SCORE CALCULATION ######
   scored_test <- reactive({
     sc <- apply(correct_answ(), 1, sum)
     sc
   })
 
-  # DATA #####
+  # DATA ######
   DPdata <- reactive ({
     dataset <- data.table(correct_answ(), DIF_groups())
     colnames(dataset) <- c(item_names(), 'group')
@@ -350,7 +350,7 @@ function(input, output, session) {
                  scrollCollapse = TRUE,
                  dom = 'tipr'))
 
-  # KEY CONTROL #######
+  # KEY CONTROL ######
 
   output$key_print<-renderTable({
     key_table <- as.data.table(t(test_key()))
@@ -370,7 +370,7 @@ function(input, output, session) {
                  scrollCollapse = TRUE,
                  dom = 'tipr'))
 
-  # SCORE 0-1 #####
+  # SCORE 0-1 ######
   output$sc01_print<-renderTable({
     # total score
     sc <- data.table(scored_test())
@@ -400,7 +400,7 @@ function(input, output, session) {
                  scrollCollapse = TRUE,
                  dom = 'tipr'))
 
-  # GROUP CONTROL #######
+  # GROUP CONTROL ######
   output$group_print<-renderTable({
     group_table <- t(DIF_groups())
     colnames(group_table) <- 1:ncol(group_table)
@@ -419,7 +419,7 @@ function(input, output, session) {
                  scrollCollapse = TRUE,
                  dom = 'tipr'))
 
-  # CRITERION VARIABLE CONTROL #######
+  # CRITERION VARIABLE CONTROL ######
   output$critvar_print<-renderTable({
     critvar_table <- t(criterion_variable())
     colnames(critvar_table) <- 1:ncol(critvar_table)
@@ -438,7 +438,7 @@ function(input, output, session) {
                  scrollCollapse = TRUE,
                  dom = 'tipr'))
 
-  ##### ITEM SLIDERS #####
+  ##### ITEM SLIDERS ######
   observe({
     sliderList<-c(
       "validitydistractorSlider",
@@ -483,45 +483,45 @@ function(input, output, session) {
 
   })
 
-  #%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  # SUMMARY              #####
-  #%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  #%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  # SUMMARY ######
+  #%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
   source("Summary.R", local = T)
 
-  #%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  # VALIDITY             #####
-  #%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  #%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  # VALIDITY ######
+  #%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
   source("Validity.R", local = T)
 
-  #%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  # TRADITIONAL ANALYSIS #####
-  #%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  #%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  # TRADITIONAL ANALYSIS ######
+  #%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
   source("TraditionalAnalysis.R", local = T)
 
-  #%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  # REGRESSION           #####
-  #%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  #%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  # REGRESSION ######
+  #%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
   source("Regression.R", local = T)
 
-  #%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  # IRT MODELS WITH MIRT #####
-  #%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  #%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  # IRT MODELS WITH MIRT ######
+  #%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
   source("IRT.R", local = T)
 
-  #%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  # DIF/FAIRNESS         #####
-  #%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  #%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  # DIF/FAIRNESS ######
+  #%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
   source("DIF.R", local = T)
 
-  #%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  # REPORTS              #####
-  #%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  #%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  # REPORTS ######
+  #%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
   formatInput<-reactive({
     format<-input$report_format

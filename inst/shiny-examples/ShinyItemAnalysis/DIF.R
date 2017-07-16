@@ -1,8 +1,12 @@
-#%%%%%%%%%%%%%%%%%%
-# DIF/FAIRNESS ####
-#%%%%%%%%%%%%%%%%%%
-# * TOTAL SCORES ####
-# ** Summary of Total Scores for Groups ####
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+# DIF/FAIRNESS ######
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+# * TOTAL SCORES ######
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+# ** Summary of Total Scores for Groups ######
 resultsgroupInput<-reactive({
   sc_one  <- scored_test()[DIF_groups() == 1]
   sc_zero <- scored_test()[DIF_groups() == 0]
@@ -32,7 +36,7 @@ digits = 2,
 include.rownames = T,
 include.colnames = T)
 
-# ** Histogram of total score for group = 1 (focal) ####
+# ** Histogram of total score for group = 1 (focal) ######
 histbyscoregroup1Input <- reactive({
 
   a <- test_answers()
@@ -92,7 +96,7 @@ output$DP_histbyscoregroup1 <- downloadHandler(
   }
 )
 
-# ** Histogram of total score for group = 0 (reference) ####
+# ** Histogram of total score for group = 0 (reference) ######
 histbyscoregroup0Input <- reactive ({
 
   a <- test_answers()
@@ -150,7 +154,10 @@ output$DP_histbyscoregroup0 <- downloadHandler(
   }
 )
 
-# * DELTA PLOT ####
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+# * DELTA PLOT ######
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 deltaGpurn <- reactive ({
   switch(input$type_threshold,
          "Fixed" = deltaPlot(DPdata(), group = "group",
@@ -191,7 +198,7 @@ deltaGpurn_report <- reactive({
   )
 })
 
-# * Delta plot ####
+# * Delta plot ######
 deltaplotInput <- reactive({
   dp <- deltaGpurn()
   df <- data.frame(dp$Deltas)
@@ -319,8 +326,11 @@ output$dp_text_normal <- renderPrint({
   deltaGpurn()
 })
 
-# * MANTEL-HAENSZEL ####
-# ** Model for print ####
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+# * MANTEL-HAENSZEL ######
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+# ** Model for print ######
 model_DIF_MH <- reactive({
   group <- unlist(DIF_groups())
   data <- data.frame(correct_answ())
@@ -331,7 +341,7 @@ model_DIF_MH <- reactive({
   mod
 })
 
-# ** Model for tables ####
+# ** Model for tables ######
 model_DIF_MH_tables <- reactive({
   group <- unlist(DIF_groups())
   data <- data.frame(correct_answ())
@@ -341,13 +351,13 @@ model_DIF_MH_tables <- reactive({
   mod
 })
 
-# ** Output print ####
+# ** Output print ######
 output$print_DIF_MH <- renderPrint({
   print(model_DIF_MH())
 })
 
 
-# ** Contingency tables ####
+# ** Contingency tables ######
 table_DIF_MH <- reactive({
   group <- unlist(DIF_groups())
   data <- data.frame(correct_answ())
@@ -373,12 +383,12 @@ table_DIF_MH <- reactive({
 
 })
 
-# ** Contingency tables output ####
+# ** Contingency tables output ######
 output$table_DIF_MH <- renderTable({
   table_DIF_MH()
 })
 
-# ** OR calculation ####
+# ** OR calculation ######
 output$ORcalculation <- renderUI ({
   a <- table_DIF_MH()[1, 2]
   b <- table_DIF_MH()[1, 3]
@@ -417,8 +427,11 @@ output$ORcalculation <- renderUI ({
   )
 })
 
-# * LOGISTIC  ####
-# ** Model for plot ####
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+# * LOGISTIC ######
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+# ** Model for plot ######
 model_DIF_logistic_plot <- reactive({
   group <- unlist(DIF_groups())
   data <- data.frame(correct_answ())
@@ -430,7 +443,7 @@ model_DIF_logistic_plot <- reactive({
   mod
 })
 
-# ** Model for print ####
+# ** Model for print ######
 model_DIF_logistic_print <- reactive({
   group <- unlist(DIF_groups())
   data <- data.frame(correct_answ())
@@ -464,12 +477,12 @@ model_DIF_logistic_print_report <- reactive({
 })
 
 
-# ** Output print ####
+# ** Output print ######
 output$print_DIF_logistic <- renderPrint({
   print(model_DIF_logistic_print())
 })
 
-# ** Plot ####
+# ** Plot ######
 plot_DIF_logisticInput <- reactive({
   group <- unlist(DIF_groups())
   data <- data.frame(correct_answ())
@@ -498,7 +511,7 @@ output$DP_plot_DIF_logistic <- downloadHandler(
   }
 )
 
-# ** Table with coefficients ####
+# ** Table with coefficients ######
 output$tab_coef_DIF_logistic <- renderTable({
 
   fit <- model_DIF_logistic_plot()
@@ -557,8 +570,11 @@ DIF_logistic_plotReport <- reactive({
   graflist
 })
 
-# * LOGISTIC IRT Z ####
-# ** Model for plot ####
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+# * LOGISTIC IRT Z ######
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+# ** Model for plot ######
 model_DIF_logistic_IRT_Z_plot <- reactive({
   group <- unlist(DIF_groups())
   data <- data.frame(correct_answ())
@@ -572,7 +588,7 @@ model_DIF_logistic_IRT_Z_plot <- reactive({
   mod
 })
 
-# ** Model for print ####
+# ** Model for print ######
 model_DIF_logistic_IRT_Z_print <- reactive({
   group <- unlist(DIF_groups())
   data <- data.frame(correct_answ())
@@ -586,12 +602,12 @@ model_DIF_logistic_IRT_Z_print <- reactive({
   mod
 })
 
-# ** Output print ####
+# ** Output print ######
 output$print_DIF_logistic_IRT_Z <- renderPrint({
   print(model_DIF_logistic_IRT_Z_print())
 })
 
-# ** Plot ####
+# ** Plot ######
 plot_DIF_logistic_IRT_ZInput <- reactive ({
   group <- unlist(DIF_groups())
   data <- data.frame(correct_answ())
@@ -665,9 +681,11 @@ output$tab_coef_DIF_logistic_IRT_Z <- renderTable({
 include.rownames = T,
 include.colnames = T)
 
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+# * NLR DIF ######
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-# * NLR DIF ####
-# ** Model for print ####
+# ** Model for print ######
 model_DIF_NLR_print <- reactive({
   group <- unlist(DIF_groups())
   data <- data.frame(correct_answ())
@@ -682,12 +700,12 @@ model_DIF_NLR_print <- reactive({
   fit
 })
 
-# ** Output print ####
+# ** Output print ######
 output$print_DIF_NLR <- renderPrint({
   print(model_DIF_NLR_print())
 })
 
-# ** Model for plot ####
+# ** Model for plot ######
 model_DIF_NLR_plot <- reactive({
   group <- unlist(DIF_groups())
   data <- data.frame(correct_answ())
@@ -702,7 +720,7 @@ model_DIF_NLR_plot <- reactive({
   fit
 })
 
-# ** Plot ####
+# ** Plot ######
 plot_DIF_NLRInput <- reactive({
   fit <- model_DIF_NLR_plot()
   item <- input$difnlrSlider
@@ -714,12 +732,12 @@ plot_DIF_NLRInput <- reactive({
     ggtitle(item_names()[item])
 })
 
-# ** Output plot ####
+# ** Output plot ######
 output$plot_DIF_NLR <- renderPlot({
   plot_DIF_NLRInput()
 })
 
-# ** Plot download ####
+# ** Plot download ######
 output$DP_plot_DIF_NLR <- downloadHandler(
   filename =  function() {
     paste("plot", input$name, ".png", sep = "")
@@ -730,7 +748,7 @@ output$DP_plot_DIF_NLR <- downloadHandler(
   }
 )
 
-# ** Table of coefficients ####
+# ** Table of coefficients ######
 output$tab_coef_DIF_NLR <- renderTable({
   item <- input$difnlrSlider
   fit <- model_DIF_NLR_plot()
@@ -750,8 +768,11 @@ output$tab_coef_DIF_NLR <- renderTable({
 },
 include.rownames = T)
 
-# * IRT LORD ####
-# ** Model for plot ####
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+# * IRT LORD ######
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+# ** Model for plot ######
 model_DIF_IRT_Lord_plot <- reactive({
   group <- unlist(DIF_groups())
   data <- data.frame(correct_answ())
@@ -776,7 +797,7 @@ model_DIF_IRT_Lord_plot <- reactive({
   mod
 })
 
-# ** Model for print ####
+# ** Model for print ######
 model_DIF_IRT_Lord_print <- reactive({
   group <- unlist(DIF_groups())
   data <- data.frame(correct_answ())
@@ -801,13 +822,13 @@ model_DIF_IRT_Lord_print <- reactive({
   mod
 })
 
-# ** Output print ####
+# ** Output print ######
 output$print_DIF_IRT_Lord <- renderPrint({
   print(model_DIF_IRT_Lord_print())
 })
 
 
-# ** Plot ####
+# ** Plot ######
 plot_DIF_IRT_LordInput <- reactive({
   fitLord <- model_DIF_IRT_Lord_plot()
   item <- input$difirt_lord_itemSlider
@@ -830,7 +851,7 @@ output$DP_plot_DIF_IRT_Lord <- downloadHandler(
   }
 )
 
-# ** Table with coefficients ####
+# ** Table with coefficients ######
 tab_coef_DIF_IRT_Lord <- reactive({
 
   fitLord <- model_DIF_IRT_Lord_plot()
@@ -873,7 +894,7 @@ tab_coef_DIF_IRT_Lord <- reactive({
   tab
 })
 
-# ** Interpretation ####
+# ** Interpretation ######
 output$irtint_lord <- renderUI({
   type <- input$type_plot_DIF_IRT_lord
   txt <- switch(type,
@@ -895,7 +916,7 @@ output$irtint_lord <- renderUI({
   HTML(txt)
 })
 
-# ** Equation ####
+# ** Equation ######
 output$irteq_lord <- renderUI({
   type <- input$type_plot_DIF_IRT_lord
   eqR <- switch(type,
@@ -924,16 +945,18 @@ output$irteq_lord <- renderUI({
   withMathJax(paste(eqR, eqF))
 })
 
-# ** Table with coefficients output ####
+# ** Table with coefficients output ######
 output$tab_coef_DIF_IRT_Lord <- renderTable({
   tab_coef_DIF_IRT_Lord()
 },
 include.rownames = T,
 include.colnames = T)
 
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+# * IRT Raju ######
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-# * IRT Raju ####
-# ** Model for plot ####
+# ** Model for plot ######
 model_DIF_IRT_Raju_plot <- reactive({
   group <- unlist(DIF_groups())
   data <- data.frame(correct_answ())
@@ -958,7 +981,7 @@ model_DIF_IRT_Raju_plot <- reactive({
   mod
 })
 
-# ** Model for print ####
+# ** Model for print ######
 model_DIF_IRT_Raju_print <- reactive({
   group <- unlist(DIF_groups())
   data <- data.frame(correct_answ())
@@ -983,14 +1006,14 @@ model_DIF_IRT_Raju_print <- reactive({
   mod
 })
 
-# ** Output print ####
+# ** Output print ######
 output$print_DIF_IRT_Raju <- renderPrint({
   print(model_DIF_IRT_Raju_print())
 })
 
 
 
-# ** Plot ####
+# ** Plot ######
 plot_DIF_IRT_RajuInput <- reactive({
   fitRaju <- model_DIF_IRT_Raju_plot()
   item <- input$difirt_raju_itemSlider
@@ -1013,7 +1036,7 @@ output$DP_plot_DIF_IRT_Raju <- downloadHandler(
   }
 )
 
-# ** Interpretation ####
+# ** Interpretation ######
 output$irtint_raju <- renderUI({
   type <- input$type_plot_DIF_IRT_raju
   txt <- switch(type,
@@ -1036,7 +1059,7 @@ output$irtint_raju <- renderUI({
 })
 
 
-# ** Equation  ####
+# ** Equation ######
 output$irteq_raju <- renderUI({
   type <- input$type_plot_DIF_IRT_raju
   eqR <- switch(type,
@@ -1067,7 +1090,7 @@ output$irteq_raju <- renderUI({
 
 })
 
-# ** Table with coefficients ####
+# ** Table with coefficients ######
 tab_coef_DIF_IRT_Raju <- reactive({
 
   fitRaju <- model_DIF_IRT_Raju_plot()
@@ -1109,14 +1132,17 @@ tab_coef_DIF_IRT_Raju <- reactive({
   tab
 })
 
-# ** Table with coefficients output ####
+# ** Table with coefficients output ######
 output$tab_coef_DIF_IRT_Raju <- renderTable({
   tab_coef_DIF_IRT_Raju()
 },
 include.rownames = T,
 include.colnames = T)
 
-# * DDF ####
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+# * DDF ######
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 # ** Model for print ####
 model_DDF_print <- reactive({
   group <- unlist(DIF_groups())
@@ -1153,12 +1179,12 @@ model_DDF_print_report <- reactive({
   fit
 })
 
-# ** Output print ####
+# ** Output print ######
 output$print_DDF <- renderPrint({
   print(model_DDF_print())
 })
 
-# ** Model for plot ####
+# ** Model for plot ######
 model_DDF_plot <- reactive({
   group <- unlist(DIF_groups())
   a <- data.frame(test_answers())
@@ -1174,7 +1200,7 @@ model_DDF_plot <- reactive({
   fit
 })
 
-# ** Plot ####
+# ** Plot ######
 plot_DDFInput <- reactive({
   fit <- model_DDF_plot()
   item <- input$ddfSlider
@@ -1221,12 +1247,12 @@ plot_DDFReportInput <- reactive({
 })
 
 
-# ** Output Plot ####
+# ** Output Plot ######
 output$plot_DDF <- renderPlot({
   plot_DDFInput()
 })
 
-# ** Plot download ####
+# ** Plot download ######
 output$DP_plot_DDF <- downloadHandler(
   filename =  function() {
     paste("plot", input$name, ".png", sep = "")
@@ -1237,7 +1263,7 @@ output$DP_plot_DDF <- downloadHandler(
   }
 )
 
-# ** Table of coefficients ####
+# ** Table of coefficients ######
 output$tab_coef_DDF <- renderTable({
   item <- input$ddfSlider
   fit <- model_DDF_plot()
@@ -1276,7 +1302,7 @@ output$tab_coef_DDF <- renderTable({
 },
 include.rownames = T)
 
-# ** Equation ####
+# ** Equation ######
 output$DDFeq <- renderUI ({
   item <- input$ddfSlider
   key <- test_key()
