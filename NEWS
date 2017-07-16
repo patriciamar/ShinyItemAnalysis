@@ -31,6 +31,8 @@ MAJOR UPDATES
      - 'Validity'- Validity.R
      - 'Traditional analysis' - TraditionalAnalysis.R
      - 'Regression' - Regression.R
+     - 'IRT models' - IRT.R
+     - 'DIF/Fairness' - DIF.IRT
 
 MINOR UPDATES
 

@@ -11,7 +11,7 @@
 #' @param l numeric: lower group. Default value is 1. See \strong{Details}.
 #' @param u numeric: upper group. Default value is 3. See \strong{Details}.
 #'
-#' @usage DDplot(data, item.names)
+#' @usage DDplot(data, item.names, k = 3, l = 1, u = 3)
 #'
 #' @details
 #' The \code{data} is a matrix or data frame whose rows represents examinee answers
