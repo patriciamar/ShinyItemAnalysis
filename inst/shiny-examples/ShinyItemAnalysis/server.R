@@ -589,7 +589,7 @@ function(input, output, session) {
   })
 
   groupPresent<-reactive({
-    if (length(dataset$group) > 1) {
+    if (length(unlist(DIF_groups())) > 1) {
       groupLogical = TRUE
     } else {
       groupLogical = FALSE
@@ -621,10 +621,10 @@ function(input, output, session) {
          graf = report_distractor_plot(),
          incProgress(0.1),
          # regression
-         logreg = logregInput(),
-         zlogreg = zlogregInput(),
-         zlogreg_irt = zlogreg_irtInput(),
-         nlsplot = nlsplotInput(),
+         logreg = logreg_plot_Input(),
+         zlogreg = z_logreg_plot_Input(),
+         zlogreg_irt = z_logreg_irt_plot_Input(),
+         nlsplot = nlr_plot_Input(),
          multiplot = multiplotReportInput(),
          incProgress(0.15),
          # irt
@@ -693,10 +693,10 @@ function(input, output, session) {
                        hist_distractor_by_group = distractor_histogram_Input(),
                        graf = report_distractor_plot(),
                        # regression
-                       logreg = logregInput(),
-                       zlogreg = zlogregInput(),
-                       zlogreg_irt = zlogreg_irtInput(),
-                       nlsplot = nlsplotInput(),
+                       logreg = logreg_plot_Input(),
+                       zlogreg = z_logreg_plot_Input(),
+                       zlogreg_irt = z_logreg_irt_plot_Input(),
+                       nlsplot = nlr_plot_Input(),
                        multiplot = multiplotReportInput(),
                        # irt
                        wrightMap = oneparamirtWrightMapReportInput_mirt(),
