@@ -76,17 +76,25 @@ colnames(table) = NULL
 print(xtable(t(table), digits = c(0, 0, 0, 3, 0, 3, 3, 3), align = rep('c', 8)), booktabs = T, comment = F, include.rownames = F)
 ```
 
+For selected cut-score, blue part of histogram shows students with total score above the cut-score, grey column shows students with total score equal to the cut-score and red part of histogram shows students below the cut-score.
+
 ```{r total-scores-histogram, echo = FALSE, fig.height = 4.5, fig.width = 11}
 params$histogram_totalscores + ggtitle('Histogram of total scores') + theme(text = element_text(size = 12), plot.title = element_text(face = "bold"))
 ```
 
+`r if (any(params$corr_plot != "")) {"\\pagebreak"}`
+
 `r if (any(params$corr_plot != "")) {"## Correlation structure"}`
+
+`r if (any(params$corr_plot != "")) {"Polychoric correlation heat map is a correlation plot which displays a polychoric correlations of items. The size and shade of circles indicate how much the items are correlated (larger and darker circle means larger correlation). The color of circles indicates in which way the items are correlated - blue color shows possitive correlation and red color shows negative correlation."}`
 
 ```{r corr-plot, echo = FALSE, fig.height = 4, fig.width = 9}
 if (any(params$corr_plot != "")) {
   corrplot(params$corr_plot, tl.cex = 0.7)
 }
 ```
+
+`r if (any(params$corr_plot != "")) {"A scree plot displays the eigenvalues associated with an component or a factor in descending order versus the number of the component or factor."}`
 
 ```{r scree-plot, echo = FALSE, fig.height = 4.5, fig.width = 11}
 if (any(params$corr_plot != "")) {
@@ -106,21 +114,26 @@ params$validity_plot
 
 ## Item analysis
 
+Difficulty (red) of items is estimated as percent of students who answered correctly to that item. Discrimination (blue) is by default described by difference of percent correct in upper and lower third of students (Upper-Lower Index, ULI). By rule of thumb it should not be lower than 0.2 (borderline in the plot), except for very easy or very difficult items.
+
 ```{r DD-plot, echo = FALSE, fig.height = 4.5, fig.width = 11}
 params$difPlot + ggtitle('Difficulty/Discrimination plot') + theme(text = element_text(size = 12), plot.title = element_text(face = "bold"))
 ```
 
-**Traditional item analysis table**
+**Traditional item analysis table**: Diff. - Difficulty of item is estimated as percent of students who answered correctly to that item. SD - standard deviation, ULI - Upper-Lower Index, RIT - Pearson correlation between item and total score, RIR - Pearson correlation between item and rest of items, Alpha Drop - Cronbach's alpha of test without given item, Cust. D.- difference between the difficulty recorded in the groups selected by user.
+
 ```{r item-table, echo = FALSE, results = "asis"}
 table = params$itemexam
 tab = format(round(table[, -1], 4), nsmall = 3)
 table = data.frame(table[, 1], tab)
-colnames(table) = c("Item", "Diff.", "SD", "D. ULI", "D. RIT", "D. RIR", "Alpha Drop")
+colnames(table) = c("Item", "Diff.", "SD", "D. ULI", "D. RIT", "D. RIR", "Alpha Drop", "Cust. D.")
 
-print(xtable(table, digits = c(0, 0, 4, 4, 4, 4, 4, 4), align = rep('c', 8)), booktabs = T, comment = F, include.rownames = FALSE)
+print(xtable(table, digits = c(0, 0, 4, 4, 4, 4, 4, 4, 4), align = rep('c', 9)), booktabs = T, comment = F, include.rownames = FALSE)
 ```
 
 ## Distractor analysis
+
+Respondents are divided into selected number groups by their total score. Subsequently, the percentage of students in each group who selected given answer (correct answer or distractor) is displayed. The correct answer should be more often selected by strong students than by students with lower total score, i.e. solid line should be increasing. The distractor should work in opposite direction, i.e. dotted lines should be decreasing.
 
 ```{r distractor-multi-plot, echo = FALSE, fig.width = 10}
 library(gridExtra)
@@ -133,6 +146,8 @@ for (i in 1:length(params$graf)){
 
 
 # IRT model
+
+Item Response Theory (IRT) models are mixed-effect regression models in which student ability (theta) is assumed to be a random effect and is estimated together with item paramters. Ability (theta) is often assumed to follow normal distibution.
 
 ```{r irt-eq, echo = FALSE, results = "hide"}
 if (params$irt_type == "rasch") {
@@ -176,6 +191,9 @@ $$ {P}(Y_{ij} = 1|\theta_{i},a_j,b_j, c_j) =c_j + (1+c_j)\cdot\frac{e^{a_j(\thet
 
 **`r if (any(params$wrightMap!="")) {"Wright (item-person) map using 1PL IRT model"}`**
 
+`r if (any(params$wrightMap!="")) {"Wright map, also called item-person map, is a graphical tool to display person estimates and item parameters. The person side (left) represents histogram of estimated knowledge of students. The item side (right) displays estimates of difficulty of particular items."}`
+
+
 ```{r wright-map, echo = FALSE, results = "hide", fig.height = 5.5, fig.width = 11}
 if (any(params$wrightMap != "")) {
   wrightMap(params$wrightMap[[1]], params$wrightMap[[2]], item.side = itemClassic)
@@ -207,6 +225,8 @@ if (params$irt_type != "none") {
 `r if (any(params$wrightMap!="")) {"\\pagebreak"}`
 `r if (params$irt_type != "none") {"\\textbf{Parameter estimates and item fit}"}`
 
+`r if (params$irt_type != "none") {"Estimates of parameters are completed by SX2 item fit statistics (Ames & Penfield, 2015). SX2 is computed only when no missing data are present. In such a case consider using imputed dataset!"}`
+
 ```{r irt-estim, echo = FALSE, results = "asis"}
 if (params$irt_type != "none") {
   table = params$irtcoef
@@ -228,7 +248,6 @@ if (params$irt_type != "none") {
 
 `r if (any(c(params$histCheck, params$deltaplotCheck, params$logregCheck, params$multiCheck)) & params$isGroupPresent) {"\\pagebreak"}`
 
-
 `r if(any(c(params$histCheck, params$deltaplotCheck, params$logregCheck, params$multiCheck))) {"# DIF/Fairness report"}`
 
 `r if(any(c(params$histCheck, params$deltaplotCheck, params$logregCheck, params$multiCheck)) & !params$isGroupPresent){"Group vector is not present. DIF and DDF Report could not be generated!"}`
@@ -236,6 +255,8 @@ if (params$irt_type != "none") {
 `r if(params$isGroupPresent & params$histCheck) {"## Total scores"}`
 
 `r if(params$isGroupPresent & params$histCheck) {"**Summary table of total scores in reference and focal group**"}`
+
+`r if(params$isGroupPresent & params$histCheck) {"DIF is not about total scores! Two groups may have the same distribution of total scores, yet, some item may function differently for two groups. Also, one of the groups may have signifficantly lower total score, yet, it may happen that there is no DIF item!"}`
 
 ```{r table-by-group, echo = FALSE, results = "asis"}
 if (params$histCheck) {
@@ -255,7 +276,12 @@ if (params$histCheck) {
 }
 ```
 
+`r if (any(c(params$deltaplotCheck, params$logregCheck, params$multiCheck)) & params$isGroupPresent & params$histCheck) {"\\pagebreak"}`
+
 `r if(params$isGroupPresent & params$deltaplotCheck) {"## DIF detection using delta plot"}`
+
+
+`r if(params$isGroupPresent & params$deltaplotCheck) {"Delta plot compares the proportions of correct answers per item in the two groups. It displays non-linear transformation of these proportions using quantiles of standard normal distributions (so called delta scores) for each item for the two groups in a scatterplot called diagonal plot or delta plot . Item is under suspicion of DIF if the delta point considerably departs from the diagonal. "}`
 
 ```{r delta-plot-output, echo = FALSE}
 if (params$deltaplotCheck) {
@@ -276,7 +302,12 @@ if (params$deltaplotCheck) {
 }
 ```
 
+`r if (any(c(params$logregCheck, params$multiCheck)) & params$isGroupPresent & params$deltaplotCheck) {"\\pagebreak"}`
+
 `r if(params$isGroupPresent & params$logregCheck) {"## DIF detection using logistic regression"}`
+
+`r if(params$isGroupPresent & params$logregCheck) {"Logistic regression allows for detection of uniform and non-uniform DIF by adding a group specific intercept (uniform DIF) and group specific interaction (non-uniform DIF) into model and by testing for their significance."}`
+
 ```{r dif-logistic-output, echo = FALSE}
 if (params$logregCheck) {
  if(params$isGroupPresent){
@@ -285,6 +316,7 @@ if (params$logregCheck) {
 }
 ```
 
+`r if(params$isGroupPresent & params$logregCheck) {"Plots are based on DIF logistic procedure without any correction method. Plots and tables are based on DIF logistic procedure without any correction method."}`
 
 ```{r dif-logistic-plot, echo = FALSE, results = 'hide', fig.height = 4.5, fig.width = 11}
 if (params$logregCheck) {
@@ -294,7 +326,13 @@ if (params$logregCheck) {
 }
 ```
 
+`r if (params$multiCheck & params$isGroupPresent & params$logregCheck) {"\\pagebreak"}`
+
 `r if(params$isGroupPresent & params$multiCheck) {"## DDF detection Using multinomial regression"}`
+
+`r if(params$isGroupPresent & params$multiCheck) {"Differential Distractor Functioning (DDF) occurs when people from different groups but with the same knowledge have different probability of selecting at least one distractor choice. DDF is here examined by multinomial log-linear regression model with Z-score and group membership as covariates. "}`
+
+
 ```{r ddf-multi-output, echo = FALSE}
 if (params$multiCheck) {
   if(params$isGroupPresent){
@@ -303,6 +341,7 @@ if (params$multiCheck) {
 }
 ```
 
+`r if(params$isGroupPresent & params$multiCheck) {"Points represent proportion of selected answer with respect to standardized total score. Size of points is determined by count of respondents who chose particular answer. "}`
 
 ```{r ddf-multi-plot, echo = FALSE, results = "hide", fig.height = 4.5, fig.width = 11}
 if (params$multiCheck) {

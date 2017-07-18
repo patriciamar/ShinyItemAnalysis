@@ -460,13 +460,13 @@ ui = tagList(
                         # * STANDARD SCORES ####
                         tabPanel("Standard scores",
                                  h3('Standard scores'),
-                                 p(strong('Total Score'), 'also known as raw score is a total number of correct
+                                 p(strong('Total score'), 'also known as raw score is a total number of correct
                                    answers. It can be used to compare individual score to a norm group, e.g. if the mean
                                    is 12, then individual score can be compared to see if it is below or above this average. ', br(),
                                    strong('Percentile'), 'indicates the value below which a percentage of observations
                                    falls, e.g. a individual score at the 80th percentile means that the individual score
                                    is the same or higher than the scores of 80% of all respondents. ', br(),
-                                   strong('Success Rate'), 'is the percentage of success, e.g. if the maximum points of test
+                                   strong('Success rate'), 'is the percentage of success, e.g. if the maximum points of test
                                    is equal to 20 and individual score is 12 then success rate is 12/20 = 0.6, i.e. 60%.', br(),
                                    strong('Z-score'), 'or also standardized score is a linear transformation of total
                                    score with a mean of 0 and with variance of 1. If X is total score, M its mean and SD its
@@ -615,12 +615,14 @@ ui = tagList(
                                             p('In distractor analysis based on criterion variable, we are interested in how test takers
                                               select the correct answer and how the distractors (wrong answers) with respect to group based
                                               on criterion variable.'),
+                                            h4('Distractor plot'),
+                                            htmlOutput("validity_distractor_text"),
                                             sliderInput('validity_group', 'Number of groups:',
                                                         min   = 1,
                                                         max   = 5,
                                                         value = 3),
-                                            htmlOutput("validity_distractor_text"),
-                                            h4('Distractor plot'),
+                                            p('With option ', strong('Combinations'), 'all item selection patterns are plotted (e.g. AB, ACD, BC). With
+                                              option', strong('Distractors'), 'answers are splitted into distractors (e.g. A, B, C, D).'),
                                             radioButtons('type_validity_combinations_distractor', 'Type',
                                                          list("Combinations", "Distractors")),
                                             sliderInput("validitydistractorSlider", "Item",
@@ -675,10 +677,23 @@ ui = tagList(
                                    for all items. Items are ordered by difficulty. ", br(),
                                    strong("Difficulty"),' of items is estimated as percent of students who
                                    answered correctly to that item.', br(),
-                                   strong("Discrimination"),' is described by difference of percent correct
+                                   strong("Discrimination"),' is by default described by difference of percent correct
                                    in upper and lower third of students (Upper-Lower Index, ULI). By rule of
                                    thumb it should not be lower than 0.2 (borderline in the plot), except for
-                                   very easy or very difficult items.'),
+                                   very easy or very difficult items. Discrimination can be customized (see also Martinkova, Stepanek, et al.
+                                   (2017)) by changing number of groups and by changing which groups should be compared: '),
+                                 sliderInput('DDplotNumGroupsSlider','Number of groups:',
+                                             min   = 1,
+                                             max   = 5,
+                                             value = 3
+                                 ),
+                                 sliderInput("DDplotRangeSlider", "Which two groups to compare:",
+                                             min = 1,
+                                             max = 3,
+                                             step = 1,
+                                             value = c(1, 3)),
+                                 htmlOutput("DDplot_text"),
+                                 br(),
                                  plotOutput('DDplot'),
                                  downloadButton("DB_DDplot", label = "Download figure"),
                                  h4("Cronbach's alpha"),
@@ -687,11 +702,7 @@ ui = tagList(
                                    of the total score (Cronbach, 1951)."),
                                  tableOutput('cronbachalpha_table'),
                                  h4("Traditional item analysis table"),
-                                 p(strong('Explanation: Difficulty'), ' - Difficulty of item is estimated as percent
-                                   of students who answered correctly to that item. ', strong('SD'),' - standard deviation, ',
-                                   strong('RIT'), ' - Pearson correlation between item and Total score, ', strong('RIR'),'
-                                   - Pearson correlation between item and rest of items, ', strong('ULI'),'
-                                   - Upper-Lower Index, ', strong('Alpha Drop'),' - Cronbach\'s alpha of test without given item.'),
+                                 htmlOutput("itemanalysis_table_text"),
                                  tableOutput('itemanalysis_table'),
                                  br(),
                                  h4("Selected R code"),
@@ -710,7 +721,7 @@ ui = tagList(
                                      br(),
                                      code('# Difficulty and discrimination plot'),
                                      br(),
-                                     code('DDplot(data)'),
+                                     code('DDplot(data, k = 3, l = 1, u = 3)'),
                                      br(),
                                      br(),
                                      code('# Cronbach alpha'),
@@ -721,9 +732,9 @@ ui = tagList(
                                      code('# Table'),
                                      br(),
                                      code('tab <- round(data.frame(item.exam(data, discr = TRUE)[, c(4, 1, 5, 2, 3)],
-                                          psych::alpha(data)$alpha.drop[, 1]), 2)'),
+                                          psych::alpha(data)$alpha.drop[, 1], gDiscrim(data, k = 3, l = 1, u = 3)), 2)'),
                                      br(),
-                                     code('colnames(tab) <- c("Difficulty", "SD", "Dsicrimination ULI", "Discrimination RIT", "Discrimination RIR", "Alpha Drop")'),
+                                     code('colnames(tab) <- c("Difficulty", "SD", "Dsicrimination ULI", "Discrimination RIT", "Discrimination RIR", "Alpha Drop", "Customized Discrimination")'),
                                      br(),
                                      code('tab')),
                                  br()
@@ -734,13 +745,15 @@ ui = tagList(
                                  p('In distractor analysis, we are interested in how test takers select
                                    the correct answer and how the distractors (wrong answers) were able
                                    to function effectively by drawing the test takers away from the correct answer.'),
+                                 h4("Distractors plot"),
+                                 htmlOutput("distractor_text"),
                                  sliderInput('gr','Number of groups:',
                                              min   = 1,
                                              max   = 5,
                                              value = 3
                                  ),
-                                 htmlOutput("distractor_text"),
-                                 h4("Distractors plot"),
+                                 p('With option ', strong('Combinations'), 'all item selection patterns are plotted (e.g. AB, ACD, BC). With
+                                   option', strong('Distractors'), 'answers are splitted into distractors (e.g. A, B, C, D).'),
                                  radioButtons('type_combinations_distractor', 'Type',
                                               list("Combinations", "Distractors")
                                  ),
@@ -752,29 +765,22 @@ ui = tagList(
                                  br(),
                                  h4("Table with counts"),
                                  fluidRow(column(12, align = "center", tableOutput('distractor_table_counts'))),
-                                 plotOutput("item_response_patterns_distribution_plot"),
-                                 downloadButton(
-                                   "item_response_patterns_distribution_plot_download",
-                                   label = "Download figure"
-                                 ),
                                  h4("Table with proportions"),
                                  fluidRow(column(12, align = "center", tableOutput('distractor_table_proportions'))),
                                  br(),
+                                 h4('Barplot of item response patterns'),
+                                 plotOutput("distractor_barplot_item_response_patterns"),
+                                 downloadButton(
+                                   "DB_distractor_barplot_item_response_patterns",
+                                   label = "Download figure"
+                                 ),
                                  h4('Histogram of total scores'),
                                  plotOutput('distractor_histogram'),
                                  downloadButton("DB_distractor_histogram", label = "Download figure"),
                                  br(),
                                  h4('Table of total scores by groups'),
-                                 fluidRow(column(12, align = "center", tableOutput('distractor_table_group'))),
+                                 fluidRow(column(12, align = "center", tableOutput('distractor_table_total_score_by_group'))),
                                  br(),
-                                 h4("Diagram of custom discrimination"),
-                                 uiOutput("distractor_double_slider"),
-                                 htmlOutput("custom_DD_plot_text"),
-                                 plotOutput("custom_DD_plot"),
-                                 downloadButton(
-                                   "custom_DD_plot_download",
-                                   label = "Download figure"
-                                 ),
                                  br(),
                                  h4("Selected R code"),
                                  div(code('library(difNLR)'),
@@ -825,7 +831,7 @@ ui = tagList(
                                  p('Various regression models may be fitted to describe
                                    item properties in more detail.',
                                    strong('Logistic regression'),'can model dependency of probability of correct answer on total score by
-                                   s-shaped logistic curve. Parameter', strong( "b0"),' describes horizontal position of the fitted curve,
+                                   S-shaped logistic curve. Parameter', strong( "b0"),' describes horizontal position of the fitted curve,
                                    parameter ', strong( 'b1'),' describes its slope.'),
                                  br(),
                                  h4("Plot with estimated logistic curve"),
@@ -834,15 +840,15 @@ ui = tagList(
                                  sliderInput("logregSlider", "Item",
                                              min = 1, value = 1, max = 10,
                                              step = 1, animate = TRUE),
-                                 plotOutput('logreg'),
-                                 downloadButton("DP_logreg", label = "Download figure"),
+                                 plotOutput('logreg_plot'),
+                                 downloadButton("DB_logreg_plot", label = "Download figure"),
                                  h4("Equation"),
                                  withMathJax(),
                                  ('$$\\mathrm{P}(Y = 1|X, b_0, b_1) = \\mathrm{E}(Y|X, b_0, b_1) = \\frac{e^{\\left( b_{0} + b_1 X\\right)}}{1+e^{\\left( b_{0} + b_1 X\\right) }} $$'),
 
                                  h4("Table of parameters"),
-                                 fluidRow(column(12, align = "center", tableOutput('logregtab'))),
-                                 htmlOutput("logisticint"),
+                                 fluidRow(column(12, align = "center", tableOutput('logreg_table'))),
+                                 htmlOutput("logreg_interpretation"),
                                  br(),
                                  h4("Selected R code"),
                                  div(code('library(difNLR)'),
@@ -880,7 +886,7 @@ ui = tagList(
                                  p('Various regression models may be fitted to describe
                                    item properties in more detail.',
                                    strong('Logistic regression'), 'can model dependency of probability of correct answer on
-                                   standardized total score (Z-score) by s-shaped logistic curve. Parameter ', strong( 'b0'), ' describes
+                                   standardized total score (Z-score) by S-shaped logistic curve. Parameter ', strong( 'b0'), ' describes
                                    horizontal position of the fitted curve (difficulty), parameter ', strong('b1'),' describes its slope at
                                    inflection point (discrimination). '),
                                  br(),
@@ -890,13 +896,13 @@ ui = tagList(
                                  sliderInput("zlogregSlider", "Item",
                                              min = 1, value = 1, max = 10,
                                              step = 1, animate = TRUE),
-                                 plotOutput('zlogreg'),
-                                 downloadButton("DP_zlogreg", label = "Download figure"),
+                                 plotOutput('z_logreg_plot'),
+                                 downloadButton("DB_z_logreg_plot", label = "Download figure"),
                                  h4("Equation"),
                                  ('$$\\mathrm{P}(Y = 1|Z, b_0, b_1) = \\mathrm{E}(Y|Z, b_0, b_1) = \\frac{e^{\\left( b_{0} + b_1 Z\\right) }}{1+e^{\\left( b_{0} + b_1 Z\\right) }} $$'),
                                  h4("Table of parameters"),
-                                 fluidRow(column(12, align = "center", tableOutput('zlogregtab'))),
-                                 htmlOutput("zlogisticint"),
+                                 fluidRow(column(12, align = "center", tableOutput('z_logreg_table'))),
+                                 htmlOutput("z_logreg_interpretation"),
                                  br(),
                                  h4("Selected R code"),
                                  div(code('library(difNLR)'),
@@ -945,13 +951,13 @@ ui = tagList(
                                  sliderInput("zlogreg_irtSlider", "Item",
                                              min = 1, value = 1, max = 10,
                                              step = 1, animate = TRUE),
-                                 plotOutput('zlogreg_irt'),
-                                 downloadButton("DP_zlogreg_irt", label = "Download figure"),
+                                 plotOutput('z_logreg_irt_plot'),
+                                 downloadButton("DB_z_logreg_irt_plot", label = "Download figure"),
                                  h4("Equation"),
                                  ('$$\\mathrm{P}(Y = 1|Z, a, b) = \\mathrm{E}(Y|Z, a, b) = \\frac{e^{ a\\left(Z - b\\right) }}{1+e^{a\\left(Z - b\\right)}} $$'),
                                  h4("Table of parameters"),
-                                 fluidRow(column(12, align = "center", tableOutput('zlogregtab_irt'))),
-                                 htmlOutput("zlogisticint_irt"),
+                                 fluidRow(column(12, align = "center", tableOutput('z_logreg_irt_table'))),
+                                 htmlOutput("z_logreg_irt_interpretation"),
                                  br(),
                                  h4("Selected R code"),
                                  div(code('library(difNLR)'),
@@ -1003,13 +1009,13 @@ ui = tagList(
                                  sliderInput("nlsSlider", "Item",
                                              min = 1, value = 1, max = 10,
                                              step = 1, animate = TRUE),
-                                 plotOutput('nlsplot'),
-                                 downloadButton("DP_nlsplot", label = "Download figure"),
+                                 plotOutput('nlr_plot'),
+                                 downloadButton("DB_nlr_plot", label = "Download figure"),
                                  h4("Equation"),
                                  ('$$\\mathrm{P}(Y = 1|Z, b_0, b_1, c) = \\mathrm{E}(Y|Z, b_0, b_1, c) = c + \\left( 1-c \\right) \\cdot \\frac{e^{a\\left(Z-b\\right) }}{1+e^{a\\left(Z-b\\right) }} $$'),
                                  h4("Table of parameters"),
-                                 fluidRow(column(12, align = "center", tableOutput('nonlinearztab'))),
-                                 htmlOutput("nonlinearint"),
+                                 fluidRow(column(12, align = "center", tableOutput('nlr_table'))),
+                                 htmlOutput("nlr_interpretation"),
                                  br(),
                                  h4("Selected R code"),
                                  div(code('library(difNLR)'),
@@ -1123,14 +1129,14 @@ ui = tagList(
                                  sliderInput("multiSlider", "Item",
                                              min = 1, value = 1, max = 10,
                                              step = 1, animate = TRUE),
-                                 plotOutput('multiplot'),
-                                 downloadButton("DP_multiplot", label = "Download figure"),
+                                 plotOutput('multi_plot'),
+                                 downloadButton("DB_multi_plot", label = "Download figure"),
                                  h4("Equation"),
-                                 uiOutput('multieq'),
+                                 uiOutput('multi_equation'),
                                  h4("Table of parameters"),
-                                 fluidRow(column(12, align = "center", tableOutput('multitab'))),
+                                 fluidRow(column(12, align = "center", tableOutput('multi_table'))),
                                  strong("Interpretation:"),
-                                 htmlOutput("multiint"),
+                                 htmlOutput("multi_interpretation"),
                                  br(),
                                  h4("Selected R code"),
                                  div(code('library(difNLR)'),
@@ -3012,6 +3018,9 @@ ui = tagList(
                         a('See online.',
                           href = "http://www.lifescied.org/content/16/2/rm2.full.pdf+html?with-ds=yes",
                           target = "_blank")),
+                      p("Martinkova, P., Stepanek, L., Drabinova, A., Houdek, J., Vejrazka, M., & Stuka, C. (2017).
+                        Semi-real-time analyses of item characteristics for medical school admission tests. In: Proceedings of
+                        the 2017 Federated Conference on Computer Science and Information Systems. Accepted."),
                       p("Swaminathan, H., & Rogers, H. J. (1990). Detecting Differential Item
                         Functioning Using Logistic Regression Procedures. Journal of Educational
                         Measurement, 27(4), 361-370.",

@@ -2,37 +2,69 @@
 % Please edit documentation in R/DDplot.R
 \name{DDplot}
 \alias{DDplot}
-\title{Graphical representation of difficulty and discrimination in item analysis}
+\title{Graphical representation of difficulty and (generalized) discrimination in item analysis}
 \usage{
-DDplot(data, item.names)
+DDplot(data, item.names, k = 3, l = 1, u = 3)
 }
 \arguments{
 \item{data}{numeric: binary data matrix or data frame. See \strong{Details}.}
 
 \item{item.names}{character: the names of items.}
+
+\item{k}{numeric: number of groups to which may be data.frame x divided by the total score.
+Default value is 3.  See \strong{Details}.}
+
+\item{l}{numeric: lower group. Default value is 1. See \strong{Details}.}
+
+\item{u}{numeric: upper group. Default value is 3. See \strong{Details}.}
 }
 \description{
-Plots difficulty and discrimination for items ordered by difficulty.
+Plots difficulty and (generalized) discrimination for items ordered by difficulty.
 }
 \details{
 The \code{data} is a matrix or data frame whose rows represents examinee answers
 ("1" correct, "0" incorrect) and columns correspond to the items. The \code{item.names}
 argument stands for names of items. If not specified, the names of dataset columns are used.
+Generalized discrimination is computed as follows: The function takes data on individuals,
+computes their total test score and then divides individuals into \code{k} groups. The lower and
+upper group are determined by \code{l} and \code{u} parameters, i.e.  l-th and u-th group where
+the ordering is defined by increasing total score.
+}
+\note{
+Generalized discrimination is calculated by \code{\link{gDiscrim}} function, generalized version
+of \code{\link{discrim}} function in \code{psychometric} package.
 }
 \examples{
 \dontrun{
 # loading 100-item medical admission test data set
 data(dataMedical)
+data <- dataMedical[, 1:100]
 
 # Difficulty/Discrimination plot of dataMedical data set
-DDplot(dataMedical)
+DDplot(data)
+
+# Difficulty/Discrimination plot of dataMedical data set
+# discrimination based on 5 groups, comparing 4th and 5th
+DDplot(data, k = 5, l = 4, u = 5)
 }
+}
+\references{
+Martinkova, P., Stepanek, L., Drabinova, A., Houdek, J., Vejrazka, M., & Stuka, C. (2017).
+Semi-real-time analyses of item characteristics for medical school admission tests.
+In: Proceedings of the 2017 Federated Conference on Computer Science and Information Systems.
+}
+\seealso{
+\code{\link{gDiscrim}}, \code{\link{discrim}}
 }
 \author{
 Adela Drabinova \cr
 Institute of Computer Science, The Czech Academy of Sciences \cr
 Faculty of Mathematics and Physics, Charles University \cr
 adela.drabinova@gmail.com \cr
+
+Lubos Stepanek \cr
+First Faculty of Medicine, Charles University \cr
+stepanek.lub@seznam.cz \cr
 
 Patricia Martinkova \cr
 Institute of Computer Science, The Czech Academy of Sciences \cr
