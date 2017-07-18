@@ -4656,9 +4656,10 @@ function(input, output, session) {
          results = t(totalscores_table_Input()),
          histogram_totalscores = totalscores_histogram_Input(),
          incProgress(0.05),
-         # correlation structure
-         corr_plot = {if (input$corr_report != "none") {corr_plot_Input()} else {""}},
-         scree_plot = {if (input$corr_report != "none") {scree_plot_Input()} else {""}},
+         # validity section
+         validity_plot = validity_plot_Input(),
+         corr_plot = {if (input$corr_report) {corr_plot_Input()} else {""}},
+         scree_plot = {if (input$corr_report) {scree_plot_Input()} else {""}},
          incProgress(0.05),
          # item analysis
          difPlot = DDplot_Input(),
@@ -4731,9 +4732,10 @@ function(input, output, session) {
                        # total scores
                        results = t(totalscores_table_Input()),
                        histogram_totalscores = totalscores_histogram_Input(),
-                       # correlation structure
-                       corr_plot = {if (input$corr_report != "none") {corr_plot_Input()} else {""}},
-                       scree_plot = {if (input$corr_report != "none") {scree_plot_Input()} else {""}},
+                       # validity section
+                       validity_plot = validity_plot_Input(),
+                       corr_plot = {if (input$corr_report) {corr_plot_Input()} else {""}},
+                       scree_plot = {if (input$corr_report) {scree_plot_Input()} else {""}},
                        # item analysis
                        difPlot = DDplot_Input(),
                        itemexam = itemanalysis_table_Input(),
