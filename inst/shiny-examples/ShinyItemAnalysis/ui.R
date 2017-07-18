@@ -49,7 +49,7 @@ ui = tagList(
                div(class = "clear"),
                div(class = "panel-footer",
                    HTML('<p> <font size = "4"> ShinyItemAnalysis </font>
-                             <font size = "2"> Test and item analysis | Version 1.2.0 </font>
+                             <font size = "2"> Test and item analysis | Version 1.2.1 </font>
                              <span style = "float:right">
                                 <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysis/" id = "tooltipweb" target="_blank"> <img src = "web_icon.png", style = "width: 25px;"> </a>
                                 <a href = "https://github.com/patriciamar/ShinyItemAnalysis/" id = "tooltipgithub" target="_blank"> <img src = "github_icon.png", style = "width: 25px;"> </a>
@@ -160,9 +160,9 @@ ui = tagList(
                       p('Current version of ', code('ShinyItemAnalysis'), ' available on ',
                         a('CRAN', href = 'https://CRAN.R-project.org/package=ShinyItemAnalysis', target = "_blank"), 'is 1.2.0.
                         Version available',
-                        a('online', href = 'https://shiny.cs.cas.cz/ShinyItemAnalysis/', target = "_blank"), 'is 1.2.0.
+                        a('online', href = 'https://shiny.cs.cas.cz/ShinyItemAnalysis/', target = "_blank"), 'is 1.2.1.
                         The newest development version available on ',
-                        a('GitHub', href = 'https://github.com/patriciamar/ShinyItemAnalysis', target = "_blank"), 'is 1.2.0.'),
+                        a('GitHub', href = 'https://github.com/patriciamar/ShinyItemAnalysis', target = "_blank"), 'is 1.2.1.'),
                       p('See also older versions: ',
                          a('0.1.0, ', href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV01/", target = "_blank"),
                          a('0.2.0, ', href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV02/", target = "_blank"),
@@ -246,8 +246,14 @@ ui = tagList(
              #%%%%%%%%%%%%%%%%%%%%%
              # DATA ###############
              #%%%%%%%%%%%%%%%%%%%%%
+
+
              tabPanel("Data",
+               tabsetPanel(
+               # ** Summary ####
+               tabPanel("Data",
                       h3("Data"),
+                      h4("Training datasets"),
                       p('For demonstration purposes, 20-item dataset ' , code("GMAT"),'
                          and dataset', code("GMATkey"),' from R ', code('difNLR'),' package are used.
                          On this page, you may select one of four datasets offered from ', code('difNLR'),
@@ -288,6 +294,7 @@ ui = tagList(
                                     "Medical 100" = "dataMedical_ShinyItemAnalysis"
                                   ),
                                   selected="GMAT_difNLR"),
+                      tags$hr(),
                       h4("Upload your own datasets"),
                       p('Main ', strong('data'), ' file should contain responses of individual students (rows) to given items
                         (columns). Header may contain item names, no row names should be included. If responses
@@ -302,11 +309,9 @@ ui = tagList(
                         should be predicted by the measurement. Again, its length needs to be the same as number of individual
                         students in the main dataset. If the criterion variable is not provided then it wont be possible to run
                         validity analysis in ', strong('Predictive validity'), ' section on ', strong('Validity'), ' page.'),
-                      p('In all data sets header should be either included or excluded. '),
-                      p('Columns of dataset are by default renamed to Item and number of particular column. If you
-                        want to keep your own names, check box below. '),
-                      p('Missing values in scored dataset are by default evaluated as 0. If you want to keep them as missing,
-                        check box below.'),
+                      p('In all data sets', strong('header'), 'should be either included or excluded. Columns of dataset are by default renamed to Item and number of particular column. If you
+                        want to keep your own names, check box ', strong('Keep items names'), 'below. Missing values in scored dataset are by default evaluated as 0. If you want to keep them as missing,
+                        check box' , strong('Keep missing values'), 'below.'),
                       fluidRow(
                         column(3, offset = 0, fileInput(
                           'data', 'Choose data (csv file)',
@@ -379,31 +384,40 @@ ui = tagList(
                         )
                         )
                       ),
-                      tags$hr(),
-                      h4("Data check"),
-                      verbatimTextOutput("headdata_print"),
-                      #DT::dataTableOutput('headdata'),
+                      br(),
+                      br()),
+               tabPanel("Data exploration",
+                      h3("Data exploration"),
+                      p("Here you can explore uploaded dataset. Rendering of tables can take some time."),
+                      h4("Main dataset"),
+                      # tableOutput("headdata_print"),
+                      # verbatimTextOutput("headdata_print"),
+                      DT::dataTableOutput('headdata'),
                       #shiny::dataTableOutput('headdata'),
                       h4("Key (correct answers)"),
-                      verbatimTextOutput("key_print"),
-                      #DT::dataTableOutput('key'),
+                      # tableOutput("key_print"),
+                      # verbatimTextOutput("key_print"),
+                      DT::dataTableOutput('key'),
                       #shiny::dataTableOutput('key'),
                       h4("Scored test"),
-                      verbatimTextOutput("sc01_print"),
-                      #DT::dataTableOutput('sc01'),
+                      # tableOutput("sc01_print"),
+                      # verbatimTextOutput("sc01_print"),
+                      DT::dataTableOutput('sc01'),
                       #shiny::dataTableOutput('sc01'),
                       h4("Group vector"),
-                      verbatimTextOutput("group_print"),
-                      #DT::dataTableOutput('group'),
+                      # tableOutput("group_print"),
+                      # verbatimTextOutput("group_print"),
+                      DT::dataTableOutput('group'),
                       #shiny::dataTableOutput('group'),
                       h4("Criterion variable vector"),
-                      verbatimTextOutput("critvar_print"),
-                      #DT::dataTableOutput('critvar'),
+                      # tableOutput("critvar_print"),
+                      # verbatimTextOutput("critvar_print"),
+                      DT::dataTableOutput('critvar'),
                       #shiny::dataTableOutput('critvar'),
                       br(),
                       br(),
                       br()
-                      ),
+                      ))),
              #%%%%%%%%%%%%%%%%%%%%%
              # SUMMARY ############
              #%%%%%%%%%%%%%%%%%%%%%
@@ -1794,10 +1808,10 @@ ui = tagList(
                                           sliderInput("ccIRTSlider_d", "d - inattention", min = 0, max = 1,
                                                       value = 1))),
 
-                                 plotOutput('ccIRT_plot'),
-                                 downloadButton("DB_ccIRT", label = "Download figure"),
-                                 plotOutput('iccIRT_plot'),
-                                 downloadButton("DB_iccIRT", label = "Download figure")
+                                 splitLayout(cellWidths = c("50%", "50%"), plotOutput('ccIRT_plot'), plotOutput('iccIRT_plot')),
+                                 splitLayout(cellWidths = c("50%", "50%"), downloadButton("DB_ccIRT", label = "Download figure"), downloadButton("DB_iccIRT", label = "Download figure")),
+                                 br(),
+                                 br()
                                  )
                                  ),
              #%%%%%%%%%%%%%%%%%%%%%
@@ -1819,10 +1833,9 @@ ui = tagList(
                                  p('For selected cut-score, blue part of histogram shows students with total score
                                    above the cut-score, grey column shows students with Total Score equal
                                    to cut-score and red part of histogram shows students below the cut-score.'),
-                                 plotOutput('histbyscoregroup0'),
-                                 downloadButton("DP_histbyscoregroup0", label = "Download figure"),
-                                 plotOutput('histbyscoregroup1'),
-                                 downloadButton("DP_histbyscoregroup1", label = "Download figure"),
+                                 splitLayout(cellWidths = c("50%", "50%"), plotOutput('histbyscoregroup0'),plotOutput('histbyscoregroup1')),
+                                 splitLayout(cellWidths = c("50%", "50%"), downloadButton("DP_histbyscoregroup0", label = "Download figure"),
+                                 downloadButton("DP_histbyscoregroup1", label = "Download figure")),
                                  br(),
                                  h4("Selected R code"),
                                  div(code('library(difNLR)'),

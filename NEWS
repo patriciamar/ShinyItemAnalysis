@@ -5,7 +5,7 @@
         ***************************************************************
 
 ---------------------------------------------------
-- Changes in ShinyItemAnalysis 1.2.1 (2017-07-10) -
+- Changes in ShinyItemAnalysis 1.2.1 (2017-07-14) -
 ---------------------------------------------------
 
 MAJOR UPDATES
@@ -13,6 +13,7 @@ MAJOR UPDATES
   o Several bugs were fixed:
      - Interpretation of regression models was fixed.
      - Interpretation of text about correlation in Predictive validity was fixed.
+     - Bug in uploading data Medical 100 was fixed.
   o ShinyItemAnalysis now used also 'data.table' package.
 
 MINOR UPDATES
