@@ -21,6 +21,7 @@ params:
   gr: NA
   results: NA
   histogram_totalscores: NA
+  validity_plot: NA
   corr_plot: NA
   scree_plot: NA
   difPlot: NA
@@ -101,6 +102,11 @@ if (any(params$corr_plot != "")) {
 if (any(params$corr_plot != "")) {
   params$scree_plot + ggtitle("Scree plot") + theme(text = element_text(size = 10), plot.title = element_text(face = "bold"))
 }
+```
+
+**Predictive validity**
+```{r validity-plot, echo=FALSE, fig.height = 4.5, fig.width = 11}
+params$validity_plot
 ```
 
 \pagebreak

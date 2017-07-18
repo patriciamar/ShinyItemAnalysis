@@ -2858,10 +2858,8 @@ ui = tagList(
                            distractors plots for each item and multinomial regression plots for each item. "),
                          fluidRow(
                            column(4,
-                                  radioButtons("corr_report", "Correlation structure",
-                                               c("None" = "none",
-                                                 "Corrplot + Screeplot" = "corrplotscreeplot"),
-                                               selected = "none")
+                                  p(strong("Correlation structure selection")),
+                                  checkboxInput("corr_report", "Correlation structure + Screeplot", FALSE)
                            )
                          ),
                          fluidRow(
