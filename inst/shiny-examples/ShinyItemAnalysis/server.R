@@ -588,12 +588,22 @@ function(input, output, session) {
     out
   })
 
+  # ** Double slider inicialization for DD plot report ######
+  observe({
+    val <- input$DDplotNumGroupsSlider_report
+    updateSliderInput(session, "DDplotRangeSlider_report",
+                      min = 1,
+                      max = val,
+                      step = 1,
+                      value = c(1, min(3, val)))
+  })
+
   groupPresent<-reactive({
-    any(dataset$group != "missing")
+    (any(dataset$group != "missing") | is.null(dataset$group))
   })
 
   criterionPresent<-reactive({
-    any(dataset$criterion_variable != "missing")
+    (any(dataset$criterion_variable != "missing") | is.null(dataset$criterion_variable))
   })
 
 
@@ -612,7 +622,8 @@ function(input, output, session) {
            corr_plot = {if (input$corr_report) {corr_plot_Input()} else {""}},
            scree_plot = {if (input$corr_report) {scree_plot_Input()} else {""}},
            isCriterionPresent = criterionPresent(),
-           validity_plot = {if (criterionPresent()) {validity_plot_Input()} else {""}},
+           validity_check = input$predict_report,
+           validity_plot = {if (input$predict_report) {if (criterionPresent()) {validity_plot_Input()} else {""}}},
            incProgress(0.05),
            # item analysis
            difPlot = DDplot_Input(),
@@ -691,7 +702,8 @@ function(input, output, session) {
                        corr_plot = {if (input$corr_report) {corr_plot_Input()} else {""}},
                        scree_plot = {if (input$corr_report) {scree_plot_Input()} else {""}},
                        isCriterionPresent = criterionPresent(),
-                       validity_plot = {if (criterionPresent()) {validity_plot_Input()} else {""}},
+                       validity_check = input$predict_report,
+                       validity_plot = {if (input$predict_report) {if (criterionPresent()) {validity_plot_Input()} else {""}}},
                        # item analysis
                        difPlot = DDplot_Input(),
                        itemexam = itemanalysis_table_Input(),
