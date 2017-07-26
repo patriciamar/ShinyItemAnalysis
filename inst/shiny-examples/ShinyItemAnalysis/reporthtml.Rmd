@@ -29,6 +29,7 @@ params:
   corr_plot: NA
   scree_plot: NA
   isCriterionPresent: NA
+  validity_check: NA
   validity_plot: NA
   difPlot: NA
   hist_distractor_by_group: NA
@@ -110,7 +111,7 @@ kable(table, align = 'c')
 
 **************
 
-# Validity
+`r if (any(params$corr_plot != "") | params$validity_check) {"# Validity"}`
 
 `r if (any(params$corr_plot != "")) {"## Correlation structure"}`
 
@@ -130,13 +131,13 @@ if (any(params$corr_plot != "")) {
 }
 ```
 
-## Predictive validity
+`r if (params$validity_check) {"## Predictive validity"}`
 
-`r if(!(params$isCriterionPresent)){"Criterion variable vector is not present. Predictive validity analysis could not have been generated!"}`
+`r if(!(params$isCriterionPresent) & params$validity_check){"Criterion variable vector is not present. Predictive validity analysis could not have been generated!"}`
 
 ```{r validity-plot, echo = FALSE, results = "hide", fig.height = 4, fig.align = 'center'}
-if(params$isCriterionPresent){
-  params$validity_plot
+if(params$isCriterionPresent & params$validity_check){
+  params$validity_plot + theme(text = element_text(size = 10))
 }
 ```
 
@@ -352,7 +353,7 @@ if (params$logregCheck) {
 }
 ```
 
-`r if(params$isGroupPresent & params$multiCheck) {"## DDF detection Using multinomial regression"}`
+`r if(params$isGroupPresent & params$multiCheck) {"## DDF detection using multinomial regression"}`
 
 `r if(params$isGroupPresent & params$multiCheck) {"Differential Distractor Functioning (DDF) occurs when people from different groups but with the same knowledge have different probability of selecting at least one distractor choice. DDF is here examined by multinomial log-linear regression model with Z-score and group membership as covariates. "}`
 
@@ -374,7 +375,6 @@ if (params$multiCheck) {
 }
 ```
 
-\pagebreak
 
 **************
 

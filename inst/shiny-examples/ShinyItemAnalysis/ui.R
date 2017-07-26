@@ -1803,16 +1803,16 @@ ui = tagList(
                                    strong('c'), '(guessing) and ', strong('d'), '(inattention). By constraining a = 1, c = 0, d = 1 you get
                                    Rasch model. With option c = 0 and d = 1 you get 2PL model and with option d = 1 3PL model.'),
                                  fluidRow(
-                                   column(2, offset = 0,
+                                   column(12,
+                                          splitLayout(
                                           sliderInput("ccIRTSlider_a", "a - discrimination", min = -4, max = 4,
-                                                      value = 1),
+                                                      value = 1, step = 0.1),
                                           sliderInput("ccIRTSlider_b", "b - difficulty", min = -4, max = 4,
-                                                      value = 0)),
-                                   column(2, offset = 1,
+                                                      value = 0, step = 0.1),
                                           sliderInput("ccIRTSlider_c", "c - guessing", min = 0, max = 1,
-                                                      value = 0),
+                                                      value = 0, step = 0.01),
                                           sliderInput("ccIRTSlider_d", "d - inattention", min = 0, max = 1,
-                                                      value = 1))),
+                                                      value = 1, step = 0.01)))),
 
                                  splitLayout(cellWidths = c("50%", "50%"), plotOutput('ccIRT_plot'), plotOutput('iccIRT_plot')),
                                  splitLayout(cellWidths = c("50%", "50%"), downloadButton("DB_ccIRT", label = "Download figure"), downloadButton("DB_iccIRT", label = "Download figure")),
@@ -2858,18 +2858,36 @@ ui = tagList(
                            distractors plots for each item and multinomial regression plots for each item. "),
                          fluidRow(
                            column(4,
-                                  p(strong("Correlation structure selection")),
-                                  checkboxInput("corr_report", "Correlation structure + Screeplot", FALSE)
+                                  p(strong("Validity")),
+                                  checkboxInput("corr_report", "Correlation structure", FALSE),
+                                  checkboxInput("predict_report", "Predictive validity", FALSE)
                            )
                          ),
                          fluidRow(
                            conditionalPanel(condition = "input.customizeCheck",
-                                            column(1, p(strong("Distractors plot")),
-                                                   radioButtons('type_combinations_distractor_report', 'Type',
-                                                                list("Combinations", "Distractors")
-                                                   )
-                                            )
-                           )
+                                            column(6,
+                                                   p(strong("Difficulty/discrimination plot")),
+                                                   splitLayout(sliderInput('DDplotNumGroupsSlider_report','Number of groups:',
+                                                                           min   = 1,
+                                                                           max   = 5,
+                                                                           value = 3),
+                                                               sliderInput("DDplotRangeSlider_report", "Which two groups to compare:",
+                                                                           min = 1,
+                                                                           max = 3,
+                                                                           step = 1,
+                                                                           value = c(1, 3)))))
+                         ),
+                         fluidRow(
+                           conditionalPanel(condition = "input.customizeCheck",
+                                            column(6,
+                                                   p(strong("Distractors plots")),
+                                                   splitLayout(radioButtons('type_combinations_distractor_report',
+                                                                            'Type',
+                                                                            list("Combinations", "Distractors")),
+                                                               sliderInput('distractorGroupSlider','Number of groups:',
+                                                                             min   = 1,
+                                                                             max   = 5,
+                                                                             value = 3))))
                          ),
                          fluidRow(
                            column(4,
@@ -2958,8 +2976,8 @@ ui = tagList(
                            " model, you can first visit ", strong("IRT models"), "section and ", strong("3PL"), " subsection."),
                          #p(strong("Warning: "), "Download of reports takes some time. Please, be patient."),
                          fluidRow(
-                           column(width = 4,
-                             splitLayout(
+                           column(width = 5,
+                             splitLayout(cellWidths = c("45%", "55%"),
                                actionButton("generate", "Generate report"),
                                uiOutput("download_report_button")
                              )
