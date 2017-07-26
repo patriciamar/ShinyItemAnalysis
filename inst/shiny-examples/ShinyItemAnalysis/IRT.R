@@ -1039,7 +1039,7 @@ ccIRT_plot_Input <- reactive({
     return(c + (d - c)/(1 + exp(-a*(theta - b))))
   }
 
-  g <- ggplot(data = data.frame(x = 0), mapping = aes(x = x)) +
+  g <- ggplot(data = data.frame(x = -4:4), mapping = aes(x = x)) +
     stat_function(fun = ccirt, args = list(a = a, b = b, c = c, d = d),
                   color = "red") +
     xlim(-4, 4) +
@@ -1058,8 +1058,19 @@ ccIRT_plot_Input <- reactive({
 
 })
 
-output$ccIRT_plot <- renderPlot({
-  ccIRT_plot_Input()
+output$ccIRT_plot <- renderPlotly({
+  # output$ccIRT_plot <- renderPlot({
+  g <- ccIRT_plot_Input()
+
+  p <- ggplotly(g)
+
+  text <- gsub("y", "Probability", p$x$data[[1]]$text)
+  text <- gsub("x", "Ability", text)
+
+  p$x$data[[1]]$text <- text
+
+  p %>% config(displayModeBar = F)
+  # ccIRT_plot_Input()
 })
 
 output$DB_ccIRT <- downloadHandler(
@@ -1083,7 +1094,7 @@ iccIRT_plot_Input <- reactive({
     return((d - c)*a^2*exp(a*(theta - b))/(1 + exp(a*(theta - b)))^2)
   }
 
-  g <- ggplot(data = data.frame(x = 0), mapping = aes(x = x)) +
+  g <- ggplot(data = data.frame(x = -4:4), mapping = aes(x = x)) +
     stat_function(fun = iccirt, args = list(a = a, b = b, c = c, d = d),
                   color = "red") +
     xlim(-4, 4) +
@@ -1101,8 +1112,19 @@ iccIRT_plot_Input <- reactive({
   g
 })
 
-output$iccIRT_plot <- renderPlot({
-  iccIRT_plot_Input()
+output$iccIRT_plot <- renderPlotly({
+  # output$iccIRT_plot <- renderPlot({
+  g <- iccIRT_plot_Input()
+
+  p <- ggplotly(g)
+
+  text <- gsub("y", "Probability", p$x$data[[1]]$text)
+  text <- gsub("x", "Ability", text)
+
+  p$x$data[[1]]$text <- text
+
+  p %>% config(displayModeBar = F)
+  # iccIRT_plot_Input()
 })
 
 output$DB_iccIRT <- downloadHandler(

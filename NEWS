@@ -15,10 +15,11 @@ MAJOR UPDATES
      - Bug when creating report for uploaded data was  fixed.
      - Bug when creating report for data without predictive
        criterion or DIF group was fixed.
+  o ShinyItemAnalysis now uses 'plotly' package!
 
 MINOR UPDATES
 
-  o Design and options of Report page were updated.
+  o Design and options of 'Report' page were updated.
   o Layout of IRT curves training page was mildly changed.
 
 

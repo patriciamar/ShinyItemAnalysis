@@ -3,6 +3,7 @@
 #%%%%%%%%%%%%%%%%%%%%%
 
 require(DT)
+require(plotly)
 require(shinyjs)
 
 #%%%%%%%%%%%%%%%%%%%%%
@@ -208,6 +209,7 @@ ui = tagList(
                       code('library(moments)'), br(),
                       code('library(msm)'), br(),
                       code('library(nnet)'), br(),
+                      code('library(plotly)'), br(),
                       code('library(psych)'), br(),
                       code('library(psychometric)'), br(),
                       code('library(reshape2)'), br(),
@@ -1813,9 +1815,13 @@ ui = tagList(
                                                       value = 0, step = 0.01),
                                           sliderInput("ccIRTSlider_d", "d - inattention", min = 0, max = 1,
                                                       value = 1, step = 0.01)))),
-
-                                 splitLayout(cellWidths = c("50%", "50%"), plotOutput('ccIRT_plot'), plotOutput('iccIRT_plot')),
-                                 splitLayout(cellWidths = c("50%", "50%"), downloadButton("DB_ccIRT", label = "Download figure"), downloadButton("DB_iccIRT", label = "Download figure")),
+                                 br(),
+                                 div(plotlyOutput('ccIRT_plot', width = "100%"), align = "center"),
+                                 downloadButton("DB_ccIRT", label = "Download figure"),
+                                 div(plotlyOutput('iccIRT_plot', width = "100%"), align = "center"),
+                                 downloadButton("DB_iccIRT", label = "Download figure"),
+                                 # splitLayout(cellWidths = c("50%", "50%"), plotOutput('ccIRT_plot'), plotOutput('iccIRT_plot')),
+                                 # splitLayout(cellWidths = c("50%", "50%"), downloadButton("DB_ccIRT", label = "Download figure"), downloadButton("DB_iccIRT", label = "Download figure")),
                                  br(),
                                  br()
                                  )

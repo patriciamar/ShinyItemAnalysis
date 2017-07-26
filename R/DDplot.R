@@ -30,7 +30,7 @@
 #'
 #' Lubos Stepanek \cr
 #' First Faculty of Medicine, Charles University \cr
-#' stepanek.lub@seznam.cz \cr
+#' lubomir.stepanek@lf1.cuni.cz \cr
 #'
 #' Patricia Martinkova \cr
 #' Institute of Computer Science, The Czech Academy of Sciences \cr
