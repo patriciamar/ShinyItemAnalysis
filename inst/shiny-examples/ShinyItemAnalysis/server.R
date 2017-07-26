@@ -589,76 +589,83 @@ function(input, output, session) {
   })
 
   groupPresent<-reactive({
-    if (length(unlist(DIF_groups())) > 1) {
-      groupLogical = TRUE
-    } else {
-      groupLogical = FALSE
-    }
-    groupLogical
+    # if (length(unlist(DIF_groups())) > 1) {
+    #   groupLogical = TRUE
+    # } else {
+    #   groupLogical = FALSE
+    # }
+    # groupLogical
+    any(DIF_groups() != "missing")
   })
 
+  criterionPresent<-reactive({
+    any(criterion_variable() != "missing")
+  })
 
 
   observeEvent(input$generate, {
     withProgress(message = "Creating content", value = 0, style = "notification", {
-    list(a = test_answers(),
-         k = test_key(),
-         # total scores
-         incProgress(0.05),
-         results = t(totalscores_table_Input()),
-         histogram_totalscores = totalscores_histogram_Input(),
-         incProgress(0.05),
-         # validity section
-         validity_plot = validity_plot_Input(),
-         corr_plot = {if (input$corr_report) {corr_plot_Input()} else {""}},
-         scree_plot = {if (input$corr_report) {scree_plot_Input()} else {""}},
-         incProgress(0.05),
-         # item analysis
-         difPlot = DDplot_Input(),
-         itemexam = itemanalysis_table_Input(),
-         incProgress(0.05),
-         # distractors
-         hist_distractor_by_group = distractor_histogram_Input(),
-         graf = report_distractor_plot(),
-         incProgress(0.1),
-         # regression
-         logreg = logreg_plot_Input(),
-         zlogreg = z_logreg_plot_Input(),
-         zlogreg_irt = z_logreg_irt_plot_Input(),
-         nlsplot = nlr_plot_Input(),
-         multiplot = multiplotReportInput(),
-         incProgress(0.15),
-         # irt
-         wrightMap = oneparamirtWrightMapReportInput_mirt(),
-         irt_type = irt_typeInput(),
-         irt = irtInput(),
-         irtiic = irtiicInput(),
-         irttif = irttifInput(),
-         irtcoef = irtcoefInput(),
-         irtfactor = irtfactorInput(),
-         incProgress(0.25),
-         # DIF
-         isGroupPresent = groupPresent(),
-         histCheck = input$histCheck,
-         resultsgroup = {if (groupPresent()) {if (input$histCheck) {resultsgroupInput()}}},
-         histbyscoregroup0 = {if (groupPresent()) {if (input$histCheck) {histbyscoregroup0Input()}}},
-         histbyscoregroup1 = {if (groupPresent()) {if (input$histCheck) {histbyscoregroup1Input()}}},
-         deltaplotCheck = input$deltaplotCheck,
-         deltaplot = {if (groupPresent()) {if (input$deltaplotCheck) {deltaplotInput_report()}}},
-         DP_text_normal = {if (groupPresent()) {if (input$deltaplotCheck) {deltaGpurn_report()}}},
-         logregCheck = input$logregCheck,
-         DIF_logistic_plot = {if (groupPresent()) {if (input$logregCheck) {DIF_logistic_plotReport()}}},
-         DIF_logistic_print = {if (groupPresent()) {if (input$logregCheck) {model_DIF_logistic_print_report()}}},
-         #plot_DIF_logistic = {if (groupPresent()) {plot_DIF_logisticInput()}},
-         #plot_DIF_logistic_IRT_Z = {if (groupPresent()) {plot_DIF_logistic_IRT_ZInput()}},
-         #plot_DIF_NLR = {if (groupPresent()) {plot_DIF_NLRInput()}},
-         #plot_DIF_IRT_Lord = {if (groupPresent()) {plot_DIF_IRT_LordInput()}},
-         #plot_DIF_IRT_Raju = {if (groupPresent()) {plot_DIF_IRT_RajuInput()}},
-         multiCheck = input$multiCheck,
-         model_DDF_print = {if (groupPresent()) {if (input$multiCheck) {model_DDF_print_report()}}},
-         plot_DDFReportInput = {if (groupPresent()) {if (input$multiCheck) {plot_DDFReportInput()}}},
-         incProgress(0.3)
-    )
+      list(a = test_answers(),
+           k = test_key(),
+           # total scores
+           incProgress(0.05),
+           results = t(totalscores_table_Input()),
+           histogram_totalscores = totalscores_histogram_Input(),
+           # standard scores
+           standardscores_table = scores_tables_Input(),
+           incProgress(0.05),
+           # validity section
+           corr_plot = {if (input$corr_report) {corr_plot_Input()} else {""}},
+           scree_plot = {if (input$corr_report) {scree_plot_Input()} else {""}},
+           isCriterionPresent = criterionPresent(),
+           validity_plot = {if (criterionPresent()) {validity_plot_Input()} else {""}},
+           incProgress(0.05),
+           # item analysis
+           difPlot = DDplot_Input(),
+           itemexam = itemanalysis_table_Input(),
+           incProgress(0.05),
+           # distractors
+           hist_distractor_by_group = distractor_histogram_Input(),
+           graf = report_distractor_plot(),
+           incProgress(0.1),
+           # regression
+           logreg = logreg_plot_Input(),
+           zlogreg = z_logreg_plot_Input(),
+           zlogreg_irt = z_logreg_irt_plot_Input(),
+           nlsplot = nlr_plot_Input(),
+           multiplot = multiplotReportInput(),
+           incProgress(0.15),
+           # irt
+           wrightMap = oneparamirtWrightMapReportInput_mirt(),
+           irt_type = irt_typeInput(),
+           irt = irtInput(),
+           irtiic = irtiicInput(),
+           irttif = irttifInput(),
+           irtcoef = irtcoefInput(),
+           irtfactor = irtfactorInput(),
+           incProgress(0.25),
+           # DIF
+           isGroupPresent = groupPresent(),
+           histCheck = input$histCheck,
+           resultsgroup = {if (groupPresent()) {if (input$histCheck) {resultsgroupInput()}}},
+           histbyscoregroup0 = {if (groupPresent()) {if (input$histCheck) {histbyscoregroup0Input()}}},
+           histbyscoregroup1 = {if (groupPresent()) {if (input$histCheck) {histbyscoregroup1Input()}}},
+           deltaplotCheck = input$deltaplotCheck,
+           deltaplot = {if (groupPresent()) {if (input$deltaplotCheck) {deltaplotInput_report()}}},
+           DP_text_normal = {if (groupPresent()) {if (input$deltaplotCheck) {deltaGpurn_report()}}},
+           logregCheck = input$logregCheck,
+           DIF_logistic_plot = {if (groupPresent()) {if (input$logregCheck) {DIF_logistic_plotReport()}}},
+           DIF_logistic_print = {if (groupPresent()) {if (input$logregCheck) {model_DIF_logistic_print_report()}}},
+           #plot_DIF_logistic = {if (groupPresent()) {plot_DIF_logisticInput()}},
+           #plot_DIF_logistic_IRT_Z = {if (groupPresent()) {plot_DIF_logistic_IRT_ZInput()}},
+           #plot_DIF_NLR = {if (groupPresent()) {plot_DIF_NLRInput()}},
+           #plot_DIF_IRT_Lord = {if (groupPresent()) {plot_DIF_IRT_LordInput()}},
+           #plot_DIF_IRT_Raju = {if (groupPresent()) {plot_DIF_IRT_RajuInput()}},
+           multiCheck = input$multiCheck,
+           model_DDF_print = {if (groupPresent()) {if (input$multiCheck) {model_DDF_print_report()}}},
+           plot_DDFReportInput = {if (groupPresent()) {if (input$multiCheck) {plot_DDFReportInput()}}},
+           incProgress(0.3)
+      )
     })
 
     output$download_report_button <- renderUI({
@@ -684,10 +691,13 @@ function(input, output, session) {
                        # total scores
                        results = t(totalscores_table_Input()),
                        histogram_totalscores = totalscores_histogram_Input(),
+                       # standard scores
+                       standardscores_table = scores_tables_Input(),
                        # validity section
-                       validity_plot = validity_plot_Input(),
                        corr_plot = {if (input$corr_report) {corr_plot_Input()} else {""}},
                        scree_plot = {if (input$corr_report) {scree_plot_Input()} else {""}},
+                       isCriterionPresent = criterionPresent(),
+                       validity_plot = {if (criterionPresent()) {validity_plot_Input()} else {""}},
                        # item analysis
                        difPlot = DDplot_Input(),
                        itemexam = itemanalysis_table_Input(),
