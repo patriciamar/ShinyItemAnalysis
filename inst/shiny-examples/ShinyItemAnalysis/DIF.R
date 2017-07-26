@@ -88,7 +88,7 @@ output$histbyscoregroup1 <- renderPlot ({
 
 output$DP_histbyscoregroup1 <- downloadHandler(
   filename =  function() {
-    paste("plot", input$name, ".png", sep = "")
+    paste("fig_HistogramForFocalGroup.png", sep = "")
   },
   content = function(file) {
     ggsave(file, plot = histbyscoregroup1Input(), device = "png",
@@ -146,7 +146,7 @@ output$histbyscoregroup0 <- renderPlot ({
 
 output$DP_histbyscoregroup0 <- downloadHandler(
   filename =  function() {
-    paste("plot", input$name, ".png", sep = "")
+    paste("fig_HistogramForRefGroup.png", sep = "")
   },
   content = function(file) {
     ggsave(file, plot = histbyscoregroup0Input(), device = "png",
@@ -313,7 +313,7 @@ output$deltaplot <- renderPlot({
 
 output$DP_deltaplot <- downloadHandler(
   filename =  function() {
-    paste("plot", input$name, ".png", sep = "")
+    paste("fig_DeltaPlot.png", sep = "")
   },
   content = function(file) {
     ggsave(file, plot = deltaplotInput(), device = "png",
@@ -503,7 +503,7 @@ output$plot_DIF_logistic <- renderPlot({
 
 output$DP_plot_DIF_logistic <- downloadHandler(
   filename =  function() {
-    paste("plot", input$name, ".png", sep = "")
+    paste("fig_DifLogisticRegression_",item_names()[input$diflogSlider],".png", sep = "")
   },
   content = function(file) {
     ggsave(file, plot = plot_DIF_logisticInput(), device = "png",
@@ -627,7 +627,7 @@ output$plot_DIF_logistic_IRT_Z <- renderPlot({
 
 output$DP_plot_DIF_logistic_IRT_Z <- downloadHandler(
   filename =  function() {
-    paste("plot", input$name, ".png", sep = "")
+    paste("fig_DIFLogisticIRTZ_",item_names()[input$diflog_irtSlider],".png", sep = "")
   },
   content = function(file) {
     ggsave(file, plot = plot_DIF_logistic_IRT_ZInput(), device = "png",
@@ -740,7 +740,7 @@ output$plot_DIF_NLR <- renderPlot({
 # ** Plot download ######
 output$DP_plot_DIF_NLR <- downloadHandler(
   filename =  function() {
-    paste("plot", input$name, ".png", sep = "")
+    paste("fig_DIFNonlinear_",item_names()[input$difnlrSlider],".png", sep = "")
   },
   content = function(file) {
     ggsave(file, plot = plot_DIF_NLRInput(), device = "png",
@@ -843,7 +843,7 @@ output$plot_DIF_IRT_Lord <- renderPlot({
 
 output$DP_plot_DIF_IRT_Lord <- downloadHandler(
   filename =  function() {
-    paste("plot", input$name, ".png", sep = "")
+    paste("fig_DIFIRTLord_",item_names()[input$difirt_lord_itemSlider],".png", sep = "")
   },
   content = function(file) {
     ggsave(file, plot = plot_DIF_IRT_LordInput(), device = "png",
@@ -1028,7 +1028,7 @@ output$plot_DIF_IRT_Raju <- renderPlot({
 
 output$DP_plot_DIF_IRT_Raju <- downloadHandler(
   filename =  function() {
-    paste("plot", input$name, ".png", sep = "")
+    paste("fig_DIFIRTRaju_",item_names()[input$difirt_raju_itemSlider],".png", sep = "")
   },
   content = function(file) {
     ggsave(file, plot = plot_DIF_IRT_RajuInput(), device = "png",
@@ -1255,7 +1255,7 @@ output$plot_DDF <- renderPlot({
 # ** Plot download ######
 output$DP_plot_DDF <- downloadHandler(
   filename =  function() {
-    paste("plot", input$name, ".png", sep = "")
+    paste("fig_DDF_",item_names()[input$ddfSlider],".png", sep = "")
   },
   content = function(file) {
     ggsave(file, plot = plot_DDFInput(), device = "png",
