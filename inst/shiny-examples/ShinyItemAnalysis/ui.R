@@ -1803,16 +1803,16 @@ ui = tagList(
                                    strong('c'), '(guessing) and ', strong('d'), '(inattention). By constraining a = 1, c = 0, d = 1 you get
                                    Rasch model. With option c = 0 and d = 1 you get 2PL model and with option d = 1 3PL model.'),
                                  fluidRow(
-                                   column(2, offset = 0,
+                                   column(12,
+                                          splitLayout(
                                           sliderInput("ccIRTSlider_a", "a - discrimination", min = -4, max = 4,
-                                                      value = 1),
+                                                      value = 1, step = 0.1),
                                           sliderInput("ccIRTSlider_b", "b - difficulty", min = -4, max = 4,
-                                                      value = 0)),
-                                   column(2, offset = 1,
+                                                      value = 0, step = 0.1),
                                           sliderInput("ccIRTSlider_c", "c - guessing", min = 0, max = 1,
-                                                      value = 0),
+                                                      value = 0, step = 0.01),
                                           sliderInput("ccIRTSlider_d", "d - inattention", min = 0, max = 1,
-                                                      value = 1))),
+                                                      value = 1, step = 0.01)))),
 
                                  splitLayout(cellWidths = c("50%", "50%"), plotOutput('ccIRT_plot'), plotOutput('iccIRT_plot')),
                                  splitLayout(cellWidths = c("50%", "50%"), downloadButton("DB_ccIRT", label = "Download figure"), downloadButton("DB_iccIRT", label = "Download figure")),

@@ -11,8 +11,15 @@
 MAJOR UPDATES
 
   o Design of reports was edited.
+  o Several bugs were fixed:
+     - Bug when creating report for uploaded data was  fixed.
+     - Bug when creating report for data without predictive
+       criterion or DIF group was fixed.
 
 MINOR UPDATES
+
+  o Design and options of Report page were updated.
+  o Layout of IRT curves training page was mildly changed.
 
 
 ---------------------------------------------------
