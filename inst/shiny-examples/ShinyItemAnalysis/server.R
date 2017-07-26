@@ -75,6 +75,7 @@ function(input, output, session) {
   dataset$answers <- NULL
   dataset$key <- NULL
   dataset$group <- NULL
+  dataset$criterion_variable <- NULL
 
   #%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   ### HITS COUNTER ######
@@ -103,8 +104,6 @@ function(input, output, session) {
       do.call(data, args = list(paste0(datasetName, "test"), package = packageName))
       test = get(paste0(datasetName, "test"))
 
-      # do.call(data, args = list(paste0(datasetName, "key"), package = packageName))
-      # key = get(paste0(datasetName, "key"))
       key = test_key()
 
       test = test[, 1:length(key)]
@@ -188,7 +187,7 @@ function(input, output, session) {
       }
       group = dataset$group
     }
-    group
+    unlist(group)
   })
 
   # LOAD CRITERION VARIABLE ######
@@ -210,11 +209,11 @@ function(input, output, session) {
 
       dataset$criterion_variable = criterion_variable
 
-      validate(
-        need(dataset$criterion_variable != "missing",
-             "Sorry, for this dataset criterion variable is not available!"),
-        errorClass = "warning_criterion_variable_missing"
-      )
+      validate(need(dataset$criterion_variable != "missing",
+                    "Sorry, for this dataset criterion variable is not available!"),
+               errorClass = "warning_criterion_variable_missing")
+
+
     } else {
       if (length(dataset$criterion_variable) == 1){
         if (dataset$criterion_variable == "missing"){
@@ -233,6 +232,7 @@ function(input, output, session) {
       }
       criterion_variable = dataset$criterion_variable
     }
+
     unlist(criterion_variable)
   })
 
@@ -589,17 +589,11 @@ function(input, output, session) {
   })
 
   groupPresent<-reactive({
-    # if (length(unlist(DIF_groups())) > 1) {
-    #   groupLogical = TRUE
-    # } else {
-    #   groupLogical = FALSE
-    # }
-    # groupLogical
-    any(DIF_groups() != "missing")
+    any(dataset$group != "missing")
   })
 
   criterionPresent<-reactive({
-    any(criterion_variable() != "missing")
+    any(dataset$criterion_variable != "missing")
   })
 
 

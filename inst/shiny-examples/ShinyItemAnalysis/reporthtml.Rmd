@@ -135,7 +135,9 @@ if (any(params$corr_plot != "")) {
 `r if(!(params$isCriterionPresent)){"Criterion variable vector is not present. Predictive validity analysis could not have been generated!"}`
 
 ```{r validity-plot, echo = FALSE, results = "hide", fig.height = 4, fig.align = 'center'}
-params$validity_plot
+if(params$isCriterionPresent){
+  params$validity_plot
+}
 ```
 
 
@@ -278,7 +280,7 @@ if (params$irt_type != "none") {
 
 `r if(any(c(params$histCheck, params$deltaplotCheck, params$logregCheck, params$multiCheck))) {"# DIF/Fairness analysis"}`
 
-`r if(any(c(params$histCheck, params$deltaplotCheck, params$logregCheck, params$multiCheck)) & !params$isGroupPresent){"Group vector is not present. DIF and DDF analysis could have not been generated!"}`
+`r if(any(c(params$histCheck, params$deltaplotCheck, params$logregCheck, params$multiCheck)) & !params$isGroupPresent){"Group vector is not present. DIF and DDF analyses could have not been generated!"}`
 
 `r if(params$isGroupPresent & params$histCheck) {"## Total scores by group"}`
 
