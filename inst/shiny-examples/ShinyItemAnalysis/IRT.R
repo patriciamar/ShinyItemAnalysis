@@ -22,7 +22,7 @@ output$rasch_mirt <- renderPlot({
 
 output$DP_rasch_mirt <- downloadHandler(
   filename =  function() {
-    paste("plot", input$name, ".png", sep = "")
+    paste("fig_RaschItemCharacteristicCurves.png", sep = "")
   },
   content = function(file) {
     png(file, height = 800, width = 1200, res = 100)
@@ -43,7 +43,7 @@ output$raschiic_mirt <- renderPlot({
 
 output$DP_raschiic_mirt <- downloadHandler(
   filename =  function() {
-    paste("plot", input$name, ".png", sep = "")
+    paste("fig_RaschItemInformationCurves.png", sep = "")
   },
   content = function(file) {
     png(file, height = 800, width = 1200, res = 100)
@@ -64,7 +64,7 @@ output$raschtif_mirt <- renderPlot({
 
 output$DP_raschtif_mirt <- downloadHandler(
   filename =  function() {
-    paste("plot", input$name, ".png", sep = "")
+    paste("fig_RaschTestInformationFunction.png", sep = "")
   },
   content = function(file) {
     png(file, height = 800, width = 1200, res = 100)
@@ -150,7 +150,7 @@ output$raschFactor_mirt <- renderPlot({
 
 output$DP_raschFactor_mirt <- downloadHandler(
   filename =  function() {
-    paste("plot", input$name, ".png", sep = "")
+    paste("fig_RaschFactorVsStandardized.png", sep = "")
   },
   content = function(file) {
     ggsave(file, plot = raschFactorInput_mirt(), device = "png",
@@ -176,7 +176,7 @@ output$raschWrightMap_mirt<- renderPlot({
 
 output$DP_raschWM_mirt <- downloadHandler(
   filename =  function() {
-    paste("plot", input$name, ".png", sep = "")
+    paste("fig_RaschWrightMap.png", sep = "")
   },
   content = function(file) {
     fs <- as.vector(fscores(rasch_model_mirt()))
@@ -214,7 +214,7 @@ output$oneparamirt_mirt <- renderPlot({
 
 output$DP_oneparamirt_mirt <- downloadHandler(
   filename =  function() {
-    paste("plot", input$name, ".png", sep = "")
+    paste("fig_1PLItemCharactersticCurves.png", sep = "")
   },
   content = function(file) {
     png(file, height = 800, width = 1200, res = 100)
@@ -234,7 +234,7 @@ output$oneparamirtiic_mirt <- renderPlot({
 
 output$DP_oneparamirtiic_mirt <- downloadHandler(
   filename =  function() {
-    paste("plot", input$name, ".png", sep = "")
+    paste("fig_1PLItemInformationCurves.png", sep = "")
   },
   content = function(file) {
     png(file, height = 800, width = 1200, res = 100)
@@ -254,7 +254,7 @@ output$oneparamirttif_mirt <- renderPlot({
 
 output$DP_oneparamirttif_mirt <- downloadHandler(
   filename =  function() {
-    paste("plot", input$name, ".png", sep = "")
+    paste("fig_1PLTestInformationFunction.png", sep = "")
   },
   content = function(file) {
     png(file, height = 800, width = 1200, res = 100)
@@ -353,7 +353,7 @@ output$oneparamirtFactor_mirt <- renderPlot({
 
 output$DP_oneparamirtFactor_mirt <- downloadHandler(
   filename =  function() {
-    paste("plot", input$name, ".png", sep = "")
+    paste("fig_1PLFactorVsStandardized.png", sep = "")
   },
   content = function(file) {
     ggsave(file, plot = oneparamirtFactorInput_mirt(), device = "png",
@@ -399,7 +399,7 @@ output$oneparamirtWrightMap_mirt<- renderPlot({
 
 output$DP_oneparamirtWM_mirt <- downloadHandler(
   filename =  function() {
-    paste("plot", input$name, ".png", sep = "")
+    paste("fig_1PLWrightMap.png", sep = "")
   },
   content = function(file) {
     fit <- one_param_irt_mirt()
@@ -435,7 +435,7 @@ output$twoparamirt_mirt <- renderPlot({
 
 output$DP_twoparamirt_mirt <- downloadHandler(
   filename =  function() {
-    paste("plot", input$name, ".png", sep = "")
+    paste("fig_2PLItemCharacteristicCurves.png", sep = "")
   },
   content = function(file) {
     png(file, height = 800, width = 1200, res = 100)
@@ -455,7 +455,7 @@ output$twoparamirtiic_mirt <- renderPlot({
 
 output$DP_twoparamirtiic_mirt <- downloadHandler(
   filename =  function() {
-    paste("plot", input$name, ".png", sep = "")
+    paste("fig_2PLItemInformationCurves.png", sep = "")
   },
   content = function(file) {
     png(file, height = 800, width = 1200, res = 100)
@@ -475,7 +475,7 @@ output$twoparamirttif_mirt <- renderPlot({
 
 output$DP_twoparamirttif_mirt <- downloadHandler(
   filename =  function() {
-    paste("plot", input$name, ".png", sep = "")
+    paste("fig_2PLTestInformationFunction.png", sep = "")
   },
   content = function(file) {
     png(file, height = 800, width = 1200, res = 100)
@@ -572,7 +572,7 @@ output$twoparamirtFactor_mirt <- renderPlot({
 
 output$DP_twoparamirtFactor_mirt <- downloadHandler(
   filename =  function() {
-    paste("plot", input$name, ".png", sep = "")
+    paste("fig_2PLFactorVsStandardized.png", sep = "")
   },
   content = function(file) {
     ggsave(file, plot = twoparamirtFactorInput_mirt(), device = "png",
@@ -603,7 +603,7 @@ output$threeparamirt_mirt <- renderPlot({
 
 output$DP_threeparamirt_mirt <- downloadHandler(
   filename =  function() {
-    paste("plot", input$name, ".png", sep = "")
+    paste("fig_3PLItemCharacteristicCurves.png", sep = "")
   },
   content = function(file) {
     png(file, height = 800, width = 1200, res = 100)
@@ -623,7 +623,7 @@ output$threeparamirtiic_mirt <- renderPlot({
 
 output$DP_threeparamirtiic_mirt <- downloadHandler(
   filename =  function() {
-    paste("plot", input$name, ".png", sep = "")
+    paste("fig_3PLItemInformationCurves.png", sep = "")
   },
   content = function(file) {
     png(file, height = 800, width = 1200, res = 100)
@@ -643,7 +643,7 @@ output$threeparamirttif_mirt <- renderPlot({
 
 output$DP_threeparamirttif_mirt <- downloadHandler(
   filename =  function() {
-    paste("plot", input$name, ".png", sep = "")
+    paste("fig_3PLTestInformationFunction.png", sep = "")
   },
   content = function(file) {
     png(file, height = 800, width = 1200, res = 100)
@@ -741,7 +741,7 @@ output$threeparamirtFactor_mirt <- renderPlot({
 
 output$DP_threeparamirtFactor_mirt <- downloadHandler(
   filename =  function() {
-    paste("plot", input$name, ".png", sep = "")
+    paste("fig_3PLFactorVsStandardized.png", sep = "")
   },
   content = function(file) {
     ggsave(file, plot = threeparamirtFactorInput_mirt(), device = "png",
@@ -866,7 +866,7 @@ output$bock_CC <- renderPlot({
 })
 output$DP_bock_CC <- downloadHandler(
   filename =  function() {
-    paste("plot", input$name, ".png", sep = "")
+    paste("fig_BockItemCharacteristicCurves.png", sep = "")
   },
   content = function(file) {
     png(file, height = 800, width = 1200, res = 100)
@@ -884,7 +884,7 @@ output$bock_IIC <- renderPlot({
 })
 output$DP_bock_IIC <- downloadHandler(
   filename =  function() {
-    paste("plot", input$name, ".png", sep = "")
+    paste("fig_BockItemInformationCurves.png", sep = "")
   },
   content = function(file) {
     png(file, height = 800, width = 1200, res = 100)
@@ -902,7 +902,7 @@ output$bock_TIF <- renderPlot({
 })
 output$DP_bock_TIF <- downloadHandler(
   filename =  function() {
-    paste("plot", input$name, ".png", sep = "")
+    paste("fig_BockTestInformationFunction.png", sep = "")
   },
   content = function(file) {
     png(file, height = 800, width = 1200, res = 100)
@@ -999,7 +999,7 @@ output$bock_factor <- renderPlot({
 })
 output$DP_bock_factor <- downloadHandler(
   filename =  function() {
-    paste("plot", input$name, ".png", sep = "")
+    paste("fig_BockFactorVsStandardized.png", sep = "")
   },
   content = function(file) {
     ggsave(file, plot = bock_factor_Input(), device = "png",
@@ -1064,7 +1064,7 @@ output$ccIRT_plot <- renderPlot({
 
 output$DB_ccIRT <- downloadHandler(
   filename =  function() {
-    paste("plot", input$name, ".png", sep = "")
+    paste("fig_CustomItemCharacteristicCurve.png", sep = "")
   },
   content = function(file) {
     ggsave(file, plot = ccIRT_plot_Input(), device = "png",
@@ -1107,7 +1107,7 @@ output$iccIRT_plot <- renderPlot({
 
 output$DB_iccIRT <- downloadHandler(
   filename =  function() {
-    paste("plot", input$name, ".png", sep = "")
+    paste("fig_CustomItemInformationCurve.png", sep = "")
   },
   content = function(file) {
     ggsave(file, plot = iccIRT_plot_Input(), device = "png",
