@@ -20,7 +20,10 @@ MAJOR UPDATES
 MINOR UPDATES
 
   o Design and options of 'Report' page were updated.
-  o Layout of IRT curves training page was mildly changed.
+  o Layout of IRT curves training page was mildly changed. There are now
+    two curves in each plot. Also text area input was added and synchro-
+    nized with sliders. Colour of sliders now correspond to colour of
+    curve.
 
 
 ---------------------------------------------------
