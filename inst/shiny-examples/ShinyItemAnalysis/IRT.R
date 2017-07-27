@@ -1030,18 +1030,25 @@ output$bockFactorCorInput_mirt <- renderText({
 
 # ** CC ######
 ccIRT_plot_Input <- reactive({
-  a <- input$ccIRTSlider_a
-  b <- input$ccIRTSlider_b
-  c <- input$ccIRTSlider_c
-  d <- input$ccIRTSlider_d
+  a1 <- input$ccIRTSlider_a1
+  b1 <- input$ccIRTSlider_b1
+  c1 <- input$ccIRTSlider_c1
+  d1 <- input$ccIRTSlider_d1
+
+  a2 <- input$ccIRTSlider_a2
+  b2 <- input$ccIRTSlider_b2
+  c2 <- input$ccIRTSlider_c2
+  d2 <- input$ccIRTSlider_d2
 
   ccirt <- function(theta, a, b, c, d){
     return(c + (d - c)/(1 + exp(-a*(theta - b))))
   }
 
   g <- ggplot(data = data.frame(x = -4:4), mapping = aes(x = x)) +
-    stat_function(fun = ccirt, args = list(a = a, b = b, c = c, d = d),
+    stat_function(fun = ccirt, args = list(a = a1, b = b1, c = c1, d = d1),
                   color = "red") +
+    stat_function(fun = ccirt, args = list(a = a2, b = b2, c = c2, d = d2),
+                  color = "blue") +
     xlim(-4, 4) +
     xlab("Ability") +
     ylab("Probability of correct answer") +
@@ -1066,8 +1073,11 @@ output$ccIRT_plot <- renderPlotly({
 
   text <- gsub("y", "Probability", p$x$data[[1]]$text)
   text <- gsub("x", "Ability", text)
-
   p$x$data[[1]]$text <- text
+
+  text <- gsub("y", "Probability", p$x$data[[2]]$text)
+  text <- gsub("x", "Ability", text)
+  p$x$data[[2]]$text <- text
 
   p %>% config(displayModeBar = F)
   # ccIRT_plot_Input()
@@ -1085,18 +1095,25 @@ output$DB_ccIRT <- downloadHandler(
 
 # ** ICC ######
 iccIRT_plot_Input <- reactive({
-  a <- input$ccIRTSlider_a
-  b <- input$ccIRTSlider_b
-  c <- input$ccIRTSlider_c
-  d <- input$ccIRTSlider_d
+  a1 <- input$ccIRTSlider_a1
+  b1 <- input$ccIRTSlider_b1
+  c1 <- input$ccIRTSlider_c1
+  d1 <- input$ccIRTSlider_d1
+
+  a2 <- input$ccIRTSlider_a2
+  b2 <- input$ccIRTSlider_b2
+  c2 <- input$ccIRTSlider_c2
+  d2 <- input$ccIRTSlider_d2
 
   iccirt <- function(theta, a, b, c, d){
     return((d - c)*a^2*exp(a*(theta - b))/(1 + exp(a*(theta - b)))^2)
   }
 
   g <- ggplot(data = data.frame(x = -4:4), mapping = aes(x = x)) +
-    stat_function(fun = iccirt, args = list(a = a, b = b, c = c, d = d),
+    stat_function(fun = iccirt, args = list(a = a1, b = b1, c = c1, d = d1),
                   color = "red") +
+    stat_function(fun = iccirt, args = list(a = a2, b = b2, c = c2, d = d2),
+                  color = "blue") +
     xlim(-4, 4) +
     ylim(0, 4) +
     xlab("Ability") +
@@ -1118,10 +1135,13 @@ output$iccIRT_plot <- renderPlotly({
 
   p <- ggplotly(g)
 
-  text <- gsub("y", "Probability", p$x$data[[1]]$text)
+  text <- gsub("y", "Information", p$x$data[[1]]$text)
   text <- gsub("x", "Ability", text)
-
   p$x$data[[1]]$text <- text
+
+  text <- gsub("y", "Information", p$x$data[[2]]$text)
+  text <- gsub("x", "Ability", text)
+  p$x$data[[2]]$text <- text
 
   p %>% config(displayModeBar = F)
   # iccIRT_plot_Input()
@@ -1136,3 +1156,77 @@ output$DB_iccIRT <- downloadHandler(
            height = 3, width = 9, dpi = 160)
   }
 )
+
+# *** Sliders and text input updates ######
+# 1a
+observe({
+  val <- input$ccIRTSlider_a1
+  updateTextInput(session, "ccIRTtext_a1", value = val)
+})
+observe({
+  val <- input$ccIRTtext_a1
+  updateSliderInput(session, "ccIRTSlider_a1", value = val)
+})
+# 1b
+observe({
+  val <- input$ccIRTSlider_b1
+  updateTextInput(session, "ccIRTtext_b1", value = val)
+})
+observe({
+  val <- input$ccIRTtext_b1
+  updateSliderInput(session, "ccIRTSlider_b1", value = val)
+})
+# 1c
+observe({
+  val <- input$ccIRTSlider_c1
+  updateTextInput(session, "ccIRTtext_c1", value = val)
+})
+observe({
+  val <- input$ccIRTtext_c1
+  updateSliderInput(session, "ccIRTSlider_c1", value = val)
+})
+# 1d
+observe({
+  val <- input$ccIRTSlider_d1
+  updateTextInput(session, "ccIRTtext_d1", value = val)
+})
+observe({
+  val <- input$ccIRTtext_d1
+  updateSliderInput(session, "ccIRTSlider_d1", value = val)
+})
+# 2a
+observe({
+  val <- input$ccIRTSlider_a2
+  updateTextInput(session, "ccIRTtext_a2", value = val)
+})
+observe({
+  val <- input$ccIRTtext_a2
+  updateSliderInput(session, "ccIRTSlider_a2", value = val)
+})
+# 2b
+observe({
+  val <- input$ccIRTSlider_b2
+  updateTextInput(session, "ccIRTtext_b2", value = val)
+})
+observe({
+  val <- input$ccIRTtext_b2
+  updateSliderInput(session, "ccIRTSlider_b2", value = val)
+})
+# 2c
+observe({
+  val <- input$ccIRTSlider_c2
+  updateTextInput(session, "ccIRTtext_c2", value = val)
+})
+observe({
+  val <- input$ccIRTtext_c2
+  updateSliderInput(session, "ccIRTSlider_c2", value = val)
+})
+# 2d
+observe({
+  val <- input$ccIRTSlider_d2
+  updateTextInput(session, "ccIRTtext_d2", value = val)
+})
+observe({
+  val <- input$ccIRTtext_d2
+  updateSliderInput(session, "ccIRTSlider_d2", value = val)
+})
