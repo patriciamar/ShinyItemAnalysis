@@ -1,6 +1,10 @@
 # ShinyItemAnalysis
 Test and item analysis via shiny.
 
+![GHversion](https://img.shields.io/github/release/patriciamar/ShinyItemAnalysis.svg)
+[![version](https://www.r-pkg.org/badges/version/ShinyItemAnalysis)](https://CRAN.R-project.org/package=ShinyItemAnalysis)
+![cranlogs](https://cranlogs.r-pkg.org/badges/ShinyItemAnalysis)
+
 ## Overview
 `ShinyItemAnalysis` is an interactive shiny application for analysis of educational tests and their items including 
  * exploration of total and standard scores,
