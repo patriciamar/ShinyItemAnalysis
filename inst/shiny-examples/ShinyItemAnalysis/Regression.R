@@ -64,7 +64,7 @@ output$logreg_plot <- renderPlot({
 # ** DB estimated logistic curve ######
 output$DB_logreg_plot <- downloadHandler(
   filename =  function() {
-    paste("fit_LogisticRegressionCurve_", item_names()[input$logregSlider], ".png", sep = "")
+    paste("fig_LogisticRegressionCurve_", item_names()[input$logregSlider], ".png", sep = "")
   },
   content = function(file) {
     ggsave(file, plot = logreg_plot_Input() + theme(text = element_text(size = 10)),
@@ -164,7 +164,7 @@ output$z_logreg_plot <- renderPlot({
 # ** DB for plot of logistic regression on Z-scores ######
 output$DB_z_logreg_plot <- downloadHandler(
   filename =  function() {
-    paste("fit_LogisticRegressionCurve_Zscores_", item_names()[input$zlogregSlider], ".png", sep = "")
+    paste("fig_LogisticRegressionCurve_Zscores_", item_names()[input$zlogregSlider], ".png", sep = "")
   },
   content = function(file) {
     ggsave(file, plot = z_logreg_plot_Input() + theme(text = element_text(size = 10)),
@@ -265,7 +265,7 @@ output$z_logreg_irt_plot <- renderPlot({
 # ** DB plot with estimated logistic curve on Z scores with IRT param. ######
 output$DB_z_logreg_irt_plot <- downloadHandler(
   filename =  function() {
-    paste("fit_LogisticRegressionCurve_Zscores_IRT_", item_names()[input$zlogreg_irtSlider], ".png", sep = "")
+    paste("fig_LogisticRegressionCurve_Zscores_IRT_", item_names()[input$zlogreg_irtSlider], ".png", sep = "")
   },
   content = function(file) {
     ggsave(file, plot = z_logreg_irt_plot_Input() + theme(text = element_text(size = 10)),
@@ -417,7 +417,7 @@ output$nlr_plot <- renderPlot({
 # ** DB plot of estimated nonlinear curve ######
 output$DB_nlr_plot <- downloadHandler(
   filename =  function() {
-    paste("fit_NonlinearRegressionCurve_Zscores_IRT_", item_names()[input$nlsSlider], ".png", sep = "")
+    paste("fig_NonlinearRegressionCurve_Zscores_IRT_", item_names()[input$nlsSlider], ".png", sep = "")
   },
   content = function(file) {
     ggsave(file, plot = nlr_plot_Input() + theme(text = element_text(size = 10)),

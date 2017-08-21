@@ -24,6 +24,7 @@ params:
   corr_plot: NA
   scree_plot: NA
   isCriterionPresent: NA
+  validity_check: NA
   validity_plot: NA
   difPlot: NA
   hist_distractor_by_group: NA
@@ -71,9 +72,9 @@ params:
 This report provides test and item analysis using ShinyItemAnalysis version `r packageVersion("ShinyItemAnalysis")`. ShinyItemAnalysis is available on
 [CRAN](https://CRAN.R-project.org/package=ShinyItemAnalysis) and also [online](https://shiny.cs.cas.cz/ShinyItemAnalysis/). This project is supported by Czech Science Foundation under grant number [GJ15-15856Y](http://www.cs.cas.cz/martinkova/psychometrics.html).
 
-# Summary report
+# Summary 
 
-## Summary of total scores
+## Total scores
 
 **Summary table of total scores**
 ```{r total-scores-table, echo = FALSE, results = 'asis'}
@@ -103,7 +104,7 @@ table = params$standardscores_table
 kable(table, align = 'c')
 ```
 
-# Validity
+`r if (any(params$corr_plot != "") | params$validity_check) {"# Validity"}`
 
 `r if (any(params$corr_plot != "")) {"## Correlation structure"}`
 
@@ -123,12 +124,14 @@ if (any(params$corr_plot != "")) {
 }
 ```
 
-## Predictive validity
+`r if (params$validity_check) {"## Predictive validity"}`
 
-`r if(!(params$isCriterionPresent)){"Criterion variable vector is not present. Predictive validity analysis could not have been generated!"}`
+`r if(!(params$isCriterionPresent) & params$validity_check){"Criterion variable vector is not present. Predictive validity analysis could not have been generated!"}`
 
 ```{r validity-plot, echo = FALSE, results = "hide", fig.height = 4, fig.width = 11}
-params$validity_plot
+if(params$isCriterionPresent & params$validity_check){
+  params$validity_plot + theme(text = element_text(size = 10))
+}
 ```
 
 \pagebreak
@@ -274,7 +277,7 @@ if (params$irt_type != "none") {
 
 `r if(any(c(params$histCheck, params$deltaplotCheck, params$logregCheck, params$multiCheck))) {"# DIF/Fairness analysis"}`
 
-`r if(any(c(params$histCheck, params$deltaplotCheck, params$logregCheck, params$multiCheck)) & !params$isGroupPresent){"Group vector is not present. DIF and DDF analysis could have not been generated!"}`
+`r if(any(c(params$histCheck, params$deltaplotCheck, params$logregCheck, params$multiCheck)) & !params$isGroupPresent){"Group vector is not present. DIF and DDF analyses could have not been generated!"}`
 
 `r if(params$isGroupPresent & params$histCheck) {"## Total scores by group"}`
 
@@ -352,7 +355,7 @@ if (params$logregCheck) {
 
 `r if (params$multiCheck & params$isGroupPresent & params$logregCheck) {"\\pagebreak"}`
 
-`r if(params$isGroupPresent & params$multiCheck) {"## DDF detection Using multinomial regression"}`
+`r if(params$isGroupPresent & params$multiCheck) {"## DDF detection using multinomial regression"}`
 
 `r if(params$isGroupPresent & params$multiCheck) {"Differential Distractor Functioning (DDF) occurs when people from different groups but with the same knowledge have different probability of selecting at least one distractor choice. DDF is here examined by multinomial log-linear regression model with Z-score and group membership as covariates. "}`
 

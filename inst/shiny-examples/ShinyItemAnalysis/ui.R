@@ -3,6 +3,7 @@
 #%%%%%%%%%%%%%%%%%%%%%
 
 require(DT)
+require(plotly)
 require(shinyjs)
 
 #%%%%%%%%%%%%%%%%%%%%%
@@ -208,6 +209,7 @@ ui = tagList(
                       code('library(moments)'), br(),
                       code('library(msm)'), br(),
                       code('library(nnet)'), br(),
+                      code('library(plotly)'), br(),
                       code('library(psych)'), br(),
                       code('library(psychometric)'), br(),
                       code('library(reshape2)'), br(),
@@ -1793,8 +1795,8 @@ ui = tagList(
                         # * ITEM PLOTS ####
                         tabPanel("Characteristic and information curves",
                                  h3("Characteristic and information curves"),
-                                 p('Here you can explore behaviour of item characteristic curve \\(\\mathrm{P}\\left(\\theta\\right)\\) and item
-                                   information function \\(\\mathrm{I}\\left(\\theta\\right)\\) in 4PL IRT model. '),
+                                 p('Here you can explore behaviour of two item characteristic curves \\(\\mathrm{P}\\left(\\theta\\right)\\) and their item
+                                   information functions \\(\\mathrm{I}\\left(\\theta\\right)\\) in 4PL IRT model. '),
                                  h4("Equations"),
                                  ('$$\\mathrm{P}\\left(\\theta \\vert a, b, c, d \\right) = c + \\left(d - c\\right) \\cdot \\frac{e^{a\\left(\\theta-b\\right) }}{1+e^{a\\left(\\theta-b\\right) }} $$'),
                                  ('$$\\mathrm{I}\\left(\\theta \\vert a, b, c, d \\right) = a^2 \\cdot \\left(d - c\\right) \\cdot \\frac{e^{a\\left(\\theta-b\\right) }}{\\left[1+e^{a\\left(\\theta-b\\right)}\\right]^2} $$'),
@@ -1802,20 +1804,114 @@ ui = tagList(
                                  p('Select parameters ', strong('a'), '(discrimination), ', strong('b'), '(difficulty), ',
                                    strong('c'), '(guessing) and ', strong('d'), '(inattention). By constraining a = 1, c = 0, d = 1 you get
                                    Rasch model. With option c = 0 and d = 1 you get 2PL model and with option d = 1 3PL model.'),
+                                 p('When you set different curve parameters, you can follow a phenomenon called Differential Item Functioning (DIF). See further
+                                   section for more information. '),
+                                 # be careful about the order of sliders!!!
+                                 # this probably has nicer solution
+                                 tags$style(HTML(".js-irs-12 .irs-single, .js-irs-12 .irs-bar-edge, .js-irs-12 .irs-bar {
+                                                  background: red;
+                                                  border-top-color: red;
+                                                  border-bottom-color: red;
+                                                  border-left-color: red;
+                                                  border-right-color: red}")),
+                                 tags$style(HTML(".js-irs-13 .irs-single, .js-irs-13 .irs-bar-edge, .js-irs-13 .irs-bar {
+                                                  background: red;
+                                                  border-top-color: red;
+                                                  border-bottom-color: red;
+                                                  border-left-color: red;
+                                                  border-right-color: red}")),
+                                 tags$style(HTML(".js-irs-14 .irs-single, .js-irs-14 .irs-bar-edge, .js-irs-14 .irs-bar {
+                                                  background: red;
+                                                  border-top-color: red;
+                                                  border-bottom-color: red;
+                                                  border-left-color: red;
+                                                  border-right-color: red}")),
+                                 tags$style(HTML(".js-irs-15 .irs-single, .js-irs-15 .irs-bar-edge, .js-irs-15 .irs-bar {
+                                                  background: red;
+                                                  border-top-color: red;
+                                                  border-bottom-color: red;
+                                                  border-left-color: red;
+                                                  border-right-color: red}")),
+                                 tags$style(HTML(".js-irs-16 .irs-single, .js-irs-16 .irs-bar-edge, .js-irs-16 .irs-bar {
+                                                  background: blue;
+                                                  border-top-color: blue;
+                                                  border-bottom-color: blue;
+                                                  border-left-color: blue;
+                                                  border-right-color: blue}")),
+                                 tags$style(HTML(".js-irs-17 .irs-single, .js-irs-17 .irs-bar-edge, .js-irs-17 .irs-bar {
+                                                  background: blue;
+                                                  border-top-color: blue;
+                                                  border-bottom-color: blue;
+                                                  border-left-color: blue;
+                                                  border-right-color: blue}")),
+                                 tags$style(HTML(".js-irs-18 .irs-single, .js-irs-18 .irs-bar-edge, .js-irs-18 .irs-bar {
+                                                  background: blue;
+                                                  border-top-color: blue;
+                                                  border-bottom-color: blue;
+                                                  border-left-color: blue;
+                                                  border-right-color: blue}")),
+                                 tags$style(HTML(".js-irs-19 .irs-single, .js-irs-19 .irs-bar-edge, .js-irs-19 .irs-bar {
+                                                  background: blue;
+                                                  border-top-color: blue;
+                                                  border-bottom-color: blue;
+                                                  border-left-color: blue;
+                                                  border-right-color: blue}")),
                                  fluidRow(
-                                   column(2, offset = 0,
-                                          sliderInput("ccIRTSlider_a", "a - discrimination", min = -4, max = 4,
-                                                      value = 1),
-                                          sliderInput("ccIRTSlider_b", "b - difficulty", min = -4, max = 4,
-                                                      value = 0)),
-                                   column(2, offset = 1,
-                                          sliderInput("ccIRTSlider_c", "c - guessing", min = 0, max = 1,
-                                                      value = 0),
-                                          sliderInput("ccIRTSlider_d", "d - inattention", min = 0, max = 1,
-                                                      value = 1))),
-
-                                 splitLayout(cellWidths = c("50%", "50%"), plotOutput('ccIRT_plot'), plotOutput('iccIRT_plot')),
-                                 splitLayout(cellWidths = c("50%", "50%"), downloadButton("DB_ccIRT", label = "Download figure"), downloadButton("DB_iccIRT", label = "Download figure")),
+                                   column(12,
+                                          splitLayout(
+                                            cellWidths = c("16%", "1%", "8%", "16%", "1%", "8%", "16%", "1%", "8%", "16%", "1%", "8%"),
+                                            sliderInput("ccIRTSlider_a1", "a - discrimination", min = -4, max = 4,
+                                                        value = 1, step = 0.1),
+                                            div(style="display: inline-block; vertical-align: middle; width: 50%;", HTML("<br>")),
+                                            div(style= "display: inline-block; vertical-align: middle; height: 100%; width: 50%",
+                                                textInput("ccIRTtext_a1", "", value = 1)),
+                                            sliderInput("ccIRTSlider_b1", "b - difficulty", min = -4, max = 4,
+                                                        value = 0, step = 0.1),
+                                            div(style="display: inline-block; vertical-align: middle; width: 50%;", HTML("<br>")),
+                                            div(style= "display: inline-block; vertical-align: middle; height: 100%; width: 50%",
+                                                textInput("ccIRTtext_b1", "", value = 0)),
+                                            sliderInput("ccIRTSlider_c1", "c - guessing", min = 0, max = 1,
+                                                        value = 0, step = 0.01),
+                                            div(style="display: inline-block; vertical-align: middle; width: 50%;", HTML("<br>")),
+                                            div(style= "display: inline-block; vertical-align: middle; height: 100%; width: 50%",
+                                                textInput("ccIRTtext_c1", "", value = 0)),
+                                            sliderInput("ccIRTSlider_d1", "d - inattention", min = 0, max = 1,
+                                                        value = 1, step = 0.01),
+                                            div(style="display: inline-block; vertical-align: middle; width: 50%;", HTML("<br>")),
+                                            div(style= "display: inline-block; vertical-align: middle; height: 100%; width: 50%",
+                                                textInput("ccIRTtext_d1", "", value = 1))))),
+                                 fluidRow(
+                                   column(12,
+                                          splitLayout(
+                                            cellWidths = c("16%", "1%", "8%", "16%", "1%", "8%", "16%", "1%", "8%", "16%", "1%", "8%"),
+                                            sliderInput("ccIRTSlider_a2", "a - discrimination", min = -4, max = 4,
+                                                        value = 2, step = 0.1),
+                                            div(style="display: inline-block; vertical-align: middle; width: 50%;", HTML("<br>")),
+                                            div(style= "display: inline-block; vertical-align: middle; height: 100%; width: 50%",
+                                                textInput("ccIRTtext_a2", "", value = 2)),
+                                            sliderInput("ccIRTSlider_b2", "b - difficulty", min = -4, max = 4,
+                                                        value = 0.5, step = 0.1),
+                                            div(style="display: inline-block; vertical-align: middle; width: 50%;", HTML("<br>")),
+                                            div(style= "display: inline-block; vertical-align: middle; height: 100%; width: 50%",
+                                                textInput("ccIRTtext_b2", "", value = 0.5)),
+                                            sliderInput("ccIRTSlider_c2", "c - guessing", min = 0, max = 1,
+                                                        value = 0, step = 0.01),
+                                            div(style="display: inline-block; vertical-align: middle; width: 50%;", HTML("&ensp;")),
+                                            div(style= "display: inline-block; vertical-align: middle; height: 100%; width: 50%",
+                                                textInput("ccIRTtext_c2", "", value = 0)),
+                                            sliderInput("ccIRTSlider_d2", "d - inattention", min = 0, max = 1,
+                                                        value = 1, step = 0.01),
+                                            div(style="display: inline-block; vertical-align: middle; width: 50%;", HTML("&ensp;")),
+                                            div(style= "display: inline-block; vertical-align: middle; height: 100%; width: 50%",
+                                                textInput("ccIRTtext_d2", "", value = 1))))),
+                                 br(),
+                                 # div(plotlyOutput('ccIRT_plot', width = "100%"), align = "center"),
+                                 # downloadButton("DB_ccIRT", label = "Download figure"),
+                                 # div(plotlyOutput('iccIRT_plot', width = "100%"), align = "center"),
+                                 # downloadButton("DB_iccIRT", label = "Download figure"),
+                                 splitLayout(cellWidths = c("50%", "50%"), plotlyOutput('ccIRT_plot'), plotlyOutput('iccIRT_plot')),
+                                 # splitLayout(cellWidths = c("50%", "50%"), plotOutput('ccIRT_plot'), plotOutput('iccIRT_plot')),
+                                 # splitLayout(cellWidths = c("50%", "50%"), downloadButton("DB_ccIRT", label = "Download figure"), downloadButton("DB_iccIRT", label = "Download figure")),
                                  br(),
                                  br()
                                  )
@@ -2858,18 +2954,36 @@ ui = tagList(
                            distractors plots for each item and multinomial regression plots for each item. "),
                          fluidRow(
                            column(4,
-                                  p(strong("Correlation structure selection")),
-                                  checkboxInput("corr_report", "Correlation structure + Screeplot", FALSE)
+                                  p(strong("Validity")),
+                                  checkboxInput("corr_report", "Correlation structure", FALSE),
+                                  checkboxInput("predict_report", "Predictive validity", FALSE)
                            )
                          ),
                          fluidRow(
                            conditionalPanel(condition = "input.customizeCheck",
-                                            column(1, p(strong("Distractors plot")),
-                                                   radioButtons('type_combinations_distractor_report', 'Type',
-                                                                list("Combinations", "Distractors")
-                                                   )
-                                            )
-                           )
+                                            column(6,
+                                                   p(strong("Difficulty/discrimination plot")),
+                                                   splitLayout(sliderInput('DDplotNumGroupsSlider_report','Number of groups:',
+                                                                           min   = 1,
+                                                                           max   = 5,
+                                                                           value = 3),
+                                                               sliderInput("DDplotRangeSlider_report", "Which two groups to compare:",
+                                                                           min = 1,
+                                                                           max = 3,
+                                                                           step = 1,
+                                                                           value = c(1, 3)))))
+                         ),
+                         fluidRow(
+                           conditionalPanel(condition = "input.customizeCheck",
+                                            column(6,
+                                                   p(strong("Distractors plots")),
+                                                   splitLayout(radioButtons('type_combinations_distractor_report',
+                                                                            'Type',
+                                                                            list("Combinations", "Distractors")),
+                                                               sliderInput('distractorGroupSlider','Number of groups:',
+                                                                             min   = 1,
+                                                                             max   = 5,
+                                                                             value = 3))))
                          ),
                          fluidRow(
                            column(4,
@@ -2958,8 +3072,8 @@ ui = tagList(
                            " model, you can first visit ", strong("IRT models"), "section and ", strong("3PL"), " subsection."),
                          #p(strong("Warning: "), "Download of reports takes some time. Please, be patient."),
                          fluidRow(
-                           column(width = 4,
-                             splitLayout(
+                           column(width = 5,
+                             splitLayout(cellWidths = c("45%", "55%"),
                                actionButton("generate", "Generate report"),
                                uiOutput("download_report_button")
                              )
