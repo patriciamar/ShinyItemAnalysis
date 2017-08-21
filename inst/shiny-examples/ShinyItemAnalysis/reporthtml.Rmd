@@ -31,7 +31,11 @@ params:
   isCriterionPresent: NA
   validity_check: NA
   validity_plot: NA
+  validity_table: NA
   difPlot: NA
+  DDplotRange1: NA
+  DDplotRange2: NA
+  DDplotNumGroups: NA
   hist_distractor_by_group: NA
   graf: NA
   logreg: NA
@@ -141,6 +145,28 @@ if(params$isCriterionPresent & params$validity_check){
 }
 ```
 
+```{r validity-table, echo = FALSE, results='hide'}
+if(params$isCriterionPresent & params$validity_check){
+  tab <- params$validity_table
+  p.val <- tab["p-value"]
+  rho <- tab[1]
+
+  txt1 <- paste("Interpretation:","\n")
+  txt2 <- ifelse(rho > 0, "positively", "negatively")
+  txt3 <- ifelse(p.val < 0.05,
+                 paste("The p-value is less than 0.05, thus we reject null hypotheses.
+                       Total score and criterion variable are", txt2, "correlated."),
+                 "The p-value is larger than 0.05, thus we don't reject null hypotheses.
+                 We cannot conclude that a significant correlation between total score
+                 and criterion variable exists.")
+}
+
+```
+
+**`r if(params$isCriterionPresent & params$validity_check){txt1}`**
+
+`r if(params$isCriterionPresent & params$validity_check){txt3}`
+
 
 **************
 
@@ -149,6 +175,28 @@ if(params$isCriterionPresent & params$validity_check){
 ## Item analysis
 
 Difficulty (red) of items is estimated as percent of students who answered correctly to that item. Discrimination (blue) is by default described by difference of percent correct in upper and lower third of students (Upper-Lower Index, ULI). By rule of thumb it should not be lower than 0.2 (borderline in the plot), except for very easy or very difficult items.
+
+```{r DD-plot-interpretation, echo=FALSE, results="hide"}
+range1 <- params$DDplotRange1
+range2 <- params$DDplotRange2
+numgroups <- params$DDplotNumGroups
+
+  if (any(range1!=1, range2!=3, numgroups!=3)) {
+    DDplot_interpretation=HTML(paste(
+      "Discrimination is here a difference between the difficulty recorded in the ",
+      "<b>", range1, "</b>",
+      ifelse(range1 >= 4, "-th", switch(range1, "1" = "-st", "2" = "-nd", "3" = "-rd")),
+      " and <b>", range2, "</b>",
+      ifelse(range2 >= 4, "-th", switch(range2, "1" = "-st", "2" = "-nd", "3" = "-rd")),
+      " group out of total number of ",
+      "<b>", numgroups, "</b>",
+      " groups. <br><br>",
+      sep = ""
+    ))
+  }
+```
+
+`r if (any(range1!=1, range2!=3, numgroups!=3)) {DDplot_interpretation}`
 
 <!-- THIS HAS TO BE MODIFY - ADD INFO WHAT GROUPS WERE SELECTED -->
 ```{r DD-plot, echo = FALSE, fig.height = 4, fig.align = 'center'}
