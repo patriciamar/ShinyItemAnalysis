@@ -4,7 +4,7 @@ vers <- paste("R package version", meta$Version)
 citHeader("To cite package 'ShinyItemAnalysis' in publications use:")
 
 
-citEntry(entry="Manual",
+citEntry(entry = "Manual",
          title = "{ShinyItemAnalysis}: {T}est and item analysis via shiny",
          author = personList(as.person("Patricia Martinkova"), as.person("Adela Drabinova"), as.person("Ondrej Leder"), as.person("Jakub Houdek")),
          year = year,

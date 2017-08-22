@@ -7,14 +7,14 @@ output:
 header-includes:
    - \usepackage{booktabs}
 subtitle: |
-  Report created on `r Sys.Date()`
+  This report was created `r ifelse(params$author == "", "", paste("by", params$author))` `r ifelse(params$dataset == "", "", paste("on", params$dataset, "dataset"))` on `r Sys.Date()`
 
-  ShinyItemAnalysis: Test and item analysis
-
-  Application version `r packageVersion("ShinyItemAnalysis")`
+  ShinyItemAnalysis: Test and item analysis, version `r packageVersion("ShinyItemAnalysis")`
 
   &copy; 2017 Patricia Martinkova, Adela Drabinova, Ondrej Leder and Jakub Houdek.
 params:
+  author: NA
+  dataset: NA
   a: NA
   k: NA
   gr: NA
@@ -92,12 +92,14 @@ print(xtable(t(table), digits = c(0, 0, 0, 3, 0, 3, 3, 3), align = rep('c', 8)),
 For selected cut-score, blue part of histogram shows students with total score above the cut-score, grey column shows students with total score equal to the cut-score and red part of histogram shows students below the cut-score.
 
 ```{r total-scores-histogram, echo = FALSE, fig.height = 4.5, fig.width = 11}
-params$histogram_totalscores + ggtitle('Histogram of total scores') + theme(text = element_text(size = 12), plot.title = element_text(face = "bold"))
+params$histogram_totalscores + ggtitle('Histogram of total scores') + theme(text = element_text(size = 14), plot.title = element_text(face = "bold"))
 ```
 
 `r if (any(params$corr_plot != "")) {"\\pagebreak"}`
 
-## Standard scores
+\pagebreak
+
+# Scoring
 
 **Summary table of standard scores**: Total score also known as raw score is a total number of correct answers. It can be used to compare individual score to a norm group, e.g. if the mean is 12, then individual score can be compared to see if it is below or above this average. Percentile indicates the value below which a percentage of observations falls, e.g. a individual score at the 80th percentile means that the individual score is the same or higher than the scores of 80% of all respondents. 
 Success rate is the percentage of success, e.g. if the maximum points of test is equal to 20 and individual score is 12 then success rate is 12/20 = 0.6, i.e. 60%. 
@@ -114,7 +116,7 @@ kable(table, align = 'c')
 
 `r if (any(params$corr_plot != "")) {"**Polychoric correlation heat map** is a correlation plot which displays a polychoric correlations of items. The size and shade of circles indicate how much the items are correlated (larger and darker circle means larger correlation). The color of circles indicates in which way the items are correlated - blue color shows possitive correlation and red color shows negative correlation."}`
 
-```{r corr-plot, echo = FALSE, fig.height = 4, fig.width = 9}
+```{r corr-plot, echo = FALSE, fig.height = 4.5, fig.width = 9}
 if (any(params$corr_plot != "")) {
   corrplot(params$corr_plot, tl.cex = 0.7)
 }
@@ -122,9 +124,9 @@ if (any(params$corr_plot != "")) {
 
 `r if (any(params$corr_plot != "")) {"**Scree plot** displays the eigenvalues associated with an component or a factor in descending order versus the number of the component or factor."}`
 
-```{r scree-plot, echo = FALSE, fig.height = 4, fig.width = 11}
+```{r scree-plot, echo = FALSE, fig.height = 4.5, fig.width = 11}
 if (any(params$corr_plot != "")) {
-  params$scree_plot + ggtitle("Scree plot") + theme(text = element_text(size = 10), plot.title = element_text(face = "bold"))
+  params$scree_plot + ggtitle("Scree plot") + theme(text = element_text(size = 14), plot.title = element_text(face = "bold"))
 }
 ```
 
@@ -132,33 +134,35 @@ if (any(params$corr_plot != "")) {
 
 `r if(!(params$isCriterionPresent) & params$validity_check){"Criterion variable vector is not present. Predictive validity analysis could not have been generated!"}`
 
-```{r validity-plot, echo = FALSE, results = "hide", fig.height = 4, fig.width = 11}
+```{r validity-plot, echo = FALSE, results = "hide", fig.height = 4.5, fig.width = 11}
 if(params$isCriterionPresent & params$validity_check){
-  params$validity_plot + theme(text = element_text(size = 10))
+  params$validity_plot + theme(text = element_text(size = 14))
 }
 ```
 
-```{r validity-table, echo = FALSE, results='hide'}
+```{r validity-table, echo = FALSE, results = 'hide'}
 if(params$isCriterionPresent & params$validity_check){
   tab <- params$validity_table
   p.val <- tab["p-value"]
   rho <- tab[1]
 
-  txt1 <- paste("Interpretation:","\n")
-  txt2 <- ifelse(rho > 0, "positively", "negatively")
-  txt3 <- ifelse(p.val < 0.05,
-                 paste("The p-value is less than 0.05, thus we reject null hypotheses.
-                       Total score and criterion variable are", txt2, "correlated."),
-                 "The p-value is larger than 0.05, thus we don't reject null hypotheses.
-                 We cannot conclude that a significant correlation between total score
-                 and criterion variable exists.")
+  txt1 <- ifelse(p.val < 0.05, "less than", "larger than")
+  txt2 <- ifelse(p.val < 0.05, "reject", "do not reject")
+  txt3 <- ifelse(p.val < 0.05, 
+                 paste("total score and criterion variable are", ifelse(rho > 0, "positively", "negatively"), "correlated."),
+                 paste("we cannot conclude that a significant correlation between total score
+                        and criterion variable exists."))
+  txt4 <- paste("Test for association between total score and criterion variable is based on Spearman`s ", expression(rho), 
+                ". The null hypothesis is that correlation is 0. ", sep = " ") 
+  txt5 <- paste("Results:", expression(rho), "=", rho, "(p-value ", p.val ,").") 
+  txt6 <- paste("Interpretation: The p-value is", txt1, "0.05, thus we", txt2, "null hypothesis;", txt3)
+  
+  txt <- paste(txt4, txt5, txt6, collapse = "/n")
 }
 
 ```
 
-**`r if(params$isCriterionPresent & params$validity_check){txt1}`**
-
-`r if(params$isCriterionPresent & params$validity_check){txt3}`
+`r if(params$isCriterionPresent & params$validity_check){txt}`
 
 \pagebreak
 
@@ -192,7 +196,7 @@ numgroups <- params$DDplotNumGroups
 `r if (any(range1!=1, range2!=3, numgroups!=3)) {DDplot_interpretation}`
 
 ```{r DD-plot, echo = FALSE, fig.height = 4.5, fig.width = 11}
-params$difPlot + ggtitle('Difficulty/Discrimination plot') + theme(text = element_text(size = 12), plot.title = element_text(face = "bold"))
+params$difPlot + ggtitle('Difficulty/Discrimination plot') + theme(text = element_text(size = 14), plot.title = element_text(face = "bold"))
 ```
 
 **Traditional item analysis table**: Diff. - Difficulty of item is estimated as percent of students who answered correctly to that item. SD - standard deviation, ULI - Upper-Lower Index, RIT - Pearson correlation between item and total score, RIR - Pearson correlation between item and rest of items, Alpha Drop - Cronbach's alpha of test without given item, Cust. D.- difference between the difficulty recorded in the groups selected by user.
@@ -316,7 +320,7 @@ if (params$irt_type != "none") {
 
 ```{r irt-3, echo = FALSE, results = "hide", fig.height = 4.5, fig.width = 11}
 if (params$irt_type != "none") {
-  params$irtfactor + ggtitle('Scatterplot of factor scores and standardized total scores') + theme(text = element_text(size = 10), plot.title = element_text(face = "bold"))
+  params$irtfactor + ggtitle('Scatterplot of factor scores and standardized total scores') + theme(text = element_text(size = 14), plot.title = element_text(face = "bold"))
 }
 ```
 
@@ -344,8 +348,8 @@ if (params$histCheck) {
 ```{r hist-by-group, echo = FALSE, fig.height = 9, fig.width = 11}
 if (params$histCheck) {
   if(params$isGroupPresent){
-    g1 = params$histbyscoregroup0 + theme(text = element_text(size = 10), plot.title = element_text(face = "bold"))
-    g2 = params$histbyscoregroup1 + theme(text = element_text(size = 10), plot.title = element_text(face = "bold"))
+    g1 = params$histbyscoregroup0 + theme(text = element_text(size = 14), plot.title = element_text(face = "bold"))
+    g2 = params$histbyscoregroup1 + theme(text = element_text(size = 14), plot.title = element_text(face = "bold"))
     grid.arrange(g1, g2, ncol = 1)
   }
 }
@@ -372,7 +376,7 @@ if (params$deltaplotCheck) {
   if(params$isGroupPresent){
     print(params$deltaplot +
             geom_text(size = 0.1) +
-            theme(text = element_text(size = 12), plot.title = element_text(face = "bold")))
+            theme(text = element_text(size = 14), plot.title = element_text(face = "bold")))
   }
 }
 ```

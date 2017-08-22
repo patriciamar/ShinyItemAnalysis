@@ -693,10 +693,11 @@ model_DIF_NLR_print <- reactive({
   type <- input$type_print_DIF_NLR
   adj.method <- input$correction_method_nlrSummary
   model <- "3PLcg"
+  purify <- input$puri_NLR_print
 
   fit <- difNLR(Data = data, group = group, focal.name = 1,
                 model = model, type = type,
-                p.adjust.method = adj.method)
+                p.adjust.method = adj.method, purify = purify)
   fit
 })
 
@@ -713,10 +714,11 @@ model_DIF_NLR_plot <- reactive({
   type <- input$type_plot_DIF_NLR
   adj.method <- input$correction_method_nlrItems
   model <- "3PLcg"
+  purify <- input$puri_NLR_plot
 
   fit <- difNLR(Data = data, group = group, focal.name = 1,
                 model = model, type = type,
-                p.adjust.method = adj.method)
+                p.adjust.method = adj.method, purify = purify)
   fit
 })
 
@@ -1151,10 +1153,11 @@ model_DDF_print <- reactive({
 
   adj.method <- input$correction_method_print_DDF
   type <- input$type_print_DDF
+  purify <- input$puri_DDF_print
 
   fit <- ddfMLR(Data = a, group = group, focal.name = 1,
                 key = k, p.adjust.method = adj.method,
-                type = type)
+                type = type, purify = purify)
 
   fit
 })
@@ -1167,14 +1170,16 @@ model_DDF_print_report <- reactive({
   if (!input$customizeCheck) {
     adj.method <- input$correction_method_print_DDF
     type <- input$type_print_DDF
+    purify <- input$puri_DDF_print
   } else {
     adj.method <- input$correction_method_DDF_report
     type <- input$type_DDF_report
+    purify <- input$puri_DDF_report
   }
 
   fit <- ddfMLR(Data = a, group = group, focal.name = 1,
                 key = k, p.adjust.method = adj.method,
-                type = type)
+                type = type, purify = purify)
 
   fit
 })
@@ -1192,10 +1197,11 @@ model_DDF_plot <- reactive({
 
   adj.method <- input$correction_method_plot_DDF
   type <- input$type_plot_DDF
+  purify <- input$puri_DDF_plot
 
   fit <- ddfMLR(Data = a, group = group, focal.name = 1,
                 key = k, p.adjust.method = adj.method,
-                type = type)
+                type = type, purify = purify)
 
   fit
 })
@@ -1220,14 +1226,16 @@ plot_DDFReportInput <- reactive({
   if (!input$customizeCheck) {
     adj.method_report <- input$correction_method_plot_DDF
     type_report <- input$type_plot_DDF
+    purify_report <- input$puri_DDF_plot
   } else {
     adj.method_report <- input$correction_method_DDF_report
     type_report <- input$type_DDF_report
+    purify_report <- input$puri_DDF_report
   }
 
   mod <- ddfMLR(Data = a, group = group, focal.name = 1,
                 key = k, p.adjust.method = adj.method_report,
-                type = type_report)
+                type = type_report, purify = purify_report)
 
   graflist = list()
   # if (mod$DIFitems[[1]]!="No DDF item detected"){

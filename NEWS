@@ -5,6 +5,33 @@
         ***************************************************************
 
 ---------------------------------------------------
+- Changes in ShinyItemAnalysis 1.2.3 (2017-08-22) -
+---------------------------------------------------
+
+*** THIS IS A CRAN VERSION ***
+
+MAJOR UPDATES
+
+  o Report's customized options were extended. Reports now include also
+    dynamic description.
+  o Author and dataset name can be now filled and add into reports.
+  o Dataset 'difMedical' was renamed to 'MSAT-B' according to 'difNLR'
+    package. Its description was mildly updated.
+  o Purification options were added into 'Nonlinear IRT Z' and 'DDF' subsections
+    of 'DIF/Fairness' sections.
+  o Purification options was added 'DDF' analysis in 'Reports' section when customized
+    setting is selected.
+
+
+MINOR UPDATES
+
+  o Size of plots and font in plots was changed for reports.
+  o Plots in HTML report are now centered.
+  o Wording of reports' default option was updated.
+  o References were updated in 'Reference' section and also in README file.
+  o Wording of Spearman test in 'Validity' section was mildly updated.
+
+---------------------------------------------------
 - Changes in ShinyItemAnalysis 1.2.2 (2017-07-26) -
 ---------------------------------------------------
 
@@ -12,7 +39,7 @@ MAJOR UPDATES
 
   o Design of reports was edited.
   o Several bugs were fixed:
-     - Bug when creating report for uploaded data was  fixed.
+     - Bug when creating report for uploaded data was fixed.
      - Bug when creating report for data without predictive
        criterion or DIF group was fixed.
   o ShinyItemAnalysis now uses 'plotly' package!
@@ -75,6 +102,8 @@ MINOR UPDATES
 ---------------------------------------------------
 - Changes in ShinyItemAnalysis 1.2.0 (2017-06-15) -
 ---------------------------------------------------
+
+*** THIS IS A CRAN VERSION ***
 
 MAJOR UPDATES
 
@@ -152,6 +181,8 @@ MINOR UPDATES
 - Changes in ShinyItemAnalysis 1.1.0 (2016-02-02) -
 ---------------------------------------------------
 
+*** THIS IS A CRAN VERSION ***
+
 MAJOR UPDATES
 
   o  New overall appearence using shinythemes package.
@@ -193,6 +224,8 @@ MINOR UPDATES
 ---------------------------------------------------
 - Changes in ShinyItemAnalysis 1.0.0 (2016-11-25) -
 ---------------------------------------------------
+
+*** THIS IS A CRAN VERSION ***
 
 UPDATES
 
