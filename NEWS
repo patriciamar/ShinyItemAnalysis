@@ -28,6 +28,8 @@ MINOR UPDATES
   o Size of plots and font in plots was changed for reports.
   o Plots in HTML report are now centered.
   o Wording of reports' default option was updated.
+  o References were updated in 'Reference' section and also in README file.
+  o Wording of Spearman test in 'Validity' section was mildly updated.
 
 ---------------------------------------------------
 - Changes in ShinyItemAnalysis 1.2.2 (2017-07-26) -

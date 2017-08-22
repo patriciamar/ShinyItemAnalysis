@@ -42,3 +42,6 @@ If you find any bug or just need help with `ShinyItemAnalysis` you can leave you
 
 ## License
 This program is free software and you can redistribute it and or modify it under the terms of the [GNU GPL 3](https://www.gnu.org/licenses/gpl-3.0.en.html).
+
+## References
+For czech speakers new paper is available [online!](http://testforum.cz/domains/testforum.cz/index.php/testforum/article/view/TF2017-9-129/146#.WZvuzyhJa70)

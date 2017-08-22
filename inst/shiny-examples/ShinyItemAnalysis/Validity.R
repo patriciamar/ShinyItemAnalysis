@@ -214,9 +214,9 @@ output$validity_table_interpretation <- renderUI({
   txt1 <- paste ("<b>", "Interpretation:","</b>")
   txt2 <- ifelse(rho > 0, "positively", "negatively")
   txt3 <- ifelse(p.val < 0.05,
-                 paste("The p-value is less than 0.05, thus we reject null hypotheses.
+                 paste("The p-value is less than 0.05, thus we reject the null hypotheses.
                        Total score and criterion variable are", txt2, "correlated."),
-                 "The p-value is larger than 0.05, thus we don't reject null hypotheses.
+                 "The p-value is larger than 0.05, thus we don't reject the null hypotheses.
                  We cannot conclude that a significant correlation between total score
                  and criterion variable exists.")
   HTML(paste(txt1, txt3))
@@ -315,9 +315,9 @@ output$validity_table_item_interpretation <- renderUI({
   txt1 <- paste ("<b>", "Interpretation:","</b>")
   txt2 <- ifelse(rho > 0, "positively", "negatively")
   txt3 <- ifelse(p.val < 0.05,
-                 paste("The p-value is less than 0.05, thus we reject null hypotheses.
+                 paste("The p-value is less than 0.05, thus we reject the null hypotheses.
                          Scored item", i, "and criterion variable are", txt2, "correlated."),
-                 paste("The p-value is larger than 0.05, thus we don't reject null hypotheses.
+                 paste("The p-value is larger than 0.05, thus we don't reject the null hypotheses.
                    We cannot conclude that a significant correlation between scored item", i,
                        "and criterion variable exists."))
   HTML(paste(txt1, txt3))
