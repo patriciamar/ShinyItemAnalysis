@@ -206,14 +206,16 @@ report_distractor_plot <- reactive({
 
   if (!input$customizeCheck) {
     multiple.answers_report <- c(input$type_combinations_distractor == "Combinations")
+    num.group <- input$gr
   } else {
     multiple.answers_report <- c(input$type_combinations_distractor_report == "Combinations")
+    num.group <- input$distractorGroupSlider
   }
 
   graflist <- list()
 
   for (i in 1:length(k)) {
-    g <- plotDistractorAnalysis(data = a, key = k, num.group = input$gr,
+    g <- plotDistractorAnalysis(data = a, key = k, num.group = num.group,
                                 item = i,
                                 item.name = item_names()[i],
                                 multiple.answers = multiple.answers_report)
