@@ -50,7 +50,7 @@ ui = tagList(
                div(class = "clear"),
                div(class = "panel-footer",
                    HTML('<p> <font size = "4"> ShinyItemAnalysis </font>
-                             <font size = "2"> Test and item analysis | Version 1.2.2 </font>
+                             <font size = "2"> Test and item analysis | Version 1.2.3 </font>
                              <span style = "float:right">
                                 <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysis/" id = "tooltipweb" target="_blank"> <img src = "web_icon.png", style = "width: 25px;"> </a>
                                 <a href = "https://github.com/patriciamar/ShinyItemAnalysis/" id = "tooltipgithub" target="_blank"> <img src = "github_icon.png", style = "width: 25px;"> </a>
@@ -159,11 +159,11 @@ ui = tagList(
 
                       h4('Version'),
                       p('Current version of ', code('ShinyItemAnalysis'), ' available on ',
-                        a('CRAN', href = 'https://CRAN.R-project.org/package=ShinyItemAnalysis', target = "_blank"), 'is 1.2.0.
+                        a('CRAN', href = 'https://CRAN.R-project.org/package=ShinyItemAnalysis', target = "_blank"), 'is 1.2.3.
                         Version available',
-                        a('online', href = 'https://shiny.cs.cas.cz/ShinyItemAnalysis/', target = "_blank"), 'is 1.2.2.
+                        a('online', href = 'https://shiny.cs.cas.cz/ShinyItemAnalysis/', target = "_blank"), 'is 1.2.3.
                         The newest development version available on ',
-                        a('GitHub', href = 'https://github.com/patriciamar/ShinyItemAnalysis', target = "_blank"), 'is 1.2.2.'),
+                        a('GitHub', href = 'https://github.com/patriciamar/ShinyItemAnalysis', target = "_blank"), 'is 1.2.3.'),
                       p('See also older versions: ',
                          a('0.1.0, ', href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV01/", target = "_blank"),
                          a('0.2.0, ', href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV02/", target = "_blank"),
@@ -279,11 +279,11 @@ ui = tagList(
                          to function differently in uniform and non-uniform way respectively. The data set
                          represents responses of 1,000 subjects (500 males, 500 females) to multiple-choice test
                          of 20 items. '),
-                      p('Dataset ', code("Medical 20 DIF"), ' (Drabinova & Martinkova, 2016) is a subset of real admission test to medical
-                         school from R ', code('difNLR'),' package. First item was previously detected as
-                         functioning differently. The data set represents responses of 1,407 subjects (484 males,
-                         923 females) to multiple-choice test of 20 items. For more details of item selection
-                         see Drabinova & Martinkova (2016).'),
+                      p('Dataset ', code("MSAT-B"), ' (Drabinova & Martinkova, 2017) is a subset of real Medical School Admission
+                         Test in Biology in Czech Republic. The data set represents responses of 1,407 subjects (484 males,
+                         923 females) to multiple-choice test of 20 items. First item was previously detected as
+                         functioning differently. For more details of item selection see Drabinova & Martinkova (2017).
+                         Dataset can be found in R ', code('difNLR'),' package.'),
                       p('Dataset ', code("Medical 100"), ' is a real data set of admission test to medical school
                          from R ', code('ShinyItemAnalysis'),' package. The data set represents responses of
                          2,392 subjects (750 males, 1,633 females and 9 subjects without gender specification)
@@ -292,7 +292,7 @@ ui = tagList(
                       selectInput("dataSelect", "Select dataset",
                                   c("GMAT" = "GMAT_difNLR",
                                     "GMAT2" = "GMAT2_difNLR",
-                                    "Medical 20 DIF" = "difMedical_difNLR",
+                                    "MSAT-B" = "MSATB_difNLR",
                                     "Medical 100" = "dataMedical_ShinyItemAnalysis"
                                   ),
                                   selected="GMAT_difNLR"),
@@ -2438,7 +2438,7 @@ ui = tagList(
                                                           "FDR" = "fdr",
                                                           "none" = "none"),
                                                         selected = "none"),
-                                            # checkboxInput('puri_NLR', 'Item purification', FALSE),
+                                            checkboxInput('puri_NLR_print', 'Item purification', FALSE),
                                             verbatimTextOutput('print_DIF_NLR'),
                                             br(),
                                             h4("Selected R code"),
@@ -2487,7 +2487,7 @@ ui = tagList(
                                                           "FDR" = "fdr",
                                                           "none" = "none"),
                                                         selected = "none"),
-                                            #checkboxInput('puri_NLR_plot', 'Item purification', FALSE),
+                                            checkboxInput('puri_NLR_plot', 'Item purification', FALSE),
                                             sliderInput("difnlrSlider", "Item",
                                                         min = 1, value = 1, max = 10,
                                                         step = 1, animate = TRUE),
@@ -2817,6 +2817,7 @@ ui = tagList(
                                                           "FDR" = "fdr",
                                                           "none" = "none"),
                                                         selected = "none"),
+                                            checkboxInput('puri_DDF_print', 'Item purification', FALSE),
                                             verbatimTextOutput('print_DDF'),
                                             br(),
                                             h4("Selected R code"),
@@ -2866,6 +2867,7 @@ ui = tagList(
                                                           "FDR" = "fdr",
                                                           "none" = "none"),
                                                         selected = "none"),
+                                            checkboxInput('puri_DDF_plot', 'Item purification', FALSE),
                                             sliderInput("ddfSlider", "Item",
                                                         min = 1, value = 1, max = 10,
                                                         step = 1, animate = TRUE),
@@ -2938,20 +2940,18 @@ ui = tagList(
                            "(or other TeX distribution). If you don't have the latest installation, please, use the HTML report."),
                          p("There is an option whether to use customize settings. By checking the", strong("Customize settings"),
                            "local settings will be offered and use for each selected section of report. Otherwise the settings
-                           will be taken from pages of application."),
+                           will be taken from pages of application. You can also include your name into report as well as the name
+                           of dataset which was used. "),
                          fluidRow(
-                           column(2,
-                                  radioButtons("report_format", "Format of report",
-                                               c("HTML" = "html",
-                                                 "PDF" = "pdf"))
-                           ),
-                           column(2,
-                                  checkboxInput("customizeCheck", "Customize settings", FALSE)
-                           )
+                           column(2, radioButtons("report_format", "Format of report", c("HTML" = "html", "PDF" = "pdf"))),
+                           column(2, checkboxInput("customizeCheck", "Customize settings", FALSE)),
+                           column(2, textInput("reportAuthor", "Author")),
+                           column(2, textInput("reportDataName", "Dataset"))
                          ),
                          h4("Content of report"),
-                         p("Reports by default contain summary of total scores, item analysis,
-                           distractors plots for each item and multinomial regression plots for each item. "),
+                         p("Reports by default contain summary of total scores, table of standard scores, item analysis,
+                           distractors plots for each item and multinomial regression plots for each item. Other analyses
+                           can be selected below. "),
                          fluidRow(
                            column(4,
                                   p(strong("Validity")),
@@ -3062,7 +3062,8 @@ ui = tagList(
                                                     "BY" = "BY",
                                                     "FDR" = "fdr",
                                                     "none" = "none"),
-                                                  selected = "none")
+                                                  selected = "none"),
+                                      checkboxInput('puri_DDF_report', 'Item purification', FALSE)
                                )
                             )
                            )
@@ -3115,6 +3116,8 @@ ui = tagList(
                       p("Drabinova, A., & Martinkova, P. (2016). Detection of Differential Item
                         Functioning Based on Non-Linear Regression. Technical Report",
                         a("V-1229", href = "https://goo.gl/R3dpJ5", target = "_blank"), "."),
+                      p("Drabinova, A., & Martinkova, P. (2017). Detection of Differential Item Functioning with Non-Linear
+                         Regression: Non-IRT Approach Accounting for Guessing. Journal of Educational Measurement. Accepted."),
                       p("Lord, F. M. (1980). Applications of Item Response Theory to Practical Testing Problems.
                         Routledge."),
                       p("Magis, D., & Facon, B. (2012). Angoff's Delta Method Revisited:
@@ -3126,6 +3129,10 @@ ui = tagList(
                         Retrospective Studies. Journal of the National Cancer Institute, 22 (4), 719-748.", a("See online.",
                                                                                                               href = "http://www.medicine.mcgill.ca/epidemiology/hanley/c634/stratified/Mantel_Haenszel_1.pdf",
                                                                                                               target = "_blank")),
+                      p("Martinkova, P., Drabinova, A., & Houdek, J. (2017). ShinyItemAnalysis: Analyza prijimacich a
+                         jinych znalostnich ci psychologických testu. TESTFORUM, 6(9), 16–35.",
+                        a("See online.", href = "http://testforum.cz/domains/testforum.cz/index.php/testforum/article/view/TF2017-9-129", target = "_blank"),
+                        "(ShinyItemAnalysis: Analyzing admission and other educational and psychological tests)"),
                       p("Martinkova, P., Drabinova, A., Liaw, Y. L., Sanders, E. A., McFarland, J. L., & Price, R. M.
                         (2017). Checking Equity: Why Differential Item Functioning Analysis Should Be a Routine Part
                         of Developing Conceptual Assessments. CBE-Life Sciences Education, 16(2). ",
@@ -3134,7 +3141,7 @@ ui = tagList(
                           target = "_blank")),
                       p("Martinkova, P., Stepanek, L., Drabinova, A., Houdek, J., Vejrazka, M., & Stuka, C. (2017).
                         Semi-real-time analyses of item characteristics for medical school admission tests. In: Proceedings of
-                        the 2017 Federated Conference on Computer Science and Information Systems. Accepted."),
+                        the 2017 Federated Conference on Computer Science and Information Systems. In print."),
                       p("Swaminathan, H., & Rogers, H. J. (1990). Detecting Differential Item
                         Functioning Using Logistic Regression Procedures. Journal of Educational
                         Measurement, 27(4), 361-370.",

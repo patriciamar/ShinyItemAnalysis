@@ -524,13 +524,30 @@ function(input, output, session) {
   # REPORTS ######
   #%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+  # update dataset name in Reports page
+  dataName <- reactive({
+    if (is.null(input$data)) {
+      a <- input$dataSelect
+      pos <- regexpr("_", a)[1]
+      name <- str_sub(a, 1, pos - 1)
+    } else {
+        name <- ""
+    }
+    name
+  })
+
+  observe({
+    updateTextInput(session = session, inputId = "reportDataName", value = dataName())
+  })
+
+
   formatInput<-reactive({
-    format<-input$report_format
+    format <- input$report_format
     format
   })
 
   irt_typeInput<-reactive({
-    type=input$irt_type_report
+    type <- input$irt_type_report
     type
   })
 
@@ -610,7 +627,9 @@ function(input, output, session) {
 
   observeEvent(input$generate, {
     withProgress(message = "Creating content", value = 0, style = "notification", {
-      list(a = test_answers(),
+      list(author = input$reportAuthor,
+           dataset = input$reportDataName,
+           a = test_answers(),
            k = test_key(),
            # total scores
            incProgress(0.05),
@@ -696,7 +715,9 @@ function(input, output, session) {
 
       reportPath <- file.path(getwd(), paste0("report", formatInput(), ".Rmd"))
       # file.copy("report.Rmd", tempReport, overwrite = TRUE)
-      parameters<-list(a = test_answers(),
+      parameters<-list(author = input$reportAuthor,
+                       dataset = input$reportDataName,
+                       a = test_answers(),
                        k = test_key(),
                        # total scores
                        results = t(totalscores_table_Input()),

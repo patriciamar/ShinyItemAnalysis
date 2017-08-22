@@ -9,17 +9,17 @@ output:
        number_sections: false
        toc: true
 author: |
-  Report created on `r Sys.Date()`
+  This report was created `r ifelse(params$author == "", "", paste("by", params$author))` `r ifelse(params$dataset == "", "", paste("on", params$dataset, "dataset"))` on `r Sys.Date()`
 
-  ShinyItemAnalysis: Test and item analysis
-
-  Application version `r packageVersion("ShinyItemAnalysis")`
+  ShinyItemAnalysis: Test and item analysis, version `r packageVersion("ShinyItemAnalysis")`
 
   &copy; 2017 Patricia Martinkova, Adela Drabinova, Ondrej Leder and Jakub Houdek.
     
   **************
   
 params:
+  author: NA
+  dataset: NA
   a: NA
   k: NA
   gr: NA
@@ -81,6 +81,7 @@ params:
 This report provides test and item analysis using ShinyItemAnalysis version `r packageVersion("ShinyItemAnalysis")`. ShinyItemAnalysis is available on
 [CRAN](https://CRAN.R-project.org/package=ShinyItemAnalysis) and also [online](https://shiny.cs.cas.cz/ShinyItemAnalysis/). This project is supported by Czech Science Foundation under grant number [GJ15-15856Y](http://www.cs.cas.cz/martinkova/psychometrics.html).
 
+**************
 
 # Summary
 
@@ -102,7 +103,9 @@ For selected cut-score, blue part of histogram shows students with total score a
 params$histogram_totalscores + ggtitle('Histogram of total scores') + theme(text = element_text(size = 10), plot.title = element_text(face = "bold"))
 ```
 
-## Standard scores
+**************
+
+# Scoring
 
 **Summary table of standard scores**: Total score also known as raw score is a total number of correct answers. It can be used to compare individual score to a norm group, e.g. if the mean is 12, then individual score can be compared to see if it is below or above this average. Percentile indicates the value below which a percentage of observations falls, e.g. a individual score at the 80th percentile means that the individual score is the same or higher than the scores of 80% of all respondents. 
 Success rate is the percentage of success, e.g. if the maximum points of test is equal to 20 and individual score is 12 then success rate is 12/20 = 0.6, i.e. 60%. 
@@ -145,30 +148,32 @@ if(params$isCriterionPresent & params$validity_check){
 }
 ```
 
-```{r validity-table, echo = FALSE, results='hide'}
+```{r validity-table, echo = FALSE, results = 'hide'}
 if(params$isCriterionPresent & params$validity_check){
   tab <- params$validity_table
   p.val <- tab["p-value"]
   rho <- tab[1]
 
-  txt1 <- paste("Interpretation:","\n")
-  txt2 <- ifelse(rho > 0, "positively", "negatively")
-  txt3 <- ifelse(p.val < 0.05,
-                 paste("The p-value is less than 0.05, thus we reject null hypotheses.
-                       Total score and criterion variable are", txt2, "correlated."),
-                 "The p-value is larger than 0.05, thus we don't reject null hypotheses.
-                 We cannot conclude that a significant correlation between total score
-                 and criterion variable exists.")
+  txt1 <- ifelse(p.val < 0.05, "less than", "larger than")
+  txt2 <- ifelse(p.val < 0.05, "reject", "do not reject")
+  txt3 <- ifelse(p.val < 0.05, 
+                 paste("total score and criterion variable are", ifelse(rho > 0, "positively", "negatively"), "correlated."),
+                 paste("we cannot conclude that a significant correlation between total score
+                        and criterion variable exists."))
+  txt4 <- paste("Test for association between total score and criterion variable is based on Spearman`s ", expression(rho), 
+                ". The null hypothesis is that correlation is 0. ", sep = " ") 
+  txt5 <- paste("Results:", expression(rho), "=", rho, "(p-value ", p.val ,").") 
+  txt6 <- paste("Interpretation: The p-value is", txt1, "0.05, thus we", txt2, "null hypothesis;", txt3)
+  
+  txt <- paste(txt4, txt5, txt6, collapse = "/n")
 }
 
 ```
 
-**`r if(params$isCriterionPresent & params$validity_check){txt1}`**
+`r if(params$isCriterionPresent & params$validity_check){txt}`
 
-`r if(params$isCriterionPresent & params$validity_check){txt3}`
+`r if (any(params$corr_plot != "") | params$validity_check) {"**************"}`
 
-
-**************
 
 # Traditional item analysis
 
@@ -176,7 +181,7 @@ if(params$isCriterionPresent & params$validity_check){
 
 Difficulty (red) of items is estimated as percent of students who answered correctly to that item. Discrimination (blue) is by default described by difference of percent correct in upper and lower third of students (Upper-Lower Index, ULI). By rule of thumb it should not be lower than 0.2 (borderline in the plot), except for very easy or very difficult items.
 
-```{r DD-plot-interpretation, echo=FALSE, results="hide"}
+```{r DD-plot-interpretation, echo = FALSE, results = "hide"}
 range1 <- params$DDplotRange1
 range2 <- params$DDplotRange2
 numgroups <- params$DDplotNumGroups
@@ -276,7 +281,7 @@ $$ {P}(Y_{ij} = 1|\theta_{i},a_j,b_j, c_j) =c_j + (1+c_j)\cdot\frac{e^{a_j(\thet
 `r if (any(params$wrightMap!="")) {"Wright map, also called item-person map, is a graphical tool to display person estimates and item parameters. The person side (left) represents histogram of estimated knowledge of students. The item side (right) displays estimates of difficulty of particular items."}`
 
 
-```{r wright-map, echo = FALSE, results = "hide", fig.height = 6, fig.width = 10, fig.align = 'center'}
+```{r wright-map, echo = FALSE, results = "hide", fig.height = 5.5, fig.width = 10, fig.align = 'center'}
 if (any(params$wrightMap != "")) {
   wrightMap(params$wrightMap[[1]], params$wrightMap[[2]], item.side = itemClassic)
 }
@@ -285,19 +290,19 @@ if (any(params$wrightMap != "")) {
 
 **Selected model:`r head`**
 
-```{r irt-0, echo = FALSE, results = "hide", fig.height = 4}
+```{r irt-0, echo = FALSE, results = "hide", fig.height = 4, fig.align = 'center'}
 if (params$irt_type != "none") {
   params$irt
 }
 ```
 
-```{r irt-1, echo = FALSE, results = "hide", fig.height = 4}
+```{r irt-1, echo = FALSE, results = "hide", fig.height = 4, fig.align = 'center'}
 if (params$irt_type != "none") {
   params$irtiic
 }
 ```
 
-```{r irt-2, echo = FALSE, fig.height = 4}
+```{r irt-2, echo = FALSE, fig.height = 4, fig.align = 'center'}
 if (params$irt_type != "none") {
   params$irttif
 }
@@ -318,7 +323,7 @@ if (params$irt_type != "none") {
 
 **`r if (params$irt_type != "none") {"Ability estimates"}`**
 
-```{r irt-3, echo = FALSE, fig.height = 4}
+```{r irt-3, echo = FALSE, fig.height = 4, fig.align = 'center'}
 if (params$irt_type != "none") {
   params$irtfactor + ggtitle('Scatterplot of factor scores and standardized total scores') + theme(text = element_text(size = 10), plot.title = element_text(face = "bold"))
 }
