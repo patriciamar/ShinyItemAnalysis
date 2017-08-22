@@ -625,9 +625,13 @@ function(input, output, session) {
            isCriterionPresent = criterionPresent(),
            validity_check = input$predict_report,
            validity_plot = {if (input$predict_report) {if (criterionPresent()) {validity_plot_Input()} else {""}}},
+           validity_table = {if (input$predict_report) {if (criterionPresent()) {validity_table_Input()} else {""}}},
            incProgress(0.05),
            # item analysis
            difPlot = DDplot_Input(),
+           DDplotRange1 = ifelse(input$customizeCheck, input$DDplotRangeSlider_report[[1]], input$DDplotRangeSlider[[1]]),
+           DDplotRange2 = ifelse(input$customizeCheck, input$DDplotRangeSlider_report[[2]], input$DDplotRangeSlider[[2]]),
+           DDplotNumGroups = ifelse(input$customizeCheck, input$DDplotNumGroupsSlider_report, input$DDplotNumGroupsSlider),
            itemexam = itemanalysis_table_Input(),
            incProgress(0.05),
            # distractors
@@ -705,8 +709,12 @@ function(input, output, session) {
                        isCriterionPresent = criterionPresent(),
                        validity_check = input$predict_report,
                        validity_plot = {if (input$predict_report) {if (criterionPresent()) {validity_plot_Input()} else {""}}},
+                       validity_table = {if (input$predict_report) {if (criterionPresent()) {validity_table_Input()} else {""}}},
                        # item analysis
                        difPlot = DDplot_Input(),
+                       DDplotRange1 = ifelse(input$customizeCheck, input$DDplotRangeSlider_report[[1]], input$DDplotRangeSlider[[1]]),
+                       DDplotRange2 = ifelse(input$customizeCheck, input$DDplotRangeSlider_report[[2]], input$DDplotRangeSlider[[2]]),
+                       DDplotNumGroups = ifelse(input$customizeCheck, input$DDplotNumGroupsSlider_report, input$DDplotNumGroupsSlider),
                        itemexam = itemanalysis_table_Input(),
                        # distractors
                        hist_distractor_by_group = distractor_histogram_Input(),

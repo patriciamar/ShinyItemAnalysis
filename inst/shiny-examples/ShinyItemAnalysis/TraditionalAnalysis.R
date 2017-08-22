@@ -20,26 +20,43 @@ output$DDplot_text <- renderUI({
   range1 <- input$DDplotRangeSlider[[1]]
   range2 <- input$DDplotRangeSlider[[2]]
 
-  HTML(paste(
-    "Discrimination is here a difference between the difficulty recorded in the ",
-    "<b>", range1, "</b>",
-    ifelse(range1 >= 4, "-th", switch(range1, "1" = "-st", "2" = "-nd", "3" = "-rd")),
-    " and <b>", range2, "</b>",
-    ifelse(range2 >= 4, "-th", switch(range2, "1" = "-st", "2" = "-nd", "3" = "-rd")),
-    " group out of total number of ",
-    "<b>", input$DDplotNumGroupsSlider, "</b>",
-    " groups. ",
-    sep = ""
-  ))
+  if (any(range1!=1, range2!=3, input$DDplotNumGroupsSlider!=3)) {
+    HTML(paste(
+      "Discrimination is here a difference between the difficulty recorded in the ",
+      "<b>", range1, "</b>",
+      ifelse(range1 >= 4, "-th", switch(range1, "1" = "-st", "2" = "-nd", "3" = "-rd")),
+      " and <b>", range2, "</b>",
+      ifelse(range2 >= 4, "-th", switch(range2, "1" = "-st", "2" = "-nd", "3" = "-rd")),
+      " group out of total number of ",
+      "<b>", input$DDplotNumGroupsSlider, "</b>",
+      " groups. ",
+      sep = ""
+    ))
+  }
 
 })
 
 # ** Difficulty/Discrimination plot ######
 DDplot_Input <- reactive({
+
   correct <- correct_answ()
   DDplot(correct, item.names = item_numbers(),
          k = input$DDplotNumGroupsSlider,
          l = input$DDplotRangeSlider[[1]], u = input$DDplotRangeSlider[[2]])
+})
+
+# ** Difficulty/Discrimination plot for report######
+DDplot_Input_report<-reactive({
+  correct <- correct_answ()
+  if (input$customizeCheck) {
+    DDplot(correct, item.names = item_numbers(),
+           k = input$DDplotNumGroupsSlider_report,
+           l = input$DDplotRangeSlider_report[[1]], u = input$DDplotRangeSlider_report[[2]])
+  } else {
+    DDplot(correct, item.names = item_numbers(),
+           k = input$DDplotNumGroupsSlider,
+           l = input$DDplotRangeSlider[[1]], u = input$DDplotRangeSlider[[2]])
+  }
 })
 
 # ** Output Difficulty/Discrimination plot ######
