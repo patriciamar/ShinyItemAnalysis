@@ -34,12 +34,6 @@ require(xtable)
 # DATA ######
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-# data('GMAT', package = 'difNLR')
-# data('GMATtest', package = 'difNLR')
-# data('GMATkey', package = 'difNLR')
-# test <- data.table(get("GMATtest"))
-# key <- data.table(get("GMATkey"))
-
 # maximum upload size set to 30MB
 options(shiny.maxRequestSize = 30*1024^2)
 
@@ -647,7 +641,7 @@ function(input, output, session) {
            validity_table = {if (input$predict_report) {if (criterionPresent()) {validity_table_Input()} else {""}}},
            incProgress(0.05),
            # item analysis
-           difPlot = DDplot_Input(),
+           difPlot = DDplot_Input_report(),
            DDplotRange1 = ifelse(input$customizeCheck, input$DDplotRangeSlider_report[[1]], input$DDplotRangeSlider[[1]]),
            DDplotRange2 = ifelse(input$customizeCheck, input$DDplotRangeSlider_report[[2]], input$DDplotRangeSlider[[2]]),
            DDplotNumGroups = ifelse(input$customizeCheck, input$DDplotNumGroupsSlider_report, input$DDplotNumGroupsSlider),
@@ -732,7 +726,7 @@ function(input, output, session) {
                        validity_plot = {if (input$predict_report) {if (criterionPresent()) {validity_plot_Input()} else {""}}},
                        validity_table = {if (input$predict_report) {if (criterionPresent()) {validity_table_Input()} else {""}}},
                        # item analysis
-                       difPlot = DDplot_Input(),
+                       difPlot = DDplot_Input_report(),
                        DDplotRange1 = ifelse(input$customizeCheck, input$DDplotRangeSlider_report[[1]], input$DDplotRangeSlider[[1]]),
                        DDplotRange2 = ifelse(input$customizeCheck, input$DDplotRangeSlider_report[[2]], input$DDplotRangeSlider[[2]]),
                        DDplotNumGroups = ifelse(input$customizeCheck, input$DDplotNumGroupsSlider_report, input$DDplotNumGroupsSlider),
