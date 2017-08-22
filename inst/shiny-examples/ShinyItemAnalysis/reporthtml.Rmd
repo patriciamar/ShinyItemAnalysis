@@ -162,7 +162,7 @@ if(params$isCriterionPresent & params$validity_check){
                         and criterion variable exists."))
   txt4 <- paste("Test for association between total score and criterion variable is based on Spearman`s ", expression(rho), 
                 ". The null hypothesis is that correlation is 0. ", sep = "") 
-  txt5 <- paste("Results:", expression(rho), "=", rho, "(p-value", p.val ,").") 
+  txt5 <- paste("Results: ", expression(rho), " = ", rho, " (p-value ", p.val ,").", sep = "") 
   txt6 <- paste("Interpretation: The p-value is", txt1, "0.05, thus we", txt2, "the null hypothesis;", txt3)
   
   txt <- paste(txt4, txt5, txt6, collapse = "/n")
