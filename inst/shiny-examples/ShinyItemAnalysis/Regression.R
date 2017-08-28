@@ -644,7 +644,7 @@ multi_plot_Input <- reactive({
 })
 
 # ** Reports: Plot with estimated curves of multinomial regression ######
-multiplotReportInput<-reactive({
+multiplotReportInput <- reactive({
   graflist <- list()
   key <- unlist(test_key())
   data <- test_answers()
@@ -686,12 +686,17 @@ multiplotReportInput<-reactive({
       ylim(0, 1) +
       labs(x = "Standardized total score",
            y = "Probability of answer") +
+      guides(colour = guide_legend(order = 1),
+             linetype = guide_legend(order = 1),
+             fill = guide_legend(order = 1),
+             size = guide_legend(order = 2)) +
       theme_bw() +
       theme(axis.line  = element_line(colour = "black"),
             panel.grid.major = element_blank(),
             panel.grid.minor = element_blank(),
             panel.background = element_blank(),
             legend.title = element_blank(),
+            legend.box = "horizontal",
             legend.position = c(0, 1),
             legend.justification = c(0, 1),
             legend.background = element_blank(),

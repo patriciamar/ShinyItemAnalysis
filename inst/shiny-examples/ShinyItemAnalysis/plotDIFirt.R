@@ -176,7 +176,7 @@ plotDIFirt <- function(parameters, test = "Lord", item = "all", item.name, same.
       ### theme
       xlab("Ability") +
       ylab("Probability of correct answer") +
-      scale_y_continuous(expand = c(0, 0), limits = c(0, 1))  +
+      scale_y_continuous(limits = c(0, 1))  +
       theme_bw() +
       theme(text = element_text(size = 14),
             plot.title = element_text(size = 14, face = "bold", vjust = 1.5),
