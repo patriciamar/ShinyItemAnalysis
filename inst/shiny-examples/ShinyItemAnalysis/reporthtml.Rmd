@@ -99,8 +99,11 @@ kable(t(table), digits = c(0, 0, 3, 0, 3, 3, 3), align = 'c')
 
 For selected cut-score, blue part of histogram shows students with total score above the cut-score, grey column shows students with total score equal to the cut-score and red part of histogram shows students below the cut-score.
 
-```{r total-scores-histogram, echo = FALSE,  fig.height = 4, fig.align = 'center'}
-params$histogram_totalscores + ggtitle('Histogram of total scores') + theme(text = element_text(size = 10), plot.title = element_text(face = "bold"))
+```{r total-scores-histogram, echo = FALSE, fig.width = 11, fig.height = 4, fig.align = 'center', dpi = 300}
+params$histogram_totalscores + 
+  ggtitle('Histogram of total scores') + 
+  theme(text = element_text(size = 10), 
+        plot.title = element_text(face = "bold"))
 ```
 
 **************
@@ -116,7 +119,7 @@ table = params$standardscores_table
 kable(table, align = 'c')
 ```
 
-**************
+`r if (any(params$corr_plot != "") | params$validity_check) {"**************"}`
 
 `r if (any(params$corr_plot != "") | params$validity_check) {"# Validity"}`
 
@@ -124,7 +127,7 @@ kable(table, align = 'c')
 
 `r if (any(params$corr_plot != "")) {"**Polychoric correlation heat map** is a correlation plot which displays a polychoric correlations of items. The size and shade of circles indicate how much the items are correlated (larger and darker circle means larger correlation). The color of circles indicates in which way the items are correlated - blue color shows possitive correlation and red color shows negative correlation."}`
 
-```{r corr-plot, echo = FALSE, fig.height = 4, fig.align = 'center'}
+```{r corr-plot, echo = FALSE, fig.width = 11, fig.height = 4, fig.align = 'center', dpi = 300}
 if (any(params$corr_plot != "")) {
   corrplot(params$corr_plot, tl.cex = 0.7)
 }
@@ -132,9 +135,12 @@ if (any(params$corr_plot != "")) {
 
 `r if (any(params$corr_plot != "")) {"**Scree plot** displays the eigenvalues associated with an component or a factor in descending order versus the number of the component or factor."}`
 
-```{r scree-plot, echo = FALSE, fig.height = 4, fig.align = 'center'}
+```{r scree-plot, echo = FALSE, fig.width = 11, fig.height = 4, fig.align = 'center', dpi = 300}
 if (any(params$corr_plot != "")) {
-  params$scree_plot + ggtitle("Scree plot") + theme(text = element_text(size = 10), plot.title = element_text(face = "bold"))
+  params$scree_plot + 
+    ggtitle("Scree plot") + 
+    theme(text = element_text(size = 10), 
+          plot.title = element_text(face = "bold"))
 }
 ```
 
@@ -142,9 +148,10 @@ if (any(params$corr_plot != "")) {
 
 `r if(!(params$isCriterionPresent) & params$validity_check){"Criterion variable vector is not present. Predictive validity analysis could not have been generated!"}`
 
-```{r validity-plot, echo = FALSE, results = "hide", fig.height = 4, fig.align = 'center'}
+```{r validity-plot, echo = FALSE, fig.width = 11, fig.height = 4, fig.align = 'center', dpi = 300}
 if(params$isCriterionPresent & params$validity_check){
-  params$validity_plot + theme(text = element_text(size = 10))
+  params$validity_plot + 
+    theme(text = element_text(size = 10))
 }
 ```
 
@@ -172,8 +179,7 @@ if(params$isCriterionPresent & params$validity_check){
 
 `r if(params$isCriterionPresent & params$validity_check){txt}`
 
-`r if (any(params$corr_plot != "") | params$validity_check) {"**************"}`
-
+**************
 
 # Traditional item analysis
 
@@ -186,7 +192,7 @@ range1 <- params$DDplotRange1
 range2 <- params$DDplotRange2
 numgroups <- params$DDplotNumGroups
 
-  if (any(range1!=1, range2!=3, numgroups!=3)) {
+  if (any(range1 != 1, range2 != 3, numgroups != 3)) {
     DDplot_interpretation=HTML(paste(
       "Discrimination is here a difference between the difficulty recorded in the ",
       "<b>", range1, "</b>",
@@ -201,11 +207,14 @@ numgroups <- params$DDplotNumGroups
   }
 ```
 
-`r if (any(range1!=1, range2!=3, numgroups!=3)) {DDplot_interpretation}`
+`r if (any(range1 != 1, range2 != 3, numgroups != 3)) {DDplot_interpretation}`
 
 <!-- THIS HAS TO BE MODIFY - ADD INFO WHAT GROUPS WERE SELECTED -->
-```{r DD-plot, echo = FALSE, fig.height = 4, fig.align = 'center'}
-params$difPlot + ggtitle('Difficulty/Discrimination plot') + theme(text = element_text(size = 10), plot.title = element_text(face = "bold"))
+```{r DD-plot, echo = FALSE, fig.width = 11, fig.height = 4, fig.align = 'center', dpi = 300}
+params$difPlot + 
+  ggtitle('Difficulty/Discrimination plot') + 
+  theme(text = element_text(size = 10), 
+        plot.title = element_text(face = "bold"))
 ```
 
 **Traditional item analysis table**: Diff. - Difficulty of item is estimated as percent of students who answered correctly to that item. SD - standard deviation, ULI - Upper-Lower Index, RIT - Pearson correlation between item and total score, RIR - Pearson correlation between item and rest of items, Alpha Drop - Cronbach's alpha of test without given item, Cust. D.- difference between the difficulty recorded in the groups selected by user.
@@ -224,10 +233,12 @@ kable(table, digits = c(0, 4, 4, 4, 4, 4, 4), align = 'c')
 
 Respondents are divided into selected number groups by their total score. Subsequently, the percentage of students in each group who selected given answer (correct answer or distractor) is displayed. The correct answer should be more often selected by strong students than by students with lower total score, i.e. solid line should be increasing. The distractor should work in opposite direction, i.e. dotted lines should be decreasing.
 
-```{r distractor-multi-plot, echo = FALSE, fig.width = 10, fig.align = 'center'}
+```{r distractor-multi-plot, echo = FALSE, fig.width = 11, fig.height = 4, fig.align = 'center', dpi = 300}
 library(gridExtra)
 for (i in 1:length(params$graf)){
-  grid.arrange(params$graf[[i]], params$multiplot[[i]], ncol = 2)
+  g1 <- params$graf[[i]]
+  g2 <- params$multiplot[[i]]
+  grid.arrange(g1, g2, ncol = 2)
 }
 ```
 
@@ -281,7 +292,7 @@ $$ {P}(Y_{ij} = 1|\theta_{i},a_j,b_j, c_j) =c_j + (1+c_j)\cdot\frac{e^{a_j(\thet
 `r if (any(params$wrightMap!="")) {"Wright map, also called item-person map, is a graphical tool to display person estimates and item parameters. The person side (left) represents histogram of estimated knowledge of students. The item side (right) displays estimates of difficulty of particular items."}`
 
 
-```{r wright-map, echo = FALSE, results = "hide", fig.height = 5.5, fig.width = 10, fig.align = 'center'}
+```{r wright-map, echo = FALSE, results = "hide", fig.height = 5.5, fig.width = 11, fig.align = 'center'}
 if (any(params$wrightMap != "")) {
   wrightMap(params$wrightMap[[1]], params$wrightMap[[2]], item.side = itemClassic)
 }
@@ -290,19 +301,19 @@ if (any(params$wrightMap != "")) {
 
 **Selected model:`r head`**
 
-```{r irt-0, echo = FALSE, results = "hide", fig.height = 4, fig.align = 'center'}
+```{r irt-0, echo = FALSE, results = "hide", fig.width = 11, fig.height = 4, fig.align = 'center', dpi = 300}
 if (params$irt_type != "none") {
   params$irt
 }
 ```
 
-```{r irt-1, echo = FALSE, results = "hide", fig.height = 4, fig.align = 'center'}
+```{r irt-1, echo = FALSE, results = "hide", fig.width = 11, fig.height = 4, fig.align = 'center', dpi = 300}
 if (params$irt_type != "none") {
   params$irtiic
 }
 ```
 
-```{r irt-2, echo = FALSE, fig.height = 4, fig.align = 'center'}
+```{r irt-2, echo = FALSE, results = "hide", fig.width = 11, fig.height = 4, fig.align = 'center', dpi = 300}
 if (params$irt_type != "none") {
   params$irttif
 }
@@ -323,9 +334,12 @@ if (params$irt_type != "none") {
 
 **`r if (params$irt_type != "none") {"Ability estimates"}`**
 
-```{r irt-3, echo = FALSE, fig.height = 4, fig.align = 'center'}
+```{r irt-3, echo = FALSE, fig.width = 11, fig.height = 4, fig.align = 'center', dpi = 300}
 if (params$irt_type != "none") {
-  params$irtfactor + ggtitle('Scatterplot of factor scores and standardized total scores') + theme(text = element_text(size = 10), plot.title = element_text(face = "bold"))
+  params$irtfactor + 
+    ggtitle('Scatterplot of factor scores and standardized total scores') + 
+    theme(text = element_text(size = 10), 
+          plot.title = element_text(face = "bold"))
 }
 ```
 
@@ -351,12 +365,16 @@ if (params$histCheck) {
 ```
 
 
-```{r hist-by-group, echo = FALSE, fig.height = 8, fig.align = 'center'}
+```{r hist-by-group, echo = FALSE, fig.width = 11, fig.height = 4, fig.align = 'center'}
 if (params$histCheck) {
   if(params$isGroupPresent){
-    g1 = params$histbyscoregroup0 + theme(text = element_text(size = 10), plot.title = element_text(face = "bold"))
-    g2 = params$histbyscoregroup1 + theme(text = element_text(size = 10), plot.title = element_text(face = "bold"))
-    grid.arrange(g1, g2, ncol = 1)
+    g1 = params$histbyscoregroup0 + 
+      theme(text = element_text(size = 10), 
+            plot.title = element_text(face = "bold"))
+    g2 = params$histbyscoregroup1 + 
+      theme(text = element_text(size = 10), 
+            plot.title = element_text(face = "bold"))
+    grid.arrange(g1, g2, nrow = 1)
   }
 }
 ```
@@ -374,12 +392,13 @@ if (params$deltaplotCheck) {
 ```
 
 
-```{r delta-plot, echo = FALSE, results = "hide", fig.height = 4, fig.align = 'center'}
+```{r delta-plot, echo = FALSE, fig.width = 11, fig.height = 4, fig.align = 'center'}
 if (params$deltaplotCheck) {
   if(params$isGroupPresent){
     print(params$deltaplot +
             geom_text(size = 0.1) +
-            theme(text = element_text(size = 10), plot.title = element_text(face = "bold")))
+            theme(text = element_text(size = 10), 
+                  plot.title = element_text(face = "bold")))
   }
 }
 ```
@@ -398,10 +417,14 @@ if (params$logregCheck) {
 
 `r if(params$isGroupPresent & params$logregCheck) {"Plots and tables are based on DIF logistic procedure without any correction method."}`
 
-```{r dif-logistic-plot, echo = FALSE, results = 'hide', fig.height = 4, fig.align = 'center'}
+```{r dif-logistic-plot, echo = FALSE, fig.width = 11, fig.height = 4, fig.align = 'center'}
 if (params$logregCheck) {
   if(params$isGroupPresent){
-    params$DIF_logistic_plot
+    for (i in 1:length(params$DIF_logistic_print$DIFitems)){
+      print(params$DIF_logistic_plot[[i]] + 
+              theme(text = element_text(size = 10), 
+                    plot.title = element_text(size = 12, face = "bold")))
+    }
   }
 }
 ```
@@ -420,10 +443,14 @@ if (params$multiCheck) {
 
 `r if(params$isGroupPresent & params$multiCheck) {"Points represent proportion of selected answer with respect to standardized total score. Size of points is determined by count of respondents who chose particular answer. "}`
 
-```{r ddf-multi-plot, echo = FALSE, results = 'hide', fig.height = 4, fig.align = 'center'}
+```{r ddf-multi-plot, echo = FALSE, fig.width = 11, fig.height = 4, fig.align = 'center'}
 if (params$multiCheck) {
   if(params$isGroupPresent){
-    params$plot_DDFReportInput
+    for (i in 1:length(params$model_DDF_print$DDFitems)){
+      print(params$plot_DDFReportInput[[i]] + 
+              theme(text = element_text(size = 14), 
+                    plot.title = element_text(size = 16, face = "bold")))
+    }
   }
 }
 ```

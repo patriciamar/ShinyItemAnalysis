@@ -5,6 +5,23 @@
         ***************************************************************
 
 ---------------------------------------------------
+- Changes in ShinyItemAnalysis 1.2.4 (2017-08-28) -
+---------------------------------------------------
+
+MINOR UPDATES
+
+  o Reports were mildly updated.
+  o Resolution of figures in reports was increased (now 300ppi)
+  o Dependencies were updated.
+  o Some typos fixed.
+  o Legends of plots were unified and placed in better way for
+      - 'NLR IRT Z'
+      - 'DDF'
+      - function 'plotDIFlogistic()'
+  o Bug in item names for 'DDF' subsection of 'Fairness/DIF' section
+    was fixed.
+
+---------------------------------------------------
 - Changes in ShinyItemAnalysis 1.2.3 (2017-08-22) -
 ---------------------------------------------------
 

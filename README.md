@@ -2,7 +2,7 @@
 Test and item analysis via shiny.
 
 ![GHversion](https://img.shields.io/github/release/patriciamar/ShinyItemAnalysis.svg)
-[![online](https://img.shields.io/badge/online-1.2.3-yellow.svg)](https://shiny.cs.cas.cz/ShinyItemAnalysis/)
+[![online](https://img.shields.io/badge/online-1.2.4-yellow.svg)](https://shiny.cs.cas.cz/ShinyItemAnalysis/)
 [![version](https://www.r-pkg.org/badges/version/ShinyItemAnalysis)](https://CRAN.R-project.org/package=ShinyItemAnalysis)
 ![cranlogs](https://cranlogs.r-pkg.org/badges/ShinyItemAnalysis)
 
@@ -27,7 +27,7 @@ install.packages("ShinyItemAnalysis")
 devtools::install_github("patriciamar/ShinyItemAnalysis")
 ```
 ## Version
-Current version available on [**CRAN**](https://CRAN.R-project.org/package=ShinyItemAnalysis) is 1.2.3. Version available [**online**](https://shiny.cs.cas.cz/ShinyItemAnalysis/) is 1.2.3. The newest development version available on [**GitHub**](https://github.com/patriciamar/ShinyItemAnalysis) is 1.2.3.
+Current version available on [**CRAN**](https://CRAN.R-project.org/package=ShinyItemAnalysis) is 1.2.3. Version available [**online**](https://shiny.cs.cas.cz/ShinyItemAnalysis/) is 1.2.4. The newest development version available on [**GitHub**](https://github.com/patriciamar/ShinyItemAnalysis) is 1.2.4.
 
 ## Usage
 It's very easy to run `ShinyItemAnalysis`:

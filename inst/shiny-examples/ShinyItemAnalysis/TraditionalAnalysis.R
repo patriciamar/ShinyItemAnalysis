@@ -202,6 +202,7 @@ output$DB_distractor_plot <- downloadHandler(
 # ** Report distractors plot ######
 report_distractor_plot <- reactive({
   a <- test_answers()
+  colnames(a) <- item_names()
   k <- test_key()
 
   if (!input$customizeCheck) {

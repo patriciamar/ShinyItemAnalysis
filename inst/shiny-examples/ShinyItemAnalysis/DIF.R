@@ -1149,6 +1149,7 @@ include.colnames = T)
 model_DDF_print <- reactive({
   group <- unlist(DIF_groups())
   a <- data.frame(test_answers())
+  colnames(a) <- item_names()
   k <- test_key()
 
   adj.method <- input$correction_method_print_DDF
@@ -1165,6 +1166,7 @@ model_DDF_print <- reactive({
 model_DDF_print_report <- reactive({
   group <- unlist(DIF_groups())
   a <- data.frame(test_answers())
+  colnames(a) <- item_names()
   k <- test_key()
 
   if (!input$customizeCheck) {
@@ -1193,6 +1195,7 @@ output$print_DDF <- renderPrint({
 model_DDF_plot <- reactive({
   group <- unlist(DIF_groups())
   a <- data.frame(test_answers())
+  colnames(a) <- item_names()
   k <- test_key()
 
   adj.method <- input$correction_method_plot_DDF
@@ -1221,6 +1224,7 @@ plot_DDFInput <- reactive({
 plot_DDFReportInput <- reactive({
   group <- unlist(DIF_groups())
   a <- data.frame(test_answers())
+  colnames(a) <- item_names()
   k <- test_key()
 
   if (!input$customizeCheck) {
@@ -1242,10 +1246,8 @@ plot_DDFReportInput <- reactive({
   for (i in 1:length(mod$DDFitems)) {
     g <- plot(mod, item = mod$DDFitems[i])[[1]] +
       theme(text = element_text(size = 12),
-            plot.title = element_text(size = 12, face = "bold",
-                                      vjust = 1.5)) +
-      ggtitle(paste("\nDDF multinomial plot for item",
-                    item_numbers()[mod$DDFitems[i]]))
+            plot.title = element_text(size = 12, face = "bold", vjust = 1.5)) +
+      ggtitle(paste("\nDDF multinomial plot for item ", item_numbers()[mod$DDFitems[i]]))
     graflist[[i]] <- g
   }
   #} else {

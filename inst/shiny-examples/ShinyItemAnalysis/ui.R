@@ -50,7 +50,7 @@ ui = tagList(
                div(class = "clear"),
                div(class = "panel-footer",
                    HTML('<p> <font size = "4"> ShinyItemAnalysis </font>
-                             <font size = "2"> Test and item analysis | Version 1.2.3 </font>
+                             <font size = "2"> Test and item analysis | Version 1.2.4 </font>
                              <span style = "float:right">
                                 <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysis/" id = "tooltipweb" target="_blank"> <img src = "web_icon.png", style = "width: 25px;"> </a>
                                 <a href = "https://github.com/patriciamar/ShinyItemAnalysis/" id = "tooltipgithub" target="_blank"> <img src = "github_icon.png", style = "width: 25px;"> </a>
@@ -99,7 +99,7 @@ ui = tagList(
                       h4('Data'),
                       p('For demonstration purposes, by default, 20-item dataset', code('GMAT'),'
                         from R ', code('difNLR'),' package is used. Other three datasets are available: ',
-                        code('GMAT2'), 'and', code('Medical 20 DIF'), 'from', code('difNLR'), 'package and ',
+                        code('GMAT2'), 'and', code('MSAT-B'), 'from', code('difNLR'), 'package and ',
                         code('Medical 100'), 'from', code('ShinyItemAnalysis'), 'package.
                         You can change the dataset (and try your own one) on page', strong('Data.')),
 
@@ -161,9 +161,9 @@ ui = tagList(
                       p('Current version of ', code('ShinyItemAnalysis'), ' available on ',
                         a('CRAN', href = 'https://CRAN.R-project.org/package=ShinyItemAnalysis', target = "_blank"), 'is 1.2.3.
                         Version available',
-                        a('online', href = 'https://shiny.cs.cas.cz/ShinyItemAnalysis/', target = "_blank"), 'is 1.2.3.
+                        a('online', href = 'https://shiny.cs.cas.cz/ShinyItemAnalysis/', target = "_blank"), 'is 1.2.4.
                         The newest development version available on ',
-                        a('GitHub', href = 'https://github.com/patriciamar/ShinyItemAnalysis', target = "_blank"), 'is 1.2.3.'),
+                        a('GitHub', href = 'https://github.com/patriciamar/ShinyItemAnalysis', target = "_blank"), 'is 1.2.4.'),
                       p('See also older versions: ',
                          a('0.1.0, ', href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV01/", target = "_blank"),
                          a('0.2.0, ', href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV02/", target = "_blank"),
@@ -282,7 +282,7 @@ ui = tagList(
                       p('Dataset ', code("MSAT-B"), ' (Drabinova & Martinkova, 2017) is a subset of real Medical School Admission
                          Test in Biology in Czech Republic. The data set represents responses of 1,407 subjects (484 males,
                          923 females) to multiple-choice test of 20 items. First item was previously detected as
-                         functioning differently. For more details of item selection see Drabinova & Martinkova (2017).
+                         functioning differently. For more details of item selection see Drabinova and Martinkova (2017).
                          Dataset can be found in R ', code('difNLR'),' package.'),
                       p('Dataset ', code("Medical 100"), ' is a real data set of admission test to medical school
                          from R ', code('ShinyItemAnalysis'),' package. The data set represents responses of
