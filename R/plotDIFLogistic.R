@@ -52,6 +52,7 @@
 #'
 #'
 #' @export
+#' @importFrom ggplot2 guides guide_legend
 
 
 
