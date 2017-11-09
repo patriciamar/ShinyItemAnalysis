@@ -22,6 +22,7 @@ params:
   histogram_totalscores: NA
   standardscores_table: NA
   corr_plot: NA
+  corr_plot_numclust: NA
   scree_plot: NA
   isCriterionPresent: NA
   validity_check: NA
@@ -118,9 +119,18 @@ kable(table, align = 'c')
 
 `r if (any(params$corr_plot != "")) {"**Polychoric correlation heat map** is a correlation plot which displays a polychoric correlations of items. The size and shade of circles indicate how much the items are correlated (larger and darker circle means larger correlation). The color of circles indicates in which way the items are correlated - blue color shows possitive correlation and red color shows negative correlation."}`
 
+`r if (any(params$corr_plot != "") & params$corr_plot_numclust > 1) {paste("Polychoric correlation heat map is reorder using hierarchical clustering with Ward's minimum variance method which aims at finding compact clusters. Number of", params$corr_plot_numclust, "clusters is considered. ")}`
+
 ```{r corr-plot, echo = FALSE, fig.height = 4.5, fig.width = 9}
 if (any(params$corr_plot != "")) {
-  corrplot(params$corr_plot, tl.cex = 0.7)
+  numclust <- params$corr_plot_numclust
+
+  if (numclust == 1){
+    corrplot(params$corr_plot, tl.cex = 0.7)
+  } else {
+    corrplot(params$corr_plot, tl.cex = 0.7,
+             order = "hclust", hclust.method = "ward.D", addrect = numclust)
+  }
 }
 ```
 

@@ -509,11 +509,19 @@ ui = tagList(
                                   h3("Correlation structure"),
                                   h4("Polychoric correlation heat map"),
                                   p('Polychoric correlation heat map is a correlation plot which displays a polychoric
-                                                 correlations of items. The size and shade of circles indicate how much the
-                                                 items are correlated (larger and darker
-                                                 circle means larger correlation). The color of circles indicates in which way the
-                                                 items are correlated - blue color shows possitive correlation and red color shows
-                                                 negative correlation.'),
+                                     correlations of items. The size and shade of circles indicate how much the
+                                     items are correlated (larger and darker circle means larger correlation).
+                                     The color of circles indicates in which way the items are correlated - blue
+                                     color shows possitive correlation and red color shows negative correlation.'),
+                                  p("Polychoric correlation heat map can be reorder using hierarchical clustering with
+                                    Ward's minimum variance method which aims at finding compact clusters. The clustering
+                                    is only applied when number of clusters is larger than one. "),
+                                  div(style = "display: inline-block; vertical-align: middle; width: 15%;",
+                                      numericInput('corr_plot_clust',
+                                                   label = 'Number of clusters',
+                                                   value = 1,
+                                                   min = 1,
+                                                   max = 1)),
                                   plotOutput('corr_plot'),
                                   downloadButton("DB_corr_plot", label = "Download figure"),
                                   br(),
@@ -2956,6 +2964,14 @@ ui = tagList(
                            column(4,
                                   p(strong("Validity")),
                                   checkboxInput("corr_report", "Correlation structure", FALSE),
+                                  conditionalPanel(condition = "input.customizeCheck",
+                                                   conditionalPanel(condition = "input.corr_report",
+                                                                    div(style = "display: inline-block; vertical-align: middle; width: 40%;",
+                                                                        numericInput('corr_plot_clust_report',
+                                                                                     label = 'Number of clusters',
+                                                                                     value = 1,
+                                                                                     min = 1,
+                                                                                     max = 1)))),
                                   checkboxInput("predict_report", "Predictive validity", FALSE)
                            )
                          ),

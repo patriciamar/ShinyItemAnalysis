@@ -19,8 +19,14 @@ corr_plot_Input <- reactive({
   corP <- corr_structure()
   corP <- corP$rho
   tlcex <- max(ifelse(dim(corP)[1] < 30, 1, 0.9 - (dim(corP)[1] - 30)*0.05), 0.5)
-  corrplot(corP, tl.cex = tlcex)
+  numclust <- input$corr_plot_clust
+  if (numclust == 1){
+    corrplot(corP, tl.cex = tlcex)
+  } else {
+    corrplot(corP, tl.cex = tlcex, order = "hclust", hclust.method = "ward.D", addrect = numclust)
+  }
 })
+
 
 # ** Output correlation plot ######
 output$corr_plot <- renderPlot({
