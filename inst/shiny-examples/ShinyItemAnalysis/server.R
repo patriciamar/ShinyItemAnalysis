@@ -453,7 +453,8 @@ function(input, output, session) {
       )
 
     itemCount = ncol(test_answers())
-
+    updateNumericInput(session = session, inputId = "corr_plot_clust", value = 1, max = itemCount)
+    updateNumericInput(session = session, inputId = "corr_plot_clust_report", value = 1, max = itemCount)
     updateSliderInput(session = session, inputId = "validitydistractorSlider", max = itemCount)
     updateSliderInput(session = session, inputId = "distractorSlider", max = itemCount)
     updateSliderInput(session = session, inputId = "logregSlider", max = itemCount)
@@ -635,6 +636,7 @@ function(input, output, session) {
            incProgress(0.05),
            # validity section
            corr_plot = {if (input$corr_report) {corr_plot_Input()} else {""}},
+           corr_plot_numclust = ifelse(input$customizeCheck, input$corr_plot_clust_report, input$corr_plot_clust),
            scree_plot = {if (input$corr_report) {scree_plot_Input()} else {""}},
            isCriterionPresent = criterionPresent(),
            validity_check = input$predict_report,
@@ -723,6 +725,7 @@ function(input, output, session) {
                          standardscores_table = scores_tables_Input(),
                          # validity section
                          corr_plot = {if (input$corr_report) {corr_plot_Input()} else {""}},
+                         corr_plot_numclust = ifelse(input$customizeCheck, input$corr_plot_clust_report, input$corr_plot_clust),
                          scree_plot = {if (input$corr_report) {scree_plot_Input()} else {""}},
                          isCriterionPresent = criterionPresent(),
                          validity_check = input$predict_report,
