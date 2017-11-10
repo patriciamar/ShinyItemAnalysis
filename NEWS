@@ -18,6 +18,8 @@ MAJOR UPDATES
 MINOR UPDATES
 
   o Link for Adela's website was added.
+  o Columns for BIC and its adjusted version were swapped in table for
+    IRT models comparison.
 
 ---------------------------------------------------
 - Changes in ShinyItemAnalysis 1.2.4 (2017-08-28) -

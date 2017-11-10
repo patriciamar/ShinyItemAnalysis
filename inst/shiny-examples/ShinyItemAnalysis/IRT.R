@@ -782,6 +782,7 @@ irtcomparisonInput <- reactive({
 
 
   rownames(df) <- c(nam, "BEST")
+  df <- df[, c(1, 2, 4, 3, 5:8)]
   df
 })
 
