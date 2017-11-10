@@ -1030,6 +1030,40 @@ output$bockFactorCorInput_mirt <- renderText({
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 # ** CC ######
+output$ccIRT_interpretation <- renderUI({
+  a1 <- input$ccIRTSlider_a1
+  b1 <- input$ccIRTSlider_b1
+  c1 <- input$ccIRTSlider_c1
+  d1 <- input$ccIRTSlider_d1
+
+  a2 <- input$ccIRTSlider_a2
+  b2 <- input$ccIRTSlider_b2
+  c2 <- input$ccIRTSlider_c2
+  d2 <- input$ccIRTSlider_d2
+
+  theta <- input$ccIRTSlider_theta
+
+  ccirt <- function(theta, a, b, c, d){
+    return(c + (d - c)/(1 + exp(-a*(theta - b))))
+  }
+
+  prob1 <- ccirt(theta, a1, b1, c1, d1)
+  prob2 <- ccirt(theta, a2, b2, c2, d2)
+
+  txt1 <- paste("The probability of correct answer with latent ability &#952; = ", theta,
+                " in <font color='red'>red</font> item with parameters ",
+                paste(paste(letters[1:4], "=", c(a1, b1, c1, d1)), collapse = ", "),
+                " is equall to <b>", sprintf("%.2f", prob1), "</b>. ", sep = "")
+  txt2 <- paste("The probability of correct answer with latent ability &#952; = ", theta,
+                " in <font color='blue'>blue</font> item with parameters ",
+                paste(paste(letters[1:4], "=", c(a2, b2, c2, d2)), collapse = ", "),
+                " is equall to <b>", sprintf("%.2f", prob2), "</b>. ", sep = "")
+  txt <- paste("<b>Interpretation: </b>", txt1, txt2)
+  HTML(txt)
+})
+
+
+
 ccIRT_plot_Input <- reactive({
   a1 <- input$ccIRTSlider_a1
   b1 <- input$ccIRTSlider_b1
@@ -1041,6 +1075,8 @@ ccIRT_plot_Input <- reactive({
   c2 <- input$ccIRTSlider_c2
   d2 <- input$ccIRTSlider_d2
 
+  theta <- input$ccIRTSlider_theta
+
   ccirt <- function(theta, a, b, c, d){
     return(c + (d - c)/(1 + exp(-a*(theta - b))))
   }
@@ -1048,9 +1084,22 @@ ccIRT_plot_Input <- reactive({
   g <- ggplot(data = data.frame(x = -4:4),
               mapping = aes(x = x)) +
     stat_function(fun = ccirt, args = list(a = a1, b = b1, c = c1, d = d1),
-                  aes(color = "red")) +
+                  aes(color = "b", linetype = "b")) +
     stat_function(fun = ccirt, args = list(a = a2, b = b2, c = c2, d = d2),
-                  aes(color = "blue")) +
+                  aes(color = "c", linetype = "c")) +
+    geom_segment(aes(y = ccirt(theta, a = a1, b = b1, c = c1, d = d1),
+                     yend = ccirt(theta, a = a1, b = b1, c = c1, d = d1),
+                     x = -4,
+                     xend = theta, color = "a", linetype = "a")) +
+    geom_segment(aes(y = ccirt(theta, a = a2, b = b2, c = c2, d = d2),
+                     yend = ccirt(theta, a = a2, b = b2, c = c2, d = d2),
+                     x = -4,
+                     xend = theta, color = "a", linetype = "a")) +
+    geom_segment(aes(y = 0,
+                     yend = max(ccirt(theta, a = a1, b = b1, c = c1, d = d1),
+                                ccirt(theta, a = a2, b = b2, c = c2, d = d2)),
+                     x = theta,
+                     xend = theta, color = "a", linetype = "a")) +
     xlim(-4, 4) +
     xlab("Ability") +
     ylab("Probability of correct answer") +
@@ -1064,32 +1113,68 @@ ccIRT_plot_Input <- reactive({
           plot.background = element_rect(fill = "transparent", colour = NA),
           legend.position = "none") +
     scale_color_manual(name = "",
-                       values = c("red", "blue"),
-                       labels = c(paste(paste(letters[1:4], "=", c(a1, b1, c1, d1)),
+                       # breaks = c("blue", "gray", "red"),
+                       # values = c("blue", "gray", "red"),
+                       breaks = c("a", "b", "c"),
+                       values = c("gray", "red", "blue"),
+                       labels = c(paste(expression(theta), "=", theta),
+                                  paste(paste(letters[1:4], "=", c(a1, b1, c1, d1)),
                                         collapse = ", "),
                                   paste(paste(paste(letters[1:4], "=", c(a2, b2, c2, d2))),
                                         collapse = ", "))) +
+    scale_linetype_manual(name = "",
+                          # breaks = c("blue", "gray", "red"),
+                          # values = c("solid", "dashed", "solid"),
+                          breaks = c("a", "b", "c"),
+                          values = c("dashed", "solid", "solid"),
+                          labels = c(paste(expression(theta), "=", theta),
+                                     paste(paste(letters[1:4], "=", c(a1, b1, c1, d1)),
+                                           collapse = ", "),
+                                     paste(paste(paste(letters[1:4], "=", c(a2, b2, c2, d2))),
+                                           collapse = ", "))) +
     ggtitle("Item characteristic curve")
   g
 
 })
 
 output$ccIRT_plot <- renderPlotly({
-  # output$ccIRT_plot <- renderPlot({
   g <- ccIRT_plot_Input()
 
   p <- ggplotly(g)
 
   text <- gsub("y", "Probability", p$x$data[[1]]$text)
   text <- gsub("x", "Ability", text)
+  text <- gsub("b: b<br />b: b<br />", "", text)
   p$x$data[[1]]$text <- text
 
   text <- gsub("y", "Probability", p$x$data[[2]]$text)
   text <- gsub("x", "Ability", text)
+  text <- gsub("c: c<br />c: c<br />", "", text)
   p$x$data[[2]]$text <- text
 
+  text <- gsub("ccirt\\(theta, a = a1, b = b1, c = c1, d = d1\\)", "Probability", p$x$data[[3]]$text)
+  text <- gsub("-4: -4<br />", "", text)
+  text <- gsub("<br />a: a<br />a: a<br />x: -4", "", text)
+  pos <- gregexpr('Probability', text)[[1]][2]
+  text <- substring(text, pos)
+  p$x$data[[3]]$text <- text
+
+  text <- gsub("ccirt\\(theta, a = a2, b = b2, c = c2, d = d2\\)", "Probability", p$x$data[[4]]$text)
+  text <- gsub("-4: -4<br />", "", text)
+  text <- gsub("<br />a: a<br />a: a<br />x: -4", "", text)
+  pos <- gregexpr('Probability', text)[[1]][2]
+  text <- substring(text, pos)
+  p$x$data[[4]]$text <- text
+
+  text <- gsub("max\\(ccirt\\(theta, a = a1, b = b1, c = c1, d = d1\\), ccirt\\(theta, a = a2, b = b2, c = c2, d = d2\\)\\)", "Probability", p$x$data[[5]]$text)
+  text <- gsub("a: a<br />", "", text)
+  pos <- regexpr('Probability', text)
+  text <- substring(text, pos)
+  pos <- regexpr("<br />x:", text)
+  text <- substring(text, 1, pos-1)
+  p$x$data[[5]]$text <- text
+
   p %>% config(displayModeBar = F)
-  # ccIRT_plot_Input()
 })
 
 output$DB_ccIRT <- downloadHandler(
@@ -1118,15 +1203,17 @@ iccIRT_plot_Input <- reactive({
   c2 <- input$ccIRTSlider_c2
   d2 <- input$ccIRTSlider_d2
 
+  theta <- input$ccIRTSlider_theta
+
   iccirt <- function(theta, a, b, c, d){
     return((d - c)*a^2*exp(a*(theta - b))/(1 + exp(a*(theta - b)))^2)
   }
 
   g <- ggplot(data = data.frame(x = -4:4), mapping = aes(x = x)) +
     stat_function(fun = iccirt, args = list(a = a1, b = b1, c = c1, d = d1),
-                  aes(color = "red")) +
+                  aes(color = "b")) +
     stat_function(fun = iccirt, args = list(a = a2, b = b2, c = c2, d = d2),
-                  aes(color = "blue")) +
+                  aes(color = "c")) +
     xlim(-4, 4) +
     ylim(0, 4) +
     xlab("Ability") +
@@ -1140,6 +1227,7 @@ iccIRT_plot_Input <- reactive({
           plot.background = element_rect(fill = "transparent", colour = NA),
           legend.position = "none") +
     scale_color_manual(name = "",
+                       breaks = c("b", "c"),
                        values = c("red", "blue"),
                        labels = c(paste(paste(letters[1:4], "=", c(a1, b1, c1, d1)),
                                         collapse = ", "),
@@ -1150,21 +1238,21 @@ iccIRT_plot_Input <- reactive({
 })
 
 output$iccIRT_plot <- renderPlotly({
-  # output$iccIRT_plot <- renderPlot({
   g <- iccIRT_plot_Input()
 
   p <- ggplotly(g)
 
   text <- gsub("y", "Information", p$x$data[[1]]$text)
   text <- gsub("x", "Ability", text)
+  text <- gsub("b: b<br />", "", text)
   p$x$data[[1]]$text <- text
 
   text <- gsub("y", "Information", p$x$data[[2]]$text)
   text <- gsub("x", "Ability", text)
+  text <- gsub("c: c<br />", "", text)
   p$x$data[[2]]$text <- text
 
   p %>% config(displayModeBar = F)
-  # iccIRT_plot_Input()
 })
 
 output$DB_iccIRT <- downloadHandler(
@@ -1253,4 +1341,14 @@ observe({
 observe({
   val <- input$ccIRTtext_d2
   updateSliderInput(session, "ccIRTSlider_d2", value = val)
+})
+
+# theta
+observe({
+  val <- input$ccIRTSlider_theta
+  updateTextInput(session, "ccIRTtext_theta", value = val)
+})
+observe({
+  val <- input$ccIRTtext_theta
+  updateSliderInput(session, "ccIRTSlider_theta", value = val)
 })
