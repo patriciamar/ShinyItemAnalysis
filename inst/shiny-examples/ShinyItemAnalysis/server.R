@@ -166,7 +166,7 @@ function(input, output, session) {
       dataset$group = group
     } else {
       if (length(dataset$group) == 1){
-        if (dataset$group == "missing"){
+        if (any(dataset$group == "missing")){
           validate(
             need(dataset$group != "missing",
                  "Group is missing! DIF and DDF analyses are not available!"),
@@ -277,6 +277,70 @@ function(input, output, session) {
       dataset$criterion_variable <- criterion_variable
     }
   )
+  checkDataText_Input <- eventReactive(input$submitButton, {
+    error_setting <- F
+    ### key
+    error_key <- ""
+    if (length(dataset$key) == 1){
+      if (dataset$key == "missing"){
+        error_key <- "The key need to be provided!"
+      }
+    } else {
+      if (ncol(dataset$answers) != length(dataset$key)){
+        error_key <- "The length of key need to be the same as number of columns of the main dataset!"
+        error_setting <- T
+      }
+    }
+    ### group
+    error_group <- ""
+    warni_group <- ""
+    if (any(dataset$group == "missing")){
+      warni_group <- "The group variable is not provided! DIF and DDF analyses are not available!"
+    } else {
+      if (nrow(dataset$answers) != length(dataset$group)){
+        error_group <- "The length of group need to be the same as number of observations in the main dataset!"
+        error_setting <- T
+      }
+    }
+    ### criterion variable
+    error_criterion_variable <- ""
+    warni_criterion_variable <- ""
+    if (any(dataset$criterion_variable == "missing")){
+      warni_criterion_variable <- "The criterion variable is not provided! Predictive validity analysis is not available!"
+    } else {
+      if (nrow(dataset$answers) != length(dataset$group)){
+        error_criterion_variable <- "The length of criterion variable need to be the same as number of observations in the main dataset!"
+        error_setting <- T
+      }
+    }
+
+    str_errors <- c(error_key, error_group, error_criterion_variable)
+    str_warnin <- c(warni_group, warni_criterion_variable)
+
+    if (any(str_warnin != "")){
+      str_warnin <- str_warnin[str_warnin != ""]
+      str_warnin <- paste("<font color = 'orange'> &#33;", str_warnin, "</font>", collapse = "<br>")
+    }
+
+    if(all(str_errors == "")){
+      paste(c("<font color = 'green'> &#10004; Your data were successfully uploaded. Check them in <b>Data exploration</b> tab. </font>",
+              str_warnin), collapse = "<br>")
+    } else {
+      str_errors <- str_errors[str_errors != ""]
+      str_errors <- paste("<font color = 'red'> &#10006;", str_errors, "</font>", collapse = "<br>")
+      if (error_setting){
+        paste(c(str_errors,
+                "<font color = 'red'> Check <b>Data exploration</b> tab to get idea what went wrong or try another
+                <b>Data specification</b> below. </font>"),
+              collapse = "<br>")
+      } else {
+        paste(str_errors)
+      }
+    }
+  })
+  output$checkDataText <- renderUI({
+    HTML(checkDataText_Input())
+  })
 
   # ITEM NUMBERS AND NAMES ######
   item_numbers <- reactive({
@@ -326,7 +390,7 @@ function(input, output, session) {
   })
 
   # DATA HEAD ######
-  output$headdata_print<-renderTable({
+  output$headdata_print <- renderTable({
     data_table <- test_answers()
     colnames(data_table) <- item_names()
     head(data_table)
