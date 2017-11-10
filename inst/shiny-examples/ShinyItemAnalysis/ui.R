@@ -28,8 +28,7 @@ ui = tagList(
                       href = "margins_and_paddings.css"),
             tags$link(rel = "shortcut icon", href = "Rlogo.png"),
             tags$style(type = "text/css",
-                       ".panel-footer {position: fixed; right: 0; bottom: 0; left: 0;}")
-            ),
+                       ".panel-footer {position: fixed; right: 0; bottom: 0; left: 0;}")),
 
   div(class = "busy",
       p("Loading"),
@@ -50,7 +49,7 @@ ui = tagList(
                div(class = "clear"),
                div(class = "panel-footer",
                    HTML('<p> <font size = "4"> ShinyItemAnalysis </font>
-                             <font size = "2"> Test and item analysis | Version 1.2.4 </font>
+                             <font size = "2"> Test and item analysis | Version 1.2.5 </font>
                              <span style = "float:right">
                                 <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysis/" id = "tooltipweb" target="_blank"> <img src = "web_icon.png", style = "width: 25px;"> </a>
                                 <a href = "https://github.com/patriciamar/ShinyItemAnalysis/" id = "tooltipgithub" target="_blank"> <img src = "github_icon.png", style = "width: 25px;"> </a>
@@ -163,7 +162,7 @@ ui = tagList(
                         Version available',
                         a('online', href = 'https://shiny.cs.cas.cz/ShinyItemAnalysis/', target = "_blank"), 'is 1.2.4.
                         The newest development version available on ',
-                        a('GitHub', href = 'https://github.com/patriciamar/ShinyItemAnalysis', target = "_blank"), 'is 1.2.4.'),
+                        a('GitHub', href = 'https://github.com/patriciamar/ShinyItemAnalysis', target = "_blank"), 'is 1.2.5.'),
                       p('See also older versions: ',
                          a('0.1.0, ', href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV01/", target = "_blank"),
                          a('0.2.0, ', href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV02/", target = "_blank"),
@@ -177,8 +176,8 @@ ui = tagList(
                                img(src = 'patricia_new.png', width = 75),
                                HTML("<figcaption><a href='http://www.cs.cas.cz/martinkova/' target='_blank'>Patricia<br>Martinkova</a></figcaption>")),
                         column(1, align = "center",
-                               img(src = 'adela_new.png', width = 75),
-                               HTML("<figcaption>Adela<br>Drabinova</figcaption>")),
+                               img(src = 'adela.jpg', width = 75),
+                               HTML("<figcaption><a href='http://uivty.cs.cas.cz/~drabinova/' target='_blank'>Adela<br>Drabinova</a></figcaption>")),
                         column(1, align = "center",
                                img(src = 'leder.png', width = 75),
                                HTML("<figcaption><a href='https://www.linkedin.com/in/ond%C5%99ej-leder-3864b1119' target='_blank'>Ondrej<br>Leder</a></figcaption>")),
@@ -359,9 +358,10 @@ ui = tagList(
                           )
                         )
                         )),
-                      fluidRow(
-                        column(2, offset = 0, actionButton(inputId = "submitButton", label = "Submit Data"))
-                      ),
+                      div(style = "display: inline-block; vertical-align: top; horizontal-align: center; width: 150px;",
+                          actionButton(inputId = "submitButton", label = "Submit Data")),
+                      div(style = "display: inline-block; vertical-align: top; horizontal-align: center; width: 80%;",
+                          htmlOutput("checkDataText")),
                       tags$hr(),
                       h4("Data specification"),
                       fluidRow(
