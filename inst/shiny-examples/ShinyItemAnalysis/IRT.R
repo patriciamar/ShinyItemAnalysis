@@ -154,7 +154,7 @@ output$DP_raschFactor_mirt <- downloadHandler(
   },
   content = function(file) {
     ggsave(file, plot = raschFactorInput_mirt(), device = "png",
-           height = 3, width = 9, dpi = 160)
+           height = 3, width = 9, dpi = 300)
   }
 )
 
@@ -357,7 +357,7 @@ output$DP_oneparamirtFactor_mirt <- downloadHandler(
   },
   content = function(file) {
     ggsave(file, plot = oneparamirtFactorInput_mirt(), device = "png",
-           height = 3, width = 9, dpi = 160)
+           height = 3, width = 9, dpi = 300)
   }
 )
 
@@ -576,7 +576,7 @@ output$DP_twoparamirtFactor_mirt <- downloadHandler(
   },
   content = function(file) {
     ggsave(file, plot = twoparamirtFactorInput_mirt(), device = "png",
-           height = 3, width = 9, dpi = 160)
+           height = 3, width = 9, dpi = 300)
   }
 )
 
@@ -745,7 +745,7 @@ output$DP_threeparamirtFactor_mirt <- downloadHandler(
   },
   content = function(file) {
     ggsave(file, plot = threeparamirtFactorInput_mirt(), device = "png",
-           height = 3, width = 9, dpi = 160)
+           height = 3, width = 9, dpi = 300)
   }
 )
 
@@ -1004,7 +1004,7 @@ output$DP_bock_factor <- downloadHandler(
   },
   content = function(file) {
     ggsave(file, plot = bock_factor_Input(), device = "png",
-           height = 3, width = 9, dpi = 160)
+           height = 3, width = 9, dpi = 300)
   }
 )
 
@@ -1045,11 +1045,12 @@ ccIRT_plot_Input <- reactive({
     return(c + (d - c)/(1 + exp(-a*(theta - b))))
   }
 
-  g <- ggplot(data = data.frame(x = -4:4), mapping = aes(x = x)) +
+  g <- ggplot(data = data.frame(x = -4:4),
+              mapping = aes(x = x)) +
     stat_function(fun = ccirt, args = list(a = a1, b = b1, c = c1, d = d1),
-                  color = "red") +
+                  aes(color = "red")) +
     stat_function(fun = ccirt, args = list(a = a2, b = b2, c = c2, d = d2),
-                  color = "blue") +
+                  aes(color = "blue")) +
     xlim(-4, 4) +
     xlab("Ability") +
     ylab("Probability of correct answer") +
@@ -1060,7 +1061,14 @@ ccIRT_plot_Input <- reactive({
           axis.line  = element_line(colour = "black"),
           panel.grid.major = element_blank(),
           panel.grid.minor = element_blank(),
-          plot.background = element_rect(fill = "transparent", colour = NA)) +
+          plot.background = element_rect(fill = "transparent", colour = NA),
+          legend.position = "none") +
+    scale_color_manual(name = "",
+                       values = c("red", "blue"),
+                       labels = c(paste(paste(letters[1:4], "=", c(a1, b1, c1, d1)),
+                                        collapse = ", "),
+                                  paste(paste(paste(letters[1:4], "=", c(a2, b2, c2, d2))),
+                                        collapse = ", "))) +
     ggtitle("Item characteristic curve")
   g
 
@@ -1089,8 +1097,12 @@ output$DB_ccIRT <- downloadHandler(
     paste("fig_CustomItemCharacteristicCurve.png", sep = "")
   },
   content = function(file) {
-    ggsave(file, plot = ccIRT_plot_Input(), device = "png",
-           height = 3, width = 9, dpi = 160)
+    ggsave(file,
+           plot = ccIRT_plot_Input() +
+             theme(legend.position = c(0.97, 0.03),
+                   legend.justification = c(0.97, 0.03)),
+           device = "png",
+           height = 3, width = 9, dpi = 300)
   }
 )
 
@@ -1112,9 +1124,9 @@ iccIRT_plot_Input <- reactive({
 
   g <- ggplot(data = data.frame(x = -4:4), mapping = aes(x = x)) +
     stat_function(fun = iccirt, args = list(a = a1, b = b1, c = c1, d = d1),
-                  color = "red") +
+                  aes(color = "red")) +
     stat_function(fun = iccirt, args = list(a = a2, b = b2, c = c2, d = d2),
-                  color = "blue") +
+                  aes(color = "blue")) +
     xlim(-4, 4) +
     ylim(0, 4) +
     xlab("Ability") +
@@ -1125,7 +1137,14 @@ iccIRT_plot_Input <- reactive({
           axis.line  = element_line(colour = "black"),
           panel.grid.major = element_blank(),
           panel.grid.minor = element_blank(),
-          plot.background = element_rect(fill = "transparent", colour = NA)) +
+          plot.background = element_rect(fill = "transparent", colour = NA),
+          legend.position = "none") +
+    scale_color_manual(name = "",
+                       values = c("red", "blue"),
+                       labels = c(paste(paste(letters[1:4], "=", c(a1, b1, c1, d1)),
+                                        collapse = ", "),
+                                  paste(paste(paste(letters[1:4], "=", c(a2, b2, c2, d2))),
+                                        collapse = ", "))) +
     ggtitle("Item information function")
   g
 })
@@ -1153,8 +1172,12 @@ output$DB_iccIRT <- downloadHandler(
     paste("fig_CustomItemInformationCurve.png", sep = "")
   },
   content = function(file) {
-    ggsave(file, plot = iccIRT_plot_Input(), device = "png",
-           height = 3, width = 9, dpi = 160)
+    ggsave(file,
+           plot = iccIRT_plot_Input() +
+             theme(legend.position = c(0.97, 0.97),
+                   legend.justification = c(0.97, 0.97)),
+           device = "png",
+           height = 3, width = 9, dpi = 300)
   }
 )
 
