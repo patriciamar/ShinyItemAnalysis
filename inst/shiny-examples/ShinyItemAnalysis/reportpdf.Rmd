@@ -325,7 +325,7 @@ if (params$irt_type != "none") {
 ```{r irt-estim, echo = FALSE, results = "asis"}
 if (params$irt_type != "none") {
   table = params$irtcoef
-  table = round(table, 5)
+  # table = round(table, 5)
   
   print(xtable(table), booktabs = T, comment = F)
 }

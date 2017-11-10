@@ -94,7 +94,16 @@ raschcoefInput_mirt <- reactive({
   }
   rownames(tab) <- item_names()
 
-  tab
+  n <- length(item_names())
+  tab.comp <- data.frame(rep(1, n), "-", 0, "-", 0, "-", 1, "-", "-", "-", "-")
+  colnames(tab.comp) <- c("a", "SD(a)", "b", "SD(b)", "c", "SD(c)", "d", "SD(d)",
+                          "SX2-value", "df", "p-value")
+  rownames(tab.comp) <- item_names()
+
+  tab <- round(tab, 3)
+  tab.comp[, colnames(tab.comp) %in% colnames(tab)] <- tab
+
+  tab.comp
 })
 
 output$raschcoef_mirt <- renderTable({
@@ -295,8 +304,16 @@ oneparamirtcoefInput_mirt <- reactive({
   }
   rownames(tab) <- item_names()
 
+  n <- length(item_names())
+  tab.comp <- data.frame(rep(1, n), "-", 0, "-", 0, "-", 1, "-", "-", "-", "-")
+  colnames(tab.comp) <- c("a", "SD(a)", "b", "SD(b)", "c", "SD(c)", "d", "SD(d)",
+                          "SX2-value", "df", "p-value")
+  rownames(tab.comp) <- item_names()
+
   tab <- round(tab, 3)
-  tab
+  tab.comp[, colnames(tab.comp) %in% colnames(tab)] <- tab
+
+  tab.comp
 })
 
 output$oneparamirtcoef_mirt <- renderTable({
@@ -515,8 +532,16 @@ twoparamirtcoefInput_mirt <- reactive({
   }
   rownames(tab) <- item_names()
 
+  n <- length(item_names())
+  tab.comp <- data.frame(rep(1, n), "-", 0, "-", 0, "-", 1, "-", "-", "-", "-")
+  colnames(tab.comp) <- c("a", "SD(a)", "b", "SD(b)", "c", "SD(c)", "d", "SD(d)",
+                          "SX2-value", "df", "p-value")
+  rownames(tab.comp) <- item_names()
+
   tab <- round(tab, 3)
-  tab
+  tab.comp[, colnames(tab.comp) %in% colnames(tab)] <- tab
+
+  tab.comp
 })
 
 output$twoparamirtcoef_mirt <- renderTable({
@@ -684,8 +709,16 @@ threeparamirtcoefInput_mirt <- reactive({
   }
   rownames(tab) <- item_names()
 
+  n <- length(item_names())
+  tab.comp <- data.frame(rep(1, n), "-", 0, "-", 0, "-", 1, "-", "-", "-", "-")
+  colnames(tab.comp) <- c("a", "SD(a)", "b", "SD(b)", "c", "SD(c)", "d", "SD(d)",
+                          "SX2-value", "df", "p-value")
+  rownames(tab.comp) <- item_names()
+
   tab <- round(tab, 3)
-  tab
+  tab.comp[, colnames(tab.comp) %in% colnames(tab)] <- tab
+
+  tab.comp
 })
 
 output$threeparamirtcoef_mirt <- renderTable({
