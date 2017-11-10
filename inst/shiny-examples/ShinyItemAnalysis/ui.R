@@ -1864,6 +1864,12 @@ ui = tagList(
                                                   border-bottom-color: blue;
                                                   border-left-color: blue;
                                                   border-right-color: blue}")),
+                                 tags$style(HTML(".js-irs-20 .irs-single, .js-irs-20 .irs-bar-edge, .js-irs-20 .irs-bar {
+                                                  background: gray;
+                                                  border-top-color: gray;
+                                                  border-bottom-color: gray;
+                                                  border-left-color: gray;
+                                                  border-right-color: gray}")),
                                  fluidRow(
                                    column(12,
                                           splitLayout(
@@ -1912,14 +1918,21 @@ ui = tagList(
                                             div(style="display: inline-block; vertical-align: middle; width: 50%;", HTML("&ensp;")),
                                             div(style= "display: inline-block; vertical-align: middle; height: 100%; width: 50%",
                                                 textInput("ccIRTtext_d2", "", value = 1))))),
+                                 p("Select also the value of latent ability", HTML("<b>&#952;</b>"), "to see the intepretation of the
+                                   item characteristic curves. "),
+                                 fluidRow(
+                                   column(3,
+                                          splitLayout(
+                                            cellWidths = c("64%", "4%", "32%"),
+                                            sliderInput("ccIRTSlider_theta", div(HTML('&#952;'), "- latent ability"), min = -4, max = 4,
+                                                        value = 0, step = 0.1),
+                                            div(style = "display: inline-block; vertical-align: middle; width: 50%;", HTML("<br>")),
+                                            div(style = "display: inline-block; vertical-align: middle; height: 100%; width: 50%",
+                                                textInput("ccIRTtext_theta", "", value = 0))))),
+                                 uiOutput("ccIRT_interpretation"),
                                  br(),
-                                 # div(plotlyOutput('ccIRT_plot', width = "100%"), align = "center"),
-                                 # downloadButton("DB_ccIRT", label = "Download figure"),
-                                 # div(plotlyOutput('iccIRT_plot', width = "100%"), align = "center"),
-                                 # downloadButton("DB_iccIRT", label = "Download figure"),
                                  splitLayout(cellWidths = c("50%", "50%"), plotlyOutput('ccIRT_plot'), plotlyOutput('iccIRT_plot')),
-                                 # splitLayout(cellWidths = c("50%", "50%"), plotOutput('ccIRT_plot'), plotOutput('iccIRT_plot')),
-                                 # splitLayout(cellWidths = c("50%", "50%"), downloadButton("DB_ccIRT", label = "Download figure"), downloadButton("DB_iccIRT", label = "Download figure")),
+                                 splitLayout(cellWidths = c("50%", "50%"), downloadButton("DB_ccIRT", label = "Download figure"), downloadButton("DB_iccIRT", label = "Download figure")),
                                  br(),
                                  br()
                                  )
