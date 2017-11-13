@@ -24,11 +24,13 @@ MINOR UPDATES
 
   o Link for Adela's website was added.
   o Columns for BIC and its adjusted version were swapped in table for
-    IRT models comparison.
+    IRT models comparison. Text above table was also updated.
   o In IRT section dpi of downloaded plots was set to 300.
   o In IRT training downloaded plots also include legend with parameters.
   o In all IRT models table with parameters includes all parameters
     a, b, c, d.
+  o In IRT training equations were moved above interpretation.
+
 
 ---------------------------------------------------
 - Changes in ShinyItemAnalysis 1.2.4 (2017-08-28) -
