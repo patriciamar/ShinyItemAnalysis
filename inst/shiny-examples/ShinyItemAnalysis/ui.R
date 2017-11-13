@@ -1684,8 +1684,8 @@ ui = tagList(
                                  tags$ul(
                                    tags$li(strong('AIC'), 'is the Akaike information criterion (Akaike, 1974), '),
                                    tags$li(strong('AICc'), 'is AIC with a correction for finite sample size, '),
-                                   tags$li(strong('SABIC'), 'is the Sample-sized adjusted BIC criterion, '),
-                                   tags$li(strong('BIC'), 'is the Bayesian information criterion (Schwarz, 1978).')
+                                   tags$li(strong('BIC'), 'is the Bayesian information criterion (Schwarz, 1978).'),
+                                   tags$li(strong('SABIC'), 'is the Sample-sized adjusted BIC criterion, ')
                                  ),
                                  p('Another approach to compare IRT models can be likelihood ratio chi-squared test.
                                    Significance level is set to 0.05.'),
