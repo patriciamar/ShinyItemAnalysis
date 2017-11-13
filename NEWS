@@ -29,6 +29,7 @@ MINOR UPDATES
   o In IRT training downloaded plots also include legend with parameters.
   o In all IRT models table with parameters includes all parameters
     a, b, c, d.
+  o In IRT training equations were moved above interpretation.
 
 
 ---------------------------------------------------

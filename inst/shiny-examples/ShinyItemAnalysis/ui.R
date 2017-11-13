@@ -1805,9 +1805,6 @@ ui = tagList(
                                  h3("Characteristic and information curves"),
                                  p('Here you can explore behaviour of two item characteristic curves \\(\\mathrm{P}\\left(\\theta\\right)\\) and their item
                                    information functions \\(\\mathrm{I}\\left(\\theta\\right)\\) in 4PL IRT model. '),
-                                 h4("Equations"),
-                                 ('$$\\mathrm{P}\\left(\\theta \\vert a, b, c, d \\right) = c + \\left(d - c\\right) \\cdot \\frac{e^{a\\left(\\theta-b\\right) }}{1+e^{a\\left(\\theta-b\\right) }} $$'),
-                                 ('$$\\mathrm{I}\\left(\\theta \\vert a, b, c, d \\right) = a^2 \\cdot \\left(d - c\\right) \\cdot \\frac{e^{a\\left(\\theta-b\\right) }}{\\left[1+e^{a\\left(\\theta-b\\right)}\\right]^2} $$'),
                                  h4("Parameters"),
                                  p('Select parameters ', strong('a'), '(discrimination), ', strong('b'), '(difficulty), ',
                                    strong('c'), '(guessing) and ', strong('d'), '(inattention). By constraining a = 1, c = 0, d = 1 you get
@@ -1929,6 +1926,9 @@ ui = tagList(
                                             div(style = "display: inline-block; vertical-align: middle; width: 50%;", HTML("<br>")),
                                             div(style = "display: inline-block; vertical-align: middle; height: 100%; width: 50%",
                                                 textInput("ccIRTtext_theta", "", value = 0))))),
+                                 h4("Equations"),
+                                 ('$$\\mathrm{P}\\left(\\theta \\vert a, b, c, d \\right) = c + \\left(d - c\\right) \\cdot \\frac{e^{a\\left(\\theta-b\\right) }}{1+e^{a\\left(\\theta-b\\right) }} $$'),
+                                 ('$$\\mathrm{I}\\left(\\theta \\vert a, b, c, d \\right) = a^2 \\cdot \\left(d - c\\right) \\cdot \\frac{e^{a\\left(\\theta-b\\right) }}{\\left[1+e^{a\\left(\\theta-b\\right)}\\right]^2} $$'),
                                  uiOutput("ccIRT_interpretation"),
                                  br(),
                                  splitLayout(cellWidths = c("50%", "50%"), plotlyOutput('ccIRT_plot'), plotlyOutput('iccIRT_plot')),
