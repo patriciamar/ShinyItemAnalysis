@@ -342,6 +342,7 @@ function(input, output, session) {
     HTML(checkDataText_Input())
   })
 
+
   # ITEM NUMBERS AND NAMES ######
   item_numbers <- reactive({
     if (!input$itemnam){
@@ -374,6 +375,44 @@ function(input, output, session) {
     }
     colnames(correct) <- item_names()
     correct
+  })
+  # checking uploaded scored data
+  checkDataColumns01Text_Input <- eventReactive(input$submitButton, {
+    data <- correct_answ()
+    # are there any items with only 0
+    all0 <- apply(data, 2, function(x) all(x == 0))
+    if (any(all0)){
+      txt0 <- paste("It seems that",
+                    colnames(data)[all0],
+                    "consists only of zeros.")
+    } else {
+      txt0 <- ""
+    }
+    # are there any items with only 1
+    all1 <- apply(data, 2, function(x) all(x == 1))
+    if (any(all1)){
+      txt1 <- paste("It seems that",
+                    colnames(data)[all1],
+                    "consists only of ones.")
+    } else {
+      txt1 <- ""
+    }
+    # warning
+    if (any(all0) | any(all1)){
+      txt <- paste(c("Check your data!",
+                     paste(txt0, collapse = "<br>"),
+                     paste(txt1, collapse = "<br>"),
+                     "Some analyses may not work properly. Consider removing of such items."),
+                   collapse = "<br>")
+      txt <- paste("<font color = 'red'>", txt, "</font>")
+    } else {
+      txt <- ""
+    }
+    print(txt)
+    txt
+  })
+  output$checkDataColumns01Text <- renderUI({
+    HTML(checkDataColumns01Text_Input())
   })
 
   # TOTAL SCORE CALCULATION ######

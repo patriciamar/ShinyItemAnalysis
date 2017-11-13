@@ -361,7 +361,8 @@ ui = tagList(
                       div(style = "display: inline-block; vertical-align: top; horizontal-align: center; width: 150px;",
                           actionButton(inputId = "submitButton", label = "Submit Data")),
                       div(style = "display: inline-block; vertical-align: top; horizontal-align: center; width: 80%;",
-                          htmlOutput("checkDataText")),
+                          htmlOutput("checkDataText"),
+                          htmlOutput("checkDataColumns01Text")),
                       tags$hr(),
                       h4("Data specification"),
                       fluidRow(
