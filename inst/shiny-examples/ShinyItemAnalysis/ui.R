@@ -1962,6 +1962,44 @@ ui = tagList(
                                  splitLayout(cellWidths = c("50%", "50%"), plotlyOutput('ccIRT_plot'), plotlyOutput('iccIRT_plot')),
                                  splitLayout(cellWidths = c("50%", "50%"), downloadButton("DB_ccIRT", label = "Download figure"), downloadButton("DB_iccIRT", label = "Download figure")),
                                  br(),
+                                 h4("Selected R code"),
+                                 div(code('library(ggplot2)'),
+                                     br(),
+                                     code('# parameters'),
+                                     br(),
+                                     code('a1 <- 1; b1 <- 0; c1 <- 0; d1 <- 1'),
+                                     br(),
+                                     code('a2 <- 2; b2 <- 0.5; c2 <- 0; d2 <- 1'),
+                                     br(),
+                                     code('# latent ability'),
+                                     br(),
+                                     code('theta <- 0'),
+                                     br(),
+                                     code('# function for IRT characteristic curve'),
+                                     br(),
+                                     code('ccirt <- function(theta, a, b, c, d){
+                                          return(c + (d - c)/(1 + exp(-a*(theta - b))))
+                                          }'),
+                                 br(),
+                                     code('# plot for characteristic curves'),
+                                 br(),
+                                     HTML('<code>g <- ggplot(data = data.frame(x = -4:4), mapping = aes(x = x)) +<br>
+                                          stat_function(fun = ccirt, args = list(a = a1, b = b1, c = c1, d = d1), aes(color = "2", linetype = "2")) +<br>
+                                          stat_function(fun = ccirt, args = list(a = a2, b = b2, c = c2, d = d2), aes(color = "3", linetype = "3")) +<br>
+                                          geom_segment(aes(y = ccirt(theta, a = a1, b = b1, c = c1, d = d1), yend = ccirt(theta, a = a1, b = b1, c = c1, d = d1), x = -4, xend = theta, color = "1", linetype = "1")) +<br>
+                                          geom_segment(aes(y = ccirt(theta, a = a2, b = b2, c = c2, d = d2), yend = ccirt(theta, a = a2, b = b2, c = c2, d = d2), x = -4, xend = theta, color = "1", linetype = "1")) +<br>
+                                          geom_segment(aes(y = 0, yend = max(ccirt(theta, a = a1, b = b1, c = c1, d = d1), ccirt(theta, a = a2, b = b2, c = c2, d = d2)), x = theta, xend = theta, color = "1", linetype = "1")) +<br>
+                                          xlim(-4, 4) +<br>
+                                          xlab("Ability") +<br>
+                                          ylab("Probability of correct answer") +<br>
+                                          theme_bw() +<br>
+                                          ylim(0, 1) +<br>
+                                          theme(axis.line  = element_line(colour = "black"), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), legend.position = c(0.97, 0.03), legend.justification = c(0.97, 0.03)) +<br>
+                                          scale_color_manual(name = "", breaks = c("1", "2", "3"), values = c("gray", "red", "blue"), labels = c(paste(expression(theta), "=", theta), paste(paste(letters[1:4], "=", c(a1, b1, c1, d1)), collapse = ", "), paste(paste(letters[1:4], "=", c(a2, b2, c2, d2)), collapse = ", "))) +<br>
+                                          scale_linetype_manual(name = "", breaks = c("1", "2", "3"), values = c("dashed", "solid", "solid"), labels = c(paste(expression(theta), "=", theta), paste(paste(letters[1:4], "=", c(a1, b1, c1, d1)), collapse = ", "), paste(paste(letters[1:4], "=", c(a2, b2, c2, d2)), collapse = ", "))) +<br>
+                                          ggtitle("Item characteristic curve")</code>'),
+                                     br(),
+                                     code('g')),
                                  br()
                                  )
                                  ),

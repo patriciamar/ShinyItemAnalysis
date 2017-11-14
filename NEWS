@@ -19,6 +19,9 @@ MAJOR UPDATES
       - the interpretation for characteristic curves is provided
       - horizontal and vertical lines for specified theta were added
         into plot for characteristic curves
+      - selected R code was added.
+  o In multinomial regression bug when only two choices in data are present
+    was fixed.
 
 MINOR UPDATES
 
