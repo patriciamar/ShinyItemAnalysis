@@ -1185,7 +1185,7 @@ ui = tagList(
                                      br(),
                                      code('data.scored  <- GMAT[, 1:20]'),
                                      br(),
-                                     code('stand.score  <- scale(apply(data, 1, sum))'),
+                                     code('stand.score  <- scale(apply(data.scored, 1, sum))'),
                                      br(),
                                      code('data(GMATtest)'),
                                      br(),

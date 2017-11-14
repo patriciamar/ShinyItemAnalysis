@@ -595,18 +595,22 @@ multi_plot_Input <- reactive({
   dfhw <- data.table(data[, item], zscore)
   dfhw <- dfhw[complete.cases(dfhw), ]
 
-  # fitM <- multinom(relevel(as.factor(unlist(dfhw[, 1])),
-  #                          ref = paste(key[item])) ~ unlist(dfhw[, 2]),
-  #                  trace = F)
-
   pp <- fitted(fitM)
+
+  temp <- as.factor(unlist(dfhw[, 1]))
+  temp <- relevel(temp, ref = paste(key[item]))
+
   if(ncol(pp) == 1){
     pp <- cbind(pp, 1 - pp)
-    colnames(pp) <- c("0", "1")
+    colnames(pp) <- rev(levels(temp))
   }
-  stotals <- rep(unlist(dfhw[, 2]), length(levels(as.factor(unlist(dfhw[, 1, with = F])))))
+
+  stotals <- rep(unlist(dfhw[, 2]),
+                 length(levels(temp)))
+
   df <- cbind(melt(pp), stotals)
   df$Var2 <- relevel(as.factor(df$Var2), ref = paste(key[item]))
+
   df2 <- data.table(table(data[, item], zscore),
                     y = data.table(prop.table(table(data[, item], zscore), 2))[, 3])
   df2$zscore <- as.numeric(paste(df2$zscore))
@@ -661,9 +665,12 @@ multiplotReportInput <- reactive({
                      trace = F)
 
     pp <- fitted(fitM)
+    temp <- as.factor(unlist(dfhw[, 1]))
+    temp <- relevel(temp, ref = paste(key[item]))
+
     if(ncol(pp) == 1){
       pp <- cbind(pp, 1 - pp)
-      colnames(pp) <- c("0", "1")
+      colnames(pp) <- rev(levels(temp))
     }
 
     stotals <- rep(unlist(dfhw[, 2]), length(levels(as.factor(unlist(dfhw[, 1, with = F])))))
@@ -746,12 +753,25 @@ output$multi_equation <- renderUI ({
 output$multi_table <- renderTable({
   fit <- multi_model()
 
+  key <- t(as.data.table(test_key()))
+  data <- test_answers()
+  item <- input$multiSlider
+
+  dfhw <- na.omit(data.table(data[, item, with = FALSE]))
+  temp <- as.factor(unlist(dfhw[, 1]))
+  temp <- relevel(temp, ref = paste(key[item]))
+
   koef <- as.vector(coef(fit))
   std  <- as.vector(sqrt(diag(vcov(fit))))
   tab  <- cbind(koef, std)
+  rnam <- rownames(coef(fit))
+  if (is.null(dim(coef(fit))[1]) & !(all(levels(temp) %in% c("1", "0")))){
+    rnam <- rev(levels(temp))[1]
+  }
+
   colnames(tab) <- c("Estimate", "SD")
-  rownames(tab) <- c(paste("b", rownames(coef(fit)), "0", sep = ""),
-                     paste("b", rownames(coef(fit)), "1", sep = ""))
+  rownames(tab) <- c(paste("b", rnam, "0", sep = ""),
+                     paste("b", rnam, "1", sep = ""))
   tab
 },
 include.rownames = T)
