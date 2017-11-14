@@ -19,11 +19,14 @@ corr_plot_Input <- reactive({
   corP <- corr_structure()
   corP <- corP$rho
   tlcex <- max(ifelse(dim(corP)[1] < 30, 1, 0.9 - (dim(corP)[1] - 30)*0.05), 0.5)
+
   numclust <- input$corr_plot_clust
-  if (numclust == 1){
+  clustmethod <- input$corr_plot_clustmethod
+
+  if (clustmethod == "none"){
     corrplot(corP, tl.cex = tlcex)
   } else {
-    corrplot(corP, tl.cex = tlcex, order = "hclust", hclust.method = "ward.D", addrect = numclust)
+    corrplot(corP, tl.cex = tlcex, order = "hclust", hclust.method = clustmethod, addrect = numclust)
   }
 })
 
@@ -39,13 +42,20 @@ output$DB_corr_plot <- downloadHandler(
     paste("fig_CorrelationPlot.png", sep = "")
   },
   content = function(file) {
-
+    # in corrplot this must be plotted completely again!
     corP <- corr_structure()
     corP <- corP$rho
     tlcex <- max(ifelse(dim(corP)[1] < 30, 1, 0.9 - (dim(corP)[1] - 30)*0.05), 0.5)
 
+    numclust <- input$corr_plot_clust
+    clustmethod <- input$corr_plot_clustmethod
+
     png(file, height = 800, width = 800, res = 300, pointsize = 300/72)
-    corrplot(corP, tl.cex = tlcex)
+    if (clustmethod == "none"){
+      corrplot(corP, tl.cex = tlcex)
+    } else {
+      corrplot(corP, tl.cex = tlcex, order = "hclust", hclust.method = clustmethod, addrect = numclust)
+    }
     dev.off()
   }
 )

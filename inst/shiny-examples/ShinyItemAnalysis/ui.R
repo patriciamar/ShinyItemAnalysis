@@ -514,15 +514,42 @@ ui = tagList(
                                      items are correlated (larger and darker circle means larger correlation).
                                      The color of circles indicates in which way the items are correlated - blue
                                      color shows possitive correlation and red color shows negative correlation.'),
-                                  p("Polychoric correlation heat map can be reorder using hierarchical clustering with
-                                    Ward's minimum variance method which aims at finding compact clusters. The clustering
-                                    is only applied when number of clusters is larger than one. "),
-                                  div(style = "display: inline-block; vertical-align: middle; width: 15%;",
-                                      numericInput('corr_plot_clust',
-                                                   label = 'Number of clusters',
-                                                   value = 1,
-                                                   min = 1,
-                                                   max = 1)),
+                                  p("Polychoric correlation heat map can be reorder using hierarchical",
+                                    HTML("<b>clustering method</b>"), "below.
+                                    Ward's method aims at finding compact clusters based on minimizing the within-cluster
+                                    sum of squares.
+                                    Ward's n. 2 method used squared disimilarities.
+                                    Single method connects clusters with the nearest neighbours, i.e. the distance between
+                                    two clusters is calculated as the minimum of distances of observations in one cluster and
+                                    observations in the other clusters.
+                                    Complete linkage with farthest neighbours, i.e. maximum of distances.
+                                    Average linkage method used the distance based on weighted average of the individual distances.
+                                    With McQuitty method used unweighted average.
+                                    Median linkage calculates the distance as the median of distances between an observation
+                                    in one cluster and observation in the other cluster.
+                                    Centroid method used distance between centroids of clusters. "),
+                                  p("With", HTML("<b>number  of clusters</b>"), "larger than 1, the rectangles representing
+                                    clusters are drawn. "),
+                                  fluidPage(div(style = "display: inline-block; vertical-align: top;
+                                      width: 15%; ",
+                                                numericInput('corr_plot_clust',
+                                                             label = 'Number of clusters',
+                                                             value = 1,
+                                                             min = 1,
+                                                             max = 1)),
+                                            div(style = "display: inline-block; vertical-align: top;
+                                      width: 15%;",
+                                                selectInput('corr_plot_clustmethod',
+                                                            label = 'Clustering method',
+                                                            choices = list("None" = "none",
+                                                                           "Ward's"  = "ward.D",
+                                                                           "Ward's n. 2" = "ward.D2",
+                                                                           "Single" = "single",
+                                                                           "Complete" = "complete",
+                                                                           "Average" = "average",
+                                                                           "McQuitty" = "mcquitty",
+                                                                           "Median" = "median",
+                                                                           "Centroid" = "centroid")))),
                                   plotOutput('corr_plot'),
                                   downloadButton("DB_corr_plot", label = "Download figure"),
                                   br(),
@@ -2975,17 +3002,29 @@ ui = tagList(
                            distractors plots for each item and multinomial regression plots for each item. Other analyses
                            can be selected below. "),
                          fluidRow(
-                           column(4,
+                           column(8,
                                   p(strong("Validity")),
                                   checkboxInput("corr_report", "Correlation structure", FALSE),
                                   conditionalPanel(condition = "input.customizeCheck",
                                                    conditionalPanel(condition = "input.corr_report",
-                                                                    div(style = "display: inline-block; vertical-align: middle; width: 40%;",
+                                                                    div(style = "display: inline-block; vertical-align: top; width: 20%;",
                                                                         numericInput('corr_plot_clust_report',
                                                                                      label = 'Number of clusters',
                                                                                      value = 1,
                                                                                      min = 1,
-                                                                                     max = 1)))),
+                                                                                     max = 1)),
+                                                                    div(style = "display: inline-block; vertical-align: top; width: 20%;",
+                                                                        selectInput('corr_plot_clustmethod_report',
+                                                                                    label = 'Clustering method',
+                                                                                    choices = list("None" = "none",
+                                                                                                   "Ward's"  = "ward.D",
+                                                                                                   "Ward's n. 2" = "ward.D2",
+                                                                                                   "Single" = "single",
+                                                                                                   "Complete" = "complete",
+                                                                                                   "Average" = "average",
+                                                                                                   "McQuitty" = "mcquitty",
+                                                                                                   "Median" = "median",
+                                                                                                   "Centroid" = "centroid"))))),
                                   checkboxInput("predict_report", "Predictive validity", FALSE)
                            )
                          ),
