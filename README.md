@@ -27,7 +27,7 @@ install.packages("ShinyItemAnalysis")
 devtools::install_github("patriciamar/ShinyItemAnalysis")
 ```
 ## Version
-Current version available on [**CRAN**](https://CRAN.R-project.org/package=ShinyItemAnalysis) is 1.2.3. Version available [**online**](https://shiny.cs.cas.cz/ShinyItemAnalysis/) is 1.2.4. The newest development version available on [**GitHub**](https://github.com/patriciamar/ShinyItemAnalysis) is 1.2.4.
+Current version available on [**CRAN**](https://CRAN.R-project.org/package=ShinyItemAnalysis) is 1.2.3. Version available [**online**](https://shiny.cs.cas.cz/ShinyItemAnalysis/) is 1.2.4. The newest development version available on [**GitHub**](https://github.com/patriciamar/ShinyItemAnalysis) is 1.2.5.
 
 ## Usage
 It's very easy to run `ShinyItemAnalysis`:
