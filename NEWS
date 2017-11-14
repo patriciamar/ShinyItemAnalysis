@@ -5,13 +5,13 @@
         ***************************************************************
 
 ---------------------------------------------------
-- Changes in ShinyItemAnalysis 1.2.5 (2017-11-10) -
+- Changes in ShinyItemAnalysis 1.2.5 (2017-11-14) -
 ---------------------------------------------------
 
 MAJOR UPDATES
 
   o Correlation plots now offer reordering by hierarchical clustering.
-    This is also included in reports.
+    Several linkage methods are offered. This is also included in reports.
   o Confirmation of data upload was added. Also warnings and errors are
     displayed in case that something went wrong when uploading.
   o In IRT training

@@ -383,7 +383,7 @@ function(input, output, session) {
     all0 <- apply(data, 2, function(x) all(x == 0))
     if (any(all0)){
       txt0 <- paste("It seems that",
-                    colnames(data)[all0],
+                    item_names()[all0],
                     "consists only of zeros.")
     } else {
       txt0 <- ""
@@ -392,7 +392,7 @@ function(input, output, session) {
     all1 <- apply(data, 2, function(x) all(x == 1))
     if (any(all1)){
       txt1 <- paste("It seems that",
-                    colnames(data)[all1],
+                    item_names()[all1],
                     "consists only of ones.")
     } else {
       txt1 <- ""
@@ -402,13 +402,13 @@ function(input, output, session) {
       txt <- paste(c("Check your data!",
                      paste(txt0, collapse = "<br>"),
                      paste(txt1, collapse = "<br>"),
-                     "Some analyses may not work properly. Consider removing of such items."),
+                     "Some analyses may not work properly. Consider removing such items."),
                    collapse = "<br>")
       txt <- paste("<font color = 'red'>", txt, "</font>")
     } else {
       txt <- ""
     }
-    print(txt)
+
     txt
   })
   output$checkDataColumns01Text <- renderUI({
@@ -740,6 +740,7 @@ function(input, output, session) {
            # validity section
            corr_plot = {if (input$corr_report) {corr_plot_Input()} else {""}},
            corr_plot_numclust = ifelse(input$customizeCheck, input$corr_plot_clust_report, input$corr_plot_clust),
+           corr_plot_clustmethod = ifelse(input$customizeCheck, input$corr_plot_clustmethod_report, input$corr_plot_clustmethod),
            scree_plot = {if (input$corr_report) {scree_plot_Input()} else {""}},
            isCriterionPresent = criterionPresent(),
            validity_check = input$predict_report,
@@ -829,6 +830,7 @@ function(input, output, session) {
                          # validity section
                          corr_plot = {if (input$corr_report) {corr_plot_Input()} else {""}},
                          corr_plot_numclust = ifelse(input$customizeCheck, input$corr_plot_clust_report, input$corr_plot_clust),
+                         corr_plot_clustmethod = ifelse(input$customizeCheck, input$corr_plot_clustmethod_report, input$corr_plot_clustmethod),
                          scree_plot = {if (input$corr_report) {scree_plot_Input()} else {""}},
                          isCriterionPresent = criterionPresent(),
                          validity_check = input$predict_report,
