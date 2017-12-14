@@ -556,6 +556,8 @@ function(input, output, session) {
       )
 
     itemCount = ncol(test_answers())
+    updateSliderInput(session = session, inputId = "slider_totalscores_histogram", max = itemCount,
+                      value = round(median(scored_test(), na.rm = T)))
     updateNumericInput(session = session, inputId = "corr_plot_clust", value = 1, max = itemCount)
     updateNumericInput(session = session, inputId = "corr_plot_clust_report", value = 1, max = itemCount)
     updateSliderInput(session = session, inputId = "validitydistractorSlider", max = itemCount)
@@ -572,8 +574,7 @@ function(input, output, session) {
     updateSliderInput(session = session, inputId = "difirt_lord_itemSlider", max = itemCount)
     updateSliderInput(session = session, inputId = "difirt_raju_itemSlider", max = itemCount)
     updateSliderInput(session = session, inputId = "ddfSlider", max = itemCount)
-    updateSliderInput(session = session, inputId = "inSlider2", max = itemCount,
-                      value = round(median(scored_test(), na.rm = T)))
+
     updateSliderInput(session = session, inputId = "inSlider2group", max = itemCount,
                       value = round(median(scored_test()[DIF_groups() == 1], na.rm = T)))
     updateSliderInput(session = session, inputId = "difMHSlider_score", max = itemCount,

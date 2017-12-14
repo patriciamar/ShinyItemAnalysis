@@ -14,7 +14,7 @@
 #' Adela Drabinova \cr
 #' Institute of Computer Science, The Czech Academy of Sciences \cr
 #' Faculty of Mathematics and Physics, Charles University \cr
-#' adela.drabinova@gmail.com \cr
+#' drabinova@cs.cas.cz \cr
 #'
 #' Ondrej Leder \cr
 #' Institute of Computer Science, The Czech Academy of Sciences \cr

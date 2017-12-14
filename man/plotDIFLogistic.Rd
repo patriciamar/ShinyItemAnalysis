@@ -56,7 +56,7 @@ plotDIFLogistic(data, group, item = 1, IRT = T)
 Adela Drabinova \cr
 Institute of Computer Science, The Czech Academy of Sciences \cr
 Faculty of Mathematics and Physics, Charles University \cr
-adela.drabinova@gmail.com \cr
+drabinova@cs.cas.cz \cr
 
 Patricia Martinkova \cr
 Institute of Computer Science, The Czech Academy of Sciences \cr
