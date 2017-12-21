@@ -36,7 +36,7 @@ totalscores_histogram_Input<- reactive({
   k <- test_key()
   sc <- scored_test()
 
-  bin <- as.numeric(input$inSlider2)
+  bin <- as.numeric(input$slider_totalscores_histogram)
 
   df <- data.table(sc,
                    gr = cut(sc,

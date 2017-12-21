@@ -60,7 +60,7 @@ In: Proceedings of the 2017 Federated Conference on Computer Science and Informa
 Adela Drabinova \cr
 Institute of Computer Science, The Czech Academy of Sciences \cr
 Faculty of Mathematics and Physics, Charles University \cr
-adela.drabinova@gmail.com \cr
+drabinova@cs.cas.cz \cr
 
 Lubos Stepanek \cr
 First Faculty of Medicine, Charles University \cr

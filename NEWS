@@ -3,6 +3,21 @@
         *  Changes and Developments in the ShinyItemAnalysis Package  *
         *                                                             *
         ***************************************************************
+---------------------------------------------------
+- Changes in ShinyItemAnalysis 1.2.6 (2017-12-14) -
+---------------------------------------------------
+
+MAJOR UPDATES
+
+  o UI for DIF/Fairness section was updated.
+  o References were added into About page.
+
+
+MINOR UPDATES
+
+  o Reference list was updated.
+  o CITATION file was modified.
+
 
 ---------------------------------------------------
 - Changes in ShinyItemAnalysis 1.2.5 (2017-11-14) -

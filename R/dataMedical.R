@@ -28,7 +28,7 @@
 #' Adela Drabinova \cr
 #' Institute of Computer Science, The Czech Academy of Sciences \cr
 #' Faculty of Mathematics and Physics, Charles University \cr
-#' adela.drabinova@gmail.com \cr
+#' drabinova@cs.cas.cz \cr
 #'
 #' @references
 #' Stuka, C. Vejrazka, M., Martinkova, P. Komenda, M. & Stepanek, L. (2016). The Use of Test and Item Analisis for
