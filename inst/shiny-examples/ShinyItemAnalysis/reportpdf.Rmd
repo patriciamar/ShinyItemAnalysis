@@ -3,15 +3,17 @@ title: "Test and Item Analysis Report"
 output: 
     pdf_document:
        number_sections: false
-       toc: true
+       fig_caption: false
 header-includes:
    - \usepackage{booktabs}
+   - \renewcommand\refname{}
+includes:
+    before_body: latex/before_body.tex
 subtitle: |
   This report was created `r ifelse(params$author == "", "", paste("by", params$author))` `r ifelse(params$dataset == "", "", paste("on", params$dataset, "dataset"))` on `r Sys.Date()`
-
-  ShinyItemAnalysis: Test and item analysis, version `r packageVersion("ShinyItemAnalysis")`
-
-  &copy; 2017 Patricia Martinkova, Adela Drabinova, Ondrej Leder and Jakub Houdek.
+  
+  ![](hexbin.png)
+  
 params:
   author: NA
   dataset: NA
@@ -70,13 +72,52 @@ params:
   multiCheck: NA
   groupie: NA
 ---
+\pagenumbering{gobble} 
+
+\mbox{}
+\vfill
+\centering
+&copy; 2018 ShinyItemAnalysis: Test and item analysis, version `r packageVersion("ShinyItemAnalysis")`
+
+\raggedright
+\clearpage
+\tableofcontents
 
 \pagebreak
 
+\pagenumbering{arabic} 
+
 # Introduction
 
-This report provides test and item analysis using ShinyItemAnalysis version `r packageVersion("ShinyItemAnalysis")`. ShinyItemAnalysis is available on
-[CRAN](https://CRAN.R-project.org/package=ShinyItemAnalysis) and also [online](https://shiny.cs.cas.cz/ShinyItemAnalysis/). This project is supported by Czech Science Foundation under grant number [GJ15-15856Y](http://www.cs.cas.cz/martinkova/psychometrics.html).
+This report was created by ShinyItemAnalysis application version `r packageVersion("ShinyItemAnalysis")`. ShinyItemAnalysis provides test and item analysis and it is available on [CRAN](https://CRAN.R-project.org/package=ShinyItemAnalysis) and also [online](https://shiny.cs.cas.cz/ShinyItemAnalysis/). 
+
+To cite ShinyItemAnalysis application in publications, please, use:
+
+\vspace{-4em}
+\begin{thebibliography}{}
+
+\bibitem{martinkova2018}
+  Martinkov\'a P., Drabinov\'a A., Leder O., \& Houdek J.
+  (2018)
+  ShinyItemAnalysis: Test and item analysis via shiny. R package version 1.2.6.
+  https://CRAN.R-project.org/package=ShinyItemAnalysis
+
+\bibitem{martinkova2017}
+  Martinkov\'a P., Drabinov\'a A., \& Houdek J.
+  (2017)
+  ShinyItemAnalysis: Anal\'yza p\v{r}ij\'imac\'ich a jin\'ych znalostn\'ich \v{c}i psychologick\'ych test\r{u}
+  [ShinyItemAnalysis: Analyzing admission and other educational and psychological tests]
+  \textit{TESTF\'ORUM, 6}(9), 16-35. doi:10.5817/TF2017-9-129
+
+\end{thebibliography}
+
+\vspace{2em}
+
+This program is free software and you can redistribute it and or modify it under the terms of the GNU GPL 3 as published by the Free Software Foundation. This program is distributed in the hope that it will be useful, but without any warranty; without even the implied warranty of merchantability of fitness for a particular purpose. 
+
+This project is supported by Czech Science Foundation under grant number [GJ15-15856Y](http://www.cs.cas.cz/martinkova/psychometrics.html).
+
+\pagebreak
 
 # Summary 
 

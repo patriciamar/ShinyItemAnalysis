@@ -60,7 +60,7 @@ ui = tagList(
                            $("#tooltipgithub").attr("title", "GitHub");
                            $("#tooltipcran").attr("title", "CRAN");
                          </script>'),
-                   p(HTML('&copy; 2017  Patricia Martinkova, Adela Drabinova, Ondrej Leder and Jakub Houdek'
+                   p(HTML('&copy; 2018  Patricia Martinkova, Adela Drabinova, Ondrej Leder and Jakub Houdek'
                    ),
                     HTML('<span style = "float:right">'),
                         textOutput('counter', inline = T),
@@ -226,7 +226,7 @@ ui = tagList(
                       ),
                       h4('References'),
                       p('To cite package', code('ShinyItemAnalysis'), 'in publications please use:'),
-                      p('Martinkova P., Drabinova A., Leder O., & Houdek J. (2017). ShinyItemAnalysis: Test and item analysis
+                      p('Martinkova P., Drabinova A., Leder O., & Houdek J. (2018). ShinyItemAnalysis: Test and item analysis
   via shiny. R package version 1.2.6. https://CRAN.R-project.org/package=ShinyItemAnalysis'),
                       p('Martinkova, P., Drabinova, A., & Houdek, J. (2017). ShinyItemAnalysis: Analyza prijimacich a jinych
   znalostnich ci psychologickych testu [ShinyItemAnalysis: Analyzing admission and other educational and
@@ -441,6 +441,14 @@ ui = tagList(
                         tabPanel("Total scores",
                                  h3("Analysis of total scores"),
                                  h4("Summary table"),
+                                 p("Table below summarizes basic characteristics of total scores including
+                                   minimum and maximum, mean, median, standard deviation, skewness and kurtosis.
+                                   The kurtosis here is estimated by sample kurtosis \\(\\frac{m_4}{m_2^2}\\),
+                                   where \\(m_4\\) is the fourth sample moment about the mean and \\(m_2\\) is the second
+                                   sample moment about the mean. The skewness is estimated by sample skewness
+                                   \\(\\frac{m_3}{m_2^{3/2}}\\), where \\(m_3\\) is the third sample moment about
+                                   the mean. The kurtosis for normally distributed scores is near the value of 3 and the skewness
+                                   is near the value of 0. "),
                                  tableOutput('totalscores_table'),
                                  h4("Histogram of total score"),
                                  fluidPage(div(style = "display: inline-block; vertical-align: top; width: 20%; ",
@@ -458,8 +466,8 @@ ui = tagList(
                                  br(),
                                  br(),
                                  h4("Selected R code"),
-                                 div(code('library(difNLR)'),
-                                     br(),
+                                 div(code('library(difNLR)'), br(),
+                                     code('library(moments)'), br(),
                                      code('data(GMAT)'),
                                      br(),
                                      code('data  <- GMAT[, 1:20]'),
@@ -470,11 +478,14 @@ ui = tagList(
                                      br(),
                                      code('# Summary of total score'),
                                      br(),
-                                     code('summary(score)'),
+                                     code('c(min(score), max(score), mean(score), median(score), sd(score), skewness(score), kurtosis(score))'),
                                      br(),
                                      code('# Histogram'),
                                      br(),
-                                     code('hist(score, breaks = 0:ncol(data)) ')),
+                                     code('cut <- median(score) # cut-score'), br(),
+                                     code('col <- c(rep("red", cut - min(score) + 2), "gray",
+                                          rep("blue", max(score) - cut + 1)) # colors for histogram'), br(),
+                                     code('hist(score, breaks = 0:ncol(data), col = col) ')),
                                  br()
                                  ),
                         # * STANDARD SCORES ####
