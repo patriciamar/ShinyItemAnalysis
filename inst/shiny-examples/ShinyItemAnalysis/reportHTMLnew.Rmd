@@ -1,7 +1,7 @@
 ---
 title: |
-  <div><b>Test and Item Analysis Report</b><img src="hexbin_html.png" width="160"></img></div>
-
+  <b>Test and Item Analysis Report</b>
+  
   **************
   
 output:
@@ -11,93 +11,76 @@ output:
 author: |
   This report was created `r ifelse(params$author == "", "", paste("by", params$author))` `r ifelse(params$dataset == "", "", paste("on", params$dataset, "dataset"))` on `r Sys.Date()`
 
-  &copy; 2018 ShinyItemAnalysis: Test and item analysis, version `r packageVersion("ShinyItemAnalysis")`
+  ShinyItemAnalysis: Test and item analysis, version `r packageVersion("ShinyItemAnalysis")`
+
+  &copy; 2018 Patricia Martinkova, Adela Drabinova, Ondrej Leder and Jakub Houdek.
     
   **************
   
 params:
+  customize: NA
   author: NA
   dataset: NA
-  a: NA
-  k: NA
-  gr: NA
-  results: NA
-  histogram_totalscores: NA
+  totalscores_table: NA
+  totalscores_histogram: NA
+  totalscores_histogram_cutscore: NA
+  totalscores_histogram_text: NA
   standardscores_table: NA
-  corr_plot: NA
-  corr_plot_numclust: NA
-  corr_plot_clustmethod: NA
-  scree_plot: NA
-  isCriterionPresent: NA
-  validity_check: NA
-  validity_plot: NA
-  validity_table: NA
-  difPlot: NA
-  DDplotRange1: NA
-  DDplotRange2: NA
-  DDplotNumGroups: NA
-  hist_distractor_by_group: NA
-  graf: NA
-  logreg: NA
-  zlogreg: NA
-  zlogreg_irt: NA
-  nlsplot: NA
-  multiplot: NA
-  wrightMap: NA
+  standardscores_table_text: NA
+  corrplot: NA
+  corrplot_numclust: NA
+  corrplot_methodclust: NA
+  corrplot_text: NA
+  screeplot: NA
+  screeplot_text: NA
+  predictivevalidity_plot: NA
+  predictivevalidity_plot_text: NA
+  DDplot: NA
+  DDplot_numgroups: NA
+  DDplot_range: NA
+  DDplot_text: NA
+  DDtable: NA
+  DDtable_text: NA
+  distractor_plots: NA
+  distractor_plots_type: NA
+  distractor_plots_numgroups: NA
+  distractor_plots_text: NA
   irt: NA
-  irtiic: NA
-  irttif: NA
-  irtcoef: NA
-  irtfactor: NA
-  resultsgroup: NA
-  histbyscoregroup0: NA
-  histbyscoregroup1: NA
-  deltaplot: NA
-  DP_text_normal: NA
-  DIF_logistic_print: NA
-  DIF_logistic_plot: NA
-  plot_DIF_logistic: NA
-  plot_DIF_logistic_IRT_Z: NA
-  plot_DIF_NLR: NA
-  plot_DIF_IRT_Lord: NA
-  plot_DIF_IRT_Raju: NA
-  itemexam: NA
-  itemReport: NA
-  irt_type: NA
-  model_DDF_print: NA
-  plot_DDFReportInput: NA
-  isGroupPresent: NA
-  histCheck: NA
-  deltaplotCheck: NA
-  logregCheck: NA
-  multiCheck: NA
-  groupie: NA
+  irt_model: NA
+  irt_equation: NA
+  irt_text: NA
+  irt_wrightmap: NA
+  irt_wrightmap_text: NA
+  irt_table: NA
+  irt_table_text: NA
+  dif_histograms: NA
+  dif_histograms_cutscore: NA
+  dif_histograms_text: NA
+  dif_deltaplot: NA
+  dif_deltaplot_threshold: NA
+  dif_deltaplot_purification: NA
+  dif_deltaplot_purification_type: NA
+  dif_deltaplot_text: NA
+  dif_logistic: NA
+  dif_logistic_type: NA
+  dif_logistic_correctionmethod: NA
+  dif_logistic_purification: NA
+  dif_logistic_text: NA
+  dif_logistic_plot_text: NA
+  dif_multinomial: NA
+  dif_multinomial_type: NA
+  dif_multinomial_correctionmethod: NA
+  dif_multinomial_purification: NA
+  dif_multinomial_text: NA
+  dif_multinomial_plot_text: NA
 ---
 
 **************
 
-
 # Introduction
 
-This report was created by ShinyItemAnalysis application version `r packageVersion("ShinyItemAnalysis")`. ShinyItemAnalysis provides test and item analysis and it is available on [CRAN](https://CRAN.R-project.org/package=ShinyItemAnalysis) and also [online](https://shiny.cs.cas.cz/ShinyItemAnalysis/). 
-
-To cite ShinyItemAnalysis application in publications, please, use:
-
-  Martinkova P., Drabinova A., Leder O., \& Houdek J.
-  (2018)
-  ShinyItemAnalysis: Test and item analysis via shiny. R package version 1.2.6.
-  https://CRAN.R-project.org/package=ShinyItemAnalysis
-
-
-  Martinkova P., Drabinova A., \& Houdek J.
-  (2017)
-  ShinyItemAnalysis: Analyza prijimacich a jinych znalostnich ci psychologickych testu
-  [ShinyItemAnalysis: Analyzing admission and other educational and psychological tests].
-  TESTFORUM, 6(9), 16-35. doi:10.5817/TF2017-9-129
-
-This program is free software and you can redistribute it and or modify it under the terms of the GNU GPL 3 as published by the Free Software Foundation. This program is distributed in the hope that it will be useful, but without any warranty; without even the implied warranty of merchantability of fitness for a particular purpose. 
-
-This project is supported by Czech Science Foundation under grant number [GJ15-15856Y](http://www.cs.cas.cz/martinkova/psychometrics.html).
+This report provides test and item analysis using ShinyItemAnalysis version `r packageVersion("ShinyItemAnalysis")`. ShinyItemAnalysis is available on
+[CRAN](https://CRAN.R-project.org/package=ShinyItemAnalysis) and also [online](https://shiny.cs.cas.cz/ShinyItemAnalysis/). This project is supported by Czech Science Foundation under grant number [GJ15-15856Y](http://www.cs.cas.cz/martinkova/psychometrics.html).
 
 **************
 
