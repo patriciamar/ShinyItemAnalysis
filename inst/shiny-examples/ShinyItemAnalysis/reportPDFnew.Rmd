@@ -1,19 +1,19 @@
 ---
-title: |
-  `r ifelse(params$dataset == "", "", params$dataset)`
-author: |
-  `r ifelse(params$author == "", "", params$author)`
+title: "Test and Item Analysis Report"
 output: 
     pdf_document:
        number_sections: false
        fig_caption: false
 header-includes:
-   - \usepackage{shiny}
-   - \renewcommand{\refname}{}
+   - \usepackage{booktabs}
+   - \renewcommand\refname{}
 includes:
     before_body: latex/before_body.tex
-fontsize:
-  12pt
+subtitle: |
+  This report was created `r ifelse(params$author == "", "", paste("by", params$author))` `r ifelse(params$dataset == "", "", paste("on", params$dataset, "dataset"))` on `r Sys.Date()`
+  
+  ![](hexbin.png)
+  
 params:
   author: NA
   dataset: NA
@@ -74,6 +74,10 @@ params:
 ---
 \pagenumbering{gobble} 
 
+\mbox{}
+\vfill
+\centering
+&copy; 2018 ShinyItemAnalysis: Test and item analysis, version `r packageVersion("ShinyItemAnalysis")`
 
 \raggedright
 \clearpage
@@ -107,9 +111,9 @@ To cite ShinyItemAnalysis application in publications, please, use:
 
 \end{thebibliography}
 
-\vspace{1.5em}
+\vspace{2em}
 
-ShinyItemAnalysis application is free software and you can redistribute it and or modify it under the terms of the GNU GPL 3 as published by the Free Software Foundation. This program is distributed in the hope that it will be useful, but without any warranty; without even the implied warranty of merchantability of fitness for a particular purpose. 
+This program is free software and you can redistribute it and or modify it under the terms of the GNU GPL 3 as published by the Free Software Foundation. This program is distributed in the hope that it will be useful, but without any warranty; without even the implied warranty of merchantability of fitness for a particular purpose. 
 
 This project is supported by Czech Science Foundation under grant number [GJ15-15856Y](http://www.cs.cas.cz/martinkova/psychometrics.html).
 
@@ -119,9 +123,7 @@ This project is supported by Czech Science Foundation under grant number [GJ15-1
 
 ## Total scores
 
-### Summary table of total scores
-Table below summarizes basic characteristics of total scores including minimum and maximum, mean, median, standard deviation, skewness and kurtosis. The kurtosis here is estimated by sample kurtosis $\frac{m_4}{m_2^2}$, where $m_4$ is the fourth sample moment about the mean and $m_2$ is the second sample moment about the mean. The skewness is estimated by sample skewness $\frac{m_3}{m_2^{3/2}}$, where $m_3$ is the third sample moment about the mean. The kurtosis for normally distributed scores is near the value of 3 and the skewness is near the value of 0. 
-
+**Summary table of total scores**
 ```{r total-scores-table, echo = FALSE, results = 'asis'}
 library(xtable)
 table = params$results
@@ -130,22 +132,19 @@ colnames(table) = NULL
 print(xtable(t(table), digits = c(0, 0, 0, 3, 0, 3, 3, 3), align = rep('c', 8)), booktabs = T, comment = F, include.rownames = F)
 ```
 
-### Histogram of total scores
 For selected cut-score, blue part of histogram shows students with total score above the cut-score, grey column shows students with total score equal to the cut-score and red part of histogram shows students below the cut-score.
 
 ```{r total-scores-histogram, echo = FALSE, fig.height = 4.5, fig.width = 11, dpi = 300}
 params$histogram_totalscores + ggtitle('Histogram of total scores') + 
   theme(text = element_text(size = 14), 
-        plot.title = element_text(face = "bold")) + 
-  ggtitle("")
+        plot.title = element_text(face = "bold"))
 ```
 
 \pagebreak
 
 # Scoring
 
-### Summary table of standard scores
-Total score also known as raw score is a total number of correct answers. It can be used to compare individual score to a norm group, e.g. if the mean is 12, then individual score can be compared to see if it is below or above this average. Percentile indicates the value below which a percentage of observations falls, e.g. a individual score at the 80th percentile means that the individual score is the same or higher than the scores of 80% of all respondents. 
+**Summary table of standard scores**: Total score also known as raw score is a total number of correct answers. It can be used to compare individual score to a norm group, e.g. if the mean is 12, then individual score can be compared to see if it is below or above this average. Percentile indicates the value below which a percentage of observations falls, e.g. a individual score at the 80th percentile means that the individual score is the same or higher than the scores of 80% of all respondents. 
 Success rate is the percentage of success, e.g. if the maximum points of test is equal to 20 and individual score is 12 then success rate is 12/20 = 0.6, i.e. 60%. 
 Z-score or also standardized score is a linear transformation of total score with a mean of 0 and with variance of 1. If X is total score, M its mean and SD its standard deviation then Z-score = (X - M) / SD. T-score is transformed Z-score with a mean of 50 and standard deviation of 10. If Z is Z-score then T-score = (Z * 10) + 50.
 
@@ -160,8 +159,7 @@ kable(table, align = 'c')
 
 `r if (any(params$corr_plot != "")) {"## Correlation structure"}`
 
-`r if (any(params$corr_plot != "")) {"### Polychoric correlation heat map "}`
-`r if (any(params$corr_plot != "")) {"Polychoris correlation heat map is a correlation plot which displays a polychoric correlations of items. The size and shade of circles indicate how much the items are correlated (larger and darker circle means larger correlation). The color of circles indicates in which way the items are correlated - blue color shows possitive correlation and red color shows negative correlation."}`
+`r if (any(params$corr_plot != "")) {"**Polychoric correlation heat map** is a correlation plot which displays a polychoric correlations of items. The size and shade of circles indicate how much the items are correlated (larger and darker circle means larger correlation). The color of circles indicates in which way the items are correlated - blue color shows possitive correlation and red color shows negative correlation."}`
 
 `r clustmethod_names <- c("None" = "none",
                           "Ward's"  = "ward.D",
@@ -172,7 +170,6 @@ kable(table, align = 'c')
                           "McQuitty" = "mcquitty",
                           "median" = "median",
                           "centroid" = "centroid")`
-                          
 `r if (any(params$corr_plot != "") & params$corr_plot_clustmethod != "none") {paste("Polychoric correlation heat map is reorder using hierarchical clustering with", names(clustmethod_names)[clustmethod_names == params$corr_plot_clustmethod], "linkage method. Number of", params$corr_plot_numclust, "clusters is considered. ")}`
 
 
@@ -193,11 +190,8 @@ if (any(params$corr_plot != "")) {
 }
 ```
 
-`r if (any(params$corr_plot != "")) {"\\pagebreak"}` 
 
-`r if (any(params$corr_plot != "")) {"### Scree plot"}` 
-
-`r if (any(params$corr_plot != "")) {"Scree plot displays the eigenvalues associated with an component or a factor in descending order versus the number of the component or factor."}`
+`r if (any(params$corr_plot != "")) {"**Scree plot** displays the eigenvalues associated with an component or a factor in descending order versus the number of the component or factor."}`
 
 ```{r scree-plot, echo = FALSE, fig.height = 4.5, fig.width = 11, dpi = 300}
 if (any(params$corr_plot != "")) {
@@ -208,6 +202,12 @@ if (any(params$corr_plot != "")) {
 `r if (params$validity_check) {"## Predictive validity"}`
 
 `r if(!(params$isCriterionPresent) & params$validity_check){"Criterion variable vector is not present. Predictive validity analysis could not have been generated!"}`
+
+```{r validity-plot, echo = FALSE, results = "hide", fig.height = 4.5, fig.width = 11, dpi = 300}
+if(params$isCriterionPresent & params$validity_check){
+  params$validity_plot + theme(text = element_text(size = 14))
+}
+```
 
 ```{r validity-table, echo = FALSE, results = 'hide'}
 if(params$isCriterionPresent & params$validity_check){
@@ -233,15 +233,6 @@ if(params$isCriterionPresent & params$validity_check){
 
 `r if(params$isCriterionPresent & params$validity_check){txt}`
 
-```{r validity-plot, echo = FALSE, results = "hide", fig.height = 4.5, fig.width = 11, dpi = 300}
-if(params$isCriterionPresent & params$validity_check){
-  params$validity_plot + theme(text = element_text(size = 14)) + 
-    guides(size=guide_legend(ncol=2))
-}
-```
-
-
-  
 \pagebreak
 
 
@@ -249,11 +240,7 @@ if(params$isCriterionPresent & params$validity_check){
 
 ## Item analysis
 
-### Difficulty/Discrimination plot
 Difficulty (red) of items is estimated as percent of students who answered correctly to that item. Discrimination (blue) is by default described by difference of percent correct in upper and lower third of students (Upper-Lower Index, ULI). By rule of thumb it should not be lower than 0.2 (borderline in the plot), except for very easy or very difficult items.
-
-
-
 
 ```{r DD-plot-interpretation, echo = FALSE, results = "hide"}
 range1 <- params$DDplotRange1
@@ -278,16 +265,12 @@ numgroups <- params$DDplotNumGroups
 `r if (any(range1 != 1, range2 != 3, numgroups != 3)) {DDplot_interpretation}`
 
 ```{r DD-plot, echo = FALSE, fig.height = 4.5, fig.width = 11, dpi = 300}
-params$difPlot + 
+params$difPlot + ggtitle('Difficulty/Discrimination plot') + 
   theme(text = element_text(size = 14), 
-        plot.title = element_text(face = "bold")) + 
-  ggtitle("")
+        plot.title = element_text(face = "bold"))
 ```
 
-\pagebreak
-
-### Traditional item analysis table 
-Diff. - Difficulty of item is estimated as percent of students who answered correctly to that item. SD - standard deviation, ULI - Upper-Lower Index, RIT - Pearson correlation between item and total score, RIR - Pearson correlation between item and rest of items, Alpha Drop - Cronbach's alpha of test without given item, Cust. D.- difference between the difficulty recorded in the groups selected by user.
+**Traditional item analysis table**: Diff. - Difficulty of item is estimated as percent of students who answered correctly to that item. SD - standard deviation, ULI - Upper-Lower Index, RIT - Pearson correlation between item and total score, RIR - Pearson correlation between item and rest of items, Alpha Drop - Cronbach's alpha of test without given item, Cust. D.- difference between the difficulty recorded in the groups selected by user.
 
 ```{r item-table, echo = FALSE, results = "asis"}
 table = params$itemexam
@@ -297,8 +280,6 @@ colnames(table) = c("Item", "Diff.", "SD", "D. ULI", "D. RIT", "D. RIR", "Alpha 
 
 print(xtable(table, digits = c(0, 0, 4, 4, 4, 4, 4, 4, 4), align = rep('c', 9)), booktabs = T, comment = F, include.rownames = FALSE)
 ```
-
-\pagebreak
 
 ## Distractor analysis
 
@@ -357,9 +338,9 @@ $$ {P}(Y_{ij} = 1|\theta_{i},a_j,b_j) = \frac{e^{a_j(\theta_i-b_j)}}{1+e^{a_j(\t
 
 3PL IRT model
 $$ {P}(Y_{ij} = 1|\theta_{i},a_j,b_j, c_j) =c_j + (1+c_j)\cdot\frac{e^{a_j(\theta_i-b_j)}}{1+e^{a_j(\theta_i-b_j)}}$$
-<!-- `r if (any(params$wrightMap!="")) {"\\vspace{3em}"}` -->
+`r if (any(params$wrightMap!="")) {"\\vspace{3em}"}`
 
-`r if (any(params$wrightMap!="")) {"### Wright (item-person) map using 1PL IRT model"}`
+**`r if (any(params$wrightMap!="")) {"Wright (item-person) map using 1PL IRT model"}`**
 
 `r if (any(params$wrightMap!="")) {"Wright map, also called item-person map, is a graphical tool to display person estimates and item parameters. The person side (left) represents histogram of estimated knowledge of students. The item side (right) displays estimates of difficulty of particular items."}`
 
@@ -393,8 +374,7 @@ if (params$irt_type != "none") {
 ```
 
 `r if (any(params$wrightMap!="")) {"\\pagebreak"}`
-
-`r if (params$irt_type != "none") {"### Parameter estimates and item fit"}`
+`r if (params$irt_type != "none") {"\\textbf{Parameter estimates and item fit}"}`
 
 `r if (params$irt_type != "none") {"Estimates of parameters are completed by SX2 item fit statistics. SX2 is computed only when no missing data are present. In such a case consider using imputed dataset!"}`
 
@@ -408,8 +388,7 @@ if (params$irt_type != "none") {
 ```
 
 `r if (params$irt_type != "none") {"\\vspace{2em}"}`
-
-`r if (params$irt_type != "none") {"### Ability estimates"}`
+`r if (params$irt_type != "none") {"**Ability estimates**"}`
 
 ```{r irt-3, echo = FALSE, results = "hide", fig.height = 4.5, fig.width = 11, dpi = 300}
 if (params$irt_type != "none") {
@@ -428,7 +407,7 @@ if (params$irt_type != "none") {
 
 `r if(params$isGroupPresent & params$histCheck) {"## Total scores by group"}`
 
-`r if(params$isGroupPresent & params$histCheck) {"### Summary table of total scores in reference and focal group"}`
+`r if(params$isGroupPresent & params$histCheck) {"**Summary table of total scores in reference and focal group**"}`
 
 `r if(params$isGroupPresent & params$histCheck) {"DIF is not about total scores! Two groups may have the same distribution of total scores, yet, some item may function differently for two groups. Also, one of the groups may have signifficantly lower total score, yet, it may happen that there is no DIF item!"}`
 

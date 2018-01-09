@@ -9,7 +9,11 @@ output:
        number_sections: false
        toc: true
 author: |
-  This report was created `r ifelse(params$author == "", "", paste("by", params$author))` `r ifelse(params$dataset == "", "", paste("on", params$dataset, "dataset"))` on `r Sys.Date()`
+  `r ifelse(params$dataset == "", "", paste(params$dataset, "dataset"))`
+  
+  `r ifelse(params$author == "", "", params$author)`
+  
+  This report was created on `r format(Sys.Date(), "%d.%m.%Y")`
 
   &copy; 2018 ShinyItemAnalysis: Test and item analysis, version `r packageVersion("ShinyItemAnalysis")`
     

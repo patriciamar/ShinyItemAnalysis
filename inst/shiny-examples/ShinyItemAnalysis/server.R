@@ -635,7 +635,9 @@ function(input, output, session) {
   })
 
   observe({
-    updateTextInput(session = session, inputId = "reportDataName", value = dataName())
+    updateTextInput(session = session,
+                    inputId = "reportDataName",
+                    value = paste(dataName(), "dataset"))
   })
 
 
