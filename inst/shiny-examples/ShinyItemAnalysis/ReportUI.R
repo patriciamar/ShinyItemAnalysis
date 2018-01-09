@@ -33,6 +33,7 @@ if (interactive()) {
               div(style = "display: inline-block; vertical-align: top; width: 15%; ",
                   textInput(inputId = "report_dataset",
                             label = "Dataset"))),
+    # NOTE: for text areas the heights is number of rows*20px + 15px
     #------------------------------------------------------------------------------------
     h4("Summary"),
     h5("Total scores"),
@@ -40,7 +41,15 @@ if (interactive()) {
     fluidPage(div(style = "display: inline-block; vertical-align: top; width: 15%; ",
                   checkboxInput(inputId = "report_totalscores_table",
                                 label = "Summary table of total scores",
-                                value = T))),
+                                value = T)),
+              div(style = "display: inline-block; vertical-align: top; width: 3%; "),
+              div(style = "display: inline-block; vertical-align: top; width: 10%; ",
+                  conditionalPanel(condition = "input.report_customize",
+                                   conditionalPanel(condition = "input.report_totalscores_table",
+                                                    textAreaInput(inputId = "report_totalscores_table_text",
+                                                                  label = "Text area",
+                                                                  value = "Table below summarizes basic characteristics of total scores including minimum and maximum, mean, median, standard deviation, skewness and kurtosis. The kurtosis here is estimated by sample kurtosis \\(\\frac{m_4}{m_2^2}\\), where \\(m_4\\) is the fourth sample moment about the mean and \\(m_2\\) is the second sample moment about the mean. The skewness is estimated by sample skewness \\(\\frac{m_3}{m_2^{3/2}}\\), where \\(m_3\\) is the third sample moment about the mean. The kurtosis for normally distributed scores is near the value of 3 and the skewness is near the value of 0. ",
+                                                                  width = "700px", height = "135px"))))),
     # histogram of total scores
     fluidPage(div(style = "display: inline-block; vertical-align: top; width: 15%; ",
                   checkboxInput(inputId = "report_totalscores_histogram",
@@ -77,7 +86,7 @@ if (interactive()) {
                                                     textAreaInput(inputId = "report_standardscores_table_text",
                                                                   label = "Text area",
                                                                   value = "Total score also known as raw score is a total number of correct answers. It can be used to compare individual score to a norm group, e.g. if the mean is 12, then individual score can be compared to see if it is below or above this average. Percentile indicates the value below which a percentage of observations falls, e.g. a individual score at the 80th percentile means that the individual score is the same or higher than the scores of 80% of all respondents. Success rate is the percentage of success, e.g. if the maximum points of test is equal to 20 and individual score is 12 then success rate is 12/20 = 0.6, i.e. 60%. Z-score or also standardized score is a linear transformation of total score with a mean of 0 and with variance of 1. If X is total score, M its mean and SD its standard deviation then Z-score = (X - M) / SD. T-score is transformed Z-score with a mean of 50 and standard deviation of 10. If Z is Z-score then T-score = (Z * 10) + 50.",
-                                                                  width = "700px", height = "200px"))))),
+                                                                  width = "700px", height = "195px"))))),
     #------------------------------------------------------------------------------------
     h4("Validity"),
     h5("Correlation structure"),
@@ -121,7 +130,7 @@ if (interactive()) {
                                                     textAreaInput(inputId = "report_corrplot_text",
                                                                   label = "Text area",
                                                                   value = "Polychoric correlation heat map is a correlation plot which displays a polychoric correlations of items. The size and shade of circles indicate how much the items are correlated (larger and darker circle means larger correlation). The color of circles indicates in which way the items are correlated - blue color shows possitive correlation and red color shows negative correlation.",
-                                                                  width = "700px", height = "100px"))))),
+                                                                  width = "700px", height = "95px"))))),
     fluidPage(div(style = "display: inline-block; vertical-align: top; width: 15%; ",
                   # scree plot
                   checkboxInput(inputId = "report_screeplot",
@@ -135,7 +144,7 @@ if (interactive()) {
                                                     textAreaInput(inputId = "report_screeplot_text",
                                                                   label = "Text area",
                                                                   value = "Scree plot displays the eigenvalues associated with an component or a factor in descending order versus the number of the component or factor.",
-                                                                  width = "700px", height = "60px"))))),
+                                                                  width = "700px", height = "55px"))))),
 
     h5("Predictive validity"),
     fluidPage(div(style = "display: inline-block; vertical-align: top; width: 15%; ",
@@ -201,7 +210,7 @@ if (interactive()) {
                                    textAreaInput(inputId = "report_DDtable_text",
                                                  label = "Text area",
                                                  value = "Traditional item analysis table: Diff. - Difficulty of item is estimated as percent of students who answered correctly to that item. SD - standard deviation, ULI - Upper-Lower Index, RIT - Pearson correlation between item and total score, RIR - Pearson correlation between item and rest of items, Alpha Drop - Cronbach’s alpha of test without given item, Cust. D.- difference between the difficulty recorded in the groups selected by user.",
-                                                 width = "800px", height = "100px"))))),
+                                                 width = "700px", height = "115px"))))),
     h5("Distractor analysis"),
     fluidPage(div(style = "display: inline-block; vertical-align: top; width: 15%; ",
                   # distractor plots
@@ -269,7 +278,7 @@ if (interactive()) {
                                                 textAreaInput(inputId = "report_irt_text",
                                                               label = "Text area",
                                                               value = "Item Response Theory (IRT) models are mixed-effect regression models in which student ability (theta) is assumed to be a random effect and is estimated together with item paramters. Ability (theta) is often assumed to follow normal distibution.",
-                                                              width = "700px", height = "85px"))))),
+                                                              width = "700px", height = "75px"))))),
     fluidPage(div(style = "display: inline-block; vertical-align: top; width: 18%; "),
               div(style = "display: inline-block; vertical-align: top; width: 20%; ",
                   # wright map
@@ -287,7 +296,7 @@ if (interactive()) {
                                                                  textAreaInput(inputId = "report_irt_wrightmap_text",
                                                                                label = "Text area for Wright map",
                                                                                value = "Wright map, also called item-person map, is a graphical tool to display person estimates and item parameters. The person side (left) represents histogram of estimated knowledge of students. The item side (right) displays estimates of difficulty of particular items.",
-                                                                               width = "700px", height = "85px")))))),
+                                                                               width = "700px", height = "75px")))))),
     fluidPage(div(style = "display: inline-block; vertical-align: top; width: 18%; "),
               div(style = "display: inline-block; vertical-align: top; width: 80%; ",
               # text area for table of parameters
@@ -296,7 +305,7 @@ if (interactive()) {
                                                 textAreaInput(inputId = "report_irt_table_text",
                                                               label = "Text area for table of parameters",
                                                               value = "Estimates of parameters are completed by SX2 item fit statistics. SX2 is computed only when no missing data are present. In such a case consider using imputed dataset!",
-                                                              width = "700px", height = "65px"))))),
+                                                              width = "700px", height = "55px"))))),
     #------------------------------------------------------------------------------------
     h4("DIF/Fairness analysis"),
     # histograms
@@ -413,7 +422,7 @@ if (interactive()) {
                                                     textAreaInput(inputId = "report_dif_logistic_plot_text",
                                                                   label = "Text area for plots",
                                                                   value = "Points represent proportion of selected answer with respect to standardized total score. Size of points is determined by count of respondents who chose particular answer. ",
-                                                                  width = "700px", height = "65px"))))),
+                                                                  width = "700px", height = "55px"))))),
     # multinomial regression
     fluidPage(div(style = "display: inline-block; vertical-align: top; width: 15%; ",
                   checkboxInput(inputId = "report_dif_multinomial",
@@ -467,7 +476,7 @@ if (interactive()) {
                                                     textAreaInput(inputId = "report_dif_multinomial_plot_text",
                                                                   label = "Text area for plots",
                                                                   value = "Points represent proportion of selected answer with respect to standardized total score. Size of points is determined by count of respondents who chose particular answer. ",
-                                                                  width = "700px", height = "65px")))))
+                                                                  width = "700px", height = "55px")))))
     )
 
 

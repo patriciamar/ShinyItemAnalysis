@@ -1,7 +1,7 @@
 ---
 title: |
-  <b>Test and Item Analysis Report</b>
-  
+  <div><b>Test and Item Analysis Report</b><img src="hexbin_html.png" width="160"></img></div>
+
   **************
   
 output:
@@ -11,9 +11,7 @@ output:
 author: |
   This report was created `r ifelse(params$author == "", "", paste("by", params$author))` `r ifelse(params$dataset == "", "", paste("on", params$dataset, "dataset"))` on `r Sys.Date()`
 
-  ShinyItemAnalysis: Test and item analysis, version `r packageVersion("ShinyItemAnalysis")`
-
-  &copy; 2018 Patricia Martinkova, Adela Drabinova, Ondrej Leder and Jakub Houdek.
+  &copy; 2018 ShinyItemAnalysis: Test and item analysis, version `r packageVersion("ShinyItemAnalysis")`
     
   **************
   

@@ -1,0 +1,41 @@
+
+\usepackage{graphicx, geometry, lmodern, xcolor, booktabs, fancyhdr}
+
+\definecolor{shinyBlue}{RGB}{0, 167, 232}
+\definecolor{shinyGray}{RGB}{100, 100, 100}
+
+\pagestyle{fancy}
+\fancyhead{}
+\fancyfoot{}
+\renewcommand{\headrulewidth}{0pt}
+\lhead{\@title}
+\rhead{\today}
+\lfoot{\textcopyright ShinyItemAnalysis}
+\rfoot{Page \thepage}
+
+\renewcommand\@maketitle{\newpage
+\newgeometry{margin = 0in}
+\vspace{-1in}
+\includegraphics[width = 3in]{hexbin_pdf.png}
+\setlength{\fboxsep}{0pt}
+\hfill \colorbox{shinyGray}{\makebox[3.84in][r]{\shortstack[r]{\vspace{2.8in}}}}%
+\vspace{-0.25pt}
+\setlength{\fboxsep}{10pt}
+\setlength{\fboxrule}{0.2pt}
+\colorbox{shinyBlue}{\makebox[8.25in][l]{\hfill \shortstack[r]{\fontsize{36}{36}\rmfamily\color{white} \textsc{Test and Item Analysis Report}}}}%
+\setlength{\fboxsep}{0.2pt}
+\vspace{-8.5pt}
+\hfill \colorbox{shinyGray}{\hspace{.25in} \parbox{3.54in}{\vspace{1in} \color{white}
+\textbf{\Large{\@title} \\
+\Large{\@author} \\
+\vspace{.65in}
+\mbox{}
+\vfill
+\normalsize{Report created on \today} \\
+\vspace{3.8in}
+\mbox{}
+\vfill
+\textcopyright 2018 ShinyItemAnalysis
+\vspace{0.75in}}}}%
+\let\Title\@title
+\restoregeometry}
