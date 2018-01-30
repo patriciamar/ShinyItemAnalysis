@@ -4,7 +4,7 @@
         *                                                             *
         ***************************************************************
 ---------------------------------------------------
-- Changes in ShinyItemAnalysis 1.2.6 (2018-01-09) -
+- Changes in ShinyItemAnalysis 1.2.6 (2018-01-30) -
 ---------------------------------------------------
 
 MAJOR UPDATES
@@ -13,6 +13,7 @@ MAJOR UPDATES
   o References were added into About page.
   o New design of reports is now in progress. Design of PDF reports was
     updated.
+  o Bug in wording in regression plots was fixed.
 
 
 MINOR UPDATES
@@ -21,6 +22,8 @@ MINOR UPDATES
   o CITATION file was modified.
   o In Summary page the description for summary table was added. The sample
     code was updated.
+  o Wording in summary statistics in Summary section was improved.
+  o Description of Session info section in reports was added.
 
 
 ---------------------------------------------------

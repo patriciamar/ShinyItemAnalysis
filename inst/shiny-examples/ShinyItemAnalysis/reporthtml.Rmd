@@ -109,7 +109,8 @@ This project is supported by Czech Science Foundation under grant number [GJ15-1
 
 ## Total scores
 
-**Summary table of total scores**
+### Summary table of total scores
+Table below summarizes basic characteristics of total scores including minimum and maximum, mean, median, standard deviation, skewness and kurtosis. The kurtosis here is estimated by sample kurtosis $\frac{m_4}{m_2^2}$, where $m_4$ is the fourth central moment and $m_2$ is the second central moment. The skewness is estimated by sample skewness $\frac{m_3}{m_2^{3/2}}$, where $m_3$ is the third central moment. The kurtosis for normally distributed scores is near the value of 3 and the skewness is near the value of 0. 
 
 ```{r total-scores-table, echo = FALSE}
 library(knitr)
@@ -485,7 +486,7 @@ if (params$multiCheck) {
 }
 ```
 
-`r if(params$isGroupPresent & params$multiCheck) {"Points represent proportion of selected answer with respect to standardized total score. Size of points is determined by count of respondents who chose particular answer. "}`
+`r if(params$isGroupPresent & params$multiCheck) {"Points represent proportion of selected answer with respect to standardized total score. Size of points is determined by count of respondents who achieved given level of standardized total score and who selected given option with respect to the group membership. "}`
 
 ```{r ddf-multi-plot, echo = FALSE, fig.width = 11, fig.height = 4, fig.align = 'center'}
 if (params$multiCheck) {
@@ -503,6 +504,8 @@ if (params$multiCheck) {
 **************
 
 # Session info
+
+Session info provides information about settings of the R console and used packages and their versions which were used for the analysis.
 
 ```{r session-info, echo = FALSE}
 sessionInfo()
