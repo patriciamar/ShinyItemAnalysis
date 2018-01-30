@@ -444,10 +444,10 @@ ui = tagList(
                                  p("Table below summarizes basic characteristics of total scores including
                                    minimum and maximum, mean, median, standard deviation, skewness and kurtosis.
                                    The kurtosis here is estimated by sample kurtosis \\(\\frac{m_4}{m_2^2}\\),
-                                   where \\(m_4\\) is the fourth sample moment about the mean and \\(m_2\\) is the second
-                                   sample moment about the mean. The skewness is estimated by sample skewness
-                                   \\(\\frac{m_3}{m_2^{3/2}}\\), where \\(m_3\\) is the third sample moment about
-                                   the mean. The kurtosis for normally distributed scores is near the value of 3 and the skewness
+                                   where \\(m_4\\) is the fourth central moment and \\(m_2\\) is the second
+                                   central moment. The skewness is estimated by sample skewness
+                                   \\(\\frac{m_3}{m_2^{3/2}}\\), where \\(m_3\\) is the third central moment.
+                                   The kurtosis for normally distributed scores is near the value of 3 and the skewness
                                    is near the value of 0. "),
                                  tableOutput('totalscores_table'),
                                  h4("Histogram of total score"),
@@ -915,7 +915,8 @@ ui = tagList(
                                  br(),
                                  h4("Plot with estimated logistic curve"),
                                  p('Points represent proportion of correct answer with respect to total score.
-                                   Their size is determined by count of respondents who answered item correctly.'),
+                                   Their size is determined by count of respondents who achieved given level of
+                                   total score.'),
                                  sliderInput("logregSlider", "Item",
                                              min = 1, value = 1, max = 10,
                                              step = 1, animate = TRUE),
@@ -971,7 +972,8 @@ ui = tagList(
                                  br(),
                                  h4("Plot with estimated logistic curve"),
                                  p('Points represent proportion of correct answer with respect to standardized
-                                   total score. Their size is determined by count of respondents who answered item correctly.'),
+                                   total score. Their size is determined by count of respondents who achieved given
+                                   level of standardized total score.'),
                                  sliderInput("zlogregSlider", "Item",
                                              min = 1, value = 1, max = 10,
                                              step = 1, animate = TRUE),
@@ -1026,7 +1028,8 @@ ui = tagList(
                                  br(),
                                  h4("Plot with estimated logistic curve"),
                                  p('Points represent proportion of correct answer with respect to standardized
-                                   total score. Their size is determined by count of respondents who answered item correctly.'),
+                                   total score. Their size is determined by count of respondents who achieved given
+                                   level of standardized total score.'),
                                  sliderInput("zlogreg_irtSlider", "Item",
                                              min = 1, value = 1, max = 10,
                                              step = 1, animate = TRUE),
@@ -1084,7 +1087,8 @@ ui = tagList(
                                  br(),
                                  h4("Plot with estimated nonlinear curve"),
                                  p('Points represent proportion of correct answer with respect to standardized
-                                   total score. Their size is determined by count of respondents who answered item correctly.'),
+                                   total score. Their size is determined by count of respondents who achieved given
+                                   level of standardized total score.'),
                                  sliderInput("nlsSlider", "Item",
                                              min = 1, value = 1, max = 10,
                                              step = 1, animate = TRUE),
@@ -1204,7 +1208,8 @@ ui = tagList(
                                  br(),
                                  h4("Plot with estimated curves of multinomial regression"),
                                  p('Points represent proportion of selected option with respect to standardized
-                                   total score. Their size is determined by count of respondents who selected given option.'),
+                                   total score. Their size is determined by count of respondents who achieved given
+                                   level of standardized total score and who selected given option.'),
                                  sliderInput("multiSlider", "Item",
                                              min = 1, value = 1, max = 10,
                                              step = 1, animate = TRUE),
@@ -2394,8 +2399,9 @@ ui = tagList(
                                                                       max = 10,
                                                                       step = 1,
                                                                       animate = TRUE))),
-                                            p('Points represent proportion of correct answer with respect to standardized
-                                              total score. Their size is determined by count of respondents who answered item correctly.'),
+                                            p('Points represent proportion of correct answer with respect to total score.
+                                              Their size is determined by count of respondents who achieved given level of
+                                              total score with respect to the group membership.'),
                                             p('NOTE: Plots and tables are based on DIF logistic procedure without any correction method. '),
                                             plotOutput('plot_DIF_logistic'),
                                             downloadButton("DP_plot_DIF_logistic", label = "Download figure"),
@@ -2542,7 +2548,8 @@ ui = tagList(
                                                                       step = 1,
                                                                       animate = TRUE))),
                                             p('Points represent proportion of correct answer with respect to standardized
-                                              total score. Their size is determined by count of respondents who answered item correctly.'),
+                                              total score. Their size is determined by count of respondents who achieved
+                                              given level of standardized total score with respect to the group membership.'),
                                             p('NOTE: Plots and tables are based on DIF logistic procedure without any correction method. '),
                                             plotOutput('plot_DIF_logistic_IRT_Z'),
                                             downloadButton("DP_plot_DIF_logistic_IRT_Z", label = "Download figure"),
@@ -2717,7 +2724,8 @@ ui = tagList(
                                                                       step = 1,
                                                                       animate = TRUE))),
                                             p('Points represent proportion of correct answer with respect to standardized
-                                              total score. Their size is determined by count of respondents who answered item correctly.'),
+                                              total score. Their size is determined by count of respondents who achieved
+                                              given level of standardized total score with respect to the group membership.'),
                                             plotOutput('plot_DIF_NLR'),
                                             downloadButton("DP_plot_DIF_NLR", label = "Download figure"),
                                             h4("Equation"),
@@ -3155,8 +3163,9 @@ ui = tagList(
                                                                       step = 1,
                                                                       animate = TRUE))),
                                             p('Points represent proportion of selected answer with respect to standardized
-                                              total score. Size of points is determined by count of respondents who chose particular
-                                              answer.'),
+                                              total score. Their size is determined by count of respondents who achieved
+                                              given level of standardized total score and who selected given option with
+                                              respect to the group membership.'),
                                             plotOutput('plot_DDF'),
                                             downloadButton("DP_plot_DDF", label = "Download figure"),
                                             h4("Equation"),
