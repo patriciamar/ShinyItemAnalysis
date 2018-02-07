@@ -4,7 +4,7 @@
         *                                                             *
         ***************************************************************
 ---------------------------------------------------
-- Changes in ShinyItemAnalysis 1.2.6 (2018-01-30) -
+- Changes in ShinyItemAnalysis 1.2.6 (2018-02-07) -
 ---------------------------------------------------
 
 MAJOR UPDATES
@@ -13,7 +13,13 @@ MAJOR UPDATES
   o References were added into About page.
   o New design of reports is now in progress. Design of PDF reports was
     updated.
-  o Bug in wording in regression plots was fixed.
+  o New hexbin for ShinyItemAnalysis was created and added into reports.
+  o Sample code in DIF/Fairness IRT Lord and IRT Raju was extended to
+    1PL, 2PL and 3PL models.
+  o Bugs fixing
+      - Wording in regression plots was fixed.
+      - Examples in DIF/Fairness IRT Lord and IRT Raju were fixed.
+      - Function 'plotDIFirt()' now can be also used for only one item.
 
 
 MINOR UPDATES

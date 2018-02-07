@@ -36,7 +36,7 @@
 #' Adela Drabinova \cr
 #' Institute of Computer Science, The Czech Academy of Sciences \cr
 #' Faculty of Mathematics and Physics, Charles University \cr
-#' adela.drabinova@gmail.com \cr
+#' drabinova@cs.cas.cz \cr
 #'
 #' Patricia Martinkova \cr
 #' Institute of Computer Science, The Czech Academy of Sciences \cr
@@ -52,18 +52,18 @@
 #' # loading libraries
 #' library(difNLR, difR)
 #'
-#'  # loading data based on GMAT
-#' data(GMAT, package = "difNLR")
+#'  # loading data based on GMAT2
+#' data(GMAT2, package = "difNLR")
 #'
 #' # Estimation of 2PL IRT model and Lord's statistic
 #' # by difR package
-#' fitLord <- difLord(GMAT, group = 21, focal.name = 1, model = "2PL")
+#' fitLord <- difLord(GMAT2, group = 21, focal.name = 1, model = "2PL")
 #' # plot of item 1 and Lord's statistic
 #' plotDIFirt(fitLord$itemParInit, item = 1)
 #'
 #' # Estimation of 2PL IRT model and Raju's statistic
 #' # by difR package
-#' fitRaju <- difRaju(GMAT, group = 21, focal.name = 1, model = "2PL")
+#' fitRaju <- difRaju(GMAT2, group = 21, focal.name = 1, model = "2PL")
 #' # plot of item 1 and Lord's statistic
 #' plotDIFirt(fitRaju$itemParInit, test = "Raju", item = 1)
 #' }
@@ -124,10 +124,14 @@ plotDIFirt <- function(parameters, test = "Lord", item = "all", item.name, same.
     mF <- itemRescale(mR, mF)
   }
 
+  if (is.null(dim(mR))){
+    mR <- as.data.frame(t(mR))
+    mF <- as.data.frame(t(mF))
+  }
+
   CC_plot <- function(x, a, b, c){
     return(c + (1 - c)/(1 + exp(-(a*(x - b)))))
   }
-
 
   coefR <- switch(as.character(ncol(mR)),
                   "2" = data.frame(a = 1, mR[, 1], c = 0),
@@ -151,68 +155,68 @@ plotDIFirt <- function(parameters, test = "Lord", item = "all", item.name, same.
   gg <- list()
   for (i in items){
     gg[[i]] <- ggplot(df, aes_string("x", "y")) +
-      xlim(-3, 3)  +
-      ### lines
-      stat_function(aes(colour = "Reference", linetype = "Reference"),
-                    fun = CC_plot,
-                    args = list(a = coefR[i, 1],
-                                b = coefR[i, 2],
-                                c = coefR[i, 3]),
-                    size = size, geom = "line") +
-      stat_function(aes(colour = "Focal", linetype = "Focal"),
-                    fun = CC_plot,
-                    args = list(a = coefF[i, 1],
-                                b = coefF[i, 2],
-                                c = coefF[i, 3]),
-                    size = size, geom = "line") +
-      ### style
-      scale_colour_manual(name = "Group",
-                          breaks = c("Reference", "Focal"),
-                          values = col) +
-      scale_fill_manual(values = col) +
-      scale_linetype_manual(name = "Group",
-                            breaks = c("Reference", "Focal"),
-                            values = linetype) +
-      ### theme
-      xlab("Ability") +
-      ylab("Probability of correct answer") +
-      scale_y_continuous(limits = c(0, 1))  +
-      theme_bw() +
-      theme(text = element_text(size = 14),
-            plot.title = element_text(size = 14, face = "bold", vjust = 1.5),
-            axis.line  = element_line(colour = "black"),
-            panel.grid.major = element_blank(),
-            panel.grid.minor = element_blank(),
-            plot.background = element_rect(fill = "transparent", colour = NA)) +
-      ### legend
-      theme(legend.box.just = "left",
-            legend.justification = c(1, 0),
-            legend.position = c(0.97, 0.03),
-            legend.box = "vertical",
-            legend.key.size = unit(0.9, "cm"),
-            legend.key.height = unit(0.8, "line"),
-            legend.text.align = 0,
-            legend.title.align = 0,
-            legend.key = element_rect(colour = "white")) +
-      ggtitle(item.names[i])
+                xlim(-3, 3)  +
+                ### lines
+                stat_function(aes(colour = "Reference", linetype = "Reference"),
+                              fun = CC_plot,
+                              args = list(a = coefR[i, 1],
+                                          b = coefR[i, 2],
+                                          c = coefR[i, 3]),
+                              size = size, geom = "line") +
+                stat_function(aes(colour = "Focal", linetype = "Focal"),
+                              fun = CC_plot,
+                              args = list(a = coefF[i, 1],
+                                          b = coefF[i, 2],
+                                          c = coefF[i, 3]),
+                              size = size, geom = "line") +
+                ### style
+                scale_colour_manual(name = "Group",
+                                    breaks = c("Reference", "Focal"),
+                                    values = col) +
+                scale_fill_manual(values = col) +
+                scale_linetype_manual(name = "Group",
+                                      breaks = c("Reference", "Focal"),
+                                      values = linetype) +
+                ### theme
+                xlab("Ability") +
+                ylab("Probability of correct answer") +
+                scale_y_continuous(limits = c(0, 1))  +
+                theme_bw() +
+                theme(text = element_text(size = 14),
+                      plot.title = element_text(size = 14, face = "bold", vjust = 1.5),
+                      axis.line  = element_line(colour = "black"),
+                      panel.grid.major = element_blank(),
+                      panel.grid.minor = element_blank(),
+                      plot.background = element_rect(fill = "transparent", colour = NA)) +
+                ### legend
+                theme(legend.box.just = "left",
+                      legend.justification = c(1, 0),
+                      legend.position = c(0.97, 0.03),
+                      legend.box = "vertical",
+                      legend.key.size = unit(0.9, "cm"),
+                      legend.key.height = unit(0.8, "line"),
+                      legend.text.align = 0,
+                      legend.title.align = 0,
+                      legend.key = element_rect(colour = "white")) +
+                ggtitle(item.names[i])
 
 
-    if (test == "Raju"){
-      gg1 <- ggplot_build(gg[[i]])
+  if (test == "Raju"){
+    gg1 <- ggplot_build(gg[[i]])
 
-      # extract data for the loess lines from the 'data' slot
-      df2 <- data.frame(x = gg1$data[[1]]$x,
-                        ymin = gg1$data[[1]]$y,
-                        ymax = gg1$data[[2]]$y)
+    # extract data for the loess lines from the 'data' slot
+    df2 <- data.frame(x = gg1$data[[1]]$x,
+                      ymin = gg1$data[[1]]$y,
+                      ymax = gg1$data[[2]]$y)
 
-      # use the loess data to add the 'ribbon' to plot
-      gg[[i]] <- gg[[i]] + geom_ribbon(data = df2,
-                                       aes_string(x = "x",
-                                                  ymin = "ymin",
-                                                  ymax = "ymax"),
-                                       fill = "grey",
-                                       alpha = 0.4,
-                                       inherit.aes = FALSE)
+    # use the loess data to add the 'ribbon' to plot
+    gg[[i]] <- gg[[i]] + geom_ribbon(data = df2,
+                                aes_string(x = "x",
+                                    ymin = "ymin",
+                                    ymax = "ymax"),
+                                fill = "grey",
+                                alpha = 0.4,
+                                inherit.aes = FALSE)
     }
   }
 
