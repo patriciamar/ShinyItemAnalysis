@@ -52,18 +52,18 @@
 #' # loading libraries
 #' library(difNLR, difR)
 #'
-#'  # loading data based on GMAT
-#' data(GMAT, package = "difNLR")
+#'  # loading data based on GMAT2
+#' data(GMAT2, package = "difNLR")
 #'
 #' # Estimation of 2PL IRT model and Lord's statistic
 #' # by difR package
-#' fitLord <- difLord(GMAT, group = 21, focal.name = 1, model = "2PL")
+#' fitLord <- difLord(GMAT2, group = 21, focal.name = 1, model = "2PL")
 #' # plot of item 1 and Lord's statistic
 #' plotDIFirt(fitLord$itemParInit, item = 1)
 #'
 #' # Estimation of 2PL IRT model and Raju's statistic
 #' # by difR package
-#' fitRaju <- difRaju(GMAT, group = 21, focal.name = 1, model = "2PL")
+#' fitRaju <- difRaju(GMAT2, group = 21, focal.name = 1, model = "2PL")
 #' # plot of item 1 and Lord's statistic
 #' plotDIFirt(fitRaju$itemParInit, test = "Raju", item = 1)
 #' }
@@ -124,10 +124,14 @@ plotDIFirt <- function(parameters, test = "Lord", item = "all", item.name, same.
     mF <- itemRescale(mR, mF)
   }
 
+  if (is.null(dim(mR))){
+    mR <- as.data.frame(t(mR))
+    mF <- as.data.frame(t(mF))
+  }
+
   CC_plot <- function(x, a, b, c){
     return(c + (1 - c)/(1 + exp(-(a*(x - b)))))
   }
-
 
   coefR <- switch(as.character(ncol(mR)),
                   "2" = data.frame(a = 1, mR[, 1], c = 0),
