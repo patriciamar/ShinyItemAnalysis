@@ -239,11 +239,8 @@ if(params$isCriterionPresent & params$validity_check){
     guides(size=guide_legend(ncol=2))
 }
 ```
-
-
   
 \pagebreak
-
 
 # Traditional item analysis
 
@@ -251,9 +248,6 @@ if(params$isCriterionPresent & params$validity_check){
 
 ### Difficulty/Discrimination plot
 Difficulty (red) of items is estimated as percent of students who answered correctly to that item. Discrimination (blue) is by default described by difference of percent correct in upper and lower third of students (Upper-Lower Index, ULI). By rule of thumb it should not be lower than 0.2 (borderline in the plot), except for very easy or very difficult items.
-
-
-
 
 ```{r DD-plot-interpretation, echo = FALSE, results = "hide"}
 range1 <- params$DDplotRange1
@@ -457,7 +451,6 @@ if (params$histCheck) {
 `r if (any(c(params$deltaplotCheck, params$logregCheck, params$multiCheck)) & params$isGroupPresent & params$histCheck) {"\\pagebreak"}`
 
 `r if(params$isGroupPresent & params$deltaplotCheck) {"## Delta plot"}`
-
 
 `r if(params$isGroupPresent & params$deltaplotCheck) {"Delta plot compares the proportions of correct answers per item in the two groups. It displays non-linear transformation of these proportions using quantiles of standard normal distributions (so called delta scores) for each item for the two groups in a scatterplot called diagonal plot or delta plot . Item is under suspicion of DIF if the delta point considerably departs from the diagonal. "}`
 
