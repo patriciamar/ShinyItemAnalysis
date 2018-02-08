@@ -119,18 +119,6 @@ ui = tagList(
                             sep = ""
                           )
                         ),
-                        'In case of busy server you can try other mirrors: ',
-                        # a('University of Washington',
-                        #   href = 'https://rstudio.stat.washington.edu/shiny/ShinyItemAnalysis/',
-                        #   target = "_blank"),
-                        # HTML(
-                        #   paste(
-                        #     "<a href='https://rstudio.stat.washington.edu/shiny/ShinyItemAnalysis/' target='_blank'>",
-                        #     "<img src='Flag_of_the_United_States.png' height='16' border='0' align='middle'>",
-                        #     "</a>,",
-                        #     sep = ""
-                        #   )
-                        # ),
                         a('Charles University',
                           href = 'http://shiny.statest.cz:3838/ShinyItemAnalysis/',
                           target = "_blank"),
@@ -160,7 +148,7 @@ ui = tagList(
                       p('Current version of ', code('ShinyItemAnalysis'), ' available on ',
                         a('CRAN', href = 'https://CRAN.R-project.org/package=ShinyItemAnalysis', target = "_blank"), 'is 1.2.3.
                         Version available',
-                        a('online', href = 'https://shiny.cs.cas.cz/ShinyItemAnalysis/', target = "_blank"), 'is 1.2.4.
+                        a('online', href = 'https://shiny.cs.cas.cz/ShinyItemAnalysis/', target = "_blank"), 'is 1.2.6.
                         The newest development version available on ',
                         a('GitHub', href = 'https://github.com/patriciamar/ShinyItemAnalysis', target = "_blank"), 'is 1.2.6.',
                         br(),
@@ -462,7 +450,7 @@ ui = tagList(
                                    above the cut-score, grey column shows students with total score equal
                                    to the cut-score and red part of histogram shows students below the cut-score.'),
                                  plotOutput('totalscores_histogram'),
-                                 downloadButton("DB_totalscores_histogram", label = "Download figure"),
+                                 downloadButton(outputId = "DB_totalscores_histogram", label = "Download figure"),
                                  br(),
                                  br(),
                                  h4("Selected R code"),
@@ -579,13 +567,13 @@ ui = tagList(
                                                                            "Centroid" = "centroid"),
                                                             selected = "none"))),
                                   plotOutput('corr_plot'),
-                                  downloadButton("DB_corr_plot", label = "Download figure"),
+                                  downloadButton(outputId = "DB_corr_plot", label = "Download figure"),
                                   br(),
                                   h4("Scree plot"),
                                   p('A scree plot displays the eigenvalues associated with an component or a factor in descending order
                                      versus the number of the component or factor. '),
                                   plotOutput('scree_plot'),
-                                  downloadButton("DB_scree_plot", label = "Download figure"),
+                                  downloadButton(outputId = "DB_scree_plot", label = "Download figure"),
                                   h4("Selected R code"),
                                   div(code('library(corrplot)'),
                                       br(),
@@ -632,7 +620,7 @@ ui = tagList(
                                               depending on outcome variable - whether it is discrete or continuous. Scatterplot is
                                               provided with red linear regression line. '),
                                             plotOutput('validity_plot'),
-                                            downloadButton("DB_validity_plot", label = "Download figure"),
+                                            downloadButton(outputId = "DB_validity_plot", label = "Download figure"),
                                             h4('Correlation of criterion variable and total score'),
                                             p('Test for association between total score and criterion variable is based on Spearman`s \\(\\rho\\).
                                               This rank-based measure has been recommended if bivariate normal distribution is not guaranteed.
@@ -686,21 +674,27 @@ ui = tagList(
                                             p('With option ', strong('Combinations'), 'all item selection patterns are plotted (e.g. AB, ACD, BC). With
                                               option', strong('Distractors'), 'answers are splitted into distractors (e.g. A, B, C, D).'),
                                             fluidPage(div(style = "display: inline-block; vertical-align: top; width: 20%; ",
-                                                          sliderInput('validity_group', 'Number of groups:',
+                                                          sliderInput(inputId = 'validity_group',
+                                                                      label = 'Number of groups:',
                                                                       min   = 1,
                                                                       max   = 5,
                                                                       value = 3)),
                                                       div(style = "display: inline-block; vertical-align: top; width: 5%; "),
                                                       div(style = "display: inline-block; vertical-align: top; width: 15%; ",
-                                                          radioButtons('type_validity_combinations_distractor', 'Type',
-                                                                       list("Combinations", "Distractors"))),
+                                                          radioButtons(inputId = 'type_validity_combinations_distractor',
+                                                                       label = 'Type',
+                                                                       choices = list("Combinations", "Distractors"))),
                                                       div(style = "display: inline-block; vertical-align: top; width: 5%; "),
                                                       div(style = "display: inline-block; vertical-align: top; width: 20%; ",
-                                                          sliderInput("validitydistractorSlider", "Item",
-                                                                      min = 1, value = 1, max = 10,
-                                                                      step = 1, animate = TRUE))),
+                                                          sliderInput(inputId = "validitydistractorSlider",
+                                                                      label = "Item",
+                                                                      min = 1,
+                                                                      value = 1,
+                                                                      max = 10,
+                                                                      step = 1,
+                                                                      animate = TRUE))),
                                             plotOutput('validity_distractor_plot'),
-                                            downloadButton("DB_validity_distractor_plot", label = "Download figure"),
+                                            downloadButton(outputId = "DB_validity_distractor_plot", label = "Download figure"),
                                             h4('Correlation of criterion variable and scored item'),
                                             p('Test for association between total score and criterion variable is based on Spearman`s \\(\\rho\\).
                                               This rank-based measure has been recommended if bivariate normal distribution is not guaranteed.
@@ -754,13 +748,15 @@ ui = tagList(
                                    very easy or very difficult items. Discrimination can be customized (see also Martinkova, Stepanek, et al.
                                    (2017)) by changing number of groups and by changing which groups should be compared: '),
                                  fluidPage(div(style = "display: inline-block; vertical-align: top; width: 20%; ",
-                                               sliderInput('DDplotNumGroupsSlider','Number of groups:',
+                                               sliderInput(inputId = 'DDplotNumGroupsSlider',
+                                                           label = 'Number of groups:',
                                                            min   = 1,
                                                            max   = 5,
                                                            value = 3)),
                                            div(style = "display: inline-block; vertical-align: top; width: 5%; "),
                                            div(style = "display: inline-block; vertical-align: top; width: 20%; ",
-                                               sliderInput("DDplotRangeSlider", "Which two groups to compare:",
+                                               sliderInput(inputId = "DDplotRangeSlider",
+                                                           label = "Which two groups to compare:",
                                                            min = 1,
                                                            max = 3,
                                                            step = 1,
@@ -823,17 +819,20 @@ ui = tagList(
                                  p('With option ', strong('Combinations'), 'all item selection patterns are plotted (e.g. AB, ACD, BC). With
                                    option', strong('Distractors'), 'answers are splitted into distractors (e.g. A, B, C, D).'),
                                  fluidPage(div(style = "display: inline-block; vertical-align: top; width: 20%; ",
-                                               sliderInput('gr','Number of groups:',
+                                               sliderInput(inputId = 'gr',
+                                                           label = 'Number of groups:',
                                                            min   = 1,
                                                            max   = 5,
                                                            value = 3)),
                                            div(style = "display: inline-block; vertical-align: top; width: 5%; "),
                                            div(style = "display: inline-block; vertical-align: top; width: 15%; ",
-                                               radioButtons('type_combinations_distractor', 'Type',
-                                                            list("Combinations", "Distractors"))),
+                                               radioButtons(inputId = 'type_combinations_distractor',
+                                                            label = 'Type',
+                                                            choices = list("Combinations", "Distractors"))),
                                            div(style = "display: inline-block; vertical-align: top; width: 5%; "),
                                            div(style = "display: inline-block; vertical-align: top; width: 20%; ",
-                                               sliderInput("distractorSlider", "Item",
+                                               sliderInput(inputId = "distractorSlider",
+                                                           label = "Item",
                                                            min = 1,
                                                            max = 10,
                                                            value = 1,
@@ -849,10 +848,7 @@ ui = tagList(
                                  br(),
                                  h4('Barplot of item response patterns'),
                                  plotOutput("distractor_barplot_item_response_patterns"),
-                                 downloadButton(
-                                   "DB_distractor_barplot_item_response_patterns",
-                                   label = "Download figure"
-                                 ),
+                                 downloadButton( "DB_distractor_barplot_item_response_patterns", label = "Download figure"),
                                  h4('Histogram of total scores'),
                                  plotOutput('distractor_histogram'),
                                  downloadButton("DB_distractor_histogram", label = "Download figure"),
