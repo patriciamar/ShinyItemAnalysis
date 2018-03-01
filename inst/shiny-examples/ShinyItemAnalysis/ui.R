@@ -146,7 +146,7 @@ ui = tagList(
 
                       h4('Version'),
                       p('Current version of ', code('ShinyItemAnalysis'), ' available on ',
-                        a('CRAN', href = 'https://CRAN.R-project.org/package=ShinyItemAnalysis', target = "_blank"), 'is 1.2.3.
+                        a('CRAN', href = 'https://CRAN.R-project.org/package=ShinyItemAnalysis', target = "_blank"), 'is 1.2.6.
                         Version available',
                         a('online', href = 'https://shiny.cs.cas.cz/ShinyItemAnalysis/', target = "_blank"), 'is 1.2.6.
                         The newest development version available on ',
@@ -166,7 +166,7 @@ ui = tagList(
                                HTML("<figcaption><a href='http://www.cs.cas.cz/martinkova/' target='_blank'>Patricia<br>Martinkova</a></figcaption>")),
                         column(1, align = "center",
                                img(src = 'adela.jpg', width = 75),
-                               HTML("<figcaption><a href='http://uivty.cs.cas.cz/~drabinova/' target='_blank'>Adela<br>Drabinova</a></figcaption>")),
+                               HTML("<figcaption><a href='http://www.cs.cas.cz/drabinova/' target='_blank'>Adela<br>Drabinova</a></figcaption>")),
                         column(1, align = "center",
                                img(src = 'leder.png', width = 75),
                                HTML("<figcaption><a href='https://www.linkedin.com/in/ond%C5%99ej-leder-3864b1119' target='_blank'>Ondrej<br>Leder</a></figcaption>")),
