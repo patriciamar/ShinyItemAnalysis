@@ -754,13 +754,9 @@ output$DP_plot_DIF_NLR <- downloadHandler(
 output$tab_coef_DIF_NLR <- renderTable({
   item <- input$difnlrSlider
   fit <- model_DIF_NLR_plot()
-  DIFitems <- fit$DIFitems
 
-  tab_coef <- tab_sd <- rep(0, 5)
-  names(tab_coef) <- names(tab_sd) <- c("a", "b", "aDif", "bDif", "c")
-
-  tab_coef[names(fit$nlrPAR[item, ])] <- fit$nlrPAR[item, ]
-  tab_sd[names(fit$nlrSE[item, ])] <- fit$nlrSE[item, ]
+  tab_coef <- fit$nlrPAR[[item]][c('a', 'b', 'aDif', 'bDif', 'c')]
+  tab_sd <- fit$nlrSE[[item]][c('a', 'b', 'aDif', 'bDif', 'c')]
 
   tab <- t(rbind(tab_coef, tab_sd))
   rownames(tab) <- c('a', 'b', 'aDIF', 'bDIF', 'c')
