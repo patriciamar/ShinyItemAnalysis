@@ -760,14 +760,14 @@ function(input, output, session) {
            # distractors
            hist_distractor_by_group = distractor_histogram_Input(),
            graf = report_distractor_plot(),
-           incProgress(0.1),
+           incProgress(0.25),
            # regression
            logreg = logreg_plot_Input(),
            zlogreg = z_logreg_plot_Input(),
            zlogreg_irt = z_logreg_irt_plot_Input(),
            nlsplot = nlr_plot_Input(),
            multiplot = multiplotReportInput(),
-           incProgress(0.15),
+           incProgress(0.05),
            # irt
            wrightMap = oneparamirtWrightMapReportInput_mirt(),
            irt_type = irt_typeInput(),
@@ -797,7 +797,7 @@ function(input, output, session) {
            multiCheck = input$multiCheck,
            model_DDF_print = {if (groupPresent()) {if (input$multiCheck) {model_DDF_print_report()}}},
            plot_DDFReportInput = {if (groupPresent()) {if (input$multiCheck) {plot_DDFReportInput()}}},
-           incProgress(0.3)
+           incProgress(0.25)
       )
     })
 

@@ -11,8 +11,10 @@ MAJOR UPDATES
 
   o UI for DIF/Fairness section was updated.
   o References were added into About page.
-  o New design of reports is now in progress. Design of PDF reports was
+  o New design of reports is now available. Design of PDF reports was
     updated.
+  o Wording in report was improved.
+  o DIF/Fairness section in report was improved.
   o New hexbin for ShinyItemAnalysis was created and added into reports.
   o Sample code in DIF/Fairness IRT Lord and IRT Raju was extended to
     1PL, 2PL and 3PL models.
