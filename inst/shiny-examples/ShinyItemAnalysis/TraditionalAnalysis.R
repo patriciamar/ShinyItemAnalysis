@@ -222,7 +222,7 @@ report_distractor_plot <- reactive({
                                 multiple.answers = multiple.answers_report)
     g = g +
       ggtitle(paste("Distractor plot for item", item_numbers()[i])) +
-      theme(text = element_text(size = 12))
+      theme(text = element_text(size = 14))
     g = ggplotGrob(g)
     graflist[[i]] = g
   }

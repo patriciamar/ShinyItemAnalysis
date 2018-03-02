@@ -712,7 +712,7 @@ multiplotReportInput <- reactive({
             legend.key.width = unit(1, "cm"))
     g = g +
       ggtitle(paste("Multinomial plot for item", item_numbers()[item])) +
-      theme(text = element_text(size = 12))
+      theme(text = element_text(size = 14))
     g = ggplotGrob(g)
     graflist[[item]] = g
   }
