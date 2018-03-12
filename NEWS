@@ -12,6 +12,7 @@ MAJOR UPDATES
 
 MINOR UPDATES
   o Hexbin was added into footer.
+  o Paddings in large devices was adjusted.
 
 ---------------------------------------------------
 - Changes in ShinyItemAnalysis 1.2.6 (2018-03-01) -
