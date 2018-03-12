@@ -3,6 +3,16 @@
         *  Changes and Developments in the ShinyItemAnalysis Package  *
         *                                                             *
         ***************************************************************
+
+-------------------------------------------------------
+- Changes in ShinyItemAnalysis 1.2.6.-1. (2018-03-12) -
+-------------------------------------------------------
+
+MAJOR UPDATES
+
+MINOR UPDATES
+  o Hexbin was added into footer.
+
 ---------------------------------------------------
 - Changes in ShinyItemAnalysis 1.2.6 (2018-03-01) -
 ---------------------------------------------------

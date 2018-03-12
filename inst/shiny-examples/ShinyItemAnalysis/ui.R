@@ -48,7 +48,9 @@ ui = tagList(
              footer = list(
                div(class = "clear"),
                div(class = "panel-footer",
-                   HTML('<p> <font size = "4"> ShinyItemAnalysis </font>
+                   HTML('<img src = "hexbin.png", style = "float:left; width: 65px;">
+                         <p style = "margin:8px 0 0 0;">
+                             <font size = "4"> ShinyItemAnalysis </font>
                              <font size = "2"> Test and item analysis | Version 1.2.6 </font>
                              <span style = "float:right">
                                 <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysis/" id = "tooltipweb" target="_blank"> <img src = "web_icon.png", style = "width: 25px;"> </a>
@@ -60,11 +62,11 @@ ui = tagList(
                            $("#tooltipgithub").attr("title", "GitHub");
                            $("#tooltipcran").attr("title", "CRAN");
                          </script>'),
-                   p(HTML('&copy; 2018  Patricia Martinkova, Adela Drabinova, Ondrej Leder and Jakub Houdek'
-                   ),
-                    HTML('<span style = "float:right">'),
-                        textOutput('counter', inline = T),
-                    HTML('</span>')))),
+                   p(`style` = "margin:0 0 0 0;",
+                     HTML('<font size = "2"> &copy; 2018  Patricia Martinkova, Adela Drabinova, Ondrej Leder and Jakub Houdek </font>'),
+                     HTML('<span style = "float:right"> '),
+                     textOutput('counter', inline = T),
+                     HTML('</span>')))),
              theme = "bootstrap.css",
              #%%%%%%%%%%%%%%%%%%%%%
              # MAIN PANEL #########
