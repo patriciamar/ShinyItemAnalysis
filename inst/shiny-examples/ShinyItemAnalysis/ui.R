@@ -22,11 +22,8 @@ ui = tagList(
                         src = "report_downloading_message.js"),
             tags$link(rel = "stylesheet",
                       type = "text/css",
-                      href = "flag-icon.css"),
-            tags$link(rel = "stylesheet",
-                      type = "text/css",
                       href = "margins_and_paddings.css"),
-            tags$link(rel = "shortcut icon", href = "Rlogo.png"),
+            tags$link(rel = "shortcut icon", href = "hexbin.png"),
             tags$style(type = "text/css",
                        ".panel-footer {position: fixed; right: 0; bottom: 0; left: 0;}")),
 
@@ -53,9 +50,9 @@ ui = tagList(
                              <font size = "4"> ShinyItemAnalysis </font>
                              <font size = "2"> Test and item analysis | Version 1.2.6 </font>
                              <span style = "float:right">
-                                <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysis/" id = "tooltipweb" target="_blank"> <img src = "web_icon.png", style = "width: 25px;"> </a>
-                                <a href = "https://github.com/patriciamar/ShinyItemAnalysis/" id = "tooltipgithub" target="_blank"> <img src = "github_icon.png", style = "width: 25px;"> </a>
-                                <a href = "https://CRAN.R-project.org/package=ShinyItemAnalysis/" id = "tooltipcran" target="_blank"> <img src = "cran_icon.png", style = "width: 25px;"> </a>
+                                <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysis/" id = "tooltipweb" target="_blank"> <img src = "footer_web_icon.png", style = "width: 25px;"> </a>
+                                <a href = "https://github.com/patriciamar/ShinyItemAnalysis/" id = "tooltipgithub" target="_blank"> <img src = "footer_github_icon.png", style = "width: 25px;"> </a>
+                                <a href = "https://CRAN.R-project.org/package=ShinyItemAnalysis/" id = "tooltipcran" target="_blank"> <img src = "footer_cran_icon.png", style = "width: 25px;"> </a>
                              </span> </p>
                          <script>
                            $("#tooltipweb").attr("title", "Web");
@@ -116,7 +113,7 @@ ui = tagList(
                         HTML(
                           paste(
                             "<a href = 'https://shiny.cs.cas.cz/ShinyItemAnalysis/' target = '_blank'>",
-                            "<img src = 'Flag_of_the_Czech_Republic.png' height = '16' border = '0' align = 'middle'>",
+                            "<img src = 'flag_CR.png' height = '16' border = '0' align = 'middle'>",
                             "</a>.",
                             sep = ""
                           )
@@ -127,7 +124,7 @@ ui = tagList(
                         HTML(
                           paste(
                             "<a href = 'http://shiny.statest.cz:3838/ShinyItemAnalysis/' target = '_blank'>",
-                            "<img src = 'Flag_of_the_Czech_Republic.png' height = '16' border = '0' align = 'middle'>",
+                            "<img src = 'flag_CR.png' height = '16' border = '0' align = 'middle'>",
                             "</a>",
                             sep = ""
                           )
@@ -139,7 +136,7 @@ ui = tagList(
                         HTML(
                           paste(
                             "<a href = 'https://patriciamar.shinyapps.io/ShinyItemAnalysis/' target = '_blank'>",
-                            "<img src = 'Flag_of_the_United_States.png' height = '16' border = '0' align = 'middle'>",
+                            "<img src = 'flag_USA.png' height = '16' border = '0' align = 'middle'>",
                             "</a>.",
                             sep = ""
                           )
@@ -164,19 +161,19 @@ ui = tagList(
 
                       fluidRow(
                         column(1, align = "center",
-                               img(src = 'patricia_new.png', width = 75),
+                               img(src = 'author_patricia.png', width = 75),
                                HTML("<figcaption><a href='http://www.cs.cas.cz/martinkova/' target='_blank'>Patricia<br>Martinkova</a></figcaption>")),
                         column(1, align = "center",
-                               img(src = 'adela.jpg', width = 75),
+                               img(src = 'author_adela.jpg', width = 75),
                                HTML("<figcaption><a href='http://www.cs.cas.cz/drabinova/' target='_blank'>Adela<br>Drabinova</a></figcaption>")),
                         column(1, align = "center",
-                               img(src = 'leder.png', width = 75),
+                               img(src = 'author_ondra.png', width = 75),
                                HTML("<figcaption><a href='https://www.linkedin.com/in/ond%C5%99ej-leder-3864b1119' target='_blank'>Ondrej<br>Leder</a></figcaption>")),
                         column(1, align = "center",
-                               img(src = 'jakub_new.png', width = 75),
+                               img(src = 'author_jakub.png', width = 75),
                                HTML("<figcaption>Jakub<br>Houdek</figcaption>")),
                         column(1, align = "center",
-                               img(src = 'Lubos.jpg', width = 75),
+                               img(src = 'author_lubos.jpg', width = 75),
                                HTML("<figcaption>Lubomir<br>Stepanek</figcaption>"))
                       ),
 
@@ -249,8 +246,6 @@ ui = tagList(
              #%%%%%%%%%%%%%%%%%%%%%
              # DATA ###############
              #%%%%%%%%%%%%%%%%%%%%%
-
-
              tabPanel("Data",
                tabsetPanel(
                # ** Summary ####
@@ -2056,7 +2051,7 @@ ui = tagList(
                         tabPanel('About DIF',
                                  h3('Differential Item Functioning / Item Fairness'),
                                  p('Differential item functioning (DIF) occurs when people from different
-                                   groups (commonly gender or ethnicity) with the same underlying true
+                                   social groups (commonly gender or ethnicity) with the same underlying true
                                    ability have a different probability of answering the item correctly.
                                    If item functions differently for two groups, it is potentially unfair.
                                    In general, two type of DIF can be recognized: if the item has different
@@ -2065,12 +2060,10 @@ ui = tagList(
                                    discrimination and possibly also different difficulty for given two groups, ',
                                    strong('non-uniform'), 'DIF is present (right figure)'),
                                  br(),
-                                 fluidRow(
-                                   column(6, align="center",
-                                          img(src = 'fig_NLR_uniformDIF.png', width = 380)),
-                                   column(6, align="center",
-                                          img(src = 'fig_NLR_nonuniformDIF.png', width = 380))
-                                 ),
+                                 img(src = "fig_DIF_uniform.png",
+                                     style = "float: left; width: 32%; margin-right: 2%; margin-left: 16%; margin-bottom: 0.5em;"),
+                                 img(src = "fig_DIF_nonuniform.png",
+                                     style = "float: left; width: 32%; margin-right: 16%; margin-left: 2%; margin-bottom: 0.5em;"),
                                  br(),
                                  br()
                         ),
@@ -2771,12 +2764,10 @@ ui = tagList(
                                               to detect DIF. In statistical terms, Lord statistic is
                                               equal to Wald statistic.'),
                                             br(),
-                                            fluidRow(
-                                              column(6, align="center",
-                                                     img(src = 'lord_udif.png', width = 380)),
-                                              column(6, align="center",
-                                                     img(src = 'lord_nudif.png', width = 380))
-                                            ),
+                                            img(src = "fig_lord_uniform.png",
+                                                style = "float: left; width: 32%; margin-right: 2%; margin-left: 16%; margin-bottom: 0.5em;"),
+                                            img(src = "fig_lord_nonuniform.png",
+                                                style = "float: left; width: 32%; margin-right: 16%; margin-left: 2%; margin-bottom: 0.5em;"),
                                             br(),
                                             h4('Summary table'),
                                             p('Here you can choose ', strong('model'), ' to test DIF. You can also select ',
@@ -2972,12 +2963,10 @@ ui = tagList(
                                               uses the area between the item charateristic curves
                                               for the two groups to detect DIF.'),
                                             br(),
-                                            fluidRow(
-                                              column(6, align="center",
-                                                     img(src = 'raju_udif.png', width = 380)),
-                                              column(6, align="center",
-                                                     img(src = 'raju_nudif.png', width = 380))
-                                            ),
+                                            img(src = "fig_raju_uniform.png",
+                                                style = "float: left; width: 32%; margin-right: 2%; margin-left: 16%; margin-bottom: 0.5em;"),
+                                            img(src = "fig_raju_nonuniform.png",
+                                                style = "float: left; width: 32%; margin-right: 16%; margin-left: 2%; margin-bottom: 0.5em;"),
                                             br(),
                                             h4('Summary table'),
                                             p('Here you can choose ', strong('model'), ' to test DIF. You can also select ',
