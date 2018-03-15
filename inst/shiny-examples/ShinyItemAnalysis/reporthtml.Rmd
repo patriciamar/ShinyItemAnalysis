@@ -40,6 +40,7 @@ params:
   DDplotRange1: NA
   DDplotRange2: NA
   DDplotNumGroups: NA
+  itemexam: NA
   hist_distractor_by_group: NA
   graf: NA
   logreg: NA
@@ -48,34 +49,26 @@ params:
   nlsplot: NA
   multiplot: NA
   wrightMap: NA
+  irt_type: NA
   irt: NA
   irtiic: NA
   irttif: NA
   irtcoef: NA
   irtfactor: NA
+  isGroupPresent: NA
+  histCheck: NA
   resultsgroup: NA
   histbyscoregroup0: NA
   histbyscoregroup1: NA
-  deltaplot: NA
-  DP_text_normal: NA
+  deltaplotCheck: NA
+  DIF_deltaplot: NA
+  DIF_deltaplot_text: NA
+  logregCheck: NA
   DIF_logistic_print: NA
   DIF_logistic_plot: NA
-  plot_DIF_logistic: NA
-  plot_DIF_logistic_IRT_Z: NA
-  plot_DIF_NLR: NA
-  plot_DIF_IRT_Lord: NA
-  plot_DIF_IRT_Raju: NA
-  itemexam: NA
-  itemReport: NA
-  irt_type: NA
-  model_DDF_print: NA
-  plot_DDFReportInput: NA
-  isGroupPresent: NA
-  histCheck: NA
-  deltaplotCheck: NA
-  logregCheck: NA
   multiCheck: NA
-  groupie: NA
+  DDF_multinomial_print: NA
+  DDF_multinomial_plot: NA
 ---
 
 **************
@@ -171,10 +164,10 @@ if (any(params$corr_plot != "")) {
   numclust <- params$corr_plot_numclust
   clustmethod <- params$corr_plot_clustmethod
   
-  tlcex <- 0.7
+  tlcex <- ifelse(ncol(corP) > 30, 0.7, 1)
   
   if (clustmethod == "none"){
-    corrplot(corP, tl.cex = )
+    corrplot(corP, tl.cex = tlcex)
   } else {
     corrplot(corP, tl.cex = tlcex, order = "hclust", 
              hclust.method = clustmethod, addrect = numclust)
@@ -451,13 +444,13 @@ if (params$histCheck) {
 
 `r if(params$isGroupPresent & params$deltaplotCheck) {"### Summary table"}`
 
-`r if(params$deltaplotCheck){if(params$isGroupPresent){res <- params$DP_text_normal; paste("Detection threshold is ", round(res$thr, 2), ". ", ifelse(res$DIFitems == "no DIF item detected", "**No DIF item detected.**  ", paste("**Items detected as DIF: ", res$DIFitems, ". **  ", sep = "")), sep = "")}}`
-`r if(params$isGroupPresent & params$logregCheck) {res <- params$DP_text_normal; paste(ifelse(res$purify, "Item purification was used.", "Item purification was not applied."))}`
+`r if(params$deltaplotCheck){if(params$isGroupPresent){res <- params$DIF_deltaplot_text; paste("Detection threshold is ", round(res$thr, 2), ". ", ifelse(res$DIFitems == "no DIF item detected", "**No DIF item detected.**  ", paste("**Items detected as DIF: ", res$DIFitems, ". **  ", sep = "")), sep = "")}}`
+`r if(params$isGroupPresent & params$logregCheck) {res <- params$DIF_deltaplot_text; paste(ifelse(res$purify, "Item purification was used.", "Item purification was not applied."))}`
 
 ```{r delta-plot-output, echo = FALSE}
 if (params$deltaplotCheck) {
   if(params$isGroupPresent){
-    res <- params$DP_text_normal
+    res <- params$DIF_deltaplot_text
     tab <- cbind(res$Props, res$Deltas, res$Dist)
     colnames(tab) <- c("Prop. Ref", "Prop. Foc", "Delta Ref", "Delta Foc", "Dist.")
     rownames(tab) <- paste("Item", 1:nrow(tab))
@@ -472,7 +465,7 @@ if (params$deltaplotCheck) {
 ```{r delta-plot, echo = FALSE, fig.width = 11, fig.height = 4, fig.align = 'center', dpi = 300}
 if (params$deltaplotCheck) {
   if(params$isGroupPresent){
-    print(params$deltaplot +
+    print(params$DIF_deltaplot +
             geom_text(size = 0.1) +
             theme(text = element_text(size = 11), 
                   plot.title = element_text(face = "bold")) + 
@@ -488,7 +481,7 @@ if (params$deltaplotCheck) {
 `r if(params$isGroupPresent & params$logregCheck) {"### Summary table"}`
 
 `r if(params$isGroupPresent & params$logregCheck) {res <- params$DIF_logistic_print; switch(res$type, "both" = "Both types of DIF tested.", "udif" = "Uniform DIF tested only.", "nudif" = "Non-uniform DIF tested only.")}`
-`r if(params$isGroupPresent & params$logregCheck) {res <- params$DIF_logistic_print; paste("Detection threshold is ", round(res$thr, 2), ". ", ifelse(any(res$DIFitems == "no DIF item detected"), "**No DIF item detected. **  ", paste("**Items detected as DIF: ", paste(res$DIFitems, collapse = ", "), ". **  ", sep = "")), sep = "")}`
+`r if(params$isGroupPresent & params$logregCheck) {res <- params$DIF_logistic_print; paste("Detection threshold is ", round(res$thr, 2), ". ", ifelse(any(res$DIFitems == "No DIF item detected"), "**No DIF item detected. **  ", paste("**Items detected as DIF: ", paste(res$DIFitems, collapse = ", "), ". **  ", sep = "")), sep = "")}`
 `r if(params$isGroupPresent & params$logregCheck) {res <- params$DIF_logistic_print; paste(ifelse(res$purification, "Item purification was used.", "Item purification was not applied."), ifelse(is.null(res$p.adjust.method), "No p-value adjustment for multiple comparisons was used.", paste(switch(res$p.adjust.method, "holm" = "Holm's", "hochberg" = "Hochberg's", "hommel" = "Hommel's", "bonferroni" = "Bonferroni", "BH" = "Benjamini-Hochberg", "BY" = "Benjamini-Yekutieli", "fdr" = "Benjamini-Hochberg", "none" = "No"), "p-value adjustment for multiple comparisons was used.")))}`
 
 ```{r dif-logistic-output, echo = FALSE}
@@ -535,16 +528,18 @@ if (params$logregCheck) {
 
 ```{r dif-logistic-plot, echo = FALSE, fig.width = 11, fig.height = 4, fig.align = 'center', dpi = 300}
 if (params$logregCheck) {
-  if(params$isGroupPresent){
-    for (i in 1:length(params$DIF_logistic_print$DIFitems)){
+  if (params$isGroupPresent){
+    if (!is.null(params$DIF_logistic_plot[[1]])){
+          for (i in 1:length(params$DIF_logistic_print$DIFitems)){
       print(params$DIF_logistic_plot[[i]] + 
-              theme(text = element_text(size = 11), 
-                    plot.title = element_text(size = 12, face = "bold")) + 
+              theme(text = element_text(size = 16), 
+                    plot.title = element_text(size = 16, face = "bold")) + 
               theme(legend.box.just = "top",
                     legend.justification = c("left", "top"), 
                     legend.position = c(0, 1), 
                     legend.box = "horizontal", 
                     legend.box.margin = margin(3, 3, 3, 3)))
+      }
     }
   }
 }
@@ -556,14 +551,14 @@ if (params$logregCheck) {
 
 `r if(params$isGroupPresent & params$multiCheck) {"### Summary table"}`
 
-`r if(params$isGroupPresent & params$multiCheck) {res <- params$model_DDF_print; switch(res$type, "both" = "Both types of DDF tested.", "udif" = "Uniform DDF tested only.", "nudif" = "Non-uniform DDF tested only.")}`
-`r if(params$isGroupPresent & params$multiCheck) {res <- params$model_DDF_print; paste(ifelse(any(res$DDFitems == "No DDF item detected"), "**No DDF item detected. **  ", paste("**Items detected as DDF: ", paste(res$DDFitems, collapse = ", "), ". **  ", sep = "")), sep = "")}`
-`r if(params$isGroupPresent & params$multiCheck) {res <- params$model_DDF_print; paste(ifelse(res$purification, "Item purification was used.", "Item purification was not applied."), ifelse(is.null(res$p.adjust.method), "No p-value adjustment for multiple comparisons was used.", paste(switch(res$p.adjust.method, "holm" = "Holm's", "hochberg" = "Hochberg's", "hommel" = "Hommel's", "bonferroni" = "Bonferroni", "BH" = "Benjamini-Hochberg", "BY" = "Benjamini-Yekutieli", "fdr" = "Benjamini-Hochberg", "none" = "No"), "p-value adjustment for multiple comparisons was used.")))}`
+`r if(params$isGroupPresent & params$multiCheck) {res <- params$DDF_multinomial_print; switch(res$type, "both" = "Both types of DDF tested.", "udif" = "Uniform DDF tested only.", "nudif" = "Non-uniform DDF tested only.")}`
+`r if(params$isGroupPresent & params$multiCheck) {res <- params$DDF_multinomial_print; paste(ifelse(any(res$DDFitems == "No DDF item detected"), "**No DDF item detected. **  ", paste("**Items detected as DDF: ", paste(res$DDFitems, collapse = ", "), ". **  ", sep = "")), sep = "")}`
+`r if(params$isGroupPresent & params$multiCheck) {res <- params$DDF_multinomial_print; paste(ifelse(res$purification, "Item purification was used.", "Item purification was not applied."), ifelse(is.null(res$p.adjust.method), "No p-value adjustment for multiple comparisons was used.", paste(switch(res$p.adjust.method, "holm" = "Holm's", "hochberg" = "Hochberg's", "hommel" = "Hommel's", "bonferroni" = "Bonferroni", "BH" = "Benjamini-Hochberg", "BY" = "Benjamini-Yekutieli", "fdr" = "Benjamini-Hochberg", "none" = "No"), "p-value adjustment for multiple comparisons was used.")))}`
 
 ```{r ddf-multi-output, echo = FALSE}
 if (params$multiCheck) {
   if(params$isGroupPresent){
-    res <- params$model_DDF_print
+    res <- params$DDF_multinomial_print
     if (all(res$pval == res$adj.pval)){
       pval <- res$pval
       star <- ifelse(pval < 0.001, "***", 
@@ -596,17 +591,19 @@ if (params$multiCheck) {
 
 `r if(params$isGroupPresent & params$logregCheck) {paste("Signif. codes: 0 '&#42;&#42;&#42;' 0.001 '&#42;&#42;' 0.01 '&#42;' 0.05 '.' 0.1 '&nbsp;' 1  ")}`
 
-`r if(params$isGroupPresent & params$multiCheck & !is.null(params$model_DDF_print[[1]])) {"### Characteristic curves of DDF items"}`
+`r if(params$isGroupPresent & params$multiCheck & !is.null(params$DDF_multinomial_plot[[1]])) {"### Characteristic curves of DDF items"}`
 
-`r if(params$isGroupPresent & params$multiCheck) {"Points represent proportion of selected answer with respect to standardized total score. Size of points is determined by count of respondents who achieved given level of standardized total score and who selected given option with respect to the group membership. "}`
+`r if(params$isGroupPresent & params$multiCheck & !is.null(params$DDF_multinomial_plot[[1]])) {"Points represent proportion of selected answer with respect to standardized total score. Size of points is determined by count of respondents who achieved given level of standardized total score and who selected given option with respect to the group membership. "}`
 
 ```{r ddf-multi-plot, echo = FALSE, fig.width = 11, fig.height = 4, fig.align = 'center', dpi = 300}
 if (params$multiCheck) {
   if(params$isGroupPresent){
-    for (i in 1:length(params$model_DDF_print$DDFitems)){
-      print(params$plot_DDFReportInput[[i]] + 
-              theme(text = element_text(size = 11), 
-                    plot.title = element_text(size = 12, face = "bold")))
+    if (!is.null(params$DDF_multinomial_plot[[1]])){
+      for (i in 1:length(params$DDF_multinomial_print$DDFitems)){
+      print(params$DDF_multinomial_plot[[i]] + 
+              theme(text = element_text(size = 16), 
+                    plot.title = element_text(size = 16, face = "bold")))
+      }
     }
   }
 }

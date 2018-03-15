@@ -550,7 +550,7 @@ DIF_logistic_plotReport <- reactive({
                      purify = purify_report)
   # mod$DIFitems
   graflist = list()
-  if (mod$DIFitems[1]!="No DIF item detected") {
+  if (mod$DIFitems[1] != "No DIF item detected") {
     for (i in 1:length(mod$DIFitems)) {
       g <- plotDIFLogistic(data, group,
                            type = type_report,
@@ -565,7 +565,7 @@ DIF_logistic_plotReport <- reactive({
       graflist[[i]] <- g
     }
   } else {
-    graflist = 0
+    graflist = NULL
   }
   graflist
 })
@@ -1238,7 +1238,7 @@ plot_DDFReportInput <- reactive({
                 type = type_report, purify = purify_report)
 
   graflist = list()
-  # if (mod$DIFitems[[1]]!="No DDF item detected"){
+  if (mod$DDFitems[[1]] != "No DDF item detected"){
   for (i in 1:length(mod$DDFitems)) {
     g <- plot(mod, item = mod$DDFitems[i])[[1]] +
       theme(text = element_text(size = 12),
@@ -1246,9 +1246,9 @@ plot_DDFReportInput <- reactive({
       ggtitle(paste("\nDDF multinomial plot for item ", item_numbers()[mod$DDFitems[i]]))
     graflist[[i]] <- g
   }
-  #} else {
-  # graflist=0
-  #}
+  } else {
+   graflist = NULL
+  }
   graflist
 })
 
