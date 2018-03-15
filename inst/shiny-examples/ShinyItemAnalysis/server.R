@@ -778,25 +778,25 @@ function(input, output, session) {
            irtfactor = irtfactorInput(),
            incProgress(0.25),
            # DIF
+           ### presence of group vector
            isGroupPresent = groupPresent(),
+           ### histograms by group
            histCheck = input$histCheck,
            resultsgroup = {if (groupPresent()) {if (input$histCheck) {resultsgroupInput()}}},
            histbyscoregroup0 = {if (groupPresent()) {if (input$histCheck) {histbyscoregroup0Input()}}},
            histbyscoregroup1 = {if (groupPresent()) {if (input$histCheck) {histbyscoregroup1Input()}}},
+           ### delta plot
            deltaplotCheck = input$deltaplotCheck,
            deltaplot = {if (groupPresent()) {if (input$deltaplotCheck) {deltaplotInput_report()}}},
            DP_text_normal = {if (groupPresent()) {if (input$deltaplotCheck) {deltaGpurn_report()}}},
+           ### logistic regression
            logregCheck = input$logregCheck,
            DIF_logistic_plot = {if (groupPresent()) {if (input$logregCheck) {DIF_logistic_plotReport()}}},
            DIF_logistic_print = {if (groupPresent()) {if (input$logregCheck) {model_DIF_logistic_print_report()}}},
-           #plot_DIF_logistic = {if (groupPresent()) {plot_DIF_logisticInput()}},
-           #plot_DIF_logistic_IRT_Z = {if (groupPresent()) {plot_DIF_logistic_IRT_ZInput()}},
-           #plot_DIF_NLR = {if (groupPresent()) {plot_DIF_NLRInput()}},
-           #plot_DIF_IRT_Lord = {if (groupPresent()) {plot_DIF_IRT_LordInput()}},
-           #plot_DIF_IRT_Raju = {if (groupPresent()) {plot_DIF_IRT_RajuInput()}},
+           ### DDF multinomial
            multiCheck = input$multiCheck,
-           model_DDF_print = {if (groupPresent()) {if (input$multiCheck) {model_DDF_print_report()}}},
-           plot_DDFReportInput = {if (groupPresent()) {if (input$multiCheck) {plot_DDFReportInput()}}},
+           DDF_multinomial_print = {if (groupPresent()) {if (input$multiCheck) {model_DDF_print_report()}}},
+           DDF_multinomial_plot = {if (groupPresent()) {if (input$multiCheck) {plot_DDFReportInput()}}},
            incProgress(0.25)
       )
     })
@@ -863,25 +863,25 @@ function(input, output, session) {
                          irtcoef = irtcoefInput(),
                          irtfactor = irtfactorInput(),
                          # DIF
+                         ### presence of group vector
                          isGroupPresent = groupPresent(),
+                         ### histograms by groups
                          histCheck = input$histCheck,
                          resultsgroup = {if (groupPresent()) {if (input$histCheck) {resultsgroupInput()}}},
                          histbyscoregroup0 = {if (groupPresent()) {if (input$histCheck) {histbyscoregroup0Input()}}},
                          histbyscoregroup1 = {if (groupPresent()) {if (input$histCheck) {histbyscoregroup1Input()}}},
+                         ### delta plot
                          deltaplotCheck = input$deltaplotCheck,
-                         deltaplot = {if (groupPresent()) {if (input$deltaplotCheck) {deltaplotInput_report()}}},
-                         DP_text_normal = {if (groupPresent()) {if (input$deltaplotCheck) {deltaGpurn_report()}}},
+                         DIF_deltaplot = {if (groupPresent()) {if (input$deltaplotCheck) {deltaplotInput_report()}}},
+                         DIF_deltaplot_text = {if (groupPresent()) {if (input$deltaplotCheck) {deltaGpurn_report()}}},
+                         ### logistic regression
                          logregCheck = input$logregCheck,
                          DIF_logistic_plot = {if (groupPresent()) {if (input$logregCheck) {DIF_logistic_plotReport()}}},
                          DIF_logistic_print = {if (groupPresent()) {if (input$logregCheck) {model_DIF_logistic_print_report()}}},
-                         #plot_DIF_logistic = {if (groupPresent()) {plot_DIF_logisticInput()}},
-                         #plot_DIF_logistic_IRT_Z = {if (groupPresent()) {plot_DIF_logistic_IRT_ZInput()}},
-                         #plot_DIF_NLR = {if (groupPresent()) {plot_DIF_NLRInput()}},
-                         #plot_DIF_IRT_Lord = {if (groupPresent()) {plot_DIF_IRT_LordInput()}},
-                         #plot_DIF_IRT_Raju = {if (groupPresent()) {plot_DIF_IRT_RajuInput()}},
+                         ### multinomial regression
                          multiCheck = input$multiCheck,
-                         model_DDF_print = {if (groupPresent()) {if (input$multiCheck) {model_DDF_print_report()}}},
-                         plot_DDFReportInput = {if (groupPresent()) {if (input$multiCheck) {plot_DDFReportInput()}}}
+                         DDF_multinomial_print = {if (groupPresent()) {if (input$multiCheck) {model_DDF_print_report()}}},
+                         DDF_multinomial_plot = {if (groupPresent()) {if (input$multiCheck) {plot_DDFReportInput()}}}
       )
       rmarkdown::render(reportPath, output_file = file,
                         params = parameters, envir = new.env(parent = globalenv()))

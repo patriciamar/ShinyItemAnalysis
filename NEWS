@@ -8,13 +8,24 @@
 - Changes in ShinyItemAnalysis 1.2.6.-1. (2018-03-15) -
 -------------------------------------------------------
 
+BUG FIXING
+  o Reports with DDF but none DDF item are now correctly generated.
+
 MINOR UPDATES
-  o Hexbin was added into footer.
-  o Paddings in large devices was adjusted.
-  o Paddings in small devices was adjusted.
+  o Hexbin
+    - was added into footer.
+    - is now as shortcut icon.
+  o Paddings
+    - in large devices was adjusted.
+    - in small devices was adjusted.
   o Unnecessary files were deleted.
-  o Hexbin is now as shortcut icon.
-  o Some wording in reports was improved.
+  o Reports
+    - Some wording in reports was improved.
+    - PDF report text is fully justified.
+    - Subsections characteristic curves is not visible when none DIF
+      or DDF item is present.
+    - Some typos were fixed.
+    - Some parameters were renamed. The unneecessary ones were removed.
 
 ---------------------------------------------------
 - Changes in ShinyItemAnalysis 1.2.6 (2018-03-01) -
