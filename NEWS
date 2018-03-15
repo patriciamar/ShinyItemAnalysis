@@ -5,14 +5,16 @@
         ***************************************************************
 
 -------------------------------------------------------
-- Changes in ShinyItemAnalysis 1.2.6.-1. (2018-03-12) -
+- Changes in ShinyItemAnalysis 1.2.6.-1. (2018-03-15) -
 -------------------------------------------------------
-
-MAJOR UPDATES
 
 MINOR UPDATES
   o Hexbin was added into footer.
   o Paddings in large devices was adjusted.
+  o Paddings in small devices was adjusted.
+  o Unnecessary files were deleted.
+  o Hexbin is now as shortcut icon.
+  o Some wording in reports was improved.
 
 ---------------------------------------------------
 - Changes in ShinyItemAnalysis 1.2.6 (2018-03-01) -

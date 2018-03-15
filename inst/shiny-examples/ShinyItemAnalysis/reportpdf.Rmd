@@ -612,7 +612,7 @@ if (params$logregCheck) {
 
 `r if(params$isGroupPresent & params$multiCheck) {"### Summary table"}`
 
-`r if(params$isGroupPresent & params$multiCheck) {res <- params$model_DDF_print; switch(res$type, "both" = "Both types of DIF tested.", "udif" = "Uniform DIF tested only.", "nudif" = "Non-uniform DIF tested only.")}`
+`r if(params$isGroupPresent & params$multiCheck) {res <- params$model_DDF_print; switch(res$type, "both" = "Both types of DDF tested.", "udif" = "Uniform DDF tested only.", "nudif" = "Non-uniform DDF tested only.")}`
 `r if(params$isGroupPresent & params$multiCheck) {res <- params$model_DDF_print; paste(ifelse(any(res$DDFitems == "No DDF item detected"), "**No DDF item detected. **  ", paste("**Items detected as DDF: ", paste(res$DDFitems, collapse = ", "), ". **  ", sep = "")), sep = "")}`
 `r if(params$isGroupPresent & params$multiCheck) {res <- params$model_DDF_print; paste(ifelse(res$purification, "Item purification was used.", "Item purification was not applied."), ifelse(is.null(res$p.adjust.method), "No p-value adjustment for multiple comparisons was used.", paste(switch(res$p.adjust.method, "holm" = "Holm's", "hochberg" = "Hochberg's", "hommel" = "Hommel's", "bonferroni" = "Bonferroni", "BH" = "Benjamini-Hochberg", "BY" = "Benjamini-Yekutieli", "fdr" = "Benjamini-Hochberg", "none" = "No"), "p-value adjustment for multiple comparisons was used.")))}`
 
