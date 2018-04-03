@@ -653,55 +653,55 @@ function(input, output, session) {
 
   irtInput <- reactive({
     type = input$irt_type_report
-    if (type=="rasch"){out=raschInput_mirt()}
-    if (type=="1pl") {out=oneparamirtInput_mirt()}
-    if (type=="2pl") {out=twoparamirtInput_mirt()}
-    if (type=="3pl") {out=threeparamirtInput_mirt()}
-    if (type=="none") {out=""}
+    if (type == "rasch"){out = raschInput_mirt()}
+    if (type == "1pl")  {out = oneparamirtInput_mirt()}
+    if (type == "2pl")  {out = twoparamirtInput_mirt()}
+    if (type == "3pl")  {out = threeparamirtInput_mirt()}
+    if (type == "none") {out = ""}
 
     out
   })
 
   irtiicInput <- reactive({
     type = input$irt_type_report
-    if (type=="rasch"){out=raschiicInput_mirt()}
-    if (type=="1pl") {out=oneparamirtiicInput_mirt()}
-    if (type=="2pl") {out=twoparamirtiicInput_mirt()}
-    if (type=="3pl") {out=threeparamirtiicInput_mirt()}
-    if (type=="none") {out=""}
+    if (type == "rasch"){out = raschiicInput_mirt()}
+    if (type == "1pl")  {out = oneparamirtiicInput_mirt()}
+    if (type == "2pl")  {out = twoparamirtiicInput_mirt()}
+    if (type == "3pl")  {out = threeparamirtiicInput_mirt()}
+    if (type == "none") {out = ""}
 
     out
   })
 
   irttifInput <- reactive({
     type = input$irt_type_report
-    if (type=="rasch"){out=raschtifInput_mirt()}
-    if (type=="1pl") {out=oneparamirttifInput_mirt()}
-    if (type=="2pl") {out=twoparamirttifInput_mirt()}
-    if (type=="3pl") {out=threeparamirttifInput_mirt()}
-    if (type=="none") {out=""}
+    if (type == "rasch"){out = raschtifInput_mirt()}
+    if (type == "1pl")  {out = oneparamirttifInput_mirt()}
+    if (type == "2pl")  {out = twoparamirttifInput_mirt()}
+    if (type == "3pl")  {out = threeparamirttifInput_mirt()}
+    if (type == "none") {out = ""}
 
     out
   })
 
   irtcoefInput <- reactive({
     type = input$irt_type_report
-    if (type=="rasch"){out=raschcoefInput_mirt()}
-    if (type=="1pl") {out=oneparamirtcoefInput_mirt()}
-    if (type=="2pl") {out=twoparamirtcoefInput_mirt()}
-    if (type=="3pl") {out=threeparamirtcoefInput_mirt()}
-    if (type=="none") {out=""}
+    if (type == "rasch"){out = raschcoefInput_mirt()}
+    if (type == "1pl")  {out = oneparamirtcoefInput_mirt()}
+    if (type == "2pl")  {out = twoparamirtcoefInput_mirt()}
+    if (type == "3pl")  {out = threeparamirtcoefInput_mirt()}
+    if (type == "none") {out = ""}
 
     out
   })
 
   irtfactorInput <- reactive({
     type = input$irt_type_report
-    if (type=="rasch"){out=raschFactorInput_mirt()}
-    if (type=="1pl") {out=oneparamirtFactorInput_mirt()}
-    if (type=="2pl") {out=twoparamirtFactorInput_mirt()}
-    if (type=="3pl") {out=threeparamirtFactorInput_mirt()}
-    if (type=="none") {out=""}
+    if (type == "rasch"){out = raschFactorInput_mirt()}
+    if (type == "1pl")  {out = oneparamirtFactorInput_mirt()}
+    if (type == "2pl")  {out = twoparamirtFactorInput_mirt()}
+    if (type == "3pl")  {out = threeparamirtFactorInput_mirt()}
+    if (type == "none") {out = ""}
 
     out
   })
