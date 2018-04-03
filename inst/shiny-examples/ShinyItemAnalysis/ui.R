@@ -1342,7 +1342,7 @@ ui = tagList(
                                      code('wrightMap(fs, b, item.side = itemClassic)')),
                                  br()
                                  ),
-                        # * 1 PL IRT ####
+                        # * 1PL ####
                         tabPanel("1PL",
                                  h3("One parameter Item Response Theory model"),
                                  p('Item Response Theory (IRT) models are mixed-effect regression models in which
@@ -1867,7 +1867,7 @@ ui = tagList(
                                  ),
                         "----",
                         "Training",
-                        # * ITEM PLOTS ####
+                        # * TRAINING PLOTS ####
                         tabPanel("Characteristic and information curves",
                                  h3("Characteristic and information curves"),
                                  p('Here you can explore behaviour of two item characteristic curves \\(\\mathrm{P}\\left(\\theta\\right)\\) and their item
@@ -1937,62 +1937,65 @@ ui = tagList(
                                  fluidRow(
                                    column(12,
                                           splitLayout(
-                                            cellWidths = c("16%", "1%", "8%", "16%", "1%", "8%", "16%", "1%", "8%", "16%", "1%", "8%"),
+                                            cellWidths = c("20%", "5%", "20%", "5%", "20%", "5%", "20%", "5%"),
                                             sliderInput("ccIRTSlider_a1", "a - discrimination", min = -4, max = 4,
                                                         value = 1, step = 0.1),
                                             div(style="display: inline-block; vertical-align: middle; width: 50%;", HTML("<br>")),
-                                            div(style= "display: inline-block; vertical-align: middle; height: 100%; width: 50%",
-                                                textInput("ccIRTtext_a1", "", value = 1)),
+                                            # div(style= "display: inline-block; vertical-align: middle; height: 100%; width: 50%",
+                                            #     textInput("ccIRTtext_a1", "", value = 1)),
                                             sliderInput("ccIRTSlider_b1", "b - difficulty", min = -4, max = 4,
                                                         value = 0, step = 0.1),
                                             div(style="display: inline-block; vertical-align: middle; width: 50%;", HTML("<br>")),
-                                            div(style= "display: inline-block; vertical-align: middle; height: 100%; width: 50%",
-                                                textInput("ccIRTtext_b1", "", value = 0)),
+                                            # div(style= "display: inline-block; vertical-align: middle; height: 100%; width: 50%",
+                                            #     textInput("ccIRTtext_b1", "", value = 0)),
                                             sliderInput("ccIRTSlider_c1", "c - guessing", min = 0, max = 1,
                                                         value = 0, step = 0.01),
                                             div(style="display: inline-block; vertical-align: middle; width: 50%;", HTML("<br>")),
-                                            div(style= "display: inline-block; vertical-align: middle; height: 100%; width: 50%",
-                                                textInput("ccIRTtext_c1", "", value = 0)),
+                                            # div(style= "display: inline-block; vertical-align: middle; height: 100%; width: 50%",
+                                            #     textInput("ccIRTtext_c1", "", value = 0)),
                                             sliderInput("ccIRTSlider_d1", "d - inattention", min = 0, max = 1,
                                                         value = 1, step = 0.01),
-                                            div(style="display: inline-block; vertical-align: middle; width: 50%;", HTML("<br>")),
-                                            div(style= "display: inline-block; vertical-align: middle; height: 100%; width: 50%",
-                                                textInput("ccIRTtext_d1", "", value = 1))))),
+                                            div(style="display: inline-block; vertical-align: middle; width: 50%;", HTML("<br>"))#,
+                                            # div(style= "display: inline-block; vertical-align: middle; height: 100%; width: 50%",
+                                            #     textInput("ccIRTtext_d1", "", value = 1))
+                                            ))),
                                  fluidRow(
                                    column(12,
                                           splitLayout(
-                                            cellWidths = c("16%", "1%", "8%", "16%", "1%", "8%", "16%", "1%", "8%", "16%", "1%", "8%"),
+                                            cellWidths = c("20%", "5%", "20%", "5%", "20%", "5%", "20%", "5%"),
                                             sliderInput("ccIRTSlider_a2", "a - discrimination", min = -4, max = 4,
                                                         value = 2, step = 0.1),
                                             div(style="display: inline-block; vertical-align: middle; width: 50%;", HTML("<br>")),
-                                            div(style= "display: inline-block; vertical-align: middle; height: 100%; width: 50%",
-                                                textInput("ccIRTtext_a2", "", value = 2)),
+                                            # div(style= "display: inline-block; vertical-align: middle; height: 100%; width: 50%",
+                                            #     textInput("ccIRTtext_a2", "", value = 2)),
                                             sliderInput("ccIRTSlider_b2", "b - difficulty", min = -4, max = 4,
                                                         value = 0.5, step = 0.1),
                                             div(style="display: inline-block; vertical-align: middle; width: 50%;", HTML("<br>")),
-                                            div(style= "display: inline-block; vertical-align: middle; height: 100%; width: 50%",
-                                                textInput("ccIRTtext_b2", "", value = 0.5)),
+                                            # div(style= "display: inline-block; vertical-align: middle; height: 100%; width: 50%",
+                                            #     textInput("ccIRTtext_b2", "", value = 0.5)),
                                             sliderInput("ccIRTSlider_c2", "c - guessing", min = 0, max = 1,
                                                         value = 0, step = 0.01),
                                             div(style="display: inline-block; vertical-align: middle; width: 50%;", HTML("&ensp;")),
-                                            div(style= "display: inline-block; vertical-align: middle; height: 100%; width: 50%",
-                                                textInput("ccIRTtext_c2", "", value = 0)),
+                                            # div(style= "display: inline-block; vertical-align: middle; height: 100%; width: 50%",
+                                            #     textInput("ccIRTtext_c2", "", value = 0)),
                                             sliderInput("ccIRTSlider_d2", "d - inattention", min = 0, max = 1,
                                                         value = 1, step = 0.01),
-                                            div(style="display: inline-block; vertical-align: middle; width: 50%;", HTML("&ensp;")),
-                                            div(style= "display: inline-block; vertical-align: middle; height: 100%; width: 50%",
-                                                textInput("ccIRTtext_d2", "", value = 1))))),
+                                            div(style="display: inline-block; vertical-align: middle; width: 50%;", HTML("&ensp;"))#,
+                                            # div(style= "display: inline-block; vertical-align: middle; height: 100%; width: 50%",
+                                            #     textInput("ccIRTtext_d2", "", value = 1))
+                                            ))),
                                  p("Select also the value of latent ability", HTML("<b>&#952;</b>"), "to see the intepretation of the
                                    item characteristic curves. "),
                                  fluidRow(
                                    column(3,
                                           splitLayout(
-                                            cellWidths = c("68%", "6%", "36%"),
+                                            cellWidths = c("85%", "15%"),
                                             sliderInput("ccIRTSlider_theta", div(HTML('&#952;'), "- latent ability"), min = -4, max = 4,
                                                         value = 0, step = 0.1),
-                                            div(style = "display: inline-block; vertical-align: middle; width: 50%;", HTML("<br>")),
-                                            div(style = "display: inline-block; vertical-align: middle; height: 100%; width: 50%",
-                                                textInput("ccIRTtext_theta", "", value = 0))))),
+                                            div(style = "display: inline-block; vertical-align: middle; width: 50%;", HTML("<br>"))#,
+                                            # div(style = "display: inline-block; vertical-align: middle; height: 100%; width: 50%",
+                                            #     textInput("ccIRTtext_theta", "", value = 0))
+                                            ))),
                                  h4("Equations"),
                                  ('$$\\mathrm{P}\\left(\\theta \\vert a, b, c, d \\right) = c + \\left(d - c\\right) \\cdot \\frac{e^{a\\left(\\theta-b\\right) }}{1+e^{a\\left(\\theta-b\\right) }} $$'),
                                  ('$$\\mathrm{I}\\left(\\theta \\vert a, b, c, d \\right) = a^2 \\cdot \\left(d - c\\right) \\cdot \\frac{e^{a\\left(\\theta-b\\right) }}{\\left[1+e^{a\\left(\\theta-b\\right)}\\right]^2} $$'),
@@ -2014,34 +2017,61 @@ ui = tagList(
                                      br(),
                                      code('theta <- 0'),
                                      br(),
+                                     br(),
                                      code('# function for IRT characteristic curve'),
                                      br(),
                                      code('ccirt <- function(theta, a, b, c, d){
                                           return(c + (d - c)/(1 + exp(-a*(theta - b))))
                                           }'),
-                                 br(),
+                                     br(),
+                                     br(),
                                      code('# plot for characteristic curves'),
-                                 br(),
-                                     HTML('<code>g <- ggplot(data = data.frame(x = -4:4), mapping = aes(x = x)) +<br>
-                                          stat_function(fun = ccirt, args = list(a = a1, b = b1, c = c1, d = d1), aes(color = "2", linetype = "2")) +<br>
-                                          stat_function(fun = ccirt, args = list(a = a2, b = b2, c = c2, d = d2), aes(color = "3", linetype = "3")) +<br>
-                                          geom_segment(aes(y = ccirt(theta, a = a1, b = b1, c = c1, d = d1), yend = ccirt(theta, a = a1, b = b1, c = c1, d = d1), x = -4, xend = theta, color = "1", linetype = "1")) +<br>
-                                          geom_segment(aes(y = ccirt(theta, a = a2, b = b2, c = c2, d = d2), yend = ccirt(theta, a = a2, b = b2, c = c2, d = d2), x = -4, xend = theta, color = "1", linetype = "1")) +<br>
-                                          geom_segment(aes(y = 0, yend = max(ccirt(theta, a = a1, b = b1, c = c1, d = d1), ccirt(theta, a = a2, b = b2, c = c2, d = d2)), x = theta, xend = theta, color = "1", linetype = "1")) +<br>
-                                          xlim(-4, 4) +<br>
-                                          xlab("Ability") +<br>
-                                          ylab("Probability of correct answer") +<br>
-                                          theme_bw() +<br>
-                                          ylim(0, 1) +<br>
-                                          theme(axis.line  = element_line(colour = "black"), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), legend.position = c(0.97, 0.03), legend.justification = c(0.97, 0.03)) +<br>
+                                     br(),
+                                     HTML('<code>ggplot(data = data.frame(x = -4:4), mapping = aes(x = x)) + <br>
+                                              stat_function(fun = ccirt, args = list(a = a1, b = b1, c = c1, d = d1), aes(color = "2", linetype = "2")) + <br>
+                                              stat_function(fun = ccirt, args = list(a = a2, b = b2, c = c2, d = d2), aes(color = "3", linetype = "3")) + <br>
+                                              geom_segment(aes(y = ccirt(theta, a = a1, b = b1, c = c1, d = d1), yend = ccirt(theta, a = a1, b = b1, c = c1, d = d1), <br>
+                                                               x = -4, xend = theta, color = "1", linetype = "1")) + <br>
+                                              geom_segment(aes(y = ccirt(theta, a = a2, b = b2, c = c2, d = d2), yend = ccirt(theta, a = a2, b = b2, c = c2, d = d2), <br>
+                                                               x = -4, xend = theta, color = "1", linetype = "1")) + <br>
+                                              geom_segment(aes(y = 0, yend = max(ccirt(theta, a = a1, b = b1, c = c1, d = d1), ccirt(theta, a = a2, b = b2, c = c2, d = d2)), <br>
+                                                               x = theta, xend = theta, color = "1", linetype = "1")) + <br>
+                                              xlim(-4, 4) + <br>
+                                              xlab("Ability") + <br>
+                                              ylab("Probability of correct answer") + <br>
+                                              theme_bw() + <br>
+                                              ylim(0, 1) + <br>
+                                              theme(axis.line  = element_line(colour = "black"), <br>
+                                                    panel.grid.major = element_blank(), <br>
+                                                    panel.grid.minor = element_blank()) + <br>
                                           scale_color_manual(name = "", breaks = c("1", "2", "3"), values = c("gray", "red", "blue"), labels = c(paste(expression(theta), "=", theta), paste(paste(letters[1:4], "=", c(a1, b1, c1, d1)), collapse = ", "), paste(paste(letters[1:4], "=", c(a2, b2, c2, d2)), collapse = ", "))) +<br>
                                           scale_linetype_manual(name = "", breaks = c("1", "2", "3"), values = c("dashed", "solid", "solid"), labels = c(paste(expression(theta), "=", theta), paste(paste(letters[1:4], "=", c(a1, b1, c1, d1)), collapse = ", "), paste(paste(letters[1:4], "=", c(a2, b2, c2, d2)), collapse = ", "))) +<br>
                                           ggtitle("Item characteristic curve")</code>'),
                                      br(),
-                                     code('g')),
-                                 br()
-                                 )
-                                 ),
+                                     br(),
+                                     code('# function for IRT information function'),
+                                     br(),
+                                     code('icirt <- function(theta, a, b, c, d){
+                                          return(a^2*(d-c)*exp(a*(theta-b))/(1 + exp(a*(theta-b)))^2)
+                                          }'),
+                                     br(),
+                                     br(),
+                                     code('# plot for information function'),
+                                     br(),
+                                     HTML('<code>ggplot(data = data.frame(x = -4:4), mapping = aes(x = x)) + <br>
+                                      stat_function(fun = icirt, args = list(a = a1, b = b1, c = c1, d = d1), aes(color = "2")) + <br>
+                                      stat_function(fun = icirt, args = list(a = a2, b = b2, c = c2, d = d2), aes(color = "3")) + <br>
+                                      xlim(-4, 4) + <br>
+                                      xlab("Ability") + <br>
+                                      ylab("Information") + <br>
+                                      theme_bw() + <br>
+                                      ylim(0, 4) + <br>
+                                      theme(axis.line  = element_line(colour = "black"), <br>
+                                      panel.grid.major = element_blank(), <br>
+                                      panel.grid.minor = element_blank()) + <br>
+                                      scale_color_manual(name = "", breaks = c("2", "3"), values = c("red", "blue"), labels = c(paste(paste(letters[1:4], "=", c(a1, b1, c1, d1)), collapse = ", "), paste(paste(letters[1:4], "=", c(a2, b2, c2, d2)), collapse = ", "))) + <br>
+                                      ggtitle("Item information function")</code>')),
+                                 br())),
              #%%%%%%%%%%%%%%%%%%%%%
              # DIF/FAIRNESS #######
              #%%%%%%%%%%%%%%%%%%%%%

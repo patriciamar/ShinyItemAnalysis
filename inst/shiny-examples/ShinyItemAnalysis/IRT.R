@@ -1302,86 +1302,86 @@ output$DB_iccIRT <- downloadHandler(
   }
 )
 
-# *** Sliders and text input updates ######
-# 1a
-observe({
-  val <- input$ccIRTSlider_a1
-  updateTextInput(session, "ccIRTtext_a1", value = val)
-})
-observe({
-  val <- input$ccIRTtext_a1
-  updateSliderInput(session, "ccIRTSlider_a1", value = val)
-})
-# 1b
-observe({
-  val <- input$ccIRTSlider_b1
-  updateTextInput(session, "ccIRTtext_b1", value = val)
-})
-observe({
-  val <- input$ccIRTtext_b1
-  updateSliderInput(session, "ccIRTSlider_b1", value = val)
-})
-# 1c
-observe({
-  val <- input$ccIRTSlider_c1
-  updateTextInput(session, "ccIRTtext_c1", value = val)
-})
-observe({
-  val <- input$ccIRTtext_c1
-  updateSliderInput(session, "ccIRTSlider_c1", value = val)
-})
-# 1d
-observe({
-  val <- input$ccIRTSlider_d1
-  updateTextInput(session, "ccIRTtext_d1", value = val)
-})
-observe({
-  val <- input$ccIRTtext_d1
-  updateSliderInput(session, "ccIRTSlider_d1", value = val)
-})
-# 2a
-observe({
-  val <- input$ccIRTSlider_a2
-  updateTextInput(session, "ccIRTtext_a2", value = val)
-})
-observe({
-  val <- input$ccIRTtext_a2
-  updateSliderInput(session, "ccIRTSlider_a2", value = val)
-})
-# 2b
-observe({
-  val <- input$ccIRTSlider_b2
-  updateTextInput(session, "ccIRTtext_b2", value = val)
-})
-observe({
-  val <- input$ccIRTtext_b2
-  updateSliderInput(session, "ccIRTSlider_b2", value = val)
-})
-# 2c
-observe({
-  val <- input$ccIRTSlider_c2
-  updateTextInput(session, "ccIRTtext_c2", value = val)
-})
-observe({
-  val <- input$ccIRTtext_c2
-  updateSliderInput(session, "ccIRTSlider_c2", value = val)
-})
-# 2d
-observe({
-  val <- input$ccIRTSlider_d2
-  updateTextInput(session, "ccIRTtext_d2", value = val)
-})
-observe({
-  val <- input$ccIRTtext_d2
-  updateSliderInput(session, "ccIRTSlider_d2", value = val)
-})
-
-# theta
-observe({
-  val <- input$ccIRTSlider_theta
-  updateTextInput(session, "ccIRTtext_theta", value = val)
-})
-observe({
-  val <- input$ccIRTtext_theta
-  updateSliderInput(session, "ccIRTSlider_theta", value = val)
-})
+# # *** Sliders and text input updates ######
+# # 1a
+# observe({
+#   val <- input$ccIRTSlider_a1
+#   updateTextInput(session, "ccIRTtext_a1", value = val)
+# })
+# observe({
+#   val <- input$ccIRTtext_a1
+#   updateSliderInput(session, "ccIRTSlider_a1", value = val)
+# })
+# # 1b
+# observe({
+#   val <- input$ccIRTSlider_b1
+#   updateTextInput(session, "ccIRTtext_b1", value = val)
+# })
+# observe({
+#   val <- input$ccIRTtext_b1
+#   updateSliderInput(session, "ccIRTSlider_b1", value = val)
+# })
+# # 1c
+# observe({
+#   val <- input$ccIRTSlider_c1
+#   updateTextInput(session, "ccIRTtext_c1", value = val)
+# })
+# observe({
+#   val <- input$ccIRTtext_c1
+#   updateSliderInput(session, "ccIRTSlider_c1", value = val)
+# })
+# # 1d
+# observe({
+#   val <- input$ccIRTSlider_d1
+#   updateTextInput(session, "ccIRTtext_d1", value = val)
+# })
+# observe({
+#   val <- input$ccIRTtext_d1
+#   updateSliderInput(session, "ccIRTSlider_d1", value = val)
+# })
+# # 2a
+# observe({
+#   val <- input$ccIRTSlider_a2
+#   updateTextInput(session, "ccIRTtext_a2", value = val)
+# })
+# observe({
+#   val <- input$ccIRTtext_a2
+#   updateSliderInput(session, "ccIRTSlider_a2", value = val)
+# })
+# # 2b
+# observe({
+#   val <- input$ccIRTSlider_b2
+#   updateTextInput(session, "ccIRTtext_b2", value = val)
+# })
+# observe({
+#   val <- input$ccIRTtext_b2
+#   updateSliderInput(session, "ccIRTSlider_b2", value = val)
+# })
+# # 2c
+# observe({
+#   val <- input$ccIRTSlider_c2
+#   updateTextInput(session, "ccIRTtext_c2", value = val)
+# })
+# observe({
+#   val <- input$ccIRTtext_c2
+#   updateSliderInput(session, "ccIRTSlider_c2", value = val)
+# })
+# # 2d
+# observe({
+#   val <- input$ccIRTSlider_d2
+#   updateTextInput(session, "ccIRTtext_d2", value = val)
+# })
+# observe({
+#   val <- input$ccIRTtext_d2
+#   updateSliderInput(session, "ccIRTSlider_d2", value = val)
+# })
+#
+# # theta
+# observe({
+#   val <- input$ccIRTSlider_theta
+#   updateTextInput(session, "ccIRTtext_theta", value = val)
+# })
+# observe({
+#   val <- input$ccIRTtext_theta
+#   updateSliderInput(session, "ccIRTSlider_theta", value = val)
+# })
