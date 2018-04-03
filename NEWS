@@ -12,6 +12,8 @@ MINOR UPDATES
   o Numeric inputs were removed from IRT training section.
   o Selected R code was extended in IRT training section by item
     information function plot.
+  o References were updated.
+  o Mirror web link was updated.
 
 -------------------------------------------------------
 - Changes in ShinyItemAnalysis 1.2.6.-1. (2018-03-15) -

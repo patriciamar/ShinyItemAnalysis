@@ -114,7 +114,7 @@ ui = tagList(
                           paste(
                             "<a href = 'https://shiny.cs.cas.cz/ShinyItemAnalysis/' target = '_blank'>",
                             "<img src = 'flag_CR.png' height = '16' border = '0' align = 'middle'>",
-                            "</a>.",
+                            "</a>, ",
                             sep = ""
                           )
                         ),
@@ -131,11 +131,11 @@ ui = tagList(
                         ),
                         'or',
                         a('shinyapps.io',
-                          href = 'https://patriciamar.shinyapps.io/ShinyItemAnalysis/',
+                          href = 'https://cemp.shinyapps.io/ShinyItemAnalysis/',
                           target = "_blank"),
                         HTML(
                           paste(
-                            "<a href = 'https://patriciamar.shinyapps.io/ShinyItemAnalysis/' target = '_blank'>",
+                            "<a href = 'https://cemp.shinyapps.io/ShinyItemAnalysis/' target = '_blank'>",
                             "<img src = 'flag_USA.png' height = '16' border = '0' align = 'middle'>",
                             "</a>.",
                             sep = ""
@@ -3557,7 +3557,7 @@ ui = tagList(
                         (2017). Checking Equity: Why Differential Item Functioning Analysis Should Be a Routine Part
                         of Developing Conceptual Assessments. CBE-Life Sciences Education, 16(2). ",
                         a('See online.',
-                          href = "http://www.lifescied.org/content/16/2/rm2.full.pdf+html?with-ds=yes",
+                          href = "https://www.lifescied.org/doi/10.1187/cbe.16-10-0307",
                           target = "_blank")),
                       p("Martinkova, P., Stepanek, L., Drabinova, A., Houdek, J., Vejrazka, M., & Stuka, C. (2017).
                         Semi-real-time analyses of item characteristics for medical school admission tests. In: Proceedings of
