@@ -1061,8 +1061,8 @@ output$bockFactorCorInput_mirt <- renderText({
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # * TRAINING ######
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-# ** CC ######
+# ** DICHOTOMOUS MODELS ######
+# *** CC ######
 output$ccIRT_interpretation <- renderUI({
   a1 <- input$ccIRTSlider_a1
   b1 <- input$ccIRTSlider_b1
@@ -1108,31 +1108,32 @@ ccIRT_plot_Input <- reactive({
   c2 <- input$ccIRTSlider_c2
   d2 <- input$ccIRTSlider_d2
 
-  theta <- input$ccIRTSlider_theta
+  theta0 <- input$ccIRTSlider_theta
 
   ccirt <- function(theta, a, b, c, d){
     return(c + (d - c)/(1 + exp(-a*(theta - b))))
   }
 
-  g <- ggplot(data = data.frame(x = -4:4),
-              mapping = aes(x = x)) +
-    stat_function(fun = ccirt, args = list(a = a1, b = b1, c = c1, d = d1),
-                  aes(color = "b", linetype = "b")) +
-    stat_function(fun = ccirt, args = list(a = a2, b = b2, c = c2, d = d2),
-                  aes(color = "c", linetype = "c")) +
-    geom_segment(aes(y = ccirt(theta, a = a1, b = b1, c = c1, d = d1),
-                     yend = ccirt(theta, a = a1, b = b1, c = c1, d = d1),
+  df <- data.frame(X1 = ccirt(seq(-4, 4, 0.01), a1, b1, c1, d1),
+                   X2 = ccirt(seq(-4, 4, 0.01), a2, b2, c2, d2),
+                   theta = seq(-4, 4, 0.01))
+  df <- melt(df, id.vars = "theta")
+
+  g <- ggplot(data = df, aes(x = theta, y = value, col = variable)) +
+    geom_line() +
+    geom_segment(aes(y = ccirt(theta0, a = a1, b = b1, c = c1, d = d1),
+                     yend = ccirt(theta0, a = a1, b = b1, c = c1, d = d1),
                      x = -4,
-                     xend = theta, color = "a", linetype = "a")) +
-    geom_segment(aes(y = ccirt(theta, a = a2, b = b2, c = c2, d = d2),
-                     yend = ccirt(theta, a = a2, b = b2, c = c2, d = d2),
+                     xend = theta0), color = "gray", linetype = "dashed") +
+    geom_segment(aes(y = ccirt(theta0, a = a2, b = b2, c = c2, d = d2),
+                     yend = ccirt(theta0, a = a2, b = b2, c = c2, d = d2),
                      x = -4,
-                     xend = theta, color = "a", linetype = "a")) +
+                     xend = theta0), color = "gray", linetype = "dashed") +
     geom_segment(aes(y = 0,
-                     yend = max(ccirt(theta, a = a1, b = b1, c = c1, d = d1),
-                                ccirt(theta, a = a2, b = b2, c = c2, d = d2)),
-                     x = theta,
-                     xend = theta, color = "a", linetype = "a")) +
+                     yend = max(ccirt(theta0, a = a1, b = b1, c = c1, d = d1),
+                                ccirt(theta0, a = a2, b = b2, c = c2, d = d2)),
+                     x = theta0,
+                     xend = theta0), color = "gray", linetype = "dashed") +
     xlim(-4, 4) +
     xlab("Ability") +
     ylab("Probability of correct answer") +
@@ -1146,25 +1147,11 @@ ccIRT_plot_Input <- reactive({
           plot.background = element_rect(fill = "transparent", colour = NA),
           legend.position = "none") +
     scale_color_manual(name = "",
-                       # breaks = c("blue", "gray", "red"),
-                       # values = c("blue", "gray", "red"),
-                       breaks = c("a", "b", "c"),
-                       values = c("gray", "red", "blue"),
-                       labels = c(paste(expression(theta), "=", theta),
-                                  paste(paste(letters[1:4], "=", c(a1, b1, c1, d1)),
+                       values = c("red", "blue"),
+                       labels = c(paste(paste(letters[1:4], "=", c(a1, b1, c1, d1)),
                                         collapse = ", "),
                                   paste(paste(paste(letters[1:4], "=", c(a2, b2, c2, d2))),
                                         collapse = ", "))) +
-    scale_linetype_manual(name = "",
-                          # breaks = c("blue", "gray", "red"),
-                          # values = c("solid", "dashed", "solid"),
-                          breaks = c("a", "b", "c"),
-                          values = c("dashed", "solid", "solid"),
-                          labels = c(paste(expression(theta), "=", theta),
-                                     paste(paste(letters[1:4], "=", c(a1, b1, c1, d1)),
-                                           collapse = ", "),
-                                     paste(paste(paste(letters[1:4], "=", c(a2, b2, c2, d2))),
-                                           collapse = ", "))) +
     ggtitle("Item characteristic curve")
   g
 
@@ -1175,37 +1162,51 @@ output$ccIRT_plot <- renderPlotly({
 
   p <- ggplotly(g)
 
-  text <- gsub("y", "Probability", p$x$data[[1]]$text)
-  text <- gsub("x", "Ability", text)
-  text <- gsub("b: b<br />b: b<br />", "", text)
+  text <- gsub("~value", "Probability", p$x$data[[1]]$text)
+  text <- gsub("~theta", "Ability", text)
+  text <- gsub("~variable: X1", "", text)
   p$x$data[[1]]$text <- text
 
-  text <- gsub("y", "Probability", p$x$data[[2]]$text)
-  text <- gsub("x", "Ability", text)
-  text <- gsub("c: c<br />c: c<br />", "", text)
+  text <- gsub("~value", "Probability", p$x$data[[2]]$text)
+  text <- gsub("~theta", "Ability", text)
+  text <- gsub("~variable: X2", "", text)
   p$x$data[[2]]$text <- text
 
-  text <- gsub("ccirt\\(theta, a = a1, b = b1, c = c1, d = d1\\)", "Probability", p$x$data[[3]]$text)
-  text <- gsub("-4: -4<br />", "", text)
-  text <- gsub("<br />a: a<br />a: a<br />x: -4", "", text)
+  text <- gsub("~ccirt\\(theta0, a = a1, b = b1, c = c1, d = d1\\)", "Probability", p$x$data[[3]]$text)
+  text <- gsub("~-4: -4<br />", "", text)
+  text <- gsub("~theta0", "Ability", text)
+  text <- gsub("~theta: -4<br />", "", text)
+  text <- gsub("~value", "Probability", text)
+  text <- gsub("<br />~variable: gray", "", text)
   pos <- gregexpr('Probability', text)[[1]][2]
   text <- substring(text, pos)
+  pos <- gregexpr('Probability', text)[[1]][2]
+  text <- substring(text, 1, pos-1)
   p$x$data[[3]]$text <- text
 
-  text <- gsub("ccirt\\(theta, a = a2, b = b2, c = c2, d = d2\\)", "Probability", p$x$data[[4]]$text)
-  text <- gsub("-4: -4<br />", "", text)
-  text <- gsub("<br />a: a<br />a: a<br />x: -4", "", text)
+  text <- gsub("~ccirt\\(theta0, a = a2, b = b2, c = c2, d = d2\\)", "Probability", p$x$data[[4]]$text)
+  text <- gsub("~-4: -4<br />", "", text)
+  text <- gsub("~theta0", "Ability", text)
+  text <- gsub("~theta: -4<br />", "", text)
+  text <- gsub("~value", "Probability", text)
+  text <- gsub("<br />~variable: gray", "", text)
   pos <- gregexpr('Probability', text)[[1]][2]
   text <- substring(text, pos)
+  pos <- gregexpr('Probability', text)[[1]][2]
+  text <- substring(text, 1, pos-1)
   p$x$data[[4]]$text <- text
 
-  text <- gsub("max\\(ccirt\\(theta, a = a1, b = b1, c = c1, d = d1\\), ccirt\\(theta, a = a2, b = b2, c = c2, d = d2\\)\\)", "Probability", p$x$data[[5]]$text)
-  text <- gsub("a: a<br />", "", text)
-  pos <- regexpr('Probability', text)
-  text <- substring(text, pos)
-  pos <- regexpr("<br />x:", text)
+  text <- gsub("~max\\(ccirt\\(theta0, a = a1, b = b1, c = c1, d = d1\\), ccirt\\(theta0, a = a2, b = b2, c = c2, d = d2\\)\\)", "Probability", p$x$data[[5]]$text)
+  text <- gsub("~theta0", "Ability", text)
+  text <- gsub("<br />0: 0", "", text)
+  text <- gsub("~theta0", "Ability", text)
+  text <- gsub("~value", "Probability", text)
+  text <- gsub("<br />~variable: gray", "", text)
+  pos <- gregexpr('Ability', text)[[1]][2]
   text <- substring(text, 1, pos-1)
   p$x$data[[5]]$text <- text
+
+  p$elementId <- NULL
 
   p %>% config(displayModeBar = F)
 })
@@ -1224,7 +1225,7 @@ output$DB_ccIRT <- downloadHandler(
   }
 )
 
-# ** ICC ######
+# *** ICC ######
 iccIRT_plot_Input <- reactive({
   a1 <- input$ccIRTSlider_a1
   b1 <- input$ccIRTSlider_b1
@@ -1242,11 +1243,13 @@ iccIRT_plot_Input <- reactive({
     return((d - c)*a^2*exp(a*(theta - b))/(1 + exp(a*(theta - b)))^2)
   }
 
-  g <- ggplot(data = data.frame(x = -4:4), mapping = aes(x = x)) +
-    stat_function(fun = iccirt, args = list(a = a1, b = b1, c = c1, d = d1),
-                  aes(color = "b")) +
-    stat_function(fun = iccirt, args = list(a = a2, b = b2, c = c2, d = d2),
-                  aes(color = "c")) +
+  df <- data.frame(X1 = iccirt(seq(-4, 4, 0.01), a1, b1, c1, d1),
+                   X2 = iccirt(seq(-4, 4, 0.01), a2, b2, c2, d2),
+                   theta = seq(-4, 4, 0.01))
+  df <- melt(df, id.vars = "theta")
+
+  g <- ggplot(data = df, aes(x = theta, y = value, col = variable)) +
+    geom_line() +
     xlim(-4, 4) +
     ylim(0, 4) +
     xlab("Ability") +
@@ -1260,7 +1263,7 @@ iccIRT_plot_Input <- reactive({
           plot.background = element_rect(fill = "transparent", colour = NA),
           legend.position = "none") +
     scale_color_manual(name = "",
-                       breaks = c("b", "c"),
+                       breaks = c("X1", "X2"),
                        values = c("red", "blue"),
                        labels = c(paste(paste(letters[1:4], "=", c(a1, b1, c1, d1)),
                                         collapse = ", "),
@@ -1275,15 +1278,17 @@ output$iccIRT_plot <- renderPlotly({
 
   p <- ggplotly(g)
 
-  text <- gsub("y", "Information", p$x$data[[1]]$text)
-  text <- gsub("x", "Ability", text)
-  text <- gsub("b: b<br />", "", text)
+  text <- gsub("~value", "Information", p$x$data[[1]]$text)
+  text <- gsub("~theta", "Ability", text)
+  text <- gsub("~variable: X1", "", text)
   p$x$data[[1]]$text <- text
 
-  text <- gsub("y", "Information", p$x$data[[2]]$text)
-  text <- gsub("x", "Ability", text)
-  text <- gsub("c: c<br />", "", text)
+  text <- gsub("~value", "Information", p$x$data[[2]]$text)
+  text <- gsub("~theta", "Ability", text)
+  text <- gsub("~variable: X2", "", text)
   p$x$data[[2]]$text <- text
+
+  p$elementId <- NULL
 
   p %>% config(displayModeBar = F)
 })
@@ -1385,3 +1390,459 @@ output$DB_iccIRT <- downloadHandler(
 #   val <- input$ccIRTtext_theta
 #   updateSliderInput(session, "ccIRTSlider_theta", value = val)
 # })
+
+# ** POLYTOMOUS MODELS ####
+# *** GRADED RESPONSE MODEL ####
+
+output$irt_training_grm_sliders <- renderUI({
+  num <- input$irt_training_grm_numresp
+
+  sliders <- tagList(
+    div(style = "display: inline-block; vertical-align: middle; width: 18%;",
+    sliderInput("irt_training_grm_b1", "b1 - difficulty",
+                value = -1.5, min = -4, max = 4, step = 0.01)),
+    div(style = "display: inline-block; vertical-align: middle; width: 2.6%;",
+        ""),
+    div(style = "display: inline-block; vertical-align: middle; width: 18%;",
+    sliderInput("irt_training_grm_b2", "b2 - difficulty",
+                value = -1, min = -4, max = 4, step = 0.01)),
+    div(style = "display: inline-block; vertical-align: middle; width: 2.6%;",
+        ""),
+    div(style = "display: inline-block; vertical-align: middle; width: 18%;",
+    sliderInput("irt_training_grm_b3", "b3 - difficulty",
+                value = -0.5, min = -4, max = 4, step = 0.01)),
+    div(style = "display: inline-block; vertical-align: middle; width: 2.6%;",
+        ""),
+    div(style = "display: inline-block; vertical-align: middle; width: 18%;",
+    sliderInput("irt_training_grm_b4", "b4 - difficulty",
+                value = 0, min = -4, max = 4, step = 0.01)),
+    div(style = "display: inline-block; vertical-align: middle; width: 2.6%;",
+        ""),
+    div(style = "display: inline-block; vertical-align: middle; width: 18%;",
+    sliderInput("irt_training_grm_b5", "b5 - difficulty",
+                value = 0.5, min = -4, max = 4, step = 0.01)),
+    div(style = "display: inline-block; vertical-align: middle; width: 2.6%;",
+        ""),
+    div(style = "display: inline-block; vertical-align: middle; width: 18%;",
+    sliderInput("irt_training_grm_b6", "b6 - difficulty",
+                value = 1, min = -4, max = 4, step = 0.01)),
+    div(style = "display: inline-block; vertical-align: middle; width: 2.6%;",
+        "")
+  )
+
+  sliders <- sliders[1:(2*num)]
+
+  sliders
+})
+# *** Cummulative ######
+irt_training_grm_plot_cummulative_Input <- reactive({
+  num <- input$irt_training_grm_numresp
+
+  a <- input$irt_training_grm_a
+
+  if (is.null(input$irt_training_grm_b1)){
+    b <- c(-1.5, -1, -0.5, 0, 0.5, 1)
+    b <- b[1:num]
+  } else {
+    b <- c(input$irt_training_grm_b1, input$irt_training_grm_b2)
+    b <- switch(paste(num),
+                "2" = b,
+                "3" = c(b, input$irt_training_grm_b3),
+                "4" = c(b, input$irt_training_grm_b3, input$irt_training_grm_b4),
+                "5" = c(b, input$irt_training_grm_b3, input$irt_training_grm_b4, input$irt_training_grm_b5),
+                "6" = c(b, input$irt_training_grm_b3, input$irt_training_grm_b4, input$irt_training_grm_b5, input$irt_training_grm_b6))
+  }
+
+  theta <- seq(-4, 4, 0.01)
+
+  ccirt <- function(theta, a, b){ return(1/(1 + exp(-a*(theta - b)))) }
+
+  df <- data.frame(sapply(1:num, function(i) ccirt(theta, a, b[i])), theta)
+  df <- melt(df, id.vars = "theta")
+
+  col <- c("red", "yellow", "green", "blue", "purple", "orange")
+  col <- col[1:num]
+
+  g <- ggplot(data = df, aes(x = theta, y = value, col = variable)) +
+    geom_line() +
+    xlab("Ability") +
+    ylab("Cummulative probability") +
+    xlim(-4, 4) +
+    ylim(0, 1) +
+    theme_bw() +
+    theme(text = element_text(size = 14),
+          plot.title = element_text(size = 14, face = "bold", vjust = 1.5),
+          axis.line  = element_line(colour = "black"),
+          panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank(),
+          plot.background = element_rect(fill = "transparent", colour = NA),
+          legend.position = "none") +
+    ggtitle("Cummulative probabilities") +
+    scale_color_manual("", values = col)
+
+  g
+})
+
+output$irt_training_grm_plot_cummulative <- renderPlotly({
+  g <- irt_training_grm_plot_cummulative_Input()
+
+  p <- ggplotly(g)
+
+  for (i in 1:length(p$x$data)){
+    text <- gsub("~value", "Cummulative probability", p$x$data[[i]]$text)
+    text <- gsub("~theta", "Ability", text)
+    text <- gsub(paste0("~variable: X", i), paste0("P(Y >= ", i, ")"), text)
+    p$x$data[[i]]$text <- text
+  }
+
+  p$elementId <- NULL
+
+  p %>% config(displayModeBar = F)
+})
+
+
+# *** Category probabilities ######
+irt_training_grm_plot_category_Input <- reactive({
+  num <- input$irt_training_grm_numresp
+
+  a <- input$irt_training_grm_a
+
+  if (is.null(input$irt_training_grm_b1)){
+    b <- c(-1.5, -1, -0.5, 0, 0.5, 1)
+    b <- b[1:num]
+  } else {
+    b <- c(input$irt_training_grm_b1, input$irt_training_grm_b2)
+    b <- switch(paste(num),
+                "2" = b,
+                "3" = c(b, input$irt_training_grm_b3),
+                "4" = c(b, input$irt_training_grm_b3, input$irt_training_grm_b4),
+                "5" = c(b, input$irt_training_grm_b3, input$irt_training_grm_b4, input$irt_training_grm_b5),
+                "6" = c(b, input$irt_training_grm_b3, input$irt_training_grm_b4, input$irt_training_grm_b5, input$irt_training_grm_b6))
+  }
+
+  theta <- seq(-4, 4, 0.01)
+
+  ccirt <- function(theta, a, b){ return(1/(1 + exp(-a*(theta - b)))) }
+
+  df <- data.frame(1, sapply(1:length(b), function(i) ccirt(theta, a, b[i])))
+  df <- data.frame(sapply(1:(ncol(df)-1), function(i) df[, i] - df[, i+1]),
+                   df[, ncol(df)],
+                   theta)
+  df <- melt(df, id.vars = "theta")
+  levels(df$variable) <- paste0("X", 0:(length(levels(df$variable))-1))
+
+  col <- c("black", "red", "yellow", "green", "blue", "purple", "orange")
+  col <- col[1:((length(levels(df$variable))-1) + 1)]
+
+  g <- ggplot(data = df, aes(x = theta, y = value, col = variable)) +
+    geom_line() +
+    xlab("Ability") +
+    ylab("Category probability") +
+    xlim(-4, 4) +
+    ylim(0, 1) +
+    theme_bw() +
+    theme(text = element_text(size = 14),
+          plot.title = element_text(size = 14, face = "bold", vjust = 1.5),
+          axis.line  = element_line(colour = "black"),
+          panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank(),
+          plot.background = element_rect(fill = "transparent", colour = NA),
+          legend.position = "none") +
+    ggtitle("Category probabilities") +
+    scale_color_manual("", values = col)
+
+  g
+})
+
+output$irt_training_grm_plot_category <- renderPlotly({
+  g <- irt_training_grm_plot_category_Input()
+
+  p <- ggplotly(g)
+
+  for (i in 1:length(p$x$data)){
+    text <- gsub("~value", "Category probability", p$x$data[[i]]$text)
+    text <- gsub("~theta", "Ability", text)
+    text <- gsub(paste0("~variable: X", i-1), paste0("P(Y = ", i-1, ")"), text)
+    p$x$data[[i]]$text <- text
+  }
+
+  p$elementId <- NULL
+
+  p %>% config(displayModeBar = F)
+})
+
+
+
+# *** GENERALIZED PARTIAL CREDIT MODEL ####
+
+output$irt_training_gpcm_sliders <- renderUI({
+  num <- input$irt_training_gpcm_numresp
+
+  sliders <- tagList(
+    div(style = "display: inline-block; vertical-align: middle; width: 18%;",
+        sliderInput("irt_training_gpcm_d1", "d1 - threshold",
+                    value = -1.5, min = -4, max = 4, step = 0.01)),
+    div(style = "display: inline-block; vertical-align: middle; width: 2.6%;",
+        ""),
+    div(style = "display: inline-block; vertical-align: middle; width: 18%;",
+        sliderInput("irt_training_gpcm_d2", "d2 - threshold",
+                    value = -1, min = -4, max = 4, step = 0.01)),
+    div(style = "display: inline-block; vertical-align: middle; width: 2.6%;",
+        ""),
+    div(style = "display: inline-block; vertical-align: middle; width: 18%;",
+        sliderInput("irt_training_gpcm_d3", "d3 - threshold",
+                    value = -0.5, min = -4, max = 4, step = 0.01)),
+    div(style = "display: inline-block; vertical-align: middle; width: 2.6%;",
+        ""),
+    div(style = "display: inline-block; vertical-align: middle; width: 18%;",
+        sliderInput("irt_training_gpcm_d4", "d4 - threshold",
+                    value = 0, min = -4, max = 4, step = 0.01)),
+    div(style = "display: inline-block; vertical-align: middle; width: 2.6%;",
+        ""),
+    div(style = "display: inline-block; vertical-align: middle; width: 18%;",
+        sliderInput("irt_training_gpcm_d5", "d5 - threshold",
+                    value = 0.5, min = -4, max = 4, step = 0.01)),
+    div(style = "display: inline-block; vertical-align: middle; width: 2.6%;",
+        ""),
+    div(style = "display: inline-block; vertical-align: middle; width: 18%;",
+        sliderInput("irt_training_gpcm_d6", "d6 - threshold",
+                    value = 1, min = -4, max = 4, step = 0.01)),
+    div(style = "display: inline-block; vertical-align: middle; width: 2.6%;",
+        "")
+  )
+
+  sliders <- sliders[1:(2*num)]
+
+  sliders
+})
+
+# *** Category probabilities ######
+irt_training_gpcm_plot_Input <- reactive({
+  num <- input$irt_training_gpcm_numresp
+
+  a <- input$irt_training_gpcm_a
+
+  if (is.null(input$irt_training_gpcm_d1)){
+    d <- c(-1.5, -1, -0.5, 0, 0.5, 1)
+    d <- d[1:num]
+  } else {
+    d <- c(input$irt_training_gpcm_d1, input$irt_training_gpcm_d2)
+    d <- switch(paste(num),
+                "2" = d,
+                "3" = c(d, input$irt_training_gpcm_d3),
+                "4" = c(d, input$irt_training_gpcm_d3, input$irt_training_gpcm_d4),
+                "5" = c(d, input$irt_training_gpcm_d3, input$irt_training_gpcm_d4, input$irt_training_gpcm_d5),
+                "6" = c(d, input$irt_training_gpcm_d3, input$irt_training_gpcm_d4, input$irt_training_gpcm_d5, input$irt_training_gpcm_d6))
+  }
+
+  theta <- seq(-4, 4, 0.01)
+
+  ccgpcm <- function(theta, a, d){ a*(theta - d) }
+
+  df <- sapply(1:length(d), function(i) ccgpcm(theta, a, d[i]))
+
+  pk <- sapply(1:ncol(df), function(k) apply(as.data.frame(df[, 1:k]), 1, sum))
+
+  pk <- cbind(0, pk)
+  pk <- exp(pk)
+
+  denom <- apply(pk, 1, sum)
+
+  df <- data.frame(apply(pk, 2, function(x) x/denom), theta)
+  df <- melt(df, id.vars = "theta")
+
+  col <- c("black", "red", "yellow", "green", "blue", "purple", "orange")
+  col <- col[1:(length(levels(df$variable)) + 1)]
+
+  g <- ggplot(data = df, aes(x = theta, y = value, col = variable)) +
+    geom_line() +
+    xlab("Ability") +
+    ylab("Category probability") +
+    xlim(-4, 4) +
+    ylim(0, 1) +
+    theme_bw() +
+    theme(text = element_text(size = 14),
+          plot.title = element_text(size = 14, face = "bold", vjust = 1.5),
+          axis.line  = element_line(colour = "black"),
+          panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank(),
+          plot.background = element_rect(fill = "transparent", colour = NA),
+          legend.position = "none") +
+    ggtitle("Category probabilities") +
+    scale_color_manual("", values = col)
+
+  g
+})
+
+output$irt_training_gpcm_plot <- renderPlotly({
+  g <- irt_training_gpcm_plot_Input()
+
+  p <- ggplotly(g)
+
+  for (i in 1:length(p$x$data)){
+    text <- gsub("~value", "Category probability", p$x$data[[i]]$text)
+    text <- gsub("~theta", "Ability", text)
+    text <- gsub(paste0("~variable: X", i), paste0("P(Y = ", i-1, ")"), text)
+    p$x$data[[i]]$text <- text
+  }
+
+  p$elementId <- NULL
+
+  p %>% config(displayModeBar = F)
+})
+
+
+# *** NOMINAL RESPONSE MODEL ####
+
+output$irt_training_nrm_sliders <- renderUI({
+  num <- input$irt_training_nrm_numresp
+
+  sliders <- tagList(
+    div(style = "display: inline-block; vertical-align: middle; width: 18%;",
+        sliderInput("irt_training_nrm_a1", "a1 - discrimination",
+                    value = 1, min = 0, max = 4, step = 0.01)),
+    div(style = "display: inline-block; vertical-align: middle; width: 2.6%;",
+        ""),
+    div(style = "display: inline-block; vertical-align: middle; width: 18%;",
+        sliderInput("irt_training_nrm_d1", "d1 - threshold",
+                    value = -1.5, min = -4, max = 4, step = 0.01)),
+    div(style = "display: inline-block; vertical-align: middle; width: 2.6%;",
+        ""),
+    div(style = "display: inline-block; vertical-align: middle; width: 18%;",
+        sliderInput("irt_training_nrm_a2", "a2 - discrimination",
+                    value = 1, min = 0, max = 4, step = 0.01)),
+    div(style = "display: inline-block; vertical-align: middle; width: 2.6%;",
+        ""),
+    div(style = "display: inline-block; vertical-align: middle; width: 18%;",
+        sliderInput("irt_training_nrm_d2", "d2 - threshold",
+                    value = -1, min = -4, max = 4, step = 0.01)),
+    div(style = "display: inline-block; vertical-align: middle; width: 2.6%;",
+        ""),
+    div(style = "display: inline-block; vertical-align: middle; width: 18%;",
+        sliderInput("irt_training_nrm_a3", "a3 - discrimination",
+                    value = 1, min = 0, max = 4, step = 0.01)),
+    div(style = "display: inline-block; vertical-align: middle; width: 2.6%;",
+        ""),
+    div(style = "display: inline-block; vertical-align: middle; width: 18%;",
+        sliderInput("irt_training_nrm_d3", "d3 - threshold",
+                    value = -0.5, min = -4, max = 4, step = 0.01)),
+    div(style = "display: inline-block; vertical-align: middle; width: 2.6%;",
+        ""),
+    div(style = "display: inline-block; vertical-align: middle; width: 18%;",
+        sliderInput("irt_training_nrm_a4", "a4 - discrimination",
+                    value = 1, min = 0, max = 4, step = 0.01)),
+    div(style = "display: inline-block; vertical-align: middle; width: 2.6%;",
+        ""),
+    div(style = "display: inline-block; vertical-align: middle; width: 18%;",
+        sliderInput("irt_training_nrm_d4", "d4 - threshold",
+                    value = 0, min = -4, max = 4, step = 0.01)),
+    div(style = "display: inline-block; vertical-align: middle; width: 2.6%;",
+        ""),
+    div(style = "display: inline-block; vertical-align: middle; width: 18%;",
+        sliderInput("irt_training_nrm_a5", "a5 - discrimination",
+                    value = 1, min = 0, max = 4, step = 0.01)),
+    div(style = "display: inline-block; vertical-align: middle; width: 2.6%;",
+        ""),
+    div(style = "display: inline-block; vertical-align: middle; width: 18%;",
+        sliderInput("irt_training_nrm_d5", "d5 - threshold",
+                    value = 0.5, min = -4, max = 4, step = 0.01)),
+    div(style = "display: inline-block; vertical-align: middle; width: 2.6%;",
+        ""),
+    div(style = "display: inline-block; vertical-align: middle; width: 18%;",
+        sliderInput("irt_training_nrm_a6", "a6 - discrimination",
+                    value = 1, min = 0, max = 4, step = 0.01)),
+    div(style = "display: inline-block; vertical-align: middle; width: 2.6%;",
+        ""),
+    div(style = "display: inline-block; vertical-align: middle; width: 18%;",
+        sliderInput("irt_training_nrm_d6", "d6 - threshold",
+                    value = 1, min = -4, max = 4, step = 0.01)),
+    div(style = "display: inline-block; vertical-align: middle; width: 2.6%;",
+        "")
+  )
+
+  sliders <- sliders[1:(4*num)]
+
+  sliders
+})
+
+# *** Category probabilities ######
+irt_training_nrm_plot_Input <- reactive({
+  num <- input$irt_training_nrm_numresp
+
+  if (is.null(input$irt_training_nrm_a1)){
+    a <- rep(1, num)
+  } else {
+    a <- c(input$irt_training_nrm_a1, input$irt_training_nrm_a2)
+    a <- switch(paste(num),
+                "2" = a,
+                "3" = c(a, input$irt_training_nrm_a3),
+                "4" = c(a, input$irt_training_nrm_a3, input$irt_training_nrm_a4),
+                "5" = c(a, input$irt_training_nrm_a3, input$irt_training_nrm_a4, input$irt_training_nrm_a5),
+                "6" = c(a, input$irt_training_nrm_a3, input$irt_training_nrm_a4, input$irt_training_nrm_a5, input$irt_training_nrm_a6))
+  }
+
+  if (is.null(input$irt_training_nrm_d1)){
+    d <- c(-1.5, -1, -0.5, 0, 0.5, 1)
+    d <- d[1:num]
+  } else {
+    d <- c(input$irt_training_nrm_d1, input$irt_training_nrm_d2)
+    d <- switch(paste(num),
+                "2" = d,
+                "3" = c(d, input$irt_training_nrm_d3),
+                "4" = c(d, input$irt_training_nrm_d3, input$irt_training_nrm_d4),
+                "5" = c(d, input$irt_training_nrm_d3, input$irt_training_nrm_d4, input$irt_training_nrm_d5),
+                "6" = c(d, input$irt_training_nrm_d3, input$irt_training_nrm_d4, input$irt_training_nrm_d5, input$irt_training_nrm_d6))
+  }
+
+  theta <- seq(-4, 4, 0.01)
+
+  ccnrm <- function(theta, a, d){ exp(d + a*theta) }
+
+  df <- sapply(1:length(d), function(i) ccnrm(theta, a[i], d[i]))
+  df <- data.frame(1, df)
+  denom <- apply(df, 1, sum)
+  df <- apply(df, 2, function(x) x/denom)
+  df <- data.frame(df, theta)
+
+  df <- melt(df, id.vars = "theta")
+  levels(df$variable) <- paste0("X", 0:(length(levels(df$variable))-1))
+
+  col <- c("black", "red", "yellow", "green", "blue", "purple", "orange")
+  col <- col[1:(length(levels(df$variable)) + 1)]
+
+  g <- ggplot(data = df, aes(x = theta, y = value, col = variable)) +
+    geom_line() +
+    xlab("Ability") +
+    ylab("Category probability") +
+    xlim(-4, 4) +
+    ylim(0, 1) +
+    theme_bw() +
+    theme(text = element_text(size = 14),
+          plot.title = element_text(size = 14, face = "bold", vjust = 1.5),
+          axis.line  = element_line(colour = "black"),
+          panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank(),
+          plot.background = element_rect(fill = "transparent", colour = NA),
+          legend.position = "none") +
+    ggtitle("Category probabilities") +
+    scale_color_manual("", values = col)
+
+  g
+})
+
+output$irt_training_nrm_plot <- renderPlotly({
+  g <- irt_training_nrm_plot_Input()
+
+  p <- ggplotly(g)
+
+  for (i in 1:length(p$x$data)){
+    text <- gsub("~value", "Category probability", p$x$data[[i]]$text)
+    text <- gsub("~theta", "Ability", text)
+    text <- gsub(paste0("~variable: X", i-1), paste0("P(Y = ", i-1, ")"), text)
+    p$x$data[[i]]$text <- text
+  }
+
+  p$elementId <- NULL
+
+  p %>% config(displayModeBar = F)
+})
