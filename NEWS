@@ -5,6 +5,17 @@
         ***************************************************************
 
 -------------------------------------------------------
+- Changes in ShinyItemAnalysis 1.2.6.-3. (2018-04-05) -
+-------------------------------------------------------
+
+MAJOR UPDATES
+  o IRT section
+    - IRT section is newly organized.
+    - IRT training section was expanded by polytomous models.
+      GRM, GPCM and NRM were added.
+    - Syntax for IRT training was improved.
+
+-------------------------------------------------------
 - Changes in ShinyItemAnalysis 1.2.6.-2. (2018-04-03) -
 -------------------------------------------------------
 

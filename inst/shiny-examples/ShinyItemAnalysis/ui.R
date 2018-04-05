@@ -1250,7 +1250,7 @@ ui = tagList(
              # IRT MODELS #########
              #%%%%%%%%%%%%%%%%%%%%%
              navbarMenu("IRT models",
-                        "Used methods",
+                        "Dichotomous models",
                         # * RASCH ####
                         tabPanel("Rasch",
                                  h3("Rasch Item Response Theory model"),
@@ -1740,7 +1740,6 @@ ui = tagList(
                                           ylab = "Factor score")')),
                                  br()
                                  ),
-                        "----",
                         # * MODEL COMPARISON ####
                         tabPanel("Model comparison ",
                                  h3("Item Response Theory model selection"),
@@ -1793,6 +1792,7 @@ ui = tagList(
                                  br()
                                  ),
                         "----",
+                        "Polytomous models",
                         # * BOCK'S NOMINAL MODEL ####
                         tabPanel("Bock's nominal model",
                                  h3("Bock's nominal Item Response Theory model"),
@@ -1868,8 +1868,9 @@ ui = tagList(
                         "----",
                         "Training",
                         # * TRAINING PLOTS ####
-                        tabPanel("Characteristic and information curves",
-                                 h3("Characteristic and information curves"),
+                        tabPanel("Dichotomous models",
+                                 # ** Dichotomous models ####
+                                 h3("Dichotomous models"),
                                  p('Here you can explore behaviour of two item characteristic curves \\(\\mathrm{P}\\left(\\theta\\right)\\) and their item
                                    information functions \\(\\mathrm{I}\\left(\\theta\\right)\\) in 4PL IRT model. '),
                                  h4("Parameters"),
@@ -1939,12 +1940,12 @@ ui = tagList(
                                           splitLayout(
                                             cellWidths = c("20%", "5%", "20%", "5%", "20%", "5%", "20%", "5%"),
                                             sliderInput("ccIRTSlider_a1", "a - discrimination", min = -4, max = 4,
-                                                        value = 1, step = 0.1),
+                                                        value = 1, step = 0.01),
                                             div(style="display: inline-block; vertical-align: middle; width: 50%;", HTML("<br>")),
                                             # div(style= "display: inline-block; vertical-align: middle; height: 100%; width: 50%",
                                             #     textInput("ccIRTtext_a1", "", value = 1)),
                                             sliderInput("ccIRTSlider_b1", "b - difficulty", min = -4, max = 4,
-                                                        value = 0, step = 0.1),
+                                                        value = 0, step = 0.01),
                                             div(style="display: inline-block; vertical-align: middle; width: 50%;", HTML("<br>")),
                                             # div(style= "display: inline-block; vertical-align: middle; height: 100%; width: 50%",
                                             #     textInput("ccIRTtext_b1", "", value = 0)),
@@ -1964,12 +1965,12 @@ ui = tagList(
                                           splitLayout(
                                             cellWidths = c("20%", "5%", "20%", "5%", "20%", "5%", "20%", "5%"),
                                             sliderInput("ccIRTSlider_a2", "a - discrimination", min = -4, max = 4,
-                                                        value = 2, step = 0.1),
+                                                        value = 2, step = 0.01),
                                             div(style="display: inline-block; vertical-align: middle; width: 50%;", HTML("<br>")),
                                             # div(style= "display: inline-block; vertical-align: middle; height: 100%; width: 50%",
                                             #     textInput("ccIRTtext_a2", "", value = 2)),
                                             sliderInput("ccIRTSlider_b2", "b - difficulty", min = -4, max = 4,
-                                                        value = 0.5, step = 0.1),
+                                                        value = 0.5, step = 0.01),
                                             div(style="display: inline-block; vertical-align: middle; width: 50%;", HTML("<br>")),
                                             # div(style= "display: inline-block; vertical-align: middle; height: 100%; width: 50%",
                                             #     textInput("ccIRTtext_b2", "", value = 0.5)),
@@ -1991,7 +1992,7 @@ ui = tagList(
                                           splitLayout(
                                             cellWidths = c("85%", "15%"),
                                             sliderInput("ccIRTSlider_theta", div(HTML('&#952;'), "- latent ability"), min = -4, max = 4,
-                                                        value = 0, step = 0.1),
+                                                        value = 0, step = 0.01),
                                             div(style = "display: inline-block; vertical-align: middle; width: 50%;", HTML("<br>"))#,
                                             # div(style = "display: inline-block; vertical-align: middle; height: 100%; width: 50%",
                                             #     textInput("ccIRTtext_theta", "", value = 0))
@@ -2071,7 +2072,83 @@ ui = tagList(
                                       panel.grid.minor = element_blank()) + <br>
                                       scale_color_manual(name = "", breaks = c("2", "3"), values = c("red", "blue"), labels = c(paste(paste(letters[1:4], "=", c(a1, b1, c1, d1)), collapse = ", "), paste(paste(letters[1:4], "=", c(a2, b2, c2, d2)), collapse = ", "))) + <br>
                                       ggtitle("Item information function")</code>')),
-                                 br())),
+                                 br()),
+                        tabPanel("Polytomous models",
+                                 tabsetPanel(
+                                   # ** Intro ####
+                                   tabPanel('Intro',
+                                            h3("Polytomous models"),
+                                            p("In this section you can explore some polytomous models. ")),
+                                   # ** Graded response model ####
+                                   tabPanel('Graded response model',
+                                            h3("Graded response model"),
+                                            p("In this section you can explore graded response model. "),
+                                            div(style = "display: inline-block; vertical-align: middle; width: 18%;",
+                                                numericInput(inputId = "irt_training_grm_numresp",
+                                                             label = "Number of responses",
+                                                             value = 4,
+                                                             min = 2,
+                                                             max = 6)),
+                                            br(),
+                                            div(style = "display: inline-block; vertical-align: middle; width: 18%;",
+                                                sliderInput(inputId = "irt_training_grm_a",
+                                                                 label = "a - discrimination",
+                                                                 value = 1,
+                                                                 min = 0,
+                                                                 max = 4,
+                                                                 step = 0.01)),
+                                            br(),
+                                            uiOutput("irt_training_grm_sliders"),
+                                            br(),
+                                            splitLayout(cellWidths = c("50%", "50%"),
+                                                        plotlyOutput('irt_training_grm_plot_cummulative'),
+                                                        plotlyOutput('irt_training_grm_plot_category')),
+                                            br(),
+                                            br()
+                                   ),
+                                   # ** Generalized partial credit model ####
+                                   tabPanel('Generalized partial credit model',
+                                            h3("Generalized partial credit model"),
+                                            p("In this section you can explore generalized partial credit model. "),
+                                            div(style = "display: inline-block; vertical-align: middle; width: 18%;",
+                                                numericInput(inputId = "irt_training_gpcm_numresp",
+                                                             label = "Number of responses",
+                                                             value = 4,
+                                                             min = 2,
+                                                             max = 6)),
+                                            br(),
+                                            div(style = "display: inline-block; vertical-align: middle; width: 18%;",
+                                                sliderInput(inputId = "irt_training_gpcm_a",
+                                                            label = "a - discrimination",
+                                                            value = 1,
+                                                            min = 0,
+                                                            max = 4,
+                                                            step = 0.01)),
+                                            br(),
+                                            uiOutput("irt_training_gpcm_sliders"),
+                                            br(),
+                                            plotlyOutput('irt_training_gpcm_plot'),
+                                            br(),
+                                            br()
+                                   ),
+                                   # ** Nominal response model ####
+                                   tabPanel('Nominal response model',
+                                            h3("Nominal response model"),
+                                            p("In this section you can explore nominal response model. "),
+                                            div(style = "display: inline-block; vertical-align: middle; width: 18%;",
+                                                numericInput(inputId = "irt_training_nrm_numresp",
+                                                             label = "Number of responses",
+                                                             value = 4,
+                                                             min = 2,
+                                                             max = 6)),
+                                            br(),
+                                            uiOutput("irt_training_nrm_sliders"),
+                                            br(),
+                                            plotlyOutput('irt_training_nrm_plot'),
+                                            br(),
+                                            br()
+                                   )
+                                   ))),
              #%%%%%%%%%%%%%%%%%%%%%
              # DIF/FAIRNESS #######
              #%%%%%%%%%%%%%%%%%%%%%
