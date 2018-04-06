@@ -25,8 +25,15 @@ ui = tagList(
                       href = "margins_and_paddings.css"),
             tags$link(rel = "shortcut icon", href = "hexbin.png"),
             tags$style(type = "text/css",
-                       ".panel-footer {position: fixed; right: 0; bottom: 0; left: 0;}")),
-
+                       ".panel-footer {position: fixed; right: 0; bottom: 0; left: 0;}"),
+            tags$style(type = "text/css",
+                       ".red-slider .irs-single, .red-slider .irs-bar-edge, .red-slider .irs-bar {
+                       background: red;
+                       border-top-color: red;
+                       border-bottom-color: red;
+                       border-left-color: red;
+                       border-right-color: red}")),
+  # .js-irs > .option
   div(class = "busy",
       p("Loading"),
       img(src = "busy_indicator.gif", height = 100, width = 100)
@@ -1738,8 +1745,80 @@ ui = tagList(
                                      code('plot(FS ~ STS, data = df,
                                           xlab = "Standardized total score",
                                           ylab = "Factor score")')),
-                                 br()
-                                 ),
+                                 br()),
+                                 # * 4PL ####
+                                 tabPanel("4PL ",
+                                          h3("Four parameter Item Response Theory model"),
+                                          p('Item Response Theory (IRT) models are mixed-effect regression models in which
+                                            student ability (theta) is assumed to be a random effect and is estimated together with item
+                                            paramters. Ability (theta) is often assumed to follow normal distibution.'),
+                                          p(strong('4PL IRT model'), ' allows for different discriminations of items', strong('a,'),
+                                            'different item difficulties', strong('b,'), 'nonzero left asymptote – pseudo-guessing', strong('c,'),
+                                            'and also for upper asymptote lower than one - inattention parameter', strong('d.')),
+                                          h4("Equation"),
+                                          ('$$\\mathrm{P}\\left(Y_{ij} = 1\\vert \\theta_{i}, a_{j}, b_{j}, c_{j}, d_{j} \\right) = c_{j} + \\left(d_{j} - c_{j}\\right) \\cdot \\frac{e^{a_{j}\\left(\\theta_{i}-b_{j}\\right) }}{1+e^{a_{j}\\left(\\theta_{i}-b_{j}\\right) }} $$'),
+                                          h4("Item characteristic curves"),
+                                          plotOutput('irt_4PL_icc'),
+                                          downloadButton("DB_irt_4PL_icc", label = "Download figure"),
+                                          h4("Item information curves"),
+                                          plotOutput('irt_4PL_iic'),
+                                          downloadButton("DB_irt_4PL_iic", label = "Download figure"),
+                                          h4("Test information function"),
+                                          plotOutput('irt_4PL_tif'),
+                                          downloadButton("DB_irt_4PL_tif", label = "Download figure"),
+                                          h4("Table of parameters with item fit statistics"),
+                                          p('Estimates of parameters are completed by SX2 item fit statistics (Ames & Penfield, 2015).
+                                            SX2 is computed only when no missing data are present. In such a case consider using imputed dataset!'),
+                                          tableOutput('irt_4PL_coef'),
+                                          h4('Scatter plot of factor scores and standardized total scores'),
+                                          textOutput('irt_4PL_factorscores_correlation'),
+                                          plotOutput('irt_4PL_factorscores_plot'),
+                                          downloadButton("DB_irt_4PL_factorscores_plot", label = "Download figure"),
+                                          br(),
+                                          h4("Selected R code"),
+                                          div(code('library(difNLR)'),
+                                              br(),
+                                              code('library(mirt)'),
+                                              br(),
+                                              code('data(GMAT)'),
+                                              br(),
+                                              code('data <- GMAT[, 1:20]'),
+                                              br(),
+                                              br(),
+                                              code('# Model'),
+                                              br(),
+                                              code('fit <- mirt(data, model = 1, itemtype = "4PL", SE = T)'),
+                                              br(),
+                                              code('# Item Characteristic Curves'),
+                                              br(),
+                                              code('plot(fit, type = "trace", facet_items = F)'),
+                                              br(),
+                                              code('# Item Information Curves'),
+                                              br(),
+                                              code('plot(fit, type = "infotrace", facet_items = F)'),
+                                              br(),
+                                              code('# Test Information Function'),
+                                              br(),
+                                              code('plot(fit, type = "infoSE")'),
+                                              br(),
+                                              code('# Coefficients'),
+                                              br(),
+                                              code('coef(fit, simplify = TRUE)'),
+                                              br(),
+                                              code('coef(fit, IRTpars = TRUE, simplify = TRUE)'),
+                                              br(),
+                                              code('# Item fit statistics'),
+                                              br(),
+                                              code('itemfit(fit)'),
+                                              br(),
+                                              code('# Factor scores vs Standardized total scores'),
+                                              br(),
+                                              code('fs <- as.vector(fscores(fit))'),
+                                              br(),
+                                              code('sts <- as.vector(scale(apply(data, 1, sum)))'),
+                                              br(),
+                                              code('plot(fs ~ sts)')),
+                                          br()),
                         # * MODEL COMPARISON ####
                         tabPanel("Model comparison ",
                                  h3("Item Response Theory model selection"),
@@ -1773,7 +1852,11 @@ ui = tagList(
                                      br(),
                                      code('# 1PL IRT model'),
                                      br(),
-                                     code('fit1PL <- mirt(data, model = 1, itemtype = "3PL", SE = T)'),
+                                     code('s <- paste("F = 1-", ncol(data), "\n", "CONSTRAIN = (1-", ncol(data), ", a1)")'),
+                                     br(),
+                                     code('model <- mirt.model(s)'),
+                                     br(),
+                                     code('fit1PL <- mirt(data, model = model, itemtype = "2PL")'),
                                      br(),
                                      code('# 2PL IRT model'),
                                      br(),
@@ -1783,12 +1866,18 @@ ui = tagList(
                                      br(),
                                      code('fit3PL <- mirt(data, model = 1, itemtype = "3PL")'),
                                      br(),
+                                     code('# 4PL IRT model'),
+                                     br(),
+                                     code('fit4PL <- mirt(data, model = 1, itemtype = "4PL")'),
+                                     br(),
                                      br(),
                                      code('# Comparison'),
                                      br(),
                                      code('anova(fit1PL, fit2PL)'),
                                      br(),
-                                     code('anova(fit2PL, fit3PL)')),
+                                     code('anova(fit2PL, fit3PL)'),
+                                     br(),
+                                     code('anova(fit3PL, fit4PL)')),
                                  br()
                                  ),
                         "----",
@@ -1879,123 +1968,58 @@ ui = tagList(
                                    Rasch model. With option c = 0 and d = 1 you get 2PL model and with option d = 1 3PL model.'),
                                  p('When you set different curve parameters, you can follow a phenomenon called Differential Item Functioning (DIF). See further
                                    section for more information. '),
-                                 # be careful about the order of sliders!!!
-                                 # this probably has nicer solution
-                                 tags$style(HTML(".js-irs-12 .irs-single, .js-irs-12 .irs-bar-edge, .js-irs-12 .irs-bar {
-                                                  background: red;
-                                                  border-top-color: red;
-                                                  border-bottom-color: red;
-                                                  border-left-color: red;
-                                                  border-right-color: red}")),
-                                 tags$style(HTML(".js-irs-13 .irs-single, .js-irs-13 .irs-bar-edge, .js-irs-13 .irs-bar {
-                                                  background: red;
-                                                  border-top-color: red;
-                                                  border-bottom-color: red;
-                                                  border-left-color: red;
-                                                  border-right-color: red}")),
-                                 tags$style(HTML(".js-irs-14 .irs-single, .js-irs-14 .irs-bar-edge, .js-irs-14 .irs-bar {
-                                                  background: red;
-                                                  border-top-color: red;
-                                                  border-bottom-color: red;
-                                                  border-left-color: red;
-                                                  border-right-color: red}")),
-                                 tags$style(HTML(".js-irs-15 .irs-single, .js-irs-15 .irs-bar-edge, .js-irs-15 .irs-bar {
-                                                  background: red;
-                                                  border-top-color: red;
-                                                  border-bottom-color: red;
-                                                  border-left-color: red;
-                                                  border-right-color: red}")),
-                                 tags$style(HTML(".js-irs-16 .irs-single, .js-irs-16 .irs-bar-edge, .js-irs-16 .irs-bar {
-                                                  background: blue;
-                                                  border-top-color: blue;
-                                                  border-bottom-color: blue;
-                                                  border-left-color: blue;
-                                                  border-right-color: blue}")),
-                                 tags$style(HTML(".js-irs-17 .irs-single, .js-irs-17 .irs-bar-edge, .js-irs-17 .irs-bar {
-                                                  background: blue;
-                                                  border-top-color: blue;
-                                                  border-bottom-color: blue;
-                                                  border-left-color: blue;
-                                                  border-right-color: blue}")),
-                                 tags$style(HTML(".js-irs-18 .irs-single, .js-irs-18 .irs-bar-edge, .js-irs-18 .irs-bar {
-                                                  background: blue;
-                                                  border-top-color: blue;
-                                                  border-bottom-color: blue;
-                                                  border-left-color: blue;
-                                                  border-right-color: blue}")),
-                                 tags$style(HTML(".js-irs-19 .irs-single, .js-irs-19 .irs-bar-edge, .js-irs-19 .irs-bar {
-                                                  background: blue;
-                                                  border-top-color: blue;
-                                                  border-bottom-color: blue;
-                                                  border-left-color: blue;
-                                                  border-right-color: blue}")),
-                                 tags$style(HTML(".js-irs-20 .irs-single, .js-irs-20 .irs-bar-edge, .js-irs-20 .irs-bar {
-                                                  background: gray;
-                                                  border-top-color: gray;
-                                                  border-bottom-color: gray;
-                                                  border-left-color: gray;
-                                                  border-right-color: gray}")),
                                  fluidRow(
                                    column(12,
                                           splitLayout(
                                             cellWidths = c("20%", "5%", "20%", "5%", "20%", "5%", "20%", "5%"),
-                                            sliderInput("ccIRTSlider_a1", "a - discrimination", min = -4, max = 4,
-                                                        value = 1, step = 0.01),
-                                            div(style="display: inline-block; vertical-align: middle; width: 50%;", HTML("<br>")),
-                                            # div(style= "display: inline-block; vertical-align: middle; height: 100%; width: 50%",
-                                            #     textInput("ccIRTtext_a1", "", value = 1)),
-                                            sliderInput("ccIRTSlider_b1", "b - difficulty", min = -4, max = 4,
-                                                        value = 0, step = 0.01),
-                                            div(style="display: inline-block; vertical-align: middle; width: 50%;", HTML("<br>")),
-                                            # div(style= "display: inline-block; vertical-align: middle; height: 100%; width: 50%",
-                                            #     textInput("ccIRTtext_b1", "", value = 0)),
-                                            sliderInput("ccIRTSlider_c1", "c - guessing", min = 0, max = 1,
-                                                        value = 0, step = 0.01),
-                                            div(style="display: inline-block; vertical-align: middle; width: 50%;", HTML("<br>")),
-                                            # div(style= "display: inline-block; vertical-align: middle; height: 100%; width: 50%",
-                                            #     textInput("ccIRTtext_c1", "", value = 0)),
-                                            sliderInput("ccIRTSlider_d1", "d - inattention", min = 0, max = 1,
-                                                        value = 1, step = 0.01),
-                                            div(style="display: inline-block; vertical-align: middle; width: 50%;", HTML("<br>"))#,
-                                            # div(style= "display: inline-block; vertical-align: middle; height: 100%; width: 50%",
-                                            #     textInput("ccIRTtext_d1", "", value = 1))
-                                            ))),
+                                            tags$div(class = "js-irs-red",
+                                                     sliderInput("ccIRTSlider_a1", "a - discrimination",
+                                                                 min = -4, max = 4, value = 1, step = 0.01)),
+                                            div(style = "display: inline-block; vertical-align: middle; width: 50%;", HTML("<br>")),
+                                            tags$div(class = "js-irs-red",
+                                                     sliderInput("ccIRTSlider_b1", "b - difficulty",
+                                                                 min = -4, max = 4, value = 0, step = 0.01)),
+                                            div(style = "display: inline-block; vertical-align: middle; width: 50%;", HTML("<br>")),
+                                            tags$div(class = "js-irs-red",
+                                                     sliderInput("ccIRTSlider_c1", "c - guessing",
+                                                                 min = 0, max = 1, value = 0, step = 0.01)),
+                                            div(style = "display: inline-block; vertical-align: middle; width: 50%;", HTML("<br>")),
+                                            tags$div(class = "js-irs-red",
+                                                     sliderInput("ccIRTSlider_d1", "d - inattention",
+                                                                 min = 0, max = 1, value = 1, step = 0.01)),
+                                            div(style = "display: inline-block; vertical-align: middle; width: 50%;", HTML("<br>"))#,
+                                          ))),
                                  fluidRow(
                                    column(12,
                                           splitLayout(
                                             cellWidths = c("20%", "5%", "20%", "5%", "20%", "5%", "20%", "5%"),
-                                            sliderInput("ccIRTSlider_a2", "a - discrimination", min = -4, max = 4,
-                                                        value = 2, step = 0.01),
-                                            div(style="display: inline-block; vertical-align: middle; width: 50%;", HTML("<br>")),
-                                            # div(style= "display: inline-block; vertical-align: middle; height: 100%; width: 50%",
-                                            #     textInput("ccIRTtext_a2", "", value = 2)),
-                                            sliderInput("ccIRTSlider_b2", "b - difficulty", min = -4, max = 4,
-                                                        value = 0.5, step = 0.01),
-                                            div(style="display: inline-block; vertical-align: middle; width: 50%;", HTML("<br>")),
-                                            # div(style= "display: inline-block; vertical-align: middle; height: 100%; width: 50%",
-                                            #     textInput("ccIRTtext_b2", "", value = 0.5)),
-                                            sliderInput("ccIRTSlider_c2", "c - guessing", min = 0, max = 1,
-                                                        value = 0, step = 0.01),
-                                            div(style="display: inline-block; vertical-align: middle; width: 50%;", HTML("&ensp;")),
-                                            # div(style= "display: inline-block; vertical-align: middle; height: 100%; width: 50%",
-                                            #     textInput("ccIRTtext_c2", "", value = 0)),
-                                            sliderInput("ccIRTSlider_d2", "d - inattention", min = 0, max = 1,
-                                                        value = 1, step = 0.01),
-                                            div(style="display: inline-block; vertical-align: middle; width: 50%;", HTML("&ensp;"))#,
-                                            # div(style= "display: inline-block; vertical-align: middle; height: 100%; width: 50%",
-                                            #     textInput("ccIRTtext_d2", "", value = 1))
-                                            ))),
+                                            tags$div(class = "js-irs-blue",
+                                                     sliderInput("ccIRTSlider_a2", "a - discrimination",
+                                                                 min = -4, max = 4, value = 2, step = 0.01)),
+                                            div(style = "display: inline-block; vertical-align: middle; width: 50%;", HTML("<br>")),
+                                            tags$div(class = "js-irs-blue",
+                                                     sliderInput("ccIRTSlider_b2", "b - difficulty",
+                                                                 min = -4, max = 4, value = 0.5, step = 0.01)),
+                                            div(style = "display: inline-block; vertical-align: middle; width: 50%;", HTML("<br>")),
+                                            tags$div(class = "js-irs-blue",
+                                                     sliderInput("ccIRTSlider_c2", "c - guessing",
+                                                                 min = 0, max = 1, value = 0, step = 0.01)),
+                                            div(style = "display: inline-block; vertical-align: middle; width: 50%;", HTML("&ensp;")),
+                                            tags$div(class = "js-irs-blue",
+                                                     sliderInput("ccIRTSlider_d2", "d - inattention",
+                                                                 min = 0, max = 1, value = 1, step = 0.01)),
+                                            div(style = "display: inline-block; vertical-align: middle; width: 50%;", HTML("&ensp;"))#,
+                                          ))),
                                  p("Select also the value of latent ability", HTML("<b>&#952;</b>"), "to see the intepretation of the
                                    item characteristic curves. "),
                                  fluidRow(
                                    column(3,
                                           splitLayout(
                                             cellWidths = c("85%", "15%"),
-                                            sliderInput("ccIRTSlider_theta", div(HTML('&#952;'), "- latent ability"), min = -4, max = 4,
-                                                        value = 0, step = 0.01),
+                                            tags$div(class = "js-irs-gray",
+                                                     sliderInput("ccIRTSlider_theta", div(HTML('&#952;'), "- latent ability"),
+                                                                 min = -4, max = 4, value = 0, step = 0.01)),
                                             div(style = "display: inline-block; vertical-align: middle; width: 50%;", HTML("<br>"))#,
-                                            # div(style = "display: inline-block; vertical-align: middle; height: 100%; width: 50%",
-                                            #     textInput("ccIRTtext_theta", "", value = 0))
                                             ))),
                                  h4("Equations"),
                                  ('$$\\mathrm{P}\\left(\\theta \\vert a, b, c, d \\right) = c + \\left(d - c\\right) \\cdot \\frac{e^{a\\left(\\theta-b\\right) }}{1+e^{a\\left(\\theta-b\\right) }} $$'),
@@ -2083,6 +2107,7 @@ ui = tagList(
                                    tabPanel('Graded response model',
                                             h3("Graded response model"),
                                             p("In this section you can explore graded response model. "),
+                                            h4("Parameters"),
                                             div(style = "display: inline-block; vertical-align: middle; width: 18%;",
                                                 numericInput(inputId = "irt_training_grm_numresp",
                                                              label = "Number of responses",
@@ -2100,9 +2125,65 @@ ui = tagList(
                                             br(),
                                             uiOutput("irt_training_grm_sliders"),
                                             br(),
+                                            h4("Equations"),
+                                            ('$$\\pi_k* = \\mathrm{P}\\left(Y \\geq k \\vert \\theta, a, b\\right) = \\frac{e^{a\\left(\\theta-b\\right) }}{1+e^{a\\left(\\theta-b\\right) }} $$'),
+                                            ('$$\\pi_k =\\mathrm{P}\\left(Y = k \\vert \\theta, a, b\\right) = \\pi_k* - \\pi_{k+1}* $$'),
+                                            h4("Plots"),
                                             splitLayout(cellWidths = c("50%", "50%"),
                                                         plotlyOutput('irt_training_grm_plot_cummulative'),
                                                         plotlyOutput('irt_training_grm_plot_category')),
+                                            splitLayout(cellWidths = c("50%", "50%"),
+                                                        downloadButton("DB_irt_training_grm_plot_cummulative", label = "Download figure"),
+                                                        downloadButton("DB_irt_training_grm_plot_category", label = "Download figure")),
+                                            h4("Selected R code"),
+                                            HTML('<code>library(ggplot2) <br>
+                                                 library(data.table) <br>
+                                                 <br>
+                                                 # setting parameters <br>
+                                                 a <- 1 <br>
+                                                 b <- c(-1.5, -1, -0.5, 0) <br>
+                                                 theta <- seq(-4, 4, 0.01) <br>
+                                                 <br>
+                                                 # calculating cummulative probabilities <br>
+                                                 ccirt <- function(theta, a, b){ return(1/(1 + exp(-a*(theta - b)))) }
+                                                 <br>
+                                                 df <- data.frame(sapply(1:length(b), function(i) ccirt(theta, a, b[i])), theta) <br>
+                                                 df <- melt(df, id.vars = "theta") <br>
+                                                 <br>
+                                                 # plotting cummulative probabilities <br>
+                                                 ggplot(data = df, aes(x = theta, y = value, col = variable)) + <br>
+                                                 geom_line() + <br>
+                                                 xlab("Ability") + <br>
+                                                 ylab("Cummulative probability") + <br>
+                                                 xlim(-4, 4) + <br>
+                                                 ylim(0, 1) + <br>
+                                                 theme_bw() + <br>
+                                                 theme(text = element_text(size = 14),  <br>
+                                                 panel.grid.major = element_blank(), <br>
+                                                 panel.grid.minor = element_blank()) + <br>
+                                                 ggtitle("Cummulative probabilities") + <br>
+                                                 scale_color_manual("", values = c("red", "yellow", "green", "blue"), labels = paste0("P(Y >= ", 1:4, ")"))
+                                                 <br> <br>
+                                                 # calculating category probabilities <br>
+                                                 df <- data.frame(1, sapply(1:length(b), function(i) ccirt(theta, a, b[i]))) <br>
+                                                 df <- data.frame(sapply(1:length(b), function(i) df[, i] - df[, i+1]),
+                                                 df[, ncol(df)],
+                                                 theta) <br>
+                                                 df <- melt(df, id.vars = "theta") <br>
+                                                 # plotting category probabilities <br>
+                                                 ggplot(data = df, aes(x = theta, y = value, col = variable)) + <br>
+                                                 geom_line() + <br>
+                                                 xlab("Ability") + <br>
+                                                 ylab("Category probability") + <br>
+                                                 xlim(-4, 4) + <br>
+                                                 ylim(0, 1) + <br>
+                                                 theme_bw() + <br>
+                                                 theme(text = element_text(size = 14), <br>
+                                                 panel.grid.major = element_blank(), <br>
+                                                 panel.grid.minor = element_blank()) + <br>
+                                                 ggtitle("Category probabilities") + <br>
+                                                 scale_color_manual("", values = c("black", "red", "yellow", "green", "blue"), labels = paste0("P(Y >= ", 0:4, ")"))
+                                                 </code>'),
                                             br(),
                                             br()
                                    ),
@@ -2110,6 +2191,7 @@ ui = tagList(
                                    tabPanel('Generalized partial credit model',
                                             h3("Generalized partial credit model"),
                                             p("In this section you can explore generalized partial credit model. "),
+                                            h4("Parameters"),
                                             div(style = "display: inline-block; vertical-align: middle; width: 18%;",
                                                 numericInput(inputId = "irt_training_gpcm_numresp",
                                                              label = "Number of responses",
@@ -2127,7 +2209,43 @@ ui = tagList(
                                             br(),
                                             uiOutput("irt_training_gpcm_sliders"),
                                             br(),
+                                            h4("Equations"),
+                                            ('$$\\pi_k =\\mathrm{P}\\left(Y = k \\vert \\theta, \\alpha, \\delta_0, \\dots, \\delta_K\\right) = \\frac{\\exp\\sum_{t = 0}^k \\alpha(\\theta - \\delta_t)}{\\sum_{r = 0}^K\\exp\\sum_{t = 0}^r \\alpha(\\theta - \\delta_t)} $$'),
+                                            h4("Plots"),
                                             plotlyOutput('irt_training_gpcm_plot'),
+                                            downloadButton("DB_irt_training_gpcm_plot", label = "Download figure"),
+                                            h4("Selected R code"),
+                                            HTML('<code>library(ggplot2) <br>
+                                                 library(data.table) <br>
+                                                 <br>
+                                                 # setting parameters <br>
+                                                 a <- 1 <br>
+                                                 d <- c(-1.5, -1, -0.5, 0) <br>
+                                                 theta <- seq(-4, 4, 0.01) <br>
+                                                 <br>
+                                                 # calculating category probabilities <br>
+                                                 ccgpcm <- function(theta, a, d){ a*(theta - d) } <br>
+                                                 df <- sapply(1:length(d), function(i) ccgpcm(theta, a, d[i])) <br>
+                                                 pk <- sapply(1:ncol(df), function(k) apply(as.data.frame(df[, 1:k]), 1, sum)) <br>
+                                                 pk <- cbind(0, pk) <br>
+                                                 pk <- exp(pk) <br>
+                                                 denom <- apply(pk, 1, sum) <br>
+                                                 df <- data.frame(apply(pk, 2, function(x) x/denom), theta) <br>
+                                                 df <- melt(df, id.vars = "theta") <br>
+                                                 <br>
+                                                 # plotting category probabilities <br>
+                                                 ggplot(data = df, aes(x = theta, y = value, col = variable)) + <br>
+                                                 geom_line() + <br>
+                                                 xlab("Ability") + <br>
+                                                 ylab("Category probability") + <br>
+                                                 xlim(-4, 4) + <br>
+                                                 ylim(0, 1) + <br>
+                                                 theme_bw() + <br>
+                                                 theme(text = element_text(size = 14), <br>
+                                                 panel.grid.major = element_blank(), <br>
+                                                 panel.grid.minor = element_blank()) + <br>
+                                                 ggtitle("Category probabilities") + <br>
+                                                 scale_color_manual("", values = c("black", "red", "yellow", "green", "blue"), labels = paste0("P(Y = ", 0:4, ")"))</code>'),
                                             br(),
                                             br()
                                    ),
@@ -2135,6 +2253,7 @@ ui = tagList(
                                    tabPanel('Nominal response model',
                                             h3("Nominal response model"),
                                             p("In this section you can explore nominal response model. "),
+                                            h4("Parameters"),
                                             div(style = "display: inline-block; vertical-align: middle; width: 18%;",
                                                 numericInput(inputId = "irt_training_nrm_numresp",
                                                              label = "Number of responses",
@@ -2144,7 +2263,42 @@ ui = tagList(
                                             br(),
                                             uiOutput("irt_training_nrm_sliders"),
                                             br(),
+                                            h4("Equations"),
+                                            ('$$\\pi_k =\\mathrm{P}\\left(Y = k \\vert \\theta, \\alpha_0, \\dots, \\alpha_K, \\delta_0, \\dots, \\delta_K\\right) = \\frac{\\exp(\\alpha_k\\theta + \\delta_k)}{\\sum_{r = 0}^K\\exp(\\alpha_r\\theta + \\delta_r)} $$'),
+                                            h4("Plots"),
                                             plotlyOutput('irt_training_nrm_plot'),
+                                            downloadButton("DB_irt_training_nrm_plot", label = "Download figure"),
+                                            h4("Selected R code"),
+                                            HTML('<code>library(ggplot2) <br>
+                                                 library(data.table) <br>
+                                                 <br>
+                                                 # setting parameters <br>
+                                                 a <- c(2.5, 2, 1, 1.5) <br>
+                                                 d <- c(-1.5, -1, -0.5, 0) <br>
+                                                 theta <- seq(-4, 4, 0.01) <br>
+                                                 <br>
+                                                 # calculating category probabilities <br>
+                                                 ccnrm <- function(theta, a, d){ exp(d + a*theta) } <br>
+                                                 df <- sapply(1:length(d), function(i) ccnrm(theta, a[i], d[i])) <br>
+                                                 df <- data.frame(1, df) <br>
+                                                 denom <- apply(df, 1, sum) <br>
+                                                 df <- apply(df, 2, function(x) x/denom) <br>
+                                                 df <- data.frame(df, theta) <br>
+                                                 df <- melt(df, id.vars = "theta") <br>
+                                                 <br>
+                                                 # plotting category probabilities <br>
+                                                 ggplot(data = df, aes(x = theta, y = value, col = variable)) + <br>
+                                                 geom_line() + <br>
+                                                 xlab("Ability") + <br>
+                                                 ylab("Category probability") + <br>
+                                                 xlim(-4, 4) + <br>
+                                                 ylim(0, 1) + <br>
+                                                 theme_bw() + <br>
+                                                 theme(text = element_text(size = 14), <br>
+                                                 panel.grid.major = element_blank(), <br>
+                                                 panel.grid.minor = element_blank()) + <br>
+                                                 ggtitle("Category probabilities") + <br>
+                                                 scale_color_manual("", values = c("black", "red", "yellow", "green", "blue"), labels = paste0("P(Y = ", 0:4, ")"))</code>'),
                                             br(),
                                             br()
                                    )

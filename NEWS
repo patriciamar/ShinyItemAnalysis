@@ -5,6 +5,23 @@
         ***************************************************************
 
 -------------------------------------------------------
+- Changes in ShinyItemAnalysis 1.2.6.-4. (2018-04-06) -
+-------------------------------------------------------
+
+MAJOR UPDATES
+  o IRT section
+    - Selected R code was added into polytomous models.
+    - Equations were added into polytomous models.
+    - Download buttons were added into polytomous models.
+    - 4PL model was added.
+    - 4PL model was added into model comparison.
+    - Sliders in IRT training are now colored with respect to line colors.
+
+MINOR UPDATES
+  o IRT section
+    - Selected R code in model comparison was updated. Typos were fixed.
+
+-------------------------------------------------------
 - Changes in ShinyItemAnalysis 1.2.6.-3. (2018-04-05) -
 -------------------------------------------------------
 
@@ -14,6 +31,10 @@ MAJOR UPDATES
     - IRT training section was expanded by polytomous models.
       GRM, GPCM and NRM were added.
     - Syntax for IRT training was improved.
+
+MINOR UPDATES
+  o IRT section
+    - Sliders steps are now 0.01 in dichotomous models.
 
 -------------------------------------------------------
 - Changes in ShinyItemAnalysis 1.2.6.-2. (2018-04-03) -
