@@ -120,6 +120,7 @@ This project was supported by Czech Science Foundation under grant number [GJ15-
 Table below summarizes basic characteristics of total scores including minimum and maximum, mean, median, standard deviation, skewness and kurtosis. The kurtosis here is estimated by sample kurtosis $\frac{m_4}{m_2^2}$, where $m_4$ is the fourth central moment and $m_2$ is the second central moment. The skewness is estimated by sample skewness $\frac{m_3}{m_2^{3/2}}$, where $m_3$ is the third central moment. The kurtosis for normally distributed scores is near the value of 3 and the skewness is near the value of 0. 
 
 ```{r total-scores-table, echo = FALSE, results = 'asis'}
+options(tinytex.verbose = TRUE)
 library(xtable)
 table = params$results
 colnames(table) = NULL
@@ -325,51 +326,42 @@ for (i in 1:length(params$graf)){
 
 \pagebreak
 
-# IRT models
+`r if (params$irt_type != "none") {"# IRT models"}`
 
-Item Response Theory (IRT) models are mixed-effect regression models in which student ability (theta) is assumed to be a random effect and is estimated together with item paramters. Ability (theta) is often assumed to follow normal distibution.
+`r if (params$irt_type != "none") {"Item Response Theory (IRT) models are mixed-effect regression models in which student ability $\\theta$ is assumed to be a random effect and is estimated together with item paramters. Ability $\\theta$ is often assumed to follow normal distibution."}`
 
 ```{r irt-eq, echo = FALSE, results = "hide"}
 if (params$irt_type == "rasch") {
   head = " Rasch model"
+  eq = "$$ {P}(Y_{ij} = 1|\\theta_{i}, a, b_j) =\\frac{e^{(\\theta_i - b_j)}}{1 + e^{(\\theta_i - b_j)}} $$"
 }
 
 if (params$irt_type == "1pl") {
-head = " 1PL IRT model"
-eq = "$ {P}(Y_{ij} = 1|\theta_{i},a,b_j) =\frac{e^{a(\theta_i-b_j)}}{1+e^{a(\theta_i-b_j)}} $"
+  head = " 1PL IRT model"
+  eq = "$$ {P}(Y_{ij} = 1|\\theta_{i}, a, b_j) =\\frac{e^{a(\\theta_i - b_j)}}{1 + e^{a(\\theta_i - b_j)}} $$"
 }
 
 if (params$irt_type == "2pl") {
-head = " 2PL IRT model"
-eq = "$$ {P}(Y_{ij} = 1|\theta_{i},a_j,b_j) = \frac{e^{a_j(\theta_i-b_j)}}{1+e^{a_j(\theta_i-b_j)}}$$"
+  head = " 2PL IRT model"
+  eq = "$$ {P}(Y_{ij} = 1|\\theta_{i}, a_j, b_j) = \\frac{e^{a_j(\\theta_i - b_j)}}{1 + e^{a_j(\\theta_i - b_j)}}$$"
 }
 
 if (params$irt_type == "3pl") {
-head = " 3PL IRT model"
-#eq = "$$ {P}(Y_{ij} = 1|\theta_{i},a_j,b_j, c_j) = c_j + (1+c_j)\cdot\frac{e^{a_j(\theta_i-b_j)}}{1+e^{a_j(\theta_i-b_j)}}$$"
+  head = " 3PL IRT model"
+  eq = "$$ {P}(Y_{ij} = 1|\\theta_{i}, a_j, b_j, c_j) = c_j + (1 + c_j) \\frac{e^{a_j(\\theta_i - b_j)}}{1 + e^{a_j(\theta_i - b_j)}} $$"
+}
+
+if (params$irt_type == "4pl") {
+  head = " 4PL IRT model"
+  eq = "$$ {P}(Y_{ij} = 1|\\theta_{i}, a_j, b_j, c_j, d_j) = c_j + (d_j + c_j) \\frac{e^{a_j(\\theta_i - b_j)}}{1 + e^{a_j(\\theta_i - b_j)}}$$"
 }
 
 if (params$irt_type == "none") {
-head = " None"
+  head = " None"
+  eq = ""
 }
 ```
 
-Available models:
-
-Rasch model
-$$ {P}(Y_{ij} = 1|\theta_{i},b_j) =\frac{e^{(\theta_i-b_j)}}{1+e^{(\theta_i-b_j)}} $$
-
-1PL IRT model
-$$ {P}(Y_{ij} = 1|\theta_{i},a,b_j) =\frac{e^{a(\theta_i-b_j)}}{1+e^{a(\theta_i-b_j)}}$$
-
-2PL IRT model
-$$ {P}(Y_{ij} = 1|\theta_{i},a_j,b_j) = \frac{e^{a_j(\theta_i-b_j)}}{1+e^{a_j(\theta_i-b_j)}}$$
-
-3PL IRT model
-$$ {P}(Y_{ij} = 1|\theta_{i},a_j,b_j, c_j) =c_j + (1+c_j)\cdot\frac{e^{a_j(\theta_i-b_j)}}{1+e^{a_j(\theta_i-b_j)}}$$
-<!-- `r if (any(params$wrightMap!="")) {"\\vspace{3em}"}` -->
-
-`r if (any(params$wrightMap!="")) {"\\pagebreak"}`
 
 `r if (any(params$wrightMap!="")) {"## Wright (item-person) map using 1PL IRT model"}`
 
@@ -385,7 +377,12 @@ if (any(params$wrightMap != "")) {
 
 \vspace{-2em}
 
-**Selected model:`r head`**
+`r if (params$irt_type != "none") {"## Equation"}`
+
+`r if (params$irt_type != "none") {paste0("All subsequent analyzes are based on the selected ", head, ":")}`
+`r if (params$irt_type != "none") {eq}`
+
+`r if (params$irt_type != "none") {"\\pagebreak"}`
 
 `r if (params$irt_type != "none") {"## Ability estimates"}`
 
@@ -399,23 +396,21 @@ if (params$irt_type != "none") {
 }
 ```
 
-`r if (any(params$wrightMap!="")) {"\\pagebreak"}`
-
 `r if (params$irt_type != "none") {"## Item characteristic and information curves"}`
 
-```{r irt-0, echo = FALSE, results = "hide", fig.height = 4.2, fig.width = 11, dpi = 300}
+```{r irt-0, echo = FALSE, results = "hide", fig.height = 4.5, fig.width = 11, dpi = 300}
 if (params$irt_type != "none") {
   params$irt
 }
 ```
 
-```{r irt-1, echo = FALSE, results = "hide", fig.height = 4.2, fig.width = 11, dpi = 300}
+```{r irt-1, echo = FALSE, results = "hide", fig.height = 4.5, fig.width = 11, dpi = 300}
 if (params$irt_type != "none") {
   params$irtiic
 }
 ```
 
-```{r irt-2, echo = FALSE, results = "hide", fig.height = 4.2, fig.width = 11, dpi = 300}
+```{r irt-2, echo = FALSE, results = "hide", fig.height = 4.5, fig.width = 11, dpi = 300}
 if (params$irt_type != "none") {
   params$irttif
 }

@@ -163,7 +163,7 @@ output$DP_raschFactor_mirt <- downloadHandler(
   },
   content = function(file) {
     ggsave(file, plot = raschFactorInput_mirt(), device = "png",
-           height = 3, width = 9, dpi = 300)
+           height = 4, width = 8, dpi = 300)
   }
 )
 
@@ -209,7 +209,7 @@ one_param_irt_mirt <- reactive({
   s <- paste("F = 1-", ncol(data), "\n",
                  "CONSTRAIN = (1-", ncol(data), ", a1)")
   model <- mirt.model(s)
-  fit1PL <- mirt(data, model = model, itemtype = "2PL")
+  fit1PL <- mirt(data, model = model, itemtype = "2PL", SE = T, verbose = F)
 })
 
 # *** CC ####
@@ -375,7 +375,7 @@ output$DP_oneparamirtFactor_mirt <- downloadHandler(
   },
   content = function(file) {
     ggsave(file, plot = oneparamirtFactorInput_mirt(), device = "png",
-           height = 3, width = 9, dpi = 300)
+           height = 4, width = 8, dpi = 300)
   }
 )
 
@@ -392,7 +392,7 @@ oneparamirtWrightMapInput_mirt <- reactive({
 
 
 oneparamirtWrightMapReportInput_mirt <- reactive({
-  if (input$irt_type_report!="none") {
+  if (input$irt_type_report != "none") {
     fit <- one_param_irt_mirt()
     fs <- as.vector(fscores(fit))
 
@@ -602,7 +602,7 @@ output$DP_twoparamirtFactor_mirt <- downloadHandler(
   },
   content = function(file) {
     ggsave(file, plot = twoparamirtFactorInput_mirt(), device = "png",
-           height = 3, width = 9, dpi = 300)
+           height = 4, width = 8, dpi = 300)
   }
 )
 
@@ -616,6 +616,17 @@ three_param_irt_mirt <- reactive({
                  constrain = NULL,
                  SE = T, technical = list(NCYCLES = 2000),
                  verbose = F)
+})
+
+output$irt_3PL_model_converged <- renderUI({
+  fit <- three_param_irt_mirt()
+  txt <- ifelse(fit@OptimInfo$converged,
+                "",
+                "<font color = 'orange'>
+          Estimation process terminated without convergence.
+          Estimates are not reliable.
+          </font>")
+  HTML(txt)
 })
 
 # *** CC ######
@@ -779,7 +790,7 @@ output$DP_threeparamirtFactor_mirt <- downloadHandler(
   },
   content = function(file) {
     ggsave(file, plot = threeparamirtFactorInput_mirt(), device = "png",
-           height = 3, width = 9, dpi = 300)
+           height = 4, width = 8, dpi = 300)
   }
 )
 
@@ -793,6 +804,17 @@ irt_4PL_model <- reactive({
               constrain = NULL,
               SE = T, technical = list(NCYCLES = 4000),
               verbose = F)
+})
+
+output$irt_4PL_model_converged <- renderUI({
+  fit <- irt_4PL_model()
+  txt <- ifelse(fit@OptimInfo$converged,
+         "",
+         "<font color = 'orange'>
+          Estimation process terminated without convergence.
+          Estimates are not reliable.
+          </font>")
+  HTML(txt)
 })
 
 # *** ICC ######
@@ -1219,7 +1241,7 @@ output$DP_bock_factor <- downloadHandler(
   },
   content = function(file) {
     ggsave(file, plot = bock_factor_Input(), device = "png",
-           height = 3, width = 9, dpi = 300)
+           height = 4, width = 8, dpi = 300)
   }
 )
 

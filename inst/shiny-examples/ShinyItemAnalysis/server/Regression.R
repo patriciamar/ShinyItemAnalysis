@@ -69,7 +69,7 @@ output$DB_logreg_plot <- downloadHandler(
   content = function(file) {
     ggsave(file, plot = logreg_plot_Input() + theme(text = element_text(size = 10)),
            device = "png",
-           height = 3, width = 9, dpi = 300)
+           height = 4, width = 8, dpi = 300)
   }
 )
 
@@ -169,7 +169,7 @@ output$DB_z_logreg_plot <- downloadHandler(
   content = function(file) {
     ggsave(file, plot = z_logreg_plot_Input() + theme(text = element_text(size = 10)),
            device = "png",
-           height = 3, width = 9, dpi = 300)
+           height = 4, width = 8, dpi = 300)
   }
 )
 
@@ -270,7 +270,7 @@ output$DB_z_logreg_irt_plot <- downloadHandler(
   content = function(file) {
     ggsave(file, plot = z_logreg_irt_plot_Input() + theme(text = element_text(size = 10)),
            device = "png",
-           height = 3, width = 9, dpi = 300)
+           height = 4, width = 8, dpi = 300)
   }
 )
 
@@ -322,45 +322,19 @@ output$z_logreg_irt_interpretation <- renderUI({
 })
 
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-# * NONLINEAR IRT Z ######
+# * NONLINEAR 3P IRT Z ######
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 # ** Model of nonlinear curve ######
-nlr_model <- reactive({
+nlr_3P_model <- reactive({
   data <- correct_answ()
   zscore <- scale(scored_test())
+  i <- input$slider_nlr_3P_item
 
-  glr <- deriv3( ~ c + (1 - c) / (1 + exp(-a * (x - b))),
-                 namevec = c("a", "b", "c"),
-                 function.arg = function(x, a, b, c) {})
+  start <- startNLR(data, group = c(rep(0, nrow(data)/2), rep(1, nrow(data)/2)),
+                    model = "3PLcg", parameterization = "classic", simplify = T)[, 1:3]
 
-  Q3 <- cut(zscore, quantile(zscore, (0:3) / 3, na.rm = T),
-            c("I", "II", "III"),
-            include.lowest = TRUE)
-
-  x <- cbind(mean(zscore[Q3 == "I"], na.rm = T),
-             apply(data[Q3 == "I",], 2, function(x){mean(x, na.rm = T)}))
-  y <- cbind(mean(zscore[Q3 == "III"], na.rm = T),
-             apply(data[Q3 == "III",], 2, function(x){mean(x, na.rm = T)}))
-  u1 <- y[, 1] - x[, 1]
-  u2 <- y[, 2] - x[, 2]
-  ### intercept of line
-  c <- -(-u1 * y[, 2] + u2 * y[, 1]) / u1
-  ### slope of line
-  t <- u2 / u1
-  g <- apply(cbind(0, t * (-4) + c), 1, max)
-
-  b <- ((1 + g) / 2 - c) / t
-
-  alpha <- 4 * t / (1 - g)
-
-  discr <- alpha
-  diffi <- b
-  guess <- g
-  i <- input$nlsSlider
-
-  start <- cbind(discr, diffi, guess)
-  colnames(start) <- c("a", "b", "c")
+  glr <- function(x, a, b, c){c + (1 - c) / (1 + exp(-a * (x - b)))}
 
   fit <- nls(unlist(data[, i, with = F]) ~ glr(zscore, a, b, c),
              algorithm = "port", start = start[i, ],
@@ -369,11 +343,11 @@ nlr_model <- reactive({
 })
 
 # ** Plot of estimated nonlinear curve ######
-nlr_plot_Input <- reactive({
+nlr_3P_plot_Input <- reactive({
   zscore <- scale(scored_test())
-  item <- input$nlsSlider
+  item <- input$slider_nlr_3P_item
   data <- correct_answ()
-  fit <- nlr_model()
+  fit <- nlr_3P_model()
 
   fun <- function(x, a, b, c){c + (1 - c) / (1 + exp(-a * (x - b)))}
 
@@ -410,25 +384,25 @@ nlr_plot_Input <- reactive({
 })
 
 # ** Output plot of estimated nonlinear curve ######
-output$nlr_plot <- renderPlot({
-  nlr_plot_Input()
+output$nlr_3P_plot <- renderPlot({
+  nlr_3P_plot_Input()
 })
 
 # ** DB plot of estimated nonlinear curve ######
-output$DB_nlr_plot <- downloadHandler(
+output$DB_nlr_3P_plot <- downloadHandler(
   filename =  function() {
-    paste("fig_NonlinearRegressionCurve_Zscores_IRT_", item_names()[input$nlsSlider], ".png", sep = "")
+    paste("fig_NLR_3P_", item_names()[input$slider_nlr_3P_item], ".png", sep = "")
   },
   content = function(file) {
-    ggsave(file, plot = nlr_plot_Input() + theme(text = element_text(size = 10)),
+    ggsave(file, plot = nlr_3P_plot_Input() + theme(text = element_text(size = 10)),
            device = "png",
-           height = 3, width = 9, dpi = 300)
+           height = 4, width = 8, dpi = 300)
   }
 )
 
 # Table of estimated parameters of nonlinear curve ######
-output$nlr_table <- renderTable({
-  fit <- nlr_model()
+output$nlr_3P_table <- renderTable({
+  fit <- nlr_3P_model()
 
   tab <- summary(fit)$parameters[, 1:2]
   colnames(tab) <- c("Estimate", "SD")
@@ -439,26 +413,132 @@ include.colnames = T
 )
 
 # ** Interpretation of estimated parameters of nonlinear curve ######
-output$nlr_interpretation <- renderUI({
-  fit <- nlr_model()
+output$nlr_3P_interpretation <- renderUI({
+  fit <- nlr_3P_model()
 
-  a <- round(summary(fit)$coef[1, 1], 2)
-  b <- round(summary(fit)$coef[2, 1], 2)
+  a <- round(coef(fit)[1], 2)
+  b <- round(coef(fit)[2], 2)
+  c <- round(coef(fit)[3], 2)
 
-  txt1 <- paste ("<b>", "Interpretation:", "</b>")
-  txt0 <- ifelse(a < 0, "decrease", "increase")
-  txt2 <-
-    paste (
-      "A one-unit increase in the Z-score (one SD increase in original
-      scores) is associated with the", txt0, " in the log
-      odds of answering the item correctly
-      vs. not correctly in the amount of"
-)
-  txt3 <- paste ("<b>", abs(a), "</b>")
-  HTML(paste(txt1, txt2, txt3))
+  txt0 <- paste0("<b>", "Interpretation:", "</b>")
+  txt1 <- paste0("A one-unit increase in the Z-score (one SD increase in original scores) is associated with the ",
+                  ifelse(a < 0, "decrease", "increase"), " in the log odds of answering the item correctly vs.
+                 not correctly in the amount of <b>", abs(a), "</b>. ")
+  txt2 <- paste0("Probability of guessing is <b>", c, "</b>. ")
+
+  HTML(paste0(txt0, txt1, txt2))
 })
 
 
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+# * NONLINEAR 4P IRT Z ######
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+# ** Model of nonlinear curve ######
+nlr_4P_model <- reactive({
+  data <- correct_answ()
+  zscore <- scale(scored_test())
+  i <- input$slider_nlr_4P_item
+
+  start <- startNLR(data, group = c(rep(0, nrow(data)/2), rep(1, nrow(data)/2)),
+                    model = "4PLcgdg", parameterization = "classic", simplify = T)[, 1:4]
+
+  glr <- function(x, a, b, c, d){c + (d - c) / (1 + exp(-a * (x - b)))}
+
+  fit <- nls(unlist(data[, i, with = F]) ~ glr(zscore, a, b, c, d),
+             algorithm = "port", start = start[i, ],
+             lower = c(-Inf, -Inf, 0, 0), upper = c(Inf, Inf, 1, 1))
+  fit
+})
+
+# ** Plot of estimated nonlinear curve ######
+nlr_4P_plot_Input <- reactive({
+  zscore <- scale(scored_test())
+  item <- input$slider_nlr_4P_item
+  data <- correct_answ()
+  fit <- nlr_4P_model()
+
+  fun <- function(x, a, b, c, d){c + (d - c) / (1 + exp(-a * (x - b)))}
+
+  df <- data.table(x = sort(unique(zscore)),
+                   y = tapply(unlist(data[, item, with = F]), zscore, mean),
+                   size = as.numeric(table(zscore)))
+  ggplot(df, aes(x = x, y = y)) +
+    geom_point(aes(size = size),
+               color = "darkblue",
+               fill = "darkblue",
+               shape = 21, alpha = 0.5) +
+    stat_function(fun = fun, geom = "line",
+                  args = list(a = coef(fit)[1],
+                              b = coef(fit)[2],
+                              c = coef(fit)[3],
+                              d = coef(fit)[4]),
+                  size = 1,
+                  color = "darkblue") +
+    xlab("Standardized total score (Z-score)") +
+    ylab("Probability of correct answer") +
+    scale_y_continuous(limits = c(0, 1)) +
+    theme_bw() +
+    theme(axis.line  = element_line(colour = "black"),
+          text = element_text(size = 14),
+          panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank(),
+          panel.background = element_blank(),
+          legend.title = element_blank(),
+          legend.position = c(0, 1),
+          legend.justification = c(0, 1),
+          legend.background = element_blank(),
+          legend.key = element_rect(colour = "white"),
+          plot.title = element_text(face = "bold")) +
+    ggtitle(item_names()[item])
+})
+
+# ** Output plot of estimated nonlinear curve ######
+output$nlr_4P_plot <- renderPlot({
+  nlr_4P_plot_Input()
+})
+
+# ** DB plot of estimated nonlinear curve ######
+output$DB_nlr_4P_plot <- downloadHandler(
+  filename =  function() {
+    paste0("fig_NLR_4P", item_names()[input$slider_nlr_4P_item], ".png")
+  },
+  content = function(file) {
+    ggsave(file, plot = nlr_4P_plot_Input() + theme(text = element_text(size = 10)),
+           device = "png",
+           height = 4, width = 8, dpi = 300)
+  }
+)
+
+# Table of estimated parameters of nonlinear curve ######
+output$nlr_4P_table <- renderTable({
+  fit <- nlr_4P_model()
+
+  tab <- summary(fit)$parameters[, 1:2]
+  colnames(tab) <- c("Estimate", "SD")
+  tab
+},
+include.rownames = T,
+include.colnames = T
+)
+
+# ** Interpretation of estimated parameters of nonlinear curve ######
+output$nlr_4P_interpretation <- renderUI({
+  fit <- nlr_4P_model()
+
+  a <- round(coef(fit)[1], 2)
+  b <- round(coef(fit)[2], 2)
+  c <- round(coef(fit)[3], 2)
+  d <- round(coef(fit)[4], 2)
+
+  txt0 <- paste0("<b>", "Interpretation: ", "</b>")
+  txt1 <- paste0( "A one-unit increase in the Z-score (one SD increase in original scores) is associated
+                  with the ", ifelse(a < 0, "decrease", "increase"), " in the log odds of answering the item correctly vs. not correctly
+                  in the amount of <b>", abs(a), "</b>. ")
+  txt2 <- paste0("Probability of guessing is <b>", c, "</b>. ")
+  txt3 <- paste0("Probability of inattention is <b>", 1-d, "</b>. ")
+  HTML(paste0(txt0, txt1, txt2, txt3))
+})
 
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # * MODEL COMPARISON ######
@@ -732,7 +812,7 @@ output$DB_multi_plot <- downloadHandler(
   content = function(file) {
     ggsave(file, plot = multi_plot_Input() + theme(text = element_text(size = 10)),
            device = "png",
-           height = 3, width = 9, dpi = 300)
+           height = 4, width = 8, dpi = 300)
   }
 )
 

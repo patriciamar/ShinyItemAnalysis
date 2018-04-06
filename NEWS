@@ -16,10 +16,20 @@ MAJOR UPDATES
     - 4PL model was added.
     - 4PL model was added into model comparison.
     - Sliders in IRT training are now colored with respect to line colors.
+  o Regression section
+    - Section is newly organized.
+    - NLR 4P model was added.
+  o Reports
+    - 4PL IRT model was added as an option.
+    - IRT equation is generated based on selected model only.
+  o Unnecessary files were deleted. Some cleaning of files was done.
 
 MINOR UPDATES
   o IRT section
     - Selected R code in model comparison was updated. Typos were fixed.
+  o Regression section
+    - Interpretation of NLR 3P model was extended.
+    - Syntax for NLR 3P model was improved.
 
 -------------------------------------------------------
 - Changes in ShinyItemAnalysis 1.2.6.-3. (2018-04-05) -
