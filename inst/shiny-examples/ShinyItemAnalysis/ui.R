@@ -25,15 +25,7 @@ ui = tagList(
                       href = "margins_and_paddings.css"),
             tags$link(rel = "shortcut icon", href = "hexbin.png"),
             tags$style(type = "text/css",
-                       ".panel-footer {position: fixed; right: 0; bottom: 0; left: 0;}"),
-            tags$style(type = "text/css",
-                       ".red-slider .irs-single, .red-slider .irs-bar-edge, .red-slider .irs-bar {
-                       background: red;
-                       border-top-color: red;
-                       border-bottom-color: red;
-                       border-left-color: red;
-                       border-right-color: red}")),
-  # .js-irs > .option
+                       ".panel-footer {position: fixed; right: 0; bottom: 0; left: 0;}")),
   div(class = "busy",
       p("Loading"),
       img(src = "busy_indicator.gif", height = 100, width = 100)
@@ -904,6 +896,7 @@ ui = tagList(
              # REGRESSION #########
              #%%%%%%%%%%%%%%%%%%%%%
              navbarMenu("Regression",
+                        "Dichotomous models",
                         # * LOGISTIC ####
                         tabPanel("Logistic",
                                  h3("Logistic regression on total scores"),
@@ -1074,31 +1067,30 @@ ui = tagList(
                                  br()
                                  ),
 
-                        # * NONLINEAR Z ####
-                        tabPanel("Nonlinear IRT Z",
-                                 h3("Nonlinear regression on standardized total scores with IRT parameterization"),
+                        # * NONLINEAR 3P IRT Z ####
+                        tabPanel("Nonlinear 3P IRT Z",
+                                 h3("Nonlinear three parameter regression on standardized total scores with IRT parameterization"),
                                  p('Various regression models may be fitted to describe
                                    item properties in more detail.',
                                    strong('Nonlinear regression'), 'can model dependency of probability of correct answer on
                                    standardized total score (Z-score) by s-shaped logistic curve. The IRT parametrization used here corresponds
                                    to the parametrization used in IRT models. Parameter ', strong( 'b'),' describes horizontal position of the fitted curve (difficulty),
                                    parameter ',strong( 'a'), ' describes its slope at inflection point (discrimination). This model allows for nonzero lower left
-                                   asymptote ', strong( 'c'), ' (pseudo-guessing). '),
+                                   asymptote ', strong( 'c'), ' (pseudo-guessing parameter). '),
                                  br(),
                                  h4("Plot with estimated nonlinear curve"),
                                  p('Points represent proportion of correct answer with respect to standardized
                                    total score. Their size is determined by count of respondents who achieved given
                                    level of standardized total score.'),
-                                 sliderInput("nlsSlider", "Item",
-                                             min = 1, value = 1, max = 10,
-                                             step = 1, animate = TRUE),
-                                 plotOutput('nlr_plot'),
-                                 downloadButton("DB_nlr_plot", label = "Download figure"),
+                                 sliderInput(inputId = "slider_nlr_3P_item", label = "Item",
+                                             min = 1, value = 1, max = 10, step = 1, animate = TRUE),
+                                 plotOutput('nlr_3P_plot'),
+                                 downloadButton("DB_nlr_3P_plot", label = "Download figure"),
                                  h4("Equation"),
                                  ('$$\\mathrm{P}(Y = 1|Z, b_0, b_1, c) = \\mathrm{E}(Y|Z, b_0, b_1, c) = c + \\left( 1-c \\right) \\cdot \\frac{e^{a\\left(Z-b\\right) }}{1+e^{a\\left(Z-b\\right) }} $$'),
                                  h4("Table of parameters"),
-                                 fluidRow(column(12, align = "center", tableOutput('nlr_table'))),
-                                 htmlOutput("nlr_interpretation"),
+                                 fluidRow(column(12, align = "center", tableOutput('nlr_3P_table'))),
+                                 htmlOutput("nlr_3P_interpretation"),
                                  br(),
                                  h4("Selected R code"),
                                  div(code('library(difNLR)'),
@@ -1107,14 +1099,14 @@ ui = tagList(
                                      br(),
                                      code('Data  <- GMAT[, 1:20]'),
                                      br(),
-                                     code('stand.score  <- scale(apply(Data, 1, sum))'),
+                                     code('zscore  <- scale(apply(Data, 1, sum))'),
                                      br(),
                                      br(),
                                      code('# NLR model for item 1'),
                                      br(),
                                      code('fun <- function(x, a, b, c){c + (1 - c) * exp(a * (x - b)) / (1 + exp(a * (x - b)))}'),
                                      br(),
-                                     code('fit <- nls(data[, 1] ~ fun(stand.score, a, b, c), algorithm = "port",
+                                     code('fit <- nls(data[, 1] ~ fun(zscore, a, b, c), algorithm = "port",
                                           start = startNLR(data, GMAT[, "group"], model = "3PLcg")[1, 1:3])'),
                                      br(),
                                      code('# Coefficients'),
@@ -1129,7 +1121,60 @@ ui = tagList(
                                           ylim = c(0, 1))')),
                                  br()
                                  ),
-                        "----",
+                        # * NONLINEAR 4P IRT Z ####
+                        tabPanel("Nonlinear 4P IRT Z",
+                                 h3("Nonlinear four parameter regression on standardized total scores with IRT parameterization"),
+                                 p('Various regression models may be fitted to describe
+                                   item properties in more detail.',
+                                   strong('Nonlinear four parameter regression'), 'can model dependency of probability of correct answer on
+                                   standardized total score (Z-score) by s-shaped logistic curve. The IRT parametrization used here corresponds
+                                   to the parametrization used in IRT models. Parameter ', strong( 'b'),' describes horizontal position of the fitted curve (difficulty),
+                                   parameter ', strong( 'a'), ' describes its slope at inflection point (discrimination), pseudo-guessing parameter ', strong('c'), '
+                                   is describes lower asymptote and inattention parameter ', strong('d'), 'describes upper asymptote.'),
+                                 br(),
+                                 h4("Plot with estimated nonlinear curve"),
+                                 p('Points represent proportion of correct answer with respect to standardized
+                                   total score. Their size is determined by count of respondents who achieved given
+                                   level of standardized total score.'),
+                                 sliderInput(inputId = "slider_nlr_4P_item", label = "Item",
+                                             min = 1, value = 1, max = 10, step = 1, animate = TRUE),
+                                 plotOutput('nlr_4P_plot'),
+                                 downloadButton("DB_nlr_4P_plot", label = "Download figure"),
+                                 h4("Equation"),
+                                 ('$$\\mathrm{P}(Y = 1|Z, b_0, b_1, c) = \\mathrm{E}(Y|Z, b_0, b_1, c) = c + \\left( d-c \\right) \\cdot \\frac{e^{a\\left(Z-b\\right) }}{1+e^{a\\left(Z-b\\right) }} $$'),
+                                 h4("Table of parameters"),
+                                 fluidRow(column(12, align = "center", tableOutput('nlr_4P_table'))),
+                                 htmlOutput("nlr_4P_interpretation"),
+                                 br(),
+                                 h4("Selected R code"),
+                                 div(code('library(difNLR)'),
+                                     br(),
+                                     code('data(GMAT)'),
+                                     br(),
+                                     code('Data  <- GMAT[, 1:20]'),
+                                     br(),
+                                     code('stand.score  <- scale(apply(Data, 1, sum))'),
+                                     br(),
+                                     br(),
+                                     code('# NLR model for item 1'),
+                                     br(),
+                                     code('fun <- function(x, a, b, c, d){c + (d - c) * exp(a * (x - b)) / (1 + exp(a * (x - b)))}'),
+                                     br(),
+                                     code('fit <- nls(data[, 1] ~ fun(stand.score, a, b, c, d), algorithm = "port",
+                                          start = startNLR(data, GMAT[, "group"], model = "4PLcgdg")[1, 1:4])'),
+                                     br(),
+                                     code('# Coefficients'),
+                                     br(),
+                                     code('coef(fit)'),
+                                     br(),
+                                     code('# Plot of estimated curve'),
+                                     br(),
+                                     code('curve(fun(x, a = coef(fit)[1], b = coef(fit)[2], c = coef(fit)[3], d = coef(fit)[4]), -3, 3,
+                                          xlab = "Standardized total score",
+                                          ylab = "Probability of correct answer",
+                                          ylim = c(0, 1))')),
+                                 br()
+                                 ),
                         # * MODELS COMPARISON ####
                         tabPanel("Model comparison",
                                  h3("Logistic regression model selection"),
@@ -1198,6 +1243,7 @@ ui = tagList(
                                  br()
                                  ),
                         "----",
+                        "Polytomous models",
                         # * MULTINOMIAL ####
                         tabPanel("Multinomial",
                                  h3("Multinomial regression on standardized total scores"),
@@ -1633,6 +1679,7 @@ ui = tagList(
                                    strong('b,'), 'and allows also for nonzero left asymptote – pseudo-guessing', strong('c.')),
                                  h4("Equation"),
                                  ('$$\\mathrm{P}\\left(Y_{ij} = 1\\vert \\theta_{i}, a_{j}, b_{j}, c_{j} \\right) = c_{j} + \\left(1 - c_{j}\\right) \\cdot \\frac{e^{a_{j}\\left(\\theta_{i}-b_{j}\\right) }}{1+e^{a_{j}\\left(\\theta_{i}-b_{j}\\right) }} $$'),
+                                 uiOutput("irt_3PL_model_converged"),
                                  h4("Item characteristic curves"),
                                  plotOutput('threeparamirt_mirt'),
                                  downloadButton("DP_threeparamirt_mirt", label = "Download figure"),
@@ -1757,6 +1804,7 @@ ui = tagList(
                                             'and also for upper asymptote lower than one - inattention parameter', strong('d.')),
                                           h4("Equation"),
                                           ('$$\\mathrm{P}\\left(Y_{ij} = 1\\vert \\theta_{i}, a_{j}, b_{j}, c_{j}, d_{j} \\right) = c_{j} + \\left(d_{j} - c_{j}\\right) \\cdot \\frac{e^{a_{j}\\left(\\theta_{i}-b_{j}\\right) }}{1+e^{a_{j}\\left(\\theta_{i}-b_{j}\\right) }} $$'),
+                                          uiOutput("irt_4PL_model_converged"),
                                           h4("Item characteristic curves"),
                                           plotOutput('irt_4PL_icc'),
                                           downloadButton("DB_irt_4PL_icc", label = "Download figure"),
@@ -3643,7 +3691,8 @@ ui = tagList(
                                                  "Rasch" = "rasch",
                                                  "1PL" = "1pl",
                                                  "2PL" = "2pl",
-                                                 "3PL" = "3pl"),
+                                                 "3PL" = "3pl",
+                                                 "4PL" = "4pl"),
                                                selected = "1pl")
                            )
                          ),

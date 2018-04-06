@@ -41,23 +41,10 @@ options(shiny.maxRequestSize = 30*1024^2)
 # FUNCTIONS ######
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-# Difficulty/Discrimination plot
-source("DDplot.R")
-
-# Distractors analysis
-source("DistractorAnalysis.R")
-source("plotDistractorAnalysis.R")
-
-# DIF logistic regression plot
-source("plotDIFLogistic.R")
-
-# DIF IRT regression plot
-source("plotDIFirt.R")
-
 # WrightMap
-source("wrightMap.R")
-source("itemClassic.R")
-source("personHist.R")
+source("functions/wrightMap.R")
+source("functions/itemClassic.R")
+source("functions/personHist.R")
 
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # SERVER SCRIPT ######
@@ -543,7 +530,8 @@ function(input, output, session) {
       "logregSlider",
       "zlogregSlider",
       "zlogreg_irtSlider",
-      "nlsSlider",
+      "slider_nlr_3P_item",
+      "slider_nlr_4P_item",
       "multiSlider",
       "difMHSlider_item",
       "diflogSlider",
@@ -565,7 +553,8 @@ function(input, output, session) {
     updateSliderInput(session = session, inputId = "logregSlider", max = itemCount)
     updateSliderInput(session = session, inputId = "zlogregSlider", max = itemCount)
     updateSliderInput(session = session, inputId = "zlogreg_irtSlider", max = itemCount)
-    updateSliderInput(session = session, inputId = "nlsSlider", max = itemCount)
+    updateSliderInput(session = session, inputId = "slider_nlr_3P_item", max = itemCount)
+    updateSliderInput(session = session, inputId = "slider_nlr_4P_item", max = itemCount)
     updateSliderInput(session = session, inputId = "multiSlider", max = itemCount)
     updateSliderInput(session = session, inputId = "difMHSlider_item", max = itemCount)
     updateSliderInput(session = session, inputId = "diflogSlider", max = itemCount)
@@ -586,37 +575,37 @@ function(input, output, session) {
   # SUMMARY ######
   #%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-  source("Summary.R", local = T)
+  source("server/Summary.R", local = T)
 
   #%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   # VALIDITY ######
   #%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-  source("Validity.R", local = T)
+  source("server/Validity.R", local = T)
 
   #%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   # TRADITIONAL ANALYSIS ######
   #%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-  source("TraditionalAnalysis.R", local = T)
+  source("server/TraditionalAnalysis.R", local = T)
 
   #%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   # REGRESSION ######
   #%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-  source("Regression.R", local = T)
+  source("server/Regression.R", local = T)
 
   #%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   # IRT MODELS WITH MIRT ######
   #%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-  source("IRT.R", local = T)
+  source("server/IRT.R", local = T)
 
   #%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   # DIF/FAIRNESS ######
   #%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-  source("DIF.R", local = T)
+  source("server/DIF.R", local = T)
 
   #%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   # REPORTS ######
@@ -657,6 +646,7 @@ function(input, output, session) {
     if (type == "1pl")  {out = oneparamirtInput_mirt()}
     if (type == "2pl")  {out = twoparamirtInput_mirt()}
     if (type == "3pl")  {out = threeparamirtInput_mirt()}
+    if (type == "4pl")  {out = irt_4PL_icc_Input()}
     if (type == "none") {out = ""}
 
     out
@@ -668,6 +658,7 @@ function(input, output, session) {
     if (type == "1pl")  {out = oneparamirtiicInput_mirt()}
     if (type == "2pl")  {out = twoparamirtiicInput_mirt()}
     if (type == "3pl")  {out = threeparamirtiicInput_mirt()}
+    if (type == "4pl")  {out = irt_4PL_iic_Input()}
     if (type == "none") {out = ""}
 
     out
@@ -679,6 +670,7 @@ function(input, output, session) {
     if (type == "1pl")  {out = oneparamirttifInput_mirt()}
     if (type == "2pl")  {out = twoparamirttifInput_mirt()}
     if (type == "3pl")  {out = threeparamirttifInput_mirt()}
+    if (type == "4pl")  {out = irt_4PL_tif_Input()}
     if (type == "none") {out = ""}
 
     out
@@ -690,6 +682,7 @@ function(input, output, session) {
     if (type == "1pl")  {out = oneparamirtcoefInput_mirt()}
     if (type == "2pl")  {out = twoparamirtcoefInput_mirt()}
     if (type == "3pl")  {out = threeparamirtcoefInput_mirt()}
+    if (type == "4pl")  {out = irt_4PL_coef_Input()}
     if (type == "none") {out = ""}
 
     out
@@ -701,6 +694,7 @@ function(input, output, session) {
     if (type == "1pl")  {out = oneparamirtFactorInput_mirt()}
     if (type == "2pl")  {out = twoparamirtFactorInput_mirt()}
     if (type == "3pl")  {out = threeparamirtFactorInput_mirt()}
+    if (type == "4pl")  {out = irt_4PL_factorscores_plot_Input()}
     if (type == "none") {out = ""}
 
     out
@@ -765,7 +759,7 @@ function(input, output, session) {
            logreg = logreg_plot_Input(),
            zlogreg = z_logreg_plot_Input(),
            zlogreg_irt = z_logreg_irt_plot_Input(),
-           nlsplot = nlr_plot_Input(),
+           nlsplot = nlr_3P_plot_Input(),
            multiplot = multiplotReportInput(),
            incProgress(0.05),
            # irt
@@ -810,15 +804,11 @@ function(input, output, session) {
 
   })
 
-
-
-
   output$report <- downloadHandler(
     filename = reactive({paste0("report.", input$report_format)}),
     content = function(file) {
 
       reportPath <- file.path(getwd(), paste0("report", formatInput(), ".Rmd"))
-      # file.copy("report.Rmd", tempReport, overwrite = TRUE)
       parameters <- list(# header
                          author = input$reportAuthor,
                          dataset = input$reportDataName,
@@ -852,7 +842,7 @@ function(input, output, session) {
                          logreg = logreg_plot_Input(),
                          zlogreg = z_logreg_plot_Input(),
                          zlogreg_irt = z_logreg_irt_plot_Input(),
-                         nlsplot = nlr_plot_Input(),
+                         nlsplot = nlr_3P_plot_Input(),
                          multiplot = multiplotReportInput(),
                          # irt
                          wrightMap = oneparamirtWrightMapReportInput_mirt(),
