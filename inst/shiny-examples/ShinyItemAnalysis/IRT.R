@@ -206,9 +206,10 @@ output$DP_raschWM_mirt <- downloadHandler(
 
 one_param_irt_mirt <- reactive({
   data <- correct_answ()
-  fit1PL <- mirt(data, model = 1, itemtype = "2PL",
-                 constrain = list((1:ncol(data)) + seq(0, (ncol(data) - 1)*3, 3)),
-                 SE = T, verbose = F)
+  s <- paste("F = 1-", ncol(data), "\n",
+                 "CONSTRAIN = (1-", ncol(data), ", a1)")
+  model <- mirt.model(s)
+  fit1PL <- mirt(data, model = model, itemtype = "2PL")
 })
 
 # *** CC ####
@@ -783,6 +784,184 @@ output$DP_threeparamirtFactor_mirt <- downloadHandler(
 )
 
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+# * 4PL IRT ######
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+irt_4PL_model <- reactive({
+  data <- correct_answ()
+  fit <- mirt(data, model = 1, itemtype = "4PL",
+              constrain = NULL,
+              SE = T, technical = list(NCYCLES = 4000),
+              verbose = F)
+})
+
+# *** ICC ######
+irt_4PL_icc_Input <- reactive({
+  plot(irt_4PL_model(), type = "trace", facet_items = F)
+})
+
+output$irt_4PL_icc <- renderPlot({
+  irt_4PL_icc_Input()
+})
+
+output$DB_irt_4PL_icc <- downloadHandler(
+  filename =  function() {
+    paste("fig_IRT_4PL_icc.png", sep = "")
+  },
+  content = function(file) {
+    png(file, height = 800, width = 1200, res = 100)
+    print(irt_4PL_icc_Input())
+    dev.off()
+  }
+)
+
+# *** IIC ######
+irt_4PL_iic_Input <- reactive({
+  plot(irt_4PL_model(), type = "infotrace", facet_items = F)
+})
+
+output$irt_4PL_iic <- renderPlot({
+  irt_4PL_iic_Input()
+})
+
+output$DB_irt_4PL_iic <- downloadHandler(
+  filename =  function() {
+    paste("fig_IRT_4PL_iic.png", sep = "")
+  },
+  content = function(file) {
+    png(file, height = 800, width = 1200, res = 100)
+    print(irt_4PL_iic_Input())
+    dev.off()
+  }
+)
+
+# *** TIF ######
+irt_4PL_tif_Input <- reactive({
+  plot(irt_4PL_model(), type = "infoSE")
+})
+
+output$irt_4PL_tif <- renderPlot({
+  irt_4PL_tif_Input()
+})
+
+output$DB_irt_4PL_tif <- downloadHandler(
+  filename =  function() {
+    paste("fig_IRT_4PL_tif.png", sep = "")
+  },
+  content = function(file) {
+    png(file, height = 800, width = 1200, res = 100)
+    print(irt_4PL_tif_Input())
+    dev.off()
+  }
+)
+
+# *** Table of parameters ######
+irt_4PL_coef_Input <- reactive({
+  fit <- irt_4PL_model()
+
+  par_tab <- coef(fit, IRTpars = T, simplify = T)$items[, c("a", "b", "g", "u")]
+
+  parvec <- extract.mirt(fit, 'parvec')
+  vcov <- vcov(fit)
+
+  se_tab <- c()
+  for (item in seq(1, 4*nrow(par_tab), 4)){
+    pick <- c(item, item + 1, item + 2, item + 3)
+    ad <- parvec[pick]
+    v <- vcov[pick, pick]
+
+    SEs <- deltamethod(list(~ x1, ~ -x2/x1, ~ x3, ~ x4), ad, v)
+    names(SEs) <- c('a', 'b', 'c', 'd')
+    se_tab <- rbind(se_tab, SEs)
+  }
+
+  tab <- cbind(par_tab, se_tab)[, c(1, 5, 2, 6, 3, 7, 4, 8)]
+
+  if(!is.null(tryCatch(round(itemfit(fit)[, 2:4], 3), error = function(e) {
+    cat("ERROR: ", conditionMessage(e), "\n")}, finally = ""))){
+    tab <- data.frame(tab, round(itemfit(fit)[, 2:4], 3))
+    colnames(tab) <- c("a", "SD(a)", "b", "SD(b)", "c", "SD(c)", "d", "SD(d)", "SX2-value", "df", "p-value")
+  } else {
+    colnames(tab) <- c("a", "SD(a)", "b", "SD(b)", "c", "SD(c)", "d", "SD(d)")
+  }
+  rownames(tab) <- item_names()
+
+  n <- length(item_names())
+  tab.comp <- data.frame(rep(1, n), "-", 0, "-", 0, "-", 1, "-", "-", "-", "-")
+  colnames(tab.comp) <- c("a", "SD(a)", "b", "SD(b)", "c", "SD(c)", "d", "SD(d)",
+                          "SX2-value", "df", "p-value")
+  rownames(tab.comp) <- item_names()
+
+  tab <- round(tab, 3)
+  tab.comp[, colnames(tab.comp) %in% colnames(tab)] <- tab
+
+  tab.comp
+})
+
+output$irt_4PL_coef <- renderTable({
+  irt_4PL_coef_Input()
+},
+include.rownames = T)
+
+# *** Factor scores plot ######
+irt_4PL_factorscores_correlation_Input <- reactive({
+
+  fs <- as.vector(fscores(irt_4PL_model()))
+  sts <- as.vector(scale(apply(correct_answ(), 1, sum)))
+
+  whok <- !(is.na(fs) | is.na(sts))
+
+  cor <- cor(fs[whok], sts[whok])
+  cor
+})
+
+output$irt_4PL_factorscores_correlation <- renderText({
+  paste("The Pearson correlation coefficient between standardized total score (Z-score)
+        and factor score estimated by IRT model is",
+        round(irt_4PL_factorscores_correlation_Input(), 3))
+})
+# *** Factor scores plot ####
+irt_4PL_factorscores_plot_Input <- reactive({
+
+  fs <- as.vector(fscores(irt_4PL_model()))
+  sts <- as.vector(scale(apply(correct_answ(), 1, sum)))
+
+  df <- data.frame(fs, sts)
+
+  ggplot(df, aes_string("sts", "fs")) +
+    geom_point(size = 3) +
+    labs(x = "Standardized total score", y = "Factor score") +
+    theme_bw() +
+    theme(text = element_text(size = 14),
+          plot.title = element_text(face = "bold", vjust = 1.5),
+          axis.line = element_line(colour = "black"),
+          panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank(),
+          panel.background = element_blank()) +
+    theme(legend.box.just = "left",
+          legend.justification = c(1, 0),
+          legend.position = c(1, 0),
+          legend.box = "vertical",
+          legend.key.size = unit(1, "lines"),
+          legend.text.align = 0,
+          legend.title.align = 0)
+})
+
+output$irt_4PL_factorscores_plot <- renderPlot({
+  irt_4PL_factorscores_plot_Input()
+})
+
+output$DB_irt_4PL_factorscores_plot <- downloadHandler(
+  filename =  function() {
+    paste("fig_IRT_4PL_factorscores.png", sep = "")
+  },
+  content = function(file) {
+    ggsave(file, plot = irt_4PL_factorscores_plot_Input(), device = "png",
+           height = 4, width = 8, dpi = 300)
+  }
+)
+
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # * IRT COMPARISON ######
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -790,16 +969,19 @@ irtcomparisonInput <- reactive({
   fit1PL <- one_param_irt_mirt()
   fit2PL <- two_param_irt_mirt()
   fit3PL <- three_param_irt_mirt()
+  fit4PL <- irt_4PL_model()
 
   models <- list(fit1PL = fit1PL,
                  fit2PL = fit2PL,
-                 fit3PL = fit3PL)
+                 fit3PL = fit3PL,
+                 fit4PL = fit4PL)
 
-  df <- data.frame(anova(models[[1]], models[[2]], verbose = F))
-  df <- rbind(df,
-              data.frame(anova(models[[2]], models[[3]], verbose = F)))
-  df <- round(df[c(1, 2, 4), ], 3)
-  nam <- c("1PL", "2PL", "3PL")
+  df <- rbind(anova(models[[1]], models[[2]], verbose = F),
+              anova(models[[2]], models[[3]], verbose = F),
+              anova(models[[3]], models[[4]], verbose = F))
+
+  df <- round(df[c(1, 2, 4, 6), ], 3)
+  nam <- c("1PL", "2PL", "3PL", "4PL")
 
   if (all(df[, 8] > 0.05)){
     hv <- "1PL"
@@ -1061,6 +1243,7 @@ output$bockFactorCorInput_mirt <- renderText({
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # * TRAINING ######
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 # ** DICHOTOMOUS MODELS ######
 # *** CC ######
 output$ccIRT_interpretation <- renderUI({
@@ -1162,46 +1345,51 @@ output$ccIRT_plot <- renderPlotly({
 
   p <- ggplotly(g)
 
-  text <- gsub("~value", "Probability", p$x$data[[1]]$text)
-  text <- gsub("~theta", "Ability", text)
-  text <- gsub("~variable: X1", "", text)
+  text <- gsub("~", "", p$x$data[[1]]$text)
+  text <- gsub("value", "Probability", text)
+  text <- gsub("theta", "Ability", text)
+  text <- gsub("variable: X1", "", text)
   p$x$data[[1]]$text <- text
 
-  text <- gsub("~value", "Probability", p$x$data[[2]]$text)
-  text <- gsub("~theta", "Ability", text)
-  text <- gsub("~variable: X2", "", text)
+  text <- gsub("~", "", p$x$data[[2]]$text)
+  text <- gsub("value", "Probability", text)
+  text <- gsub("theta", "Ability", text)
+  text <- gsub("variable: X2", "", text)
   p$x$data[[2]]$text <- text
 
-  text <- gsub("~ccirt\\(theta0, a = a1, b = b1, c = c1, d = d1\\)", "Probability", p$x$data[[3]]$text)
-  text <- gsub("~-4: -4<br />", "", text)
-  text <- gsub("~theta0", "Ability", text)
-  text <- gsub("~theta: -4<br />", "", text)
-  text <- gsub("~value", "Probability", text)
-  text <- gsub("<br />~variable: gray", "", text)
+  text <- gsub("~", "", p$x$data[[3]]$text)
+  text <- gsub("ccirt\\(theta0, a = a1, b = b1, c = c1, d = d1\\)", "Probability", text)
+  text <- gsub("-4: -4<br />", "", text)
+  text <- gsub("theta0", "Ability", text)
+  text <- gsub("theta: -4<br />", "", text)
+  text <- gsub("value", "Probability", text)
+  text <- gsub("<br />variable: gray", "", text)
   pos <- gregexpr('Probability', text)[[1]][2]
   text <- substring(text, pos)
   pos <- gregexpr('Probability', text)[[1]][2]
   text <- substring(text, 1, pos-1)
   p$x$data[[3]]$text <- text
 
-  text <- gsub("~ccirt\\(theta0, a = a2, b = b2, c = c2, d = d2\\)", "Probability", p$x$data[[4]]$text)
-  text <- gsub("~-4: -4<br />", "", text)
-  text <- gsub("~theta0", "Ability", text)
-  text <- gsub("~theta: -4<br />", "", text)
-  text <- gsub("~value", "Probability", text)
-  text <- gsub("<br />~variable: gray", "", text)
+  text <- gsub("~", "", p$x$data[[4]]$text)
+  text <- gsub("ccirt\\(theta0, a = a2, b = b2, c = c2, d = d2\\)", "Probability", text)
+  text <- gsub("-4: -4<br />", "", text)
+  text <- gsub("theta0", "Ability", text)
+  text <- gsub("theta: -4<br />", "", text)
+  text <- gsub("value", "Probability", text)
+  text <- gsub("<br />variable: gray", "", text)
   pos <- gregexpr('Probability', text)[[1]][2]
   text <- substring(text, pos)
   pos <- gregexpr('Probability', text)[[1]][2]
   text <- substring(text, 1, pos-1)
   p$x$data[[4]]$text <- text
 
-  text <- gsub("~max\\(ccirt\\(theta0, a = a1, b = b1, c = c1, d = d1\\), ccirt\\(theta0, a = a2, b = b2, c = c2, d = d2\\)\\)", "Probability", p$x$data[[5]]$text)
-  text <- gsub("~theta0", "Ability", text)
+  text <- gsub("~", "", p$x$data[[5]]$text)
+  text <- gsub("max\\(ccirt\\(theta0, a = a1, b = b1, c = c1, d = d1\\), ccirt\\(theta0, a = a2, b = b2, c = c2, d = d2\\)\\)", "Probability", text)
+  text <- gsub("theta0", "Ability", text)
   text <- gsub("<br />0: 0", "", text)
-  text <- gsub("~theta0", "Ability", text)
-  text <- gsub("~value", "Probability", text)
-  text <- gsub("<br />~variable: gray", "", text)
+  text <- gsub("theta0", "Ability", text)
+  text <- gsub("value", "Probability", text)
+  text <- gsub("<br />variable: gray", "", text)
   pos <- gregexpr('Ability', text)[[1]][2]
   text <- substring(text, 1, pos-1)
   p$x$data[[5]]$text <- text
@@ -1221,7 +1409,7 @@ output$DB_ccIRT <- downloadHandler(
              theme(legend.position = c(0.97, 0.03),
                    legend.justification = c(0.97, 0.03)),
            device = "png",
-           height = 3, width = 9, dpi = 300)
+           height = 4, width = 8, dpi = 300)
   }
 )
 
@@ -1278,14 +1466,16 @@ output$iccIRT_plot <- renderPlotly({
 
   p <- ggplotly(g)
 
-  text <- gsub("~value", "Information", p$x$data[[1]]$text)
-  text <- gsub("~theta", "Ability", text)
-  text <- gsub("~variable: X1", "", text)
+  text <- gsub("~", "", p$x$data[[1]]$text)
+  text <- gsub("value", "Information", text)
+  text <- gsub("theta", "Ability", text)
+  text <- gsub("variable: X1", "", text)
   p$x$data[[1]]$text <- text
 
-  text <- gsub("~value", "Information", p$x$data[[2]]$text)
-  text <- gsub("~theta", "Ability", text)
-  text <- gsub("~variable: X2", "", text)
+  text <- gsub("~", "", p$x$data[[2]]$text)
+  text <- gsub("value", "Information", text)
+  text <- gsub("theta", "Ability", text)
+  text <- gsub("variable: X2", "", text)
   p$x$data[[2]]$text <- text
 
   p$elementId <- NULL
@@ -1303,7 +1493,7 @@ output$DB_iccIRT <- downloadHandler(
              theme(legend.position = c(0.97, 0.97),
                    legend.justification = c(0.97, 0.97)),
            device = "png",
-           height = 3, width = 9, dpi = 300)
+           height = 4, width = 8, dpi = 300)
   }
 )
 
@@ -1398,36 +1588,36 @@ output$irt_training_grm_sliders <- renderUI({
   num <- input$irt_training_grm_numresp
 
   sliders <- tagList(
-    div(style = "display: inline-block; vertical-align: middle; width: 18%;",
-    sliderInput("irt_training_grm_b1", "b1 - difficulty",
-                value = -1.5, min = -4, max = 4, step = 0.01)),
-    div(style = "display: inline-block; vertical-align: middle; width: 2.6%;",
-        ""),
-    div(style = "display: inline-block; vertical-align: middle; width: 18%;",
-    sliderInput("irt_training_grm_b2", "b2 - difficulty",
-                value = -1, min = -4, max = 4, step = 0.01)),
-    div(style = "display: inline-block; vertical-align: middle; width: 2.6%;",
-        ""),
-    div(style = "display: inline-block; vertical-align: middle; width: 18%;",
-    sliderInput("irt_training_grm_b3", "b3 - difficulty",
-                value = -0.5, min = -4, max = 4, step = 0.01)),
-    div(style = "display: inline-block; vertical-align: middle; width: 2.6%;",
-        ""),
-    div(style = "display: inline-block; vertical-align: middle; width: 18%;",
-    sliderInput("irt_training_grm_b4", "b4 - difficulty",
-                value = 0, min = -4, max = 4, step = 0.01)),
-    div(style = "display: inline-block; vertical-align: middle; width: 2.6%;",
-        ""),
-    div(style = "display: inline-block; vertical-align: middle; width: 18%;",
-    sliderInput("irt_training_grm_b5", "b5 - difficulty",
-                value = 0.5, min = -4, max = 4, step = 0.01)),
-    div(style = "display: inline-block; vertical-align: middle; width: 2.6%;",
-        ""),
-    div(style = "display: inline-block; vertical-align: middle; width: 18%;",
-    sliderInput("irt_training_grm_b6", "b6 - difficulty",
-                value = 1, min = -4, max = 4, step = 0.01)),
-    div(style = "display: inline-block; vertical-align: middle; width: 2.6%;",
-        "")
+    tags$div(class = "js-irs-red",
+             style = "display: inline-block; vertical-align: middle; width: 18%;",
+             sliderInput("irt_training_grm_b1", "b1 - difficulty",
+                         value = -1.5, min = -4, max = 4, step = 0.01)),
+    div(style = "display: inline-block; vertical-align: middle; width: 2.6%;", ""),
+    tags$div(class = "js-irs-yellow",
+             style = "display: inline-block; vertical-align: middle; width: 18%;",
+             sliderInput("irt_training_grm_b2", "b2 - difficulty",
+                         value = -1, min = -4, max = 4, step = 0.01)),
+    div(style = "display: inline-block; vertical-align: middle; width: 2.6%;", ""),
+    tags$div(class = "js-irs-green",
+             style = "display: inline-block; vertical-align: middle; width: 18%;",
+             sliderInput("irt_training_grm_b3", "b3 - difficulty",
+                         value = -0.5, min = -4, max = 4, step = 0.01)),
+    div(style = "display: inline-block; vertical-align: middle; width: 2.6%;", ""),
+    tags$div(class = "js-irs-blue",
+             style = "display: inline-block; vertical-align: middle; width: 18%;",
+             sliderInput("irt_training_grm_b4", "b4 - difficulty",
+                         value = 0, min = -4, max = 4, step = 0.01)),
+    div(style = "display: inline-block; vertical-align: middle; width: 2.6%;", ""),
+    tags$div(class = "js-irs-purple",
+             style = "display: inline-block; vertical-align: middle; width: 18%;",
+             sliderInput("irt_training_grm_b5", "b5 - difficulty",
+                         value = 0.5, min = -4, max = 4, step = 0.01)),
+    div(style = "display: inline-block; vertical-align: middle; width: 2.6%;", ""),
+    tags$div(class = "js-irs-orange",
+             style = "display: inline-block; vertical-align: middle; width: 18%;",
+             sliderInput("irt_training_grm_b6", "b6 - difficulty",
+                         value = 1, min = -4, max = 4, step = 0.01)),
+    div(style = "display: inline-block; vertical-align: middle; width: 2.6%;", "")
   )
 
   sliders <- sliders[1:(2*num)]
@@ -1478,7 +1668,7 @@ irt_training_grm_plot_cummulative_Input <- reactive({
           plot.background = element_rect(fill = "transparent", colour = NA),
           legend.position = "none") +
     ggtitle("Cummulative probabilities") +
-    scale_color_manual("", values = col)
+    scale_color_manual("", values = col, labels = paste0("P(Y >= ", 1:length(col), ")"))
 
   g
 })
@@ -1489,9 +1679,10 @@ output$irt_training_grm_plot_cummulative <- renderPlotly({
   p <- ggplotly(g)
 
   for (i in 1:length(p$x$data)){
-    text <- gsub("~value", "Cummulative probability", p$x$data[[i]]$text)
-    text <- gsub("~theta", "Ability", text)
-    text <- gsub(paste0("~variable: X", i), paste0("P(Y >= ", i, ")"), text)
+    text <- gsub("~", "", p$x$data[[i]]$text)
+    text <- gsub("value", "Cummulative probability", text)
+    text <- gsub("theta", "Ability", text)
+    text <- gsub(paste0("variable: X", i), paste0("P(Y >= ", i, ")"), text)
     p$x$data[[i]]$text <- text
   }
 
@@ -1500,6 +1691,19 @@ output$irt_training_grm_plot_cummulative <- renderPlotly({
   p %>% config(displayModeBar = F)
 })
 
+output$DB_irt_training_grm_plot_cummulative <- downloadHandler(
+  filename =  function() {
+    paste("fig_GRM_cummulative.png", sep = "")
+  },
+  content = function(file) {
+    ggsave(file,
+           plot = irt_training_grm_plot_cummulative_Input() +
+             theme(legend.position = c(0.97, 0.7),
+                   legend.justification = c(0.97, 0.97)),
+           device = "png",
+           height = 4, width = 8, dpi = 300)
+  }
+)
 
 # *** Category probabilities ######
 irt_training_grm_plot_category_Input <- reactive({
@@ -1549,7 +1753,7 @@ irt_training_grm_plot_category_Input <- reactive({
           plot.background = element_rect(fill = "transparent", colour = NA),
           legend.position = "none") +
     ggtitle("Category probabilities") +
-    scale_color_manual("", values = col)
+    scale_color_manual("", values = col, labels = paste0("P(Y >= ", 0:(length(col)-1), ")"))
 
   g
 })
@@ -1560,9 +1764,10 @@ output$irt_training_grm_plot_category <- renderPlotly({
   p <- ggplotly(g)
 
   for (i in 1:length(p$x$data)){
-    text <- gsub("~value", "Category probability", p$x$data[[i]]$text)
-    text <- gsub("~theta", "Ability", text)
-    text <- gsub(paste0("~variable: X", i-1), paste0("P(Y = ", i-1, ")"), text)
+    text <- gsub("~", "", p$x$data[[i]]$text)
+    text <- gsub("value", "Category probability",text)
+    text <- gsub("theta", "Ability", text)
+    text <- gsub(paste0("variable: X", i-1), paste0("P(Y = ", i-1, ")"), text)
     p$x$data[[i]]$text <- text
   }
 
@@ -1571,6 +1776,19 @@ output$irt_training_grm_plot_category <- renderPlotly({
   p %>% config(displayModeBar = F)
 })
 
+output$DB_irt_training_grm_plot_category <- downloadHandler(
+  filename =  function() {
+    paste("fig_GRM_category.png", sep = "")
+  },
+  content = function(file) {
+    ggsave(file,
+           plot = irt_training_grm_plot_category_Input() +
+             theme(legend.position = c(0.97, 0.7),
+                   legend.justification = c(0.97, 0.97)),
+           device = "png",
+           height = 4, width = 8, dpi = 300)
+  }
+)
 
 
 # *** GENERALIZED PARTIAL CREDIT MODEL ####
@@ -1579,36 +1797,36 @@ output$irt_training_gpcm_sliders <- renderUI({
   num <- input$irt_training_gpcm_numresp
 
   sliders <- tagList(
-    div(style = "display: inline-block; vertical-align: middle; width: 18%;",
-        sliderInput("irt_training_gpcm_d1", "d1 - threshold",
+    tags$div(class = "js-irs-red",
+             style = "display: inline-block; vertical-align: middle; width: 18%;",
+             sliderInput("irt_training_gpcm_d1", "d1 - threshold",
                     value = -1.5, min = -4, max = 4, step = 0.01)),
-    div(style = "display: inline-block; vertical-align: middle; width: 2.6%;",
-        ""),
-    div(style = "display: inline-block; vertical-align: middle; width: 18%;",
-        sliderInput("irt_training_gpcm_d2", "d2 - threshold",
+    div(style = "display: inline-block; vertical-align: middle; width: 2.6%;", ""),
+    tags$div(class = "js-irs-yellow",
+             style = "display: inline-block; vertical-align: middle; width: 18%;",
+             sliderInput("irt_training_gpcm_d2", "d2 - threshold",
                     value = -1, min = -4, max = 4, step = 0.01)),
-    div(style = "display: inline-block; vertical-align: middle; width: 2.6%;",
-        ""),
-    div(style = "display: inline-block; vertical-align: middle; width: 18%;",
-        sliderInput("irt_training_gpcm_d3", "d3 - threshold",
+    div(style = "display: inline-block; vertical-align: middle; width: 2.6%;", ""),
+    tags$div(class = "js-irs-green",
+             style = "display: inline-block; vertical-align: middle; width: 18%;",
+             sliderInput("irt_training_gpcm_d3", "d3 - threshold",
                     value = -0.5, min = -4, max = 4, step = 0.01)),
-    div(style = "display: inline-block; vertical-align: middle; width: 2.6%;",
-        ""),
-    div(style = "display: inline-block; vertical-align: middle; width: 18%;",
-        sliderInput("irt_training_gpcm_d4", "d4 - threshold",
+    div(style = "display: inline-block; vertical-align: middle; width: 2.6%;", ""),
+    tags$div(class = "js-irs-blue",
+             style = "display: inline-block; vertical-align: middle; width: 18%;",
+             sliderInput("irt_training_gpcm_d4", "d4 - threshold",
                     value = 0, min = -4, max = 4, step = 0.01)),
-    div(style = "display: inline-block; vertical-align: middle; width: 2.6%;",
-        ""),
-    div(style = "display: inline-block; vertical-align: middle; width: 18%;",
-        sliderInput("irt_training_gpcm_d5", "d5 - threshold",
+    div(style = "display: inline-block; vertical-align: middle; width: 2.6%;", ""),
+    tags$div(class = "js-irs-purple",
+             style = "display: inline-block; vertical-align: middle; width: 18%;",
+             sliderInput("irt_training_gpcm_d5", "d5 - threshold",
                     value = 0.5, min = -4, max = 4, step = 0.01)),
-    div(style = "display: inline-block; vertical-align: middle; width: 2.6%;",
-        ""),
-    div(style = "display: inline-block; vertical-align: middle; width: 18%;",
-        sliderInput("irt_training_gpcm_d6", "d6 - threshold",
+    div(style = "display: inline-block; vertical-align: middle; width: 2.6%;", ""),
+    tags$div(class = "js-irs-orange",
+             style = "display: inline-block; vertical-align: middle; width: 18%;",
+             sliderInput("irt_training_gpcm_d6", "d6 - threshold",
                     value = 1, min = -4, max = 4, step = 0.01)),
-    div(style = "display: inline-block; vertical-align: middle; width: 2.6%;",
-        "")
+    div(style = "display: inline-block; vertical-align: middle; width: 2.6%;", "")
   )
 
   sliders <- sliders[1:(2*num)]
@@ -1669,7 +1887,7 @@ irt_training_gpcm_plot_Input <- reactive({
           plot.background = element_rect(fill = "transparent", colour = NA),
           legend.position = "none") +
     ggtitle("Category probabilities") +
-    scale_color_manual("", values = col)
+    scale_color_manual("", values = col, labels = paste0("P(Y = ", 0:(length(col)-1), ")"))
 
   g
 })
@@ -1680,9 +1898,10 @@ output$irt_training_gpcm_plot <- renderPlotly({
   p <- ggplotly(g)
 
   for (i in 1:length(p$x$data)){
-    text <- gsub("~value", "Category probability", p$x$data[[i]]$text)
-    text <- gsub("~theta", "Ability", text)
-    text <- gsub(paste0("~variable: X", i), paste0("P(Y = ", i-1, ")"), text)
+    text <- gsub("~", "", p$x$data[[i]]$text)
+    text <- gsub("value", "Category probability", text)
+    text <- gsub("theta", "Ability", text)
+    text <- gsub(paste0("variable: X", i), paste0("P(Y = ", i-1, ")"), text)
     p$x$data[[i]]$text <- text
   }
 
@@ -1691,6 +1910,19 @@ output$irt_training_gpcm_plot <- renderPlotly({
   p %>% config(displayModeBar = F)
 })
 
+output$DB_irt_training_gpcm_plot <- downloadHandler(
+  filename =  function() {
+    paste("fig_GPCM_category.png", sep = "")
+  },
+  content = function(file) {
+    ggsave(file,
+           plot = irt_training_gpcm_plot_Input() +
+             theme(legend.position = c(0.97, 0.7),
+                   legend.justification = c(0.97, 0.97)),
+           device = "png",
+           height = 4, width = 8, dpi = 300)
+  }
+)
 
 # *** NOMINAL RESPONSE MODEL ####
 
@@ -1698,66 +1930,66 @@ output$irt_training_nrm_sliders <- renderUI({
   num <- input$irt_training_nrm_numresp
 
   sliders <- tagList(
-    div(style = "display: inline-block; vertical-align: middle; width: 18%;",
-        sliderInput("irt_training_nrm_a1", "a1 - discrimination",
-                    value = 1, min = 0, max = 4, step = 0.01)),
-    div(style = "display: inline-block; vertical-align: middle; width: 2.6%;",
-        ""),
-    div(style = "display: inline-block; vertical-align: middle; width: 18%;",
-        sliderInput("irt_training_nrm_d1", "d1 - threshold",
+    tags$div(class = "js-irs-red",
+             style = "display: inline-block; vertical-align: middle; width: 18%;",
+             sliderInput("irt_training_nrm_a1", "a1 - discrimination",
+                    value = 2.5, min = 0, max = 4, step = 0.01)),
+    div(style = "display: inline-block; vertical-align: middle; width: 2.6%;", ""),
+    tags$div(class = "js-irs-red",
+             style = "display: inline-block; vertical-align: middle; width: 18%;",
+             sliderInput("irt_training_nrm_d1", "d1 - threshold",
                     value = -1.5, min = -4, max = 4, step = 0.01)),
-    div(style = "display: inline-block; vertical-align: middle; width: 2.6%;",
-        ""),
-    div(style = "display: inline-block; vertical-align: middle; width: 18%;",
-        sliderInput("irt_training_nrm_a2", "a2 - discrimination",
-                    value = 1, min = 0, max = 4, step = 0.01)),
-    div(style = "display: inline-block; vertical-align: middle; width: 2.6%;",
-        ""),
-    div(style = "display: inline-block; vertical-align: middle; width: 18%;",
-        sliderInput("irt_training_nrm_d2", "d2 - threshold",
+    div(style = "display: inline-block; vertical-align: middle; width: 2.6%;", ""),
+    tags$div(class = "js-irs-yellow",
+             style = "display: inline-block; vertical-align: middle; width: 18%;",
+             sliderInput("irt_training_nrm_a2", "a2 - discrimination",
+                    value = 2, min = 0, max = 4, step = 0.01)),
+    div(style = "display: inline-block; vertical-align: middle; width: 2.6%;", ""),
+    tags$div(class = "js-irs-yellow",
+             style = "display: inline-block; vertical-align: middle; width: 18%;",
+             sliderInput("irt_training_nrm_d2", "d2 - threshold",
                     value = -1, min = -4, max = 4, step = 0.01)),
-    div(style = "display: inline-block; vertical-align: middle; width: 2.6%;",
-        ""),
-    div(style = "display: inline-block; vertical-align: middle; width: 18%;",
-        sliderInput("irt_training_nrm_a3", "a3 - discrimination",
+    div(style = "display: inline-block; vertical-align: middle; width: 2.6%;", ""),
+    tags$div(class = "js-irs-green",
+             style = "display: inline-block; vertical-align: middle; width: 18%;",
+             sliderInput("irt_training_nrm_a3", "a3 - discrimination",
                     value = 1, min = 0, max = 4, step = 0.01)),
-    div(style = "display: inline-block; vertical-align: middle; width: 2.6%;",
-        ""),
-    div(style = "display: inline-block; vertical-align: middle; width: 18%;",
-        sliderInput("irt_training_nrm_d3", "d3 - threshold",
+    div(style = "display: inline-block; vertical-align: middle; width: 2.6%;", ""),
+    tags$div(class = "js-irs-green",
+             style = "display: inline-block; vertical-align: middle; width: 18%;",
+             sliderInput("irt_training_nrm_d3", "d3 - threshold",
                     value = -0.5, min = -4, max = 4, step = 0.01)),
-    div(style = "display: inline-block; vertical-align: middle; width: 2.6%;",
-        ""),
-    div(style = "display: inline-block; vertical-align: middle; width: 18%;",
-        sliderInput("irt_training_nrm_a4", "a4 - discrimination",
-                    value = 1, min = 0, max = 4, step = 0.01)),
-    div(style = "display: inline-block; vertical-align: middle; width: 2.6%;",
-        ""),
-    div(style = "display: inline-block; vertical-align: middle; width: 18%;",
-        sliderInput("irt_training_nrm_d4", "d4 - threshold",
+    div(style = "display: inline-block; vertical-align: middle; width: 2.6%;", ""),
+    tags$div(class = "js-irs-blue",
+             style = "display: inline-block; vertical-align: middle; width: 18%;",
+             sliderInput("irt_training_nrm_a4", "a4 - discrimination",
+                    value = 1.5, min = 0, max = 4, step = 0.01)),
+    div(style = "display: inline-block; vertical-align: middle; width: 2.6%;", ""),
+    tags$div(class = "js-irs-blue",
+             style = "display: inline-block; vertical-align: middle; width: 18%;",
+             sliderInput("irt_training_nrm_d4", "d4 - threshold",
                     value = 0, min = -4, max = 4, step = 0.01)),
-    div(style = "display: inline-block; vertical-align: middle; width: 2.6%;",
-        ""),
-    div(style = "display: inline-block; vertical-align: middle; width: 18%;",
-        sliderInput("irt_training_nrm_a5", "a5 - discrimination",
-                    value = 1, min = 0, max = 4, step = 0.01)),
-    div(style = "display: inline-block; vertical-align: middle; width: 2.6%;",
-        ""),
-    div(style = "display: inline-block; vertical-align: middle; width: 18%;",
-        sliderInput("irt_training_nrm_d5", "d5 - threshold",
+    div(style = "display: inline-block; vertical-align: middle; width: 2.6%;", ""),
+    tags$div(class = "js-irs-purple",
+             style = "display: inline-block; vertical-align: middle; width: 18%;",
+             sliderInput("irt_training_nrm_a5", "a5 - discrimination",
+                    value = 0.5, min = 0, max = 4, step = 0.01)),
+    div(style = "display: inline-block; vertical-align: middle; width: 2.6%;", ""),
+    tags$div(class = "js-irs-purple",
+             style = "display: inline-block; vertical-align: middle; width: 18%;",
+             sliderInput("irt_training_nrm_d5", "d5 - threshold",
                     value = 0.5, min = -4, max = 4, step = 0.01)),
-    div(style = "display: inline-block; vertical-align: middle; width: 2.6%;",
-        ""),
-    div(style = "display: inline-block; vertical-align: middle; width: 18%;",
-        sliderInput("irt_training_nrm_a6", "a6 - discrimination",
-                    value = 1, min = 0, max = 4, step = 0.01)),
-    div(style = "display: inline-block; vertical-align: middle; width: 2.6%;",
-        ""),
-    div(style = "display: inline-block; vertical-align: middle; width: 18%;",
-        sliderInput("irt_training_nrm_d6", "d6 - threshold",
+    div(style = "display: inline-block; vertical-align: middle; width: 2.6%;", ""),
+    tags$div(class = "js-irs-orange",
+             style = "display: inline-block; vertical-align: middle; width: 18%;",
+             sliderInput("irt_training_nrm_a6", "a6 - discrimination",
+                    value = 1.3, min = 0, max = 4, step = 0.01)),
+    div(style = "display: inline-block; vertical-align: middle; width: 2.6%;", ""),
+    tags$div(class = "js-irs-orange",
+             style = "display: inline-block; vertical-align: middle; width: 18%;",
+             sliderInput("irt_training_nrm_d6", "d6 - threshold",
                     value = 1, min = -4, max = 4, step = 0.01)),
-    div(style = "display: inline-block; vertical-align: middle; width: 2.6%;",
-        "")
+    div(style = "display: inline-block; vertical-align: middle; width: 2.6%;", "")
   )
 
   sliders <- sliders[1:(4*num)]
@@ -1770,7 +2002,8 @@ irt_training_nrm_plot_Input <- reactive({
   num <- input$irt_training_nrm_numresp
 
   if (is.null(input$irt_training_nrm_a1)){
-    a <- rep(1, num)
+    a <- c(2.5, 2, 1, 1.5, 0.5, 1.3)
+    a <- a[1:num]
   } else {
     a <- c(input$irt_training_nrm_a1, input$irt_training_nrm_a2)
     a <- switch(paste(num),
@@ -1825,7 +2058,7 @@ irt_training_nrm_plot_Input <- reactive({
           plot.background = element_rect(fill = "transparent", colour = NA),
           legend.position = "none") +
     ggtitle("Category probabilities") +
-    scale_color_manual("", values = col)
+    scale_color_manual("", values = col, labels = paste0("P(Y = ", 0:(length(col)-1), ")"))
 
   g
 })
@@ -1836,9 +2069,10 @@ output$irt_training_nrm_plot <- renderPlotly({
   p <- ggplotly(g)
 
   for (i in 1:length(p$x$data)){
-    text <- gsub("~value", "Category probability", p$x$data[[i]]$text)
-    text <- gsub("~theta", "Ability", text)
-    text <- gsub(paste0("~variable: X", i-1), paste0("P(Y = ", i-1, ")"), text)
+    text <- gsub("~", "", p$x$data[[i]]$text)
+    text <- gsub("value", "Category probability", text)
+    text <- gsub("theta", "Ability", text)
+    text <- gsub(paste0("variable: X", i-1), paste0("P(Y = ", i-1, ")"), text)
     p$x$data[[i]]$text <- text
   }
 
@@ -1846,3 +2080,17 @@ output$irt_training_nrm_plot <- renderPlotly({
 
   p %>% config(displayModeBar = F)
 })
+
+output$DB_irt_training_nrm_plot <- downloadHandler(
+  filename =  function() {
+    paste("fig_NRM_category.png", sep = "")
+  },
+  content = function(file) {
+    ggsave(file,
+           plot = irt_training_nrm_plot_Input() +
+             theme(legend.position = c(0.97, 0.7),
+                   legend.justification = c(0.97, 0.97)),
+           device = "png",
+           height = 4, width = 8, dpi = 300)
+  }
+)
