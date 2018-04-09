@@ -61,15 +61,7 @@ totalscores_histogram_Input<- reactive({
     scale_y_continuous(expand = c(0, 0),
                        limits = c(0, max(table(sc)) + 0.01 * nrow(a))) +
     scale_x_continuous(limits = c(-0.5, ncol(a) + 0.5)) +
-    theme_bw() +
-    theme(legend.title = element_blank(),
-          legend.position = "none",
-          axis.line  = element_line(colour = "black"),
-          panel.grid.major = element_blank(),
-          panel.grid.minor = element_blank(),
-          panel.background = element_blank(),
-          text = element_text(size = 14),
-          plot.title = element_text(face = "bold"))
+    theme_shiny
 })
 
 # ** Output histogram of total scores ######
@@ -85,7 +77,7 @@ output$DB_totalscores_histogram <- downloadHandler(
   content = function(file) {
     ggsave(file, plot = totalscores_histogram_Input() + theme(text = element_text(size = 10)),
            device = "png",
-           height = 3, width = 9, dpi = 300)
+           height = 4, width = 8, dpi = 300)
   }
 )
 
