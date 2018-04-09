@@ -5,6 +5,27 @@
         ***************************************************************
 
 -------------------------------------------------------
+- Changes in ShinyItemAnalysis 1.2.6.-5. (2018-04-09) -
+-------------------------------------------------------
+
+MAJOR UPDATES
+  o IRT section
+    - Wording for IRT training was added and improved.
+  o Selected R code syntax was improved in some sections. This can be
+    done with
+    txt <- gsub("\n", "<br>", txt)
+    txt <- gsub(" ", "&nbsp;", txt)
+    txt
+    where txt is R code in "".
+  o theme_shiny was created as a default theme for all figures.
+    Now it is used only partionally.
+
+MINOR UPDATES
+  o README file was updated. Typos were fixed. Links were added.
+    Hexbin was added.
+  o References were updated.
+
+-------------------------------------------------------
 - Changes in ShinyItemAnalysis 1.2.6.-4. (2018-04-06) -
 -------------------------------------------------------
 

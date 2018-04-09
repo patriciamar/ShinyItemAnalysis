@@ -450,26 +450,7 @@ ui = tagList(
                                  br(),
                                  br(),
                                  h4("Selected R code"),
-                                 div(code('library(difNLR)'), br(),
-                                     code('library(moments)'), br(),
-                                     code('data(GMAT)'),
-                                     br(),
-                                     code('data  <- GMAT[, 1:20]'),
-                                     br(),
-                                     br(),
-                                     code('score <- apply(data, 1, sum) # Total score'),
-                                     br(),
-                                     br(),
-                                     code('# Summary of total score'),
-                                     br(),
-                                     code('c(min(score), max(score), mean(score), median(score), sd(score), skewness(score), kurtosis(score))'),
-                                     br(),
-                                     code('# Histogram'),
-                                     br(),
-                                     code('cut <- median(score) # cut-score'), br(),
-                                     code('col <- c(rep("red", cut - min(score) + 2), "gray",
-                                          rep("blue", max(score) - cut + 1)) # colors for histogram'), br(),
-                                     code('hist(score, breaks = 0:ncol(data), col = col) ')),
+                                 div(code(HTML("library(difNLR)<br>library(ggplot2)<br>library(moments)<br><br>#&nbsp;loading&nbsp;data<br>data(GMAT)<br>data&nbsp;<-&nbsp;GMAT[,&nbsp;1:20]<br><br>#&nbsp;total&nbsp;score&nbsp;calculation<br>score&nbsp;<-&nbsp;apply(data,&nbsp;1,&nbsp;sum)<br><br>#&nbsp;summary&nbsp;of&nbsp;total&nbsp;score&nbsp;<br>c(min(score),&nbsp;max(score),&nbsp;mean(score),&nbsp;median(score),&nbsp;sd(score),&nbsp;skewness(score),&nbsp;kurtosis(score))<br><br>#&nbsp;colors&nbsp;by&nbsp;cut-score<br>cut&nbsp;<-&nbsp;median(score)&nbsp;#&nbsp;cut-score&nbsp;<br>color&nbsp;<-&nbsp;c(rep(\"red\",&nbsp;cut&nbsp;-&nbsp;min(score)),&nbsp;\"gray\",&nbsp;rep(\"blue\",&nbsp;max(score)&nbsp;-&nbsp;cut))<br>df&nbsp;<-&nbsp;data.frame(score)<br><br>#&nbsp;histogram<br>ggplot(df,&nbsp;aes(score))&nbsp;+&nbsp;<br>&nbsp;&nbsp;geom_histogram(binwidth&nbsp;=&nbsp;1,&nbsp;fill&nbsp;=&nbsp;color,&nbsp;col&nbsp;=&nbsp;\"black\")&nbsp;+&nbsp;<br>&nbsp;&nbsp;xlab(\"Total&nbsp;score\")&nbsp;+&nbsp;<br>&nbsp;&nbsp;ylab(\"Number&nbsp;of&nbsp;respondents\")&nbsp;+&nbsp;<br>&nbsp;&nbsp;theme_bw()&nbsp;+&nbsp;<br>&nbsp;&nbsp;theme(legend.title&nbsp;=&nbsp;element_blank(),&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;axis.line&nbsp;&nbsp;=&nbsp;element_line(colour&nbsp;=&nbsp;\"black\"),&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;panel.grid.major&nbsp;=&nbsp;element_blank(),&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;panel.grid.minor&nbsp;=&nbsp;element_blank(),&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;text&nbsp;=&nbsp;element_text(size&nbsp;=&nbsp;14))"))),
                                  br()
                                  ),
                         # * STANDARD SCORES ####
@@ -2008,7 +1989,11 @@ ui = tagList(
                         tabPanel("Dichotomous models",
                                  # ** Dichotomous models ####
                                  h3("Dichotomous models"),
-                                 p('Here you can explore behaviour of two item characteristic curves \\(\\mathrm{P}\\left(\\theta\\right)\\) and their item
+                                 p('Dichotomous models are used for modelling items producing a simple binary response (i.e., true/false).
+                                   Most complex unidimensional dichotomous IRT model described here is 4PL IRT model. Rasch model (Rasch, 1960)
+                                   assumes discrimination fixed to a=1, guessing fixed to c=0 and innatention to d=1. Similarly, other
+                                   restricted models (1PL, 2PL and 3PL models) can be obtained by fixing appropriate parameters in 4PL model.'),
+                                 p('In this section, you can explore behavior of two item characteristic curves \\(\\mathrm{P}\\left(\\theta\\right)\\) and their item
                                    information functions \\(\\mathrm{I}\\left(\\theta\\right)\\) in 4PL IRT model. '),
                                  h4("Parameters"),
                                  p('Select parameters ', strong('a'), '(discrimination), ', strong('b'), '(difficulty), ',
@@ -2077,85 +2062,68 @@ ui = tagList(
                                  splitLayout(cellWidths = c("50%", "50%"), plotlyOutput('ccIRT_plot'), plotlyOutput('iccIRT_plot')),
                                  splitLayout(cellWidths = c("50%", "50%"), downloadButton("DB_ccIRT", label = "Download figure"), downloadButton("DB_iccIRT", label = "Download figure")),
                                  br(),
+                                 h4("Exercise"),
+                                 p("Consider the following 2PL items with parameters", br(), "
+                                   Item 1: a = 2, b = 1", br(), "
+                                   Item 2: a = 1.5, b = -1"),
+                                 tags$ul(
+                                     tags$li("Sketch item characteristic and information curves."),
+                                     tags$li("Calculate probability of correct answer for latent abilities \\(\\theta\\) = -2, -1, 0, 1, 2."),
+                                     tags$li("For what level of ability \\(\\theta\\) are the probabilities equal?"),
+                                     tags$li("How do item characteristic and information curves change if you introduce guessing c = 0.2?"),
+                                     tags$li("How do item characteristic and information curves change if you introduce inattention d = 0.8?")),
                                  h4("Selected R code"),
-                                 div(code('library(ggplot2)'),
-                                     br(),
-                                     code('# parameters'),
-                                     br(),
-                                     code('a1 <- 1; b1 <- 0; c1 <- 0; d1 <- 1'),
-                                     br(),
-                                     code('a2 <- 2; b2 <- 0.5; c2 <- 0; d2 <- 1'),
-                                     br(),
-                                     code('# latent ability'),
-                                     br(),
-                                     code('theta <- 0'),
-                                     br(),
-                                     br(),
-                                     code('# function for IRT characteristic curve'),
-                                     br(),
-                                     code('ccirt <- function(theta, a, b, c, d){
-                                          return(c + (d - c)/(1 + exp(-a*(theta - b))))
-                                          }'),
-                                     br(),
-                                     br(),
-                                     code('# plot for characteristic curves'),
-                                     br(),
-                                     HTML('<code>ggplot(data = data.frame(x = -4:4), mapping = aes(x = x)) + <br>
-                                              stat_function(fun = ccirt, args = list(a = a1, b = b1, c = c1, d = d1), aes(color = "2", linetype = "2")) + <br>
-                                              stat_function(fun = ccirt, args = list(a = a2, b = b2, c = c2, d = d2), aes(color = "3", linetype = "3")) + <br>
-                                              geom_segment(aes(y = ccirt(theta, a = a1, b = b1, c = c1, d = d1), yend = ccirt(theta, a = a1, b = b1, c = c1, d = d1), <br>
-                                                               x = -4, xend = theta, color = "1", linetype = "1")) + <br>
-                                              geom_segment(aes(y = ccirt(theta, a = a2, b = b2, c = c2, d = d2), yend = ccirt(theta, a = a2, b = b2, c = c2, d = d2), <br>
-                                                               x = -4, xend = theta, color = "1", linetype = "1")) + <br>
-                                              geom_segment(aes(y = 0, yend = max(ccirt(theta, a = a1, b = b1, c = c1, d = d1), ccirt(theta, a = a2, b = b2, c = c2, d = d2)), <br>
-                                                               x = theta, xend = theta, color = "1", linetype = "1")) + <br>
-                                              xlim(-4, 4) + <br>
-                                              xlab("Ability") + <br>
-                                              ylab("Probability of correct answer") + <br>
-                                              theme_bw() + <br>
-                                              ylim(0, 1) + <br>
-                                              theme(axis.line  = element_line(colour = "black"), <br>
-                                                    panel.grid.major = element_blank(), <br>
-                                                    panel.grid.minor = element_blank()) + <br>
-                                          scale_color_manual(name = "", breaks = c("1", "2", "3"), values = c("gray", "red", "blue"), labels = c(paste(expression(theta), "=", theta), paste(paste(letters[1:4], "=", c(a1, b1, c1, d1)), collapse = ", "), paste(paste(letters[1:4], "=", c(a2, b2, c2, d2)), collapse = ", "))) +<br>
-                                          scale_linetype_manual(name = "", breaks = c("1", "2", "3"), values = c("dashed", "solid", "solid"), labels = c(paste(expression(theta), "=", theta), paste(paste(letters[1:4], "=", c(a1, b1, c1, d1)), collapse = ", "), paste(paste(letters[1:4], "=", c(a2, b2, c2, d2)), collapse = ", "))) +<br>
-                                          ggtitle("Item characteristic curve")</code>'),
-                                     br(),
-                                     br(),
-                                     code('# function for IRT information function'),
-                                     br(),
-                                     code('icirt <- function(theta, a, b, c, d){
-                                          return(a^2*(d-c)*exp(a*(theta-b))/(1 + exp(a*(theta-b)))^2)
-                                          }'),
-                                     br(),
-                                     br(),
-                                     code('# plot for information function'),
-                                     br(),
-                                     HTML('<code>ggplot(data = data.frame(x = -4:4), mapping = aes(x = x)) + <br>
-                                      stat_function(fun = icirt, args = list(a = a1, b = b1, c = c1, d = d1), aes(color = "2")) + <br>
-                                      stat_function(fun = icirt, args = list(a = a2, b = b2, c = c2, d = d2), aes(color = "3")) + <br>
-                                      xlim(-4, 4) + <br>
-                                      xlab("Ability") + <br>
-                                      ylab("Information") + <br>
-                                      theme_bw() + <br>
-                                      ylim(0, 4) + <br>
-                                      theme(axis.line  = element_line(colour = "black"), <br>
-                                      panel.grid.major = element_blank(), <br>
-                                      panel.grid.minor = element_blank()) + <br>
-                                      scale_color_manual(name = "", breaks = c("2", "3"), values = c("red", "blue"), labels = c(paste(paste(letters[1:4], "=", c(a1, b1, c1, d1)), collapse = ", "), paste(paste(letters[1:4], "=", c(a2, b2, c2, d2)), collapse = ", "))) + <br>
-                                      ggtitle("Item information function")</code>')),
+                                 div(code(HTML("library(ggplot2)<br>library(data.table)<br><br>#&nbsp;parameters&nbsp;<br>a1&nbsp;<-&nbsp;1;&nbsp;b1&nbsp;<-&nbsp;0;&nbsp;c1&nbsp;<-&nbsp;0;&nbsp;d1&nbsp;<-&nbsp;1&nbsp;<br>a2&nbsp;<-&nbsp;2;&nbsp;b2&nbsp;<-&nbsp;0.5;&nbsp;c2&nbsp;<-&nbsp;0;&nbsp;d2&nbsp;<-&nbsp;1&nbsp;<br><br>#&nbsp;latent&nbsp;ability&nbsp;<br>theta&nbsp;<-&nbsp;seq(-4,&nbsp;4,&nbsp;0.01)<br>#&nbsp;latent&nbsp;ability&nbsp;level<br>theta0&nbsp;<-&nbsp;0<br><br>#&nbsp;function&nbsp;for&nbsp;IRT&nbsp;characteristic&nbsp;curve&nbsp;<br>icc_irt&nbsp;<-&nbsp;function(theta,&nbsp;a,&nbsp;b,&nbsp;c,&nbsp;d){&nbsp;return(c&nbsp;+&nbsp;(d&nbsp;-&nbsp;c)/(1&nbsp;+&nbsp;exp(-a*(theta&nbsp;-&nbsp;b))))&nbsp;}&nbsp;<br><br>#&nbsp;calculation&nbsp;of&nbsp;characteristic&nbsp;curves<br>df&nbsp;<-&nbsp;data.frame(theta,&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\"icc1\"&nbsp;=&nbsp;icc_irt(theta,&nbsp;a1,&nbsp;b1,&nbsp;c1,&nbsp;d1),<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\"icc2\"&nbsp;=&nbsp;icc_irt(theta,&nbsp;a2,&nbsp;b2,&nbsp;c2,&nbsp;d2))<br>df&nbsp;<-&nbsp;melt(df,&nbsp;id.vars&nbsp;=&nbsp;\"theta\")<br><br>#&nbsp;plot&nbsp;for&nbsp;characteristic&nbsp;curves&nbsp;<br>ggplot(df,&nbsp;aes(x&nbsp;=&nbsp;theta,&nbsp;y&nbsp;=&nbsp;value,&nbsp;color&nbsp;=&nbsp;variable))&nbsp;+&nbsp;<br>&nbsp;&nbsp;geom_line()&nbsp;+&nbsp;<br>&nbsp;&nbsp;geom_segment(aes(y&nbsp;=&nbsp;icc_irt(theta0,&nbsp;a&nbsp;=&nbsp;a1,&nbsp;b&nbsp;=&nbsp;b1,&nbsp;c&nbsp;=&nbsp;c1,&nbsp;d&nbsp;=&nbsp;d1),&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;yend&nbsp;=&nbsp;icc_irt(theta0,&nbsp;a&nbsp;=&nbsp;a1,&nbsp;b&nbsp;=&nbsp;b1,&nbsp;c&nbsp;=&nbsp;c1,&nbsp;d&nbsp;=&nbsp;d1),&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x&nbsp;=&nbsp;-4,&nbsp;xend&nbsp;=&nbsp;theta0),&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;color&nbsp;=&nbsp;\"gray\",&nbsp;linetype&nbsp;=&nbsp;\"dashed\")&nbsp;+&nbsp;<br>&nbsp;&nbsp;geom_segment(aes(y&nbsp;=&nbsp;icc_irt(theta0,&nbsp;a&nbsp;=&nbsp;a2,&nbsp;b&nbsp;=&nbsp;b2,&nbsp;c&nbsp;=&nbsp;c2,&nbsp;d&nbsp;=&nbsp;d2),&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;yend&nbsp;=&nbsp;icc_irt(theta0,&nbsp;a&nbsp;=&nbsp;a2,&nbsp;b&nbsp;=&nbsp;b2,&nbsp;c&nbsp;=&nbsp;c2,&nbsp;d&nbsp;=&nbsp;d2),&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x&nbsp;=&nbsp;-4,&nbsp;xend&nbsp;=&nbsp;theta0),&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;color&nbsp;=&nbsp;\"gray\",&nbsp;linetype&nbsp;=&nbsp;\"dashed\")&nbsp;+&nbsp;<br>&nbsp;&nbsp;geom_segment(aes(y&nbsp;=&nbsp;0,&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;yend&nbsp;=&nbsp;max(icc_irt(theta0,&nbsp;a&nbsp;=&nbsp;a1,&nbsp;b&nbsp;=&nbsp;b1,&nbsp;c&nbsp;=&nbsp;c1,&nbsp;d&nbsp;=&nbsp;d1),&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;icc_irt(theta0,&nbsp;a&nbsp;=&nbsp;a2,&nbsp;b&nbsp;=&nbsp;b2,&nbsp;c&nbsp;=&nbsp;c2,&nbsp;d&nbsp;=&nbsp;d2)),&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x&nbsp;=&nbsp;theta0,&nbsp;xend&nbsp;=&nbsp;theta0),<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;color&nbsp;=&nbsp;\"gray\",&nbsp;linetype&nbsp;=&nbsp;\"dashed\")&nbsp;+&nbsp;<br>&nbsp;&nbsp;xlim(-4,&nbsp;4)&nbsp;+&nbsp;<br>&nbsp;&nbsp;xlab(\"Ability\")&nbsp;+&nbsp;<br>&nbsp;&nbsp;ylab(\"Probability&nbsp;of&nbsp;correct&nbsp;answer\")&nbsp;+&nbsp;<br>&nbsp;&nbsp;theme_bw()&nbsp;+&nbsp;<br>&nbsp;&nbsp;ylim(0,&nbsp;1)&nbsp;+&nbsp;<br>&nbsp;&nbsp;theme(axis.line&nbsp;=&nbsp;element_line(colour&nbsp;=&nbsp;\"black\"),&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;panel.grid.major&nbsp;=&nbsp;element_blank(),&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;panel.grid.minor&nbsp;=&nbsp;element_blank())&nbsp;+&nbsp;<br>&nbsp;&nbsp;ggtitle(\"Item&nbsp;characteristic&nbsp;curve\")&nbsp;<br><br>#&nbsp;function&nbsp;for&nbsp;IRT&nbsp;information&nbsp;function&nbsp;<br>iic_irt&nbsp;<-&nbsp;function(theta,&nbsp;a,&nbsp;b,&nbsp;c,&nbsp;d){&nbsp;return(a^2*(d-c)*exp(a*(theta-b))/(1&nbsp;+&nbsp;exp(a*(theta-b)))^2)&nbsp;}&nbsp;<br><br>#&nbsp;calculation&nbsp;of&nbsp;information&nbsp;curves<br>df&nbsp;<-&nbsp;data.frame(theta,&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\"iic1\"&nbsp;=&nbsp;iic_irt(theta,&nbsp;a1,&nbsp;b1,&nbsp;c1,&nbsp;d1),<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\"iic2\"&nbsp;=&nbsp;iic_irt(theta,&nbsp;a2,&nbsp;b2,&nbsp;c2,&nbsp;d2))<br>df&nbsp;<-&nbsp;melt(df,&nbsp;id.vars&nbsp;=&nbsp;\"theta\")<br><br>#&nbsp;plot&nbsp;for&nbsp;information&nbsp;curves&nbsp;<br>ggplot(df,&nbsp;aes(x&nbsp;=&nbsp;theta,&nbsp;y&nbsp;=&nbsp;value,&nbsp;color&nbsp;=&nbsp;variable))&nbsp;+&nbsp;<br>&nbsp;&nbsp;geom_line()&nbsp;+&nbsp;<br>&nbsp;&nbsp;xlim(-4,&nbsp;4)&nbsp;+&nbsp;<br>&nbsp;&nbsp;xlab(\"Ability\")&nbsp;+&nbsp;<br>&nbsp;&nbsp;ylab(\"Information\")&nbsp;+&nbsp;<br>&nbsp;&nbsp;theme_bw()&nbsp;+&nbsp;<br>&nbsp;&nbsp;ylim(0,&nbsp;4)&nbsp;+&nbsp;<br>&nbsp;&nbsp;theme(axis.line&nbsp;=&nbsp;element_line(colour&nbsp;=&nbsp;\"black\"),&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;panel.grid.major&nbsp;=&nbsp;element_blank(),&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;panel.grid.minor&nbsp;=&nbsp;element_blank())&nbsp;+&nbsp;<br>&nbsp;&nbsp;ggtitle(\"Item&nbsp;information&nbsp;curve\")&nbsp;"))),
                                  br()),
                         tabPanel("Polytomous models",
                                  tabsetPanel(
                                    # ** Intro ####
                                    tabPanel('Intro',
                                             h3("Polytomous models"),
-                                            p("In this section you can explore some polytomous models. ")),
+                                            p('Polytomous models are used when partial score is possible, or when items are graded
+                                              on Likert scale (e.g. from “Totally disagree” to “Totally agree”). Some polytomous
+                                              models can also be used when analyzing multiple-choice items.  In this section you
+                                              can explore item response functions of some polytomous models.'),
+                                            br(),
+                                            p('Two main classes of polytomous IRT models are considered:'),
+                                            p(strong('Difference models'), 'are defined by setting mathematical form to cumulative
+                                              probabilities, while category probabilities are calculated as their difference.
+                                              These models are also sometimes called', strong('cumulative logit models'), 'as they
+                                              set linear form to cumulative logits.'),
+                                            p('As an example, ', strong('Graded Response Model'), '(GRM; Samejima, 1970) uses 2PL
+                                              IRT model to describe cumulative probabilities (probabilities to obtain score higher
+                                              than 1, 2, 3, etc.). Category probabilities are then described as differences of two
+                                              subsequent cumulative probabilities. '), br(),
+                                            p('For', strong('divide-by-total models'), 'response category probabilities are defined
+                                              as the ratio between category-related functions and their sum. '),
+                                            p('In', strong('Generalized Partial Credit Model'), '(GPCM; Muraki, 1992), probability
+                                              of the successful transition from one category score to the next category score is
+                                              modelled by 2PL IRT model, while ', strong('Partial Credit Model'), '(PCM; Masters, 1982)
+                                              uses 1PL IRT model to describe this probability. Even more restricted version, the',
+                                              strong('Rating Scale Model'), '(RSM; Andrich, 1978) assumes exactly the same K response
+                                              categories for each item and threshold parameters which can be split into a response-threshold
+                                              parameter and an item-specific location parameter. These models are also sometimes called
+                                              adjacent-category logit models, as they set linear form to adjacent logits.'),
+                                            p('To model distractor properties in multiple-choice items,', strong('Nominal Response Model'),
+                                              '(NRM; Bock, 1972) can be used. NRM is an IRT analogy of multinomial regression model. This
+                                              model is also generalization of GPCM/PCM/RSM ordinal models. NRM is also sometimes called
+                                              baseline-category logit model, as it sets linear form to log of odds of selecting given category
+                                              to selecting a baseline category. Baseline can be chosen arbitrary, although usually the correct
+                                              answer or the first answer is chosen.')
+                                            ),
                                    # ** Graded response model ####
                                    tabPanel('Graded response model',
                                             h3("Graded response model"),
-                                            p("In this section you can explore graded response model. "),
+                                            p("Graded response model (GRM; Samejima, 1970) uses 2PL IRT model to describe cumulative probabilities
+                                              (probabilities to obtain score higher than 1, 2, 3, etc.). Category probabilities are then described
+                                              as differences of two subsequent cumulative probabilities. "),
+                                            p("It belongs to class of difference models, which are defined by setting mathematical form to cumulative
+                                              probabilities, while category probabilities are calculated as their difference. These models are also
+                                              sometimes called cumulative logit models, as they set linear form to cumulative logits."),
                                             h4("Parameters"),
+                                            p("Select number of responses and difficulty for cummulative probabilities", strong("b"), "and common
+                                              discrimination parameter", strong("a"), ". Cummulative probability \\(P(Y \\geq 0)\\) is always equal to 1
+                                              and it is not displayed, corresponding category probability \\(P(Y = 0)\\) is displayed with black color."),
                                             div(style = "display: inline-block; vertical-align: middle; width: 18%;",
                                                 numericInput(inputId = "irt_training_grm_numresp",
                                                              label = "Number of responses",
@@ -2184,62 +2152,27 @@ ui = tagList(
                                                         downloadButton("DB_irt_training_grm_plot_cummulative", label = "Download figure"),
                                                         downloadButton("DB_irt_training_grm_plot_category", label = "Download figure")),
                                             h4("Selected R code"),
-                                            HTML('<code>library(ggplot2) <br>
-                                                 library(data.table) <br>
-                                                 <br>
-                                                 # setting parameters <br>
-                                                 a <- 1 <br>
-                                                 b <- c(-1.5, -1, -0.5, 0) <br>
-                                                 theta <- seq(-4, 4, 0.01) <br>
-                                                 <br>
-                                                 # calculating cummulative probabilities <br>
-                                                 ccirt <- function(theta, a, b){ return(1/(1 + exp(-a*(theta - b)))) }
-                                                 <br>
-                                                 df <- data.frame(sapply(1:length(b), function(i) ccirt(theta, a, b[i])), theta) <br>
-                                                 df <- melt(df, id.vars = "theta") <br>
-                                                 <br>
-                                                 # plotting cummulative probabilities <br>
-                                                 ggplot(data = df, aes(x = theta, y = value, col = variable)) + <br>
-                                                 geom_line() + <br>
-                                                 xlab("Ability") + <br>
-                                                 ylab("Cummulative probability") + <br>
-                                                 xlim(-4, 4) + <br>
-                                                 ylim(0, 1) + <br>
-                                                 theme_bw() + <br>
-                                                 theme(text = element_text(size = 14),  <br>
-                                                 panel.grid.major = element_blank(), <br>
-                                                 panel.grid.minor = element_blank()) + <br>
-                                                 ggtitle("Cummulative probabilities") + <br>
-                                                 scale_color_manual("", values = c("red", "yellow", "green", "blue"), labels = paste0("P(Y >= ", 1:4, ")"))
-                                                 <br> <br>
-                                                 # calculating category probabilities <br>
-                                                 df <- data.frame(1, sapply(1:length(b), function(i) ccirt(theta, a, b[i]))) <br>
-                                                 df <- data.frame(sapply(1:length(b), function(i) df[, i] - df[, i+1]),
-                                                 df[, ncol(df)],
-                                                 theta) <br>
-                                                 df <- melt(df, id.vars = "theta") <br>
-                                                 # plotting category probabilities <br>
-                                                 ggplot(data = df, aes(x = theta, y = value, col = variable)) + <br>
-                                                 geom_line() + <br>
-                                                 xlab("Ability") + <br>
-                                                 ylab("Category probability") + <br>
-                                                 xlim(-4, 4) + <br>
-                                                 ylim(0, 1) + <br>
-                                                 theme_bw() + <br>
-                                                 theme(text = element_text(size = 14), <br>
-                                                 panel.grid.major = element_blank(), <br>
-                                                 panel.grid.minor = element_blank()) + <br>
-                                                 ggtitle("Category probabilities") + <br>
-                                                 scale_color_manual("", values = c("black", "red", "yellow", "green", "blue"), labels = paste0("P(Y >= ", 0:4, ")"))
-                                                 </code>'),
+                                            div(code(HTML("library(ggplot2)&nbsp;<br>library(data.table)&nbsp;<br><br>#&nbsp;setting&nbsp;parameters&nbsp;<br>a&nbsp;<-&nbsp;1&nbsp;<br>b&nbsp;<-&nbsp;c(-1.5,&nbsp;-1,&nbsp;-0.5,&nbsp;0)&nbsp;<br>theta&nbsp;<-&nbsp;seq(-4,&nbsp;4,&nbsp;0.01)&nbsp;<br><br>#&nbsp;calculating&nbsp;cummulative&nbsp;probabilities&nbsp;<br>ccirt&nbsp;<-&nbsp;function(theta,&nbsp;a,&nbsp;b){&nbsp;return(1/(1&nbsp;+&nbsp;exp(-a*(theta&nbsp;-&nbsp;b))))&nbsp;}&nbsp;<br>df&nbsp;<-&nbsp;data.frame(sapply(1:length(b),&nbsp;function(i)&nbsp;ccirt(theta,&nbsp;a,&nbsp;b[i])),&nbsp;theta)&nbsp;<br>df&nbsp;<-&nbsp;melt(df,&nbsp;id.vars&nbsp;=&nbsp;\"theta\")&nbsp;<br><br>#&nbsp;plotting&nbsp;cummulative&nbsp;probabilities&nbsp;<br>ggplot(data&nbsp;=&nbsp;df,&nbsp;aes(x&nbsp;=&nbsp;theta,&nbsp;y&nbsp;=&nbsp;value,&nbsp;col&nbsp;=&nbsp;variable))&nbsp;+&nbsp;<br>&nbsp;&nbsp;geom_line()&nbsp;+&nbsp;<br>&nbsp;&nbsp;xlab(\"Ability\")&nbsp;+&nbsp;<br>&nbsp;&nbsp;ylab(\"Cummulative&nbsp;probability\")&nbsp;+&nbsp;<br>&nbsp;&nbsp;xlim(-4,&nbsp;4)&nbsp;+&nbsp;<br>&nbsp;&nbsp;ylim(0,&nbsp;1)&nbsp;+&nbsp;<br>&nbsp;&nbsp;theme_bw()&nbsp;+&nbsp;<br>&nbsp;&nbsp;theme(text&nbsp;=&nbsp;element_text(size&nbsp;=&nbsp;14),&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;panel.grid.major&nbsp;=&nbsp;element_blank(),&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;panel.grid.minor&nbsp;=&nbsp;element_blank())&nbsp;+&nbsp;<br>&nbsp;&nbsp;ggtitle(\"Cummulative&nbsp;probabilities\")&nbsp;+&nbsp;<br>&nbsp;&nbsp;scale_color_manual(\"\",&nbsp;values&nbsp;=&nbsp;c(\"red\",&nbsp;\"yellow\",&nbsp;\"green\",&nbsp;\"blue\"),&nbsp;labels&nbsp;=&nbsp;paste0(\"P(Y&nbsp;>=&nbsp;\",&nbsp;1:4,&nbsp;\")\"))&nbsp;<br><br>#&nbsp;calculating&nbsp;category&nbsp;probabilities&nbsp;<br>df&nbsp;<-&nbsp;data.frame(1,&nbsp;sapply(1:length(b),&nbsp;function(i)&nbsp;ccirt(theta,&nbsp;a,&nbsp;b[i])))&nbsp;<br>df&nbsp;<-&nbsp;data.frame(sapply(1:length(b),&nbsp;function(i)&nbsp;df[,&nbsp;i]&nbsp;-&nbsp;df[,&nbsp;i+1]),&nbsp;df[,&nbsp;ncol(df)],&nbsp;theta)&nbsp;<br>df&nbsp;<-&nbsp;melt(df,&nbsp;id.vars&nbsp;=&nbsp;\"theta\")&nbsp;<br><br>#&nbsp;plotting&nbsp;category&nbsp;probabilities&nbsp;<br>ggplot(data&nbsp;=&nbsp;df,&nbsp;aes(x&nbsp;=&nbsp;theta,&nbsp;y&nbsp;=&nbsp;value,&nbsp;col&nbsp;=&nbsp;variable))&nbsp;+&nbsp;<br>&nbsp;&nbsp;geom_line()&nbsp;+&nbsp;<br>&nbsp;&nbsp;xlab(\"Ability\")&nbsp;+&nbsp;<br>&nbsp;&nbsp;ylab(\"Category&nbsp;probability\")&nbsp;+&nbsp;<br>&nbsp;&nbsp;xlim(-4,&nbsp;4)&nbsp;+&nbsp;<br>&nbsp;&nbsp;ylim(0,&nbsp;1)&nbsp;+&nbsp;<br>&nbsp;&nbsp;theme_bw()&nbsp;+&nbsp;<br>&nbsp;&nbsp;theme(text&nbsp;=&nbsp;element_text(size&nbsp;=&nbsp;14),&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;panel.grid.major&nbsp;=&nbsp;element_blank(),&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;panel.grid.minor&nbsp;=&nbsp;element_blank())&nbsp;+&nbsp;<br>&nbsp;&nbsp;ggtitle(\"Category&nbsp;probabilities\")&nbsp;+&nbsp;<br>&nbsp;&nbsp;scale_color_manual(\"\",&nbsp;values&nbsp;=&nbsp;c(\"black\",&nbsp;\"red\",&nbsp;\"yellow\",&nbsp;\"green\",&nbsp;\"blue\"),&nbsp;labels&nbsp;=&nbsp;paste0(\"P(Y&nbsp;>=&nbsp;\",&nbsp;0:4,&nbsp;\")\"))"))),
                                             br(),
                                             br()
                                    ),
                                    # ** Generalized partial credit model ####
                                    tabPanel('Generalized partial credit model',
                                             h3("Generalized partial credit model"),
-                                            p("In this section you can explore generalized partial credit model. "),
+                                            p("In Generalized Partial Credit Model (GPCM; Muraki, 1992), probability of the successful transition
+                                              from one category score to the next category score is modelled by 2PL IRT model. The response category
+                                              probabilities are then ratios between category-related functions (cumulative sums of exponentials)
+                                              and their sum."),
+                                            p("Two simpler models can be derived from GPCM by restricting some parameters: Partial Credit Model
+                                              (PCM; Masters, 1982) uses 1PL IRT model to describe this probability, thus parameters a = 1.
+                                              Even more restricted version, the Rating Scale Model (RSM; Andrich, 1978) assumes exactly the same
+                                              K response categories for each item and threshold parameters which can be split into a response-threshold
+                                              parameter \\(\\lambda_t\\) and an item-specific location parameter \\(\\delta_i\\). These models are
+                                              also sometimes called adjacent logit models, as they set linear form to adjacent logits."),
                                             h4("Parameters"),
+                                            p("Select number of responses and their threshold parameters ", strong("d"), "and common
+                                              discrimination parameter", strong("a"), ". With a = 1 you get PCM. Numerator of \\(\\pi_0 = P(Y = 0)\\) is
+                                              set to 1 and \\(pi_0\\) is displayed with black color."),
                                             div(style = "display: inline-block; vertical-align: middle; width: 18%;",
                                                 numericInput(inputId = "irt_training_gpcm_numresp",
                                                              label = "Number of responses",
@@ -2263,45 +2196,22 @@ ui = tagList(
                                             plotlyOutput('irt_training_gpcm_plot'),
                                             downloadButton("DB_irt_training_gpcm_plot", label = "Download figure"),
                                             h4("Selected R code"),
-                                            HTML('<code>library(ggplot2) <br>
-                                                 library(data.table) <br>
-                                                 <br>
-                                                 # setting parameters <br>
-                                                 a <- 1 <br>
-                                                 d <- c(-1.5, -1, -0.5, 0) <br>
-                                                 theta <- seq(-4, 4, 0.01) <br>
-                                                 <br>
-                                                 # calculating category probabilities <br>
-                                                 ccgpcm <- function(theta, a, d){ a*(theta - d) } <br>
-                                                 df <- sapply(1:length(d), function(i) ccgpcm(theta, a, d[i])) <br>
-                                                 pk <- sapply(1:ncol(df), function(k) apply(as.data.frame(df[, 1:k]), 1, sum)) <br>
-                                                 pk <- cbind(0, pk) <br>
-                                                 pk <- exp(pk) <br>
-                                                 denom <- apply(pk, 1, sum) <br>
-                                                 df <- data.frame(apply(pk, 2, function(x) x/denom), theta) <br>
-                                                 df <- melt(df, id.vars = "theta") <br>
-                                                 <br>
-                                                 # plotting category probabilities <br>
-                                                 ggplot(data = df, aes(x = theta, y = value, col = variable)) + <br>
-                                                 geom_line() + <br>
-                                                 xlab("Ability") + <br>
-                                                 ylab("Category probability") + <br>
-                                                 xlim(-4, 4) + <br>
-                                                 ylim(0, 1) + <br>
-                                                 theme_bw() + <br>
-                                                 theme(text = element_text(size = 14), <br>
-                                                 panel.grid.major = element_blank(), <br>
-                                                 panel.grid.minor = element_blank()) + <br>
-                                                 ggtitle("Category probabilities") + <br>
-                                                 scale_color_manual("", values = c("black", "red", "yellow", "green", "blue"), labels = paste0("P(Y = ", 0:4, ")"))</code>'),
+                                            div(code(HTML("library(ggplot2)&nbsp;<br>library(data.table)&nbsp;<br><br>#&nbsp;setting&nbsp;parameters&nbsp;<br>a&nbsp;<-&nbsp;1&nbsp;<br>d&nbsp;<-&nbsp;c(-1.5,&nbsp;-1,&nbsp;-0.5,&nbsp;0)&nbsp;<br>theta&nbsp;<-&nbsp;seq(-4,&nbsp;4,&nbsp;0.01)&nbsp;<br><br>#&nbsp;calculating&nbsp;category&nbsp;probabilities&nbsp;<br>ccgpcm&nbsp;<-&nbsp;function(theta,&nbsp;a,&nbsp;d){&nbsp;a*(theta&nbsp;-&nbsp;d)&nbsp;}&nbsp;<br>df&nbsp;<-&nbsp;sapply(1:length(d),&nbsp;function(i)&nbsp;ccgpcm(theta,&nbsp;a,&nbsp;d[i]))&nbsp;<br>pk&nbsp;<-&nbsp;sapply(1:ncol(df),&nbsp;function(k)&nbsp;apply(as.data.frame(df[,&nbsp;1:k]),&nbsp;1,&nbsp;sum))&nbsp;<br>pk&nbsp;<-&nbsp;cbind(0,&nbsp;pk)&nbsp;<br>pk&nbsp;<-&nbsp;exp(pk)&nbsp;<br>denom&nbsp;<-&nbsp;apply(pk,&nbsp;1,&nbsp;sum)&nbsp;<br>df&nbsp;<-&nbsp;data.frame(apply(pk,&nbsp;2,&nbsp;function(x)&nbsp;x/denom),&nbsp;theta)&nbsp;<br>df&nbsp;<-&nbsp;melt(df,&nbsp;id.vars&nbsp;=&nbsp;\"theta\")&nbsp;<br><br>#&nbsp;plotting&nbsp;category&nbsp;probabilities&nbsp;<br>ggplot(data&nbsp;=&nbsp;df,&nbsp;aes(x&nbsp;=&nbsp;theta,&nbsp;y&nbsp;=&nbsp;value,&nbsp;col&nbsp;=&nbsp;variable))&nbsp;+&nbsp;<br>&nbsp;&nbsp;geom_line()&nbsp;+&nbsp;<br>&nbsp;&nbsp;xlab(\"Ability\")&nbsp;+&nbsp;<br>&nbsp;&nbsp;ylab(\"Category&nbsp;probability\")&nbsp;+&nbsp;<br>&nbsp;&nbsp;xlim(-4,&nbsp;4)&nbsp;+&nbsp;<br>&nbsp;&nbsp;ylim(0,&nbsp;1)&nbsp;+&nbsp;<br>&nbsp;&nbsp;theme_bw()&nbsp;+&nbsp;<br>&nbsp;&nbsp;theme(text&nbsp;=&nbsp;element_text(size&nbsp;=&nbsp;14),&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;panel.grid.major&nbsp;=&nbsp;element_blank(),&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;panel.grid.minor&nbsp;=&nbsp;element_blank())&nbsp;+&nbsp;<br>&nbsp;&nbsp;ggtitle(\"Category&nbsp;probabilities\")&nbsp;+&nbsp;<br>&nbsp;&nbsp;scale_color_manual(\"\",&nbsp;values&nbsp;=&nbsp;c(\"black\",&nbsp;\"red\",&nbsp;\"yellow\",&nbsp;\"green\",&nbsp;\"blue\"),&nbsp;labels&nbsp;=&nbsp;paste0(\"P(Y&nbsp;=&nbsp;\",&nbsp;0:4,&nbsp;\")\"))"))),
                                             br(),
                                             br()
                                    ),
                                    # ** Nominal response model ####
                                    tabPanel('Nominal response model',
                                             h3("Nominal response model"),
-                                            p("In this section you can explore nominal response model. "),
+                                            p("In Nominal Response Model (NRM; Bock, 1972), probability of selecting given category over baseline
+                                              category is modelled by 2PL IRT model. This model is also sometimes called baseline-category logit
+                                              model, as it sets linear form to log of odds of selecting given category to selecting a baseline category.
+                                              Baseline can be chosen arbitrary, although usually the correct answer or the first answer is chosen.
+                                              NRM model is generalization of GPCM model by setting item-specific and category-specific intercept and
+                                              slope parameters."),
                                             h4("Parameters"),
+                                            p("Select number of responses and their threshold parameters ", strong("d"), "and discrimination parameters",
+                                              strong("a"), ". Parameters of \\(\\pi_0 = P(Y = 0)\\) are set to zeros and \\(pi_0\\) is displayed with black color."),
                                             div(style = "display: inline-block; vertical-align: middle; width: 18%;",
                                                 numericInput(inputId = "irt_training_nrm_numresp",
                                                              label = "Number of responses",
@@ -2317,36 +2227,7 @@ ui = tagList(
                                             plotlyOutput('irt_training_nrm_plot'),
                                             downloadButton("DB_irt_training_nrm_plot", label = "Download figure"),
                                             h4("Selected R code"),
-                                            HTML('<code>library(ggplot2) <br>
-                                                 library(data.table) <br>
-                                                 <br>
-                                                 # setting parameters <br>
-                                                 a <- c(2.5, 2, 1, 1.5) <br>
-                                                 d <- c(-1.5, -1, -0.5, 0) <br>
-                                                 theta <- seq(-4, 4, 0.01) <br>
-                                                 <br>
-                                                 # calculating category probabilities <br>
-                                                 ccnrm <- function(theta, a, d){ exp(d + a*theta) } <br>
-                                                 df <- sapply(1:length(d), function(i) ccnrm(theta, a[i], d[i])) <br>
-                                                 df <- data.frame(1, df) <br>
-                                                 denom <- apply(df, 1, sum) <br>
-                                                 df <- apply(df, 2, function(x) x/denom) <br>
-                                                 df <- data.frame(df, theta) <br>
-                                                 df <- melt(df, id.vars = "theta") <br>
-                                                 <br>
-                                                 # plotting category probabilities <br>
-                                                 ggplot(data = df, aes(x = theta, y = value, col = variable)) + <br>
-                                                 geom_line() + <br>
-                                                 xlab("Ability") + <br>
-                                                 ylab("Category probability") + <br>
-                                                 xlim(-4, 4) + <br>
-                                                 ylim(0, 1) + <br>
-                                                 theme_bw() + <br>
-                                                 theme(text = element_text(size = 14), <br>
-                                                 panel.grid.major = element_blank(), <br>
-                                                 panel.grid.minor = element_blank()) + <br>
-                                                 ggtitle("Category probabilities") + <br>
-                                                 scale_color_manual("", values = c("black", "red", "yellow", "green", "blue"), labels = paste0("P(Y = ", 0:4, ")"))</code>'),
+                                            div(code(HTML("library(ggplot2)&nbsp;<br>library(data.table)&nbsp;<br><br>#&nbsp;setting&nbsp;parameters&nbsp;<br>a&nbsp;<-&nbsp;c(2.5,&nbsp;2,&nbsp;1,&nbsp;1.5)&nbsp;<br>d&nbsp;<-&nbsp;c(-1.5,&nbsp;-1,&nbsp;-0.5,&nbsp;0)&nbsp;<br>theta&nbsp;<-&nbsp;seq(-4,&nbsp;4,&nbsp;0.01)&nbsp;<br><br>#&nbsp;calculating&nbsp;category&nbsp;probabilities&nbsp;<br>ccnrm&nbsp;<-&nbsp;function(theta,&nbsp;a,&nbsp;d){&nbsp;exp(d&nbsp;+&nbsp;a*theta)&nbsp;}&nbsp;<br>df&nbsp;<-&nbsp;sapply(1:length(d),&nbsp;function(i)&nbsp;ccnrm(theta,&nbsp;a[i],&nbsp;d[i]))&nbsp;<br>df&nbsp;<-&nbsp;data.frame(1,&nbsp;df)&nbsp;<br>denom&nbsp;<-&nbsp;apply(df,&nbsp;1,&nbsp;sum)&nbsp;<br>df&nbsp;<-&nbsp;apply(df,&nbsp;2,&nbsp;function(x)&nbsp;x/denom)&nbsp;<br>df&nbsp;<-&nbsp;data.frame(df,&nbsp;theta)&nbsp;<br>df&nbsp;<-&nbsp;melt(df,&nbsp;id.vars&nbsp;=&nbsp;\"theta\")&nbsp;<br><br>#&nbsp;plotting&nbsp;category&nbsp;probabilities&nbsp;<br>ggplot(data&nbsp;=&nbsp;df,&nbsp;aes(x&nbsp;=&nbsp;theta,&nbsp;y&nbsp;=&nbsp;value,&nbsp;col&nbsp;=&nbsp;variable))&nbsp;+&nbsp;<br>&nbsp;&nbsp;geom_line()&nbsp;+&nbsp;<br>&nbsp;&nbsp;xlab(\"Ability\")&nbsp;+&nbsp;<br>&nbsp;&nbsp;ylab(\"Category&nbsp;probability\")&nbsp;+&nbsp;<br>&nbsp;&nbsp;xlim(-4,&nbsp;4)&nbsp;+&nbsp;<br>&nbsp;&nbsp;ylim(0,&nbsp;1)&nbsp;+&nbsp;<br>&nbsp;&nbsp;theme_bw()&nbsp;+&nbsp;<br>&nbsp;&nbsp;theme(text&nbsp;=&nbsp;element_text(size&nbsp;=&nbsp;14),&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;panel.grid.major&nbsp;=&nbsp;element_blank(),&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;panel.grid.minor&nbsp;=&nbsp;element_blank())&nbsp;+&nbsp;<br>&nbsp;&nbsp;ggtitle(\"Category&nbsp;probabilities\")&nbsp;+&nbsp;<br>&nbsp;&nbsp;scale_color_manual(\"\",&nbsp;values&nbsp;=&nbsp;c(\"black\",&nbsp;\"red\",&nbsp;\"yellow\",&nbsp;\"green\",&nbsp;\"blue\"),&nbsp;labels&nbsp;=&nbsp;paste0(\"P(Y&nbsp;=&nbsp;\",&nbsp;0:4,&nbsp;\")\"))"))),
                                             br(),
                                             br()
                                    )
@@ -3799,6 +3680,11 @@ ui = tagList(
                         Practice, 34(3), 39-48.', a("See online.",
                                                     href = "http://onlinelibrary.wiley.com/doi/10.1111/emip.12067/full",
                                                     target = "_blank")),
+                      p('Andrich, D. (1978). A rating formulation for ordered response categories.
+                        Psychometrika, 43(4), 561-573.',
+                        a("See online.",
+                          href = "https://link.springer.com/article/10.1007/BF02293814",
+                          target = "_blank")),
                       p('Angoff, W. H., & Ford, S. F. (1973). Item-Race Interaction on a Test of
                         Scholastic Aptitude. Journal of Educational Measurement, 10(2), 95-105.',
                         a("See online.",
@@ -3842,6 +3728,15 @@ ui = tagList(
                       p("Martinkova, P., Stepanek, L., Drabinova, A., Houdek, J., Vejrazka, M., & Stuka, C. (2017).
                         Semi-real-time analyses of item characteristics for medical school admission tests. In: Proceedings of
                         the 2017 Federated Conference on Computer Science and Information Systems. In print."),
+                      p("Masters, G. N. (1982). A Rasch model for partial credit scoring. Psychometrika, 47(2), 149-174.",
+                        a('See online.',
+                          href = "https://link.springer.com/article/10.1007/BF02296272",
+                          target = "_blank")),
+                      p("Muraki, E. (1992). A generalized partial credit model: Application of an EM algorithm.
+                        ETS Research Report Series, 1992(1).",
+                        a('See online.',
+                          href = "https://onlinelibrary.wiley.com/doi/abs/10.1002/j.2333-8504.1992.tb01436.x",
+                          target = "_blank")),
                       p("Swaminathan, H., & Rogers, H. J. (1990). Detecting Differential Item
                         Functioning Using Logistic Regression Procedures. Journal of Educational
                         Measurement, 27(4), 361-370.",
@@ -3860,6 +3755,11 @@ ui = tagList(
                           target = "_blank")),
                       p('Rasch, G. (1960) Probabilistic Models for Some Intelligence and Attainment Tests.
                         Copenhagen: Paedagogiske Institute.'),
+                      p("Samejima, F. (1969). Estimation of latent ability using a response pattern of graded scores.
+                        Psychometrika, 34(1), 1-97.",
+                        a('See online.',
+                          href = "https://link.springer.com/article/10.1007%2FBF03372160",
+                          target = "_blank")),
                       p('Schwarz, G. (1978). Estimating the Dimension of a Model. The Annals of Statistics,
                         6(2), 461-464.', a('See online.',
                                            href = "https://projecteuclid.org/euclid.aos/1176344136",

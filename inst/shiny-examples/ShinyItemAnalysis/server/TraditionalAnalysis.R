@@ -73,7 +73,7 @@ output$DB_DDplot <- downloadHandler(
     ggsave(file,
            plot = DDplot_Input() + theme(text = element_text(size = 10)),
            device = "png",
-           height = 5, width = 14, dpi = 300)
+           height = 4, width = 8, dpi = 300)
   }
 )
 
@@ -196,7 +196,7 @@ output$DB_distractor_plot <- downloadHandler(
   content = function(file) {
     ggsave(file, plot = distractor_plot_Input() + theme(text = element_text(size = 10)),
            device = "png",
-           height = 3, width = 9, dpi = 300)
+           height = 4, width = 8, dpi = 300)
   }
 )
 # ** Report distractors plot ######
@@ -311,7 +311,7 @@ output$DB_distractor_barplot_item_response_patterns <- downloadHandler(
   content = function(file) {
     ggsave(file, plot = distractor_barplot_item_response_patterns_Input() + theme(text = element_text(size = 10)),
            device = "png",
-           height = 3, width = 9, dpi = 300)
+           height = 4, width = 8, dpi = 300)
   }
 )
 
@@ -363,7 +363,7 @@ output$DB_distractor_histogram <- downloadHandler(
   content = function(file) {
     ggsave(file, plot = distractor_histogram_Input() + theme(text = element_text(size = 10)),
            device = "png",
-           height = 3, width = 9, dpi = 300)
+           height = 4, width = 8, dpi = 300)
   }
 )
 
