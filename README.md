@@ -1,10 +1,12 @@
-<div><h1>Test and Item Analysis Report<img style="float:right;display:block;" src="inst/shiny-examples/ShinyItemAnalysis/hexbin_html.png" width="140"></img></h1></div>
-Test and item analysis via shiny.
+<div><h1 style = "display: inline-block">ShinyItemAnalysis</h1><img style = "float: right; display: inline-block" src="inst/shiny-examples/ShinyItemAnalysis/hexbin_html.png" width="110"></img></div>
+
+Test and item analysis via shiny
 
 ![GHversion](https://img.shields.io/github/release/patriciamar/ShinyItemAnalysis.svg)
 [![online](https://img.shields.io/badge/online-1.2.6-yellow.svg)](https://shiny.cs.cas.cz/ShinyItemAnalysis/)
 [![version](https://www.r-pkg.org/badges/version/ShinyItemAnalysis)](https://CRAN.R-project.org/package=ShinyItemAnalysis)
 ![cranlogs](https://cranlogs.r-pkg.org/badges/ShinyItemAnalysis)
+
 
 ## Overview
 `ShinyItemAnalysis` is an interactive shiny application for analysis of educational tests and their items including 

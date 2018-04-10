@@ -137,13 +137,7 @@ raschFactorInput_mirt <- reactive({
   ggplot(df, aes_string("sts", "fs")) +
     geom_point(size = 3) +
     labs(x = "Standardized total score", y = "Factor score") +
-    theme_bw() +
-    theme(text = element_text(size = 14),
-          plot.title = element_text(face = "bold", vjust = 1.5),
-          axis.line = element_line(colour = "black"),
-          panel.grid.major = element_blank(),
-          panel.grid.minor = element_blank(),
-          panel.background = element_blank()) +
+    theme_shiny +
     theme(legend.box.just = "left",
           legend.justification = c(1, 0),
           legend.position = c(1, 0),
@@ -162,7 +156,9 @@ output$DP_raschFactor_mirt <- downloadHandler(
     paste("fig_RaschFactorVsStandardized.png", sep = "")
   },
   content = function(file) {
-    ggsave(file, plot = raschFactorInput_mirt(), device = "png",
+    ggsave(file, plot = raschFactorInput_mirt() +
+             theme(text = element_text(size = 10)),
+           device = "png",
            height = 4, width = 8, dpi = 300)
   }
 )
@@ -349,13 +345,7 @@ oneparamirtFactorInput_mirt <- reactive({
   ggplot(df, aes_string("sts", "fs")) +
     geom_point(size = 3) +
     labs(x = "Standardized total score", y = "Factor score") +
-    theme_bw() +
-    theme(text = element_text(size = 14),
-          plot.title = element_text(face = "bold", vjust = 1.5),
-          axis.line = element_line(colour = "black"),
-          panel.grid.major = element_blank(),
-          panel.grid.minor = element_blank(),
-          panel.background = element_blank()) +
+    theme_shiny +
     theme(legend.box.just = "left",
           legend.justification = c(1, 0),
           legend.position = c(1, 0),
@@ -374,7 +364,9 @@ output$DP_oneparamirtFactor_mirt <- downloadHandler(
     paste("fig_1PLFactorVsStandardized.png", sep = "")
   },
   content = function(file) {
-    ggsave(file, plot = oneparamirtFactorInput_mirt(), device = "png",
+    ggsave(file, plot = oneparamirtFactorInput_mirt() +
+             theme(text = element_text(size = 10)),
+           device = "png",
            height = 4, width = 8, dpi = 300)
   }
 )
@@ -576,13 +568,7 @@ twoparamirtFactorInput_mirt <- reactive({
   ggplot(df, aes_string("sts", "fs")) +
     geom_point(size = 3) +
     labs(x = "Standardized total score", y = "Factor score") +
-    theme_bw() +
-    theme(text = element_text(size = 14),
-          plot.title = element_text(face = "bold", vjust = 1.5),
-          axis.line = element_line(colour = "black"),
-          panel.grid.major = element_blank(),
-          panel.grid.minor = element_blank(),
-          panel.background = element_blank()) +
+    theme_shiny +
     theme(legend.box.just = "left",
           legend.justification = c(1, 0),
           legend.position = c(1, 0),
@@ -601,7 +587,9 @@ output$DP_twoparamirtFactor_mirt <- downloadHandler(
     paste("fig_2PLFactorVsStandardized.png", sep = "")
   },
   content = function(file) {
-    ggsave(file, plot = twoparamirtFactorInput_mirt(), device = "png",
+    ggsave(file, plot = twoparamirtFactorInput_mirt() +
+             theme(text = element_text(size = 10)),
+           device = "png",
            height = 4, width = 8, dpi = 300)
   }
 )
@@ -764,13 +752,7 @@ threeparamirtFactorInput_mirt <- reactive({
   ggplot(df, aes_string("sts", "fs")) +
     geom_point(size = 3) +
     labs(x = "Standardized total score", y = "Factor score") +
-    theme_bw() +
-    theme(text = element_text(size = 14),
-          plot.title = element_text(face = "bold", vjust = 1.5),
-          axis.line = element_line(colour = "black"),
-          panel.grid.major = element_blank(),
-          panel.grid.minor = element_blank(),
-          panel.background = element_blank()) +
+    theme_shiny +
     theme(legend.box.just = "left",
           legend.justification = c(1, 0),
           legend.position = c(1, 0),
@@ -789,7 +771,9 @@ output$DP_threeparamirtFactor_mirt <- downloadHandler(
     paste("fig_3PLFactorVsStandardized.png", sep = "")
   },
   content = function(file) {
-    ggsave(file, plot = threeparamirtFactorInput_mirt(), device = "png",
+    ggsave(file, plot = threeparamirtFactorInput_mirt() +
+             theme(text = element_text(size = 10)),
+           device = "png",
            height = 4, width = 8, dpi = 300)
   }
 )
@@ -953,13 +937,7 @@ irt_4PL_factorscores_plot_Input <- reactive({
   ggplot(df, aes_string("sts", "fs")) +
     geom_point(size = 3) +
     labs(x = "Standardized total score", y = "Factor score") +
-    theme_bw() +
-    theme(text = element_text(size = 14),
-          plot.title = element_text(face = "bold", vjust = 1.5),
-          axis.line = element_line(colour = "black"),
-          panel.grid.major = element_blank(),
-          panel.grid.minor = element_blank(),
-          panel.background = element_blank()) +
+    theme_shiny +
     theme(legend.box.just = "left",
           legend.justification = c(1, 0),
           legend.position = c(1, 0),
@@ -978,7 +956,9 @@ output$DB_irt_4PL_factorscores_plot <- downloadHandler(
     paste("fig_IRT_4PL_factorscores.png", sep = "")
   },
   content = function(file) {
-    ggsave(file, plot = irt_4PL_factorscores_plot_Input(), device = "png",
+    ggsave(file, plot = irt_4PL_factorscores_plot_Input() +
+             theme(text = element_text(size = 10)),
+           device = "png",
            height = 4, width = 8, dpi = 300)
   }
 )
@@ -1217,13 +1197,7 @@ bock_factor_Input <- reactive({
   ggplot(df, aes_string("sts", "fs")) +
     geom_point(size = 3) +
     labs(x = "Standardized total score", y = "Factor score") +
-    theme_bw() +
-    theme(text = element_text(size = 14),
-          plot.title = element_text(face = "bold", vjust = 1.5),
-          axis.line = element_line(colour = "black"),
-          panel.grid.major = element_blank(),
-          panel.grid.minor = element_blank(),
-          panel.background = element_blank()) +
+    theme_shiny +
     theme(legend.box.just = "left",
           legend.justification = c(1, 0),
           legend.position = c(1, 0),
@@ -1240,7 +1214,9 @@ output$DP_bock_factor <- downloadHandler(
     paste("fig_BockFactorVsStandardized.png", sep = "")
   },
   content = function(file) {
-    ggsave(file, plot = bock_factor_Input(), device = "png",
+    ggsave(file, plot = bock_factor_Input() +
+             theme(text = element_text(size = 10)),
+           device = "png",
            height = 4, width = 8, dpi = 300)
   }
 )
@@ -1342,21 +1318,14 @@ ccIRT_plot_Input <- reactive({
     xlim(-4, 4) +
     xlab("Ability") +
     ylab("Probability of correct answer") +
-    theme_bw() +
     ylim(0, 1) +
-    theme(text = element_text(size = 14),
-          plot.title = element_text(size = 14, face = "bold", vjust = 1.5),
-          axis.line  = element_line(colour = "black"),
-          panel.grid.major = element_blank(),
-          panel.grid.minor = element_blank(),
-          plot.background = element_rect(fill = "transparent", colour = NA),
-          legend.position = "none") +
     scale_color_manual(name = "",
                        values = c("red", "blue"),
                        labels = c(paste(paste(letters[1:4], "=", c(a1, b1, c1, d1)),
                                         collapse = ", "),
                                   paste(paste(paste(letters[1:4], "=", c(a2, b2, c2, d2))),
                                         collapse = ", "))) +
+    theme_shiny +
     ggtitle("Item characteristic curve")
   g
 
@@ -1428,6 +1397,7 @@ output$DB_ccIRT <- downloadHandler(
   content = function(file) {
     ggsave(file,
            plot = ccIRT_plot_Input() +
+             theme(text = element_text(size = 10)) +
              theme(legend.position = c(0.97, 0.03),
                    legend.justification = c(0.97, 0.03)),
            device = "png",
@@ -1464,14 +1434,6 @@ iccIRT_plot_Input <- reactive({
     ylim(0, 4) +
     xlab("Ability") +
     ylab("Information") +
-    theme_bw() +
-    theme(text = element_text(size = 14),
-          plot.title = element_text(size = 14, face = "bold", vjust = 1.5),
-          axis.line  = element_line(colour = "black"),
-          panel.grid.major = element_blank(),
-          panel.grid.minor = element_blank(),
-          plot.background = element_rect(fill = "transparent", colour = NA),
-          legend.position = "none") +
     scale_color_manual(name = "",
                        breaks = c("X1", "X2"),
                        values = c("red", "blue"),
@@ -1479,6 +1441,7 @@ iccIRT_plot_Input <- reactive({
                                         collapse = ", "),
                                   paste(paste(paste(letters[1:4], "=", c(a2, b2, c2, d2))),
                                         collapse = ", "))) +
+    theme_shiny +
     ggtitle("Item information function")
   g
 })
@@ -1512,6 +1475,7 @@ output$DB_iccIRT <- downloadHandler(
   content = function(file) {
     ggsave(file,
            plot = iccIRT_plot_Input() +
+             theme(text = element_text(size = 10)) +
              theme(legend.position = c(0.97, 0.97),
                    legend.justification = c(0.97, 0.97)),
            device = "png",
@@ -1681,16 +1645,9 @@ irt_training_grm_plot_cummulative_Input <- reactive({
     ylab("Cummulative probability") +
     xlim(-4, 4) +
     ylim(0, 1) +
-    theme_bw() +
-    theme(text = element_text(size = 14),
-          plot.title = element_text(size = 14, face = "bold", vjust = 1.5),
-          axis.line  = element_line(colour = "black"),
-          panel.grid.major = element_blank(),
-          panel.grid.minor = element_blank(),
-          plot.background = element_rect(fill = "transparent", colour = NA),
-          legend.position = "none") +
+    scale_color_manual("", values = col, labels = paste0("P(Y >= ", 1:length(col), ")")) +
+    theme_shiny +
     ggtitle("Cummulative probabilities") +
-    scale_color_manual("", values = col, labels = paste0("P(Y >= ", 1:length(col), ")"))
 
   g
 })
@@ -1720,6 +1677,7 @@ output$DB_irt_training_grm_plot_cummulative <- downloadHandler(
   content = function(file) {
     ggsave(file,
            plot = irt_training_grm_plot_cummulative_Input() +
+             theme(text = element_text(size = 10)) +
              theme(legend.position = c(0.97, 0.7),
                    legend.justification = c(0.97, 0.97)),
            device = "png",
@@ -1766,16 +1724,9 @@ irt_training_grm_plot_category_Input <- reactive({
     ylab("Category probability") +
     xlim(-4, 4) +
     ylim(0, 1) +
-    theme_bw() +
-    theme(text = element_text(size = 14),
-          plot.title = element_text(size = 14, face = "bold", vjust = 1.5),
-          axis.line  = element_line(colour = "black"),
-          panel.grid.major = element_blank(),
-          panel.grid.minor = element_blank(),
-          plot.background = element_rect(fill = "transparent", colour = NA),
-          legend.position = "none") +
+    scale_color_manual("", values = col, labels = paste0("P(Y >= ", 0:(length(col)-1), ")")) +
+    theme_shiny +
     ggtitle("Category probabilities") +
-    scale_color_manual("", values = col, labels = paste0("P(Y >= ", 0:(length(col)-1), ")"))
 
   g
 })
@@ -1805,6 +1756,7 @@ output$DB_irt_training_grm_plot_category <- downloadHandler(
   content = function(file) {
     ggsave(file,
            plot = irt_training_grm_plot_category_Input() +
+             theme(text = element_text(size = 10)) +
              theme(legend.position = c(0.97, 0.7),
                    legend.justification = c(0.97, 0.97)),
            device = "png",
@@ -1900,16 +1852,9 @@ irt_training_gpcm_plot_Input <- reactive({
     ylab("Category probability") +
     xlim(-4, 4) +
     ylim(0, 1) +
-    theme_bw() +
-    theme(text = element_text(size = 14),
-          plot.title = element_text(size = 14, face = "bold", vjust = 1.5),
-          axis.line  = element_line(colour = "black"),
-          panel.grid.major = element_blank(),
-          panel.grid.minor = element_blank(),
-          plot.background = element_rect(fill = "transparent", colour = NA),
-          legend.position = "none") +
+    scale_color_manual("", values = col, labels = paste0("P(Y = ", 0:(length(col)-1), ")")) +
+    theme_shiny +
     ggtitle("Category probabilities") +
-    scale_color_manual("", values = col, labels = paste0("P(Y = ", 0:(length(col)-1), ")"))
 
   g
 })
@@ -1939,6 +1884,7 @@ output$DB_irt_training_gpcm_plot <- downloadHandler(
   content = function(file) {
     ggsave(file,
            plot = irt_training_gpcm_plot_Input() +
+             theme(text = element_text(size = 10)) +
              theme(legend.position = c(0.97, 0.7),
                    legend.justification = c(0.97, 0.97)),
            device = "png",
@@ -2071,16 +2017,9 @@ irt_training_nrm_plot_Input <- reactive({
     ylab("Category probability") +
     xlim(-4, 4) +
     ylim(0, 1) +
-    theme_bw() +
-    theme(text = element_text(size = 14),
-          plot.title = element_text(size = 14, face = "bold", vjust = 1.5),
-          axis.line  = element_line(colour = "black"),
-          panel.grid.major = element_blank(),
-          panel.grid.minor = element_blank(),
-          plot.background = element_rect(fill = "transparent", colour = NA),
-          legend.position = "none") +
+    scale_color_manual("", values = col, labels = paste0("P(Y = ", 0:(length(col)-1), ")")) +
+    theme_shiny +
     ggtitle("Category probabilities") +
-    scale_color_manual("", values = col, labels = paste0("P(Y = ", 0:(length(col)-1), ")"))
 
   g
 })
@@ -2110,6 +2049,7 @@ output$DB_irt_training_nrm_plot <- downloadHandler(
   content = function(file) {
     ggsave(file,
            plot = irt_training_nrm_plot_Input() +
+             theme(text = element_text(size = 10)) +
              theme(legend.position = c(0.97, 0.7),
                    legend.justification = c(0.97, 0.97)),
            device = "png",

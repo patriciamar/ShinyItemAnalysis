@@ -65,19 +65,11 @@ histbyscoregroup1Input <- reactive({
     geom_histogram(aes(fill = gr), binwidth = 1, color = "black") +
     scale_fill_manual("", breaks = df$gr, values = col) +
     labs(x = "Total score",
-         y = "Number of students") +
+         y = "Number of respondents") +
     scale_y_continuous(expand = c(0, 0),
                        limits = c(0, max(table(sc)) + 0.01 * nrow(a))) +
     scale_x_continuous(limits = c(-0.5, ncol(a) + 0.5)) +
-    theme_bw() +
-    theme(legend.title = element_blank(),
-          legend.position = "none",
-          axis.line  = element_line(colour = "black"),
-          panel.grid.major = element_blank(),
-          panel.grid.minor = element_blank(),
-          panel.background = element_blank(),
-          text = element_text(size = 14),
-          plot.title = element_text(face = "bold")) +
+    theme_shiny +
     ggtitle("Histogram of total scores for focal group")
   g
 })
@@ -91,8 +83,10 @@ output$DP_histbyscoregroup1 <- downloadHandler(
     paste("fig_HistogramForFocalGroup.png", sep = "")
   },
   content = function(file) {
-    ggsave(file, plot = histbyscoregroup1Input(), device = "png",
-           height = 3, width = 9, dpi = 160)
+    ggsave(file, plot = histbyscoregroup1Input() +
+             theme(text = element_text(size = 10)),
+           device = "png",
+           height = 4, width = 8, dpi = 300)
   }
 )
 
@@ -119,23 +113,16 @@ histbyscoregroup0Input <- reactive ({
       col <- c("red", "grey", "blue")
     }
   }
-  g<-ggplot(df, aes(x = sc)) +
+
+  g <- ggplot(df, aes(x = sc)) +
     geom_histogram(aes(fill = gr), binwidth = 1, color = "black") +
     scale_fill_manual("", breaks = df$gr, values = col) +
     labs(x = "Total score",
-         y = "Number of students") +
+         y = "Number of respondents") +
     scale_y_continuous(expand = c(0, 0),
                        limits = c(0, max(table(sc)) + 0.01 * nrow(a))) +
     scale_x_continuous(limits = c(-0.5, ncol(a) + 0.5)) +
-    theme_bw() +
-    theme(legend.title = element_blank(),
-          legend.position = "none",
-          axis.line  = element_line(colour = "black"),
-          panel.grid.major = element_blank(),
-          panel.grid.minor = element_blank(),
-          panel.background = element_blank(),
-          text = element_text(size = 14),
-          plot.title = element_text(face = "bold")) +
+    theme_shiny +
     ggtitle("Histogram of total scores for reference group")
   g
 })
@@ -149,8 +136,10 @@ output$DP_histbyscoregroup0 <- downloadHandler(
     paste("fig_HistogramForRefGroup.png", sep = "")
   },
   content = function(file) {
-    ggsave(file, plot = histbyscoregroup0Input(), device = "png",
-           height = 3, width = 9, dpi = 160)
+    ggsave(file, plot = histbyscoregroup0Input() +
+             theme(text = element_text(size = 10)),
+           device = "png",
+           height = 4, width = 8, dpi = 300)
   }
 )
 
@@ -235,14 +224,7 @@ deltaplotInput <- reactive({
          y = "Focal group") +
     xlim(min(dp$Deltas, na.rm = T) - 0.5, max(dp$Deltas, na.rm = T) + 0.5) +
     ylim(min(dp$Deltas, na.rm = T) - 0.5, max(dp$Deltas, na.rm = T) + 0.5) +
-    theme_bw() +
-    theme(legend.title = element_blank(),
-          axis.line  = element_line(colour = "black"),
-          panel.grid.major = element_blank(),
-          panel.grid.minor = element_blank(),
-          panel.background = element_blank(),
-          text = element_text(size = 14),
-          plot.title = element_text(face = "bold"))
+    theme_shiny
   if (is.numeric(dp$DIFitems)){
     df2 <- df[dp$DIFitems, ]
     p <- p + geom_point(data = df2,
@@ -289,14 +271,8 @@ deltaplotInput_report<-reactive({
          y = "Focal group") +
     xlim(min(dp$Deltas, na.rm = T) - 0.5, max(dp$Deltas, na.rm = T) + 0.5) +
     ylim(min(dp$Deltas, na.rm = T) - 0.5, max(dp$Deltas, na.rm = T) + 0.5) +
-    theme_bw() +
-    theme(legend.title = element_blank(),
-          axis.line  = element_line(colour = "black"),
-          panel.grid.major = element_blank(),
-          panel.grid.minor = element_blank(),
-          panel.background = element_blank(),
-          text = element_text(size = 14),
-          plot.title = element_text(face = "bold"))
+    theme_shiny
+
   if (is.numeric(dp$DIFitems)){
     df2 <- df[dp$DIFitems, ]
     p <- p + geom_point(data = df2,
@@ -316,8 +292,10 @@ output$DP_deltaplot <- downloadHandler(
     paste("fig_DeltaPlot.png", sep = "")
   },
   content = function(file) {
-    ggsave(file, plot = deltaplotInput(), device = "png",
-           height = 3, width = 9, dpi = 160)
+    ggsave(file, plot = deltaplotInput() +
+             theme(text = element_text(size = 10)),
+           device = "png",
+           height = 4, width = 8, dpi = 300)
   }
 )
 
@@ -399,7 +377,7 @@ output$ORcalculation <- renderUI ({
   alphaMH <- round(model_DIF_MH_tables()$alphaMH[input$difMHSlider_item], 2)
 
   txt <- ifelse((b * c == 0)|(a * d == 0), "Odds ratio cannot be calculated!",
-                paste("For students who reached total score of", input$difMHSlider_score,
+                paste("For respondent who reached total score of", input$difMHSlider_score,
                       "the odds of answering item", item_numbers()[input$difMHSlider_item],
                       "correctly is",
                       ifelse(OR == 1, "is the same for both groups. ",
@@ -488,13 +466,14 @@ plot_DIF_logisticInput <- reactive({
   data <- data.frame(correct_answ())
 
   type <- input$type_plot_DIF_logistic
-  plotDIFLogistic(data, group,
-                  type = input$type_plot_DIF_logistic,
-                  item =  input$diflogSlider,
-                  IRT = F,
-                  p.adjust.method = input$correction_method_logItems,
-                  purify = input$puri_LR_plot
-  )
+  g <- plotDIFLogistic(data, group,
+                       type = input$type_plot_DIF_logistic,
+                       item =  input$diflogSlider,
+                       IRT = F,
+                       p.adjust.method = input$correction_method_logItems,
+                       purify = input$puri_LR_plot)
+  g <- g + theme_shiny
+  g
 })
 
 output$plot_DIF_logistic <- renderPlot({
@@ -506,8 +485,10 @@ output$DP_plot_DIF_logistic <- downloadHandler(
     paste("fig_DifLogisticRegression_",item_names()[input$diflogSlider],".png", sep = "")
   },
   content = function(file) {
-    ggsave(file, plot = plot_DIF_logisticInput(), device = "png",
-           height = 3, width = 9, dpi = 160)
+    ggsave(file, plot = plot_DIF_logisticInput() +
+             theme(text = element_text(size = 10)),
+           device = "png",
+           height = 4, width = 10, dpi = 300)
   }
 )
 
@@ -557,8 +538,8 @@ DIF_logistic_plotReport <- reactive({
                            item =  mod$DIFitems[i],
                            IRT = F,
                            p.adjust.method = p.adjust.method_report,
-                           purify = purify_report
-      )
+                           purify = purify_report)
+      g <- g + theme_shiny
       g = g + ggtitle(paste0("DIF logistic plot for item ", item_numbers()[mod$DIFitems[i]])) +
         theme(text = element_text(size = 12),
               plot.title = element_text(size = 12, face = "bold"))
@@ -613,12 +594,14 @@ plot_DIF_logistic_IRT_ZInput <- reactive ({
   data <- data.frame(correct_answ())
 
   type <- input$type_plot_DIF_logistic
-  plotDIFLogistic(data, group,
-                  type = input$type_plot_DIF_logistic_IRT_Z,
-                  item =  input$diflog_irtSlider,
-                  IRT = T,
-                  p.adjust.method = input$correction_method_logZItems,
-                  purify = F)
+  g <- plotDIFLogistic(data, group,
+                       type = input$type_plot_DIF_logistic_IRT_Z,
+                       item =  input$diflog_irtSlider,
+                       IRT = T,
+                       p.adjust.method = input$correction_method_logZItems,
+                       purify = F)
+  g <- g + theme_shiny
+  g
 })
 
 output$plot_DIF_logistic_IRT_Z <- renderPlot({
@@ -630,8 +613,10 @@ output$DP_plot_DIF_logistic_IRT_Z <- downloadHandler(
     paste("fig_DIFLogisticIRTZ_",item_names()[input$diflog_irtSlider],".png", sep = "")
   },
   content = function(file) {
-    ggsave(file, plot = plot_DIF_logistic_IRT_ZInput(), device = "png",
-           height = 3, width = 9, dpi = 160)
+    ggsave(file, plot = plot_DIF_logistic_IRT_ZInput() +
+             theme(text = element_text(size = 10)),
+           device = "png",
+           height = 4, width = 8, dpi = 300)
   }
 )
 
@@ -727,11 +712,10 @@ plot_DIF_NLRInput <- reactive({
   fit <- model_DIF_NLR_plot()
   item <- input$difnlrSlider
 
-  plot(fit, item = item)[[1]] +
-    theme(text = element_text(size = 14),
-          plot.title = element_text(size = 14, face = "bold",
-                                    vjust = 1.5)) +
+  g <- plot(fit, item = item)[[1]] +
+    theme_shiny +
     ggtitle(item_names()[item])
+  g
 })
 
 # ** Output plot ######
@@ -745,8 +729,10 @@ output$DP_plot_DIF_NLR <- downloadHandler(
     paste("fig_DIFNonlinear_",item_names()[input$difnlrSlider],".png", sep = "")
   },
   content = function(file) {
-    ggsave(file, plot = plot_DIF_NLRInput(), device = "png",
-           height = 3, width = 9, dpi = 160)
+    ggsave(file, plot = plot_DIF_NLRInput() +
+             theme(text = element_text(size = 10)),
+           device = "png",
+           height = 4, width = 8, dpi = 300)
   }
 )
 
@@ -831,8 +817,11 @@ plot_DIF_IRT_LordInput <- reactive({
   fitLord <- model_DIF_IRT_Lord_plot()
   item <- input$difirt_lord_itemSlider
 
-  plotDIFirt(parameters = fitLord$itemParInit,
-             item = item, item.name = item_names()[item])[[item]]
+  g <- plotDIFirt(parameters = fitLord$itemParInit,
+                  item = item,
+                  item.name = item_names()[item])[[item]]
+  g <- g + theme_shiny
+  g
 })
 
 output$plot_DIF_IRT_Lord <- renderPlot({
@@ -844,8 +833,10 @@ output$DP_plot_DIF_IRT_Lord <- downloadHandler(
     paste("fig_DIFIRTLord_",item_names()[input$difirt_lord_itemSlider],".png", sep = "")
   },
   content = function(file) {
-    ggsave(file, plot = plot_DIF_IRT_LordInput(), device = "png",
-           height = 3, width = 9, dpi = 160)
+    ggsave(file, plot = plot_DIF_IRT_LordInput() +
+             theme(text = element_text(size = 10)),
+           device = "png",
+           height = 4, width = 8, dpi = 300)
   }
 )
 
@@ -1016,8 +1007,10 @@ plot_DIF_IRT_RajuInput <- reactive({
   fitRaju <- model_DIF_IRT_Raju_plot()
   item <- input$difirt_raju_itemSlider
 
-  plotDIFirt(parameters = fitRaju$itemParInit, test = "Raju",
-             item = item, item.name = item_names()[item])[[item]]
+  g <- plotDIFirt(parameters = fitRaju$itemParInit, test = "Raju",
+                  item = item, item.name = item_names()[item])[[item]]
+  g <- g + theme_shiny
+  g
 })
 
 output$plot_DIF_IRT_Raju <- renderPlot({
@@ -1029,8 +1022,10 @@ output$DP_plot_DIF_IRT_Raju <- downloadHandler(
     paste("fig_DIFIRTRaju_",item_names()[input$difirt_raju_itemSlider],".png", sep = "")
   },
   content = function(file) {
-    ggsave(file, plot = plot_DIF_IRT_RajuInput(), device = "png",
-           height = 3, width = 9, dpi = 160)
+    ggsave(file, plot = plot_DIF_IRT_RajuInput() +
+             theme(text = element_text(size = 10)),
+           device = "png",
+           height = 4, width = 8, dpi = 300)
   }
 )
 
@@ -1211,10 +1206,10 @@ plot_DDFInput <- reactive({
   item <- input$ddfSlider
 
   g <- plot(fit, item = item)[[1]]
-  g + theme(text = element_text(size = 14),
-            plot.title = element_text(size = 14, face = "bold",
-                                      vjust = 1.5)) +
+  g <- g +
+    theme_shiny +
     ggtitle(item_names()[item])
+  g
 })
 
 plot_DDFReportInput <- reactive({
@@ -1264,8 +1259,10 @@ output$DP_plot_DDF <- downloadHandler(
     paste("fig_DDF_",item_names()[input$ddfSlider],".png", sep = "")
   },
   content = function(file) {
-    ggsave(file, plot = plot_DDFInput(), device = "png",
-           height = 3, width = 9, dpi = 160)
+    ggsave(file, plot = plot_DDFInput() +
+             theme(text = element_text(size = 10)),
+           device = "png",
+           height = 4, width = 8, dpi = 300)
   }
 )
 

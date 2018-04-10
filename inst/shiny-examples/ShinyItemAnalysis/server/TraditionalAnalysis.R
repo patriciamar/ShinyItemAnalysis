@@ -102,7 +102,7 @@ output$itemanalysis_table_text <- renderUI({
   num.groups <- input$DDplotNumGroupsSlider
   HTML(paste(
     " <b> Explanation: Difficulty </b> ",
-    " - Difficulty of item is estimated as percent of students who answered correctly to that item. ",
+    " - Difficulty of item is estimated as percent of respondents who answered correctly to that item. ",
     " <b> SD </b> ",
     " - standard deviation, ",
     " <b> RIT </b> ",
@@ -160,9 +160,9 @@ output$distractor_text <- renderUI({
   txt1 <- paste ('Respondents are divided into ')
   txt2 <- paste ("<b>", input$gr, "</b>")
   txt3 <- paste ("groups by their total score. Subsequently, we display percentage
-                 of students in each group who selected given answer (correct answer or distractor).
-                 The correct answer should be more often selected by strong students than by students
-                 with lower total score, i.e."
+                 of respondents in each group who selected given answer (correct answer or distractor).
+                 The correct answer should be more often selected by respondents with higher total score
+                 than by those with lower total score, i.e."
   )
   txt4 <- paste ("<b>",'solid line should be increasing.',"</b>")
   txt5 <- paste('The distractor should work in opposite direction, i.e. ')
@@ -222,7 +222,7 @@ report_distractor_plot <- reactive({
                                 multiple.answers = multiple.answers_report)
     g = g +
       ggtitle(paste("Distractor plot for item", item_numbers()[i])) +
-      theme(text = element_text(size = 14))
+      theme_shiny
     g = ggplotGrob(g)
     graflist[[i]] = g
   }
@@ -283,18 +283,9 @@ distractor_barplot_item_response_patterns_Input <- reactive({
     xlab("Item response pattern") +
     ylab("Relative frequency") +
     scale_y_continuous(limits =  c(0, 1), expand = c(0, 0)) +
-    theme_bw() +
-    theme(axis.line  = element_line(colour = "black"),
-          text = element_text(size = 14),
-          panel.grid.major = element_blank(),
-          panel.grid.minor = element_blank(),
-          panel.background = element_blank(),
-          legend.title = element_blank(),
-          legend.position = c(0, 1),
-          legend.justification = c(0, 1),
-          legend.background = element_blank(),
-          legend.key = element_rect(colour = "white"),
-          plot.title = element_text(face = "bold")) +
+    theme_shiny +
+    theme(legend.position = c(0, 1),
+          legend.justification = c(0, 1)) +
     ggtitle(item_names()[item])
 
 })
@@ -309,7 +300,8 @@ output$DB_distractor_barplot_item_response_patterns <- downloadHandler(
     paste("fig_ItemResponsePatterns_", item_names()[input$distractorSlider], ".png", sep = "")
   },
   content = function(file) {
-    ggsave(file, plot = distractor_barplot_item_response_patterns_Input() + theme(text = element_text(size = 10)),
+    ggsave(file, plot = distractor_barplot_item_response_patterns_Input() +
+             theme(text = element_text(size = 10)),
            device = "png",
            height = 4, width = 8, dpi = 300)
   }
@@ -335,19 +327,11 @@ distractor_histogram_Input <- reactive({
     geom_histogram(aes(fill = gr), binwidth = 1, color = "black") +
     scale_fill_manual("", breaks = df$gr, values = col) +
     labs(x = "Total score",
-         y = "Number of students") +
+         y = "Number of respondents") +
     scale_y_continuous(expand = c(0, 0),
                        limits = c(0, max(table(sc)) + 0.01 * nrow(a))) +
     scale_x_continuous(limits = c(-0.5, ncol(a) + 0.5)) +
-    theme_bw() +
-    theme(legend.title = element_blank(),
-          legend.position = "none",
-          axis.line  = element_line(colour = "black"),
-          panel.grid.major = element_blank(),
-          panel.grid.minor = element_blank(),
-          panel.background = element_blank(),
-          text = element_text(size = 14),
-          plot.title = element_text(face = "bold"))
+    theme_shiny
 })
 
 # ** Output distractors histograms by group ######

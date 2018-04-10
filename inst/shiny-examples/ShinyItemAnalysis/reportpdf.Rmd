@@ -132,7 +132,7 @@ print(xtable(t(table),
 ```
 
 ### Histogram of total scores
-For selected cut-score, blue part of histogram shows students with total score above the cut-score, grey column shows students with total score equal to the cut-score and red part of histogram shows students below the cut-score.
+For selected cut-score, blue part of histogram shows respondents with total score above the cut-score, grey column shows respondents with total score equal to the cut-score and red part of histogram shows respondents below the cut-score.
 
 ```{r total-scores-histogram, echo = FALSE, fig.height = 4.5, fig.width = 11, dpi = 300}
 params$histogram_totalscores + 
@@ -261,7 +261,7 @@ if(params$isCriterionPresent & params$validity_check){
 ## Item analysis
 
 ### Difficulty/Discrimination plot
-Difficulty (red) of items is estimated as percent of students who answered correctly to that item. Discrimination (blue) is by default described by difference of percent correct in upper and lower third of students (Upper-Lower Index, ULI). By rule of thumb it should not be lower than 0.2 (borderline in the plot), except for very easy or very difficult items.
+Difficulty (red) of items is estimated as percent of respondents who answered correctly to that item. Discrimination (blue) is by default described by difference of percent correct in upper and lower third of respondents (Upper-Lower Index, ULI). By rule of thumb it should not be lower than 0.2 (borderline in the plot), except for very easy or very difficult items.
 
 ```{r DD-plot-interpretation, echo = FALSE, results = "hide"}
 range1 <- params$DDplotRange1
@@ -295,7 +295,7 @@ params$difPlot +
 \pagebreak
 
 ### Traditional item analysis table 
-Diff. - Difficulty of item is estimated as percent of students who answered correctly to that item. SD - standard deviation, ULI - Upper-Lower Index, RIT - Pearson correlation between item and total score, RIR - Pearson correlation between item and rest of items, Alpha Drop - Cronbach's alpha of test without given item, Cust. D.- difference between the difficulty recorded in the groups selected by user.
+Diff. - Difficulty of item is estimated as percent of respondents who answered correctly to that item. SD - standard deviation, ULI - Upper-Lower Index, RIT - Pearson correlation between item and total score, RIR - Pearson correlation between item and rest of items, Alpha Drop - Cronbach's alpha of test without given item, Cust. D.- difference between the difficulty recorded in the groups selected by user.
 
 ```{r item-table, echo = FALSE, results = "asis"}
 table = params$itemexam
@@ -313,7 +313,7 @@ print(xtable(table,
 
 ## Distractor analysis
 
-Respondents are divided into selected number groups by their total score. Subsequently, the percentage of students in each group who selected given answer (correct answer or distractor) is displayed. The correct answer should be more often selected by strong students than by students with lower total score, i.e. solid line should be increasing. The distractor should work in opposite direction, i.e. dotted lines should be decreasing.
+Respondents are divided into selected number groups by their total score. Subsequently, the percentage of respondents in each group who selected given answer (correct answer or distractor) is displayed. The correct answer should be more often selected by respondents with higher total score than by those with lower total score, i.e. solid line should be increasing. The distractor should work in opposite direction, i.e. dotted lines should be decreasing.
 
 ```{r distractor-multi-plot, echo = FALSE, fig.height = 4.5, fig.width = 11, dpi = 300}
 library(gridExtra)
@@ -328,7 +328,7 @@ for (i in 1:length(params$graf)){
 
 `r if (params$irt_type != "none") {"# IRT models"}`
 
-`r if (params$irt_type != "none") {"Item Response Theory (IRT) models are mixed-effect regression models in which student ability $\\theta$ is assumed to be a random effect and is estimated together with item paramters. Ability $\\theta$ is often assumed to follow normal distibution."}`
+`r if (params$irt_type != "none") {"Item Response Theory (IRT) models are mixed-effect regression models in which respondent ability $\\theta$ is assumed to be a random effect and is estimated together with item paramters. Ability $\\theta$ is often assumed to follow normal distibution."}`
 
 ```{r irt-eq, echo = FALSE, results = "hide"}
 if (params$irt_type == "rasch") {
@@ -365,7 +365,7 @@ if (params$irt_type == "none") {
 
 `r if (any(params$wrightMap!="")) {"## Wright (item-person) map using 1PL IRT model"}`
 
-`r if (any(params$wrightMap!="")) {"Wright map, also called item-person map, is a graphical tool to display person estimates and item parameters. The person side (left) represents histogram of estimated knowledge of students. The item side (right) displays estimates of difficulty of particular items."}`
+`r if (any(params$wrightMap!="")) {"Wright map, also called item-person map, is a graphical tool to display person estimates and item parameters. The person side (left) represents histogram of estimated knowledge of respondents. The item side (right) displays estimates of difficulty of particular items."}`
 
 \vspace{-1em}
 
@@ -460,7 +460,7 @@ if (params$histCheck) {
 
 `r if(params$isGroupPresent & params$histCheck) {"### Histogram of total score by group"}`
 
-`r if(params$isGroupPresent & params$histCheck) {"For selected cut-score, blue part of histograms shows students with total score above the cut-score, grey column shows students with total score equal to the cut-score and red part of histogram shows students below the cut-score."}`
+`r if(params$isGroupPresent & params$histCheck) {"For selected cut-score, blue part of histograms shows respondents with total score above the cut-score, grey column shows respondents with total score equal to the cut-score and red part of histogram shows respondents below the cut-score."}`
 
 
 ```{r hist-by-group, echo = FALSE, fig.height = 4.5, fig.width = 11.5, dpi = 300}

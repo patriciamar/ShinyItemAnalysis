@@ -40,19 +40,10 @@ logreg_plot_Input <- reactive({
                   color = "darkblue") +
     xlab("Total score") +
     ylab("Probability of correct answer") +
-    scale_y_continuous(limits = c(0, 1)) +
-    theme_bw() +
-    theme(axis.line  = element_line(colour = "black"),
-          text = element_text(size = 14),
-          panel.grid.major = element_blank(),
-          panel.grid.minor = element_blank(),
-          panel.background = element_blank(),
-          legend.title = element_blank(),
-          legend.position = c(0, 1),
-          legend.justification = c(0, 1),
-          legend.background = element_blank(),
-          legend.key = element_rect(colour = "white"),
-          plot.title = element_text(face = "bold")) +
+    ylim(0, 1) +
+    theme_shiny +
+    theme(legend.position = c(0.01, 0.97),
+          legend.justification = c(0.01, 0.97)) +
     ggtitle(item_names()[item])
 })
 
@@ -67,7 +58,8 @@ output$DB_logreg_plot <- downloadHandler(
     paste("fig_LogisticRegressionCurve_", item_names()[input$logregSlider], ".png", sep = "")
   },
   content = function(file) {
-    ggsave(file, plot = logreg_plot_Input() + theme(text = element_text(size = 10)),
+    ggsave(file, plot = logreg_plot_Input() +
+             theme(text = element_text(size = 10)),
            device = "png",
            height = 4, width = 8, dpi = 300)
   }
@@ -141,18 +133,9 @@ z_logreg_plot_Input <- reactive({
     xlab("Standardized total score (Z-score)") +
     ylab("Probability of correct answer") +
     scale_y_continuous(limits = c(0, 1)) +
-    theme_bw() +
-    theme(axis.line  = element_line(colour = "black"),
-          text = element_text(size = 14),
-          panel.grid.major = element_blank(),
-          panel.grid.minor = element_blank(),
-          panel.background = element_blank(),
-          legend.title = element_blank(),
-          legend.position = c(0, 1),
-          legend.justification = c(0, 1),
-          legend.background = element_blank(),
-          legend.key = element_rect(colour = "white"),
-          plot.title = element_text(face = "bold")) +
+    theme_shiny +
+    theme(legend.position = c(0.01, 0.97),
+          legend.justification = c(0.01, 0.97)) +
     ggtitle(item_names()[item])
 })
 
@@ -167,7 +150,8 @@ output$DB_z_logreg_plot <- downloadHandler(
     paste("fig_LogisticRegressionCurve_Zscores_", item_names()[input$zlogregSlider], ".png", sep = "")
   },
   content = function(file) {
-    ggsave(file, plot = z_logreg_plot_Input() + theme(text = element_text(size = 10)),
+    ggsave(file, plot = z_logreg_plot_Input() +
+             theme(text = element_text(size = 10)),
            device = "png",
            height = 4, width = 8, dpi = 300)
   }
@@ -242,18 +226,9 @@ z_logreg_irt_plot_Input <- reactive({
     xlab("Standardized total score (Z-score)") +
     ylab("Probability of correct answer") +
     scale_y_continuous(limits = c(0, 1)) +
-    theme_bw() +
-    theme(axis.line  = element_line(colour = "black"),
-          text = element_text(size = 14),
-          panel.grid.major = element_blank(),
-          panel.grid.minor = element_blank(),
-          panel.background = element_blank(),
-          legend.title = element_blank(),
-          legend.position = c(0, 1),
-          legend.justification = c(0, 1),
-          legend.background = element_blank(),
-          legend.key = element_rect(colour = "white"),
-          plot.title = element_text(face = "bold")) +
+    theme_shiny +
+    theme(legend.position = c(0.01, 0.97),
+          legend.justification = c(0.01, 0.97)) +
     ggtitle(item_names()[item])
 })
 
@@ -268,7 +243,8 @@ output$DB_z_logreg_irt_plot <- downloadHandler(
     paste("fig_LogisticRegressionCurve_Zscores_IRT_", item_names()[input$zlogreg_irtSlider], ".png", sep = "")
   },
   content = function(file) {
-    ggsave(file, plot = z_logreg_irt_plot_Input() + theme(text = element_text(size = 10)),
+    ggsave(file, plot = z_logreg_irt_plot_Input() +
+             theme(text = element_text(size = 10)),
            device = "png",
            height = 4, width = 8, dpi = 300)
   }
@@ -368,18 +344,9 @@ nlr_3P_plot_Input <- reactive({
     xlab("Standardized total score (Z-score)") +
     ylab("Probability of correct answer") +
     scale_y_continuous(limits = c(0, 1)) +
-    theme_bw() +
-    theme(axis.line  = element_line(colour = "black"),
-          text = element_text(size = 14),
-          panel.grid.major = element_blank(),
-          panel.grid.minor = element_blank(),
-          panel.background = element_blank(),
-          legend.title = element_blank(),
-          legend.position = c(0, 1),
-          legend.justification = c(0, 1),
-          legend.background = element_blank(),
-          legend.key = element_rect(colour = "white"),
-          plot.title = element_text(face = "bold")) +
+    theme_shiny +
+    theme(legend.position = c(0.01, 0.97),
+          legend.justification = c(0.01, 0.97)) +
     ggtitle(item_names()[item])
 })
 
@@ -394,7 +361,8 @@ output$DB_nlr_3P_plot <- downloadHandler(
     paste("fig_NLR_3P_", item_names()[input$slider_nlr_3P_item], ".png", sep = "")
   },
   content = function(file) {
-    ggsave(file, plot = nlr_3P_plot_Input() + theme(text = element_text(size = 10)),
+    ggsave(file, plot = nlr_3P_plot_Input() +
+             theme(text = element_text(size = 10)),
            device = "png",
            height = 4, width = 8, dpi = 300)
   }
@@ -478,18 +446,9 @@ nlr_4P_plot_Input <- reactive({
     xlab("Standardized total score (Z-score)") +
     ylab("Probability of correct answer") +
     scale_y_continuous(limits = c(0, 1)) +
-    theme_bw() +
-    theme(axis.line  = element_line(colour = "black"),
-          text = element_text(size = 14),
-          panel.grid.major = element_blank(),
-          panel.grid.minor = element_blank(),
-          panel.background = element_blank(),
-          legend.title = element_blank(),
-          legend.position = c(0, 1),
-          legend.justification = c(0, 1),
-          legend.background = element_blank(),
-          legend.key = element_rect(colour = "white"),
-          plot.title = element_text(face = "bold")) +
+    theme_shiny +
+    theme(legend.position = c(0.01, 0.97),
+          legend.justification = c(0.01, 0.97)) +
     ggtitle(item_names()[item])
 })
 
@@ -504,7 +463,8 @@ output$DB_nlr_4P_plot <- downloadHandler(
     paste0("fig_NLR_4P", item_names()[input$slider_nlr_4P_item], ".png")
   },
   content = function(file) {
-    ggsave(file, plot = nlr_4P_plot_Input() + theme(text = element_text(size = 10)),
+    ggsave(file, plot = nlr_4P_plot_Input() +
+             theme(text = element_text(size = 10)),
            device = "png",
            height = 4, width = 8, dpi = 300)
   }
@@ -550,93 +510,100 @@ output$regr_comp_table <- DT::renderDataTable({
 
   m <- ncol(data)
 
-  glr <- deriv3( ~ c + (1 - c) / (1 + exp(-a * (x - b))),
-                 namevec = c("a", "b", "c"),
-                 function.arg = function(x, a, b, c) {})
+  glr <- function(x, a, b, c, d){c + (d - c) / (1 + exp(-a * (x - b)))}
 
-  Q3 <- cut(zscore, quantile(zscore, (0:3) / 3, na.rm = T),
-            c("I", "II", "III"),
-            include.lowest = TRUE)
+  start <- startNLR(data, group = c(rep(0, nrow(data)/2), rep(1, nrow(data)/2)),
+                    model = "4PLcgdg",
+                    parameterization = "classic",
+                    simplify = T)[, 1:4]
 
-  x <- cbind(mean(zscore[Q3 == "I"], na.rm = T),
-             apply(data[Q3 == "I",], 2, function(x){mean(x, na.rm = T)}))
-  y <- cbind(mean(zscore[Q3 == "III"], na.rm = T),
-             apply(data[Q3 == "III",], 2, function(x){mean(x, na.rm = T)}))
-  u1 <- y[, 1] - x[, 1]
-  u2 <- y[, 2] - x[, 2]
-  ### intercept of line
-  c <- -(-u1 * y[, 2] + u2 * y[, 1]) / u1
-  ### slope of line
-  t <- u2 / u1
-  g <- apply(cbind(0, t * (-4) + c), 1, max)
 
-  b <- ((1 + g) / 2 - c) / t
-
-  alpha <- 4 * t / (1 - g)
-
-  discr <- alpha
-  diffi <- b
-  guess <- g
-
-  start <- cbind(discr, diffi, guess)
-  colnames(start) <- c("a", "b", "c")
-
-  fit2PL <- lapply(1:m, function(i) tryCatch(nls(unlist(data[, i, with = F]) ~  glr(zscore, a, b, c = 0),
+  fit2PL <- lapply(1:m, function(i) tryCatch(nls(unlist(data[, i, with = F]) ~  glr(zscore, a, b, c = 0, d = 1),
                                                  algorithm = "port", start = start[i, 1:2],
                                                  lower = c(-Inf, -Inf),
                                                  upper = c(Inf, Inf)), error = function(e) {
                                                    cat("ERROR : ", conditionMessage(e), "\n")}))
 
-  fit3PL <- lapply(1:m, function(i) tryCatch(nls(unlist(data[, i, with = F]) ~  glr(zscore, a, b, c),
-                                                 algorithm = "port", start = start[i, ],
+  fit3PL <- lapply(1:m, function(i) tryCatch(nls(unlist(data[, i, with = F]) ~  glr(zscore, a, b, c, d = 1),
+                                                 algorithm = "port", start = start[i, 1:3],
                                                  lower = c(-Inf, -Inf, 0),
                                                  upper = c(Inf, Inf, 1)), error = function(e) {
                                                    cat("ERROR : ", conditionMessage(e), "\n")}))
 
-  whok <- !c(sapply(fit3PL, is.null) | sapply(fit2PL, is.null))
-  AIC2PL <- AIC3PL <- BIC2PL <- BIC3PL <- rep(NA, m)
+  fit4PL <- lapply(1:m, function(i) tryCatch(nls(unlist(data[, i, with = F]) ~  glr(zscore, a, b, c, d),
+                                                 algorithm = "port", start = start[i, 1:4],
+                                                 lower = c(-Inf, -Inf, 0, 0),
+                                                 upper = c(Inf, Inf, 1, 1)), error = function(e) {
+                                                   cat("ERROR : ", conditionMessage(e), "\n")}))
+
+
+  whok <- !c(sapply(fit2PL, is.null) | sapply(fit3PL, is.null) | sapply(fit4PL, is.null))
+  AIC2PL <- AIC3PL <- AIC4PL <- BIC2PL <- BIC3PL <- BIC4PL <- rep(NA, m)
 
   AIC2PL[whok] <- sapply(fit2PL[whok], AIC)
   AIC3PL[whok] <- sapply(fit3PL[whok], AIC)
+  AIC4PL[whok] <- sapply(fit4PL[whok], AIC)
+
   BIC2PL[whok] <- sapply(fit2PL[whok], BIC)
   BIC3PL[whok] <- sapply(fit3PL[whok], BIC)
+  BIC4PL[whok] <- sapply(fit4PL[whok], BIC)
 
   bestAIC <- bestBIC <- rep(NA, m)
-  bestAIC[whok] <- ifelse(AIC2PL[whok] < AIC3PL[whok], "2PL", "3PL")
-  bestBIC[whok] <- ifelse(BIC2PL[whok] < BIC3PL[whok], "2PL", "3PL")
+  dfAIC <- cbind(AIC2PL[whok], AIC3PL[whok], AIC4PL[whok])
+  bestAIC[whok] <- paste0(apply(dfAIC, 1, function(x) which(x == min(x))[1]) + 1, "PL")
 
-  LRstat <- LRpval <- rep(NA, m)
-  LRstat[whok] <- -2 * (sapply(fit2PL[whok], logLik) - sapply(fit3PL[whok], logLik))
+  dfBIC <- cbind(BIC2PL[whok], BIC3PL[whok], BIC4PL[whok])
+  bestBIC[whok] <- paste0(apply(dfBIC, 1, function(x) which(x == min(x))[1]) + 1, "PL")
+
+  LRstat23 <- LRpval23 <- rep(NA, m)
+  LRstat23[whok] <- -2 * (sapply(fit2PL[whok], logLik) - sapply(fit3PL[whok], logLik))
   LRdf <- 1
-  LRpval[whok] <- 1 - pchisq(LRstat[whok], LRdf)
-  LRpval <- p.adjust(LRpval, method = input$correction_method_regrmodels)
-  bestLR <- ifelse(LRpval < 0.05, "3PL", "2PL")
+  LRpval23[whok] <- 1 - pchisq(LRstat23[whok], LRdf)
+  LRpval23 <- p.adjust(LRpval23, method = input$correction_method_regrmodels)
+
+  LRstat34 <- LRpval34 <- rep(NA, m)
+  LRstat34[whok] <- -2 * (sapply(fit3PL[whok], logLik) - sapply(fit4PL[whok], logLik))
+  LRdf <- 1
+  LRpval34[whok] <- 1 - pchisq(LRstat34[whok], LRdf)
+  LRpval34 <- p.adjust(LRpval34, method = input$correction_method_regrmodels)
+
+  bestLR <- ifelse(LRpval34 < 0.05, "4PL",
+                   ifelse(LRpval23 < 0.05, "3PL", "2PL"))
 
   tab <- rbind(sprintf("%.2f", round(AIC2PL, 2)),
                sprintf("%.2f", round(AIC3PL, 2)),
+               sprintf("%.2f", round(AIC4PL, 2)),
+               bestAIC,
                sprintf("%.2f", round(BIC2PL, 2)),
                sprintf("%.2f", round(BIC3PL, 2)),
-               sprintf("%.2f", round(LRstat, 3)),
-               ifelse(round(LRpval, 3) < 0.001, "<0.001", sprintf("%.3f", round(LRpval, 3))),
-               bestAIC,
+               sprintf("%.2f", round(BIC4PL, 2)),
                bestBIC,
+               sprintf("%.2f", round(LRstat23, 3)),
+               ifelse(round(LRpval23, 3) < 0.001, "<0.001",
+                      sprintf("%.3f", round(LRpval23, 3))),
+               sprintf("%.2f", round(LRstat34, 3)),
+               ifelse(round(LRpval34, 3) < 0.001, "<0.001",
+                      sprintf("%.3f", round(LRpval34, 3))),
                bestLR)
 
   tab <- as.data.table(tab)
   colnames(tab) <- item_names()
-  rownames(tab) <- c("AIC 2PL", "AIC 3PL",
-                     "BIC 2PL", "BIC 3PL",
-                     "Chisq-value", "p-value",
-                     "BEST AIC", "BEST BIC", "BEST LR")
+  rownames(tab) <- c("AIC 2PL", "AIC 3PL", "AIC 4PL", "BEST AIC",
+                     "BIC 2PL", "BIC 3PL", "BIC 4PL", "BEST BIC",
+                     "Chisq-value 2PL vs 3PL", "p-value 2PL vs 3PL",
+                     "Chisq-value 3PL vs 4PL", "p-value 3PL vs 4PL",
+                     "BEST LR")
 
   tab <- datatable(tab, rownames = T,
                    options = list(autoWidth = T,
-                                  columnDefs = list(list(width = '80px', targets = list(0)),
-                                                    list(width = '60px', targets = list(1:ncol(tab))),
+                                  columnDefs = list(list(width = '140px', targets = list(0)),
+                                                    list(width = '100px', targets = list(1:ncol(tab))),
                                                     list(targets = "_all")),
                                   scrollX = T,
+                                  pageLength = 13,
                                   dom = 'tipr')) %>%
-    formatStyle(0, target = 'row', fontWeight = styleEqual(c('BEST AIC', 'BEST BIC', 'BEST LR'), c('bold', 'bold', 'bold')))
+    formatStyle(0, target = 'row', fontWeight = styleEqual(c('BEST AIC', 'BEST BIC', 'BEST LR'),
+                                                           c('bold', 'bold', 'bold')))
   tab
 
 })
@@ -710,20 +677,10 @@ multi_plot_Input <- reactive({
     ylim(0, 1) +
     labs(x = "Standardized total score",
          y = "Probability of answer") +
-    theme_bw() +
-    theme(axis.line  = element_line(colour = "black"),
-          text = element_text(size = 14),
-          panel.grid.major = element_blank(),
-          panel.grid.minor = element_blank(),
-          panel.background = element_blank(),
-          legend.title = element_blank(),
-          legend.position = c(0, 1),
-          legend.justification = c(0, 1),
-          legend.background = element_blank(),
-          legend.key = element_rect(colour = "white"),
-          legend.box = "horizontal",
-          plot.title = element_text(face = "bold"),
-          legend.key.width = unit(1, "cm")) +
+    theme_shiny +
+    theme(legend.box = "horizontal",
+          legend.position = c(0.01, 0.97),
+          legend.justification = c(0.01, 0.97)) +
     ggtitle(item_names()[item])
 })
 
@@ -777,19 +734,10 @@ multiplotReportInput <- reactive({
              linetype = guide_legend(order = 1),
              fill = guide_legend(order = 1),
              size = guide_legend(order = 2)) +
-      theme_bw() +
-      theme(axis.line  = element_line(colour = "black"),
-            panel.grid.major = element_blank(),
-            panel.grid.minor = element_blank(),
-            panel.background = element_blank(),
-            legend.title = element_blank(),
-            legend.box = "horizontal",
-            legend.position = c(0, 1),
-            legend.justification = c(0, 1),
-            legend.background = element_blank(),
-            legend.key = element_rect(colour = "white"),
-            plot.title = element_text(face = "bold"),
-            legend.key.width = unit(1, "cm"))
+      theme_shiny +
+      theme(legend.box = "horizontal",
+            legend.position = c(0.01, 0.99),
+            legend.justification = c(0.01, 0.99))
     g = g +
       ggtitle(paste("Multinomial plot for item", item_numbers()[item])) +
       theme(text = element_text(size = 14))
@@ -810,7 +758,8 @@ output$DB_multi_plot <- downloadHandler(
     paste("fig_MultinomialRegressionCurve_", item_names()[input$multiSlider], ".png", sep = "")
   },
   content = function(file) {
-    ggsave(file, plot = multi_plot_Input() + theme(text = element_text(size = 10)),
+    ggsave(file, plot = multi_plot_Input() +
+             theme(text = element_text(size = 10)),
            device = "png",
            height = 4, width = 8, dpi = 300)
   }
