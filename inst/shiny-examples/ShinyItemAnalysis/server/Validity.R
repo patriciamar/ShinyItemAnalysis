@@ -50,7 +50,7 @@ output$DB_corr_plot <- downloadHandler(
     numclust <- input$corr_plot_clust
     clustmethod <- input$corr_plot_clustmethod
 
-    png(file, height = 800, width = 800, res = 300, pointsize = 300/72)
+    png(file, height = 800, width = 800, res = 400, pointsize = 300/72)
     if (clustmethod == "none"){
       corrplot(corP, tl.cex = tlcex)
     } else {
@@ -135,8 +135,8 @@ validity_plot_scatter_Input <- reactive({
     xlab("Total score") +
     ylab("Criterion variable") +
     theme_shiny +
-    theme(legend.justification = c(1, 0),
-          legend.position = c(1, 0))
+    theme(legend.justification = c(0.99, 0.01),
+          legend.position = c(0.99, 0.01))
   g
 })
 
@@ -168,7 +168,8 @@ output$DB_validity_plot <- downloadHandler(
     paste("fig_CriterionVariable_", type, ".png", sep = "")
   },
   content = function(file) {
-    ggsave(file, plot = validity_plot_Input() + theme(text = element_text(size = 10)),
+    ggsave(file, plot = validity_plot_Input() +
+             theme(text = element_text(size = 10)),
            device = "png",
            height = 4, width = 8, dpi = 300)
   }
@@ -232,9 +233,9 @@ output$validity_distractor_text <- renderUI({
                  paste("<b>", num.group, "</b> groups as it seems that criterion variable is discrete. "),
                  paste("<b>", num.group, "</b> groups by their criterion variable. "))
   txt3 <- paste ("Subsequently, we display percentage
-                 of students in each group who selected given answer (correct answer or distractor).
-                 The correct answer should be more often selected by strong students than by students
-                 with lower total score, i.e.")
+                 of respondents in each group who selected given answer (correct answer or distractor).
+                 The correct answer should be more often selected by respondents with higher total score
+                 than by those with lower total score, i.e.")
   txt4 <- paste ("<b>",'solid line should be increasing.',"</b>")
   txt5 <- paste('The distractor should work in opposite direction, i.e. ')
   txt6 <- paste ("<b>",'dotted lines should be decreasing.',"<b>")

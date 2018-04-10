@@ -5,6 +5,23 @@
         ***************************************************************
 
 -------------------------------------------------------
+- Changes in ShinyItemAnalysis 1.2.6.-6. (2018-04-10) -
+-------------------------------------------------------
+
+MAJOR UPDATES
+  o Regression
+    - NLR 4P model was added into model comparison.
+
+MINOR UPDATES
+  o README file was updated. Typos were fixed.
+  o Design of figures was unified.
+  o Download button options were unified.
+  o Selected R code syntax was improved in some sections
+    (IRT only partionally, DIF not).
+  o Selected R code was improved for first 4 sections.
+  o Some wording was improved.
+
+-------------------------------------------------------
 - Changes in ShinyItemAnalysis 1.2.6.-5. (2018-04-09) -
 -------------------------------------------------------
 

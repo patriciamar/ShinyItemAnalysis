@@ -57,7 +57,7 @@ totalscores_histogram_Input<- reactive({
     geom_histogram(aes(fill = gr), binwidth = 1, color = "black") +
     scale_fill_manual("", breaks = df$gr, values = col) +
     labs(x = "Total score",
-         y = "Number of students") +
+         y = "Number of respondents") +
     scale_y_continuous(expand = c(0, 0),
                        limits = c(0, max(table(sc)) + 0.01 * nrow(a))) +
     scale_x_continuous(limits = c(-0.5, ncol(a) + 0.5)) +
@@ -75,7 +75,8 @@ output$DB_totalscores_histogram <- downloadHandler(
     paste("fig_TotalScores_histogram.png", sep = "")
   },
   content = function(file) {
-    ggsave(file, plot = totalscores_histogram_Input() + theme(text = element_text(size = 10)),
+    ggsave(file, plot = totalscores_histogram_Input() +
+             theme(text = element_text(size = 10)),
            device = "png",
            height = 4, width = 8, dpi = 300)
   }
