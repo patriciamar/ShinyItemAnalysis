@@ -1706,7 +1706,7 @@ ui = tagList(
                                             ))),
                                  h4("Equations"),
                                  ('$$\\mathrm{P}\\left(\\theta \\vert a, b, c, d \\right) = c + \\left(d - c\\right) \\cdot \\frac{e^{a\\left(\\theta-b\\right) }}{1+e^{a\\left(\\theta-b\\right) }} $$'),
-                                 ('$$\\mathrm{I}\\left(\\theta \\vert a, b, c, d \\right) = a^2 \\cdot \\left(d - c\\right) \\cdot \\frac{e^{a\\left(\\theta-b\\right) }}{\\left[1+e^{a\\left(\\theta-b\\right)}\\right]^2} $$'),
+                                 ('$$\\mathrm{I}\\left(\\theta \\vert a, b, c, d \\right) = a \\cdot \\left(d - c\\right) \\cdot \\frac{e^{a\\left(\\theta-b\\right) }}{\\left[1+e^{a\\left(\\theta-b\\right)}\\right]^2} $$'),
                                  uiOutput("ccIRT_interpretation"),
                                  br(),
                                  splitLayout(cellWidths = c("50%", "50%"), plotlyOutput('ccIRT_plot'), plotlyOutput('iccIRT_plot')),
