@@ -6926,32 +6926,32 @@ button.close {
   border-right-color: red;
 }
 .js-irs-green .irs-single, .js-irs-green .irs-bar-edge, .js-irs-green .irs-bar {
-  background: green;
-  border-top-color: green;
-  border-bottom-color: green;
-  border-left-color: green;
-  border-right-color: green;
+  background: #00b300;
+  border-top-color: #00b300;
+  border-bottom-color: #00b300;
+  border-left-color: #00b300;
+  border-right-color: #00b300;
 }
 .js-irs-yellow .irs-single, .js-irs-yellow .irs-bar-edge, .js-irs-yellow .irs-bar {
-  background: yellow;
-  border-top-color: yellow;
-  border-bottom-color: yellow;
-  border-left-color: yellow;
-  border-right-color: yellow;
+  background: #e6b800;
+  border-top-color: #e6b800;
+  border-bottom-color: #e6b800;
+  border-left-color: #e6b800;
+  border-right-color: #e6b800;
 }
 .js-irs-purple .irs-single, .js-irs-purple .irs-bar-edge, .js-irs-purple .irs-bar {
-  background: purple;
-  border-top-color: purple;
-  border-bottom-color: purple;
-  border-left-color: purple;
-  border-right-color: purple;
+  background: #990099;
+  border-top-color: #990099;
+  border-bottom-color: #990099;
+  border-left-color: #990099;
+  border-right-color: #990099;
 }
 .js-irs-orange .irs-single, .js-irs-orange .irs-bar-edge, .js-irs-orange .irs-bar {
-  background: orange;
-  border-top-color: orange;
-  border-bottom-color: orange;
-  border-left-color: orange;
-  border-right-color: orange;
+  background: #ff6600;
+  border-top-color: #ff6600;
+  border-bottom-color: #ff6600;
+  border-left-color: #ff6600;
+  border-right-color: #ff6600;
 }
 .js-irs-black .irs-single, .js-irs-black .irs-bar-edge, .js-irs-black .irs-bar {
   background: black;

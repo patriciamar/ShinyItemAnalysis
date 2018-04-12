@@ -23,7 +23,7 @@ Stuka, C. Vejrazka, M., Martinkova, P. Komenda, M. & Stepanek, L. (2016). The Us
 Improvement of Tests. Workshop held at conference MEFANET, 2016, Brno, Czech Republic.
 }
 \seealso{
-\code{\link{dataMedical}}, \code{\link{dataMedicalkey}}
+\code{\link{dataMedical}}, \code{\link{dataMedicalkey}}, \code{\link{dataMedicalgraded}}
 }
 \author{
 Cestmir Stuka \cr

@@ -5,6 +5,23 @@
         ***************************************************************
 
 -------------------------------------------------------
+- Changes in ShinyItemAnalysis 1.2.6.-7. (2018-04-12) -
+-------------------------------------------------------
+
+MAJOR UPDATES
+  o Data
+    - Graded data od Medical data set was added.
+    - In all dataMedical data sets the criterion variable was renamed to
+      StudySuccess.
+  o IRT
+    - Expected item scores were added into polytomous models in IRT training.
+    - Selected R code was updated in IRT training.
+
+MINOR UPDATES
+  o IRT section
+    - Colors of sliders and curves in IRT training section were adjusted.
+
+-------------------------------------------------------
 - Changes in ShinyItemAnalysis 1.2.6.-6. (2018-04-10) -
 -------------------------------------------------------
 

@@ -36,7 +36,7 @@
 #'
 #' @keywords datasets
 #'
-#' @seealso \code{\link{dataMedical}}, \code{\link{dataMedicalkey}}
+#' @seealso \code{\link{dataMedical}}, \code{\link{dataMedicalkey}}, \code{\link{dataMedicalgraded}}
 #'
 #' @format A \code{dataMedicaltest} data frame consists of 2,392 observations on
 #' the following 101 variables. The first 100 columns represent answers of subject to
