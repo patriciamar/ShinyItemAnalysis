@@ -1636,7 +1636,7 @@ irt_training_grm_plot_cummulative_Input <- reactive({
   df <- data.frame(sapply(1:num, function(i) ccirt(theta, a, b[i])), theta)
   df <- melt(df, id.vars = "theta")
 
-  col <- c("red", "yellow", "green", "blue", "purple", "orange")
+  col <- c("red", "#e6b800", "#00b300", "blue", "#990099", "#ff6600")
   col <- col[1:num]
 
   g <- ggplot(data = df, aes(x = theta, y = value, col = variable)) +
@@ -1647,7 +1647,7 @@ irt_training_grm_plot_cummulative_Input <- reactive({
     ylim(0, 1) +
     scale_color_manual("", values = col, labels = paste0("P(Y >= ", 1:length(col), ")")) +
     theme_shiny +
-    ggtitle("Cummulative probabilities") +
+    ggtitle("Cummulative probabilities")
 
   g
 })
@@ -1715,7 +1715,7 @@ irt_training_grm_plot_category_Input <- reactive({
   df <- melt(df, id.vars = "theta")
   levels(df$variable) <- paste0("X", 0:(length(levels(df$variable))-1))
 
-  col <- c("black", "red", "yellow", "green", "blue", "purple", "orange")
+  col <- c("black", "red", "#e6b800", "#00b300", "blue", "#990099", "#ff6600")
   col <- col[1:((length(levels(df$variable))-1) + 1)]
 
   g <- ggplot(data = df, aes(x = theta, y = value, col = variable)) +
@@ -1726,7 +1726,7 @@ irt_training_grm_plot_category_Input <- reactive({
     ylim(0, 1) +
     scale_color_manual("", values = col, labels = paste0("P(Y >= ", 0:(length(col)-1), ")")) +
     theme_shiny +
-    ggtitle("Category probabilities") +
+    ggtitle("Category probabilities")
 
   g
 })
@@ -1764,7 +1764,76 @@ output$DB_irt_training_grm_plot_category <- downloadHandler(
   }
 )
 
+# *** Expected item score ######
+irt_training_grm_plot_expected_Input <- reactive({
+  num <- input$irt_training_grm_numresp
 
+  a <- input$irt_training_grm_a
+
+  if (is.null(input$irt_training_grm_b1)){
+    b <- c(-1.5, -1, -0.5, 0, 0.5, 1)
+    b <- b[1:num]
+  } else {
+    b <- c(input$irt_training_grm_b1, input$irt_training_grm_b2)
+    b <- switch(paste(num),
+                "2" = b,
+                "3" = c(b, input$irt_training_grm_b3),
+                "4" = c(b, input$irt_training_grm_b3, input$irt_training_grm_b4),
+                "5" = c(b, input$irt_training_grm_b3, input$irt_training_grm_b4, input$irt_training_grm_b5),
+                "6" = c(b, input$irt_training_grm_b3, input$irt_training_grm_b4, input$irt_training_grm_b5, input$irt_training_grm_b6))
+  }
+
+  theta <- seq(-4, 4, 0.01)
+
+  ccirt <- function(theta, a, b){ return(1/(1 + exp(-a*(theta - b)))) }
+
+  df <- data.frame(1, sapply(1:length(b), function(i) ccirt(theta, a, b[i])))
+  df <- data.frame(sapply(1:(ncol(df)-1), function(i) df[, i] - df[, i+1]),
+                   df[, ncol(df)])
+  df <- data.frame(exp = as.matrix(df) %*% c(0:(dim(df)[2] - 1)), theta)
+
+  g <- ggplot(data = df, aes(x = theta, y = exp)) +
+    geom_line() +
+    xlab("Ability") +
+    ylab("Expected item score") +
+    xlim(-4, 4) +
+    ylim(0, num) +
+    theme_shiny +
+    ggtitle("Expected item score")
+
+  g
+})
+
+output$irt_training_grm_plot_expected <- renderPlotly({
+  g <- irt_training_grm_plot_expected_Input()
+
+  p <- ggplotly(g)
+
+  for (i in 1:length(p$x$data)){
+    text <- gsub("~", "", p$x$data[[i]]$text)
+    text <- gsub("theta", "Ability", text)
+    text <- gsub("exp", "Expected score", text)
+    text <- paste0(text, "<br />E(Y)")
+    p$x$data[[i]]$text <- text
+  }
+
+  p$elementId <- NULL
+
+  p %>% config(displayModeBar = F)
+})
+
+output$DB_irt_training_grm_plot_expected <- downloadHandler(
+  filename =  function() {
+    paste("fig_GRM_expected.png", sep = "")
+  },
+  content = function(file) {
+    ggsave(file,
+           plot = irt_training_grm_plot_expected_Input() +
+             theme(text = element_text(size = 10)),
+           device = "png",
+           height = 4, width = 8, dpi = 300)
+  }
+)
 # *** GENERALIZED PARTIAL CREDIT MODEL ####
 
 output$irt_training_gpcm_sliders <- renderUI({
@@ -1843,7 +1912,7 @@ irt_training_gpcm_plot_Input <- reactive({
   df <- data.frame(apply(pk, 2, function(x) x/denom), theta)
   df <- melt(df, id.vars = "theta")
 
-  col <- c("black", "red", "yellow", "green", "blue", "purple", "orange")
+  col <- c("black", "red", "#e6b800", "#00b300", "blue", "#990099", "#ff6600")
   col <- col[1:(length(levels(df$variable)) + 1)]
 
   g <- ggplot(data = df, aes(x = theta, y = value, col = variable)) +
@@ -1854,7 +1923,7 @@ irt_training_gpcm_plot_Input <- reactive({
     ylim(0, 1) +
     scale_color_manual("", values = col, labels = paste0("P(Y = ", 0:(length(col)-1), ")")) +
     theme_shiny +
-    ggtitle("Category probabilities") +
+    ggtitle("Category probabilities")
 
   g
 })
@@ -1884,14 +1953,90 @@ output$DB_irt_training_gpcm_plot <- downloadHandler(
   content = function(file) {
     ggsave(file,
            plot = irt_training_gpcm_plot_Input() +
-             theme(text = element_text(size = 10)) +
-             theme(legend.position = c(0.97, 0.7),
-                   legend.justification = c(0.97, 0.97)),
+             theme(text = element_text(size = 10)),
            device = "png",
            height = 4, width = 8, dpi = 300)
   }
 )
 
+
+# *** Expected item score ######
+irt_training_gpcm_plot_expected_Input <- reactive({
+  num <- input$irt_training_gpcm_numresp
+
+  a <- input$irt_training_gpcm_a
+
+  if (is.null(input$irt_training_gpcm_d1)){
+    d <- c(-1.5, -1, -0.5, 0, 0.5, 1)
+    d <- d[1:num]
+  } else {
+    d <- c(input$irt_training_gpcm_d1, input$irt_training_gpcm_d2)
+    d <- switch(paste(num),
+                "2" = d,
+                "3" = c(d, input$irt_training_gpcm_d3),
+                "4" = c(d, input$irt_training_gpcm_d3, input$irt_training_gpcm_d4),
+                "5" = c(d, input$irt_training_gpcm_d3, input$irt_training_gpcm_d4, input$irt_training_gpcm_d5),
+                "6" = c(d, input$irt_training_gpcm_d3, input$irt_training_gpcm_d4, input$irt_training_gpcm_d5, input$irt_training_gpcm_d6))
+  }
+
+  theta <- seq(-4, 4, 0.01)
+
+  ccgpcm <- function(theta, a, d){ a*(theta - d) }
+
+  df <- sapply(1:length(d), function(i) ccgpcm(theta, a, d[i]))
+
+  pk <- sapply(1:ncol(df), function(k) apply(as.data.frame(df[, 1:k]), 1, sum))
+
+  pk <- cbind(0, pk)
+  pk <- exp(pk)
+
+  denom <- apply(pk, 1, sum)
+
+  df <- data.frame(apply(pk, 2, function(x) x/denom))
+  df <- data.frame(exp = as.matrix(df) %*% c(0:(dim(df)[2] - 1)), theta)
+
+  g <- ggplot(data = df, aes(x = theta, y = exp)) +
+    geom_line() +
+    xlab("Ability") +
+    ylab("Expected item score") +
+    xlim(-4, 4) +
+    ylim(0, num) +
+    theme_shiny +
+    ggtitle("Expected item score")
+
+  g
+})
+
+output$irt_training_gpcm_plot_expected <- renderPlotly({
+  g <- irt_training_gpcm_plot_expected_Input()
+
+  p <- ggplotly(g)
+
+  for (i in 1:length(p$x$data)){
+    text <- gsub("~", "", p$x$data[[i]]$text)
+    text <- gsub("theta", "Ability", text)
+    text <- gsub("exp", "Expected score", text)
+    text <- paste0(text, "<br />E(Y)")
+    p$x$data[[i]]$text <- text
+  }
+
+  p$elementId <- NULL
+
+  p %>% config(displayModeBar = F)
+})
+
+output$DB_irt_training_gpcm_plot_expected <- downloadHandler(
+  filename =  function() {
+    paste("fig_GPCM_expected.png", sep = "")
+  },
+  content = function(file) {
+    ggsave(file,
+           plot = irt_training_gpcm_plot_expected_Input() +
+             theme(text = element_text(size = 10)),
+           device = "png",
+           height = 4, width = 8, dpi = 300)
+  }
+)
 # *** NOMINAL RESPONSE MODEL ####
 
 output$irt_training_nrm_sliders <- renderUI({
@@ -2008,7 +2153,7 @@ irt_training_nrm_plot_Input <- reactive({
   df <- melt(df, id.vars = "theta")
   levels(df$variable) <- paste0("X", 0:(length(levels(df$variable))-1))
 
-  col <- c("black", "red", "yellow", "green", "blue", "purple", "orange")
+  col <- c("black", "red", "#e6b800", "#00b300", "blue", "#990099", "#ff6600")
   col <- col[1:(length(levels(df$variable)) + 1)]
 
   g <- ggplot(data = df, aes(x = theta, y = value, col = variable)) +
@@ -2019,7 +2164,7 @@ irt_training_nrm_plot_Input <- reactive({
     ylim(0, 1) +
     scale_color_manual("", values = col, labels = paste0("P(Y = ", 0:(length(col)-1), ")")) +
     theme_shiny +
-    ggtitle("Category probabilities") +
+    ggtitle("Category probabilities")
 
   g
 })
@@ -2056,3 +2201,88 @@ output$DB_irt_training_nrm_plot <- downloadHandler(
            height = 4, width = 8, dpi = 300)
   }
 )
+
+# *** Expected item score ######
+irt_training_nrm_plot_expected_Input <- reactive({
+  num <- input$irt_training_nrm_numresp
+
+  if (is.null(input$irt_training_nrm_a1)){
+    a <- c(2.5, 2, 1, 1.5, 0.5, 1.3)
+    a <- a[1:num]
+  } else {
+    a <- c(input$irt_training_nrm_a1, input$irt_training_nrm_a2)
+    a <- switch(paste(num),
+                "2" = a,
+                "3" = c(a, input$irt_training_nrm_a3),
+                "4" = c(a, input$irt_training_nrm_a3, input$irt_training_nrm_a4),
+                "5" = c(a, input$irt_training_nrm_a3, input$irt_training_nrm_a4, input$irt_training_nrm_a5),
+                "6" = c(a, input$irt_training_nrm_a3, input$irt_training_nrm_a4, input$irt_training_nrm_a5, input$irt_training_nrm_a6))
+  }
+
+  if (is.null(input$irt_training_nrm_d1)){
+    d <- c(-1.5, -1, -0.5, 0, 0.5, 1)
+    d <- d[1:num]
+  } else {
+    d <- c(input$irt_training_nrm_d1, input$irt_training_nrm_d2)
+    d <- switch(paste(num),
+                "2" = d,
+                "3" = c(d, input$irt_training_nrm_d3),
+                "4" = c(d, input$irt_training_nrm_d3, input$irt_training_nrm_d4),
+                "5" = c(d, input$irt_training_nrm_d3, input$irt_training_nrm_d4, input$irt_training_nrm_d5),
+                "6" = c(d, input$irt_training_nrm_d3, input$irt_training_nrm_d4, input$irt_training_nrm_d5, input$irt_training_nrm_d6))
+  }
+
+  theta <- seq(-4, 4, 0.01)
+
+  ccnrm <- function(theta, a, d){ exp(d + a*theta) }
+
+  df <- sapply(1:length(d), function(i) ccnrm(theta, a[i], d[i]))
+  df <- data.frame(1, df)
+  denom <- apply(df, 1, sum)
+  df <- apply(df, 2, function(x) x/denom)
+
+  df <- data.frame(exp = as.matrix(df) %*% c(0:(dim(df)[2] - 1)), theta)
+
+  g <- ggplot(data = df, aes(x = theta, y = exp)) +
+    geom_line() +
+    xlab("Ability") +
+    ylab("Expected item score") +
+    xlim(-4, 4) +
+    ylim(0, num) +
+    theme_shiny +
+    ggtitle("Expected item score")
+
+  g
+})
+
+output$irt_training_nrm_plot_expected <- renderPlotly({
+  g <- irt_training_nrm_plot_expected_Input()
+
+  p <- ggplotly(g)
+
+  for (i in 1:length(p$x$data)){
+    text <- gsub("~", "", p$x$data[[i]]$text)
+    text <- gsub("theta", "Ability", text)
+    text <- gsub("exp", "Expected score", text)
+    text <- paste0(text, "<br />E(Y)")
+    p$x$data[[i]]$text <- text
+  }
+
+  p$elementId <- NULL
+
+  p %>% config(displayModeBar = F)
+})
+
+output$DB_irt_training_nrm_plot_expected <- downloadHandler(
+  filename =  function() {
+    paste("fig_NRM_expected.png", sep = "")
+  },
+  content = function(file) {
+    ggsave(file,
+           plot = irt_training_nrm_plot_expected_Input() +
+             theme(text = element_text(size = 10)),
+           device = "png",
+           height = 4, width = 8, dpi = 300)
+  }
+)
+

@@ -184,10 +184,14 @@ function(input, output, session) {
       do.call(data, args = list(paste0(datasetName, "test"), package = packageName))
       test = data.table(get(paste0(datasetName, "test")))
 
-      if (datasetName == "GMAT" | datasetName == "dataMedical"){
+      if (datasetName == "GMAT"){
         criterion_variable <- test[, "criterion"]
       } else {
-        criterion_variable <- "missing"
+        if (datasetName == "dataMedical"){
+          criterion_variable <- test[, "StudySuccess"]
+        } else {
+          criterion_variable <- "missing"
+        }
       }
 
       dataset$criterion_variable = criterion_variable
