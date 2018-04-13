@@ -1483,6 +1483,136 @@ output$DB_iccIRT <- downloadHandler(
   }
 )
 
+# *** correct answers ######
+irt_dichotom_answers <- reactive({
+  ccirt <- function(theta, a, b, c, d){
+    return(c + (d - c)/(1 + exp(-a*(theta - b))))
+  }
+
+  a1 <- 2; b1 <- -0.5; c1 <- 0; d1 <- 1
+  a2 <- 1; b2 <- -1; c2 <- 0; d2 <- 1
+
+  par1 <- c(a1, b1, c1, d1)
+  par2 <- c(a2, b2, c2, d2)
+
+  theta0 <- c(-2, -1, 0, 1, 2)
+
+  cci1 <- round(ccirt(theta0, a1, b1, c1, d1), 1)
+  cci2 <- round(ccirt(theta0, a2, b2, c2, d2), 1)
+
+  theta <- (a1*b1 - a2*b2)/(a1 - a2)
+
+  answers <- list(par1 = par1,
+                  par2 = par2,
+                  cci1 = cci1,
+                  cci2 = cci2,
+                  theta = theta)
+  answers
+})
+
+irt_training_dich_check <- eventReactive(input$irt_training_dich_submit, {
+  answers <- irt_dichotom_answers()
+
+  # answer 1
+  a1 <- input$ccIRTSlider_a1
+  b1 <- input$ccIRTSlider_b1
+  c1 <- input$ccIRTSlider_c1
+  d1 <- input$ccIRTSlider_d1
+
+  a2 <- input$ccIRTSlider_a2
+  b2 <- input$ccIRTSlider_b2
+  c2 <- input$ccIRTSlider_c2
+  d2 <- input$ccIRTSlider_d2
+
+  par1 <- answers[[1]]
+  par2 <- answers[[2]]
+
+  par1input <- c(a1, b1, c1, d1)
+  par2input <- c(a2, b2, c2, d2)
+
+  ans1 <- (all(round(par1 - par1input, 2) <= 0.05) &  all(round(par2 - par2input, 2) <= 0.05))
+
+  # answers 2, item 1
+  cci1 <- answers[[3]]
+  cci1input <- c(input$irt_training_dich_1_2a, input$irt_training_dich_1_2b, input$irt_training_dich_1_2c,
+                 input$irt_training_dich_1_2d, input$irt_training_dich_1_2e)
+  ans2_1 <- (round(cci1 - cci1input, 2) <= 0.05)
+  # answers 2, item 1
+  cci2 <- answers[[4]]
+  cci2input <- c(input$irt_training_dich_2_2a, input$irt_training_dich_2_2b, input$irt_training_dich_2_2c,
+                 input$irt_training_dich_2_2d, input$irt_training_dich_2_2e)
+  ans2_2 <- (round(cci2 - cci2input, 2) <= 0.05)
+
+  # answer 3
+  ans3 <- (round(answers[[5]] - input$irt_training_dich_3, 2) <= 0.05)
+
+
+  ans <- list(ans1 = ans1,
+              ans2_1 = ans2_1,
+              ans2_2 = ans2_2,
+              ans3 = ans3)
+  res <- sum(sapply(ans, sum))/12
+  ans <- lapply(ans, function(x) ifelse(x,
+                                        "<font color='green'>&#10004;</font>",
+                                        "<font color='red'>&#10006;</font>"))
+  ans[["ans"]] <- res
+  ans
+})
+
+output$irt_training_dich_1_answer <- renderUI({
+  HTML(irt_training_dich_check()[[1]])
+})
+
+output$irt_training_dich_2a_1_answer <- renderUI({
+  HTML(irt_training_dich_check()[[2]][1])
+})
+
+output$irt_training_dich_2b_1_answer <- renderUI({
+  HTML(irt_training_dich_check()[[2]][2])
+})
+
+output$irt_training_dich_2c_1_answer <- renderUI({
+  HTML(irt_training_dich_check()[[2]][3])
+})
+
+output$irt_training_dich_2d_1_answer <- renderUI({
+  HTML(irt_training_dich_check()[[2]][4])
+})
+
+output$irt_training_dich_2e_1_answer <- renderUI({
+  HTML(irt_training_dich_check()[[2]][5])
+})
+
+output$irt_training_dich_2a_2_answer <- renderUI({
+  HTML(irt_training_dich_check()[[3]][1])
+})
+
+output$irt_training_dich_2b_2_answer <- renderUI({
+  HTML(irt_training_dich_check()[[3]][2])
+})
+
+output$irt_training_dich_2c_2_answer <- renderUI({
+  HTML(irt_training_dich_check()[[3]][3])
+})
+
+output$irt_training_dich_2d_2_answer <- renderUI({
+  HTML(irt_training_dich_check()[[3]][4])
+})
+
+output$irt_training_dich_2e_2_answer <- renderUI({
+  HTML(irt_training_dich_check()[[3]][5])
+})
+
+output$irt_training_dich_3_answer <- renderUI({
+  HTML(irt_training_dich_check()[[4]])
+})
+
+output$irt_training_dich_answer <- renderUI({
+  res <- irt_training_dich_check()[["ans"]]
+  HTML(ifelse(res == 1,
+              "<font color='green'>Everything correct! Well done!</font>",
+              paste0("<font color='red'>",round(100*res), "% correct. Try again.</font>")))
+})
 # # *** Sliders and text input updates ######
 # # 1a
 # observe({
@@ -2197,90 +2327,6 @@ output$DB_irt_training_nrm_plot <- downloadHandler(
              theme(text = element_text(size = 10)) +
              theme(legend.position = c(0.97, 0.7),
                    legend.justification = c(0.97, 0.97)),
-           device = "png",
-           height = 4, width = 8, dpi = 300)
-  }
-)
-
-# *** Expected item score ######
-irt_training_nrm_plot_expected_Input <- reactive({
-  num <- input$irt_training_nrm_numresp
-
-  if (is.null(input$irt_training_nrm_a1)){
-    a <- c(2.5, 2, 1, 1.5, 0.5, 1.3)
-    a <- a[1:num]
-  } else {
-    a <- c(input$irt_training_nrm_a1, input$irt_training_nrm_a2)
-    a <- switch(paste(num),
-                "2" = a,
-                "3" = c(a, input$irt_training_nrm_a3),
-                "4" = c(a, input$irt_training_nrm_a3, input$irt_training_nrm_a4),
-                "5" = c(a, input$irt_training_nrm_a3, input$irt_training_nrm_a4, input$irt_training_nrm_a5),
-                "6" = c(a, input$irt_training_nrm_a3, input$irt_training_nrm_a4, input$irt_training_nrm_a5, input$irt_training_nrm_a6))
-  }
-
-  if (is.null(input$irt_training_nrm_d1)){
-    d <- c(-1.5, -1, -0.5, 0, 0.5, 1)
-    d <- d[1:num]
-  } else {
-    d <- c(input$irt_training_nrm_d1, input$irt_training_nrm_d2)
-    d <- switch(paste(num),
-                "2" = d,
-                "3" = c(d, input$irt_training_nrm_d3),
-                "4" = c(d, input$irt_training_nrm_d3, input$irt_training_nrm_d4),
-                "5" = c(d, input$irt_training_nrm_d3, input$irt_training_nrm_d4, input$irt_training_nrm_d5),
-                "6" = c(d, input$irt_training_nrm_d3, input$irt_training_nrm_d4, input$irt_training_nrm_d5, input$irt_training_nrm_d6))
-  }
-
-  theta <- seq(-4, 4, 0.01)
-
-  ccnrm <- function(theta, a, d){ exp(d + a*theta) }
-
-  df <- sapply(1:length(d), function(i) ccnrm(theta, a[i], d[i]))
-  df <- data.frame(1, df)
-  denom <- apply(df, 1, sum)
-  df <- apply(df, 2, function(x) x/denom)
-
-  df <- data.frame(exp = as.matrix(df) %*% c(0:(dim(df)[2] - 1)), theta)
-
-  g <- ggplot(data = df, aes(x = theta, y = exp)) +
-    geom_line() +
-    xlab("Ability") +
-    ylab("Expected item score") +
-    xlim(-4, 4) +
-    ylim(0, num) +
-    theme_shiny +
-    ggtitle("Expected item score")
-
-  g
-})
-
-output$irt_training_nrm_plot_expected <- renderPlotly({
-  g <- irt_training_nrm_plot_expected_Input()
-
-  p <- ggplotly(g)
-
-  for (i in 1:length(p$x$data)){
-    text <- gsub("~", "", p$x$data[[i]]$text)
-    text <- gsub("theta", "Ability", text)
-    text <- gsub("exp", "Expected score", text)
-    text <- paste0(text, "<br />E(Y)")
-    p$x$data[[i]]$text <- text
-  }
-
-  p$elementId <- NULL
-
-  p %>% config(displayModeBar = F)
-})
-
-output$DB_irt_training_nrm_plot_expected <- downloadHandler(
-  filename =  function() {
-    paste("fig_NRM_expected.png", sep = "")
-  },
-  content = function(file) {
-    ggsave(file,
-           plot = irt_training_nrm_plot_expected_Input() +
-             theme(text = element_text(size = 10)),
            device = "png",
            height = 4, width = 8, dpi = 300)
   }

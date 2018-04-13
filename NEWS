@@ -5,6 +5,19 @@
         ***************************************************************
 
 -------------------------------------------------------
+- Changes in ShinyItemAnalysis 1.2.6.-8. (2018-04-13) -
+-------------------------------------------------------
+
+MAJOR UPDATES
+  o IRT
+    - Expected item scores were removed from IRT training NRM.
+    - Interactive exercises were added into  IRT training - dichotomous
+      models.
+
+MINOR UPDATES
+
+
+-------------------------------------------------------
 - Changes in ShinyItemAnalysis 1.2.6.-7. (2018-04-12) -
 -------------------------------------------------------
 
