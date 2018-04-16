@@ -32,6 +32,7 @@ Imports:
     reshape2,
     rmarkdown,
     shiny (>= 1.0.3),
+    shinyBS,
     shinyjs (>= 0.9),
     stringr,
     WrightMap,

@@ -9,12 +9,15 @@
 -------------------------------------------------------
 
 MAJOR UPDATES
+  o Packages - shinyBS is now required.
   o Data
     - HCI dataset was added into package.
     - Description of dataMedical was improved.
     - Description of training datasets was improved.
   o About
     - Page was improved.
+  o IRT
+    - Helps for interactive exercises were added.
 
 MINOR UPDATES
   o Typos were fixed.
