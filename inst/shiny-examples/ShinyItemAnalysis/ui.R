@@ -5,6 +5,7 @@
 require(DT)
 require(plotly)
 require(shinyjs)
+require(shinyBS)
 
 #%%%%%%%%%%%%%%%%%%%%%
 # UI #################
@@ -185,25 +186,27 @@ ui = tagList(
                                code('library(deltaPlotR)'), br(),
                                code('library(DT)'), br(),
                                code('library(difNLR)'), br(),
-                               code('library(difR)'), br(),
-                               code('library(ggplot2)'), br(),
-                               code('library(grid)'), br()),
+                               code('library(difR)'), br()),
                         column(2,
+                               code('library(ggplot2)'), br(),
+                               code('library(grid)'), br(),
                                code('library(gridExtra)'), br(),
                                code('library(knitr)'), br(),
                                code('library(latticeExtra)'), br(),
                                code('library(ltm)'), br(),
-                               code('library(mirt)'), br(),
+                               code('library(mirt)'), br()),
+                        column(2,
                                code('library(moments)'), br(),
                                code('library(msm)'), br(),
                                code('library(nnet)'), br(),
-                               code('library(plotly)'), br()),
-                        column(2,
+                               code('library(plotly)'), br(),
                                code('library(psych)'), br(),
                                code('library(psychometric)'), br(),
-                               code('library(reshape2)'), br(),
+                               code('library(reshape2)'), br()),
+                        column(2,
                                code('library(rmarkdown)'), br(),
                                code('library(shiny)'), br(),
+                               code('library(shinyBS)'), br(),
                                code('library(shinyjs)'), br(),
                                code('library(stringr)'), br(),
                                code('library(WrightMap)'), br(),
@@ -285,7 +288,7 @@ ui = tagList(
                       p(code("HCI"), ' (McFarland et al., 2017) is a real dataset of Homeostasis Concept Inventory
                          from ', code('ShinyItemAnalysis'), ' R package. The dataset represents responses of
                          651 subjects (405 males, 246 females) to multiple-choice test of 20 items. ', code("HCI"), "contains
-                         criterion variable -  indicator whether student studies major or not. "),
+                         criterion variable -  indicator whether students planning to major in the life sciences.-+ "),
                       br(),
                       selectInput("dataSelect", "Select dataset",
                                   c("GMAT" = "GMAT_difNLR",
@@ -1716,15 +1719,32 @@ ui = tagList(
                                  splitLayout(cellWidths = c("50%", "50%"), downloadButton("DB_ccIRT", label = "Download figure"), downloadButton("DB_iccIRT", label = "Download figure")),
                                  br(),
                                  h4("Exercise"),
-                                 p("Consider the following 2PL items with parameters", br(), "
-                                   Item 1: \\(a = 2, b = -0.5\\)", br(), "
-                                   Item 2: \\(a = 1, b = -1\\)", br(),
-                                   "For these items fill the following examples with an accuracy of up to 0.05.
-                                   Then click on ", strong("Submit answers"), "button. "),
+                                 p("Consider the following 2PL items with parameters", br(),
+                                   strong("Item 1:"), "\\(a = 2, b = -0.5\\)", br(),
+                                   strong("Item 2:"), "\\(a = 1, b = -1\\)", br(),
+                                   "For these items fill the following exercises with an accuracy of up to 0.05. Then click on ", strong("Submit answers"), "button.
+                                    If you need a hint, click on blue button with question mark."),
                                  tags$ul(
                                      tags$li("Sketch item characteristic and information curves.",
+                                             bsButton(inputId = "irt_training_dich_1_help",
+                                                      label = "", icon = icon("question"),
+                                                      style = "info", size = "extra-small"),
+                                             bsPopover(id = "irt_training_dich_1_help", title = "Help",
+                                                       content = "Set item parameters by red and blue sliders above.",
+                                                       placement = "right",
+                                                       trigger = "click",
+                                                       options = list(container = "body")),
                                              htmlOutput("irt_training_dich_1_answer", inline = T)),
                                      tags$li("Calculate probability of correct answer for latent abilities \\(\\theta  = -2, -1, 0, 1, 2\\).",
+                                             bsButton(inputId = "irt_training_dich_2_help",
+                                                      label = "", icon = icon("question"),
+                                                      style = "info", size = "extra-small"),
+                                             bsPopover(id = "irt_training_dich_2_help",
+                                                       title = "Help",
+                                                       content = "Set &theta; to desired value by gray slider above.",
+                                                       placement = "right",
+                                                       trigger = "click",
+                                                       options = list(container = "body")),
                                              splitLayout(
                                                cellWidths = c("7%", "7%", "4%", "7%", "4%", "7%", "4%", "7%", "4%", "7%", "4%", "38%"),
                                                strong("Item 1: "),
@@ -1763,6 +1783,15 @@ ui = tagList(
                                                htmlOutput("irt_training_dich_2e_2_answer"), "")
                                              ),
                                      tags$li("For what level of ability \\(\\theta\\) are the probabilities equal?",
+                                             bsButton(inputId = "irt_training_dich_3_help",
+                                                      label = "", icon = icon("question"),
+                                                      style = "info", size = "extra-small"),
+                                             bsPopover(id = "irt_training_dich_3_help",
+                                                       title = "Help",
+                                                       content = "You can find this value at the left figure. Alternatively, you need to find &theta; satisfying P<sub>1</sub>(&theta;) = P<sub>2</sub>(&theta;), that is a<sub>1</sub>(&theta; - b<sub>1</sub>) = a<sub>2</sub>(&theta; - b<sub>2</sub>).",
+                                                       placement = "right",
+                                                       trigger = "click",
+                                                       options = list(container = "body")),
                                              splitLayout(
                                                cellWidths = c("7%", "4%", "89%"),
                                                numericInput(inputId = "irt_training_dich_3",
