@@ -95,11 +95,10 @@ ui = tagList(
 
                       h4('Data'),
                       p('For demonstration purposes, by default, 20-item dataset', code('GMAT'),'
-                        from R ', code('difNLR'),' package is used. Other three datasets are available: ',
+                        from R ', code('difNLR'),' package is used. Other four datasets are available: ',
                         code('GMAT2'), 'and', code('MSAT-B'), 'from', code('difNLR'), 'package and ',
-                        code('Medical 100'), 'from', code('ShinyItemAnalysis'), 'package.
-                        You can change the dataset (and try your own one) on page', strong('Data.')),
-
+                        code('Medical 100'),  'and', code('HCI'), 'from', code('ShinyItemAnalysis'),
+                       'package.  You can change the dataset (and try your own one) on page', strong('Data.')),
                       h4('Availability'),
                       p('Application can be downloaded as R package from ',
                         a('CRAN. ',
@@ -250,47 +249,51 @@ ui = tagList(
                # ** Summary ####
                tabPanel("Data",
                       h3("Data"),
-                      h4("Training datasets"),
-                      p('For demonstration purposes, 20-item dataset ' , code("GMAT"),'
-                         and dataset', code("GMATkey"),' from R ', code('difNLR'),' package are used.
-                         On this page, you may select one of four datasets offered from ', code('difNLR'),
+                      p('For demonstration purposes, 20-item dataset ', code("GMAT"), ' from ', code('difNLR'),'
+                         R package is used. On this page, you may select one of five datasets offered by ', code('difNLR'),
                         ' and ', code('ShinyItemAnalysis'), 'packages or you may upload your own dataset
                          (see below). To return to demonstration dataset,
                          refresh this page in your browser' , strong("(F5)"), '.'),
+                      h4("Training datasets"),
                       p('Used dataset ', code("GMAT"), a(' (Martinkova, et al., 2017) ',
-                                 href = "http://www.lifescied.org/content/16/2/rm2.full.pdf+html?with-ds=yes",
-                        target = "_blank"),
-                        ' is generated based on parameters of real Graduate Management
-                        Admission Test (GMAT) data set (Kingston et al., 1985). However, first two items were
-                        generated to function differently in uniform and non-uniform way respectively.
-                        The data set represents responses of 2,000 subjects (1,000 males, 1,000 females) to
+                                                         href = "http://www.lifescied.org/content/16/2/rm2.full.pdf+html?with-ds=yes",
+                                                         target = "_blank"),
+                        ' is generated dataset based on parameters of real Graduate Management
+                        Admission Test (GMAT) (Kingston et al., 1985). However, first two items were
+                        simulated to function differently in uniform and non-uniform way respectively.
+                        The dataset represents responses of 2,000 subjects (1,000 males, 1,000 females) to
                         multiple-choice test of 20 items. The distribution of total scores is the same for both groups.
                         See ', a('Martinkova, et al. (2017) ',
                                  href = "http://www.lifescied.org/content/16/2/rm2.full.pdf+html?with-ds=yes",
                                  target = "_blank"),
-                        'for further discussion. '),
-                      p('Dataset ', code("GMAT2"), ' (Drabinova & Martinkova, 2016) is also generated based on parameters of GMAT (Kingston et
-                         al., 1985) from R ', code('difNLR'),' package . Again, first two items were generated
-                         to function differently in uniform and non-uniform way respectively. The data set
-                         represents responses of 1,000 subjects (500 males, 500 females) to multiple-choice test
-                         of 20 items. '),
-                      p('Dataset ', code("MSAT-B"), ' (Drabinova & Martinkova, 2017) is a subset of real Medical School Admission
-                         Test in Biology in Czech Republic. The data set represents responses of 1,407 subjects (484 males,
+                        'for further discussion. ', code("GMAT"), 'containts simulated continuous criterion variable. '),
+                      p(code("GMAT2"), ' (Drabinova & Martinkova, 2017) is also simulated dataset based
+                        on parameters of GMAT (Kingston et al., 1985) from ', code('difNLR'), 'R package .
+                        Again, first two items were generated to function differently in uniform and non-uniform way respectively.
+                        The dataset represents responses of 1,000 subjects (500 males, 500 females) to multiple-choice test
+                        of 20 items. '),
+                      p(code("MSAT-B"), ' (Drabinova & Martinkova, 2017) is a subset of real Medical School Admission
+                         Test in Biology in Czech Republic. The dataset represents responses of 1,407 subjects (484 males,
                          923 females) to multiple-choice test of 20 items. First item was previously detected as
                          functioning differently. For more details of item selection see Drabinova and Martinkova (2017).
-                         Dataset can be found in R ', code('difNLR'),' package.'),
-                      p('Dataset ', code("Medical 100"), ' is a real data set of admission test to medical school
-                         from R ', code('ShinyItemAnalysis'),' package. The data set represents responses of
+                         Dataset can be found in ', code('difNLR'), ' R package.'),
+                      p(code("Medical 100"), ' is a real dataset of admission test to medical school
+                         from ', code('ShinyItemAnalysis'), ' R package. The data set represents responses of
                          2,392 subjects (750 males, 1,633 females and 9 subjects without gender specification)
-                         to multiple-choice test of 100 items. '),
+                         to multiple-choice test of 100 items. ', code("Medical 100"), "contains criterion variable -
+                        indicator whether student studies standardly or not. "),
+                      p(code("HCI"), ' (McFarland et al., 2017) is a real dataset of Homeostasis Concept Inventory
+                         from ', code('ShinyItemAnalysis'), ' R package. The dataset represents responses of
+                         651 subjects (405 males, 246 females) to multiple-choice test of 20 items. ', code("HCI"), "contains
+                         criterion variable -  indicator whether student studies major or not. "),
                       br(),
                       selectInput("dataSelect", "Select dataset",
                                   c("GMAT" = "GMAT_difNLR",
                                     "GMAT2" = "GMAT2_difNLR",
                                     "MSAT-B" = "MSATB_difNLR",
-                                    "Medical 100" = "dataMedical_ShinyItemAnalysis"
-                                  ),
-                                  selected="GMAT_difNLR"),
+                                    "Medical 100" = "dataMedical_ShinyItemAnalysis",
+                                    "HCI" = "HCI_ShinyItemAnalysis"),
+                                  selected = "GMAT_difNLR"),
                       tags$hr(),
                       h4("Upload your own datasets"),
                       p('Main ', strong('data'), ' file should contain responses of individual respondents (rows) to given items
@@ -3439,6 +3442,12 @@ ui = tagList(
                       p("Masters, G. N. (1982). A Rasch model for partial credit scoring. Psychometrika, 47(2), 149-174.",
                         a('See online.',
                           href = "https://link.springer.com/article/10.1007/BF02296272",
+                          target = "_blank")),
+                      p("McFarland, J. L., Price, R. M., Wenderoth, M. P., Martinkova, P., Cliff, W., Michael, J., ... & Wright, A. (2017).
+                        Development and validation of the homeostasis concept inventory.
+                        CBE-Life Sciences Education, 16(2), ar35.",
+                        a('See online.',
+                          href = "https://www.lifescied.org/doi/abs/10.1187/cbe.16-10-0305",
                           target = "_blank")),
                       p("Muraki, E. (1992). A generalized partial credit model: Application of an EM algorithm.
                         ETS Research Report Series, 1992(1).",

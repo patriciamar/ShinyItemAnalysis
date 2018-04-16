@@ -110,7 +110,8 @@ validity_plot_boxplot_Input <- reactive({
     xlab("Criterion group") +
     ylab("Total score") +
     coord_flip() +
-    theme_shiny
+    theme_shiny +
+    theme(legend.position = "none")
   g
 })
 

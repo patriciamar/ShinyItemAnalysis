@@ -1,8 +1,8 @@
-#' Data Set of Admission Test to Medical School
+#' Dataset of Admission Test to Medical School
 #'
 #' @docType data
 #' @name dataMedicaltest
-#' @description The \code{dataMedicaltest} data set consists of the responses of 2,392 subjects
+#' @description The \code{dataMedicaltest} dataset consists of the responses of 2,392 subjects
 #' (750 males, 1,633 females and 9 subjects without gender specification) to multiple-choice
 #' admission test to a medical school. It contains 100 items, possible answers
 #' were A, B, C, D, while any combination of these can be correct.
@@ -38,9 +38,9 @@
 #'
 #' @seealso \code{\link{dataMedical}}, \code{\link{dataMedicalkey}}, \code{\link{dataMedicalgraded}}
 #'
-#' @format A \code{dataMedicaltest} data frame consists of 2,392 observations on
+#' @format \code{dataMedicaltest} is a \code{data.frame} consisting of 2,392 observations on
 #' the following 101 variables. The first 100 columns represent answers of subject to
 #' items of the test. The 101st column is vector of gender membership; values 0 and 1
 #' refer to males and females. The 102nd columns in criterion variable; value 1 means
-#' that student study standardly, 0 otherwise (e.g. leaving or interrupting studies).
+#' that student studies standardly, 0 otherwise (e.g. leaving or interrupting studies).
 "dataMedicaltest"

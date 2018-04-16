@@ -144,7 +144,7 @@ function(input, output, session) {
       if (datasetName == "GMAT"){
         group <- test[, "group"]
       } else {
-        if (datasetName == "dataMedical"){
+        if (datasetName == "dataMedical" | datasetName == "HCI"){
           group <- test[, "gender"]
         } else {
           group <- test[, ncol(test), with = FALSE]
@@ -190,7 +190,11 @@ function(input, output, session) {
         if (datasetName == "dataMedical"){
           criterion_variable <- test[, "StudySuccess"]
         } else {
-          criterion_variable <- "missing"
+          if (datasetName == "HCI"){
+            criterion_variable <- test[, "major"]
+          } else {
+            criterion_variable <- "missing"
+          }
         }
       }
 

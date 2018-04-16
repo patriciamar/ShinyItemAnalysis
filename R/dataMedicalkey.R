@@ -1,4 +1,4 @@
-#' Key of Correct Answers for \code{dataMedicaltest} Data Set
+#' Key of Correct Answers for \code{dataMedicaltest} Dataset
 #'
 #' @docType data
 #' @name dataMedicalkey
@@ -36,7 +36,7 @@
 #'
 #' @seealso \code{\link{dataMedical}}, \code{\link{dataMedicaltest}}, \code{\link{dataMedicalgraded}}
 #'
-#' @format A data frame with 100 values representing correct answers to items of \code{dataMedicaltest}
-#' data set. For more details see \code{\link{dataMedicaltest}}.
+#' @format A \code{data.frame} with 100 values representing correct answers to items of \code{dataMedicaltest}
+#' dataset. For more details see \code{\link{dataMedicaltest}}.
 "dataMedicalkey"
 
