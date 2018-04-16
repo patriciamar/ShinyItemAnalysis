@@ -3,8 +3,8 @@
 \docType{data}
 \name{dataMedicalgraded}
 \alias{dataMedicalgraded}
-\title{Graded Data Set of Admission Test to Medical School}
-\format{A \code{dataMedicalgraded} data frame consists of 2,392 observations on
+\title{Graded Dataset of Admission Test to Medical School}
+\format{A \code{dataMedicalgraded} is a \code{data.frame} consisting of 2,392 observations on
 the following 101 variables. The first 100 columns represent graded answers of subject to
 items of the test. The 101st column is vector of gender membership; values 0 and 1
 refer to males and females. The 102nd columns in criterion variable; value 1 means
@@ -13,7 +13,7 @@ that student study standardly, 0 otherwise (e.g. leaving or interrupting studies
 data(dataMedicalgraded)
 }
 \description{
-The \code{dataMedicalgraded} data set consists of the responses of 2,392 subjects
+The \code{dataMedicalgraded} dataset consists of the responses of 2,392 subjects
 (750 males, 1,633 females and 9 subjects without gender specification) to multiple-choice
 admission test to a medical school. It contains 100 items. Each item is graded with 0 to 4
 points. Maximum of 4 points were set if all correct answers and none of incorrect answers

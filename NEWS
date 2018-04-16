@@ -5,6 +5,21 @@
         ***************************************************************
 
 -------------------------------------------------------
+- Changes in ShinyItemAnalysis 1.2.6.-9. (2018-04-16) -
+-------------------------------------------------------
+
+MAJOR UPDATES
+  o Data
+    - HCI dataset was added into package.
+    - Description of dataMedical was improved.
+    - Description of training datasets was improved.
+  o About
+    - Page was improved.
+
+MINOR UPDATES
+  o Typos were fixed.
+
+-------------------------------------------------------
 - Changes in ShinyItemAnalysis 1.2.6.-8. (2018-04-13) -
 -------------------------------------------------------
 
@@ -13,9 +28,6 @@ MAJOR UPDATES
     - Expected item scores were removed from IRT training NRM.
     - Interactive exercises were added into  IRT training - dichotomous
       models.
-
-MINOR UPDATES
-
 
 -------------------------------------------------------
 - Changes in ShinyItemAnalysis 1.2.6.-7. (2018-04-12) -

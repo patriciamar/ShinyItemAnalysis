@@ -3,9 +3,9 @@
 \docType{data}
 \name{dataMedicalkey}
 \alias{dataMedicalkey}
-\title{Key of Correct Answers for \code{dataMedicaltest} Data Set}
-\format{A data frame with 100 values representing correct answers to items of \code{dataMedicaltest}
-data set. For more details see \code{\link{dataMedicaltest}}.}
+\title{Key of Correct Answers for \code{dataMedicaltest} Dataset}
+\format{A \code{data.frame} with 100 values representing correct answers to items of \code{dataMedicaltest}
+dataset. For more details see \code{\link{dataMedicaltest}}.}
 \usage{
 data(dataMedicalkey)
 }
