@@ -1482,36 +1482,50 @@ output$DB_iccIRT <- downloadHandler(
            height = 4, width = 8, dpi = 300)
   }
 )
-
-# *** correct answers ######
-irt_dichotom_answers <- reactive({
+# *** EXERCISES ####
+# **** Exercises 1 ####
+irt_dich1_answers <- reactive({
   ccirt <- function(theta, a, b, c, d){
     return(c + (d - c)/(1 + exp(-a*(theta - b))))
   }
+  iccirt <- function(theta, a, b, c, d){
+    return((d - c)*a^2*exp(a*(theta - b))/(1 + exp(a*(theta - b)))^2)
+  }
 
-  a1 <- 2; b1 <- -0.5; c1 <- 0; d1 <- 1
-  a2 <- 1; b2 <- -1; c2 <- 0; d2 <- 1
+  a1 <- 2.5; b1 <- -0.5; c1 <- 0; d1 <- 1
+  a2 <- 1.5; b2 <- 0; c2 <- 0; d2 <- 1
 
   par1 <- c(a1, b1, c1, d1)
   par2 <- c(a2, b2, c2, d2)
 
   theta0 <- c(-2, -1, 0, 1, 2)
 
-  cci1 <- round(ccirt(theta0, a1, b1, c1, d1), 1)
-  cci2 <- round(ccirt(theta0, a2, b2, c2, d2), 1)
+  cci1 <- ccirt(theta0, a1, b1, c1, d1)
+  cci2 <- ccirt(theta0, a2, b2, c2, d2)
 
   theta <- (a1*b1 - a2*b2)/(a1 - a2)
+
+  iccirt1a <- iccirt(-2, a1, b1, c1, d1)
+  iccirt2a <- iccirt(-2, a2, b2, c2, d2)
+  icca <- as.numeric(iccirt1a < iccirt2a) + 1
+  iccirt1b <- iccirt( 0, a1, b1, c1, d1)
+  iccirt2b <- iccirt( 0, a2, b2, c2, d2)
+  iccb <- as.numeric(iccirt1b < iccirt2b) + 1
+  iccirt1c <- iccirt( 2, a1, b1, c1, d1)
+  iccirt2c <- iccirt( 2, a2, b2, c2, d2)
+  iccc <- as.numeric(iccirt1c < iccirt2c) + 1
 
   answers <- list(par1 = par1,
                   par2 = par2,
                   cci1 = cci1,
                   cci2 = cci2,
-                  theta = theta)
+                  theta = theta,
+                  icc = c(icca, iccb, iccc))
   answers
 })
 
-irt_training_dich_check <- eventReactive(input$irt_training_dich_submit, {
-  answers <- irt_dichotom_answers()
+irt_training_dich1_check <- eventReactive(input$irt_training_dich1_submit, {
+  answers <- irt_dich1_answers()
 
   # answer 1
   a1 <- input$ccIRTSlider_a1
@@ -1530,28 +1544,32 @@ irt_training_dich_check <- eventReactive(input$irt_training_dich_submit, {
   par1input <- c(a1, b1, c1, d1)
   par2input <- c(a2, b2, c2, d2)
 
-  ans1 <- (all(round(par1 - par1input, 2) <= 0.05) &  all(round(par2 - par2input, 2) <= 0.05))
+  ans1 <- c(all(abs(par1 - par1input) <= 0.05) &  all(abs(par2 - par2input) <= 0.05))
 
   # answers 2, item 1
   cci1 <- answers[[3]]
-  cci1input <- c(input$irt_training_dich_1_2a, input$irt_training_dich_1_2b, input$irt_training_dich_1_2c,
-                 input$irt_training_dich_1_2d, input$irt_training_dich_1_2e)
-  ans2_1 <- (round(cci1 - cci1input, 2) <= 0.05)
+  cci1input <- c(input$irt_training_dich1_1_2a, input$irt_training_dich1_1_2b, input$irt_training_dich1_1_2c,
+                 input$irt_training_dich1_1_2d, input$irt_training_dich1_1_2e)
+  ans2_1 <- c(abs(cci1 - cci1input) <= 0.05)
   # answers 2, item 1
   cci2 <- answers[[4]]
-  cci2input <- c(input$irt_training_dich_2_2a, input$irt_training_dich_2_2b, input$irt_training_dich_2_2c,
-                 input$irt_training_dich_2_2d, input$irt_training_dich_2_2e)
-  ans2_2 <- (round(cci2 - cci2input, 2) <= 0.05)
+  cci2input <- c(input$irt_training_dich1_2_2a, input$irt_training_dich1_2_2b, input$irt_training_dich1_2_2c,
+                 input$irt_training_dich1_2_2d, input$irt_training_dich1_2_2e)
+  ans2_2 <- c(abs(cci2 - cci2input) <= 0.05)
 
   # answer 3
-  ans3 <- (round(answers[[5]] - input$irt_training_dich_3, 2) <= 0.05)
+  ans3 <- c(abs(answers[[5]] - input$irt_training_dich1_3) <= 0.05)
+
+  # answer 4,
+  ans4 <- c(answers[["icc"]] == c(input$irt_training_dich1_4a, input$irt_training_dich1_4b, input$irt_training_dich1_4c))
 
 
   ans <- list(ans1 = ans1,
               ans2_1 = ans2_1,
               ans2_2 = ans2_2,
-              ans3 = ans3)
-  res <- sum(sapply(ans, sum))/12
+              ans3 = ans3,
+              ans4 = ans4)
+  res <- sum(sapply(ans, sum))/sum(sapply(ans, length))
   ans <- lapply(ans, function(x) ifelse(x,
                                         "<font color='green'>&#10004;</font>",
                                         "<font color='red'>&#10006;</font>"))
@@ -1559,143 +1577,239 @@ irt_training_dich_check <- eventReactive(input$irt_training_dich_submit, {
   ans
 })
 
-output$irt_training_dich_1_answer <- renderUI({
-  HTML(irt_training_dich_check()[[1]])
+output$irt_training_dich1_1_answer <- renderUI({
+  HTML(irt_training_dich1_check()[["ans1"]])
 })
 
-output$irt_training_dich_2a_1_answer <- renderUI({
-  HTML(irt_training_dich_check()[[2]][1])
+output$irt_training_dich1_2a_1_answer <- renderUI({
+  HTML(irt_training_dich1_check()[["ans2_1"]][1])
 })
 
-output$irt_training_dich_2b_1_answer <- renderUI({
-  HTML(irt_training_dich_check()[[2]][2])
+output$irt_training_dich1_2b_1_answer <- renderUI({
+  HTML(irt_training_dich1_check()[["ans2_1"]][2])
 })
 
-output$irt_training_dich_2c_1_answer <- renderUI({
-  HTML(irt_training_dich_check()[[2]][3])
+output$irt_training_dich1_2c_1_answer <- renderUI({
+  HTML(irt_training_dich1_check()[["ans2_1"]][3])
 })
 
-output$irt_training_dich_2d_1_answer <- renderUI({
-  HTML(irt_training_dich_check()[[2]][4])
+output$irt_training_dich1_2d_1_answer <- renderUI({
+  HTML(irt_training_dich1_check()[["ans2_1"]][4])
 })
 
-output$irt_training_dich_2e_1_answer <- renderUI({
-  HTML(irt_training_dich_check()[[2]][5])
+output$irt_training_dich1_2e_1_answer <- renderUI({
+  HTML(irt_training_dich1_check()[["ans2_1"]][5])
 })
 
-output$irt_training_dich_2a_2_answer <- renderUI({
-  HTML(irt_training_dich_check()[[3]][1])
+output$irt_training_dich1_2a_2_answer <- renderUI({
+  HTML(irt_training_dich1_check()[["ans2_2"]][1])
 })
 
-output$irt_training_dich_2b_2_answer <- renderUI({
-  HTML(irt_training_dich_check()[[3]][2])
+output$irt_training_dich1_2b_2_answer <- renderUI({
+  HTML(irt_training_dich1_check()[["ans2_2"]][2])
 })
 
-output$irt_training_dich_2c_2_answer <- renderUI({
-  HTML(irt_training_dich_check()[[3]][3])
+output$irt_training_dich1_2c_2_answer <- renderUI({
+  HTML(irt_training_dich1_check()[["ans2_2"]][3])
 })
 
-output$irt_training_dich_2d_2_answer <- renderUI({
-  HTML(irt_training_dich_check()[[3]][4])
+output$irt_training_dich1_2d_2_answer <- renderUI({
+  HTML(irt_training_dich1_check()[["ans2_2"]][4])
 })
 
-output$irt_training_dich_2e_2_answer <- renderUI({
-  HTML(irt_training_dich_check()[[3]][5])
+output$irt_training_dich1_2e_2_answer <- renderUI({
+  HTML(irt_training_dich1_check()[["ans2_2"]][5])
 })
 
-output$irt_training_dich_3_answer <- renderUI({
-  HTML(irt_training_dich_check()[[4]])
+output$irt_training_dich1_3_answer <- renderUI({
+  HTML(irt_training_dich1_check()[["ans3"]])
 })
 
-output$irt_training_dich_answer <- renderUI({
-  res <- irt_training_dich_check()[["ans"]]
+output$irt_training_dich1_4a_answer <- renderUI({
+  HTML(irt_training_dich1_check()[["ans4"]][1])
+})
+
+output$irt_training_dich1_4b_answer <- renderUI({
+  HTML(irt_training_dich1_check()[["ans4"]][2])
+})
+
+output$irt_training_dich1_4c_answer <- renderUI({
+  HTML(irt_training_dich1_check()[["ans4"]][3])
+})
+
+output$irt_training_dich1_answer <- renderUI({
+  res <- irt_training_dich1_check()[["ans"]]
   HTML(ifelse(res == 1,
               "<font color='green'>Everything correct! Well done!</font>",
-              paste0("<font color='red'>",round(100*res), "% correct. Try again.</font>")))
+              paste0("<font color='red'>", round(100*res), "% correct. Try again.</font>")))
 })
-# # *** Sliders and text input updates ######
-# # 1a
-# observe({
-#   val <- input$ccIRTSlider_a1
-#   updateTextInput(session, "ccIRTtext_a1", value = val)
-# })
-# observe({
-#   val <- input$ccIRTtext_a1
-#   updateSliderInput(session, "ccIRTSlider_a1", value = val)
-# })
-# # 1b
-# observe({
-#   val <- input$ccIRTSlider_b1
-#   updateTextInput(session, "ccIRTtext_b1", value = val)
-# })
-# observe({
-#   val <- input$ccIRTtext_b1
-#   updateSliderInput(session, "ccIRTSlider_b1", value = val)
-# })
-# # 1c
-# observe({
-#   val <- input$ccIRTSlider_c1
-#   updateTextInput(session, "ccIRTtext_c1", value = val)
-# })
-# observe({
-#   val <- input$ccIRTtext_c1
-#   updateSliderInput(session, "ccIRTSlider_c1", value = val)
-# })
-# # 1d
-# observe({
-#   val <- input$ccIRTSlider_d1
-#   updateTextInput(session, "ccIRTtext_d1", value = val)
-# })
-# observe({
-#   val <- input$ccIRTtext_d1
-#   updateSliderInput(session, "ccIRTSlider_d1", value = val)
-# })
-# # 2a
-# observe({
-#   val <- input$ccIRTSlider_a2
-#   updateTextInput(session, "ccIRTtext_a2", value = val)
-# })
-# observe({
-#   val <- input$ccIRTtext_a2
-#   updateSliderInput(session, "ccIRTSlider_a2", value = val)
-# })
-# # 2b
-# observe({
-#   val <- input$ccIRTSlider_b2
-#   updateTextInput(session, "ccIRTtext_b2", value = val)
-# })
-# observe({
-#   val <- input$ccIRTtext_b2
-#   updateSliderInput(session, "ccIRTSlider_b2", value = val)
-# })
-# # 2c
-# observe({
-#   val <- input$ccIRTSlider_c2
-#   updateTextInput(session, "ccIRTtext_c2", value = val)
-# })
-# observe({
-#   val <- input$ccIRTtext_c2
-#   updateSliderInput(session, "ccIRTSlider_c2", value = val)
-# })
-# # 2d
-# observe({
-#   val <- input$ccIRTSlider_d2
-#   updateTextInput(session, "ccIRTtext_d2", value = val)
-# })
-# observe({
-#   val <- input$ccIRTtext_d2
-#   updateSliderInput(session, "ccIRTSlider_d2", value = val)
-# })
-#
-# # theta
-# observe({
-#   val <- input$ccIRTSlider_theta
-#   updateTextInput(session, "ccIRTtext_theta", value = val)
-# })
-# observe({
-#   val <- input$ccIRTtext_theta
-#   updateSliderInput(session, "ccIRTSlider_theta", value = val)
-# })
+
+
+# **** Exercises 2 ####
+irt_dich2_answers <- reactive({
+  ccirt <- function(theta, a, b, c, d){
+    return(c + (d - c)/(1 + exp(-a*(theta - b))))
+  }
+  iccirt <- function(theta, a, b, c, d){
+    return((d - c)*a^2*exp(a*(theta - b))/(1 + exp(a*(theta - b)))^2)
+  }
+
+  a1 <- 1.5; b1 <- 0; c1 <- 0; d1 <- 1
+  a2 <- 1.5; b2 <- 0; c2 <- 0.2; d2 <- 1
+
+  ans1 <- c(c1, c2)
+  ans2 <- c((1 + c1)/2, (1 + c2)/2)
+  ans3 <- 1
+
+  answers <- list(ans1 = ans1,
+                  ans2 = ans2,
+                  ans3 = ans3)
+  answers
+})
+
+irt_training_dich2_check <- eventReactive(input$irt_training_dich2_submit, {
+  answers <- irt_dich2_answers()
+
+  # answer 1
+  c1cor <- answers[["ans1"]][1]
+  c2cor <- answers[["ans1"]][2]
+  c1inp <- input$irt_training_dich2_1a
+  c2inp <- input$irt_training_dich2_1b
+
+  ans1 <- c(abs(c1cor - c1inp) <= 0.05,
+            abs(c2cor - c2inp) <= 0.05)
+
+  # answers 2
+  p1cor <- answers[["ans2"]][1]
+  p2cor <- answers[["ans2"]][2]
+  p1inp <- input$irt_training_dich2_2a
+  p2inp <- input$irt_training_dich2_2b
+
+  ans2 <- c(abs(p1cor - p1inp) <= 0.05,
+            abs(p2cor - p2inp) <= 0.05)
+
+  # answer 3
+  itcor <- answers[["ans3"]]
+  itinp <- input$irt_training_dich2_3
+  ans3 <- (itcor == itinp)
+
+  ans <- list(ans1 = ans1,
+              ans2 = ans2,
+              ans3 = ans3)
+  res <- sum(sapply(ans, sum))/sum(sapply(ans, length))
+  ans <- lapply(ans, function(x) ifelse(x,
+                                        "<font color='green'>&#10004;</font>",
+                                        "<font color='red'>&#10006;</font>"))
+  ans[["ans"]] <- res
+  ans
+})
+
+output$irt_training_dich2_1a_answer <- renderUI({
+  HTML(irt_training_dich2_check()[["ans1"]][1])
+})
+
+output$irt_training_dich2_1b_answer <- renderUI({
+  HTML(irt_training_dich2_check()[["ans1"]][2])
+})
+
+output$irt_training_dich2_2a_answer <- renderUI({
+  HTML(irt_training_dich2_check()[["ans2"]][1])
+})
+
+output$irt_training_dich2_2b_answer <- renderUI({
+  HTML(irt_training_dich2_check()[["ans2"]][2])
+})
+
+output$irt_training_dich2_3_answer <- renderUI({
+  HTML(irt_training_dich2_check()[["ans3"]])
+})
+
+output$irt_training_dich2_answer <- renderUI({
+  res <- irt_training_dich2_check()[["ans"]]
+  HTML(ifelse(res == 1,
+              "<font color='green'>Everything correct! Well done!</font>",
+              paste0("<font color='red'>", round(100*res), "% correct. Try again.</font>")))
+})
+
+# **** Exercises 3 ####
+irt_dich3_answers <- reactive({
+  a1 <- 1.5; b1 <- 0; c1 <- 0; d1 <- 0.9
+  a2 <- 1.5; b2 <- 0; c2 <- 0; d2 <- 1
+
+  ans1 <- c(d1, d2)
+  ans2 <- c(d1/2, d2/2)
+  ans3 <- 2
+
+  answers <- list(ans1 = ans1,
+                  ans2 = ans2,
+                  ans3 = ans3)
+  answers
+})
+
+irt_training_dich3_check <- eventReactive(input$irt_training_dich3_submit, {
+  answers <- irt_dich3_answers()
+
+  # answer 1
+  d1cor <- answers[["ans1"]][1]
+  d2cor <- answers[["ans1"]][2]
+  d1inp <- input$irt_training_dich3_1a
+  d2inp <- input$irt_training_dich3_1b
+
+  ans1 <- c(abs(d1cor - d1inp) <= 0.05,
+            abs(d2cor - d2inp) <= 0.05)
+
+  # answers 2
+  p1cor <- answers[["ans2"]][1]
+  p2cor <- answers[["ans2"]][2]
+  p1inp <- input$irt_training_dich3_2a
+  p2inp <- input$irt_training_dich3_2b
+
+  ans2 <- c(abs(p1cor - p1inp) <= 0.05,
+            abs(p2cor - p2inp) <= 0.05)
+
+  # answer 3
+  itcor <- answers[["ans3"]]
+  itinp <- input$irt_training_dich3_3
+
+  ans3 <- (itcor == itinp)
+
+  ans <- list(ans1 = ans1,
+              ans2 = ans2,
+              ans3 = ans3)
+  res <- sum(sapply(ans, sum))/sum(sapply(ans, length))
+  ans <- lapply(ans, function(x) ifelse(x,
+                                        "<font color='green'>&#10004;</font>",
+                                        "<font color='red'>&#10006;</font>"))
+  ans[["ans"]] <- res
+  ans
+})
+
+output$irt_training_dich3_1a_answer <- renderUI({
+  HTML(irt_training_dich3_check()[["ans1"]][1])
+})
+
+output$irt_training_dich3_1b_answer <- renderUI({
+  HTML(irt_training_dich3_check()[["ans1"]][2])
+})
+
+output$irt_training_dich3_2a_answer <- renderUI({
+  HTML(irt_training_dich3_check()[["ans2"]][1])
+})
+
+output$irt_training_dich3_2b_answer <- renderUI({
+  HTML(irt_training_dich3_check()[["ans2"]][2])
+})
+
+output$irt_training_dich3_3_answer <- renderUI({
+  HTML(irt_training_dich3_check()[["ans3"]])
+})
+
+output$irt_training_dich3_answer <- renderUI({
+  res <- irt_training_dich3_check()[["ans"]]
+  HTML(ifelse(res == 1,
+              "<font color='green'>Everything correct! Well done!</font>",
+              paste0("<font color='red'>", round(100*res), "% correct. Try again.</font>")))
+})
 
 # ** POLYTOMOUS MODELS ####
 # *** GRADED RESPONSE MODEL ####

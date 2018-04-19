@@ -122,8 +122,8 @@ function(input, output, session) {
         }
       } else {
         validate(
-          need(ncol(dataset$answers) == length(dataset$key), "Length of key is not the same as
-               number of items in the main data set!"),
+          need(ncol(dataset$answers) == length(dataset$key),
+          "The length of key need to be the same as number of columns in the main dataset!"),
           errorClass = "error_dimension"
           )
       }
@@ -166,7 +166,7 @@ function(input, output, session) {
       } else {
         validate(
           need(nrow(dataset$answers) == length(dataset$group),
-            "Length of group is not the same as number of observation in the main data set!"),
+            "The length of group need to be the same as number of observation in the main dataset!"),
           errorClass = "error_dimension"
         )
       }
@@ -219,7 +219,7 @@ function(input, output, session) {
       } else {
         validate(
           need(nrow(dataset$answers) == length(dataset$criterion_variable),
-               "Length of criterion variable is not the same as number of observation in the main data set!"),
+               "The length of criterion variable need to be the same as number of observation in the main dataset!"),
           errorClass = "error_dimension"
         )
       }
@@ -264,7 +264,8 @@ function(input, output, session) {
         if (is.null(input$criterion_variable)){
           criterion_variable <- "missing"
         } else {
-          criterion_variable <- read.csv(input$criterion_variable$datapath, header = input$header,
+          criterion_variable <- read.csv(input$criterion_variable$datapath,
+                                         header = input$header,
                                          sep = input$sep)
           criterion_variable <- unlist(criterion_variable)
         }
@@ -306,7 +307,7 @@ function(input, output, session) {
     if (any(dataset$criterion_variable == "missing")){
       warni_criterion_variable <- "The criterion variable is not provided! Predictive validity analysis is not available!"
     } else {
-      if (nrow(dataset$answers) != length(dataset$group)){
+      if (nrow(dataset$answers) != length(dataset$criterion_variable)){
         error_criterion_variable <- "The length of criterion variable need to be the same as number of observations in the main dataset!"
         error_setting <- T
       }

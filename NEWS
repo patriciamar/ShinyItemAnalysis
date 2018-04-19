@@ -5,6 +5,19 @@
         ***************************************************************
 
 -------------------------------------------------------
+- Changes in ShinyItemAnalysis 1.2.6.-10. (2018-04-19) -
+-------------------------------------------------------
+
+MAJOR UPDATES
+  o UI
+    - Some parts were splitted from main ui.R file
+  o IRT
+    - Exercises in IRT training were extended.
+  o Data
+    - Bug in data upload was fixed. Now length of criterion variable
+      is correctly checked.
+
+-------------------------------------------------------
 - Changes in ShinyItemAnalysis 1.2.6.-9. (2018-04-16) -
 -------------------------------------------------------
 
