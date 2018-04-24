@@ -768,10 +768,10 @@ function(input, output, session) {
            graf = report_distractor_plot(),
            incProgress(0.25),
            # regression
-           logreg = logreg_plot_Input(),
-           zlogreg = z_logreg_plot_Input(),
-           zlogreg_irt = z_logreg_irt_plot_Input(),
-           nlsplot = nlr_3P_plot_Input(),
+           # logreg = logreg_plot_Input(),
+           # zlogreg = z_logreg_plot_Input(),
+           # zlogreg_irt = z_logreg_irt_plot_Input(),
+           # nlsplot = nlr_3P_plot_Input(),
            multiplot = multiplotReportInput(),
            incProgress(0.05),
            # irt
@@ -851,10 +851,10 @@ function(input, output, session) {
                          hist_distractor_by_group = distractor_histogram_Input(),
                          graf = report_distractor_plot(),
                          # regression
-                         logreg = logreg_plot_Input(),
-                         zlogreg = z_logreg_plot_Input(),
-                         zlogreg_irt = z_logreg_irt_plot_Input(),
-                         nlsplot = nlr_3P_plot_Input(),
+                         # logreg = logreg_plot_Input(),
+                         # zlogreg = z_logreg_plot_Input(),
+                         # zlogreg_irt = z_logreg_irt_plot_Input(),
+                         # nlsplot = nlr_3P_plot_Input(),
                          multiplot = multiplotReportInput(),
                          # irt
                          wrightMap = oneparamirtWrightMapReportInput_mirt(),
