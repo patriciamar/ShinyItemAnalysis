@@ -125,6 +125,10 @@ DDplot <- function(data, item.names, k = 3, l = 1, u = 3){
   difc <- psychometric::item.exam(data, discr = T)[, "Difficulty"]
   disc <- ShinyItemAnalysis::gDiscrim(data, k = k, l = l, u = u)
 
+  if (any(disc < 0)){
+    warning("Estimated discrimination is lower than 0.", call. = F)
+  }
+
   value <- c(rbind(difc, disc)[, order(difc)])
   parameter <- rep(c("Difficulty", "Discrimination"), ncol(data))
   # ordered by difficulty
@@ -144,7 +148,7 @@ DDplot <- function(data, item.names, k = 3, l = 1, u = 3){
     geom_hline(yintercept = 0.2) +
     xlab("Item (ordered by difficulty)") +
     ylab("Difficulty/Discrimination") +
-    scale_y_continuous(expand = c(0, 0), limits = c(0, 1)) +
+    scale_y_continuous(expand = c(0, 0), limits = c(min(min(df$value) - 0.01, 0), 1)) +
     scale_fill_manual(breaks = parameter,
                       values = col) +
     scale_colour_manual(breaks = parameter,
