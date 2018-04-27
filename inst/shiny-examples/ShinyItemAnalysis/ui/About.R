@@ -41,12 +41,7 @@ About <- tabPanel("About",
                       target = "_blank"),
                     HTML("<a href = 'https://shiny.cs.cas.cz/ShinyItemAnalysis/' target = '_blank'>
                          <img src = 'flag_CR.png' height = '16' border = '0' align = 'middle'></a>"),
-                    a("Charles University",
-                      href = "http://shiny.statest.cz:3838/ShinyItemAnalysis/",
-                      target = "_blank"),
-                    HTML("<a href = 'http://shiny.statest.cz:3838/ShinyItemAnalysis/' target = '_blank'>
-                         <img src = 'flag_CR.png' height = '16' border = '0' align = 'middle'></a>"),
-                    "or",
+                    "and",
                     a("shinyapps.io",
                       href = "https://cemp.shinyapps.io/ShinyItemAnalysis/",
                       target = "_blank"),
