@@ -82,7 +82,7 @@ To cite ShinyItemAnalysis application in publications, please, use:
 
   Martinkova P., Drabinova A., Leder O., \& Houdek J.
   (2018)
-  ShinyItemAnalysis: Test and item analysis via shiny. R package version 1.2.6.
+  ShinyItemAnalysis: Test and item analysis via shiny. R package version 1.2.7.
   [https://CRAN.R-project.org/package=ShinyItemAnalysis](https://CRAN.R-project.org/package=ShinyItemAnalysis)
 
 

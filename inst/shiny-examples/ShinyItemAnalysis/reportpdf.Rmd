@@ -92,14 +92,14 @@ To cite ShinyItemAnalysis application in publications, please, use:
 \bibitem{martinkova2018}
   Martinkov\'a P., Drabinov\'a A., Leder O., \& Houdek J.
   (2018)
-  ShinyItemAnalysis: Test and item analysis via shiny. R package version 1.2.6.
+  ShinyItemAnalysis: Test and item analysis via shiny. R package version 1.2.7.
   https://CRAN.R-project.org/package=ShinyItemAnalysis
 
 \bibitem{martinkova2017}
   Martinkov\'a P., Drabinov\'a A., \& Houdek J.
   (2017)
   ShinyItemAnalysis: Anal\'yza p\v{r}ij\'imac\'ich a jin\'ych znalostn\'ich \v{c}i psychologick\'ych test\r{u}
-  [ShinyItemAnalysis: Analyzing admission and other educational and psychological tests]
+  [ShinyItemAnalysis: Analyzing admission and other educational and psychological tests]. 
   \textit{TESTF\'ORUM, 6}(9), 16-35. doi:10.5817/TF2017-9-129
 
 \end{thebibliography}

@@ -56,7 +56,7 @@ ui = tagList(
                    HTML('<img src = "hexbin.png", style = "float:left; width: 65px;">
                          <p style = "margin:8px 0 0 0;">
                              <font size = "4"> ShinyItemAnalysis </font>
-                             <font size = "2"> Test and item analysis | Version 1.2.6 </font>
+                             <font size = "2"> Test and item analysis | Version 1.2.7 </font>
                              <span style = "float:right">
                                 <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysis/" id = "tooltipweb" target="_blank"> <img src = "footer_web_icon.png", style = "width: 25px;"> </a>
                                 <a href = "https://github.com/patriciamar/ShinyItemAnalysis/" id = "tooltipgithub" target="_blank"> <img src = "footer_github_icon.png", style = "width: 25px;"> </a>

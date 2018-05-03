@@ -53,11 +53,11 @@ About <- tabPanel("About",
                   #------------------------------------------------------------------------------------#
                   h4("Version"),
                   p("Current version of ", code("ShinyItemAnalysis"), " available on ",
-                    a("CRAN", href = "https://CRAN.R-project.org/package=ShinyItemAnalysis", target = "_blank"), "is 1.2.6.
+                    a("CRAN", href = "https://CRAN.R-project.org/package=ShinyItemAnalysis", target = "_blank"), "is 1.2.7.
                     Version available",
-                    a("online", href = "https://shiny.cs.cas.cz/ShinyItemAnalysis/", target = "_blank"), "is 1.2.6.
+                    a("online", href = "https://shiny.cs.cas.cz/ShinyItemAnalysis/", target = "_blank"), "is 1.2.7.
                     The newest development version available on ",
-                    a("GitHub", href = "https://github.com/patriciamar/ShinyItemAnalysis", target = "_blank"), "is 1.2.6.",
+                    a("GitHub", href = "https://github.com/patriciamar/ShinyItemAnalysis", target = "_blank"), "is 1.2.7.",
                     br(),
                     "See also older versions: ",
                     a("0.1.0, ", href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV01/", target = "_blank"),
