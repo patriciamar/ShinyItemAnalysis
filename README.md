@@ -19,7 +19,7 @@ Test and item analysis via shiny
  
 It also offers some training data sets but you can also upload your own data. Moreover it is also possible to generate reports. 
 
-`ShinyItemAnalysis` is available online at [Czech Academy of Sciences](https://shiny.cs.cas.cz/ShinyItemAnalysis/) and [shinyapps.io](cemp.shinyapps.io/ShinyItemAnalysis/). It can be also downloaded from [**CRAN**](https://CRAN.R-project.org/package=ShinyItemAnalysis).
+`ShinyItemAnalysis` is available online at [Czech Academy of Sciences](https://shiny.cs.cas.cz/ShinyItemAnalysis/) and [shinyapps.io](https://cemp.shinyapps.io/ShinyItemAnalysis/). It can be also downloaded from [**CRAN**](https://CRAN.R-project.org/package=ShinyItemAnalysis).
 
 ## Installation
 ```
@@ -32,7 +32,7 @@ devtools::install_github("patriciamar/ShinyItemAnalysis")
 ```
 ## Version
 Current version available on [**CRAN**](https://CRAN.R-project.org/package=ShinyItemAnalysis) is 1.2.7. <br> 
-Version available online at [Czech Academy of Sciences](https://shiny.cs.cas.cz/ShinyItemAnalysis/) and [shinyapps.io](cemp.shinyapps.io/ShinyItemAnalysis/) is 1.2.7. <br> 
+Version available online at [Czech Academy of Sciences](https://shiny.cs.cas.cz/ShinyItemAnalysis/) and [shinyapps.io](https://cemp.shinyapps.io/ShinyItemAnalysis/) is 1.2.7. <br> 
 The newest development version available on [**GitHub**](https://github.com/patriciamar/ShinyItemAnalysis) is 1.2.7.
 
 ## Usage
@@ -41,7 +41,7 @@ It's very easy to run `ShinyItemAnalysis`:
 rm(list = ls())
 startShinyItemAnalysis()
 ```
-Or try it directly online at [Czech Academy of Sciences](https://shiny.cs.cas.cz/ShinyItemAnalysis/) or [shinyapps.io](cemp.shinyapps.io/ShinyItemAnalysis/)!
+Or try it directly online at [Czech Academy of Sciences](https://shiny.cs.cas.cz/ShinyItemAnalysis/) or [shinyapps.io](https://cemp.shinyapps.io/ShinyItemAnalysis/)!
 
 ## Getting help
 If you find any bug or just need help with `ShinyItemAnalysis` you can leave your message as an issue [here](https://github.com/patriciamar/ShinyItemAnalysis/issues) or directly contact us at martinkova@cs.cas.cz
