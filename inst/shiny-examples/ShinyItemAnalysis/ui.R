@@ -632,7 +632,10 @@ ui = tagList(
                                  h3("Total scores"),
                                  p('DIF is not about total scores! Two groups may have the same distribution of total scores, yet,
                                    some item may function differently for two groups. Also, one of the groups may have signifficantly
-                                   lower total score, yet, it may happen that there is no DIF item!'),
+                                   lower total score, yet, it may happen that there is no DIF item!',
+                                 a('(Martinkova et al., 2017). ',
+                                 href = "https://www.lifescied.org/doi/10.1187/cbe.16-10-0307",
+                                 target = "_blank")),
                                  h4("Summary of total scores for groups"),
                                  tableOutput('resultsgroup'),
                                  h4("Histograms of total scores for groups"),
