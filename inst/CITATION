@@ -19,9 +19,8 @@ citEntry(entry = "Manual",
                ". https://CRAN.R-project.org/package=ShinyItemAnalysis", sep = ""))
 
 citEntry(entry = "Article",
-         title = "ShinyItemAnalysis: Analyza prijimacich a jinych znalostnich ci psychologickych testu [ShinyItemAnalysis: Analyzing admission
-and other educational and psychological tests]. ",
-         author = personList(as.person("Adela Drabinova"), as.person("Patricia Martinkova")),
+         title = "{ShinyItemAnalysis}: {A}nalyza prijimacich a jinych znalostnich ci psychologickych testu [{ShinyItemAnalysis}: {A}nalyzing admission and other educational and psychological tests]",
+         author = personList(as.person("Patricia Martinkova"), as.person("Adela Drabinova"), as.person("Jakub Houdek")),
          year = "2017",
          journal = "TESTFORUM",
          volume = "6",
