@@ -63,7 +63,9 @@ About <- tabPanel("About",
                     a("0.1.0, ", href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV01/", target = "_blank"),
                     a("0.2.0, ", href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV02/", target = "_blank"),
                     a("1.0.0, ", href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV100/", target = "_blank"),
-                    a("1.1.0. ", href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV110/", target = "_blank")),
+                    a("1.1.0. ", href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV110/", target = "_blank"),
+                    a("1.2.3. ", href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV123/", target = "_blank"),
+                    a("1.2.6. ", href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV126/", target = "_blank")),
 
                   #------------------------------------------------------------------------------------#
                   # Authors ####

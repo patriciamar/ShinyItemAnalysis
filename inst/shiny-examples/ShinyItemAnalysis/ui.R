@@ -158,7 +158,7 @@ ui = tagList(
                                      items are correlated (larger and darker circle means larger correlation).
                                      The color of circles indicates in which way the items are correlated - blue
                                      color shows possitive correlation and red color shows negative correlation.'),
-                                  p("Polychoric correlation heat map can be reorder using hierarchical",
+                                  p("Polychoric correlation heat map can be reordered using hierarchical",
                                     HTML("<b>clustering method</b>"), "below.
                                     Ward's method aims at finding compact clusters based on minimizing the within-cluster
                                     sum of squares.
@@ -207,18 +207,17 @@ ui = tagList(
                                   br()
                                     ),
                         # * PREDICTIVE VALIDITY ####
-                        tabPanel('Predictive validity',
+                        tabPanel('Criterion validity',
                                  tabsetPanel(
                                    # ** Summary ####
                                    tabPanel('Summary',
-                                            h3('Predictive validity'),
+                                            h3('Criterion validity'),
                                             p('This section requires criterion variable (e.g. future study success or future GPA in case
-                                              of admission tests) which should be predicted by the measurement. This outcome variable
-                                              can be uploaded in ', strong('Data'), 'section. Then you can explore how data predict this
-                                              variable. '),
+                                              of admission tests) which should correlate with the measurement. Criterion variable
+                                              can be uploaded in ', strong('Data'), 'section.'),
                                             h4('Descriptive plots of criterion variable on total score'),
                                             p('Total scores are plotted according to criterion variable. Boxplot or scatterplot is displayed
-                                              depending on outcome variable - whether it is discrete or continuous. Scatterplot is
+                                              depending on the type of criterion variable - whether it is discrete or continuous. Scatterplot is
                                               provided with red linear regression line. '),
                                             plotOutput('validity_plot'),
                                             downloadButton(outputId = "DB_validity_plot", label = "Download figure"),
@@ -234,11 +233,10 @@ ui = tagList(
                                             ),
                                    # ** Items ####
                                    tabPanel('Items',
-                                            h3('Predictive validity'),
+                                            h3('Criterion validity'),
                                             p('This section requires criterion variable (e.g. future study success or future GPA in case
-                                              of admission tests) which should be predicted by the measurement. This outcome variable
-                                              can be uploaded in ', strong('Data'), 'section. Here you can explore how data predict this
-                                              variable item by item. '),
+                                              of admission tests) which should correlate with the measurement. Criterion variable
+                                              can be uploaded in ', strong('Data'), 'section. Here you can explore how the criterion correlates with individual items. '),
                                             p('In distractor analysis based on criterion variable, we are interested in how test takers
                                               select the correct answer and how the distractors (wrong answers) with respect to group based
                                               on criterion variable.'),
@@ -541,7 +539,7 @@ ui = tagList(
                         tabPanel("Model comparison",
                                  h3("Logistic regression model selection"),
                                  p('Here you can compare classic 2PL logistic regression model to non-linear model
-                                   item by item using some information criterions: '),
+                                   item by item using some information criteria: '),
                                  tags$ul(
                                    tags$li(strong('AIC'), 'is the Akaike information criterion (Akaike, 1974), '),
                                    tags$li(strong('BIC'), 'is the Bayesian information criterion (Schwarz, 1978)')
