@@ -99,8 +99,7 @@ IRT <- navbarMenu("IRT models",
                            p('Item Response Theory (IRT) models are mixed-effect regression models in which
                              respondent ability (theta) is assumed to be a random effect and is estimated together with item
                              paramters. Ability (theta) is often assumed to follow normal distibution.'),
-                           p('In',
-                             strong('1PL IRT model'), ', all items are assumed to have the same slope in inflection point, i.e., the
+                           p('In', strong('1PL IRT model,'), 'all items are assumed to have the same slope in inflection point, i.e., the
                              same discrimination', strong('a.'), ' Items can differ in location of their inflection point, i.e., in item difficulty parameters',
                              strong('b.')),
                            h4("Equation"),
@@ -851,7 +850,7 @@ IRT <- navbarMenu("IRT models",
                                         slope parameters."),
                                       h4("Parameters"),
                                       p("Select number of distractors and their threshold parameters ", strong("d"), "and discrimination parameters",
-                                        strong("a"), ". Parameters of \\(\\pi_0 = P(Y = 0)\\) (correct answer) are set to zeros and \\(\\pi_0\\) is displayed with black color."),
+                                        strong("a"), ". Parameters of \\(\\pi_0 = P(Y = 0)\\) are set to zeros and \\(\\pi_0\\) is displayed with black color."),
                                       div(style = "display: inline-block; vertical-align: middle; width: 18%;",
                                           numericInput(inputId = "irt_training_nrm_numresp",
                                                        label = "Number of distractors",

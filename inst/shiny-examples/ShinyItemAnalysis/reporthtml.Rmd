@@ -145,7 +145,7 @@ kable(table, align = 'c')
 `r if (any(params$corr_plot != "")) {"## Correlation structure"}`
 
 `r if (any(params$corr_plot != "")) {"### Polychoric correlation heat map "}`
-`r if (any(params$corr_plot != "")) {"Polychoris correlation heat map is a correlation plot which displays a polychoric correlations of items. The size and shade of circles indicate how much the items are correlated (larger and darker circle means larger correlation). The color of circles indicates in which way the items are correlated - blue color shows possitive correlation and red color shows negative correlation."}`
+`r if (any(params$corr_plot != "")) {"Polychoric correlation heat map is a correlation plot which displays a polychoric correlations of items. The size and shade of circles indicate how much the items are correlated (larger and darker circle means larger correlation). The color of circles indicates in which way the items are correlated - blue color shows possitive correlation and red color shows negative correlation."}`
 
 `r clustmethod_names <- c("None" = "none",
                           "Ward's"  = "ward.D",
