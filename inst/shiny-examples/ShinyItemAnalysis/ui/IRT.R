@@ -4,13 +4,13 @@ IRT <- navbarMenu("IRT models",
                   "Dichotomous models",
                   # * RASCH ####
                   tabPanel("Rasch",
-                           h3("Rasch Item Response Theory model"),
+                           h3("Rasch model"),
                            p('Item Response Theory (IRT) models are mixed-effect regression models in which
                              respondent ability (theta) is assumed to be a random effect and is estimated together with item
                              paramters. Ability (theta) is often assumed to follow normal distibution.'),
                            p('In',
-                             strong('Rasch IRT model'), '(Rasch, 1960), all items are assumed to have the same slope in inflection point – the
-                             same discrimination', strong('a'), 'which is fixed to value of 1. Items can differ in location of their inflection point – in item difficulty',
+                             strong('Rasch model'), '(Rasch, 1960), all items are assumed to have the same slope in inflection point, i.e., the
+                             same discrimination parameter', strong('a'), 'which is fixed to value of 1. Items may differ in location of their inflection point, i.e. they may differ in difficulty parameter',
                              strong('b.')),
                            h4("Equation"),
                            ('$$\\mathrm{P}\\left(Y_{ij} = 1\\vert \\theta_{i}, b_{j} \\right) =  \\frac{e^{\\left(\\theta_{i}-b_{j}\\right) }}{1+e^{\\left(\\theta_{i}-b_{j}\\right) }} $$'),
@@ -33,9 +33,9 @@ IRT <- navbarMenu("IRT models",
                            downloadButton("DP_raschFactor_mirt", label = "Download figure"),
                            h4('Wright map'),
                            p('Wright map (Wilson, 2005; Wright & Stone, 1979), also called item-person map, is a graphical tool
-                             to display person estimates and item parameters. The person side
-                             (left) represents histogram of estimated knowledge of respondents.
-                             The item side (right) displays estimates of difficulty of particular items. '),
+                             to display person ability estimates and item parameters. The person side
+                             (left) represents histogram of estimated abilities of respondents.
+                             The item side (right) displays estimates of difficulty parameters of individual items. '),
                            plotOutput('raschWrightMap_mirt'),
                            downloadButton('DP_raschWM_mirt', label = "Download figure"),
                            br(),
@@ -100,8 +100,8 @@ IRT <- navbarMenu("IRT models",
                              respondent ability (theta) is assumed to be a random effect and is estimated together with item
                              paramters. Ability (theta) is often assumed to follow normal distibution.'),
                            p('In',
-                             strong('1PL IRT model'), ', all items are assumed to have the same slope in inflection point – the
-                             same discrimination', strong('a'), '. Items can differ in location of their inflection point – in item difficulty',
+                             strong('1PL IRT model'), ', all items are assumed to have the same slope in inflection point, i.e., the
+                             same discrimination', strong('a.'), ' Items can differ in location of their inflection point, i.e., in item difficulty parameters',
                              strong('b.')),
                            h4("Equation"),
                            ('$$\\mathrm{P}\\left(Y_{ij} = 1\\vert \\theta_{i}, a, b_{j} \\right) =  \\frac{e^{a\\left(\\theta_{i}-b_{j}\\right) }}{1+e^{a\\left(\\theta_{i}-b_{j}\\right) }} $$'),
@@ -125,9 +125,9 @@ IRT <- navbarMenu("IRT models",
                            downloadButton("DP_oneparamirtFactor_mirt", label = "Download figure"),
                            h4('Wright map'),
                            p('Wright map (Wilson, 2005; Wright & Stone, 1979), also called item-person map, is a graphical tool
-                             to display person estimates and item parameters. The person side
-                             (left) represents histogram of estimated knowledge of respondents.
-                             The item side (right) displays estimates of difficulty of particular items. '),
+                             to display person ability estimates and item parameters. The person side
+                             (left) represents histogram of estimated abilities of respondents.
+                             The item side (right) displays estimates of difficulty parameters of individual items. '),
                            plotOutput('oneparamirtWrightMap_mirt'),
                            downloadButton('DP_oneparamirtWM_mirt', label = "Download figure"),
                            br(),
@@ -247,8 +247,8 @@ IRT <- navbarMenu("IRT models",
                            p('Item Response Theory (IRT) models are mixed-effect regression models in which
                              respondent ability (theta) is assumed to be a random effect and is estimated together with item
                              paramters. Ability (theta) is often assumed to follow normal distibution.'),
-                           p(strong('2PL IRT model'), ' allows for different slopes in inflection point – different
-                             discriminations', strong('a.'), 'Items can also differ in location of their inflection point – in item difficulty',
+                           p(strong('2PL IRT model'), ' allows for different slopes in inflection point, i.e., different
+                             discrimination parameters', strong('a.'), 'Items can also differ in location of their inflection point, i.e., in item difficulty parameters',
                              strong('b.')),
                            h4("Equation"),
                            ('$$\\mathrm{P}\\left(Y_{ij} = 1\\vert \\theta_{i}, a_{j}, b_{j}\\right) =  \\frac{e^{a_{j}\\left(\\theta_{i}-b_{j}\\right) }}{1+e^{a_{j}\\left(\\theta_{i}-b_{j}\\right) }} $$'),
@@ -374,7 +374,7 @@ IRT <- navbarMenu("IRT models",
                              paramters. Ability (theta) is often assumed to follow normal distibution.'),
                            p(strong('3PL IRT model'), ' allows for different discriminations of items', strong('a,'),
                              'different item difficulties',
-                             strong('b,'), 'and allows also for nonzero left asymptote – pseudo-guessing', strong('c.')),
+                             strong('b,'), 'and allows also for nonzero left asymptote, pseudo-guessing', strong('c.')),
                            h4("Equation"),
                            ('$$\\mathrm{P}\\left(Y_{ij} = 1\\vert \\theta_{i}, a_{j}, b_{j}, c_{j} \\right) = c_{j} + \\left(1 - c_{j}\\right) \\cdot \\frac{e^{a_{j}\\left(\\theta_{i}-b_{j}\\right) }}{1+e^{a_{j}\\left(\\theta_{i}-b_{j}\\right) }} $$'),
                            uiOutput("irt_3PL_model_converged"),
@@ -498,8 +498,8 @@ IRT <- navbarMenu("IRT models",
                              respondent ability (theta) is assumed to be a random effect and is estimated together with item
                              paramters. Ability (theta) is often assumed to follow normal distibution.'),
                            p(strong('4PL IRT model'), ' allows for different discriminations of items', strong('a,'),
-                             'different item difficulties', strong('b,'), 'nonzero left asymptote – pseudo-guessing', strong('c,'),
-                             'and also for upper asymptote lower than one - inattention parameter', strong('d.')),
+                             'different item difficulties', strong('b,'), 'nonzero left asymptote, i.e. pseudo-guessing parameter', strong('c,'),
+                             'and also for upper asymptote lower than one, i.e, inattention parameter', strong('d.')),
                            h4("Equation"),
                            ('$$\\mathrm{P}\\left(Y_{ij} = 1\\vert \\theta_{i}, a_{j}, b_{j}, c_{j}, d_{j} \\right) = c_{j} + \\left(d_{j} - c_{j}\\right) \\cdot \\frac{e^{a_{j}\\left(\\theta_{i}-b_{j}\\right) }}{1+e^{a_{j}\\left(\\theta_{i}-b_{j}\\right) }} $$'),
                            uiOutput("irt_4PL_model_converged"),
@@ -571,7 +571,7 @@ IRT <- navbarMenu("IRT models",
                            p('Item Response Theory (IRT) models are mixed-effect regression models in which
                              respondent ability (theta) is assumed to be a random effect and is estimated together with item
                              paramters. Ability (theta) is often assumed to follow normal distibution.'),
-                           p('IRT models can be compared by several information criterions: '),
+                           p('IRT models can be compared by several information criteria: '),
                            tags$ul(
                              tags$li(strong('AIC'), 'is the Akaike information criterion (Akaike, 1974), '),
                              tags$li(strong('AICc'), 'is AIC with a correction for finite sample size, '),
@@ -633,8 +633,9 @@ IRT <- navbarMenu("IRT models",
                            h3("Bock's nominal Item Response Theory model"),
                            p('The nominal response model (NRM) was introduced by Bock (1972) as a way to model
                              responses to items with two or more nominal categories. This model is suitable for
-                             multiple-choice items with no particular ordering of distractors. The correct answer
-                             represent the highest category, in terms of the measured latent trait. '),
+                             multiple-choice items with no particular ordering of distractors. 
+                             It is also generalization of some models for ordinal data, e.g. generalized  partial credit model (GPCM) 
+                             or its restricted versions partial credit model (PCM) and rating scale model (RSM).'),
                            h4('Equation'),
                            withMathJax('For ', strong('K'), ' possible test choices is the probability of the choice ', strong('k'), ' for
                                        person ', strong('i'), ' with latent trait', strong('\\(\\theta\\)'), ' in item ', strong('j'),
@@ -712,7 +713,7 @@ IRT <- navbarMenu("IRT models",
                              tabPanel('Intro',
                                       h3("Polytomous models"),
                                       p('Polytomous models are used when partial score is possible, or when items are graded
-                                        on Likert scale (e.g. from “Totally disagree” to “Totally agree”). Some polytomous
+                                        on Likert scale (e.g. from Totally disagree to Totally agree); some polytomous
                                         models can also be used when analyzing multiple-choice items.  In this section you
                                         can explore item response functions of some polytomous models.'),
                                       br(),
@@ -734,11 +735,11 @@ IRT <- navbarMenu("IRT models",
                                         strong('Rating Scale Model'), '(RSM; Andrich, 1978) assumes exactly the same K response
                                         categories for each item and threshold parameters which can be split into a response-threshold
                                         parameter and an item-specific location parameter. These models are also sometimes called
-                                        adjacent-category logit models, as they set linear form to adjacent logits.'),
+                                        ', strong('adjacent-category logit models'), 'as they set linear form to adjacent logits.'),
                                       p('To model distractor properties in multiple-choice items,', strong('Nominal Response Model'),
                                         '(NRM; Bock, 1972) can be used. NRM is an IRT analogy of multinomial regression model. This
                                         model is also generalization of GPCM/PCM/RSM ordinal models. NRM is also sometimes called
-                                        baseline-category logit model, as it sets linear form to log of odds of selecting given category
+                                        ', strong('baseline-category logit model'), 'as it sets linear form to log of odds of selecting given category
                                         to selecting a baseline category. Baseline can be chosen arbitrary, although usually the correct
                                         answer or the first answer is chosen.')
                                       ),

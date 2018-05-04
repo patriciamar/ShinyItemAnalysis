@@ -235,8 +235,8 @@ output$validity_distractor_text <- renderUI({
                  paste("<b>", num.group, "</b> groups by their criterion variable. "))
   txt3 <- paste ("Subsequently, we display percentage
                  of respondents in each group who selected given answer (correct answer or distractor).
-                 The correct answer should be more often selected by respondents with higher total score
-                 than by those with lower total score, i.e.")
+                 The correct answer should be more often selected by respondents with higher values of criterion variable
+                 than by those with lower values, i.e.")
   txt4 <- paste ("<b>",'solid line should be increasing.',"</b>")
   txt5 <- paste('The distractor should work in opposite direction, i.e. ')
   txt6 <- paste ("<b>",'dotted lines should be decreasing.',"<b>")

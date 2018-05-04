@@ -49,7 +49,7 @@ Data <- tabPanel("Data",
                             p(code("HCI"), " (McFarland et al., 2017) is a real dataset of Homeostasis Concept Inventory
                               from ", code("ShinyItemAnalysis"), " R package. The dataset represents responses of
                               651 subjects (405 males, 246 females) to multiple-choice test of 20 items. ", code("HCI"), "contains
-                              criterion variable -  indicator whether students planning to major in the life sciences. "),
+                              criterion variable -  indicator whether student plans to major in the life sciences. "),
                             br(),
                             selectInput(inputId = "dataSelect",
                                         label = "Select dataset",

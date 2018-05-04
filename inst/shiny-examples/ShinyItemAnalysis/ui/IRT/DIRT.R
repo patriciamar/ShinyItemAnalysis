@@ -25,7 +25,7 @@ DIRT <- tabPanel("Dichotomous models",
                    "(difficulty), ", strong("\\(c\\)"), "(guessing) and ", strong("\\(d\\)"), "(inattention).
                    By constraining \\(a = 1\\), \\(c = 0\\), \\(d = 1\\) you get Rasch model. With option
                    \\(c = 0\\) and \\(d = 1\\) you get 2PL model and with option \\(d = 1\\) 3PL model."),
-                 p("When you set different curve parameters, you can follow a phenomenon called Differential
+                 p("When different curve parameters describe properties of the same item but for different groups of respondents, this phenomenon is called Differential
                    Item Functioning (DIF). See further section for more information. "),
                  fluidRow(
                    splitLayout(
