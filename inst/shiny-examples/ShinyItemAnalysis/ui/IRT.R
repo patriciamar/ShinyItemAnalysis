@@ -633,8 +633,8 @@ IRT <- navbarMenu("IRT models",
                            h3("Bock's nominal Item Response Theory model"),
                            p('The nominal response model (NRM) was introduced by Bock (1972) as a way to model
                              responses to items with two or more nominal categories. This model is suitable for
-                             multiple-choice items with no particular ordering of distractors. 
-                             It is also generalization of some models for ordinal data, e.g. generalized  partial credit model (GPCM) 
+                             multiple-choice items with no particular ordering of distractors.
+                             It is also generalization of some models for ordinal data, e.g. generalized  partial credit model (GPCM)
                              or its restricted versions partial credit model (PCM) and rating scale model (RSM).'),
                            h4('Equation'),
                            withMathJax('For ', strong('K'), ' possible test choices is the probability of the choice ', strong('k'), ' for
@@ -850,11 +850,11 @@ IRT <- navbarMenu("IRT models",
                                         NRM model is generalization of GPCM model by setting item-specific and category-specific intercept and
                                         slope parameters."),
                                       h4("Parameters"),
-                                      p("Select number of responses and their threshold parameters ", strong("d"), "and discrimination parameters",
-                                        strong("a"), ". Parameters of \\(\\pi_0 = P(Y = 0)\\) are set to zeros and \\(pi_0\\) is displayed with black color."),
+                                      p("Select number of distractors and their threshold parameters ", strong("d"), "and discrimination parameters",
+                                        strong("a"), ". Parameters of \\(\\pi_0 = P(Y = 0)\\) (correct answer) are set to zeros and \\(\\pi_0\\) is displayed with black color."),
                                       div(style = "display: inline-block; vertical-align: middle; width: 18%;",
                                           numericInput(inputId = "irt_training_nrm_numresp",
-                                                       label = "Number of responses",
+                                                       label = "Number of distractors",
                                                        value = 4,
                                                        min = 2,
                                                        max = 6)),
