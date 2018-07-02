@@ -31,7 +31,9 @@ About <- tabPanel("About",
                     code("GMAT2"), "and", code("MSAT-B"), "from", code("difNLR"), "package and ",
                     code("Medical 100"),  "and", code("HCI"), "from", code("ShinyItemAnalysis"),
                     "package.  You can change the dataset (and try your own one) on page", strong("Data.")),
+                  #------------------------------------------------------------------------------------#
                   # Availability ####
+                  #------------------------------------------------------------------------------------#
                   h4("Availability"),
                   p("Application can be downloaded as R package from ",
                     a("CRAN.", href = "https://CRAN.R-project.org/package=ShinyItemAnalysis", target = "_blank"),
@@ -142,11 +144,15 @@ About <- tabPanel("About",
                   #------------------------------------------------------------------------------------#
                   # Bug reports ####
                   #------------------------------------------------------------------------------------#
-                  h4("Bug reports"),
+                  h4("Feedback"),
                   p("If you discover a problem with this application please contact the project
                     maintainer at martinkova(at)cs.cas.cz or use ",
                     a("GitHub.",
                       href = "https://github.com/patriciamar/ShinyItemAnalysis/issues",
+                      target = "_blank"),
+                    "We also encourage you to provide your feedback using ",
+                    a("google form.",
+                      href = "https://goo.gl/forms/5ZVR6mTOFJFwmtT52",
                       target = "_blank")),
 
                   #------------------------------------------------------------------------------------#

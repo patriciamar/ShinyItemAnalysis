@@ -806,7 +806,7 @@ IRT <- navbarMenu("IRT models",
                                       h4("Parameters"),
                                       p("Select number of responses and their threshold parameters ", strong("d"), "and common
                                         discrimination parameter", strong("a"), ". With a = 1 you get PCM. Numerator of \\(\\pi_0 = P(Y = 0)\\) is
-                                        set to 1 and \\(pi_0\\) is displayed with black color."),
+                                        set to 1 and \\(\\pi_0\\) is displayed with black color."),
                                       div(style = "display: inline-block; vertical-align: middle; width: 18%;",
                                           numericInput(inputId = "irt_training_gpcm_numresp",
                                                        label = "Highest score",

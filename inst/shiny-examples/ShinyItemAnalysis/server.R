@@ -629,6 +629,9 @@ function(input, output, session) {
       a <- input$dataSelect
       pos <- regexpr("_", a)[1]
       name <- str_sub(a, 1, pos - 1)
+      if (name == "dataMedical"){
+        name <- "Medical 100"
+      }
     } else {
         name <- ""
     }

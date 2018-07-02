@@ -11,6 +11,7 @@ header-includes:
    - \usepackage{titlepage}
    - \renewcommand{\refname}{}
    - \usepackage{ragged2e}
+   - \usepackage{longtable}
 includes:
     before_body: latex/before_body.tex
 fontsize:
@@ -128,7 +129,8 @@ colnames(table) = NULL
 print(xtable(t(table), 
              digits = c(0, 0, 0, 2, 2, 2, 2, 2), 
              align = rep('c', 8)), 
-      booktabs = T, comment = F, include.rownames = F)
+      booktabs = T, comment = F, include.rownames = F,
+      tabular.environment = "longtable", floating = F)
 ```
 
 ### Histogram of total scores
@@ -157,7 +159,8 @@ table = params$standardscores_table
 print(xtable(table, 
              digits = c(0, 0, 2, 0, 2, 2), 
              align = rep('c', 6)), 
-      booktabs = T, comment = F, include.rownames = F)
+      booktabs = T, comment = F, include.rownames = F,
+      tabular.environment = "longtable", floating = F)
 ```
 
 `r if (any(params$corr_plot != "") | params$validity_check) {"\\pagebreak"}`
@@ -183,7 +186,7 @@ print(xtable(table,
 
 `r if (any(params$corr_plot != "") & params$corr_plot_clustmethod != "none") {"\\vspace{2em}"}`
 
-```{r corr-plot, echo = FALSE, fig.height = 5, fig.width = 9, dpi = 300}
+```{r corr-plot, fig.align = 'center', echo = FALSE, fig.height = 5, fig.width = 9, dpi = 300}
 if (any(params$corr_plot != "")) {
   corP <- params$corr_plot
   numclust <- params$corr_plot_numclust
@@ -306,7 +309,8 @@ colnames(table) = c("Item", "Diff.", "SD", "D. ULI", "D. RIT", "D. RIR", "Alpha 
 print(xtable(table, 
              digits = c(0, 0, 2, 2, 2, 2, 2, 2, 2), 
              align = rep('c', 9)), 
-      booktabs = T, comment = F, include.rownames = FALSE)
+      booktabs = T, comment = F, include.rownames = FALSE,
+      tabular.environment = "longtable", floating = F)
 ```
 
 \pagebreak
@@ -429,7 +433,8 @@ if (params$irt_type != "none") {
   print(xtable(table, 
              digits = c(0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 2), 
              align = rep('c', 12)), 
-      booktabs = T, comment = F, include.rownames = T)
+      booktabs = T, comment = F, include.rownames = T,
+      tabular.environment = "longtable", floating = F)
 }
 ```
 
@@ -453,7 +458,8 @@ if (params$histCheck) {
     print(xtable(params$resultsgroup, 
                  digits = c(0, 0, 0, 2, 2, 2, 2, 2), 
                  align = rep('c', 8)), 
-          booktabs = T, comment = F)
+          booktabs = T, comment = F,
+          tabular.environment = "longtable", floating = F)
   }
 }
 ```
@@ -501,7 +507,8 @@ if (params$deltaplotCheck) {
     print(xtable(tab, 
                  digits = c(0, 3, 3, 3, 3, 3), 
                  align = rep('c', 6)), 
-          booktabs = T, comment = F)
+          booktabs = T, comment = F,
+          tabular.environment = "longtable", floating = F)
   }
 }
 ```
@@ -561,7 +568,8 @@ if (params$logregCheck) {
   print(xtable(tab, 
                  digits = c(0, 3, 3, 3, 0, 0), 
                  align = c('l', 'c', 'l', 'c', 'c', 'c')), 
-          booktabs = T, comment = F)
+        booktabs = T, comment = F,
+        tabular.environment = "longtable", floating = F)
   } 
 }
 ```
@@ -634,12 +642,14 @@ if (params$multiCheck) {
     rownames(tab) <- colnames(res$Data)
     if (ncol(tab) == 2){
       colnames(tab) <- c("Stat.", "P-value")
-      print(xtable(tab, align = c('l', 'c', 'l')), 
-          booktabs = T, comment = F)
+      print(xtable(tab, align = c('l', 'c', 'l')),
+            booktabs = T, comment = F,
+            tabular.environment = "longtable", floating = F)
     } else {
       colnames(tab) <- c("Stat.", "P-value", "Adj. p-value")
-      print(xtable(tab, align = c('l', 'c', 'c', 'l')), 
-          booktabs = T, comment = F)
+      print(xtable(tab, align = c('l', 'c', 'c', 'l')),
+            booktabs = T, comment = F,
+            tabular.environment = "longtable", floating = F)
     }
   }
 }
