@@ -1387,7 +1387,8 @@ output$ccIRT_plot <- renderPlotly({
 
   p$elementId <- NULL
 
-  p %>% config(displayModeBar = F)
+  # p %>% config(displayModeBar = F)
+  p
 })
 
 output$DB_ccIRT <- downloadHandler(
@@ -1465,7 +1466,8 @@ output$iccIRT_plot <- renderPlotly({
 
   p$elementId <- NULL
 
-  p %>% config(displayModeBar = F)
+  # p %>% config(displayModeBar = F)
+  p
 })
 
 output$DB_iccIRT <- downloadHandler(
@@ -1911,7 +1913,8 @@ output$irt_training_grm_plot_cummulative <- renderPlotly({
 
   p$elementId <- NULL
 
-  p %>% config(displayModeBar = F)
+  # p %>% config(displayModeBar = F)
+  p
 })
 
 output$DB_irt_training_grm_plot_cummulative <- downloadHandler(
@@ -1990,7 +1993,8 @@ output$irt_training_grm_plot_category <- renderPlotly({
 
   p$elementId <- NULL
 
-  p %>% config(displayModeBar = F)
+  # p %>% config(displayModeBar = F)
+  p
 })
 
 output$DB_irt_training_grm_plot_category <- downloadHandler(
@@ -2063,7 +2067,8 @@ output$irt_training_grm_plot_expected <- renderPlotly({
 
   p$elementId <- NULL
 
-  p %>% config(displayModeBar = F)
+  # p %>% config(displayModeBar = F)
+  p
 })
 
 output$DB_irt_training_grm_plot_expected <- downloadHandler(
@@ -2187,7 +2192,8 @@ output$irt_training_gpcm_plot <- renderPlotly({
 
   p$elementId <- NULL
 
-  p %>% config(displayModeBar = F)
+  # p %>% config(displayModeBar = F)
+  p
 })
 
 output$DB_irt_training_gpcm_plot <- downloadHandler(
@@ -2266,7 +2272,8 @@ output$irt_training_gpcm_plot_expected <- renderPlotly({
 
   p$elementId <- NULL
 
-  p %>% config(displayModeBar = F)
+  # p %>% config(displayModeBar = F)
+  p
 })
 
 output$DB_irt_training_gpcm_plot_expected <- downloadHandler(
@@ -2428,7 +2435,8 @@ output$irt_training_nrm_plot <- renderPlotly({
 
   p$elementId <- NULL
 
-  p %>% config(displayModeBar = F)
+  # p %>% config(displayModeBar = F)
+  p
 })
 
 output$DB_irt_training_nrm_plot <- downloadHandler(

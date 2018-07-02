@@ -5,6 +5,20 @@
         ***************************************************************
 
 -------------------------------------------------------
+- Changes in ShinyItemAnalysis 1.2.7.-1. (2018-07-02) -
+-------------------------------------------------------
+
+BUG FIXING
+  o Plotly files in IRT training section are now displayed with
+    mode bar due a bug in plotly package.
+
+MINOR UPDATES
+  o Some typos were fixed.
+  o Link to google form for feedback was added into About section.
+  o New R icon was added into footer.
+
+
+-------------------------------------------------------
 - ShinyItemAnalysis 1.2.7. (2018-05-03) -
 -------------------------------------------------------
 
