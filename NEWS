@@ -5,7 +5,36 @@
         ***************************************************************
 
 -------------------------------------------------------
-- Changes in ShinyItemAnalysis 1.2.7.-1. (2018-07-02) -
+- Changes in ShinyItemAnalysis 1.2.7-4. (2018-08-10) -
+-------------------------------------------------------
+
+MINOR UPDATES
+  o Paddings were adjusted.
+  o Acknowledgments were updated.
+
+-------------------------------------------------------
+- Changes in ShinyItemAnalysis 1.2.7-3. (2018-07-27) -
+-------------------------------------------------------
+
+BUG FIXING
+  o Crashing of the app when upload no data was fixed.
+
+MAJOR UPDATES
+  o Data page
+    - Design of data page was changed.
+    - User can now specify encoding of missing values.
+    - Basic summary was added.
+
+-------------------------------------------------------
+- Changes in ShinyItemAnalysis 1.2.7-2. (2018-07-04) -
+-------------------------------------------------------
+
+MAJOR UPDATES
+  o Phone version
+    - collapsible menu closes when clicked
+
+-------------------------------------------------------
+- Changes in ShinyItemAnalysis 1.2.7-1. (2018-07-02) -
 -------------------------------------------------------
 
 BUG FIXING
@@ -17,7 +46,6 @@ MINOR UPDATES
   o Link to google form for feedback was added into About section.
   o New R icon was added into footer.
 
-
 -------------------------------------------------------
 - ShinyItemAnalysis 1.2.7. (2018-05-03) -
 -------------------------------------------------------
@@ -25,14 +53,14 @@ MINOR UPDATES
  ** This is CRAN version, it includes version 1.2.6.-1.-12. **
 
 -------------------------------------------------------
-- Changes in ShinyItemAnalysis 1.2.6.-12. (2018-04-26) -
+- Changes in ShinyItemAnalysis 1.2.6-12. (2018-04-26) -
 -------------------------------------------------------
 
 MINOR UPDATES
   o Mirror at Charles University is no longer in use.
 
 -------------------------------------------------------
-- Changes in ShinyItemAnalysis 1.2.6.-11. (2018-04-24) -
+- Changes in ShinyItemAnalysis 1.2.6-11. (2018-04-24) -
 -------------------------------------------------------
 
 MAJOR UPDATES
@@ -44,7 +72,7 @@ MAJOR UPDATES
     - Some unused parts of reports were excluded.
 
 -------------------------------------------------------
-- Changes in ShinyItemAnalysis 1.2.6.-10. (2018-04-19) -
+- Changes in ShinyItemAnalysis 1.2.6-10. (2018-04-19) -
 -------------------------------------------------------
 
 MAJOR UPDATES
@@ -57,7 +85,7 @@ MAJOR UPDATES
       is correctly checked.
 
 -------------------------------------------------------
-- Changes in ShinyItemAnalysis 1.2.6.-9. (2018-04-16) -
+- Changes in ShinyItemAnalysis 1.2.6-9. (2018-04-16) -
 -------------------------------------------------------
 
 MAJOR UPDATES
@@ -75,7 +103,7 @@ MINOR UPDATES
   o Typos were fixed.
 
 -------------------------------------------------------
-- Changes in ShinyItemAnalysis 1.2.6.-8. (2018-04-13) -
+- Changes in ShinyItemAnalysis 1.2.6-8. (2018-04-13) -
 -------------------------------------------------------
 
 MAJOR UPDATES
@@ -85,7 +113,7 @@ MAJOR UPDATES
       models.
 
 -------------------------------------------------------
-- Changes in ShinyItemAnalysis 1.2.6.-7. (2018-04-12) -
+- Changes in ShinyItemAnalysis 1.2.6-7. (2018-04-12) -
 -------------------------------------------------------
 
 MAJOR UPDATES
@@ -102,7 +130,7 @@ MINOR UPDATES
     - Colors of sliders and curves in IRT training section were adjusted.
 
 -------------------------------------------------------
-- Changes in ShinyItemAnalysis 1.2.6.-6. (2018-04-10) -
+- Changes in ShinyItemAnalysis 1.2.6-6. (2018-04-10) -
 -------------------------------------------------------
 
 MAJOR UPDATES
@@ -119,7 +147,7 @@ MINOR UPDATES
   o Some wording was improved.
 
 -------------------------------------------------------
-- Changes in ShinyItemAnalysis 1.2.6.-5. (2018-04-09) -
+- Changes in ShinyItemAnalysis 1.2.6-5. (2018-04-09) -
 -------------------------------------------------------
 
 MAJOR UPDATES
@@ -140,7 +168,7 @@ MINOR UPDATES
   o References were updated.
 
 -------------------------------------------------------
-- Changes in ShinyItemAnalysis 1.2.6.-4. (2018-04-06) -
+- Changes in ShinyItemAnalysis 1.2.6-4. (2018-04-06) -
 -------------------------------------------------------
 
 MAJOR UPDATES
@@ -167,7 +195,7 @@ MINOR UPDATES
     - Syntax for NLR 3P model was improved.
 
 -------------------------------------------------------
-- Changes in ShinyItemAnalysis 1.2.6.-3. (2018-04-05) -
+- Changes in ShinyItemAnalysis 1.2.6-3. (2018-04-05) -
 -------------------------------------------------------
 
 MAJOR UPDATES
@@ -182,7 +210,7 @@ MINOR UPDATES
     - Sliders steps are now 0.01 in dichotomous models.
 
 -------------------------------------------------------
-- Changes in ShinyItemAnalysis 1.2.6.-2. (2018-04-03) -
+- Changes in ShinyItemAnalysis 1.2.6-2. (2018-04-03) -
 -------------------------------------------------------
 
 MINOR UPDATES
@@ -193,7 +221,7 @@ MINOR UPDATES
   o Mirror web link was updated.
 
 -------------------------------------------------------
-- Changes in ShinyItemAnalysis 1.2.6.-1. (2018-03-15) -
+- Changes in ShinyItemAnalysis 1.2.6-1. (2018-03-15) -
 -------------------------------------------------------
 
 BUG FIXING

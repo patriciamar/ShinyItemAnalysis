@@ -4,8 +4,9 @@
 
 require(DT)
 require(plotly)
-require(shinyjs)
 require(shinyBS)
+require(shinydashboard)
+require(shinyjs)
 
 #%%%%%%%%%%%%%%%%%%%%%
 # SOURCING ###########
@@ -20,21 +21,50 @@ source("ui/IRT.R", local = T)
 #%%%%%%%%%%%%%%%%%%%%%
 
 ui = tagList(
-  tags$head(tags$link(rel = "stylesheet",
+  tags$head(tags$link(rel = "shortcut icon",
+                      href = "hexbin.png"),
+            # CSS
+            tags$link(rel = "stylesheet",
                       type = "text/css",
                       href = "style.css"),
+            tags$link(rel = "stylesheet",
+                      type = "text/css",
+                      href = "margins_and_paddings.css"),
+            tags$style(type = "text/css",
+                       ".panel-footer {
+                          position: fixed;
+                          right: 0;
+                          bottom: 0;
+                          left: 0;
+                       }"),
+            tags$link(rel = "stylesheet",
+                      type = "text/css",
+                      href = "box.css"),
+            tags$style(type = "text/css",
+                       "#inline-left {
+                          display: table;
+                          width: 100%;
+                        }
+                        #inline-left label{
+                          display: table-cell;
+                          text-align: center;
+                          vertical-align: middle;
+                          padding-right: 5px;
+                        }
+                        #inline-left .form-group {
+                          display: table-row;
+                          width: 80%;
+                        }"),
+            # JS
             tags$script(type = "text/javascript",
                         src = "busy.js"),
             tags$script(type = "text/javascript",
                         src = "report_generating_message.js"),
             tags$script(type = "text/javascript",
                         src = "report_downloading_message.js"),
-            tags$link(rel = "stylesheet",
-                      type = "text/css",
-                      href = "margins_and_paddings.css"),
-            tags$link(rel = "shortcut icon", href = "hexbin.png"),
-            tags$style(type = "text/css",
-                       ".panel-footer {position: fixed; right: 0; bottom: 0; left: 0;}")),
+            tags$script(type = "text/javascript",
+                        src = "collapsible_menu_click.js")
+            ),
   div(class = "busy",
       p("Loading"),
       img(src = "busy_indicator.gif", height = 100, width = 100)
@@ -44,34 +74,55 @@ ui = tagList(
 
   tags$head(includeScript("google-analytics.js")),
 
-  navbarPage(title = div(HTML('<font size = "5"> ShinyItemAnalysis </font>
-                               <font size = "2"> Test and item analysis </font> </p>')),
+  navbarPage(title = HTML('<div style = "margin-top: -10px;">
+                              <div class = "header-title">
+				                        <img src = "header_hexbin.png">
+				                        ShinyItemAnalysis
+			                        </div>
+			                        <div class = "header-subtitle">
+				                        Test and item analysis
+			                        </div>
+                           </div>'),
              windowTitle = 'ShinyItemAnalysis',
              position = 'fixed-top',
              selected = 'About',
              collapsible = TRUE,
              footer = list(
-               div(class = "clear"),
-               div(class = "panel-footer",
-                   HTML('<img src = "hexbin.png", style = "float:left; width: 65px;">
-                         <p style = "margin:8px 0 0 0;">
-                             <font size = "4"> ShinyItemAnalysis </font>
-                             <font size = "2"> Test and item analysis | Version 1.2.7 </font>
-                             <span style = "float:right">
-                                <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysis/" id = "tooltipweb" target="_blank"> <img src = "footer_web_icon.png", style = "width: 25px;"> </a>
-                                <a href = "https://github.com/patriciamar/ShinyItemAnalysis/" id = "tooltipgithub" target="_blank"> <img src = "footer_github_icon.png", style = "width: 25px;"> </a>
-                                <a href = "https://CRAN.R-project.org/package=ShinyItemAnalysis/" id = "tooltipcran" target="_blank"> <img src = "footer_cran_icon.png", style = "width: 25px;"> </a>
-                             </span> </p>
-                         <script>
-                           $("#tooltipweb").attr("title", "Web");
-                           $("#tooltipgithub").attr("title", "GitHub");
-                           $("#tooltipcran").attr("title", "CRAN");
-                         </script>'),
-                   p(`style` = "margin:0 0 0 0;",
-                     HTML('<font size = "2"> &copy; 2018  Patricia Martinkova, Adela Drabinova, Ondrej Leder and Jakub Houdek </font>'),
-                     HTML('<span style = "float:right"> '),
-                     textOutput('counter', inline = T),
-                     HTML('</span>')))),
+                           HTML('<div class = "panel-footer">
+                              <p style = "margin:8px 0 0 0;">
+                                <div class = "footer-title">
+  				                        <img src = "hexbin.png">
+  				                        ShinyItemAnalysis
+  			                        </div>
+  			                        <div class = "footer-subtitle">
+  				                        Test and item analysis | Version 1.2.7-4
+  			                        </div>
+                                <span style = "float:right">
+                                  <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysis/" id = "tooltipweb" target="_blank">
+                                      <img src = "footer_web_icon.png", class = "footer-icons">
+                                  </a>
+                                  <a href = "https://github.com/patriciamar/ShinyItemAnalysis/" id = "tooltipgithub" target="_blank">
+                                      <img src = "footer_github_icon.png", class = "footer-icons">
+                                  </a>
+                                  <a href = "https://CRAN.R-project.org/package=ShinyItemAnalysis/" id = "tooltipcran" target="_blank">
+                                      <img src = "footer_cran_icon.png", class = "footer-icons">
+                                  </a>
+                                </span>
+                              </p>
+                              <script>
+                                $("#tooltipweb").attr("title", "Web");
+                                $("#tooltipgithub").attr("title", "GitHub");
+                                $("#tooltipcran").attr("title", "CRAN");
+                              </script>
+                              <br>
+                              <div class = "footer-copyright">
+				                        &copy; 2018  ShinyItemAnalysis
+			                        </div>'),
+                              HTML('<div class = "footer-counter">'),
+                                textOutput('counter', inline = T),
+                              HTML('</div></div>')),
+
+
              theme = "bootstrap.css",
              #%%%%%%%%%%%%%%%%%%%%%
              # MAIN PANEL #########
@@ -103,7 +154,7 @@ ui = tagList(
                                    is near the value of 0. "),
                                  tableOutput('totalscores_table'),
                                  h4("Histogram of total score"),
-                                 fluidPage(div(style = "display: inline-block; vertical-align: top; width: 20%; ",
+                                 fluidPage(div(class = "input-slider",
                                                sliderInput(inputId = "slider_totalscores_histogram",
                                                            label = "Cut-score",
                                                            min = 0,
@@ -174,14 +225,14 @@ ui = tagList(
                                     Centroid method used distance between centroids of clusters. "),
                                   p("With", HTML("<b>number  of clusters</b>"), "larger than 1, the rectangles representing
                                     clusters are drawn. "),
-                                  fluidPage(div(style = "display: inline-block; vertical-align: top; width: 20%;",
+                                  fluidPage(div(class = "input-box",
                                                 numericInput(inputId = 'corr_plot_clust',
                                                              label = 'Number of clusters',
                                                              value = 1,
                                                              min = 1,
                                                              max = 1)),
                                             div(style = "display: inline-block; vertical-align: top; width: 5%;"),
-                                            div(style = "display: inline-block; vertical-align: top; width: 20%;",
+                                            div(class = "input-box",
                                                 selectInput(inputId = 'corr_plot_clustmethod',
                                                             label = 'Clustering method',
                                                             choices = list("None" = "none",
@@ -244,19 +295,19 @@ ui = tagList(
                                             htmlOutput("validity_distractor_text"),
                                             p('With option ', strong('Combinations'), 'all item selection patterns are plotted (e.g. AB, ACD, BC). With
                                               option', strong('Distractors'), 'answers are splitted into distractors (e.g. A, B, C, D).'),
-                                            fluidPage(div(style = "display: inline-block; vertical-align: top; width: 20%; ",
+                                            fluidPage(div(class = "input-slider",
                                                           sliderInput(inputId = 'validity_group',
                                                                       label = 'Number of groups:',
                                                                       min   = 1,
                                                                       max   = 5,
                                                                       value = 3)),
                                                       div(style = "display: inline-block; vertical-align: top; width: 5%; "),
-                                                      div(style = "display: inline-block; vertical-align: top; width: 15%; ",
+                                                      div(class = "input-radio",
                                                           radioButtons(inputId = 'type_validity_combinations_distractor',
                                                                        label = 'Type',
                                                                        choices = list("Combinations", "Distractors"))),
                                                       div(style = "display: inline-block; vertical-align: top; width: 5%; "),
-                                                      div(style = "display: inline-block; vertical-align: top; width: 20%; ",
+                                                      div(class = "input-slider",
                                                           sliderInput(inputId = "validitydistractorSlider",
                                                                       label = "Item",
                                                                       min = 1,
@@ -296,14 +347,14 @@ ui = tagList(
                                    thumb it should not be lower than 0.2 (borderline in the plot), except for
                                    very easy or very difficult items. Discrimination can be customized (see also Martinkova, Stepanek, et al.
                                    (2017)) by changing number of groups and by changing which groups should be compared: '),
-                                 fluidPage(div(style = "display: inline-block; vertical-align: top; width: 20%; ",
+                                 fluidPage(div(class = "input-slider",
                                                sliderInput(inputId = 'DDplotNumGroupsSlider',
                                                            label = 'Number of groups:',
                                                            min   = 1,
                                                            max   = 5,
                                                            value = 3)),
                                            div(style = "display: inline-block; vertical-align: top; width: 5%; "),
-                                           div(style = "display: inline-block; vertical-align: top; width: 20%; ",
+                                           div(class = "input-slider",
                                                sliderInput(inputId = "DDplotRangeSlider",
                                                            label = "Which two groups to compare:",
                                                            min = 1,
@@ -337,19 +388,19 @@ ui = tagList(
                                  htmlOutput("distractor_text"),
                                  p('With option ', strong('Combinations'), 'all item selection patterns are plotted (e.g. AB, ACD, BC). With
                                    option', strong('Distractors'), 'answers are splitted into distractors (e.g. A, B, C, D).'),
-                                 fluidPage(div(style = "display: inline-block; vertical-align: top; width: 20%; ",
+                                 fluidPage(div(class = "input-slider",
                                                sliderInput(inputId = 'gr',
                                                            label = 'Number of groups:',
                                                            min   = 1,
                                                            max   = 5,
                                                            value = 3)),
                                            div(style = "display: inline-block; vertical-align: top; width: 5%; "),
-                                           div(style = "display: inline-block; vertical-align: top; width: 15%; ",
+                                           div(class = "input-radio",
                                                radioButtons(inputId = 'type_combinations_distractor',
                                                             label = 'Type',
                                                             choices = list("Combinations", "Distractors"))),
                                            div(style = "display: inline-block; vertical-align: top; width: 5%; "),
-                                           div(style = "display: inline-block; vertical-align: top; width: 20%; ",
+                                           div(class = "input-slider",
                                                sliderInput(inputId = "distractorSlider",
                                                            label = "Item",
                                                            min = 1,
@@ -2041,110 +2092,435 @@ ui = tagList(
              # REFERENCES #########
              #%%%%%%%%%%%%%%%%%%%%%
              tabPanel("References",
+                      #------------------------------------------------------------------------------------#
+                      # Packages ####
+                      #------------------------------------------------------------------------------------#
+                      h3("R packages"),
+                      HTML('<ul class = "biblio">
+                           <li><code>corrplot</code>
+                           Wei, T. & Simko, V. (2017).
+                           R package `corrplot`: Visualization of a Correlation Matrix.
+                           R package version 0.84.
+                           <a href = "https://github.com/taiyun/corrplot", target = "_blank">See online.</a>
+                           </li>
+
+
+                           <li><code>CTT</code>
+                           Willse, J. & Willse, T. (2018).
+                           CTT: Classical Test Theory Functions.
+                           R package version 2.3.2.
+                           <a href = "https://CRAN.R-project.org/package=CTT", target = "_blank">See online.</a>
+                           </li>
+
+
+                           <li><code>data.table</code>
+                           Dowle, M. & Srinivasan, A. (2018).
+                           data.table: Extension of `data.frame`.
+                           R package version 1.11.4.
+                           <a href = "https://CRAN.R-project.org/package=data.table", target = "_blank">See online.</a>
+                           </li>
+
+
+                           <li><code>deltaPlotR</code>
+                           Magis, D. & Facon, B. (2014).
+                           deltaPlotR: An R Package for Differential Item Functioning Analysis with Angoff`s Delta Plot.
+                           <i>Journal of Statistical Software, Code Snippets, 59</i>(1), 1--19.
+                           <a href = "http://www.jstatsoft.org/v59/c01/", target = "_blank">See online.</a>
+                           </li>
+
+
+                           <li><code>difNLR</code>
+                           Drabinova, A., Martinkova, P. & Zvara, K. (2018).
+                           difNLR: DIF and DDF Detection by Non-Linear Regression Models.
+                           R package version 1.2.2.
+                           <a href = "https://CRAN.R-project.org/package=difNLR", target = "_blank">See online.</a>
+                           </li>
+
+
+                           <li><code>difR</code>
+                           Magis, D., Beland, S., Tuerlinckx, F. & De Boeck, P. (2010).
+                           A general framework and an R package for the detection of dichotomous differential item functioning.
+                           <i>Behavior Research Methods, 42</i>847--862.
+
+                           </li>
+
+
+                           <li><code>DT</code>
+                           Xie, Y. (2018).
+                           DT: A Wrapper of the JavaScript Library `DataTables`.
+                           R package version 0.4.
+                           <a href = "https://CRAN.R-project.org/package=DT", target = "_blank">See online.</a>
+                           </li>
+
+
+                           <li><code>ggplot2</code>
+                           Wickham, H. (2016).
+                           ggplot2: Elegant Graphics for Data Analysis.
+
+                           <a href = "http://ggplot2.org", target = "_blank">See online.</a>
+                           </li>
+
+
+                           <li><code>gridExtra</code>
+                           Auguie, B. (2017).
+                           gridExtra: Miscellaneous Functions for `Grid` Graphics.
+                           R package version 2.3.
+                           <a href = "https://CRAN.R-project.org/package=gridExtra", target = "_blank">See online.</a>
+                           </li>
+
+
+                           <li><code>knitr</code>
+                           Xie, Y. (2018).
+                           knitr: A General-Purpose Package for Dynamic Report Generation in R.
+                           R package version 1.20.
+                           <a href = "https://yihui.name/knitr/", target = "_blank">See online.</a>
+                           </li>
+
+
+                           <li><code>lattice</code>
+                           Sarkar, D. (2008).
+                           Lattice: Multivariate Data Visualization with R.
+                           <a href = "http://lmdvr.r-forge.r-project.org", target = "_blank">See online.</a>
+                           </li>
+
+
+                           <li><code>latticeExtra</code>
+                           Sarkar, D. & Andrews, F. (2016).
+                           latticeExtra: Extra Graphical Utilities Based on Lattice.
+                           R package version 0.6-28.
+                           <a href = "https://CRAN.R-project.org/package=latticeExtra", target = "_blank">See online.</a>
+                           </li>
+
+
+                           <li><code>ltm</code>
+                           Rizopoulos, D. (2006).
+                           ltm: An R package for Latent Variable Modelling and Item Response Theory Analyses.
+                           <i>Journal of Statistical Software, 17</i>(5), 1--25.
+                           <a href = "http://www.jstatsoft.org/v17/i05/", target = "_blank">See online.</a>
+                           </li>
+
+
+                           <li><code>MASS</code>
+                           Venables, C. & Ripley, C. (2002).
+                           Modern Applied Statistics with S.
+                           <a href = "http://www.stats.ox.ac.uk/pub/MASS4", target = "_blank">See online.</a>
+                           </li>
+
+
+                           <li><code>mirt</code>
+                           Chalmers, R. & Chalmers, P. (2012).
+                           mirt: A Multidimensional Item Response Theory Package for the R Environment.
+                           <i>Journal of Statistical Software, 48</i>(6), 1--29.
+
+                           </li>
+
+
+                           <li><code>moments</code>
+                           Komsta, L. & Novomestky, F. (2015).
+                           moments: Moments, cumulants, skewness, kurtosis and related tests.
+                           R package version 0.14.
+                           <a href = "https://CRAN.R-project.org/package=moments", target = "_blank">See online.</a>
+                           </li>
+
+
+                           <li><code>msm</code>
+                           Jackson, C. & Jackson, H. (2011).
+                           Multi-State Models for Panel Data: The msm Package for R.
+                           <i>Journal of Statistical Software, 38</i>(8), 1--29.
+                           <a href = "http://www.jstatsoft.org/v38/i08/", target = "_blank">See online.</a>
+                           </li>
+
+
+                           <li><code>multilevel</code>
+                           Bliese, P. (2016).
+                           multilevel: Multilevel Functions.
+                           R package version 2.6.
+                           <a href = "https://CRAN.R-project.org/package=multilevel", target = "_blank">See online.</a>
+                           </li>
+
+
+                           <li><code>nlme</code>
+                           Pinheiro, J., Bates, D., DebRoy, S., Sarkar, D. & NULL, R. (2018).
+                           nlme: Linear and Nonlinear Mixed Effects Models.
+                           R package version 3.1-137.
+                           <a href = "https://CRAN.R-project.org/package=nlme", target = "_blank">See online.</a>
+                           </li>
+
+
+                           <li><code>nnet</code>
+                           Venables, C. & Ripley, C. (2002).
+                           Modern Applied Statistics with S.
+                           <a href = "http://www.stats.ox.ac.uk/pub/MASS4", target = "_blank">See online.</a>
+                           </li>
+
+
+                           <li><code>plotly</code>
+                           Sievert, C., Parmer, C., Hocking, T., Chamberlain, S., Ram, K., Corvellec, M. & Despouy, P. (2017).
+                           plotly: Create Interactive Web Graphics via `plotly.js`.
+                           R package version 4.7.1.
+                           <a href = "https://CRAN.R-project.org/package=plotly", target = "_blank">See online.</a>
+                           </li>
+
+
+                           <li><code>polycor</code>
+                           Fox, J. (2016).
+                           polycor: Polychoric and Polyserial Correlations.
+                           R package version 0.7-9.
+                           <a href = "https://CRAN.R-project.org/package=polycor", target = "_blank">See online.</a>
+                           </li>
+
+
+                           <li><code>psych</code>
+                           Revelle, W. (2018).
+                           psych: Procedures for Psychological, Psychometric, and Personality Research.
+                           R package version 1.8.4.
+                           <a href = "https://CRAN.R-project.org/package=psych", target = "_blank">See online.</a>
+                           </li>
+
+
+                           <li><code>psychometric</code>
+                           Fletcher, T. & Fletcher, D. (2010).
+                           psychometric: Applied Psychometric Theory.
+                           R package version 2.2.
+                           <a href = "https://CRAN.R-project.org/package=psychometric", target = "_blank">See online.</a>
+                           </li>
+
+
+                           <li><code>RColorBrewer</code>
+                           Neuwirth, E. (2014).
+                           RColorBrewer: ColorBrewer Palettes.
+                           R package version 1.1-2.
+                           <a href = "https://CRAN.R-project.org/package=RColorBrewer", target = "_blank">See online.</a>
+                           </li>
+
+
+                           <li><code>reshape2</code>
+                           Wickham, H. (2007).
+                           Reshaping Data with the reshape Package.
+                           <i>Journal of Statistical Software, 21</i>(12), 1--20.
+                           <a href = "http://www.jstatsoft.org/v21/i12/", target = "_blank">See online.</a>
+                           </li>
+
+
+                           <li><code>rmarkdown</code>
+                           Allaire, J., Xie, Y., McPherson, J., Luraschi, J., Ushey, K., Atkins, A., Wickham, H., Cheng, J. & Chang, W. (2018).
+                           rmarkdown: Dynamic Documents for R.
+                           R package version 1.10.
+                           <a href = "https://CRAN.R-project.org/package=rmarkdown", target = "_blank">See online.</a>
+                           </li>
+
+
+                           <li><code>shiny</code>
+                           Chang, W., Cheng, J., Allaire, J., Xie, Y. & McPherson, J. (2018).
+                           shiny: Web Application Framework for R.
+                           R package version 1.1.0.
+                           <a href = "https://CRAN.R-project.org/package=shiny", target = "_blank">See online.</a>
+                           </li>
+
+
+                           <li><code>shinyBS</code>
+                           Bailey, E. (2015).
+                           shinyBS: Twitter Bootstrap Components for Shiny.
+                           R package version 0.61.
+                           <a href = "https://CRAN.R-project.org/package=shinyBS", target = "_blank">See online.</a>
+                           </li>
+
+
+                           <li><code>ShinyItemAnalysis</code>
+                           Martinkova, P., Drabinova, A., Leder, O. & Houdek, J. (2018).
+                           ShinyItemAnalysis: Test and item analysis via shiny.
+                           R package version 1.2.7.
+                           <a href = "https://CRAN.R-project.org/package=ShinyItemAnalysis", target = "_blank">See online.</a>
+                           </li>
+
+
+                           <li><code>shinyjs</code>
+                           Attali, D. (2018).
+                           shinyjs: Easily Improve the User Experience of Your Shiny Apps in Seconds.
+                           R package version 1.0.
+                           <a href = "https://CRAN.R-project.org/package=shinyjs", target = "_blank">See online.</a>
+                           </li>
+
+
+                           <li><code>stringr</code>
+                           Wickham, H. (2018).
+                           stringr: Simple, Consistent Wrappers for Common String Operations.
+                           R package version 1.3.1.
+                           <a href = "https://CRAN.R-project.org/package=stringr", target = "_blank">See online.</a>
+                           </li>
+
+
+                           <li><code>WrightMap</code>
+                           Irribarra, C. & Freund, R. (2014).
+                           Wright Map: IRT item-person map with ConQuest integration.
+
+                           <a href = "http://github.com/david-ti/wrightmap", target = "_blank">See online.</a>
+                           </li>
+
+
+                           <li><code>xtable</code>
+                           Dahl, D. & Dahl, B. (2016).
+                           xtable: Export Tables to LaTeX or HTML.
+                           R package version 1.8-2.
+                           <a href = "https://CRAN.R-project.org/package=xtable", target = "_blank">See online.</a>
+                           </li>
+                           </ul>'),
+                      #------------------------------------------------------------------------------------#
+                      # References ####
+                      #------------------------------------------------------------------------------------#
                       h3('References'),
-                      p('Akaike, H. (1974). A New Look at the Statistical Model Identification. IEEE Transactions
-                        on Automatic Control, 19(6), 716-723.', a('See online.',
-                                                                  href = "http://ieeexplore.ieee.org/abstract/document/1100705/",
-                                                                  target = "_blank")),
-                      p('Ames, A. J., & Penfield, R. D. (2015). An NCME Instructional Module on Item-Fit
-                        Statistics for Item Response Theory Models. Educational Measurement: Issues and
-                        Practice, 34(3), 39-48.', a("See online.",
-                                                    href = "http://onlinelibrary.wiley.com/doi/10.1111/emip.12067/full",
-                                                    target = "_blank")),
-                      p('Andrich, D. (1978). A rating formulation for ordered response categories.
-                        Psychometrika, 43(4), 561-573.',
-                        a("See online.",
-                          href = "https://link.springer.com/article/10.1007/BF02293814",
-                          target = "_blank")),
-                      p('Angoff, W. H., & Ford, S. F. (1973). Item-Race Interaction on a Test of
-                        Scholastic Aptitude. Journal of Educational Measurement, 10(2), 95-105.',
-                        a("See online.",
-                          href = "https://www.jstor.org/stable/1433905?seq=1#page_scan_tab_contents",
-                          target = "_blank")),
-                      p('Bock, R. D. (1972). Estimating Item Parameters and Latent Ability when
-                        Responses Are Scored in Two or More Nominal Categories. Psychometrika,
-                        37(1), 29-51.', a("See online.",
-                                          href = "http://link.springer.com/article/10.1007/BF02291411",
-                                          target = "_blank")),
-                      p('Cronbach, L. J. (1951). Coefficient Alpha and the Internal Structure
-                        of Tests. Psychometrika, 16(3), 297-334.', a("See online.",
-                                                                     href = "https://link.springer.com/article/10.1007/BF02310555",
-                                                                     target = "_blank")),
-                      p("Drabinova, A., & Martinkova, P. (2017). Detection of Differential Item Functioning with Non-Linear
-                         Regression: Non-IRT Approach Accounting for Guessing. Journal of Educational Measurement, 54(4), 498-517.",
-                        a("See online.",
-                          href = "http://onlinelibrary.wiley.com/doi/10.1111/jedm.12158/full",
-                          target = "_blank")),
-                      p("Lord, F. M. (1980). Applications of Item Response Theory to Practical Testing Problems.
-                        Routledge."),
-                      p("Magis, D., & Facon, B. (2012). Angoff's Delta Method Revisited:
-                        Improving DIF Detection under Small Samples. British Journal of
-                        Mathematical and Statistical Psychology, 65(2), 302-321.", a("See online.",
-                                                                                     href = "https://www.ncbi.nlm.nih.gov/pubmed/22500570",
-                                                                                     target = "_blank")),
-                      p("Mantel, N., & Haenszel, W. (1959). Statistical Aspects of the Analysis of Data from
-                        Retrospective Studies. Journal of the National Cancer Institute, 22 (4), 719-748.", a("See online.",
-                                                                                                              href = "http://www.medicine.mcgill.ca/epidemiology/hanley/c634/stratified/Mantel_Haenszel_1.pdf",
-                                                                                                              target = "_blank")),
-                      p("Martinkova, P., Drabinova, A., & Houdek, J. (2017). ShinyItemAnalysis: Analyza prijimacich a
-                         jinych znalostnich ci psychologických testu. TESTFORUM, 6(9), 16–35.",
-                        a("See online.", href = "http://testforum.cz/domains/testforum.cz/index.php/testforum/article/view/TF2017-9-129", target = "_blank"),
-                        "(ShinyItemAnalysis: Analyzing admission and other educational and psychological tests)"),
-                      p("Martinkova, P., Drabinova, A., Liaw, Y. L., Sanders, E. A., McFarland, J. L., & Price, R. M.
-                        (2017). Checking Equity: Why Differential Item Functioning Analysis Should Be a Routine Part
-                        of Developing Conceptual Assessments. CBE-Life Sciences Education, 16(2). ",
-                        a('See online.',
-                          href = "https://www.lifescied.org/doi/10.1187/cbe.16-10-0307",
-                          target = "_blank")),
-                      p("Martinkova, P., Stepanek, L., Drabinova, A., Houdek, J., Vejrazka, M., & Stuka, C. (2017).
-                        Semi-real-time analyses of item characteristics for medical school admission tests. In: Proceedings of
-                        the 2017 Federated Conference on Computer Science and Information Systems. In print."),
-                      p("Masters, G. N. (1982). A Rasch model for partial credit scoring. Psychometrika, 47(2), 149-174.",
-                        a('See online.',
-                          href = "https://link.springer.com/article/10.1007/BF02296272",
-                          target = "_blank")),
-                      p("McFarland, J. L., Price, R. M., Wenderoth, M. P., Martinkova, P., Cliff, W., Michael, J., ... & Wright, A. (2017).
-                        Development and validation of the homeostasis concept inventory.
-                        CBE-Life Sciences Education, 16(2), ar35.",
-                        a('See online.',
-                          href = "https://www.lifescied.org/doi/abs/10.1187/cbe.16-10-0305",
-                          target = "_blank")),
-                      p("Muraki, E. (1992). A generalized partial credit model: Application of an EM algorithm.
-                        ETS Research Report Series, 1992(1).",
-                        a('See online.',
-                          href = "https://onlinelibrary.wiley.com/doi/abs/10.1002/j.2333-8504.1992.tb01436.x",
-                          target = "_blank")),
-                      p("Swaminathan, H., & Rogers, H. J. (1990). Detecting Differential Item
-                        Functioning Using Logistic Regression Procedures. Journal of Educational
-                        Measurement, 27(4), 361-370.",
-                        a('See online.',
-                          href = "https://www.jstor.org/stable/1434855?seq=1#page_scan_tab_contents",
-                          target = "_blank")),
-                      p("Raju, N. S. (1988). The Area between Two Item Characteristic Curves. Psychometrika,
-                        53 (4), 495-502.",
-                        a('See online.',
-                          href = "https://link.springer.com/article/10.1007/BF02294403",
-                          target = "_blank")),
-                      p("Raju, N. S. (1990). Determining the Significance of Estimated Signed and Unsigned Areas
-                        between Two Item Response Functions. Applied Psychological Measurement, 14 (2), 197-207.",
-                        a('See online.',
-                          href = "http://journals.sagepub.com/doi/abs/10.1177/014662169001400208",
-                          target = "_blank")),
-                      p('Rasch, G. (1960) Probabilistic Models for Some Intelligence and Attainment Tests.
-                        Copenhagen: Paedagogiske Institute.'),
-                      p("Samejima, F. (1969). Estimation of latent ability using a response pattern of graded scores.
-                        Psychometrika, 34(1), 1-97.",
-                        a('See online.',
-                          href = "https://link.springer.com/article/10.1007%2FBF03372160",
-                          target = "_blank")),
-                      p('Schwarz, G. (1978). Estimating the Dimension of a Model. The Annals of Statistics,
-                        6(2), 461-464.', a('See online.',
-                                           href = "https://projecteuclid.org/euclid.aos/1176344136",
-                                           target = "_blank")),
-                      p("Wilson, M. (2005). Constructing Measures: An Item Response Modeling Approach."),
-                      p("Wright, B. D., & Stone, M. H. (1979). Best Test Design. Chicago: Mesa Press."),
+                      HTML('<ul class = "biblio">
+                      <li>Akaike, H. (1974). A New Look at the Statistical Model Identification.
+                          <i>IEEE Transactions on Automatic Control, 19</i>(6), 716-723.
+                           <a href = "http://ieeexplore.ieee.org/abstract/document/1100705/",
+                              target = "_blank">See online.</a>
+                      </li>
+
+                      <li>Ames, A. J., & Penfield, R. D. (2015). An NCME Instructional Module on Item-Fit
+                          Statistics for Item Response Theory Models.
+                          <i>Educational Measurement: Issues and Practice, 34</i>(3), 39-48.
+                          <a href = "http://onlinelibrary.wiley.com/doi/10.1111/emip.12067/full",
+                             target = "_blank">See online.</a>
+                      </li>
+
+                      <li>Andrich, D. (1978). A Rating Formulation for Ordered Response Categories.
+                          <i>Psychometrika, 43</i>(4), 561-573.
+                          <a href = "https://link.springer.com/article/10.1007/BF02293814",
+                             target = "_blank">See online.</a>
+                      </li>
+
+                      <li>Angoff, W. H., & Ford, S. F. (1973). Item-Race Interaction on a Test of
+                          Scholastic Aptitude.
+                          <i>Journal of Educational Measurement, 10</i>(2), 95-105.
+                          <a href = "https://www.jstor.org/stable/1433905?seq=1#page_scan_tab_contents",
+                             target = "_blank">See online.</a>
+                      </li>
+
+                      <li>Bock, R. D. (1972). Estimating Item Parameters and Latent Ability when
+                          Responses Are Scored in Two or More Nominal Categories.
+                          <i>Psychometrika, 37</i>(1), 29-51.
+                          <a href = "http://link.springer.com/article/10.1007/BF02291411",
+                             target = "_blank">See online.</a>
+                      </li>
+
+                      <li>Cronbach, L. J. (1951). Coefficient Alpha and the Internal Structure of Tests.
+                          <i>Psychometrika, 16</i>(3), 297-334.
+                          <a href = "https://link.springer.com/article/10.1007/BF02310555",
+                             target = "_blank">See online.</a>
+                      </li>
+
+                      <li>Drabinova, A., & Martinkova, P. (2017). Detection of Differential Item Functioning
+                          with Non-Linear Regression: Non-IRT Approach Accounting for Guessing.
+                          <i>Journal of Educational Measurement, 54</i>(4), 498-517
+                          <a href = "http://onlinelibrary.wiley.com/doi/10.1111/jedm.12158/full",
+                             target = "_blank">See online.</a>
+                      </li>
+
+                      <li>Lord, F. M. (1980). Applications of Item Response Theory to Practical Testing Problems.
+                        Routledge.
+                      </li>
+
+                      <li>Magis, D., & Facon, B. (2012). Angoffs Delta Method Revisited: Improving DIF Detection under
+                          Small Samples.
+                          <i>British Journal of Mathematical and Statistical Psychology, 65</i>(2), 302-321.
+                          <a href = "https://www.ncbi.nlm.nih.gov/pubmed/22500570",
+                             target = "_blank">See online.</a>
+                      </li>
+
+                      <li>Mantel, N., & Haenszel, W. (1959). Statistical Aspects of the Analysis of Data from
+                          Retrospective Studies.
+                          <i>Journal of the National Cancer Institute, 22</i>(4), 719-748.
+                          <a href = "http://www.medicine.mcgill.ca/epidemiology/hanley/c634/stratified/Mantel_Haenszel_1.pdf",
+                             target = "_blank">See online.</a>                                                                                    )),
+                      </li>
+
+                      <li>Martinkova, P., Drabinova, A., & Houdek, J. (2017). ShinyItemAnalysis: Analyza Prijimacich a
+                          Jinych Znalostnich ci Psychologických Testu. [ShinyItemAnalysis: Analyzing Admission and Other
+                          Educational and Psychological Tests]
+                          <i>TESTFORUM, 6</i>(9), 16–35.
+                          <a href = "http://testforum.cz/domains/testforum.cz/index.php/testforum/article/view/TF2017-9-129",
+                             target = "_blank">See online.</a>
+                      </li>
+
+                      <li>Martinkova, P., Drabinova, A., Liaw, Y. L., Sanders, E. A., McFarland, J. L., & Price, R. M.
+                          (2017). Checking Equity: Why Differential Item Functioning Analysis Should Be a Routine Part
+                          of Developing Conceptual Assessments.
+                          <i>CBE-Life Sciences Education, 16</i>(2), rm2.
+                          <a href = "https://doi.org/10.1187/cbe.16-10-0307",
+                             target = "_blank">See online</a>
+                      </li>
+
+                      <li>Martinkova, P., Stepanek, L., Drabinova, A., Houdek, J., Vejrazka, M., & Stuka, C. (2017).
+                          Semi-real-time Analyses of Item Characteristics for Medical School Admission Tests.
+                          In
+                          <i>Proceedings of the 2017 Federated Conference on Computer Science and Information Systems</i>,
+                          189-194.
+                          <a href="http://dx.doi.org/10.15439/2017F380",
+                             target="_blank">See online.</a>
+                      </li>
+
+                      <li>Masters, G. N. (1982). A Rasch model for partial credit scoring.
+                          <i>Psychometrika, 47</i>(2), 149-174.
+                          <a href = "https://link.springer.com/article/10.1007/BF02296272",
+                             target = "_blank">See online.</a>
+                      </li>
+
+                      <li>McFarland, J. L., Price, R. M., Wenderoth, M. P., Martinkova, P., Cliff, W., Michael, J., ... & Wright, A. (2017).
+                          Development and Validation of the Homeostasis Concept Inventory.
+                          <i>CBE-Life Sciences Education, 16</i>(2), ar35.
+                          <a href = "https://www.lifescied.org/doi/abs/10.1187/cbe.16-10-0305",
+                             target = "_blank">See online.</a>
+                      </li>
+
+                      <li>Muraki, E. (1992). A Generalized Partial Credit Model: Application of an EM Algorithm.
+                          <i>ETS Research Report Series, 1992</i>(1)
+                          <a href = "https://onlinelibrary.wiley.com/doi/abs/10.1002/j.2333-8504.1992.tb01436.x",
+                             target = "_blank">See online.</a>
+                      </li>
+
+                      <li>Swaminathan, H., & Rogers, H. J. (1990). Detecting Differential Item
+                          Functioning Using Logistic Regression Procedures.
+                          <i>Journal of Educational Measurement, 27</i>(4), 361-370.
+                          <a href = "https://www.jstor.org/stable/1434855?seq=1#page_scan_tab_contents",
+                             target = "_blank">See online.</a>
+                      </li>
+
+                      <li>Raju, N. S. (1988). The Area between Two Item Characteristic Curves.
+                          <i>Psychometrika, 53</i>(4), 495-502.
+                          <a href = "https://link.springer.com/article/10.1007/BF02294403",
+                          target = "_blank">See online.</a>
+                      </li>
+
+                      <li>Raju, N. S. (1990). Determining the Significance of Estimated Signed and Unsigned Areas
+                          between Two Item Response Functions.
+                          <i>Applied Psychological Measurement, 14</i>(2), 197-207.
+                          <a href = "http://journals.sagepub.com/doi/abs/10.1177/014662169001400208",
+                             target = "_blank">See online.</a>
+                      </li>
+
+                      <li>Rasch, G. (1960) Probabilistic Models for Some Intelligence and Attainment Tests.
+                          Copenhagen: Paedagogiske Institute.
+                      </li>
+
+                      <li>Samejima, F. (1969). Estimation of Latent Ability Using a Response Pattern of Graded Scores.
+                          <i>Psychometrika, 34</i>(1), 1-97
+                          <a href = "https://link.springer.com/article/10.1007%2FBF03372160",
+                             target = "_blank">See online.</a>
+                      </li>
+
+                      <li>Schwarz, G. (1978). Estimating the Dimension of a Model.
+                          <i>The Annals of Statistics, 6</i>(2), 461-464.
+                          <a href = "https://projecteuclid.org/euclid.aos/1176344136",
+                             target = "_blank">See online.</a>
+                      </li>
+
+                      <li>Wilson, M. (2005). Constructing Measures: An Item Response Modeling Approach.
+                      </li>
+
+                      <li>Wright, B. D., & Stone, M. H. (1979). Best Test Design. Chicago: Mesa Press.
+                      </li>
+                      </ul>'),
                       br()
                       )
-                      )
-                      )
+                      ))
 

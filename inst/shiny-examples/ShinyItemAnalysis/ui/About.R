@@ -2,77 +2,80 @@ About <- tabPanel("About",
                   #------------------------------------------------------------------------------------#
                   # Description ####
                   #------------------------------------------------------------------------------------#
-                  h3("Description"),
-                  p(code("ShinyItemAnalysis"), "provides analysis of educational tests (such as admission
-                    tests) and their items including:" ),
-                  tags$ul(tags$li("Exploration of total and standard scores on ", strong("Summary"), "page. "),
-                          tags$li("Correlation structure and predictive validity analysis on ", strong("Validity"), "page. "),
-                          tags$li("Item and distractor analysis on ", strong("Item analysis"), "page. "),
-                          tags$li("Item analysis by logistic models on ", strong("Regression"), "page. "),
-                          tags$li("Item analysis by item response theory models on ", strong("IRT models"), "page. "),
-                          tags$li("Differential item functioning (DIF) and differential distractor functioning (DDF)
-                            methods on ", strong("DIF/Fairness"), "page. ")),
-                  p("This application is based on the free statistical software",
+                  h3("Welcome"),
+                  p("Welcome to ShinyItemAnalysis!"),
+                  p("ShinyItemAnalysis is an interactive online application, built
+                    on ",
                     a("R", href = "https://cran.r-project.org/", target = "_blank"),
-                    " and its ",
-                    a("shiny", href = "http://www.rstudio.com/shiny/", target = "_blank"),
-                    "package. "),
-                  p("For all graphical outputs a download button is provided. Moreover, on",
-                    strong("Reports"), "page HTML or PDF report can be created. Additionaly, all application
-                    outputs are complemented by selected R code hence the similar analysis can be run and
-                    modified in R."),
-
-                  #------------------------------------------------------------------------------------#
-                  # Data ####
-                  #------------------------------------------------------------------------------------#
-                  h4("Data"),
-                  p("For demonstration purposes, by default, 20-item dataset", code("GMAT"),"
-                    from R ", code("difNLR")," package is used. Other four datasets are available: ",
-                    code("GMAT2"), "and", code("MSAT-B"), "from", code("difNLR"), "package and ",
-                    code("Medical 100"),  "and", code("HCI"), "from", code("ShinyItemAnalysis"),
-                    "package.  You can change the dataset (and try your own one) on page", strong("Data.")),
+                    "and",
+                    a("shiny,", href = "http://www.rstudio.com/shiny/", target = "_blank"),
+                    "for psychometric analysis of educational and other psychological tests and their items.
+                    You can simply start using the application by choosing toy data (or upload your own one)
+                    in section ", strong("Data"), " and run analysis including:" ),
+                  tags$ul(tags$li("Exploration of total and standard scores in ", strong("Summary"), "section"),
+                          tags$li("Correlation structure and criterion validity analysis in ", strong("Validity"), "section"),
+                          tags$li("Item and distractor analysis in ", strong("Item analysis"), "section"),
+                          tags$li("Item analysis by logistic regression models and their extensions in ", strong("Regression"), "section"),
+                          tags$li("Item analysis by item response theory models in ", strong("IRT models"), "section"),
+                          tags$li("Differential item functioning (DIF) and differential distractor functioning (DDF)
+                                  methods in ", strong("DIF/Fairness"), "section")),
+                  p("All graphical outputs can be downloaded via download button. Moreover, you can automatically
+                    generate HTML or PDF report in", strong("Reports"), "section. All offered analysis
+                    are complemented by selected R code which is ready to copy paste into your R console, hence
+                    the similar analysis can be run and modified in R."),
+                  tags$hr(),
                   #------------------------------------------------------------------------------------#
                   # Availability ####
                   #------------------------------------------------------------------------------------#
-                  h4("Availability"),
-                  p("Application can be downloaded as R package from ",
-                    a("CRAN.", href = "https://CRAN.R-project.org/package=ShinyItemAnalysis", target = "_blank"),
-                    "It is also available online at ",
-                    a("Czech Academy of Sciences ",
-                      href = "https://shiny.cs.cas.cz/ShinyItemAnalysis/",
-                      target = "_blank"),
-                    HTML("<a href = 'https://shiny.cs.cas.cz/ShinyItemAnalysis/' target = '_blank'>
+                  fluidRow(
+                    column(6,
+                           h4("Availability"),
+                           p("Application can be downloaded as R package from ",
+                             a("CRAN.", href = "https://CRAN.R-project.org/package=ShinyItemAnalysis", target = "_blank"),
+                             br(),
+                             "It is also available online at ",
+                             a("Czech Academy of Sciences ",
+                               href = "https://shiny.cs.cas.cz/ShinyItemAnalysis/",
+                               target = "_blank"),
+                             HTML("<a href = 'https://shiny.cs.cas.cz/ShinyItemAnalysis/' target = '_blank'>
                          <img src = 'flag_CR.png' height = '16' border = '0' align = 'middle'></a>"),
-                    "and",
-                    a("shinyapps.io",
-                      href = "https://cemp.shinyapps.io/ShinyItemAnalysis/",
-                      target = "_blank"),
-                    HTML("<a href = 'https://cemp.shinyapps.io/ShinyItemAnalysis/' target = '_blank'>
+                             "and",
+                             a("shinyapps.io",
+                               href = "https://cemp.shinyapps.io/ShinyItemAnalysis/",
+                               target = "_blank"),
+                             HTML("<a href = 'https://cemp.shinyapps.io/ShinyItemAnalysis/' target = '_blank'>
                          <img src = 'flag_USA.png' height = '16' border = '0' align = 'middle'></a>.")),
+                           p("Visit our",
+                             a("web page",
+                               href = "http://www.shinyitemanalysis.org",
+                               target = "_blank"), "about ShinyItemAnalysis to learn more!")),
 
+                    #------------------------------------------------------------------------------------#
+                    # Version ####
+                    #------------------------------------------------------------------------------------#
+                    column(6, h4("Versions"),
+                           p("Current",
+                             a("CRAN", href = "https://CRAN.R-project.org/package=ShinyItemAnalysis", target = "_blank"),
+                             "version is 1.2.7.",
+                             br(),
+                             "Version available",
+                             a("online", href = "https://shiny.cs.cas.cz/ShinyItemAnalysis/", target = "_blank"), "is 1.2.7-4.",
+                             br(),
+                             "The newest development version available on ",
+                             a("GitHub", href = "https://github.com/patriciamar/ShinyItemAnalysis", target = "_blank"), "is 1.2.7-4.",
+                             br(),
+                             "See also older versions: ",
+                             a("0.1.0, ", href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV01/", target = "_blank"),
+                             a("0.2.0, ", href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV02/", target = "_blank"),
+                             a("1.0.0, ", href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV100/", target = "_blank"),
+                             a("1.1.0, ", href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV110/", target = "_blank"),
+                             a("1.2.3, ", href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV123/", target = "_blank"),
+                             a("1.2.6. ", href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV126/", target = "_blank")))),
+                  tags$hr(),
                   #------------------------------------------------------------------------------------#
-                  # Version ####
+                  # Team ####
                   #------------------------------------------------------------------------------------#
-                  h4("Version"),
-                  p("Current version of ", code("ShinyItemAnalysis"), " available on ",
-                    a("CRAN", href = "https://CRAN.R-project.org/package=ShinyItemAnalysis", target = "_blank"), "is 1.2.7.
-                    Version available",
-                    a("online", href = "https://shiny.cs.cas.cz/ShinyItemAnalysis/", target = "_blank"), "is 1.2.7.
-                    The newest development version available on ",
-                    a("GitHub", href = "https://github.com/patriciamar/ShinyItemAnalysis", target = "_blank"), "is 1.2.7.",
-                    br(),
-                    "See also older versions: ",
-                    a("0.1.0, ", href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV01/", target = "_blank"),
-                    a("0.2.0, ", href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV02/", target = "_blank"),
-                    a("1.0.0, ", href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV100/", target = "_blank"),
-                    a("1.1.0. ", href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV110/", target = "_blank"),
-                    a("1.2.3. ", href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV123/", target = "_blank"),
-                    a("1.2.6. ", href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV126/", target = "_blank")),
-
-                  #------------------------------------------------------------------------------------#
-                  # Authors ####
-                  #------------------------------------------------------------------------------------#
-                  h4("Authors and contributors"),
+                  h4("Meet the team"),
                   fluidRow(
                     column(1, align = "center",
                            img(src = "author_patricia.png", width = 75),
@@ -89,60 +92,9 @@ About <- tabPanel("About",
                     column(1, align = "center",
                            img(src = "author_lubos.jpg", width = 75),
                            HTML("<figcaption>Lubomir<br>Stepanek</figcaption>"))),
-
+                  tags$hr(),
                   #------------------------------------------------------------------------------------#
-                  # Packages ####
-                  #------------------------------------------------------------------------------------#
-                  h4("List of packages used"),
-                  fluidRow(
-                    column(2,
-                           code("library(corrplot)"), br(),
-                           code("library(CTT)"), br(),
-                           code("library(data.table)"), br(),
-                           code("library(deltaPlotR)"), br(),
-                           code("library(DT)"), br(),
-                           code("library(difNLR)"), br(),
-                           code("library(difR)"), br()),
-                    column(2,
-                           code("library(ggplot2)"), br(),
-                           code("library(grid)"), br(),
-                           code("library(gridExtra)"), br(),
-                           code("library(knitr)"), br(),
-                           code("library(latticeExtra)"), br(),
-                           code("library(ltm)"), br(),
-                           code("library(mirt)"), br()),
-                    column(2,
-                           code("library(moments)"), br(),
-                           code("library(msm)"), br(),
-                           code("library(nnet)"), br(),
-                           code("library(plotly)"), br(),
-                           code("library(psych)"), br(),
-                           code("library(psychometric)"), br(),
-                           code("library(reshape2)"), br()),
-                    column(2,
-                           code("library(rmarkdown)"), br(),
-                           code("library(shiny)"), br(),
-                           code("library(shinyBS)"), br(),
-                           code("library(shinyjs)"), br(),
-                           code("library(stringr)"), br(),
-                           code("library(WrightMap)"), br(),
-                           code("library(xtable)"), br())),
-
-                  #------------------------------------------------------------------------------------#
-                  # References ####
-                  #------------------------------------------------------------------------------------#
-                  h4("References"),
-                  p("To cite package", code("ShinyItemAnalysis"), "in publications please use:"),
-                  p("Martinkova P., Drabinova A., Leder O., & Houdek J. (2018).
-                    ShinyItemAnalysis: Test and item analysis via shiny.
-                    R package version 1.2.6. https://CRAN.R-project.org/package=ShinyItemAnalysis"),
-                  p("Martinkova, P., Drabinova, A., & Houdek, J. (2017).
-                    ShinyItemAnalysis: Analyza prijimacich a jinych znalostnich ci psychologickych testu
-                    [ShinyItemAnalysis: Analyzing admission and other educational and psychological tests].
-                    TESTFORUM, 6(9), 16-35. doi:10.5817/TF2017-9-129"),
-
-                  #------------------------------------------------------------------------------------#
-                  # Bug reports ####
+                  # Feedback ####
                   #------------------------------------------------------------------------------------#
                   h4("Feedback"),
                   p("If you discover a problem with this application please contact the project
@@ -151,19 +103,10 @@ About <- tabPanel("About",
                       href = "https://github.com/patriciamar/ShinyItemAnalysis/issues",
                       target = "_blank"),
                     "We also encourage you to provide your feedback using ",
-                    a("google form.",
+                    a("Google form.",
                       href = "https://goo.gl/forms/5ZVR6mTOFJFwmtT52",
                       target = "_blank")),
-
-                  #------------------------------------------------------------------------------------#
-                  # Acknowledgments ####
-                  #------------------------------------------------------------------------------------#
-                  h4("Acknowledgments"),
-                  p(" Project was supported by grant funded by Czech Science Foundation under number ",
-                    a("GJ15-15856Y.",
-                      href = "http://www.cs.cas.cz/martinkova/psychometrics.html",
-                      target = "_blank")),
-
+                  tags$hr(),
                   #------------------------------------------------------------------------------------#
                   # Licence ####
                   #------------------------------------------------------------------------------------#
@@ -176,6 +119,33 @@ About <- tabPanel("About",
                     "as published by the Free Software Foundation. This program is distributed in the
                     hope that it will be useful, but without any warranty; without even the implied
                     warranty of merchantability of fitness for a particular purpose." ),
+
+                  #------------------------------------------------------------------------------------#
+                  # References ####
+                  #------------------------------------------------------------------------------------#
+
+                  p("To cite ShinyItemAnalysis in publications, please use:"),
+                  div(class = "cite-box",
+                    "Martinkova P., Drabinova A., Leder O., & Houdek J. (2018).", br(), "
+                    ShinyItemAnalysis: Test and item analysis via shiny.", br(), "
+                    R package version 1.2.6. ", br(), "
+                    https://CRAN.R-project.org/package=ShinyItemAnalysis"),
+                  p("In Czech written papers you can also use "),
+                  div(class = "cite-box",
+                    "Martinkova, P., Drabinova, A., & Houdek, J. (2017).", br(), "
+                    ShinyItemAnalysis: Analyza prijimacich a jinych znalostnich ci psychologickych testu", br(), "
+                    [ShinyItemAnalysis: Analyzing admission and other educational and psychological tests].", br(), "
+                    TESTFORUM, 6(9), 16-35. doi:10.5817/TF2017-9-129"),
+                  tags$hr(),
+
+                  #------------------------------------------------------------------------------------#
+                  # Acknowledgments ####
+                  #------------------------------------------------------------------------------------#
+                  h4("Acknowledgments"),
+                  p("Project was supported by Czech Science Foundation grant GJ15-15856Y 'Estimation of psychometric
+                    measures as part of admission test development' and by Charles University grant PRIMUS/17/HUM/11
+                    'Center for Educational Measurement and Psychometrics (CEMP)'."),
                   br(),
-                  br())
+                  br()
+                  )
 

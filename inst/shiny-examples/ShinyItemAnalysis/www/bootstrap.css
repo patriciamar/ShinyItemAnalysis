@@ -6899,6 +6899,9 @@ button.close {
 .panel-info .panel-title {
   color: #fff;
 }
+.shiny-output-error-warning_data_missing {
+    color: orange;
+}
 .shiny-output-error-error_key_missing {
     color: red;
 }
@@ -6967,3 +6970,130 @@ button.close {
   border-left-color: gray;
   border-right-color: gray;
 }
+.biblio {
+  padding-left: 20px;
+  text-indent: -20px;
+  list-style-type: none;
+}
+
+
+.header-title {
+  font-size: x-large;
+  display: inline;
+}
+.header-title img {
+  width: 40px;
+  margin-bottom: 10px;
+  vertical-align: middle;
+}
+.header-subtitle {
+  font-size: small;
+  display: inline;
+}
+
+@media (max-width: 480px) {
+  .header-title {
+    font-size: medium;
+    display: inline;
+  }
+  .header-title img {
+    width: 30px;
+    margin-bottom: 5px;
+    margin-top: 5px;
+    vertical-align: middle;
+  }
+  .header-subtitle {
+    font-size: x-small;
+    display: inline;
+  }
+}
+
+
+.footer-title {
+  font-size: large;
+  display: inline;
+}
+.footer-title img {
+  width: 65px;
+  margin-top: -8px;
+  vertical-align: middle;
+  float: left;
+}
+.footer-subtitle {
+  font-size: small;
+  display: inline;
+}
+.footer-copyright {
+  margin-top: -30px;
+  font-size: small;
+}
+.footer-counter {
+  float: right;
+  margin-top: -15px;
+}
+.footer-icons {
+  width: 25px;
+}
+
+
+@media (max-width: 561px) {
+  .footer-counter {
+    float: left;
+    margin-top: 0;
+    font-size: small;
+  }
+}
+
+@media (max-width: 480px) {
+  .footer-title {
+    font-size: small;
+  }
+  .footer-title img {
+    width: 40px;
+    vertical-align: middle;
+    float: left;
+  }
+  .footer-subtitle {
+    font-size: xx-small;
+  }
+  .footer-copyright {
+    margin-top: -30px;
+    font-size: xx-small;
+  }
+  .footer-counter {
+    float: left;
+    font-size: xx-small;
+    margin-top: 0;
+    margin-left: 40px;
+  }
+  .footer-icons {
+    width: 20px;
+  }
+}
+
+
+.cite-box {
+  max-width: 480px;
+  width: 100%;
+  border: 1px solid black;
+  padding: 15px;
+  margin: -5px 0 5px 0;
+  background: white;
+}
+
+.input-slider {
+  display: inline-block;
+  vertical-align: top;
+  width: 250px;
+}
+.input-box {
+  display: inline-block;
+  vertical-align: top;
+  width: 250px;
+}
+.input-radio {
+  display: inline-block;
+  vertical-align: top;
+  width: 200px;
+}
+

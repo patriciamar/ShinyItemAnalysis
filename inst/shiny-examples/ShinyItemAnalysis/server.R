@@ -58,6 +58,7 @@ function(input, output, session) {
   dataset <- reactiveValues()
 
   dataset$answers <- NULL
+  dataset$data_status <- NULL
   dataset$key <- NULL
   dataset$group <- NULL
   dataset$criterion_variable <- NULL
@@ -93,6 +94,7 @@ function(input, output, session) {
 
       test = test[, 1:length(key)]
       dataset$answers = test
+
     } else {
       test = dataset$answers
     }
@@ -101,33 +103,33 @@ function(input, output, session) {
 
   # LOAD KEY ######
   test_key <- reactive({
-    if ((is.null(input$key)) | (is.null(dataset$key))) {
-      a = input$dataSelect
-      pos = regexpr("_", a)[1]
-      datasetName = str_sub(a, 1, pos - 1)
-      packageName = str_sub(a, pos + 1)
-
-      do.call(data, args = list(paste0(datasetName, "key"), package = packageName))
-      key = get(paste0(datasetName, "key"))
-      key = unlist(key)
-      dataset$key = key
-
+    if ((is.null(input$key) & input$submitButton & input$data_type == "binary")) {
+      key = dataset$key
     } else {
-      if (length(dataset$key) == 1) {
-        if (dataset$key == "missing"){
+      if ((is.null(input$key)) | (is.null(dataset$key))) {
+        a = input$dataSelect
+        pos = regexpr("_", a)[1]
+        datasetName = str_sub(a, 1, pos - 1)
+        packageName = str_sub(a, pos + 1)
+
+        do.call(data, args = list(paste0(datasetName, "key"), package = packageName))
+        key = get(paste0(datasetName, "key"))
+        key = unlist(key)
+        dataset$key = key
+
+      } else {
+        if (length(dataset$key) == 1) {
+          validate(need(dataset$key != "missing", "Key is missing!"),
+                   errorClass = "error_key_missing")
+        } else {
           validate(
-            need(dataset$key != "missing", "Key is missing!"),
-            errorClass = "error_key_missing"
+            need(ncol(dataset$answers) == length(dataset$key),
+                 "The length of key need to be the same as number of columns in the main dataset!"),
+            errorClass = "error_dimension"
           )
         }
-      } else {
-        validate(
-          need(ncol(dataset$answers) == length(dataset$key),
-          "The length of key need to be the same as number of columns in the main dataset!"),
-          errorClass = "error_dimension"
-          )
+        key = dataset$key
       }
-      key = dataset$key
     }
     unlist(key)
   })
@@ -240,15 +242,22 @@ function(input, output, session) {
       criterion_variable = NULL
 
       if (is.null(input$data)){
-        key <- test_key()
-        answ <- test[ , 1:length(key), with = FALSE]
-        group <- DIF_groups()
-        criterion_variable <- criterion_variable()
+        dataset$data_status <- "missing"
+
+        # key <- test_key()
+        # answ <- test[ , 1:length(key), with = FALSE]
+        # group <- DIF_groups()
+        # criterion_variable <- criterion_variable()
       } else {
         answ <- read.csv(input$data$datapath, header = input$header,
                          sep = input$sep, quote = input$quote)
+        dataset$data_status <- "OK"
         if (is.null(input$key)){
-          key <- "missing"
+          if (input$data_type == "binary"){
+            key <- rep(1, ncol(answ))
+          } else {
+            key <- "missing"
+          }
         } else {
           key <- read.csv(input$key$datapath, header = input$header,
                           sep = input$sep)
@@ -276,71 +285,6 @@ function(input, output, session) {
       dataset$criterion_variable <- criterion_variable
     }
   )
-  checkDataText_Input <- eventReactive(input$submitButton, {
-    error_setting <- F
-    ### key
-    error_key <- ""
-    if (length(dataset$key) == 1){
-      if (dataset$key == "missing"){
-        error_key <- "The key need to be provided!"
-      }
-    } else {
-      if (ncol(dataset$answers) != length(dataset$key)){
-        error_key <- "The length of key need to be the same as number of columns of the main dataset!"
-        error_setting <- T
-      }
-    }
-    ### group
-    error_group <- ""
-    warni_group <- ""
-    if (any(dataset$group == "missing")){
-      warni_group <- "The group variable is not provided! DIF and DDF analyses are not available!"
-    } else {
-      if (nrow(dataset$answers) != length(dataset$group)){
-        error_group <- "The length of group need to be the same as number of observations in the main dataset!"
-        error_setting <- T
-      }
-    }
-    ### criterion variable
-    error_criterion_variable <- ""
-    warni_criterion_variable <- ""
-    if (any(dataset$criterion_variable == "missing")){
-      warni_criterion_variable <- "The criterion variable is not provided! Predictive validity analysis is not available!"
-    } else {
-      if (nrow(dataset$answers) != length(dataset$criterion_variable)){
-        error_criterion_variable <- "The length of criterion variable need to be the same as number of observations in the main dataset!"
-        error_setting <- T
-      }
-    }
-
-    str_errors <- c(error_key, error_group, error_criterion_variable)
-    str_warnin <- c(warni_group, warni_criterion_variable)
-
-    if (any(str_warnin != "")){
-      str_warnin <- str_warnin[str_warnin != ""]
-      str_warnin <- paste("<font color = 'orange'> &#33;", str_warnin, "</font>", collapse = "<br>")
-    }
-
-    if(all(str_errors == "")){
-      paste(c("<font color = 'green'> &#10004; Your data were successfully uploaded. Check them in <b>Data exploration</b> tab. </font>",
-              str_warnin), collapse = "<br>")
-    } else {
-      str_errors <- str_errors[str_errors != ""]
-      str_errors <- paste("<font color = 'red'> &#10006;", str_errors, "</font>", collapse = "<br>")
-      if (error_setting){
-        paste(c(str_errors,
-                "<font color = 'red'> Check <b>Data exploration</b> tab to get idea what went wrong or try another
-                <b>Data specification</b> below. </font>"),
-              collapse = "<br>")
-      } else {
-        paste(str_errors)
-      }
-    }
-  })
-  output$checkDataText <- renderUI({
-    HTML(checkDataText_Input())
-  })
-
 
   # ITEM NUMBERS AND NAMES ######
   item_numbers <- reactive({
@@ -367,51 +311,24 @@ function(input, output, session) {
 
     df.key <- data.table(matrix(rep(key, dim(test)[1]),
                                 ncol = dim(test)[2], nrow = dim(test)[1], byrow = T))
+
+    if (input$missval){
+      if (!is.null(input$missval_coding)){
+        missval_coding <- unlist(strsplit(gsub(" ", "", missval_coding), ","))
+        for (i in 1:length(missval_coding)){
+          test[test == missval_coding[i]] <- NA
+        }
+      }
+    }
+
     correct <- data.table(matrix(as.numeric(test == df.key),
                           ncol = dim(test)[2], nrow = dim(test)[1]))
     if (!(input$missval)){
       correct[is.na(correct)] <- 0
     }
+
     colnames(correct) <- item_names()
     correct
-  })
-  # checking uploaded scored data
-  checkDataColumns01Text_Input <- eventReactive(input$submitButton, {
-    data <- correct_answ()
-    # are there any items with only 0
-    all0 <- apply(data, 2, function(x) all(x == 0))
-    if (any(all0)){
-      txt0 <- paste("It seems that",
-                    item_names()[all0],
-                    "consists only of zeros.")
-    } else {
-      txt0 <- ""
-    }
-    # are there any items with only 1
-    all1 <- apply(data, 2, function(x) all(x == 1))
-    if (any(all1)){
-      txt1 <- paste("It seems that",
-                    item_names()[all1],
-                    "consists only of ones.")
-    } else {
-      txt1 <- ""
-    }
-    # warning
-    if (any(all0) | any(all1)){
-      txt <- paste(c("Check your data!",
-                     paste(txt0, collapse = "<br>"),
-                     paste(txt1, collapse = "<br>"),
-                     "Some analyses may not work properly. Consider removing such items."),
-                   collapse = "<br>")
-      txt <- paste("<font color = 'red'>", txt, "</font>")
-    } else {
-      txt <- ""
-    }
-
-    txt
-  })
-  output$checkDataColumns01Text <- renderUI({
-    HTML(checkDataColumns01Text_Input())
   })
 
   # TOTAL SCORE CALCULATION ######
@@ -455,7 +372,6 @@ function(input, output, session) {
   })
 
   output$key <- DT::renderDataTable({
-  # output$key <- shiny::renderDataTable({
     key_table <- as.data.table(t(test_key()))
     colnames(key_table) <- item_names()
     key_table
@@ -582,6 +498,12 @@ function(input, output, session) {
                       value = round(median(scored_test(), na.rm = T)))
 
   })
+
+  #%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  # DATA PAGE ######
+  #%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+  source("server/Data.R", local = T)
 
   #%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   # SUMMARY ######
