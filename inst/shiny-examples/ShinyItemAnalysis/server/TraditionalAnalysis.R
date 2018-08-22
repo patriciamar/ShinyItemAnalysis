@@ -222,7 +222,7 @@ report_distractor_plot <- reactive({
                                 multiple.answers = multiple.answers_report)
     g = g +
       ggtitle(paste("Distractor plot for item", item_numbers()[i])) +
-      theme_shiny
+      theme_app()
     g = ggplotGrob(g)
     graflist[[i]] = g
   }
@@ -283,9 +283,7 @@ distractor_barplot_item_response_patterns_Input <- reactive({
     xlab("Item response pattern") +
     ylab("Relative frequency") +
     scale_y_continuous(limits =  c(0, 1), expand = c(0, 0)) +
-    theme_shiny +
-    theme(legend.position = c(0, 1),
-          legend.justification = c(0, 1)) +
+    theme_app() +
     ggtitle(item_names()[item])
 
 })
@@ -331,7 +329,7 @@ distractor_histogram_Input <- reactive({
     scale_y_continuous(expand = c(0, 0),
                        limits = c(0, max(table(sc)) + 0.01 * nrow(a))) +
     scale_x_continuous(limits = c(-0.5, ncol(a) + 0.5)) +
-    theme_shiny
+    theme_app()
 })
 
 # ** Output distractors histograms by group ######

@@ -152,17 +152,9 @@ DDplot <- function(data, item.names, k = 3, l = 1, u = 3){
                       values = col) +
     scale_colour_manual(breaks = parameter,
                         values = col) +
-    theme_bw() +
-    theme(axis.line  = element_line(colour = "black"),
-          text = element_text(size = 14),
-          axis.text.x = element_text(angle = 90, vjust = 0.5),
-          panel.grid.major = element_blank(),
-          panel.grid.minor = element_blank(),
-          panel.background = element_blank(),
-          legend.title = element_blank(),
-          legend.position = c(0, 1),
-          legend.justification = c(0, 1),
-          legend.background = element_blank(),
-          legend.key = element_rect(colour = "white"))
+    theme_app() +
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5),
+          legend.position = c(0.01, 0.98),
+          legend.justification = c(0, 1))
 }
 

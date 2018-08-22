@@ -69,7 +69,7 @@ histbyscoregroup1Input <- reactive({
     scale_y_continuous(expand = c(0, 0),
                        limits = c(0, max(table(sc)) + 0.01 * nrow(a))) +
     scale_x_continuous(limits = c(-0.5, ncol(a) + 0.5)) +
-    theme_shiny +
+    theme_app() +
     ggtitle("Histogram of total scores for focal group")
   g
 })
@@ -122,7 +122,7 @@ histbyscoregroup0Input <- reactive ({
     scale_y_continuous(expand = c(0, 0),
                        limits = c(0, max(table(sc)) + 0.01 * nrow(a))) +
     scale_x_continuous(limits = c(-0.5, ncol(a) + 0.5)) +
-    theme_shiny +
+    theme_app() +
     ggtitle("Histogram of total scores for reference group")
   g
 })
@@ -207,7 +207,7 @@ deltaplotInput <- reactive({
   p <- ggplot(df,
               aes(x = X1, y = X2, label = nam)) +
     geom_point() +
-    geom_text(hjust = 0, nudge_x = 0.05) +
+    geom_text(hjust = 0, nudge_x = 0.05, size = 6) +
     geom_abline(intercept = par[1], slope = par[2],
                 size = 1) +
     geom_abline(intercept = par[1] + thr * sqrt(par[2]^2 + 1),
@@ -224,12 +224,12 @@ deltaplotInput <- reactive({
          y = "Focal group") +
     xlim(min(dp$Deltas, na.rm = T) - 0.5, max(dp$Deltas, na.rm = T) + 0.5) +
     ylim(min(dp$Deltas, na.rm = T) - 0.5, max(dp$Deltas, na.rm = T) + 0.5) +
-    theme_shiny
+    theme_app()
   if (is.numeric(dp$DIFitems)){
     df2 <- df[dp$DIFitems, ]
     p <- p + geom_point(data = df2,
                         aes(x = X1, y = X2, label = nam),
-                        size = 6, color = "black", shape = 1)
+                        size = 8, color = "black", shape = 1)
   }
   p <- p + ggtitle("Delta plot")
   p
@@ -271,7 +271,7 @@ deltaplotInput_report<-reactive({
          y = "Focal group") +
     xlim(min(dp$Deltas, na.rm = T) - 0.5, max(dp$Deltas, na.rm = T) + 0.5) +
     ylim(min(dp$Deltas, na.rm = T) - 0.5, max(dp$Deltas, na.rm = T) + 0.5) +
-    theme_shiny
+    theme_app()
 
   if (is.numeric(dp$DIFitems)){
     df2 <- df[dp$DIFitems, ]
@@ -472,7 +472,6 @@ plot_DIF_logisticInput <- reactive({
                        IRT = F,
                        p.adjust.method = input$correction_method_logItems,
                        purify = input$puri_LR_plot)
-  g <- g + theme_shiny
   g
 })
 
@@ -539,7 +538,6 @@ DIF_logistic_plotReport <- reactive({
                            IRT = F,
                            p.adjust.method = p.adjust.method_report,
                            purify = purify_report)
-      g <- g + theme_shiny
       g = g + ggtitle(paste0("DIF logistic plot for item ", item_numbers()[mod$DIFitems[i]])) +
         theme(text = element_text(size = 12),
               plot.title = element_text(size = 12, face = "bold"))
@@ -600,7 +598,6 @@ plot_DIF_logistic_IRT_ZInput <- reactive ({
                        IRT = T,
                        p.adjust.method = input$correction_method_logZItems,
                        purify = F)
-  g <- g + theme_shiny
   g
 })
 
@@ -713,7 +710,12 @@ plot_DIF_NLRInput <- reactive({
   item <- input$difnlrSlider
 
   g <- plot(fit, item = item)[[1]] +
-    theme_shiny +
+    theme_app() +
+    theme(legend.box.just = "top",
+          legend.position = c(0.01, 0.98),
+          legend.justification = c(0, 1),
+          legend.key.width = unit(1, "cm"),
+          legend.box = "horizontal") +
     ggtitle(item_names()[item])
   g
 })
@@ -820,7 +822,6 @@ plot_DIF_IRT_LordInput <- reactive({
   g <- plotDIFirt(parameters = fitLord$itemParInit,
                   item = item,
                   item.name = item_names()[item])[[item]]
-  g <- g + theme_shiny
   g
 })
 
@@ -1009,7 +1010,6 @@ plot_DIF_IRT_RajuInput <- reactive({
 
   g <- plotDIFirt(parameters = fitRaju$itemParInit, test = "Raju",
                   item = item, item.name = item_names()[item])[[item]]
-  g <- g + theme_shiny
   g
 })
 
@@ -1207,7 +1207,12 @@ plot_DDFInput <- reactive({
 
   g <- plot(fit, item = item)[[1]]
   g <- g +
-    theme_shiny +
+    theme_app() +
+    theme(legend.box.just = "top",
+          legend.position = c(0.01, 0.98),
+          legend.justification = c(0, 1),
+          legend.key.width = unit(1, "cm"),
+          legend.box = "horizontal") +
     ggtitle(item_names()[item])
   g
 })

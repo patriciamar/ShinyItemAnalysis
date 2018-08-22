@@ -41,9 +41,9 @@ logreg_plot_Input <- reactive({
     xlab("Total score") +
     ylab("Probability of correct answer") +
     ylim(0, 1) +
-    theme_shiny +
-    theme(legend.position = c(0.01, 0.97),
-          legend.justification = c(0.01, 0.97)) +
+    theme_app() +
+    theme(legend.position = c(0.01, 0.98),
+          legend.justification = c(0, 1)) +
     ggtitle(item_names()[item])
 })
 
@@ -133,9 +133,9 @@ z_logreg_plot_Input <- reactive({
     xlab("Standardized total score (Z-score)") +
     ylab("Probability of correct answer") +
     scale_y_continuous(limits = c(0, 1)) +
-    theme_shiny +
-    theme(legend.position = c(0.01, 0.97),
-          legend.justification = c(0.01, 0.97)) +
+    theme_app() +
+    theme(legend.position = c(0.01, 0.98),
+          legend.justification = c(0, 1)) +
     ggtitle(item_names()[item])
 })
 
@@ -226,9 +226,9 @@ z_logreg_irt_plot_Input <- reactive({
     xlab("Standardized total score (Z-score)") +
     ylab("Probability of correct answer") +
     scale_y_continuous(limits = c(0, 1)) +
-    theme_shiny +
-    theme(legend.position = c(0.01, 0.97),
-          legend.justification = c(0.01, 0.97)) +
+    theme_app() +
+    theme(legend.position = c(0.01, 0.98),
+          legend.justification = c(0, 1)) +
     ggtitle(item_names()[item])
 })
 
@@ -344,9 +344,9 @@ nlr_3P_plot_Input <- reactive({
     xlab("Standardized total score (Z-score)") +
     ylab("Probability of correct answer") +
     scale_y_continuous(limits = c(0, 1)) +
-    theme_shiny +
-    theme(legend.position = c(0.01, 0.97),
-          legend.justification = c(0.01, 0.97)) +
+    theme_app() +
+    theme(legend.position = c(0.01, 0.98),
+          legend.justification = c(0, 1)) +
     ggtitle(item_names()[item])
 })
 
@@ -446,9 +446,9 @@ nlr_4P_plot_Input <- reactive({
     xlab("Standardized total score (Z-score)") +
     ylab("Probability of correct answer") +
     scale_y_continuous(limits = c(0, 1)) +
-    theme_shiny +
-    theme(legend.position = c(0.01, 0.97),
-          legend.justification = c(0.01, 0.97)) +
+    theme_app() +
+    theme(legend.position = c(0.01, 0.98),
+          legend.justification = c(0, 1)) +
     ggtitle(item_names()[item])
 })
 
@@ -677,10 +677,10 @@ multi_plot_Input <- reactive({
     ylim(0, 1) +
     labs(x = "Standardized total score",
          y = "Probability of answer") +
-    theme_shiny +
+    theme_app() +
     theme(legend.box = "horizontal",
-          legend.position = c(0.01, 0.97),
-          legend.justification = c(0.01, 0.97)) +
+          legend.position = c(0.01, 0.98),
+          legend.justification = c(0, 1)) +
     ggtitle(item_names()[item])
 })
 
@@ -734,13 +734,12 @@ multiplotReportInput <- reactive({
              linetype = guide_legend(order = 1),
              fill = guide_legend(order = 1),
              size = guide_legend(order = 2)) +
-      theme_shiny +
+      theme_app() +
       theme(legend.box = "horizontal",
-            legend.position = c(0.01, 0.99),
-            legend.justification = c(0.01, 0.99))
+            legend.position = c(0.01, 0.98),
+            legend.justification = c(0, 1))
     g = g +
-      ggtitle(paste("Multinomial plot for item", item_numbers()[item])) +
-      theme(text = element_text(size = 14))
+      ggtitle(paste("Multinomial plot for item", item_numbers()[item]))
     g = ggplotGrob(g)
     graflist[[item]] = g
   }
