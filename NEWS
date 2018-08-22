@@ -5,6 +5,17 @@
         ***************************************************************
 
 -------------------------------------------------------
+- Changes in ShinyItemAnalysis 1.2.7-5. (2018-08-22) -
+-------------------------------------------------------
+
+MINOR UPDATES
+  o Some wording was updated.
+  o Selected R code was updated.
+  o Function theme_shiny is deprecated.
+    New function theme_app() was created and applied for all
+    graphics, including R functions in package.
+
+-------------------------------------------------------
 - Changes in ShinyItemAnalysis 1.2.7-4. (2018-08-10) -
 -------------------------------------------------------
 

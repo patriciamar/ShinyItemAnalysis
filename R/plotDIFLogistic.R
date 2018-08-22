@@ -148,17 +148,11 @@ plotDIFLogistic <- function(data, group, type = "both", item, item.name,
     xlab(xlab) +
     ylab("Probability of correct answer") +
     scale_y_continuous(limits = c(0, 1)) +
-    theme_bw() +
-    theme(text = element_text(size = 14),
-          plot.title = element_text(size = 14, face = "bold", vjust = 1.5),
-          axis.line  = element_line(colour = "black"),
-          panel.grid.major = element_blank(),
-          panel.grid.minor = element_blank(),
-          plot.background = element_rect(fill = "transparent", colour = NA)) +
-    ### legend
+    theme_app() +
     theme(legend.box.just = "top",
-          legend.justification = c(1, 0),
-          legend.position = c(1, 0),
+          legend.position = c(0.01, 0.98),
+          legend.justification = c(0, 1),
+          legend.key.width = unit(1, "cm"),
           legend.box = "horizontal")
     ggtitle(item.name)
 

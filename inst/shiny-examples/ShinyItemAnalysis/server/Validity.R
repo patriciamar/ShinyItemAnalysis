@@ -71,7 +71,7 @@ scree_plot_Input <- reactive({
     geom_line() +
     xlab("Component number") + ylab("Eigen value") +
     scale_x_continuous(breaks = 1:length(ev), expand = c(0.01, 0.01)) +
-    theme_shiny
+    theme_app()
 })
 
 # ** Output scree plot ######
@@ -110,8 +110,7 @@ validity_plot_boxplot_Input <- reactive({
     xlab("Criterion group") +
     ylab("Total score") +
     coord_flip() +
-    theme_shiny +
-    theme(legend.position = "none")
+    theme_app()
   g
 })
 
@@ -135,7 +134,7 @@ validity_plot_scatter_Input <- reactive({
                 show.legend = FALSE) +
     xlab("Total score") +
     ylab("Criterion variable") +
-    theme_shiny +
+    theme_app() +
     theme(legend.justification = c(0.99, 0.01),
           legend.position = c(0.99, 0.01))
   g

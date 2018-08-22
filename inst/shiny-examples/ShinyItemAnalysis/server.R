@@ -47,7 +47,6 @@ options(shiny.maxRequestSize = 30*1024^2)
 source("functions/wrightMap.R")
 source("functions/itemClassic.R")
 source("functions/personHist.R")
-source("functions/theme_shiny.R")
 
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # SERVER SCRIPT ######

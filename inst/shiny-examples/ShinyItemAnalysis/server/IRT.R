@@ -137,7 +137,7 @@ raschFactorInput_mirt <- reactive({
   ggplot(df, aes_string("sts", "fs")) +
     geom_point(size = 3) +
     labs(x = "Standardized total score", y = "Factor score") +
-    theme_shiny +
+    theme_app() +
     theme(legend.box.just = "left",
           legend.justification = c(1, 0),
           legend.position = c(1, 0),
@@ -345,7 +345,7 @@ oneparamirtFactorInput_mirt <- reactive({
   ggplot(df, aes_string("sts", "fs")) +
     geom_point(size = 3) +
     labs(x = "Standardized total score", y = "Factor score") +
-    theme_shiny +
+    theme_app() +
     theme(legend.box.just = "left",
           legend.justification = c(1, 0),
           legend.position = c(1, 0),
@@ -568,7 +568,7 @@ twoparamirtFactorInput_mirt <- reactive({
   ggplot(df, aes_string("sts", "fs")) +
     geom_point(size = 3) +
     labs(x = "Standardized total score", y = "Factor score") +
-    theme_shiny +
+    theme_app() +
     theme(legend.box.just = "left",
           legend.justification = c(1, 0),
           legend.position = c(1, 0),
@@ -752,7 +752,7 @@ threeparamirtFactorInput_mirt <- reactive({
   ggplot(df, aes_string("sts", "fs")) +
     geom_point(size = 3) +
     labs(x = "Standardized total score", y = "Factor score") +
-    theme_shiny +
+    theme_app() +
     theme(legend.box.just = "left",
           legend.justification = c(1, 0),
           legend.position = c(1, 0),
@@ -937,7 +937,7 @@ irt_4PL_factorscores_plot_Input <- reactive({
   ggplot(df, aes_string("sts", "fs")) +
     geom_point(size = 3) +
     labs(x = "Standardized total score", y = "Factor score") +
-    theme_shiny +
+    theme_app() +
     theme(legend.box.just = "left",
           legend.justification = c(1, 0),
           legend.position = c(1, 0),
@@ -1197,7 +1197,7 @@ bock_factor_Input <- reactive({
   ggplot(df, aes_string("sts", "fs")) +
     geom_point(size = 3) +
     labs(x = "Standardized total score", y = "Factor score") +
-    theme_shiny +
+    theme_app() +
     theme(legend.box.just = "left",
           legend.justification = c(1, 0),
           legend.position = c(1, 0),
@@ -1325,7 +1325,7 @@ ccIRT_plot_Input <- reactive({
                                         collapse = ", "),
                                   paste(paste(paste(letters[1:4], "=", c(a2, b2, c2, d2))),
                                         collapse = ", "))) +
-    theme_shiny +
+    theme_app() +
     ggtitle("Item characteristic curve")
   g
 
@@ -1442,7 +1442,7 @@ iccIRT_plot_Input <- reactive({
                                         collapse = ", "),
                                   paste(paste(paste(letters[1:4], "=", c(a2, b2, c2, d2))),
                                         collapse = ", "))) +
-    theme_shiny +
+    theme_app() +
     ggtitle("Item information function")
   g
 })
@@ -1892,7 +1892,7 @@ irt_training_grm_plot_cummulative_Input <- reactive({
     xlim(-4, 4) +
     ylim(0, 1) +
     scale_color_manual("", values = col, labels = paste0("P(Y >= ", 1:length(col), ")")) +
-    theme_shiny +
+    theme_app() +
     ggtitle("Cummulative probabilities")
 
   g
@@ -1972,7 +1972,7 @@ irt_training_grm_plot_category_Input <- reactive({
     xlim(-4, 4) +
     ylim(0, 1) +
     scale_color_manual("", values = col, labels = paste0("P(Y >= ", 0:(length(col)-1), ")")) +
-    theme_shiny +
+    theme_app() +
     ggtitle("Category probabilities")
 
   g
@@ -2046,7 +2046,7 @@ irt_training_grm_plot_expected_Input <- reactive({
     ylab("Expected item score") +
     xlim(-4, 4) +
     ylim(0, num) +
-    theme_shiny +
+    theme_app() +
     ggtitle("Expected item score")
 
   g
@@ -2171,7 +2171,7 @@ irt_training_gpcm_plot_Input <- reactive({
     xlim(-4, 4) +
     ylim(0, 1) +
     scale_color_manual("", values = col, labels = paste0("P(Y = ", 0:(length(col)-1), ")")) +
-    theme_shiny +
+    theme_app() +
     ggtitle("Category probabilities")
 
   g
@@ -2251,7 +2251,7 @@ irt_training_gpcm_plot_expected_Input <- reactive({
     ylab("Expected item score") +
     xlim(-4, 4) +
     ylim(0, num) +
-    theme_shiny +
+    theme_app() +
     ggtitle("Expected item score")
 
   g
@@ -2414,7 +2414,7 @@ irt_training_nrm_plot_Input <- reactive({
     xlim(-4, 4) +
     ylim(0, 1) +
     scale_color_manual("", values = col, labels = paste0("P(Y = ", 0:(length(col)-1), ")")) +
-    theme_shiny +
+    theme_app() +
     ggtitle("Category probabilities")
 
   g

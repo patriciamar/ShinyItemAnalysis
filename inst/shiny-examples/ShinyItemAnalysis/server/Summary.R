@@ -61,7 +61,7 @@ totalscores_histogram_Input<- reactive({
     scale_y_continuous(expand = c(0, 0),
                        limits = c(0, max(table(sc)) + 0.01 * nrow(a))) +
     scale_x_continuous(limits = c(-0.5, ncol(a) + 0.5)) +
-    theme_shiny
+    theme_app()
 })
 
 # ** Output histogram of total scores ######

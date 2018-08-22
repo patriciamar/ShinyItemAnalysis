@@ -155,50 +155,41 @@ plotDIFirt <- function(parameters, test = "Lord", item = "all", item.name, same.
   gg <- list()
   for (i in items){
     gg[[i]] <- ggplot(df, aes_string("x", "y")) +
-                xlim(-3, 3)  +
-                ### lines
-                stat_function(aes(colour = "Reference", linetype = "Reference"),
-                              fun = CC_plot,
-                              args = list(a = coefR[i, 1],
-                                          b = coefR[i, 2],
-                                          c = coefR[i, 3]),
-                              size = size, geom = "line") +
-                stat_function(aes(colour = "Focal", linetype = "Focal"),
-                              fun = CC_plot,
-                              args = list(a = coefF[i, 1],
-                                          b = coefF[i, 2],
-                                          c = coefF[i, 3]),
-                              size = size, geom = "line") +
-                ### style
-                scale_colour_manual(name = "Group",
-                                    breaks = c("Reference", "Focal"),
-                                    values = col) +
-                scale_fill_manual(values = col) +
-                scale_linetype_manual(name = "Group",
-                                      breaks = c("Reference", "Focal"),
-                                      values = linetype) +
-                ### theme
-                xlab("Ability") +
-                ylab("Probability of correct answer") +
-                scale_y_continuous(limits = c(0, 1))  +
-                theme_bw() +
-                theme(text = element_text(size = 14),
-                      plot.title = element_text(size = 14, face = "bold", vjust = 1.5),
-                      axis.line  = element_line(colour = "black"),
-                      panel.grid.major = element_blank(),
-                      panel.grid.minor = element_blank(),
-                      plot.background = element_rect(fill = "transparent", colour = NA)) +
-                ### legend
-                theme(legend.box.just = "left",
-                      legend.justification = c(1, 0),
-                      legend.position = c(0.97, 0.03),
-                      legend.box = "vertical",
-                      legend.key.size = unit(0.9, "cm"),
-                      legend.key.height = unit(0.8, "line"),
-                      legend.text.align = 0,
-                      legend.title.align = 0,
-                      legend.key = element_rect(colour = "white")) +
-                ggtitle(item.names[i])
+      xlim(-3, 3)  +
+      ### lines
+      stat_function(aes(colour = "Reference", linetype = "Reference"),
+                    fun = CC_plot,
+                    args = list(a = coefR[i, 1],
+                                b = coefR[i, 2],
+                                c = coefR[i, 3]),
+                    size = size, geom = "line") +
+      stat_function(aes(colour = "Focal", linetype = "Focal"),
+                    fun = CC_plot,
+                    args = list(a = coefF[i, 1],
+                                b = coefF[i, 2],
+                                c = coefF[i, 3]),
+                    size = size, geom = "line") +
+      ### style
+      scale_colour_manual(name = "Group",
+                          breaks = c("Reference", "Focal"),
+                          values = col) +
+      scale_fill_manual(values = col) +
+      scale_linetype_manual(name = "Group",
+                            breaks = c("Reference", "Focal"),
+                            values = linetype) +
+      ### theme
+      xlab("Ability") +
+      ylab("Probability of correct answer") +
+      scale_y_continuous(limits = c(0, 1))  +
+      theme_app() +
+
+      ### legend
+      theme(legend.box.just = "top",
+            legend.position = c(0.01, 0.98),
+            legend.justification = c(0, 1),
+            legend.key.width = unit(1, "cm"),
+            legend.box = "horizontal")
+    ggtitle(item.names[i])
 
 
   if (test == "Raju"){
