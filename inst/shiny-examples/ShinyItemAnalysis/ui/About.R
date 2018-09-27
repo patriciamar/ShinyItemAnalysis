@@ -10,18 +10,19 @@ About <- tabPanel("About",
                     "and",
                     a("shiny,", href = "http://www.rstudio.com/shiny/", target = "_blank"),
                     "for psychometric analysis of educational and other psychological tests and their items.
-                    You can simply start using the application by choosing toy data (or upload your own one)
+                    You can simply start using the application by choosing toy dataset (or upload your own one)
                     in section ", strong("Data"), " and run analysis including:" ),
                   tags$ul(tags$li("Exploration of total and standard scores in ", strong("Summary"), "section"),
+                          tags$li("Analysis of measurement error in ", strong("Reliability"), "section"),
                           tags$li("Correlation structure and criterion validity analysis in ", strong("Validity"), "section"),
                           tags$li("Item and distractor analysis in ", strong("Item analysis"), "section"),
-                          tags$li("Item analysis by logistic regression models and their extensions in ", strong("Regression"), "section"),
+                          tags$li("Item analysis with regression models in ", strong("Regression"), "section"),
                           tags$li("Item analysis by item response theory models in ", strong("IRT models"), "section"),
                           tags$li("Differential item functioning (DIF) and differential distractor functioning (DDF)
                                   methods in ", strong("DIF/Fairness"), "section")),
                   p("All graphical outputs can be downloaded via download button. Moreover, you can automatically
                     generate HTML or PDF report in", strong("Reports"), "section. All offered analysis
-                    are complemented by selected R code which is ready to copy paste into your R console, hence
+                    are complemented by selected R code which is ready to be copy pasted into your R console, hence
                     the similar analysis can be run and modified in R."),
                   tags$hr(),
                   #------------------------------------------------------------------------------------#
@@ -56,13 +57,13 @@ About <- tabPanel("About",
                     column(6, h4("Versions"),
                            p("Current",
                              a("CRAN", href = "https://CRAN.R-project.org/package=ShinyItemAnalysis", target = "_blank"),
-                             "version is 1.2.7.",
+                             "version is 1.2.8.",
                              br(),
                              "Version available",
-                             a("online", href = "https://shiny.cs.cas.cz/ShinyItemAnalysis/", target = "_blank"), "is 1.2.7-5.",
+                             a("online", href = "https://shiny.cs.cas.cz/ShinyItemAnalysis/", target = "_blank"), "is 1.2.8.",
                              br(),
                              "The newest development version available on ",
-                             a("GitHub", href = "https://github.com/patriciamar/ShinyItemAnalysis", target = "_blank"), "is 1.2.7-5.",
+                             a("GitHub", href = "https://github.com/patriciamar/ShinyItemAnalysis", target = "_blank"), "is 1.2.8.",
                              br(),
                              "See also older versions: ",
                              a("0.1.0, ", href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV01/", target = "_blank"),

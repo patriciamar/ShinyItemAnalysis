@@ -29,7 +29,6 @@ require(shinyBS)
 require(ShinyItemAnalysis)
 require(shinyjs)
 require(stringr)
-require(WrightMap)
 require(xtable)
 
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -38,15 +37,6 @@ require(xtable)
 
 # maximum upload size set to 30MB
 options(shiny.maxRequestSize = 30*1024^2)
-
-#%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-# FUNCTIONS ######
-#%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-# WrightMap
-source("functions/wrightMap.R")
-source("functions/itemClassic.R")
-source("functions/personHist.R")
 
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # SERVER SCRIPT ######
@@ -463,7 +453,7 @@ function(input, output, session) {
       "difMHSlider_item",
       "diflogSlider",
       "diflog_irtSlider",
-      "difnlrSlider",
+      "DIF_NLR_item_plot",
       "difirt_lord_itemSlider",
       "difirt_raju_itemSlider",
       "ddfSlider",
@@ -486,7 +476,7 @@ function(input, output, session) {
     updateSliderInput(session = session, inputId = "difMHSlider_item", max = itemCount)
     updateSliderInput(session = session, inputId = "diflogSlider", max = itemCount)
     updateSliderInput(session = session, inputId = "diflog_irtSlider", max = itemCount)
-    updateSliderInput(session = session, inputId = "difnlrSlider", max = itemCount)
+    updateSliderInput(session = session, inputId = "DIF_NLR_item_plot", max = itemCount)
     updateSliderInput(session = session, inputId = "difirt_lord_itemSlider", max = itemCount)
     updateSliderInput(session = session, inputId = "difirt_raju_itemSlider", max = itemCount)
     updateSliderInput(session = session, inputId = "ddfSlider", max = itemCount)
@@ -509,6 +499,12 @@ function(input, output, session) {
   #%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
   source("server/Summary.R", local = T)
+
+  #%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  # RELIABILITY ######
+  #%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+  source("server/Reliability.R", local = T)
 
   #%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   # VALIDITY ######
