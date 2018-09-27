@@ -48,7 +48,6 @@
 #'
 #' @seealso
 #' \code{\link{gDiscrim}}, \code{\link{discrim}}
-
 #'
 #' @examples
 #' \dontrun{
@@ -67,14 +66,15 @@
 #' @import difNLR
 #' difR
 #' shiny
-#' WrightMap
 #' @importFrom corrplot corrplot
 #' @importFrom CTT score
+#' @importFrom cowplot plot_grid
 #' @importFrom deltaPlotR deltaPlot
-#' @importFrom ggplot2 aes aes_string element_blank element_line element_rect element_text geom_abline
+#' @importFrom ggplot2 aes aes_string coord_flip element_blank element_line element_rect element_text geom_abline
 #' ggplot_build position_dodge geom_histogram geom_hline geom_line geom_point geom_ribbon geom_text ggplot
 #' ggsave ggtitle labs scale_color_manual scale_colour_manual scale_fill_manual scale_linetype_manual
 #' scale_shape_manual scale_size_continuous scale_x_continuous scale_x_discrete scale_y_continuous
+#' scale_y_reverse
 #' stat_function stat_summary theme theme_bw unit xlab xlim ylab ylim
 #' @importFrom graphics lines plot plot.new
 #' @importFrom grDevices dev.off png rainbow recordPlot

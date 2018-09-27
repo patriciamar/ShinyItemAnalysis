@@ -93,7 +93,7 @@ To cite ShinyItemAnalysis application in publications, please, use:
 \bibitem{martinkova2018}
   Martinkov\'a P., Drabinov\'a A., Leder O., \& Houdek J.
   (2018)
-  ShinyItemAnalysis: Test and item analysis via shiny. R package version 1.2.7.
+  ShinyItemAnalysis: Test and item analysis via shiny. R package version 1.2.8.
   https://CRAN.R-project.org/package=ShinyItemAnalysis
 
 \bibitem{martinkova2017}
@@ -371,11 +371,10 @@ if (params$irt_type == "none") {
 
 `r if (any(params$wrightMap!="")) {"Wright map, also called item-person map, is a graphical tool to display person estimates and item parameters. The person side (left) represents histogram of estimated knowledge of respondents. The item side (right) displays estimates of difficulty of particular items."}`
 
-\vspace{-1em}
 
-```{r wright-map, echo = FALSE, results = "hide", fig.height = 5.8, fig.width = 11, dpi = 300}
+```{r wright-map, echo = FALSE, results = "hide", fig.height = 4.5, fig.width = 11, dpi = 300}
 if (any(params$wrightMap != "")) {
-  wrightMap(params$wrightMap[[1]], params$wrightMap[[2]], item.side = itemClassic)
+  ggWrightMap(params$wrightMap[[1]], params$wrightMap[[2]], size = 16)
 }
 ```
 

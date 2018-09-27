@@ -5,6 +5,44 @@
         ***************************************************************
 
 -------------------------------------------------------
+- Changes in ShinyItemAnalysis 1.2.8 (2018-09-27) -
+-------------------------------------------------------
+
+ ** This is CRAN version, it includes version 1.2.7.-1.-7. **
+
+-------------------------------------------------------
+- Changes in ShinyItemAnalysis 1.2.7-7. (2018-09-27) -
+-------------------------------------------------------
+
+MAJOR UPDATES
+  o Section Reliability was added.
+    - Split-half methods including also Revelle's beta were added
+    - Cronbach's alpha method with CI was moved to section Reliability.
+    - Spearman-Brown formula was added.
+  o New function ggWrightMap replaced wrightMap from WrightMap package.
+  o Section IRT models
+    - Selected R code for Rasch and 1PL models was updated.
+
+MINOR UPDATES
+  o Reference list was updated.
+
+-------------------------------------------------------
+- Changes in ShinyItemAnalysis 1.2.7-6. (2018-08-29) -
+-------------------------------------------------------
+
+MAJOR UPDATES
+  o Section DIF/Fairness
+    - Subsection Logistic IRT Z is deprecated.
+    - Subsection Nonlinear IRT Z is now called Generalized logistic.
+    - Subsection Generalized logistic includes now wide range of models
+      and different specification of DIF type.
+    - Subsection SIBTEST was added, including SIBTEST method and
+      Crossing-SIBTEST method.
+
+MINOR UPDATES
+  o Reference list was updated.
+
+-------------------------------------------------------
 - Changes in ShinyItemAnalysis 1.2.7-5. (2018-08-22) -
 -------------------------------------------------------
 

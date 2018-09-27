@@ -38,7 +38,7 @@ Data <- tabPanel("Data",
                             #------------------------------------------------------------------------------------#
                             h4("Upload your own datasets"),
                             fluidRow(
-                              box(width = 3,
+                              box(3,
                                   fileInput(inputId = "data",
                                             label = "Choose data (CSV file)",
                                             accept = c("text/csv",
@@ -49,12 +49,14 @@ Data <- tabPanel("Data",
                                                        ".tsv"))),
                               column(9,
                                      p("Main ", strong("data"), " file should contain responses of individual respondents (rows)
-                              to given items (columns). Data need to be either binary or nominal (e.g. in ABCD format or Likert scale).
+                              to given items (columns). Data need to be either binary or nominal (e.g. in ABCD format).
                               Header may contain item names, no row names should be included. In all data sets", strong("header"), "should
                               be either included or excluded. Columns of dataset are by default renamed to Item and number of particular column.
                               If you want to keep your own names, check box ", strong("Keep items names"), "below. Missing values in scored
                               dataset are by default evaluated as 0. If you want to keep them as missing, check box" , strong("Keep missing values"),
-                                       "below."))),
+                                       "below."),
+                                     p(strong("Note: "), "Analysis of ordinal (Likert scale) data is currently not supported. In case of ordinal data, you
+                                may select 'nominal' and include key vector containing of maximum value for each item."))),
                             fluidRow(
                               box(width = 12,
                                   column(2,
@@ -180,7 +182,8 @@ Data <- tabPanel("Data",
                                                          ".csv",
                                                          ".tsv"))),
                                 column(9,
-                                       p("For nominal data, it is necessary to upload ", strong("key"), "of correct answers."))
+                                       p("For nominal data, it is necessary to upload ", strong("key"), "of correct answers."),
+                                       p(strong("Note: "), "In case of ordinal data, you are advised to include key vector containing of maximum value for each item."))
                                 )
                               ),
                             fluidRow(
@@ -195,10 +198,10 @@ Data <- tabPanel("Data",
                                                        ".tsv"))),
                               column(9,
                                      p(strong("Group"), " is binary vector, where 0 represents reference group
-                              and 1 represents focal group. Its length need to be the same as number of individual
-                              respondents in main dataset. If the group is not provided then it wont be possible to run
+                              and 1 represents focal group. Its length needs to be the same as number of individual
+                              respondents in the main dataset. If the group is not provided then it won't be possible to run
                               DIF and DDF detection procedures in ", strong("DIF/Fairness"), " section. Missing values
-                              are not supported for group membership vector and should be removed."))
+                              are not supported for group membership vector and such cases/rows of the data should be removed."))
                             ),
                             fluidRow(
                               box(width = 3,
@@ -213,7 +216,7 @@ Data <- tabPanel("Data",
                               column(9,
                                      p(strong("Criterion variable"), " is either discrete or continuous vector (e.g. future study
                               success or future GPA in case of admission tests) which should be predicted by the measurement.
-                              Again, its length needs to be the same as number of individual respondents in the main dataset.
+                              Its length needs to be the same as number of individual respondents in the main dataset.
                               If the criterion variable is not provided then it wont be possible to run validity analysis in ",
                                        strong("Predictive validity"), " section on ", strong("Validity"), " page."))
                             ),

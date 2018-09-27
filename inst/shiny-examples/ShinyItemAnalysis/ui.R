@@ -32,29 +32,29 @@ ui = tagList(
                       href = "margins_and_paddings.css"),
             tags$style(type = "text/css",
                        ".panel-footer {
-                          position: fixed;
-                          right: 0;
-                          bottom: 0;
-                          left: 0;
+                       position: fixed;
+                       right: 0;
+                       bottom: 0;
+                       left: 0;
                        }"),
             tags$link(rel = "stylesheet",
                       type = "text/css",
                       href = "box.css"),
             tags$style(type = "text/css",
                        "#inline-left {
-                          display: table;
-                          width: 100%;
-                        }
-                        #inline-left label{
-                          display: table-cell;
-                          text-align: center;
-                          vertical-align: middle;
-                          padding-right: 5px;
-                        }
-                        #inline-left .form-group {
-                          display: table-row;
-                          width: 80%;
-                        }"),
+                       display: table;
+                       width: 100%;
+                       }
+                       #inline-left label{
+                       display: table-cell;
+                       text-align: center;
+                       vertical-align: middle;
+                       padding-right: 5px;
+                       }
+                       #inline-left .form-group {
+                       display: table-row;
+                       width: 80%;
+                       }"),
             # JS
             tags$script(type = "text/javascript",
                         src = "busy.js"),
@@ -75,52 +75,52 @@ ui = tagList(
   tags$head(includeScript("google-analytics.js")),
 
   navbarPage(title = HTML('<div style = "margin-top: -10px;">
-                              <div class = "header-title">
-				                        <img src = "header_hexbin.png">
-				                        ShinyItemAnalysis
-			                        </div>
-			                        <div class = "header-subtitle">
-				                        Test and item analysis
-			                        </div>
-                           </div>'),
+                          <div class = "header-title">
+                          <img src = "header_hexbin.png">
+                          ShinyItemAnalysis
+                          </div>
+                          <div class = "header-subtitle">
+                          Test and item analysis
+                          </div>
+                          </div>'),
              windowTitle = 'ShinyItemAnalysis',
              position = 'fixed-top',
              selected = 'About',
              collapsible = TRUE,
              footer = list(
-                           HTML('<div class = "panel-footer">
-                              <p style = "margin:8px 0 0 0;">
-                                <div class = "footer-title">
-  				                        <img src = "hexbin.png">
-  				                        ShinyItemAnalysis
-  			                        </div>
-  			                        <div class = "footer-subtitle">
-  				                        Test and item analysis | Version 1.2.7-5
-  			                        </div>
-                                <span style = "float:right">
-                                  <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysis/" id = "tooltipweb" target="_blank">
-                                      <img src = "footer_web_icon.png", class = "footer-icons">
-                                  </a>
-                                  <a href = "https://github.com/patriciamar/ShinyItemAnalysis/" id = "tooltipgithub" target="_blank">
-                                      <img src = "footer_github_icon.png", class = "footer-icons">
-                                  </a>
-                                  <a href = "https://CRAN.R-project.org/package=ShinyItemAnalysis/" id = "tooltipcran" target="_blank">
-                                      <img src = "footer_cran_icon.png", class = "footer-icons">
-                                  </a>
-                                </span>
-                              </p>
-                              <script>
-                                $("#tooltipweb").attr("title", "Web");
-                                $("#tooltipgithub").attr("title", "GitHub");
-                                $("#tooltipcran").attr("title", "CRAN");
-                              </script>
-                              <br>
-                              <div class = "footer-copyright">
-				                        &copy; 2018  ShinyItemAnalysis
-			                        </div>'),
-                              HTML('<div class = "footer-counter">'),
-                                textOutput('counter', inline = T),
-                              HTML('</div></div>')),
+               HTML('<div class = "panel-footer">
+                    <p style = "margin:8px 0 0 0;">
+                    <div class = "footer-title">
+                    <img src = "hexbin.png">
+                    ShinyItemAnalysis
+                    </div>
+                    <div class = "footer-subtitle">
+                    Test and item analysis | Version 1.2.8
+                    </div>
+                    <span style = "float:right">
+                    <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysis/" id = "tooltipweb" target="_blank">
+                    <img src = "footer_web_icon.png", class = "footer-icons">
+                    </a>
+                    <a href = "https://github.com/patriciamar/ShinyItemAnalysis/" id = "tooltipgithub" target="_blank">
+                    <img src = "footer_github_icon.png", class = "footer-icons">
+                    </a>
+                    <a href = "https://CRAN.R-project.org/package=ShinyItemAnalysis/" id = "tooltipcran" target="_blank">
+                    <img src = "footer_cran_icon.png", class = "footer-icons">
+                    </a>
+                    </span>
+                    </p>
+                    <script>
+                    $("#tooltipweb").attr("title", "Web");
+                    $("#tooltipgithub").attr("title", "GitHub");
+                    $("#tooltipcran").attr("title", "CRAN");
+                    </script>
+                    <br>
+                    <div class = "footer-copyright">
+                    &copy; 2018  ShinyItemAnalysis
+                    </div>'),
+               HTML('<div class = "footer-counter">'),
+               textOutput('counter', inline = T),
+               HTML('</div></div>')),
 
 
              theme = "bootstrap.css",
@@ -195,69 +195,234 @@ ui = tagList(
                                  h4("Selected R code"),
                                  div(code(HTML("library(difNLR)&nbsp;<br><br>#&nbsp;loading&nbsp;data<br>data(GMAT)&nbsp;<br>data&nbsp;<-&nbsp;GMAT[,&nbsp;1:20]&nbsp;<br><br>#&nbsp;scores&nbsp;calculations<br>score&nbsp;<-&nbsp;apply(data,&nbsp;1,&nbsp;sum)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Total&nbsp;score&nbsp;<br>tosc&nbsp;<-&nbsp;sort(unique(score))&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Levels&nbsp;of&nbsp;total&nbsp;score&nbsp;<br>perc&nbsp;<-&nbsp;cumsum(prop.table(table(score)))&nbsp;#&nbsp;Percentiles&nbsp;<br>sura&nbsp;<-&nbsp;100&nbsp;*&nbsp;(tosc&nbsp;/&nbsp;max(score))&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Success&nbsp;rate&nbsp;<br>zsco&nbsp;<-&nbsp;sort(unique(scale(score)))&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Z-score&nbsp;<br>tsco&nbsp;<-&nbsp;50&nbsp;+&nbsp;10&nbsp;*&nbsp;zsco&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;T-score"))),
                                  br()
-                        )
+                                 )
+                                 ),
+             #%%%%%%%%%%%%%%%%%%%%%
+             # RELIABILITY ########
+             #%%%%%%%%%%%%%%%%%%%%%
+             navbarMenu("Reliability",
+                        "Description",
+                        # * RELIABILITY ####
+                        tabPanel("Reliability",
+                                 h3("Reliability"),
+                                 p("We are typically interested in unobserved true score \\(T\\), but have available only the
+                                   observed score \\(X\\) which is contaminated by some measurement error \\(e\\), such that
+                                   \\(X = T + e\\) and error term is uncorrelated with the true score."),
+                                 h4("Equation"),
+                                 p("Reliability is defined as squared correlation of the true and observed score"),
+                                 withMathJax(),
+                                 ('$$\\text{rel}(X) = \\text{cor}(T, X)^2$$'),
+                                 p("Equivalently, reliability can be re-expressed as the ratio of the true score variance
+                                   to total observed variance"),
+                                 withMathJax(),
+                                 ('$$\\text{rel}(X) = \\frac{\\sigma^2_T}{\\sigma^2_X}$$'),
+                                 br()
+                                 ),
+                        "----",
+                        "Used methods",
+                        # * SPEARMAN-BROWN FORMULA ####
+                        tabPanel("Spearman-Brown formula",
+                                 h3("Spearman-Brown formula"),
+                                 h4("Equation"),
+                                 p("For test with \\(I\\) items total score is calculated as \\(X = X_1 + ... + X_I\\).
+                                   Let \\(\\text{rel}(X)\\) be a reliability of the test. For test consisting of
+                                   \\(I^*\\) items (equally precise, measuring the same construct),  that is for test which is
+                                   \\(m = \\frac{I^*}{I}\\) times longer/shorter, the reliability would be"),
+                                 withMathJax(),
+                                 ('$$\\text{rel}(X^*) = \\frac{m\\cdot \\text{rel}(X)}{1 + (m - 1)\\cdot\\text{rel}(X)}.$$'),
+                                 p("Spearman-Brown formula can be used to determine reliability of test with similar items but of
+                                    different number of items. It can also be used to determine necessary number of items to achieve
+                                    desired reliability."),
+                                 p("In calculations below", strong("reliability of original data"), "is by
+                                   default set to value of Cronbach's \\(\\alpha\\). ", strong("Number of items in original data"), "is
+                                   by default set to number of items of dataset currently in use. "),
+                                 fluidRow(column(3,
+                                                 numericInput(inputId = "reliability_SBformula_reliability_original",
+                                                              label = "Reliability of original data",
+                                                              max = 0,
+                                                              min = 1,
+                                                              value = 0.7)),
+                                          column(3,
+                                                 numericInput(inputId = "reliability_SBformula_items_original",
+                                                              label = "Number of items in original data",
+                                                              min = 1,
+                                                              step = 1,
+                                                              value = 20))),
+                                 br(),
+                                 h4("Estimate of reliability with different number of items"),
+                                 p("Here you can calculate estimate of reliability of a test consisting of different number of
+                                   items (equally precise, measuring the same construct). "),
+                                 fluidRow(column(3,
+                                                 numericInput(inputId = "reliability_SBformula_items_new",
+                                                              label = "Number of items in new data",
+                                                              min = 1,
+                                                              step = 1,
+                                                              value = 30))),
+                                 uiOutput("reliability_SBformula_reliability_text"),
+                                 br(),
+                                 h4("Necessary number of items for required level of reliability"),
+                                 p("Here you can calculate necessary number of items (equally precise, measuring the same construct)
+                                   to gain required level of reliability. "),
+                                 fluidRow(column(3,
+                                                 numericInput(inputId = "reliability_SBformula_reliability_new",
+                                                              label = "Reliability of new data",
+                                                              max = 0,
+                                                              min = 1,
+                                                              value = 0.8))),
+                                 uiOutput("reliability_SBformula_items_text"),
+                                 br(),
+                                 h4("Selected R code"),
+                                 div(code(HTML("library(psychometrics)<br>library(ShinyItemAnalysis)<br><br>#&nbsp;loading&nbsp;data<br>data(HCI)<br>data&nbsp;<-&nbsp;HCI[,&nbsp;1:20]<br><br>#&nbsp;reliability&nbsp;of&nbsp;original&nbsp;data<br>rel.original&nbsp;<-&nbsp;psychometric::alpha(data)<br>#&nbsp;number&nbsp;of&nbsp;items&nbsp;in&nbsp;original&nbsp;data<br>items.original&nbsp;<-&nbsp;ncol(data)<br><br><br>#&nbsp;number&nbsp;of&nbsp;items&nbsp;in&nbsp;new&nbsp;data<br>items.new&nbsp;<-&nbsp;30<br>#&nbsp;ratio&nbsp;of&nbsp;tests&nbsp;lengths<br>m&nbsp;<-&nbsp;items.new/items.original<br>#&nbsp;determining&nbsp;reliability<br>psychometric::SBrel(Nlength&nbsp;=&nbsp;m,&nbsp;rxx&nbsp;=&nbsp;rel.original)<br><br><br>#&nbsp;desired&nbsp;reliability<br>rel.new&nbsp;<-&nbsp;0.8<br>#&nbsp;determining&nbsp;test&nbsp;length<br>(m.new&nbsp;<-&nbsp;psychometric::SBlength(rxxp&nbsp;=&nbsp;rel.new,&nbsp;rxx&nbsp;=&nbsp;rel.original))<br>#&nbsp;number&nbsp;of&nbsp;required&nbsp;items<br>m.new*items.original"))),
+                                 br(),
+                                 br()
+                                 ),
+                        # * SPLIT-HALF METHOD ####
+                        tabPanel("Split-half method",
+                                 h3("Split-half method"),
+                                 p("Split-half method uses correlation between two subscores for estimation of reliability.
+                                   The underlying assumption is that the two halves of the test (or even all items on the test) are
+                                   equally precise and measure the same underlying construct. Spearman-Brown formula is then used to
+                                   correct the estimate for the number of items."),
+                                 h4("Equation"),
+                                 p("For test with \\(I\\) items total score is calculated as \\(X = X_1 + ... + X_I\\).
+                                   Let \\(X^*_1\\) and \\(X^*_2\\) be total scores calculated from items only in the first
+                                   and second subsets. Then estimate of reliability is given by Spearman-Brown formula (Spearman, 1910; Brown, 1910)
+                                   with \\(m = 2\\)."),
+                                 withMathJax(),
+                                 ('$$\\text{rel}(X) = \\frac{m\\cdot \\text{cor}(X^*_1, X^*_2)}{1 + (m - 1)\\cdot\\text{cor}(X^*_1, X^*_2)} =
+                                  \\frac{2\\cdot \\text{cor}(X^*_1, X^*_2)}{1 + \\text{cor}(X^*_1, X^*_2)}$$'),
+                                 p("Below you can choose from different split-half approaches. ",
+                                   strong("First-last"), "method uses correlation between the first half of items and the second
+                                   half of items.", strong("Even-odd"), "includes even items into the first subset and odd items
+                                   into the second one. ", strong("Random"), "method performs random split of items, thus the
+                                   resulting estimate may be different for each call. ", strong("Revelle's \\(\\beta\\)"), "is
+                                   actually the worst split-half (Revelle, 1979). Estimate is here calculated as the lowest split-half
+                                   reliability of by default 10,000 random splits. Finally, ", strong("Average"), "considers by default
+                                   10,000 split halves and averages the resulting estimates. Number of split halves can be changed below.
+                                   In case of odd number of items, first subset contains one more item than second one."),
+                                 uiOutput("reliability_splithalf_allpossible_text"),
+                                 br(),
+                                 fluidRow(column(3,
+                                                 withMathJax(),
+                                                 selectInput(inputId = "reliability_splithalf_method",
+                                                             label = "Split half method",
+                                                             choices = c("First-last" = "firstlast",
+                                                                         "Even-odd" = "evenodd",
+                                                                         "Random" = "random",
+                                                                         "Revelle's beta" = "worst",
+                                                                         "Average" = "average"),
+                                                             selected = "First_last")),
+                                          column(4,
+                                                 numericInput(inputId = "reliability_splithalf_number",
+                                                              label = textOutput("reliability_splithalf_number_label"),
+                                                              value = 10000,
+                                                              min = 1,
+                                                              step = 1))),
+                                 conditionalPanel(
+                                   condition = "input.reliability_splithalf_method != 'average'",
+                                   uiOutput("reliability_splithalf_text"),
+                                   br()),
+                                 h4("Reliability estimate with confidence interval"),
+                                 p("Estimate of reliability for ", strong("First-last"), ", ", strong("Even-odd"), ", ", strong("Random"), "and",
+                                   strong("Revelle's \\(\\beta\\)"), "is calculated using Spearman-Brown formula. Confidence interval is based on
+                                   confidence interval of correlation using delta method. Estimate of reliability for ", strong("Average"),
+                                   "method is mean value of sampled reliabilities and confidence interval is confidence interval of this mean. "),
+                                 uiOutput("reliability_splithalf_table"),
+                                 br(),
+                                 h4("Histogram of reliability estimates"),
+                                 p("Histogram is based on selected number of split halves estimates (10,000 by default).
+                                   The current estimate is highlighted by red colour."),
+                                 plotOutput("reliability_splithalf_histogram"),
+                                 downloadButton("DB_reliability_splithalf_histogram"),
+                                 br(),
+                                 h4("Selected R code"),
+                                 div(code(HTML("library(psych)<br>library(ShinyItemAnalysis)<br><br>#&nbsp;loading&nbsp;data<br>data(HCI)<br><br>#&nbsp;First-last&nbsp;splitting<br>df1&nbsp;<-&nbsp;HCI[,&nbsp;1:10]<br>df2&nbsp;<-&nbsp;HCI[,&nbsp;11:20]<br>#&nbsp;total&nbsp;score&nbsp;calculation<br>ts1&nbsp;<-&nbsp;apply(df1,&nbsp;1,&nbsp;sum)<br>ts2&nbsp;<-&nbsp;apply(df2,&nbsp;1,&nbsp;sum)<br>#&nbsp;correlation<br>cor.x&nbsp;<-&nbsp;cor(ts1,&nbsp;ts2)<br>#&nbsp;apply&nbsp;Spearmann-Brown&nbsp;formula&nbsp;to&nbsp;estimate&nbsp;reliability<br>(rel.x&nbsp;<-&nbsp;2*cor.x/(1&nbsp;+&nbsp;cor.x))<br><br>#&nbsp;Even-odd&nbsp;splitting<br>df1&nbsp;<-&nbsp;HCI[,&nbsp;seq(1,&nbsp;20,&nbsp;2)]<br>df2&nbsp;<-&nbsp;HCI[,&nbsp;seq(2,&nbsp;20,&nbsp;2)]<br>#&nbsp;total&nbsp;score&nbsp;calculation<br>ts1&nbsp;<-&nbsp;apply(df1,&nbsp;1,&nbsp;sum)<br>ts2&nbsp;<-&nbsp;apply(df2,&nbsp;1,&nbsp;sum)<br>#&nbsp;correlation<br>cor.x&nbsp;<-&nbsp;cor(ts1,&nbsp;ts2)<br>#&nbsp;apply&nbsp;Spearmann-Brown&nbsp;formula&nbsp;to&nbsp;estimate&nbsp;reliability<br>(rel.x&nbsp;<-&nbsp;2*cor.x/(1&nbsp;+&nbsp;cor.x))<br><br>#&nbsp;Random&nbsp;splitting<br>samp&nbsp;<-&nbsp;sample(1:20,&nbsp;10)<br>df1&nbsp;<-&nbsp;HCI[,&nbsp;samp]<br>df2&nbsp;<-&nbsp;HCI[,&nbsp;setdiff(1:20,&nbsp;samp)]<br>#&nbsp;total&nbsp;score&nbsp;calculation<br>ts1&nbsp;<-&nbsp;apply(df1,&nbsp;1,&nbsp;sum)<br>ts2&nbsp;<-&nbsp;apply(df2,&nbsp;1,&nbsp;sum)<br>#&nbsp;correlation<br>cor.x&nbsp;<-&nbsp;cor(ts1,&nbsp;ts2)<br>#&nbsp;apply&nbsp;Spearmann-Brown&nbsp;formula&nbsp;to&nbsp;estimate&nbsp;reliability<br>(rel.x&nbsp;<-&nbsp;2*cor.x/(1&nbsp;+&nbsp;cor.x))<br><br>#&nbsp;Minimum&nbsp;of&nbsp;10,000&nbsp;split-halves&nbsp;(Revelle's&nbsp;beta)<br>split&nbsp;<-&nbsp;psych::splitHalf(HCI[,&nbsp;1:20],&nbsp;raw&nbsp;=&nbsp;TRUE)<br>items1&nbsp;<-&nbsp;which(split$minAB[,&nbsp;'A']&nbsp;==&nbsp;1)<br>items2&nbsp;<-&nbsp;which(split$minAB[,&nbsp;'B']&nbsp;==&nbsp;1)<br>df1&nbsp;<-&nbsp;HCI[,&nbsp;items1]<br>df2&nbsp;<-&nbsp;HCI[,&nbsp;items2]<br>#&nbsp;total&nbsp;score&nbsp;calculation<br>ts1&nbsp;<-&nbsp;apply(df1,&nbsp;1,&nbsp;sum)<br>ts2&nbsp;<-&nbsp;apply(df2,&nbsp;1,&nbsp;sum)<br>#&nbsp;correlation<br>cor.x&nbsp;<-&nbsp;cor(ts1,&nbsp;ts2)<br>#&nbsp;apply&nbsp;Spearmann-Brown&nbsp;formula&nbsp;to&nbsp;estimate&nbsp;reliability<br>(rel.x&nbsp;<-&nbsp;2*cor.x/(1&nbsp;+&nbsp;cor.x))<br><br>#&nbsp;calculation&nbsp;of&nbsp;CI<br>z.r&nbsp;<-&nbsp;0.5*log((1&nbsp;+&nbsp;cor.x)/(1&nbsp;-&nbsp;cor.x))<br>n&nbsp;<-&nbsp;length(ts1)<br>z.low&nbsp;<-&nbsp;z.r&nbsp;-&nbsp;1.96&nbsp;*&nbsp;sqrt(1/(n&nbsp;-&nbsp;3))<br>z.upp&nbsp;<-&nbsp;z.r&nbsp;+&nbsp;1.96&nbsp;*&nbsp;sqrt(1/(n&nbsp;-&nbsp;3))<br><br>cor.low&nbsp;<-&nbsp;(exp(2*z.low)&nbsp;-&nbsp;1)/(exp(2*z.low)&nbsp;+&nbsp;1)<br>cor.upp&nbsp;<-&nbsp;(exp(2*z.upp)&nbsp;-&nbsp;1)/(exp(2*z.upp)&nbsp;+&nbsp;1)<br><br>rel.x&nbsp;<-&nbsp;2*cor.x/(1&nbsp;+&nbsp;cor.x)<br>rel.low&nbsp;<-&nbsp;2*cor.low/(1&nbsp;+&nbsp;cor.low)<br>rel.upp&nbsp;<-&nbsp;2*cor.upp/(1&nbsp;+&nbsp;cor.upp)<br><br><br>#&nbsp;Average&nbsp;10,000&nbsp;split-halves<br>split&nbsp;<-&nbsp;psych::splitHalf(HCI[,&nbsp;1:20],&nbsp;raw&nbsp;=&nbsp;TRUE)<br>(rel.x&nbsp;<-&nbsp;mean(split$raw))<br><br>#&nbsp;Average&nbsp;all&nbsp;split-halves<br>split&nbsp;<-&nbsp;psych::splitHalf(HCI[,&nbsp;1:20],&nbsp;raw&nbsp;=&nbsp;TRUE,&nbsp;brute&nbsp;=&nbsp;TRUE)<br>(rel.x&nbsp;<-&nbsp;mean(split$raw))<br><br>#&nbsp;calculation&nbsp;of&nbsp;CI<br>n&nbsp;<-&nbsp;length(split$raw)<br>rel.low&nbsp;<-&nbsp;rel.x&nbsp;-&nbsp;1.96&nbsp;*&nbsp;sd(split$raw)/sqrt(n)<br>rel.upp&nbsp;<-&nbsp;rel.x&nbsp;+&nbsp;1.96&nbsp;*&nbsp;sd(split$raw)/sqrt(n)"))),
+                                 br()
+                                 ),
+                        # * CRONBACH'S ALPHA ####
+                        tabPanel("Cronbach's \\(\\alpha\\)",
+                                 h3("Cronbach's \\(\\alpha\\)"),
+                                 p("Cronbach's \\(\\alpha\\) is an estimate of internal consistency of a psychometric test.
+                                   It is a function of the number of items in a test, the average covariance
+                                   between item-pairs, and the variance of the total score (Cronbach, 1951)."),
+                                 h4("Equation"),
+                                 p("For test with \\(I\\) items where \\(X = X_1 + ... + X_I\\) is a total score,
+                                   \\(\\sigma^2_X\\) its variance and \\(\\sigma^2_{X_i}\\) variances of items,
+                                   Cronbach's \\(\\alpha\\) is given by following equation"),
+                                 withMathJax(),
+                                 ('$$\\alpha = \\frac{I}{I-1}\\left(1 - \\frac{\\sum_{i = 1}^I \\sigma^2_{X_i}}{\\sigma^2_X}\\right)$$'),
+                                 h4("Estimate with confidence interval"),
+                                 p("Confidence interval is based on F distribution as proposed by Feldt et al. (1987)."),
+                                 tableOutput("reliability_cronbachalpha_table"),
+                                 # h3("McDonald's \\(\\omega\\)"),
+                                 # p(),
+                                 # br(),
+                                 h4("Selected R code"),
+                                 div(code(HTML("library(psychometric)<br>library(ShinyItemAnalysis)<br><br>#&nbsp;loading&nbsp;data<br>data(HCI)<br>data&nbsp;<-&nbsp;HCI[,&nbsp;1:20]<br><br>#&nbsp;Cronbach's&nbsp;alpha&nbsp;with&nbsp;confidence&nbsp;interval<br>a&nbsp;<-&nbsp;psychometric::alpha(data)<br>psychometric::alpha.CI(a,&nbsp;N&nbsp;=&nbsp;nrow(data),&nbsp;k&nbsp;=&nbsp;ncol(data),&nbsp;level&nbsp;=&nbsp;0.95)"))),
+                                 br()
+                                 )
                         ),
              #%%%%%%%%%%%%%%%%%%%%%
              # VALIDITY ###########
              #%%%%%%%%%%%%%%%%%%%%%
              navbarMenu("Validity",
                         # * CORRELATION STRUCTURE ####
-                         tabPanel("Correlation structure",
-                                  h3("Correlation structure"),
-                                  h4("Polychoric correlation heat map"),
-                                  p('Polychoric correlation heat map is a correlation plot which displays a polychoric
-                                     correlations of items. The size and shade of circles indicate how much the
-                                     items are correlated (larger and darker circle means larger correlation).
-                                     The color of circles indicates in which way the items are correlated - blue
-                                     color shows possitive correlation and red color shows negative correlation.'),
-                                  p("Polychoric correlation heat map can be reordered using hierarchical",
-                                    HTML("<b>clustering method</b>"), "below.
-                                    Ward's method aims at finding compact clusters based on minimizing the within-cluster
-                                    sum of squares.
-                                    Ward's n. 2 method used squared disimilarities.
-                                    Single method connects clusters with the nearest neighbours, i.e. the distance between
-                                    two clusters is calculated as the minimum of distances of observations in one cluster and
-                                    observations in the other clusters.
-                                    Complete linkage with farthest neighbours, i.e. maximum of distances.
-                                    Average linkage method used the distance based on weighted average of the individual distances.
-                                    With McQuitty method used unweighted average.
-                                    Median linkage calculates the distance as the median of distances between an observation
-                                    in one cluster and observation in the other cluster.
-                                    Centroid method used distance between centroids of clusters. "),
-                                  p("With", HTML("<b>number  of clusters</b>"), "larger than 1, the rectangles representing
-                                    clusters are drawn. "),
-                                  fluidPage(div(class = "input-box",
-                                                numericInput(inputId = 'corr_plot_clust',
-                                                             label = 'Number of clusters',
-                                                             value = 1,
-                                                             min = 1,
-                                                             max = 1)),
-                                            div(style = "display: inline-block; vertical-align: top; width: 5%;"),
-                                            div(class = "input-box",
-                                                selectInput(inputId = 'corr_plot_clustmethod',
-                                                            label = 'Clustering method',
-                                                            choices = list("None" = "none",
-                                                                           "Ward's"  = "ward.D",
-                                                                           "Ward's n. 2" = "ward.D2",
-                                                                           "Single" = "single",
-                                                                           "Complete" = "complete",
-                                                                           "Average" = "average",
-                                                                           "McQuitty" = "mcquitty",
-                                                                           "Median" = "median",
-                                                                           "Centroid" = "centroid"),
-                                                            selected = "none"))),
-                                  plotOutput('corr_plot'),
-                                  downloadButton(outputId = "DB_corr_plot", label = "Download figure"),
-                                  br(),
-                                  h4("Scree plot"),
-                                  p('A scree plot displays the eigenvalues associated with an component or a factor in descending order
-                                     versus the number of the component or factor. '),
-                                  plotOutput('scree_plot'),
-                                  downloadButton(outputId = "DB_scree_plot", label = "Download figure"),
-                                  h4("Selected R code"),
-                                  div(code(HTML("library(corrplot)&nbsp;<br>library(difNLR)&nbsp;<br>library(psych)<br><br>#&nbsp;loading&nbsp;data<br>data(GMAT)&nbsp;<br>data&nbsp;<-&nbsp;GMAT[,&nbsp;1:20]&nbsp;<br><br>#&nbsp;correlation&nbsp;heat&nbsp;map&nbsp;<br>corP&nbsp;<-&nbsp;polychoric(data)&nbsp;#&nbsp;polychoric&nbsp;correlation&nbsp;calculation<br>corP$rho&nbsp;#&nbsp;correlation&nbsp;matrix&nbsp;<br>corrplot(corP$rho)&nbsp;#&nbsp;correlation&nbsp;plot&nbsp;<br>corrplot(corP$rho,&nbsp;order&nbsp;=&nbsp;\"hclust\",&nbsp;hclust.method&nbsp;=&nbsp;\"ward.D\",&nbsp;addrect&nbsp;=&nbsp;3)&nbsp;#&nbsp;correlation&nbsp;plot&nbsp;with&nbsp;3&nbsp;clusters&nbsp;using&nbsp;Ward&nbsp;method<br><br>#&nbsp;scree&nbsp;plot&nbsp;<br>ev&nbsp;<-&nbsp;eigen(corP$rho)$values&nbsp;#&nbsp;eigen&nbsp;values<br>df&nbsp;<-&nbsp;data.frame(comp&nbsp;=&nbsp;1:length(ev),&nbsp;ev)<br><br>ggplot(df,&nbsp;aes(x&nbsp;=&nbsp;comp,&nbsp;y&nbsp;=&nbsp;ev))&nbsp;+&nbsp;<br>&nbsp;&nbsp;geom_point()&nbsp;+&nbsp;<br>&nbsp;&nbsp;geom_line()&nbsp;+&nbsp;<br>&nbsp;&nbsp;ylab(\"Eigen&nbsp;value\")&nbsp;+&nbsp;<br>&nbsp;&nbsp;xlab(\"Component&nbsp;number\")&nbsp;+<br>&nbsp;&nbsp;theme_app()"))),
-                                  br()
-                                    ),
+                        tabPanel("Correlation structure",
+                                 h3("Correlation structure"),
+                                 h4("Polychoric correlation heat map"),
+                                 p('Polychoric correlation heat map is a correlation plot which displays a polychoric
+                                   correlations of items. The size and shade of circles indicate how much the
+                                   items are correlated (larger and darker circle means larger correlation).
+                                   The color of circles indicates in which way the items are correlated - blue
+                                   color shows possitive correlation and red color shows negative correlation.'),
+                                 p("Polychoric correlation heat map can be reordered using hierarchical",
+                                   HTML("<b>clustering method</b>"), "below.
+                                   Ward's method aims at finding compact clusters based on minimizing the within-cluster
+                                   sum of squares.
+                                   Ward's n. 2 method used squared disimilarities.
+                                   Single method connects clusters with the nearest neighbours, i.e. the distance between
+                                   two clusters is calculated as the minimum of distances of observations in one cluster and
+                                   observations in the other clusters.
+                                   Complete linkage with farthest neighbours, i.e. maximum of distances.
+                                   Average linkage method used the distance based on weighted average of the individual distances.
+                                   With McQuitty method used unweighted average.
+                                   Median linkage calculates the distance as the median of distances between an observation
+                                   in one cluster and observation in the other cluster.
+                                   Centroid method used distance between centroids of clusters. "),
+                                 p("With", HTML("<b>number  of clusters</b>"), "larger than 1, the rectangles representing
+                                   clusters are drawn. "),
+                                 fluidPage(div(class = "input-box",
+                                               numericInput(inputId = 'corr_plot_clust',
+                                                            label = 'Number of clusters',
+                                                            value = 1,
+                                                            min = 1,
+                                                            max = 1)),
+                                           div(style = "display: inline-block; vertical-align: top; width: 5%;"),
+                                           div(class = "input-box",
+                                               selectInput(inputId = 'corr_plot_clustmethod',
+                                                           label = 'Clustering method',
+                                                           choices = list("None" = "none",
+                                                                          "Ward's"  = "ward.D",
+                                                                          "Ward's n. 2" = "ward.D2",
+                                                                          "Single" = "single",
+                                                                          "Complete" = "complete",
+                                                                          "Average" = "average",
+                                                                          "McQuitty" = "mcquitty",
+                                                                          "Median" = "median",
+                                                                          "Centroid" = "centroid"),
+                                                           selected = "none"))),
+                                 plotOutput('corr_plot'),
+                                 downloadButton(outputId = "DB_corr_plot", label = "Download figure"),
+                                 br(),
+                                 h4("Scree plot"),
+                                 p('A scree plot displays the eigenvalues associated with an component or a factor in descending order
+                                   versus the number of the component or factor. '),
+                                 plotOutput('scree_plot'),
+                                 downloadButton(outputId = "DB_scree_plot", label = "Download figure"),
+                                 h4("Selected R code"),
+                                 div(code(HTML("library(corrplot)&nbsp;<br>library(difNLR)&nbsp;<br>library(psych)<br><br>#&nbsp;loading&nbsp;data<br>data(GMAT)&nbsp;<br>data&nbsp;<-&nbsp;GMAT[,&nbsp;1:20]&nbsp;<br><br>#&nbsp;correlation&nbsp;heat&nbsp;map&nbsp;<br>corP&nbsp;<-&nbsp;polychoric(data)&nbsp;#&nbsp;polychoric&nbsp;correlation&nbsp;calculation<br>corP$rho&nbsp;#&nbsp;correlation&nbsp;matrix&nbsp;<br>corrplot(corP$rho)&nbsp;#&nbsp;correlation&nbsp;plot&nbsp;<br>corrplot(corP$rho,&nbsp;order&nbsp;=&nbsp;\"hclust\",&nbsp;hclust.method&nbsp;=&nbsp;\"ward.D\",&nbsp;addrect&nbsp;=&nbsp;3)&nbsp;#&nbsp;correlation&nbsp;plot&nbsp;with&nbsp;3&nbsp;clusters&nbsp;using&nbsp;Ward&nbsp;method<br><br>#&nbsp;scree&nbsp;plot&nbsp;<br>ev&nbsp;<-&nbsp;eigen(corP$rho)$values&nbsp;#&nbsp;eigen&nbsp;values<br>df&nbsp;<-&nbsp;data.frame(comp&nbsp;=&nbsp;1:length(ev),&nbsp;ev)<br><br>ggplot(df,&nbsp;aes(x&nbsp;=&nbsp;comp,&nbsp;y&nbsp;=&nbsp;ev))&nbsp;+&nbsp;<br>&nbsp;&nbsp;geom_point()&nbsp;+&nbsp;<br>&nbsp;&nbsp;geom_line()&nbsp;+&nbsp;<br>&nbsp;&nbsp;ylab(\"Eigen&nbsp;value\")&nbsp;+&nbsp;<br>&nbsp;&nbsp;xlab(\"Component&nbsp;number\")&nbsp;+<br>&nbsp;&nbsp;theme_app()"))),
+                                 br()
+                                 ),
                         # * PREDICTIVE VALIDITY ####
                         tabPanel('Criterion validity',
                                  tabsetPanel(
@@ -328,7 +493,7 @@ ui = tagList(
                                             div(code(HTML("library(ShinyItemAnalysis)&nbsp;<br>library(difNLR)&nbsp;<br><br>#&nbsp;loading&nbsp;data<br>data(\"GMAT\",&nbsp;\"GMATtest\",&nbsp;\"GMATkey\")&nbsp;<br>data&nbsp;<-&nbsp;GMATtest[,&nbsp;1:20]&nbsp;<br>data01&nbsp;<-&nbsp;GMAT[,&nbsp;1:20]&nbsp;<br>key&nbsp;<-&nbsp;GMATkey&nbsp;<br>criterion&nbsp;<-&nbsp;GMAT[,&nbsp;\"criterion\"]&nbsp;<br><br>#&nbsp;distractor&nbsp;plot&nbsp;for&nbsp;item&nbsp;1&nbsp;and&nbsp;3&nbsp;groups&nbsp;<br>plotDistractorAnalysis(data,&nbsp;key,&nbsp;num.groups&nbsp;=&nbsp;3,&nbsp;item&nbsp;=&nbsp;1,&nbsp;matching&nbsp;=&nbsp;criterion)&nbsp;<br><br>#&nbsp;correlation&nbsp;for&nbsp;item&nbsp;1&nbsp;<br>cor.test(criterion,&nbsp;data01[,&nbsp;1],&nbsp;method&nbsp;=&nbsp;\"spearman\",&nbsp;exact&nbsp;=&nbsp;F)"))),
                                             br()
                                             )
-                                   ))),
+                                            ))),
 
              #%%%%%%%%%%%%%%%%%%%%%
              # ITEM ANALYSIS ######
@@ -685,9 +850,9 @@ ui = tagList(
                                  p('DIF is not about total scores! Two groups may have the same distribution of total scores, yet,
                                    some item may function differently for two groups. Also, one of the groups may have signifficantly
                                    lower total score, yet, it may happen that there is no DIF item!',
-                                 a('(Martinkova et al., 2017). ',
-                                 href = "https://www.lifescied.org/doi/10.1187/cbe.16-10-0307",
-                                 target = "_blank")),
+                                   a('(Martinkova et al., 2017). ',
+                                     href = "https://www.lifescied.org/doi/10.1187/cbe.16-10-0307",
+                                     target = "_blank")),
                                  h4("Summary of total scores for groups"),
                                  tableOutput('resultsgroup'),
                                  h4("Histograms of total scores for groups"),
@@ -698,7 +863,7 @@ ui = tagList(
                                    to cut-score and red part of histogram shows respondents below the cut-score.'),
                                  splitLayout(cellWidths = c("50%", "50%"), plotOutput('histbyscoregroup0'),plotOutput('histbyscoregroup1')),
                                  splitLayout(cellWidths = c("50%", "50%"), downloadButton("DP_histbyscoregroup0", label = "Download figure"),
-                                 downloadButton("DP_histbyscoregroup1", label = "Download figure")),
+                                             downloadButton("DP_histbyscoregroup1", label = "Download figure")),
                                  br(),
                                  h4("Selected R code"),
                                  div(code('library(difNLR)'),
@@ -739,11 +904,11 @@ ui = tagList(
                                  conditionalPanel(
                                    condition = "input.puri_DP",
                                    selectInput("puri_DP_type", "Purification method",
-                                             c("IPP1" = "IPP1",
-                                               "IPP2" = "IPP2",
-                                               "IPP3" = "IPP3"
+                                               c("IPP1" = "IPP1",
+                                                 "IPP2" = "IPP2",
+                                                 "IPP3" = "IPP3"
                                                ),
-                                             selected = "IPP1")),
+                                               selected = "IPP1")),
                                  plotOutput('deltaplot'),
                                  downloadButton("DP_deltaplot", label = "Download figure"),
                                  br(),
@@ -901,10 +1066,10 @@ ui = tagList(
                                                 code('fit$alphaMH')),
                                             br()
                                             )
-                        )
+                                 )
                         ),
                         # * LOGISTIC ####
-                        tabPanel("Logistic",
+                        tabPanel("Logistic regression",
                                  tabsetPanel(
                                    # ** Summary ####
                                    tabPanel('Summary',
@@ -1050,321 +1215,332 @@ ui = tagList(
                                                 code('fit$logitPar')),
                                             br()
                                             )
-                                   )
-                                 ),
-
-                        # * LOGISTIC Z ####
-                        tabPanel("Logistic IRT Z",
-                                 tabsetPanel(
-                                   # ** Summary ####
-                                   tabPanel('Summary',
-                                            h3('Logistic regression on standardized total scores with IRT parameterization'),
-                                            p('Logistic regression allows for detection of uniform and non-uniform DIF (Swaminathan & Rogers, 1990) by adding a group
-                                              specific intercept', strong('bDIF'), '(uniform DIF) and group specific interaction', strong('aDIF'), '(non-uniform DIF) into model and
-                                              by testing for their significance.'),
-                                            h4("Equation"),
-                                            ('$$\\mathrm{P}\\left(Y_{ij} = 1 | Z_i, G_i, a_j, b_j, a_{\\text{DIF}j}, b_{\\text{DIF}j}\\right) = \\frac{e^{\\left(a_j + a_{\\text{DIF}j} G_i\\right)
-                                             \\left(Z_i -\\left(b_j + b_{\\text{DIF}j} G_i\\right)\\right)}}{1+e^{\\left(a_j + a_{\\text{DIF}j} G_i\\right)
-                                             \\left(Z_i -\\left(b_j + b_{\\text{DIF}j} G_i\\right)\\right)}} $$'),
-                                            h4('Summary table'),
-                                            p('Here you can choose what', strong('type'), 'of DIF to test. You can also select ',
-                                              strong('correction method'), 'for multiple comparison.'),
-                                            fluidPage(div(style = "display: inline-block; vertical-align: top; width: 27%; ",
-                                                          radioButtons(inputId = 'type_print_DIF_logistic_IRT_Z',
-                                                                       label = 'Type',
-                                                                       choices = c("H0: Any DIF vs. H1: No DIF" = 'both',
-                                                                                   "H0: Uniform DIF vs. H1: No DIF" = 'udif',
-                                                                                   "H0: Non-Uniform DIF vs. H1: Uniform DIF" = 'nudif'),
-                                                                       selected = 'both')),
-                                                      div(style = "display: inline-block; vertical-align: top; width: 5%; "),
-                                                      div(style = "display: inline-block; vertical-align: top; width: 20%; ",
-                                                          selectInput(inputId = "correction_method_logZSummary",
-                                                                      label = "Correction method",
-                                                                      choices = c("BH" = "BH",
-                                                                                  "Holm" = "holm",
-                                                                                  "Hochberg" = "hochberg",
-                                                                                  "Hommel" = "hommel",
-                                                                                  "BY" = "BY",
-                                                                                  "FDR" = "fdr",
-                                                                                  "none" = "none"),
-                                                                      selected = "none"))),
-                                            verbatimTextOutput('print_DIF_logistic_IRT_Z'),
-                                            br(),
-                                            h4("Selected R code"),
-                                            div(code('library(difNLR)'),
-                                                br(),
-                                                code('library(difR)'),
-                                                br(),
-                                                code('data(GMAT)'),
-                                                br(),
-                                                code('data <- GMAT[, 1:20]'),
-                                                br(),
-                                                code('group <- GMAT[, "group"]'),
-                                                br(),
-                                                code('scaled.score <- scale(score)'),
-                                                br(),
-                                                br(),
-                                                code('# Logistic regression DIF detection method'),
-                                                br(),
-                                                code('fit <- difLogistic(Data = data, group = group, focal.name = 1,
-                                                     type = "both",
-                                                     match = scaled.score,
-                                                     p.adjust.method = "none",
-                                                     purify = F)'),
-                                                br(),
-                                                code('fit')),
-                                            br()
-                                            ),
-                                   # ** Items ####
-                                   tabPanel('Items',
-                                            h3('Logistic regression on standardized total scores with IRT parameterization'),
-                                            p('Logistic regression allows for detection of uniform and non-uniform DIF by adding a group
-                                              specific intercept', strong('bDIF'), '(uniform DIF) and group specific interaction', strong('aDIF'), '(non-uniform DIF) into model and
-                                              by testing for their significance.'),
-                                            h4("Plot with estimated DIF logistic curve"),
-                                            p('Here you can choose what', strong('type'), 'of DIF to test. You can also select ',
-                                              strong('correction method'), 'for multiple comparison.'),
-                                            fluidPage(div(style = "display: inline-block; vertical-align: top; width: 27%; ",
-                                                          radioButtons(inputId = 'type_plot_DIF_logistic_IRT_Z',
-                                                                       label = 'Type',
-                                                                       choices = c("H0: Any DIF vs. H1: No DIF" = 'both',
-                                                                                   "H0: Uniform DIF vs. H1: No DIF" = 'udif',
-                                                                                   "H0: Non-Uniform DIF vs. H1: Uniform DIF" = 'nudif'),
-                                                                       selected = 'both')),
-                                                      div(style = "display: inline-block; vertical-align: top; width: 5%; "),
-                                                      div(style = "display: inline-block; vertical-align: top; width: 20%; ",
-                                                          selectInput(inputId = "correction_method_logZItems",
-                                                                      label = "Correction method",
-                                                                      choices = c("BH" = "BH",
-                                                                                  "Holm" = "holm",
-                                                                                  "Hochberg" = "hochberg",
-                                                                                  "Hommel" = "hommel",
-                                                                                  "BY" = "BY",
-                                                                                  "FDR" = "fdr",
-                                                                                  "none" = "none"),
-                                                                      selected = "none")),
-                                                      div(style = "display: inline-block; vertical-align: top; width: 5%; "),
-                                                      div(style = "display: inline-block; vertical-align: top; width: 20%; ",
-                                                          sliderInput("diflog_irtSlider", "Item",
-                                                                      min = 1,
-                                                                      value = 1,
-                                                                      max = 10,
-                                                                      step = 1,
-                                                                      animate = TRUE))),
-                                            p('Points represent proportion of correct answer with respect to standardized
-                                              total score. Their size is determined by count of respondents who achieved
-                                              given level of standardized total score with respect to the group membership.'),
-                                            p('NOTE: Plots and tables are based on DIF logistic procedure without any correction method. '),
-                                            plotOutput('plot_DIF_logistic_IRT_Z'),
-                                            downloadButton("DP_plot_DIF_logistic_IRT_Z", label = "Download figure"),
-                                            h4("Equation"),
-                                            ('$$\\mathrm{P}\\left(Y_{ij} = 1 | Z_i, G_i, a_j, b_j, a_{\\text{DIF}j}, b_{\\text{DIF}j}\\right) =
-                                             \\frac{e^{\\left(a_j + a_{\\text{DIF}j} G_i\\right)\\left(Z_i -\\left(b_j + b_{\\text{DIF}j} G_i\\right)\\right)}}
-                                             {1+e^{\\left(a_j + a_{\\text{DIF}j} G_i\\right)\\left(Z_i -\\left(b_j + b_{\\text{DIF}j} G_i\\right)\\right)}} $$'),
-                                            h4("Table of parameters"),
-                                            fluidRow(column(12, align = "center", tableOutput('tab_coef_DIF_logistic_IRT_Z'))),
-                                            br(),
-                                            h4("Selected R code"),
-                                            div(code('library(difNLR)'),
-                                                br(),
-                                                code('library(difR)'),
-                                                br(),
-                                                code('data(GMAT)'),
-                                                br(),
-                                                code('data <- GMAT[, 1:20]'),
-                                                br(),
-                                                code('group <- GMAT[, "group"]'),
-                                                br(),
-                                                code('scaled.score <- scale(score)'),
-                                                br(),
-                                                br(),
-                                                code('# Logistic regression DIF detection method'),
-                                                br(),
-                                                code('fit <- difLogistic(Data = data, group = group, focal.name = 1,
-                                                     type = "both",
-                                                     match = scaled.score,
-                                                     p.adjust.method = "none",
-                                                     purify = F)'),
-                                                br(),
-                                                code('fit'),
-                                                br(),
-
-                                                code('# Plot of characteristic curve for item 1'),
-                                                br(),
-                                                code('plotDIFLogistic(data, group,
-                                                     type = "both",
-                                                     item =  1,
-                                                     IRT = T,
-                                                     p.adjust.method = "BH")'),
-                                                br(),
-                                                code('# Coefficients for item 1 - recalculation'),
-                                                br(),
-                                                code('coef_old <- fit$logitPar[1, ]'),
-                                                br(),
-                                                code('coef <- c()'),
-                                                br(),
-                                                code('# a = b1, b = -b0/b1, adif = b3, bdif = -(b1b2-b0b3)/(b1(b1+b3))'),
-                                                br(),
-                                                code('coef[1] <- coef_old[2]'),
-                                                br(),
-                                                code('coef[2] <- -(coef_old[1] / coef_old[2])'),
-                                                br(),
-                                                code('coef[3] <- coef_old[4]'),
-                                                br(),
-                                                code('coef[4] <- -(coef_old[2] * coef_old[3] + coef_old[1] * coef_old[4] ) /
-                                                     (coef_old[2] * (coef_old[2] + coef_old[4]))')),
-                                            br()
-                                                )
                                             )
                                    ),
+
+                        # # * LOGISTIC Z ####
+                        # tabPanel("Logistic IRT Z",
+                        #          tabsetPanel(
+                        #            # ** Summary ####
+                        #            tabPanel('Summary',
+                        #                     h3('Logistic regression on standardized total scores with IRT parameterization'),
+                        #                     p('Logistic regression allows for detection of uniform and non-uniform DIF (Swaminathan & Rogers, 1990) by adding a group
+                        #                       specific intercept', strong('bDIF'), '(uniform DIF) and group specific interaction', strong('aDIF'), '(non-uniform DIF) into model and
+                        #                       by testing for their significance.'),
+                        #                     h4("Equation"),
+                        #                     ('$$\\mathrm{P}\\left(Y_{ij} = 1 | Z_i, G_i, a_j, b_j, a_{\\text{DIF}j}, b_{\\text{DIF}j}\\right) = \\frac{e^{\\left(a_j + a_{\\text{DIF}j} G_i\\right)
+                        #                      \\left(Z_i -\\left(b_j + b_{\\text{DIF}j} G_i\\right)\\right)}}{1+e^{\\left(a_j + a_{\\text{DIF}j} G_i\\right)
+                        #                      \\left(Z_i -\\left(b_j + b_{\\text{DIF}j} G_i\\right)\\right)}} $$'),
+                        #                     h4('Summary table'),
+                        #                     p('Here you can choose what', strong('type'), 'of DIF to test. You can also select ',
+                        #                       strong('correction method'), 'for multiple comparison.'),
+                        #                     fluidPage(div(style = "display: inline-block; vertical-align: top; width: 27%; ",
+                        #                                   radioButtons(inputId = 'type_print_DIF_logistic_IRT_Z',
+                        #                                                label = 'Type',
+                        #                                                choices = c("H0: Any DIF vs. H1: No DIF" = 'both',
+                        #                                                            "H0: Uniform DIF vs. H1: No DIF" = 'udif',
+                        #                                                            "H0: Non-Uniform DIF vs. H1: Uniform DIF" = 'nudif'),
+                        #                                                selected = 'both')),
+                        #                               div(style = "display: inline-block; vertical-align: top; width: 5%; "),
+                        #                               div(style = "display: inline-block; vertical-align: top; width: 20%; ",
+                        #                                   selectInput(inputId = "correction_method_logZSummary",
+                        #                                               label = "Correction method",
+                        #                                               choices = c("BH" = "BH",
+                        #                                                           "Holm" = "holm",
+                        #                                                           "Hochberg" = "hochberg",
+                        #                                                           "Hommel" = "hommel",
+                        #                                                           "BY" = "BY",
+                        #                                                           "FDR" = "fdr",
+                        #                                                           "none" = "none"),
+                        #                                               selected = "none"))),
+                        #                     verbatimTextOutput('print_DIF_logistic_IRT_Z'),
+                        #                     br(),
+                        #                     h4("Selected R code"),
+                        #                     div(code('library(difNLR)'),
+                        #                         br(),
+                        #                         code('library(difR)'),
+                        #                         br(),
+                        #                         code('data(GMAT)'),
+                        #                         br(),
+                        #                         code('data <- GMAT[, 1:20]'),
+                        #                         br(),
+                        #                         code('group <- GMAT[, "group"]'),
+                        #                         br(),
+                        #                         code('scaled.score <- scale(score)'),
+                        #                         br(),
+                        #                         br(),
+                        #                         code('# Logistic regression DIF detection method'),
+                        #                         br(),
+                        #                         code('fit <- difLogistic(Data = data, group = group, focal.name = 1,
+                        #                              type = "both",
+                        #                              match = scaled.score,
+                        #                              p.adjust.method = "none",
+                        #                              purify = F)'),
+                        #                         br(),
+                        #                         code('fit')),
+                        #                     br()
+                        #                     ),
+                        #            # ** Items ####
+                        #            tabPanel('Items',
+                        #                     h3('Logistic regression on standardized total scores with IRT parameterization'),
+                        #                     p('Logistic regression allows for detection of uniform and non-uniform DIF by adding a group
+                        #                       specific intercept', strong('bDIF'), '(uniform DIF) and group specific interaction', strong('aDIF'), '(non-uniform DIF) into model and
+                        #                       by testing for their significance.'),
+                        #                     h4("Plot with estimated DIF logistic curve"),
+                        #                     p('Here you can choose what', strong('type'), 'of DIF to test. You can also select ',
+                        #                       strong('correction method'), 'for multiple comparison.'),
+                        #                     fluidPage(div(style = "display: inline-block; vertical-align: top; width: 27%; ",
+                        #                                   radioButtons(inputId = 'type_plot_DIF_logistic_IRT_Z',
+                        #                                                label = 'Type',
+                        #                                                choices = c("H0: Any DIF vs. H1: No DIF" = 'both',
+                        #                                                            "H0: Uniform DIF vs. H1: No DIF" = 'udif',
+                        #                                                            "H0: Non-Uniform DIF vs. H1: Uniform DIF" = 'nudif'),
+                        #                                                selected = 'both')),
+                        #                               div(style = "display: inline-block; vertical-align: top; width: 5%; "),
+                        #                               div(style = "display: inline-block; vertical-align: top; width: 20%; ",
+                        #                                   selectInput(inputId = "correction_method_logZItems",
+                        #                                               label = "Correction method",
+                        #                                               choices = c("BH" = "BH",
+                        #                                                           "Holm" = "holm",
+                        #                                                           "Hochberg" = "hochberg",
+                        #                                                           "Hommel" = "hommel",
+                        #                                                           "BY" = "BY",
+                        #                                                           "FDR" = "fdr",
+                        #                                                           "none" = "none"),
+                        #                                               selected = "none")),
+                        #                               div(style = "display: inline-block; vertical-align: top; width: 5%; "),
+                        #                               div(style = "display: inline-block; vertical-align: top; width: 20%; ",
+                        #                                   sliderInput("diflog_irtSlider", "Item",
+                        #                                               min = 1,
+                        #                                               value = 1,
+                        #                                               max = 10,
+                        #                                               step = 1,
+                        #                                               animate = TRUE))),
+                        #                     p('Points represent proportion of correct answer with respect to standardized
+                        #                       total score. Their size is determined by count of respondents who achieved
+                        #                       given level of standardized total score with respect to the group membership.'),
+                        #                     p('NOTE: Plots and tables are based on DIF logistic procedure without any correction method. '),
+                        #                     plotOutput('plot_DIF_logistic_IRT_Z'),
+                        #                     downloadButton("DP_plot_DIF_logistic_IRT_Z", label = "Download figure"),
+                        #                     h4("Equation"),
+                        #                     ('$$\\mathrm{P}\\left(Y_{ij} = 1 | Z_i, G_i, a_j, b_j, a_{\\text{DIF}j}, b_{\\text{DIF}j}\\right) =
+                        #                      \\frac{e^{\\left(a_j + a_{\\text{DIF}j} G_i\\right)\\left(Z_i -\\left(b_j + b_{\\text{DIF}j} G_i\\right)\\right)}}
+                        #                      {1+e^{\\left(a_j + a_{\\text{DIF}j} G_i\\right)\\left(Z_i -\\left(b_j + b_{\\text{DIF}j} G_i\\right)\\right)}} $$'),
+                        #                     h4("Table of parameters"),
+                        #                     fluidRow(column(12, align = "center", tableOutput('tab_coef_DIF_logistic_IRT_Z'))),
+                        #                     br(),
+                        #                     h4("Selected R code"),
+                        #                     div(code('library(difNLR)'),
+                        #                         br(),
+                        #                         code('library(difR)'),
+                        #                         br(),
+                        #                         code('data(GMAT)'),
+                        #                         br(),
+                        #                         code('data <- GMAT[, 1:20]'),
+                        #                         br(),
+                        #                         code('group <- GMAT[, "group"]'),
+                        #                         br(),
+                        #                         code('scaled.score <- scale(score)'),
+                        #                         br(),
+                        #                         br(),
+                        #                         code('# Logistic regression DIF detection method'),
+                        #                         br(),
+                        #                         code('fit <- difLogistic(Data = data, group = group, focal.name = 1,
+                        #                              type = "both",
+                        #                              match = scaled.score,
+                        #                              p.adjust.method = "none",
+                        #                              purify = F)'),
+                        #                         br(),
+                        #                         code('fit'),
+                        #                         br(),
+                        #
+                        #                         code('# Plot of characteristic curve for item 1'),
+                        #                         br(),
+                        #                         code('plotDIFLogistic(data, group,
+                        #                              type = "both",
+                        #                              item =  1,
+                        #                              IRT = T,
+                        #                              p.adjust.method = "BH")'),
+                        #                         br(),
+                        #                         code('# Coefficients for item 1 - recalculation'),
+                        #                         br(),
+                        #                         code('coef_old <- fit$logitPar[1, ]'),
+                        #                         br(),
+                        #                         code('coef <- c()'),
+                        #                         br(),
+                        #                         code('# a = b1, b = -b0/b1, adif = b3, bdif = -(b1b2-b0b3)/(b1(b1+b3))'),
+                        #                         br(),
+                        #                         code('coef[1] <- coef_old[2]'),
+                        #                         br(),
+                        #                         code('coef[2] <- -(coef_old[1] / coef_old[2])'),
+                        #                         br(),
+                        #                         code('coef[3] <- coef_old[4]'),
+                        #                         br(),
+                        #                         code('coef[4] <- -(coef_old[2] * coef_old[3] + coef_old[1] * coef_old[4] ) /
+                        #                              (coef_old[2] * (coef_old[2] + coef_old[4]))')),
+                        #                     br()
+                        #                         )
+                        #                     )
+                        #            ),
                         # * NONLINEAR Z ####
-                        tabPanel("Nonlinear IRT Z",
+                        tabPanel("Generalized logistic",
                                  tabsetPanel(
                                    # ** Summary ####
                                    tabPanel('Summary',
-                                            h3('Nonlinear regression on standardized total scores with IRT parameterization'),
-                                            p('Nonlinear regression model allows for nonzero lower asymptote - pseudoguessing',
-                                              strong('c '),
-                                              a('(Drabinova & Martinkova, 2017). ',
+                                            h3('Generalized logistic regression'),
+                                            p('Generalized logistic regression models can be seen as proxies of IRT models for
+                                              DIF detection using standardized total score as estimate of knowledge.
+                                              They can allow for nonzero lower asymptote - pseudoguessing \\(c\\)',
+                                              a('(Drabinova & Martinkova, 2017) ',
                                                 href = "http://onlinelibrary.wiley.com/doi/10.1111/jedm.12158/full",
                                                 target = "_blank"),
-                                              'Similarly to logistic regression, also nonlinear regression allows for
-                                              detection of uniform and non-uniform DIF by adding a group specific intercept',
-                                              strong('bDIF'), '(uniform DIF) and group specific interaction', strong('aDIF'),
-                                              '(non-uniform DIF) into the model and by testing for their significance.'),
+                                              'or upper asymptote lower than one - inattention \\(d\\). Similarly to logistic
+                                              regression, also its extensions provide detection of uniform and non-uniform DIF by
+                                              letting difficulty parameter \\(b\\) (uniform) and discrimination parameter \\(a\\)
+                                              (non-uniform) differ for groups and by testing for significance difference in their
+                                              values. Moreover, these extensions allow for testing differences in pseudoguessing and
+                                              inattention parameters. '),
+                                            p('With ', strong('model'), 'you can specify what parameters should be kept the same for
+                                              both groups and what parameters should differ. The notation is similar to IRT models.
+                                              In 3PL and 4PL models abbreviations cg or dg mean that parameters c or d are the same for
+                                              both groups. With ', strong('type'), 'you can choose parameters in which difference between
+                                              groups should be tested.'),
                                             h4("Equation"),
-                                            ('$$\\mathrm{P}\\left(Y_{ij} = 1 | Z_i, G_i, a_j, b_j, c_j, a_{\\text{DIF}j}, b_{\\text{DIF}j}\\right) =
-                                             c_j + \\left(1 - c_j\\right) \\cdot \\frac{e^{\\left(a_j + a_{\\text{DIF}j} G_i\\right)\\left(Z_i -\\left(b_j + b_{\\text{DIF}j} G_i\\right)\\right)}}
-                                             {1+e^{\\left(a_j + a_{\\text{DIF}j} G_i\\right)\\left(Z_i -\\left(b_j + b_{\\text{DIF}j} G_i\\right)\\right)}} $$'),
+                                            p("Displayed equation is based on selected model"),
+                                            uiOutput("DIF_NLR_equation_print"),
                                             h4("Summary table"),
-                                            p('Here you can choose what', strong('type'), 'of DIF to test. You can also select ',
-                                              strong('correction method'), 'for multiple comparison or ', strong('item purification. ')),
-                                            fluidPage(div(style = "display: inline-block; vertical-align: top; width: 27%; ",
-                                                          radioButtons(inputId = 'type_print_DIF_NLR',
-                                                                       label = 'Type',
-                                                                       choices = c("H0: Any DIF vs. H1: No DIF" = 'both',
-                                                                                   "H0: Uniform DIF vs. H1: No DIF" = 'udif',
-                                                                                   "H0: Non-Uniform DIF vs. H1: Uniform DIF" = 'nudif'),
-                                                                       selected = 'both')),
-                                                      div(style = "display: inline-block; vertical-align: top; width: 5%; "),
-                                                      div(style = "display: inline-block; vertical-align: top; width: 20%; ",
-                                                          selectInput(inputId = "correction_method_nlrSummary",
-                                                                      label = "Correction method",
-                                                                      choices = c("BH" = "BH",
-                                                                                  "Holm" = "holm",
-                                                                                  "Hochberg" = "hochberg",
-                                                                                  "Hommel" = "hommel",
-                                                                                  "BY" = "BY",
-                                                                                  "FDR" = "fdr",
-                                                                                  "none" = "none"),
-                                                                      selected = "none"),
-                                                          checkboxInput(inputId = 'puri_NLR_print',
-                                                                        label = 'Item purification',
-                                                                        value = FALSE))),
+                                            p('Here you can choose what', strong('model'), "to use and what", strong('type'), 'of DIF to test.
+                                              You can also select ', strong('correction method'), 'for multiple comparison or ',
+                                              strong('item purification. ')),
+                                            fluidRow(column(3,
+                                                            selectInput(inputId = "DIF_NLR_model_print",
+                                                                        label = "Model",
+                                                                        choices = c("Rasch" = "Rasch",
+                                                                                    "1PL" = "1PL",
+                                                                                    "2PL" = "2PL",
+                                                                                    "3PLcg" = "3PLcg",
+                                                                                    "3PLdg" = "3PLdg",
+                                                                                    "3PLc" = "3PLc",
+                                                                                    "3PLd" = "3PLd",
+                                                                                    "4PLcgdg" = "4PLcgdg",
+                                                                                    "4PLcgd" = "4PLcgd",
+                                                                                    "4PLcdg" = "4PLcdg",
+                                                                                    "4PL" = "4PL"),
+                                                                        selected = "3PLcg")),
+                                                     column(1,
+                                                            checkboxGroupInput(inputId = 'DIF_NLR_type_print',
+                                                                               label = 'Type',
+                                                                               choices = c("a" = "a",
+                                                                                           "b" = "b",
+                                                                                           "c" = "c",
+                                                                                           "d" = "d"),
+                                                                               selected = c("a", "b"))),
+                                                     column(3,
+                                                            selectInput(inputId = "DIF_NLR_correction_method_print",
+                                                                        label = "Correction method",
+                                                                        choices = c("BH" = "BH",
+                                                                                    "Holm" = "holm",
+                                                                                    "Hochberg" = "hochberg",
+                                                                                    "Hommel" = "hommel",
+                                                                                    "BY" = "BY",
+                                                                                    "FDR" = "fdr",
+                                                                                    "none" = "none"),
+                                                                        selected = "none"),
+                                                            checkboxInput(inputId = 'DIF_NLR_purification_print',
+                                                                          label = 'Item purification',
+                                                                          value = FALSE))
+                                            ),
                                             verbatimTextOutput('print_DIF_NLR'),
                                             br(),
                                             h4("Selected R code"),
-                                            div(code('library(difNLR)'),
-                                                br(),
-                                                code('data(GMAT)'),
-                                                br(),
-                                                code('Data <- GMAT[, 1:20]'),
-                                                br(),
-                                                code('group <- GMAT[, "group"]'),
-                                                br(),
-                                                br(),
-                                                code('# Nonlinear regression DIF method'),
-                                                br(),
-                                                code('fit <- difNLR(Data = Data, group = group, focal.name = 1,
-                                                     model = "3PLcg", type = "both", p.adjust.method = "none")'),
-                                                br(),
-                                                code('fit')),
+                                            div(code(HTML("library(difNLR)&nbsp;<br><br>#&nbsp;loading&nbsp;data&nbsp;<br>data(GMAT)&nbsp;<br>Data&nbsp;<-&nbsp;GMAT[,&nbsp;1:20]&nbsp;<br>group&nbsp;<-&nbsp;GMAT[,&nbsp;\"group\"]&nbsp;<br><br>#&nbsp;generalized&nbsp;logistic&nbsp;regression&nbsp;DIF&nbsp;method&nbsp;<br>#&nbsp;using&nbsp;3PL&nbsp;model&nbsp;with&nbsp;the&nbsp;same&nbsp;guessing&nbsp;parameter&nbsp;for&nbsp;both&nbsp;groups&nbsp;<br>fit&nbsp;<-&nbsp;difNLR(Data&nbsp;=&nbsp;Data,&nbsp;group&nbsp;=&nbsp;group,&nbsp;focal.name&nbsp;=&nbsp;1,&nbsp;model&nbsp;=&nbsp;\"3PLcg\",&nbsp;type&nbsp;=&nbsp;\"both\",&nbsp;p.adjust.method&nbsp;=&nbsp;\"none\")&nbsp;<br>fit"))),
                                             br()
                                             ),
                                    # ** Items ####
                                    tabPanel('Items',
-                                            h3('Nonlinear regression on standardized total scores with IRT parameterization'),
-                                            p('Nonlinear regression model allows for nonzero lower asymptote - pseudoguessing',
-                                              strong('c '),
-                                              a('(Drabinova & Martinkova, 2017). ',
+                                            h3('Generalized logistic regression'),
+                                            p('Generalized logistic regression models can be seen as proxies of IRT models for
+                                              DIF detection using standardized total score as estimate of knowledge.
+                                              They can allow for nonzero lower asymptote - pseudoguessing \\(c\\)',
+                                              a('(Drabinova & Martinkova, 2017) ',
                                                 href = "http://onlinelibrary.wiley.com/doi/10.1111/jedm.12158/full",
                                                 target = "_blank"),
-                                              'Similarly to logistic regression, also nonlinear regression allows
-                                              for detection of uniform and non-uniform DIF by adding a group specific intercept', strong('bDIF'), '(uniform DIF) and group specific
-                                              interaction', strong('aDIF'), '(non-uniform DIF) into the model and by testing for
-                                              their significance.'),
-                                            h4("Plot with estimated DIF nonlinear curve"),
-                                            p('Here you can choose what', strong('type'), 'of DIF to test. You can also select ',
-                                              strong('correction method'), 'for multiple comparison or ', strong('item purification. ')),
-                                            fluidPage(div(style = "display: inline-block; vertical-align: top; width: 27%; ",
-                                                          radioButtons(inputId = 'type_plot_DIF_NLR',
-                                                                       label = 'Type',
-                                                                       choices = c("H0: Any DIF vs. H1: No DIF" = 'both',
-                                                                                   "H0: Uniform DIF vs. H1: No DIF" = 'udif',
-                                                                                   "H0: Non-Uniform DIF vs. H1: Uniform DIF" = 'nudif'),
-                                                                       selected = 'both')),
-                                                      div(style = "display: inline-block; vertical-align: top; width: 5%; "),
-                                                      div(style = "display: inline-block; vertical-align: top; width: 20%; ",
-                                                          selectInput(inputId = "correction_method_nlrItems",
-                                                                      label = "Correction method",
-                                                                      choices = c("BH" = "BH",
-                                                                                  "Holm" = "holm",
-                                                                                  "Hochberg" = "hochberg",
-                                                                                  "Hommel" = "hommel",
-                                                                                  "BY" = "BY",
-                                                                                  "FDR" = "fdr",
-                                                                                  "none" = "none"),
-                                                                      selected = "none"),
-                                                          checkboxInput(inputId = 'puri_NLR_plot',
-                                                                        label = 'Item purification',
-                                                                        value = FALSE)),
-                                                      div(style = "display: inline-block; vertical-align: top; width: 5%; "),
-                                                      div(style = "display: inline-block; vertical-align: top; width: 20%; ",
-                                                          sliderInput(inputId = "difnlrSlider",
-                                                                      label = "Item",
-                                                                      min = 1,
-                                                                      value = 1,
-                                                                      max = 10,
-                                                                      step = 1,
-                                                                      animate = TRUE))),
+                                              'or upper asymptote lower than one - inattention \\(d\\). Similarly to logistic
+                                              regression, also its extensions provide detection of uniform and non-uniform DIF by
+                                              letting difficulty parameter \\(b\\) (uniform) and discrimination parameter \\(a\\)
+                                              (non-uniform) differ for groups and by testing for significance difference in their
+                                              values. Moreover, these extensions allow for testing differences in pseudoguessing and
+                                              inattention parameters. '),
+                                            p('With ', strong('model'), 'you can specify what parameters should be kept the same for
+                                              both groups and what parameters should differ. The notation is similar to IRT models.
+                                              In 3PL and 4PL models abbreviations cg or dg mean that parameters c or d are the same for
+                                              both groups. With ', strong('type'), 'you can choose parameters in which difference between
+                                              groups should be tested.'),
+                                            h4("Plot with estimated DIF generalized logistic curve"),
+                                            p('Here you can choose what', strong('model'), "to use and what", strong('type'), 'of DIF to test.
+                                              You can also select ', strong('correction method'), 'for multiple comparison or ',
+                                              strong('item purification. ')),
+                                            fluidRow(column(3,
+                                                            selectInput(inputId = "DIF_NLR_model_plot",
+                                                                        label = "Model",
+                                                                        choices = c("Rasch" = "Rasch",
+                                                                                    "1PL" = "1PL",
+                                                                                    "2PL" = "2PL",
+                                                                                    "3PLcg" = "3PLcg",
+                                                                                    "3PLdg" = "3PLdg",
+                                                                                    "3PLc" = "3PLc",
+                                                                                    "3PLd" = "3PLd",
+                                                                                    "4PLcgdg" = "4PLcgdg",
+                                                                                    "4PLcgd" = "4PLcgd",
+                                                                                    "4PLcdg" = "4PLcdg",
+                                                                                    "4PL" = "4PL"),
+                                                                        selected = "3PLcg")),
+                                                     column(1,
+                                                            checkboxGroupInput(inputId = 'DIF_NLR_type_plot',
+                                                                               label = 'Type',
+                                                                               choices = c("a" = "a",
+                                                                                           "b" = "b",
+                                                                                           "c" = "c",
+                                                                                           "d" = "d"),
+                                                                               selected = c("a", "b"))),
+                                                     column(3,
+                                                            selectInput(inputId = "DIF_NLR_correction_method_plot",
+                                                                        label = "Correction method",
+                                                                        choices = c("BH" = "BH",
+                                                                                    "Holm" = "holm",
+                                                                                    "Hochberg" = "hochberg",
+                                                                                    "Hommel" = "hommel",
+                                                                                    "BY" = "BY",
+                                                                                    "FDR" = "fdr",
+                                                                                    "none" = "none"),
+                                                                        selected = "none"),
+                                                            checkboxInput(inputId = 'DIF_NLR_purification_plot',
+                                                                          label = 'Item purification',
+                                                                          value = FALSE)),
+                                                     column(3,
+                                                            sliderInput(inputId = "DIF_NLR_item_plot",
+                                                                        label = "Item",
+                                                                        min = 1,
+                                                                        value = 1,
+                                                                        max = 10,
+                                                                        step = 1,
+                                                                        animate = TRUE))),
                                             p('Points represent proportion of correct answer with respect to standardized
                                               total score. Their size is determined by count of respondents who achieved
                                               given level of standardized total score with respect to the group membership.'),
                                             plotOutput('plot_DIF_NLR'),
                                             downloadButton("DP_plot_DIF_NLR", label = "Download figure"),
                                             h4("Equation"),
-                                            ('$$\\mathrm{P}\\left(Y_{ij} = 1 | Z_i, G_i, a_j, b_j, c_j, a_{\\text{DIF}j}, b_{\\text{DIF}j}\\right) =
-                                             c_j + \\left(1 - c_j\\right) \\cdot \\frac{e^{\\left(a_j + a_{\\text{DIF}j} G_i\\right)\\left(Z_i -\\left(b_j + b_{\\text{DIF}j} G_i\\right)\\right)}}
-                                             {1+e^{\\left(a_j + a_{\\text{DIF}j} G_i\\right)\\left(Z_i -\\left(b_j + b_{\\text{DIF}j} G_i\\right)\\right)}} $$'),
+                                            uiOutput("DIF_NLR_equation_plot"),
                                             h4("Table of parameters"),
                                             fluidRow(column(12, align = "center", tableOutput('tab_coef_DIF_NLR'))),
                                             br(),
                                             h4("Selected R code"),
-                                            div(code('library(difNLR)'),
-                                                br(),
-                                                code('data(GMAT)'),
-                                                br(),
-                                                code('Data <- GMAT[, 1:20]'),
-                                                br(),
-                                                code('group <- GMAT[, "group"]'),
-                                                br(),
-                                                br(),
-                                                code('# Nonlinear regression DIF method'),
-                                                br(),
-                                                code('fit <- difNLR(Data = Data, group = group, focal.name = 1,
-                                                     model = "3PLcg", type = "both", p.adjust.method = "none")'),
-                                                br(),
-                                                code('# Plot of characteristic curve of item 1'),
-                                                br(),
-                                                code('plot(fit, item = 1)'),
-                                                br(),
-                                                code('# Coefficients'),
-                                                br(),
-                                                code('fit$nlrPAR')),
+                                            div(code(HTML("library(difNLR)&nbsp;<br><br>#&nbsp;loading&nbsp;data&nbsp;<br>data(GMAT)&nbsp;<br>Data&nbsp;<-&nbsp;GMAT[,&nbsp;1:20]&nbsp;<br>group&nbsp;<-&nbsp;GMAT[,&nbsp;\"group\"]&nbsp;<br><br>#&nbsp;generalized&nbsp;logistic&nbsp;regression&nbsp;DIF&nbsp;method&nbsp;<br>#&nbsp;using&nbsp;3PL&nbsp;model&nbsp;with&nbsp;the&nbsp;same&nbsp;guessing&nbsp;parameter&nbsp;for&nbsp;both&nbsp;groups&nbsp;<br>fit&nbsp;<-&nbsp;difNLR(Data&nbsp;=&nbsp;Data,&nbsp;group&nbsp;=&nbsp;group,&nbsp;focal.name&nbsp;=&nbsp;1,&nbsp;model&nbsp;=&nbsp;\"3PLcg\",&nbsp;type&nbsp;=&nbsp;\"both\",&nbsp;p.adjust.method&nbsp;=&nbsp;\"none\")&nbsp;<br><br>#&nbsp;plot&nbsp;of&nbsp;characteristic&nbsp;curve&nbsp;of&nbsp;item&nbsp;1&nbsp;<br>plot(fit,&nbsp;item&nbsp;=&nbsp;1)&nbsp;<br><br>#&nbsp;table&nbsp;of&nbsp;estimated&nbsp;coefficients&nbsp;<br>fit$nlrPAR"))),
                                             br()
                                             )
                                             )
-                        ),
+                                            ),
                         # * IRT LORD ####
                         tabPanel("IRT Lord",
                                  tabsetPanel(
@@ -1766,6 +1942,41 @@ ui = tagList(
                                             br())
                                    )
                                    ),
+                        # * SIBTEST ####
+                        tabPanel("SIBTEST",
+                                 h3("SIBTEST"),
+                                 p("The SIBTEST method (Shealy and Stout, 1993) allows for detection of uniform DIF without requiring
+                                   an item response model approach. Its modified version, the Crossing-SIBTEST (Chalmers, 2018; Li and Stout, 1996),
+                                   focuses on detection of non-uniform DIF."),
+                                 h4("Summary table"),
+                                 p("Here you can choose ", strong("type"), " of DIF to be tested. With uniform DIF, SIBTEST is applied,
+                                   while with non-uniform DIF, the Crossing-SIBTEST method is used instead. You can also select ",
+                                   strong("correction method"), "for multiple comparison or ", strong("item purification. ")),
+                                 fluidRow(column(2,
+                                                 radioButtons(inputId = "DIF_SIBTEST_type",
+                                                              label = "Type",
+                                                              choices = c("Uniform" = "udif",
+                                                                          "Non-uniform" = "nudif"),
+                                                              selected = "udif")),
+                                          column(3,
+                                                 selectInput(inputId = "DIF_SIBTEST_correction_method",
+                                                             label = "Correction method",
+                                                             choices = c("BH" = "BH",
+                                                                         "Holm" = "holm",
+                                                                         "Hochberg" = "hochberg",
+                                                                         "Hommel" = "hommel",
+                                                                         "BY" = "BY",
+                                                                         "FDR" = "fdr",
+                                                                         "none" = "none"),
+                                                             selected = "none"),
+                                                 checkboxInput(inputId = "DIF_SIBTEST_purification",
+                                                               label = "Item purification",
+                                                               value = FALSE))),
+                                 verbatimTextOutput("DIF_SIBTEST_print"),
+                                 br(),
+                                 h4("Selected code"),
+                                 div(code(HTML("library(difNLR)<br>library(difR)<br><br>#&nbsp;loading&nbsp;data<br>data(GMAT)<br>data&nbsp;<-&nbsp;GMAT[,&nbsp;1:20]<br>group&nbsp;<-&nbsp;GMAT[,&nbsp;\"group\"]<br><br>#&nbsp;SIBTEST&nbsp;(uniform&nbsp;DIF)<br>fit&nbsp;<-&nbsp;difMH(Data&nbsp;=&nbsp;data,&nbsp;group&nbsp;=&nbsp;group,&nbsp;focal.name&nbsp;=&nbsp;1,&nbsp;type&nbsp;=&nbsp;\"udif\",&nbsp;p.adjust.method&nbsp;=&nbsp;\"none\",&nbsp;purify&nbsp;=&nbsp;F)<br>fit<br><br>#&nbsp;Crossing-SIBTEST&nbsp;(non-uniform&nbsp;DIF)<br>fit&nbsp;<-&nbsp;difMH(Data&nbsp;=&nbsp;data,&nbsp;group&nbsp;=&nbsp;group,&nbsp;focal.name&nbsp;=&nbsp;1,&nbsp;type&nbsp;=&nbsp;\"nudif\",&nbsp;p.adjust.method&nbsp;=&nbsp;\"none\",&nbsp;purify&nbsp;=&nbsp;F)<br>fit"))),
+                                 br()),
                         # * DDF ####
                         tabPanel("DDF",
                                  tabsetPanel(
@@ -1778,14 +1989,14 @@ ui = tagList(
                                               Regression model with Z-score and group membership as covariates. '),
                                             h4('Equation'),
                                             p('For ', strong('K'), ' possible test choices is the probability of the correct answer for
-                                               person ', strong('i'), ' with standardized total score ', strong('Z'), ' and group
+                                              person ', strong('i'), ' with standardized total score ', strong('Z'), ' and group
                                               membership ', strong('G'),' in item ', strong('j'), 'given by the following equation: '),
                                             ('$$\\mathrm{P}(Y_{ij} = K|Z_i, G_i, b_{jl0}, b_{jl1}, b_{jl2}, b_{jl3}, l = 1, \\dots, K-1) =
                                              \\frac{1}{1 + \\sum_l e^{\\left( b_{il0} + b_{il1} Z + b_{il2} G + b_{il3} Z:G\\right)}}$$'),
                                             p('The probability of choosing distractor ', strong('k'), ' is then given by: '),
                                             ('$$\\mathrm{P}(Y_{ij} = k|Z_i, G_i, b_{jl0}, b_{jl1}, b_{jl2}, b_{jl3}, l = 1, \\dots, K-1) =
                                              \\frac{e^{\\left( b_{jk0} + b_{jk1} Z_i + b_{jk2} G_i + b_{jk3} Z_i:G_i\\right)}}
-                                                   {1 + \\sum_l e^{\\left( b_{jl0} + b_{jl1} Z_i + b_{jl2} G_i + b_{jl3} Z_i:G_i\\right)}}$$'),
+                                             {1 + \\sum_l e^{\\left( b_{jl0} + b_{jl1} Z_i + b_{jl2} G_i + b_{jl3} Z_i:G_i\\right)}}$$'),
                                             br(),
                                             h4('Summary table'),
                                             p('Here you can choose what', strong('type'), 'of DIF to test. You can also select ',
@@ -1833,7 +2044,7 @@ ui = tagList(
                                                 br(),
                                                 code('fit')),
                                             br()
-                                   ),
+                                            ),
                                    # ** Items ####
                                    tabPanel('Items',
                                             h3('Differential Distractor Functioning with multinomial log-linear regression model'),
@@ -1908,186 +2119,186 @@ ui = tagList(
                                                 code('fit$mlrPAR[[1]]')),
                                             br()
                                             )
-                                 )
-                                 )
-                        ),
-                #%%%%%%%%%%%%%%%%%%%%%
-                # REPORTS ############
-                #%%%%%%%%%%%%%%%%%%%%%
-                tabPanel("Reports",
-                         h3("Download report"),
-                         h4("Settings of report"),
-                         p(code("ShinyItemAnalysis"), " offers an option to download a report in HTML or PDF format. PDF report
-                           creation requires latest version of", a("MiKTeX", href = "https://miktex.org/howto/install-miktex",
-                                                                   target = "_blank"),
-                           "(or other TeX distribution). If you don't have the latest installation, please, use the HTML report."),
-                         p("There is an option whether to use customize settings. By checking the", strong("Customize settings"),
-                           "local settings will be offered and use for each selected section of report. Otherwise the settings
-                           will be taken from pages of application. You can also include your name into report as well as the name
-                           of dataset which was used. "),
-                         fluidRow(
-                           column(2, radioButtons("report_format", "Format of report", c("HTML" = "html", "PDF" = "pdf"))),
-                           column(2, checkboxInput("customizeCheck", "Customize settings", FALSE)),
-                           column(2, textInput("reportAuthor", "Author")),
-                           column(2, textInput("reportDataName", "Dataset"))
-                         ),
-                         h4("Content of report"),
-                         p("Reports by default contain summary of total scores, table of standard scores, item analysis,
-                           distractors plots for each item and multinomial regression plots for each item. Other analyses
-                           can be selected below. "),
-                         fluidRow(
-                           column(8,
-                                  p(strong("Validity")),
-                                  checkboxInput("corr_report", "Correlation structure", FALSE),
-                                  conditionalPanel(condition = "input.customizeCheck",
-                                                   conditionalPanel(condition = "input.corr_report",
-                                                                    div(style = "display: inline-block; vertical-align: top; width: 20%;",
-                                                                        numericInput('corr_plot_clust_report',
-                                                                                     label = 'Number of clusters',
-                                                                                     value = 1,
-                                                                                     min = 1,
-                                                                                     max = 1)),
-                                                                    div(style = "display: inline-block; vertical-align: top; width: 20%;",
-                                                                        selectInput('corr_plot_clustmethod_report',
-                                                                                    label = 'Clustering method',
-                                                                                    choices = list("None" = "none",
-                                                                                                   "Ward's"  = "ward.D",
-                                                                                                   "Ward's n. 2" = "ward.D2",
-                                                                                                   "Single" = "single",
-                                                                                                   "Complete" = "complete",
-                                                                                                   "Average" = "average",
-                                                                                                   "McQuitty" = "mcquitty",
-                                                                                                   "Median" = "median",
-                                                                                                   "Centroid" = "centroid"))))),
-                                  checkboxInput("predict_report", "Predictive validity", FALSE)
-                           )
-                         ),
-                         fluidRow(
-                           conditionalPanel(condition = "input.customizeCheck",
-                                            column(6,
-                                                   p(strong("Difficulty/discrimination plot")),
-                                                   splitLayout(sliderInput('DDplotNumGroupsSlider_report','Number of groups:',
-                                                                           min   = 1,
-                                                                           max   = 5,
-                                                                           value = 3),
-                                                               sliderInput("DDplotRangeSlider_report", "Which two groups to compare:",
-                                                                           min = 1,
-                                                                           max = 3,
-                                                                           step = 1,
-                                                                           value = c(1, 3)))))
-                         ),
-                         fluidRow(
-                           conditionalPanel(condition = "input.customizeCheck",
-                                            column(6,
-                                                   p(strong("Distractors plots")),
-                                                   splitLayout(radioButtons('type_combinations_distractor_report',
-                                                                            'Type',
-                                                                            list("Combinations", "Distractors")),
-                                                               sliderInput('distractorGroupSlider','Number of groups:',
-                                                                             min   = 1,
-                                                                             max   = 5,
-                                                                             value = 3))))
-                         ),
-                         fluidRow(
-                           column(4,
-                                  radioButtons("irt_type_report", "IRT model selection",
-                                               c("None" = "none",
-                                                 "Rasch" = "rasch",
-                                                 "1PL" = "1pl",
-                                                 "2PL" = "2pl",
-                                                 "3PL" = "3pl",
-                                                 "4PL" = "4pl"),
-                                               selected = "1pl")
-                           )
-                         ),
+                                            )
+                                   )
+                                            ),
+             #%%%%%%%%%%%%%%%%%%%%%
+             # REPORTS ############
+             #%%%%%%%%%%%%%%%%%%%%%
+             tabPanel("Reports",
+                      h3("Download report"),
+                      h4("Settings of report"),
+                      p(code("ShinyItemAnalysis"), " offers an option to download a report in HTML or PDF format. PDF report
+                        creation requires latest version of", a("MiKTeX", href = "https://miktex.org/howto/install-miktex",
+                                                                target = "_blank"),
+                        "(or other TeX distribution). If you don't have the latest installation, please, use the HTML report."),
+                      p("There is an option whether to use customize settings. By checking the", strong("Customize settings"),
+                        "local settings will be offered and use for each selected section of report. Otherwise the settings
+                        will be taken from pages of application. You can also include your name into report as well as the name
+                        of dataset which was used. "),
+                      fluidRow(
+                        column(2, radioButtons("report_format", "Format of report", c("HTML" = "html", "PDF" = "pdf"))),
+                        column(2, checkboxInput("customizeCheck", "Customize settings", FALSE)),
+                        column(2, textInput("reportAuthor", "Author")),
+                        column(2, textInput("reportDataName", "Dataset"))
+                      ),
+                      h4("Content of report"),
+                      p("Reports by default contain summary of total scores, table of standard scores, item analysis,
+                        distractors plots for each item and multinomial regression plots for each item. Other analyses
+                        can be selected below. "),
+                      fluidRow(
+                        column(8,
+                               p(strong("Validity")),
+                               checkboxInput("corr_report", "Correlation structure", FALSE),
+                               conditionalPanel(condition = "input.customizeCheck",
+                                                conditionalPanel(condition = "input.corr_report",
+                                                                 div(style = "display: inline-block; vertical-align: top; width: 20%;",
+                                                                     numericInput('corr_plot_clust_report',
+                                                                                  label = 'Number of clusters',
+                                                                                  value = 1,
+                                                                                  min = 1,
+                                                                                  max = 1)),
+                                                                 div(style = "display: inline-block; vertical-align: top; width: 20%;",
+                                                                     selectInput('corr_plot_clustmethod_report',
+                                                                                 label = 'Clustering method',
+                                                                                 choices = list("None" = "none",
+                                                                                                "Ward's"  = "ward.D",
+                                                                                                "Ward's n. 2" = "ward.D2",
+                                                                                                "Single" = "single",
+                                                                                                "Complete" = "complete",
+                                                                                                "Average" = "average",
+                                                                                                "McQuitty" = "mcquitty",
+                                                                                                "Median" = "median",
+                                                                                                "Centroid" = "centroid"))))),
+                               checkboxInput("predict_report", "Predictive validity", FALSE)
+                        )
+                      ),
+                      fluidRow(
+                        conditionalPanel(condition = "input.customizeCheck",
+                                         column(6,
+                                                p(strong("Difficulty/discrimination plot")),
+                                                splitLayout(sliderInput('DDplotNumGroupsSlider_report','Number of groups:',
+                                                                        min   = 1,
+                                                                        max   = 5,
+                                                                        value = 3),
+                                                            sliderInput("DDplotRangeSlider_report", "Which two groups to compare:",
+                                                                        min = 1,
+                                                                        max = 3,
+                                                                        step = 1,
+                                                                        value = c(1, 3)))))
+                      ),
+                      fluidRow(
+                        conditionalPanel(condition = "input.customizeCheck",
+                                         column(6,
+                                                p(strong("Distractors plots")),
+                                                splitLayout(radioButtons('type_combinations_distractor_report',
+                                                                         'Type',
+                                                                         list("Combinations", "Distractors")),
+                                                            sliderInput('distractorGroupSlider','Number of groups:',
+                                                                        min   = 1,
+                                                                        max   = 5,
+                                                                        value = 3))))
+                      ),
+                      fluidRow(
+                        column(4,
+                               radioButtons("irt_type_report", "IRT model selection",
+                                            c("None" = "none",
+                                              "Rasch" = "rasch",
+                                              "1PL" = "1pl",
+                                              "2PL" = "2pl",
+                                              "3PL" = "3pl",
+                                              "4PL" = "4pl"),
+                                            selected = "1pl")
+                        )
+                      ),
 
-                           fluidRow(
-                             column(3,
-                                    p(strong("DIF method selection")),
-                                    checkboxInput("histCheck", "None - histograms by group only", FALSE),
-                                    checkboxInput("deltaplotCheck", "Delta plot", FALSE),
-                                    checkboxInput("logregCheck", "Logistic regression", FALSE),
-                                    checkboxInput("multiCheck", "Multinomial regression", FALSE)
-                             ),
-                             conditionalPanel(condition = "input.customizeCheck",
-                             conditionalPanel(condition = "input.deltaplotCheck",
-                               column(2, p(strong("Delta plot settings")),
-                                      radioButtons('type_threshold_report', 'Threshold',
-                                                   list("Fixed", "Normal")
-                                      ),
-                                      checkboxInput('puri_DP_report', 'Item purification', FALSE),
-                                      conditionalPanel(
-                                        condition = "input.puri_DP_report",
-                                        selectInput("puri_DP_type_report", "Purification method",
-                                                    c("IPP1" = "IPP1",
-                                                      "IPP2" = "IPP2",
-                                                      "IPP3" = "IPP3"
-                                                    ),
-                                                    selected = "IPP1")
-                                      )
+                      fluidRow(
+                        column(3,
+                               p(strong("DIF method selection")),
+                               checkboxInput("histCheck", "None - histograms by group only", FALSE),
+                               checkboxInput("deltaplotCheck", "Delta plot", FALSE),
+                               checkboxInput("logregCheck", "Logistic regression", FALSE),
+                               checkboxInput("multiCheck", "Multinomial regression", FALSE)
+                        ),
+                        conditionalPanel(condition = "input.customizeCheck",
+                                         conditionalPanel(condition = "input.deltaplotCheck",
+                                                          column(2, p(strong("Delta plot settings")),
+                                                                 radioButtons('type_threshold_report', 'Threshold',
+                                                                              list("Fixed", "Normal")
+                                                                 ),
+                                                                 checkboxInput('puri_DP_report', 'Item purification', FALSE),
+                                                                 conditionalPanel(
+                                                                   condition = "input.puri_DP_report",
+                                                                   selectInput("puri_DP_type_report", "Purification method",
+                                                                               c("IPP1" = "IPP1",
+                                                                                 "IPP2" = "IPP2",
+                                                                                 "IPP3" = "IPP3"
+                                                                               ),
+                                                                               selected = "IPP1")
+                                                                 )
+                                                          )
+                                         ),
+                                         conditionalPanel(condition = "input.logregCheck",
+                                                          column(2, p(strong("Logistic regression settings")),
+                                                                 radioButtons('type_print_DIF_logistic_report', 'Type',
+                                                                              c("H0: Any DIF vs. H1: No DIF" = 'both',
+                                                                                "H0: Uniform DIF vs. H1: No DIF" = 'udif',
+                                                                                "H0: Non-Uniform DIF vs. H1: Uniform DIF" = 'nudif'
+                                                                              ),
+                                                                              'both'
+                                                                 ),
+                                                                 selectInput("correction_method_log_report", "Correction method",
+                                                                             c("BH" = "BH",
+                                                                               "Holm" = "holm",
+                                                                               "Hochberg" = "hochberg",
+                                                                               "Hommel" = "hommel",
+                                                                               "BY" = "BY",
+                                                                               "FDR" = "fdr",
+                                                                               "none" = "none"
+                                                                             ),
+                                                                             selected = "none"),
+                                                                 checkboxInput('puri_LR_report', 'Item purification', FALSE)
+                                                          )
+                                         ),
+                                         conditionalPanel(condition = "input.multiCheck",
+                                                          column(2, p(strong("Multinomial regression settings")),
+                                                                 radioButtons('type_DDF_report', 'Type',
+                                                                              c("H0: Any DIF vs. H1: No DIF" = 'both',
+                                                                                "H0: Uniform DIF vs. H1: No DIF" = 'udif',
+                                                                                "H0: Non-Uniform DIF vs. H1: Uniform DIF" = 'nudif'
+                                                                              ),
+                                                                              'both'
+                                                                 ),
+                                                                 selectInput("correction_method_DDF_report", "Correction method",
+                                                                             c("BH" = "BH",
+                                                                               "Holm" = "holm",
+                                                                               "Hochberg" = "hochberg",
+                                                                               "Hommel" = "hommel",
+                                                                               "BY" = "BY",
+                                                                               "FDR" = "fdr",
+                                                                               "none" = "none"),
+                                                                             selected = "none"),
+                                                                 checkboxInput('puri_DDF_report', 'Item purification', FALSE)
+                                                          )
+                                         )
+                        )
+                      ),
+                      p(strong("Recommendation: "), "Report generation can be faster and more reliable when you first check
+                        sections of intended contents. For example, if you wish to include a ", strong("3PL IRT"),
+                        " model, you can first visit ", strong("IRT models"), "section and ", strong("3PL"), " subsection."),
+                      #p(strong("Warning: "), "Download of reports takes some time. Please, be patient."),
+                      fluidRow(
+                        column(width = 5,
+                               splitLayout(cellWidths = c("45%", "55%"),
+                                           actionButton("generate", "Generate report"),
+                                           uiOutput("download_report_button")
                                )
-                             ),
-                             conditionalPanel(condition = "input.logregCheck",
-                               column(2, p(strong("Logistic regression settings")),
-                                      radioButtons('type_print_DIF_logistic_report', 'Type',
-                                                   c("H0: Any DIF vs. H1: No DIF" = 'both',
-                                                     "H0: Uniform DIF vs. H1: No DIF" = 'udif',
-                                                     "H0: Non-Uniform DIF vs. H1: Uniform DIF" = 'nudif'
-                                                   ),
-                                                   'both'
-                                      ),
-                                      selectInput("correction_method_log_report", "Correction method",
-                                                  c("BH" = "BH",
-                                                    "Holm" = "holm",
-                                                    "Hochberg" = "hochberg",
-                                                    "Hommel" = "hommel",
-                                                    "BY" = "BY",
-                                                    "FDR" = "fdr",
-                                                    "none" = "none"
-                                                  ),
-                                                  selected = "none"),
-                                      checkboxInput('puri_LR_report', 'Item purification', FALSE)
-                               )
-                             ),
-                             conditionalPanel(condition = "input.multiCheck",
-                               column(2, p(strong("Multinomial regression settings")),
-                                      radioButtons('type_DDF_report', 'Type',
-                                                   c("H0: Any DIF vs. H1: No DIF" = 'both',
-                                                     "H0: Uniform DIF vs. H1: No DIF" = 'udif',
-                                                     "H0: Non-Uniform DIF vs. H1: Uniform DIF" = 'nudif'
-                                                   ),
-                                                   'both'
-                                      ),
-                                      selectInput("correction_method_DDF_report", "Correction method",
-                                                  c("BH" = "BH",
-                                                    "Holm" = "holm",
-                                                    "Hochberg" = "hochberg",
-                                                    "Hommel" = "hommel",
-                                                    "BY" = "BY",
-                                                    "FDR" = "fdr",
-                                                    "none" = "none"),
-                                                  selected = "none"),
-                                      checkboxInput('puri_DDF_report', 'Item purification', FALSE)
-                               )
-                            )
-                           )
-                         ),
-                         p(strong("Recommendation: "), "Report generation can be faster and more reliable when you first check
-                           sections of intended contents. For example, if you wish to include a ", strong("3PL IRT"),
-                           " model, you can first visit ", strong("IRT models"), "section and ", strong("3PL"), " subsection."),
-                         #p(strong("Warning: "), "Download of reports takes some time. Please, be patient."),
-                         fluidRow(
-                           column(width = 5,
-                             splitLayout(cellWidths = c("45%", "55%"),
-                               actionButton("generate", "Generate report"),
-                               uiOutput("download_report_button")
-                             )
-                           )
-                         ),
-                         br(),
-                         br(),
-                         br()
-                         ),
+                        )
+                      ),
+                      br(),
+                      br(),
+                      br()
+                      ),
 
              #%%%%%%%%%%%%%%%%%%%%%
              # REFERENCES #########
@@ -2105,6 +2316,12 @@ ui = tagList(
                            <a href = "https://github.com/taiyun/corrplot", target = "_blank">See online.</a>
                            </li>
 
+                           <li><code>cowplot</code>
+                           Claus O. Wilke (2018).
+                           cowplot: Streamlined Plot Theme and Plot Annotations for "ggplot2".
+                           R package version 0.9.3.
+                           <a href = " https://CRAN.R-project.org/package=cowplot", target = "_blank">See online.</a>
+                           </li>
 
                            <li><code>CTT</code>
                            Willse, J. & Willse, T. (2018).
@@ -2330,7 +2547,7 @@ ui = tagList(
                            <li><code>ShinyItemAnalysis</code>
                            Martinkova, P., Drabinova, A., Leder, O. & Houdek, J. (2018).
                            ShinyItemAnalysis: Test and item analysis via shiny.
-                           R package version 1.2.7.
+                           R package version 1.2.8.
                            <a href = "https://CRAN.R-project.org/package=ShinyItemAnalysis", target = "_blank">See online.</a>
                            </li>
 
@@ -2350,15 +2567,6 @@ ui = tagList(
                            <a href = "https://CRAN.R-project.org/package=stringr", target = "_blank">See online.</a>
                            </li>
 
-
-                           <li><code>WrightMap</code>
-                           Irribarra, C. & Freund, R. (2014).
-                           Wright Map: IRT item-person map with ConQuest integration.
-
-                           <a href = "http://github.com/david-ti/wrightmap", target = "_blank">See online.</a>
-                           </li>
-
-
                            <li><code>xtable</code>
                            Dahl, D. & Dahl, B. (2016).
                            xtable: Export Tables to LaTeX or HTML.
@@ -2371,156 +2579,204 @@ ui = tagList(
                       #------------------------------------------------------------------------------------#
                       h3('References'),
                       HTML('<ul class = "biblio">
-                      <li>Akaike, H. (1974). A New Look at the Statistical Model Identification.
-                          <i>IEEE Transactions on Automatic Control, 19</i>(6), 716-723.
+                           <li>Akaike, H. (1974). A New Look at the Statistical Model Identification.
+                           <i>IEEE Transactions on Automatic Control, 19</i>(6), 716-723.
                            <a href = "http://ieeexplore.ieee.org/abstract/document/1100705/",
-                              target = "_blank">See online.</a>
-                      </li>
+                           target = "_blank">See online.</a>
+                           </li>
 
-                      <li>Ames, A. J., & Penfield, R. D. (2015). An NCME Instructional Module on Item-Fit
-                          Statistics for Item Response Theory Models.
-                          <i>Educational Measurement: Issues and Practice, 34</i>(3), 39-48.
-                          <a href = "http://onlinelibrary.wiley.com/doi/10.1111/emip.12067/full",
-                             target = "_blank">See online.</a>
-                      </li>
+                           <li>Ames, A. J., & Penfield, R. D. (2015). An NCME Instructional Module on Item-Fit
+                           Statistics for Item Response Theory Models.
+                           <i>Educational Measurement: Issues and Practice, 34</i>(3), 39-48.
+                           <a href = "http://onlinelibrary.wiley.com/doi/10.1111/emip.12067/full",
+                           target = "_blank">See online.</a>
+                           </li>
 
-                      <li>Andrich, D. (1978). A Rating Formulation for Ordered Response Categories.
-                          <i>Psychometrika, 43</i>(4), 561-573.
-                          <a href = "https://link.springer.com/article/10.1007/BF02293814",
-                             target = "_blank">See online.</a>
-                      </li>
+                           <li>Andrich, D. (1978). A Rating Formulation for Ordered Response Categories.
+                           <i>Psychometrika, 43</i>(4), 561-573.
+                           <a href = "https://link.springer.com/article/10.1007/BF02293814",
+                           target = "_blank">See online.</a>
+                           </li>
 
-                      <li>Angoff, W. H., & Ford, S. F. (1973). Item-Race Interaction on a Test of
-                          Scholastic Aptitude.
-                          <i>Journal of Educational Measurement, 10</i>(2), 95-105.
-                          <a href = "https://www.jstor.org/stable/1433905?seq=1#page_scan_tab_contents",
-                             target = "_blank">See online.</a>
-                      </li>
+                           <li>Angoff, W. H., & Ford, S. F. (1973). Item-Race Interaction on a Test of
+                           Scholastic Aptitude.
+                           <i>Journal of Educational Measurement, 10</i>(2), 95-105.
+                           <a href = "https://www.jstor.org/stable/1433905?seq=1#page_scan_tab_contents",
+                           target = "_blank">See online.</a>
+                           </li>
 
-                      <li>Bock, R. D. (1972). Estimating Item Parameters and Latent Ability when
-                          Responses Are Scored in Two or More Nominal Categories.
-                          <i>Psychometrika, 37</i>(1), 29-51.
-                          <a href = "http://link.springer.com/article/10.1007/BF02291411",
-                             target = "_blank">See online.</a>
-                      </li>
+                           <li>Bock, R. D. (1972). Estimating Item Parameters and Latent Ability when
+                           Responses Are Scored in Two or More Nominal Categories.
+                           <i>Psychometrika, 37</i>(1), 29-51.
+                           <a href = "http://link.springer.com/article/10.1007/BF02291411",
+                           target = "_blank">See online.</a>
+                           </li>
 
-                      <li>Cronbach, L. J. (1951). Coefficient Alpha and the Internal Structure of Tests.
-                          <i>Psychometrika, 16</i>(3), 297-334.
-                          <a href = "https://link.springer.com/article/10.1007/BF02310555",
-                             target = "_blank">See online.</a>
-                      </li>
+                           <li>Brown, W. (1910).
+                           Some experimental results in the correlation of mental abilities.
+                           <i>British Journal of Psychology, 1904‐1920, 3</i>(3), 296-322.
+                           <a href = "https://onlinelibrary.wiley.com/doi/abs/10.1111/j.2044-8295.1910.tb00207.x",
+                           target = "_blank">See online.</a>
+                           </li>
 
-                      <li>Drabinova, A., & Martinkova, P. (2017). Detection of Differential Item Functioning
-                          with Non-Linear Regression: Non-IRT Approach Accounting for Guessing.
-                          <i>Journal of Educational Measurement, 54</i>(4), 498-517
-                          <a href = "http://onlinelibrary.wiley.com/doi/10.1111/jedm.12158/full",
-                             target = "_blank">See online.</a>
-                      </li>
+                           <li>Chalmers, R. P. (2018). Improving the Crossing-SIBTEST Statistic for Detecting Non-uniform DIF.
+                           <i>Psychometrika, 83</i>(2), 376–386.
+                           <a href = "https://link.springer.com/article/10.1007/s11336-017-9583-8",
+                           target = "_blank">See online.</a>
+                           </li>
 
-                      <li>Lord, F. M. (1980). Applications of Item Response Theory to Practical Testing Problems.
-                        Routledge.
-                      </li>
+                           <li>Cronbach, L. J. (1951). Coefficient Alpha and the Internal Structure of Tests.
+                           <i>Psychometrika, 16</i>(3), 297-334.
+                           <a href = "https://link.springer.com/article/10.1007/BF02310555",
+                           target = "_blank">See online.</a>
+                           </li>
 
-                      <li>Magis, D., & Facon, B. (2012). Angoffs Delta Method Revisited: Improving DIF Detection under
-                          Small Samples.
-                          <i>British Journal of Mathematical and Statistical Psychology, 65</i>(2), 302-321.
-                          <a href = "https://www.ncbi.nlm.nih.gov/pubmed/22500570",
-                             target = "_blank">See online.</a>
-                      </li>
+                           <li>Drabinova, A., & Martinkova, P. (2017). Detection of Differential Item Functioning
+                           with Non-Linear Regression: Non-IRT Approach Accounting for Guessing.
+                           <i>Journal of Educational Measurement, 54</i>(4), 498-517
+                           <a href = "http://onlinelibrary.wiley.com/doi/10.1111/jedm.12158/full",
+                           target = "_blank">See online.</a>
+                           </li>
 
-                      <li>Mantel, N., & Haenszel, W. (1959). Statistical Aspects of the Analysis of Data from
-                          Retrospective Studies.
-                          <i>Journal of the National Cancer Institute, 22</i>(4), 719-748.
-                          <a href = "http://www.medicine.mcgill.ca/epidemiology/hanley/c634/stratified/Mantel_Haenszel_1.pdf",
-                             target = "_blank">See online.</a>                                                                                    )),
-                      </li>
+                           <li> Feldt, L. S., Woodruff, D. J., & Salih, F. A. (1987).
+                           Statistical inference for coefficient alpha.
+                           <i>Applied Psychological Measurement 11</i>(1), 93-103.
+                           <a href = "http://journals.sagepub.com/doi/abs/10.1177/014662168701100107",
+                           target = "_blank">See online.</a>
+                           </li>
 
-                      <li>Martinkova, P., Drabinova, A., & Houdek, J. (2017). ShinyItemAnalysis: Analyza Prijimacich a
-                          Jinych Znalostnich ci Psychologických Testu. [ShinyItemAnalysis: Analyzing Admission and Other
-                          Educational and Psychological Tests]
-                          <i>TESTFORUM, 6</i>(9), 16–35.
-                          <a href = "http://testforum.cz/domains/testforum.cz/index.php/testforum/article/view/TF2017-9-129",
-                             target = "_blank">See online.</a>
-                      </li>
+                           <li>Li, H.-H., and Stout, W. (1996). A New Procedure for Detection of Crossing DIF.
+                           <i>Psychometrika, 61</i>(4), 647–677.
+                           <a href = "https://link.springer.com/article/10.1007/BF02294041",
+                           target = "_blank">See online.</a>
+                           </li>
 
-                      <li>Martinkova, P., Drabinova, A., Liaw, Y. L., Sanders, E. A., McFarland, J. L., & Price, R. M.
-                          (2017). Checking Equity: Why Differential Item Functioning Analysis Should Be a Routine Part
-                          of Developing Conceptual Assessments.
-                          <i>CBE-Life Sciences Education, 16</i>(2), rm2.
-                          <a href = "https://doi.org/10.1187/cbe.16-10-0307",
-                             target = "_blank">See online</a>
-                      </li>
+                           <li>Lord, F. M. (1980). Applications of Item Response Theory to Practical Testing Problems.
+                           Routledge.
+                           </li>
 
-                      <li>Martinkova, P., Stepanek, L., Drabinova, A., Houdek, J., Vejrazka, M., & Stuka, C. (2017).
-                          Semi-real-time Analyses of Item Characteristics for Medical School Admission Tests.
-                          In
-                          <i>Proceedings of the 2017 Federated Conference on Computer Science and Information Systems</i>,
-                          189-194.
-                          <a href="http://dx.doi.org/10.15439/2017F380",
-                             target="_blank">See online.</a>
-                      </li>
+                           <li>Magis, D., & Facon, B. (2012). Angoffs Delta Method Revisited: Improving DIF Detection under
+                           Small Samples.
+                           <i>British Journal of Mathematical and Statistical Psychology, 65</i>(2), 302-321.
+                           <a href = "https://www.ncbi.nlm.nih.gov/pubmed/22500570",
+                           target = "_blank">See online.</a>
+                           </li>
 
-                      <li>Masters, G. N. (1982). A Rasch model for partial credit scoring.
-                          <i>Psychometrika, 47</i>(2), 149-174.
-                          <a href = "https://link.springer.com/article/10.1007/BF02296272",
-                             target = "_blank">See online.</a>
-                      </li>
+                           <li>Mantel, N., & Haenszel, W. (1959). Statistical Aspects of the Analysis of Data from
+                           Retrospective Studies.
+                           <i>Journal of the National Cancer Institute, 22</i>(4), 719-748.
+                           <a href = "http://www.medicine.mcgill.ca/epidemiology/hanley/c634/stratified/Mantel_Haenszel_1.pdf",
+                           target = "_blank">See online.</a>                                                                                    )),
+                           </li>
 
-                      <li>McFarland, J. L., Price, R. M., Wenderoth, M. P., Martinkova, P., Cliff, W., Michael, J., ... & Wright, A. (2017).
-                          Development and Validation of the Homeostasis Concept Inventory.
-                          <i>CBE-Life Sciences Education, 16</i>(2), ar35.
-                          <a href = "https://www.lifescied.org/doi/abs/10.1187/cbe.16-10-0305",
-                             target = "_blank">See online.</a>
-                      </li>
+                           <li>Martinkova, P., Drabinova, A., & Houdek, J. (2017). ShinyItemAnalysis: Analyza Prijimacich a
+                           Jinych Znalostnich ci Psychologických Testu. [ShinyItemAnalysis: Analyzing Admission and Other
+                           Educational and Psychological Tests]
+                           <i>TESTFORUM, 6</i>(9), 16–35.
+                           <a href = "http://testforum.cz/domains/testforum.cz/index.php/testforum/article/view/TF2017-9-129",
+                           target = "_blank">See online.</a>
+                           </li>
 
-                      <li>Muraki, E. (1992). A Generalized Partial Credit Model: Application of an EM Algorithm.
-                          <i>ETS Research Report Series, 1992</i>(1)
-                          <a href = "https://onlinelibrary.wiley.com/doi/abs/10.1002/j.2333-8504.1992.tb01436.x",
-                             target = "_blank">See online.</a>
-                      </li>
+                           <li>Martinkova, P., Drabinova, A., Liaw, Y. L., Sanders, E. A., McFarland, J. L., & Price, R. M.
+                           (2017). Checking Equity: Why Differential Item Functioning Analysis Should Be a Routine Part
+                           of Developing Conceptual Assessments.
+                           <i>CBE-Life Sciences Education, 16</i>(2), rm2.
+                           <a href = "https://doi.org/10.1187/cbe.16-10-0307",
+                           target = "_blank">See online</a>
+                           </li>
 
-                      <li>Swaminathan, H., & Rogers, H. J. (1990). Detecting Differential Item
-                          Functioning Using Logistic Regression Procedures.
-                          <i>Journal of Educational Measurement, 27</i>(4), 361-370.
-                          <a href = "https://www.jstor.org/stable/1434855?seq=1#page_scan_tab_contents",
-                             target = "_blank">See online.</a>
-                      </li>
+                           <li>Martinkova, P., Stepanek, L., Drabinova, A., Houdek, J., Vejrazka, M., & Stuka, C. (2017).
+                           Semi-real-time Analyses of Item Characteristics for Medical School Admission Tests.
+                           In
+                           <i>Proceedings of the 2017 Federated Conference on Computer Science and Information Systems</i>,
+                           189-194.
+                           <a href="http://dx.doi.org/10.15439/2017F380",
+                           target="_blank">See online.</a>
+                           </li>
 
-                      <li>Raju, N. S. (1988). The Area between Two Item Characteristic Curves.
-                          <i>Psychometrika, 53</i>(4), 495-502.
-                          <a href = "https://link.springer.com/article/10.1007/BF02294403",
-                          target = "_blank">See online.</a>
-                      </li>
+                           <li>Masters, G. N. (1982). A Rasch model for partial credit scoring.
+                           <i>Psychometrika, 47</i>(2), 149-174.
+                           <a href = "https://link.springer.com/article/10.1007/BF02296272",
+                           target = "_blank">See online.</a>
+                           </li>
 
-                      <li>Raju, N. S. (1990). Determining the Significance of Estimated Signed and Unsigned Areas
-                          between Two Item Response Functions.
-                          <i>Applied Psychological Measurement, 14</i>(2), 197-207.
-                          <a href = "http://journals.sagepub.com/doi/abs/10.1177/014662169001400208",
-                             target = "_blank">See online.</a>
-                      </li>
+                           <li>McFarland, J. L., Price, R. M., Wenderoth, M. P., Martinkova, P., Cliff, W., Michael, J., ... & Wright, A. (2017).
+                           Development and Validation of the Homeostasis Concept Inventory.
+                           <i>CBE-Life Sciences Education, 16</i>(2), ar35.
+                           <a href = "https://www.lifescied.org/doi/abs/10.1187/cbe.16-10-0305",
+                           target = "_blank">See online.</a>
+                           </li>
 
-                      <li>Rasch, G. (1960) Probabilistic Models for Some Intelligence and Attainment Tests.
-                          Copenhagen: Paedagogiske Institute.
-                      </li>
+                           <li>Muraki, E. (1992). A Generalized Partial Credit Model: Application of an EM Algorithm.
+                           <i>ETS Research Report Series, 1992</i>(1)
+                           <a href = "https://onlinelibrary.wiley.com/doi/abs/10.1002/j.2333-8504.1992.tb01436.x",
+                           target = "_blank">See online.</a>
+                           </li>
 
-                      <li>Samejima, F. (1969). Estimation of Latent Ability Using a Response Pattern of Graded Scores.
-                          <i>Psychometrika, 34</i>(1), 1-97
-                          <a href = "https://link.springer.com/article/10.1007%2FBF03372160",
-                             target = "_blank">See online.</a>
-                      </li>
+                           <li>Swaminathan, H., & Rogers, H. J. (1990). Detecting Differential Item
+                           Functioning Using Logistic Regression Procedures.
+                           <i>Journal of Educational Measurement, 27</i>(4), 361-370.
+                           <a href = "https://www.jstor.org/stable/1434855?seq=1#page_scan_tab_contents",
+                           target = "_blank">See online.</a>
+                           </li>
 
-                      <li>Schwarz, G. (1978). Estimating the Dimension of a Model.
-                          <i>The Annals of Statistics, 6</i>(2), 461-464.
-                          <a href = "https://projecteuclid.org/euclid.aos/1176344136",
-                             target = "_blank">See online.</a>
-                      </li>
+                           <li>Raju, N. S. (1988). The Area between Two Item Characteristic Curves.
+                           <i>Psychometrika, 53</i>(4), 495-502.
+                           <a href = "https://link.springer.com/article/10.1007/BF02294403",
+                           target = "_blank">See online.</a>
+                           </li>
 
-                      <li>Wilson, M. (2005). Constructing Measures: An Item Response Modeling Approach.
-                      </li>
+                           <li>Raju, N. S. (1990). Determining the Significance of Estimated Signed and Unsigned Areas
+                           between Two Item Response Functions.
+                           <i>Applied Psychological Measurement, 14</i>(2), 197-207.
+                           <a href = "http://journals.sagepub.com/doi/abs/10.1177/014662169001400208",
+                           target = "_blank">See online.</a>
+                           </li>
 
-                      <li>Wright, B. D., & Stone, M. H. (1979). Best Test Design. Chicago: Mesa Press.
-                      </li>
-                      </ul>'),
+                           <li>Rasch, G. (1960) Probabilistic Models for Some Intelligence and Attainment Tests.
+                           Copenhagen: Paedagogiske Institute.
+                           </li>
+
+                           <li>Revelle, W. (1979).
+                           Hierarchical cluster analysis and the internal structure of tests.
+                           <i>Multivariate Behavioral Research, 14</i>(1), 57-74.
+                           <a href = "https://doi.org/10.1207/s15327906mbr1401_4",
+                           target = "_blank">See online.</a>
+                           </li>
+
+                           <li>Samejima, F. (1969). Estimation of Latent Ability Using a Response Pattern of Graded Scores.
+                           <i>Psychometrika, 34</i>(1), 1-97
+                           <a href = "https://link.springer.com/article/10.1007%2FBF03372160",
+                           target = "_blank">See online.</a>
+                           </li>
+
+                           <li>Schwarz, G. (1978). Estimating the Dimension of a Model.
+                           <i>The Annals of Statistics, 6</i>(2), 461-464.
+                           <a href = "https://projecteuclid.org/euclid.aos/1176344136",
+                           target = "_blank">See online.</a>
+                           </li>
+
+                           <li>Shealy, R. and Stout, W. (1993). A Model-Based Standardization Approach that
+                           Separates True Bias/DIF from Group Ability Differences and Detect Test Bias/DTF
+                           as well as Item Bias/DIF.
+                           <i>Psychometrika, 58</i>(2), 159-194.
+                           <a href = "https://link.springer.com/article/10.1007/BF02294572",
+                           target = "_blank">See online.</a>
+                           </li>
+
+                           <li>Spearman, C. (1910).
+                           Correlation calculated from faulty data.
+                           <i>British Journal of Psychology, 1904‐1920, 3</i>(3), 271-295.
+                           <a href = "https://onlinelibrary.wiley.com/doi/abs/10.1111/j.2044-8295.1910.tb00206.x",
+                           target = "_blank">See online.</a>
+                           </li>
+
+                           <li>Wilson, M. (2005). Constructing Measures: An Item Response Modeling Approach.
+                           </li>
+
+                           <li>Wright, B. D., & Stone, M. H. (1979). Best Test Design. Chicago: Mesa Press.
+                           </li>
+                           </ul>'),
                       br()
                       )
                       ))

@@ -171,7 +171,7 @@ raschWrightMapInput_mirt <- reactive({
   b <- coef(fit, IRTpars = T, simplify = T)$items[, "b"]
   names(b) <- item_names()
 
-  wrightMap(fs, b, item.side = itemClassic)
+  ggWrightMap(fs, b)
 
 })
 
@@ -184,15 +184,10 @@ output$DP_raschWM_mirt <- downloadHandler(
     paste("fig_RaschWrightMap.png", sep = "")
   },
   content = function(file) {
-    fs <- as.vector(fscores(rasch_model_mirt()))
-    fit <- rasch_model_mirt()
-
-    b <- coef(fit, IRTpars = T, simplify = T)$items[, "b"]
-    names(b) <- item_names()
-
-    png(file, height = 800, width = 1200, res = 100)
-    wrightMap(fs, b, item.side = itemClassic)
-    dev.off()
+    ggsave(file, plot = raschWrightMapInput_mirt() +
+             theme(text = element_text(size = 10)),
+           device = "png",
+           height = 4, width = 8, dpi = 300)
   }
 )
 
@@ -379,7 +374,7 @@ oneparamirtWrightMapInput_mirt <- reactive({
   b <- coef(fit, IRTpars = T, simplify = T)$items[, "b"]
   names(b) <- item_names()
 
-  wrightMap(fs, b, item.side = itemClassic)
+  ggWrightMap(fs, b)
 })
 
 
@@ -412,15 +407,10 @@ output$DP_oneparamirtWM_mirt <- downloadHandler(
     paste("fig_1PLWrightMap.png", sep = "")
   },
   content = function(file) {
-    fit <- one_param_irt_mirt()
-    fs <- as.vector(fscores(fit))
-
-    b <- coef(fit, IRTpars = T, simplify = T)$items[, "b"]
-    names(b) <- item_names()
-
-    png(file, height = 800, width = 1200, res = 100)
-    wrightMap(fs, b, item.side = itemClassic)
-    dev.off()
+    ggsave(file, plot = oneparamirtWrightMapInput_mirt() +
+             theme(text = element_text(size = 10)),
+           device = "png",
+           height = 4, width = 8, dpi = 300)
   }
 )
 
