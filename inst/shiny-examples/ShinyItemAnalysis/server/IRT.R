@@ -973,12 +973,13 @@ irtcomparisonInput <- reactive({
               anova(models[[3]], models[[4]], verbose = F))
 
   df <- round(df[c(1, 2, 4, 6), ], 3)
+  df <- df[, c("AIC", "AICc", "BIC", "SABIC", "logLik", "X2", "df", "p")]
   nam <- c("1PL", "2PL", "3PL", "4PL")
 
-  if (all(df[, 8] > 0.05)){
+  if (all(df[, "p"] > 0.05)){
     hv <- "1PL"
   } else {
-    p <- which(df[, 8] < 0.05)
+    p <- which(df[, "p"] < 0.05)
     hv <- nam[p[length(p)]]
   }
 
@@ -987,9 +988,7 @@ irtcomparisonInput <- reactive({
                 rep("", 3),
                 hv))
 
-
   rownames(df) <- c(nam, "BEST")
-  df <- df[, c(1, 2, 4, 3, 5:8)]
   df
 })
 
