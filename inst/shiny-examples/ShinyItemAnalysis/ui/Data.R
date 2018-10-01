@@ -38,7 +38,7 @@ Data <- tabPanel("Data",
                             #------------------------------------------------------------------------------------#
                             h4("Upload your own datasets"),
                             fluidRow(
-                              box(3,
+                              box(width = 3,
                                   fileInput(inputId = "data",
                                             label = "Choose data (CSV file)",
                                             accept = c("text/csv",
