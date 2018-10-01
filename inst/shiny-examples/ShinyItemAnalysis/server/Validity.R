@@ -50,7 +50,10 @@ output$DB_corr_plot <- downloadHandler(
     numclust <- input$corr_plot_clust
     clustmethod <- input$corr_plot_clustmethod
 
-    png(file, height = 800, width = 800, res = 400, pointsize = 300/72)
+    png(file, height = setting_figures$height, width = setting_figures$height,
+        units = "in",
+        res = setting_figures$dpi,
+        pointsize = setting_figures$dpi/72)
     if (clustmethod == "none"){
       corrplot(corP, tl.cex = tlcex)
     } else {
@@ -85,9 +88,11 @@ output$DB_scree_plot <- downloadHandler(
     paste("fig_ScreePlot.png", sep = "")
   },
   content = function(file) {
-    ggsave(file, plot = scree_plot_Input() + theme(text = element_text(size = 10)),
+    ggsave(file, plot = scree_plot_Input() +
+             theme(text = element_text(size = setting_figures$text_size)),
            device = "png",
-           height = 4, width = 8, dpi = 300)
+           height = setting_figures$height, width = setting_figures$width,
+           dpi = setting_figures$dpi)
   }
 )
 
@@ -169,9 +174,10 @@ output$DB_validity_plot <- downloadHandler(
   },
   content = function(file) {
     ggsave(file, plot = validity_plot_Input() +
-             theme(text = element_text(size = 10)),
+             theme(text = element_text(size = setting_figures$text_size)),
            device = "png",
-           height = 4, width = 8, dpi = 300)
+           height = setting_figures$height, width = setting_figures$width,
+           dpi = setting_figures$dpi)
   }
 )
 
@@ -269,9 +275,11 @@ output$DB_validity_distractor_plot <- downloadHandler(
     paste("fig_DistractorsValidityPlot.png", sep = "")
   },
   content = function(file) {
-    ggsave(file, plot = validity_distractor_plot_Input() + theme(text = element_text(size = 10)),
+    ggsave(file, plot = validity_distractor_plot_Input() +
+             theme(text = element_text(size = setting_figures$text_size)),
            device = "png",
-           height = 4, width = 8, dpi = 300)
+           height = setting_figures$height, width = setting_figures$width,
+           dpi = setting_figures$dpi)
   }
 )
 

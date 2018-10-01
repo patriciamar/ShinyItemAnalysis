@@ -153,7 +153,7 @@ plotDIFLogistic <- function(data, group, type = "both", item, item.name,
           legend.position = c(0.01, 0.98),
           legend.justification = c(0, 1),
           legend.key.width = unit(1, "cm"),
-          legend.box = "horizontal")
+          legend.box = "horizontal") +
     ggtitle(item.name)
 
   plot_CC

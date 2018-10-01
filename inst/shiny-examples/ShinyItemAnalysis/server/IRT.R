@@ -25,7 +25,11 @@ output$DP_rasch_mirt <- downloadHandler(
     paste("fig_RaschItemCharacteristicCurves.png", sep = "")
   },
   content = function(file) {
-    png(file, height = 800, width = 1200, res = 100)
+    png(file, height = setting_figures$height,
+        width = setting_figures$width,
+        units = "in",
+        res = setting_figures$dpi,
+        pointsize = setting_figures$dpi/72)
     print(raschInput_mirt())
     dev.off()
   }
@@ -46,7 +50,11 @@ output$DP_raschiic_mirt <- downloadHandler(
     paste("fig_RaschItemInformationCurves.png", sep = "")
   },
   content = function(file) {
-    png(file, height = 800, width = 1200, res = 100)
+    png(file, height = setting_figures$height,
+        width = setting_figures$width,
+        units = "in",
+        res = setting_figures$dpi,
+        pointsize = setting_figures$dpi/72)
     print(raschiicInput_mirt())
     dev.off()
   }
@@ -67,7 +75,11 @@ output$DP_raschtif_mirt <- downloadHandler(
     paste("fig_RaschTestInformationFunction.png", sep = "")
   },
   content = function(file) {
-    png(file, height = 800, width = 1200, res = 100)
+    png(file, height = setting_figures$height,
+        width = setting_figures$width,
+        units = "in",
+        res = setting_figures$dpi,
+        pointsize = setting_figures$dpi/72)
     print(raschtifInput_mirt())
     dev.off()
   }
@@ -157,9 +169,10 @@ output$DP_raschFactor_mirt <- downloadHandler(
   },
   content = function(file) {
     ggsave(file, plot = raschFactorInput_mirt() +
-             theme(text = element_text(size = 10)),
+             theme(text = element_text(size = setting_figures$text_size)),
            device = "png",
-           height = 4, width = 8, dpi = 300)
+           height = setting_figures$height, width = setting_figures$width,
+           dpi = setting_figures$dpi)
   }
 )
 
@@ -185,9 +198,10 @@ output$DP_raschWM_mirt <- downloadHandler(
   },
   content = function(file) {
     ggsave(file, plot = raschWrightMapInput_mirt() +
-             theme(text = element_text(size = 10)),
+             theme(text = element_text(size = setting_figures$text_size)),
            device = "png",
-           height = 4, width = 8, dpi = 300)
+           height = setting_figures$height, width = setting_figures$width,
+           dpi = setting_figures$dpi)
   }
 )
 
@@ -218,7 +232,11 @@ output$DP_oneparamirt_mirt <- downloadHandler(
     paste("fig_1PLItemCharactersticCurves.png", sep = "")
   },
   content = function(file) {
-    png(file, height = 800, width = 1200, res = 100)
+    png(file, height = setting_figures$height,
+        width = setting_figures$width,
+        units = "in",
+        res = setting_figures$dpi,
+        pointsize = setting_figures$dpi/72)
     print(oneparamirtInput_mirt())
     dev.off()
   }
@@ -238,7 +256,11 @@ output$DP_oneparamirtiic_mirt <- downloadHandler(
     paste("fig_1PLItemInformationCurves.png", sep = "")
   },
   content = function(file) {
-    png(file, height = 800, width = 1200, res = 100)
+    png(file, height = setting_figures$height,
+        width = setting_figures$width,
+        units = "in",
+        res = setting_figures$dpi,
+        pointsize = setting_figures$dpi/72)
     print(oneparamirtiicInput_mirt())
     dev.off()
   }
@@ -258,7 +280,11 @@ output$DP_oneparamirttif_mirt <- downloadHandler(
     paste("fig_1PLTestInformationFunction.png", sep = "")
   },
   content = function(file) {
-    png(file, height = 800, width = 1200, res = 100)
+    png(file, height = setting_figures$height,
+        width = setting_figures$width,
+        units = "in",
+        res = setting_figures$dpi,
+        pointsize = setting_figures$dpi/72)
     print(oneparamirttifInput_mirt())
     dev.off()
   }
@@ -360,9 +386,10 @@ output$DP_oneparamirtFactor_mirt <- downloadHandler(
   },
   content = function(file) {
     ggsave(file, plot = oneparamirtFactorInput_mirt() +
-             theme(text = element_text(size = 10)),
+             theme(text = element_text(size = setting_figures$text_size)),
            device = "png",
-           height = 4, width = 8, dpi = 300)
+           height = setting_figures$height, width = setting_figures$width,
+           dpi = setting_figures$dpi)
   }
 )
 
@@ -408,9 +435,10 @@ output$DP_oneparamirtWM_mirt <- downloadHandler(
   },
   content = function(file) {
     ggsave(file, plot = oneparamirtWrightMapInput_mirt() +
-             theme(text = element_text(size = 10)),
+             theme(text = element_text(size = setting_figures$text_size)),
            device = "png",
-           height = 4, width = 8, dpi = 300)
+           height = setting_figures$height, width = setting_figures$width,
+           dpi = setting_figures$dpi)
   }
 )
 
@@ -438,7 +466,11 @@ output$DP_twoparamirt_mirt <- downloadHandler(
     paste("fig_2PLItemCharacteristicCurves.png", sep = "")
   },
   content = function(file) {
-    png(file, height = 800, width = 1200, res = 100)
+    png(file, height = setting_figures$height,
+        width = setting_figures$width,
+        units = "in",
+        res = setting_figures$dpi,
+        pointsize = setting_figures$dpi/72)
     print(twoparamirtInput_mirt())
     dev.off()
   }
@@ -458,7 +490,11 @@ output$DP_twoparamirtiic_mirt <- downloadHandler(
     paste("fig_2PLItemInformationCurves.png", sep = "")
   },
   content = function(file) {
-    png(file, height = 800, width = 1200, res = 100)
+    png(file, height = setting_figures$height,
+        width = setting_figures$width,
+        units = "in",
+        res = setting_figures$dpi,
+        pointsize = setting_figures$dpi/72)
     print(twoparamirtiicInput_mirt())
     dev.off()
   }
@@ -478,7 +514,11 @@ output$DP_twoparamirttif_mirt <- downloadHandler(
     paste("fig_2PLTestInformationFunction.png", sep = "")
   },
   content = function(file) {
-    png(file, height = 800, width = 1200, res = 100)
+    png(file, height = setting_figures$height,
+        width = setting_figures$width,
+        units = "in",
+        res = setting_figures$dpi,
+        pointsize = setting_figures$dpi/72)
     print(twoparamirttifInput_mirt())
     dev.off()
   }
@@ -578,9 +618,10 @@ output$DP_twoparamirtFactor_mirt <- downloadHandler(
   },
   content = function(file) {
     ggsave(file, plot = twoparamirtFactorInput_mirt() +
-             theme(text = element_text(size = 10)),
+             theme(text = element_text(size = setting_figures$text_size)),
            device = "png",
-           height = 4, width = 8, dpi = 300)
+           height = setting_figures$height, width = setting_figures$width,
+           dpi = setting_figures$dpi)
   }
 )
 
@@ -621,7 +662,11 @@ output$DP_threeparamirt_mirt <- downloadHandler(
     paste("fig_3PLItemCharacteristicCurves.png", sep = "")
   },
   content = function(file) {
-    png(file, height = 800, width = 1200, res = 100)
+    png(file, height = setting_figures$height,
+        width = setting_figures$width,
+        units = "in",
+        res = setting_figures$dpi,
+        pointsize = setting_figures$dpi/72)
     print(threeparamirtInput_mirt())
     dev.off()
   }
@@ -641,7 +686,11 @@ output$DP_threeparamirtiic_mirt <- downloadHandler(
     paste("fig_3PLItemInformationCurves.png", sep = "")
   },
   content = function(file) {
-    png(file, height = 800, width = 1200, res = 100)
+    png(file, height = setting_figures$height,
+        width = setting_figures$width,
+        units = "in",
+        res = setting_figures$dpi,
+        pointsize = setting_figures$dpi/72)
     print(threeparamirtiicInput_mirt())
     dev.off()
   }
@@ -661,7 +710,11 @@ output$DP_threeparamirttif_mirt <- downloadHandler(
     paste("fig_3PLTestInformationFunction.png", sep = "")
   },
   content = function(file) {
-    png(file, height = 800, width = 1200, res = 100)
+    png(file, height = setting_figures$height,
+        width = setting_figures$width,
+        units = "in",
+        res = setting_figures$dpi,
+        pointsize = setting_figures$dpi/72)
     print(threeparamirttifInput_mirt())
     dev.off()
   }
@@ -677,15 +730,19 @@ threeparamirtcoefInput_mirt <- reactive({
   parvec <- extract.mirt(fit, 'parvec')
   vcov <- vcov(fit)
 
-  se_tab <- c()
-  for (item in seq(1, 3*nrow(par_tab), 3)){
-    pick <- c(item, item + 1, item + 2)
-    ad <- parvec[pick]
-    v <- vcov[pick, pick]
+  if (all(is.na(vcov))){
+    se_tab <- matrix(NA, nrow = nrow(par_tab), ncol = ncol(par_tab))
+  } else {
+    se_tab <- c()
+    for (item in seq(1, 3*nrow(par_tab), 3)){
+      pick <- c(item, item + 1, item + 2)
+      ad <- parvec[pick]
+      v <- vcov[pick, pick]
 
-    SEs <- deltamethod(list(~ x1, ~ -x2/x1, ~ x3), ad, v)
-    names(SEs) <- c('a', 'b', 'c')
-    se_tab <- rbind(se_tab, SEs)
+      SEs <- deltamethod(list(~ x1, ~ -x2/x1, ~ x3), ad, v)
+      names(SEs) <- c('a', 'b', 'c')
+      se_tab <- rbind(se_tab, SEs)
+    }
   }
 
   tab <- cbind(par_tab, se_tab)[, c(1, 4, 2, 5, 3, 6)]
@@ -762,9 +819,10 @@ output$DP_threeparamirtFactor_mirt <- downloadHandler(
   },
   content = function(file) {
     ggsave(file, plot = threeparamirtFactorInput_mirt() +
-             theme(text = element_text(size = 10)),
+             theme(text = element_text(size = setting_figures$text_size)),
            device = "png",
-           height = 4, width = 8, dpi = 300)
+           height = setting_figures$height, width = setting_figures$width,
+           dpi = setting_figures$dpi)
   }
 )
 
@@ -805,7 +863,11 @@ output$DB_irt_4PL_icc <- downloadHandler(
     paste("fig_IRT_4PL_icc.png", sep = "")
   },
   content = function(file) {
-    png(file, height = 800, width = 1200, res = 100)
+    png(file, height = setting_figures$height,
+        width = setting_figures$width,
+        units = "in",
+        res = setting_figures$dpi,
+        pointsize = setting_figures$dpi/72)
     print(irt_4PL_icc_Input())
     dev.off()
   }
@@ -825,7 +887,11 @@ output$DB_irt_4PL_iic <- downloadHandler(
     paste("fig_IRT_4PL_iic.png", sep = "")
   },
   content = function(file) {
-    png(file, height = 800, width = 1200, res = 100)
+    png(file, height = setting_figures$height,
+        width = setting_figures$width,
+        units = "in",
+        res = setting_figures$dpi,
+        pointsize = setting_figures$dpi/72)
     print(irt_4PL_iic_Input())
     dev.off()
   }
@@ -845,7 +911,11 @@ output$DB_irt_4PL_tif <- downloadHandler(
     paste("fig_IRT_4PL_tif.png", sep = "")
   },
   content = function(file) {
-    png(file, height = 800, width = 1200, res = 100)
+    png(file, height = setting_figures$height,
+        width = setting_figures$width,
+        units = "in",
+        res = setting_figures$dpi,
+        pointsize = setting_figures$dpi/72)
     print(irt_4PL_tif_Input())
     dev.off()
   }
@@ -860,16 +930,21 @@ irt_4PL_coef_Input <- reactive({
   parvec <- extract.mirt(fit, 'parvec')
   vcov <- vcov(fit)
 
-  se_tab <- c()
-  for (item in seq(1, 4*nrow(par_tab), 4)){
-    pick <- c(item, item + 1, item + 2, item + 3)
-    ad <- parvec[pick]
-    v <- vcov[pick, pick]
+  if (all(is.na(vcov))){
+    se_tab <- matrix(NA, nrow = nrow(par_tab), ncol = ncol(par_tab))
+  } else {
+    se_tab <- c()
+    for (item in seq(1, 4*nrow(par_tab), 4)){
+      pick <- c(item, item + 1, item + 2, item + 3)
+      ad <- parvec[pick]
+      v <- vcov[pick, pick]
 
-    SEs <- deltamethod(list(~ x1, ~ -x2/x1, ~ x3, ~ x4), ad, v)
-    names(SEs) <- c('a', 'b', 'c', 'd')
-    se_tab <- rbind(se_tab, SEs)
+      SEs <- deltamethod(list(~ x1, ~ -x2/x1, ~ x3, ~ x4), ad, v)
+      names(SEs) <- c('a', 'b', 'c', 'd')
+      se_tab <- rbind(se_tab, SEs)
+    }
   }
+
 
   tab <- cbind(par_tab, se_tab)[, c(1, 5, 2, 6, 3, 7, 4, 8)]
 
@@ -947,9 +1022,10 @@ output$DB_irt_4PL_factorscores_plot <- downloadHandler(
   },
   content = function(file) {
     ggsave(file, plot = irt_4PL_factorscores_plot_Input() +
-             theme(text = element_text(size = 10)),
+             theme(text = element_text(size = setting_figures$text_size)),
            device = "png",
-           height = 4, width = 8, dpi = 300)
+           height = setting_figures$height, width = setting_figures$width,
+           dpi = setting_figures$dpi)
   }
 )
 
@@ -1076,7 +1152,11 @@ output$DP_bock_CC <- downloadHandler(
     paste("fig_BockItemCharacteristicCurves.png", sep = "")
   },
   content = function(file) {
-    png(file, height = 800, width = 1200, res = 100)
+    png(file, height = setting_figures$height,
+        width = setting_figures$width,
+        units = "in",
+        res = setting_figures$dpi,
+        pointsize = setting_figures$dpi/72)
     print(bock_CC_Input())
     dev.off()
   }
@@ -1094,7 +1174,11 @@ output$DP_bock_IIC <- downloadHandler(
     paste("fig_BockItemInformationCurves.png", sep = "")
   },
   content = function(file) {
-    png(file, height = 800, width = 1200, res = 100)
+    png(file, height = setting_figures$height,
+        width = setting_figures$width,
+        units = "in",
+        res = setting_figures$dpi,
+        pointsize = setting_figures$dpi/72)
     print(bock_IIC_Input())
     dev.off()
   }
@@ -1112,7 +1196,11 @@ output$DP_bock_TIF <- downloadHandler(
     paste("fig_BockTestInformationFunction.png", sep = "")
   },
   content = function(file) {
-    png(file, height = 800, width = 1200, res = 100)
+    png(file, height = setting_figures$height,
+        width = setting_figures$width,
+        units = "in",
+        res = setting_figures$dpi,
+        pointsize = setting_figures$dpi/72)
     print(bock_TIF_Input())
     dev.off()
   }
@@ -1204,9 +1292,10 @@ output$DP_bock_factor <- downloadHandler(
   },
   content = function(file) {
     ggsave(file, plot = bock_factor_Input() +
-             theme(text = element_text(size = 10)),
+             theme(text = element_text(size = setting_figures$text_size)),
            device = "png",
-           height = 4, width = 8, dpi = 300)
+           height = setting_figures$height, width = setting_figures$width,
+           dpi = setting_figures$dpi)
   }
 )
 
@@ -1385,13 +1474,13 @@ output$DB_ccIRT <- downloadHandler(
     paste("fig_CustomItemCharacteristicCurve.png", sep = "")
   },
   content = function(file) {
-    ggsave(file,
-           plot = ccIRT_plot_Input() +
-             theme(text = element_text(size = 10)) +
+    ggsave(file, plot = ccIRT_plot_Input() +
              theme(legend.position = c(0.97, 0.03),
-                   legend.justification = c(0.97, 0.03)),
+                   legend.justification = c(0.97, 0.03)) +
+             theme(text = element_text(size = setting_figures$text_size)),
            device = "png",
-           height = 4, width = 8, dpi = 300)
+           height = setting_figures$height, width = setting_figures$width,
+           dpi = setting_figures$dpi)
   }
 )
 
@@ -1464,13 +1553,13 @@ output$DB_iccIRT <- downloadHandler(
     paste("fig_CustomItemInformationCurve.png", sep = "")
   },
   content = function(file) {
-    ggsave(file,
-           plot = iccIRT_plot_Input() +
-             theme(text = element_text(size = 10)) +
+    ggsave(file, plot = iccIRT_plot_Input() +
              theme(legend.position = c(0.97, 0.97),
-                   legend.justification = c(0.97, 0.97)),
+                   legend.justification = c(0.97, 0.97)) +
+             theme(text = element_text(size = setting_figures$text_size)),
            device = "png",
-           height = 4, width = 8, dpi = 300)
+           height = setting_figures$height, width = setting_figures$width,
+           dpi = setting_figures$dpi)
   }
 )
 # *** EXERCISES ####
@@ -1911,13 +2000,13 @@ output$DB_irt_training_grm_plot_cummulative <- downloadHandler(
     paste("fig_GRM_cummulative.png", sep = "")
   },
   content = function(file) {
-    ggsave(file,
-           plot = irt_training_grm_plot_cummulative_Input() +
-             theme(text = element_text(size = 10)) +
+    ggsave(file, plot = irt_training_grm_plot_cummulative_Input() +
              theme(legend.position = c(0.97, 0.7),
-                   legend.justification = c(0.97, 0.97)),
+                   legend.justification = c(0.97, 0.97)) +
+             theme(text = element_text(size = setting_figures$text_size)),
            device = "png",
-           height = 4, width = 8, dpi = 300)
+           height = setting_figures$height, width = setting_figures$width,
+           dpi = setting_figures$dpi)
   }
 )
 
@@ -1991,13 +2080,13 @@ output$DB_irt_training_grm_plot_category <- downloadHandler(
     paste("fig_GRM_category.png", sep = "")
   },
   content = function(file) {
-    ggsave(file,
-           plot = irt_training_grm_plot_category_Input() +
-             theme(text = element_text(size = 10)) +
+    ggsave(file, plot = irt_training_grm_plot_category_Input() +
              theme(legend.position = c(0.97, 0.7),
-                   legend.justification = c(0.97, 0.97)),
+                   legend.justification = c(0.97, 0.97)) +
+             theme(text = element_text(size = setting_figures$text_size)),
            device = "png",
-           height = 4, width = 8, dpi = 300)
+           height = setting_figures$height, width = setting_figures$width,
+           dpi = setting_figures$dpi)
   }
 )
 
@@ -2065,11 +2154,11 @@ output$DB_irt_training_grm_plot_expected <- downloadHandler(
     paste("fig_GRM_expected.png", sep = "")
   },
   content = function(file) {
-    ggsave(file,
-           plot = irt_training_grm_plot_expected_Input() +
-             theme(text = element_text(size = 10)),
+    ggsave(file, plot = irt_training_grm_plot_expected_Input() +
+             theme(text = element_text(size = setting_figures$text_size)),
            device = "png",
-           height = 4, width = 8, dpi = 300)
+           height = setting_figures$height, width = setting_figures$width,
+           dpi = setting_figures$dpi)
   }
 )
 # *** GENERALIZED PARTIAL CREDIT MODEL ####
@@ -2190,11 +2279,13 @@ output$DB_irt_training_gpcm_plot <- downloadHandler(
     paste("fig_GPCM_category.png", sep = "")
   },
   content = function(file) {
-    ggsave(file,
-           plot = irt_training_gpcm_plot_Input() +
-             theme(text = element_text(size = 10)),
+    ggsave(file, plot = irt_training_gpcm_plot_Input() +
+             theme(legend.position = c(0.97, 0.7),
+                   legend.justification = c(0.97, 0.97)) +
+             theme(text = element_text(size = setting_figures$text_size)),
            device = "png",
-           height = 4, width = 8, dpi = 300)
+           height = setting_figures$height, width = setting_figures$width,
+           dpi = setting_figures$dpi)
   }
 )
 
@@ -2270,11 +2361,11 @@ output$DB_irt_training_gpcm_plot_expected <- downloadHandler(
     paste("fig_GPCM_expected.png", sep = "")
   },
   content = function(file) {
-    ggsave(file,
-           plot = irt_training_gpcm_plot_expected_Input() +
-             theme(text = element_text(size = 10)),
+    ggsave(file, plot = irt_training_gpcm_plot_expected_Input() +
+             theme(text = element_text(size = setting_figures$text_size)),
            device = "png",
-           height = 4, width = 8, dpi = 300)
+           height = setting_figures$height, width = setting_figures$width,
+           dpi = setting_figures$dpi)
   }
 )
 # *** NOMINAL RESPONSE MODEL ####
@@ -2433,13 +2524,13 @@ output$DB_irt_training_nrm_plot <- downloadHandler(
     paste("fig_NRM_category.png", sep = "")
   },
   content = function(file) {
-    ggsave(file,
-           plot = irt_training_nrm_plot_Input() +
-             theme(text = element_text(size = 10)) +
+    ggsave(file, plot = irt_training_nrm_plot_Input() +
              theme(legend.position = c(0.97, 0.7),
-                   legend.justification = c(0.97, 0.97)),
+                   legend.justification = c(0.97, 0.97)) +
+             theme(text = element_text(size = setting_figures$text_size)),
            device = "png",
-           height = 4, width = 8, dpi = 300)
+           height = setting_figures$height, width = setting_figures$width,
+           dpi = setting_figures$dpi)
   }
 )
 

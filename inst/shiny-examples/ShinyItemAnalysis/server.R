@@ -52,6 +52,13 @@ function(input, output, session) {
   dataset$group <- NULL
   dataset$criterion_variable <- NULL
 
+  setting_figures <- reactiveValues()
+
+  setting_figures$text_size <- 12
+  setting_figures$height <- 4
+  setting_figures$width <- 8
+  setting_figures$dpi <- 600
+
   #%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   ### HITS COUNTER ######
   #%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -811,4 +818,9 @@ function(input, output, session) {
   )
 
 
+  #%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  # SETTING ######
+  #%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+  source("server/Setting.R", local = T)
 }

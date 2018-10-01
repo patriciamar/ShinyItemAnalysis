@@ -70,10 +70,11 @@ output$DB_DDplot <- downloadHandler(
     paste("fig_DDplot.png", sep = "")
   },
   content = function(file) {
-    ggsave(file,
-           plot = DDplot_Input() + theme(text = element_text(size = 10)),
+    ggsave(file, plot = DDplot_Input() +
+             theme(text = element_text(size = setting_figures$text_size)),
            device = "png",
-           height = 4, width = 8, dpi = 300)
+           height = setting_figures$height, width = setting_figures$width,
+           dpi = setting_figures$dpi)
   }
 )
 
@@ -194,9 +195,11 @@ output$DB_distractor_plot <- downloadHandler(
     paste("fig_DistractorPlot_", item_names()[input$distractorSlider], ".png", sep = "")
   },
   content = function(file) {
-    ggsave(file, plot = distractor_plot_Input() + theme(text = element_text(size = 10)),
+    ggsave(file, plot = distractor_plot_Input() +
+             theme(text = element_text(size = setting_figures$text_size)),
            device = "png",
-           height = 4, width = 8, dpi = 300)
+           height = setting_figures$height, width = setting_figures$width,
+           dpi = setting_figures$dpi)
   }
 )
 # ** Report distractors plot ######
@@ -299,9 +302,10 @@ output$DB_distractor_barplot_item_response_patterns <- downloadHandler(
   },
   content = function(file) {
     ggsave(file, plot = distractor_barplot_item_response_patterns_Input() +
-             theme(text = element_text(size = 10)),
+             theme(text = element_text(size = setting_figures$text_size)),
            device = "png",
-           height = 4, width = 8, dpi = 300)
+           height = setting_figures$height, width = setting_figures$width,
+           dpi = setting_figures$dpi)
   }
 )
 
@@ -343,9 +347,11 @@ output$DB_distractor_histogram <- downloadHandler(
     paste("fig_HistrogramByDistractorGroups.png", sep = "")
   },
   content = function(file) {
-    ggsave(file, plot = distractor_histogram_Input() + theme(text = element_text(size = 10)),
+    ggsave(file, plot = distractor_histogram_Input() +
+             theme(text = element_text(size = setting_figures$text_size)),
            device = "png",
-           height = 4, width = 8, dpi = 300)
+           height = setting_figures$height, width = setting_figures$width,
+           dpi = setting_figures$dpi)
   }
 )
 

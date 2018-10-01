@@ -84,9 +84,10 @@ output$DP_histbyscoregroup1 <- downloadHandler(
   },
   content = function(file) {
     ggsave(file, plot = histbyscoregroup1Input() +
-             theme(text = element_text(size = 10)),
+             theme(text = element_text(size = setting_figures$text_size)),
            device = "png",
-           height = 4, width = 8, dpi = 300)
+           height = setting_figures$height, width = setting_figures$width,
+           dpi = setting_figures$dpi)
   }
 )
 
@@ -137,9 +138,10 @@ output$DP_histbyscoregroup0 <- downloadHandler(
   },
   content = function(file) {
     ggsave(file, plot = histbyscoregroup0Input() +
-             theme(text = element_text(size = 10)),
+             theme(text = element_text(size = setting_figures$text_size)),
            device = "png",
-           height = 4, width = 8, dpi = 300)
+           height = setting_figures$height, width = setting_figures$width,
+           dpi = setting_figures$dpi)
   }
 )
 
@@ -293,9 +295,10 @@ output$DP_deltaplot <- downloadHandler(
   },
   content = function(file) {
     ggsave(file, plot = deltaplotInput() +
-             theme(text = element_text(size = 10)),
+             theme(text = element_text(size = setting_figures$text_size)),
            device = "png",
-           height = 4, width = 8, dpi = 300)
+           height = setting_figures$height, width = setting_figures$width,
+           dpi = setting_figures$dpi)
   }
 )
 
@@ -485,9 +488,10 @@ output$DP_plot_DIF_logistic <- downloadHandler(
   },
   content = function(file) {
     ggsave(file, plot = plot_DIF_logisticInput() +
-             theme(text = element_text(size = 10)),
+             theme(text = element_text(size = setting_figures$text_size)),
            device = "png",
-           height = 4, width = 10, dpi = 300)
+           height = setting_figures$height, width = setting_figures$width,
+           dpi = setting_figures$dpi)
   }
 )
 
@@ -942,9 +946,10 @@ output$DP_plot_DIF_NLR <- downloadHandler(
   },
   content = function(file) {
     ggsave(file, plot = plot_DIF_NLRInput() +
-             theme(text = element_text(size = 10)),
+             theme(text = element_text(size = setting_figures$text_size)),
            device = "png",
-           height = 4, width = 8, dpi = 300)
+           height = setting_figures$height, width = setting_figures$width,
+           dpi = setting_figures$dpi)
   }
 )
 
@@ -1111,9 +1116,10 @@ output$DP_plot_DIF_IRT_Lord <- downloadHandler(
   },
   content = function(file) {
     ggsave(file, plot = plot_DIF_IRT_LordInput() +
-             theme(text = element_text(size = 10)),
+             theme(text = element_text(size = setting_figures$text_size)),
            device = "png",
-           height = 4, width = 8, dpi = 300)
+           height = setting_figures$height, width = setting_figures$width,
+           dpi = setting_figures$dpi)
   }
 )
 
@@ -1299,9 +1305,10 @@ output$DP_plot_DIF_IRT_Raju <- downloadHandler(
   },
   content = function(file) {
     ggsave(file, plot = plot_DIF_IRT_RajuInput() +
-             theme(text = element_text(size = 10)),
+             theme(text = element_text(size = setting_figures$text_size)),
            device = "png",
-           height = 4, width = 8, dpi = 300)
+           height = setting_figures$height, width = setting_figures$width,
+           dpi = setting_figures$dpi)
   }
 )
 
@@ -1572,9 +1579,10 @@ output$DP_plot_DDF <- downloadHandler(
   },
   content = function(file) {
     ggsave(file, plot = plot_DDFInput() +
-             theme(text = element_text(size = 10)),
+             theme(text = element_text(size = setting_figures$text_size)),
            device = "png",
-           height = 4, width = 8, dpi = 300)
+           height = setting_figures$height, width = setting_figures$width,
+           dpi = setting_figures$dpi)
   }
 )
 

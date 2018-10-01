@@ -76,9 +76,10 @@ output$DB_totalscores_histogram <- downloadHandler(
   },
   content = function(file) {
     ggsave(file, plot = totalscores_histogram_Input() +
-             theme(text = element_text(size = 10)),
+             theme(text = element_text(size = setting_figures$text_size)),
            device = "png",
-           height = 4, width = 8, dpi = 300)
+           height = setting_figures$height, width = setting_figures$width,
+           dpi = setting_figures$dpi)
   }
 )
 
