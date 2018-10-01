@@ -59,9 +59,10 @@ output$DB_logreg_plot <- downloadHandler(
   },
   content = function(file) {
     ggsave(file, plot = logreg_plot_Input() +
-             theme(text = element_text(size = 10)),
+             theme(text = element_text(size = setting_figures$text_size)),
            device = "png",
-           height = 4, width = 8, dpi = 300)
+           height = setting_figures$height, width = setting_figures$width,
+           dpi = setting_figures$dpi)
   }
 )
 
@@ -151,9 +152,10 @@ output$DB_z_logreg_plot <- downloadHandler(
   },
   content = function(file) {
     ggsave(file, plot = z_logreg_plot_Input() +
-             theme(text = element_text(size = 10)),
+             theme(text = element_text(size = setting_figures$text_size)),
            device = "png",
-           height = 4, width = 8, dpi = 300)
+           height = setting_figures$height, width = setting_figures$width,
+           dpi = setting_figures$dpi)
   }
 )
 
@@ -244,9 +246,10 @@ output$DB_z_logreg_irt_plot <- downloadHandler(
   },
   content = function(file) {
     ggsave(file, plot = z_logreg_irt_plot_Input() +
-             theme(text = element_text(size = 10)),
+             theme(text = element_text(size = setting_figures$text_size)),
            device = "png",
-           height = 4, width = 8, dpi = 300)
+           height = setting_figures$height, width = setting_figures$width,
+           dpi = setting_figures$dpi)
   }
 )
 
@@ -362,9 +365,10 @@ output$DB_nlr_3P_plot <- downloadHandler(
   },
   content = function(file) {
     ggsave(file, plot = nlr_3P_plot_Input() +
-             theme(text = element_text(size = 10)),
+             theme(text = element_text(size = setting_figures$text_size)),
            device = "png",
-           height = 4, width = 8, dpi = 300)
+           height = setting_figures$height, width = setting_figures$width,
+           dpi = setting_figures$dpi)
   }
 )
 
@@ -464,9 +468,10 @@ output$DB_nlr_4P_plot <- downloadHandler(
   },
   content = function(file) {
     ggsave(file, plot = nlr_4P_plot_Input() +
-             theme(text = element_text(size = 10)),
+             theme(text = element_text(size = setting_figures$text_size)),
            device = "png",
-           height = 4, width = 8, dpi = 300)
+           height = setting_figures$height, width = setting_figures$width,
+           dpi = setting_figures$dpi)
   }
 )
 
@@ -758,9 +763,10 @@ output$DB_multi_plot <- downloadHandler(
   },
   content = function(file) {
     ggsave(file, plot = multi_plot_Input() +
-             theme(text = element_text(size = 10)),
+             theme(text = element_text(size = setting_figures$text_size)),
            device = "png",
-           height = 4, width = 8, dpi = 300)
+           height = setting_figures$height, width = setting_figures$width,
+           dpi = setting_figures$dpi)
   }
 )
 

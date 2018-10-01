@@ -5,12 +5,23 @@
         ***************************************************************
 
 -------------------------------------------------------
-- Changes in ShinyItemAnalysis 1.2.8-1. (2018-09-28) -
+- Changes in ShinyItemAnalysis 1.2.8-1. (2018-10-01) -
 -------------------------------------------------------
 
- BUG FIXING
+BUG FIXING
   o Bug in IRT dichotomous models comparison is fixed.
     (Reported by Jean-Luc Kop)
+  o Bug in IRT dichotomous models (3PL and 4PL) was fixed.
+    Tables of parameters are rendered even in case that EM cycles terminated
+    without convergence. In such a case SD of parameters are set to NA.
+  o Bug in plotDIFLogistic() function was fixed. Function now returns also
+    item.name argument.
+  o Bug in plotDIFirt() function was fixed. Function now returns also
+    item.name argument.
+
+MAJOR UPDATES
+  o Global setting for figure downloads was created. This can be changed
+    in Setting section.
 
 -------------------------------------------------------
 - Changes in ShinyItemAnalysis 1.2.8 (2018-09-27) -

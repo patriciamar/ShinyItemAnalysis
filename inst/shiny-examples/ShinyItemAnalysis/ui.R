@@ -95,7 +95,7 @@ ui = tagList(
                     ShinyItemAnalysis
                     </div>
                     <div class = "footer-subtitle">
-                    Test and item analysis | Version 1.2.8
+                    Test and item analysis | Version 1.2.8-1
                     </div>
                     <span style = "float:right">
                     <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysis/" id = "tooltipweb" target="_blank">
@@ -2778,6 +2778,35 @@ ui = tagList(
                            </li>
                            </ul>'),
                       br()
-                      )
+                      ),
+             #%%%%%%%%%%%%%%%%%%%%%
+             # SETTING #########
+             #%%%%%%%%%%%%%%%%%%%%%
+             tabPanel("",
+                      icon = icon("fas fa-cog"),
+                      h4("Figure downloads"),
+                      p("Here you can change setting for download of figures. "),
+                      fluidPage(column(2, numericInput(inputId = "setting_figures_text_size",
+                                                       label = "Text size [pts]",
+                                                       value = 12,
+                                                       min = 6,
+                                                       max = 20)),
+                                column(2, numericInput(inputId = "setting_figures_height",
+                                                       label = "Height [in]",
+                                                       value = 4,
+                                                       min = 1,
+                                                       max = 16)),
+                                column(2, numericInput(inputId = "setting_figures_width",
+                                                       label = "Width [in]",
+                                                       value = 8,
+                                                       min = 1,
+                                                       max = 16)),
+                                column(2, numericInput(inputId = "setting_figures_dpi",
+                                                       label = "Plot resolution",
+                                                       value = 600,
+                                                       min = 72,
+                                                       max = 600))
                       ))
+             #     ))
+             ))
 
