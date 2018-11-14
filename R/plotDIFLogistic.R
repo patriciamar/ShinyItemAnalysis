@@ -27,7 +27,7 @@
 #' Adela Drabinova \cr
 #' Institute of Computer Science, The Czech Academy of Sciences \cr
 #' Faculty of Mathematics and Physics, Charles University \cr
-#' adela.drabinova@gmail.com \cr
+#' drabinova@cs.cas.cz \cr
 #'
 #' Patricia Martinkova \cr
 #' Institute of Computer Science, The Czech Academy of Sciences \cr
@@ -52,6 +52,7 @@
 #'
 #'
 #' @export
+#' @importFrom ggplot2 guides guide_legend
 
 
 
@@ -139,28 +140,20 @@ plotDIFLogistic <- function(data, group, type = "both", item, item.name,
     scale_linetype_manual(name = "Group",
                           breaks = hv$Group,
                           values = linetype) +
+    guides(colour = guide_legend(title = "Group", order = 1)) +
+    guides(fill = guide_legend(title = "Group", order = 1)) +
+    guides(linetype = guide_legend(title = "Group", order = 1)) +
+    guides(size = guide_legend(title = "Counts", order = 2)) +
     ### theme
     xlab(xlab) +
     ylab("Probability of correct answer") +
-    scale_y_continuous(expand = c(0, 0), limits = c(0, 1)) +
-    theme_bw() +
-    theme(text = element_text(size = 14),
-          plot.title = element_text(size = 14, face = "bold", vjust = 1.5),
-          axis.line  = element_line(colour = "black"),
-          panel.grid.major = element_blank(),
-          panel.grid.minor = element_blank(),
-          plot.background = element_rect(fill = "transparent", colour = NA)) +
-    ### legend
-    theme(legend.box.just = "left",
-          legend.justification = c(1, 0),
-          legend.position = c(0.97, 0.03),
-          # legend.margin = unit(0, "lines"),
-          legend.box = "vertical",
-          legend.key.size = unit(0.9, "cm"),
-          legend.key.height = unit(0.8, "line"),
-          legend.text.align = 0,
-          legend.title.align = 0,
-          legend.key = element_rect(colour = "white")) +
+    scale_y_continuous(limits = c(0, 1)) +
+    theme_app() +
+    theme(legend.box.just = "top",
+          legend.position = c(0.01, 0.98),
+          legend.justification = c(0, 1),
+          legend.key.width = unit(1, "cm"),
+          legend.box = "horizontal") +
     ggtitle(item.name)
 
   plot_CC

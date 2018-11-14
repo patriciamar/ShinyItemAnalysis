@@ -24,46 +24,19 @@ require(psych)
 require(psychometric)
 require(reshape2)
 require(rmarkdown)
+require(shiny)
+require(shinyBS)
 require(ShinyItemAnalysis)
 require(shinyjs)
 require(stringr)
-require(WrightMap)
 require(xtable)
 
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # DATA ######
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-# data('GMAT', package = 'difNLR')
-# data('GMATtest', package = 'difNLR')
-# data('GMATkey', package = 'difNLR')
-# test <- data.table(get("GMATtest"))
-# key <- data.table(get("GMATkey"))
-
 # maximum upload size set to 30MB
 options(shiny.maxRequestSize = 30*1024^2)
-
-#%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-# FUNCTIONS ######
-#%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-# Difficulty/Discrimination plot
-source("DDplot.R")
-
-# Distractors analysis
-source("DistractorAnalysis.R")
-source("plotDistractorAnalysis.R")
-
-# DIF logistic regression plot
-source("plotDIFLogistic.R")
-
-# DIF IRT regression plot
-source("plotDIFirt.R")
-
-# WrightMap
-source("wrightMap.R")
-source("itemClassic.R")
-source("personHist.R")
 
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # SERVER SCRIPT ######
@@ -74,9 +47,17 @@ function(input, output, session) {
   dataset <- reactiveValues()
 
   dataset$answers <- NULL
+  dataset$data_status <- NULL
   dataset$key <- NULL
   dataset$group <- NULL
   dataset$criterion_variable <- NULL
+
+  setting_figures <- reactiveValues()
+
+  setting_figures$text_size <- 12
+  setting_figures$height <- 4
+  setting_figures$width <- 8
+  setting_figures$dpi <- 600
 
   #%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   ### HITS COUNTER ######
@@ -109,6 +90,7 @@ function(input, output, session) {
 
       test = test[, 1:length(key)]
       dataset$answers = test
+
     } else {
       test = dataset$answers
     }
@@ -117,33 +99,33 @@ function(input, output, session) {
 
   # LOAD KEY ######
   test_key <- reactive({
-    if ((is.null(input$key)) | (is.null(dataset$key))) {
-      a = input$dataSelect
-      pos = regexpr("_", a)[1]
-      datasetName = str_sub(a, 1, pos - 1)
-      packageName = str_sub(a, pos + 1)
-
-      do.call(data, args = list(paste0(datasetName, "key"), package = packageName))
-      key = get(paste0(datasetName, "key"))
-      key = unlist(key)
-      dataset$key = key
-
+    if ((is.null(input$key) & input$submitButton & input$data_type == "binary")) {
+      key = dataset$key
     } else {
-      if (length(dataset$key) == 1) {
-        if (dataset$key == "missing"){
+      if ((is.null(input$key)) | (is.null(dataset$key))) {
+        a = input$dataSelect
+        pos = regexpr("_", a)[1]
+        datasetName = str_sub(a, 1, pos - 1)
+        packageName = str_sub(a, pos + 1)
+
+        do.call(data, args = list(paste0(datasetName, "key"), package = packageName))
+        key = get(paste0(datasetName, "key"))
+        key = unlist(key)
+        dataset$key = key
+
+      } else {
+        if (length(dataset$key) == 1) {
+          validate(need(dataset$key != "missing", "Key is missing!"),
+                   errorClass = "error_key_missing")
+        } else {
           validate(
-            need(dataset$key != "missing", "Key is missing!"),
-            errorClass = "error_key_missing"
+            need(ncol(dataset$answers) == length(dataset$key),
+                 "The length of key need to be the same as number of columns in the main dataset!"),
+            errorClass = "error_dimension"
           )
         }
-      } else {
-        validate(
-          need(ncol(dataset$answers) == length(dataset$key), "Length of key is not the same as
-               number of items in the main data set!"),
-          errorClass = "error_dimension"
-          )
+        key = dataset$key
       }
-      key = dataset$key
     }
     unlist(key)
   })
@@ -162,7 +144,7 @@ function(input, output, session) {
       if (datasetName == "GMAT"){
         group <- test[, "group"]
       } else {
-        if (datasetName == "dataMedical"){
+        if (datasetName == "dataMedical" | datasetName == "HCI"){
           group <- test[, "gender"]
         } else {
           group <- test[, ncol(test), with = FALSE]
@@ -172,7 +154,7 @@ function(input, output, session) {
       dataset$group = group
     } else {
       if (length(dataset$group) == 1){
-        if (dataset$group == "missing"){
+        if (any(dataset$group == "missing")){
           validate(
             need(dataset$group != "missing",
                  "Group is missing! DIF and DDF analyses are not available!"),
@@ -182,7 +164,7 @@ function(input, output, session) {
       } else {
         validate(
           need(nrow(dataset$answers) == length(dataset$group),
-            "Length of group is not the same as number of observation in the main data set!"),
+            "The length of group need to be the same as number of observation in the main dataset!"),
           errorClass = "error_dimension"
         )
       }
@@ -202,10 +184,18 @@ function(input, output, session) {
       do.call(data, args = list(paste0(datasetName, "test"), package = packageName))
       test = data.table(get(paste0(datasetName, "test")))
 
-      if (datasetName == "GMAT" | datasetName == "dataMedical"){
+      if (datasetName == "GMAT"){
         criterion_variable <- test[, "criterion"]
       } else {
-        criterion_variable <- "missing"
+        if (datasetName == "dataMedical"){
+          criterion_variable <- test[, "StudySuccess"]
+        } else {
+          if (datasetName == "HCI"){
+            criterion_variable <- test[, "major"]
+          } else {
+            criterion_variable <- "missing"
+          }
+        }
       }
 
       dataset$criterion_variable = criterion_variable
@@ -227,7 +217,7 @@ function(input, output, session) {
       } else {
         validate(
           need(nrow(dataset$answers) == length(dataset$criterion_variable),
-               "Length of criterion variable is not the same as number of observation in the main data set!"),
+               "The length of criterion variable need to be the same as number of observation in the main dataset!"),
           errorClass = "error_dimension"
         )
       }
@@ -248,15 +238,22 @@ function(input, output, session) {
       criterion_variable = NULL
 
       if (is.null(input$data)){
-        key <- test_key()
-        answ <- test[ , 1:length(key), with = FALSE]
-        group <- DIF_groups()
-        criterion_variable <- criterion_variable()
+        dataset$data_status <- "missing"
+
+        # key <- test_key()
+        # answ <- test[ , 1:length(key), with = FALSE]
+        # group <- DIF_groups()
+        # criterion_variable <- criterion_variable()
       } else {
         answ <- read.csv(input$data$datapath, header = input$header,
                          sep = input$sep, quote = input$quote)
+        dataset$data_status <- "OK"
         if (is.null(input$key)){
-          key <- "missing"
+          if (input$data_type == "binary"){
+            key <- rep(1, ncol(answ))
+          } else {
+            key <- "missing"
+          }
         } else {
           key <- read.csv(input$key$datapath, header = input$header,
                           sep = input$sep)
@@ -272,7 +269,8 @@ function(input, output, session) {
         if (is.null(input$criterion_variable)){
           criterion_variable <- "missing"
         } else {
-          criterion_variable <- read.csv(input$criterion_variable$datapath, header = input$header,
+          criterion_variable <- read.csv(input$criterion_variable$datapath,
+                                         header = input$header,
                                          sep = input$sep)
           criterion_variable <- unlist(criterion_variable)
         }
@@ -309,11 +307,22 @@ function(input, output, session) {
 
     df.key <- data.table(matrix(rep(key, dim(test)[1]),
                                 ncol = dim(test)[2], nrow = dim(test)[1], byrow = T))
+
+    if (input$missval){
+      if (!is.null(input$missval_coding)){
+        missval_coding <- unlist(strsplit(gsub(" ", "", missval_coding), ","))
+        for (i in 1:length(missval_coding)){
+          test[test == missval_coding[i]] <- NA
+        }
+      }
+    }
+
     correct <- data.table(matrix(as.numeric(test == df.key),
                           ncol = dim(test)[2], nrow = dim(test)[1]))
     if (!(input$missval)){
       correct[is.na(correct)] <- 0
     }
+
     colnames(correct) <- item_names()
     correct
   })
@@ -332,7 +341,7 @@ function(input, output, session) {
   })
 
   # DATA HEAD ######
-  output$headdata_print<-renderTable({
+  output$headdata_print <- renderTable({
     data_table <- test_answers()
     colnames(data_table) <- item_names()
     head(data_table)
@@ -352,15 +361,13 @@ function(input, output, session) {
                  dom = 'tipr'))
 
   # KEY CONTROL ######
-
-  output$key_print<-renderTable({
+  output$key_print <- renderTable({
     key_table <- as.data.table(t(test_key()))
     colnames(key_table) <- item_names()
     key_table
   })
 
   output$key <- DT::renderDataTable({
-  # output$key <- shiny::renderDataTable({
     key_table <- as.data.table(t(test_key()))
     colnames(key_table) <- item_names()
     key_table
@@ -372,7 +379,7 @@ function(input, output, session) {
                  dom = 'tipr'))
 
   # SCORE 0-1 ######
-  output$sc01_print<-renderTable({
+  output$sc01_print <- renderTable({
     # total score
     sc <- data.table(scored_test())
     # scored data
@@ -402,7 +409,7 @@ function(input, output, session) {
                  dom = 'tipr'))
 
   # GROUP CONTROL ######
-  output$group_print<-renderTable({
+  output$group_print <- renderTable({
     group_table <- t(DIF_groups())
     colnames(group_table) <- 1:ncol(group_table)
     group_table
@@ -421,7 +428,7 @@ function(input, output, session) {
                  dom = 'tipr'))
 
   # CRITERION VARIABLE CONTROL ######
-  output$critvar_print<-renderTable({
+  output$critvar_print <- renderTable({
     critvar_table <- t(criterion_variable())
     colnames(critvar_table) <- 1:ncol(critvar_table)
     critvar_table
@@ -441,18 +448,19 @@ function(input, output, session) {
 
   ##### ITEM SLIDERS ######
   observe({
-    sliderList<-c(
+    sliderList <- c(
       "validitydistractorSlider",
       "distractorSlider",
       "logregSlider",
       "zlogregSlider",
       "zlogreg_irtSlider",
-      "nlsSlider",
+      "slider_nlr_3P_item",
+      "slider_nlr_4P_item",
       "multiSlider",
       "difMHSlider_item",
       "diflogSlider",
       "diflog_irtSlider",
-      "difnlrSlider",
+      "DIF_NLR_item_plot",
       "difirt_lord_itemSlider",
       "difirt_raju_itemSlider",
       "ddfSlider",
@@ -460,23 +468,26 @@ function(input, output, session) {
       )
 
     itemCount = ncol(test_answers())
-
+    updateSliderInput(session = session, inputId = "slider_totalscores_histogram", max = itemCount,
+                      value = round(median(scored_test(), na.rm = T)))
+    updateNumericInput(session = session, inputId = "corr_plot_clust", value = 1, max = itemCount)
+    updateNumericInput(session = session, inputId = "corr_plot_clust_report", value = 1, max = itemCount)
     updateSliderInput(session = session, inputId = "validitydistractorSlider", max = itemCount)
     updateSliderInput(session = session, inputId = "distractorSlider", max = itemCount)
     updateSliderInput(session = session, inputId = "logregSlider", max = itemCount)
     updateSliderInput(session = session, inputId = "zlogregSlider", max = itemCount)
     updateSliderInput(session = session, inputId = "zlogreg_irtSlider", max = itemCount)
-    updateSliderInput(session = session, inputId = "nlsSlider", max = itemCount)
+    updateSliderInput(session = session, inputId = "slider_nlr_3P_item", max = itemCount)
+    updateSliderInput(session = session, inputId = "slider_nlr_4P_item", max = itemCount)
     updateSliderInput(session = session, inputId = "multiSlider", max = itemCount)
     updateSliderInput(session = session, inputId = "difMHSlider_item", max = itemCount)
     updateSliderInput(session = session, inputId = "diflogSlider", max = itemCount)
     updateSliderInput(session = session, inputId = "diflog_irtSlider", max = itemCount)
-    updateSliderInput(session = session, inputId = "difnlrSlider", max = itemCount)
+    updateSliderInput(session = session, inputId = "DIF_NLR_item_plot", max = itemCount)
     updateSliderInput(session = session, inputId = "difirt_lord_itemSlider", max = itemCount)
     updateSliderInput(session = session, inputId = "difirt_raju_itemSlider", max = itemCount)
     updateSliderInput(session = session, inputId = "ddfSlider", max = itemCount)
-    updateSliderInput(session = session, inputId = "inSlider2", max = itemCount,
-                      value = round(median(scored_test(), na.rm = T)))
+
     updateSliderInput(session = session, inputId = "inSlider2group", max = itemCount,
                       value = round(median(scored_test()[DIF_groups() == 1], na.rm = T)))
     updateSliderInput(session = session, inputId = "difMHSlider_score", max = itemCount,
@@ -485,106 +496,145 @@ function(input, output, session) {
   })
 
   #%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  # DATA PAGE ######
+  #%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+  source("server/Data.R", local = T)
+
+  #%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   # SUMMARY ######
   #%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-  source("Summary.R", local = T)
+  source("server/Summary.R", local = T)
+
+  #%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  # RELIABILITY ######
+  #%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+  source("server/Reliability.R", local = T)
 
   #%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   # VALIDITY ######
   #%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-  source("Validity.R", local = T)
+  source("server/Validity.R", local = T)
 
   #%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   # TRADITIONAL ANALYSIS ######
   #%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-  source("TraditionalAnalysis.R", local = T)
+  source("server/TraditionalAnalysis.R", local = T)
 
   #%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   # REGRESSION ######
   #%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-  source("Regression.R", local = T)
+  source("server/Regression.R", local = T)
 
   #%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   # IRT MODELS WITH MIRT ######
   #%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-  source("IRT.R", local = T)
+  source("server/IRT.R", local = T)
 
   #%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   # DIF/FAIRNESS ######
   #%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-  source("DIF.R", local = T)
+  source("server/DIF.R", local = T)
 
   #%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   # REPORTS ######
   #%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-  formatInput<-reactive({
-    format<-input$report_format
+  # update dataset name in Reports page
+  dataName <- reactive({
+    if (is.null(input$data)) {
+      a <- input$dataSelect
+      pos <- regexpr("_", a)[1]
+      name <- str_sub(a, 1, pos - 1)
+      if (name == "dataMedical"){
+        name <- "Medical 100"
+      }
+    } else {
+        name <- ""
+    }
+    name
+  })
+
+  observe({
+    updateTextInput(session = session,
+                    inputId = "reportDataName",
+                    value = paste(dataName(), "dataset"))
+  })
+
+
+  formatInput <- reactive({
+    format <- input$report_format
     format
   })
 
-  irt_typeInput<-reactive({
-    type=input$irt_type_report
+  irt_typeInput <- reactive({
+    type <- input$irt_type_report
     type
   })
 
-  irtInput<-reactive({
+  irtInput <- reactive({
     type = input$irt_type_report
-    if (type=="rasch"){out=raschInput_mirt()}
-    if (type=="1pl") {out=oneparamirtInput_mirt()}
-    if (type=="2pl") {out=twoparamirtInput_mirt()}
-    if (type=="3pl") {out=threeparamirtInput_mirt()}
-    if (type=="none") {out=""}
+    if (type == "rasch"){out = raschInput_mirt()}
+    if (type == "1pl")  {out = oneparamirtInput_mirt()}
+    if (type == "2pl")  {out = twoparamirtInput_mirt()}
+    if (type == "3pl")  {out = threeparamirtInput_mirt()}
+    if (type == "4pl")  {out = irt_4PL_icc_Input()}
+    if (type == "none") {out = ""}
 
     out
   })
 
-  irtiicInput<-reactive({
+  irtiicInput <- reactive({
     type = input$irt_type_report
-    if (type=="rasch"){out=raschiicInput_mirt()}
-    if (type=="1pl") {out=oneparamirtiicInput_mirt()}
-    if (type=="2pl") {out=twoparamirtiicInput_mirt()}
-    if (type=="3pl") {out=threeparamirtiicInput_mirt()}
-    if (type=="none") {out=""}
+    if (type == "rasch"){out = raschiicInput_mirt()}
+    if (type == "1pl")  {out = oneparamirtiicInput_mirt()}
+    if (type == "2pl")  {out = twoparamirtiicInput_mirt()}
+    if (type == "3pl")  {out = threeparamirtiicInput_mirt()}
+    if (type == "4pl")  {out = irt_4PL_iic_Input()}
+    if (type == "none") {out = ""}
 
     out
   })
 
-  irttifInput<-reactive({
+  irttifInput <- reactive({
     type = input$irt_type_report
-    if (type=="rasch"){out=raschtifInput_mirt()}
-    if (type=="1pl") {out=oneparamirttifInput_mirt()}
-    if (type=="2pl") {out=twoparamirttifInput_mirt()}
-    if (type=="3pl") {out=threeparamirttifInput_mirt()}
-    if (type=="none") {out=""}
+    if (type == "rasch"){out = raschtifInput_mirt()}
+    if (type == "1pl")  {out = oneparamirttifInput_mirt()}
+    if (type == "2pl")  {out = twoparamirttifInput_mirt()}
+    if (type == "3pl")  {out = threeparamirttifInput_mirt()}
+    if (type == "4pl")  {out = irt_4PL_tif_Input()}
+    if (type == "none") {out = ""}
 
     out
   })
 
-  irtcoefInput<-reactive({
+  irtcoefInput <- reactive({
     type = input$irt_type_report
-    if (type=="rasch"){out=raschcoefInput_mirt()}
-    if (type=="1pl") {out=oneparamirtcoefInput_mirt()}
-    if (type=="2pl") {out=twoparamirtcoefInput_mirt()}
-    if (type=="3pl") {out=threeparamirtcoefInput_mirt()}
-    if (type=="none") {out=""}
+    if (type == "rasch"){out = raschcoefInput_mirt()}
+    if (type == "1pl")  {out = oneparamirtcoefInput_mirt()}
+    if (type == "2pl")  {out = twoparamirtcoefInput_mirt()}
+    if (type == "3pl")  {out = threeparamirtcoefInput_mirt()}
+    if (type == "4pl")  {out = irt_4PL_coef_Input()}
+    if (type == "none") {out = ""}
 
     out
   })
 
-  irtfactorInput<-reactive({
+  irtfactorInput <- reactive({
     type = input$irt_type_report
-    if (type=="rasch"){out=raschFactorInput_mirt()}
-    if (type=="1pl") {out=oneparamirtFactorInput_mirt()}
-    if (type=="2pl") {out=twoparamirtFactorInput_mirt()}
-    if (type=="3pl") {out=threeparamirtFactorInput_mirt()}
-    if (type=="none") {out=""}
+    if (type == "rasch"){out = raschFactorInput_mirt()}
+    if (type == "1pl")  {out = oneparamirtFactorInput_mirt()}
+    if (type == "2pl")  {out = twoparamirtFactorInput_mirt()}
+    if (type == "3pl")  {out = threeparamirtFactorInput_mirt()}
+    if (type == "4pl")  {out = irt_4PL_factorscores_plot_Input()}
+    if (type == "none") {out = ""}
 
     out
   })
@@ -599,18 +649,22 @@ function(input, output, session) {
                       value = c(1, min(3, val)))
   })
 
-  groupPresent<-reactive({
+  groupPresent <- reactive({
     (any(dataset$group != "missing") | is.null(dataset$group))
   })
 
-  criterionPresent<-reactive({
+  criterionPresent <- reactive({
     (any(dataset$criterion_variable != "missing") | is.null(dataset$criterion_variable))
   })
 
 
   observeEvent(input$generate, {
     withProgress(message = "Creating content", value = 0, style = "notification", {
-      list(a = test_answers(),
+      list(# header
+           author = input$reportAuthor,
+           dataset = input$reportDataName,
+           # datasets
+           a = test_answers(),
            k = test_key(),
            # total scores
            incProgress(0.05),
@@ -621,6 +675,8 @@ function(input, output, session) {
            incProgress(0.05),
            # validity section
            corr_plot = {if (input$corr_report) {corr_plot_Input()} else {""}},
+           corr_plot_numclust = ifelse(input$customizeCheck, input$corr_plot_clust_report, input$corr_plot_clust),
+           corr_plot_clustmethod = ifelse(input$customizeCheck, input$corr_plot_clustmethod_report, input$corr_plot_clustmethod),
            scree_plot = {if (input$corr_report) {scree_plot_Input()} else {""}},
            isCriterionPresent = criterionPresent(),
            validity_check = input$predict_report,
@@ -628,7 +684,7 @@ function(input, output, session) {
            validity_table = {if (input$predict_report) {if (criterionPresent()) {validity_table_Input()} else {""}}},
            incProgress(0.05),
            # item analysis
-           difPlot = DDplot_Input(),
+           difPlot = DDplot_Input_report(),
            DDplotRange1 = ifelse(input$customizeCheck, input$DDplotRangeSlider_report[[1]], input$DDplotRangeSlider[[1]]),
            DDplotRange2 = ifelse(input$customizeCheck, input$DDplotRangeSlider_report[[2]], input$DDplotRangeSlider[[2]]),
            DDplotNumGroups = ifelse(input$customizeCheck, input$DDplotNumGroupsSlider_report, input$DDplotNumGroupsSlider),
@@ -637,14 +693,14 @@ function(input, output, session) {
            # distractors
            hist_distractor_by_group = distractor_histogram_Input(),
            graf = report_distractor_plot(),
-           incProgress(0.1),
+           incProgress(0.25),
            # regression
-           logreg = logreg_plot_Input(),
-           zlogreg = z_logreg_plot_Input(),
-           zlogreg_irt = z_logreg_irt_plot_Input(),
-           nlsplot = nlr_plot_Input(),
+           # logreg = logreg_plot_Input(),
+           # zlogreg = z_logreg_plot_Input(),
+           # zlogreg_irt = z_logreg_irt_plot_Input(),
+           # nlsplot = nlr_3P_plot_Input(),
            multiplot = multiplotReportInput(),
-           incProgress(0.15),
+           incProgress(0.05),
            # irt
            wrightMap = oneparamirtWrightMapReportInput_mirt(),
            irt_type = irt_typeInput(),
@@ -655,26 +711,26 @@ function(input, output, session) {
            irtfactor = irtfactorInput(),
            incProgress(0.25),
            # DIF
+           ### presence of group vector
            isGroupPresent = groupPresent(),
+           ### histograms by group
            histCheck = input$histCheck,
            resultsgroup = {if (groupPresent()) {if (input$histCheck) {resultsgroupInput()}}},
            histbyscoregroup0 = {if (groupPresent()) {if (input$histCheck) {histbyscoregroup0Input()}}},
            histbyscoregroup1 = {if (groupPresent()) {if (input$histCheck) {histbyscoregroup1Input()}}},
+           ### delta plot
            deltaplotCheck = input$deltaplotCheck,
            deltaplot = {if (groupPresent()) {if (input$deltaplotCheck) {deltaplotInput_report()}}},
            DP_text_normal = {if (groupPresent()) {if (input$deltaplotCheck) {deltaGpurn_report()}}},
+           ### logistic regression
            logregCheck = input$logregCheck,
            DIF_logistic_plot = {if (groupPresent()) {if (input$logregCheck) {DIF_logistic_plotReport()}}},
            DIF_logistic_print = {if (groupPresent()) {if (input$logregCheck) {model_DIF_logistic_print_report()}}},
-           #plot_DIF_logistic = {if (groupPresent()) {plot_DIF_logisticInput()}},
-           #plot_DIF_logistic_IRT_Z = {if (groupPresent()) {plot_DIF_logistic_IRT_ZInput()}},
-           #plot_DIF_NLR = {if (groupPresent()) {plot_DIF_NLRInput()}},
-           #plot_DIF_IRT_Lord = {if (groupPresent()) {plot_DIF_IRT_LordInput()}},
-           #plot_DIF_IRT_Raju = {if (groupPresent()) {plot_DIF_IRT_RajuInput()}},
+           ### DDF multinomial
            multiCheck = input$multiCheck,
-           model_DDF_print = {if (groupPresent()) {if (input$multiCheck) {model_DDF_print_report()}}},
-           plot_DDFReportInput = {if (groupPresent()) {if (input$multiCheck) {plot_DDFReportInput()}}},
-           incProgress(0.3)
+           DDF_multinomial_print = {if (groupPresent()) {if (input$multiCheck) {model_DDF_print_report()}}},
+           DDF_multinomial_plot = {if (groupPresent()) {if (input$multiCheck) {plot_DDFReportInput()}}},
+           incProgress(0.25)
       )
     })
 
@@ -687,72 +743,74 @@ function(input, output, session) {
 
   })
 
-
-
-
   output$report <- downloadHandler(
     filename = reactive({paste0("report.", input$report_format)}),
     content = function(file) {
 
       reportPath <- file.path(getwd(), paste0("report", formatInput(), ".Rmd"))
-      # file.copy("report.Rmd", tempReport, overwrite = TRUE)
-      parameters<-list(a = test_answers(),
-                       k = test_key(),
-                       # total scores
-                       results = t(totalscores_table_Input()),
-                       histogram_totalscores = totalscores_histogram_Input(),
-                       # standard scores
-                       standardscores_table = scores_tables_Input(),
-                       # validity section
-                       corr_plot = {if (input$corr_report) {corr_plot_Input()} else {""}},
-                       scree_plot = {if (input$corr_report) {scree_plot_Input()} else {""}},
-                       isCriterionPresent = criterionPresent(),
-                       validity_check = input$predict_report,
-                       validity_plot = {if (input$predict_report) {if (criterionPresent()) {validity_plot_Input()} else {""}}},
-                       validity_table = {if (input$predict_report) {if (criterionPresent()) {validity_table_Input()} else {""}}},
-                       # item analysis
-                       difPlot = DDplot_Input(),
-                       DDplotRange1 = ifelse(input$customizeCheck, input$DDplotRangeSlider_report[[1]], input$DDplotRangeSlider[[1]]),
-                       DDplotRange2 = ifelse(input$customizeCheck, input$DDplotRangeSlider_report[[2]], input$DDplotRangeSlider[[2]]),
-                       DDplotNumGroups = ifelse(input$customizeCheck, input$DDplotNumGroupsSlider_report, input$DDplotNumGroupsSlider),
-                       itemexam = itemanalysis_table_Input(),
-                       # distractors
-                       hist_distractor_by_group = distractor_histogram_Input(),
-                       graf = report_distractor_plot(),
-                       # regression
-                       logreg = logreg_plot_Input(),
-                       zlogreg = z_logreg_plot_Input(),
-                       zlogreg_irt = z_logreg_irt_plot_Input(),
-                       nlsplot = nlr_plot_Input(),
-                       multiplot = multiplotReportInput(),
-                       # irt
-                       wrightMap = oneparamirtWrightMapReportInput_mirt(),
-                       irt_type = irt_typeInput(),
-                       irt = irtInput(),
-                       irtiic = irtiicInput(),
-                       irttif = irttifInput(),
-                       irtcoef = irtcoefInput(),
-                       irtfactor = irtfactorInput(),
-                       # DIF
-                       isGroupPresent = groupPresent(),
-                       histCheck = input$histCheck,
-                       resultsgroup = {if (groupPresent()) {if (input$histCheck) {resultsgroupInput()}}},
-                       histbyscoregroup0 = {if (groupPresent()) {if (input$histCheck) {histbyscoregroup0Input()}}},
-                       histbyscoregroup1 = {if (groupPresent()) {if (input$histCheck) {histbyscoregroup1Input()}}},
-                       deltaplotCheck = input$deltaplotCheck,
-                       deltaplot = {if (groupPresent()) {if (input$deltaplotCheck) {deltaplotInput_report()}}},
-                       DP_text_normal = {if (groupPresent()) {if (input$deltaplotCheck) {deltaGpurn_report()}}},
-                       logregCheck = input$logregCheck,
-                       DIF_logistic_plot = {if (groupPresent()) {if (input$logregCheck) {DIF_logistic_plotReport()}}},
-                       DIF_logistic_print = {if (groupPresent()) {if (input$logregCheck) {model_DIF_logistic_print_report()}}},
-                       #plot_DIF_logistic = {if (groupPresent()) {plot_DIF_logisticInput()}},
-                       #plot_DIF_logistic_IRT_Z = {if (groupPresent()) {plot_DIF_logistic_IRT_ZInput()}},
-                       #plot_DIF_NLR = {if (groupPresent()) {plot_DIF_NLRInput()}},
-                       #plot_DIF_IRT_Lord = {if (groupPresent()) {plot_DIF_IRT_LordInput()}},
-                       #plot_DIF_IRT_Raju = {if (groupPresent()) {plot_DIF_IRT_RajuInput()}},
-                       multiCheck = input$multiCheck,
-                       model_DDF_print = {if (groupPresent()) {if (input$multiCheck) {model_DDF_print_report()}}},
-                       plot_DDFReportInput = {if (groupPresent()) {if (input$multiCheck) {plot_DDFReportInput()}}}
+      parameters <- list(# header
+                         author = input$reportAuthor,
+                         dataset = input$reportDataName,
+                         # datasets
+                         a = test_answers(),
+                         k = test_key(),
+                         # total scores
+                         results = t(totalscores_table_Input()),
+                         histogram_totalscores = totalscores_histogram_Input(),
+                         # standard scores
+                         standardscores_table = scores_tables_Input(),
+                         # validity section
+                         corr_plot = {if (input$corr_report) {corr_plot_Input()} else {""}},
+                         corr_plot_numclust = ifelse(input$customizeCheck, input$corr_plot_clust_report, input$corr_plot_clust),
+                         corr_plot_clustmethod = ifelse(input$customizeCheck, input$corr_plot_clustmethod_report, input$corr_plot_clustmethod),
+                         scree_plot = {if (input$corr_report) {scree_plot_Input()} else {""}},
+                         isCriterionPresent = criterionPresent(),
+                         validity_check = input$predict_report,
+                         validity_plot = {if (input$predict_report) {if (criterionPresent()) {validity_plot_Input()} else {""}}},
+                         validity_table = {if (input$predict_report) {if (criterionPresent()) {validity_table_Input()} else {""}}},
+                         # item analysis
+                         difPlot = DDplot_Input_report(),
+                         DDplotRange1 = ifelse(input$customizeCheck, input$DDplotRangeSlider_report[[1]], input$DDplotRangeSlider[[1]]),
+                         DDplotRange2 = ifelse(input$customizeCheck, input$DDplotRangeSlider_report[[2]], input$DDplotRangeSlider[[2]]),
+                         DDplotNumGroups = ifelse(input$customizeCheck, input$DDplotNumGroupsSlider_report, input$DDplotNumGroupsSlider),
+                         itemexam = itemanalysis_table_Input(),
+                         # distractors
+                         hist_distractor_by_group = distractor_histogram_Input(),
+                         graf = report_distractor_plot(),
+                         # regression
+                         # logreg = logreg_plot_Input(),
+                         # zlogreg = z_logreg_plot_Input(),
+                         # zlogreg_irt = z_logreg_irt_plot_Input(),
+                         # nlsplot = nlr_3P_plot_Input(),
+                         multiplot = multiplotReportInput(),
+                         # irt
+                         wrightMap = oneparamirtWrightMapReportInput_mirt(),
+                         irt_type = irt_typeInput(),
+                         irt = irtInput(),
+                         irtiic = irtiicInput(),
+                         irttif = irttifInput(),
+                         irtcoef = irtcoefInput(),
+                         irtfactor = irtfactorInput(),
+                         # DIF
+                         ### presence of group vector
+                         isGroupPresent = groupPresent(),
+                         ### histograms by groups
+                         histCheck = input$histCheck,
+                         resultsgroup = {if (groupPresent()) {if (input$histCheck) {resultsgroupInput()}}},
+                         histbyscoregroup0 = {if (groupPresent()) {if (input$histCheck) {histbyscoregroup0Input()}}},
+                         histbyscoregroup1 = {if (groupPresent()) {if (input$histCheck) {histbyscoregroup1Input()}}},
+                         ### delta plot
+                         deltaplotCheck = input$deltaplotCheck,
+                         DIF_deltaplot = {if (groupPresent()) {if (input$deltaplotCheck) {deltaplotInput_report()}}},
+                         DIF_deltaplot_text = {if (groupPresent()) {if (input$deltaplotCheck) {deltaGpurn_report()}}},
+                         ### logistic regression
+                         logregCheck = input$logregCheck,
+                         DIF_logistic_plot = {if (groupPresent()) {if (input$logregCheck) {DIF_logistic_plotReport()}}},
+                         DIF_logistic_print = {if (groupPresent()) {if (input$logregCheck) {model_DIF_logistic_print_report()}}},
+                         ### multinomial regression
+                         multiCheck = input$multiCheck,
+                         DDF_multinomial_print = {if (groupPresent()) {if (input$multiCheck) {model_DDF_print_report()}}},
+                         DDF_multinomial_plot = {if (groupPresent()) {if (input$multiCheck) {plot_DDFReportInput()}}}
       )
       rmarkdown::render(reportPath, output_file = file,
                         params = parameters, envir = new.env(parent = globalenv()))
@@ -760,4 +818,9 @@ function(input, output, session) {
   )
 
 
+  #%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  # SETTING ######
+  #%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+  source("server/Setting.R", local = T)
 }

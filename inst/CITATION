@@ -1,16 +1,30 @@
-year <- "2017"
+year <- sub("-.*", "", meta$Date)
 vers <- paste("R package version", meta$Version)
 
 citHeader("To cite package 'ShinyItemAnalysis' in publications use:")
 
 
-citEntry(entry="Manual",
+citEntry(entry = "Manual",
          title = "{ShinyItemAnalysis}: {T}est and item analysis via shiny",
-         author = personList(as.person("Patricia Martinkova"), as.person("Adela Drabinova"), as.person("Ondrej Leder"), as.person("Jakub Houdek")),
+         author = personList(as.person("Patricia Martinkova"),
+         as.person("Adela Drabinova"),
+         as.person("Ondrej Leder"),
+         as.person("Jakub Houdek")),
          year = year,
          note = vers,
          url = "https://CRAN.R-project.org/package=ShinyItemAnalysis",
          textVersion =
          paste("Martinkova P., Drabinova A., Leder O., & Houdek J. (",
                year, "). ShinyItemAnalysis: Test and item analysis via shiny. ", vers,
-               ".", sep = ""))
+               ". https://CRAN.R-project.org/package=ShinyItemAnalysis", sep = ""))
+
+citEntry(entry = "Article",
+         title = "{ShinyItemAnalysis}: {A}nalyza prijimacich a jinych znalostnich ci psychologickych testu [{ShinyItemAnalysis}: {A}nalyzing admission and other educational and psychological tests]",
+         author = personList(as.person("Patricia Martinkova"), as.person("Adela Drabinova"), as.person("Jakub Houdek")),
+         year = "2017",
+         journal = "TESTFORUM",
+         volume = "6",
+         number = "9",
+         pages = "16-35",
+         doi = "10.5817/TF2017-9-129",
+         textVersion = "Martinkova, P., Drabinova, A., & Houdek, J. (2017). ShinyItemAnalysis: Analyza prijimacich a jinych znalostnich ci psychologickych testu [ShinyItemAnalysis: Analyzing admission and other educational and psychological tests]. TESTFORUM, 6(9), 16-35. doi:10.5817/TF2017-9-129")

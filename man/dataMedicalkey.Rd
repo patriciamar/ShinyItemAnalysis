@@ -3,9 +3,9 @@
 \docType{data}
 \name{dataMedicalkey}
 \alias{dataMedicalkey}
-\title{Key of Correct Answers for \code{dataMedicaltest} Data Set}
-\format{A data frame with 100 values representing correct answers to items of \code{dataMedicaltest}
-data set. For more details see \code{\link{dataMedicaltest}}.}
+\title{Key of Correct Answers for \code{dataMedicaltest} Dataset}
+\format{A \code{data.frame} with 100 values representing correct answers to items of \code{dataMedicaltest}
+dataset. For more details see \code{\link{dataMedicaltest}}.}
 \usage{
 data(dataMedicalkey)
 }
@@ -18,7 +18,7 @@ Stuka, C. Vejrazka, M., Martinkova, P. Komenda, M. & Stepanek, L. (2016). The Us
 Improvement of Tests. Workshop held at conference MEFANET, 2016, Brno, Czech Republic.
 }
 \seealso{
-\code{\link{dataMedical}}, \code{\link{dataMedicaltest}}
+\code{\link{dataMedical}}, \code{\link{dataMedicaltest}}, \code{\link{dataMedicalgraded}}
 }
 \author{
 Cestmir Stuka \cr
@@ -39,6 +39,6 @@ houdek.james@gmail.com \cr
 Adela Drabinova \cr
 Institute of Computer Science, The Czech Academy of Sciences \cr
 Faculty of Mathematics and Physics, Charles University \cr
-adela.drabinova@gmail.com \cr
+drabinova@cs.cas.cz \cr
 }
 \keyword{datasets}

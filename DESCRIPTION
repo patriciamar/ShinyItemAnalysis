@@ -1,23 +1,23 @@
 Package: ShinyItemAnalysis
 Type: Package
 Title: Test and Item Analysis via Shiny
-Version: 1.2.2
-Date: 2017-07-26
+Version: 1.2.8-2
+Date: 2018-11-05
 Author: Patricia Martinkova [aut, cre], Adela Drabinova [aut], Ondrej Leder [aut], Jakub Houdek [aut], Lubomir Stepanek [ctb]
 Authors@R: c(person("Patricia", "Martinkova", role = c("aut", "cre"), email = "martinkova@cs.cas.cz"), person("Adela", "Drabinova", role = c("aut")), person("Ondrej", "Leder", role = "aut"), person("Jakub", "Houdek", role = "aut"), person("Lubomir", "Stepanek", role = "ctb"))
 Maintainer: Patricia Martinkova <martinkova@cs.cas.cz>
 Depends:
-    R (>= 3.3.2)
+    R (>= 3.1)
 Imports:
     corrplot,
+    cowplot,
     CTT,
     data.table,
     deltaPlotR,
     DT,
-    difNLR (>= 1.0.3),
-    difR (>= 4.7),
+    difNLR (>= 1.2.2),
+    difR (>= 5.0),
     ggplot2 (>= 2.2.1),
-    grid,
     gridExtra,
     knitr,
     latticeExtra,
@@ -32,13 +32,15 @@ Imports:
     reshape2,
     rmarkdown,
     shiny (>= 1.0.3),
+    shinyBS,
+    shinydashboard,
     shinyjs (>= 0.9),
     stringr,
-    WrightMap,
     xtable
 Description: Interactive shiny application for analysis of educational tests and
     their items.
 License: GPL-3
 LazyData: TRUE
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.0
 BugReports: https://github.com/patriciamar/ShinyItemAnalysis/issues
+Encoding: UTF-8

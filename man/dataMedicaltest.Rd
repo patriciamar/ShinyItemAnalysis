@@ -3,17 +3,17 @@
 \docType{data}
 \name{dataMedicaltest}
 \alias{dataMedicaltest}
-\title{Data Set of Admission Test to Medical School}
-\format{A \code{dataMedicaltest} data frame consists of 2,392 observations on
+\title{Dataset of Admission Test to Medical School}
+\format{\code{dataMedicaltest} is a \code{data.frame} consisting of 2,392 observations on
 the following 101 variables. The first 100 columns represent answers of subject to
 items of the test. The 101st column is vector of gender membership; values 0 and 1
 refer to males and females. The 102nd columns in criterion variable; value 1 means
-that student study standardly, 0 otherwise (e.g. leaving or interrupting studies).}
+that student studies standardly, 0 otherwise (e.g. leaving or interrupting studies).}
 \usage{
 data(dataMedicaltest)
 }
 \description{
-The \code{dataMedicaltest} data set consists of the responses of 2,392 subjects
+The \code{dataMedicaltest} dataset consists of the responses of 2,392 subjects
 (750 males, 1,633 females and 9 subjects without gender specification) to multiple-choice
 admission test to a medical school. It contains 100 items, possible answers
 were A, B, C, D, while any combination of these can be correct.
@@ -23,7 +23,7 @@ Stuka, C. Vejrazka, M., Martinkova, P. Komenda, M. & Stepanek, L. (2016). The Us
 Improvement of Tests. Workshop held at conference MEFANET, 2016, Brno, Czech Republic.
 }
 \seealso{
-\code{\link{dataMedical}}, \code{\link{dataMedicalkey}}
+\code{\link{dataMedical}}, \code{\link{dataMedicalkey}}, \code{\link{dataMedicalgraded}}
 }
 \author{
 Cestmir Stuka \cr
@@ -44,6 +44,6 @@ houdek.james@gmail.com \cr
 Adela Drabinova \cr
 Institute of Computer Science, The Czech Academy of Sciences \cr
 Faculty of Mathematics and Physics, Charles University \cr
-adela.drabinova@gmail.com \cr
+drabinova@cs.cas.cz \cr
 }
 \keyword{datasets}

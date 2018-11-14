@@ -38,7 +38,7 @@
 #' Adela Drabinova \cr
 #' Institute of Computer Science, The Czech Academy of Sciences \cr
 #' Faculty of Mathematics and Physics, Charles University \cr
-#' adela.drabinova@gmail.com \cr
+#' drabinova@cs.cas.cz \cr
 #'
 #' Patricia Martinkova \cr
 #' Institute of Computer Science, The Czech Academy of Sciences \cr
@@ -153,19 +153,10 @@ plotDistractorAnalysis <-  function (data, key, num.groups = 3, item = 1, item.n
     scale_linetype_manual(values = linetype) +
     scale_shape_manual(values = shape) +
     scale_color_manual(values = col) +
-    theme_bw() +
-    theme(axis.line  = element_line(colour = "black"),
-          text = element_text(size = 14),
-          panel.grid.major = element_blank(),
-          panel.grid.minor = element_blank(),
-          panel.background = element_blank(),
-          legend.title = element_blank(),
-          legend.position = c(0, 1),
+    theme_app() +
+    theme(legend.position = c(0.01, 0.98),
           legend.justification = c(0, 1),
-          legend.background = element_blank(),
-          legend.key = element_rect(colour = "white"),
-          legend.key.width = unit(1, "cm"),
-          plot.title = element_text(face = "bold")) +
+          legend.key.width = unit(1, "cm")) +
     ggtitle(item.name)
 
 }

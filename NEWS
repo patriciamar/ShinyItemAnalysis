@@ -3,6 +3,425 @@
         *  Changes and Developments in the ShinyItemAnalysis Package  *
         *                                                             *
         ***************************************************************
+-------------------------------------------------------
+- Changes in ShinyItemAnalysis 1.2.8-2. (2018-11-05) -
+-------------------------------------------------------
+
+MAJOR UPDATES
+  o gDiscrim() function has been extended to calculate Upper-Lower Index (ULI) also for ordinal items
+
+-------------------------------------------------------
+- Changes in ShinyItemAnalysis 1.2.8-1. (2018-10-01) -
+-------------------------------------------------------
+
+BUG FIXING
+  o Bug in IRT dichotomous models comparison is fixed.
+    (Reported by Jean-Luc Kop)
+  o Bug in IRT dichotomous models (3PL and 4PL) was fixed.
+    Tables of parameters are rendered even in case that EM cycles terminated
+    without convergence. In such a case SD of parameters are set to NA.
+  o Bug in plotDIFLogistic() function was fixed. Function now returns also
+    item.name argument.
+  o Bug in plotDIFirt() function was fixed. Function now returns also
+    item.name argument.
+
+MAJOR UPDATES
+  o Global setting for figure downloads was created. This can be changed
+    in Setting section.
+
+-------------------------------------------------------
+- Changes in ShinyItemAnalysis 1.2.8 (2018-09-27) -
+-------------------------------------------------------
+
+ ** This is CRAN version, it includes version 1.2.7.-1.-7. **
+
+-------------------------------------------------------
+- Changes in ShinyItemAnalysis 1.2.7-7. (2018-09-27) -
+-------------------------------------------------------
+
+MAJOR UPDATES
+  o Section Reliability was added.
+    - Split-half methods including also Revelle's beta were added
+    - Cronbach's alpha method with CI was moved to section Reliability.
+    - Spearman-Brown formula was added.
+  o New function ggWrightMap replaced wrightMap from WrightMap package.
+  o Section IRT models
+    - Selected R code for Rasch and 1PL models was updated.
+
+MINOR UPDATES
+  o Reference list was updated.
+
+-------------------------------------------------------
+- Changes in ShinyItemAnalysis 1.2.7-6. (2018-08-29) -
+-------------------------------------------------------
+
+MAJOR UPDATES
+  o Section DIF/Fairness
+    - Subsection Logistic IRT Z is deprecated.
+    - Subsection Nonlinear IRT Z is now called Generalized logistic.
+    - Subsection Generalized logistic includes now wide range of models
+      and different specification of DIF type.
+    - Subsection SIBTEST was added, including SIBTEST method and
+      Crossing-SIBTEST method.
+
+MINOR UPDATES
+  o Reference list was updated.
+
+-------------------------------------------------------
+- Changes in ShinyItemAnalysis 1.2.7-5. (2018-08-22) -
+-------------------------------------------------------
+
+MINOR UPDATES
+  o Some wording was updated.
+  o Selected R code was updated.
+  o Function theme_shiny is deprecated.
+    New function theme_app() was created and applied for all
+    graphics, including R functions in package.
+
+-------------------------------------------------------
+- Changes in ShinyItemAnalysis 1.2.7-4. (2018-08-10) -
+-------------------------------------------------------
+
+MINOR UPDATES
+  o Paddings were adjusted.
+  o Acknowledgments were updated.
+
+-------------------------------------------------------
+- Changes in ShinyItemAnalysis 1.2.7-3. (2018-07-27) -
+-------------------------------------------------------
+
+BUG FIXING
+  o Crashing of the app when upload no data was fixed.
+
+MAJOR UPDATES
+  o Data page
+    - Design of data page was changed.
+    - User can now specify encoding of missing values.
+    - Basic summary was added.
+
+-------------------------------------------------------
+- Changes in ShinyItemAnalysis 1.2.7-2. (2018-07-04) -
+-------------------------------------------------------
+
+MAJOR UPDATES
+  o Phone version
+    - collapsible menu closes when clicked
+
+-------------------------------------------------------
+- Changes in ShinyItemAnalysis 1.2.7-1. (2018-07-02) -
+-------------------------------------------------------
+
+BUG FIXING
+  o Plotly files in IRT training section are now displayed with
+    mode bar due a bug in plotly package.
+
+MINOR UPDATES
+  o Some typos were fixed.
+  o Link to google form for feedback was added into About section.
+  o New R icon was added into footer.
+
+-------------------------------------------------------
+- ShinyItemAnalysis 1.2.7. (2018-05-03) -
+-------------------------------------------------------
+
+ ** This is CRAN version, it includes version 1.2.6.-1.-12. **
+
+-------------------------------------------------------
+- Changes in ShinyItemAnalysis 1.2.6-12. (2018-04-26) -
+-------------------------------------------------------
+
+MINOR UPDATES
+  o Mirror at Charles University is no longer in use.
+
+-------------------------------------------------------
+- Changes in ShinyItemAnalysis 1.2.6-11. (2018-04-24) -
+-------------------------------------------------------
+
+MAJOR UPDATES
+  o Function 'DDplot()'
+    - Limits for y-axis were adjusted when negative values of discrimination
+      are detected.
+    - Warning for negative discrimination values were added.
+  o Reports
+    - Some unused parts of reports were excluded.
+
+-------------------------------------------------------
+- Changes in ShinyItemAnalysis 1.2.6-10. (2018-04-19) -
+-------------------------------------------------------
+
+MAJOR UPDATES
+  o UI
+    - Some parts were splitted from main ui.R file
+  o IRT
+    - Exercises in IRT training were extended.
+  o Data
+    - Bug in data upload was fixed. Now length of criterion variable
+      is correctly checked.
+
+-------------------------------------------------------
+- Changes in ShinyItemAnalysis 1.2.6-9. (2018-04-16) -
+-------------------------------------------------------
+
+MAJOR UPDATES
+  o Packages - shinyBS is now required.
+  o Data
+    - HCI dataset was added into package.
+    - Description of dataMedical was improved.
+    - Description of training datasets was improved.
+  o About
+    - Page was improved.
+  o IRT
+    - Helps for interactive exercises were added.
+
+MINOR UPDATES
+  o Typos were fixed.
+
+-------------------------------------------------------
+- Changes in ShinyItemAnalysis 1.2.6-8. (2018-04-13) -
+-------------------------------------------------------
+
+MAJOR UPDATES
+  o IRT
+    - Expected item scores were removed from IRT training NRM.
+    - Interactive exercises were added into  IRT training - dichotomous
+      models.
+
+-------------------------------------------------------
+- Changes in ShinyItemAnalysis 1.2.6-7. (2018-04-12) -
+-------------------------------------------------------
+
+MAJOR UPDATES
+  o Data
+    - Graded data od Medical data set was added.
+    - In all dataMedical data sets the criterion variable was renamed to
+      StudySuccess.
+  o IRT
+    - Expected item scores were added into polytomous models in IRT training.
+    - Selected R code was updated in IRT training.
+
+MINOR UPDATES
+  o IRT section
+    - Colors of sliders and curves in IRT training section were adjusted.
+
+-------------------------------------------------------
+- Changes in ShinyItemAnalysis 1.2.6-6. (2018-04-10) -
+-------------------------------------------------------
+
+MAJOR UPDATES
+  o Regression
+    - NLR 4P model was added into model comparison.
+
+MINOR UPDATES
+  o README file was updated. Typos were fixed.
+  o Design of figures was unified.
+  o Download button options were unified.
+  o Selected R code syntax was improved in some sections
+    (IRT only partionally, DIF not).
+  o Selected R code was improved for first 4 sections.
+  o Some wording was improved.
+
+-------------------------------------------------------
+- Changes in ShinyItemAnalysis 1.2.6-5. (2018-04-09) -
+-------------------------------------------------------
+
+MAJOR UPDATES
+  o IRT section
+    - Wording for IRT training was added and improved.
+  o Selected R code syntax was improved in some sections. This can be
+    done with
+    txt <- gsub("\n", "<br>", txt)
+    txt <- gsub(" ", "&nbsp;", txt)
+    txt
+    where txt is R code in "".
+  o theme_shiny was created as a default theme for all figures.
+    Now it is used only partionally.
+
+MINOR UPDATES
+  o README file was updated. Typos were fixed. Links were added.
+    Hexbin was added.
+  o References were updated.
+
+-------------------------------------------------------
+- Changes in ShinyItemAnalysis 1.2.6-4. (2018-04-06) -
+-------------------------------------------------------
+
+MAJOR UPDATES
+  o IRT section
+    - Selected R code was added into polytomous models.
+    - Equations were added into polytomous models.
+    - Download buttons were added into polytomous models.
+    - 4PL model was added.
+    - 4PL model was added into model comparison.
+    - Sliders in IRT training are now colored with respect to line colors.
+  o Regression section
+    - Section is newly organized.
+    - NLR 4P model was added.
+  o Reports
+    - 4PL IRT model was added as an option.
+    - IRT equation is generated based on selected model only.
+  o Unnecessary files were deleted. Some cleaning of files was done.
+
+MINOR UPDATES
+  o IRT section
+    - Selected R code in model comparison was updated. Typos were fixed.
+  o Regression section
+    - Interpretation of NLR 3P model was extended.
+    - Syntax for NLR 3P model was improved.
+
+-------------------------------------------------------
+- Changes in ShinyItemAnalysis 1.2.6-3. (2018-04-05) -
+-------------------------------------------------------
+
+MAJOR UPDATES
+  o IRT section
+    - IRT section is newly organized.
+    - IRT training section was expanded by polytomous models.
+      GRM, GPCM and NRM were added.
+    - Syntax for IRT training was improved.
+
+MINOR UPDATES
+  o IRT section
+    - Sliders steps are now 0.01 in dichotomous models.
+
+-------------------------------------------------------
+- Changes in ShinyItemAnalysis 1.2.6-2. (2018-04-03) -
+-------------------------------------------------------
+
+MINOR UPDATES
+  o Numeric inputs were removed from IRT training section.
+  o Selected R code was extended in IRT training section by item
+    information function plot.
+  o References were updated.
+  o Mirror web link was updated.
+
+-------------------------------------------------------
+- Changes in ShinyItemAnalysis 1.2.6-1. (2018-03-15) -
+-------------------------------------------------------
+
+BUG FIXING
+  o Reports with DDF but none DDF item are now correctly generated.
+
+MINOR UPDATES
+  o Hexbin
+    - was added into footer.
+    - is now as shortcut icon.
+  o Paddings
+    - in large devices was adjusted.
+    - in small devices was adjusted.
+  o Unnecessary files were deleted.
+  o Reports
+    - Some wording in reports was improved.
+    - PDF report text is fully justified.
+    - Subsections characteristic curves is not visible when none DIF
+      or DDF item is present.
+    - Some typos were fixed.
+    - Some parameters were renamed. The unneecessary ones were removed.
+
+---------------------------------------------------
+- Changes in ShinyItemAnalysis 1.2.6 (2018-03-01) -
+---------------------------------------------------
+
+MAJOR UPDATES
+
+  o UI for DIF/Fairness section was updated.
+  o References were added into About page.
+  o New design of reports is now available. Design of PDF reports was
+    updated.
+  o Wording in report was improved.
+  o DIF/Fairness section in report was improved.
+  o New hexbin for ShinyItemAnalysis was created and added into reports.
+  o Sample code in DIF/Fairness IRT Lord and IRT Raju was extended to
+    1PL, 2PL and 3PL models.
+  o Bugs fixing
+      - Wording in regression plots was fixed.
+      - Examples in DIF/Fairness IRT Lord and IRT Raju were fixed.
+      - Function 'plotDIFirt()' now can be also used for only one item.
+
+
+MINOR UPDATES
+
+  o Reference list was updated.
+  o CITATION file was modified.
+  o In Summary page the description for summary table was added. The sample
+    code was updated.
+  o Wording in summary statistics in Summary section was improved.
+  o Description of Session info section in reports was added.
+
+
+---------------------------------------------------
+- Changes in ShinyItemAnalysis 1.2.5 (2017-11-14) -
+---------------------------------------------------
+
+MAJOR UPDATES
+
+  o Correlation plots now offer reordering by hierarchical clustering.
+    Several linkage methods are offered. This is also included in reports.
+  o Confirmation of data upload was added. Also warnings and errors are
+    displayed in case that something went wrong when uploading.
+  o In IRT training
+      - parameter theta (latent ability) is now included
+      - the interpretation for characteristic curves is provided
+      - horizontal and vertical lines for specified theta were added
+        into plot for characteristic curves
+      - selected R code was added.
+  o In multinomial regression bug when only two choices in data are present
+    was fixed.
+
+MINOR UPDATES
+
+  o Link for Adela's website was added.
+  o Columns for BIC and its adjusted version were swapped in table for
+    IRT models comparison. Text above table was also updated.
+  o In IRT section dpi of downloaded plots was set to 300.
+  o In IRT training downloaded plots also include legend with parameters.
+  o In all IRT models table with parameters includes all parameters
+    a, b, c, d.
+  o In IRT training equations were moved above interpretation.
+
+
+---------------------------------------------------
+- Changes in ShinyItemAnalysis 1.2.4 (2017-08-28) -
+---------------------------------------------------
+
+MINOR UPDATES
+
+  o Reports were mildly updated.
+  o Resolution of figures in reports was increased (now 300ppi)
+  o Dependencies were updated.
+  o Some typos fixed.
+  o Legends of plots were unified and placed in better way for
+      - 'NLR IRT Z'
+      - 'DDF'
+      - function 'plotDIFlogistic()'
+  o Bug in item names for 'DDF' subsection of 'Fairness/DIF' section
+    was fixed.
+
+---------------------------------------------------
+- Changes in ShinyItemAnalysis 1.2.3 (2017-08-22) -
+---------------------------------------------------
+
+*** THIS IS A CRAN VERSION ***
+
+MAJOR UPDATES
+
+  o Report's customized options were extended. Reports now include also
+    dynamic description.
+  o Author and dataset name can be now filled and add into reports.
+  o Dataset 'difMedical' was renamed to 'MSAT-B' according to 'difNLR'
+    package. Its description was mildly updated.
+  o Purification options were added into 'Nonlinear IRT Z' and 'DDF' subsections
+    of 'DIF/Fairness' sections.
+  o Purification options was added 'DDF' analysis in 'Reports' section when customized
+    setting is selected.
+
+
+MINOR UPDATES
+
+  o Size of plots and font in plots was changed for reports.
+  o Plots in HTML report are now centered.
+  o Wording of reports' default option was updated.
+  o References were updated in 'Reference' section and also in README file.
+  o Wording of Spearman test in 'Validity' section was mildly updated.
 
 ---------------------------------------------------
 - Changes in ShinyItemAnalysis 1.2.2 (2017-07-26) -
@@ -12,7 +431,7 @@ MAJOR UPDATES
 
   o Design of reports was edited.
   o Several bugs were fixed:
-     - Bug when creating report for uploaded data was  fixed.
+     - Bug when creating report for uploaded data was fixed.
      - Bug when creating report for data without predictive
        criterion or DIF group was fixed.
   o ShinyItemAnalysis now uses 'plotly' package!
@@ -75,6 +494,8 @@ MINOR UPDATES
 ---------------------------------------------------
 - Changes in ShinyItemAnalysis 1.2.0 (2017-06-15) -
 ---------------------------------------------------
+
+*** THIS IS A CRAN VERSION ***
 
 MAJOR UPDATES
 
@@ -152,6 +573,8 @@ MINOR UPDATES
 - Changes in ShinyItemAnalysis 1.1.0 (2016-02-02) -
 ---------------------------------------------------
 
+*** THIS IS A CRAN VERSION ***
+
 MAJOR UPDATES
 
   o  New overall appearence using shinythemes package.
@@ -193,6 +616,8 @@ MINOR UPDATES
 ---------------------------------------------------
 - Changes in ShinyItemAnalysis 1.0.0 (2016-11-25) -
 ---------------------------------------------------
+
+*** THIS IS A CRAN VERSION ***
 
 UPDATES
 

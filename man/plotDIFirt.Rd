@@ -45,18 +45,18 @@ For default option \code{"all"}, all characteristic curves are plotted.
 # loading libraries
 library(difNLR, difR)
 
- # loading data based on GMAT
-data(GMAT, package = "difNLR")
+ # loading data based on GMAT2
+data(GMAT2, package = "difNLR")
 
 # Estimation of 2PL IRT model and Lord's statistic
 # by difR package
-fitLord <- difLord(GMAT, group = 21, focal.name = 1, model = "2PL")
+fitLord <- difLord(GMAT2, group = 21, focal.name = 1, model = "2PL")
 # plot of item 1 and Lord's statistic
 plotDIFirt(fitLord$itemParInit, item = 1)
 
 # Estimation of 2PL IRT model and Raju's statistic
 # by difR package
-fitRaju <- difRaju(GMAT, group = 21, focal.name = 1, model = "2PL")
+fitRaju <- difRaju(GMAT2, group = 21, focal.name = 1, model = "2PL")
 # plot of item 1 and Lord's statistic
 plotDIFirt(fitRaju$itemParInit, test = "Raju", item = 1)
 }
@@ -72,7 +72,7 @@ plotDIFirt(fitRaju$itemParInit, test = "Raju", item = 1)
 Adela Drabinova \cr
 Institute of Computer Science, The Czech Academy of Sciences \cr
 Faculty of Mathematics and Physics, Charles University \cr
-adela.drabinova@gmail.com \cr
+drabinova@cs.cas.cz \cr
 
 Patricia Martinkova \cr
 Institute of Computer Science, The Czech Academy of Sciences \cr

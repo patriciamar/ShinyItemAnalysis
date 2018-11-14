@@ -6899,6 +6899,9 @@ button.close {
 .panel-info .panel-title {
   color: #fff;
 }
+.shiny-output-error-warning_data_missing {
+    color: orange;
+}
 .shiny-output-error-error_key_missing {
     color: red;
 }
@@ -6911,3 +6914,186 @@ button.close {
 .shiny-output-error-warning_criterion_variable_missing {
     color: orange;
 }
+.js-irs-blue .irs-single, .js-irs-blue .irs-bar-edge, .js-irs-blue .irs-bar {
+  background: blue;
+  border-top-color: blue;
+  border-bottom-color: blue;
+  border-left-color: blue;
+  border-right-color: blue;
+}
+.js-irs-red .irs-single, .js-irs-red .irs-bar-edge, .js-irs-red .irs-bar {
+  background: red;
+  border-top-color: red;
+  border-bottom-color: red;
+  border-left-color: red;
+  border-right-color: red;
+}
+.js-irs-green .irs-single, .js-irs-green .irs-bar-edge, .js-irs-green .irs-bar {
+  background: #00b300;
+  border-top-color: #00b300;
+  border-bottom-color: #00b300;
+  border-left-color: #00b300;
+  border-right-color: #00b300;
+}
+.js-irs-yellow .irs-single, .js-irs-yellow .irs-bar-edge, .js-irs-yellow .irs-bar {
+  background: #e6b800;
+  border-top-color: #e6b800;
+  border-bottom-color: #e6b800;
+  border-left-color: #e6b800;
+  border-right-color: #e6b800;
+}
+.js-irs-purple .irs-single, .js-irs-purple .irs-bar-edge, .js-irs-purple .irs-bar {
+  background: #990099;
+  border-top-color: #990099;
+  border-bottom-color: #990099;
+  border-left-color: #990099;
+  border-right-color: #990099;
+}
+.js-irs-orange .irs-single, .js-irs-orange .irs-bar-edge, .js-irs-orange .irs-bar {
+  background: #ff6600;
+  border-top-color: #ff6600;
+  border-bottom-color: #ff6600;
+  border-left-color: #ff6600;
+  border-right-color: #ff6600;
+}
+.js-irs-black .irs-single, .js-irs-black .irs-bar-edge, .js-irs-black .irs-bar {
+  background: black;
+  border-top-color: black;
+  border-bottom-color: black;
+  border-left-color: black;
+  border-right-color: black;
+}
+.js-irs-gray .irs-single, .js-irs-gray .irs-bar-edge, .js-irs-gray .irs-bar {
+  background: gray;
+  border-top-color: gray;
+  border-bottom-color: gray;
+  border-left-color: gray;
+  border-right-color: gray;
+}
+.biblio {
+  padding-left: 20px;
+  text-indent: -20px;
+  list-style-type: none;
+}
+
+
+.header-title {
+  font-size: x-large;
+  display: inline;
+}
+.header-title img {
+  width: 40px;
+  margin-bottom: 10px;
+  vertical-align: middle;
+}
+.header-subtitle {
+  font-size: small;
+  display: inline;
+}
+
+@media (max-width: 480px) {
+  .header-title {
+    font-size: medium;
+    display: inline;
+  }
+  .header-title img {
+    width: 30px;
+    margin-bottom: 5px;
+    margin-top: 5px;
+    vertical-align: middle;
+  }
+  .header-subtitle {
+    font-size: x-small;
+    display: inline;
+  }
+}
+
+
+.footer-title {
+  font-size: large;
+  display: inline;
+}
+.footer-title img {
+  width: 65px;
+  margin-top: -8px;
+  vertical-align: middle;
+  float: left;
+}
+.footer-subtitle {
+  font-size: small;
+  display: inline;
+}
+.footer-copyright {
+  margin-top: -30px;
+  font-size: small;
+}
+.footer-counter {
+  float: right;
+  margin-top: -15px;
+}
+.footer-icons {
+  width: 25px;
+}
+
+
+@media (max-width: 561px) {
+  .footer-counter {
+    float: left;
+    margin-top: 0;
+    font-size: small;
+  }
+}
+
+@media (max-width: 480px) {
+  .footer-title {
+    font-size: small;
+  }
+  .footer-title img {
+    width: 40px;
+    vertical-align: middle;
+    float: left;
+  }
+  .footer-subtitle {
+    font-size: xx-small;
+  }
+  .footer-copyright {
+    margin-top: -30px;
+    font-size: xx-small;
+  }
+  .footer-counter {
+    float: left;
+    font-size: xx-small;
+    margin-top: 0;
+    margin-left: 40px;
+  }
+  .footer-icons {
+    width: 20px;
+  }
+}
+
+
+.cite-box {
+  max-width: 480px;
+  width: 100%;
+  border: 1px solid black;
+  padding: 15px;
+  margin: -5px 0 5px 0;
+  background: white;
+}
+
+.input-slider {
+  display: inline-block;
+  vertical-align: top;
+  width: 250px;
+}
+.input-box {
+  display: inline-block;
+  vertical-align: top;
+  width: 250px;
+}
+.input-radio {
+  display: inline-block;
+  vertical-align: top;
+  width: 200px;
+}
+

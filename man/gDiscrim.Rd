@@ -4,7 +4,7 @@
 \alias{gDiscrim}
 \title{Generalized Item Discrimination}
 \usage{
-gDiscrim(x, k = 3, l = 1, u = 3)
+gDiscrim(x, k = 3, l = 1, u = 3, maxscore, minscore)
 }
 \arguments{
 \item{x}{matrix or data.frame of items to be examined. Rows represent persons, columns
@@ -16,17 +16,25 @@ Default value is 3.  See \strong{Details}.}
 \item{l}{numeric: lower group. Default value is 1. See \strong{Details}.}
 
 \item{u}{numeric: upper group. Default value is 3. See \strong{Details}.}
+
+\item{maxscore}{numeric: maximal score in ordinal items. If missing, vector of obtained maximal scores is imputed. See \strong{Details}.}
+
+\item{minscore}{numeric: minimal score in ordinal items. If missing, vector of obtained minimal scores is imputed. See \strong{Details}.}
 }
 \description{
-Generalized item discrimination functions is generalized version of
-\code{\link{discrim}} function from \code{psychometric} package. It computes discrimination of an item,
-i.e. the ablitity for a specific items to distinguish among upper and lower ability individuals on a test,
-where number of groups, upper and lower group can be specified by user.
+gDiscrim function computes various generalizations of discrimination index ULI.
+It enumerates the ablitity of item to distinguish between individuals from upper (U) vs. lower (L)
+ability groups, i.e. between respondents with high vs. low overall score on the test.
+Number of groups, as well as upper and lower groups can be specified by user.
+Maximal and minimal score in ordinal data sets can be specified by user.
 }
 \details{
-The function takes data on individuals, computes their total test score and then divides
-individuals into \code{k} groups. The lower and upper group are determined by \code{l} and \code{u}
+The function computes total test scores for all respondents and then divides
+the respondents into \code{k} groups. The lower and upper groups are determined by \code{l} and \code{u}
 parameters, i.e.  l-th and u-th group where the ordering is defined by increasing total score.
+In ordinal items, difficulty is calculated as difference of average score divided by range
+(maximal possible score minus minimal possible score for given item).
+Discrimination is calculated as difference in difficulty between upper and lower group.
 }
 \note{
 \code{gDiscrim} is used by \code{\link{DDplot}} function.
@@ -35,33 +43,52 @@ parameters, i.e.  l-th and u-th group where the ordering is defined by increasin
 \dontrun{
 # loading 100-item medical admission test data set
 data(dataMedical)
-x <- dataMedical[, 1:100]
+dataBin <- dataMedical[, 1:100]
 
-# discrimination as in discrim() function from psychometric package
+# Discrimination (ULI) defined as difference of proportion of correct answers
+# in upper and lower third of respondents
 # compare to psychometric::discrim(x)
-gDiscrim(x)
+gDiscrim(dataBin)[1:5]
 
 # 5 groups, compare 4th and 5th
-gDiscrim(x, k = 5, l = 4, u = 5)
+gDiscrim(dataBin, k = 5, l = 4, u = 5)[1:5]
+
+## Ordinal data set
+# loading 100-item medical admission test data set
+data(dataMedicalgraded)
+dataOrd <- dataMedicalgraded[,1:100]
+
+# Discrimination with default settings
+gDiscrim(dataOrd)[1:5]
+
+# 5 groups, compare 4th and 5th
+# maximum (4) and minimum (0) score are same for all items
+gDiscrim(dataOrd,  k = 5, l = 4, u = 5, maxscore = 4, minscore = 0)[1:5]
+
 }
 }
 \references{
 Martinkova, P., Stepanek, L., Drabinova, A., Houdek, J., Vejrazka, M., & Stuka, C. (2017).
 Semi-real-time analyses of item characteristics for medical school admission tests.
 In: Proceedings of the 2017 Federated Conference on Computer Science and Information Systems.
+http://dx.doi.org/10.15439/2017F380
 }
 \seealso{
-\code{\link{discrim}}, \code{\link{DDplot}}
+\code{\link{DDplot}}
 }
 \author{
 Adela Drabinova \cr
 Institute of Computer Science, The Czech Academy of Sciences \cr
 Faculty of Mathematics and Physics, Charles University \cr
-adela.drabinova@gmail.com \cr
+drabinova@cs.cas.cz \cr
 
 Lubos Stepanek \cr
 First Faculty of Medicine, Charles University \cr
 lubomir.stepanek@lf1.cuni.cz \cr
+
+Jana Vorlickova \cr
+Institute of Computer Science, The Czech Academy of Sciences \cr
+Faculty of Mathematics and Physics, Charles University \cr
 
 Patricia Martinkova \cr
 Institute of Computer Science, The Czech Academy of Sciences \cr

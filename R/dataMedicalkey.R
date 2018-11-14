@@ -1,4 +1,4 @@
-#' Key of Correct Answers for \code{dataMedicaltest} Data Set
+#' Key of Correct Answers for \code{dataMedicaltest} Dataset
 #'
 #' @docType data
 #' @name dataMedicalkey
@@ -26,7 +26,7 @@
 #' Adela Drabinova \cr
 #' Institute of Computer Science, The Czech Academy of Sciences \cr
 #' Faculty of Mathematics and Physics, Charles University \cr
-#' adela.drabinova@gmail.com \cr
+#' drabinova@cs.cas.cz \cr
 #'
 #' @references
 #' Stuka, C. Vejrazka, M., Martinkova, P. Komenda, M. & Stepanek, L. (2016). The Use of  Test and Item Analisis for
@@ -34,9 +34,9 @@
 #'
 #' @keywords datasets
 #'
-#' @seealso \code{\link{dataMedical}}, \code{\link{dataMedicaltest}}
+#' @seealso \code{\link{dataMedical}}, \code{\link{dataMedicaltest}}, \code{\link{dataMedicalgraded}}
 #'
-#' @format A data frame with 100 values representing correct answers to items of \code{dataMedicaltest}
-#' data set. For more details see \code{\link{dataMedicaltest}}.
+#' @format A \code{data.frame} with 100 values representing correct answers to items of \code{dataMedicaltest}
+#' dataset. For more details see \code{\link{dataMedicaltest}}.
 "dataMedicalkey"
 
