@@ -74,7 +74,8 @@ Data <- tabPanel("Data",
                                                                              trigger = "hover",
                                                                              options = list(container = "body"))),
                                                       choices = c("Binary" = "binary",
-                                                                  "Nominal" = "nominal"),
+                                                                  "Nominal" = "nominal",
+                                                                  "Ordinal" = "ordinal"),
                                                       selected = "nominal")
                                   ),
                                   column(2,
@@ -186,6 +187,26 @@ Data <- tabPanel("Data",
                                        p(strong("Note: "), "In case of ordinal data, you are advised to include key vector containing of maximum value for each item."))
                                 )
                               ),
+                            conditionalPanel(
+                              condition = "input.data_type == 'ordinal'",
+                              fluidRow(
+                                box(width = 3,
+                                    fileInput(inputId = "minmaxOrdinal",
+                                              label = "Choose minimal and maximal values",
+                                              accept = c("text/csv",
+                                                         "text/comma-separated-values",
+                                                         "text/tab-separated-values",
+                                                         "text/plain",
+                                                         ".csv",
+                                                         ".tsv")),
+                                    textInput("globalMin", "Dataset Minimum Value"),
+                                    textInput("globalMax", "Dataset Maximum Value")),
+                                column(9,
+                                       p("For ordinal data, it is optional to upload ", strong("Minimal and Maximal"), "values of answers."),
+                                       p(strong("Note: "), "If no dataset of minimal and maximal values is provided or are not set by the user, these values will be generated in the environment of the app.")
+                                       )
+                              )
+                            ),
                             fluidRow(
                               box(width = 3,
                                   fileInput(inputId = "groups",

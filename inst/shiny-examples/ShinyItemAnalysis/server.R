@@ -44,7 +44,7 @@ options(shiny.maxRequestSize = 30*1024^2)
 
 function(input, output, session) {
 
-  dataset <- reactiveValues()
+    dataset <- reactiveValues()
 
   dataset$answers <- NULL
   dataset$data_status <- NULL
@@ -252,7 +252,15 @@ function(input, output, session) {
           if (input$data_type == "binary"){
             key <- rep(1, ncol(answ))
           } else {
-            key <- "missing"
+            if (input$data_type == "ordinal"){
+              if(input$globalMin==""|input$globalMax=="") {
+                key <- data.frame(ordinalMin=apply(X=answ[2:nrow(answ),], FUN=min, 2), ordinalMax=apply(X=answ[2:nrow(answ),], FUN=max, 2))
+              } else {
+                key <- data.frame(ordinalMin=rep(input$globalMin, ncol(answ)-1), ordinalMax=rep(input$globalMax, ncol(answ)-1))
+              }
+            } else {
+              key <- "missing"
+              }
           }
         } else {
           key <- read.csv(input$key$datapath, header = input$header,
