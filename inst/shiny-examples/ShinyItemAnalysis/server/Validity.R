@@ -10,24 +10,53 @@
 corr_structure <- reactive({
   data <- correct_answ()
 
+  #calculate correlations depending on selected method
+  if (input$type_of_corr == 'spearman') {
+  corP <- cor(data, method = 'spearman')
+  corP
+  } else if (input$type_of_corr == 'pearson') {
+  corP <- cor(data, method = 'pearson')
+  corP
+  } else if (input$type_of_corr == 'polychoric') {
   corP <- polychoric(data)
   corP
+  }
 })
 
 # ** Correlation plot ######
 corr_plot_Input <- reactive({
   corP <- corr_structure()
-  corP <- corP$rho
+
+  if (input$type_of_corr == 'polychoric') {
+	corP <- corP$rho
+  }
+
   tlcex <- max(ifelse(dim(corP)[1] < 30, 1, 0.9 - (dim(corP)[1] - 30)*0.05), 0.5)
 
   numclust <- input$corr_plot_clust
   clustmethod <- input$corr_plot_clustmethod
 
-  if (clustmethod == "none"){
-    corrplot(corP, tl.cex = tlcex)
+
+  # option to display correlation values
+
+  if(input$show_corr > 0) {
+
+	if (clustmethod == "none"){
+		corrplot(corP, tl.cex = tlcex, tl.pos = 'lt', method = 'number', number.cex = 0.7)
+	} else {
+		corrplot(corP, tl.cex = tlcex, order = "hclust", hclust.method = clustmethod, addrect = numclust, tl.pos = 'lt', method = 'number',
+		number.cex  = 0.7)
+	}
+
+
   } else {
-    corrplot(corP, tl.cex = tlcex, order = "hclust", hclust.method = clustmethod, addrect = numclust)
+	if (clustmethod == "none"){
+		corrplot(corP, tl.cex = tlcex, tl.pos = 'lt')
+	} else {
+		corrplot(corP, tl.cex = tlcex, order = "hclust", hclust.method = clustmethod, addrect = numclust, tl.pos = 'lt')
+	}
   }
+
 })
 
 
@@ -44,8 +73,12 @@ output$DB_corr_plot <- downloadHandler(
   content = function(file) {
     # in corrplot this must be plotted completely again!
     corP <- corr_structure()
-    corP <- corP$rho
-    tlcex <- max(ifelse(dim(corP)[1] < 30, 1, 0.9 - (dim(corP)[1] - 30)*0.05), 0.5)
+
+	if (input$type_of_corr == 'polychoric') {
+	  corP <- corP$rho
+  	}
+
+	tlcex <- max(ifelse(dim(corP)[1] < 30, 1, 0.9 - (dim(corP)[1] - 30)*0.05), 0.5)
 
     numclust <- input$corr_plot_clust
     clustmethod <- input$corr_plot_clustmethod
@@ -66,7 +99,13 @@ output$DB_corr_plot <- downloadHandler(
 # ** Scree plot ######
 scree_plot_Input <- reactive({
   corP <- corr_structure()
-  ev <- eigen(corP$rho)$values
+
+  if (input$type_of_corr == 'polychoric'){
+    ev <- eigen(corP$rho)$values
+  } else {
+    ev <- eigen(corP)$values
+  }
+
   df <- data.table(pos = 1:length(ev), ev)
 
   ggplot(data = df, aes(x = pos, y = ev)) +
