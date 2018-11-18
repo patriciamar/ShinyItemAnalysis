@@ -501,7 +501,7 @@ output$nlr_4P_interpretation <- renderUI({
                   with the ", ifelse(a < 0, "decrease", "increase"), " in the log odds of answering the item correctly vs. not correctly
                   in the amount of <b>", abs(a), "</b>. ")
   txt2 <- paste0("Probability of guessing is <b>", c, "</b>. ")
-  txt3 <- paste0("Probability of inattention is <b>", 1-d, "</b>. ")
+  txt3 <- paste0("Probability of inattention is <b>", round(1-d,2), "</b>. ")
   HTML(paste0(txt0, txt1, txt2, txt3))
 })
 
