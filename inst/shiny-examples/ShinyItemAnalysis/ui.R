@@ -88,14 +88,14 @@ ui = tagList(
              selected = 'About',
              collapsible = TRUE,
              footer = list(
-               HTML('<div class = "panel-footer">
+               HTML('<div class = "panel-footer", style = "opacity: 1.00; z-index: 1000;">
                     <p style = "margin:8px 0 0 0;">
                     <div class = "footer-title">
                     <img src = "hexbin.png">
                     ShinyItemAnalysis
                     </div>
                     <div class = "footer-subtitle">
-                    Test and item analysis | Version 1.2.8-2
+                    Test and item analysis | Version 1.2.8-3
                     </div>
                     <span style = "float:right">
                     <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysis/" id = "tooltipweb" target="_blank">
@@ -389,6 +389,18 @@ ui = tagList(
                                    Median linkage calculates the distance as the median of distances between an observation
                                    in one cluster and observation in the other cluster.
                                    Centroid method used distance between centroids of clusters. "),
+                         #radiobutton for selection of method for correlation
+								 fluidRow(column(width = 3,div(class = 'input-radio',radioButtons(inputId = "type_of_corr",
+                                              label    = "Choose correlation",
+                                              choices  = c("Pearson"    = "pearson",
+                                                           "Spearman"   = "spearman",
+                                                           "Polychoric" = "polychoric"),
+                                              selected = 'polychoric'))),
+								          #action button for displaying correlation values in corrplot
+								          column(width = 7,p(HTML('<b>Click the button to display the correlation values in corrplot</b>')),
+								          actionButton( inputId = 'show_corr',
+								                        label = 'Display correlation',
+								                        class = 'btn btn-primary'))),
                                  p("With", HTML("<b>number  of clusters</b>"), "larger than 1, the rectangles representing
                                    clusters are drawn. "),
                                  fluidPage(div(class = "input-box",

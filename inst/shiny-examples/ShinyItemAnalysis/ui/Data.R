@@ -39,7 +39,7 @@ Data <- tabPanel("Data",
                             #------------------------------------------------------------------------------------#
                             h4("Upload your own datasets"),
                             fluidRow(
-                              box(width = 3,
+                              box(width = 4,
                                   fileInput(inputId = "data",
                                             label = "Choose data (CSV file)",
                                             accept = c("text/csv",
@@ -47,13 +47,14 @@ Data <- tabPanel("Data",
                                                        "text/tab-separated-values",
                                                        "text/plain",
                                                        ".csv",
-                                                       ".tsv"))),
-                              column(9,
+                                                       ".tsv")),
+                              p(strong("Use ,,Upload data'' button on bottom of this page!"))),
+                            column(8,
                                      p("Main ", strong("data"), " file should contain responses of individual respondents (rows)
                               to given items (columns). Data need to be either binary or nominal (e.g. in ABCD format).
                               Header may contain item names, no row names should be included. In all data sets", strong("header"), "should
                               be either included or excluded. Columns of dataset are by default renamed to Item and number of particular column.
-                              If you want to keep your own names, check box ", strong("Keep items names"), "below. Missing values in scored
+                              If you want to keep your own names, check box ", strong("Keep item names"), "below. Missing values in scored
                               dataset are by default evaluated as 0. If you want to keep them as missing, check box" , strong("Keep missing values"),
                                        "below."),
                                      p(strong("Note: "), "Analysis of ordinal (Likert scale) data is currently not supported. In case of ordinal data, you
@@ -70,7 +71,7 @@ Data <- tabPanel("Data",
                                                                             size = "extra-small"),
                                                                    bsPopover(id = "data_type_info",
                                                                              title = "Info",
-                                                                             content = "Binary data are of 0-1 form, where 0 is incorrect answer and 1 is correct one. Nominal data may take e.g. ABCD form or Likert scale.",
+                                                                             content = "Binary data are of 0-1 form, where 0 is incorrect answer and 1 is correct one. Nominal data may take e.g. ABCD form. Ordinal data are e.g. those on the Likert scale 1-2-3-4-5.",
                                                                              placement = "right",
                                                                              trigger = "hover",
                                                                              options = list(container = "body"))),
@@ -110,7 +111,7 @@ Data <- tabPanel("Data",
                                                                               options = list(container = "body"))),
                                                        value = TRUE),
                                          checkboxInput(inputId = "itemnam",
-                                                       label = list("Keep items names",
+                                                       label = list("Keep item names",
                                                                     bsButton(inputId = "itemnam_info",
                                                                              label = "",
                                                                              icon = icon("info"),
@@ -174,7 +175,7 @@ Data <- tabPanel("Data",
                             conditionalPanel(
                               condition = "input.data_type == 'nominal'",
                               fluidRow(
-                                box(width = 3,
+                                box(width = 4,
                                     fileInput(inputId = "key",
                                               label = "Choose key (CSV file)",
                                               accept = c("text/csv",
@@ -182,8 +183,9 @@ Data <- tabPanel("Data",
                                                          "text/tab-separated-values",
                                                          "text/plain",
                                                          ".csv",
-                                                         ".tsv"))),
-                                column(9,
+                                                         ".tsv")),
+                                p(strong("Use ,,Upload data'' button on bottom of this page!"))),
+                                column(8,
                                        p("For nominal data, it is necessary to upload ", strong("key"), "of correct answers."),
                                        p(strong("Note: "), "In case of ordinal data, you are advised to include key vector containing of maximum value for each item."))
                                 )
@@ -191,7 +193,7 @@ Data <- tabPanel("Data",
                             conditionalPanel(
                               condition = "input.data_type == 'ordinal'",
                               fluidRow(
-                                box(width = 3,
+                                box(width = 4,
                                     fileInput(inputId = "minOrdinal",
                                               label = "Choose minimal values",
                                               accept = c("text/csv",
@@ -201,13 +203,13 @@ Data <- tabPanel("Data",
                                                          ".csv",
                                                          ".tsv")),
                                     textInput("globalMin", "Dataset Minimum Value")),
-                                column(9,
+                                column(8,
                                        p("For ordinal data, it is optional to upload ", strong("Minimal and Maximal"), "values of answers."),
                                        p(strong("Note: "), "If no dataset of minimal and maximal values is provided or are not set by the user, these values will be generated in the environment of the app.")
                                 )
                                 ),
                               fluidRow(
-                                box(width = 3,
+                                box(width = 4,
                                     fileInput(inputId = "maxOrdinal",
                                               label = "Choose maximal values",
                                               accept = c("text/csv",
@@ -222,7 +224,7 @@ Data <- tabPanel("Data",
                               )
                             ),
                             fluidRow(
-                              box(width = 3,
+                              box(width = 4,
                                   fileInput(inputId = "groups",
                                             label = "Choose group (optional)",
                                             accept = c("text/csv",
@@ -230,8 +232,9 @@ Data <- tabPanel("Data",
                                                        "text/tab-separated-values",
                                                        "text/plain",
                                                        ".csv",
-                                                       ".tsv"))),
-                              column(9,
+                                                       ".tsv")),
+                                  p(strong("Use ,,Upload data'' button on bottom of this page!"))),
+                              column(8,
                                      p(strong("Group"), " is binary vector, where 0 represents reference group
                               and 1 represents focal group. Its length needs to be the same as number of individual
                               respondents in the main dataset. If the group is not provided then it won't be possible to run
@@ -239,7 +242,7 @@ Data <- tabPanel("Data",
                               are not supported for group membership vector and such cases/rows of the data should be removed."))
                             ),
                             fluidRow(
-                              box(width = 3,
+                              box(width = 4,
                                      fileInput(inputId = "criterion_variable",
                                                label = "Choose criterion variable (optional)",
                                                accept = c("text/csv",
@@ -247,8 +250,9 @@ Data <- tabPanel("Data",
                                                           "text/tab-separated-values",
                                                           "text/plain",
                                                           ".csv",
-                                                          ".tsv"))),
-                              column(9,
+                                                          ".tsv")),
+                                  p(strong("Use ,,Upload data'' button on bottom of this page!"))),
+                              column(8,
                                      p(strong("Criterion variable"), " is either discrete or continuous vector (e.g. future study
                               success or future GPA in case of admission tests) which should be predicted by the measurement.
                               Its length needs to be the same as number of individual respondents in the main dataset.
