@@ -27,8 +27,9 @@ Data <- tabPanel("Data",
                                                              "GMAT2" = "GMAT2_difNLR",
                                                              "MSAT-B" = "MSATB_difNLR",
                                                              "Medical 100" = "dataMedical_ShinyItemAnalysis",
-                                                             "HCI" = "HCI_ShinyItemAnalysis"),
-                                                 selected = "GMAT_difNLR")),
+                                                             "HCI" = "HCI_ShinyItemAnalysis",
+                                                             'Medical Graded' = 'dataMedicalgraded_ShinyItemAnalysis'),
+                                                 selected = "GMAT_difNLR"),
                               column(9,
                                      uiOutput("data_description"))),
                             tags$hr(),
@@ -191,20 +192,33 @@ Data <- tabPanel("Data",
                               condition = "input.data_type == 'ordinal'",
                               fluidRow(
                                 box(width = 3,
-                                    fileInput(inputId = "minmaxOrdinal",
-                                              label = "Choose minimal and maximal values",
+                                    fileInput(inputId = "minOrdinal",
+                                              label = "Choose minimal values",
                                               accept = c("text/csv",
                                                          "text/comma-separated-values",
                                                          "text/tab-separated-values",
                                                          "text/plain",
                                                          ".csv",
                                                          ".tsv")),
-                                    textInput("globalMin", "Dataset Minimum Value"),
-                                    textInput("globalMax", "Dataset Maximum Value")),
+                                    textInput("globalMin", "Dataset Minimum Value")),
                                 column(9,
                                        p("For ordinal data, it is optional to upload ", strong("Minimal and Maximal"), "values of answers."),
                                        p(strong("Note: "), "If no dataset of minimal and maximal values is provided or are not set by the user, these values will be generated in the environment of the app.")
-                                       )
+                                )
+                                ),
+                              fluidRow(
+                                box(width = 3,
+                                    fileInput(inputId = "maxOrdinal",
+                                              label = "Choose maximal values",
+                                              accept = c("text/csv",
+                                                         "text/comma-separated-values",
+                                                         "text/tab-separated-values",
+                                                         "text/plain",
+                                                         ".csv",
+                                                         ".tsv")),
+                                    textInput("globalMax", "Dataset Maximum Value"))
+
+                              )
                               )
                             ),
                             fluidRow(
