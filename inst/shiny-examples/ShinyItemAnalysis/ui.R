@@ -88,7 +88,7 @@ ui = tagList(
              selected = 'About',
              collapsible = TRUE,
              footer = list(
-               HTML('<div class = "panel-footer">
+               HTML('<div class = "panel-footer", style = "opacity: 1.00; z-index: 1000;">
                     <p style = "margin:8px 0 0 0;">
                     <div class = "footer-title">
                     <img src = "hexbin.png">
