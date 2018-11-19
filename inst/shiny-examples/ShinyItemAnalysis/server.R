@@ -108,7 +108,7 @@ function(input, output, session) {
 
   # LOAD KEY ######
   test_key <- reactive({
-    if ((is.null(input$key) & input$submitButton & input$data_type == "binary")) {
+    if ((is.null(input$key) & input$submitButton & (input$data_type == "binary" | input$data_type == "ordinal"))) {
       key = dataset$key
     } else {
       if ((is.null(input$key)) | (is.null(dataset$key))) {
@@ -290,9 +290,9 @@ function(input, output, session) {
 
               if (is.null(input$minOrdinal)) {
                 if (input$globalMin=="") {
-                  keyOrdinalMin = data.frame(ordinalMin=apply(X=answ[2:nrow(answ),], FUN=min, 2))
+                  keyOrdinalMin = data.frame(ordinalMin=apply(X=answ, FUN=min, 2))
                 } else {
-                  keyOrdinalMin = data.frame(ordinalMin=rep(input$globalMin, nrow(answ)-1))
+                  keyOrdinalMin = data.frame(ordinalMin=rep(input$globalMin, ncol(answ)))
                 }
               } else {
                 keyOrdinalMin = data.frame(ordinalMin = input$minOrdinal)
@@ -302,15 +302,15 @@ function(input, output, session) {
 
               if (is.null(input$maxOrdinal)) {
                 if (input$globalMax=="") {
-                  keyOrdinalMax = data.frame(ordinalMax=apply(X=answ[2:nrow(answ),], FUN=max, 2))
+                  keyOrdinalMax = data.frame(ordinalMax=apply(X=answ, FUN=max, 2))
                 } else {
-                  keyOrdinalMax = data.frame(ordinalMax=rep(input$globalMax, nrow(answ)-1))
+                  keyOrdinalMax = data.frame(ordinalMax=rep(input$globalMax, ncol(answ)))
                 }
               } else {
                 keyOrdinalMax = data.frame(ordinalMax = input$mmaxOrdinal)
               }
 
-              key=keyOrdinalMax
+              key=unlist(keyOrdinalMax)
 
             } else {
             key <- "missing"

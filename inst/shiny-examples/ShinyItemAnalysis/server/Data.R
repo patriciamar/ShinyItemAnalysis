@@ -273,10 +273,12 @@ data_rawdata_summary_Input <- reactive({
     data_table_summary = data.table(item_names(),
                                     apply(X=data_table, FUN=min, 2),
                                     apply(X=data_table, FUN=median, 2),
+                                    apply(X=data_table, FUN=mean, 2),
                                     apply(X=data_table, FUN=max, 2),
-                                    key)
+                                    apply(X=data_table, FUN=sd, 2),
+                                    as.numeric(key))
     rownames(data_table_summary)=item_names()
-    colnames(data_table_summary)=c("NAME", "MIN", "MEDIAN", "MAX", "KEY")
+    colnames(data_table_summary)=c("NAME", "MIN", "MEDIAN", "MEAN", "MAX", "SD", "KEY")
     data_table_summary
   } else {
     data_table <- sapply(data_table, as.factor)

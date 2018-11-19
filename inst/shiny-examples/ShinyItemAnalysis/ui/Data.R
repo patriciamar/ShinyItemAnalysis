@@ -30,7 +30,7 @@ Data <- tabPanel("Data",
                                                              "Medical 100 Graded" = "dataMedicalgraded_ShinyItemAnalysis",
                                                              "HCI" = "HCI_ShinyItemAnalysis"),
 
-                                                 selected = "GMAT_difNLR"),
+                                                 selected = "GMAT_difNLR")),
                               column(9,
                                      uiOutput("data_description"))),
                             tags$hr(),
@@ -203,10 +203,12 @@ Data <- tabPanel("Data",
                                                          "text/plain",
                                                          ".csv",
                                                          ".tsv")),
-                                    textInput("globalMin", "Dataset Minimum Value")),
+                                    textInput("globalMin", "Dataset minimal Value")),
                                 column(8,
-                                       p("For ordinal data, it is optional to upload ", strong("Minimal and Maximal"), "values of answers."),
-                                       p(strong("Note: "), "If no dataset of minimal and maximal values is provided or are not set by the user, these values will be generated in the environment of the app.")
+                                       p("For ordinal data, it is optional to upload ", strong("minimal and maximal"), "values of answers.
+                                         You can either upload datasets of item-specific values, or you can provide one value for whole dataset."),
+                                       p(strong("Note: "), "If no minimal or maximal values are provided, these
+                                        values are set automatically based on observed values.")
                                 )
                                 ),
                               fluidRow(
@@ -219,10 +221,10 @@ Data <- tabPanel("Data",
                                                          "text/plain",
                                                          ".csv",
                                                          ".tsv")),
-                                    textInput("globalMax", "Dataset Maximum Value"))
+                                    textInput("globalMax", "Dataset maximal value"))
 
                               )
-                              )
+
                             ),
                             fluidRow(
                               box(width = 4,
