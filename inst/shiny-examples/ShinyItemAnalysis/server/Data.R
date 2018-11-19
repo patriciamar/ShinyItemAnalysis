@@ -223,10 +223,15 @@ data_description_Input <- reactive({
                 represents responses of 1,407 subjects (484 males, 923 females) to multiple-choice test of 20 items.
                 First item was previously detected as functioning differently. For more details of item selection see
                 Drabinova and Martinkova (2017). ",
-                dataMedical_ShinyItemAnalysis = "<code>Medical 100</code> is a real dataset of admission test to medical
+                dataMedical_ShinyItemAnalysis = "<code>Medical 100</code> is a real <code>dataMedical</code> dataset of admission test to medical
                 school from <code>ShinyItemAnalysis</code> R package. The data set represents responses of 2,392 subjects
                 (750 males, 1,633 females and 9 subjects without gender specification) to multiple-choice test of 100
-                items. <code>Medical 100</code> contains criterion variable - indicator whether student studies standardly
+                items.  This dataset contains criterion variable - indicator whether student studies standardly
+                or not. ",
+                dataMedicalgraded_ShinyItemAnalysis = "<code>Medical 100 Graded</code> is a real <code>dataMedicalgraded</code> dataset of admission test to medical
+                school from <code>ShinyItemAnalysis</code> R package. The data set represents responses of 2,392 subjects
+                (750 males, 1,633 females and 9 subjects without gender specification) to multiple-choice test of 100
+                items. Each item is graded with 0 to 4 points. Maximum of 4 points were set if all correct answers and none of incorrect answers were selected. This dataset contains criterion variable - indicator whether student studies standardly
                 or not. ",
                 HCI_ShinyItemAnalysis = "<code>HCI</code> (McFarland et al., 2017) is a real dataset of Homeostasis
                 Concept Inventory (HCI) from <code>ShinyItemAnalysis</code> R package. The dataset represents responses of
