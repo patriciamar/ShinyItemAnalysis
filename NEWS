@@ -3,6 +3,26 @@
         *  Changes and Developments in the ShinyItemAnalysis Package  *
         *                                                             *
         ***************************************************************
+-------------------------------------------------------
+- Changes in ShinyItemAnalysis 1.2.8-3. (2018-11-16) -
+-------------------------------------------------------
+
+BUG FIXING
+  o Bug in Regression/Nonlinear 4P IRT Z (rounding in interpretation) was fixed.
+
+MAJOR UPDATES
+  o Data upload now allows also ordinal data, min/max values can be specified.
+  o Validity/Correlation structure now allows selection between Pearson/Spearman/Polychoric correlation, Polychoric is default for binary data
+
+MINOR UPDATES
+  o Data upload now better points to "Upload data" button.
+
+-------------------------------------------------------
+- Changes in ShinyItemAnalysis 1.2.8-2. (2018-11-05) -
+-------------------------------------------------------
+
+MAJOR UPDATES
+  o gDiscrim() function has been extended to calculate Upper-Lower Index (ULI) also for ordinal items
 
 -------------------------------------------------------
 - Changes in ShinyItemAnalysis 1.2.8-1. (2018-10-01) -

@@ -44,7 +44,7 @@ options(shiny.maxRequestSize = 30*1024^2)
 
 function(input, output, session) {
 
-  dataset <- reactiveValues()
+    dataset <- reactiveValues()
 
   dataset$answers <- NULL
   dataset$data_status <- NULL
@@ -83,23 +83,32 @@ function(input, output, session) {
       datasetName = str_sub(a, 1, pos - 1)
       packageName = str_sub(a, pos + 1)
 
-      do.call(data, args = list(paste0(datasetName, "test"), package = packageName))
-      test = get(paste0(datasetName, "test"))
+      if (datasetName == "dataMedicalgraded") {
+        do.call(data, args = list(paste0(datasetName), package = packageName))
+        test = get(paste0(datasetName))
 
-      key = test_key()
+        test = test[, 1:(dim(test)[2]-2)]
+        dataset$answers = test
+      } else {
+        do.call(data, args = list(paste0(datasetName, "test"), package = packageName))
+        test = get(paste0(datasetName, "test"))
 
-      test = test[, 1:length(key)]
-      dataset$answers = test
+        key = test_key()
+
+        test = test[, 1:length(key)]
+        dataset$answers = test
+      }
 
     } else {
       test = dataset$answers
     }
     data.table(test)
+
   })
 
   # LOAD KEY ######
   test_key <- reactive({
-    if ((is.null(input$key) & input$submitButton & input$data_type == "binary")) {
+    if ((is.null(input$key) & input$submitButton & (input$data_type == "binary" | input$data_type == "ordinal"))) {
       key = dataset$key
     } else {
       if ((is.null(input$key)) | (is.null(dataset$key))) {
@@ -108,10 +117,23 @@ function(input, output, session) {
         datasetName = str_sub(a, 1, pos - 1)
         packageName = str_sub(a, pos + 1)
 
-        do.call(data, args = list(paste0(datasetName, "key"), package = packageName))
-        key = get(paste0(datasetName, "key"))
-        key = unlist(key)
-        dataset$key = key
+        if (datasetName == "dataMedicalgraded") {
+
+          key = apply(X=test_answers()[1:nrow(test_answers()),], FUN=max, 2)
+          key = unlist(key)
+          dataset$key = key
+        } else {
+
+          do.call(data, args = list(paste0(datasetName, "key"), package = packageName))
+          key = get(paste0(datasetName, "key"))
+          key = unlist(key)
+          dataset$key = key
+          }
+
+        # do.call(data, args = list(paste0(datasetName, "key"), package = packageName))
+        # key = get(paste0(datasetName, "key"))
+        # key = unlist(key)
+        # dataset$key = key
 
       } else {
         if (length(dataset$key) == 1) {
@@ -138,13 +160,18 @@ function(input, output, session) {
       datasetName = str_sub(a, 1, pos - 1)
       packageName = str_sub(a, pos + 1)
 
-      do.call(data, args = list(paste0(datasetName, "test"), package = packageName))
-      test = data.table(get(paste0(datasetName, "test")))
+      if (datasetName == "dataMedicalgraded") {
+        do.call(data, args = list(paste0(datasetName), package = packageName))
+        test = data.table(get(paste0(datasetName)))
+      } else {
+        do.call(data, args = list(paste0(datasetName, "test"), package = packageName))
+        test = data.table(get(paste0(datasetName, "test")))
+      }
 
       if (datasetName == "GMAT"){
         group <- test[, "group"]
       } else {
-        if (datasetName == "dataMedical" | datasetName == "HCI"){
+        if (datasetName == "dataMedical" | datasetName == "HCI" | datasetName == "dataMedicalgraded"){
           group <- test[, "gender"]
         } else {
           group <- test[, ncol(test), with = FALSE]
@@ -181,13 +208,18 @@ function(input, output, session) {
       datasetName = str_sub(a, 1, pos - 1)
       packageName = str_sub(a, pos + 1)
 
-      do.call(data, args = list(paste0(datasetName, "test"), package = packageName))
-      test = data.table(get(paste0(datasetName, "test")))
+      if (datasetName == "dataMedicalgraded") {
+        do.call(data, args = list(paste0(datasetName), package = packageName))
+        test = data.table(get(paste0(datasetName)))
+      } else {
+        do.call(data, args = list(paste0(datasetName, "test"), package = packageName))
+        test = data.table(get(paste0(datasetName, "test")))
+      }
 
       if (datasetName == "GMAT"){
         criterion_variable <- test[, "criterion"]
       } else {
-        if (datasetName == "dataMedical"){
+        if (datasetName == "dataMedical" | datasetName == "dataMedicalgraded"){
           criterion_variable <- test[, "StudySuccess"]
         } else {
           if (datasetName == "HCI"){
@@ -252,7 +284,37 @@ function(input, output, session) {
           if (input$data_type == "binary"){
             key <- rep(1, ncol(answ))
           } else {
+            if (input$data_type == "ordinal"){
+
+              ### LOADING MINIMAL VALUES FOR ORDINAL DATA
+
+              if (is.null(input$minOrdinal)) {
+                if (input$globalMin=="") {
+                  keyOrdinalMin = data.frame(ordinalMin=apply(X=answ, FUN=min, 2))
+                } else {
+                  keyOrdinalMin = data.frame(ordinalMin=rep(input$globalMin, ncol(answ)))
+                }
+              } else {
+                keyOrdinalMin = data.frame(ordinalMin = input$minOrdinal)
+              }
+
+              ### LOADING MAXIMUM VALUES FOR ORDINAL DATA
+
+              if (is.null(input$maxOrdinal)) {
+                if (input$globalMax=="") {
+                  keyOrdinalMax = data.frame(ordinalMax=apply(X=answ, FUN=max, 2))
+                } else {
+                  keyOrdinalMax = data.frame(ordinalMax=rep(input$globalMax, ncol(answ)))
+                }
+              } else {
+                keyOrdinalMax = data.frame(ordinalMax = input$mmaxOrdinal)
+              }
+
+              key=unlist(keyOrdinalMax)
+
+            } else {
             key <- "missing"
+            }
           }
         } else {
           key <- read.csv(input$key$datapath, header = input$header,
