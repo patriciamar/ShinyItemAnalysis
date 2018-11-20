@@ -1414,18 +1414,21 @@ output$ccIRT_plot <- renderPlotly({
 
   p <- ggplotly(g)
 
+  # item 1, probabilities
   text <- gsub("~", "", p$x$data[[1]]$text)
   text <- gsub("value", "Probability", text)
   text <- gsub("theta", "Ability", text)
   text <- gsub("variable: X1", "", text)
   p$x$data[[1]]$text <- text
 
+  # item 2, probabilities
   text <- gsub("~", "", p$x$data[[2]]$text)
   text <- gsub("value", "Probability", text)
   text <- gsub("theta", "Ability", text)
   text <- gsub("variable: X2", "", text)
   p$x$data[[2]]$text <- text
 
+  # item 1 and selected theta
   text <- gsub("~", "", p$x$data[[3]]$text)
   text <- gsub("ccirt\\(theta0, a = a1, b = b1, c = c1, d = d1\\)", "Probability", text)
   text <- gsub("-4: -4<br />", "", text)
@@ -1453,7 +1456,7 @@ output$ccIRT_plot <- renderPlotly({
   p$x$data[[4]]$text <- text
 
   text <- gsub("~", "", p$x$data[[5]]$text)
-  text <- gsub("max\\(ccirt\\(theta0, a = a1, b = b1, c = c1, d = d1\\), ccirt\\(theta0, a = a2, b = b2, c = c2, d = d2\\)\\)", "Probability", text)
+  text <- gsub("max\\(ccirt\\(theta0, a = a1, b = b1, c = c1, d = d1\\), ccirt\\(theta0, \n    a = a2, b = b2, c = c2, d = d2\\)\\)", "Probability", text)
   text <- gsub("theta0", "Ability", text)
   text <- gsub("<br />0: 0", "", text)
   text <- gsub("theta0", "Ability", text)
@@ -1461,12 +1464,11 @@ output$ccIRT_plot <- renderPlotly({
   text <- gsub("<br />variable: gray", "", text)
   pos <- gregexpr('Ability', text)[[1]][2]
   text <- substring(text, 1, pos-1)
-  p$x$data[[5]]$text <- text
+  p$x$data[[5]]$text <- p$x$data[[4]]$text
 
   p$elementId <- NULL
 
-  # p %>% config(displayModeBar = F)
-  p
+  p %>%  plotly::config(displayModeBar = F)
 })
 
 output$DB_ccIRT <- downloadHandler(
@@ -1544,8 +1546,7 @@ output$iccIRT_plot <- renderPlotly({
 
   p$elementId <- NULL
 
-  # p %>% config(displayModeBar = F)
-  p
+  p %>%  plotly::config(displayModeBar = F)
 })
 
 output$DB_iccIRT <- downloadHandler(
@@ -1901,32 +1902,32 @@ output$irt_training_grm_sliders <- renderUI({
     tags$div(class = "js-irs-red",
              style = "display: inline-block; vertical-align: middle; width: 18%;",
              sliderInput("irt_training_grm_b1", "b1 - difficulty",
-                         value = -1.5, min = -4, max = 4, step = 0.01)),
+                         value = -1.5, min = -4, max = 4, step = 0.1)),
     div(style = "display: inline-block; vertical-align: middle; width: 2.6%;", ""),
     tags$div(class = "js-irs-yellow",
              style = "display: inline-block; vertical-align: middle; width: 18%;",
              sliderInput("irt_training_grm_b2", "b2 - difficulty",
-                         value = -1, min = -4, max = 4, step = 0.01)),
+                         value = -1, min = -4, max = 4, step = 0.1)),
     div(style = "display: inline-block; vertical-align: middle; width: 2.6%;", ""),
     tags$div(class = "js-irs-green",
              style = "display: inline-block; vertical-align: middle; width: 18%;",
              sliderInput("irt_training_grm_b3", "b3 - difficulty",
-                         value = -0.5, min = -4, max = 4, step = 0.01)),
+                         value = -0.5, min = -4, max = 4, step = 0.1)),
     div(style = "display: inline-block; vertical-align: middle; width: 2.6%;", ""),
     tags$div(class = "js-irs-blue",
              style = "display: inline-block; vertical-align: middle; width: 18%;",
              sliderInput("irt_training_grm_b4", "b4 - difficulty",
-                         value = 0, min = -4, max = 4, step = 0.01)),
+                         value = 0, min = -4, max = 4, step = 0.1)),
     div(style = "display: inline-block; vertical-align: middle; width: 2.6%;", ""),
     tags$div(class = "js-irs-purple",
              style = "display: inline-block; vertical-align: middle; width: 18%;",
              sliderInput("irt_training_grm_b5", "b5 - difficulty",
-                         value = 0.5, min = -4, max = 4, step = 0.01)),
+                         value = 0.5, min = -4, max = 4, step = 0.1)),
     div(style = "display: inline-block; vertical-align: middle; width: 2.6%;", ""),
     tags$div(class = "js-irs-orange",
              style = "display: inline-block; vertical-align: middle; width: 18%;",
              sliderInput("irt_training_grm_b6", "b6 - difficulty",
-                         value = 1, min = -4, max = 4, step = 0.01)),
+                         value = 1, min = -4, max = 4, step = 0.1)),
     div(style = "display: inline-block; vertical-align: middle; width: 2.6%;", "")
   )
 
@@ -1991,8 +1992,7 @@ output$irt_training_grm_plot_cummulative <- renderPlotly({
 
   p$elementId <- NULL
 
-  # p %>% config(displayModeBar = F)
-  p
+  p %>%  plotly::config(displayModeBar = F)
 })
 
 output$DB_irt_training_grm_plot_cummulative <- downloadHandler(
@@ -2071,8 +2071,7 @@ output$irt_training_grm_plot_category <- renderPlotly({
 
   p$elementId <- NULL
 
-  # p %>% config(displayModeBar = F)
-  p
+  p %>%  plotly::config(displayModeBar = F)
 })
 
 output$DB_irt_training_grm_plot_category <- downloadHandler(
@@ -2145,8 +2144,7 @@ output$irt_training_grm_plot_expected <- renderPlotly({
 
   p$elementId <- NULL
 
-  # p %>% config(displayModeBar = F)
-  p
+  p %>%  plotly::config(displayModeBar = F)
 })
 
 output$DB_irt_training_grm_plot_expected <- downloadHandler(
@@ -2170,32 +2168,32 @@ output$irt_training_gpcm_sliders <- renderUI({
     tags$div(class = "js-irs-red",
              style = "display: inline-block; vertical-align: middle; width: 18%;",
              sliderInput("irt_training_gpcm_d1", "d1 - threshold",
-                    value = -1.5, min = -4, max = 4, step = 0.01)),
+                    value = -1.5, min = -4, max = 4, step = 0.1)),
     div(style = "display: inline-block; vertical-align: middle; width: 2.6%;", ""),
     tags$div(class = "js-irs-yellow",
              style = "display: inline-block; vertical-align: middle; width: 18%;",
              sliderInput("irt_training_gpcm_d2", "d2 - threshold",
-                    value = -1, min = -4, max = 4, step = 0.01)),
+                    value = -1, min = -4, max = 4, step = 0.1)),
     div(style = "display: inline-block; vertical-align: middle; width: 2.6%;", ""),
     tags$div(class = "js-irs-green",
              style = "display: inline-block; vertical-align: middle; width: 18%;",
              sliderInput("irt_training_gpcm_d3", "d3 - threshold",
-                    value = -0.5, min = -4, max = 4, step = 0.01)),
+                    value = -0.5, min = -4, max = 4, step = 0.1)),
     div(style = "display: inline-block; vertical-align: middle; width: 2.6%;", ""),
     tags$div(class = "js-irs-blue",
              style = "display: inline-block; vertical-align: middle; width: 18%;",
              sliderInput("irt_training_gpcm_d4", "d4 - threshold",
-                    value = 0, min = -4, max = 4, step = 0.01)),
+                    value = 0, min = -4, max = 4, step = 0.1)),
     div(style = "display: inline-block; vertical-align: middle; width: 2.6%;", ""),
     tags$div(class = "js-irs-purple",
              style = "display: inline-block; vertical-align: middle; width: 18%;",
              sliderInput("irt_training_gpcm_d5", "d5 - threshold",
-                    value = 0.5, min = -4, max = 4, step = 0.01)),
+                    value = 0.5, min = -4, max = 4, step = 0.1)),
     div(style = "display: inline-block; vertical-align: middle; width: 2.6%;", ""),
     tags$div(class = "js-irs-orange",
              style = "display: inline-block; vertical-align: middle; width: 18%;",
              sliderInput("irt_training_gpcm_d6", "d6 - threshold",
-                    value = 1, min = -4, max = 4, step = 0.01)),
+                    value = 1, min = -4, max = 4, step = 0.1)),
     div(style = "display: inline-block; vertical-align: middle; width: 2.6%;", "")
   )
 
@@ -2270,8 +2268,7 @@ output$irt_training_gpcm_plot <- renderPlotly({
 
   p$elementId <- NULL
 
-  # p %>% config(displayModeBar = F)
-  p
+  p %>%  plotly::config(displayModeBar = F)
 })
 
 output$DB_irt_training_gpcm_plot <- downloadHandler(
@@ -2352,8 +2349,7 @@ output$irt_training_gpcm_plot_expected <- renderPlotly({
 
   p$elementId <- NULL
 
-  # p %>% config(displayModeBar = F)
-  p
+  p %>%  plotly::config(displayModeBar = F)
 })
 
 output$DB_irt_training_gpcm_plot_expected <- downloadHandler(
@@ -2377,62 +2373,62 @@ output$irt_training_nrm_sliders <- renderUI({
     tags$div(class = "js-irs-red",
              style = "display: inline-block; vertical-align: middle; width: 18%;",
              sliderInput("irt_training_nrm_a1", "a1 - discrimination",
-                    value = 2.5, min = 0, max = 4, step = 0.01)),
+                    value = 2.5, min = 0, max = 4, step = 0.1)),
     div(style = "display: inline-block; vertical-align: middle; width: 2.6%;", ""),
     tags$div(class = "js-irs-red",
              style = "display: inline-block; vertical-align: middle; width: 18%;",
              sliderInput("irt_training_nrm_d1", "d1 - threshold",
-                    value = -1.5, min = -4, max = 4, step = 0.01)),
+                    value = -1.5, min = -4, max = 4, step = 0.1)),
     div(style = "display: inline-block; vertical-align: middle; width: 2.6%;", ""),
     tags$div(class = "js-irs-yellow",
              style = "display: inline-block; vertical-align: middle; width: 18%;",
              sliderInput("irt_training_nrm_a2", "a2 - discrimination",
-                    value = 2, min = 0, max = 4, step = 0.01)),
+                    value = 2, min = 0, max = 4, step = 0.1)),
     div(style = "display: inline-block; vertical-align: middle; width: 2.6%;", ""),
     tags$div(class = "js-irs-yellow",
              style = "display: inline-block; vertical-align: middle; width: 18%;",
              sliderInput("irt_training_nrm_d2", "d2 - threshold",
-                    value = -1, min = -4, max = 4, step = 0.01)),
+                    value = -1, min = -4, max = 4, step = 0.1)),
     div(style = "display: inline-block; vertical-align: middle; width: 2.6%;", ""),
     tags$div(class = "js-irs-green",
              style = "display: inline-block; vertical-align: middle; width: 18%;",
              sliderInput("irt_training_nrm_a3", "a3 - discrimination",
-                    value = 1, min = 0, max = 4, step = 0.01)),
+                    value = 1, min = 0, max = 4, step = 0.1)),
     div(style = "display: inline-block; vertical-align: middle; width: 2.6%;", ""),
     tags$div(class = "js-irs-green",
              style = "display: inline-block; vertical-align: middle; width: 18%;",
              sliderInput("irt_training_nrm_d3", "d3 - threshold",
-                    value = -0.5, min = -4, max = 4, step = 0.01)),
+                    value = -0.5, min = -4, max = 4, step = 0.1)),
     div(style = "display: inline-block; vertical-align: middle; width: 2.6%;", ""),
     tags$div(class = "js-irs-blue",
              style = "display: inline-block; vertical-align: middle; width: 18%;",
              sliderInput("irt_training_nrm_a4", "a4 - discrimination",
-                    value = 1.5, min = 0, max = 4, step = 0.01)),
+                    value = 1.5, min = 0, max = 4, step = 0.1)),
     div(style = "display: inline-block; vertical-align: middle; width: 2.6%;", ""),
     tags$div(class = "js-irs-blue",
              style = "display: inline-block; vertical-align: middle; width: 18%;",
              sliderInput("irt_training_nrm_d4", "d4 - threshold",
-                    value = 0, min = -4, max = 4, step = 0.01)),
+                    value = 0, min = -4, max = 4, step = 0.1)),
     div(style = "display: inline-block; vertical-align: middle; width: 2.6%;", ""),
     tags$div(class = "js-irs-purple",
              style = "display: inline-block; vertical-align: middle; width: 18%;",
              sliderInput("irt_training_nrm_a5", "a5 - discrimination",
-                    value = 0.5, min = 0, max = 4, step = 0.01)),
+                    value = 0.5, min = 0, max = 4, step = 0.1)),
     div(style = "display: inline-block; vertical-align: middle; width: 2.6%;", ""),
     tags$div(class = "js-irs-purple",
              style = "display: inline-block; vertical-align: middle; width: 18%;",
              sliderInput("irt_training_nrm_d5", "d5 - threshold",
-                    value = 0.5, min = -4, max = 4, step = 0.01)),
+                    value = 0.5, min = -4, max = 4, step = 0.1)),
     div(style = "display: inline-block; vertical-align: middle; width: 2.6%;", ""),
     tags$div(class = "js-irs-orange",
              style = "display: inline-block; vertical-align: middle; width: 18%;",
              sliderInput("irt_training_nrm_a6", "a6 - discrimination",
-                    value = 1.3, min = 0, max = 4, step = 0.01)),
+                    value = 1.3, min = 0, max = 4, step = 0.1)),
     div(style = "display: inline-block; vertical-align: middle; width: 2.6%;", ""),
     tags$div(class = "js-irs-orange",
              style = "display: inline-block; vertical-align: middle; width: 18%;",
              sliderInput("irt_training_nrm_d6", "d6 - threshold",
-                    value = 1, min = -4, max = 4, step = 0.01)),
+                    value = 1, min = -4, max = 4, step = 0.1)),
     div(style = "display: inline-block; vertical-align: middle; width: 2.6%;", "")
   )
 
@@ -2515,8 +2511,7 @@ output$irt_training_nrm_plot <- renderPlotly({
 
   p$elementId <- NULL
 
-  # p %>% config(displayModeBar = F)
-  p
+  p %>%  plotly::config(displayModeBar = F)
 })
 
 output$DB_irt_training_nrm_plot <- downloadHandler(
