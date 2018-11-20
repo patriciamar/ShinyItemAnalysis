@@ -26,7 +26,6 @@ corr_structure <- reactive({
 # ** Correlation plot ######
 corr_plot_Input <- reactive({
   corP <- corr_structure()
-
   if (input$type_of_corr == 'polychoric') {
 	corP <- corP$rho
   }
@@ -36,27 +35,23 @@ corr_plot_Input <- reactive({
   numclust <- input$corr_plot_clust
   clustmethod <- input$corr_plot_clustmethod
 
-
   # option to display correlation values
-
-  if(input$show_corr > 0) {
-
-	if (clustmethod == "none"){
-		corrplot(corP, tl.cex = tlcex, tl.pos = 'lt', method = 'number', number.cex = 0.7)
-	} else {
-		corrplot(corP, tl.cex = tlcex, order = "hclust", hclust.method = clustmethod, addrect = numclust, tl.pos = 'lt', method = 'number',
-		number.cex  = 0.7)
-	}
-
-
-  } else {
-	if (clustmethod == "none"){
-		corrplot(corP, tl.cex = tlcex, tl.pos = 'lt')
-	} else {
-		corrplot(corP, tl.cex = tlcex, order = "hclust", hclust.method = clustmethod, addrect = numclust, tl.pos = 'lt')
-	}
+  if(input$show_corr %% 2 == 1 ) {
+    updateActionButton(session,"show_corr", label = "Hide correlation values")
+	  if (clustmethod == "none"){
+	    corrplot(corP, tl.cex = tlcex, tl.pos = 'lt', method = 'number', number.cex = 0.7, col = 'black', cl.pos = 'n')
+    } else {
+      corrplot(corP, tl.cex = tlcex, order = "hclust", hclust.method = clustmethod, addrect = numclust, tl.pos = 'lt', method = 'number',
+		  number.cex  = 0.7, col = 'black', cl.pos = 'n')
+    }
+   } else {
+      updateActionButton(session,"show_corr", label = "Display correlation values")
+    if (clustmethod == "none"){
+	    corrplot(corP, tl.cex = tlcex, tl.pos = 'lt')
+	  } else {
+	    corrplot(corP, tl.cex = tlcex, order = "hclust", hclust.method = clustmethod, addrect = numclust, tl.pos = 'lt')
+	  }
   }
-
 })
 
 
@@ -95,6 +90,19 @@ output$DB_corr_plot <- downloadHandler(
     dev.off()
   }
 )
+
+
+output$corr_matrix <- downloadHandler(
+	filename = function() {
+		paste("Correlation_matrix",".csv",sep = "")
+	},
+	content = function(file) {
+	  corP <- corr_structure()
+	  if (input$type_of_corr == 'polychoric') {
+		corP <- corP$rho
+	  }
+	  write.csv(corP,file)
+	})
 
 # ** Scree plot ######
 scree_plot_Input <- reactive({

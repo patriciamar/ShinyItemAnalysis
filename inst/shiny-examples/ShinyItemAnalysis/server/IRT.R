@@ -123,6 +123,18 @@ output$raschcoef_mirt <- renderTable({
 },
 include.rownames = T)
 
+
+# ** Download table ######
+output$download_Rasch_table <- downloadHandler(
+  filename = function() {
+    paste("Rasch_table",".csv",sep = "")
+  },
+  content = function(file) {
+    data <- raschcoefInput_mirt()
+    write.csv(data,file)
+  }
+)
+
 # *** Factor scores correlation ######
 raschFactorCorInput_mirt <- reactive({
   fs <- as.vector(fscores(rasch_model_mirt()))
@@ -339,6 +351,16 @@ output$oneparamirtcoef_mirt <- renderTable({
 },
 include.rownames = T)
 
+# ** Download table ######
+output$download_1pl_table <- downloadHandler(
+  filename = function() {
+    paste("1PL_table",".csv",sep = "")
+  },
+  content = function(file) {
+    data <- oneparamirtcoefInput_mirt()
+    write.csv(data,file)
+  }
+)
 
 # *** Factor scores correlation ######
 oneparamirtFactorCorInput_mirt <- reactive({
@@ -571,6 +593,18 @@ output$twoparamirtcoef_mirt <- renderTable({
   twoparamirtcoefInput_mirt()
 },
 include.rownames = T)
+
+# ** Download table ######
+output$download_2pl_table <- downloadHandler(
+  filename = function() {
+    paste("2PL_table",".csv",sep = "")
+  },
+  content = function(file) {
+    data <- twoparamirtcoefInput_mirt()
+    write.csv(data,file)
+  }
+)
+
 # *** Factor scores correlation ######
 twoparamirtFactorCorInput_mirt <- reactive({
 
@@ -611,6 +645,8 @@ twoparamirtFactorInput_mirt <- reactive({
 output$twoparamirtFactor_mirt <- renderPlot({
   twoparamirtFactorInput_mirt()
 })
+
+
 
 output$DP_twoparamirtFactor_mirt <- downloadHandler(
   filename =  function() {
@@ -772,6 +808,17 @@ output$threeparamirtcoef_mirt <- renderTable({
   threeparamirtcoefInput_mirt()
 },
 include.rownames = T)
+
+# ** Download table ######
+output$download_3pl_table <- downloadHandler(
+  filename = function() {
+    paste("3PL_table",".csv",sep = "")
+  },
+  content = function(file) {
+    data <- threeparamirtcoefInput_mirt()
+    write.csv(data,file)
+  }
+)
 
 # *** Factor scores plot ######
 threeparamirtFactorCorInput_mirt <- reactive({
@@ -973,6 +1020,17 @@ output$irt_4PL_coef <- renderTable({
   irt_4PL_coef_Input()
 },
 include.rownames = T)
+
+# ** Download table ######
+output$download_4pl_table <- downloadHandler(
+  filename = function() {
+    paste("4PL_table",".csv",sep = "")
+  },
+  content = function(file) {
+    data <- irt_4PL_coef_Input()
+    write.csv(data,file)
+  }
+)
 
 # *** Factor scores plot ######
 irt_4PL_factorscores_correlation_Input <- reactive({
