@@ -379,8 +379,13 @@ function(input, output, session) {
       }
     }
 
-    correct <- data.table(matrix(as.numeric(test == df.key),
-                          ncol = dim(test)[2], nrow = dim(test)[1]))
+    if (input$data_select == 'dataMedicalgraded_ShinyItemAnalysis' | (!is.null(input$submitButton) & input$data_type == 'ordinal')){
+      correct <- test
+    } else {
+      correct <- data.table(matrix(as.numeric(test == df.key),
+                                   ncol = dim(test)[2], nrow = dim(test)[1]))
+    }
+
     if (!(input$missval)){
       correct[is.na(correct)] <- 0
     }

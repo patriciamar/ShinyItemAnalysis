@@ -39,8 +39,9 @@ Data <- tabPanel("Data",
                             # * Upload your own datasets ####
                             #------------------------------------------------------------------------------------#
                             h4("Upload your own datasets"),
+                            p("Here you can upload your own dataset. Select all necessary files and use ", strong("Upload data"), " button on bottom of this page."),
                             fluidRow(
-                              box(width = 4,
+                              box(width = 3,
                                   fileInput(inputId = "data",
                                             label = "Choose data (CSV file)",
                                             accept = c("text/csv",
@@ -48,9 +49,8 @@ Data <- tabPanel("Data",
                                                        "text/tab-separated-values",
                                                        "text/plain",
                                                        ".csv",
-                                                       ".tsv")),
-                              p(strong("Use ,,Upload data'' button on bottom of this page!"))),
-                            column(8,
+                                                       ".tsv"))),
+                            column(9,
                                      p("Main ", strong("data"), " file should contain responses of individual respondents (rows)
                               to given items (columns). Data need to be either binary or nominal (e.g. in ABCD format).
                               Header may contain item names, no row names should be included. In all data sets", strong("header"), "should
@@ -176,7 +176,7 @@ Data <- tabPanel("Data",
                             conditionalPanel(
                               condition = "input.data_type == 'nominal'",
                               fluidRow(
-                                box(width = 4,
+                                box(width = 3,
                                     fileInput(inputId = "key",
                                               label = "Choose key (CSV file)",
                                               accept = c("text/csv",
@@ -184,9 +184,8 @@ Data <- tabPanel("Data",
                                                          "text/tab-separated-values",
                                                          "text/plain",
                                                          ".csv",
-                                                         ".tsv")),
-                                p(strong("Use ,,Upload data'' button on bottom of this page!"))),
-                                column(8,
+                                                         ".tsv"))),
+                                column(9,
                                        p("For nominal data, it is necessary to upload ", strong("key"), "of correct answers."),
                                        p(strong("Note: "), "In case of ordinal data, you are advised to include key vector containing of maximum value for each item."))
                                 )
@@ -194,7 +193,7 @@ Data <- tabPanel("Data",
                             conditionalPanel(
                               condition = "input.data_type == 'ordinal'",
                               fluidRow(
-                                box(width = 4,
+                                box(width = 3,
                                     fileInput(inputId = "minOrdinal",
                                               label = "Choose minimal values",
                                               accept = c("text/csv",
@@ -204,7 +203,7 @@ Data <- tabPanel("Data",
                                                          ".csv",
                                                          ".tsv")),
                                     textInput("globalMin", "Dataset minimal Value")),
-                                column(8,
+                                column(9,
                                        p("For ordinal data, it is optional to upload ", strong("minimal and maximal"), "values of answers.
                                          You can either upload datasets of item-specific values, or you can provide one value for whole dataset."),
                                        p(strong("Note: "), "If no minimal or maximal values are provided, these
@@ -212,7 +211,7 @@ Data <- tabPanel("Data",
                                 )
                                 ),
                               fluidRow(
-                                box(width = 4,
+                                box(width = 3,
                                     fileInput(inputId = "maxOrdinal",
                                               label = "Choose maximal values",
                                               accept = c("text/csv",
@@ -227,7 +226,7 @@ Data <- tabPanel("Data",
 
                             ),
                             fluidRow(
-                              box(width = 4,
+                              box(width = 3,
                                   fileInput(inputId = "groups",
                                             label = "Choose group (optional)",
                                             accept = c("text/csv",
@@ -235,9 +234,8 @@ Data <- tabPanel("Data",
                                                        "text/tab-separated-values",
                                                        "text/plain",
                                                        ".csv",
-                                                       ".tsv")),
-                                  p(strong("Use ,,Upload data'' button on bottom of this page!"))),
-                              column(8,
+                                                       ".tsv"))),
+                              column(9,
                                      p(strong("Group"), " is binary vector, where 0 represents reference group
                               and 1 represents focal group. Its length needs to be the same as number of individual
                               respondents in the main dataset. If the group is not provided then it won't be possible to run
@@ -245,7 +243,7 @@ Data <- tabPanel("Data",
                               are not supported for group membership vector and such cases/rows of the data should be removed."))
                             ),
                             fluidRow(
-                              box(width = 4,
+                              box(width = 3,
                                      fileInput(inputId = "criterion_variable",
                                                label = "Choose criterion variable (optional)",
                                                accept = c("text/csv",
@@ -253,9 +251,8 @@ Data <- tabPanel("Data",
                                                           "text/tab-separated-values",
                                                           "text/plain",
                                                           ".csv",
-                                                          ".tsv")),
-                                  p(strong("Use ,,Upload data'' button on bottom of this page!"))),
-                              column(8,
+                                                          ".tsv"))),
+                              column(9,
                                      p(strong("Criterion variable"), " is either discrete or continuous vector (e.g. future study
                               success or future GPA in case of admission tests) which should be predicted by the measurement.
                               Its length needs to be the same as number of individual respondents in the main dataset.
@@ -284,6 +281,8 @@ Data <- tabPanel("Data",
                                 htmlOutput("checkGroupText")),
                             div(style = "vertical-align: top; float: right;",
                                 uiOutput("renderdeleteButtonGroup")),
+                            div(style = "vertical-align: top; float: right;",
+                                htmlOutput("removedGroupText")),
                             br(),
                             br()),
                    #------------------------------------------------------------------------------------#

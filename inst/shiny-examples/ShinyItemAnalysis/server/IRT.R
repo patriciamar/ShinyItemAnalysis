@@ -226,7 +226,8 @@ one_param_irt_mirt <- reactive({
   s <- paste("F = 1-", ncol(data), "\n",
                  "CONSTRAIN = (1-", ncol(data), ", a1)")
   model <- mirt.model(s)
-  fit1PL <- mirt(data, model = model, itemtype = "2PL", SE = T, verbose = F)
+  fit1PL <- mirt(data, model = model, itemtype = "2PL", SE = T, verbose = F,
+                 technical = list(NCYCLES = input$ncycles))
 })
 
 # *** CC ####
@@ -471,7 +472,8 @@ two_param_irt_mirt <- reactive({
   data <- correct_answ()
   fit2PL <- mirt(data, model = 1, itemtype = "2PL",
                  constrain = NULL,
-                 SE = T, verbose = F)
+                 SE = T, verbose = F,
+                 technical = list(NCYCLES = input$ncycles))
 })
 
 # *** CC ######
@@ -669,7 +671,7 @@ three_param_irt_mirt <- reactive({
   data <- correct_answ()
   fit3PL <- mirt(data, model = 1, itemtype = "3PL",
                  constrain = NULL,
-                 SE = T, technical = list(NCYCLES = 2000),
+                 SE = T, technical = list(NCYCLES = input$ncycles),
                  verbose = F)
 })
 
@@ -881,7 +883,7 @@ irt_4PL_model <- reactive({
   data <- correct_answ()
   fit <- mirt(data, model = 1, itemtype = "4PL",
               constrain = NULL,
-              SE = T, technical = list(NCYCLES = 4000),
+              SE = T, technical = list(NCYCLES = input$ncycles),
               verbose = F)
 })
 
