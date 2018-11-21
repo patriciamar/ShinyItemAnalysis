@@ -2813,6 +2813,13 @@ ui = tagList(
              #%%%%%%%%%%%%%%%%%%%%%
              tabPanel("",
                       icon = icon("fas fa-cog"),
+                      h4("IRT models setting"),
+                      p("Set the number of cycles for IRT 1PL, 2PL, 3PL and 4PL models."),
+                      numericInput(inputId = "ncycles",
+                                   label = "Number of cycles",
+                                   value = 2000,
+                                   min = 1,
+                                   max = 999999),
                       h4("Figure downloads"),
                       p("Here you can change setting for download of figures. "),
                       fluidPage(column(2, numericInput(inputId = "setting_figures_text_size",
