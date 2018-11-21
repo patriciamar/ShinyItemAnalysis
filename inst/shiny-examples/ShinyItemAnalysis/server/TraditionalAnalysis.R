@@ -152,6 +152,18 @@ output$itemanalysis_table <- renderTable({
 },
 include.rownames = FALSE)
 
+
+# ** Download traditional item analysis table ######
+output$download_itemanal_table <- downloadHandler(
+  filename = function() {
+    paste("Item_Analysis",".csv",sep = "")
+  },
+  content = function(file) {
+    data <- itemanalysis_table_Input()
+    write.csv(data,file)
+  }
+)
+
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # * DISTRACTORS ######
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -380,3 +392,4 @@ output$distractor_table_total_score_by_group <- renderTable({
 },
 include.colnames = TRUE,
 include.rownames = TRUE)
+
