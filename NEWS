@@ -21,6 +21,8 @@ MAJOR UPDATES
   o Validity/Correlation structure now allows selection between
     Pearson/Spearman/Polychoric correlation, Polychoric is default
     for binary data
+  o DDplot now allows also ordinal items and offers different types
+    of discrimination indices to be displayed
   o Download of tables (as .csv files) is now provided for
     standard scores, correlation matrix, traditional item analysis,
     and for parameter estimates in IRT models.
