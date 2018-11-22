@@ -123,6 +123,18 @@ output$raschcoef_mirt <- renderTable({
 },
 include.rownames = T)
 
+
+# ** Download table ######
+output$download_Rasch_table <- downloadHandler(
+  filename = function() {
+    paste("Rasch_table",".csv",sep = "")
+  },
+  content = function(file) {
+    data <- raschcoefInput_mirt()
+    write.csv(data,file)
+  }
+)
+
 # *** Factor scores correlation ######
 raschFactorCorInput_mirt <- reactive({
   fs <- as.vector(fscores(rasch_model_mirt()))
@@ -214,7 +226,8 @@ one_param_irt_mirt <- reactive({
   s <- paste("F = 1-", ncol(data), "\n",
                  "CONSTRAIN = (1-", ncol(data), ", a1)")
   model <- mirt.model(s)
-  fit1PL <- mirt(data, model = model, itemtype = "2PL", SE = T, verbose = F)
+  fit1PL <- mirt(data, model = model, itemtype = "2PL", SE = T, verbose = F,
+                 technical = list(NCYCLES = input$ncycles))
 })
 
 # *** CC ####
@@ -339,6 +352,16 @@ output$oneparamirtcoef_mirt <- renderTable({
 },
 include.rownames = T)
 
+# ** Download table ######
+output$download_1pl_table <- downloadHandler(
+  filename = function() {
+    paste("1PL_table",".csv",sep = "")
+  },
+  content = function(file) {
+    data <- oneparamirtcoefInput_mirt()
+    write.csv(data,file)
+  }
+)
 
 # *** Factor scores correlation ######
 oneparamirtFactorCorInput_mirt <- reactive({
@@ -449,7 +472,8 @@ two_param_irt_mirt <- reactive({
   data <- correct_answ()
   fit2PL <- mirt(data, model = 1, itemtype = "2PL",
                  constrain = NULL,
-                 SE = T, verbose = F)
+                 SE = T, verbose = F,
+                 technical = list(NCYCLES = input$ncycles))
 })
 
 # *** CC ######
@@ -571,6 +595,18 @@ output$twoparamirtcoef_mirt <- renderTable({
   twoparamirtcoefInput_mirt()
 },
 include.rownames = T)
+
+# ** Download table ######
+output$download_2pl_table <- downloadHandler(
+  filename = function() {
+    paste("2PL_table",".csv",sep = "")
+  },
+  content = function(file) {
+    data <- twoparamirtcoefInput_mirt()
+    write.csv(data,file)
+  }
+)
+
 # *** Factor scores correlation ######
 twoparamirtFactorCorInput_mirt <- reactive({
 
@@ -612,6 +648,8 @@ output$twoparamirtFactor_mirt <- renderPlot({
   twoparamirtFactorInput_mirt()
 })
 
+
+
 output$DP_twoparamirtFactor_mirt <- downloadHandler(
   filename =  function() {
     paste("fig_2PLFactorVsStandardized.png", sep = "")
@@ -633,7 +671,7 @@ three_param_irt_mirt <- reactive({
   data <- correct_answ()
   fit3PL <- mirt(data, model = 1, itemtype = "3PL",
                  constrain = NULL,
-                 SE = T, technical = list(NCYCLES = 2000),
+                 SE = T, technical = list(NCYCLES = input$ncycles),
                  verbose = F)
 })
 
@@ -773,6 +811,17 @@ output$threeparamirtcoef_mirt <- renderTable({
 },
 include.rownames = T)
 
+# ** Download table ######
+output$download_3pl_table <- downloadHandler(
+  filename = function() {
+    paste("3PL_table",".csv",sep = "")
+  },
+  content = function(file) {
+    data <- threeparamirtcoefInput_mirt()
+    write.csv(data,file)
+  }
+)
+
 # *** Factor scores plot ######
 threeparamirtFactorCorInput_mirt <- reactive({
 
@@ -834,7 +883,7 @@ irt_4PL_model <- reactive({
   data <- correct_answ()
   fit <- mirt(data, model = 1, itemtype = "4PL",
               constrain = NULL,
-              SE = T, technical = list(NCYCLES = 4000),
+              SE = T, technical = list(NCYCLES = input$ncycles),
               verbose = F)
 })
 
@@ -973,6 +1022,17 @@ output$irt_4PL_coef <- renderTable({
   irt_4PL_coef_Input()
 },
 include.rownames = T)
+
+# ** Download table ######
+output$download_4pl_table <- downloadHandler(
+  filename = function() {
+    paste("4PL_table",".csv",sep = "")
+  },
+  content = function(file) {
+    data <- irt_4PL_coef_Input()
+    write.csv(data,file)
+  }
+)
 
 # *** Factor scores plot ######
 irt_4PL_factorscores_correlation_Input <- reactive({

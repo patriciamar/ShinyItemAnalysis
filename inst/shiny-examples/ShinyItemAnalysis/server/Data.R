@@ -169,7 +169,7 @@ checkGroupText_Input <- eventReactive(input$submitButton, {
                  For this purpose you can use button <b>Remove data</b> on the right side. <br><br>")
     txt <- paste("<font color = 'red'>", txt, "</font>")
   } else {
-    txt <- ""
+      txt <- ""
   }
   txt
 })
@@ -178,14 +178,24 @@ output$checkGroupText <- renderUI({
   HTML(checkGroupText_Input())
 })
 
-# # * Removing such data ####
-# eventReactive(input$deleteButtonGroup, {
-#   OKgroup <- !checkGroup_Input()
-#
-#   dataset$answers <- dataset$answers[OKgroup, ]
-#   dataset$group <- dataset$group[OKgroup]
-#   dataset$criterion_variable <- dataset$criterion_variable[OKgroup]
-# })
+removedGroupText_Input <- eventReactive(input$deleteButtonGroup, {
+  txt <- "Rows with missing group membership removed."
+  txt <- paste("<font color = 'green'>", txt, "</font>")
+  txt
+})
+
+output$removedGroupText <- renderUI({
+  HTML(removedGroupText_Input())
+})
+
+# * Removing such data ####
+
+observeEvent(input$deleteButtonGroup, {
+  OKgroup <- !checkGroup_Input()
+  dataset$answers = dataset$answers[OKgroup, ]
+  dataset$group = dataset$group[OKgroup]
+  dataset$criterion_variable = dataset$criterion_variable[OKgroup]
+})
 
 # * Render button for excluding data with missing group membership ####
 output$renderdeleteButtonGroup <- renderUI({

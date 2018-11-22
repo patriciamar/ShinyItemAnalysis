@@ -115,3 +115,16 @@ output$scores_tables <- renderTable({
   scores_tables_Input()
 },
 include.rownames = FALSE)
+
+# ** Download table with standard scores ** ####
+output$download_standard_scores <- downloadHandler(
+  filename = function() {
+    paste("Standard_scores",".csv",sep = "")
+  },
+  content = function(file) {
+    data <- scores_tables_Input()
+    write.csv(data,file)
+  }
+)
+
+

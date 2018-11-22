@@ -192,6 +192,11 @@ ui = tagList(
                                  h4("Table by score"),
                                  tableOutput('scores_tables'),
                                  br(),
+                                 #download button for downloading table
+                                 downloadButton( outputId = 'download_standard_scores',
+                                                 label = 'Download table'),
+                                 br(),
+                                 br(),
                                  h4("Selected R code"),
                                  div(code(HTML("library(difNLR)&nbsp;<br><br>#&nbsp;loading&nbsp;data<br>data(GMAT)&nbsp;<br>data&nbsp;<-&nbsp;GMAT[,&nbsp;1:20]&nbsp;<br><br>#&nbsp;scores&nbsp;calculations<br>score&nbsp;<-&nbsp;apply(data,&nbsp;1,&nbsp;sum)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Total&nbsp;score&nbsp;<br>tosc&nbsp;<-&nbsp;sort(unique(score))&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Levels&nbsp;of&nbsp;total&nbsp;score&nbsp;<br>perc&nbsp;<-&nbsp;cumsum(prop.table(table(score)))&nbsp;#&nbsp;Percentiles&nbsp;<br>sura&nbsp;<-&nbsp;100&nbsp;*&nbsp;(tosc&nbsp;/&nbsp;max(score))&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Success&nbsp;rate&nbsp;<br>zsco&nbsp;<-&nbsp;sort(unique(scale(score)))&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Z-score&nbsp;<br>tsco&nbsp;<-&nbsp;50&nbsp;+&nbsp;10&nbsp;*&nbsp;zsco&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;T-score"))),
                                  br()
@@ -369,13 +374,13 @@ ui = tagList(
                         # * CORRELATION STRUCTURE ####
                         tabPanel("Correlation structure",
                                  h3("Correlation structure"),
-                                 h4("Polychoric correlation heat map"),
-                                 p('Polychoric correlation heat map is a correlation plot which displays a polychoric
-                                   correlations of items. The size and shade of circles indicate how much the
+                                 h4("Correlation heat map"),
+                                 p('Correlation heat map displays selected type of
+                                   correlations between items. The size and shade of circles indicate how much the
                                    items are correlated (larger and darker circle means larger correlation).
                                    The color of circles indicates in which way the items are correlated - blue
                                    color shows possitive correlation and red color shows negative correlation.'),
-                                 p("Polychoric correlation heat map can be reordered using hierarchical",
+                                 p("Correlation heat map can be reordered using hierarchical",
                                    HTML("<b>clustering method</b>"), "below.
                                    Ward's method aims at finding compact clusters based on minimizing the within-cluster
                                    sum of squares.
@@ -390,17 +395,21 @@ ui = tagList(
                                    in one cluster and observation in the other cluster.
                                    Centroid method used distance between centroids of clusters. "),
                          #radiobutton for selection of method for correlation
-								 fluidRow(column(width = 3,div(class = 'input-radio',radioButtons(inputId = "type_of_corr",
+								               fluidPage(div(style = "display: inline-block; vertical-align: top; width: 5%;"),
+                               fluidRow(column(width = 5,
+								               selectInput(inputId = "type_of_corr",
                                               label    = "Choose correlation",
                                               choices  = c("Pearson"    = "pearson",
                                                            "Spearman"   = "spearman",
                                                            "Polychoric" = "polychoric"),
-                                              selected = 'polychoric'))),
+                                              selected = 'polychoric',
+								                              width    =  '82%')),
 								          #action button for displaying correlation values in corrplot
-								          column(width = 7,p(HTML('<b>Click the button to display the correlation values in corrplot</b>')),
-								          actionButton( inputId = 'show_corr',
-								                        label = 'Display correlation',
-								                        class = 'btn btn-primary'))),
+								          column(width = 7,
+								                 actionButton( inputId = 'show_corr',
+								                        label = 'Display correlation values',
+								                        class = 'btn btn-primary')))),
+								          br(),
                                  p("With", HTML("<b>number  of clusters</b>"), "larger than 1, the rectangles representing
                                    clusters are drawn. "),
                                  fluidPage(div(class = "input-box",
@@ -424,7 +433,11 @@ ui = tagList(
                                                                           "Centroid" = "centroid"),
                                                            selected = "none"))),
                                  plotOutput('corr_plot'),
+								                 br(),
                                  downloadButton(outputId = "DB_corr_plot", label = "Download figure"),
+								                 #download correlation matrix button
+								                 tags$style(HTML('#corr_matrix { margin: 10px }')),
+								                 downloadButton(outputId = "corr_matrix",  label = "Download correlation matrix"),
                                  br(),
                                  h4("Scree plot"),
                                  p('A scree plot displays the eigenvalues associated with an component or a factor in descending order
@@ -551,6 +564,10 @@ ui = tagList(
                                  h4("Traditional item analysis table"),
                                  htmlOutput("itemanalysis_table_text"),
                                  tableOutput('itemanalysis_table'),
+                                 br(),
+                                 #download item analysis table button
+                                 downloadButton(outputId = "download_itemanal_table",
+                                                label    = "Download table"),
                                  br(),
                                  h4("Selected R code"),
                                  div(code(HTML("library(difNLR)&nbsp;<br>library(psych)&nbsp;<br>library(psychometric)&nbsp;<br>library(ShinyItemAnalysis)&nbsp;<br><br>#&nbsp;loading&nbsp;data<br>data(GMAT)&nbsp;<br>data&nbsp;<-&nbsp;GMAT[,&nbsp;1:20]&nbsp;<br><br>#&nbsp;difficulty&nbsp;and&nbsp;discrimination&nbsp;plot&nbsp;<br>DDplot(data,&nbsp;k&nbsp;=&nbsp;3,&nbsp;l&nbsp;=&nbsp;1,&nbsp;u&nbsp;=&nbsp;3)&nbsp;<br><br>#&nbsp;Cronbach&nbsp;alpha&nbsp;<br>psych::alpha(data)&nbsp;<br><br>#&nbsp;traditional&nbsp;item&nbsp;analysis&nbsp;table&nbsp;<br>tab&nbsp;<-&nbsp;round(data.frame(item.exam(data,&nbsp;discr&nbsp;=&nbsp;TRUE)[,&nbsp;c(4,&nbsp;1,&nbsp;5,&nbsp;2,&nbsp;3)],&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;psych::alpha(data)$alpha.drop[,&nbsp;1],&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;gDiscrim(data,&nbsp;k&nbsp;=&nbsp;3,&nbsp;l&nbsp;=&nbsp;1,&nbsp;u&nbsp;=&nbsp;3)),&nbsp;2)&nbsp;<br>colnames(tab)&nbsp;<-&nbsp;c(\"Difficulty\",&nbsp;\"SD\",&nbsp;\"Dsicrimination&nbsp;ULI\",&nbsp;\"Discrimination&nbsp;RIT\",&nbsp;\"Discrimination&nbsp;RIR\",&nbsp;\"Alpha&nbsp;Drop\",&nbsp;\"Customized&nbsp;Discrimination\")&nbsp;<br>tab"))),
@@ -2796,6 +2813,13 @@ ui = tagList(
              #%%%%%%%%%%%%%%%%%%%%%
              tabPanel("",
                       icon = icon("fas fa-cog"),
+                      h4("IRT models setting"),
+                      p("Set the number of cycles for IRT 1PL, 2PL, 3PL and 4PL models."),
+                      numericInput(inputId = "ncycles",
+                                   label = "Number of cycles",
+                                   value = 2000,
+                                   min = 1,
+                                   max = 999999),
                       h4("Figure downloads"),
                       p("Here you can change setting for download of figures. "),
                       fluidPage(column(2, numericInput(inputId = "setting_figures_text_size",
