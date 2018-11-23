@@ -5,6 +5,34 @@
         ***************************************************************
 
 -------------------------------------------------------
+- Changes in ShinyItemAnalysis 1.2.8-4. (2018-11-23) -
+-------------------------------------------------------
+
+BUG FIXING
+  o Bug in IRT models/Training/Dichotomous models text of theta in
+    plotly was fixed.
+
+MAJOR UPDATES
+  o Reorganization of data upload and renaming data variables.
+      test_answers() -> nominal()
+      correct_answers() -> binary()
+      scored_test() -> total_score()
+      test_key() -> key()
+      DIF_groups() -> group()
+      criterion_variable -> criterion()
+
+    And creating new variables:
+      ordinal() - ordinal data
+      maximal() - maximal values for ordinal data
+      minimal() - minimal values for ordinal data
+      z_score() - standardized total score, no need to use scale(total_score())
+                  in each function
+
+MINOR UPDATES
+  o Updating text in Data section.
+  o Editing boxes for data upload in Data section.
+
+-------------------------------------------------------
 - Changes in ShinyItemAnalysis 1.2.8-3. (2018-11-20) -
 -------------------------------------------------------
 

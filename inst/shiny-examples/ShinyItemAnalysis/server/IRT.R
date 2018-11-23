@@ -6,7 +6,7 @@
 # * RASCH ######
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 rasch_model_mirt <- reactive({
-  fitRasch <- mirt(correct_answ(), model = 1, itemtype = "Rasch",
+  fitRasch <- mirt(binary(), model = 1, itemtype = "Rasch",
                    SE = T, verbose = F)
 })
 
@@ -138,7 +138,7 @@ output$download_Rasch_table <- downloadHandler(
 # *** Factor scores correlation ######
 raschFactorCorInput_mirt <- reactive({
   fs <- as.vector(fscores(rasch_model_mirt()))
-  sts <- as.vector(scale(apply(correct_answ(), 1, sum)))
+  sts <- z_score()
 
   whok <- !(is.na(fs) | is.na(sts))
 
@@ -154,7 +154,7 @@ output$raschFactorCor_mirt <- renderText({
 raschFactorInput_mirt <- reactive({
 
   fs <- as.vector(fscores(rasch_model_mirt()))
-  sts <- as.vector(scale(apply(correct_answ(), 1, sum)))
+  sts <- z_score()
 
   df <- data.frame(fs, sts)
 
@@ -222,7 +222,7 @@ output$DP_raschWM_mirt <- downloadHandler(
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 one_param_irt_mirt <- reactive({
-  data <- correct_answ()
+  data <- binary()
   s <- paste("F = 1-", ncol(data), "\n",
                  "CONSTRAIN = (1-", ncol(data), ", a1)")
   model <- mirt.model(s)
@@ -367,7 +367,7 @@ output$download_1pl_table <- downloadHandler(
 oneparamirtFactorCorInput_mirt <- reactive({
 
   fs <- as.vector(fscores(one_param_irt_mirt()))
-  sts <- as.vector(scale(apply(correct_answ(), 1, sum)))
+  sts <- z_score()
 
   whok <- !(is.na(fs) | is.na(sts))
 
@@ -382,7 +382,7 @@ output$oneparamirtFactorCor_mirt <- renderText({
 oneparamirtFactorInput_mirt <- reactive({
 
   fs <- as.vector(fscores(one_param_irt_mirt()))
-  sts <- as.vector(scale(apply(correct_answ(), 1, sum)))
+  sts <- z_score()
 
   df <- data.frame(fs, sts)
 
@@ -469,7 +469,7 @@ output$DP_oneparamirtWM_mirt <- downloadHandler(
 # * 2PL IRT ######
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 two_param_irt_mirt <- reactive({
-  data <- correct_answ()
+  data <- binary()
   fit2PL <- mirt(data, model = 1, itemtype = "2PL",
                  constrain = NULL,
                  SE = T, verbose = F,
@@ -611,7 +611,7 @@ output$download_2pl_table <- downloadHandler(
 twoparamirtFactorCorInput_mirt <- reactive({
 
   fs <- as.vector(fscores(two_param_irt_mirt()))
-  sts <- as.vector(scale(apply(correct_answ(), 1, sum)))
+  sts <- z_score()
 
   whok <- !(is.na(fs) | is.na(sts))
 
@@ -627,7 +627,7 @@ output$twoparamirtFactorCor_mirt <- renderText({
 twoparamirtFactorInput_mirt <- reactive({
 
   fs <- as.vector(fscores(two_param_irt_mirt()))
-  sts <- as.vector(scale(apply(correct_answ(), 1, sum)))
+  sts <- z_score()
 
   df <- data.frame(fs, sts)
 
@@ -668,7 +668,7 @@ output$DP_twoparamirtFactor_mirt <- downloadHandler(
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 three_param_irt_mirt <- reactive({
-  data <- correct_answ()
+  data <- binary()
   fit3PL <- mirt(data, model = 1, itemtype = "3PL",
                  constrain = NULL,
                  SE = T, technical = list(NCYCLES = input$ncycles),
@@ -826,7 +826,7 @@ output$download_3pl_table <- downloadHandler(
 threeparamirtFactorCorInput_mirt <- reactive({
 
   fs <- as.vector(fscores(three_param_irt_mirt()))
-  sts <- as.vector(scale(apply(correct_answ(), 1, sum)))
+  sts <- z_score()
 
   whok <- !(is.na(fs) | is.na(sts))
 
@@ -841,7 +841,7 @@ output$threeparamirtFactorCor_mirt <- renderText({
 threeparamirtFactorInput_mirt <- reactive({
 
   fs <- as.vector(fscores(three_param_irt_mirt()))
-  sts <- as.vector(scale(apply(correct_answ(), 1, sum)))
+  sts <- z_score()
 
   df <- data.frame(fs, sts)
 
@@ -880,7 +880,7 @@ output$DP_threeparamirtFactor_mirt <- downloadHandler(
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 irt_4PL_model <- reactive({
-  data <- correct_answ()
+  data <- binary()
   fit <- mirt(data, model = 1, itemtype = "4PL",
               constrain = NULL,
               SE = T, technical = list(NCYCLES = input$ncycles),
@@ -1038,7 +1038,7 @@ output$download_4pl_table <- downloadHandler(
 irt_4PL_factorscores_correlation_Input <- reactive({
 
   fs <- as.vector(fscores(irt_4PL_model()))
-  sts <- as.vector(scale(apply(correct_answ(), 1, sum)))
+  sts <- z_score()
 
   whok <- !(is.na(fs) | is.na(sts))
 
@@ -1055,7 +1055,7 @@ output$irt_4PL_factorscores_correlation <- renderText({
 irt_4PL_factorscores_plot_Input <- reactive({
 
   fs <- as.vector(fscores(irt_4PL_model()))
-  sts <- as.vector(scale(apply(correct_answ(), 1, sum)))
+  sts <- z_score()
 
   df <- data.frame(fs, sts)
 
@@ -1138,8 +1138,8 @@ include.rownames = T)
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 adj_data_bock <- reactive({
-  a <- test_answers()
-  k <- as.factor(test_key())
+  a <- nominal()
+  k <- as.factor(key())
 
   m <- ncol(a)
   lev <- unlist(lapply(1:m, function(i) levels(factor(unlist(a[, i, with = F])))))
@@ -1327,7 +1327,7 @@ include.colnames = T)
 bock_factor_Input <- reactive({
 
   fs <- as.vector(fscores(bock_irt_mirt()))
-  sts <- as.vector(scale(apply(correct_answ(), 1, sum)))
+  sts <- z_score()
 
   df <- data.frame(fs, sts)
 
@@ -1363,7 +1363,7 @@ output$DP_bock_factor <- downloadHandler(
 bockFactorCorInput_mirt <- reactive({
 
   fs <- as.vector(fscores(bock_irt_mirt()))
-  sts <- as.vector(scale(apply(correct_answ(), 1, sum)))
+  sts <- z_score()
 
   whok <- !(is.na(fs) | is.na(sts))
 
@@ -1522,9 +1522,10 @@ output$ccIRT_plot <- renderPlotly({
   text <- gsub("theta0", "Ability", text)
   text <- gsub("value", "Probability", text)
   text <- gsub("<br />variable: gray", "", text)
+  text <- gsub(paste0("<br />y: ", theta0), "", text)
   pos <- gregexpr('Ability', text)[[1]][2]
   text <- substring(text, 1, pos-1)
-  p$x$data[[5]]$text <- p$x$data[[4]]$text
+  p$x$data[[5]]$text <- text
 
   p$elementId <- NULL
 
