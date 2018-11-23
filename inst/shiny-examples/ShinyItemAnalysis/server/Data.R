@@ -287,7 +287,7 @@ data_ordinal_summary_Input <- reactive({
   data_table <- ordinal()
 
   if (input$data_type == 'ordinal' | input$dataSelect == "dataMedicalgraded_ShinyItemAnalysis"){
-    data_table <- sapply(data_table, as.numeric)
+    data_table <- as.data.frame(sapply(data_table, as.numeric))
     if (input$data_type == 'ordinal') {
       key <- key()
       # Distinction of MIN and MAX key will be added based on guture submitBUtton changes
