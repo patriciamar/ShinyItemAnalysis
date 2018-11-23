@@ -8,7 +8,7 @@
 
 # ** Polychoric correlation matrix ######
 corr_structure <- reactive({
-  data <- correct_answ()
+  data <- binary()
 
   #calculate correlations depending on selected method
   if (input$type_of_corr == 'spearman') {
@@ -149,8 +149,8 @@ output$DB_scree_plot <- downloadHandler(
 
 # ** Validity boxplot ######
 validity_plot_boxplot_Input <- reactive({
-  ts <- scored_test()
-  cv <- unlist(criterion_variable())
+  ts <- total_score()
+  cv <- unlist(criterion())
 
   df <- data.table(ts, cv)
   df <- df[complete.cases(df), ]
@@ -168,8 +168,8 @@ validity_plot_boxplot_Input <- reactive({
 
 # ** Validity scatterplot ######
 validity_plot_scatter_Input <- reactive({
-  ts <- scored_test()
-  cv <- unlist(criterion_variable())
+  ts <- total_score()
+  cv <- unlist(criterion())
 
   size <- as.factor(cv)
   levels(size) <- table(cv)
@@ -194,7 +194,7 @@ validity_plot_scatter_Input <- reactive({
 
 # ** Validity descriptive plot ######
 validity_plot_Input <- reactive({
-  cv <- criterion_variable()
+  cv <- criterion()
 
   ## this is fixed value to recognize discrete variable
   k <- 6
@@ -214,7 +214,7 @@ output$validity_plot <- renderPlot({
 # ** DB validity descriptive plot ######
 output$DB_validity_plot <- downloadHandler(
   filename =  function() {
-    cv <- criterion_variable()
+    cv <- criterion()
     k <- 6
     type <- ifelse(length(unique(cv)) <= length(cv)/k, "boxplot", "scatterplot")
     paste("fig_CriterionVariable_", type, ".png", sep = "")
@@ -230,8 +230,8 @@ output$DB_validity_plot <- downloadHandler(
 
 # ** Validity correlation table ######
 validity_table_Input <- reactive({
-  ts <- scored_test()
-  cv <- criterion_variable()
+  ts <- total_score()
+  cv <- criterion()
 
   ct <- cor.test(ts, cv, method = "spearman", exact = F)
   tab <- c(round(ct$estimate, 2), round(ct$statistic, 2), round(ct$p.value, 3))
@@ -271,7 +271,7 @@ output$validity_table_interpretation <- renderUI({
 
 # ** Validity distractor text ######
 output$validity_distractor_text <- renderUI({
-  cv <- criterion_variable()
+  cv <- criterion()
 
   ## this is fixed value to recognize discrete variable
   k <- 6
@@ -297,10 +297,10 @@ output$validity_distractor_text <- renderUI({
 
 # ** Validity distractors plot ######
 validity_distractor_plot_Input <- reactive({
-  a <- test_answers()
-  k <- test_key()
+  a <- nominal()
+  k <- key()
   i <- input$validitydistractorSlider
-  cv <- criterion_variable()
+  cv <- criterion()
   num.group <- input$validity_group
 
   multiple.answers <- c(input$type_validity_combinations_distractor == "Combinations")
@@ -332,8 +332,8 @@ output$DB_validity_distractor_plot <- downloadHandler(
 
 # ** Validity correlation table for items ######
 validity_table_item_Input <- reactive({
-  correct <- correct_answ()
-  cv <- criterion_variable()
+  correct <- binary()
+  cv <- criterion()
   i <- input$validitydistractorSlider
 
   ct <- cor.test(unlist(correct[, i, with = F]), cv, method = "spearman", exact = F)

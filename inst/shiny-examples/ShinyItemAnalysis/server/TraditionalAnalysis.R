@@ -39,7 +39,7 @@ output$DDplot_text <- renderUI({
 # ** Difficulty/Discrimination plot ######
 DDplot_Input <- reactive({
 
-  correct <- correct_answ()
+  correct <- binary()
   DDplot(correct, item.names = item_numbers(),
          k = input$DDplotNumGroupsSlider,
          l = input$DDplotRangeSlider[[1]], u = input$DDplotRangeSlider[[2]])
@@ -47,7 +47,7 @@ DDplot_Input <- reactive({
 
 # ** Difficulty/Discrimination plot for report######
 DDplot_Input_report<-reactive({
-  correct <- correct_answ()
+  correct <- binary()
   if (input$customizeCheck) {
     DDplot(correct, item.names = item_numbers(),
            k = input$DDplotNumGroupsSlider_report,
@@ -80,7 +80,7 @@ output$DB_DDplot <- downloadHandler(
 
 # ** Cronbach's alpha table ######
 cronbachalpha_table_Input <- reactive({
-  correct <- correct_answ()
+  correct <- binary()
   tab <- c(psych::alpha(correct)$total[1], psych::alpha(correct)$total[8])
 
   tab <- as.data.table(tab)
@@ -126,9 +126,9 @@ output$itemanalysis_table_text <- renderUI({
 
 # ** Traditional item analysis table ######
 itemanalysis_table_Input <- reactive({
-  a <- test_answers()
-  k <- test_key()
-  correct <- correct_answ()
+  a <- nominal()
+  k <- key()
+  correct <- binary()
 
   num.groups <- input$DDplotNumGroupsSlider
   range1 <- input$DDplotRangeSlider[[1]]
@@ -185,8 +185,8 @@ output$distractor_text <- renderUI({
 
 # ** Distractors plot ######
 distractor_plot_Input <- reactive({
-  a <- test_answers()
-  k <- test_key()
+  a <- nominal()
+  k <- key()
   i <- input$distractorSlider
 
   multiple.answers <- c(input$type_combinations_distractor == "Combinations")
@@ -216,9 +216,9 @@ output$DB_distractor_plot <- downloadHandler(
 )
 # ** Report distractors plot ######
 report_distractor_plot <- reactive({
-  a <- test_answers()
+  a <- nominal()
   colnames(a) <- item_names()
-  k <- test_key()
+  k <- key()
 
   if (!input$customizeCheck) {
     multiple.answers_report <- c(input$type_combinations_distractor == "Combinations")
@@ -247,8 +247,8 @@ report_distractor_plot <- reactive({
 
 # ** Distractor table with counts ######
 distractor_table_counts_Input <- reactive({
-  a <- test_answers()
-  k <- test_key()
+  a <- nominal()
+  k <- key()
   num.group <- input$gr
   item <- input$distractorSlider
 
@@ -266,8 +266,8 @@ output$distractor_table_counts <- renderTable({
 
 # ** Distractor table with proportions ######
 distractor_table_proportions_Input <- reactive({
-  a <- test_answers()
-  k <- test_key()
+  a <- nominal()
+  k <- key()
   num.group <- input$gr
   item <- input$distractorSlider
 
@@ -284,8 +284,8 @@ output$distractor_table_proportions <- renderTable({
 
 # ** Item response patterns barplot ######
 distractor_barplot_item_response_patterns_Input <- reactive({
-  a <- test_answers()
-  k <- test_key()
+  a <- nominal()
+  k <- key()
   num.group <- 1
   item <- input$distractorSlider
 
@@ -323,9 +323,9 @@ output$DB_distractor_barplot_item_response_patterns <- downloadHandler(
 
 # ** Distractors histograms by group ######
 distractor_histogram_Input <- reactive({
-  a <- test_answers()
-  k <- test_key()
-  sc <- scored_test()
+  a <- nominal()
+  k <- key()
+  sc <- total_score()
 
   df <- data.table(sc,
                    gr = cut(sc, quantile(sc, seq(0, 1, by = 1/input$gr), na.rm = T),
@@ -370,7 +370,7 @@ output$DB_distractor_histogram <- downloadHandler(
 
 # ** Distractor analysis table by group ######
 distractor_table_total_score_by_group_Input <- reactive({
-  sc <- scored_test()
+  sc <- total_score()
   num.group <- input$gr
 
   score.level <- quantile(sc, seq(0, 1, by = 1/num.group), na.rm = T)

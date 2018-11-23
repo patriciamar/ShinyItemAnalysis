@@ -8,8 +8,8 @@
 
 # ** Summary of Total Scores for Groups ######
 resultsgroupInput<-reactive({
-  sc_one  <- scored_test()[DIF_groups() == 1]
-  sc_zero <- scored_test()[DIF_groups() == 0]
+  sc_one  <- total_score()[group() == 1]
+  sc_zero <- total_score()[group() == 0]
   tab <- t(data.frame(round(c(min(sc_zero, na.rm = T),
                               max(sc_zero, na.rm = T),
                               mean(sc_zero, na.rm = T),
@@ -39,9 +39,8 @@ include.colnames = T)
 # ** Histogram of total score for group = 1 (focal) ######
 histbyscoregroup1Input <- reactive({
 
-  a <- test_answers()
-  k <- test_key()
-  sc  <- scored_test()[DIF_groups() == 1]
+  a <- binary()
+  sc  <- total_score()[group() == 1]
 
 
   bin <- as.numeric(input$inSlider2group)
@@ -94,9 +93,8 @@ output$DP_histbyscoregroup1 <- downloadHandler(
 # ** Histogram of total score for group = 0 (reference) ######
 histbyscoregroup0Input <- reactive ({
 
-  a <- test_answers()
-  k <- test_key()
-  sc  <- scored_test()[DIF_groups() == 0]
+  a <- binary()
+  sc  <- total_score()[group() == 0]
 
   bin <- as.numeric(input$inSlider2group)
 
@@ -150,13 +148,14 @@ output$DP_histbyscoregroup0 <- downloadHandler(
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 deltaGpurn <- reactive ({
+  data <- data.table(binary(), group = group())
   switch(input$type_threshold,
-         "Fixed" = deltaPlot(DPdata(), group = "group",
+         "Fixed" = deltaPlot(data, group = "group",
                              focal.name = 1,
                              thr = 1.5,
                              purify = input$puri_DP,
                              purType = input$puri_DP_type),
-         "Normal"= deltaPlot(DPdata(), group = "group",
+         "Normal"= deltaPlot(data, group = "group",
                              focal.name = 1,
                              thr = "norm",
                              purify = input$puri_DP,
@@ -165,6 +164,7 @@ deltaGpurn <- reactive ({
 })
 
 deltaGpurn_report <- reactive({
+  data <- data.table(binary(), group = group())
   if (!input$customizeCheck){
     type_threshold_report = input$type_threshold
     purify_report = input$puri_DP
@@ -176,12 +176,12 @@ deltaGpurn_report <- reactive({
   }
 
   switch(type_threshold_report,
-         "Fixed" = deltaPlot(DPdata(), group = "group",
+         "Fixed" = deltaPlot(data, group = "group",
                              focal.name = 1,
                              thr = 1.5,
                              purify = purify_report,
                              purType = purType_report),
-         "Normal"= deltaPlot(DPdata(), group = "group",
+         "Normal"= deltaPlot(data, group = "group",
                              focal.name = 1,
                              thr = "norm",
                              purify = purify_report,
@@ -313,8 +313,8 @@ output$dp_text_normal <- renderPrint({
 
 # ** Model for print ######
 model_DIF_MH <- reactive({
-  group <- unlist(DIF_groups())
-  data <- data.frame(correct_answ())
+  group <- unlist(group())
+  data <- data.frame(binary())
 
   mod <- difMH(Data = data, group = group, focal.name = 1,
                p.adjust.method = input$correction_method_MZ_print,
@@ -324,8 +324,8 @@ model_DIF_MH <- reactive({
 
 # ** Model for tables ######
 model_DIF_MH_tables <- reactive({
-  group <- unlist(DIF_groups())
-  data <- data.frame(correct_answ())
+  group <- unlist(group())
+  data <- data.frame(binary())
 
   mod <- difMH(Data = data, group = group, focal.name = 1)
   # no need for correction, estimates of OR are the same
@@ -340,8 +340,8 @@ output$print_DIF_MH <- renderPrint({
 
 # ** Contingency tables ######
 table_DIF_MH <- reactive({
-  group <- unlist(DIF_groups())
-  data <- data.frame(correct_answ())
+  group <- unlist(group())
+  data <- data.frame(binary())
 
   total <- apply(data, 1, sum)
 
@@ -414,8 +414,8 @@ output$ORcalculation <- renderUI ({
 
 # ** Model for plot ######
 model_DIF_logistic_plot <- reactive({
-  group <- unlist(DIF_groups())
-  data <- data.frame(correct_answ())
+  group <- unlist(group())
+  data <- data.frame(binary())
 
   mod <- difLogistic(Data = data, group = group, focal.name = 1,
                      type = input$type_plot_DIF_logistic,
@@ -426,8 +426,8 @@ model_DIF_logistic_plot <- reactive({
 
 # ** Model for print ######
 model_DIF_logistic_print <- reactive({
-  group <- unlist(DIF_groups())
-  data <- data.frame(correct_answ())
+  group <- unlist(group())
+  data <- data.frame(binary())
 
   mod <- difLogistic(Data = data, group = group, focal.name = 1,
                      type = input$type_print_DIF_logistic,
@@ -437,8 +437,8 @@ model_DIF_logistic_print <- reactive({
 })
 
 model_DIF_logistic_print_report <- reactive({
-  group <- unlist(DIF_groups())
-  data <- data.frame(correct_answ())
+  group <- unlist(group())
+  data <- data.frame(binary())
 
   if (!input$customizeCheck) {
     type_report = input$type_print_DIF_logistic
@@ -465,8 +465,8 @@ output$print_DIF_logistic <- renderPrint({
 
 # ** Plot ######
 plot_DIF_logisticInput <- reactive({
-  group <- unlist(DIF_groups())
-  data <- data.frame(correct_answ())
+  group <- unlist(group())
+  data <- data.frame(binary())
 
   type <- input$type_plot_DIF_logistic
   g <- plotDIFLogistic(data, group,
@@ -515,8 +515,8 @@ include.rownames = T,
 include.colnames = T)
 
 DIF_logistic_plotReport <- reactive({
-  group <- unlist(DIF_groups())
-  data <- data.frame(correct_answ())
+  group <- unlist(group())
+  data <- data.frame(binary())
 
   if (!input$customizeCheck) {
     type_report = input$type_print_DIF_logistic
@@ -553,119 +553,6 @@ DIF_logistic_plotReport <- reactive({
   graflist
 })
 
-# #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-# # * LOGISTIC IRT Z ######
-# #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-#
-# # ** Model for plot ######
-# model_DIF_logistic_IRT_Z_plot <- reactive({
-#   group <- unlist(DIF_groups())
-#   data <- data.frame(correct_answ())
-#
-#   mod <- difLogistic(Data = data, group = group, focal.name = 1,
-#                      type = input$type_plot_DIF_logistic_IRT_Z,
-#                      match = scale(scored_test()),
-#                      p.adjust.method = input$correction_method_logZItems,
-#                      all.cov = T,
-#                      purify = F)
-#   mod
-# })
-#
-# # ** Model for print ######
-# model_DIF_logistic_IRT_Z_print <- reactive({
-#   group <- unlist(DIF_groups())
-#   data <- data.frame(correct_answ())
-#
-#   mod <- difLogistic(Data = data, group = group, focal.name = 1,
-#                      type = input$type_print_DIF_logistic_IRT_Z,
-#                      match = scale(scored_test()),
-#                      p.adjust.method = input$correction_method_logZSummary,
-#                      all.cov = T,
-#                      purify = F)
-#   mod
-# })
-#
-# # ** Output print ######
-# output$print_DIF_logistic_IRT_Z <- renderPrint({
-#   print(model_DIF_logistic_IRT_Z_print())
-# })
-#
-# # ** Plot ######
-# plot_DIF_logistic_IRT_ZInput <- reactive ({
-#   group <- unlist(DIF_groups())
-#   data <- data.frame(correct_answ())
-#
-#   type <- input$type_plot_DIF_logistic
-#   g <- plotDIFLogistic(data, group,
-#                        type = input$type_plot_DIF_logistic_IRT_Z,
-#                        item =  input$diflog_irtSlider,
-#                        IRT = T,
-#                        p.adjust.method = input$correction_method_logZItems,
-#                        purify = F)
-#   g
-# })
-#
-# output$plot_DIF_logistic_IRT_Z <- renderPlot({
-#   plot_DIF_logistic_IRT_ZInput()
-# })
-#
-# output$DP_plot_DIF_logistic_IRT_Z <- downloadHandler(
-#   filename =  function() {
-#     paste("fig_DIFLogisticIRTZ_",item_names()[input$diflog_irtSlider],".png", sep = "")
-#   },
-#   content = function(file) {
-#     ggsave(file, plot = plot_DIF_logistic_IRT_ZInput() +
-#              theme(text = element_text(size = 10)),
-#            device = "png",
-#            height = 4, width = 8, dpi = 300)
-#   }
-# )
-#
-# output$tab_coef_DIF_logistic_IRT_Z <- renderTable({
-#
-#   fit <- model_DIF_logistic_IRT_Z_plot()
-#   i <- input$diflog_irtSlider
-#
-#   tab_coef_old <- fit$logitPar[i, ]
-#
-#   tab_coef <- c()
-#   # a = b1, b = -b0/b1, adif = b3, bdif = -(b1b2-b0b3)/(b1(b1+b3))
-#   tab_coef[1] <- tab_coef_old[2]
-#   tab_coef[2] <- -(tab_coef_old[1] / tab_coef_old[2])
-#   tab_coef[3] <- tab_coef_old[4]
-#   tab_coef[4] <- -(tab_coef_old[2] * tab_coef_old[3] + tab_coef_old[1] * tab_coef_old[4] ) /
-#     (tab_coef_old[2] * (tab_coef_old[2] + tab_coef_old[4]))
-#
-#   # delta method
-#   g <- list( ~ x2,  ~ -x1/x2, ~ x4, ~ -((x2 * x3 - x1 * x4) / (x2 * (x2 + x4))))
-#   if (is.character(fit$DIFitems) | !(i %in% fit$DIFitems)){
-#     d <- dim(fit$cov.M1[[i]])[1]
-#     cov <- matrix(0, ncol = 4, nrow = 4)
-#     cov[1:d, 1:d] <-  fit$cov.M1[[i]]
-#   } else {
-#     d <- dim(fit$cov.M0[[i]])[1]
-#     cov <- matrix(0, ncol = 4, nrow = 4)
-#     cov[1:d, 1:d] <-  fit$cov.M0[[i]]
-#   }
-#   cov <- as.matrix(cov)
-#   syms <- paste("x", 1:4, sep = "")
-#   for (i in 1:4) assign(syms[i], tab_coef_old[i])
-#   gdashmu <- t(sapply(g, function(form) {
-#     as.numeric(attr(eval(deriv(form, syms)), "gradient"))
-#     # in some shiny v. , envir = parent.frame() in eval() needs to be added
-#   }))
-#   new.covar <- gdashmu %*% cov %*% t(gdashmu)
-#   tab_sd <- sqrt(diag(new.covar))
-#
-#   tab <- data.frame(tab_coef, tab_sd)
-#
-#   rownames(tab) <- c('a', 'b', 'aDIF', 'bDIF')
-#   colnames(tab) <- c("Estimate", "SD")
-#
-#   tab
-# },
-# include.rownames = T,
-# include.colnames = T)
 
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # * NLR DIF ######
@@ -673,8 +560,8 @@ DIF_logistic_plotReport <- reactive({
 
 # ** Model for print ######
 model_DIF_NLR_print <- reactive({
-  data <- data.frame(correct_answ())
-  group <- unlist(DIF_groups())
+  data <- data.frame(binary())
+  group <- unlist(group())
 
   model <- input$DIF_NLR_model_print
   type <- paste0(input$DIF_NLR_type_print, collapse = "")
@@ -904,8 +791,8 @@ observeEvent(input$DIF_NLR_purification_plot,{
 
 # ** Model for plot ######
 model_DIF_NLR_plot <- reactive({
-  data <- data.frame(correct_answ())
-  group <- unlist(DIF_groups())
+  data <- data.frame(binary())
+  group <- unlist(group())
 
   model <- input$DIF_NLR_model_print
   type <- paste0(input$DIF_NLR_type_print, collapse = "")
@@ -1041,8 +928,8 @@ include.rownames = T)
 
 # ** Model for plot ######
 model_DIF_IRT_Lord_plot <- reactive({
-  group <- unlist(DIF_groups())
-  data <- data.frame(correct_answ())
+  group <- unlist(group())
+  data <- data.frame(binary())
 
   if (input$type_plot_DIF_IRT_lord == "3PL"){
     guess <- itemPar3PL(data)[, 3]
@@ -1066,8 +953,8 @@ model_DIF_IRT_Lord_plot <- reactive({
 
 # ** Model for print ######
 model_DIF_IRT_Lord_print <- reactive({
-  group <- unlist(DIF_groups())
-  data <- data.frame(correct_answ())
+  group <- unlist(group())
+  data <- data.frame(binary())
 
   if (input$type_print_DIF_IRT_lord == "3PL"){
     guess <- itemPar3PL(data)[, 3]
@@ -1230,8 +1117,8 @@ include.colnames = T)
 
 # ** Model for plot ######
 model_DIF_IRT_Raju_plot <- reactive({
-  group <- unlist(DIF_groups())
-  data <- data.frame(correct_answ())
+  group <- unlist(group())
+  data <- data.frame(binary())
 
   if (input$type_plot_DIF_IRT_raju == "3PL"){
     guess <- itemPar3PL(data)[, 3]
@@ -1255,8 +1142,8 @@ model_DIF_IRT_Raju_plot <- reactive({
 
 # ** Model for print ######
 model_DIF_IRT_Raju_print <- reactive({
-  group <- unlist(DIF_groups())
-  data <- data.frame(correct_answ())
+  group <- unlist(group())
+  data <- data.frame(binary())
 
   if (input$type_print_DIF_IRT_raju == "3PL"){
     guess <- itemPar3PL(data)[, 3]
@@ -1423,8 +1310,8 @@ include.colnames = T)
 # ** Model for print ####
 DIF_SIBTEST_model <- reactive({
   # data
-  group <- unlist(DIF_groups())
-  a <- data.frame(correct_answ())
+  group <- unlist(group())
+  a <- data.frame(binary())
   colnames(a) <- item_names()
 
   # inputs
@@ -1452,10 +1339,10 @@ output$DIF_SIBTEST_print <- renderPrint({
 
 # ** Model for print ####
 model_DDF_print <- reactive({
-  group <- unlist(DIF_groups())
-  a <- data.frame(test_answers())
+  group <- unlist(group())
+  a <- data.frame(nominal())
   colnames(a) <- item_names()
-  k <- test_key()
+  k <- key()
 
   adj.method <- input$correction_method_print_DDF
   type <- input$type_print_DDF
@@ -1469,10 +1356,10 @@ model_DDF_print <- reactive({
 })
 
 model_DDF_print_report <- reactive({
-  group <- unlist(DIF_groups())
-  a <- data.frame(test_answers())
+  group <- unlist(group())
+  a <- data.frame(nominal())
   colnames(a) <- item_names()
-  k <- test_key()
+  k <- key()
 
   if (!input$customizeCheck) {
     adj.method <- input$correction_method_print_DDF
@@ -1498,10 +1385,10 @@ output$print_DDF <- renderPrint({
 
 # ** Model for plot ######
 model_DDF_plot <- reactive({
-  group <- unlist(DIF_groups())
-  a <- data.frame(test_answers())
+  group <- unlist(group())
+  a <- data.frame(nominal())
   colnames(a) <- item_names()
-  k <- test_key()
+  k <- key()
 
   adj.method <- input$correction_method_plot_DDF
   type <- input$type_plot_DDF
@@ -1532,10 +1419,10 @@ plot_DDFInput <- reactive({
 })
 
 plot_DDFReportInput <- reactive({
-  group <- unlist(DIF_groups())
-  a <- data.frame(test_answers())
+  group <- unlist(group())
+  a <- data.frame(nominal())
   colnames(a) <- item_names()
-  k <- test_key()
+  k <- key()
 
   if (!input$customizeCheck) {
     adj.method_report <- input$correction_method_plot_DDF
@@ -1628,7 +1515,7 @@ include.rownames = T)
 # ** Equation ######
 output$DDFeq <- renderUI ({
   item <- input$ddfSlider
-  key <- test_key()
+  key <- key()
 
   cor_option <- key[item]
   withMathJax(

@@ -1,80 +1,80 @@
 # DATA CHECKING ####
 # * Error and warning messages for upload ####
-# checkDataText_Input <- eventReactive(input$submitButton, {
-#   error_setting <- F
-#
-#   if (dataset$data_status == "missing"){
-#     str_errors <- "No data found! Please, upload data. Default dataset GMAT is now in use."
-#     str_warnin <- ""
-#   } else {
-#     ### key
-#     error_key <- ""
-#     if (length(dataset$key) == 1){
-#       if (dataset$key == "missing"){
-#         error_key <- "The key need to be provided!"
-#       }
-#     } else {
-#       if (ncol(dataset$answers) != length(dataset$key)){
-#         error_key <- "The length of key need to be the same as number of columns of the main dataset!"
-#         error_setting <- T
-#       }
-#     }
-#     ### group
-#     error_group <- ""
-#     warni_group <- ""
-#     if (any(dataset$group == "missing", na.rm = T)){
-#       warni_group <- "The group variable is not provided! DIF and DDF analyses are not available!"
-#     } else {
-#       if (nrow(dataset$answers) != length(dataset$group)){
-#         error_group <- "The length of group need to be the same as number of observations in the main dataset!"
-#         error_setting <- T
-#       }
-#     }
-#     ### criterion variable
-#     error_criterion_variable <- ""
-#     warni_criterion_variable <- ""
-#     if (any(dataset$criterion_variable == "missing", na.rm = T)){
-#       warni_criterion_variable <- "The criterion variable is not provided! Predictive validity analysis is not available!"
-#     } else {
-#       if (nrow(dataset$answers) != length(dataset$criterion_variable)){
-#         error_criterion_variable <- "The length of criterion variable need to be the same as number of observations in the main dataset!"
-#         error_setting <- T
-#       }
-#     }
-#
-#     str_errors <- c(error_key, error_group, error_criterion_variable)
-#     str_warnin <- c(warni_group, warni_criterion_variable)
-#   }
-#
-#
-#   if (any(str_warnin != "")){
-#     str_warnin <- str_warnin[str_warnin != ""]
-#     str_warnin <- paste("<font color = 'orange'> &#33;", str_warnin, "</font>", collapse = "<br>")
-#   }
-#
-#   if(all(str_errors == "")){
-#     paste(c("<font color = 'green'> &#10004; Your data were successfully uploaded. Check them in <b>Data exploration</b> tab. </font>",
-#             str_warnin), collapse = "<br>")
-#   } else {
-#     str_errors <- str_errors[str_errors != ""]
-#     str_errors <- paste("<font color = 'red'> &#10006;", str_errors, "</font>", collapse = "<br>")
-#     if (error_setting){
-#       paste(c(str_errors,
-#               "<font color = 'red'> Check <b>Data exploration</b> tab to get idea what went wrong or try another
-#               <b>Data specification</b> below. </font>"),
-#             collapse = "<br>")
-#     } else {
-#       paste(str_errors)
-#     }
-#   }
-# })
-# output$checkDataText <- renderUI({
-#   HTML(checkDataText_Input())
-# })
+checkDataText_Input <- eventReactive(input$submitButton, {
+  error_setting <- F
+
+  if (dataset$data_status == "missing"){
+    str_errors <- "No data found! Please, upload data. Default dataset GMAT is now in use."
+    str_warnin <- ""
+  } else {
+    ### key
+    error_key <- ""
+    if (length(key()) == 1){
+      if (key() == "missing"){
+        error_key <- "The key need to be provided!"
+      }
+    } else {
+      if (ncol(nominal()) != length(key())){
+        error_key <- "The length of key need to be the same as number of columns of the main dataset!"
+        error_setting <- T
+      }
+    }
+    ### group
+    error_group <- ""
+    warni_group <- ""
+    if (any(group() == "missing", na.rm = T)){
+      warni_group <- "The group variable is not provided! DIF and DDF analyses are not available!"
+    } else {
+      if (nrow(nominal()) != length(group())){
+        error_group <- "The length of group need to be the same as number of observations in the main dataset!"
+        error_setting <- T
+      }
+    }
+    ### criterion variable
+    error_criterion_variable <- ""
+    warni_criterion_variable <- ""
+    if (any(criterion() == "missing", na.rm = T)){
+      warni_criterion_variable <- "The criterion variable is not provided! Predictive validity analysis is not available!"
+    } else {
+      if (nrow(nominal()) != length(criterion())){
+        error_criterion_variable <- "The length of criterion variable need to be the same as number of observations in the main dataset!"
+        error_setting <- T
+      }
+    }
+
+    str_errors <- c(error_key, error_group, error_criterion_variable)
+    str_warnin <- c(warni_group, warni_criterion_variable)
+  }
+
+
+  if (any(str_warnin != "")){
+    str_warnin <- str_warnin[str_warnin != ""]
+    str_warnin <- paste("<font color = 'orange'> &#33;", str_warnin, "</font>", collapse = "<br>")
+  }
+
+  if(all(str_errors == "")){
+    paste(c("<font color = 'green'> &#10004; Your data were successfully uploaded. Check them in <b>Data exploration</b> tab. </font>",
+            str_warnin), collapse = "<br>")
+  } else {
+    str_errors <- str_errors[str_errors != ""]
+    str_errors <- paste("<font color = 'red'> &#10006;", str_errors, "</font>", collapse = "<br>")
+    if (error_setting){
+      paste(c(str_errors,
+              "<font color = 'red'> Check <b>Data exploration</b> tab to get idea what went wrong or try another
+              <b>Data specification</b> below. </font>"),
+            collapse = "<br>")
+    } else {
+      paste(str_errors)
+    }
+  }
+})
+output$checkDataText <- renderUI({
+  HTML(checkDataText_Input())
+})
 
 # * Checking uploaded scored data ####
 checkDataColumns01_Input <- reactive({
-  data <- dataset$binary
+  data <- binary()
   # are there any items with only 0
   all0 <- apply(data, 2, function(x) all(x == 0))
   all1 <- apply(data, 2, function(x) all(x == 1))
@@ -103,8 +103,8 @@ output$renderdeleteButtonColumns01 <- renderUI({
 #   ok0 <- (!checkDataColumns01_Input()$all0)
 #   ok1 <- (!checkDataColumns01_Input()$all1)
 #
-#   dataset$answers <- dataset$answers[, (ok0 & ok1)]
-#   dataset$key <- dataset$key[(ok0 & ok1)]
+#   nominal() <- nominal()[, (ok0 & ok1)]
+#   key() <- key()[(ok0 & ok1)]
 #
 # })
 
@@ -149,7 +149,7 @@ output$checkDataColumns01Text <- renderUI({
 
 # * Checking uploaded group membership ####
 checkGroup_Input <- reactive({
-  group <- dataset$group
+  group <- group()
   # are there any missing values?
   NAgroup <- is.na(group)
   NAgroup
@@ -192,9 +192,9 @@ output$removedGroupText <- renderUI({
 
 observeEvent(input$deleteButtonGroup, {
   OKgroup <- !checkGroup_Input()
-  dataset$answers = dataset$answers[OKgroup, ]
-  dataset$group = dataset$group[OKgroup]
-  dataset$criterion_variable = dataset$criterion_variable[OKgroup]
+  nominal() = nominal()[OKgroup, ]
+  group() = group()[OKgroup]
+  criterion() = criterion()[OKgroup]
 })
 
 # * Render button for excluding data with missing group membership ####
@@ -277,26 +277,26 @@ output$data_key_file_input <- renderUI({
 # * Main dataset ####
 # ** Dimension ####
 output$data_rawdata_dim <- renderText({
-  txt <- paste0("Dataset consists of ", nrow(dataset$nominal),
-                " observations on the ", ncol(dataset$nominal), " items. ")
+  txt <- paste0("Dataset consists of ", nrow(nominal()),
+                " observations on the ", ncol(nominal()), " items. ")
 })
 
 # ** Summary ####
 # *** Ordinal data ####
 data_ordinal_summary_Input <- reactive({
-  data_table <- dataset$ordinal
+  data_table <- ordinal()
 
   if (input$data_type == 'ordinal' | input$dataSelect == "dataMedicalgraded_ShinyItemAnalysis"){
     data_table <- sapply(data_table, as.numeric)
     if (input$data_type == 'ordinal') {
-      key <- dataset$key
+      key <- key()
       # Distinction of MIN and MAX key will be added based on guture submitBUtton changes
       # ...minKey=keyOrdinalMin
       # ...maxKey=keyOrdinalMax
     }
 
     if (input$dataSelect == "dataMedicalgraded_ShinyItemAnalysis") {
-      key <- dataset$key
+      key <- key()
       # Distinction of MIN and MAX key will be added
     }
     data_table_summary = data.table(item_names(),
@@ -331,7 +331,7 @@ output$data_rawdata_summary <- renderPrint({
 
 # *** Nominal data ####
 data_nominal_summary_Input <- reactive({
-  data_table <- dataset$nominal
+  data_table <- nominal()
   data_table <- sapply(data_table, as.factor)
   colnames(data_table) <- item_names()
   summary(data_table)
@@ -347,7 +347,7 @@ output$data_nominal_summary <- renderPrint({
 
 # *** Binary data ####
 data_binary_summary_Input <- reactive({
-  data_table <- dataset$binary
+  data_table <- binary()
   data_table <- sapply(data_table, as.factor)
   colnames(data_table) <- item_names()
   summary(data_table)
@@ -359,7 +359,7 @@ output$data_binary_summary <- renderPrint({
 
 # * Group ####
 data_group_summary_Input <- reactive({
-  gr <- as.factor(dataset$group)
+  gr <- as.factor(group())
   summary(gr)
 })
 
@@ -369,7 +369,7 @@ output$data_group_summary <- renderPrint({
 
 # * Criterion ####
 data_criterion_summary_Input <- reactive({
-  summary(dataset$criterion)
+  summary(criterion())
 })
 
 output$data_criterion_summary <- renderPrint({
@@ -379,14 +379,11 @@ output$data_criterion_summary <- renderPrint({
 
 
 
-
-
-
 # DATA EXPLORATION ####
 
 # * Main dataset ######
 output$headdata <- DT::renderDataTable({
-  data_table <- dataset$nominal
+  data_table <- nominal()
   colnames(data_table) <- item_names()
   data_table
 },
@@ -399,7 +396,7 @@ options = list(scrollX = TRUE,
 
 # * Key ######
 output$key <- DT::renderDataTable({
-  key_table <- as.data.table(t(dataset$key))
+  key_table <- as.data.table(t(key()))
   colnames(key_table) <- item_names()
   key_table
 },
@@ -411,13 +408,9 @@ options = list(scrollX = TRUE,
 
 # * Binary data with total score ######
 output$sc01 <- DT::renderDataTable({
-  # total score
-  sc <- data.table(dataset$total_score)
-  # scored data
-  correct <- dataset$binary
-
-  scored_table <- data.table(correct, sc)
+  scored_table <- data.table(binary(), total_score())
   colnames(scored_table) <- c(item_names(), "Score")
+
   scored_table
 },
 rownames = F,
@@ -429,7 +422,7 @@ options = list(scrollX = TRUE,
 
 # GROUP CONTROL ######
 output$group <- DT::renderDataTable({
-  group_table <- t(dataset$group)
+  group_table <- t(group())
   colnames(group_table) <- 1:ncol(group_table)
   group_table
 },
@@ -441,7 +434,7 @@ options = list(scrollX = TRUE,
 
 # CRITERION VARIABLE CONTROL ######
 output$critvar <- DT::renderDataTable({
-  critvar_table <- t(dataset$criterion)
+  critvar_table <- t(criterion())
   colnames(critvar_table) <- 1:ncol(critvar_table)
   critvar_table
 },
