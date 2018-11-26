@@ -10,25 +10,21 @@
 corr_structure <- reactive({
   data <- binary()
 
-  #calculate correlations depending on selected method
+  # calculate correlations depending on selected method
   if (input$type_of_corr == 'spearman') {
-  corP <- cor(data, method = 'spearman')
-  corP
+    corP <- cor(data, method = 'spearman')
   } else if (input$type_of_corr == 'pearson') {
-  corP <- cor(data, method = 'pearson')
-  corP
+    corP <- cor(data, method = 'pearson')
   } else if (input$type_of_corr == 'polychoric') {
-  corP <- polychoric(data)
-  corP
+    corP <- polychoric(data)
+    corP <- corP$rho
   }
+  corP
 })
 
 # ** Correlation plot ######
 corr_plot_Input <- reactive({
   corP <- corr_structure()
-  if (input$type_of_corr == 'polychoric') {
-	corP <- corP$rho
-  }
 
   tlcex <- max(ifelse(dim(corP)[1] < 30, 1, 0.9 - (dim(corP)[1] - 30)*0.05), 0.5)
 
@@ -37,19 +33,22 @@ corr_plot_Input <- reactive({
 
   # option to display correlation values
   if(input$show_corr %% 2 == 1 ) {
-    updateActionButton(session,"show_corr", label = "Hide correlation values")
+    updateActionButton(session, "show_corr", label = "Hide correlation values")
 	  if (clustmethod == "none"){
-	    corrplot(corP, tl.cex = tlcex, tl.pos = 'lt', method = 'number', number.cex = 0.7, col = 'black', cl.pos = 'n')
+	    corrplot(corP, tl.cex = tlcex, tl.pos = 'lt', method = 'number',
+	             number.cex = 0.7, col = 'black', cl.pos = 'n')
     } else {
-      corrplot(corP, tl.cex = tlcex, order = "hclust", hclust.method = clustmethod, addrect = numclust, tl.pos = 'lt', method = 'number',
-		  number.cex  = 0.7, col = 'black', cl.pos = 'n')
+      corrplot(corP, tl.cex = tlcex, order = "hclust", hclust.method = clustmethod,
+               addrect = numclust, tl.pos = 'lt', method = 'number',
+               number.cex  = 0.7, col = 'black', cl.pos = 'n')
     }
    } else {
       updateActionButton(session,"show_corr", label = "Display correlation values")
     if (clustmethod == "none"){
 	    corrplot(corP, tl.cex = tlcex, tl.pos = 'lt')
 	  } else {
-	    corrplot(corP, tl.cex = tlcex, order = "hclust", hclust.method = clustmethod, addrect = numclust, tl.pos = 'lt')
+	    corrplot(corP, tl.cex = tlcex, order = "hclust", hclust.method = clustmethod,
+	             addrect = numclust, tl.pos = 'lt')
 	  }
   }
 })
@@ -69,11 +68,7 @@ output$DB_corr_plot <- downloadHandler(
     # in corrplot this must be plotted completely again!
     corP <- corr_structure()
 
-	if (input$type_of_corr == 'polychoric') {
-	  corP <- corP$rho
-  	}
-
-	tlcex <- max(ifelse(dim(corP)[1] < 30, 1, 0.9 - (dim(corP)[1] - 30)*0.05), 0.5)
+    tlcex <- max(ifelse(dim(corP)[1] < 30, 1, 0.9 - (dim(corP)[1] - 30)*0.05), 0.5)
 
     numclust <- input$corr_plot_clust
     clustmethod <- input$corr_plot_clustmethod
@@ -85,7 +80,8 @@ output$DB_corr_plot <- downloadHandler(
     if (clustmethod == "none"){
       corrplot(corP, tl.cex = tlcex)
     } else {
-      corrplot(corP, tl.cex = tlcex, order = "hclust", hclust.method = clustmethod, addrect = numclust)
+      corrplot(corP, tl.cex = tlcex, order = "hclust", hclust.method = clustmethod,
+               addrect = numclust)
     }
     dev.off()
   }
@@ -94,25 +90,83 @@ output$DB_corr_plot <- downloadHandler(
 
 output$corr_matrix <- downloadHandler(
 	filename = function() {
-		paste("Correlation_matrix",".csv",sep = "")
+		paste("Correlation_matrix", ".csv", sep = "")
 	},
 	content = function(file) {
 	  corP <- corr_structure()
-	  if (input$type_of_corr == 'polychoric') {
-		corP <- corP$rho
-	  }
-	  write.csv(corP,file)
+	  write.csv(corP, file)
 	})
+
+# ** Dendrogram ######
+dendrogram_plot_Input <- reactive({
+  corP <- corr_structure()
+  dist <- as.dist(1 - corP)
+
+  clustmethod <- input$corr_plot_clustmethod
+  numclust <- input$corr_plot_clust
+
+  hc <- hclust(dist, method = clustmethod)
+
+  if (numclust == 1){
+    order <- hc$order
+    label <- hc$labels[hc$order]
+    times <- length(label)
+  } else {
+    plot(hc)
+    rhc <- rect.hclust(hc, k = numclust)
+    order <- unlist(rhc)
+    label <- names(order)
+    times <- sapply(rhc, length)
+  }
+
+  df <- data.frame(label = label,
+                   num = order,
+                   cluster = rep(paste("Cluster", 1:numclust), times))
+  dendr <- dendro_data(hc, type = "rectangle")
+  dfd <- merge(label(dendr), df, by = "label")
+
+  ggplot() +
+    geom_segment(data = segment(dendr),
+                 aes(x = x, y = y, xend = xend, yend = yend)) +
+    geom_text(data = dfd,
+              aes(x = x, y = y, label = label, hjust = 0, color = cluster)) +
+    coord_flip() + scale_y_reverse(expand = c(0.2, 0)) +
+    ylab("Height") +
+    theme_app() +
+    theme(axis.line.y = element_blank(),
+          axis.ticks.y = element_blank(),
+          axis.text.y = element_blank(),
+          axis.title.y = element_blank())
+})
+
+# ** Output scree plot ######
+output$dendrogram_plot <- renderPlot({
+  dendrogram_plot_Input()
+})
+
+# ** DB scree plot ######
+output$DB_dendrogram <- downloadHandler(
+  filename =  function() {
+    paste("fig_Dendrogram.png", sep = "")
+  },
+  content = function(file) {
+    ggsave(file, plot = dendrogram_plot_Input() +
+             theme(text = element_text(size = setting_figures$text_size)),
+           device = "png",
+           height = setting_figures$height, width = setting_figures$width,
+           dpi = setting_figures$dpi)
+  }
+)
+
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+# * FACTOR ANALYSIS ######
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 # ** Scree plot ######
 scree_plot_Input <- reactive({
   corP <- corr_structure()
 
-  if (input$type_of_corr == 'polychoric'){
-    ev <- eigen(corP$rho)$values
-  } else {
-    ev <- eigen(corP)$values
-  }
+  ev <- eigen(corP)$values
 
   df <- data.table(pos = 1:length(ev), ev)
 

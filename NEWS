@@ -5,6 +5,25 @@
         ***************************************************************
 
 -------------------------------------------------------
+- Changes in ShinyItemAnalysis 1.2.8-5. (2018-11-26) -
+-------------------------------------------------------
+
+BUG FIXING
+  o Key for ordinal data for binarization is now correctly used. Values
+    greater or equal to value of the key are set to 1.
+
+MAJOR UPDATES
+  o Scree plot was moved into the new tab 'Factor analysis'.
+  o Dendrogram was added into 'Correlation structure' tab.
+  o Option for global cut-score for ordinal data was added.
+  o R package ggdendro is now used.
+
+MINOR UPDATES
+  o Text in Data section was updated.
+  o List of references was updated.
+  o Selected R code in 'Correlation structure' tab was updated.
+
+-------------------------------------------------------
 - Changes in ShinyItemAnalysis 1.2.8-4. (2018-11-23) -
 -------------------------------------------------------
 
