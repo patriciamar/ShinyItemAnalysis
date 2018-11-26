@@ -236,8 +236,8 @@ ui = tagList(
                                  withMathJax(),
                                  ('$$\\text{rel}(X^*) = \\frac{m\\cdot \\text{rel}(X)}{1 + (m - 1)\\cdot\\text{rel}(X)}.$$'),
                                  p("Spearman-Brown formula can be used to determine reliability of test with similar items but of
-                                    different number of items. It can also be used to determine necessary number of items to achieve
-                                    desired reliability."),
+                                   different number of items. It can also be used to determine necessary number of items to achieve
+                                   desired reliability."),
                                  p("In calculations below", strong("reliability of original data"), "is by
                                    default set to value of Cronbach's \\(\\alpha\\). ", strong("Number of items in original data"), "is
                                    by default set to number of items of dataset currently in use. "),
@@ -366,7 +366,7 @@ ui = tagList(
                                  div(code(HTML("library(psychometric)<br>library(ShinyItemAnalysis)<br><br>#&nbsp;loading&nbsp;data<br>data(HCI)<br>data&nbsp;<-&nbsp;HCI[,&nbsp;1:20]<br><br>#&nbsp;Cronbach's&nbsp;alpha&nbsp;with&nbsp;confidence&nbsp;interval<br>a&nbsp;<-&nbsp;psychometric::alpha(data)<br>psychometric::alpha.CI(a,&nbsp;N&nbsp;=&nbsp;nrow(data),&nbsp;k&nbsp;=&nbsp;ncol(data),&nbsp;level&nbsp;=&nbsp;0.95)"))),
                                  br()
                                  )
-                        ),
+                                 ),
              #%%%%%%%%%%%%%%%%%%%%%
              # VALIDITY ###########
              #%%%%%%%%%%%%%%%%%%%%%
@@ -375,73 +375,96 @@ ui = tagList(
                         tabPanel("Correlation structure",
                                  h3("Correlation structure"),
                                  h4("Correlation heat map"),
-                                 p('Correlation heat map displays selected type of
-                                   correlations between items. The size and shade of circles indicate how much the
-                                   items are correlated (larger and darker circle means larger correlation).
+                                 p("Correlation heat map displays selected type of",
+                                   HTML("<b>correlations</b>"), "between items. The size and shade of circles indicate how much the
+                                   items are correlated (larger and darker circle mean larger correlations).
                                    The color of circles indicates in which way the items are correlated - blue
-                                   color shows possitive correlation and red color shows negative correlation.'),
-                                 p("Correlation heat map can be reordered using hierarchical",
-                                   HTML("<b>clustering method</b>"), "below.
-                                   Ward's method aims at finding compact clusters based on minimizing the within-cluster
+                                   color mean possitive correlation and red color mean negative correlation. 
+                                   Correlation heat map can be reordered using hierarchical",
+                                   HTML("<b>clustering method</b>"), "selected below. With", HTML("<b>number  of clusters</b>"), "larger than 1, the rectangles representing
+                                   clusters are drawn. The values of correlation heatmap may be displayed and also downloaded."),
+                                 fluidRow(div(style = "display: inline-block; vertical-align: top; width: 5%;"),
+                                          column(3,selectInput(inputId = "type_of_corr",
+                                                               label    = "Choose correlation",
+                                                               choices  = c("Pearson"    = "pearson",
+                                                                            "Spearman"   = "spearman",
+                                                                            "Polychoric" = "polychoric"),
+                                                               selected = 'polychoric',
+                                                               width    =  '100%')),
+                                          column(3,div(class = "input-box",
+                                                       selectInput(inputId = 'corr_plot_clustmethod',
+                                                                   label = 'Clustering method',
+                                                                   choices = list("None" = "none",
+                                                                                  "Ward's"  = "ward.D",
+                                                                                  "Ward's n. 2" = "ward.D2",
+                                                                                  "Single" = "single",
+                                                                                  "Complete" = "complete",
+                                                                                  "Average" = "average",
+                                                                                  "McQuitty" = "mcquitty",
+                                                                                  "Median" = "median",
+                                                                                  "Centroid" = "centroid"),
+                                                                   selected = "none"))),
+                                          column(3,div(class = "input-box",
+                                                       numericInput(inputId = 'corr_plot_clust',
+                                                                    label = 'Number of clusters',
+                                                                    value = 1,
+                                                                    min = 1,
+                                                                    max = 1))),
+                                          column(3,actionButton( inputId = 'show_corr',
+                                                                 label = 'Display correlation values',
+                                                                 class = 'btn btn-primary'))),
+                                 conditionalPanel( condition = "input.type_of_corr == 'pearson'",
+                                                   p(HTML('<b>Pearson correlation coefficient</b>'), 'describes linear correlation between
+                                                     two random variables X and Y. It is given by formula'),
+                                                   withMathJax(),
+                                                   ('$$\\rho = \\frac{cov(X,Y)}{\\sqrt{var(X)}\\sqrt{var(Y)}}.$$'),
+                                                   p('Sample Pearson corelation coefficient may be calculated as'),
+                                                   withMathJax(),
+                                                   ('$$ r = \\frac{\\sum_{i = 1}^{n}(x_{i} - \\bar{x})(y_{i} - \\bar{y})}{\\sqrt{\\sum_{i = 1}^{n}(x_{i} - \\bar{x})^2}\\sqrt{\\sum_{i = 1}^{n}(y_{i} - \\bar{y})^2}}$$'),
+                                                   p('Pearson correlation coefficient has a value between -1 and +1. Sample correlation of -1 and +1 correspond to all data points lying exactly on a line 
+                                                    (decreasing in case of negative linear correlation -1 and increasing for +1). If coefficient is
+                                                     equal to 0 it implies no linear correlation between the variables.')),
+                                 conditionalPanel( condition = "input.type_of_corr == 'polychoric'",
+                                                   p(HTML("<b>Polychoric/tetrachoric correlation</b>"), "between two ordinal/binary variables is calculated from their contingency table,
+                                                     under the assumption that the ordinal variables dissect continuous latent variables that are bivariate normal.")),
+                                 conditionalPanel( condition = "input.type_of_corr == 'spearman'",
+                                                   p(HTML("<b>Spearman's rank correlation coefficient</b>"), 'describes strength and direction of monotonic relationship between random variables X
+                                                     and Y, i.e. dependence between the rankings of two variables. It is given by formula'),
+                                                   withMathJax(),
+                                                   ('$$\\rho = \\frac{cov(rg_{X},rg_{Y})}{\\sqrt{var(rg_{X})}\\sqrt{var(rg_{Y})}},$$'),
+                                                   p('where rgX and rgY are transformed random variables X and Y into ranks, i.e Spearman correlation coefficient is the Pearson correlation coefficient between the ranked variables.'),
+                                                   p('Sample Spearman correlation is calculated by converting X and Y to ranks (average ranks are used in case of ties) and by applying Pearson correlation formula. If both X and Y have',HTML('<i>n</i>'),'unique ranks, i.e. there are no ties, then sample correlation coefficient is given by formula'),
+                                                   withMathJax(),
+                                                   ('$$ r = 1 - \\frac{6\\sum_{i = 1}^{n}d_i^{2}}{n(n-1)}$$'),
+                                                   p('where d = rgX - rgY is the difference between two ranks and ',HTML('<i>n</i>'), 'is size of X and Y. 
+                                                     Spearman rank correlation coefficient has value between -1 and 1, where 1  means perfect increasing relationship
+                                                     between variables and -1 means decreasing relationship between the two variables.  
+                                                     In case of no repeated values, Spearman correlation of +1 or -1 means all data points lying exactly on some monotone line. 
+                                                     If coefficient is equal to 0, it means, there is no tendency for Y to either increase or decrease with X increasing.')),
+                                 p(HTML("<b>Clustering methods.</b>"),
+                                   "Ward's method aims at finding compact clusters based on minimizing the within-cluster
                                    sum of squares.
-                                   Ward's n. 2 method used squared disimilarities.
+                                   Ward's n. 2 method uses squared disimilarities.
                                    Single method connects clusters with the nearest neighbours, i.e. the distance between
                                    two clusters is calculated as the minimum of distances of observations in one cluster and
                                    observations in the other clusters.
-                                   Complete linkage with farthest neighbours, i.e. maximum of distances.
-                                   Average linkage method used the distance based on weighted average of the individual distances.
-                                   With McQuitty method used unweighted average.
+                                   Complete linkage with farthest neighbours on the other hand uses maximum of distances.
+                                   Average linkage method uses the distance based on weighted average of the individual distances.
+                                   McQuitty method uses unweighted average.
                                    Median linkage calculates the distance as the median of distances between an observation
                                    in one cluster and observation in the other cluster.
-                                   Centroid method used distance between centroids of clusters. "),
-                         #radiobutton for selection of method for correlation
-								               fluidPage(div(style = "display: inline-block; vertical-align: top; width: 5%;"),
-                               fluidRow(column(width = 5,
-								               selectInput(inputId = "type_of_corr",
-                                              label    = "Choose correlation",
-                                              choices  = c("Pearson"    = "pearson",
-                                                           "Spearman"   = "spearman",
-                                                           "Polychoric" = "polychoric"),
-                                              selected = 'polychoric',
-								                              width    =  '82%')),
-								          #action button for displaying correlation values in corrplot
-								          column(width = 7,
-								                 actionButton( inputId = 'show_corr',
-								                        label = 'Display correlation values',
-								                        class = 'btn btn-primary')))),
-								          br(),
-                                 p("With", HTML("<b>number  of clusters</b>"), "larger than 1, the rectangles representing
-                                   clusters are drawn. "),
-                                 fluidPage(div(class = "input-box",
-                                               numericInput(inputId = 'corr_plot_clust',
-                                                            label = 'Number of clusters',
-                                                            value = 1,
-                                                            min = 1,
-                                                            max = 1)),
-                                           div(style = "display: inline-block; vertical-align: top; width: 5%;"),
-                                           div(class = "input-box",
-                                               selectInput(inputId = 'corr_plot_clustmethod',
-                                                           label = 'Clustering method',
-                                                           choices = list("None" = "none",
-                                                                          "Ward's"  = "ward.D",
-                                                                          "Ward's n. 2" = "ward.D2",
-                                                                          "Single" = "single",
-                                                                          "Complete" = "complete",
-                                                                          "Average" = "average",
-                                                                          "McQuitty" = "mcquitty",
-                                                                          "Median" = "median",
-                                                                          "Centroid" = "centroid"),
-                                                           selected = "none"))),
+                                   Centroid method uses distance between centroids of clusters. "),
+                                 br(),
                                  plotOutput('corr_plot'),
-								                 br(),
+                                 br(),
                                  downloadButton(outputId = "DB_corr_plot", label = "Download figure"),
-								                 #download correlation matrix button
-								                 tags$style(HTML('#corr_matrix { margin: 10px }')),
-								                 downloadButton(outputId = "corr_matrix",  label = "Download correlation matrix"),
+                                 #download correlation matrix button
+                                 tags$style(HTML('#corr_matrix { margin: 10px }')),
+                                 downloadButton(outputId = "corr_matrix",  label = "Download correlation matrix"),
                                  br(),
                                  h4("Scree plot"),
                                  p('A scree plot displays the eigenvalues associated with an component or a factor in descending order
-                                   versus the number of the component or factor. '),
+                                   versus the number of the component or factor. Location of a bend (an elbow) suggests a suitable number of clusters.'),
                                  plotOutput('scree_plot'),
                                  downloadButton(outputId = "DB_scree_plot", label = "Download figure"),
                                  h4("Selected R code"),
@@ -2198,7 +2221,14 @@ ui = tagList(
                                                                                                 "Average" = "average",
                                                                                                 "McQuitty" = "mcquitty",
                                                                                                 "Median" = "median",
-                                                                                                "Centroid" = "centroid"))))),
+                                                                                                "Centroid" = "centroid"))),
+                                                                 div(style = "display: inline-block; vertical-align: top; width: 20%;",
+                                                                     selectInput('corr_plot_type_of_corr_report',
+                                                                                 label = 'Choose correlation',
+                                                                                 choices = c("Polychoric" = "polychoric",
+                                                                                             "Pearson" = "pearson",
+                                                                                             "Spearman"  = "spearman"),
+                                                                                 selected = "Polychoric" )))),
                                checkboxInput("predict_report", "Predictive validity", FALSE)
                         )
                       ),
@@ -2807,7 +2837,7 @@ ui = tagList(
                            </li>
                            </ul>'),
                       br()
-                      ),
+             ),
              #%%%%%%%%%%%%%%%%%%%%%
              # SETTING #########
              #%%%%%%%%%%%%%%%%%%%%%
@@ -2844,5 +2874,5 @@ ui = tagList(
                                                        max = 600))
                       ))
              #     ))
-             ))
+                      ))
 
