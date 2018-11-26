@@ -9,6 +9,7 @@ require(DT)
 require(data.table)
 require(difNLR)
 require(difR)
+require(ggdendro)
 require(ggplot2)
 require(grid)
 require(gridExtra)
@@ -113,8 +114,9 @@ function(input, output, session) {
       dataType <- "ordinal"
 
       key <- sapply(dataOrdinal, max)
-
-      dataBinary <- mirt::key2binary(dataNominal, key)
+      df.key <- sapply(key, rep, each = nrow(dataOrdinal))
+      dataBinary <- matrix(as.numeric(dataOrdinal >= df.key),
+                           ncol = ncol(dataOrdinal), nrow = nrow(dataOrdinal))
 
     } else {
       do.call(data, args = list(paste0(datasetName, "test"), package = packageName))
@@ -216,6 +218,7 @@ function(input, output, session) {
 
       # loading key
       if (is.null(input$key)){
+        if (input$globalCut == "") {
           if (input$data_type == "binary"){
             inputKey <- rep(1, ncol(inputData))
           } else {
@@ -226,12 +229,15 @@ function(input, output, session) {
             }
           }
         } else {
-          inputKey <- read.csv(input$key$datapath,
-                              header = input$header,
-                              sep = input$sep,
-                              quote = input$quote)
-          inputKey <- as.character(unlist(inputKey))
+          inputKey <- rep(input$globalCut, ncol(inputData))
         }
+      } else {
+        inputKey <- read.csv(input$key$datapath,
+                             header = input$header,
+                             sep = input$sep,
+                             quote = input$quote)
+        inputKey <- as.character(unlist(inputKey))
+      }
 
       # loading group
       if (is.null(input$groups)){
@@ -265,7 +271,9 @@ function(input, output, session) {
       } else {
         if (input$data_type == "ordinal"){
           dataset$ordinal <- as.data.table(dataset$nominal)
-          dataset$binary <- as.data.table(mirt::key2binary(dataset$nominal, inputKey))
+          df.key <- sapply(inputKey, rep, each = nrow(inputData))
+          dataset$binary <- as.data.table(matrix(as.numeric(inputData >= df.key),
+                                                 ncol = ncol(inputData), nrow = nrow(inputData)))
         } else {
           dataset$ordinal <- as.data.table(dataset$nominal)
           dataset$binary <- as.data.table(dataset$nominal)

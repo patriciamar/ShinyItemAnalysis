@@ -175,14 +175,21 @@ Data <- tabPanel("Data",
                               condition = "input.data_type != 'binary'",
                               fluidRow(
                                 box(width = 3,
-                                    uiOutput("data_key_file_input")),
+                                    uiOutput("data_key_file_input"),
+                                    conditionalPanel(
+                                      condition = "input.data_type == 'ordinal'",
+                                      textInput(inputId = "globalCut",
+                                                label = "Dataset cut-score"))
+                                    ),
                                 column(9,
                                        conditionalPanel(
                                          condition = "input.data_type == 'nominal'",
                                          p("For nominal data, it is necessary to upload ", strong("key"), "of correct answers.")),
                                        conditionalPanel(
                                          condition = "input.data_type == 'ordinal'",
-                                         p("For ordinal data, you are advised to include vector containing", strong("cut-score"), "which is used for binarization of uploaded data."),
+                                         p("For ordinal data, you are advised to include vector containing", strong("cut-score"), "which is used for binarization of uploaded data, i.e.,
+                                           values greater or equal to provided cut-score are set to 1, otherwise to 0. You can either upload dataset of item-specific values, or you can
+                                           provide one value for whole dataset."),
                                          p(strong("Note: "), "In case that cut-score is not provided, vector of maximal values is used. "))
                                 )
                               )),
