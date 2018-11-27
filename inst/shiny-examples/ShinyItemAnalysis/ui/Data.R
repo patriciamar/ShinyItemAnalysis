@@ -52,14 +52,12 @@ Data <- tabPanel("Data",
                                                        ".tsv"))),
                             column(9,
                                      p("Main ", strong("data"), " file should contain responses of individual respondents (rows)
-                              to given items (columns). Data need to be either binary or nominal (e.g. in ABCD format).
+                              to given items (columns). Data need to be either binary, nominal (e.g. in ABCD format), or ordinal (e.g. in Likert scale).
                               Header may contain item names, no row names should be included. In all data sets", strong("header"), "should
                               be either included or excluded. Columns of dataset are by default renamed to Item and number of particular column.
                               If you want to keep your own names, check box ", strong("Keep item names"), "below. Missing values in scored
                               dataset are by default evaluated as 0. If you want to keep them as missing, check box" , strong("Keep missing values"),
-                                       "below."),
-                                     p(strong("Note: "), "Analysis of ordinal (Likert scale) data is currently not supported. In case of ordinal data, you
-                                may select 'nominal' and include key vector containing of maximum value for each item."))),
+                                       "below."))),
                             fluidRow(
                               box(width = 12,
                                   column(2,
@@ -174,56 +172,60 @@ Data <- tabPanel("Data",
                                            )))))),
 
                             conditionalPanel(
-                              condition = "input.data_type == 'nominal'",
+                              condition = "input.data_type != 'binary'",
                               fluidRow(
                                 box(width = 3,
-                                    fileInput(inputId = "key",
-                                              label = "Choose key (CSV file)",
-                                              accept = c("text/csv",
-                                                         "text/comma-separated-values",
-                                                         "text/tab-separated-values",
-                                                         "text/plain",
-                                                         ".csv",
-                                                         ".tsv"))),
+                                    uiOutput("data_key_file_input"),
+                                    conditionalPanel(
+                                      condition = "input.data_type == 'ordinal'",
+                                      textInput(inputId = "globalCut",
+                                                label = "Dataset cut-score"))
+                                    ),
                                 column(9,
-                                       p("For nominal data, it is necessary to upload ", strong("key"), "of correct answers."),
-                                       p(strong("Note: "), "In case of ordinal data, you are advised to include key vector containing of maximum value for each item."))
+                                       conditionalPanel(
+                                         condition = "input.data_type == 'nominal'",
+                                         p("For nominal data, it is necessary to upload ", strong("key"), "of correct answers.")),
+                                       conditionalPanel(
+                                         condition = "input.data_type == 'ordinal'",
+                                         p("For ordinal data, you are advised to include vector containing", strong("cut-score"), "which is used for binarization of uploaded data, i.e.,
+                                           values greater or equal to provided cut-score are set to 1, otherwise to 0. You can either upload dataset of item-specific values, or you can
+                                           provide one value for whole dataset."),
+                                         p(strong("Note: "), "In case that cut-score is not provided, vector of maximal values is used. "))
                                 )
-                              ),
+                              )),
                             conditionalPanel(
                               condition = "input.data_type == 'ordinal'",
                               fluidRow(
-                                box(width = 3,
-                                    fileInput(inputId = "minOrdinal",
-                                              label = "Choose minimal values",
-                                              accept = c("text/csv",
-                                                         "text/comma-separated-values",
-                                                         "text/tab-separated-values",
-                                                         "text/plain",
-                                                         ".csv",
-                                                         ".tsv")),
-                                    textInput("globalMin", "Dataset minimal Value")),
-                                column(9,
+                                box(width = 6,
+                                    fluidRow(column(6,
+                                                    fileInput(inputId = "minOrdinal",
+                                                              label = "Choose minimal values",
+                                                              accept = c("text/csv",
+                                                                         "text/comma-separated-values",
+                                                                         "text/tab-separated-values",
+                                                                         "text/plain",
+                                                                         ".csv",
+                                                                         ".tsv")),
+                                                    textInput(inputId = "globalMin",
+                                                              label = "Dataset minimal value")),
+                                             column(6,
+                                                    fileInput(inputId = "maxOrdinal",
+                                                              label = "Choose maximal values",
+                                                              accept = c("text/csv",
+                                                                         "text/comma-separated-values",
+                                                                         "text/tab-separated-values",
+                                                                         "text/plain",
+                                                                         ".csv",
+                                                                         ".tsv")),
+                                                    textInput(inputId = "globalMax",
+                                                              label = "Dataset maximal value")))),
+                                column(6,
                                        p("For ordinal data, it is optional to upload ", strong("minimal and maximal"), "values of answers.
                                          You can either upload datasets of item-specific values, or you can provide one value for whole dataset."),
                                        p(strong("Note: "), "If no minimal or maximal values are provided, these
                                         values are set automatically based on observed values.")
                                 )
-                                ),
-                              fluidRow(
-                                box(width = 3,
-                                    fileInput(inputId = "maxOrdinal",
-                                              label = "Choose maximal values",
-                                              accept = c("text/csv",
-                                                         "text/comma-separated-values",
-                                                         "text/tab-separated-values",
-                                                         "text/plain",
-                                                         ".csv",
-                                                         ".tsv")),
-                                    textInput("globalMax", "Dataset maximal value"))
-
                               )
-
                             ),
                             fluidRow(
                               box(width = 3,
@@ -297,7 +299,7 @@ Data <- tabPanel("Data",
                             textOutput("data_rawdata_dim"),
                             verbatimTextOutput("data_rawdata_summary"),
                             h4("Scored test"),
-                            verbatimTextOutput("data_scoreddata_summary"),
+                            verbatimTextOutput("data_binary_summary"),
                             h4("Group"),
                             verbatimTextOutput("data_group_summary"),
                             h4("Criterion variable"),

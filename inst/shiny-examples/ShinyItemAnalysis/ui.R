@@ -95,7 +95,7 @@ ui = tagList(
                     ShinyItemAnalysis
                     </div>
                     <div class = "footer-subtitle">
-                    Test and item analysis | Version 1.2.8-3
+                    Test and item analysis | Version 1.2.8-5
                     </div>
                     <span style = "float:right">
                     <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysis/" id = "tooltipweb" target="_blank">
@@ -236,8 +236,8 @@ ui = tagList(
                                  withMathJax(),
                                  ('$$\\text{rel}(X^*) = \\frac{m\\cdot \\text{rel}(X)}{1 + (m - 1)\\cdot\\text{rel}(X)}.$$'),
                                  p("Spearman-Brown formula can be used to determine reliability of test with similar items but of
-                                    different number of items. It can also be used to determine necessary number of items to achieve
-                                    desired reliability."),
+                                   different number of items. It can also be used to determine necessary number of items to achieve
+                                   desired reliability."),
                                  p("In calculations below", strong("reliability of original data"), "is by
                                    default set to value of Cronbach's \\(\\alpha\\). ", strong("Number of items in original data"), "is
                                    by default set to number of items of dataset currently in use. "),
@@ -366,7 +366,7 @@ ui = tagList(
                                  div(code(HTML("library(psychometric)<br>library(ShinyItemAnalysis)<br><br>#&nbsp;loading&nbsp;data<br>data(HCI)<br>data&nbsp;<-&nbsp;HCI[,&nbsp;1:20]<br><br>#&nbsp;Cronbach's&nbsp;alpha&nbsp;with&nbsp;confidence&nbsp;interval<br>a&nbsp;<-&nbsp;psychometric::alpha(data)<br>psychometric::alpha.CI(a,&nbsp;N&nbsp;=&nbsp;nrow(data),&nbsp;k&nbsp;=&nbsp;ncol(data),&nbsp;level&nbsp;=&nbsp;0.95)"))),
                                  br()
                                  )
-                        ),
+                                 ),
              #%%%%%%%%%%%%%%%%%%%%%
              # VALIDITY ###########
              #%%%%%%%%%%%%%%%%%%%%%
@@ -375,77 +375,111 @@ ui = tagList(
                         tabPanel("Correlation structure",
                                  h3("Correlation structure"),
                                  h4("Correlation heat map"),
-                                 p('Correlation heat map displays selected type of
-                                   correlations between items. The size and shade of circles indicate how much the
-                                   items are correlated (larger and darker circle means larger correlation).
+                                 p("Correlation heat map displays selected type of",
+                                   HTML("<b>correlations</b>"), "between items. The size and shade of circles indicate how much the
+                                   items are correlated (larger and darker circle mean larger correlations).
                                    The color of circles indicates in which way the items are correlated - blue
-                                   color shows possitive correlation and red color shows negative correlation.'),
-                                 p("Correlation heat map can be reordered using hierarchical",
-                                   HTML("<b>clustering method</b>"), "below.
-                                   Ward's method aims at finding compact clusters based on minimizing the within-cluster
+                                   color mean possitive correlation and red color mean negative correlation.
+                                   Correlation heat map can be reordered using hierarchical",
+                                   HTML("<b>clustering method</b>"), "selected below. With", HTML("<b>number  of clusters</b>"), "larger than 1, the rectangles representing
+                                   clusters are drawn. The values of correlation heatmap may be displayed and also downloaded."),
+                                 fluidRow(div(style = "display: inline-block; vertical-align: top; width: 5%;"),
+                                          column(3, selectInput(inputId = "type_of_corr",
+                                                               label    = "Choose correlation",
+                                                               choices  = c("Pearson"    = "pearson",
+                                                                            "Spearman"   = "spearman",
+                                                                            "Polychoric" = "polychoric"),
+                                                               selected = 'polychoric',
+                                                               width    =  '100%')),
+                                          column(3, div(class = "input-box",
+                                                       selectInput(inputId = 'corr_plot_clustmethod',
+                                                                   label = 'Clustering method',
+                                                                   choices = list("None" = "none",
+                                                                                  "Ward's"  = "ward.D",
+                                                                                  "Ward's n. 2" = "ward.D2",
+                                                                                  "Single" = "single",
+                                                                                  "Complete" = "complete",
+                                                                                  "Average" = "average",
+                                                                                  "McQuitty" = "mcquitty",
+                                                                                  "Median" = "median",
+                                                                                  "Centroid" = "centroid"),
+                                                                   selected = "none"))),
+                                          column(3, div(class = "input-box",
+                                                       numericInput(inputId = 'corr_plot_clust',
+                                                                    label = 'Number of clusters',
+                                                                    value = 1,
+                                                                    min = 1,
+                                                                    max = 1))),
+                                          column(3, actionButton(inputId = 'show_corr',
+                                                                 label = 'Display correlation values',
+                                                                 class = 'btn btn-primary'))),
+                                 conditionalPanel(condition = "input.type_of_corr == 'pearson'",
+                                                   p(HTML('<b>Pearson correlation coefficient</b>'), 'describes linear correlation between
+                                                     two random variables X and Y. It is given by formula'),
+                                                   withMathJax(),
+                                                   ('$$\\rho = \\frac{cov(X,Y)}{\\sqrt{var(X)}\\sqrt{var(Y)}}.$$'),
+                                                   p('Sample Pearson corelation coefficient may be calculated as'),
+                                                   withMathJax(),
+                                                   ('$$ r = \\frac{\\sum_{i = 1}^{n}(x_{i} - \\bar{x})(y_{i} - \\bar{y})}{\\sqrt{\\sum_{i = 1}^{n}(x_{i} - \\bar{x})^2}\\sqrt{\\sum_{i = 1}^{n}(y_{i} - \\bar{y})^2}}$$'),
+                                                   p('Pearson correlation coefficient has a value between -1 and +1. Sample correlation of -1 and +1 correspond to all data points lying exactly on a line
+                                                    (decreasing in case of negative linear correlation -1 and increasing for +1). If coefficient is
+                                                     equal to 0 it implies no linear correlation between the variables.')),
+                                 conditionalPanel(condition = "input.type_of_corr == 'polychoric'",
+                                                   p(HTML("<b>Polychoric/tetrachoric correlation</b>"), "between two ordinal/binary variables is calculated from their contingency table,
+                                                     under the assumption that the ordinal variables dissect continuous latent variables that are bivariate normal.")),
+                                 conditionalPanel(condition = "input.type_of_corr == 'spearman'",
+                                                   p(HTML("<b>Spearman's rank correlation coefficient</b>"), 'describes strength and direction of monotonic relationship between random variables X
+                                                     and Y, i.e. dependence between the rankings of two variables. It is given by formula'),
+                                                   withMathJax(),
+                                                   ('$$\\rho = \\frac{cov(rg_{X},rg_{Y})}{\\sqrt{var(rg_{X})}\\sqrt{var(rg_{Y})}},$$'),
+                                                   p('where rgX and rgY are transformed random variables X and Y into ranks, i.e Spearman correlation coefficient is the Pearson correlation coefficient between the ranked variables.'),
+                                                   p('Sample Spearman correlation is calculated by converting X and Y to ranks (average ranks are used in case of ties) and by applying Pearson correlation formula. If both X and Y have',HTML('<i>n</i>'),'unique ranks, i.e. there are no ties, then sample correlation coefficient is given by formula'),
+                                                   withMathJax(),
+                                                   ('$$ r = 1 - \\frac{6\\sum_{i = 1}^{n}d_i^{2}}{n(n-1)}$$'),
+                                                   p('where d = rgX - rgY is the difference between two ranks and ',HTML('<i>n</i>'), 'is size of X and Y.
+                                                     Spearman rank correlation coefficient has value between -1 and 1, where 1  means perfect increasing relationship
+                                                     between variables and -1 means decreasing relationship between the two variables.
+                                                     In case of no repeated values, Spearman correlation of +1 or -1 means all data points lying exactly on some monotone line.
+                                                     If coefficient is equal to 0, it means, there is no tendency for Y to either increase or decrease with X increasing.')),
+                                 p(HTML("<b>Clustering methods.</b>"),
+                                   "Ward's method aims at finding compact clusters based on minimizing the within-cluster
                                    sum of squares.
-                                   Ward's n. 2 method used squared disimilarities.
+                                   Ward's n. 2 method uses squared disimilarities.
                                    Single method connects clusters with the nearest neighbours, i.e. the distance between
                                    two clusters is calculated as the minimum of distances of observations in one cluster and
                                    observations in the other clusters.
-                                   Complete linkage with farthest neighbours, i.e. maximum of distances.
-                                   Average linkage method used the distance based on weighted average of the individual distances.
-                                   With McQuitty method used unweighted average.
+                                   Complete linkage with farthest neighbours on the other hand uses maximum of distances.
+                                   Average linkage method uses the distance based on weighted average of the individual distances.
+                                   McQuitty method uses unweighted average.
                                    Median linkage calculates the distance as the median of distances between an observation
                                    in one cluster and observation in the other cluster.
-                                   Centroid method used distance between centroids of clusters. "),
-                         #radiobutton for selection of method for correlation
-								               fluidPage(div(style = "display: inline-block; vertical-align: top; width: 5%;"),
-                               fluidRow(column(width = 5,
-								               selectInput(inputId = "type_of_corr",
-                                              label    = "Choose correlation",
-                                              choices  = c("Pearson"    = "pearson",
-                                                           "Spearman"   = "spearman",
-                                                           "Polychoric" = "polychoric"),
-                                              selected = 'polychoric',
-								                              width    =  '82%')),
-								          #action button for displaying correlation values in corrplot
-								          column(width = 7,
-								                 actionButton( inputId = 'show_corr',
-								                        label = 'Display correlation values',
-								                        class = 'btn btn-primary')))),
-								          br(),
-                                 p("With", HTML("<b>number  of clusters</b>"), "larger than 1, the rectangles representing
-                                   clusters are drawn. "),
-                                 fluidPage(div(class = "input-box",
-                                               numericInput(inputId = 'corr_plot_clust',
-                                                            label = 'Number of clusters',
-                                                            value = 1,
-                                                            min = 1,
-                                                            max = 1)),
-                                           div(style = "display: inline-block; vertical-align: top; width: 5%;"),
-                                           div(class = "input-box",
-                                               selectInput(inputId = 'corr_plot_clustmethod',
-                                                           label = 'Clustering method',
-                                                           choices = list("None" = "none",
-                                                                          "Ward's"  = "ward.D",
-                                                                          "Ward's n. 2" = "ward.D2",
-                                                                          "Single" = "single",
-                                                                          "Complete" = "complete",
-                                                                          "Average" = "average",
-                                                                          "McQuitty" = "mcquitty",
-                                                                          "Median" = "median",
-                                                                          "Centroid" = "centroid"),
-                                                           selected = "none"))),
-                                 plotOutput('corr_plot'),
-								                 br(),
-                                 downloadButton(outputId = "DB_corr_plot", label = "Download figure"),
-								                 #download correlation matrix button
-								                 tags$style(HTML('#corr_matrix { margin: 10px }')),
-								                 downloadButton(outputId = "corr_matrix",  label = "Download correlation matrix"),
+                                   Centroid method uses distance between centroids of clusters. "),
                                  br(),
+                                 plotOutput('corr_plot'),
+                                 br(),
+                                 downloadButton(outputId = "DB_corr_plot", label = "Download figure"),
+                                 # download correlation matrix button
+                                 tags$style(HTML('#corr_matrix { margin: 10px }')),
+                                 downloadButton(outputId = "corr_matrix",  label = "Download matrix"),
+                                 br(),
+                                 conditionalPanel(condition = "input.corr_plot_clustmethod != 'none'",
+                                                  h4("Dendrogram"),
+                                                  plotOutput('dendrogram_plot'),
+                                                  downloadButton(outputId = "DB_dendrogram", label = "Download figure")),
+                                 h4("Selected R code"),
+                                 div(code(HTML("library(corrplot)&nbsp;<br>library(ggdendro)<br>library(difNLR)&nbsp;<br>library(psych)<br><br>#&nbsp;loading&nbsp;data<br>data(GMAT)&nbsp;<br>data&nbsp;<-&nbsp;GMAT[,&nbsp;1:20]&nbsp;<br><br>#&nbsp;calculation&nbsp;of&nbsp;correlation<br>###&nbsp;Pearson<br>corP&nbsp;<-&nbsp;cor(data,&nbsp;method&nbsp;=&nbsp;\"pearson\")<br>###&nbsp;Spearman<br>corP&nbsp;<-&nbsp;cor(data,&nbsp;method&nbsp;=&nbsp;\"spearman\")<br>###&nbsp;Polychoric<br>corP&nbsp;<-&nbsp;polychoric(data)&nbsp;<br>corP$rho&nbsp;<br><br>#&nbsp;correlation&nbsp;heat&nbsp;map&nbsp;<br>corrplot(corP$rho)&nbsp;#&nbsp;correlation&nbsp;plot&nbsp;<br>corrplot(corP$rho,&nbsp;order&nbsp;=&nbsp;\"hclust\",&nbsp;hclust.method&nbsp;=&nbsp;\"ward.D\",&nbsp;addrect&nbsp;=&nbsp;3)&nbsp;#&nbsp;correlation&nbsp;plot&nbsp;with&nbsp;3&nbsp;clusters&nbsp;using&nbsp;Ward&nbsp;method<br><br>#&nbsp;dendrogram<br>hc&nbsp;<-&nbsp;hclust(as.dist(1&nbsp;-&nbsp;corP$rho),&nbsp;method&nbsp;=&nbsp;\"ward.D\")&nbsp;#&nbsp;hierarchical&nbsp;clustering&nbsp;<br>ggdendrogram(hc)&nbsp;#&nbsp;dendrogram"))),
+                                 br()
+                                 ),
+                        # * FACTOR ANALYSIS ####
+                        tabPanel("Factor analysis",
+                                 h3("Factor analysis"),
                                  h4("Scree plot"),
                                  p('A scree plot displays the eigenvalues associated with an component or a factor in descending order
-                                   versus the number of the component or factor. '),
+                                   versus the number of the component or factor. Location of a bend (an elbow) suggests a suitable number of clusters.'),
                                  plotOutput('scree_plot'),
                                  downloadButton(outputId = "DB_scree_plot", label = "Download figure"),
                                  h4("Selected R code"),
-                                 div(code(HTML("library(corrplot)&nbsp;<br>library(difNLR)&nbsp;<br>library(psych)<br><br>#&nbsp;loading&nbsp;data<br>data(GMAT)&nbsp;<br>data&nbsp;<-&nbsp;GMAT[,&nbsp;1:20]&nbsp;<br><br>#&nbsp;correlation&nbsp;heat&nbsp;map&nbsp;<br>corP&nbsp;<-&nbsp;polychoric(data)&nbsp;#&nbsp;polychoric&nbsp;correlation&nbsp;calculation<br>corP$rho&nbsp;#&nbsp;correlation&nbsp;matrix&nbsp;<br>corrplot(corP$rho)&nbsp;#&nbsp;correlation&nbsp;plot&nbsp;<br>corrplot(corP$rho,&nbsp;order&nbsp;=&nbsp;\"hclust\",&nbsp;hclust.method&nbsp;=&nbsp;\"ward.D\",&nbsp;addrect&nbsp;=&nbsp;3)&nbsp;#&nbsp;correlation&nbsp;plot&nbsp;with&nbsp;3&nbsp;clusters&nbsp;using&nbsp;Ward&nbsp;method<br><br>#&nbsp;scree&nbsp;plot&nbsp;<br>ev&nbsp;<-&nbsp;eigen(corP$rho)$values&nbsp;#&nbsp;eigen&nbsp;values<br>df&nbsp;<-&nbsp;data.frame(comp&nbsp;=&nbsp;1:length(ev),&nbsp;ev)<br><br>ggplot(df,&nbsp;aes(x&nbsp;=&nbsp;comp,&nbsp;y&nbsp;=&nbsp;ev))&nbsp;+&nbsp;<br>&nbsp;&nbsp;geom_point()&nbsp;+&nbsp;<br>&nbsp;&nbsp;geom_line()&nbsp;+&nbsp;<br>&nbsp;&nbsp;ylab(\"Eigen&nbsp;value\")&nbsp;+&nbsp;<br>&nbsp;&nbsp;xlab(\"Component&nbsp;number\")&nbsp;+<br>&nbsp;&nbsp;theme_app()"))),
+                                 div(code(HTML("library(difNLR)&nbsp;<br>library(psych)<br><br>#&nbsp;loading&nbsp;data<br>data(GMAT)&nbsp;<br>data&nbsp;<-&nbsp;GMAT[,&nbsp;1:20]&nbsp;<br><br>#&nbsp;scree&nbsp;plot&nbsp;<br>ev&nbsp;<-&nbsp;eigen(corP$rho)$values&nbsp;#&nbsp;eigen&nbsp;values<br>df&nbsp;<-&nbsp;data.frame(comp&nbsp;=&nbsp;1:length(ev),&nbsp;ev)<br><br>ggplot(df,&nbsp;aes(x&nbsp;=&nbsp;comp,&nbsp;y&nbsp;=&nbsp;ev))&nbsp;+&nbsp;<br>&nbsp;&nbsp;geom_point()&nbsp;+&nbsp;<br>&nbsp;&nbsp;geom_line()&nbsp;+&nbsp;<br>&nbsp;&nbsp;ylab(\"Eigen&nbsp;value\")&nbsp;+&nbsp;<br>&nbsp;&nbsp;xlab(\"Component&nbsp;number\")&nbsp;+<br>&nbsp;&nbsp;theme_app()"))),
                                  br()
                                  ),
                         # * PREDICTIVE VALIDITY ####
@@ -2198,7 +2232,14 @@ ui = tagList(
                                                                                                 "Average" = "average",
                                                                                                 "McQuitty" = "mcquitty",
                                                                                                 "Median" = "median",
-                                                                                                "Centroid" = "centroid"))))),
+                                                                                                "Centroid" = "centroid"))),
+                                                                 div(style = "display: inline-block; vertical-align: top; width: 20%;",
+                                                                     selectInput('corr_plot_type_of_corr_report',
+                                                                                 label = 'Choose correlation',
+                                                                                 choices = c("Polychoric" = "polychoric",
+                                                                                             "Pearson" = "pearson",
+                                                                                             "Spearman"  = "spearman"),
+                                                                                 selected = "Polychoric" )))),
                                checkboxInput("predict_report", "Predictive validity", FALSE)
                         )
                       ),
@@ -2359,7 +2400,6 @@ ui = tagList(
                            <a href = "https://CRAN.R-project.org/package=CTT", target = "_blank">See online.</a>
                            </li>
 
-
                            <li><code>data.table</code>
                            Dowle, M. & Srinivasan, A. (2018).
                            data.table: Extension of `data.frame`.
@@ -2375,7 +2415,6 @@ ui = tagList(
                            <a href = "http://www.jstatsoft.org/v59/c01/", target = "_blank">See online.</a>
                            </li>
 
-
                            <li><code>difNLR</code>
                            Drabinova, A., Martinkova, P. & Zvara, K. (2018).
                            difNLR: DIF and DDF Detection by Non-Linear Regression Models.
@@ -2388,9 +2427,7 @@ ui = tagList(
                            Magis, D., Beland, S., Tuerlinckx, F. & De Boeck, P. (2010).
                            A general framework and an R package for the detection of dichotomous differential item functioning.
                            <i>Behavior Research Methods, 42</i>847--862.
-
                            </li>
-
 
                            <li><code>DT</code>
                            Xie, Y. (2018).
@@ -2399,14 +2436,18 @@ ui = tagList(
                            <a href = "https://CRAN.R-project.org/package=DT", target = "_blank">See online.</a>
                            </li>
 
+                           <li><code>ggdendro</code>
+                           Andrie de Vries & Brian D. Ripley (2018).
+                           ggdendro: Create Dendrograms and Tree Diagrams Using "ggplot2".
+                           R package version 0.1-20.
+                           <a href = "https://CRAN.R-project.org/package=ggdendro", target = "_blank">See online.</a>
+                           </li>
 
                            <li><code>ggplot2</code>
                            Wickham, H. (2016).
                            ggplot2: Elegant Graphics for Data Analysis.
-
                            <a href = "http://ggplot2.org", target = "_blank">See online.</a>
                            </li>
-
 
                            <li><code>gridExtra</code>
                            Auguie, B. (2017).
@@ -2415,7 +2456,6 @@ ui = tagList(
                            <a href = "https://CRAN.R-project.org/package=gridExtra", target = "_blank">See online.</a>
                            </li>
 
-
                            <li><code>knitr</code>
                            Xie, Y. (2018).
                            knitr: A General-Purpose Package for Dynamic Report Generation in R.
@@ -2423,13 +2463,11 @@ ui = tagList(
                            <a href = "https://yihui.name/knitr/", target = "_blank">See online.</a>
                            </li>
 
-
                            <li><code>lattice</code>
                            Sarkar, D. (2008).
                            Lattice: Multivariate Data Visualization with R.
                            <a href = "http://lmdvr.r-forge.r-project.org", target = "_blank">See online.</a>
                            </li>
-
 
                            <li><code>latticeExtra</code>
                            Sarkar, D. & Andrews, F. (2016).
@@ -2438,7 +2476,6 @@ ui = tagList(
                            <a href = "https://CRAN.R-project.org/package=latticeExtra", target = "_blank">See online.</a>
                            </li>
 
-
                            <li><code>ltm</code>
                            Rizopoulos, D. (2006).
                            ltm: An R package for Latent Variable Modelling and Item Response Theory Analyses.
@@ -2446,21 +2483,17 @@ ui = tagList(
                            <a href = "http://www.jstatsoft.org/v17/i05/", target = "_blank">See online.</a>
                            </li>
 
-
                            <li><code>MASS</code>
                            Venables, C. & Ripley, C. (2002).
                            Modern Applied Statistics with S.
                            <a href = "http://www.stats.ox.ac.uk/pub/MASS4", target = "_blank">See online.</a>
                            </li>
 
-
                            <li><code>mirt</code>
                            Chalmers, R. & Chalmers, P. (2012).
                            mirt: A Multidimensional Item Response Theory Package for the R Environment.
                            <i>Journal of Statistical Software, 48</i>(6), 1--29.
-
                            </li>
-
 
                            <li><code>moments</code>
                            Komsta, L. & Novomestky, F. (2015).
@@ -2469,14 +2502,12 @@ ui = tagList(
                            <a href = "https://CRAN.R-project.org/package=moments", target = "_blank">See online.</a>
                            </li>
 
-
                            <li><code>msm</code>
                            Jackson, C. & Jackson, H. (2011).
                            Multi-State Models for Panel Data: The msm Package for R.
                            <i>Journal of Statistical Software, 38</i>(8), 1--29.
                            <a href = "http://www.jstatsoft.org/v38/i08/", target = "_blank">See online.</a>
                            </li>
-
 
                            <li><code>multilevel</code>
                            Bliese, P. (2016).
@@ -2485,7 +2516,6 @@ ui = tagList(
                            <a href = "https://CRAN.R-project.org/package=multilevel", target = "_blank">See online.</a>
                            </li>
 
-
                            <li><code>nlme</code>
                            Pinheiro, J., Bates, D., DebRoy, S., Sarkar, D. & NULL, R. (2018).
                            nlme: Linear and Nonlinear Mixed Effects Models.
@@ -2493,13 +2523,11 @@ ui = tagList(
                            <a href = "https://CRAN.R-project.org/package=nlme", target = "_blank">See online.</a>
                            </li>
 
-
                            <li><code>nnet</code>
                            Venables, C. & Ripley, C. (2002).
                            Modern Applied Statistics with S.
                            <a href = "http://www.stats.ox.ac.uk/pub/MASS4", target = "_blank">See online.</a>
                            </li>
-
 
                            <li><code>plotly</code>
                            Sievert, C., Parmer, C., Hocking, T., Chamberlain, S., Ram, K., Corvellec, M. & Despouy, P. (2017).
@@ -2508,14 +2536,12 @@ ui = tagList(
                            <a href = "https://CRAN.R-project.org/package=plotly", target = "_blank">See online.</a>
                            </li>
 
-
                            <li><code>polycor</code>
                            Fox, J. (2016).
                            polycor: Polychoric and Polyserial Correlations.
                            R package version 0.7-9.
                            <a href = "https://CRAN.R-project.org/package=polycor", target = "_blank">See online.</a>
                            </li>
-
 
                            <li><code>psych</code>
                            Revelle, W. (2018).
@@ -2524,14 +2550,12 @@ ui = tagList(
                            <a href = "https://CRAN.R-project.org/package=psych", target = "_blank">See online.</a>
                            </li>
 
-
                            <li><code>psychometric</code>
                            Fletcher, T. & Fletcher, D. (2010).
                            psychometric: Applied Psychometric Theory.
                            R package version 2.2.
                            <a href = "https://CRAN.R-project.org/package=psychometric", target = "_blank">See online.</a>
                            </li>
-
 
                            <li><code>RColorBrewer</code>
                            Neuwirth, E. (2014).
@@ -2540,14 +2564,12 @@ ui = tagList(
                            <a href = "https://CRAN.R-project.org/package=RColorBrewer", target = "_blank">See online.</a>
                            </li>
 
-
                            <li><code>reshape2</code>
                            Wickham, H. (2007).
                            Reshaping Data with the reshape Package.
                            <i>Journal of Statistical Software, 21</i>(12), 1--20.
                            <a href = "http://www.jstatsoft.org/v21/i12/", target = "_blank">See online.</a>
                            </li>
-
 
                            <li><code>rmarkdown</code>
                            Allaire, J., Xie, Y., McPherson, J., Luraschi, J., Ushey, K., Atkins, A., Wickham, H., Cheng, J. & Chang, W. (2018).
@@ -2556,14 +2578,12 @@ ui = tagList(
                            <a href = "https://CRAN.R-project.org/package=rmarkdown", target = "_blank">See online.</a>
                            </li>
 
-
                            <li><code>shiny</code>
                            Chang, W., Cheng, J., Allaire, J., Xie, Y. & McPherson, J. (2018).
                            shiny: Web Application Framework for R.
                            R package version 1.1.0.
                            <a href = "https://CRAN.R-project.org/package=shiny", target = "_blank">See online.</a>
                            </li>
-
 
                            <li><code>shinyBS</code>
                            Bailey, E. (2015).
@@ -2572,7 +2592,6 @@ ui = tagList(
                            <a href = "https://CRAN.R-project.org/package=shinyBS", target = "_blank">See online.</a>
                            </li>
 
-
                            <li><code>ShinyItemAnalysis</code>
                            Martinkova, P., Drabinova, A., Leder, O. & Houdek, J. (2018).
                            ShinyItemAnalysis: Test and item analysis via shiny.
@@ -2580,14 +2599,12 @@ ui = tagList(
                            <a href = "https://CRAN.R-project.org/package=ShinyItemAnalysis", target = "_blank">See online.</a>
                            </li>
 
-
                            <li><code>shinyjs</code>
                            Attali, D. (2018).
                            shinyjs: Easily Improve the User Experience of Your Shiny Apps in Seconds.
                            R package version 1.0.
                            <a href = "https://CRAN.R-project.org/package=shinyjs", target = "_blank">See online.</a>
                            </li>
-
 
                            <li><code>stringr</code>
                            Wickham, H. (2018).
@@ -2807,7 +2824,7 @@ ui = tagList(
                            </li>
                            </ul>'),
                       br()
-                      ),
+             ),
              #%%%%%%%%%%%%%%%%%%%%%
              # SETTING #########
              #%%%%%%%%%%%%%%%%%%%%%
@@ -2844,5 +2861,5 @@ ui = tagList(
                                                        max = 600))
                       ))
              #     ))
-             ))
+                      ))
 

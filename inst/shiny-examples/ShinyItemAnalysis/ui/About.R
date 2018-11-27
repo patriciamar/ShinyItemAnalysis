@@ -63,7 +63,7 @@ About <- tabPanel("About",
                              a("online", href = "https://shiny.cs.cas.cz/ShinyItemAnalysis/", target = "_blank"), "is 1.2.8.",
                              br(),
                              "The newest development version available on ",
-                             a("GitHub", href = "https://github.com/patriciamar/ShinyItemAnalysis", target = "_blank"), "is 1.2.8-2.",
+                             a("GitHub", href = "https://github.com/patriciamar/ShinyItemAnalysis", target = "_blank"), "is 1.2.8-5.",
                              br(),
                              "See also older versions: ",
                              a("0.1.0, ", href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV01/", target = "_blank"),
@@ -129,7 +129,7 @@ About <- tabPanel("About",
                   div(class = "cite-box",
                     "Martinkova P., Drabinova A., Leder O., & Houdek J. (2018).", br(), "
                     ShinyItemAnalysis: Test and item analysis via shiny.", br(), "
-                    R package version 1.2.6. ", br(), "
+                    R package version 1.2.8. ", br(), "
                     https://CRAN.R-project.org/package=ShinyItemAnalysis"),
                   p("In Czech written papers you can also use "),
                   div(class = "cite-box",

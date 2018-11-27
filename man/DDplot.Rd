@@ -4,10 +4,11 @@
 \alias{DDplot}
 \title{Graphical representation of difficulty and (generalized) discrimination in item analysis}
 \usage{
-DDplot(data, item.names, k = 3, l = 1, u = 3)
+DDplot(data, item.names, k = 3, l = 1, u = 3,
+              discrim = "ULI", bin = FALSE, maxscore, minscore, cutscore)
 }
 \arguments{
-\item{data}{numeric: binary data matrix or data frame. See \strong{Details}.}
+\item{data}{numeric: binary or ordinal data matrix or data frame. See \strong{Details}.}
 
 \item{item.names}{character: the names of items.}
 
@@ -17,35 +18,72 @@ Default value is 3.  See \strong{Details}.}
 \item{l}{numeric: lower group. Default value is 1. See \strong{Details}.}
 
 \item{u}{numeric: upper group. Default value is 3. See \strong{Details}.}
+
+\item{discrim}{character: type of discrimination index to be calculated. Deafult value is "ULI". See \strong{Details}.}
+
+\item{bin}{logical: should the ordinal data be binarized. Deafult value is FALSE. See \strong{Details}.}
+
+\item{maxscore}{vector or numeric: maximal scores of items. If numeric, the same maximal score is used for all items. If missing, vector of achieved maximal scores is calculated and used in calculations.}
+
+\item{minscore}{vector or numeric: minimal scores of items. If numeric, the same minimal score is used for all items. If missing, vector of achieved minimal scores is calculated and used in calculations.}
+
+\item{cutscore}{vector or numeric: cutscore used to binarize the data.set. If numeric, the same cutscore is used for all items. If missing, vector of maximal scores is used in calculations.}
 }
 \description{
 Plots difficulty and (generalized) discrimination for items ordered by difficulty.
 }
 \details{
 The \code{data} is a matrix or data frame whose rows represents examinee answers
-("1" correct, "0" incorrect) and columns correspond to the items. The \code{item.names}
+("1" correct, "0" incorrect, or ordinal item scores) and columns correspond to the items. The \code{item.names}
 argument stands for names of items. If not specified, the names of dataset columns are used.
-Generalized discrimination is computed as follows: The function takes data on individuals,
+Difficulty and discrimination indices are plotted for each item, items are ordered by their difficulty.
+Discrimination is calculated using method specified in \strong{discrim}. ULI calculates difference
+in ratio of correct answers in upper and lower third of students.
+RIT index caluclates correlation between item score and test total score.
+RIR index caclulates correlation between item score and total score for the rest of the items.
+Generalized ULI discrimination is computed as follows: The function takes data on individuals,
 computes their total test score and then divides individuals into \code{k} groups. The lower and
 upper group are determined by \code{l} and \code{u} parameters, i.e.  l-th and u-th group where
 the ordering is defined by increasing total score.
+For ordinal data, difficulty is defined as relative score (achieved - minimal)/(maximal - minimal).
+Minimal score can be specified by \code{minscore}, maximal score can be specified by \code{maxscore}.
+Binarization of data is allowed in \strong{bin}, for this purpose \strong{cutscore} is used.
 }
 \note{
-Generalized discrimination is calculated by \code{\link{gDiscrim}} function, generalized version
-of \code{\link{discrim}} function in \code{psychometric} package.
+Generalized discrimination is calculated by \code{\link{gDiscrim}} function.
 }
 \examples{
 \dontrun{
-# loading 100-item medical admission test data set
+# loading 100-item medical admission test data sets
+# Binary data set
 data(dataMedical)
-data <- dataMedical[, 1:100]
+dataBin <- dataMedical[, 1:100]
+# Ordinal data set
+data(dataMedicalgraded)
+dataOrd <- dataMedicalgraded[, 1:100]
 
 # Difficulty/Discrimination plot of dataMedical data set
-DDplot(data)
+DDplot(dataBin)
+# Compared to DDplot using ordinal data set and 'bin=TRUE'
+DDplot(dataOrd, discrim = "ULI", bin=TRUE)
 
 # Difficulty/Discrimination plot of dataMedical data set
 # discrimination based on 5 groups, comparing 4th and 5th
-DDplot(data, k = 5, l = 4, u = 5)
+DDplot(dataBin, k = 5, l = 4, u = 5)
+
+DDplot(dataOrd)
+
+# Difficulty/Discrimination plot of dataMedicalgraded data set
+# discrimination ULI based on 5 groups, comparing 4th and 5th
+DDplot(dataOrd, k = 5, l = 4, u = 5)
+
+# Difficulty/Discrimination RIR plot of dataMedicalgraded data set
+DDplot(dataOrd, discrim = "RIT")
+
+# Difficulty/Discrimination RIR plot of binary dataMedicalgraded data set
+# using bin=TRUE and cutscore equal to 3.
+DDplot(dataOrd, discrim = "ULI", bin=TRUE, cutscore=3)
+
 }
 }
 \references{
@@ -65,6 +103,10 @@ drabinova@cs.cas.cz \cr
 Lubos Stepanek \cr
 First Faculty of Medicine, Charles University \cr
 lubomir.stepanek@lf1.cuni.cz \cr
+
+Jana Vorlickova  \cr
+Institute of Computer Science, The Czech Academy of Sciences \cr
+Faculty of Mathematics and Physics, Charles University \cr
 
 Patricia Martinkova \cr
 Institute of Computer Science, The Czech Academy of Sciences \cr

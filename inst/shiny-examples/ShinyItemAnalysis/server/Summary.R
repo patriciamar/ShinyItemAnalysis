@@ -8,7 +8,7 @@
 
 # ** Total scores summary table ######
 totalscores_table_Input <- reactive({
-  sc <- scored_test()
+  sc <- total_score()
 
   tab <- t(data.table(c(min(sc, na.rm = T),
                         max(sc, na.rm = T),
@@ -32,35 +32,32 @@ include.colnames = T
 
 # ** Histogram of total scores ######
 totalscores_histogram_Input<- reactive({
-  a <- test_answers()
-  k <- test_key()
-  sc <- scored_test()
-
+  sc <- total_score()
   bin <- as.numeric(input$slider_totalscores_histogram)
 
-  df <- data.table(sc,
+  df <- data.table(score = sc,
                    gr = cut(sc,
-                            breaks = unique(c(0, bin - 1, bin, ncol(a))),
+                            breaks = unique(c(0, bin - 1, bin, ncol(binary()))),
                             include.lowest = T))
 
-  if (bin < min(sc, na.rm = T)){
+  if (bin < min(total_score(), na.rm = T)){
     col <- "blue"
   } else {
-    if (bin == min(sc, na.rm = T)){
+    if (bin == min(total_score(), na.rm = T)){
       col <- c("grey", "blue")
     } else {
       col <- c("red", "grey", "blue")
     }
   }
 
-  ggplot(df, aes(x = sc)) +
+  ggplot(df, aes(x = score)) +
     geom_histogram(aes(fill = gr), binwidth = 1, color = "black") +
     scale_fill_manual("", breaks = df$gr, values = col) +
     labs(x = "Total score",
          y = "Number of respondents") +
     scale_y_continuous(expand = c(0, 0),
-                       limits = c(0, max(table(sc)) + 0.01 * nrow(a))) +
-    scale_x_continuous(limits = c(-0.5, ncol(a) + 0.5)) +
+                       limits = c(0, max(table(sc)) + 0.01 * nrow(binary()))) +
+    scale_x_continuous(limits = c(-0.5, ncol(binary()) + 0.5)) +
     theme_app()
 })
 
@@ -89,18 +86,16 @@ output$DB_totalscores_histogram <- downloadHandler(
 
 # ** Table for scores ######
 scores_tables_Input <- reactive({
-  a  <- test_answers()
-  k  <- test_key()
-  sc <- scored_test()
+  sc <- total_score()
 
   # total score
   tosc <- sort(unique(sc))
   # percentile
   perc <- cumsum(prop.table(table(sc)))
   # succes rate
-  sura <- (tosc / length(k)) * 100
+  sura <- (tosc / length(key())) * 100
   # Z score
-  zsco <- sort(unique(scale(sc)))
+  zsco <- sort(unique(z_score()))
   # T score
   tsco <- 50 + 10 * zsco
 
