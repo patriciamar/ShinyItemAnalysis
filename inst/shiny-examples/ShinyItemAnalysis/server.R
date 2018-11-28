@@ -229,7 +229,7 @@ function(input, output, session) {
             }
           }
         } else {
-          inputKey <- rep(input$globalCut, ncol(inputData))
+          inputKey <- rep(as.numeric(input$globalCut), ncol(inputData))
         }
       } else {
         inputKey <- read.csv(input$key$datapath,
@@ -238,6 +238,8 @@ function(input, output, session) {
                              quote = input$quote)
         inputKey <- as.character(unlist(inputKey))
       }
+
+      dataset$key <- inputKey
 
       # loading group
       if (is.null(input$groups)){
