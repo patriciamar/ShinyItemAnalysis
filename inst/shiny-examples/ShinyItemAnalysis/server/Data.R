@@ -41,12 +41,9 @@ checkDataText_Input <- eventReactive(input$submitButton, {
         error_setting <- T
       }
     }
-
     str_errors <- c(error_key, error_group, error_criterion_variable)
     str_warnin <- c(warni_group, warni_criterion_variable)
   }
-
-
   if (any(str_warnin != "")){
     str_warnin <- str_warnin[str_warnin != ""]
     str_warnin <- paste("<font color = 'orange'> &#33;", str_warnin, "</font>", collapse = "<br>")
@@ -98,18 +95,20 @@ output$renderdeleteButtonColumns01 <- renderUI({
   }
 })
 
-# # * Removing such items ####
-# eventReactive(input$deleteButtonColumns01, {
-#   ok0 <- (!checkDataColumns01_Input()$all0)
-#   ok1 <- (!checkDataColumns01_Input()$all1)
-#
-#   nominal() <- nominal()[, (ok0 & ok1)]
-#   key() <- key()[(ok0 & ok1)]
-#
-# })
+# * Removing such items ####
+observeEvent(input$deleteButtonColumns01, {
+  ok0 <- (!checkDataColumns01_Input()$all0)
+  ok1 <- (!checkDataColumns01_Input()$all1)
+
+  dataset$key <- key()[(ok0 & ok1)]
+
+  dataset$nominal <- nominal()[, (ok0 & ok1), with = F]
+  dataset$ordinal <- ordinal()[, (ok0 & ok1), with = F]
+  dataset$binary <- binary()[, (ok0 & ok1), with = F]
+})
 
 # * Text for check of uploaded scored data ####
-checkDataColumns01Text_Input <- eventReactive(input$submitButton, {
+checkDataColumns01Text_Input <- eventReactive((input$submitButton | input$deleteButtonColumns01), {
   all0 <- checkDataColumns01_Input()$all0
   all1 <- checkDataColumns01_Input()$all1
 
@@ -143,8 +142,20 @@ checkDataColumns01Text_Input <- eventReactive(input$submitButton, {
 
   txt
 })
+
 output$checkDataColumns01Text <- renderUI({
   HTML(checkDataColumns01Text_Input())
+})
+
+# * Confirmation about items removal ####
+removedItemsText_Input <- eventReactive(input$deleteButtonColumns01, {
+  txt <- "Items were removed."
+  txt <- paste("<font color = 'green'>", txt, "</font>")
+  txt
+})
+
+output$removedItemsText <- renderUI({
+  HTML(removedItemsText_Input())
 })
 
 # * Checking uploaded group membership ####
@@ -156,7 +167,7 @@ checkGroup_Input <- reactive({
 })
 
 # * Text for check of uploaded group membership ####
-checkGroupText_Input <- eventReactive(input$submitButton, {
+checkGroupText_Input <- eventReactive((input$submitButton | input$deleteButtonGroup), {
   NAgroup <- checkGroup_Input()
 
   if (any(NAgroup)){
@@ -169,7 +180,7 @@ checkGroupText_Input <- eventReactive(input$submitButton, {
                  For this purpose you can use button <b>Remove data</b> on the right side. <br><br>")
     txt <- paste("<font color = 'red'>", txt, "</font>")
   } else {
-      txt <- ""
+    txt <- ""
   }
   txt
 })
@@ -178,6 +189,7 @@ output$checkGroupText <- renderUI({
   HTML(checkGroupText_Input())
 })
 
+# * Confirmation about group with NA values removal ####
 removedGroupText_Input <- eventReactive(input$deleteButtonGroup, {
   txt <- "Rows with missing group membership removed."
   txt <- paste("<font color = 'green'>", txt, "</font>")
@@ -189,12 +201,18 @@ output$removedGroupText <- renderUI({
 })
 
 # * Removing such data ####
-
 observeEvent(input$deleteButtonGroup, {
-  OKgroup <- !checkGroup_Input()
-  nominal() = nominal()[OKgroup, ]
-  group() = group()[OKgroup]
-  criterion() = criterion()[OKgroup]
+  OKgroup <- (!checkGroup_Input())
+
+  dataset$group <- dataset$group[OKgroup]
+  # exclude when criterion is missing
+  if (length(dataset$criterion) == length(OKgroup)){
+    dataset$criterion <- dataset$criterion[OKgroup]
+  }
+
+  dataset$nominal <- dataset$nominal[OKgroup]
+  dataset$ordinal <- dataset$ordinal[OKgroup]
+  dataset$binary <- dataset$binary[OKgroup]
 })
 
 # * Render button for excluding data with missing group membership ####
@@ -256,7 +274,6 @@ output$data_description <- renderUI({
 })
 
 # KEY INPUT ####
-
 output$data_key_file_input <- renderUI({
   label <- switch(input$data_type,
                  "nominal" = "Choose key (CSV file)",
