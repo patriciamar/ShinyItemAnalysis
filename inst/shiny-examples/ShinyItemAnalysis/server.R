@@ -66,9 +66,6 @@ function(input, output, session) {
 
   dataset$data_status <- NULL
 
-  dataset$total_score <- NULL
-  dataset$z_score <- NULL
-
   # * Setting ####
   setting_figures <- reactiveValues()
 
@@ -100,6 +97,8 @@ function(input, output, session) {
     pos <- regexpr("_", inputData)[1]
     datasetName <- str_sub(inputData, 1, pos - 1)
     packageName <- str_sub(inputData, pos + 1)
+
+    dataset$data_status <- "OK"
 
     if (datasetName == "dataMedicalgraded") {
       do.call(data, args = list(paste0(datasetName), package = packageName))
@@ -157,33 +156,33 @@ function(input, output, session) {
     dataset$key <- key
     dataset$group <- group
     dataset$criterion <- criterion
-
-    dataset$total_score <- apply(dataset$binary, 1, sum)
-    dataset$z_score <- as.vector(scale(dataset$total_score))
   })
 
   # * Load data from csv files ####
   observeEvent(input$submitButton, {
 
-      inputData <- NULL
-      inputKey <- NULL
-      inputGroup <- NULL
-      inputCriterion <- NULL
-      inputOrdinalMin <- NULL
-      inputOrdinalMax <- NULL
+    inputData <- NULL
+    inputKey <- NULL
+    inputGroup <- NULL
+    inputCriterion <- NULL
+    inputOrdinalMin <- NULL
+    inputOrdinalMax <- NULL
 
-      inputData_type <- input$data_type
+    inputData_type <- input$data_type
 
-      # loading main data
-      if (is.null(input$data)){
-        dataset$data_status <- "missing"
-      } else {
-        inputData <- read.csv(input$data$datapath,
-                              header = input$header,
-                              sep = input$sep,
-                              quote = input$quote)
-        dataset$data_status <- "OK"
-      }
+    # loading main data
+    if (is.null(input$data)){
+      dataset$data_status <- "missing"
+
+      updateSelectInput(session = session, inputId = "dataSelect",
+                        selected = "GMAT_difNLR")
+    } else {
+      inputData <- read.csv(input$data$datapath,
+                            header = input$header,
+                            sep = input$sep,
+                            quote = input$quote)
+      dataset$data_status <- "OK"
+
 
       # loading max/min values for ordinal data
       if (input$data_type == "ordinal"){
@@ -244,24 +243,24 @@ function(input, output, session) {
       # loading group
       if (is.null(input$groups)){
         inputGroup <- "missing"
-        } else {
-          inputGroup <- read.csv(input$groups$datapath,
-                                 header = input$header,
-                                 sep = input$sep,
-                                 quote = input$quote)
-          inputGroup <- unlist(inputGroup)
-        }
+      } else {
+        inputGroup <- read.csv(input$groups$datapath,
+                               header = input$header,
+                               sep = input$sep,
+                               quote = input$quote)
+        inputGroup <- unlist(inputGroup)
+      }
 
       # loading criterion
       if (is.null(input$criterion_variable)){
-          inputCriterion <- "missing"
-        } else {
-          inputCriterion <- read.csv(input$criterion_variable$datapath,
-                                     header = input$header,
-                                     sep = input$sep,
-                                     quote = input$quote)
-          inputCriterion <- unlist(inputCriterion)
-        }
+        inputCriterion <- "missing"
+      } else {
+        inputCriterion <- read.csv(input$criterion_variable$datapath,
+                                   header = input$header,
+                                   sep = input$sep,
+                                   quote = input$quote)
+        inputCriterion <- unlist(inputCriterion)
+      }
 
       # changing reactiveValues
       ### main data
@@ -296,25 +295,19 @@ function(input, output, session) {
       dataset$group <- inputGroup
       ### criterion
       dataset$criterion <- inputCriterion
-
-      ### calculation of total score and z-score
-      dataset$total_score <- apply(dataset$binary, 1, sum)
-      dataset$z_score <- as.vector(scale(dataset$total_score))
     }
+  }
   )
 
   # * Creating reactive() for data and checking ####
   nominal <- reactive({
-    # validate(need(dataset$data_status != "missing",
-    #               "&#10006;No data found! Please, upload data. Selected toy dataset is still in use."),
-    #          errorClass = "error_dimension")
-    #
-    # validate(need(dataset$nominal != "missing", "Please query data from server"))
     dataset$nominal
   })
+
   ordinal <- reactive({
     dataset$ordinal
   })
+
   binary <- reactive({
     dataset$binary
   })
@@ -324,7 +317,7 @@ function(input, output, session) {
       validate(need(dataset$key != "missing", "Key is missing!"),
                errorClass = "error_key_missing")
     } else {
-      validate(need(ncol(dataset$nominal) == length(dataset$key),
+      validate(need(ncol(nominal()) == length(dataset$key),
                     "The length of key need to be the same as number of columns in the main dataset!"),
                errorClass = "error_dimension")
     }
@@ -333,14 +326,14 @@ function(input, output, session) {
 
   minimal <- reactive({
     ### bad minimal values dimension
-    validate(need(ncol(dataset$nominal) == length(dataset$minimal),
+    validate(need(ncol(nominal()) == length(dataset$minimal),
                   "The length of minimal values need to be the same as number of items in the main dataset!"),
              errorClass = "error_dimension")
     dataset$minimal
   })
   maximal <- reactive({
     ### bad maximal values dimension
-    validate(need(ncol(dataset$nominal) == length(dataset$maximal),
+    validate(need(ncol(nominal()) == length(dataset$maximal),
                   "The length of maximal values need to be the same as number of items in the main dataset!"),
              errorClass = "error_dimension")
     dataset$maximal
@@ -353,7 +346,7 @@ function(input, output, session) {
                     "Group is missing! DIF and DDF analyses are not available!"),
                errorClass = "warning_group_missing")
     } else {
-      validate(need(nrow(dataset$nominal) == length(dataset$group),
+      validate(need(nrow(nominal()) == length(dataset$group),
                     "The length of group need to be the same as number of observation in the main dataset!"),
                errorClass = "error_dimension")
     }
@@ -367,7 +360,7 @@ function(input, output, session) {
                     "Criterion variable is missing! Predictive validity analysis is not available!"),
                errorClass = "warning_criterion_variable_missing")
     } else {
-      validate(need(nrow(dataset$nominal) == length(dataset$criterion),
+      validate(need(nrow(nominal()) == length(dataset$criterion),
                     "The length of criterion variable need to be the same as number of observation in the main dataset!"),
                errorClass = "error_dimension")
     }
@@ -375,11 +368,11 @@ function(input, output, session) {
   })
 
   total_score <- reactive({
-    dataset$total_score
+    apply(binary(), 1, sum)
   })
 
   z_score <- reactive({
-    dataset$z_score
+    scale(total_score())
   })
 
   # * Item numbers and item names ######
@@ -428,7 +421,7 @@ function(input, output, session) {
       "inSlider2group",
       "reportSlider",
       "difMHSlider_score"
-      )
+    )
 
     itemCount = ncol(ordinal())
     updateSliderInput(session = session, inputId = "slider_totalscores_histogram", max = itemCount, value = round(median(total_score(), na.rm = T)))
@@ -450,9 +443,9 @@ function(input, output, session) {
     updateSliderInput(session = session, inputId = "difirt_raju_itemSlider", max = itemCount)
     updateSliderInput(session = session, inputId = "ddfSlider", max = itemCount)
     updateSliderInput(session = session, inputId = "inSlider2group", max = itemCount,
-                      value = round(median(dataset$total_score[dataset$group == 1], na.rm = T)))
+                      value = round(median(total_score()[group() == 1], na.rm = T)))
     updateSliderInput(session = session, inputId = "difMHSlider_score", max = itemCount,
-                      value = round(median(dataset$total_score, na.rm = T)))
+                      value = round(median(total_score(), na.rm = T)))
 
   })
 
@@ -521,7 +514,7 @@ function(input, output, session) {
         name <- "Medical Graded"
       }
     } else {
-        name <- ""
+      name <- ""
     }
     name
   })
@@ -625,72 +618,72 @@ function(input, output, session) {
   observeEvent(input$generate, {
     withProgress(message = "Creating content", value = 0, style = "notification", {
       list(# header
-           author = input$reportAuthor,
-           dataset = input$reportDataName,
-           # datasets
-           a = nominal(),
-           k = key(),
-           # total scores
-           incProgress(0.05),
-           results = t(totalscores_table_Input()),
-           histogram_totalscores = totalscores_histogram_Input(),
-           # standard scores
-           standardscores_table = scores_tables_Input(),
-           incProgress(0.05),
-           # validity section
-           corr_plot = {if (input$corr_report) {corr_plot_Input()} else {""}},
-           corr_plot_numclust = ifelse(input$customizeCheck, input$corr_plot_clust_report, input$corr_plot_clust),
-           corr_plot_clustmethod = ifelse(input$customizeCheck, input$corr_plot_clustmethod_report, input$corr_plot_clustmethod),
-           scree_plot = {if (input$corr_report) {scree_plot_Input()} else {""}},
-           isCriterionPresent = criterionPresent(),
-           validity_check = input$predict_report,
-           validity_plot = {if (input$predict_report) {if (criterionPresent()) {validity_plot_Input()} else {""}}},
-           validity_table = {if (input$predict_report) {if (criterionPresent()) {validity_table_Input()} else {""}}},
-           incProgress(0.05),
-           # item analysis
-           difPlot = DDplot_Input_report(),
-           DDplotRange1 = ifelse(input$customizeCheck, input$DDplotRangeSlider_report[[1]], input$DDplotRangeSlider[[1]]),
-           DDplotRange2 = ifelse(input$customizeCheck, input$DDplotRangeSlider_report[[2]], input$DDplotRangeSlider[[2]]),
-           DDplotNumGroups = ifelse(input$customizeCheck, input$DDplotNumGroupsSlider_report, input$DDplotNumGroupsSlider),
-           itemexam = itemanalysis_table_Input(),
-           incProgress(0.05),
-           # distractors
-           hist_distractor_by_group = distractor_histogram_Input(),
-           graf = report_distractor_plot(),
-           incProgress(0.25),
-           # regression
-           multiplot = multiplotReportInput(),
-           incProgress(0.05),
-           # irt
-           wrightMap = oneparamirtWrightMapReportInput_mirt(),
-           irt_type = irt_typeInput(),
-           irt = irtInput(),
-           irtiic = irtiicInput(),
-           irttif = irttifInput(),
-           irtcoef = irtcoefInput(),
-           irtfactor = irtfactorInput(),
-           incProgress(0.25),
-           # DIF
-           ### presence of group vector
-           isGroupPresent = groupPresent(),
-           ### histograms by group
-           histCheck = input$histCheck,
-           resultsgroup = {if (groupPresent()) {if (input$histCheck) {resultsgroupInput()}}},
-           histbyscoregroup0 = {if (groupPresent()) {if (input$histCheck) {histbyscoregroup0Input()}}},
-           histbyscoregroup1 = {if (groupPresent()) {if (input$histCheck) {histbyscoregroup1Input()}}},
-           ### delta plot
-           deltaplotCheck = input$deltaplotCheck,
-           deltaplot = {if (groupPresent()) {if (input$deltaplotCheck) {deltaplotInput_report()}}},
-           DP_text_normal = {if (groupPresent()) {if (input$deltaplotCheck) {deltaGpurn_report()}}},
-           ### logistic regression
-           logregCheck = input$logregCheck,
-           DIF_logistic_plot = {if (groupPresent()) {if (input$logregCheck) {DIF_logistic_plotReport()}}},
-           DIF_logistic_print = {if (groupPresent()) {if (input$logregCheck) {model_DIF_logistic_print_report()}}},
-           ### DDF multinomial
-           multiCheck = input$multiCheck,
-           DDF_multinomial_print = {if (groupPresent()) {if (input$multiCheck) {model_DDF_print_report()}}},
-           DDF_multinomial_plot = {if (groupPresent()) {if (input$multiCheck) {plot_DDFReportInput()}}},
-           incProgress(0.25)
+        author = input$reportAuthor,
+        dataset = input$reportDataName,
+        # datasets
+        a = nominal(),
+        k = key(),
+        # total scores
+        incProgress(0.05),
+        results = t(totalscores_table_Input()),
+        histogram_totalscores = totalscores_histogram_Input(),
+        # standard scores
+        standardscores_table = scores_tables_Input(),
+        incProgress(0.05),
+        # validity section
+        corr_plot = {if (input$corr_report) {corr_plot_Input()} else {""}},
+        corr_plot_numclust = ifelse(input$customizeCheck, input$corr_plot_clust_report, input$corr_plot_clust),
+        corr_plot_clustmethod = ifelse(input$customizeCheck, input$corr_plot_clustmethod_report, input$corr_plot_clustmethod),
+        scree_plot = {if (input$corr_report) {scree_plot_Input()} else {""}},
+        isCriterionPresent = criterionPresent(),
+        validity_check = input$predict_report,
+        validity_plot = {if (input$predict_report) {if (criterionPresent()) {validity_plot_Input()} else {""}}},
+        validity_table = {if (input$predict_report) {if (criterionPresent()) {validity_table_Input()} else {""}}},
+        incProgress(0.05),
+        # item analysis
+        difPlot = DDplot_Input_report(),
+        DDplotRange1 = ifelse(input$customizeCheck, input$DDplotRangeSlider_report[[1]], input$DDplotRangeSlider[[1]]),
+        DDplotRange2 = ifelse(input$customizeCheck, input$DDplotRangeSlider_report[[2]], input$DDplotRangeSlider[[2]]),
+        DDplotNumGroups = ifelse(input$customizeCheck, input$DDplotNumGroupsSlider_report, input$DDplotNumGroupsSlider),
+        itemexam = itemanalysis_table_Input(),
+        incProgress(0.05),
+        # distractors
+        hist_distractor_by_group = distractor_histogram_Input(),
+        graf = report_distractor_plot(),
+        incProgress(0.25),
+        # regression
+        multiplot = multiplotReportInput(),
+        incProgress(0.05),
+        # irt
+        wrightMap = oneparamirtWrightMapReportInput_mirt(),
+        irt_type = irt_typeInput(),
+        irt = irtInput(),
+        irtiic = irtiicInput(),
+        irttif = irttifInput(),
+        irtcoef = irtcoefInput(),
+        irtfactor = irtfactorInput(),
+        incProgress(0.25),
+        # DIF
+        ### presence of group vector
+        isGroupPresent = groupPresent(),
+        ### histograms by group
+        histCheck = input$histCheck,
+        resultsgroup = {if (groupPresent()) {if (input$histCheck) {resultsgroupInput()}}},
+        histbyscoregroup0 = {if (groupPresent()) {if (input$histCheck) {histbyscoregroup0Input()}}},
+        histbyscoregroup1 = {if (groupPresent()) {if (input$histCheck) {histbyscoregroup1Input()}}},
+        ### delta plot
+        deltaplotCheck = input$deltaplotCheck,
+        deltaplot = {if (groupPresent()) {if (input$deltaplotCheck) {deltaplotInput_report()}}},
+        DP_text_normal = {if (groupPresent()) {if (input$deltaplotCheck) {deltaGpurn_report()}}},
+        ### logistic regression
+        logregCheck = input$logregCheck,
+        DIF_logistic_plot = {if (groupPresent()) {if (input$logregCheck) {DIF_logistic_plotReport()}}},
+        DIF_logistic_print = {if (groupPresent()) {if (input$logregCheck) {model_DIF_logistic_print_report()}}},
+        ### DDF multinomial
+        multiCheck = input$multiCheck,
+        DDF_multinomial_print = {if (groupPresent()) {if (input$multiCheck) {model_DDF_print_report()}}},
+        DDF_multinomial_plot = {if (groupPresent()) {if (input$multiCheck) {plot_DDFReportInput()}}},
+        incProgress(0.25)
       )
     })
 
@@ -709,64 +702,64 @@ function(input, output, session) {
 
       reportPath <- file.path(getwd(), paste0("report", formatInput(), ".Rmd"))
       parameters <- list(# header
-                         author = input$reportAuthor,
-                         dataset = input$reportDataName,
-                         # datasets
-                         a = nominal(),
-                         k = key(),
-                         # total scores
-                         results = t(totalscores_table_Input()),
-                         histogram_totalscores = totalscores_histogram_Input(),
-                         # standard scores
-                         standardscores_table = scores_tables_Input(),
-                         # validity section
-                         corr_plot = {if (input$corr_report) {corr_plot_Input()} else {""}},
-                         corr_plot_numclust = ifelse(input$customizeCheck, input$corr_plot_clust_report, input$corr_plot_clust),
-                         corr_plot_clustmethod = ifelse(input$customizeCheck, input$corr_plot_clustmethod_report, input$corr_plot_clustmethod),
-                         scree_plot = {if (input$corr_report) {scree_plot_Input()} else {""}},
-                         isCriterionPresent = criterionPresent(),
-                         validity_check = input$predict_report,
-                         validity_plot = {if (input$predict_report) {if (criterionPresent()) {validity_plot_Input()} else {""}}},
-                         validity_table = {if (input$predict_report) {if (criterionPresent()) {validity_table_Input()} else {""}}},
-                         # item analysis
-                         difPlot = DDplot_Input_report(),
-                         DDplotRange1 = ifelse(input$customizeCheck, input$DDplotRangeSlider_report[[1]], input$DDplotRangeSlider[[1]]),
-                         DDplotRange2 = ifelse(input$customizeCheck, input$DDplotRangeSlider_report[[2]], input$DDplotRangeSlider[[2]]),
-                         DDplotNumGroups = ifelse(input$customizeCheck, input$DDplotNumGroupsSlider_report, input$DDplotNumGroupsSlider),
-                         itemexam = itemanalysis_table_Input(),
-                         # distractors
-                         hist_distractor_by_group = distractor_histogram_Input(),
-                         graf = report_distractor_plot(),
-                         # regression
-                         multiplot = multiplotReportInput(),
-                         # irt
-                         wrightMap = oneparamirtWrightMapReportInput_mirt(),
-                         irt_type = irt_typeInput(),
-                         irt = irtInput(),
-                         irtiic = irtiicInput(),
-                         irttif = irttifInput(),
-                         irtcoef = irtcoefInput(),
-                         irtfactor = irtfactorInput(),
-                         # DIF
-                         ### presence of group vector
-                         isGroupPresent = groupPresent(),
-                         ### histograms by groups
-                         histCheck = input$histCheck,
-                         resultsgroup = {if (groupPresent()) {if (input$histCheck) {resultsgroupInput()}}},
-                         histbyscoregroup0 = {if (groupPresent()) {if (input$histCheck) {histbyscoregroup0Input()}}},
-                         histbyscoregroup1 = {if (groupPresent()) {if (input$histCheck) {histbyscoregroup1Input()}}},
-                         ### delta plot
-                         deltaplotCheck = input$deltaplotCheck,
-                         DIF_deltaplot = {if (groupPresent()) {if (input$deltaplotCheck) {deltaplotInput_report()}}},
-                         DIF_deltaplot_text = {if (groupPresent()) {if (input$deltaplotCheck) {deltaGpurn_report()}}},
-                         ### logistic regression
-                         logregCheck = input$logregCheck,
-                         DIF_logistic_plot = {if (groupPresent()) {if (input$logregCheck) {DIF_logistic_plotReport()}}},
-                         DIF_logistic_print = {if (groupPresent()) {if (input$logregCheck) {model_DIF_logistic_print_report()}}},
-                         ### multinomial regression
-                         multiCheck = input$multiCheck,
-                         DDF_multinomial_print = {if (groupPresent()) {if (input$multiCheck) {model_DDF_print_report()}}},
-                         DDF_multinomial_plot = {if (groupPresent()) {if (input$multiCheck) {plot_DDFReportInput()}}}
+        author = input$reportAuthor,
+        dataset = input$reportDataName,
+        # datasets
+        a = nominal(),
+        k = key(),
+        # total scores
+        results = t(totalscores_table_Input()),
+        histogram_totalscores = totalscores_histogram_Input(),
+        # standard scores
+        standardscores_table = scores_tables_Input(),
+        # validity section
+        corr_plot = {if (input$corr_report) {corr_plot_Input()} else {""}},
+        corr_plot_numclust = ifelse(input$customizeCheck, input$corr_plot_clust_report, input$corr_plot_clust),
+        corr_plot_clustmethod = ifelse(input$customizeCheck, input$corr_plot_clustmethod_report, input$corr_plot_clustmethod),
+        scree_plot = {if (input$corr_report) {scree_plot_Input()} else {""}},
+        isCriterionPresent = criterionPresent(),
+        validity_check = input$predict_report,
+        validity_plot = {if (input$predict_report) {if (criterionPresent()) {validity_plot_Input()} else {""}}},
+        validity_table = {if (input$predict_report) {if (criterionPresent()) {validity_table_Input()} else {""}}},
+        # item analysis
+        difPlot = DDplot_Input_report(),
+        DDplotRange1 = ifelse(input$customizeCheck, input$DDplotRangeSlider_report[[1]], input$DDplotRangeSlider[[1]]),
+        DDplotRange2 = ifelse(input$customizeCheck, input$DDplotRangeSlider_report[[2]], input$DDplotRangeSlider[[2]]),
+        DDplotNumGroups = ifelse(input$customizeCheck, input$DDplotNumGroupsSlider_report, input$DDplotNumGroupsSlider),
+        itemexam = itemanalysis_table_Input(),
+        # distractors
+        hist_distractor_by_group = distractor_histogram_Input(),
+        graf = report_distractor_plot(),
+        # regression
+        multiplot = multiplotReportInput(),
+        # irt
+        wrightMap = oneparamirtWrightMapReportInput_mirt(),
+        irt_type = irt_typeInput(),
+        irt = irtInput(),
+        irtiic = irtiicInput(),
+        irttif = irttifInput(),
+        irtcoef = irtcoefInput(),
+        irtfactor = irtfactorInput(),
+        # DIF
+        ### presence of group vector
+        isGroupPresent = groupPresent(),
+        ### histograms by groups
+        histCheck = input$histCheck,
+        resultsgroup = {if (groupPresent()) {if (input$histCheck) {resultsgroupInput()}}},
+        histbyscoregroup0 = {if (groupPresent()) {if (input$histCheck) {histbyscoregroup0Input()}}},
+        histbyscoregroup1 = {if (groupPresent()) {if (input$histCheck) {histbyscoregroup1Input()}}},
+        ### delta plot
+        deltaplotCheck = input$deltaplotCheck,
+        DIF_deltaplot = {if (groupPresent()) {if (input$deltaplotCheck) {deltaplotInput_report()}}},
+        DIF_deltaplot_text = {if (groupPresent()) {if (input$deltaplotCheck) {deltaGpurn_report()}}},
+        ### logistic regression
+        logregCheck = input$logregCheck,
+        DIF_logistic_plot = {if (groupPresent()) {if (input$logregCheck) {DIF_logistic_plotReport()}}},
+        DIF_logistic_print = {if (groupPresent()) {if (input$logregCheck) {model_DIF_logistic_print_report()}}},
+        ### multinomial regression
+        multiCheck = input$multiCheck,
+        DDF_multinomial_print = {if (groupPresent()) {if (input$multiCheck) {model_DDF_print_report()}}},
+        DDF_multinomial_plot = {if (groupPresent()) {if (input$multiCheck) {plot_DDFReportInput()}}}
       )
       rmarkdown::render(reportPath, output_file = file,
                         params = parameters, envir = new.env(parent = globalenv()))
