@@ -123,7 +123,7 @@ dendrogram_plot_Input <- reactive({
                    num = order,
                    cluster = rep(paste("Cluster", 1:numclust), times))
   dendr <- dendro_data(hc, type = "rectangle")
-  dfd <- merge(label(dendr), df, by = "label")
+  dfd <- merge(dendr$labels, df, by = "label")
 
   ggplot() +
     geom_segment(data = segment(dendr),
