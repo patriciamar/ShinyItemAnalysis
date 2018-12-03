@@ -7,6 +7,9 @@
 - Changes in ShinyItemAnalysis 1.2.8-6. (2018-12-03) -
 -------------------------------------------------------
 
+BUG FIXING
+  o Dendrogram is now correctly rendered.
+
 MAJOR UPDATES
   o Function ItemAnalysis() was added.
 
