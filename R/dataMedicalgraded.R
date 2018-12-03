@@ -40,7 +40,7 @@
 #' @seealso \code{\link{dataMedical}}, \code{\link{dataMedicaltest}}, \code{\link{dataMedicalkey}}
 #'
 #' @format A \code{dataMedicalgraded} is a \code{data.frame} consisting of 2,392 observations on
-#' the following 101 variables. The first 100 columns represent graded answers of subject to
+#' the following 102 variables. The first 100 columns represent graded answers of subject to
 #' items of the test. The 101st column is vector of gender membership; values 0 and 1
 #' refer to males and females. The 102nd columns in criterion variable; value 1 means
 #' that student study standardly, 0 otherwise (e.g. leaving or interrupting studies).

@@ -23,7 +23,7 @@ distractor analysis is performed based on it.}
 Performs distractor analysis for each item and optional number of groups.
 }
 \details{
-This function is adapted version of \code{distractor.analysis} function from \code{CTT} package.
+This function is adapted version of \code{\link[CTT]{distractor.analysis}} function from \code{CTT} package.
 The scores are calculatede using the item data and key. The respondents are then splitted into
 the \code{num.groups}-quantiles and the number (or proportion) of respondents in each quantile is
 reported with respect to their answers.
@@ -37,18 +37,23 @@ The \code{key} must be a vector of the same length as \code{ncol(data)}.
 \dontrun{
 # loading 100-item medical admission test data
 data(dataMedicaltest, dataMedicalkey)
+data <- dataMedicaltest[, 1:100]
+key <- unlist(dataMedicalkey)
 
 # distractor analysis for dataMedicaltest data set
-DistractorAnalysis(dataMedicaltest, dataMedicalkey)
+DistractorAnalysis(data, key)
 
 # distractor analysis for dataMedicaltest data set with proportions
-DistractorAnalysis(dataMedicaltest, dataMedicalkey, p.table = T)
+DistractorAnalysis(data, key, p.table = T)
 
 # distractor analysis for dataMedicaltest data set for 6 groups
-DistractorAnalysis(dataMedicaltest, dataMedicalkey, num.group = 6)
+DistractorAnalysis(data, key, num.group = 6)
 }
 
 
+}
+\seealso{
+\code{\link[CTT]{distractor.analysis}}
 }
 \author{
 Adela Drabinova \cr

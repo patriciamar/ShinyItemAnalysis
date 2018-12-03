@@ -22,8 +22,10 @@
 #' @details The function computes total test scores for all respondents and then divides
 #' the respondents into \code{k} groups. The lower and upper groups are determined by \code{l} and \code{u}
 #' parameters, i.e.  l-th and u-th group where the ordering is defined by increasing total score.
+#'
 #' In ordinal items, difficulty is calculated as difference of average score divided by range
-#' (maximal possible score minus minimal possible score for given item).
+#' (maximal possible score \code{maxscore} minus minimal possible score \code{minscore} for given item).
+#'
 #' Discrimination is calculated as difference in difficulty between upper and lower group.
 #'
 #' @author
@@ -58,30 +60,25 @@
 #'
 #' @examples
 #' \dontrun{
-#' # loading 100-item medical admission test data set
-#' data(dataMedical)
+#' # loading 100-item medical admission test data sets
+#' data(dataMedical, dataMedicalgraded)
+#' # binary data set
 #' dataBin <- dataMedical[, 1:100]
+#' # ordinal data set
+#' dataOrd <- dataMedicalgraded[, 1:100]
 #'
-#' # Discrimination (ULI) defined as difference of proportion of correct answers
-#' # in upper and lower third of respondents
+#' # ULI for first 5 items for binary data set
 #' # compare to psychometric::discrim(x)
 #' gDiscrim(dataBin)[1:5]
-#'
-#' # 5 groups, compare 4th and 5th
+#' # generalized ULI using 5 groups, compare 4th and 5th for binary data set
 #' gDiscrim(dataBin, k = 5, l = 4, u = 5)[1:5]
 #'
-#' ## Ordinal data set
-#' # loading 100-item medical admission test data set
-#' data(dataMedicalgraded)
-#' dataOrd <- dataMedicalgraded[,1:100]
-#'
-#' # Discrimination with default settings
+#' # ULI for first 5 items for ordinal data set
 #' gDiscrim(dataOrd)[1:5]
-#'
-#' # 5 groups, compare 4th and 5th
+#' # generalized ULI using 5 groups, compare 4th and 5th for binary data set
+#' gDiscrim(dataOrd, k = 5, l = 4, u = 5)[1:5]
 #' # maximum (4) and minimum (0) score are same for all items
 #' gDiscrim(dataOrd,  k = 5, l = 4, u = 5, maxscore = 4, minscore = 0)[1:5]
-#'
 #' }
 #' @export
 

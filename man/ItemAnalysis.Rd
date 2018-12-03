@@ -5,7 +5,7 @@
 \title{Item Analysis}
 \usage{
 ItemAnalysis(data, y = NULL, k = 3, l = 1, u = 3,
-                    maxscore, minscore, cutscore, add.bin=FALSE)
+maxscore, minscore, cutscore, add.bin = FALSE)
 }
 \arguments{
 \item{data}{matrix or data.frame of items to be examined. Rows represent respondents, columns
@@ -29,57 +29,75 @@ If missing, vector of maximal scores is imputed. See \strong{Details}.}
 
 \item{add.bin}{logical: If TRUE, indices are printed also for binarized data. See \strong{Details}.}
 }
+\value{
+\code{ItemAnalysis} function computes various traditional item analysis indices. Output
+is a \code{data.frame} with following columns:
+  \item{\code{Difficulty}}{item difficulty based on ratio of correct answers}
+  \item{\code{Scaled score}}{}
+  \item{\code{Sample SD}}{standard deviation of the item}
+  \item{\code{Correct answers}}{proportion of correct answers}
+  \item{\code{Min score}}{minimal score specified in \code{minscore}; if not provided, observed minimal score}
+  \item{\code{Max score}}{maximal score specified in \code{maxscore}; if not provided, observed maximal score}
+  \item{\code{Obtained min}}{observed minimal score}
+  \item{\code{Obtained max}}{observed maximal score}
+  \item{\code{Cut score}}{cut-score specified in \code{cutscore}}
+  \item{\code{ULI}}{generalized ULI}
+  \item{\code{ULI default}}{dscrimination with ULI}
+  \item{\code{RIT}}{correlation between item score and overall test score}
+  \item{\code{RIR}}{correlation between item score and overall test score}
+  \item{\code{Item criterion}}{correlation of item score with criterion}
+  \item{\code{Item reliability}}{item reliability index}
+  \item{\code{Item reliability woi}}{item reliability index (scored without item)}
+  \item{\code{Item validity}}{item validity index}
+  \item{\code{Item criterion}}{correlation between item and criterion \code{y}}
+  \item{\code{Alpha drop}}{Cronbach's alpha without given item}
+With \code{add.bin == TRUE}, indices based on binarized data set are also provided
+and marked with \code{bin}.
+}
 \description{
-ItemAnalysis function computes various traditional item analysis indices
-including difficulty, discrimination and item validity.
-For ordinal items the difficulty and discrimination indices take into account
-minimal item score as well as range.
+\code{ItemAnalysis} function computes various traditional item analysis indices
+including difficulty, discrimination and item validity. For ordinal items the difficulty and
+discrimination indices take into account minimal item score as well as range.
 }
 \details{
-ItemAnalysis function computes various traditional item analysis indices
-including difficulty indices based on ratio of correct answers, sample SD,
-discrimination indices ULI based on difference in ratio of correct answer
-in Upper and Lower group, RIT (correlation between item score and overall test score),
-RIR (correlation between item score and overall test score),
-item validity indices based on correlation of Item score with criterion,
-and item reliability indices based on Cronbach's alpha without given item.
 For ordinal items the difficulty and discrimination indices take into account
 minimal item score as well as range.
 
-For caluclation discimination ULI index, it is possible to
-specify number of groups \code{k}, and which two groups \code{l} and \code{u}
+For calculation of discimination ULI index, it is possible to
+specify the number of groups \code{k}, and which two groups \code{l} and \code{u}
 are to be compared.
 
 In ordinal items, difficulty is calculated as difference of average score divided by range
 (maximal possible score \code{maxscore} minus minimal possible score \code{minscore}).
+
 If \code{add.bin} is set to \code{TRUE}, item analysis of binarized data is
 included in the output table. In such a case, \code{cutscore} is used for binarization.
-When binarizing the data, values greater or equal to cut-score are set to 1,
-other values are set to 0.
+When binarizing the data, values greater or equal to cut-score are set to \code{1},
+other values are set to \code{0}.
 }
 \examples{
 \dontrun{
-## Examples on 100-item medical admission test data set (binary)
-library(ShinyItemAnalysis)
-dim(dataMedical)
-names(dataMedical)
+# loading 100-item medical admission test data sets
+data(dataMedical, dataMedicalgraded)
+# binary data set
+dataBin <- dataMedical[, 1:100]
+# ordinal data set
+dataOrd <- dataMedicalgraded[, 1:100]
+# study success is the same for both data sets
+StudySuccess <- dataMedical[, 102]
 
-dataBin <- dataMedical[,1:100]
-StudySuccessBin <- dataMedical[,102]
-
+# item analysis for binary data
 head(ItemAnalysis(dataBin))
-head(ItemAnalysis(dataBin, y = StudySuccessBin))
+# item analysis for binary data using also study success
+head(ItemAnalysis(dataBin, y = StudySuccess))
 
-## Examples on 100-item medical admission test data set (ordinal)
-dim(dataMedicalgraded)
-names(dataMedicalgraded)
-
-dataOrd <- dataMedicalgraded[,1:100]
-StudySuccess <- dataMedicalgraded[,102]
-
+# item analysis for binary data
+head(ItemAnalysis(dataOrd))
+# item analysis for binary data using also study success
 head(ItemAnalysis(dataOrd, y = StudySuccess))
-head(ItemAnalysis(dataOrd, y = StudySuccess,
-     k = 5, l = 4, u = 5, maxscore = 4, minscore = 0, cutscore = 4, add.bin=TRUE) )
+# including also item analysis for binarized data
+head(ItemAnalysis(dataOrd, y = StudySuccess, k = 5, l = 4, u = 5,
+maxscore = 4, minscore = 0, cutscore = 4, add.bin = TRUE) )
 }
 }
 \references{
