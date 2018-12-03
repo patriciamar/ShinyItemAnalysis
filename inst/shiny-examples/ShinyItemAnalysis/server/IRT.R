@@ -12,37 +12,103 @@ rasch_model_mirt <- reactive({
 
 # *** CC ######
 raschInput_mirt <- reactive({
-  g <- plot(rasch_model_mirt(), type = "trace", facet_items = F)
-  g
+  plt <- plot(rasch_model_mirt(), type = 'trace', facet_items = F)
+  vals <- plt$panel.args
+  x <- vals[[1]]$x
+  y <- vals[[1]]$y
+  n <- length(vals[[1]]$subscripts)
+  m <- length(item_names())
+  k <- n/m
+  names <- list()
+
+  for(j in 1:m){
+    names[[j]] <- rep(paste('Item', j), k)
+  }
+  names <- unlist(names)
+
+  df <- data.frame(cbind(x, y))
+  df$x <- as.numeric(df$x)
+  df$y <-as.numeric(df$y)
+  df$names <- as.character(names)
+  colnames(df) <- c("Ability", "Probability", "Item")
+
+  g <- ggplot(data = df, aes(x = Ability, y = Probability, color = Item )) +
+    geom_line() +
+    ylab("Probability of correct answer") +
+    theme_app()
 })
 
-output$rasch_mirt <- renderPlot({
-  raschInput_mirt()
+output$rasch_mirt <- renderPlotly({
+  g <- raschInput_mirt()
+  p <- ggplotly(g)
+
+  # changing plotly description
+  for (j in 1:length(p$x$data)){
+    text <- gsub("Item: ", "", p$x$data[[j]]$text)
+    p$x$data[[j]]$text <- text
+  }
+
+  p$elementId <- NULL
+
+  p %>% plotly::config(displayModeBar = F)
 })
+
+
 
 output$DP_rasch_mirt <- downloadHandler(
   filename =  function() {
     paste("fig_RaschItemCharacteristicCurves.png", sep = "")
   },
   content = function(file) {
-    png(file, height = setting_figures$height,
-        width = setting_figures$width,
-        units = "in",
-        res = setting_figures$dpi,
-        pointsize = setting_figures$dpi/72)
-    print(raschInput_mirt())
-    dev.off()
+    ggsave(file, plot = raschInput_mirt() +
+             theme(text = element_text(size = setting_figures$text_size)),
+           device = "png",
+           height = setting_figures$height, width = setting_figures$width,
+           dpi = setting_figures$dpi)
   }
 )
 
 # *** IIC ######
 raschiicInput_mirt <- reactive({
-  g <- plot(rasch_model_mirt(), type = "infotrace", facet_items = F)
-  g
+  plt <- plot(rasch_model_mirt(), type = 'infotrace', facet_items = F)
+  vals <- plt$panel.args
+  x <- vals[[1]]$x
+  y <- vals[[1]]$y
+  n <- length(vals[[1]]$subscripts)
+  m <- length(item_names())
+  k <- n/m
+  names <- list()
+
+  for(j in 1:m){
+    names[[j]] <- rep(paste('Item', j), k)
+  }
+
+  names <- unlist(names)
+
+  df <- data.frame(cbind(x, y))
+  df$x <- as.numeric(df$x)
+  df$y <-as.numeric(df$y)
+  df$names <- as.character(names)
+  colnames(df) <- c("Ability", "Information", "Item")
+
+  g <- ggplot(data = df, aes(x = Ability, y = Information, color = Item )) +
+    geom_line() +
+    theme_app()
 })
 
-output$raschiic_mirt <- renderPlot({
-  raschiicInput_mirt()
+output$raschiic_mirt <- renderPlotly({
+  g <- raschiicInput_mirt()
+  p <- ggplotly(g)
+
+  # changing plotly description
+  for (j in 1:length(p$x$data)){
+    text <- gsub("Item: ", "", p$x$data[[j]]$text)
+    p$x$data[[j]]$text <- text
+  }
+
+  p$elementId <- NULL
+
+  p %>% plotly::config(displayModeBar = F)
 })
 
 output$DP_raschiic_mirt <- downloadHandler(
@@ -50,13 +116,11 @@ output$DP_raschiic_mirt <- downloadHandler(
     paste("fig_RaschItemInformationCurves.png", sep = "")
   },
   content = function(file) {
-    png(file, height = setting_figures$height,
-        width = setting_figures$width,
-        units = "in",
-        res = setting_figures$dpi,
-        pointsize = setting_figures$dpi/72)
-    print(raschiicInput_mirt())
-    dev.off()
+    ggsave(file, plot = raschiicInput_mirt() +
+             theme(text = element_text(size = setting_figures$text_size)),
+           device = "png",
+           height = setting_figures$height, width = setting_figures$width,
+           dpi = setting_figures$dpi)
   }
 )
 
@@ -134,6 +198,44 @@ output$download_Rasch_table <- downloadHandler(
     write.csv(data,file)
   }
 )
+
+# * Abilities estimates parameters * #
+raschAbilities <- reactive({
+  fit <- rasch_model_mirt()
+
+  ts <- as.vector(total_score())
+  sts <- as.vector(z_score())
+  fs <- as.vector(fscores(fit))
+  fs.Err <- as.vector(fscores(fit, full.scores.SE = TRUE)[, 2])
+
+  tab <- data.frame(cbind(ts, sts, fs, fs.Err))
+  colnames(tab) <- c('Total scores', 'Z-score', 'F-scores', 'SE of F-score')
+  n <- nrow(tab)
+  nam <- vector('character', length = n)
+  for (i in 1:n) {
+    nam[i] <- paste('Respondent', i)
+  }
+  rownames(tab) <- c(nam)
+  tab
+})
+
+output$raschcoef_abilities <- renderTable({
+
+  head(raschAbilities(), 6)
+
+}, include.rownames = TRUE)
+
+# ** Download abilities ######
+output$download_Rasch_abilities <- downloadHandler(
+  filename = function() {
+    paste("Rasch_abilities",".csv",sep = "")
+  },
+  content = function(file) {
+    data <- raschAbilities()
+    write.csv(data,file, col.names = TRUE)
+  }
+)
+
 
 # *** Factor scores correlation ######
 raschFactorCorInput_mirt <- reactive({
@@ -224,7 +326,7 @@ output$DP_raschWM_mirt <- downloadHandler(
 one_param_irt_mirt <- reactive({
   data <- binary()
   s <- paste("F = 1-", ncol(data), "\n",
-                 "CONSTRAIN = (1-", ncol(data), ", a1)")
+             "CONSTRAIN = (1-", ncol(data), ", a1)")
   model <- mirt.model(s)
   fit1PL <- mirt(data, model = model, itemtype = "2PL", SE = T, verbose = F,
                  technical = list(NCYCLES = input$ncycles))
@@ -232,12 +334,35 @@ one_param_irt_mirt <- reactive({
 
 # *** CC ####
 oneparamirtInput_mirt <- reactive({
-  g <- plot(one_param_irt_mirt(), type = "trace", facet_items = F)
-  g
+  plt <- plot(one_param_irt_mirt(), type = 'trace',facet_items = F)
+  vals <- plt$panel.args
+  x <- vals[[1]]$x
+  y <- vals[[1]]$y
+  n <- length(vals[[1]]$subscripts)
+  m <- length(item_names())
+  k <- n/m
+  names <- list()
+
+  for(j in 1:m){
+
+    names[[j]] <- rep(paste('Item',j),k)
+
+  }
+
+  names <- unlist(names)
+
+  df <- data.frame(cbind(x,y))
+  df$x <- as.numeric(df$x)
+  df$y <-as.numeric(df$y)
+  df$names <- as.character(names)
+  colnames(df)[3] <- 'Item'
+
+  g <- ggplot(data= df, aes(x = x, y = y, color = Item )) + geom_line() +
+    theme_app()
 })
 
-output$oneparamirt_mirt <- renderPlot({
-  oneparamirtInput_mirt()
+output$oneparamirt_mirt <- renderPlotly({
+  ggplotly(oneparamirtInput_mirt())
 })
 
 output$DP_oneparamirt_mirt <- downloadHandler(
@@ -257,11 +382,33 @@ output$DP_oneparamirt_mirt <- downloadHandler(
 
 # *** IIC ######
 oneparamirtiicInput_mirt <- reactive({
-  plot(one_param_irt_mirt(), type = "infotrace", facet_items = F)
+  plt <- plot(one_param_irt_mirt(), type = 'infotrace',facet_items = F)
+  vals <- plt$panel.args
+  x <- vals[[1]]$x
+  y <- vals[[1]]$y
+  n <- length(vals[[1]]$subscripts)
+  m <- length(item_names())
+  k <- n/m
+  names <- list()
+
+  for(j in 1:m){
+    names[[j]] <- rep(paste('Item', j),k)
+  }
+
+  names <- unlist(names)
+
+  df <- data.frame(cbind(x,y))
+  df$x <- as.numeric(df$x)
+  df$y <-as.numeric(df$y)
+  df$names <- as.character(names)
+  colnames(df)[3] <- 'Item'
+
+  g <- ggplot(data= df, aes(x = x, y = y, color = Item )) + geom_line() +
+    theme_app()
 })
 
-output$oneparamirtiic_mirt <- renderPlot({
-  oneparamirtiicInput_mirt()
+output$oneparamirtiic_mirt <- renderPlotly({
+  ggplotly(oneparamirtiicInput_mirt())
 })
 
 output$DP_oneparamirtiic_mirt <- downloadHandler(
@@ -360,6 +507,43 @@ output$download_1pl_table <- downloadHandler(
   content = function(file) {
     data <- oneparamirtcoefInput_mirt()
     write.csv(data,file)
+  }
+)
+
+# * Abilities estimates parameters * #
+onePlAbilities <- reactive({
+
+  ts <- as.vector(total_score())
+  sts <- as.vector(z_score())
+  fs <- as.vector(fscores(one_param_irt_mirt()))
+  fs.Err <- as.vector(fscores(one_param_irt_mirt(), full.scores.SE = TRUE)[,2])
+  tab <- data.frame(cbind(ts,sts,fs,fs.Err))
+  colnames(tab) <- c('Total scores','Z-score','F-scores','Std.Error of F-score')
+  n <- nrow(tab)
+  nam <- vector('character',length = n)
+  for (i in 1:n) {
+
+    nam[i] <- paste('Respondent',i)
+
+  }
+  rownames(tab) <- c(nam)
+  tab
+})
+
+output$one_PL_abilities <- renderTable({
+
+  head(onePlAbilities(),6)
+
+}, include.rownames = TRUE)
+
+# ** Download abilities ######
+output$download_onePL_abilities <- downloadHandler(
+  filename = function() {
+    paste("1PL_abilities",".csv",sep = "")
+  },
+  content = function(file) {
+    data <- onePlAbilities()
+    write.csv(data,file, col.names = TRUE)
   }
 )
 
@@ -478,11 +662,37 @@ two_param_irt_mirt <- reactive({
 
 # *** CC ######
 twoparamirtInput_mirt <- reactive({
-  plot(two_param_irt_mirt(), type = "trace", facet_items = F)
+  #plot(two_param_irt_mirt(), type = "trace", facet_items = F)
+
+  plt <- plot(two_param_irt_mirt(), type = 'trace',facet_items = F)
+  vals <- plt$panel.args
+  x <- vals[[1]]$x
+  y <- vals[[1]]$y
+  n <- length(vals[[1]]$subscripts)
+  m <- length(item_names())
+  k <- n/m
+  names <- list()
+
+  for(j in 1:m){
+
+    names[[j]] <- rep(paste('Item',j),k)
+
+  }
+
+  names <- unlist(names)
+
+  df <- data.frame(cbind(x,y))
+  df$x <- as.numeric(df$x)
+  df$y <-as.numeric(df$y)
+  df$names <- as.character(names)
+  colnames(df)[3] <- 'Item'
+
+  g <- ggplot(data= df, aes(x = x, y = y, color = Item )) + geom_line() +
+    theme_app()
 })
 
-output$twoparamirt_mirt <- renderPlot({
-  twoparamirtInput_mirt()
+output$twoparamirt_mirt <- renderPlotly({
+  ggplotly(twoparamirtInput_mirt())
 })
 
 output$DP_twoparamirt_mirt <- downloadHandler(
@@ -502,11 +712,37 @@ output$DP_twoparamirt_mirt <- downloadHandler(
 
 # *** IIC ######
 twoparamirtiicInput_mirt <- reactive({
-  plot(two_param_irt_mirt(), type = "infotrace", facet_items = F)
+  #plot(two_param_irt_mirt(), type = "infotrace", facet_items = F)
+
+  plt <- plot(two_param_irt_mirt(), type = 'infotrace',facet_items = F)
+  vals <- plt$panel.args
+  x <- vals[[1]]$x
+  y <- vals[[1]]$y
+  n <- length(vals[[1]]$subscripts)
+  m <- length(item_names())
+  k <- n/m
+  names <- list()
+
+  for(j in 1:m){
+
+    names[[j]] <- rep(paste('Item',j),k)
+
+  }
+
+  names <- unlist(names)
+
+  df <- data.frame(cbind(x,y))
+  df$x <- as.numeric(df$x)
+  df$y <-as.numeric(df$y)
+  df$names <- as.character(names)
+  colnames(df)[3] <- 'Item'
+
+  g <- ggplot(data= df, aes(x = x, y = y, color = Item )) + geom_line() +
+    theme_app()
 })
 
-output$twoparamirtiic_mirt <- renderPlot({
-  twoparamirtiicInput_mirt()
+output$twoparamirtiic_mirt <- renderPlotly({
+  ggplotly(twoparamirtiicInput_mirt())
 })
 
 output$DP_twoparamirtiic_mirt <- downloadHandler(
@@ -607,6 +843,43 @@ output$download_2pl_table <- downloadHandler(
   }
 )
 
+# * Abilities estimates parameters * #
+twoPlAbilities <- reactive({
+
+  ts <- as.vector(total_score())
+  sts <- as.vector(z_score())
+  fs <- as.vector(fscores(two_param_irt_mirt()))
+  fs.Err <- as.vector(fscores(two_param_irt_mirt(), full.scores.SE = TRUE)[,2])
+  tab <- data.frame(cbind(ts,sts,fs,fs.Err))
+  colnames(tab) <- c('Total scores','Z-score','F-scores','Std.Error of F-score')
+  n <- nrow(tab)
+  nam <- vector('character',length = n)
+  for (i in 1:n) {
+
+    nam[i] <- paste('Respondent',i)
+
+  }
+  rownames(tab) <- c(nam)
+  tab
+})
+
+output$two_PL_abilities <- renderTable({
+
+  head(twoPlAbilities(),6)
+
+}, include.rownames = TRUE)
+
+# ** Download abilities ######
+output$download_twoPL_abilities <- downloadHandler(
+  filename = function() {
+    paste("2PL_abilities",".csv",sep = "")
+  },
+  content = function(file) {
+    data <- twoPlAbilities()
+    write.csv(data,file, col.names = TRUE)
+  }
+)
+
 # *** Factor scores correlation ######
 twoparamirtFactorCorInput_mirt <- reactive({
 
@@ -680,19 +953,44 @@ output$irt_3PL_model_converged <- renderUI({
   txt <- ifelse(fit@OptimInfo$converged,
                 "",
                 "<font color = 'orange'>
-          Estimation process terminated without convergence.
-          Estimates are not reliable.
-          </font>")
+                Estimation process terminated without convergence.
+                Estimates are not reliable.
+                </font>")
   HTML(txt)
 })
 
 # *** CC ######
 threeparamirtInput_mirt <- reactive({
-  plot(three_param_irt_mirt(), type = "trace", facet_items = F)
+  #plot(three_param_irt_mirt(), type = "trace", facet_items = F)
+  plt <- plot(three_param_irt_mirt(), type = 'trace',facet_items = F)
+  vals <- plt$panel.args
+  x <- vals[[1]]$x
+  y <- vals[[1]]$y
+  n <- length(vals[[1]]$subscripts)
+  m <- length(item_names())
+  k <- n/m
+  names <- list()
+
+  for(j in 1:m){
+
+    names[[j]] <- rep(paste('Item',j),k)
+
+  }
+
+  names <- unlist(names)
+
+  df <- data.frame(cbind(x,y))
+  df$x <- as.numeric(df$x)
+  df$y <-as.numeric(df$y)
+  df$names <- as.character(names)
+  colnames(df)[3] <- 'Item'
+
+  g <- ggplot(data= df, aes(x = x, y = y, color = Item )) + geom_line() +
+    theme_app()
 })
 
-output$threeparamirt_mirt <- renderPlot({
-  threeparamirtInput_mirt()
+output$threeparamirt_mirt <- renderPlotly({
+  ggplotly(threeparamirtInput_mirt())
 })
 
 output$DP_threeparamirt_mirt <- downloadHandler(
@@ -712,11 +1010,37 @@ output$DP_threeparamirt_mirt <- downloadHandler(
 
 # *** IIC ######
 threeparamirtiicInput_mirt <- reactive({
-  plot(three_param_irt_mirt(), type = "infotrace", facet_items = F)
+  #plot(three_param_irt_mirt(), type = "infotrace", facet_items = F)
+
+  plt <- plot(three_param_irt_mirt(), type = 'infotrace',facet_items = F)
+  vals <- plt$panel.args
+  x <- vals[[1]]$x
+  y <- vals[[1]]$y
+  n <- length(vals[[1]]$subscripts)
+  m <- length(item_names())
+  k <- n/m
+  names <- list()
+
+  for(j in 1:m){
+
+    names[[j]] <- rep(paste('Item',j),k)
+
+  }
+
+  names <- unlist(names)
+
+  df <- data.frame(cbind(x,y))
+  df$x <- as.numeric(df$x)
+  df$y <-as.numeric(df$y)
+  df$names <- as.character(names)
+  colnames(df)[3] <- 'Item'
+
+  g <- ggplot(data= df, aes(x = x, y = y, color = Item )) + geom_line() +
+    theme_app()
 })
 
-output$threeparamirtiic_mirt <- renderPlot({
-  threeparamirtiicInput_mirt()
+output$threeparamirtiic_mirt <- renderPlotly({
+  ggplotly(threeparamirtiicInput_mirt())
 })
 
 output$DP_threeparamirtiic_mirt <- downloadHandler(
@@ -822,6 +1146,44 @@ output$download_3pl_table <- downloadHandler(
   }
 )
 
+# * Abilities estimates parameters * #
+threePlAbilities <- reactive({
+
+  ts <- as.vector(total_score())
+  sts <- as.vector(z_score())
+  fs <- as.vector(fscores(three_param_irt_mirt()))
+  fs.Err <- as.vector(fscores(three_param_irt_mirt(), full.scores.SE = TRUE)[,2])
+  tab <- data.frame(cbind(ts,sts,fs,fs.Err))
+  colnames(tab) <- c('Total scores','Z-score','F-scores','Std.Error of F-score')
+  n <- nrow(tab)
+  nam <- vector('character',length = n)
+  for (i in 1:n) {
+
+    nam[i] <- paste('Respondent',i)
+
+  }
+  rownames(tab) <- c(nam)
+
+  tab
+})
+
+output$three_PL_abilities <- renderTable({
+
+  head(threePlAbilities(),6)
+
+}, include.rownames = TRUE)
+
+# ** Download abilities ######
+output$download_threePL_abilities <- downloadHandler(
+  filename = function() {
+    paste("3PL_abilities",".csv",sep = "")
+  },
+  content = function(file) {
+    data <- threePlAbilities()
+    write.csv(data,file, col.names = TRUE)
+  }
+)
+
 # *** Factor scores plot ######
 threeparamirtFactorCorInput_mirt <- reactive({
 
@@ -890,21 +1252,47 @@ irt_4PL_model <- reactive({
 output$irt_4PL_model_converged <- renderUI({
   fit <- irt_4PL_model()
   txt <- ifelse(fit@OptimInfo$converged,
-         "",
-         "<font color = 'orange'>
-          Estimation process terminated without convergence.
-          Estimates are not reliable.
-          </font>")
+                "",
+                "<font color = 'orange'>
+                Estimation process terminated without convergence.
+                Estimates are not reliable.
+                </font>")
   HTML(txt)
 })
 
 # *** ICC ######
 irt_4PL_icc_Input <- reactive({
-  plot(irt_4PL_model(), type = "trace", facet_items = F)
+  # plot(irt_4PL_model(), type = "trace", facet_items = F)
+
+  plt <- plot(irt_4PL_model(), type = 'trace',facet_items = F)
+  vals <- plt$panel.args
+  x <- vals[[1]]$x
+  y <- vals[[1]]$y
+  n <- length(vals[[1]]$subscripts)
+  m <- length(item_names())
+  k <- n/m
+  names <- list()
+
+  for(j in 1:m){
+
+    names[[j]] <- rep(paste('Item',j),k)
+
+  }
+
+  names <- unlist(names)
+
+  df <- data.frame(cbind(x,y))
+  df$x <- as.numeric(df$x)
+  df$y <-as.numeric(df$y)
+  df$names <- as.character(names)
+  colnames(df)[3] <- 'Item'
+
+  g <- ggplot(data= df, aes(x = x, y = y, color = Item )) + geom_line() +
+    theme_app()
 })
 
-output$irt_4PL_icc <- renderPlot({
-  irt_4PL_icc_Input()
+output$irt_4PL_icc <- renderPlotly({
+  ggplotly(irt_4PL_icc_Input())
 })
 
 output$DB_irt_4PL_icc <- downloadHandler(
@@ -924,11 +1312,36 @@ output$DB_irt_4PL_icc <- downloadHandler(
 
 # *** IIC ######
 irt_4PL_iic_Input <- reactive({
-  plot(irt_4PL_model(), type = "infotrace", facet_items = F)
+  #plot(irt_4PL_model(), type = "infotrace", facet_items = F)
+  plt <- plot(irt_4PL_model(), type = 'infotrace',facet_items = F)
+  vals <- plt$panel.args
+  x <- vals[[1]]$x
+  y <- vals[[1]]$y
+  n <- length(vals[[1]]$subscripts)
+  m <- length(item_names())
+  k <- n/m
+  names <- list()
+
+  for(j in 1:m){
+
+    names[[j]] <- rep(paste('Item',j),k)
+
+  }
+
+  names <- unlist(names)
+
+  df <- data.frame(cbind(x,y))
+  df$x <- as.numeric(df$x)
+  df$y <-as.numeric(df$y)
+  df$names <- as.character(names)
+  colnames(df)[3] <- 'Item'
+
+  g <- ggplot(data= df, aes(x = x, y = y, color = Item )) + geom_line() +
+    theme_app()
 })
 
-output$irt_4PL_iic <- renderPlot({
-  irt_4PL_iic_Input()
+output$irt_4PL_iic <- renderPlotly({
+  ggplotly(irt_4PL_iic_Input())
 })
 
 output$DB_irt_4PL_iic <- downloadHandler(
@@ -1031,6 +1444,44 @@ output$download_4pl_table <- downloadHandler(
   content = function(file) {
     data <- irt_4PL_coef_Input()
     write.csv(data,file)
+  }
+)
+
+# * Abilities estimates parameters * #
+fourPlAbilities <- reactive({
+
+  ts <- as.vector(total_score())
+  sts <- as.vector(z_score())
+  fs <- as.vector(fscores(irt_4PL_model()))
+  fs.Err <- as.vector(fscores(irt_4PL_model(), full.scores.SE = TRUE)[,2])
+  tab <- data.frame(cbind(ts,sts,fs,fs.Err))
+  colnames(tab) <- c('Total scores','Z-score','F-scores','Std.Error of F-score')
+  n <- nrow(tab)
+  nam <- vector('character',length = n)
+  for (i in 1:n) {
+
+    nam[i] <- paste('Respondent',i)
+
+  }
+  rownames(tab) <- c(nam)
+
+  tab
+})
+
+output$four_PL_abilities <- renderTable({
+
+  head(fourPlAbilities(),6)
+
+}, include.rownames = TRUE)
+
+# ** Download abilities ######
+output$download_fourPL_abilities <- downloadHandler(
+  filename = function() {
+    paste("4PL_abilities",".csv",sep = "")
+  },
+  content = function(file) {
+    data <- fourPlAbilities()
+    write.csv(data,file, col.names = TRUE)
   }
 )
 
@@ -1202,10 +1653,37 @@ bock_irt_mirt <- reactive({
 
 # *** CC ######
 bock_CC_Input <- reactive({
-  plot(bock_irt_mirt(), type = "trace", facet_items = F)
+  #plot(bock_irt_mirt(), type = "trace", facet_items = F)
+
+  plt <- plot(bock_irt_mirt(), type = 'trace',facet_items = F)
+  vals <- plt$panel.args
+  x <- vals[[1]]$x
+  y <- vals[[1]]$y
+  n <- length(vals[[1]]$subscripts)
+  m <- length(item_names())
+  k <- n/m
+  names <- list()
+
+  for(j in 1:m){
+
+    names[[j]] <- rep(paste('Item',j),k)
+
+  }
+
+  names <- unlist(names)
+
+  df <- data.frame(cbind(x,y))
+  df$x <- as.numeric(df$x)
+  df$y <-as.numeric(df$y)
+  df$names <- as.character(names)
+  colnames(df)[3] <- 'Item'
+
+  g <- ggplot(data= df, aes(x = x, y = y, color = Item )) + geom_line() +
+    theme_app()
+
 })
-output$bock_CC <- renderPlot({
-  bock_CC_Input()
+output$bock_CC <- renderPlotly({
+  ggplotly(bock_CC_Input())
 })
 output$DP_bock_CC <- downloadHandler(
   filename =  function() {
@@ -1224,10 +1702,35 @@ output$DP_bock_CC <- downloadHandler(
 
 # *** IIC ######
 bock_IIC_Input <- reactive({
-  plot(bock_irt_mirt(), type = "infotrace", facet_items = F)
+  #plot(bock_irt_mirt(), type = "infotrace", facet_items = F)
+  plt <- plot(bock_irt_mirt(), type = 'infotrace',facet_items = F)
+  vals <- plt$panel.args
+  x <- vals[[1]]$x
+  y <- vals[[1]]$y
+  n <- length(vals[[1]]$subscripts)
+  m <- length(item_names())
+  k <- n/m
+  names <- list()
+
+  for(j in 1:m){
+
+    names[[j]] <- rep(paste('Item',j),k)
+
+  }
+
+  names <- unlist(names)
+
+  df <- data.frame(cbind(x,y))
+  df$x <- as.numeric(df$x)
+  df$y <-as.numeric(df$y)
+  df$names <- as.character(names)
+  colnames(df)[3] <- 'Item'
+
+  g <- ggplot(data= df, aes(x = x, y = y, color = Item )) + geom_line() +
+    theme_app()
 })
 output$bock_IIC <- renderPlot({
-  bock_IIC_Input()
+  ggplotly(bock_IIC_Input())
 })
 output$DP_bock_IIC <- downloadHandler(
   filename =  function() {
@@ -2229,32 +2732,32 @@ output$irt_training_gpcm_sliders <- renderUI({
     tags$div(class = "js-irs-red",
              style = "display: inline-block; vertical-align: middle; width: 18%;",
              sliderInput("irt_training_gpcm_d1", "d1 - threshold",
-                    value = -1.5, min = -4, max = 4, step = 0.1)),
+                         value = -1.5, min = -4, max = 4, step = 0.1)),
     div(style = "display: inline-block; vertical-align: middle; width: 2.6%;", ""),
     tags$div(class = "js-irs-yellow",
              style = "display: inline-block; vertical-align: middle; width: 18%;",
              sliderInput("irt_training_gpcm_d2", "d2 - threshold",
-                    value = -1, min = -4, max = 4, step = 0.1)),
+                         value = -1, min = -4, max = 4, step = 0.1)),
     div(style = "display: inline-block; vertical-align: middle; width: 2.6%;", ""),
     tags$div(class = "js-irs-green",
              style = "display: inline-block; vertical-align: middle; width: 18%;",
              sliderInput("irt_training_gpcm_d3", "d3 - threshold",
-                    value = -0.5, min = -4, max = 4, step = 0.1)),
+                         value = -0.5, min = -4, max = 4, step = 0.1)),
     div(style = "display: inline-block; vertical-align: middle; width: 2.6%;", ""),
     tags$div(class = "js-irs-blue",
              style = "display: inline-block; vertical-align: middle; width: 18%;",
              sliderInput("irt_training_gpcm_d4", "d4 - threshold",
-                    value = 0, min = -4, max = 4, step = 0.1)),
+                         value = 0, min = -4, max = 4, step = 0.1)),
     div(style = "display: inline-block; vertical-align: middle; width: 2.6%;", ""),
     tags$div(class = "js-irs-purple",
              style = "display: inline-block; vertical-align: middle; width: 18%;",
              sliderInput("irt_training_gpcm_d5", "d5 - threshold",
-                    value = 0.5, min = -4, max = 4, step = 0.1)),
+                         value = 0.5, min = -4, max = 4, step = 0.1)),
     div(style = "display: inline-block; vertical-align: middle; width: 2.6%;", ""),
     tags$div(class = "js-irs-orange",
              style = "display: inline-block; vertical-align: middle; width: 18%;",
              sliderInput("irt_training_gpcm_d6", "d6 - threshold",
-                    value = 1, min = -4, max = 4, step = 0.1)),
+                         value = 1, min = -4, max = 4, step = 0.1)),
     div(style = "display: inline-block; vertical-align: middle; width: 2.6%;", "")
   )
 
@@ -2434,62 +2937,62 @@ output$irt_training_nrm_sliders <- renderUI({
     tags$div(class = "js-irs-red",
              style = "display: inline-block; vertical-align: middle; width: 18%;",
              sliderInput("irt_training_nrm_a1", "a1 - discrimination",
-                    value = 2.5, min = 0, max = 4, step = 0.1)),
+                         value = 2.5, min = 0, max = 4, step = 0.1)),
     div(style = "display: inline-block; vertical-align: middle; width: 2.6%;", ""),
     tags$div(class = "js-irs-red",
              style = "display: inline-block; vertical-align: middle; width: 18%;",
              sliderInput("irt_training_nrm_d1", "d1 - threshold",
-                    value = -1.5, min = -4, max = 4, step = 0.1)),
+                         value = -1.5, min = -4, max = 4, step = 0.1)),
     div(style = "display: inline-block; vertical-align: middle; width: 2.6%;", ""),
     tags$div(class = "js-irs-yellow",
              style = "display: inline-block; vertical-align: middle; width: 18%;",
              sliderInput("irt_training_nrm_a2", "a2 - discrimination",
-                    value = 2, min = 0, max = 4, step = 0.1)),
+                         value = 2, min = 0, max = 4, step = 0.1)),
     div(style = "display: inline-block; vertical-align: middle; width: 2.6%;", ""),
     tags$div(class = "js-irs-yellow",
              style = "display: inline-block; vertical-align: middle; width: 18%;",
              sliderInput("irt_training_nrm_d2", "d2 - threshold",
-                    value = -1, min = -4, max = 4, step = 0.1)),
+                         value = -1, min = -4, max = 4, step = 0.1)),
     div(style = "display: inline-block; vertical-align: middle; width: 2.6%;", ""),
     tags$div(class = "js-irs-green",
              style = "display: inline-block; vertical-align: middle; width: 18%;",
              sliderInput("irt_training_nrm_a3", "a3 - discrimination",
-                    value = 1, min = 0, max = 4, step = 0.1)),
+                         value = 1, min = 0, max = 4, step = 0.1)),
     div(style = "display: inline-block; vertical-align: middle; width: 2.6%;", ""),
     tags$div(class = "js-irs-green",
              style = "display: inline-block; vertical-align: middle; width: 18%;",
              sliderInput("irt_training_nrm_d3", "d3 - threshold",
-                    value = -0.5, min = -4, max = 4, step = 0.1)),
+                         value = -0.5, min = -4, max = 4, step = 0.1)),
     div(style = "display: inline-block; vertical-align: middle; width: 2.6%;", ""),
     tags$div(class = "js-irs-blue",
              style = "display: inline-block; vertical-align: middle; width: 18%;",
              sliderInput("irt_training_nrm_a4", "a4 - discrimination",
-                    value = 1.5, min = 0, max = 4, step = 0.1)),
+                         value = 1.5, min = 0, max = 4, step = 0.1)),
     div(style = "display: inline-block; vertical-align: middle; width: 2.6%;", ""),
     tags$div(class = "js-irs-blue",
              style = "display: inline-block; vertical-align: middle; width: 18%;",
              sliderInput("irt_training_nrm_d4", "d4 - threshold",
-                    value = 0, min = -4, max = 4, step = 0.1)),
+                         value = 0, min = -4, max = 4, step = 0.1)),
     div(style = "display: inline-block; vertical-align: middle; width: 2.6%;", ""),
     tags$div(class = "js-irs-purple",
              style = "display: inline-block; vertical-align: middle; width: 18%;",
              sliderInput("irt_training_nrm_a5", "a5 - discrimination",
-                    value = 0.5, min = 0, max = 4, step = 0.1)),
+                         value = 0.5, min = 0, max = 4, step = 0.1)),
     div(style = "display: inline-block; vertical-align: middle; width: 2.6%;", ""),
     tags$div(class = "js-irs-purple",
              style = "display: inline-block; vertical-align: middle; width: 18%;",
              sliderInput("irt_training_nrm_d5", "d5 - threshold",
-                    value = 0.5, min = -4, max = 4, step = 0.1)),
+                         value = 0.5, min = -4, max = 4, step = 0.1)),
     div(style = "display: inline-block; vertical-align: middle; width: 2.6%;", ""),
     tags$div(class = "js-irs-orange",
              style = "display: inline-block; vertical-align: middle; width: 18%;",
              sliderInput("irt_training_nrm_a6", "a6 - discrimination",
-                    value = 1.3, min = 0, max = 4, step = 0.1)),
+                         value = 1.3, min = 0, max = 4, step = 0.1)),
     div(style = "display: inline-block; vertical-align: middle; width: 2.6%;", ""),
     tags$div(class = "js-irs-orange",
              style = "display: inline-block; vertical-align: middle; width: 18%;",
              sliderInput("irt_training_nrm_d6", "d6 - threshold",
-                    value = 1, min = -4, max = 4, step = 0.1)),
+                         value = 1, min = -4, max = 4, step = 0.1)),
     div(style = "display: inline-block; vertical-align: middle; width: 2.6%;", "")
   )
 

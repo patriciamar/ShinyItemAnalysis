@@ -3,14 +3,15 @@
 #' @aliases ggWrightMap
 #'
 #' @description This function allows to generate Wright Map (also called item-person map)
-#' using ggplot() function from package ggplot2. Wright Map is used to display histogram
+#' using \code{ggplot} function from package \code{ggplot2} and \code{plot_grid} function
+#' from \code{cowplot}. Wright Map is used to display histogram
 #' of factor scores and the item difficulty parameters estimated by the Rasch IRT model.
 #'
-#' @param theta numeric: vector of ability estimates
-#' @param b numeric: vector of difficulty estimates
-#' @param binwidth numeric: the width of the bins of histogram
-#' @param color character: color of histogram
-#' @param size text size in pts
+#' @param theta numeric: vector of ability estimates.
+#' @param b numeric: vector of difficulty estimates.
+#' @param binwidth numeric: the width of the bins of histogram.
+#' @param color character: color of histogram.
+#' @param size text size in pts.
 #'
 #' @usage ggWrightMap(theta, b, binwidth = 0.5, color = "blue", size = 15)
 #'
@@ -32,14 +33,15 @@
 #'
 #' @examples
 #' \dontrun{
-#' library(ShinyItemAnalysis)
 #' library(mirt)
 #'
+#' # loading 100-item medical admission test data sets
 #' data(dataMedical)
-#' data <- dataMedical[, 1:100]
+#' # binary data set
+#' dataBin <- dataMedical[, 1:100]
 #'
-#' # Model
-#' fit <- mirt(data, model = 1, itemtype = "Rasch")
+#' # fit Rasch model with mirt package
+#' fit <- mirt(dataBin, model = 1, itemtype = "Rasch")
 #' # factor scores
 #' theta <- as.vector(fscores(fit))
 #' # difficulty estimates

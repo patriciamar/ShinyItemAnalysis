@@ -2,6 +2,7 @@
 
 export(DDplot)
 export(DistractorAnalysis)
+export(ItemAnalysis)
 export(gDiscrim)
 export(ggWrightMap)
 export(plotDIFLogistic)
