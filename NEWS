@@ -3,6 +3,12 @@
         *  Changes and Developments in the ShinyItemAnalysis Package  *
         *                                                             *
         ***************************************************************
+-------------------------------------------------------
+- Changes in ShinyItemAnalysis 1.2.8-6. (2018-12-03) -
+-------------------------------------------------------
+
+MAJOR UPDATES
+  o Function ItemAnalysis() was added.
 
 -------------------------------------------------------
 - Changes in ShinyItemAnalysis 1.2.8-5. (2018-11-29) -
