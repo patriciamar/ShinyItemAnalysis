@@ -19,7 +19,7 @@
 #' multiple.answers = TRUE, matching = NULL)
 #'
 #' @details
-#' This function is graphical representation of \code{DistractorAnalysis} function.
+#' This function is graphical representation of \code{\link{DistractorAnalysis}} function.
 #' The scores are calculatede using the item data and key. The respondents are then splitted into
 #' the \code{num.groups}-quantiles and the proportion of respondents in each quantile is
 #' reported with respect to their answers, using all reported combinations (default) or distractors.
@@ -44,31 +44,37 @@
 #' Institute of Computer Science, The Czech Academy of Sciences \cr
 #' martinkova@cs.cas.cz \cr
 #'
+#' #' @seealso \code{\link{DistractorAnalysis}}
+#' #' @seealso \code{\link[CTT]{distractor.analysis}}
+#'
 #' @examples
 #' \dontrun{
-#' # loading data
-#' data(dataMedical, dataMedicaltest, dataMedicalkey)
+#' # loading 100-item medical admission test data
+#' data(dataMedicaltest, dataMedicalkey)
+#' dataBin <- dataMedical[, 1:100]
+#' data <- dataMedicaltest[, 1:100]
+#' key <- unlist(dataMedicalkey)
 #'
 #' # Difficulty/Discriminaton plot for medical admission test
-#' DDplot(dataMedical)
+#' DDplot(dataBin)
 #' # item 48 is very hard, thus does not discriminate well
 #' # item 57 discriminates well
 #' # item 32 does not discriminate well
 #'
-#' plotDistractorAnalysis(dataMedicaltest, dataMedicalkey, item = 48, multiple.answers = F)
+#' plotDistractorAnalysis(data, key, item = 48, multiple.answers = F)
 #' # correct answer B does not function well
-#' plotDistractorAnalysis(dataMedicaltest, dataMedicalkey, item = 57, multiple.answers = F)
+#' plotDistractorAnalysis(data, key, item = 57, multiple.answers = F)
 #' # all options function well, thus the whole item discriminates well
-#' plotDistractorAnalysis(dataMedicaltest, dataMedicalkey, item = 32, multiple.answers = F)
+#' plotDistractorAnalysis(data, key, item = 32, multiple.answers = F)
 #' # functions well, thus the whole item discriminates well
 #'
 #' # distractor analysis plot for item 48, 57 and 32, all combinations
-#' plotDistractorAnalysis(dataMedicaltest, dataMedicalkey, item = 48)
-#' plotDistractorAnalysis(dataMedicaltest, dataMedicalkey, item = 57)
-#' plotDistractorAnalysis(dataMedicaltest, dataMedicalkey, item = 32)
+#' plotDistractorAnalysis(data, key, item = 48)
+#' plotDistractorAnalysis(data, key, item = 57)
+#' plotDistractorAnalysis(data, key, item = 32)
 #'
 #' # distractor analysis plot for item 57, all combinations and 6 groups
-#' plotDistractorAnalysis(dataMedicaltest, dataMedicalkey, num.group = 6, item = 57)
+#' plotDistractorAnalysis(data, key, num.group = 6, item = 57)
 #' }
 #'
 #'

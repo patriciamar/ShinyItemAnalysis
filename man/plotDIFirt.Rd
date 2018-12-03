@@ -43,7 +43,8 @@ For default option \code{"all"}, all characteristic curves are plotted.
 \examples{
 \dontrun{
 # loading libraries
-library(difNLR, difR)
+library(difR)
+library(ltm)
 
  # loading data based on GMAT2
 data(GMAT2, package = "difNLR")

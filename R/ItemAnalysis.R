@@ -2,10 +2,9 @@
 #'
 #' @aliases ItemAnalysis
 #'
-#' @description ItemAnalysis function computes various traditional item analysis indices
-#' including difficulty, discrimination and item validity.
-#' For ordinal items the difficulty and discrimination indices take into account
-#' minimal item score as well as range.
+#' @description \code{ItemAnalysis} function computes various traditional item analysis indices
+#' including difficulty, discrimination and item validity. For ordinal items the difficulty and
+#' discrimination indices take into account minimal item score as well as range.
 #'
 #' @param data matrix or data.frame of items to be examined. Rows represent respondents, columns
 #' reperesent items.
@@ -21,28 +20,48 @@
 #' @param add.bin logical: If TRUE, indices are printed also for binarized data. See \strong{Details}.
 #'
 #' @usage ItemAnalysis(data, y = NULL, k = 3, l = 1, u = 3,
-#'                     maxscore, minscore, cutscore, add.bin=FALSE)
+#' maxscore, minscore, cutscore, add.bin = FALSE)
 #'
-#' @details ItemAnalysis function computes various traditional item analysis indices
-#' including difficulty indices based on ratio of correct answers, sample SD,
-#' discrimination indices ULI based on difference in ratio of correct answer
-#' in Upper and Lower group, RIT (correlation between item score and overall test score),
-#' RIR (correlation between item score and overall test score),
-#' item validity indices based on correlation of Item score with criterion,
-#' and item reliability indices based on Cronbach's alpha without given item.
+#' @details
 #' For ordinal items the difficulty and discrimination indices take into account
 #' minimal item score as well as range.
 #'
-#' For caluclation discimination ULI index, it is possible to
-#' specify number of groups \code{k}, and which two groups \code{l} and \code{u}
+#' For calculation of discimination ULI index, it is possible to
+#' specify the number of groups \code{k}, and which two groups \code{l} and \code{u}
 #' are to be compared.
 #'
 #' In ordinal items, difficulty is calculated as difference of average score divided by range
 #' (maximal possible score \code{maxscore} minus minimal possible score \code{minscore}).
+#'
 #' If \code{add.bin} is set to \code{TRUE}, item analysis of binarized data is
 #' included in the output table. In such a case, \code{cutscore} is used for binarization.
-#' When binarizing the data, values greater or equal to cut-score are set to 1,
-#' other values are set to 0.
+#' When binarizing the data, values greater or equal to cut-score are set to \code{1},
+#' other values are set to \code{0}.
+#'
+#' @return
+#' \code{ItemAnalysis} function computes various traditional item analysis indices. Output
+#' is a \code{data.frame} with following columns:
+#'   \item{\code{Difficulty}}{item difficulty based on ratio of correct answers}
+#'   \item{\code{Scaled score}}{}
+#'   \item{\code{Sample SD}}{standard deviation of the item}
+#'   \item{\code{Correct answers}}{proportion of correct answers}
+#'   \item{\code{Min score}}{minimal score specified in \code{minscore}; if not provided, observed minimal score}
+#'   \item{\code{Max score}}{maximal score specified in \code{maxscore}; if not provided, observed maximal score}
+#'   \item{\code{Obtained min}}{observed minimal score}
+#'   \item{\code{Obtained max}}{observed maximal score}
+#'   \item{\code{Cut score}}{cut-score specified in \code{cutscore}}
+#'   \item{\code{ULI}}{generalized ULI}
+#'   \item{\code{ULI default}}{dscrimination with ULI}
+#'   \item{\code{RIT}}{correlation between item score and overall test score}
+#'   \item{\code{RIR}}{correlation between item score and overall test score}
+#'   \item{\code{Item criterion}}{correlation of item score with criterion}
+#'   \item{\code{Item reliability}}{item reliability index}
+#'   \item{\code{Item reliability woi}}{item reliability index (scored without item)}
+#'   \item{\code{Item validity}}{item validity index}
+#'   \item{\code{Item criterion}}{correlation between item and criterion \code{y}}
+#'   \item{\code{Alpha drop}}{Cronbach's alpha without given item}
+#' With \code{add.bin == TRUE}, indices based on binarized data set are also provided
+#' and marked with \code{bin}.
 #'
 #' @author
 #' Patricia Martinkova \cr
@@ -71,31 +90,31 @@
 #'
 #' @examples
 #' \dontrun{
-#' ## Examples on 100-item medical admission test data set (binary)
-#' library(ShinyItemAnalysis)
-#' dim(dataMedical)
-#' names(dataMedical)
+#' # loading 100-item medical admission test data sets
+#' data(dataMedical, dataMedicalgraded)
+#' # binary data set
+#' dataBin <- dataMedical[, 1:100]
+#' # ordinal data set
+#' dataOrd <- dataMedicalgraded[, 1:100]
+#' # study success is the same for both data sets
+#' StudySuccess <- dataMedical[, 102]
 #'
-#' dataBin <- dataMedical[,1:100]
-#' StudySuccessBin <- dataMedical[,102]
-#'
+#' # item analysis for binary data
 #' head(ItemAnalysis(dataBin))
-#' head(ItemAnalysis(dataBin, y = StudySuccessBin))
+#' # item analysis for binary data using also study success
+#' head(ItemAnalysis(dataBin, y = StudySuccess))
 #'
-#' ## Examples on 100-item medical admission test data set (ordinal)
-#' dim(dataMedicalgraded)
-#' names(dataMedicalgraded)
-#'
-#' dataOrd <- dataMedicalgraded[,1:100]
-#' StudySuccess <- dataMedicalgraded[,102]
-#'
+#' # item analysis for binary data
+#' head(ItemAnalysis(dataOrd))
+#' # item analysis for binary data using also study success
 #' head(ItemAnalysis(dataOrd, y = StudySuccess))
-#' head(ItemAnalysis(dataOrd, y = StudySuccess,
-#'      k = 5, l = 4, u = 5, maxscore = 4, minscore = 0, cutscore = 4, add.bin=TRUE) )
+#' # including also item analysis for binarized data
+#' head(ItemAnalysis(dataOrd, y = StudySuccess, k = 5, l = 4, u = 5,
+#' maxscore = 4, minscore = 0, cutscore = 4, add.bin = TRUE) )
 #' }
 #' @export
 
-ItemAnalysis <- function (data, y = NULL,  k = 3, l = 1, u = 3, maxscore, minscore, cutscore, add.bin=FALSE)
+ItemAnalysis <- function (data, y = NULL,  k = 3, l = 1, u = 3, maxscore, minscore, cutscore, add.bin = FALSE)
 {
 
   if (!is.matrix(data) & !is.data.frame(data)) {
@@ -103,27 +122,27 @@ ItemAnalysis <- function (data, y = NULL,  k = 3, l = 1, u = 3, maxscore, minsco
          call. = FALSE)
   }
   if (missing(maxscore)) {
-    maxscore <- apply(data,2,max,na.rm=T)
+    maxscore <- apply(data, 2, max, na.rm = T)
   }
   if (missing(minscore)) {
     minscore <- rep(0, dim(data)[2])
   }
   if (missing(cutscore)) {
-    cutscore <- apply(data,2,max,na.rm=T)
+    cutscore <- apply(data, 2, max, na.rm = T)
   } else {
     if (length(cutscore) == 1){
       cutscore <- rep(cutscore, ncol(data))
     }
   }
-  if (add.bin ==TRUE) {
+  if (add.bin == TRUE) {
     dataBin  <- data
     for(i in 1:dim(data)[2]){
       dataBin[data[,i] >= cutscore[i], i] <- 1
       dataBin[data[,i] < cutscore[i], i] <- 0
     }
     head(dataBin)
-    minscoreB <- apply(dataBin,2,min,na.rm=T)
-    maxscoreB <- apply(dataBin,2,max,na.rm=T)
+    minscoreB <- apply(dataBin, 2, min, na.rm = T)
+    maxscoreB <- apply(dataBin, 2, max, na.rm = T)
   }
   if (u > k) {
     stop("'u' need to be lower or equal to 'k'", call. = FALSE)
@@ -138,30 +157,27 @@ ItemAnalysis <- function (data, y = NULL,  k = 3, l = 1, u = 3, maxscore, minsco
     stop("'l' should be lower than 'u'", call. = FALSE)
   }
 
-
   data <- na.exclude(as.matrix(data))
   n <- ncol(data)
   N <- nrow(data)
   TOT <- apply(data, 1, sum)
   TOT.woi <- TOT - (data)
   mean <- apply(data, 2, mean)
-  obtainedmin <- apply(data,2,min,na.rm=T)
-  obtainedmax <- apply(data,2,max,na.rm=T)
+  obtainedmin <- apply(data, 2, min, na.rm = T)
+  obtainedmax <- apply(data, 2, max, na.rm = T)
 
   # ratio of full scores
   dataTOT <- rbind(data, maxscore)
-  correct <- (apply(apply(dataTOT, 2, function (x) x==max(x)), 2, sum)-1)/nrow(data)
+  correct <- (apply(apply(dataTOT, 2, function (x) x == max(x)), 2, sum) - 1)/nrow(data)
 
   # ULI ordinal
   ni <- as.integer(N/k)
   Max <- c(maxscore)
-  MaxSum <- sum(apply(data,2,max,na.rm=T))
+  MaxSum <- sum(apply(data, 2, max, na.rm = T))
   TOT <- apply(data, 1, sum)/MaxSum
   tmpx <- data[order(TOT), ]
-  tmpxU <- tmpx[as.integer((u - 1) * N/k + 1):as.integer(u *
-                                                           N/k), ]
-  tmpxL <- tmpx[as.integer((l - 1) * N/k + 1):as.integer(l *
-                                                           N/k), ]
+  tmpxU <- tmpx[as.integer((u - 1) * N/k + 1):as.integer(u * N/k), ]
+  tmpxL <- tmpx[as.integer((l - 1) * N/k + 1):as.integer(l * N/k), ]
   Ui <- apply(tmpxU, 2, sum)/Max
   Li <- apply(tmpxL, 2, sum)/Max
   ULIord <- (Ui - Li)/ni
@@ -178,14 +194,11 @@ ItemAnalysis <- function (data, y = NULL,  k = 3, l = 1, u = 3, maxscore, minsco
     ni <- as.integer(N/k)
     TOT <- apply(dataBin, 1, sum)
     tmpx <- dataBin[order(TOT), ]
-    tmpxU <- tmpx[as.integer((u - 1) * N/k + 1):as.integer(u *
-                                                             N/k), ]
-    tmpxL <- tmpx[as.integer((l - 1) * N/k + 1):as.integer(l *
-                                                             N/k), ]
+    tmpxU <- tmpx[as.integer((u - 1) * N/k + 1):as.integer(u * N/k), ]
+    tmpxL <- tmpx[as.integer((l - 1) * N/k + 1):as.integer(l * N/k), ]
     Ui <- apply(tmpxU, 2, sum)
     Li <- apply(tmpxL, 2, sum)
     ULIbin <- (Ui - Li)/ni
-
 
     ni <- as.integer(N/3)
     tmpxU <- tmpx[(N + 1 - ni):N, ]
@@ -198,8 +211,6 @@ ItemAnalysis <- function (data, y = NULL,  k = 3, l = 1, u = 3, maxscore, minsco
     ULIbin <- NA
     discrimBin <- NA
   }
-
-
   # RIR ordinal
   TOTord <- apply(data, 1, sum)
   TOT.woi <- TOTord - (data)
@@ -240,7 +251,7 @@ ItemAnalysis <- function (data, y = NULL,  k = 3, l = 1, u = 3, maxscore, minsco
   i.rel.woi <- rix.woi * sqrt(vx)
 
   # Item analysis of binarized data
-  if (add.bin==TRUE){
+  if (add.bin == TRUE){
     sx.bin <- apply(dataBin, 2, sd)
     vx.bin <- ((N - 1)/N) * sx.bin^2
     if (is.null(y)) {
@@ -262,43 +273,43 @@ ItemAnalysis <- function (data, y = NULL,  k = 3, l = 1, u = 3, maxscore, minsco
 
   # Alpha without item
   alphaDrop <- apply(data,2, function (x) {
-    withoutItem <- data[, apply(data, 2, function (y) !all(y==x))]
+    withoutItem <- data[, apply(data, 2, function (y) !all(y == x))]
     var <- var(withoutItem)
-    N <- ncol( withoutItem )
-    TOT <- apply( withoutItem , 1, sum)
+    N <- ncol(withoutItem)
+    TOT <- apply(withoutItem, 1, sum)
     alpha <- N/(N-1)*(1-(sum(diag(var))/var(TOT)))
   })
 
-  if(add.bin==TRUE){
-    alphaDrop.bin <- apply(dataBin,2, function (x) {
-      withoutItem <- dataBin[, apply(dataBin, 2, function (y) !all(y==x))]
+  if(add.bin == TRUE){
+    alphaDrop.bin <- apply(dataBin, 2, function (x) {
+      withoutItem <- dataBin[, apply(dataBin, 2, function (y) !all(y == x))]
       var <- var(withoutItem)
-      N <- ncol( withoutItem )
-      TOT <- apply( withoutItem , 1, sum)
+      N <- ncol(withoutItem)
+      TOT <- apply(withoutItem , 1, sum)
       alpha <- N/(N-1)*(1-(sum(diag(var))/var(TOT)))
     })
   } else{
     alphaDrop.bin <- NA
   }
 
-  mat <- data.frame( Mean= mean, Scaled.Score = difc, Sample.SD = sx, Sample.SD.bin = sx.bin, CorrAnsw = correct,
-                     Min.score = minscore, Max.score = maxscore, Obt.min = obtainedmin, Obt.max = obtainedmax,
-                     CutScore= cutscore,ULI.Ord = ULIord, ULI.bin = ULIbin, ULI.default = discrim, ULI.default.bin = discrimBin,
-                     Item.total = rix,Item.total.bin = rix.bin,
-                     Item.Tot.woi = rix.woi, Item.Tot.woi.bin = rix.woi.bin,
-                     Item.Criterion = riy,  Item.Criterion.bin = riy.bin, Item.Reliab = i.rel, Item.Reliab.bin = i.rel.bin,
-                     Item.Rel.woi = i.rel.woi, Item.Rel.woi.bin = i.rel.woi.bin, Item.Validity = i.val, Item.Validity.bin = i.val.bin,
-                     Alpha.Drop = alphaDrop, Alpha.Drop.bin = alphaDrop.bin)
+  mat <- data.frame(Mean = mean, Scaled.Score = difc, Sample.SD = sx, Sample.SD.bin = sx.bin, CorrAnsw = correct,
+                    Min.score = minscore, Max.score = maxscore, Obt.min = obtainedmin, Obt.max = obtainedmax,
+                    CutScore = cutscore, ULI.Ord = ULIord, ULI.bin = ULIbin, ULI.default = discrim, ULI.default.bin = discrimBin,
+                    Item.total = rix,Item.total.bin = rix.bin,
+                    Item.Tot.woi = rix.woi, Item.Tot.woi.bin = rix.woi.bin,
+                    Item.Criterion = riy,  Item.Criterion.bin = riy.bin, Item.Reliab = i.rel, Item.Reliab.bin = i.rel.bin,
+                    Item.Rel.woi = i.rel.woi, Item.Rel.woi.bin = i.rel.woi.bin, Item.Validity = i.val, Item.Validity.bin = i.val.bin,
+                    Alpha.Drop = alphaDrop, Alpha.Drop.bin = alphaDrop.bin)
 
-  names(mat) <- c("Difficulty"  , "Scaled Score" ,  "Sample SD" , "Sample SD binary" , "Correct Answers",
-                  "Min score","Max score" ,"Obtained min","Obtained max" ,"Cut score" , "ULI" , "ULI binary", "ULI default",
-                  "ULI default binary",
-                  "RIT" ,"RIT binary" , "RIR" , "RIR binary"  , "Item Criterion" , "Item.Criterion.bin", "Item.Reliab",
-                  "Item.Reliab.bin", "Item.Rel.woi" , "Item.Rel.woi.bin" ,"Item.Validity" ,"Item.Validity.bin","Alpha drop", "Alpha drop Binary" )
+  names(mat) <- c("Difficulty", "Scaled score", "Sample SD", "Sample SD bin", "Correct answers",
+                  "Min score", "Max score", "Obtained min", "Obtained max", "Cut score", "ULI", "ULI binary",
+                  "ULI default", "ULI default bin", "RIT", "RIT bin", "RIR", "RIR bin",
+                  "Item criterion", "Item criterion bin", "Item reliability", "Item reliability bin", "Item reliability woi",
+                  "Item reliability woi bin", "Item validity", "Item validity bin", "Alpha drop", "Alpha drop bin")
 
   if (add.bin == TRUE){
   return(mat)
     }
-  matOrd <- mat[,c(2:3, 6:11,13,15,17,19,21,23, 25,27)]
+  matOrd <- mat[, c(2:3, 6:11, 13, 15, 17, 19, 21, 23, 25, 27)]
   return(matOrd)
 }
