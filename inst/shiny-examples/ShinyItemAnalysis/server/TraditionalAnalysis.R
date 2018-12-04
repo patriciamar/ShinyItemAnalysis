@@ -38,11 +38,11 @@ output$DDplot_text <- renderUI({
 
 # ** Difficulty/Discrimination plot ######
 DDplot_Input <- reactive({
-
   correct <- binary()
   DDplot(correct, item.names = item_numbers(),
          k = input$DDplotNumGroupsSlider,
-         l = input$DDplotRangeSlider[[1]], u = input$DDplotRangeSlider[[2]])
+         l = input$DDplotRangeSlider[[1]], u = input$DDplotRangeSlider[[2]],
+         discrim = input$DDplotDiscriminationSelect)
 })
 
 # ** Difficulty/Discrimination plot for report######
@@ -51,11 +51,13 @@ DDplot_Input_report<-reactive({
   if (input$customizeCheck) {
     DDplot(correct, item.names = item_numbers(),
            k = input$DDplotNumGroupsSlider_report,
-           l = input$DDplotRangeSlider_report[[1]], u = input$DDplotRangeSlider_report[[2]])
+           l = input$DDplotRangeSlider_report[[1]], u = input$DDplotRangeSlider_report[[2]],
+           discrim = input$DDplotDiscriminationSelect_report)
   } else {
     DDplot(correct, item.names = item_numbers(),
            k = input$DDplotNumGroupsSlider,
-           l = input$DDplotRangeSlider[[1]], u = input$DDplotRangeSlider[[2]])
+           l = input$DDplotRangeSlider[[1]], u = input$DDplotRangeSlider[[2]],
+           discrim = input$DDplotDiscriminationSelect)
   }
 })
 

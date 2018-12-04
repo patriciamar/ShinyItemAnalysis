@@ -40,6 +40,7 @@ params:
   DDplotRange1: NA
   DDplotRange2: NA
   DDplotNumGroups: NA
+  DDplotDiscType: NA
   itemexam: NA
   hist_distractor_by_group: NA
   graf: NA
