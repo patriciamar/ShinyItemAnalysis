@@ -38,6 +38,7 @@ params:
   DDplotRange1: NA
   DDplotRange2: NA
   DDplotNumGroups: NA
+  DDplotDiscType: NA
   itemexam: NA
   hist_distractor_by_group: NA
   graf: NA
@@ -399,21 +400,23 @@ if (params$irt_type != "none") {
 }
 ```
 
+`r if (params$irt_type != "none") {"\\pagebreak"}`
+
 `r if (params$irt_type != "none") {"## Item characteristic and information curves"}`
 
-```{r irt-0, echo = FALSE, results = "hide", fig.height = 4.5, fig.width = 11, dpi = 300}
+```{r irt-0, echo = FALSE, results = "hide", fig.height = 4, fig.width = 11, dpi = 300}
 if (params$irt_type != "none") {
   params$irt
 }
 ```
 
-```{r irt-1, echo = FALSE, results = "hide", fig.height = 4.5, fig.width = 11, dpi = 300}
+```{r irt-1, echo = FALSE, results = "hide", fig.height = 4, fig.width = 11, dpi = 300}
 if (params$irt_type != "none") {
   params$irtiic
 }
 ```
 
-```{r irt-2, echo = FALSE, results = "hide", fig.height = 4.5, fig.width = 11, dpi = 300}
+```{r irt-2, echo = FALSE, results = "hide", fig.height = 4, fig.width = 11, dpi = 300}
 if (params$irt_type != "none") {
   params$irttif
 }
