@@ -2261,7 +2261,7 @@ ui = tagList(
                                                               "RIT" = "RIT",
                                                               "RIR" = "RIR",
                                                               "none" = "none"),
-                                                            selected = "ULI"),
+                                                            selected = "RIT"),
                                                 conditionalPanel(condition = "input.DDplotDiscriminationSelect_report == 'ULI'",
                                                                  splitLayout(sliderInput('DDplotNumGroupsSlider_report','Number of groups:',
                                                                                          min   = 1,

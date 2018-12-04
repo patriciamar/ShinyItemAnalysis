@@ -54,6 +54,7 @@ params:
   irttif: NA
   irtcoef: NA
   irtfactor: NA
+  irtability: NA
   isGroupPresent: NA
   histCheck: NA
   resultsgroup: NA
@@ -391,6 +392,16 @@ if (any(params$wrightMap != "")) {
 `r if (params$irt_type != "none") {"## Ability estimates"}`
 
 `r if (params$irt_type != "none") {"Ability is estimated by selected IRT model. Relationship between ability estimates (factor scores) and standardized total test scores can be seen on scatter plot below. "}`
+
+```{r irtability, echo = FALSE, results = 'asis'}
+table = params$irtability
+
+print(xtable(table, 
+             digits = 2, 
+             align = rep('c', 8)), 
+      booktabs = T, comment = F, include.rownames = T,
+      tabular.environment = "longtable", floating = F)
+```
 
 ```{r irt-3, echo = FALSE, results = "hide", fig.height = 4.5, fig.width = 11, dpi = 300}
 if (params$irt_type != "none") {

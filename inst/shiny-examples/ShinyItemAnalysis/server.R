@@ -596,6 +596,29 @@ function(input, output, session) {
     out
   })
 
+  irtabilityTableInput <- reactive({
+    type = input$irt_type_report
+    if (type == "rasch"){out = raschAbilities()}
+    if (type == "1pl")  {out = onePlAbilities()}
+    if (type == "2pl")  {out = twoPlAbilities()}
+    if (type == "3pl")  {out = threePlAbilities()}
+    if (type == "4pl")  {out = fourPlAbilities()}
+    if (type == "none") {out = ""}
+
+    if (type != "none") {
+      out<-data.table(Min = apply(X=out[,1:3], FUN=min, 2),
+                      Max = apply(X=out[,1:3], FUN=max, 2),
+                      Mean = apply(X=out[,1:3], FUN=mean, 2),
+                      Median = apply(X=out[,1:3], FUN=median, 2),
+                      SD = apply(X=out[,1:3], FUN=sd, 2),
+                      Skewness = apply(X=out[,1:3], FUN=skewness, 2),
+                      Kurtosis = apply(X=out[,1:3], FUN=kurtosis, 2))
+      rownames(out) = c("Total Scores", "Z-Scores", "F-scores")
+    }
+
+    out
+  })
+
   # ** Double slider inicialization for DD plot report ######
   observe({
     val <- input$DDplotNumGroupsSlider_report
@@ -663,6 +686,7 @@ function(input, output, session) {
         irttif = irttifInput(),
         irtcoef = irtcoefInput(),
         irtfactor = irtfactorInput(),
+        irtability = irtabilityTableInput(),
         incProgress(0.25),
         # DIF
         ### presence of group vector
@@ -741,6 +765,7 @@ function(input, output, session) {
         irttif = irttifInput(),
         irtcoef = irtcoefInput(),
         irtfactor = irtfactorInput(),
+        irtability = irtabilityTableInput(),
         # DIF
         ### presence of group vector
         isGroupPresent = groupPresent(),
