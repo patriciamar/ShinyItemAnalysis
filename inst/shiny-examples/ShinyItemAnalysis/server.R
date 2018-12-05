@@ -657,6 +657,7 @@ function(input, output, session) {
         corr_plot = {if (input$corr_report) {if(input$customizeCheck) {corr_plot_Input_report()} else {corr_plot_Input()}} else {""}},
         corr_plot_numclust = ifelse(input$customizeCheck, input$corr_plot_clust_report, input$corr_plot_clust),
         corr_plot_clustmethod = ifelse(input$customizeCheck, input$corr_plot_clustmethod_report, input$corr_plot_clustmethod),
+        corr_type = ifelse(input$customizeCheck, input$corr_plot_type_of_corr_report, input$type_of_corr),
         scree_plot = {if (input$corr_report) {scree_plot_Input()} else {""}},
         isCriterionPresent = criterionPresent(),
         validity_check = input$predict_report,
@@ -741,6 +742,7 @@ function(input, output, session) {
         corr_plot = {if (input$corr_report) {if(input$customizeCheck) {corr_plot_Input_report()} else {corr_plot_Input()}} else {""}},
         corr_plot_numclust = ifelse(input$customizeCheck, input$corr_plot_clust_report, input$corr_plot_clust),
         corr_plot_clustmethod = ifelse(input$customizeCheck, input$corr_plot_clustmethod_report, input$corr_plot_clustmethod),
+        corr_type = ifelse(input$customizeCheck, input$corr_plot_type_of_corr_report, input$type_of_corr),
         scree_plot = {if (input$corr_report) {scree_plot_Input()} else {""}},
         isCriterionPresent = criterionPresent(),
         validity_check = input$predict_report,
@@ -751,6 +753,7 @@ function(input, output, session) {
         DDplotRange1 = ifelse(input$customizeCheck, input$DDplotRangeSlider_report[[1]], input$DDplotRangeSlider[[1]]),
         DDplotRange2 = ifelse(input$customizeCheck, input$DDplotRangeSlider_report[[2]], input$DDplotRangeSlider[[2]]),
         DDplotNumGroups = ifelse(input$customizeCheck, input$DDplotNumGroupsSlider_report, input$DDplotNumGroupsSlider),
+        DDplotDiscType = ifelse(input$customizeCheck, input$DDplotDiscriminationSelect_report, input$DDplotDiscriminationSelect),
         itemexam = itemanalysis_table_Input(),
         # distractors
         hist_distractor_by_group = distractor_histogram_Input(),
