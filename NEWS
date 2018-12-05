@@ -4,6 +4,14 @@
         *                                                             *
         ***************************************************************
 -------------------------------------------------------
+- Changes in ShinyItemAnalysis 1.2.8-7. (2018-12-05) -
+-------------------------------------------------------
+
+MAJOR UPDATES
+  o IRT section of shiny app was updated and now provides
+    new and more shiny figures in plotly
+
+-------------------------------------------------------
 - Changes in ShinyItemAnalysis 1.2.8-6. (2018-12-03) -
 -------------------------------------------------------
 
@@ -12,6 +20,7 @@ BUG FIXING
 
 MAJOR UPDATES
   o Function ItemAnalysis() was added.
+  o IRT section now allows download of ability estimates
 
 MINOR UPDATES
   o Help pages for functions were updated.

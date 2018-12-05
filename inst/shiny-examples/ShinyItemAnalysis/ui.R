@@ -95,7 +95,7 @@ ui = tagList(
                     ShinyItemAnalysis
                     </div>
                     <div class = "footer-subtitle">
-                    Test and item analysis | Version 1.2.8-6
+                    Test and item analysis | Version 1.2.8-7
                     </div>
                     <span style = "float:right">
                     <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysis/" id = "tooltipweb" target="_blank">
@@ -475,7 +475,7 @@ ui = tagList(
                                  h3("Factor analysis"),
                                  h4("Scree plot"),
                                  p('A scree plot displays the eigenvalues associated with an component or a factor in descending order
-                                   versus the number of the component or factor. Location of a bend (an elbow) suggests a suitable number of clusters.'),
+                                   versus the number of the component or factor. Location of a bend (an elbow) suggests a suitable number of factors.'),
                                  plotOutput('scree_plot'),
                                  downloadButton(outputId = "DB_scree_plot", label = "Download figure"),
                                  h4("Selected R code"),

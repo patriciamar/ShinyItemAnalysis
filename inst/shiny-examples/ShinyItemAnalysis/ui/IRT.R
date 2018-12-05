@@ -25,9 +25,8 @@ IRT <- navbarMenu("IRT models",
                                       h4("Test information function"),
                                       plotOutput('raschtif_mirt'),
                                       downloadButton("DP_raschtif_mirt", label = "Download figure"),
-                                      h4("Table of estimates parameters"),
-                                      p('Estimates of parameters are completed by SX2 item fit statistics (Ames & Penfield, 2015).
-                                        SX2 is computed only when no missing data are present. In such a case consider using imputed dataset!'),
+                                      h4("Table of estimated parameters"),
+                                      p('Estimates of parameters are completed by SX2 item fit statistics (Orlando and Thissen, 2000; see also Ames & Penfield, 2015). SX2 statistics are computed only when no missing data are present.'),
                                       tableOutput('raschcoef_mirt'),
                                       br(),
                                       downloadButton( outputId = "download_Rasch_table",
@@ -58,10 +57,34 @@ IRT <- navbarMenu("IRT models",
                                       br()
                                       ),
                              tabPanel("Items",
-                                      h3("Rasch model"))
+                                      h3("Rasch model"),
+									   p('Item Response Theory (IRT) models are mixed-effect regression models in which
+                                        respondent ability (theta) is assumed to be a random effect and is estimated together with item
+                                        paramters. Ability (theta) is often assumed to follow normal distibution.'),
+                                      p('In',
+                                        strong('Rasch model'), '(Rasch, 1960), all items are assumed to have the same slope in inflection point, i.e., the
+                                        same discrimination parameter', strong('a'), 'which is fixed to value of 1. Items may differ in location of their inflection point, i.e. they may differ in difficulty parameter',
+                                        strong('b.')),
+                                      h4("Equation"),
+                                      ('$$\\mathrm{P}\\left(Y_{ij} = 1\\vert \\theta_{i}, b_{j} \\right) =  \\frac{e^{\\left(\\theta_{i}-b_{j}\\right) }}{1+e^{\\left(\\theta_{i}-b_{j}\\right) }} $$'),
+									  h4("Item characteristic curves"),
+									  sliderInput("rachSliderChar", "Item",
+                                             min = 1, value = 1, max = 20,
+                                             step = 1, animate = TRUE),
+                                      plotlyOutput('rasch_mirt_tab'),
+									  downloadButton("DP_rasch_mirt_tab", label = "Download figure"),
+                                      h4("Item information curves"),
+                                      plotlyOutput('raschiic_mirt_tab'),
+                                      downloadButton("DP_raschiic_mirt_tab", label = "Download figure"),
+									  h4("Table of estimated parameters"),
+									  p('Estimates of parameters are completed by SX2 item fit statistics (Ames & Penfield, 2015).
+                                        SX2 is computed only when no missing data are present. In such a case consider using imputed dataset!'),
+                                      tableOutput('raschcoef_mirt_tab'))
                                       )),
                   # * 1PL ####
                   tabPanel("1PL",
+				    tabsetPanel(
+                           tabPanel("Model",
                            h3("One parameter Item Response Theory model"),
                            p('Item Response Theory (IRT) models are mixed-effect regression models in which
                              respondent ability (theta) is assumed to be a random effect and is estimated together with item
@@ -80,10 +103,9 @@ IRT <- navbarMenu("IRT models",
                            h4("Test information function"),
                            plotOutput('oneparamirttif_mirt'),
                            downloadButton("DP_oneparamirttif_mirt", label = "Download figure"),
-                           h4("Table of estimates parameters"),
-                           p('Estimates of parameters are completed by SX2 item fit statistics
-                             (Ames & Penfield, 2015). SX2 is computed only when no missing data are present.
-                             In such a case consider using imputed dataset!'),
+                           h4("Table of estimated parameters"),
+                           p('Estimates of parameters are completed by SX2 item fit statistics (Orlando and Thissen, 2000; see also Ames & Penfield, 2015). 
+						      SX2 statistics are computed only when no missing data are present.'),
                            tableOutput('oneparamirtcoef_mirt'),
                            br(),
                            downloadButton(outputId = "download_1pl_table",
@@ -111,9 +133,34 @@ IRT <- navbarMenu("IRT models",
                            h4("Selected R code"),
                            div(code(HTML("library(difNLR)<br>library(mirt)&nbsp;<br>library(ShinyItemAnalysis)<br><br>#&nbsp;loading&nbsp;data<br>data(GMAT)&nbsp;<br>data&nbsp;<-&nbsp;GMAT[,&nbsp;1:20]&nbsp;<br><br>#&nbsp;fitting&nbsp;1PL&nbsp;model<br>fit&nbsp;<-&nbsp;mirt(data,&nbsp;model&nbsp;=&nbsp;1,&nbsp;itemtype&nbsp;=&nbsp;'2PL',&nbsp;constrain&nbsp;=&nbsp;list((1:ncol(data))&nbsp;+&nbsp;seq(0,&nbsp;(ncol(data)&nbsp;-&nbsp;1)*3,&nbsp;3)),&nbsp;SE&nbsp;=&nbsp;T)&nbsp;<br><br>#&nbsp;Item&nbsp;Characteristic&nbsp;Curves&nbsp;<br>plot(fit,&nbsp;type&nbsp;=&nbsp;'trace',&nbsp;facet_items&nbsp;=&nbsp;F)&nbsp;<br>#&nbsp;Item&nbsp;Information&nbsp;Curves&nbsp;<br>plot(fit,&nbsp;type&nbsp;=&nbsp;'infotrace',&nbsp;facet_items&nbsp;=&nbsp;F)&nbsp;<br>#&nbsp;Test&nbsp;Information&nbsp;Function&nbsp;<br>plot(fit,&nbsp;type&nbsp;=&nbsp;'infoSE')&nbsp;<br><br>#&nbsp;Coefficients&nbsp;<br>coef(fit,&nbsp;simplify&nbsp;=&nbsp;TRUE)&nbsp;<br>coef(fit,&nbsp;IRTpars&nbsp;=&nbsp;TRUE,&nbsp;simplify&nbsp;=&nbsp;TRUE)&nbsp;<br><br>#&nbsp;Item&nbsp;fit&nbsp;statistics&nbsp;<br>itemfit(fit)&nbsp;<br><br>#&nbsp;Factor&nbsp;scores&nbsp;vs&nbsp;Standardized&nbsp;total&nbsp;scores&nbsp;<br>fs&nbsp;<-&nbsp;as.vector(fscores(fit))&nbsp;<br>sts&nbsp;<-&nbsp;as.vector(scale(apply(data,&nbsp;1,&nbsp;sum)))&nbsp;<br>plot(fs&nbsp;~&nbsp;sts)&nbsp;<br><br>#&nbsp;Wright&nbsp;Map&nbsp;<br>b&nbsp;<-&nbsp;sapply(1:ncol(data),&nbsp;function(i)&nbsp;coef(fit)[[i]][,&nbsp;'d'])&nbsp;<br>ggWrightMap(fs,&nbsp;b)<br><br><br><br>#&nbsp;You&nbsp;can&nbsp;also&nbsp;use&nbsp;ltm&nbsp;library&nbsp;for&nbsp;IRT&nbsp;models&nbsp;<br>#&nbsp;&nbsp;fitting&nbsp;1PL&nbsp;model<br>fit&nbsp;<-&nbsp;rasch(data)&nbsp;<br>#&nbsp;for&nbsp;Rasch&nbsp;model&nbsp;use&nbsp;<br>#&nbsp;fit&nbsp;<-&nbsp;rasch(data,&nbsp;constraint&nbsp;=&nbsp;cbind(ncol(data)&nbsp;+&nbsp;1,&nbsp;1))&nbsp;<br><br>#&nbsp;Item&nbsp;Characteristic&nbsp;Curves&nbsp;<br>plot(fit)&nbsp;<br>#&nbsp;Item&nbsp;Information&nbsp;Curves&nbsp;<br>plot(fit,&nbsp;type&nbsp;=&nbsp;'IIC')&nbsp;<br>#&nbsp;Test&nbsp;Information&nbsp;Function&nbsp;<br>plot(fit,&nbsp;items&nbsp;=&nbsp;0,&nbsp;type&nbsp;=&nbsp;'IIC')&nbsp;<br><br>#&nbsp;Coefficients&nbsp;<br>coef(fit)&nbsp;<br><br>#&nbsp;Factor&nbsp;scores&nbsp;vs&nbsp;Standardized&nbsp;total&nbsp;scores&nbsp;<br>df1&nbsp;<-&nbsp;ltm::factor.scores(fit,&nbsp;return.MIvalues&nbsp;=&nbsp;T)$score.dat&nbsp;<br>FS&nbsp;<-&nbsp;as.vector(df1[,&nbsp;'z1'])&nbsp;<br>df2&nbsp;<-&nbsp;df1&nbsp;<br>df2$Obs&nbsp;<-&nbsp;df2$Exp&nbsp;<-&nbsp;df2$z1&nbsp;<-&nbsp;df2$se.z1&nbsp;<-&nbsp;NULL&nbsp;<br>STS&nbsp;<-&nbsp;as.vector(scale(apply(df2,&nbsp;1,&nbsp;sum)))&nbsp;<br>df&nbsp;<-&nbsp;data.frame(FS,&nbsp;STS)&nbsp;<br>plot(FS&nbsp;~&nbsp;STS,&nbsp;data&nbsp;=&nbsp;df,&nbsp;xlab&nbsp;=&nbsp;'Standardized&nbsp;total&nbsp;score',&nbsp;ylab&nbsp;=&nbsp;'Factor&nbsp;score')"))),
                            br()
-                           ),
+						   ),
+						   tabPanel("Items",
+                                      h3("1PL model"),
+									  p('Item Response Theory (IRT) models are mixed-effect regression models in which
+                             respondent ability (theta) is assumed to be a random effect and is estimated together with item
+                             paramters. Ability (theta) is often assumed to follow normal distibution.'),
+                           p('In', strong('1PL IRT model,'), 'all items are assumed to have the same slope in inflection point, i.e., the
+                             same discrimination', strong('a.'), ' Items can differ in location of their inflection point, i.e., in item difficulty parameters',
+                             strong('b.')),
+                           h4("Equation"),
+                           ('$$\\mathrm{P}\\left(Y_{ij} = 1\\vert \\theta_{i}, a, b_{j} \\right) =  \\frac{e^{a\\left(\\theta_{i}-b_{j}\\right) }}{1+e^{a\\left(\\theta_{i}-b_{j}\\right) }} $$'),
+                           h4("Item characteristic curves"),
+						   sliderInput("onePLSliderChar", "Item",
+                                             min = 1, value = 1, max = 20,
+                                             step = 1, animate = TRUE),
+                           plotlyOutput('oneparamirt_mirt_tab'),
+                           downloadButton("DP_oneparamirt_mirt_tab", label = "Download figure"),
+                           h4("Item information curves"),
+                           plotlyOutput('oneparamirtiic_mirt_tab'),
+						   downloadButton("DP_oneparamirtiic_mirt_tab", label = "Download figure"),
+						   h4("Table of estimated parameters"),
+                           p('Estimates of parameters are completed by SX2 item fit statistics (Orlando and Thissen, 2000; see also Ames & Penfield, 2015). 
+						      SX2 statistics are computed only when no missing data are present.'),
+                           tableOutput('oneparamirtcoef_mirt_tab')))),
                   # * 2PL ####
                   tabPanel("2PL ",
+				    tabsetPanel(
+						tabPanel("Model",
                            h3("Two parameter Item Response Theory model"),
                            p('Item Response Theory (IRT) models are mixed-effect regression models in which
                              respondent ability (theta) is assumed to be a random effect and is estimated together with item
@@ -132,9 +179,9 @@ IRT <- navbarMenu("IRT models",
                            h4("Test information function"),
                            plotOutput('twoparamirttif_mirt'),
                            downloadButton("DP_twoparamirttif_mirt", label = "Download figure"),
-                           h4("Table of estimates parameters"),
-                           p('Estimates of parameters are completed by SX2 item fit statistics (Ames & Penfield, 2015).
-                             SX2 is computed only when no missing data are present. In such a case consider using imputed dataset!'),
+                           h4("Table of estimated parameters"),
+                           p('Estimates of parameters are completed by SX2 item fit statistics (Orlando and Thissen, 2000; see also Ames & Penfield, 2015). 
+						     SX2 statistics are computed only when no missing data are present.'),
                            tableOutput('twoparamirtcoef_mirt'),
                            br(),
                            downloadButton(outputId = "download_2pl_table",
@@ -248,8 +295,34 @@ IRT <- navbarMenu("IRT models",
                                     ylab = "Factor score")')),
                            br()
                            ),
+						  tabPanel("Items",
+                           h3("Two parameter Item Response Theory model"),
+						   p('Item Response Theory (IRT) models are mixed-effect regression models in which
+                             respondent ability (theta) is assumed to be a random effect and is estimated together with item
+                             paramters. Ability (theta) is often assumed to follow normal distibution.'),
+						   p(strong('2PL IRT model'), ' allows for different slopes in inflection point, i.e., different
+                             discrimination parameters', strong('a.'), 'Items can also differ in location of their inflection point, i.e., in item difficulty parameters',
+                             strong('b.')),
+						   h4("Equation"),
+							('$$\\mathrm{P}\\left(Y_{ij} = 1\\vert \\theta_{i}, a_{j}, b_{j}\\right) =  \\frac{e^{a_{j}\\left(\\theta_{i}-b_{j}\\right) }}{1+e^{a_{j}\\left(\\theta_{i}-b_{j}\\right) }} $$'),
+                           h4("Item characteristic curves"),
+						   sliderInput("twoPLSliderChar", "Item",
+                                             min = 1, value = 1, max = 20,
+                                             step = 1, animate = TRUE),
+                           plotlyOutput('twoparamirt_mirt_tab'),
+                           downloadButton("DP_twoparamirt_mirt_tab", label = "Download figure"),
+                           h4("Item information curves"),
+                           plotlyOutput('twoparamirtiic_mirt_tab'),
+                           downloadButton("DP_twoparamirtiic_mirt_tab", label = "Download figure"),
+						   h4("Table of estimated parameters"),
+                           p('Estimates of parameters are completed by SX2 item fit statistics (Orlando and Thissen, 2000; see also Ames & Penfield, 2015). 
+						     SX2 statistics are computed only when no missing data are present.'),
+                           tableOutput('twoparamirtcoef_mirt_tab'))
+                                      )),
                   # * 3PL ####
                   tabPanel("3PL ",
+					tabsetPanel(
+						tabPanel("Model",
                            h3("Three parameter Item Response Theory model"),
                            p('Item Response Theory (IRT) models are mixed-effect regression models in which
                              respondent ability (theta) is assumed to be a random effect and is estimated together with item
@@ -269,9 +342,9 @@ IRT <- navbarMenu("IRT models",
                            h4("Test information function"),
                            plotOutput('threeparamirttif_mirt'),
                            downloadButton("DP_threeparamirttif_mirt", label = "Download figure"),
-                           h4("Table of estimates parameters"),
-                           p('Estimates of parameters are completed by SX2 item fit statistics (Ames & Penfield, 2015).
-                             SX2 is computed only when no missing data are present. In such a case consider using imputed dataset!'),
+                           h4("Table of estimated parameters"),
+                           p('Estimates of parameters are completed by SX2 item fit statistics (Orlando and Thissen, 2000; see also Ames & Penfield, 2015).
+    						   SX2 statistics are computed only when no missing data are present.'),
                            tableOutput('threeparamirtcoef_mirt'),
                            br(),
                            downloadButton(outputId = "download_3pl_table",
@@ -384,8 +457,35 @@ IRT <- navbarMenu("IRT models",
                                     xlab = "Standardized total score",
                                     ylab = "Factor score")')),
                            br()),
+						   tabPanel("Items",
+                               h3("Three parameter Item Response Theory model"),
+							   p('Item Response Theory (IRT) models are mixed-effect regression models in which
+								  respondent ability (theta) is assumed to be a random effect and is estimated together with item
+                                  paramters. Ability (theta) is often assumed to follow normal distibution.'),
+                               p(strong('3PL IRT model'), ' allows for different discriminations of items', strong('a,'),
+                                 'different item difficulties',
+                               strong('b,'), 'and allows also for nonzero left asymptote, pseudo-guessing', strong('c.')),
+                               h4("Equation"),
+                               ('$$\\mathrm{P}\\left(Y_{ij} = 1\\vert \\theta_{i}, a_{j}, b_{j}, c_{j} \\right) = c_{j} + \\left(1 - c_{j}\\right) \\cdot \\frac{e^{a_{j}\\left(\\theta_{i}-b_{j}\\right) }}{1+e^{a_{j}\\left(\\theta_{i}-b_{j}\\right) }} $$'),
+                               uiOutput("irt_3PL_model_converged_tab"),
+                               h4("Item characteristic curves"),
+							   sliderInput("threePLSliderChar", "Item",
+                                             min = 1, value = 1, max = 20,
+                                             step = 1, animate = TRUE),
+                               plotlyOutput('threeparamirt_mirt_tab'),
+                               downloadButton("DP_threeparamirt_mirt_tab", label = "Download figure"),
+                               h4("Item information curves"),
+                               plotlyOutput('threeparamirtiic_mirt_tab'),
+                               downloadButton("DP_threeparamirtiic_mirt_tab", label = "Download figure"),
+							   h4("Table of estimated parameters"),
+                               p('Estimates of parameters are completed by SX2 item fit statistics (Orlando and Thissen, 2000; see also Ames & Penfield, 2015).
+    						   SX2 statistics are computed only when no missing data are present.'),
+                              tableOutput('threeparamirtcoef_mirt_tab'))
+                                      )),
                   # * 4PL ####
                   tabPanel("4PL ",
+					tabsetPanel(
+						tabPanel("Model",
                            h3("Four parameter Item Response Theory model"),
                            p('Item Response Theory (IRT) models are mixed-effect regression models in which
                              respondent ability (theta) is assumed to be a random effect and is estimated together with item
@@ -405,9 +505,9 @@ IRT <- navbarMenu("IRT models",
                            h4("Test information function"),
                            plotOutput('irt_4PL_tif'),
                            downloadButton("DB_irt_4PL_tif", label = "Download figure"),
-                           h4("Table of estimates parameters"),
-                           p('Estimates of parameters are completed by SX2 item fit statistics (Ames & Penfield, 2015).
-                             SX2 is computed only when no missing data are present. In such a case consider using imputed dataset!'),
+                           h4("Table of estimated parameters"),
+                           p('Estimates of parameters are completed by SX2 item fit statistics (Orlando and Thissen, 2000; see also Ames & Penfield, 2015). 
+						      SX2 statistics are computed only when no missing data are present.'),
                            tableOutput('irt_4PL_coef'),
                            br(),
                            downloadButton(outputId = "download_4pl_table",
@@ -469,6 +569,31 @@ IRT <- navbarMenu("IRT models",
                                br(),
                                code('plot(fs ~ sts)')),
                            br()),
+						   tabPanel("Items",
+                               h3("Four parameter Item Response Theory model"),
+                               p('Item Response Theory (IRT) models are mixed-effect regression models in which
+								  respondent ability (theta) is assumed to be a random effect and is estimated together with item
+								  paramters. Ability (theta) is often assumed to follow normal distibution.'),
+							   p(strong('4PL IRT model'), ' allows for different discriminations of items', strong('a,'),
+								 'different item difficulties', strong('b,'), 'nonzero left asymptote, i.e. pseudo-guessing parameter', strong('c,'),
+                                 'and also for upper asymptote lower than one, i.e, inattention parameter', strong('d.')),
+                               h4("Equation"),
+                               ('$$\\mathrm{P}\\left(Y_{ij} = 1\\vert \\theta_{i}, a_{j}, b_{j}, c_{j}, d_{j} \\right) = c_{j} + \\left(d_{j} - c_{j}\\right) \\cdot \\frac{e^{a_{j}\\left(\\theta_{i}-b_{j}\\right) }}{1+e^{a_{j}\\left(\\theta_{i}-b_{j}\\right) }} $$'),
+                               uiOutput("irt_4PL_model_converged_item"),
+                               h4("Item characteristic curves"),
+							   sliderInput("fourPLSliderChar", "Item",
+                                             min = 1, value = 1, max = 20,
+                                             step = 1, animate = TRUE),
+                               plotlyOutput('irt_4PL_icc_item_tab'),
+                               downloadButton("DB_irt_4PL_icc_item_tab", label = "Download figure"),
+                               h4("Item information curves"),
+                               plotlyOutput('irt_4PL_iic_item_tab'),
+                               downloadButton("DB_irt_4PL_iic_item_tab", label = "Download figure"),
+							   h4("Table of estimated parameters"),
+                               p('Estimates of parameters are completed by SX2 item fit statistics (Orlando and Thissen, 2000; see also Ames & Penfield, 2015). 
+						         SX2 statistics are computed only when no missing data are present.'),
+                               tableOutput('irt_4PL_coef_tab'))
+                                      )),
                   # * MODEL COMPARISON ####
                   tabPanel("Model comparison ",
                            h3("Item Response Theory model selection"),
@@ -498,6 +623,8 @@ IRT <- navbarMenu("IRT models",
                   "Polytomous models",
                   # * BOCK'S NOMINAL MODEL ####
                   tabPanel("Bock's nominal model",
+					tabsetPanel(
+						tabPanel("Model",
                            h3("Bock's nominal Item Response Theory model"),
                            p('The nominal response model (NRM) was introduced by Bock (1972) as a way to model
                              responses to items with two or more nominal categories. This model is suitable for
@@ -569,6 +696,32 @@ IRT <- navbarMenu("IRT models",
                                code('plot(fs ~ sts)')),
                            br()
                            ),
+						tabPanel("Item",
+						   h3("Bock's nominal Item Response Theory model"),
+                           p('The nominal response model (NRM) was introduced by Bock (1972) as a way to model
+                             responses to items with two or more nominal categories. This model is suitable for
+                             multiple-choice items with no particular ordering of distractors.
+                             It is also generalization of some models for ordinal data, e.g. generalized  partial credit model (GPCM)
+                             or its restricted versions partial credit model (PCM) and rating scale model (RSM).'),
+                           h4('Equation'),
+                           withMathJax('For ', strong('K'), ' possible test choices is the probability of the choice ', strong('k'), ' for
+                                       person ', strong('i'), ' with latent trait', strong('\\(\\theta\\)'), ' in item ', strong('j'),
+                                       'given by the following equation: '),
+                           ('$$\\mathrm{P}(Y_{ij} = k|\\theta_i, a_{j1}, al_{j(l-1)}, d_{j(l-1)}, l = 1, \\dots, K) =
+                            \\frac{e^{(ak_{j(k-1)} * a_{j1} * \\theta_i + d_{j(k-1)})}}{\\sum_l e^{(al_{j(l-1)} * a_{j1} * \\theta_i + d_{j(l-1)})}}$$'),
+                           br(),
+                           h4("Item characteristic curves"),
+						   sliderInput("bockSlider", "Item",
+                                       min = 1, value = 1, max = 20,
+                                        step = 1, animate = TRUE),
+                           plotlyOutput('bock_CC_tab'),
+                           downloadButton("DP_bock_CC_tab", label = "Download figure"),
+                           h4("Item information curves"),
+                           plotlyOutput('bock_IIC_tab'),
+                           downloadButton("DP_bock_IIC_tab", label = "Download figure"),
+						   h4("Table of parameters"),
+                           textOutput("bock_coef_warning_tab"),
+                           tableOutput('bock_coef_tab')))),
                   "----",
                   "Training",
                   # * TRAINING  ####
