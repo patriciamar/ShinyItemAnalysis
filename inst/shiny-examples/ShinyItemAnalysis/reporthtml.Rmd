@@ -31,6 +31,7 @@ params:
   corr_plot: NA
   corr_plot_numclust: NA
   corr_plot_clustmethod: NA
+  corr_type: NA
   scree_plot: NA
   isCriterionPresent: NA
   validity_check: NA
@@ -144,10 +145,15 @@ kable(table, align = 'c')
 
 `r if (any(params$corr_plot != "") | params$validity_check) {"# Validity"}`
 
+
 `r if (any(params$corr_plot != "")) {"## Correlation structure"}`
 
-`r if (any(params$corr_plot != "")) {"### Polychoric correlation heat map "}`
-`r if (any(params$corr_plot != "")) {"Polychoric correlation heat map is a correlation plot which displays a polychoric correlations of items. The size and shade of circles indicate how much the items are correlated (larger and darker circle means larger correlation). The color of circles indicates in which way the items are correlated - blue color shows possitive correlation and red color shows negative correlation."}`
+`r if (any(params$corr_plot != "")) {"### Correlation heat map "}`
+`r if (any(params$corr_plot != "")) {if (params$corr_type=="pearson") {"Correlation heat map is a correlation plot which displays Pearson correlations of items. Pearson correlation coefficient describes linear correlation between two random variables X and Y."}}`
+
+`r if (any(params$corr_plot != "")) {if (params$corr_type=="polychoric") {"Correlation heat map is a correlation plot which displays Polychoric correlations of items. Polychoric/tetrachoric correlation between two ordinal/binary variables is calculated from their contingency table, under the assumption that the ordinal variables dissect continuous latent variables that are bivariate normal."}}`
+
+`r if (any(params$corr_plot != "")) {if (params$corr_type=="spearman") {"Correlation heat map is a correlation plot which displays Polychoric correlations of items. Spearman's rank correlation coefficient describes strength and direction of monotonic relationship between random variables X and Y, i.e. dependence between the rankings of two variables."}}`
 
 `r clustmethod_names <- c("None" = "none",
                           "Ward's"  = "ward.D",
@@ -158,7 +164,7 @@ kable(table, align = 'c')
                           "McQuitty" = "mcquitty",
                           "median" = "median",
                           "centroid" = "centroid")`
-`r if (any(params$corr_plot != "") & params$corr_plot_clustmethod != "none") {paste("Polychoric correlation heat map is reorder using hierarchical clustering with", names(clustmethod_names)[clustmethod_names == params$corr_plot_clustmethod], "linkage method. Number of", params$corr_plot_numclust, "clusters is considered. ")}`
+`r if (any(params$corr_plot != "") & params$corr_plot_clustmethod != "none") {paste("Correlation heat map is reordered using hierarchical clustering with", names(clustmethod_names)[clustmethod_names == params$corr_plot_clustmethod], "linkage method. Number of", params$corr_plot_numclust, "clusters is considered. ")}`
 
 ```{r corr-plot, echo = FALSE, fig.width = 11, fig.height = 4, fig.align = 'center', dpi = 300}
 if (any(params$corr_plot != "")) {
@@ -237,7 +243,11 @@ if(params$isCriterionPresent & params$validity_check){
 ## Item analysis
 
 ### Difficulty/Discrimination plot
-Difficulty (red) of items is estimated as percent of respondents who answered correctly to that item. Discrimination (blue) is by default described by difference of percent correct in upper and lower third of respondents (Upper-Lower Index, ULI). By rule of thumb it should not be lower than 0.2 (borderline in the plot), except for very easy or very difficult items.
+`r if (params$DDplotDiscType=="ULI") {"Difficulty (red) of items is estimated as percent of respondents who answered correctly to that item. Discrimination (blue) is by default described by difference of percent correct in upper and lower third of respondents (Upper-Lower Index, ULI). By rule of thumb it should not be lower than 0.2 (borderline in the plot), except for very easy or very difficult items."}`
+
+`r if (params$DDplotDiscType=="RIR") {"Difficulty (red) of items is estimated as percent of respondents who answered correctly to that item. Discrimination (blue) is described by Pearson correlation between item and rest of items. By rule of thumb it should not be lower than 0.2 (borderline in the plot), except for very easy or very difficult items."}`
+
+`r if (params$DDplotDiscType=="RIT") {"Difficulty (red) of items is estimated as percent of respondents who answered correctly to that item. Discrimination (blue) is described by Pearson correlation between item and total score. By rule of thumb it should not be lower than 0.2 (borderline in the plot), except for very easy or very difficult items."}`
 
 ```{r DD-plot-interpretation, echo = FALSE, results = "hide"}
 range1 <- params$DDplotRange1
@@ -372,13 +382,15 @@ if (params$irt_type != "none") {
 
 ```{r irt-0, echo = FALSE, results = "hide", fig.width = 11, fig.height = 4, fig.align = 'center', dpi = 300}
 if (params$irt_type != "none") {
-  params$irt
-}
+params$irt + ggtitle("Item trace lines") + xlab(expression(theta)) + ylab(expression("I("*theta*")")) + 
+    theme(legend.position = "right", legend.text=element_text(size=10))
+  }
 ```
 
 ```{r irt-1, echo = FALSE, results = "hide", fig.width = 11, fig.height = 4, fig.align = 'center', dpi = 300}
 if (params$irt_type != "none") {
-  params$irtiic
+  params$irtiic + ggtitle("Item information trace lines") + xlab(expression(theta)) + ylab(expression("I("*theta*")")) + 
+    theme(legend.position = "right", legend.text=element_text(size=10))
 }
 ```
 
