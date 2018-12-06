@@ -3109,6 +3109,7 @@ output$ccIRT_plot <- renderPlotly({
   g <- ccIRT_plot_Input()
 
   p <- ggplotly(g)
+  theta0 <- input$ccIRTSlider_theta
 
   # item 1, probabilities
   text <- gsub("~", "", p$x$data[[1]]$text)
