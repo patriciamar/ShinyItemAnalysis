@@ -19,6 +19,7 @@ MINOR UPDATES
   o Legend for plots of IRT models was modified in Reports.
   o Ability estimates summary table is now round in Reports.
   o Some typos were fixed in Reports.
+  o Colours of IRT summary plots correspond to model for Items.
 
 
 -------------------------------------------------------

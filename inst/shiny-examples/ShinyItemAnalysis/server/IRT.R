@@ -11,20 +11,9 @@ rasch_model_mirt <- reactive({
 })
 
 # ** UPDATING MAXIMUM VALUE IN INPUT SLIDER, IN ITEMS TAB ** #
-
 observe({
-
-	updateSliderInput(session, 'rachSliderChar', max = length(item_names()))
-
+  updateSliderInput(session, 'rachSliderChar', max = length(item_names()))
 })
-
-# ** GET ITEM NUMBER ** #
-
- char <- reactive({
-
-	return(input$rachSliderChar)
-
- })
 
 # *** CC ######
 raschInput_mirt <- reactive({
@@ -48,7 +37,7 @@ raschInput_mirt <- reactive({
   df$names <- factor(names, levels = paste("Item", 1:m))
   colnames(df) <- c("Ability", "Probability", "Item")
 
-  g <- ggplot(data = df, aes(x = Ability, y = Probability, color = Item )) +
+  g <- ggplot(data = df, aes(x = Ability, y = Probability, color = Item)) +
     geom_line() +
     ylab("Probability of correct answer") +
     theme_app()
@@ -81,13 +70,19 @@ output$DP_rasch_mirt <- downloadHandler(
            dpi = setting_figures$dpi)
   }
 )
-
+# *** CC items ######
 raschInput_mirt_tab <- reactive({
-  plt <- plot(rasch_model_mirt(), type = 'trace', which.item = char(), facet_items = F)
+  plt <- plot(rasch_model_mirt(), type = 'trace', which.item = input$rachSliderChar, facet_items = F)
   vals <- plt$panel.args
   x <- vals[[1]]$x
   y <- vals[[1]]$y
-  n <- length(vals[[1]]$subscripts)
+  n <- ncol(binary())
+
+  gg_color_hue <- function(n) {
+    hues = seq(15, 375, length = n + 1)
+    hcl(h = hues, l = 65, c = 100)[1:n]
+  }
+  cols <- gg_color_hue(n)
 
   df <- data.frame(cbind(x, y))
   df$x <- as.numeric(df$x)
@@ -95,9 +90,9 @@ raschInput_mirt_tab <- reactive({
   colnames(df) <- c("Ability", "Probability")
 
   g <- ggplot(data = df, aes(x = Ability, y = Probability)) +
-    geom_line(color = colors()[sample(1:256, 1)]) +
+    geom_line(color = cols[input$rachSliderChar]) +
     ylab("Probability of correct answer") +
-	ggtitle(as.character(paste("Item ",char()))) +
+    ggtitle(item_names()[input$rachSliderChar]) +
     theme_app()
 })
 
@@ -116,8 +111,6 @@ output$rasch_mirt_tab <- renderPlotly({
   p %>% plotly::config(displayModeBar = F)
 })
 
-
-
 output$DP_rasch_mirt_tab <- downloadHandler(
   filename =  function() {
     paste("fig_RaschItemCharacteristicCurve.png", sep = "")
@@ -130,8 +123,6 @@ output$DP_rasch_mirt_tab <- downloadHandler(
            dpi = setting_figures$dpi)
   }
 )
-
-
 
 # *** IIC ######
 raschiicInput_mirt <- reactive({
@@ -189,20 +180,29 @@ output$DP_raschiic_mirt <- downloadHandler(
            dpi = setting_figures$dpi)
   }
 )
-
+# *** ICC items ######
 raschiicInput_mirt_tab <- reactive({
-  plt <- plot(rasch_model_mirt(), type = 'infotrace',which.item = char(), facet_items = F)
+  plt <- plot(rasch_model_mirt(), type = 'infotrace', which.item = input$rachSliderChar, facet_items = F)
   vals <- plt$panel.args
   x <- vals[[1]]$x
   y <- vals[[1]]$y
+
+  n <- ncol(binary())
+
+  gg_color_hue <- function(n) {
+    hues = seq(15, 375, length = n + 1)
+    hcl(h = hues, l = 65, c = 100)[1:n]
+  }
+  cols <- gg_color_hue(n)
+
   df <- data.frame(cbind(x, y))
   df$x <- as.numeric(df$x)
   df$y <-as.numeric(df$y)
   colnames(df) <- c("Ability", "Information")
 
   g <- ggplot(data = df, aes(x = Ability, y = Information)) +
-    geom_line(color = colors()[sample(1:256,1)]) +
-	ggtitle(as.character(paste("Item ",char()))) +
+    geom_line(color = cols[input$rachSliderChar]) +
+    ggtitle(item_names()[input$rachSliderChar]) +
     theme_app()
 })
 
@@ -240,20 +240,20 @@ raschtifInput_mirt <- reactive({
   plt <- plot(rasch_model_mirt(), type = "infoSE")
 
   vals <- plt$panel.args
-	x <- vals[[1]]$x
-	y <- vals[[1]]$y
-	df <- data.frame(cbind(Ability = x, Information = y))
+  x <- vals[[1]]$x
+  y <- vals[[1]]$y
+  df <- data.frame(cbind(Ability = x, Information = y))
 
-	df$SE <- 1/sqrt(df$Information)
+  df$SE <- 1/sqrt(df$Information)
 
-	ggplot(data = df, aes(x = Ability)) +
-		geom_line(aes(y = Information, col = "info")) +
-		geom_line(aes(y = SE, col = "se")) +
-	  scale_color_manual("", values = c("blue", "pink"), labels = c("Information", "SE")) +
-	  scale_y_continuous("Information",
-	                     sec.axis = sec_axis(~., name = "SE")) +
-		theme(axis.title.y = element_text(color = 'pink')) +
-		theme_app()
+  ggplot(data = df, aes(x = Ability)) +
+    geom_line(aes(y = Information, col = "info")) +
+    geom_line(aes(y = SE, col = "se")) +
+    scale_color_manual("", values = c("blue", "pink"), labels = c("Information", "SE")) +
+    scale_y_continuous("Information",
+                       sec.axis = sec_axis(~., name = "SE")) +
+    theme(axis.title.y = element_text(color = 'pink')) +
+    theme_app()
 
 })
 
@@ -350,7 +350,7 @@ raschcoefInput_mirt_tab <- reactive({
   tab <- round(tab, 3)
   tab.comp[, colnames(tab.comp) %in% colnames(tab)] <- tab
 
-  tab.comp[char(),]
+  tab.comp[input$rachSliderChar,]
 })
 
 output$raschcoef_mirt_tab <- renderTable({
@@ -505,21 +505,9 @@ one_param_irt_mirt <- reactive({
 })
 
 # Updating number of items in slider input, in ITEMS tab #
-
 observe({
-
-	updateSliderInput(session, 'onePLSliderChar', max = length(item_names()))
-
-
+  updateSliderInput(session, 'onePLSliderChar', max = length(item_names()))
 })
-
-# ** GET ITEM NUMBER ** #
-
- charOnePL <- reactive({
-
-	return(input$onePLSliderChar)
-
- })
 
 
 # *** CC ####
@@ -534,34 +522,29 @@ oneparamirtInput_mirt <- reactive({
   names <- list()
 
   for(j in 1:m){
-
-    names[[j]] <- rep(paste('Item',j),k)
-
+    names[[j]] <- rep(paste('Item', j), k)
   }
-
   names <- unlist(names)
 
-  df <- data.frame(cbind(x,y))
+  df <- data.frame(cbind(x, y))
   df$x <- as.numeric(df$x)
   df$y <-as.numeric(df$y)
   df$names <- factor(names, levels = paste("Item", 1:m))
-  colnames(df) <- c('Ability','Probability','Item')
+  colnames(df) <- c('Ability', 'Probability', 'Item')
 
-  g <- ggplot(data= df, aes(x = Ability, y = Probability, color = Item )) + geom_line() +
+  g <- ggplot(data = df, aes(x = Ability, y = Probability, color = Item )) +
+    geom_line() +
     ylab("Probability of correct answer") +
     theme_app()
 })
 
 output$oneparamirt_mirt <- renderPlotly({
-   p <- ggplotly(oneparamirtInput_mirt())
+  p <- ggplotly(oneparamirtInput_mirt())
 
-   for (j in 1:length(p$x$data)) {
-
-    text <- gsub("Item: ","",p$x$data[[j]]$text)
-	p$x$data[[j]]$text <- text
-
-   }
-
+  for (j in 1:length(p$x$data)) {
+    text <- gsub("Item: ", "", p$x$data[[j]]$text)
+    p$x$data[[j]]$text <- text
+  }
 
   p$elementId <- NULL
 
@@ -583,21 +566,29 @@ output$DP_oneparamirt_mirt <- downloadHandler(
     dev.off()
   }
 )
-
+# *** CC items ####
 oneparamirtInput_mirt_tab <- reactive({
-  plt <- plot(one_param_irt_mirt(), type = 'trace',which.item = charOnePL(),facet_items = F)
+  plt <- plot(one_param_irt_mirt(), type = 'trace', which.item = input$onePLSliderChar, facet_items = F)
   vals <- plt$panel.args
   x <- vals[[1]]$x
   y <- vals[[1]]$y
-  n <- length(vals[[1]]$subscripts)
-  df <- data.frame(cbind(x,y))
-  df$x <- as.numeric(df$x)
-  df$y <-as.numeric(df$y)
-  colnames(df) <- c('Ability','Probability')
+  n <- ncol(binary())
 
-  g <- ggplot(data= df, aes(x = Ability, y = Probability)) + geom_line(color = colors()[sample(1:256,1)]) +
+  gg_color_hue <- function(n) {
+    hues = seq(15, 375, length = n + 1)
+    hcl(h = hues, l = 65, c = 100)[1:n]
+  }
+  cols <- gg_color_hue(n)
+
+  df <- data.frame(cbind(x, y))
+  df$x <- as.numeric(df$x)
+  df$y <- as.numeric(df$y)
+  colnames(df) <- c("Ability", "Probability")
+
+  g <- ggplot(data = df, aes(x = Ability, y = Probability)) +
+    geom_line(color = cols[input$onePLSliderChar]) +
     ylab("Probability of correct answer") +
-	ggtitle(as.character(paste("Item ",charOnePL()))) +
+    ggtitle(item_names()[input$onePLSliderChar]) +
     theme_app()
 })
 
@@ -605,13 +596,10 @@ output$oneparamirt_mirt_tab <- renderPlotly({
 
   p <- ggplotly(oneparamirtInput_mirt_tab())
 
-   for (j in 1:length(p$x$data)) {
-
-    text <- gsub("Item: ","",p$x$data[[j]]$text)
-	p$x$data[[j]]$text <- text
-
-   }
-
+  for (j in 1:length(p$x$data)) {
+    text <- gsub("Item: ", "", p$x$data[[j]]$text)
+    p$x$data[[j]]$text <- text
+  }
 
   p$elementId <- NULL
 
@@ -623,7 +611,7 @@ output$DP_oneparamirt_mirt_tab <- downloadHandler(
     paste("fig_1PLItemCharactersticCurve.png", sep = "")
   },
   content = function(file) {
-   ggsave(file, plot = oneparamirtInput_mirt_tab() +
+    ggsave(file, plot = oneparamirtInput_mirt_tab() +
              theme(text = element_text(size = setting_figures$text_size)),
            device = "png",
            height = setting_figures$height, width = setting_figures$width,
@@ -633,7 +621,7 @@ output$DP_oneparamirt_mirt_tab <- downloadHandler(
 
 # *** IIC ######
 oneparamirtiicInput_mirt <- reactive({
-  plt <- plot(one_param_irt_mirt(), type = 'infotrace',facet_items = F)
+  plt <- plot(one_param_irt_mirt(), type = 'infotrace', facet_items = F)
   vals <- plt$panel.args
   x <- vals[[1]]$x
   y <- vals[[1]]$y
@@ -643,19 +631,20 @@ oneparamirtiicInput_mirt <- reactive({
   names <- list()
 
   for(j in 1:m){
-    names[[j]] <- rep(paste('Item', j),k)
+    names[[j]] <- rep(paste('Item', j), k)
   }
 
   names <- unlist(names)
 
-  df <- data.frame(cbind(x,y))
+  df <- data.frame(cbind(x, y))
   df$x <- as.numeric(df$x)
   df$y <-as.numeric(df$y)
   df$names <- factor(names, levels = paste("Item", 1:m))
-  colnames(df) <- c('Ability', 'Probability', 'Item')
+  colnames(df) <- c('Ability', 'Information', 'Item')
 
-  g <- ggplot(data= df, aes(x = Ability, y = Probability, color = Item )) + geom_line() +
-    ylab('Probability of correct answer') +
+  g <- ggplot(data = df, aes(x = Ability, y = Information, color = Item )) +
+    geom_line() +
+    ylab('Information') +
     theme_app()
 })
 
@@ -663,17 +652,13 @@ output$oneparamirtiic_mirt <- renderPlotly({
   p <- ggplotly(oneparamirtiicInput_mirt())
 
   for (j in 1:length(p$x$data)) {
-
     text <- gsub("Item: ","",p$x$data[[j]]$text)
-	p$x$data[[j]]$text <- text
-
-   }
-
+    p$x$data[[j]]$text <- text
+  }
 
   p$elementId <- NULL
 
   p %>% plotly::config(displayModeBar = F)
-
 })
 
 output$DP_oneparamirtiic_mirt <- downloadHandler(
@@ -690,34 +675,40 @@ output$DP_oneparamirtiic_mirt <- downloadHandler(
     dev.off()
   }
 )
-
+# *** IIC items ####
 oneparamirtiicInput_mirt_tab <- reactive({
-  plt <- plot(one_param_irt_mirt(), type = 'infotrace',which.item = charTwoPL(),facet_items = F)
+  plt <- plot(one_param_irt_mirt(), type = 'infotrace', which.item = input$onePLSliderChar, facet_items = F)
   vals <- plt$panel.args
   x <- vals[[1]]$x
   y <- vals[[1]]$y
-  df <- data.frame(cbind(x,y))
-  df$x <- as.numeric(df$x)
-  df$y <-as.numeric(df$y)
-  colnames(df) <- c('Ability','Information')
+  n <- ncol(binary())
 
-  g <- ggplot(data= df, aes(x = Ability, y = Information)) + geom_line(color = colors()[sample(1:255,1)]) +
-    ylab('Probability of correct answer') +
-	ggtitle(as.character(paste("Item ",charTwoPL()))) +
+  gg_color_hue <- function(n) {
+    hues = seq(15, 375, length = n + 1)
+    hcl(h = hues, l = 65, c = 100)[1:n]
+  }
+  cols <- gg_color_hue(n)
+
+  df <- data.frame(cbind(x, y))
+  df$x <- as.numeric(df$x)
+  df$y <- as.numeric(df$y)
+  colnames(df) <- c('Ability', 'Information')
+
+  g <- ggplot(data = df, aes(x = Ability, y = Information)) +
+    geom_line(color = cols[input$onePLSliderChar]) +
+    ylab("Information") +
+    ggtitle(item_names()[input$onePLSliderChar]) +
     theme_app()
 })
 
 
 output$oneparamirtiic_mirt_tab <- renderPlotly({
-	p <- ggplotly(oneparamirtiicInput_mirt_tab())
+  p <- ggplotly(oneparamirtiicInput_mirt_tab())
 
-	for (j in 1:length(p$x$data)) {
-
-		text <- gsub("Item: ","",p$x$data[[j]]$text)
-		p$x$data[[j]]$text <- text
-
-	}
-
+  for (j in 1:length(p$x$data)) {
+    text <- gsub("Item: ", "", p$x$data[[j]]$text)
+    p$x$data[[j]]$text <- text
+  }
 
   p$elementId <- NULL
 
@@ -784,7 +775,6 @@ output$DP_oneparamirttif_mirt <- downloadHandler(
            dpi = setting_figures$dpi)
   }
 )
-
 
 # *** Table of parameters ######
 oneparamirtcoefInput_mirt <- reactive({
@@ -873,7 +863,7 @@ oneparamirtcoefInput_mirt_tab <- reactive({
   tab <- round(tab, 3)
   tab.comp[, colnames(tab.comp) %in% colnames(tab)] <- tab
 
-  tab.comp[charOnePL(),]
+  tab.comp[input$onePLSliderChar,]
 })
 
 output$oneparamirtcoef_mirt_tab <- renderTable({
@@ -900,9 +890,9 @@ onePlAbilities <- reactive({
   fs <- as.vector(fscores(one_param_irt_mirt()))
   fs.Err <- as.vector(fscores(one_param_irt_mirt(), full.scores.SE = TRUE)[,2])
   tab <- data.frame(cbind(ts,sts,fs,fs.Err))
-  colnames(tab) <- c('Total scores','Z-score','F-scores','Std.Error of F-score')
+  colnames(tab) <- c('Total scores', 'Z-score', 'F-scores', 'SE of F-score')
   n <- nrow(tab)
-  nam <- vector('character',length = n)
+  nam <- vector('character', length = n)
   for (i in 1:n) {
 
     nam[i] <- paste('Respondent',i)
@@ -1043,26 +1033,13 @@ two_param_irt_mirt <- reactive({
 })
 
 # Updating number of items in slider input, in ITEMS tab #
-
 observe({
-
-	updateSliderInput(session, 'twoPLSliderChar', max = length(item_names()))
-
-
+  updateSliderInput(session, 'twoPLSliderChar', max = length(item_names()))
 })
-
-charTwoPL <- reactive({
-
-	return(input$twoPLSliderChar)
-
- })
-
 
 # *** CC ######
 twoparamirtInput_mirt <- reactive({
-  #plot(two_param_irt_mirt(), type = "trace", facet_items = F)
-
-  plt <- plot(two_param_irt_mirt(), type = 'trace',facet_items = F)
+  plt <- plot(two_param_irt_mirt(), type = 'trace', facet_items = F)
   vals <- plt$panel.args
   x <- vals[[1]]$x
   y <- vals[[1]]$y
@@ -1072,34 +1049,30 @@ twoparamirtInput_mirt <- reactive({
   names <- list()
 
   for(j in 1:m){
-
-    names[[j]] <- rep(paste('Item',j),k)
-
+    names[[j]] <- rep(paste('Item', j), k)
   }
 
   names <- unlist(names)
 
-  df <- data.frame(cbind(x,y))
+  df <- data.frame(cbind(x, y))
   df$x <- as.numeric(df$x)
   df$y <-as.numeric(df$y)
   df$names <- factor(names, levels = paste("Item", 1:m))
   colnames(df) <- c('Ability', 'Probability', 'Item')
 
-  g <- ggplot(data= df, aes(x = Ability, y = Probability, color = Item )) + geom_line() +
-	   ylab('Probability of correct answer') +
-	   theme_app()
+  g <- ggplot(data= df, aes(x = Ability, y = Probability, color = Item )) +
+    geom_line() +
+    ylab('Probability of correct answer') +
+    theme_app()
 })
 
 output$twoparamirt_mirt <- renderPlotly({
   p <- ggplotly(twoparamirtInput_mirt())
 
   for (j in 1:length(p$x$data)) {
-
-		text <- gsub("Item: ","",p$x$data[[j]]$text)
-		p$x$data[[j]]$text <- text
-
-	}
-
+    text <- gsub("Item: ", "", p$x$data[[j]]$text)
+    p$x$data[[j]]$text <- text
+  }
 
   p$elementId <- NULL
 
@@ -1118,35 +1091,39 @@ output$DP_twoparamirt_mirt <- downloadHandler(
            dpi = setting_figures$dpi)
   }
 )
-
+# *** CC items ######
 twoparamirtInput_mirt_tab <- reactive({
-  #plot(two_param_irt_mirt(), type = "trace", facet_items = F)
-
-  plt <- plot(two_param_irt_mirt(), type = 'trace',which.item = charTwoPL(),facet_items = F)
+  plt <- plot(two_param_irt_mirt(), type = 'trace', which.item = input$twoPLSliderChar, facet_items = F)
   vals <- plt$panel.args
   x <- vals[[1]]$x
   y <- vals[[1]]$y
-  n <- length(vals[[1]]$subscripts)
-  df <- data.frame(cbind(x,y))
-  df$x <- as.numeric(df$x)
-  df$y <-as.numeric(df$y)
-  colnames(df) <- c('Ability','Information')
+  n <- ncol(binary())
 
-  g <- ggplot(data= df, aes(x = Ability, y = Information)) + geom_line(color = colors()[sample(1:255,1)]) +
-	   ylab('Probability of correct answer') +
-	   ggtitle(as.character(paste("Item ",charTwoPL()))) +
-	   theme_app()
+  gg_color_hue <- function(n) {
+    hues = seq(15, 375, length = n + 1)
+    hcl(h = hues, l = 65, c = 100)[1:n]
+  }
+  cols <- gg_color_hue(n)
+
+  df <- data.frame(cbind(x, y))
+  df$x <- as.numeric(df$x)
+  df$y <- as.numeric(df$y)
+  colnames(df) <- c("Ability", "Probability")
+
+  g <- ggplot(data = df, aes(x = Ability, y = Probability)) +
+    geom_line(color = cols[input$twoPLSliderChar]) +
+    ylab("Probability of correct answer") +
+    ggtitle(item_names()[input$twoPLSliderChar]) +
+    theme_app()
 })
 
 output$twoparamirt_mirt_tab <- renderPlotly({
   p <- ggplotly(twoparamirtInput_mirt_tab())
 
   for (j in 1:length(p$x$data)) {
-
-		text <- gsub("Item: ","",p$x$data[[j]]$text)
-		p$x$data[[j]]$text <- text
-
-	}
+    text <- gsub("Item: ","", p$x$data[[j]]$text)
+    p$x$data[[j]]$text <- text
+  }
 
 
   p$elementId <- NULL
@@ -1169,9 +1146,7 @@ output$DP_twoparamirt_mirt_tab <- downloadHandler(
 
 # *** IIC ######
 twoparamirtiicInput_mirt <- reactive({
-  #plot(two_param_irt_mirt(), type = "infotrace", facet_items = F)
-
-  plt <- plot(two_param_irt_mirt(), type = 'infotrace',facet_items = F)
+  plt <- plot(two_param_irt_mirt(), type = 'infotrace', facet_items = F)
   vals <- plt$panel.args
   x <- vals[[1]]$x
   y <- vals[[1]]$y
@@ -1181,22 +1156,20 @@ twoparamirtiicInput_mirt <- reactive({
   names <- list()
 
   for(j in 1:m){
-
-    names[[j]] <- rep(paste('Item',j),k)
-
+    names[[j]] <- rep(paste('Item', j), k)
   }
 
   names <- unlist(names)
 
-  df <- data.frame(cbind(x,y))
+  df <- data.frame(cbind(x, y))
   df$x <- as.numeric(df$x)
   df$y <-as.numeric(df$y)
   df$names <- factor(names, levels = paste("Item", 1:m))
-  colnames(df) <- c('Ability', 'Probability', 'Item')
+  colnames(df) <- c('Ability', 'Information', 'Item')
 
-  g <- ggplot(data = df, aes(x = Ability, y = Probability, color = Item )) +
+  g <- ggplot(data = df, aes(x = Ability, y = Information, color = Item)) +
     geom_line() +
-    ylab('Probability of correct answer') +
+    ylab('Information') +
     theme_app()
 })
 
@@ -1204,12 +1177,9 @@ output$twoparamirtiic_mirt <- renderPlotly({
   p <- ggplotly(twoparamirtiicInput_mirt())
 
   for (j in 1:length(p$x$data)) {
-
-		text <- gsub("Item: ","",p$x$data[[j]]$text)
-		p$x$data[[j]]$text <- text
-
-	}
-
+    text <- gsub("Item: ", "", p$x$data[[j]]$text)
+    p$x$data[[j]]$text <- text
+  }
 
   p$elementId <- NULL
 
@@ -1228,36 +1198,39 @@ output$DP_twoparamirtiic_mirt <- downloadHandler(
            dpi = setting_figures$dpi)
   }
 )
-
+# *** IIC items ####
 twoparamirtiicInput_mirt_tab <- reactive({
-  #plot(two_param_irt_mirt(), type = "infotrace", facet_items = F)
-
-  plt <- plot(two_param_irt_mirt(), type = 'infotrace',which.item = charTwoPL(),facet_items = F)
+  plt <- plot(two_param_irt_mirt(), type = 'infotrace', which.item = input$twoPLSliderChar, facet_items = F)
   vals <- plt$panel.args
   x <- vals[[1]]$x
   y <- vals[[1]]$y
-  n <- length(vals[[1]]$subscripts)
-  df <- data.frame(cbind(x,y))
-  df$x <- as.numeric(df$x)
-  df$y <-as.numeric(df$y)
-  colnames(df) <- c('Ability','Probability')
+  n <- ncol(binary())
 
-  g <- ggplot(data= df, aes(x = Ability, y = Probability)) + geom_line(color = colors()[sample(1:255,1)]) +
-	   ylab('Probability of correct answer') +
-	   ggtitle(as.character(paste("Item ", charTwoPL()))) +
-       theme_app()
+  gg_color_hue <- function(n) {
+    hues = seq(15, 375, length = n + 1)
+    hcl(h = hues, l = 65, c = 100)[1:n]
+  }
+  cols <- gg_color_hue(n)
+
+  df <- data.frame(cbind(x, y))
+  df$x <- as.numeric(df$x)
+  df$y <- as.numeric(df$y)
+  colnames(df) <- c('Ability', 'Information')
+
+  g <- ggplot(data = df, aes(x = Ability, y = Information)) +
+    geom_line(color = cols[input$twoPLSliderChar]) +
+    ylab("Information") +
+    ggtitle(item_names()[input$twoPLSliderChar]) +
+    theme_app()
 })
 
 output$twoparamirtiic_mirt_tab <- renderPlotly({
   p <- ggplotly(twoparamirtiicInput_mirt_tab())
 
   for (j in 1:length(p$x$data)) {
-
-		text <- gsub("Item: ","",p$x$data[[j]]$text)
-		p$x$data[[j]]$text <- text
-
-	}
-
+    text <- gsub("Item: ", "", p$x$data[[j]]$text)
+    p$x$data[[j]]$text <- text
+  }
 
   p$elementId <- NULL
 
@@ -1276,7 +1249,6 @@ output$DP_twoparamirtiic_mirt_tab <- downloadHandler(
            dpi = setting_figures$dpi)
   }
 )
-
 
 # *** TIF ######
 twoparamirttifInput_mirt <- reactive({
@@ -1317,7 +1289,7 @@ output$DP_twoparamirttif_mirt <- downloadHandler(
     paste("fig_2PLTestInformationFunction.png", sep = "")
   },
   content = function(file) {
-   ggsave(file, plot = twoparamirttifInput_mirt() +
+    ggsave(file, plot = twoparamirttifInput_mirt() +
              theme(text = element_text(size = setting_figures$text_size)),
            device = "png",
            height = setting_figures$height, width = setting_figures$width,
@@ -1412,7 +1384,7 @@ twoparamirtcoefInput_mirt_tab <- reactive({
   tab <- round(tab, 3)
   tab.comp[, colnames(tab.comp) %in% colnames(tab)] <- tab
 
-  tab.comp[charTwoPL(),]
+  tab.comp[input$twoPLSliderChar,]
 })
 
 output$twoparamirtcoef_mirt_tab <- renderTable({
@@ -1437,34 +1409,30 @@ twoPlAbilities <- reactive({
   ts <- as.vector(total_score())
   sts <- as.vector(z_score())
   fs <- as.vector(fscores(two_param_irt_mirt()))
-  fs.Err <- as.vector(fscores(two_param_irt_mirt(), full.scores.SE = TRUE)[,2])
-  tab <- data.frame(cbind(ts,sts,fs,fs.Err))
-  colnames(tab) <- c('Total scores','Z-score','F-scores','Std.Error of F-score')
+  fs.Err <- as.vector(fscores(two_param_irt_mirt(), full.scores.SE = TRUE)[, 2])
+  tab <- data.frame(cbind(ts, sts, fs, fs.Err))
+  colnames(tab) <- c('Total scores', 'Z-score', 'F-scores', 'SE of F-score')
   n <- nrow(tab)
-  nam <- vector('character',length = n)
+  nam <- vector('character', length = n)
   for (i in 1:n) {
-
-    nam[i] <- paste('Respondent',i)
-
+    nam[i] <- paste('Respondent', i)
   }
   rownames(tab) <- c(nam)
   tab
 })
 
 output$two_PL_abilities <- renderTable({
-
-  head(twoPlAbilities(),6)
-
+  head(twoPlAbilities(), 6)
 }, include.rownames = TRUE)
 
 # ** Download abilities ######
 output$download_twoPL_abilities <- downloadHandler(
   filename = function() {
-    paste("2PL_abilities",".csv",sep = "")
+    paste("2PL_abilities", ".csv", sep = "")
   },
   content = function(file) {
     data <- twoPlAbilities()
-    write.csv(data,file, col.names = TRUE)
+    write.csv(data, file, col.names = TRUE)
   }
 )
 
@@ -1537,20 +1505,9 @@ three_param_irt_mirt <- reactive({
 })
 
 # Updating number of items in slider input, in ITEMS tab #
-
 observe({
-
-	updateSliderInput(session, 'threePLSliderChar', max = length(item_names()))
-
-
+  updateSliderInput(session, 'threePLSliderChar', max = length(item_names()))
 })
-
-charthreePL <- reactive({
-
-	return(input$threePLSliderChar)
-
- })
-
 
 output$irt_3PL_model_converged <- renderUI({
   fit <- three_param_irt_mirt()
@@ -1565,8 +1522,7 @@ output$irt_3PL_model_converged <- renderUI({
 
 # *** CC ######
 threeparamirtInput_mirt <- reactive({
-  #plot(three_param_irt_mirt(), type = "trace", facet_items = F)
-  plt <- plot(three_param_irt_mirt(), type = 'trace',facet_items = F)
+  plt <- plot(three_param_irt_mirt(), type = 'trace', facet_items = F)
   vals <- plt$panel.args
   x <- vals[[1]]$x
   y <- vals[[1]]$y
@@ -1597,12 +1553,9 @@ output$threeparamirt_mirt <- renderPlotly({
   p <- ggplotly(threeparamirtInput_mirt())
 
   for (j in 1:length(p$x$data)) {
-
-		text <- gsub("Item: ","",p$x$data[[j]]$text)
-		p$x$data[[j]]$text <- text
-
-	}
-
+    text <- gsub("Item: ", "", p$x$data[[j]]$text)
+    p$x$data[[j]]$text <- text
+  }
 
   p$elementId <- NULL
 
@@ -1621,35 +1574,39 @@ output$DP_threeparamirt_mirt <- downloadHandler(
            dpi = setting_figures$dpi)
   }
 )
-
+# *** CC items ####
 threeparamirtInput_mirt_tab <- reactive({
-  #plot(three_param_irt_mirt(), type = "trace", facet_items = F)
-  plt <- plot(three_param_irt_mirt(), type = 'trace',which.item = charthreePL(),facet_items = F)
+  plt <- plot(three_param_irt_mirt(), type = 'trace', which.item = input$threePLSliderChar, facet_items = F)
   vals <- plt$panel.args
   x <- vals[[1]]$x
   y <- vals[[1]]$y
-  n <- length(vals[[1]]$subscripts)
-  df <- data.frame(cbind(x,y))
-  df$x <- as.numeric(df$x)
-  df$y <-as.numeric(df$y)
-  colnames(df) <- c('Ability','Information')
+  n <- ncol(binary())
 
-  g <- ggplot(data= df, aes(x = Ability, y = Information)) + geom_line(color = colors()[sample(1:255,1)]) +
-	   ylab('Probability of correct answer') +
-	   ggtitle(as.character(paste("Item ",charthreePL()))) +
-       theme_app()
+  gg_color_hue <- function(n) {
+    hues = seq(15, 375, length = n + 1)
+    hcl(h = hues, l = 65, c = 100)[1:n]
+  }
+  cols <- gg_color_hue(n)
+
+  df <- data.frame(cbind(x, y))
+  df$x <- as.numeric(df$x)
+  df$y <- as.numeric(df$y)
+  colnames(df) <- c("Ability", "Probability")
+
+  g <- ggplot(data = df, aes(x = Ability, y = Probability)) +
+    geom_line(color = cols[input$threePLSliderChar]) +
+    ylab("Probability of correct answer") +
+    ggtitle(item_names()[input$threePLSliderChar]) +
+    theme_app()
 })
 
 output$threeparamirt_mirt_tab <- renderPlotly({
   p <- ggplotly(threeparamirtInput_mirt_tab())
 
   for (j in 1:length(p$x$data)) {
-
-		text <- gsub("Item: ","",p$x$data[[j]]$text)
-		p$x$data[[j]]$text <- text
-
-	}
-
+    text <- gsub("Item: ", "", p$x$data[[j]]$text)
+    p$x$data[[j]]$text <- text
+  }
 
   p$elementId <- NULL
 
@@ -1671,9 +1628,7 @@ output$DP_threeparamirt_mirt_tab <- downloadHandler(
 
 # *** IIC ######
 threeparamirtiicInput_mirt <- reactive({
-  #plot(three_param_irt_mirt(), type = "infotrace", facet_items = F)
-
-  plt <- plot(three_param_irt_mirt(), type = 'infotrace',facet_items = F)
+  plt <- plot(three_param_irt_mirt(), type = 'infotrace', facet_items = F)
   vals <- plt$panel.args
   x <- vals[[1]]$x
   y <- vals[[1]]$y
@@ -1692,11 +1647,11 @@ threeparamirtiicInput_mirt <- reactive({
   df$x <- as.numeric(df$x)
   df$y <-as.numeric(df$y)
   df$names <- factor(names, levels = paste("Item", 1:m))
-  colnames(df) <- c('Ability', 'Probability', 'Item')
+  colnames(df) <- c('Ability', 'Information', 'Item')
 
-  g <- ggplot(data = df, aes(x = Ability, y = Probability, color = Item )) +
+  g <- ggplot(data = df, aes(x = Ability, y = Information, color = Item )) +
     geom_line() +
-    ylab('Probability of correct answer') +
+    ylab('Information') +
     theme_app()
 })
 
@@ -1704,12 +1659,9 @@ output$threeparamirtiic_mirt <- renderPlotly({
   p <- ggplotly(threeparamirtiicInput_mirt())
 
   for (j in 1:length(p$x$data)) {
-
-		text <- gsub("Item: ","",p$x$data[[j]]$text)
-		p$x$data[[j]]$text <- text
-
-	}
-
+    text <- gsub("Item: ", "", p$x$data[[j]]$text)
+    p$x$data[[j]]$text <- text
+  }
 
   p$elementId <- NULL
 
@@ -1728,36 +1680,39 @@ output$DP_threeparamirtiic_mirt <- downloadHandler(
            dpi = setting_figures$dpi)
   }
 )
-
+# *** IIC items ######
 threeparamirtiicInput_mirt_tab <- reactive({
-  #plot(three_param_irt_mirt(), type = "infotrace", facet_items = F)
-
-  plt <- plot(three_param_irt_mirt(), type = 'infotrace',which.item = charthreePL(),facet_items = F)
+  plt <- plot(three_param_irt_mirt(), type = 'infotrace', which.item = input$threePLSliderChar, facet_items = F)
   vals <- plt$panel.args
   x <- vals[[1]]$x
   y <- vals[[1]]$y
-  n <- length(vals[[1]]$subscripts)
-  df <- data.frame(cbind(x,y))
-  df$x <- as.numeric(df$x)
-  df$y <-as.numeric(df$y)
-  colnames(df) <- c('Ability','Information')
+  n <- ncol(binary())
 
-  g <- ggplot(data= df, aes(x = Ability, y = Information)) + geom_line(color = colors()[sample(1:255,1)]) +
-       ylab('Probability of correct answer') +
-	   ggtitle(as.character(paste("Item ", charthreePL()))) +
-       theme_app()
+  gg_color_hue <- function(n) {
+    hues = seq(15, 375, length = n + 1)
+    hcl(h = hues, l = 65, c = 100)[1:n]
+  }
+  cols <- gg_color_hue(n)
+
+  df <- data.frame(cbind(x, y))
+  df$x <- as.numeric(df$x)
+  df$y <- as.numeric(df$y)
+  colnames(df) <- c('Ability', 'Information')
+
+  g <- ggplot(data = df, aes(x = Ability, y = Information)) +
+    geom_line(color = cols[input$threePLSliderChar]) +
+    ylab("Information") +
+    ggtitle(item_names()[input$threePLSliderChar]) +
+    theme_app()
 })
 
 output$threeparamirtiic_mirt_tab <- renderPlotly({
   p <- ggplotly(threeparamirtiicInput_mirt_tab())
 
   for (j in 1:length(p$x$data)) {
-
-		text <- gsub("Item: ","",p$x$data[[j]]$text)
-		p$x$data[[j]]$text <- text
-
-	}
-
+    text <- gsub("Item: ", "", p$x$data[[j]]$text)
+    p$x$data[[j]]$text <- text
+  }
 
   p$elementId <- NULL
 
@@ -1920,7 +1875,7 @@ threeparamirtcoefInput_mirt_tab <- reactive({
   tab <- round(tab, 3)
   tab.comp[, colnames(tab.comp) %in% colnames(tab)] <- tab
 
-  tab.comp[charthreePL(),]
+  tab.comp[input$threePLSliderChar,]
 })
 
 output$threeparamirtcoef_mirt_tab <- renderTable({
@@ -1945,15 +1900,13 @@ threePlAbilities <- reactive({
   ts <- as.vector(total_score())
   sts <- as.vector(z_score())
   fs <- as.vector(fscores(three_param_irt_mirt()))
-  fs.Err <- as.vector(fscores(three_param_irt_mirt(), full.scores.SE = TRUE)[,2])
-  tab <- data.frame(cbind(ts,sts,fs,fs.Err))
-  colnames(tab) <- c('Total scores','Z-score','F-scores','Std.Error of F-score')
+  fs.Err <- as.vector(fscores(three_param_irt_mirt(), full.scores.SE = TRUE)[, 2])
+  tab <- data.frame(cbind(ts, sts, fs, fs.Err))
+  colnames(tab) <- c('Total scores', 'Z-score', 'F-scores', 'SE of F-score')
   n <- nrow(tab)
-  nam <- vector('character',length = n)
+  nam <- vector('character', length = n)
   for (i in 1:n) {
-
-    nam[i] <- paste('Respondent',i)
-
+    nam[i] <- paste('Respondent', i)
   }
   rownames(tab) <- c(nam)
 
@@ -1961,9 +1914,7 @@ threePlAbilities <- reactive({
 })
 
 output$three_PL_abilities <- renderTable({
-
-  head(threePlAbilities(),6)
-
+  head(threePlAbilities(), 6)
 }, include.rownames = TRUE)
 
 # ** Download abilities ######
@@ -2043,20 +1994,9 @@ irt_4PL_model <- reactive({
 })
 
 # Updating number of items in slider input, in ITEMS tab #
-
 observe({
-
-	updateSliderInput(session, 'fourPLSliderChar', max = length(item_names()))
-
-
+  updateSliderInput(session, 'fourPLSliderChar', max = length(item_names()))
 })
-
-charFourPL <- reactive({
-
-	return(input$fourPLSliderChar)
-
- })
-
 
 output$irt_4PL_model_converged <- renderUI({
   fit <- irt_4PL_model()
@@ -2071,8 +2011,6 @@ output$irt_4PL_model_converged <- renderUI({
 
 # *** ICC ######
 irt_4PL_icc_Input <- reactive({
-  # plot(irt_4PL_model(), type = "trace", facet_items = F)
-
   plt <- plot(irt_4PL_model(), type = 'trace', facet_items = F)
   vals <- plt$panel.args
   x <- vals[[1]]$x
@@ -2092,9 +2030,9 @@ irt_4PL_icc_Input <- reactive({
   df$x <- as.numeric(df$x)
   df$y <-as.numeric(df$y)
   df$names <- factor(names, levels = paste("Item", 1:m))
-  colnames(df) <- c('Ability', 'Information', 'Item')
+  colnames(df) <- c('Ability', 'Probability', 'Item')
 
-  g <- ggplot(data= df, aes(x = Ability, y = Information, color = Item )) +
+  g <- ggplot(data= df, aes(x = Ability, y = Probability, color = Item )) +
     geom_line() +
     ylab('Probability of correct answer') +
     theme_app()
@@ -2104,10 +2042,9 @@ output$irt_4PL_icc <- renderPlotly({
   p <- ggplotly(irt_4PL_icc_Input())
 
   for (j in 1:length(p$x$data)) {
-		text <- gsub("Item: ", "", p$x$data[[j]]$text)
-		p$x$data[[j]]$text <- text
-	}
-
+    text <- gsub("Item: ", "", p$x$data[[j]]$text)
+    p$x$data[[j]]$text <- text
+  }
 
   p$elementId <- NULL
 
@@ -2126,23 +2063,29 @@ output$DB_irt_4PL_icc <- downloadHandler(
            dpi = setting_figures$dpi)
   }
 )
-
+# *** CC items ####
 irt_4PL_icc_Input_tab <- reactive({
-  # plot(irt_4PL_model(), type = "trace", facet_items = F)
-
-  plt <- plot(irt_4PL_model(), type = 'trace',which.item = charFourPL(),facet_items = F)
+  plt <- plot(irt_4PL_model(), type = 'trace', which.item = input$fourPLSliderChar, facet_items = F)
   vals <- plt$panel.args
   x <- vals[[1]]$x
   y <- vals[[1]]$y
-  n <- length(vals[[1]]$subscripts)
-  df <- data.frame(cbind(x,y))
-  df$x <- as.numeric(df$x)
-  df$y <-as.numeric(df$y)
-  colnames(df) <- c('Ability','Information')
+  n <- ncol(binary())
 
-  g <- ggplot(data= df, aes(x = Ability, y = Information)) + geom_line(color = colors()[sample(1:255,1)]) +
-    ylab('Probability of correct answer') +
-	ggtitle(as.character(paste("Item ",charFourPL()))) +
+  gg_color_hue <- function(n) {
+    hues = seq(15, 375, length = n + 1)
+    hcl(h = hues, l = 65, c = 100)[1:n]
+  }
+  cols <- gg_color_hue(n)
+
+  df <- data.frame(cbind(x, y))
+  df$x <- as.numeric(df$x)
+  df$y <- as.numeric(df$y)
+  colnames(df) <- c("Ability", "Probability")
+
+  g <- ggplot(data = df, aes(x = Ability, y = Probability)) +
+    geom_line(color = cols[input$fourPLSliderChar]) +
+    ylab("Probability of correct answer") +
+    ggtitle(item_names()[input$fourPLSliderChar]) +
     theme_app()
 })
 
@@ -2150,12 +2093,9 @@ output$irt_4PL_icc_item_tab <- renderPlotly({
   p <- ggplotly(irt_4PL_icc_Input_tab())
 
   for (j in 1:length(p$x$data)) {
-
-		text <- gsub("Item: ","",p$x$data[[j]]$text)
-		p$x$data[[j]]$text <- text
-
-	}
-
+    text <- gsub("Item: ", "", p$x$data[[j]]$text)
+    p$x$data[[j]]$text <- text
+  }
 
   p$elementId <- NULL
 
@@ -2177,8 +2117,7 @@ output$DB_irt_4PL_icc_tab <- downloadHandler(
 
 # *** IIC ######
 irt_4PL_iic_Input <- reactive({
-  #plot(irt_4PL_model(), type = "infotrace", facet_items = F)
-  plt <- plot(irt_4PL_model(), type = 'infotrace',facet_items = F)
+  plt <- plot(irt_4PL_model(), type = 'infotrace', facet_items = F)
   vals <- plt$panel.args
   x <- vals[[1]]$x
   y <- vals[[1]]$y
@@ -2197,24 +2136,21 @@ irt_4PL_iic_Input <- reactive({
   df$x <- as.numeric(df$x)
   df$y <-as.numeric(df$y)
   df$names <- factor(names, levels = paste("Item", 1:m))
-  colnames(df) <- c('Ability', 'Probability', 'Item')
+  colnames(df) <- c('Ability', 'Information', 'Item')
 
-  g <- ggplot(data = df, aes(x = Ability, y = Probability, color = Item )) +
+  g <- ggplot(data = df, aes(x = Ability, y = Information, color = Item )) +
     geom_line() +
-    ylab('Probability of correct answer') +
+    ylab('Information') +
     theme_app()
 })
 
 output$irt_4PL_iic <- renderPlotly({
-   p <- ggplotly(irt_4PL_iic_Input())
+  p <- ggplotly(irt_4PL_iic_Input())
 
-   for (j in 1:length(p$x$data)) {
-
-		text <- gsub("Item: ","",p$x$data[[j]]$text)
-		p$x$data[[j]]$text <- text
-
-	}
-
+  for (j in 1:length(p$x$data)) {
+    text <- gsub("Item: ", "", p$x$data[[j]]$text)
+    p$x$data[[j]]$text <- text
+  }
 
   p$elementId <- NULL
 
@@ -2235,35 +2171,39 @@ output$DB_irt_4PL_iic <- downloadHandler(
     dev.off()
   }
 )
-
+# *** IIC items ####
 irt_4PL_iic_Input_tab <- reactive({
-  #plot(irt_4PL_model(), type = "infotrace", facet_items = F)
-  plt <- plot(irt_4PL_model(), type = 'infotrace',which.item = charFourPL(),facet_items = F)
+  plt <- plot(irt_4PL_model(), type = 'infotrace', which.item = input$fourPLSliderChar, facet_items = F)
   vals <- plt$panel.args
   x <- vals[[1]]$x
   y <- vals[[1]]$y
-  n <- length(vals[[1]]$subscripts)
-  df <- data.frame(cbind(x,y))
-  df$x <- as.numeric(df$x)
-  df$y <-as.numeric(df$y)
-  colnames(df) <- c('Ability','Information')
+  n <- ncol(binary())
 
-  g <- ggplot(data= df, aes(x = Ability, y = Information)) + geom_line(color = colors()[sample(1:255,1)]) +
-       ylab('Probability of correct answer') +
-	   ggtitle(as.character(paste("Item ",charFourPL()))) +
-	   theme_app()
+  gg_color_hue <- function(n) {
+    hues = seq(15, 375, length = n + 1)
+    hcl(h = hues, l = 65, c = 100)[1:n]
+  }
+  cols <- gg_color_hue(n)
+
+  df <- data.frame(cbind(x, y))
+  df$x <- as.numeric(df$x)
+  df$y <- as.numeric(df$y)
+  colnames(df) <- c('Ability', 'Information')
+
+  g <- ggplot(data = df, aes(x = Ability, y = Information)) +
+    geom_line(color = cols[input$fourPLSliderChar]) +
+    ylab("Information") +
+    ggtitle(item_names()[input$fourPLSliderChar]) +
+    theme_app()
 })
 
 output$irt_4PL_iic_item_tab <- renderPlotly({
-   p <- ggplotly(irt_4PL_iic_Input_tab())
+  p <- ggplotly(irt_4PL_iic_Input_tab())
 
-   for (j in 1:length(p$x$data)) {
-
-		text <- gsub("Item: ","",p$x$data[[j]]$text)
-		p$x$data[[j]]$text <- text
-
-	}
-
+  for (j in 1:length(p$x$data)) {
+    text <- gsub("Item: ", "", p$x$data[[j]]$text)
+    p$x$data[[j]]$text <- text
+  }
 
   p$elementId <- NULL
 
@@ -2353,7 +2293,6 @@ irt_4PL_coef_Input <- reactive({
     }
   }
 
-
   tab <- cbind(par_tab, se_tab)[, c(1, 5, 2, 6, 3, 7, 4, 8)]
 
   if(!is.null(tryCatch(round(itemfit(fit)[, 2:4], 3), error = function(e) {
@@ -2426,7 +2365,7 @@ irt_4PL_coef_Input_tab <- reactive({
   tab <- round(tab, 3)
   tab.comp[, colnames(tab.comp) %in% colnames(tab)] <- tab
 
-  tab.comp[charFourPL(),]
+  tab.comp[input$fourPLSliderChar,]
 })
 
 output$irt_4PL_coef_tab <- renderTable({
@@ -2451,15 +2390,13 @@ fourPlAbilities <- reactive({
   ts <- as.vector(total_score())
   sts <- as.vector(z_score())
   fs <- as.vector(fscores(irt_4PL_model()))
-  fs.Err <- as.vector(fscores(irt_4PL_model(), full.scores.SE = TRUE)[,2])
+  fs.Err <- as.vector(fscores(irt_4PL_model(), full.scores.SE = TRUE)[, 2])
   tab <- data.frame(cbind(ts,sts,fs,fs.Err))
-  colnames(tab) <- c('Total scores','Z-score','F-scores','Std.Error of F-score')
+  colnames(tab) <- c('Total scores', 'Z-score', 'F-scores', 'SE of F-score')
   n <- nrow(tab)
-  nam <- vector('character',length = n)
+  nam <- vector('character', length = n)
   for (i in 1:n) {
-
-    nam[i] <- paste('Respondent',i)
-
+    nam[i] <- paste('Respondent', i)
   }
   rownames(tab) <- c(nam)
 
@@ -2467,19 +2404,17 @@ fourPlAbilities <- reactive({
 })
 
 output$four_PL_abilities <- renderTable({
-
-  head(fourPlAbilities(),6)
-
+  head(fourPlAbilities(), 6)
 }, include.rownames = TRUE)
 
 # ** Download abilities ######
 output$download_fourPL_abilities <- downloadHandler(
   filename = function() {
-    paste("4PL_abilities",".csv",sep = "")
+    paste("4PL_abilities", ".csv", sep = "")
   },
   content = function(file) {
     data <- fourPlAbilities()
-    write.csv(data,file, col.names = TRUE)
+    write.csv(data, file, col.names = TRUE)
   }
 )
 
@@ -2587,21 +2522,9 @@ include.rownames = T)
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 # ** UPDATING MAXIMUM VALUE IN INPUT SLIDER, IN ITEMS TAB ** #
-
 observe({
-
-	updateSliderInput(session, 'bockSlider', max = length(item_names()))
-
+  updateSliderInput(session, 'bockSlider', max = length(item_names()))
 })
-
-# ** GET ITEM NUMBER ** #
-
- charBock <- reactive({
-
-	return(input$bockSlider)
-
- })
-
 
 adj_data_bock <- reactive({
   a <- nominal()
@@ -2612,7 +2535,6 @@ adj_data_bock <- reactive({
   lev <- c(lev, levels(k))
   lev <- unique(lev)
   lev_num <- as.numeric(as.factor(lev))
-
 
   lev_k_num <- sapply(1:length(levels(k)),
                       function(i) lev_num[levels(k)[i] == lev])
@@ -2631,14 +2553,14 @@ adj_data_bock <- reactive({
     a[, i] <- as.numeric(paste(unlist(a[, i])))
   }
 
-  list(data = data.table(a), key = k)
+  list(data = data.table(a), key = k,
+       lev_a_num = lev_a_num)
 })
 
 
 bock_irt_mirt <- reactive({
   data <- adj_data_bock()$data
   key <- adj_data_bock()$key
-
 
   sv <- mirt(data, 1, 'nominal', pars = 'values', verbose = F, SE = T)
 
@@ -2668,9 +2590,7 @@ bock_irt_mirt <- reactive({
 
 # *** CC ######
 bock_CC_Input <- reactive({
-  #plot(bock_irt_mirt(), type = "trace", facet_items = F)
-
-  plt <- plot(bock_irt_mirt(), type = 'trace',facet_items = F)
+  plt <- plot(bock_irt_mirt(), type = 'trace', facet_items = F)
   vals <- plt$panel.args
   x <- vals[[1]]$x
   y <- vals[[1]]$y
@@ -2695,17 +2615,16 @@ bock_CC_Input <- reactive({
   # 200 je delka sekvence -6 az 6
   df$line <- paste0("line", (rep(1:(n/200), 200)))
 
-  colnames(df) <- c('Ability','Information','Item','line')
+  colnames(df) <- c('Ability', 'Probability', 'Item', 'line')
 
-  g <- ggplot(data = df, aes(x = Ability, y = Information, color = Item, group = line)) +
+  g <- ggplot(data = df, aes(x = Ability, y = Probability, color = Item, group = line)) +
     geom_line() +
-	ylab('Probability of correct answer') +
+    ylab('Probability of answer') +
     theme_app()
 
 })
 output$bock_CC <- renderPlotly({
   p <- ggplotly(bock_CC_Input())
-
 
   # changing plotly description
   for (j in 1:length(p$x$data)){
@@ -2730,37 +2649,47 @@ output$DP_bock_CC <- downloadHandler(
   }
 )
 
-
+# *** CC items ######
 bock_CC_Input_tab <- reactive({
-  #plot(bock_irt_mirt(), type = "trace", facet_items = F)
-
-  plt <- plot(bock_irt_mirt(), type = 'trace',which.item = charBock(),facet_items = F)
+  plt <- plot(bock_irt_mirt(), type = 'trace', which.item = input$bockSlider)
   vals <- plt$panel.args
   x <- vals[[1]]$x
   y <- vals[[1]]$y
   n <- length(vals[[1]]$subscripts)
+  k <- ncol(binary())
+
+  gg_color_hue <- function(n) {
+    hues = seq(15, 375, length = n + 1)
+    hcl(h = hues, l = 65, c = 100)[1:n]
+  }
+  cols <- gg_color_hue(k)
 
   df <- data.frame(cbind(x, y))
   df$x <- as.numeric(df$x)
-  df$y <-as.numeric(df$y)
-
+  df$y <- as.numeric(df$y)
 
   df <- df[order(df$x), ]
+  colnames(df) <- c("Ability", "Probability")
+
   # 200 je delka sekvence -6 az 6
-  df$line <- paste0("line", (rep(1:(n/200), 200)))
+  df$Option <- as.factor(paste0("line", (rep(1:(n/200), 200))))
+  levels(df$Option) <- levels(as.data.frame(nominal())[, input$bockSlider])
 
-  g <- ggplot(data = df, aes(x = x, y = y, group = line)) +
-    geom_line(color = colors()[sample(1:255,1)]) +
-	ggtitle(as.character(paste('Item',charBock()))) +
+  g <- ggplot(data = df, aes(x = Ability, y = Probability, group = Option, linetype = Option)) +
+    geom_line(color = cols[input$bockSlider]) +
+    ylab("Probability of answer") +
+    ggtitle(item_names()[input$bockSlider]) +
     theme_app()
-
 })
+
 output$bock_CC_tab <- renderPlotly({
-  p<-ggplotly(bock_CC_Input_tab())
+  p <- ggplotly(bock_CC_Input_tab())
 
   # changing plotly description
   for (j in 1:length(p$x$data)){
-    text <- gsub("Item: ", "", p$x$data[[j]]$text)
+    txt0 <- unique(sub("^.+<br />", "", p$x$data[[j]]$text))
+    pos <- gregexpr(txt0,  p$x$data[[j]]$text)[[1]][2] - 6
+    text <- substring(p$x$data[[j]]$text, 1, pos - 1)
     p$x$data[[j]]$text <- text
   }
 
@@ -2783,8 +2712,7 @@ output$DP_bock_CC_tab <- downloadHandler(
 
 # *** IIC ######
 bock_IIC_Input <- reactive({
-  #plot(bock_irt_mirt(), type = "infotrace", facet_items = F)
-  plt <- plot(bock_irt_mirt(), type = 'infotrace',facet_items = F)
+  plt <- plot(bock_irt_mirt(), type = 'infotrace', facet_items = F)
   vals <- plt$panel.args
   x <- vals[[1]]$x
   y <- vals[[1]]$y
@@ -2799,7 +2727,7 @@ bock_IIC_Input <- reactive({
 
   names <- unlist(names)
 
-  df <- data.frame(cbind(x,y))
+  df <- data.frame(cbind(x, y))
   df$x <- as.numeric(df$x)
   df$y <-as.numeric(df$y)
   df$names <- factor(names, levels = paste("Item", 1:m))
@@ -2811,11 +2739,11 @@ bock_IIC_Input <- reactive({
 
   g <- ggplot(data = df, aes(x = Ability, y = Information , color = Item)) +
     geom_line() +
-    ylab('Probability of correct answer') +
+    ylab('Information') +
     theme_app()
 })
 output$bock_IIC <- renderPlotly({
-  p<-ggplotly(bock_IIC_Input())
+  p <- ggplotly(bock_IIC_Input())
 
   # changing plotly description
   for (j in 1:length(p$x$data)){
@@ -2840,30 +2768,34 @@ output$DP_bock_IIC <- downloadHandler(
   }
 )
 
+# *** IIC items ####
 bock_IIC_Input_tab <- reactive({
-  #plot(bock_irt_mirt(), type = "infotrace", facet_items = F)
-  plt <- plot(bock_irt_mirt(), type = 'infotrace', which.item = charBock(),facet_items = F)
+  plt <- plot(bock_irt_mirt(), type = 'infotrace', which.item = input$bockSlider, facet_items = F)
   vals <- plt$panel.args
   x <- vals[[1]]$x
   y <- vals[[1]]$y
-  n <- length(vals[[1]]$subscripts)
+  k <- ncol(binary())
 
-  df <- data.frame(cbind(x,y))
+  gg_color_hue <- function(n) {
+    hues = seq(15, 375, length = n + 1)
+    hcl(h = hues, l = 65, c = 100)[1:n]
+  }
+  cols <- gg_color_hue(k)
+
+  df <- data.frame(cbind(x, y))
   df$x <- as.numeric(df$x)
-  df$y <-as.numeric(df$y)
+  df$y <- as.numeric(df$y)
 
+  colnames(df) <- c('Ability', 'Information')
 
-  df <- df[order(df$x), ]
-  colnames(df) <- c('Ability','Information')
-
-  g <- ggplot(data= df, aes(x = Ability, y = Information)) + geom_line(color = colors()[sample(1:256,1)]) +
-       ylab('Probability of correct answer)') +
-	   ggtitle(as.character(paste('Item ',charBock()))) +
+  g <- ggplot(data = df, aes(x = Ability, y = Information)) +
+    geom_line(color = cols[input$bockSlider]) +
+    ylab("Information") +
+    ggtitle(item_names()[input$bockSlider]) +
     theme_app()
 })
 output$bock_IIC_tab <- renderPlotly({
   p <- ggplotly(bock_IIC_Input_tab())
-
 
   # changing plotly description
   for (j in 1:length(p$x$data)){
@@ -2890,23 +2822,23 @@ output$DP_bock_IIC_tab <- downloadHandler(
 
 # *** TIF ######
 bock_TIF_Input <- reactive({
-	plt <- plot(bock_irt_mirt(), type = "infoSE")
+  plt <- plot(bock_irt_mirt(), type = "infoSE")
 
-	vals <- plt$panel.args
-	x <- vals[[1]]$x
-	y <- vals[[1]]$y
-	df <- data.frame(cbind(Ability = x, Information = y))
+  vals <- plt$panel.args
+  x <- vals[[1]]$x
+  y <- vals[[1]]$y
+  df <- data.frame(cbind(Ability = x, Information = y))
 
-	df$SE <- 1/sqrt(df$Information)
+  df$SE <- 1/sqrt(df$Information)
 
-	ggplot(data = df, aes(x = Ability)) +
-	  geom_line(aes(y = Information, col = "info")) +
-	  geom_line(aes(y = SE, col = "se")) +
-	  scale_color_manual("", values = c("blue", "pink"), labels = c("Information", "SE")) +
-	  scale_y_continuous("Information",
-	                     sec.axis = sec_axis(~., name = "SE")) +
-	  theme(axis.title.y = element_text(color = 'pink')) +
-	  theme_app()
+  ggplot(data = df, aes(x = Ability)) +
+    geom_line(aes(y = Information, col = "info")) +
+    geom_line(aes(y = SE, col = "se")) +
+    scale_color_manual("", values = c("blue", "pink"), labels = c("Information", "SE")) +
+    scale_y_continuous("Information",
+                       sec.axis = sec_axis(~., name = "SE")) +
+    theme(axis.title.y = element_text(color = 'pink')) +
+    theme_app()
 })
 
 output$bock_TIF <- renderPlotly({
@@ -3018,7 +2950,7 @@ bock_coef_Input_tab <- reactive({
     tab <- NULL
   }
 
-  tab[charBock(),]
+  tab[input$bockSlider,]
 })
 
 output$bock_coef_tab <- renderTable({
