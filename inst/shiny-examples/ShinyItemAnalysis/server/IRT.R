@@ -26,8 +26,6 @@ observe({
 
  })
 
-
-
 # *** CC ######
 raschInput_mirt <- reactive({
   plt <- plot(rasch_model_mirt(), type = 'trace', facet_items = F)
@@ -47,7 +45,7 @@ raschInput_mirt <- reactive({
   df <- data.frame(cbind(x, y))
   df$x <- as.numeric(df$x)
   df$y <-as.numeric(df$y)
-  df$names <- as.character(names)
+  df$names <- factor(names, levels = paste("Item", 1:m))
   colnames(df) <- c("Ability", "Probability", "Item")
 
   g <- ggplot(data = df, aes(x = Ability, y = Probability, color = Item )) +
@@ -85,7 +83,7 @@ output$DP_rasch_mirt <- downloadHandler(
 )
 
 raschInput_mirt_tab <- reactive({
-  plt <- plot(rasch_model_mirt(), type = 'trace',which.item = char(), facet_items = F)
+  plt <- plot(rasch_model_mirt(), type = 'trace', which.item = char(), facet_items = F)
   vals <- plt$panel.args
   x <- vals[[1]]$x
   y <- vals[[1]]$y
@@ -93,11 +91,11 @@ raschInput_mirt_tab <- reactive({
 
   df <- data.frame(cbind(x, y))
   df$x <- as.numeric(df$x)
-  df$y <-as.numeric(df$y)
+  df$y <- as.numeric(df$y)
   colnames(df) <- c("Ability", "Probability")
 
   g <- ggplot(data = df, aes(x = Ability, y = Probability)) +
-    geom_line(color = colors()[sample(1:256,1)]) +
+    geom_line(color = colors()[sample(1:256, 1)]) +
     ylab("Probability of correct answer") +
 	ggtitle(as.character(paste("Item ",char()))) +
     theme_app()
@@ -155,7 +153,7 @@ raschiicInput_mirt <- reactive({
   df <- data.frame(cbind(x, y))
   df$x <- as.numeric(df$x)
   df$y <-as.numeric(df$y)
-  df$names <- as.character(names)
+  df$names <- factor(names, levels = paste("Item", 1:m))
   colnames(df) <- c("Ability", "Information", "Item")
 
   g <- ggplot(data = df, aes(x = Ability, y = Information, color = Item )) +
@@ -240,27 +238,36 @@ output$DP_raschiic_mirt_tab <- downloadHandler(
 # *** TIF ######
 raschtifInput_mirt <- reactive({
   plt <- plot(rasch_model_mirt(), type = "infoSE")
-  
-   vals <- plt$panel.args
+
+  vals <- plt$panel.args
 	x <- vals[[1]]$x
 	y <- vals[[1]]$y
 	df <- data.frame(cbind(Ability = x, Information = y))
 
-	df$se <- 1/sqrt(df$Information)
-	
-	ggplot(data = df, aes(x = x)) +
-		geom_line(aes(y = Information), color = 'blue') +
-		geom_line(aes(y = se), color = 'pink') +
-		ylab(expression(paste('I(',theta,')'))) +
-		ggtitle('Test information and standard error') +
-		xlab(expression(theta)) +
+	df$SE <- 1/sqrt(df$Information)
+
+	ggplot(data = df, aes(x = Ability)) +
+		geom_line(aes(y = Information, col = "info")) +
+		geom_line(aes(y = SE, col = "se")) +
+	  scale_color_manual("", values = c("blue", "pink"), labels = c("Information", "SE")) +
+	  scale_y_continuous("Information",
+	                     sec.axis = sec_axis(~., name = "SE")) +
 		theme(axis.title.y = element_text(color = 'pink')) +
 		theme_app()
-  
+
 })
 
-output$raschtif_mirt <- renderPlot({
-  raschtifInput_mirt()
+output$raschtif_mirt <- renderPlotly({
+  g <- raschtifInput_mirt()
+
+  p <- ggplotly(g)
+
+  p$x$data[[1]]$text <- gsub("<br />colour: info", "", p$x$data[[1]]$text)
+  p$x$data[[2]]$text <- gsub("<br />colour: se", "", p$x$data[[2]]$text)
+
+  p$elementId <- NULL
+
+  p %>% plotly::config(displayModeBar = F)
 })
 
 output$DP_raschtif_mirt <- downloadHandler(
@@ -537,7 +544,7 @@ oneparamirtInput_mirt <- reactive({
   df <- data.frame(cbind(x,y))
   df$x <- as.numeric(df$x)
   df$y <-as.numeric(df$y)
-  df$names <- as.character(names)
+  df$names <- factor(names, levels = paste("Item", 1:m))
   colnames(df) <- c('Ability','Probability','Item')
 
   g <- ggplot(data= df, aes(x = Ability, y = Probability, color = Item )) + geom_line() +
@@ -644,8 +651,8 @@ oneparamirtiicInput_mirt <- reactive({
   df <- data.frame(cbind(x,y))
   df$x <- as.numeric(df$x)
   df$y <-as.numeric(df$y)
-  df$names <- as.character(names)
-  colnames(df) <- c('Ability','Probability','Item')
+  df$names <- factor(names, levels = paste("Item", 1:m))
+  colnames(df) <- c('Ability', 'Probability', 'Item')
 
   g <- ggplot(data= df, aes(x = Ability, y = Probability, color = Item )) + geom_line() +
     ylab('Probability of correct answer') +
@@ -733,27 +740,37 @@ output$DP_oneparamirtiic_mirt_tab <- downloadHandler(
 # *** TIF ######
 oneparamirttifInput_mirt <- reactive({
   plt <- plot(one_param_irt_mirt(), type = "infoSE")
-  
+
   vals <- plt$panel.args
-	x <- vals[[1]]$x
-	y <- vals[[1]]$y
-	df <- data.frame(cbind(Ability = x, Information = y))
+  x <- vals[[1]]$x
+  y <- vals[[1]]$y
+  df <- data.frame(cbind(Ability = x, Information = y))
 
-	df$se <- 1/sqrt(df$Information)
-	
-	ggplot(data = df, aes(x = x)) +
-		geom_line(aes(y = Information), color = 'blue') +
-		geom_line(aes(y = se), color = 'pink') +
-		ylab(expression(paste('I(',theta,')'))) +
-		ggtitle('Test information and standard error') +
-		xlab(expression(theta)) +
-		theme(axis.title.y = element_text(color = 'pink')) +
-		theme_app()
+  df$SE <- 1/sqrt(df$Information)
+
+  ggplot(data = df, aes(x = Ability)) +
+    geom_line(aes(y = Information, col = "info")) +
+    geom_line(aes(y = SE, col = "se")) +
+    scale_color_manual("", values = c("blue", "pink"), labels = c("Information", "SE")) +
+    scale_y_continuous("Information",
+                       sec.axis = sec_axis(~., name = "SE")) +
+    theme(axis.title.y = element_text(color = 'pink')) +
+    theme_app()
+
 })
 
-output$oneparamirttif_mirt <- renderPlot({
-  oneparamirttifInput_mirt()
+output$oneparamirttif_mirt <- renderPlotly({
+  g <- oneparamirttifInput_mirt()
+  p <- ggplotly(g)
+
+  p$x$data[[1]]$text <- gsub("<br />colour: info", "", p$x$data[[1]]$text)
+  p$x$data[[2]]$text <- gsub("<br />colour: se", "", p$x$data[[2]]$text)
+
+  p$elementId <- NULL
+
+  p %>% plotly::config(displayModeBar = F)
 })
+
 
 output$DP_oneparamirttif_mirt <- downloadHandler(
   filename =  function() {
@@ -1065,8 +1082,8 @@ twoparamirtInput_mirt <- reactive({
   df <- data.frame(cbind(x,y))
   df$x <- as.numeric(df$x)
   df$y <-as.numeric(df$y)
-  df$names <- as.character(names)
-  colnames(df) <- c('Ability','Probability','Item')
+  df$names <- factor(names, levels = paste("Item", 1:m))
+  colnames(df) <- c('Ability', 'Probability', 'Item')
 
   g <- ggplot(data= df, aes(x = Ability, y = Probability, color = Item )) + geom_line() +
 	   ylab('Probability of correct answer') +
@@ -1174,12 +1191,13 @@ twoparamirtiicInput_mirt <- reactive({
   df <- data.frame(cbind(x,y))
   df$x <- as.numeric(df$x)
   df$y <-as.numeric(df$y)
-  df$names <- as.character(names)
-  colnames(df) <- c('Ability','Probability','Item')
+  df$names <- factor(names, levels = paste("Item", 1:m))
+  colnames(df) <- c('Ability', 'Probability', 'Item')
 
-  g <- ggplot(data= df, aes(x = Ability, y = Probability, color = Item )) + geom_line() +
-	   ylab('Probability of correct answer') +
-       theme_app()
+  g <- ggplot(data = df, aes(x = Ability, y = Probability, color = Item )) +
+    geom_line() +
+    ylab('Probability of correct answer') +
+    theme_app()
 })
 
 output$twoparamirtiic_mirt <- renderPlotly({
@@ -1263,26 +1281,35 @@ output$DP_twoparamirtiic_mirt_tab <- downloadHandler(
 # *** TIF ######
 twoparamirttifInput_mirt <- reactive({
   plt <- plot(two_param_irt_mirt(), type = "infoSE")
-  
-  vals <- plt$panel.args
-	x <- vals[[1]]$x
-	y <- vals[[1]]$y
-	df <- data.frame(cbind(Ability = x, Information = y))
 
-	df$se <- 1/sqrt(df$Information)
-	
-	ggplot(data = df, aes(x = x)) +
-		geom_line(aes(y = Information), color = 'blue') +
-		geom_line(aes(y = se), color = 'pink') +
-		ylab(expression(paste('I(',theta,')'))) +
-		ggtitle('Test information and standard error') +
-		xlab(expression(theta)) +
-		theme(axis.title.y = element_text(color = 'pink')) +
-		theme_app()
+  vals <- plt$panel.args
+  x <- vals[[1]]$x
+  y <- vals[[1]]$y
+  df <- data.frame(cbind(Ability = x, Information = y))
+
+  df$SE <- 1/sqrt(df$Information)
+
+  ggplot(data = df, aes(x = Ability)) +
+    geom_line(aes(y = Information, col = "info")) +
+    geom_line(aes(y = SE, col = "se")) +
+    scale_color_manual("", values = c("blue", "pink"), labels = c("Information", "SE")) +
+    scale_y_continuous("Information",
+                       sec.axis = sec_axis(~., name = "SE")) +
+    theme(axis.title.y = element_text(color = 'pink')) +
+    theme_app()
+
 })
 
-output$twoparamirttif_mirt <- renderPlot({
-  twoparamirttifInput_mirt()
+output$twoparamirttif_mirt <- renderPlotly({
+  g <- twoparamirttifInput_mirt()
+  p <- ggplotly(g)
+
+  p$x$data[[1]]$text <- gsub("<br />colour: info", "", p$x$data[[1]]$text)
+  p$x$data[[2]]$text <- gsub("<br />colour: se", "", p$x$data[[2]]$text)
+
+  p$elementId <- NULL
+
+  p %>% plotly::config(displayModeBar = F)
 })
 
 output$DP_twoparamirttif_mirt <- downloadHandler(
@@ -1549,22 +1576,21 @@ threeparamirtInput_mirt <- reactive({
   names <- list()
 
   for(j in 1:m){
-
-    names[[j]] <- rep(paste('Item',j),k)
-
+    names[[j]] <- rep(paste('Item', j), k)
   }
 
   names <- unlist(names)
 
-  df <- data.frame(cbind(x,y))
+  df <- data.frame(cbind(x, y))
   df$x <- as.numeric(df$x)
   df$y <-as.numeric(df$y)
-  df$names <- as.character(names)
-  colnames(df) <- c('Ability','Probability','Item')
+  df$names <- factor(names, levels = paste("Item", 1:m))
+  colnames(df) <- c('Ability', 'Probability', 'Item')
 
-  g <- ggplot(data= df, aes(x = Ability, y = Probability, color = Item )) + geom_line() +
-	   ylab('Probability of correct answer') +
-       theme_app()
+  g <- ggplot(data = df, aes(x = Ability, y = Probability, color = Item )) +
+    geom_line() +
+    ylab('Probability of correct answer') +
+    theme_app()
 })
 
 output$threeparamirt_mirt <- renderPlotly({
@@ -1657,22 +1683,21 @@ threeparamirtiicInput_mirt <- reactive({
   names <- list()
 
   for(j in 1:m){
-
-    names[[j]] <- rep(paste('Item',j),k)
-
+    names[[j]] <- rep(paste('Item', j), k)
   }
 
   names <- unlist(names)
 
-  df <- data.frame(cbind(x,y))
+  df <- data.frame(cbind(x, y))
   df$x <- as.numeric(df$x)
   df$y <-as.numeric(df$y)
-  df$names <- as.character(names)
-  colnames(df) <- c('Ability','Probability','Item')
+  df$names <- factor(names, levels = paste("Item", 1:m))
+  colnames(df) <- c('Ability', 'Probability', 'Item')
 
-  g <- ggplot(data= df, aes(x = Ability, y = Probability, color = Item )) + geom_line() +
-       ylab('Probability of correct answer') +
-       theme_app()
+  g <- ggplot(data = df, aes(x = Ability, y = Probability, color = Item )) +
+    geom_line() +
+    ylab('Probability of correct answer') +
+    theme_app()
 })
 
 output$threeparamirtiic_mirt <- renderPlotly({
@@ -1755,26 +1780,35 @@ output$DP_threeparamirtiic_mirt_tab <- downloadHandler(
 # *** TIF ######
 threeparamirttifInput_mirt <- reactive({
   plt <- plot(three_param_irt_mirt(), type = "infoSE")
-  
-  vals <- plt$panel.args
-	x <- vals[[1]]$x
-	y <- vals[[1]]$y
-	df <- data.frame(cbind(Ability = x, Information = y))
 
-	df$se <- 1/sqrt(df$Information)
-	
-	ggplot(data = df, aes(x = x)) +
-		geom_line(aes(y = Information), color = 'blue') +
-		geom_line(aes(y = se), color = 'pink') +
-		ylab(expression(paste('I(',theta,')'))) +
-		ggtitle('Test information and standard error') +
-		xlab(expression(theta)) +
-		theme(axis.title.y = element_text(color = 'pink')) +
-		theme_app()
+  vals <- plt$panel.args
+  x <- vals[[1]]$x
+  y <- vals[[1]]$y
+  df <- data.frame(cbind(Ability = x, Information = y))
+
+  df$SE <- 1/sqrt(df$Information)
+
+  ggplot(data = df, aes(x = Ability)) +
+    geom_line(aes(y = Information, col = "info")) +
+    geom_line(aes(y = SE, col = "se")) +
+    scale_color_manual("", values = c("blue", "pink"), labels = c("Information", "SE")) +
+    scale_y_continuous("Information",
+                       sec.axis = sec_axis(~., name = "SE")) +
+    theme(axis.title.y = element_text(color = 'pink')) +
+    theme_app()
+
 })
 
-output$threeparamirttif_mirt <- renderPlot({
-  threeparamirttifInput_mirt()
+output$threeparamirttif_mirt <- renderPlotly({
+  g <- threeparamirttifInput_mirt()
+  p <- ggplotly(g)
+
+  p$x$data[[1]]$text <- gsub("<br />colour: info", "", p$x$data[[1]]$text)
+  p$x$data[[2]]$text <- gsub("<br />colour: se", "", p$x$data[[2]]$text)
+
+  p$elementId <- NULL
+
+  p %>% plotly::config(displayModeBar = F)
 })
 
 output$DP_threeparamirttif_mirt <- downloadHandler(
@@ -2039,7 +2073,7 @@ output$irt_4PL_model_converged <- renderUI({
 irt_4PL_icc_Input <- reactive({
   # plot(irt_4PL_model(), type = "trace", facet_items = F)
 
-  plt <- plot(irt_4PL_model(), type = 'trace',facet_items = F)
+  plt <- plot(irt_4PL_model(), type = 'trace', facet_items = F)
   vals <- plt$panel.args
   x <- vals[[1]]$x
   y <- vals[[1]]$y
@@ -2049,20 +2083,19 @@ irt_4PL_icc_Input <- reactive({
   names <- list()
 
   for(j in 1:m){
-
-    names[[j]] <- rep(paste('Item',j),k)
-
+    names[[j]] <- rep(paste('Item', j), k)
   }
 
   names <- unlist(names)
 
-  df <- data.frame(cbind(x,y))
+  df <- data.frame(cbind(x, y))
   df$x <- as.numeric(df$x)
   df$y <-as.numeric(df$y)
-  df$names <- as.character(names)
-  colnames(df) <- c('Ability','Information','Item')
+  df$names <- factor(names, levels = paste("Item", 1:m))
+  colnames(df) <- c('Ability', 'Information', 'Item')
 
-  g <- ggplot(data= df, aes(x = Ability, y = Information, color = Item )) + geom_line() +
+  g <- ggplot(data= df, aes(x = Ability, y = Information, color = Item )) +
+    geom_line() +
     ylab('Probability of correct answer') +
     theme_app()
 })
@@ -2071,10 +2104,8 @@ output$irt_4PL_icc <- renderPlotly({
   p <- ggplotly(irt_4PL_icc_Input())
 
   for (j in 1:length(p$x$data)) {
-
-		text <- gsub("Item: ","",p$x$data[[j]]$text)
+		text <- gsub("Item: ", "", p$x$data[[j]]$text)
 		p$x$data[[j]]$text <- text
-
 	}
 
 
@@ -2157,22 +2188,21 @@ irt_4PL_iic_Input <- reactive({
   names <- list()
 
   for(j in 1:m){
-
-    names[[j]] <- rep(paste('Item',j),k)
-
+    names[[j]] <- rep(paste('Item', j), k)
   }
 
   names <- unlist(names)
 
-  df <- data.frame(cbind(x,y))
+  df <- data.frame(cbind(x, y))
   df$x <- as.numeric(df$x)
   df$y <-as.numeric(df$y)
-  df$names <- as.character(names)
-  colnames(df) <- c('Ability','Probability','Item')
+  df$names <- factor(names, levels = paste("Item", 1:m))
+  colnames(df) <- c('Ability', 'Probability', 'Item')
 
-  g <- ggplot(data= df, aes(x = Ability, y = Probability, color = Item )) + geom_line() +
-       ylab('Probability of correct answer') +
-	   theme_app()
+  g <- ggplot(data = df, aes(x = Ability, y = Probability, color = Item )) +
+    geom_line() +
+    ylab('Probability of correct answer') +
+    theme_app()
 })
 
 output$irt_4PL_iic <- renderPlotly({
@@ -2256,26 +2286,34 @@ output$DB_irt_4PL_iic_tab <- downloadHandler(
 # *** TIF ######
 irt_4PL_tif_Input <- reactive({
   plt <- plot(irt_4PL_model(), type = "infoSE")
-  
-  vals <- plt$panel.args
-	x <- vals[[1]]$x
-	y <- vals[[1]]$y
-	df <- data.frame(cbind(Ability = x, Information = y))
 
-	df$se <- 1/sqrt(df$Information)
-	
-	ggplot(data = df, aes(x = x)) +
-		geom_line(aes(y = Information), color = 'blue') +
-		geom_line(aes(y = se), color = 'pink') +
-		ylab(expression(paste('I(',theta,')'))) +
-		ggtitle('Test information and standard error') +
-		xlab(expression(theta)) +
-		theme(axis.title.y = element_text(color = 'pink')) +
-		theme_app()
+  vals <- plt$panel.args
+  x <- vals[[1]]$x
+  y <- vals[[1]]$y
+  df <- data.frame(cbind(Ability = x, Information = y))
+
+  df$SE <- 1/sqrt(df$Information)
+
+  ggplot(data = df, aes(x = Ability)) +
+    geom_line(aes(y = Information, col = "info")) +
+    geom_line(aes(y = SE, col = "se")) +
+    scale_color_manual("", values = c("blue", "pink"), labels = c("Information", "SE")) +
+    scale_y_continuous("Information",
+                       sec.axis = sec_axis(~., name = "SE")) +
+    theme(axis.title.y = element_text(color = 'pink')) +
+    theme_app()
 })
 
-output$irt_4PL_tif <- renderPlot({
-  irt_4PL_tif_Input()
+output$irt_4PL_tif <- renderPlotly({
+  g <- irt_4PL_tif_Input()
+  p <- ggplotly(g)
+
+  p$x$data[[1]]$text <- gsub("<br />colour: info", "", p$x$data[[1]]$text)
+  p$x$data[[2]]$text <- gsub("<br />colour: se", "", p$x$data[[2]]$text)
+
+  p$elementId <- NULL
+
+  p %>% plotly::config(displayModeBar = F)
 })
 
 output$DB_irt_4PL_tif <- downloadHandler(
@@ -2651,7 +2689,7 @@ bock_CC_Input <- reactive({
   df$x <- as.numeric(df$x)
   df$y <-as.numeric(df$y)
 
-  df$names <- as.character(names)
+  df$names <- factor(names, levels = paste("Item", 1:m))
 
   df <- df[order(df$x), ]
   # 200 je delka sekvence -6 az 6
@@ -2667,7 +2705,7 @@ bock_CC_Input <- reactive({
 })
 output$bock_CC <- renderPlotly({
   p <- ggplotly(bock_CC_Input())
-  
+
 
   # changing plotly description
   for (j in 1:length(p$x$data)){
@@ -2705,13 +2743,13 @@ bock_CC_Input_tab <- reactive({
   df <- data.frame(cbind(x, y))
   df$x <- as.numeric(df$x)
   df$y <-as.numeric(df$y)
-  
-  
+
+
   df <- df[order(df$x), ]
   # 200 je delka sekvence -6 az 6
   df$line <- paste0("line", (rep(1:(n/200), 200)))
 
-  g <- ggplot(data = df, aes(x = x, y = y, group = line)) + 
+  g <- ggplot(data = df, aes(x = x, y = y, group = line)) +
     geom_line(color = colors()[sample(1:255,1)]) +
 	ggtitle(as.character(paste('Item',charBock()))) +
     theme_app()
@@ -2756,9 +2794,7 @@ bock_IIC_Input <- reactive({
   names <- list()
 
   for(j in 1:m){
-
-    names[[j]] <- rep(paste('Item',j),k)
-
+    names[[j]] <- rep(paste('Item', j), k)
   }
 
   names <- unlist(names)
@@ -2766,15 +2802,16 @@ bock_IIC_Input <- reactive({
   df <- data.frame(cbind(x,y))
   df$x <- as.numeric(df$x)
   df$y <-as.numeric(df$y)
-  df$names <- as.character(names)
+  df$names <- factor(names, levels = paste("Item", 1:m))
 
-  
+
   df <- df[order(df$x), ]
 
-  colnames(df) <- c('Ability','Information','Item')
+  colnames(df) <- c('Ability', 'Information', 'Item')
 
-  g <- ggplot(data= df, aes(x = Ability, y = Information , color = Item)) + geom_line() +
-       ylab('Probability of correct answer') +
+  g <- ggplot(data = df, aes(x = Ability, y = Information , color = Item)) +
+    geom_line() +
+    ylab('Probability of correct answer') +
     theme_app()
 })
 output$bock_IIC <- renderPlotly({
@@ -2805,28 +2842,28 @@ output$DP_bock_IIC <- downloadHandler(
 
 bock_IIC_Input_tab <- reactive({
   #plot(bock_irt_mirt(), type = "infotrace", facet_items = F)
-  plt <- plot(bock_irt_mirt(), type = 'infotrace',which.item = charBock(),facet_items = F)
+  plt <- plot(bock_irt_mirt(), type = 'infotrace', which.item = charBock(),facet_items = F)
   vals <- plt$panel.args
   x <- vals[[1]]$x
   y <- vals[[1]]$y
   n <- length(vals[[1]]$subscripts)
-  
+
   df <- data.frame(cbind(x,y))
   df$x <- as.numeric(df$x)
   df$y <-as.numeric(df$y)
-  
-  
+
+
   df <- df[order(df$x), ]
-  colnames(df) <- c('Ability','Information') 
+  colnames(df) <- c('Ability','Information')
 
   g <- ggplot(data= df, aes(x = Ability, y = Information)) + geom_line(color = colors()[sample(1:256,1)]) +
        ylab('Probability of correct answer)') +
-	   ggtitle(as.character(paste('Item ',charBock()))) + 
+	   ggtitle(as.character(paste('Item ',charBock()))) +
     theme_app()
 })
 output$bock_IIC_tab <- renderPlotly({
   p <- ggplotly(bock_IIC_Input_tab())
-  
+
 
   # changing plotly description
   for (j in 1:length(p$x$data)){
@@ -2851,36 +2888,39 @@ output$DP_bock_IIC_tab <- downloadHandler(
   }
 )
 
-
-
 # *** TIF ######
 bock_TIF_Input <- reactive({
-  
 	plt <- plot(bock_irt_mirt(), type = "infoSE")
-  
-    vals <- plt$panel.args
+
+	vals <- plt$panel.args
 	x <- vals[[1]]$x
 	y <- vals[[1]]$y
 	df <- data.frame(cbind(Ability = x, Information = y))
 
-	df$se <- 1/sqrt(df$Information)
-	
-	ggplot(data = df, aes(x = x)) +
-		geom_line(aes(y = Information), color = 'blue') +
-		geom_line(aes(y = se), color = 'pink') +
-		ylab(expression(paste('I(',theta,')'))) +
-		ggtitle('Test information and standard error') +
-		xlab(expression(theta)) +
-		scale_y_continuous(sec.axis = dup_axis(~., name = 'S(E)')) +
-		theme(axis.title.y = element_text(color = 'pink')) +
-		theme_app()
+	df$SE <- 1/sqrt(df$Information)
 
+	ggplot(data = df, aes(x = Ability)) +
+	  geom_line(aes(y = Information, col = "info")) +
+	  geom_line(aes(y = SE, col = "se")) +
+	  scale_color_manual("", values = c("blue", "pink"), labels = c("Information", "SE")) +
+	  scale_y_continuous("Information",
+	                     sec.axis = sec_axis(~., name = "SE")) +
+	  theme(axis.title.y = element_text(color = 'pink')) +
+	  theme_app()
 })
-output$bock_TIF <- renderPlot({
-  
-  bock_TIF_Input()
-  
+
+output$bock_TIF <- renderPlotly({
+  g <- bock_TIF_Input()
+  p <- ggplotly(g)
+
+  p$x$data[[1]]$text <- gsub("<br />colour: info", "", p$x$data[[1]]$text)
+  p$x$data[[2]]$text <- gsub("<br />colour: se", "", p$x$data[[2]]$text)
+
+  p$elementId <- NULL
+
+  p %>% plotly::config(displayModeBar = F)
 })
+
 output$DP_bock_TIF <- downloadHandler(
   filename =  function() {
     paste("fig_BockTestInformationFunction.png", sep = "")
@@ -2902,7 +2942,6 @@ output$bock_coef_warning <- renderText({
   m <- length(coeftab) - 1
 
   dims <- sapply(coeftab, dim)[, -(m+1)]
-  print(length(unique(dims[2, ])))
   if (length(unique(dims[2, ])) == 1){
     hide("bock_coef_warning")
   } else {
@@ -2918,7 +2957,6 @@ bock_coef_Input <- reactive({
   coeftab <- coef(fit, printSE = T)
   m <- length(coeftab) - 1
 
-  print(coeftab)
   dims <- sapply(coeftab, dim)[, -(m+1)]
   if (length(unique(dims[2, ])) == 1){
     partab <- t(sapply(1:m, function(i) coeftab[[i]][1, ]))
@@ -2957,7 +2995,6 @@ bock_coef_Input_tab <- reactive({
   coeftab <- coef(fit, printSE = T)
   m <- length(coeftab) - 1
 
-  print(coeftab)
   dims <- sapply(coeftab, dim)[, -(m+1)]
   if (length(unique(dims[2, ])) == 1){
     partab <- t(sapply(1:m, function(i) coeftab[[i]][1, ]))

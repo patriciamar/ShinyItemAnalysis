@@ -3,6 +3,23 @@
         *  Changes and Developments in the ShinyItemAnalysis Package  *
         *                                                             *
         ***************************************************************
+
+-------------------------------------------------------
+- Changes in ShinyItemAnalysis 1.2.9. (2018-12-06) -
+-------------------------------------------------------
+
+MAJOR UPDATES
+  o TIF were converted into plotly.
+  o Section Validity/FA is not accessible for now.
+
+MINOR UPDATES
+  o Selected R code for IRT/Bock's model was updated.
+  o Wording in IRT models was updated.
+  o Wording in Reports was updated.
+  o Legend for plots of IRT models was modified in Reports.
+  o Ability estimates summary table is now round in Reports.
+
+
 -------------------------------------------------------
 - Changes in ShinyItemAnalysis 1.2.8-7. (2018-12-05) -
 -------------------------------------------------------

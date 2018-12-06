@@ -95,7 +95,7 @@ ui = tagList(
                     ShinyItemAnalysis
                     </div>
                     <div class = "footer-subtitle">
-                    Test and item analysis | Version 1.2.8-7
+                    Test and item analysis | Version 1.2.9
                     </div>
                     <span style = "float:right">
                     <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysis/" id = "tooltipweb" target="_blank">
@@ -466,22 +466,27 @@ ui = tagList(
                                                   h4("Dendrogram"),
                                                   plotOutput('dendrogram_plot'),
                                                   downloadButton(outputId = "DB_dendrogram", label = "Download figure")),
-                                 h4("Selected R code"),
-                                 div(code(HTML("library(corrplot)&nbsp;<br>library(ggdendro)<br>library(difNLR)&nbsp;<br>library(psych)<br><br>#&nbsp;loading&nbsp;data<br>data(GMAT)&nbsp;<br>data&nbsp;<-&nbsp;GMAT[,&nbsp;1:20]&nbsp;<br><br>#&nbsp;calculation&nbsp;of&nbsp;correlation<br>###&nbsp;Pearson<br>corP&nbsp;<-&nbsp;cor(data,&nbsp;method&nbsp;=&nbsp;\"pearson\")<br>###&nbsp;Spearman<br>corP&nbsp;<-&nbsp;cor(data,&nbsp;method&nbsp;=&nbsp;\"spearman\")<br>###&nbsp;Polychoric<br>corP&nbsp;<-&nbsp;polychoric(data)&nbsp;<br>corP$rho&nbsp;<br><br>#&nbsp;correlation&nbsp;heat&nbsp;map&nbsp;<br>corrplot(corP$rho)&nbsp;#&nbsp;correlation&nbsp;plot&nbsp;<br>corrplot(corP$rho,&nbsp;order&nbsp;=&nbsp;\"hclust\",&nbsp;hclust.method&nbsp;=&nbsp;\"ward.D\",&nbsp;addrect&nbsp;=&nbsp;3)&nbsp;#&nbsp;correlation&nbsp;plot&nbsp;with&nbsp;3&nbsp;clusters&nbsp;using&nbsp;Ward&nbsp;method<br><br>#&nbsp;dendrogram<br>hc&nbsp;<-&nbsp;hclust(as.dist(1&nbsp;-&nbsp;corP$rho),&nbsp;method&nbsp;=&nbsp;\"ward.D\")&nbsp;#&nbsp;hierarchical&nbsp;clustering&nbsp;<br>ggdendrogram(hc)&nbsp;#&nbsp;dendrogram"))),
-                                 br()
-                                 ),
-                        # * FACTOR ANALYSIS ####
-                        tabPanel("Factor analysis",
-                                 h3("Factor analysis"),
                                  h4("Scree plot"),
                                  p('A scree plot displays the eigenvalues associated with an component or a factor in descending order
                                    versus the number of the component or factor. Location of a bend (an elbow) suggests a suitable number of factors.'),
                                  plotOutput('scree_plot'),
                                  downloadButton(outputId = "DB_scree_plot", label = "Download figure"),
                                  h4("Selected R code"),
-                                 div(code(HTML("library(difNLR)&nbsp;<br>library(psych)<br><br>#&nbsp;loading&nbsp;data<br>data(GMAT)&nbsp;<br>data&nbsp;<-&nbsp;GMAT[,&nbsp;1:20]&nbsp;<br><br>#&nbsp;scree&nbsp;plot&nbsp;<br>ev&nbsp;<-&nbsp;eigen(corP$rho)$values&nbsp;#&nbsp;eigen&nbsp;values<br>df&nbsp;<-&nbsp;data.frame(comp&nbsp;=&nbsp;1:length(ev),&nbsp;ev)<br><br>ggplot(df,&nbsp;aes(x&nbsp;=&nbsp;comp,&nbsp;y&nbsp;=&nbsp;ev))&nbsp;+&nbsp;<br>&nbsp;&nbsp;geom_point()&nbsp;+&nbsp;<br>&nbsp;&nbsp;geom_line()&nbsp;+&nbsp;<br>&nbsp;&nbsp;ylab(\"Eigen&nbsp;value\")&nbsp;+&nbsp;<br>&nbsp;&nbsp;xlab(\"Component&nbsp;number\")&nbsp;+<br>&nbsp;&nbsp;theme_app()"))),
+                                 div(code(HTML("library(corrplot)&nbsp;<br>library(ggdendro)<br>library(difNLR)&nbsp;<br>library(psych)<br><br>#&nbsp;loading&nbsp;data<br>data(GMAT)&nbsp;<br>data&nbsp;<-&nbsp;GMAT[,&nbsp;1:20]&nbsp;<br><br>#&nbsp;calculation&nbsp;of&nbsp;correlation<br>###&nbsp;Pearson<br>corP&nbsp;<-&nbsp;cor(data,&nbsp;method&nbsp;=&nbsp;\"pearson\")<br>###&nbsp;Spearman<br>corP&nbsp;<-&nbsp;cor(data,&nbsp;method&nbsp;=&nbsp;\"spearman\")<br>###&nbsp;Polychoric<br>corP&nbsp;<-&nbsp;polychoric(data)&nbsp;<br>corP$rho&nbsp;<br><br>#&nbsp;correlation&nbsp;heat&nbsp;map&nbsp;<br>corrplot(corP$rho)&nbsp;#&nbsp;correlation&nbsp;plot&nbsp;<br>corrplot(corP$rho,&nbsp;order&nbsp;=&nbsp;\"hclust\",&nbsp;hclust.method&nbsp;=&nbsp;\"ward.D\",&nbsp;addrect&nbsp;=&nbsp;3)&nbsp;#&nbsp;correlation&nbsp;plot&nbsp;with&nbsp;3&nbsp;clusters&nbsp;using&nbsp;Ward&nbsp;method<br><br>#&nbsp;dendrogram<br>hc&nbsp;<-&nbsp;hclust(as.dist(1&nbsp;-&nbsp;corP$rho),&nbsp;method&nbsp;=&nbsp;\"ward.D\")&nbsp;#&nbsp;hierarchical&nbsp;clustering&nbsp;<br>ggdendrogram(hc)&nbsp;#&nbsp;dendrogram<br><br>library(difNLR)&nbsp;<br>library(psych)<br><br>#&nbsp;loading&nbsp;data<br>data(GMAT)&nbsp;<br>data&nbsp;<-&nbsp;GMAT[,&nbsp;1:20]&nbsp;<br><br>#&nbsp;scree&nbsp;plot&nbsp;<br>ev&nbsp;<-&nbsp;eigen(corP$rho)$values&nbsp;#&nbsp;eigen&nbsp;values<br>df&nbsp;<-&nbsp;data.frame(comp&nbsp;=&nbsp;1:length(ev),&nbsp;ev)<br><br>ggplot(df,&nbsp;aes(x&nbsp;=&nbsp;comp,&nbsp;y&nbsp;=&nbsp;ev))&nbsp;+&nbsp;<br>&nbsp;&nbsp;geom_point()&nbsp;+&nbsp;<br>&nbsp;&nbsp;geom_line()&nbsp;+&nbsp;<br>&nbsp;&nbsp;ylab(\"Eigen&nbsp;value\")&nbsp;+&nbsp;<br>&nbsp;&nbsp;xlab(\"Component&nbsp;number\")&nbsp;+<br>&nbsp;&nbsp;theme_app()"))),
                                  br()
                                  ),
+                        # # * FACTOR ANALYSIS ####
+                        # tabPanel("Factor analysis",
+                        #          h3("Factor analysis"),
+                        #          h4("Scree plot"),
+                        #          p('A scree plot displays the eigenvalues associated with an component or a factor in descending order
+                        #            versus the number of the component or factor. Location of a bend (an elbow) suggests a suitable number of factors.'),
+                        #          plotOutput('scree_plot'),
+                        #          downloadButton(outputId = "DB_scree_plot", label = "Download figure"),
+                        #          h4("Selected R code"),
+                        #          div(code(HTML("library(difNLR)&nbsp;<br>library(psych)<br><br>#&nbsp;loading&nbsp;data<br>data(GMAT)&nbsp;<br>data&nbsp;<-&nbsp;GMAT[,&nbsp;1:20]&nbsp;<br><br>#&nbsp;scree&nbsp;plot&nbsp;<br>ev&nbsp;<-&nbsp;eigen(corP$rho)$values&nbsp;#&nbsp;eigen&nbsp;values<br>df&nbsp;<-&nbsp;data.frame(comp&nbsp;=&nbsp;1:length(ev),&nbsp;ev)<br><br>ggplot(df,&nbsp;aes(x&nbsp;=&nbsp;comp,&nbsp;y&nbsp;=&nbsp;ev))&nbsp;+&nbsp;<br>&nbsp;&nbsp;geom_point()&nbsp;+&nbsp;<br>&nbsp;&nbsp;geom_line()&nbsp;+&nbsp;<br>&nbsp;&nbsp;ylab(\"Eigen&nbsp;value\")&nbsp;+&nbsp;<br>&nbsp;&nbsp;xlab(\"Component&nbsp;number\")&nbsp;+<br>&nbsp;&nbsp;theme_app()"))),
+                        #          br()
+                        #          ),
                         # * PREDICTIVE VALIDITY ####
                         tabPanel('Criterion validity',
                                  tabsetPanel(
@@ -2613,7 +2618,7 @@ ui = tagList(
                            <li><code>ShinyItemAnalysis</code>
                            Martinkova, P., Drabinova, A., Leder, O. & Houdek, J. (2018).
                            ShinyItemAnalysis: Test and item analysis via shiny.
-                           R package version 1.2.8.
+                           R package version 1.2.9.
                            <a href = "https://CRAN.R-project.org/package=ShinyItemAnalysis", target = "_blank">See online.</a>
                            </li>
 
