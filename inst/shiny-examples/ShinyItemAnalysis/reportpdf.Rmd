@@ -94,9 +94,15 @@ To cite ShinyItemAnalysis application in publications, please, use:
 \begin{thebibliography}{}
 
 \bibitem{martinkova2018}
+  Martinkov\'a P. \& Drabinov\'a A.
+  (2018)
+  ShinyItemAnalysis for teaching psychometrics and to enforce routine analysis of educational tests. 
+  \textit{The R Journal}. Submitted.
+
+\bibitem{martinkova2018}
   Martinkov\'a P., Drabinov\'a A., Leder O., \& Houdek J.
   (2018)
-  ShinyItemAnalysis: Test and item analysis via shiny. R package version 1.2.8.
+  ShinyItemAnalysis: Test and item analysis via shiny. R package version 1.2.9.
   https://CRAN.R-project.org/package=ShinyItemAnalysis
 
 \bibitem{martinkova2017}
@@ -136,6 +142,8 @@ print(xtable(t(table),
       tabular.environment = "longtable", floating = F)
 ```
 
+\vspace{1em}
+
 ### Histogram of total scores
 For selected cut-score, blue part of histogram shows respondents with total score above the cut-score, grey column shows respondents with total score equal to the cut-score and red part of histogram shows respondents below the cut-score.
 
@@ -156,6 +164,8 @@ Total score also known as raw score is a total number of correct answers. It can
 Success rate is the percentage of success, e.g. if the maximum points of test is equal to 20 and individual score is 12 then success rate is 12/20 = 0.6, i.e. 60%. 
 Z-score or also standardized score is a linear transformation of total score with a mean of 0 and with variance of 1. If X is total score, M its mean and SD its standard deviation then Z-score = (X - M) / SD. T-score is transformed Z-score with a mean of 50 and standard deviation of 10. If Z is Z-score then T-score = (Z * 10) + 50.
 
+\vspace{1em}
+
 ```{r standard-scores-table, echo = FALSE, results = 'asis'}
 table = params$standardscores_table
 
@@ -173,11 +183,11 @@ print(xtable(table,
 `r if (any(params$corr_plot != "")) {"## Correlation structure"}`
 
 `r if (any(params$corr_plot != "")) {"### Correlation heat map "}`
-`r if (any(params$corr_plot != "")) {if (params$corr_type=="pearson") {"Correlation heat map is a correlation plot which displays Pearson correlations of items. Pearson correlation coefficient describes linear correlation between two random variables X and Y."}}`
+`r if (any(params$corr_plot != "")) {if (params$corr_type == "pearson") {"Correlation heat map is a correlation plot which displays Pearson correlations of items. Pearson correlation coefficient describes linear correlation between two random variables X and Y."}}`
 
-`r if (any(params$corr_plot != "")) {if (params$corr_type=="polychoric") {"Correlation heat map is a correlation plot which displays Polychoric correlations of items. Polychoric/tetrachoric correlation between two ordinal/binary variables is calculated from their contingency table, under the assumption that the ordinal variables dissect continuous latent variables that are bivariate normal."}}`
+`r if (any(params$corr_plot != "")) {if (params$corr_type == "polychoric") {"Correlation heat map is a correlation plot which displays polychoric correlations of items. Polychoric/tetrachoric correlation between two ordinal/binary variables is calculated from their contingency table, under the assumption that the ordinal variables dissect continuous latent variables that are bivariate normal."}}`
 
-`r if (any(params$corr_plot != "")) {if (params$corr_type=="spearman") {"Correlation heat map is a correlation plot which displays Polychoric correlations of items. Spearman's rank correlation coefficient describes strength and direction of monotonic relationship between random variables X and Y, i.e. dependence between the rankings of two variables."}}`
+`r if (any(params$corr_plot != "")) {if (params$corr_type == "spearman") {"Correlation heat map is a correlation plot which displays Polychoric correlations of items. Spearman's rank correlation coefficient describes strength and direction of monotonic relationship between random variables X and Y, i.e. dependence between the rankings of two variables."}}`
 
 `r clustmethod_names <- c("None" = "none",
                           "Ward's"  = "ward.D",
@@ -272,13 +282,13 @@ if(params$isCriterionPresent & params$validity_check){
 
 ### Difficulty/Discrimination plot
 
-`r if (params$DDplotDiscType=="ULI") {"Difficulty (red) of items is estimated as percent of respondents who answered correctly to that item. Discrimination (blue) is by default described by difference of percent correct in upper and lower third of respondents (Upper-Lower Index, ULI). By rule of thumb it should not be lower than 0.2 (borderline in the plot), except for very easy or very difficult items."}`
+`r if (params$DDplotDiscType == "ULI") {"Difficulty (red) of items is estimated as percent of respondents who answered correctly to that item. Discrimination (blue) is by default described by difference of percent correct in upper and lower third of respondents (Upper-Lower Index, ULI). By rule of thumb it should not be lower than 0.2 (borderline in the plot), except for very easy or very difficult items."}`
 
-`r if (params$DDplotDiscType=="RIR") {"Difficulty (red) of items is estimated as percent of respondents who answered correctly to that item. Discrimination (blue) is described by Pearson correlation between item and rest of items. By rule of thumb it should not be lower than 0.2 (borderline in the plot), except for very easy or very difficult items."}`
+`r if (params$DDplotDiscType == "RIR") {"Difficulty (red) of items is estimated as percent of respondents who answered correctly to that item. Discrimination (blue) is described by Pearson correlation between item and rest of items. By rule of thumb it should not be lower than 0.2 (borderline in the plot), except for very easy or very difficult items."}`
 
-`r if (params$DDplotDiscType=="RIT") {"Difficulty (red) of items is estimated as percent of respondents who answered correctly to that item. Discrimination (blue) is described by Pearson correlation between item and total score. By rule of thumb it should not be lower than 0.2 (borderline in the plot), except for very easy or very difficult items."}`
+`r if (params$DDplotDiscType == "RIT") {"Difficulty (red) of items is estimated as percent of respondents who answered correctly to that item. Discrimination (blue) is described by Pearson correlation between item and total score. By rule of thumb it should not be lower than 0.2 (borderline in the plot), except for very easy or very difficult items."}`
 
-`r if (params$DDplotDiscType=="none") {"Difficulty (red) of items is estimated as percent of respondents who answered correctly to that item."}`
+`r if (params$DDplotDiscType == "none") {"Difficulty (red) of items is estimated as percent of respondents who answered correctly to that item."}`
 
 ```{r DD-plot-interpretation, echo = FALSE, results = "hide"}
 range1 <- params$DDplotRange1
@@ -302,6 +312,8 @@ numgroups <- params$DDplotNumGroups
 
 `r if (any(range1 != 1, range2 != 3, numgroups != 3)) {DDplot_interpretation}`
 
+\vspace{1em}
+
 ```{r DD-plot, echo = FALSE, fig.height = 4.5, fig.width = 11, dpi = 300}
 params$difPlot + 
   theme(text = element_text(size = 16), 
@@ -313,6 +325,8 @@ params$difPlot +
 
 ### Traditional item analysis table 
 Diff. - Difficulty of item is estimated as percent of respondents who answered correctly to that item. SD - standard deviation, ULI - Upper-Lower Index calculated as difference in percent correct between upper lower third of respondents, RIT - Pearson correlation between item and total score, RIR - Pearson correlation between item and rest of items, Alpha Drop - Cronbach's alpha of test without given item, gULI - generalized ULI calculated as difference between the difficulty recorded in the groups selected by user.
+
+\vspace{1em}
 
 ```{r item-table, echo = FALSE, results = "asis"}
 table = params$itemexam
@@ -380,6 +394,9 @@ if (params$irt_type == "none") {
 }
 ```
 
+`r if (params$irt_type != "rasch") {"Ability $\\theta$ is assumed to follow normal distribution with freely estimated variance. "}`
+
+`r if (params$irt_type %in% c("1pl", "2pl", "3pl", "4pl")) {"Ability $\\theta$ is assumed to follow standard normal distribution. "}`
 
 `r if (any(params$wrightMap!="")) {"## Wright (item-person) map using 1PL IRT model"}`
 
@@ -403,7 +420,7 @@ if (any(params$wrightMap != "")) {
 
 `r if (params$irt_type != "none") {"## Ability estimates"}`
 
-`r if (params$irt_type != "none") {"Ability is estimated by selected IRT model. Relationship between ability estimates (factor scores, F-scores) and standardized total test scores (Z-scores) can be seen on scatter plot below."}`
+`r if (params$irt_type != "none") {"Ability is estimated by selected IRT model. Relationship between ability estimates (factor scores, F-scores) and standardized total test scores (Z-scores) can be seen on scatter plot below. The complete score table for all respondents can be downloaded in the application. "}`
 
 ```{r irtability, echo = FALSE, results = 'asis'}
 table = params$irtability
@@ -427,23 +444,58 @@ if (params$irt_type != "none") {
 
 `r if (params$irt_type != "none") {"## Item characteristic and information curves"}`
 
-```{r irt-0, echo = FALSE, results = "hide", fig.height = 4, fig.width = 11, dpi = 300}
+```{r irt-0, echo = FALSE, results = "hide", fig.height = 4.3, fig.width = 11, dpi = 300}
 if (params$irt_type != "none") {
-  params$irt + ggtitle("Item trace lines") + xlab(expression(theta)) + ylab(expression("I("*theta*")")) + 
-    theme(legend.position = "right", legend.text=element_text(size=10))
+  if (ncol(params$a) < 50){
+  params$irt + 
+    ggtitle("Item characteristic curves") + 
+    xlab(expression(theta)) + 
+    ylab(expression("P("*theta*")")) + 
+    guides(colour = guide_legend(ncol = max(ncol(params$a) %/% 10, 1))) + 
+    theme(legend.position = "right", 
+          legend.text = element_text(size = 10))
+  } else {
+    params$irt + 
+      ggtitle("Item characteristic curves") + 
+      xlab(expression(theta)) + 
+      ylab(expression("P("*theta*")")) + 
+      guides(colour = guide_legend(nrow = max(ncol(params$a) %/% 13, 1))) + 
+      theme(legend.position = "bottom", 
+            legend.text = element_text(size = 10))
+  }
 }
 ```
 
-```{r irt-1, echo = FALSE, results = "hide", fig.height = 4, fig.width = 11, dpi = 300}
+```{r irt-1, echo = FALSE, results = "hide", fig.height = 4.3, fig.width = 11, dpi = 300}
 if (params$irt_type != "none") {
-  params$irtiic + ggtitle("Item information trace lines") + xlab(expression(theta)) + ylab(expression("I("*theta*")")) + 
-    theme(legend.position = "right", legend.text=element_text(size=10))
+  if (ncol(params$a) < 50){
+    params$irtiic + 
+      ggtitle("Item information curves") + 
+      xlab(expression(theta)) + 
+      ylab(expression("I("*theta*")")) + 
+      guides(colour = guide_legend(ncol = max(ncol(params$a) %/% 10, 1))) + 
+      theme(legend.position = "right", 
+            legend.text = element_text(size = 10))
+  } else {
+    params$irtiic + 
+      ggtitle("Item information curves") + 
+      xlab(expression(theta)) + 
+      ylab(expression("I("*theta*")")) + 
+      guides(colour = guide_legend(nrow = max(ncol(params$a) %/% 13, 1))) + 
+      theme(legend.position = "bottom", 
+            legend.text = element_text(size = 10))
+  }
 }
 ```
 
-```{r irt-2, echo = FALSE, results = "hide", fig.height = 4, fig.width = 11, dpi = 300}
+```{r irt-2, echo = FALSE, results = "hide", fig.height = 4.3, fig.width = 11, dpi = 300}
 if (params$irt_type != "none") {
-  params$irttif
+  params$irttif + 
+    ggtitle("Test information function") + 
+    xlab(expression(theta)) + 
+    ylab(expression("I("*theta*")")) + 
+    theme(legend.position = "right", 
+          legend.text = element_text(size = 10))
 }
 ```
 
