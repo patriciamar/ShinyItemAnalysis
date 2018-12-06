@@ -10,6 +10,10 @@
 MAJOR UPDATES
   o IRT section of shiny app was updated and now provides
     new and more shiny figures in plotly
+  o PDF and HTML reports were updated and now allow
+    - different types of correlation in corrplots
+    - different types of discrimination indices in DDplots
+    - summary table for ability estimates in IRT section
 
 -------------------------------------------------------
 - Changes in ShinyItemAnalysis 1.2.8-6. (2018-12-03) -
