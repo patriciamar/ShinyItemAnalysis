@@ -84,7 +84,7 @@ This report was created by ShinyItemAnalysis application version `r packageVersi
 To cite ShinyItemAnalysis application in publications, please, use:
 
 
-  Martinkova P. \& Drabinova A.
+  Martinkova P., \& Drabinova A.
   (2018)
   ShinyItemAnalysis for teaching psychometrics and to enforce routine analysis of educational tests. 
   The R Journal. 
@@ -99,7 +99,7 @@ To cite ShinyItemAnalysis application in publications, please, use:
   Martinkova P., Drabinova A., \& Houdek J.
   (2017)
   ShinyItemAnalysis: Analyza prijimacich a jinych znalostnich ci psychologickych testu
-  [ShinyItemAnalysis: Analyzing admission and other educational and psychological tests].
+  [ShinyItemAnalysis: Analyzing admission and other educational and psychological tests, in Czech].
   TESTFORUM, 6(9), 16-35. [doi:10.5817/TF2017-9-129](http://www.testforum.cz/domains/testforum.cz/index.php/testforum/article/view/129)
 
 This program is free software and you can redistribute it and or modify it under the terms of the GNU GPL 3 as published by the Free Software Foundation. This program is distributed in the hope that it will be useful, but without any warranty; without even the implied warranty of merchantability of fitness for a particular purpose. 
@@ -139,14 +139,14 @@ params$histogram_totalscores +
 # Scoring
 
 ### Summary table of standard scores
-Total score also known as raw score is a total number of correct answers. It can be used to compare individual score to a norm group, e.g. if the mean is 12, then individual score can be compared to see if it is below or above this average. Percentile indicates the value below which a percentage of observations falls, e.g. a individual score at the 80th percentile means that the individual score is the same or higher than the scores of 80% of all respondents. 
-Success rate is the percentage of success, e.g. if the maximum points of test is equal to 20 and individual score is 12 then success rate is 12/20 = 0.6, i.e. 60%. 
-Z-score or also standardized score is a linear transformation of total score with a mean of 0 and with variance of 1. If X is total score, M its mean and SD its standard deviation then Z-score = (X - M) / SD. T-score is transformed Z-score with a mean of 50 and standard deviation of 10. If Z is Z-score then T-score = (Z * 10) + 50.
+The total score also known as the raw score is a total number of correct answers. It can be used to compare individual score to a norm group, e.g. if the mean is 12, then individual score can be compared to see if it is below or above this average. Percentile indicates the value below which a percentage of observations falls, e.g. an individual score at the 80th percentile means that the individual score is the same or higher than the scores of 80% of all respondents. Success rate is the percentage of correct answers, e.g. if the maximum points of test is equal to 20 and individual score is 12 then success rate is 12/20 = 0.6, i.e. 60%. The Z-score or also the standardized score is a linear transformation of total score with a mean of 0 and with variance of 1. If X is total score, M its mean and SD its standard deviation then Z-score = (X - M) / SD. The T-score is transformed Z-score with a mean of 50 and standard deviation of 10. If Z is Z-score then T-score = (Z * 10) + 50.
 
 ```{r standard-scores-table, echo = FALSE}
 table = params$standardscores_table
 kable(table, align = 'c')
 ```
+
+`r if (params$irt_type != "none") {"More complex estimates of ability are provided in IRT section."}`
 
 `r if (any(params$corr_plot != "") | params$validity_check) {"**************"}`
 
@@ -156,11 +156,11 @@ kable(table, align = 'c')
 `r if (any(params$corr_plot != "")) {"## Correlation structure"}`
 
 `r if (any(params$corr_plot != "")) {"### Correlation heat map "}`
-`r if (any(params$corr_plot != "")) {if (params$corr_type == "pearson") {"Correlation heat map is a correlation plot which displays Pearson correlations of items. Pearson correlation coefficient describes linear correlation between two random variables X and Y."}}`
+`r if (any(params$corr_plot != "")) {if (params$corr_type == "pearson") {"Correlation heat map displays Pearson correlations of items. Pearson correlation coefficient describes linear correlation between two random variables X and Y."}}`
 
-`r if (any(params$corr_plot != "")) {if (params$corr_type == "polychoric") {"Correlation heat map is a correlation plot which displays polychoric correlations of items. Polychoric/tetrachoric correlation between two ordinal/binary variables is calculated from their contingency table, under the assumption that the ordinal variables dissect continuous latent variables that are bivariate normal."}}`
+`r if (any(params$corr_plot != "")) {if (params$corr_type == "polychoric") {"Correlation heat map displays polychoric correlations of items. Polychoric/tetrachoric correlation between two ordinal/binary variables is calculated from their contingency table, under the assumption that the ordinal variables dissect continuous latent variables that are bivariate normal."}}`
 
-`r if (any(params$corr_plot != "")) {if (params$corr_type == "spearman") {"Correlation heat map is a correlation plot which displays Spearman correlations of items. Spearman's rank correlation coefficient describes strength and direction of monotonic relationship between random variables X and Y, i.e. dependence between the rankings of two variables."}}`
+`r if (any(params$corr_plot != "")) {if (params$corr_type == "spearman") {"Correlation heat map displays Spearman correlations of items. Spearman's rank correlation coefficient describes strength and direction of monotonic relationship between random variables X and Y, i.e. dependence between the rankings of two variables."}}`
 
 `r clustmethod_names <- c("None" = "none",
                           "Ward's"  = "ward.D",
@@ -171,7 +171,7 @@ kable(table, align = 'c')
                           "McQuitty" = "mcquitty",
                           "median" = "median",
                           "centroid" = "centroid")`
-`r if (any(params$corr_plot != "") & params$corr_plot_clustmethod != "none") {paste("Correlation heat map is reordered using hierarchical clustering with", names(clustmethod_names)[clustmethod_names == params$corr_plot_clustmethod], "linkage method. Number of considered clusters was", params$corr_plot_numclust, ".")}`
+`r if (any(params$corr_plot != "") & params$corr_plot_clustmethod != "none") {paste("Correlation heat map is reordered using hierarchical clustering with", names(clustmethod_names)[clustmethod_names == params$corr_plot_clustmethod], "linkage method. Number of highlighted clusters is", params$corr_plot_numclust, ". ")}`
 
 ```{r corr-plot, echo = FALSE, fig.width = 11, fig.height = 4, fig.align = 'center', dpi = 300}
 if (any(params$corr_plot != "")) {
@@ -192,7 +192,7 @@ if (any(params$corr_plot != "")) {
 
 `r if (any(params$corr_plot != "")) {"### Scree plot"}` 
 
-`r if (any(params$corr_plot != "")) {"Scree plot displays the eigenvalues associated with an component or a factor in descending order versus the number of the component or factor."}`
+`r if (any(params$corr_plot != "")) {"Scree plot displays the eigenvalues associated with a component or a factor in descending order."}`
 
 ```{r scree-plot, echo = FALSE, fig.width = 11, fig.height = 4, fig.align = 'center', dpi = 300}
 if (any(params$corr_plot != "")) {
@@ -289,7 +289,7 @@ params$difPlot +
 ```
 
 ### Traditional item analysis table
-Diff. - Difficulty of item is estimated as percent of respondents who answered correctly to that item. SD - standard deviation, ULI - Upper-Lower Index calculated as difference in percent correct between upper lower third of respondents, RIT - Pearson correlation between item and total score, RIR - Pearson correlation between item and rest of items, Alpha Drop - Cronbach's alpha of test without given item, gULI - generalized ULI calculated as difference between the difficulty recorded in the groups selected by user.
+Diff. - Difficulty of item is estimated as percent of respondents who answered correctly to that item. SD - standard deviation, ULI - Upper-Lower Index calculated as difference in percent correct between upper and lower third of respondents, RIT - Pearson correlation between item and total score, RIR - Pearson correlation between item and rest of items, Alpha Drop - Cronbach's alpha of test without given item, gULI - generalized ULI calculated as difference between the difficulty recorded in the groups selected by user.
 
 ```{r item-table, echo = FALSE}
 table = params$itemexam
@@ -368,13 +368,13 @@ if (any(params$wrightMap != "")) {
 `r if (params$irt_type != "none") {paste0("All subsequent analyses are based on the selected ", head, ":")}`
 `r if (params$irt_type != "none") {eq}`
 
-`r if (params$irt_type == "rasch") {"Ability $\\theta$ is assumed to follow normal distribution with freely estimated variance. "}`
+`r if (params$irt_type == "rasch") {"Model parameters are estimated using marginal maximum likelihood (MML) method. Ability $\\theta$ is assumed to follow normal distribution with freely estimated variance. "}`
 
-`r if (params$irt_type %in% c("1pl", "2pl", "3pl", "4pl")) {"Ability $\\theta$ is assumed to follow standard normal distribution. "}`
+`r if (params$irt_type %in% c("1pl", "2pl", "3pl", "4pl")) {"Model parameters are estimated using marginal maximum likelihood (MML) method. Ability $\\theta$ is assumed to follow standard normal distribution. "}`
 
 `r if (params$irt_type != "none") {"## Ability estimates"}`
 
-`r if (params$irt_type != "none") {"Ability is estimated by selected IRT model. Relationship between ability estimates (factor scores, F-scores) and standardized total test scores (Z-scores) can be seen on scatter plot below. The complete score table for all respondents can be downloaded in the application. "}`
+`r if (params$irt_type != "none") {"Ability is estimated using EAP algorithm and selected IRT model. Relationship between ability estimates (factor scores, F-scores) and standardized total test scores (Z-scores) can be seen on scatter plot below. Table with ability estimates for all respondents can be downloaded in the application. "}`
 
 ```{r irtability, echo = FALSE, results = 'asis'}
 table = round(params$irtability, 2)
@@ -430,7 +430,7 @@ if (params$irt_type != "none") {
 
 `r if (params$irt_type != "none") {"## Parameter estimates and item fit"}`
 
-`r if (params$irt_type != "none") {"Estimates of parameters are completed by SX2 item fit statistics. SX2 is computed only when no missing data are present."}`
+`r if (params$irt_type != "none") {"Estimates of parameters are completed by their standard errors (SE) and by signed Chi-squared statistics (SX2, see Orlando and Thissen, 2000). P-values lower than 0.05 indicate suspicious items not fitting the selected IRT model. SX2 is computed only when no missing data are present."}`
 
 ```{r irt-estim, echo = FALSE}
 if (params$irt_type != "none") {
@@ -465,7 +465,6 @@ if (params$histCheck) {
 `r if(params$isGroupPresent & params$histCheck) {"### Histogram of total score by group"}`
 
 `r if(params$isGroupPresent & params$histCheck) {"For selected cut-score, blue part of histograms shows respondents with total score above the cut-score, grey column shows respondents with total score equal to the cut-score and red part of histogram shows respondents below the cut-score."}`
-
 
 ```{r hist-by-group, echo = FALSE, fig.width = 11, fig.height = 4, fig.align = 'center', dpi = 300}
 if (params$histCheck) {
@@ -592,7 +591,7 @@ if (params$logregCheck) {
 
 `r if(params$isGroupPresent & params$multiCheck) {"## DDF detection using multinomial regression"}`
 
-`r if(params$isGroupPresent & params$multiCheck) {"Differential Distractor Functioning (DDF) occurs when people from different groups but with the same knowledge have different probability of selecting at least one distractor choice. DDF is here examined by multinomial log-linear regression model with Z-score and group membership as covariates. "}`
+`r if(params$isGroupPresent & params$multiCheck) {"Differential Distractor Functioning (DDF) occurs when respondents from different groups but with the same knowledge have different probability of selecting at least one distractor choice. DDF is here examined by multinomial log-linear regression model with Z-score and group membership as covariates. "}`
 
 `r if(params$isGroupPresent & params$multiCheck) {"### Summary table"}`
 
