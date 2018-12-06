@@ -29,6 +29,7 @@ params:
   corr_plot: NA
   corr_plot_numclust: NA
   corr_plot_clustmethod: NA
+  corr_type: NA
   scree_plot: NA
   isCriterionPresent: NA
   validity_check: NA
@@ -171,8 +172,12 @@ print(xtable(table,
 
 `r if (any(params$corr_plot != "")) {"## Correlation structure"}`
 
-`r if (any(params$corr_plot != "")) {"### Polychoric correlation heat map "}`
-`r if (any(params$corr_plot != "")) {"Polychoric correlation heat map is a correlation plot which displays a polychoric correlations of items. The size and shade of circles indicate how much the items are correlated (larger and darker circle means larger correlation). The color of circles indicates in which way the items are correlated - blue color shows possitive correlation and red color shows negative correlation."}`
+`r if (any(params$corr_plot != "")) {"### Correlation heat map "}`
+`r if (any(params$corr_plot != "")) {if (params$corr_type=="pearson") {"Correlation heat map is a correlation plot which displays Pearson correlations of items. Pearson correlation coefficient describes linear correlation between two random variables X and Y."}}`
+
+`r if (any(params$corr_plot != "")) {if (params$corr_type=="polychoric") {"Correlation heat map is a correlation plot which displays Polychoric correlations of items. Polychoric/tetrachoric correlation between two ordinal/binary variables is calculated from their contingency table, under the assumption that the ordinal variables dissect continuous latent variables that are bivariate normal."}}`
+
+`r if (any(params$corr_plot != "")) {if (params$corr_type=="spearman") {"Correlation heat map is a correlation plot which displays Polychoric correlations of items. Spearman's rank correlation coefficient describes strength and direction of monotonic relationship between random variables X and Y, i.e. dependence between the rankings of two variables."}}`
 
 `r clustmethod_names <- c("None" = "none",
                           "Ward's"  = "ward.D",
@@ -184,7 +189,7 @@ print(xtable(table,
                           "median" = "median",
                           "centroid" = "centroid")`
                           
-`r if (any(params$corr_plot != "") & params$corr_plot_clustmethod != "none") {paste("Polychoric correlation heat map is reorder using hierarchical clustering with", names(clustmethod_names)[clustmethod_names == params$corr_plot_clustmethod], "linkage method. Number of", params$corr_plot_numclust, "clusters is considered. ")}`
+`r if (any(params$corr_plot != "") & params$corr_plot_clustmethod != "none") {paste("Correlation heat map is reordered using hierarchical clustering with", names(clustmethod_names)[clustmethod_names == params$corr_plot_clustmethod], "linkage method. Number of considered clusters was", params$corr_plot_numclust, ". ")}`
 
 `r if (any(params$corr_plot != "") & params$corr_plot_clustmethod != "none") {"\\vspace{2em}"}`
 
@@ -266,7 +271,14 @@ if(params$isCriterionPresent & params$validity_check){
 ## Item analysis
 
 ### Difficulty/Discrimination plot
-Difficulty (red) of items is estimated as percent of respondents who answered correctly to that item. Discrimination (blue) is by default described by difference of percent correct in upper and lower third of respondents (Upper-Lower Index, ULI). By rule of thumb it should not be lower than 0.2 (borderline in the plot), except for very easy or very difficult items.
+
+`r if (params$DDplotDiscType=="ULI") {"Difficulty (red) of items is estimated as percent of respondents who answered correctly to that item. Discrimination (blue) is by default described by difference of percent correct in upper and lower third of respondents (Upper-Lower Index, ULI). By rule of thumb it should not be lower than 0.2 (borderline in the plot), except for very easy or very difficult items."}`
+
+`r if (params$DDplotDiscType=="RIR") {"Difficulty (red) of items is estimated as percent of respondents who answered correctly to that item. Discrimination (blue) is described by Pearson correlation between item and rest of items. By rule of thumb it should not be lower than 0.2 (borderline in the plot), except for very easy or very difficult items."}`
+
+`r if (params$DDplotDiscType=="RIT") {"Difficulty (red) of items is estimated as percent of respondents who answered correctly to that item. Discrimination (blue) is described by Pearson correlation between item and total score. By rule of thumb it should not be lower than 0.2 (borderline in the plot), except for very easy or very difficult items."}`
+
+`r if (params$DDplotDiscType=="none") {"Difficulty (red) of items is estimated as percent of respondents who answered correctly to that item."}`
 
 ```{r DD-plot-interpretation, echo = FALSE, results = "hide"}
 range1 <- params$DDplotRange1
@@ -300,13 +312,13 @@ params$difPlot +
 \pagebreak
 
 ### Traditional item analysis table 
-Diff. - Difficulty of item is estimated as percent of respondents who answered correctly to that item. SD - standard deviation, ULI - Upper-Lower Index, RIT - Pearson correlation between item and total score, RIR - Pearson correlation between item and rest of items, Alpha Drop - Cronbach's alpha of test without given item, Cust. D.- difference between the difficulty recorded in the groups selected by user.
+Diff. - Difficulty of item is estimated as percent of respondents who answered correctly to that item. SD - standard deviation, ULI - Upper-Lower Index calculated as difference in percent correct between upper lower third of respondents, RIT - Pearson correlation between item and total score, RIR - Pearson correlation between item and rest of items, Alpha Drop - Cronbach's alpha of test without given item, gULI - generalized ULI calculated as difference between the difficulty recorded in the groups selected by user.
 
 ```{r item-table, echo = FALSE, results = "asis"}
 table = params$itemexam
 tab = format(round(table[, -1], 2), nsmall = 2)
 table = data.frame(table[, 1], tab)
-colnames(table) = c("Item", "Diff.", "SD", "D. ULI", "D. RIT", "D. RIR", "Alpha Drop", "Cust. D.")
+colnames(table) = c("Item", "Diff.", "SD", "ULI", "RIT", "RIR", "Alpha Drop", "gULI")
 
 print(xtable(table, 
              digits = c(0, 0, 2, 2, 2, 2, 2, 2, 2), 
@@ -334,7 +346,7 @@ for (i in 1:length(params$graf)){
 
 `r if (params$irt_type != "none") {"# IRT models"}`
 
-`r if (params$irt_type != "none") {"Item Response Theory (IRT) models are mixed-effect regression models in which respondent ability $\\theta$ is assumed to be a random effect and is estimated together with item paramters. Ability $\\theta$ is often assumed to follow normal distibution."}`
+`r if (params$irt_type != "none") {"Item Response Theory (IRT) models are mixed-effect regression models in which respondent ability $\\theta$ is assumed to be latent and is estimated together with item paramters."}`
 
 ```{r irt-eq, echo = FALSE, results = "hide"}
 if (params$irt_type == "rasch") {
@@ -384,14 +396,14 @@ if (any(params$wrightMap != "")) {
 
 `r if (params$irt_type != "none") {"## Equation"}`
 
-`r if (params$irt_type != "none") {paste0("All subsequent analyzes are based on the selected ", head, ":")}`
+`r if (params$irt_type != "none") {paste0("All subsequent analyses are based on the selected ", head, ":")}`
 `r if (params$irt_type != "none") {eq}`
 
 `r if (params$irt_type != "none") {"\\pagebreak"}`
 
 `r if (params$irt_type != "none") {"## Ability estimates"}`
 
-`r if (params$irt_type != "none") {"Ability is estimated by selected IRT model. Relationship between ability estimates (factor scores) and standardized total test scores can be seen on scatter plot below. "}`
+`r if (params$irt_type != "none") {"Ability is estimated by selected IRT model. Relationship between ability estimates (factor scores, F-scores) and standardized total test scores (Z-scores) can be seen on scatter plot below."}`
 
 ```{r irtability, echo = FALSE, results = 'asis'}
 table = params$irtability
@@ -417,13 +429,15 @@ if (params$irt_type != "none") {
 
 ```{r irt-0, echo = FALSE, results = "hide", fig.height = 4, fig.width = 11, dpi = 300}
 if (params$irt_type != "none") {
-  params$irt
+  params$irt + ggtitle("Item trace lines") + xlab(expression(theta)) + ylab(expression("I("*theta*")")) + 
+    theme(legend.position = "right", legend.text=element_text(size=10))
 }
 ```
 
 ```{r irt-1, echo = FALSE, results = "hide", fig.height = 4, fig.width = 11, dpi = 300}
 if (params$irt_type != "none") {
-  params$irtiic
+  params$irtiic + ggtitle("Item information trace lines") + xlab(expression(theta)) + ylab(expression("I("*theta*")")) + 
+    theme(legend.position = "right", legend.text=element_text(size=10))
 }
 ```
 
@@ -437,7 +451,7 @@ if (params$irt_type != "none") {
 
 `r if (params$irt_type != "none") {"## Parameter estimates and item fit"}`
 
-`r if (params$irt_type != "none") {"Estimates of parameters are completed by SX2 item fit statistics. SX2 is computed only when no missing data are present. In such a case consider using imputed dataset!"}`
+`r if (params$irt_type != "none") {"Estimates of parameters are completed by SX2 item fit statistics. SX2 is computed only when no missing data are present."}`
 
 ```{r irt-estim, echo = FALSE, results = "asis"}
 if (params$irt_type != "none") {
