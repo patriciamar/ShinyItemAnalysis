@@ -252,9 +252,9 @@ if(params$isCriterionPresent & params$validity_check){
 ### Difficulty/Discrimination plot
 `r if (params$DDplotDiscType == "ULI") {"Difficulty (red) of items is estimated as percent of respondents who answered correctly to that item. Discrimination (blue) is by default described by difference of percent correct in upper and lower third of respondents (Upper-Lower Index, ULI). By rule of thumb it should not be lower than 0.2 (borderline in the plot), except for very easy or very difficult items."}`
 
-`r if (params$DDplotDiscType == "RIR") {"Difficulty (red) of items is estimated as percent of respondents who answered correctly to that item. Discrimination (blue) is described by Pearson correlation between item and rest of items. By rule of thumb it should not be lower than 0.2 (borderline in the plot), except for very easy or very difficult items."}`
+`r if (params$DDplotDiscType == "RIR") {"Difficulty (red) of items is estimated as percent of respondents who answered correctly to that item. Discrimination (blue) is described by Pearson correlation between item and rest of items. "}`
 
-`r if (params$DDplotDiscType == "RIT") {"Difficulty (red) of items is estimated as percent of respondents who answered correctly to that item. Discrimination (blue) is described by Pearson correlation between item and total score. By rule of thumb it should not be lower than 0.2 (borderline in the plot), except for very easy or very difficult items."}`
+`r if (params$DDplotDiscType == "RIT") {"Difficulty (red) of items is estimated as percent of respondents who answered correctly to that item. Discrimination (blue) is described by Pearson correlation between item and total score. "}`
 
 `r if (params$DDplotDiscType == "none") {"Difficulty (red) of items is estimated as percent of respondents who answered correctly to that item."}`
 
@@ -338,7 +338,7 @@ if (params$irt_type == "2pl") {
 
 if (params$irt_type == "3pl") {
   head = " 3PL IRT model"
-  eq = "$$ {P}(Y_{ij} = 1|\\theta_{i}, a_j, b_j, c_j) = c_j + (1 + c_j) \\frac{e^{a_j(\\theta_i - b_j)}}{1 + e^{a_j(\theta_i - b_j)}} $$"
+  eq = "$$ {P}(Y_{ij} = 1|\\theta_{i}, a_j, b_j, c_j) = c_j + (1 + c_j) \\frac{e^{a_j(\\theta_i - b_j)}}{1 + e^{a_j(\\theta_i - b_j)}} $$"
 }
 
 if (params$irt_type == "4pl") {
@@ -351,10 +351,6 @@ if (params$irt_type == "none") {
   eq = ""
 }
 ```
-
-`r if (params$irt_type != "rasch") {"Ability $\\theta$ is assumed to follow normal distribution with freely estimated variance. "}`
-
-`r if (params$irt_type %in% c("1pl", "2pl", "3pl", "4pl")) {"Ability $\\theta$ is assumed to follow standard normal distribution. "}`
 
 `r if (any(params$wrightMap!="")) {"## Wright (item-person) map using 1PL IRT model"}`
 
@@ -371,6 +367,10 @@ if (any(params$wrightMap != "")) {
 
 `r if (params$irt_type != "none") {paste0("All subsequent analyses are based on the selected ", head, ":")}`
 `r if (params$irt_type != "none") {eq}`
+
+`r if (params$irt_type == "rasch") {"Ability $\\theta$ is assumed to follow normal distribution with freely estimated variance. "}`
+
+`r if (params$irt_type %in% c("1pl", "2pl", "3pl", "4pl")) {"Ability $\\theta$ is assumed to follow standard normal distribution. "}`
 
 `r if (params$irt_type != "none") {"## Ability estimates"}`
 
