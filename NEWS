@@ -8,6 +8,10 @@
 - Changes in ShinyItemAnalysis 1.2.9. (2018-12-06) -
 -------------------------------------------------------
 
+BUG FIXING
+  o IRT/Training/Dichotomous models - plots are correctly plotted.
+  o Download buttons in IRT/4PL works now.
+
 MAJOR UPDATES
   o TIF were converted into plotly.
   o Section Validity/FA is not accessible for now.
