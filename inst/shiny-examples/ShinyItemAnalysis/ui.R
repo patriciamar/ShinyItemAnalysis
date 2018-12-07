@@ -2782,6 +2782,12 @@ ui = tagList(
                            target = "_blank">See online.</a>
                            </li>
 
+                           <li>Orlando, M., & Thissen, D. (2000). Likelihood-based item-fit indices for dichotomous item response theory models.
+                           <i>Applied Psychological Measurement, 24</i>(1), 50-64.
+                           <a href = "https://doi.org/10.1177%2F01466216000241003",
+                           target = "_blank">See online.</a>
+                           </li>
+
                            <li>Swaminathan, H., & Rogers, H. J. (1990). Detecting Differential Item
                            Functioning Using Logistic Regression Procedures.
                            <i>Journal of Educational Measurement, 27</i>(4), 361-370.

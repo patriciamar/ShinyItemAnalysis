@@ -8,11 +8,11 @@ IRT <- navbarMenu("IRT models",
                              tabPanel("Model",
                                       h3("Rasch model"),
                                       p('Item Response Theory (IRT) models are mixed-effect regression models in which
-                                        respondent ability \\(\\theta\\) is assumed to be a random effect and is estimated together with item
+                                        respondent ability \\(\\theta\\) is assumed to be latent and is estimated together with item
                                         paramters. '),
                                       p('In', strong('Rasch model'), '(Rasch, 1960), all items are assumed to have the same slope in inflection point, i.e., the
                                         same discrimination parameter \\(a\\) which is fixed to value of 1. Items may differ in location of their inflection point, i.e. they may differ in difficulty parameter
-                                        \\(b\\). Ability \\(\\theta\\) is assumed to follow normal distribution with freely estimated variance. '),
+                                        \\(b\\). Model parameters are estimated using marginal maximum likelihood (MML) method. Ability \\(\\theta\\) is assumed to follow normal distribution with freely estimated variance. '),
                                       h4("Equation"),
                                       ('$$\\mathrm{P}\\left(Y_{ij} = 1\\vert \\theta_{i}, b_{j} \\right) =  \\frac{e^{\\left(\\theta_{i}-b_{j}\\right) }}{1+e^{\\left(\\theta_{i}-b_{j}\\right) }} $$'),
                                       h4("Item characteristic curves"),
@@ -25,7 +25,7 @@ IRT <- navbarMenu("IRT models",
                                       plotlyOutput('raschtif_mirt'),
                                       downloadButton("DP_raschtif_mirt", label = "Download figure"),
                                       h4("Table of estimated parameters"),
-                                      p('Estimates of parameters are completed by SX2 item fit statistics (Orlando and Thissen, 2000; see also Ames & Penfield, 2015). SX2 statistics are computed only when no missing data are present.'),
+                                      p('Estimates of parameters are completed by SX2 item fit statistics (Orlando and Thissen, 2000). SX2 statistics are computed only when no missing data are present.'),
                                       tableOutput('raschcoef_mirt'),
                                       br(),
                                       downloadButton( outputId = "download_Rasch_table",
@@ -58,11 +58,11 @@ IRT <- navbarMenu("IRT models",
                              tabPanel("Items",
                                       h3("Rasch model"),
                                       p('Item Response Theory (IRT) models are mixed-effect regression models in which
-                                        respondent ability \\(\\theta\\) is assumed to be a random effect and is estimated together with item
+                                        respondent ability \\(\\theta\\) is assumed to be latent and is estimated together with item
                                         paramters. '),
                                       p('In', strong('Rasch model'), '(Rasch, 1960), all items are assumed to have the same slope in inflection point, i.e., the
                                         same discrimination parameter \\(a\\) which is fixed to value of 1. Items may differ in location of their inflection point, i.e. they may differ in difficulty parameter
-                                        \\(b\\). Ability \\(\\theta\\) is assumed to follow normal distribution with freely estimated variance. '),
+                                        \\(b\\). Model parameters are estimated using marginal maximum likelihood (MML) method. Ability \\(\\theta\\) is assumed to follow normal distribution with freely estimated variance. '),
                                       h4("Equation"),
                                       ('$$\\mathrm{P}\\left(Y_{ij} = 1\\vert \\theta_{i}, b_{j} \\right) =  \\frac{e^{\\left(\\theta_{i}-b_{j}\\right) }}{1+e^{\\left(\\theta_{i}-b_{j}\\right) }} $$'),
                                       h4("Item characteristic curves"),
@@ -75,7 +75,7 @@ IRT <- navbarMenu("IRT models",
                                       plotlyOutput('raschiic_mirt_tab'),
                                       downloadButton("DP_raschiic_mirt_tab", label = "Download figure"),
                                       h4("Table of estimated parameters"),
-                                      p('Estimates of parameters are completed by SX2 item fit statistics (Ames & Penfield, 2015).
+                                      p('Estimates of parameters are completed by SX2 item fit statistics (Orlando & Thissen, 2000).
                                         SX2 is computed only when no missing data are present. In such a case consider using imputed dataset!'),
                                       tableOutput('raschcoef_mirt_tab'))
                                       )),
@@ -85,12 +85,12 @@ IRT <- navbarMenu("IRT models",
                              tabPanel("Model",
                                       h3("One parameter Item Response Theory model"),
                                       p('Item Response Theory (IRT) models are mixed-effect regression models in which
-                                        respondent ability \\(\\theta\\) is assumed to be a random effect and is estimated together with item
+                                        respondent ability \\(\\theta\\) is assumed to be latent and is estimated together with item
                                         paramters. '),
                                       p('In', strong('1PL IRT model,'), 'all items are assumed to have the same slope in inflection point, i.e., the
                                         same discrimination \\(a\\). Its value corresponds to standard deviation of ability estimates in Rasch model.
                                         Items can differ in location of their inflection point, i.e., in item difficulty parameters
-                                        \\(b\\). Ability \\(\\theta\\) is assumed to follow standard normal distribution. '),
+                                        \\(b\\). Model parameters are estimated using marginal maximum likelihood (MML) method. Ability \\(\\theta\\) is assumed to follow standard normal distribution. '),
                                       h4("Equation"),
                                       ('$$\\mathrm{P}\\left(Y_{ij} = 1\\vert \\theta_{i}, a, b_{j} \\right) =  \\frac{e^{a\\left(\\theta_{i}-b_{j}\\right) }}{1+e^{a\\left(\\theta_{i}-b_{j}\\right) }} $$'),
                                       h4("Item characteristic curves"),
@@ -103,7 +103,7 @@ IRT <- navbarMenu("IRT models",
                                       plotlyOutput('oneparamirttif_mirt'),
                                       downloadButton("DP_oneparamirttif_mirt", label = "Download figure"),
                                       h4("Table of estimated parameters"),
-                                      p('Estimates of parameters are completed by SX2 item fit statistics (Orlando and Thissen, 2000; see also Ames & Penfield, 2015).
+                                      p('Estimates of parameters are completed by SX2 item fit statistics (Orlando and Thissen, 2000).
                                         SX2 statistics are computed only when no missing data are present.'),
                                       tableOutput('oneparamirtcoef_mirt'),
                                       br(),
@@ -136,12 +136,12 @@ IRT <- navbarMenu("IRT models",
                              tabPanel("Items",
                                       h3("1PL model"),
                                       p('Item Response Theory (IRT) models are mixed-effect regression models in which
-                                        respondent ability \\(\\theta\\) is assumed to be a random effect and is estimated together with item
+                                        respondent ability \\(\\theta\\) is assumed to be latent and is estimated together with item
                                         paramters. '),
                                       p('In', strong('1PL IRT model,'), 'all items are assumed to have the same slope in inflection point, i.e., the
                                         same discrimination \\(a\\). Its value corresponds to standard deviation of ability estimates in Rasch model.
                                         Items can differ in location of their inflection point, i.e., in item difficulty parameters
-                                        \\(b\\). Ability \\(\\theta\\) is assumed to follow standard normal distribution. '),
+                                        \\(b\\). Model parameters are estimated using marginal maximum likelihood (MML) method. Ability \\(\\theta\\) is assumed to follow standard normal distribution. '),
                                       h4("Equation"),
                                       ('$$\\mathrm{P}\\left(Y_{ij} = 1\\vert \\theta_{i}, a, b_{j} \\right) =  \\frac{e^{a\\left(\\theta_{i}-b_{j}\\right) }}{1+e^{a\\left(\\theta_{i}-b_{j}\\right) }} $$'),
                                       h4("Item characteristic curves"),
@@ -154,7 +154,7 @@ IRT <- navbarMenu("IRT models",
                                       plotlyOutput('oneparamirtiic_mirt_tab'),
                                       downloadButton("DP_oneparamirtiic_mirt_tab", label = "Download figure"),
                                       h4("Table of estimated parameters"),
-                                      p('Estimates of parameters are completed by SX2 item fit statistics (Orlando and Thissen, 2000; see also Ames & Penfield, 2015).
+                                      p('Estimates of parameters are completed by SX2 item fit statistics (Orlando and Thissen, 2000).
                                         SX2 statistics are computed only when no missing data are present.'),
                                       tableOutput('oneparamirtcoef_mirt_tab')))),
                   # * 2PL ####
@@ -163,11 +163,12 @@ IRT <- navbarMenu("IRT models",
                              tabPanel("Model",
                                       h3("Two parameter Item Response Theory model"),
                                       p('Item Response Theory (IRT) models are mixed-effect regression models in which
-                                        respondent ability \\(\\theta\\) is assumed to be a random effect and is estimated together with item
-                                        paramters. Ability \\(\\theta\\) is assumed to follow standard normal distribution. '),
+                                        respondent ability \\(\\theta\\) is assumed to be latent and is estimated together with item
+                                        paramters. '),
                                       p(strong('2PL IRT model'), ' allows for different slopes in inflection point, i.e., different
                                         discrimination parameters \\(a\\). Items can also differ in location of their inflection point, i.e., in item difficulty parameters
-                                        \\(b\\). '),
+                                        \\(b\\). Model parameters are estimated using marginal maximum likelihood (MML) method.
+                                         Ability \\(\\theta\\) is assumed to follow standard normal distribution. '),
                                       h4("Equation"),
                                       ('$$\\mathrm{P}\\left(Y_{ij} = 1\\vert \\theta_{i}, a_{j}, b_{j}\\right) =  \\frac{e^{a_{j}\\left(\\theta_{i}-b_{j}\\right) }}{1+e^{a_{j}\\left(\\theta_{i}-b_{j}\\right) }} $$'),
                                       h4("Item characteristic curves"),
@@ -180,7 +181,7 @@ IRT <- navbarMenu("IRT models",
                                       plotlyOutput('twoparamirttif_mirt'),
                                       downloadButton("DP_twoparamirttif_mirt", label = "Download figure"),
                                       h4("Table of estimated parameters"),
-                                      p('Estimates of parameters are completed by SX2 item fit statistics (Orlando and Thissen, 2000; see also Ames & Penfield, 2015).
+                                      p('Estimates of parameters are completed by SX2 item fit statistics (Orlando and Thissen, 2000).
                                         SX2 statistics are computed only when no missing data are present.'),
                                       tableOutput('twoparamirtcoef_mirt'),
                                       br(),
@@ -298,11 +299,12 @@ IRT <- navbarMenu("IRT models",
                              tabPanel("Items",
                                       h3("Two parameter Item Response Theory model"),
                                       p('Item Response Theory (IRT) models are mixed-effect regression models in which
-                                        respondent ability \\(\\theta\\) is assumed to be a random effect and is estimated together with item
-                                        paramters. Ability \\(\\theta\\) is assumed to follow standard normal distribution. '),
+                                        respondent ability \\(\\theta\\) is assumed to be latent and is estimated together with item
+                                        paramters.'),
                                       p(strong('2PL IRT model'), ' allows for different slopes in inflection point, i.e., different
                                         discrimination parameters \\(a\\). Items can also differ in location of their inflection point, i.e., in item difficulty parameters
-                                        \\(b\\). '),
+                                        \\(b\\). Model parameters are estimated using marginal maximum likelihood (MML) method.
+                                         Ability \\(\\theta\\) is assumed to follow standard normal distribution. '),
                                       h4("Equation"),
                                       ('$$\\mathrm{P}\\left(Y_{ij} = 1\\vert \\theta_{i}, a_{j}, b_{j}\\right) =  \\frac{e^{a_{j}\\left(\\theta_{i}-b_{j}\\right) }}{1+e^{a_{j}\\left(\\theta_{i}-b_{j}\\right) }} $$'),
                                       h4("Item characteristic curves"),
@@ -315,7 +317,7 @@ IRT <- navbarMenu("IRT models",
                                       plotlyOutput('twoparamirtiic_mirt_tab'),
                                       downloadButton("DP_twoparamirtiic_mirt_tab", label = "Download figure"),
                                       h4("Table of estimated parameters"),
-                                      p('Estimates of parameters are completed by SX2 item fit statistics (Orlando and Thissen, 2000; see also Ames & Penfield, 2015).
+                                      p('Estimates of parameters are completed by SX2 item fit statistics (Orlando and Thissen, 2000).
                                         SX2 statistics are computed only when no missing data are present.'),
                                       tableOutput('twoparamirtcoef_mirt_tab'))
                                       )),
@@ -325,10 +327,12 @@ IRT <- navbarMenu("IRT models",
                              tabPanel("Model",
                                       h3("Three parameter Item Response Theory model"),
                                       p('Item Response Theory (IRT) models are mixed-effect regression models in which
-                                        respondent ability \\(\\theta\\) is assumed to be a random effect and is estimated together with item
-                                        paramters. Ability \\(\\theta\\) is assumed to follow standard normal distribution. '),
+                                        respondent ability \\(\\theta\\) is assumed to be latent and is estimated together with item
+                                        paramters. '),
                                       p(strong('3PL IRT model'), ' allows for different discriminations of items \\(a\\), different
-                                        item difficulties \\(b\\) and allows also for nonzero left asymptote, pseudo-guessing \\(c\\).'),
+                                        item difficulties \\(b\\) and allows also for nonzero left asymptote, pseudo-guessing \\(c\\).
+                                         Model parameters are estimated using marginal maximum likelihood (MML) method.
+                                         Ability \\(\\theta\\) is assumed to follow standard normal distribution. '),
                                       h4("Equation"),
                                       ('$$\\mathrm{P}\\left(Y_{ij} = 1\\vert \\theta_{i}, a_{j}, b_{j}, c_{j} \\right) = c_{j} + \\left(1 - c_{j}\\right) \\cdot \\frac{e^{a_{j}\\left(\\theta_{i}-b_{j}\\right) }}{1+e^{a_{j}\\left(\\theta_{i}-b_{j}\\right) }} $$'),
                                       uiOutput("irt_3PL_model_converged"),
@@ -342,7 +346,7 @@ IRT <- navbarMenu("IRT models",
                                       plotlyOutput('threeparamirttif_mirt'),
                                       downloadButton("DP_threeparamirttif_mirt", label = "Download figure"),
                                       h4("Table of estimated parameters"),
-                                      p('Estimates of parameters are completed by SX2 item fit statistics (Orlando and Thissen, 2000; see also Ames & Penfield, 2015).
+                                      p('Estimates of parameters are completed by SX2 item fit statistics (Orlando and Thissen, 2000).
                                         SX2 statistics are computed only when no missing data are present.'),
                                       tableOutput('threeparamirtcoef_mirt'),
                                       br(),
@@ -459,10 +463,12 @@ IRT <- navbarMenu("IRT models",
                              tabPanel("Items",
                                       h3("Three parameter Item Response Theory model"),
                                       p('Item Response Theory (IRT) models are mixed-effect regression models in which
-                                        respondent ability \\(\\theta\\) is assumed to be a random effect and is estimated together with item
-                                        paramters. Ability \\(\\theta\\) is assumed to follow standard normal distribution. '),
+                                        respondent ability \\(\\theta\\) is assumed to be latent and is estimated together with item
+                                        paramters.  '),
                                       p(strong('3PL IRT model'), ' allows for different discriminations of items \\(a\\), different
-                                        item difficulties \\(b\\) and allows also for nonzero left asymptote, pseudo-guessing \\(c\\). '),
+                                        item difficulties \\(b\\) and allows also for nonzero left asymptote, pseudo-guessing \\(c\\).
+                                         Model parameters are estimated using marginal maximum likelihood (MML) method.
+                                         Ability \\(\\theta\\) is assumed to follow standard normal distribution.'),
                                       h4("Equation"),
                                       ('$$\\mathrm{P}\\left(Y_{ij} = 1\\vert \\theta_{i}, a_{j}, b_{j}, c_{j} \\right) = c_{j} + \\left(1 - c_{j}\\right) \\cdot \\frac{e^{a_{j}\\left(\\theta_{i}-b_{j}\\right) }}{1+e^{a_{j}\\left(\\theta_{i}-b_{j}\\right) }} $$'),
                                       uiOutput("irt_3PL_model_converged_tab"),
@@ -476,7 +482,7 @@ IRT <- navbarMenu("IRT models",
                                       plotlyOutput('threeparamirtiic_mirt_tab'),
                                       downloadButton("DP_threeparamirtiic_mirt_tab", label = "Download figure"),
                                       h4("Table of estimated parameters"),
-                                      p('Estimates of parameters are completed by SX2 item fit statistics (Orlando and Thissen, 2000; see also Ames & Penfield, 2015).
+                                      p('Estimates of parameters are completed by SX2 item fit statistics (Orlando and Thissen, 2000).
                                         SX2 statistics are computed only when no missing data are present.'),
                                       tableOutput('threeparamirtcoef_mirt_tab'))
                                       )),
@@ -486,11 +492,13 @@ IRT <- navbarMenu("IRT models",
                              tabPanel("Model",
                                       h3("Four parameter Item Response Theory model"),
                                       p('Item Response Theory (IRT) models are mixed-effect regression models in which
-                                        respondent ability \\(\\theta\\) is assumed to be a random effect and is estimated together with item
-                                        paramters. Ability \\(\\theta\\) is assumed to follow standard normal distribution. '),
+                                        respondent ability \\(\\theta\\) is assumed to be latent and is estimated together with item
+                                        paramters.  '),
                                       p(strong('4PL IRT model'), ' allows for different discriminations of items \\(a\\), different
                                         item difficulties \\(b\\), nonzero left asymptote, pseudo-guessing \\(c\\) and also for upper
-                                        asymptote lower than one, i.e, inattention parameter \\(d\\). '),
+                                        asymptote lower than one, i.e, inattention parameter \\(d\\).
+                                        Model parameters are estimated using marginal maximum likelihood (MML) method.
+                                        Ability \\(\\theta\\) is assumed to follow standard normal distribution. '),
                                       h4("Equation"),
                                       ('$$\\mathrm{P}\\left(Y_{ij} = 1\\vert \\theta_{i}, a_{j}, b_{j}, c_{j}, d_{j} \\right) = c_{j} + \\left(d_{j} - c_{j}\\right) \\cdot \\frac{e^{a_{j}\\left(\\theta_{i}-b_{j}\\right) }}{1+e^{a_{j}\\left(\\theta_{i}-b_{j}\\right) }} $$'),
                                       uiOutput("irt_4PL_model_converged"),
@@ -504,7 +512,7 @@ IRT <- navbarMenu("IRT models",
                                       plotlyOutput('irt_4PL_tif'),
                                       downloadButton("DB_irt_4PL_tif", label = "Download figure"),
                                       h4("Table of estimated parameters"),
-                                      p('Estimates of parameters are completed by SX2 item fit statistics (Orlando and Thissen, 2000; see also Ames & Penfield, 2015).
+                                      p('Estimates of parameters are completed by SX2 item fit statistics (Orlando and Thissen, 2000).
                                         SX2 statistics are computed only when no missing data are present.'),
                                       tableOutput('irt_4PL_coef'),
                                       br(),
@@ -570,11 +578,13 @@ IRT <- navbarMenu("IRT models",
                              tabPanel("Items",
                                       h3("Four parameter Item Response Theory model"),
                                       p('Item Response Theory (IRT) models are mixed-effect regression models in which
-                                        respondent ability \\(\\theta\\) is assumed to be a random effect and is estimated together with item
-                                        paramters. Ability \\(\\theta\\) is assumed to follow standard normal distribution. '),
+                                        respondent ability \\(\\theta\\) is assumed to be latent and is estimated together with item
+                                        paramters.  '),
                                       p(strong('4PL IRT model'), ' allows for different discriminations of items \\(a\\), different
                                         item difficulties \\(b\\), nonzero left asymptote, pseudo-guessing \\(c\\) and also for upper
-                                        asymptote lower than one, i.e, inattention parameter \\(d\\). '),
+                                        asymptote lower than one, i.e, inattention parameter \\(d\\).
+                                         Model parameters are estimated using marginal maximum likelihood (MML) method.
+                                         Ability \\(\\theta\\) is assumed to follow standard normal distribution. '),
                                       h4("Equation"),
                                       ('$$\\mathrm{P}\\left(Y_{ij} = 1\\vert \\theta_{i}, a_{j}, b_{j}, c_{j}, d_{j} \\right) = c_{j} + \\left(d_{j} - c_{j}\\right) \\cdot \\frac{e^{a_{j}\\left(\\theta_{i}-b_{j}\\right) }}{1+e^{a_{j}\\left(\\theta_{i}-b_{j}\\right) }} $$'),
                                       uiOutput("irt_4PL_model_converged_item"),
@@ -588,7 +598,7 @@ IRT <- navbarMenu("IRT models",
                                       plotlyOutput('irt_4PL_iic_item_tab'),
                                       downloadButton("DB_irt_4PL_iic_tab", label = "Download figure"),
                                       h4("Table of estimated parameters"),
-                                      p('Estimates of parameters are completed by SX2 item fit statistics (Orlando and Thissen, 2000; see also Ames & Penfield, 2015).
+                                      p('Estimates of parameters are completed by SX2 item fit statistics (Orlando and Thissen, 2000).
                                         SX2 statistics are computed only when no missing data are present.'),
                                       tableOutput('irt_4PL_coef_tab'))
                                       )),
@@ -596,8 +606,9 @@ IRT <- navbarMenu("IRT models",
                   tabPanel("Model comparison ",
                            h3("Item Response Theory model selection"),
                            p('Item Response Theory (IRT) models are mixed-effect regression models in which
-                             respondent ability (theta) is assumed to be a random effect and is estimated together with item
-                             paramters. Ability (theta) is often assumed to follow normal distibution.'),
+                             respondent ability (theta) is assumed to be latent and is estimated together with item
+                             paramters. Model parameters are estimated using marginal maximum likelihood (MML) method,
+                             in 1PL, 2PL, 3PL and 4PL IRT models, ability (theta) is assumed to follow standard normal distibution.'),
                            p('IRT models can be compared by several information criteria: '),
                            tags$ul(
                              tags$li(strong('AIC'), 'is the Akaike information criterion (Akaike, 1974), '),
