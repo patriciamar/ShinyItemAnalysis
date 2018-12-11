@@ -230,16 +230,16 @@ ui = tagList(
                                  h3("Spearman-Brown formula"),
                                  h4("Equation"),
                                  p("For test with \\(I\\) items total score is calculated as \\(X = X_1 + ... + X_I\\).
-                                   Let \\(\\text{rel}(X)\\) be a reliability of the test. For test consisting of
+                                   Let \\(\\text{rel}(X)\\) be the reliability of the test. For a test consisting of
                                    \\(I^*\\) items (equally precise, measuring the same construct),  that is for test which is
                                    \\(m = \\frac{I^*}{I}\\) times longer/shorter, the reliability would be"),
                                  withMathJax(),
                                  ('$$\\text{rel}(X^*) = \\frac{m\\cdot \\text{rel}(X)}{1 + (m - 1)\\cdot\\text{rel}(X)}.$$'),
-                                 p("Spearman-Brown formula can be used to determine reliability of test with similar items but of
+                                 p("Spearman-Brown formula can be used to determine reliability of a test with similar items but of
                                    different number of items. It can also be used to determine necessary number of items to achieve
                                    desired reliability."),
                                  p("In calculations below", strong("reliability of original data"), "is by
-                                   default set to value of Cronbach's \\(\\alpha\\). ", strong("Number of items in original data"), "is
+                                   default set to value of Cronbach's \\(\\alpha\\) of the dataset currentli in use. ", strong("Number of items in original data"), "is
                                    by default set to number of items of dataset currently in use. "),
                                  fluidRow(column(3,
                                                  numericInput(inputId = "reliability_SBformula_reliability_original",
@@ -582,7 +582,7 @@ ui = tagList(
                                                              "RIT" = "RIT",
                                                              "RIR" = "RIR",
                                                              "none" = "none"),
-                                                           selected = "RIT"),
+                                                           selected = "ULI"),
                                            conditionalPanel(condition = "input.DDplotDiscriminationSelect=='ULI'",
                                                             div(class = "input-slider",
                                                                 sliderInput(inputId = 'DDplotNumGroupsSlider',
@@ -2209,10 +2209,10 @@ ui = tagList(
                         creation requires latest version of", a("MiKTeX", href = "https://miktex.org/howto/install-miktex",
                                                                 target = "_blank"),
                         "(or other TeX distribution). If you don't have the latest installation, please, use the HTML report."),
-                      p("There is an option whether to use customize settings. By checking the", strong("Customize settings"),
-                        "local settings will be offered and use for each selected section of report. Otherwise the settings
-                        will be taken from pages of application. You can also include your name into report as well as the name
-                        of dataset which was used. "),
+                      p("There is an option to use customized settings. When checking the", strong("Customize settings"),
+                        "local settings will be offered and used for each selected section of the report. Otherwise, the settings
+                        will be taken from sections of the application. You may also include your name into the report, as well as the name
+                        of analyzed dataset. "),
                       fluidRow(
                         column(2, radioButtons("report_format", "Format of report", c("HTML" = "html", "PDF" = "pdf"))),
                         column(2, checkboxInput("customizeCheck", "Customize settings", FALSE)),
@@ -2221,7 +2221,7 @@ ui = tagList(
                       ),
                       h4("Content of report"),
                       p("Reports by default contain summary of total scores, table of standard scores, item analysis,
-                        distractors plots for each item and multinomial regression plots for each item. Other analyses
+                        distractor plots for each item and multinomial regression plots for each item. Other analyses
                         can be selected below. "),
                       fluidRow(
                         column(8,
@@ -2779,6 +2779,12 @@ ui = tagList(
                            <li>Muraki, E. (1992). A Generalized Partial Credit Model: Application of an EM Algorithm.
                            <i>ETS Research Report Series, 1992</i>(1)
                            <a href = "https://onlinelibrary.wiley.com/doi/abs/10.1002/j.2333-8504.1992.tb01436.x",
+                           target = "_blank">See online.</a>
+                           </li>
+
+                           <li>Orlando, M., & Thissen, D. (2000). Likelihood-based item-fit indices for dichotomous item response theory models.
+                           <i>Applied Psychological Measurement, 24</i>(1), 50-64.
+                           <a href = "https://doi.org/10.1177%2F01466216000241003",
                            target = "_blank">See online.</a>
                            </li>
 

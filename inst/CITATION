@@ -19,7 +19,7 @@ citEntry(entry = "Manual",
                ". https://CRAN.R-project.org/package=ShinyItemAnalysis", sep = ""))
 
 citEntry(entry = "Article",
-         title = "{ShinyItemAnalysis}: {A}nalyza prijimacich a jinych znalostnich ci psychologickych testu [{ShinyItemAnalysis}: {A}nalyzing admission and other educational and psychological tests]",
+         title = "{ShinyItemAnalysis}: {A}nalyza prijimacich a jinych znalostnich ci psychologickych testu [{ShinyItemAnalysis}: {A}nalyzing admission and other educational and psychological tests. In Czech.]",
          author = personList(as.person("Patricia Martinkova"), as.person("Adela Drabinova"), as.person("Jakub Houdek")),
          year = "2017",
          journal = "TESTFORUM",
@@ -27,4 +27,4 @@ citEntry(entry = "Article",
          number = "9",
          pages = "16-35",
          doi = "10.5817/TF2017-9-129",
-         textVersion = "Martinkova, P., Drabinova, A., & Houdek, J. (2017). ShinyItemAnalysis: Analyza prijimacich a jinych znalostnich ci psychologickych testu [ShinyItemAnalysis: Analyzing admission and other educational and psychological tests]. TESTFORUM, 6(9), 16-35. doi:10.5817/TF2017-9-129")
+         textVersion = "Martinkova, P., Drabinova, A., & Houdek, J. (2017). ShinyItemAnalysis: Analyza prijimacich a jinych znalostnich ci psychologickych testu [ShinyItemAnalysis: Analyzing admission and other educational and psychological tests. In Czech]. TESTFORUM, 6(9), 16-35. doi:10.5817/TF2017-9-129")
