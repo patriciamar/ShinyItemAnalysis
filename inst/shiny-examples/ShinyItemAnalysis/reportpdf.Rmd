@@ -97,7 +97,7 @@ To cite ShinyItemAnalysis application in publications, please, use:
   Martinkov\'a P., \& Drabinov\'a A.
   (2018)
   ShinyItemAnalysis for teaching psychometrics and to enforce routine analysis of educational tests. 
-  \textit{The R Journal}. Submitted.
+  \textit{The R Journal}. Accepted.
 
 \bibitem{martinkova2018}
   Martinkov\'a P., Drabinov\'a A., Leder O., \& Houdek J.
@@ -162,7 +162,7 @@ params$histogram_totalscores +
 # Scoring
 
 ### Summary table of standard scores
-The total score also known as the raw score, is the total number of correct answers. It can be used to compare an individual score to a norm group, e.g. if the mean is 12, then an individual score can be compared to see if it is below or above this average. The percentile indicates the value below which a percentage of observations falls, e.g. an individual score at the 80th percentile means that the individual score is the same or higher than the scores of 80% of all respondents. The success rate is the percentage of correct answers, e.g. if the maximum points of a test is equal to 20 and an individual score is 12 then the success rate is 12/20 = 0.6, i.e. 60%. The Z-score, or the standardized score, is a linear transformation of the total score with a mean of 0 and with a variance of 1. If X is the total score, M is its mean and SD is its standard deviation then Z-score = (X - M) / SD. The T-score is the transformed Z-score with a mean of 50 and a standard deviation of 10. If Z is Z-score then T-score = (Z * 10) + 50.
+The total score, also known as the raw score, is the total number of correct answers. It can be used to compare an individual score to a norm group, e.g. if the mean is 12, then an individual score can be compared to see if it is below or above this average. The percentile indicates the value below which a percentage of observations falls, e.g. an individual score at the 80th percentile means that the individual score is the same or higher than the scores of 80% of all respondents. The success rate is the percentage of correct answers, e.g. if the maximum points of a test is equal to 20 and an individual score is 12 then the success rate is 12/20 = 0.6, i.e. 60%. The Z-score, or the standardized score, is a linear transformation of the total score with a mean of 0 and with a variance of 1. If X is the total score, M is its mean and SD is its standard deviation then Z-score = (X - M) / SD. The T-score is the transformed Z-score with a mean of 50 and a standard deviation of 10. If Z is Z-score then T-score = (Z * 10) + 50.
 
 \vspace{1em}
 
@@ -252,7 +252,7 @@ if(params$isCriterionPresent & params$validity_check){
                  paste("total score and the criterion variable are", ifelse(rho > 0, "positively", "negatively"), "correlated."),
                  paste("we cannot conclude that a significant correlation between total score
                         and criterion variable exists."))
-  txt4 <- paste("A test for association the between total score and the criterion variable is based on Spearman`s ", expression(rho), 
+  txt4 <- paste("A test for association between the total score and the criterion variable is based on Spearman`s ", expression(rho), 
                 ". The null hypothesis is that the correlation is 0. ", sep = "") 
   txt5 <- paste("Results: ", expression(rho), " = ", rho, " (p-value ", p.val ,").", sep = "") 
   txt6 <- paste("Interpretation: The p-value is", txt1, "0.05, thus we", txt2, "the null hypothesis;", txt3)
@@ -284,7 +284,7 @@ if(params$isCriterionPresent & params$validity_check){
 
 ### Difficulty/Discrimination plot
 
-`r if (params$DDplotDiscType == "ULI") {"Difficulty (red) of items is estimated as a percent of the respondents who answered correctly to that item. Discrimination (blue) is, by default, described by the difference of the percent correct in the upper and lower third of respondents (Upper-Lower Index, ULI). By a rule of thumb, it should not be lower than 0.2 (borderline in the plot), except for very easy or very difficult items."}`
+`r if (params$DDplotDiscType == "ULI") {"Difficulty (red) of items is estimated as a percentage of the respondents who answered correctly to that item. Discrimination (blue) is described by the difference of the percent correct in the upper and lower third of respondents (Upper-Lower Index, ULI). By a rule of thumb, it should not be lower than 0.2 (borderline in the plot), except for very easy or very difficult items."}`
 
 `r if (params$DDplotDiscType == "RIR") {"Difficulty (red) of items is estimated as a percent of the respondents who answered correctly to that item. Discrimination (blue) is described by Pearson correlation between an item and the rest of the items. "}`
 
@@ -416,15 +416,15 @@ if (any(params$wrightMap != "")) {
 `r if (params$irt_type != "none") {paste0("All subsequent analyses are based on the selected ", head, ":")}`
 `r if (params$irt_type != "none") {eq}`
 
-`r if (params$irt_type == "rasch") {"Model parameters are estimated using a marginal maximum likelihood (MML) method. Ability $\\theta$ is assumed to follow normal distribution with a freely estimated variance. "}`
+`r if (params$irt_type == "rasch") {"Model parameters are estimated using a marginal maximum likelihood method. Ability $\\theta$ is assumed to follow normal distribution with a freely estimated variance. "}`
 
-`r if (params$irt_type %in% c("1pl", "2pl", "3pl", "4pl")) {"Model parameters are estimated using a marginal maximum likelihood (MML) method. Ability $\\theta$ is assumed to follow standard normal distribution. "}`
+`r if (params$irt_type %in% c("1pl", "2pl", "3pl", "4pl")) {"Model parameters are estimated using a marginal maximum likelihood method. Ability $\\theta$ is assumed to follow standard normal distribution. "}`
 
 `r if (params$irt_type != "none") {"\\pagebreak"}`
 
 `r if (params$irt_type != "none") {"## Ability estimates"}`
 
-`r if (params$irt_type != "none") {"Ability is estimated using  an EAP algorithm and a selected IRT model. The relationship between ability estimates (factor scores, F-scores) and standardized total test scores (Z-scores) can be seen on the scatter plot below. A table with ability estimates for all respondents can be downloaded into the application. "}`
+`r if (params$irt_type != "none") {"Ability is estimated using  an EAP algorithm and a selected IRT model. The relationship between ability estimates (factor scores, F-scores) and standardized total test scores (Z-scores) can be seen on the scatter plot below. A table with ability estimates for all respondents can be downloaded from the application. "}`
 
 ```{r irtability, echo = FALSE, results = 'asis'}
 table = params$irtability
@@ -612,7 +612,7 @@ if (params$deltaplotCheck) {
 
 `r if(params$isGroupPresent & params$logregCheck & params$deltaplotCheck) {"\\pagebreak"}`
 
-`r if(params$isGroupPresent & params$logregCheck) {"## DIF detection using logistic regression"}`
+`r if(params$isGroupPresent & params$logregCheck) {"## Logistic regression method"}`
 
 `r if(params$isGroupPresent & params$logregCheck) {"Logistic regression allows for detection of uniform and non-uniform DIF by adding a group specific intercept (uniform DIF) and group specific interaction (non-uniform DIF) into the model and by testing for their significance."}`
 
@@ -689,7 +689,7 @@ if (params$logregCheck) {
 
 `r if (params$multiCheck & params$isGroupPresent & params$logregCheck) {"\\pagebreak"}`
 
-`r if(params$isGroupPresent & params$multiCheck) {"## DDF detection using multinomial regression"}`
+`r if(params$isGroupPresent & params$multiCheck) {"## DDF detection using multinomial regression method"}`
 
 `r if(params$isGroupPresent & params$multiCheck) {"Differential Distractor Functioning (DDF) occurs when respondents from different groups but with the same knowledge have a different probability of selecting at least one distractor choice. DDF is examined here by a  multinomial log-linear regression model with Z-score and group membership as covariates. "}`
 
