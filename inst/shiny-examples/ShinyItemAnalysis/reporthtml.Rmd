@@ -88,7 +88,7 @@ To cite ShinyItemAnalysis application in publications, please, use:
   (2018)
   ShinyItemAnalysis for teaching psychometrics and to enforce routine analysis of educational tests. 
   The R Journal. 
-  Submitted.
+  Accepted.
   
   Martinkova P., Drabinova A., Leder O., \& Houdek J.
   (2018)
@@ -113,7 +113,7 @@ This project was supported by Czech Science Foundation under grant number [GJ15-
 ## Total scores
 
 ### Summary table of total scores
-Table below summarizes basic characteristics of total scores including minimum and maximum, mean, median, standard deviation, skewness and kurtosis. The kurtosis here is estimated by sample kurtosis $\frac{m_4}{m_2^2}$, where $m_4$ is the fourth central moment and $m_2$ is the second central moment. The skewness is estimated by sample skewness $\frac{m_3}{m_2^{3/2}}$, where $m_3$ is the third central moment. The kurtosis for normally distributed scores is near the value of 3 and the skewness is near the value of 0. 
+The table below summarizes basic characteristics of total scores including minimum and maximum, mean, median, standard deviation, skewness and kurtosis. The kurtosis here is estimated by a sample kurtosis $\frac{m_4}{m_2^2}$, where $m_4$ is the fourth central moment and $m_2$ is the second central moment. The skewness is estimated by a sample skewness $\frac{m_3}{m_2^{3/2}}$, where $m_3$ is the third central moment. The kurtosis for normally distributed scores is near the value of 3 and the skewness is near the value of 0. 
 
 ```{r total-scores-table, echo = FALSE}
 library(knitr)
@@ -124,7 +124,7 @@ kable(t(table), digits = c(0, 0, 2, 2, 2, 2, 2), align = 'c')
 ```
 
 ### Histogram of total scores
-For selected cut-score, blue part of histogram shows respondents with total score above the cut-score, grey column shows respondents with total score equal to the cut-score and red part of histogram shows respondents below the cut-score.
+For a selected cut-score, the blue part of a histogram shows respondents with a total score above the cut-score, the grey column shows respondents with a total score equal to the cut-score and the red part of a histogram shows respondents below the cut-score.
 
 ```{r total-scores-histogram, echo = FALSE, fig.width = 11, fig.height = 4, fig.align = 'center', dpi = 300}
 params$histogram_totalscores + 
@@ -139,14 +139,14 @@ params$histogram_totalscores +
 # Scoring
 
 ### Summary table of standard scores
-The total score also known as the raw score is a total number of correct answers. It can be used to compare individual score to a norm group, e.g. if the mean is 12, then individual score can be compared to see if it is below or above this average. Percentile indicates the value below which a percentage of observations falls, e.g. an individual score at the 80th percentile means that the individual score is the same or higher than the scores of 80% of all respondents. Success rate is the percentage of correct answers, e.g. if the maximum points of test is equal to 20 and individual score is 12 then success rate is 12/20 = 0.6, i.e. 60%. The Z-score or also the standardized score is a linear transformation of total score with a mean of 0 and with variance of 1. If X is total score, M its mean and SD its standard deviation then Z-score = (X - M) / SD. The T-score is transformed Z-score with a mean of 50 and standard deviation of 10. If Z is Z-score then T-score = (Z * 10) + 50.
+The total score, also known as the raw score, is the total number of correct answers. It can be used to compare an individual score to a norm group, e.g. if the mean is 12, then an individual score can be compared to see if it is below or above this average. The percentile indicates the value below which a percentage of observations falls, e.g. an individual score at the 80th percentile means that the individual score is the same or higher than the scores of 80% of all respondents. The success rate is the percentage of correct answers, e.g. if the maximum points of a test is equal to 20 and an individual score is 12 then the success rate is 12/20 = 0.6, i.e. 60%. The Z-score, or the standardized score, is a linear transformation of the total score with a mean of 0 and with a variance of 1. If X is the total score, M is its mean and SD is its standard deviation then Z-score = (X - M) / SD. The T-score is the transformed Z-score with a mean of 50 and a standard deviation of 10. If Z is Z-score then T-score = (Z * 10) + 50.
 
 ```{r standard-scores-table, echo = FALSE}
 table = params$standardscores_table
 kable(table, align = 'c')
 ```
 
-`r if (params$irt_type != "none") {"More complex estimates of ability are provided in IRT section."}`
+`r if (params$irt_type != "none") {"More complex estimates of ability are provided in the IRT section."}`
 
 `r if (any(params$corr_plot != "") | params$validity_check) {"**************"}`
 
@@ -156,11 +156,11 @@ kable(table, align = 'c')
 `r if (any(params$corr_plot != "")) {"## Correlation structure"}`
 
 `r if (any(params$corr_plot != "")) {"### Correlation heat map "}`
-`r if (any(params$corr_plot != "")) {if (params$corr_type == "pearson") {"Correlation heat map displays Pearson correlations of items. Pearson correlation coefficient describes linear correlation between two random variables X and Y."}}`
+`r if (any(params$corr_plot != "")) {if (params$corr_type == "pearson") {"A correlation heat map displays Pearson correlations of items. Pearson correlation coefficient describes linear correlation between two random variables X and Y."}}`
 
-`r if (any(params$corr_plot != "")) {if (params$corr_type == "polychoric") {"Correlation heat map displays polychoric correlations of items. Polychoric/tetrachoric correlation between two ordinal/binary variables is calculated from their contingency table, under the assumption that the ordinal variables dissect continuous latent variables that are bivariate normal."}}`
+`r if (any(params$corr_plot != "")) {if (params$corr_type == "polychoric") {"A correlation heat map displays polychoric correlations of items. Polychoric/tetrachoric correlation between two ordinal/binary variables is calculated from their contingency table, under the assumption that the ordinal variables dissect continuous latent variables that are bivariate normal."}}`
 
-`r if (any(params$corr_plot != "")) {if (params$corr_type == "spearman") {"Correlation heat map displays Spearman correlations of items. Spearman's rank correlation coefficient describes strength and direction of monotonic relationship between random variables X and Y, i.e. dependence between the rankings of two variables."}}`
+`r if (any(params$corr_plot != "")) {if (params$corr_type == "spearman") {"A correlation heat map displays Spearman correlations of items. Spearman's rank correlation coefficient describes strength and direction of monotonic relationship between random variables X and Y, i.e. dependence between the rankings of two variables."}}`
 
 `r clustmethod_names <- c("None" = "none",
                           "Ward's"  = "ward.D",
@@ -171,7 +171,7 @@ kable(table, align = 'c')
                           "McQuitty" = "mcquitty",
                           "median" = "median",
                           "centroid" = "centroid")`
-`r if (any(params$corr_plot != "") & params$corr_plot_clustmethod != "none") {paste("Correlation heat map is reordered using hierarchical clustering with", names(clustmethod_names)[clustmethod_names == params$corr_plot_clustmethod], "linkage method. Number of highlighted clusters is", params$corr_plot_numclust, ". ")}`
+`r if (any(params$corr_plot != "") & params$corr_plot_clustmethod != "none") {paste("A correlation heat map is reordered using hierarchical clustering with", names(clustmethod_names)[clustmethod_names == params$corr_plot_clustmethod], "linkage method. The number of highlighted clusters is", params$corr_plot_numclust, ". ")}`
 
 ```{r corr-plot, echo = FALSE, fig.width = 11, fig.height = 4, fig.align = 'center', dpi = 300}
 if (any(params$corr_plot != "")) {
@@ -192,7 +192,7 @@ if (any(params$corr_plot != "")) {
 
 `r if (any(params$corr_plot != "")) {"### Scree plot"}` 
 
-`r if (any(params$corr_plot != "")) {"Scree plot displays the eigenvalues associated with a component or a factor in descending order."}`
+`r if (any(params$corr_plot != "")) {"A scree plot displays the eigenvalues associated with a component or a factor in descending order."}`
 
 ```{r scree-plot, echo = FALSE, fig.width = 11, fig.height = 4, fig.align = 'center', dpi = 300}
 if (any(params$corr_plot != "")) {
@@ -205,7 +205,7 @@ if (any(params$corr_plot != "")) {
 
 `r if (params$validity_check) {"## Predictive validity"}`
 
-`r if(!(params$isCriterionPresent) & params$validity_check){"Criterion variable vector is not present. Predictive validity analysis could not have been generated."}`
+`r if(!(params$isCriterionPresent) & params$validity_check){"No criterion variable vector is present. The predictive validity analysis could not have been generated."}`
 
 ```{r validity-plot, echo = FALSE, fig.width = 11, fig.height = 4, fig.align = 'center', dpi = 300}
 if(params$isCriterionPresent & params$validity_check){
@@ -228,11 +228,11 @@ if(params$isCriterionPresent & params$validity_check){
   txt1 <- ifelse(p.val < 0.05, "less than", "larger than")
   txt2 <- ifelse(p.val < 0.05, "reject", "do not reject")
   txt3 <- ifelse(p.val < 0.05, 
-                 paste("total score and criterion variable are", ifelse(rho > 0, "positively", "negatively"), "correlated."),
+                 paste("total score and the criterion variable are", ifelse(rho > 0, "positively", "negatively"), "correlated."),
                  paste("we cannot conclude that a significant correlation between total score
                         and criterion variable exists."))
-  txt4 <- paste("Test for association between total score and criterion variable is based on Spearman`s ", expression(rho), 
-                ". The null hypothesis is that correlation is 0. ", sep = "") 
+  txt4 <- paste("A test for association between the total score and the criterion variable is based on Spearman`s ", expression(rho), 
+                ". The null hypothesis is that the correlation is 0. ", sep = "") 
   txt5 <- paste("Results: ", expression(rho), " = ", rho, " (p-value ", p.val ,").", sep = "") 
   txt6 <- paste("Interpretation: The p-value is", txt1, "0.05, thus we", txt2, "the null hypothesis;", txt3)
   
@@ -250,13 +250,13 @@ if(params$isCriterionPresent & params$validity_check){
 ## Item analysis
 
 ### Difficulty/Discrimination plot
-`r if (params$DDplotDiscType == "ULI") {"Difficulty (red) of items is estimated as percent of respondents who answered correctly to that item. Discrimination (blue) is by default described by difference of percent correct in upper and lower third of respondents (Upper-Lower Index, ULI). By rule of thumb it should not be lower than 0.2 (borderline in the plot), except for very easy or very difficult items."}`
+`r if (params$DDplotDiscType == "ULI") {"Difficulty (red) of items is estimated as a percentage of the respondents who answered correctly to that item. Discrimination (blue) is described by the difference of the percent correct in the upper and lower third of respondents (Upper-Lower Index, ULI). By a rule of thumb, it should not be lower than 0.2 (borderline in the plot), except for very easy or very difficult items."}`
 
-`r if (params$DDplotDiscType == "RIR") {"Difficulty (red) of items is estimated as percent of respondents who answered correctly to that item. Discrimination (blue) is described by Pearson correlation between item and rest of items. "}`
+`r if (params$DDplotDiscType == "RIR") {"Difficulty (red) of items is estimated as a percent of the  respondents who answered correctly to that item. Discrimination (blue) is described by Pearson correlation between an item and the rest of the items. "}`
 
-`r if (params$DDplotDiscType == "RIT") {"Difficulty (red) of items is estimated as percent of respondents who answered correctly to that item. Discrimination (blue) is described by Pearson correlation between item and total score. "}`
+`r if (params$DDplotDiscType == "RIT") {"Difficulty (red) of items is estimated as a percent of the  respondents who answered correctly to that item. Discrimination (blue) is described by Pearson correlation between an item and the total score. "}`
 
-`r if (params$DDplotDiscType == "none") {"Difficulty (red) of items is estimated as percent of respondents who answered correctly to that item."}`
+`r if (params$DDplotDiscType == "none") {"Difficulty (red) of items is estimated as a percent of the respondents who answered correctly to that item."}`
 
 ```{r DD-plot-interpretation, echo = FALSE, results = "hide"}
 range1 <- params$DDplotRange1
@@ -265,12 +265,12 @@ numgroups <- params$DDplotNumGroups
 
   if (any(range1 != 1, range2 != 3, numgroups != 3)) {
     DDplot_interpretation = HTML(paste(
-      "Discrimination is here a difference between the difficulty recorded in the ",
+      "Discrimination is here the difference between the difficulty recorded in the ",
       "<b>", range1, "</b>",
       ifelse(range1 >= 4, "-th", switch(range1, "1" = "-st", "2" = "-nd", "3" = "-rd")),
       " and <b>", range2, "</b>",
       ifelse(range2 >= 4, "-th", switch(range2, "1" = "-st", "2" = "-nd", "3" = "-rd")),
-      " group out of total number of ",
+      " group out of a total number of ",
       "<b>", numgroups, "</b>",
       " groups. <br><br>",
       sep = ""
@@ -289,7 +289,7 @@ params$difPlot +
 ```
 
 ### Traditional item analysis table
-Diff. - Difficulty of item is estimated as percent of respondents who answered correctly to that item. SD - standard deviation, ULI - Upper-Lower Index calculated as difference in percent correct between upper and lower third of respondents, RIT - Pearson correlation between item and total score, RIR - Pearson correlation between item and rest of items, Alpha Drop - Cronbach's alpha of test without given item, gULI - generalized ULI calculated as difference between the difficulty recorded in the groups selected by user.
+Diff. - Difficulty of an item is estimated as the percent of respondents who correctly answered that item. SD - standard deviation, ULI - Upper-Lower Index calculated as the difference in the percent correct between the upper and lower third of respondents, RIT - Pearson correlation between an item and the total score, RIR - Pearson correlation between an item and the rest of the items, Alpha Drop - Cronbach's alpha of a test without a given item, gULI - generalized ULI calculated as the difference between the difficulty recorded in the groups selected by the user.
 
 ```{r item-table, echo = FALSE}
 table = params$itemexam
@@ -303,7 +303,7 @@ kable(table, digits = c(0, 2, 2, 2, 2, 2, 2), align = 'c')
 
 ## Distractor analysis
 
-Respondents are divided into selected number groups by their total score. Subsequently, the percentage of respondents in each group who selected given answer (correct answer or distractor) is displayed. The correct answer should be more often selected by respondents with higher total score than by those with lower total score, i.e. solid line should be increasing. The distractor should work in opposite direction, i.e. dotted lines should be decreasing.
+Respondents are divided into a selected number of groups by their total score. Subsequently, the percentage of respondents in each group who selected a given answer (correct answer or distractor) is displayed. The correct answer should be selected more often by the respondents with a higher total score than by those with a lower total score, i.e. the solid line should be increasing. The distractor should work in the opposite direction, i.e. the dotted lines should be decreasing.
 
 ```{r distractor-multi-plot, echo = FALSE, fig.width = 11, fig.height = 4, fig.align = 'center', dpi = 300}
 library(gridExtra)
@@ -318,7 +318,7 @@ for (i in 1:length(params$graf)){
 
 `r if (params$irt_type != "none") {"# IRT models"}`
 
-`r if (params$irt_type != "none") {"Item Response Theory (IRT) models are mixed-effect regression models in which respondent ability (theta) is assumed to be a latent and is estimated together with item paramters."}`
+`r if (params$irt_type != "none") {"Item Response Theory (IRT) models are mixed-effect regression models in which the respondent's ability $\\theta$ is assumed to be a latent and is estimated together with item parameters."}`
 
 ```{r irt-eq, echo = FALSE, results = "hide"}
 if (params$irt_type == "rasch") {
@@ -354,7 +354,7 @@ if (params$irt_type == "none") {
 
 `r if (any(params$wrightMap!="")) {"## Wright (item-person) map using 1PL IRT model"}`
 
-`r if (any(params$wrightMap!="")) {"Wright map, also called item-person map, is a graphical tool to display person estimates and item parameters. The person side (left) represents histogram of estimated knowledge of respondents. The item side (right) displays estimates of difficulty of particular items."}`
+`r if (any(params$wrightMap!="")) {"A Wright map, also called an item-person map, is a graphical tool to display person estimates and item parameters. The person side (left) represents a histogram of estimated knowledge of the  respondents. The item side (right) displays estimates of the difficulty of particular items."}`
 
 
 ```{r wright-map, echo = FALSE, results = "hide", fig.height = 4, fig.width = 11, fig.align = 'center', dpi = 300}
@@ -368,13 +368,13 @@ if (any(params$wrightMap != "")) {
 `r if (params$irt_type != "none") {paste0("All subsequent analyses are based on the selected ", head, ":")}`
 `r if (params$irt_type != "none") {eq}`
 
-`r if (params$irt_type == "rasch") {"Model parameters are estimated using marginal maximum likelihood (MML) method. Ability $\\theta$ is assumed to follow normal distribution with freely estimated variance. "}`
+`r if (params$irt_type == "rasch") {"Model parameters are estimated using a marginal maximum likelihood method. Ability $\\theta$ is assumed to follow normal distribution with a freely estimated variance. "}`
 
-`r if (params$irt_type %in% c("1pl", "2pl", "3pl", "4pl")) {"Model parameters are estimated using marginal maximum likelihood (MML) method. Ability $\\theta$ is assumed to follow standard normal distribution. "}`
+`r if (params$irt_type %in% c("1pl", "2pl", "3pl", "4pl")) {"Model parameters are estimated using a  marginal maximum likelihood method. Ability $\\theta$ is assumed to follow standard normal distribution. "}`
 
 `r if (params$irt_type != "none") {"## Ability estimates"}`
 
-`r if (params$irt_type != "none") {"Ability is estimated using EAP algorithm and selected IRT model. Relationship between ability estimates (factor scores, F-scores) and standardized total test scores (Z-scores) can be seen on scatter plot below. Table with ability estimates for all respondents can be downloaded in the application. "}`
+`r if (params$irt_type != "none") {"Ability is estimated using  an EAP algorithm and a selected IRT model. The relationship between ability estimates (factor scores, F-scores) and standardized total test scores (Z-scores) can be seen on the scatter plot below. A table with ability estimates for all respondents can be downloaded from the application. "}`
 
 ```{r irtability, echo = FALSE, results = 'asis'}
 table = round(params$irtability, 2)
@@ -430,7 +430,7 @@ if (params$irt_type != "none") {
 
 `r if (params$irt_type != "none") {"## Parameter estimates and item fit"}`
 
-`r if (params$irt_type != "none") {"Estimates of parameters are completed by their standard errors (SE) and by signed Chi-squared statistics (SX2, see Orlando and Thissen, 2000). P-values lower than 0.05 indicate suspicious items not fitting the selected IRT model. SX2 is computed only when no missing data are present."}`
+`r if (params$irt_type != "none") {"Estimates of parameters are completed by their standard errors (SE) and by signed Chi-squared statistics SX2 (see Orlando and Thissen, 2000). P-values lower than 0.05 indicate suspicious items are not fitting the selected IRT model. SX2 is computed only when no missing data are present."}`
 
 ```{r irt-estim, echo = FALSE}
 if (params$irt_type != "none") {
@@ -446,13 +446,13 @@ if (params$irt_type != "none") {
 
 `r if(any(c(params$histCheck, params$deltaplotCheck, params$logregCheck, params$multiCheck))) {"# DIF/Fairness analysis"}`
 
-`r if(any(c(params$histCheck, params$deltaplotCheck, params$logregCheck, params$multiCheck)) & !params$isGroupPresent){"Group vector is not present. DIF and DDF analyses could have not been generated!"}`
+`r if(any(c(params$histCheck, params$deltaplotCheck, params$logregCheck, params$multiCheck)) & !params$isGroupPresent){"No group vector is present. DIF and DDF analyses could have not been generated!"}`
 
 `r if(params$isGroupPresent & params$histCheck) {"## Total scores by group"}`
 
-`r if(params$isGroupPresent & params$histCheck) {"### Summary table of total scores in reference and focal group"}`
+`r if(params$isGroupPresent & params$histCheck) {"### Summary table of total scores in a reference and focal group"}`
 
-`r if(params$isGroupPresent & params$histCheck) {"DIF is not about total scores! Two groups may have the same distribution of total scores, yet, some item may function differently for two groups. Also, one of the groups may have signifficantly lower total score, yet, it may happen that there is no DIF item!"}`
+`r if(params$isGroupPresent & params$histCheck) {"DIF is not about total scores! Two groups may have the same distribution of total scores, yet, some item may function differently for the two groups. Also, one of the groups may have a signifficantly lower total score, yet, it may happen that there is no DIF item!"}`
 
 ```{r table-by-group, echo = FALSE}
 if (params$histCheck) {
@@ -464,7 +464,7 @@ if (params$histCheck) {
 
 `r if(params$isGroupPresent & params$histCheck) {"### Histogram of total score by group"}`
 
-`r if(params$isGroupPresent & params$histCheck) {"For selected cut-score, blue part of histograms shows respondents with total score above the cut-score, grey column shows respondents with total score equal to the cut-score and red part of histogram shows respondents below the cut-score."}`
+`r if(params$isGroupPresent & params$histCheck) {"For a selected cut-score, the blue part of histograms shows respondents with a total score above the cut-score, the grey column shows respondents with a  total score equal to the cut-score and the red part of histograms shows respondents below the cut-score."}`
 
 ```{r hist-by-group, echo = FALSE, fig.width = 11, fig.height = 4, fig.align = 'center', dpi = 300}
 if (params$histCheck) {
@@ -484,11 +484,11 @@ if (params$histCheck) {
 
 `r if(params$isGroupPresent & params$deltaplotCheck) {"## Delta plot method"}`
 
-`r if(params$isGroupPresent & params$deltaplotCheck) {"Delta plot compares the proportions of correct answers per item in the two groups. It displays non-linear transformation of these proportions using quantiles of standard normal distributions (so called delta scores) for each item for the two groups in a scatterplot called diagonal plot or delta plot . Item is under suspicion of DIF if the delta point considerably departs from the major axis. "}`
+`r if(params$isGroupPresent & params$deltaplotCheck) {"A delta plot compares the proportions of correct answers per item in the two groups. It displays non-linear transformation of these proportions using quantiles of standard normal distributions (so called delta scores) of each item for the two groups in a scatterplot called diagonal plot or delta plot . An item is under suspicion of DIF if the delta point departs considerably from the major axis. "}`
 
 `r if(params$isGroupPresent & params$deltaplotCheck) {"### Summary table"}`
 
-`r if(params$deltaplotCheck){if(params$isGroupPresent){res <- params$DIF_deltaplot_text; paste("Detection threshold is ", round(res$thr, 2), ". ", ifelse(res$DIFitems == "no DIF item detected", "**No DIF item detected.**  ", paste("**Items detected as DIF: ", res$DIFitems, ". **  ", sep = "")), sep = "")}}`
+`r if(params$deltaplotCheck){if(params$isGroupPresent){res <- params$DIF_deltaplot_text; paste("Detection threshold is ", round(res$thr, 2), ". ", ifelse(res$DIFitems == "no DIF item detected", "**No DIF item was detected.**  ", paste("**Items were detected as DIF: ", res$DIFitems, ". **  ", sep = "")), sep = "")}}`
 `r if(params$isGroupPresent & params$logregCheck) {res <- params$DIF_deltaplot_text; paste(ifelse(res$purify, "Item purification was used.", "Item purification was not applied."))}`
 
 ```{r delta-plot-output, echo = FALSE}
@@ -518,14 +518,14 @@ if (params$deltaplotCheck) {
 }
 ```
 
-`r if(params$isGroupPresent & params$logregCheck) {"## DIF detection using logistic regression"}`
+`r if(params$isGroupPresent & params$logregCheck) {"## Logistic regression method"}`
 
-`r if(params$isGroupPresent & params$logregCheck) {"Logistic regression allows for detection of uniform and non-uniform DIF by adding a group specific intercept (uniform DIF) and group specific interaction (non-uniform DIF) into model and by testing for their significance."}`
+`r if(params$isGroupPresent & params$logregCheck) {"Logistic regression allows for detection of uniform and non-uniform DIF by adding a group specific intercept (uniform DIF) and group specific interaction (non-uniform DIF) into the model and by testing for their significance."}`
 
 `r if(params$isGroupPresent & params$logregCheck) {"### Summary table"}`
 
-`r if(params$isGroupPresent & params$logregCheck) {res <- params$DIF_logistic_print; switch(res$type, "both" = "Both types of DIF tested.", "udif" = "Uniform DIF tested only.", "nudif" = "Non-uniform DIF tested only.")}`
-`r if(params$isGroupPresent & params$logregCheck) {res <- params$DIF_logistic_print; paste("Detection threshold is ", round(res$thr, 2), ". ", ifelse(any(res$DIFitems == "No DIF item detected"), "**No DIF item detected. **  ", paste("**Items detected as DIF: ", paste(res$DIFitems, collapse = ", "), ". **  ", sep = "")), sep = "")}`
+`r if(params$isGroupPresent & params$logregCheck) {res <- params$DIF_logistic_print; switch(res$type, "both" = "Both types of DIF were tested.", "udif" = "Uniform DIF was tested only.", "nudif" = "Non-uniform  DIF was tested only.")}`
+`r if(params$isGroupPresent & params$logregCheck) {res <- params$DIF_logistic_print; paste("The detection threshold is ", round(res$thr, 2), ". ", ifelse(any(res$DIFitems == "No DIF item detected"), "**No DIF item was detected. **  ", paste("**Items were detected as DIF: ", paste(res$DIFitems, collapse = ", "), ". **  ", sep = "")), sep = "")}`
 `r if(params$isGroupPresent & params$logregCheck) {res <- params$DIF_logistic_print; paste(ifelse(res$purification, "Item purification was used.", "Item purification was not applied."), ifelse(is.null(res$p.adjust.method), "No p-value adjustment for multiple comparisons was used.", paste(switch(res$p.adjust.method, "holm" = "Holm's", "hochberg" = "Hochberg's", "hommel" = "Hommel's", "bonferroni" = "Bonferroni", "BH" = "Benjamini-Hochberg", "BY" = "Benjamini-Yekutieli", "fdr" = "Benjamini-Hochberg", "none" = "No"), "p-value adjustment for multiple comparisons was used.")))}`
 
 ```{r dif-logistic-output, echo = FALSE}
@@ -568,7 +568,7 @@ if (params$logregCheck) {
 `r if(params$isGroupPresent & params$logregCheck & !is.null(params$DIF_logistic_plot[[1]])) {"### Characteristic curves of DIF items"}`
 
 `r if(params$isGroupPresent & params$logregCheck & !is.null(params$DIF_logistic_plot[[1]])) {"Plots are based on DIF logistic procedure without any correction method."}`
-`r if(params$isGroupPresent & params$logregCheck & !is.null(params$DIF_logistic_plot[[1]])) {"Points represent proportion of correct answer with respect to standardized total score. Their size is determined by count of respondents who achieved given level of standardized total score."}`
+`r if(params$isGroupPresent & params$logregCheck & !is.null(params$DIF_logistic_plot[[1]])) {"Points represent a proportion of a correct answer with respect to standardized total score. Their size is determined by count of the respondents who achieved a given level of standardized total score."}`
 
 ```{r dif-logistic-plot, echo = FALSE, fig.width = 11, fig.height = 4, fig.align = 'center', dpi = 300}
 if (params$logregCheck) {
@@ -589,14 +589,14 @@ if (params$logregCheck) {
 }
 ```
 
-`r if(params$isGroupPresent & params$multiCheck) {"## DDF detection using multinomial regression"}`
+`r if(params$isGroupPresent & params$multiCheck) {"## DDF detection using multinomial regression method"}`
 
-`r if(params$isGroupPresent & params$multiCheck) {"Differential Distractor Functioning (DDF) occurs when respondents from different groups but with the same knowledge have different probability of selecting at least one distractor choice. DDF is here examined by multinomial log-linear regression model with Z-score and group membership as covariates. "}`
+`r if(params$isGroupPresent & params$multiCheck) {"Differential Distractor Functioning (DDF) occurs when respondents from different groups but with the same knowledge have a different probability of selecting at least one distractor choice. DDF is examined here by a  multinomial log-linear regression model with Z-score and group membership as covariates. "}`
 
 `r if(params$isGroupPresent & params$multiCheck) {"### Summary table"}`
 
-`r if(params$isGroupPresent & params$multiCheck) {res <- params$DDF_multinomial_print; switch(res$type, "both" = "Both types of DDF tested.", "udif" = "Uniform DDF tested only.", "nudif" = "Non-uniform DDF tested only.")}`
-`r if(params$isGroupPresent & params$multiCheck) {res <- params$DDF_multinomial_print; paste(ifelse(any(res$DDFitems == "No DDF item detected"), "**No DDF item detected. **  ", paste("**Items detected as DDF: ", paste(res$DDFitems, collapse = ", "), ". **  ", sep = "")), sep = "")}`
+`r if(params$isGroupPresent & params$multiCheck) {res <- params$DDF_multinomial_print; switch(res$type, "both" = "Both types of DDF were tested.", "udif" = "Uniform DDF was tested only.", "nudif" = "Non-uniform DDF was tested only.")}`
+`r if(params$isGroupPresent & params$multiCheck) {res <- params$DDF_multinomial_print; paste(ifelse(any(res$DDFitems == "No DDF item detected"), "**No DDF item was detected. **  ", paste("**Items detected as DDF: ", paste(res$DDFitems, collapse = ", "), ". **  ", sep = "")), sep = "")}`
 `r if(params$isGroupPresent & params$multiCheck) {res <- params$DDF_multinomial_print; paste(ifelse(res$purification, "Item purification was used.", "Item purification was not applied."), ifelse(is.null(res$p.adjust.method), "No p-value adjustment for multiple comparisons was used.", paste(switch(res$p.adjust.method, "holm" = "Holm's", "hochberg" = "Hochberg's", "hommel" = "Hommel's", "bonferroni" = "Bonferroni", "BH" = "Benjamini-Hochberg", "BY" = "Benjamini-Yekutieli", "fdr" = "Benjamini-Hochberg", "none" = "No"), "p-value adjustment for multiple comparisons was used.")))}`
 
 ```{r ddf-multi-output, echo = FALSE}
@@ -637,7 +637,7 @@ if (params$multiCheck) {
 
 `r if(params$isGroupPresent & params$multiCheck & !is.null(params$DDF_multinomial_plot[[1]])) {"### Characteristic curves of DDF items"}`
 
-`r if(params$isGroupPresent & params$multiCheck & !is.null(params$DDF_multinomial_plot[[1]])) {"Points represent proportion of selected answer with respect to standardized total score. Size of points is determined by count of respondents who achieved given level of standardized total score and who selected given option with respect to the group membership. "}`
+`r if(params$isGroupPresent & params$multiCheck & !is.null(params$DDF_multinomial_plot[[1]])) {"Points represent a proportion of a selected answer with respect to standardized total score. Their size is determined by count of the respondents who achieved a given level of standardized total score and who selected a given option with respect to the group membership. "}`
 
 ```{r ddf-multi-plot, echo = FALSE, fig.width = 11, fig.height = 4, fig.align = 'center', dpi = 300}
 if (params$multiCheck) {
