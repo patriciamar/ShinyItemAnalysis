@@ -467,11 +467,12 @@ output$print_DIF_logistic <- renderPrint({
 plot_DIF_logisticInput <- reactive({
   group <- unlist(group())
   data <- data.frame(binary())
+  item <- input$diflogSlider
 
-  type <- input$type_plot_DIF_logistic
   g <- plotDIFLogistic(data, group,
                        type = input$type_plot_DIF_logistic,
-                       item =  input$diflogSlider,
+                       item = item,
+                       item.name = item_names()[item],
                        IRT = F,
                        p.adjust.method = input$correction_method_logItems,
                        purify = input$puri_LR_plot)
@@ -484,7 +485,7 @@ output$plot_DIF_logistic <- renderPlot({
 
 output$DP_plot_DIF_logistic <- downloadHandler(
   filename =  function() {
-    paste("fig_DifLogisticRegression_",item_names()[input$diflogSlider],".png", sep = "")
+    paste("fig_DifLogisticRegression_", item_names()[input$diflogSlider], ".png", sep = "")
   },
   content = function(file) {
     ggsave(file, plot = plot_DIF_logisticInput() +
@@ -539,10 +540,11 @@ DIF_logistic_plotReport <- reactive({
       g <- plotDIFLogistic(data, group,
                            type = type_report,
                            item =  mod$DIFitems[i],
+                           item.name = item_names(mod$DIFitems[i]),
                            IRT = F,
                            p.adjust.method = p.adjust.method_report,
                            purify = purify_report)
-      g = g + ggtitle(paste0("DIF logistic plot for item ", item_numbers()[mod$DIFitems[i]])) +
+      g = g + ggtitle(paste0("DIF logistic plot for ", item_names()[mod$DIFitems[i]])) +
         theme(text = element_text(size = 12),
               plot.title = element_text(size = 12, face = "bold"))
       graflist[[i]] <- g
