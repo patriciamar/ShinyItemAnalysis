@@ -22,10 +22,12 @@ author: |
 params:
   author: NA
   dataset: NA
+  itemNames: NA
   a: NA
   k: NA
   gr: NA
   results: NA
+  cutScore: NA
   histogram_totalscores: NA
   standardscores_table: NA
   corr_plot: NA
@@ -63,6 +65,8 @@ params:
   resultsgroup: NA
   histbyscoregroup0: NA
   histbyscoregroup1: NA
+  maxScore0: NA
+  maxScore1: NA
   deltaplotCheck: NA
   DIF_deltaplot: NA
   DIF_deltaplot_text: NA
@@ -72,14 +76,17 @@ params:
   multiCheck: NA
   DDF_multinomial_print: NA
   DDF_multinomial_plot: NA
+  sessionInfo: NA
 ---
 
+<style>
+body {text-align: justify}
+</style>
 **************
-
 
 # Introduction
 
-This report was created by ShinyItemAnalysis application version `r packageVersion("ShinyItemAnalysis")`. ShinyItemAnalysis provides test and item analysis and it is available on [CRAN](https://CRAN.R-project.org/package=ShinyItemAnalysis) and also [online](https://shiny.cs.cas.cz/ShinyItemAnalysis/). 
+This report was created by by R version `r getRversion()` and its package ShinyItemAnalysis application version `r packageVersion("ShinyItemAnalysis")`. ShinyItemAnalysis provides test and item analysis and it is available on [CRAN](https://CRAN.R-project.org/package=ShinyItemAnalysis) and also [online](https://shiny.cs.cas.cz/ShinyItemAnalysis/). 
 
 To cite ShinyItemAnalysis application in publications, please, use:
 
@@ -88,7 +95,8 @@ To cite ShinyItemAnalysis application in publications, please, use:
   (2018)
   ShinyItemAnalysis for teaching psychometrics and to enforce routine analysis of educational tests. 
   The R Journal. 
-  Accepted.
+  Accepted. 
+  doi: 10.32614/RJ-2018-074
   
   Martinkova P., Drabinova A., Leder O., \& Houdek J.
   (2018)
@@ -100,7 +108,7 @@ To cite ShinyItemAnalysis application in publications, please, use:
   (2017)
   ShinyItemAnalysis: Analyza prijimacich a jinych znalostnich ci psychologickych testu
   [ShinyItemAnalysis: Analyzing admission and other educational and psychological tests, in Czech].
-  TESTFORUM, 6(9), 16-35. [doi:10.5817/TF2017-9-129](http://www.testforum.cz/domains/testforum.cz/index.php/testforum/article/view/129)
+  TESTFORUM, 6(9), 16-35. [doi: 10.5817/TF2017-9-129](http://www.testforum.cz/domains/testforum.cz/index.php/testforum/article/view/129)
 
 This program is free software and you can redistribute it and or modify it under the terms of the GNU GPL 3 as published by the Free Software Foundation. This program is distributed in the hope that it will be useful, but without any warranty; without even the implied warranty of merchantability of fitness for a particular purpose. 
 
@@ -124,7 +132,7 @@ kable(t(table), digits = c(0, 0, 2, 2, 2, 2, 2), align = 'c')
 ```
 
 ### Histogram of total scores
-For a selected cut-score, the blue part of a histogram shows respondents with a total score above the cut-score, the grey column shows respondents with a total score equal to the cut-score and the red part of a histogram shows respondents below the cut-score.
+For cut-score `r params$cutScore`, the blue part of a histogram shows respondents with a total score above the cut-score, the grey column shows respondents with a total score equal to the cut-score and the red part of a histogram shows respondents below the cut-score.
 
 ```{r total-scores-histogram, echo = FALSE, fig.width = 11, fig.height = 4, fig.align = 'center', dpi = 300}
 params$histogram_totalscores + 
@@ -152,7 +160,6 @@ kable(table, align = 'c')
 
 `r if (any(params$corr_plot != "") | params$validity_check) {"# Validity"}`
 
-
 `r if (any(params$corr_plot != "")) {"## Correlation structure"}`
 
 `r if (any(params$corr_plot != "")) {"### Correlation heat map "}`
@@ -171,6 +178,7 @@ kable(table, align = 'c')
                           "McQuitty" = "mcquitty",
                           "median" = "median",
                           "centroid" = "centroid")`
+                          
 `r if (any(params$corr_plot != "") & params$corr_plot_clustmethod != "none") {paste("A correlation heat map is reordered using hierarchical clustering with", names(clustmethod_names)[clustmethod_names == params$corr_plot_clustmethod], "linkage method. The number of highlighted clusters is", params$corr_plot_numclust, ". ")}`
 
 ```{r corr-plot, echo = FALSE, fig.width = 11, fig.height = 4, fig.align = 'center', dpi = 300}
@@ -219,6 +227,7 @@ if(params$isCriterionPresent & params$validity_check){
 }
 ```
 
+
 ```{r validity-table, echo = FALSE, results = 'hide'}
 if(params$isCriterionPresent & params$validity_check){
   tab <- params$validity_table
@@ -228,10 +237,12 @@ if(params$isCriterionPresent & params$validity_check){
   txt1 <- ifelse(p.val < 0.05, "less than", "larger than")
   txt2 <- ifelse(p.val < 0.05, "reject", "do not reject")
   txt3 <- ifelse(p.val < 0.05, 
-                 paste("total score and the criterion variable are", ifelse(rho > 0, "positively", "negatively"), "correlated."),
+                 paste("total score and the criterion variable are", ifelse(rho > 0, "positively", "negatively"),
+                       "correlated."),
                  paste("we cannot conclude that a significant correlation between total score
                         and criterion variable exists."))
-  txt4 <- paste("A test for association between the total score and the criterion variable is based on Spearman`s ", expression(rho), 
+  txt4 <- paste("A test for association between the total score and the criterion variable is based on Spearman`s ",
+                expression(rho), 
                 ". The null hypothesis is that the correlation is 0. ", sep = "") 
   txt5 <- paste("Results: ", expression(rho), " = ", rho, " (p-value ", p.val ,").", sep = "") 
   txt6 <- paste("Interpretation: The p-value is", txt1, "0.05, thus we", txt2, "the null hypothesis;", txt3)
@@ -250,37 +261,35 @@ if(params$isCriterionPresent & params$validity_check){
 ## Item analysis
 
 ### Difficulty/Discrimination plot
-`r if (params$DDplotDiscType == "ULI") {"Difficulty (red) of items is estimated as a percentage of the respondents who answered correctly to that item. Discrimination (blue) is described by the difference of the percent correct in the upper and lower third of respondents (Upper-Lower Index, ULI). By a rule of thumb, it should not be lower than 0.2 (borderline in the plot), except for very easy or very difficult items."}`
 
-`r if (params$DDplotDiscType == "RIR") {"Difficulty (red) of items is estimated as a percent of the  respondents who answered correctly to that item. Discrimination (blue) is described by Pearson correlation between an item and the rest of the items. "}`
+```{r DD-plot-interpretation, echo = FALSE}
+txt1 <- "Difficulty (red) of items is estimated as a percent of the respondents who answered correctly to that item. "
 
-`r if (params$DDplotDiscType == "RIT") {"Difficulty (red) of items is estimated as a percent of the  respondents who answered correctly to that item. Discrimination (blue) is described by Pearson correlation between an item and the total score. "}`
-
-`r if (params$DDplotDiscType == "none") {"Difficulty (red) of items is estimated as a percent of the respondents who answered correctly to that item."}`
-
-```{r DD-plot-interpretation, echo = FALSE, results = "hide"}
 range1 <- params$DDplotRange1
 range2 <- params$DDplotRange2
 numgroups <- params$DDplotNumGroups
 
-  if (any(range1 != 1, range2 != 3, numgroups != 3)) {
-    DDplot_interpretation = HTML(paste(
-      "Discrimination is here the difference between the difficulty recorded in the ",
-      "<b>", range1, "</b>",
-      ifelse(range1 >= 4, "-th", switch(range1, "1" = "-st", "2" = "-nd", "3" = "-rd")),
-      " and <b>", range2, "</b>",
-      ifelse(range2 >= 4, "-th", switch(range2, "1" = "-st", "2" = "-nd", "3" = "-rd")),
-      " group out of a total number of ",
-      "<b>", numgroups, "</b>",
-      " groups. <br><br>",
-      sep = ""
-    ))
-  }
+txt2 <- switch(params$DDplotDiscType,
+       "RIR" = "Discrimination (blue) is described by Pearson correlation between an item and the rest of the items.",
+       "RIT" = "Discrimination (blue) is described by Pearson correlation between an item and the total score.",
+       "none" = "",
+       "ULI" = if (any(range1 != 1, range2 != 3, numgroups != 3)) {
+         paste0("Discrimination (blue) is described by the difference of the percent correct in the ",
+                "<b>", range1, "</b>",
+                ifelse(range1 >= 4, "-th", switch(range1, "1" = "-st", "2" = "-nd", "3" = "-rd")),
+                " and <b>", range2, "</b>",
+                ifelse(range2 >= 4, "-th", switch(range2, "1" = "-st", "2" = "-nd", "3" = "-rd")),
+                " group of respondents out of a total number of ",
+                "<b>", numgroups, "</b>",
+                " groups. ")
+         } else {
+           "Discrimination (blue) is described by the difference of the percent correct in the upper and lower third of respondents (Upper-Lower Index, ULI). By a rule of thumb, it should not be lower than 0.2 (borderline in the plot), except for very easy or very difficult items."
+           })
+
+HTML(paste0(txt1, txt2))
 ```
 
-`r if (any(range1 != 1, range2 != 3, numgroups != 3)) {DDplot_interpretation}`
 
-<!-- THIS HAS TO BE MODIFIED - ADD INFO WHICH GROUPS WERE SELECTED -->
 ```{r DD-plot, echo = FALSE, fig.width = 11, fig.height = 4, fig.align = 'center', dpi = 300}
 params$difPlot + 
   ggtitle("") + 
@@ -289,21 +298,62 @@ params$difPlot +
 ```
 
 ### Traditional item analysis table
-Diff. - Difficulty of an item is estimated as the percent of respondents who correctly answered that item. SD - standard deviation, ULI - Upper-Lower Index calculated as the difference in the percent correct between the upper and lower third of respondents, RIT - Pearson correlation between an item and the total score, RIR - Pearson correlation between an item and the rest of the items, Alpha Drop - Cronbach's alpha of a test without a given item, gULI - generalized ULI calculated as the difference between the difficulty recorded in the groups selected by the user.
+```{r item-table-text, echo = FALSE}
+
+range1 <- params$DDplotRange1
+range2 <- params$DDplotRange2
+numgroups <- params$DDplotNumGroups
+
+txt1 <- "Diff. - Difficulty of an item is estimated as the percent of respondents who correctly answered that item. SD - standard deviation, ULI - Upper-Lower Index calculated as the difference in the percent correct between the upper and lower third of respondents, RIT - Pearson correlation between an item and the total score, RIR - Pearson correlation between an item and the rest of the items, Alpha Drop - Cronbach's alpha of a test without a given item"
+
+if(params$DDplotNumGroups == 3 & params$DDplotRange1 == 1 & params$DDplotRange2 == 3){
+  txt2 <- ". "
+} else {
+  txt2 <- paste0(", gULI - generalized ULI calculated as the difference between the difficulty recorded in the ", 
+                 "<b>", range1, "</b>",
+                 ifelse(range1 >= 4, "-th", switch(range1, "1" = "-st", "2" = "-nd", "3" = "-rd")),
+                 " and <b>", range2, "</b>",
+                 ifelse(range2 >= 4, "-th", switch(range2, "1" = "-st", "2" = "-nd", "3" = "-rd")),
+                 " group of respondents out of a total number of ",
+                 "<b>", numgroups, "</b>",
+                 " groups. ")
+}
+
+HTML(paste0(txt1, txt2))
+```
+
 
 ```{r item-table, echo = FALSE}
-table = params$itemexam
-tab = format(round(table[, -1], 2), nsmall = 2)
-table = data.frame(table[, 1], tab)
-colnames(table) = c("Item", "Diff.", "SD", "ULI", "RIT", "RIR", "Alpha Drop", "gULI")
-rownames(table) = NULL
 
-kable(table, digits = c(0, 2, 2, 2, 2, 2, 2), align = 'c')
+if(params$DDplotNumGroups == 3 & params$DDplotRange1 == 1 & params$DDplotRange2 == 3){
+  table = params$itemexam
+  tab = format(round(table[, -1], 2), nsmall = 2)
+  table = data.frame(table[, 1], tab[,-7])
+  colnames(table) = c("Item", "Diff.", "SD", "ULI", "RIT", "RIR", "Alpha Drop")
+  rownames(table) = NULL
+
+  kable(table, digits = c(0, 2, 2, 2, 2, 2), align = 'c')
+  
+} else {
+  table = params$itemexam
+  tab = format(round(table[, -1], 2), nsmall = 2)
+  table = data.frame(table[, 1], tab)
+  colnames(table) = c("Item", "Diff.", "SD", "ULI", "RIT", "RIR", "Alpha Drop",   "gULI")
+  rownames(table) = NULL
+
+  kable(table, digits = c(0, 2, 2, 2, 2, 2, 2), align = 'c')
+}
 ```
 
 ## Distractor analysis
 
+### Distractor plot
+
 Respondents are divided into a selected number of groups by their total score. Subsequently, the percentage of respondents in each group who selected a given answer (correct answer or distractor) is displayed. The correct answer should be selected more often by the respondents with a higher total score than by those with a lower total score, i.e. the solid line should be increasing. The distractor should work in the opposite direction, i.e. the dotted lines should be decreasing.
+
+### Multinomial plot
+
+In the multinomial plot, points represent proportion of selected option with respect to standardized total score. Their size is determined by count of respondents who achieved given level of standardized total score and who selected given option.
 
 ```{r distractor-multi-plot, echo = FALSE, fig.width = 11, fig.height = 4, fig.align = 'center', dpi = 300}
 library(gridExtra)
@@ -374,13 +424,15 @@ if (any(params$wrightMap != "")) {
 
 `r if (params$irt_type != "none") {"## Ability estimates"}`
 
-`r if (params$irt_type != "none") {"Ability is estimated using  an EAP algorithm and a selected IRT model. The relationship between ability estimates (factor scores, F-scores) and standardized total test scores (Z-scores) can be seen on the scatter plot below. A table with ability estimates for all respondents can be downloaded from the application. "}`
+`r if (params$irt_type != "none") {paste0("Ability is estimated using  an EAP algorithm and a", head ," IRT model. The relationship between ability estimates (factor scores, F-scores) and standardized total test scores (Z-scores) can be seen on the scatter plot below. A table with ability estimates for all respondents can be downloaded from the application. ")}`
 
 ```{r irtability, echo = FALSE, results = 'asis'}
-table = round(params$irtability, 2)
-table = cbind(c("Total Scores", "Z-Scores", "F-Scores"), table)
-colnames(table)[1] = "Score type"
-kable(table, align = 'c')
+if (params$irt_type != "none"){
+  table = round(params$irtability, 2)
+  table = cbind(c("Total Scores", "Z-Scores", "F-Scores"), table)
+  colnames(table)[1] = "Score type"
+  kable(table, align = c('l', rep('c', 7)))
+}
 ```
 
 ```{r irt-3, echo = FALSE, fig.width = 11, fig.height = 4, fig.align = 'center', dpi = 300}
@@ -436,13 +488,12 @@ if (params$irt_type != "none") {
 if (params$irt_type != "none") {
   table = params$irtcoef
   
-  kable(table, align = 'c')
+  kable(table, align = c('l', rep('c', 11)))
 }
 ```
 
 
 `r if (any(c(params$histCheck, params$deltaplotCheck, params$logregCheck, params$multiCheck)) & params$isGroupPresent) {"**************"}`
-
 
 `r if(any(c(params$histCheck, params$deltaplotCheck, params$logregCheck, params$multiCheck))) {"# DIF/Fairness analysis"}`
 
@@ -457,7 +508,7 @@ if (params$irt_type != "none") {
 ```{r table-by-group, echo = FALSE}
 if (params$histCheck) {
   if(params$isGroupPresent){
-    kable(params$resultsgroup, digits = c(0, 0, 3, 0, 3, 3, 3), align = 'c')
+    kable(params$resultsgroup, digits = c(0, 0, 3, 0, 3, 3, 3), align = c('l', rep('c', 6)))
   }
 }
 ```
@@ -497,9 +548,9 @@ if (params$deltaplotCheck) {
     res <- params$DIF_deltaplot_text
     tab <- cbind(res$Props, res$Deltas, res$Dist)
     colnames(tab) <- c("Prop. Ref", "Prop. Foc", "Delta Ref", "Delta Foc", "Dist.")
-    rownames(tab) <- paste("Item", 1:nrow(tab))
+    rownames(tab) <- params$itemNames
     
-    kable(tab, digits = c(0, 3, 3, 3, 3, 3), align = 'c')
+    kable(tab, digits = c(0, 3, 3, 3, 3, 3), align = c('l', rep('c', 5)))
   }
 }
 ```
@@ -550,7 +601,7 @@ if (params$logregCheck) {
   
   tab <- cbind(sprintf("%.3f", res$Logistik), pval, 
                sprintf("%.3f", res$deltaR2), ZT, JG)
-  rownames(tab) <- res$names
+  rownames(tab) <- params$itemNames
   colnames(tab) <- c("Stat.", "P-value", "R^2", "ZT", "JG")
   
   kable(tab, digits = c(0, 3, 3, 3, 0, 0), align = 'c')
@@ -621,11 +672,13 @@ if (params$multiCheck) {
     
     
     tab <- cbind(sprintf("%.3f", res$Sval), pval)
-    rownames(tab) <- colnames(res$Data)
+    rownames(tab) <- gsub("\\."," ",colnames(res$Data))
     if (ncol(tab) == 2){
       colnames(tab) <- c("Stat.", "P-value")
+      rownames(tab) <- params$itemNames
     } else {
       colnames(tab) <- c("Stat.", "P-value", "Adj. p-value")
+      rownames(tab) <- params$itemNames
     }
     
     kable(tab, align = 'c')
@@ -656,11 +709,11 @@ if (params$multiCheck) {
 
 **************
 
-# Session info
+`r if(params$sessionInfo == 'Yes') {"# Session info"} `
 
-Session info provides information about settings of the R console and used packages and their versions which were used for the analysis.
+`r if(params$sessionInfo == 'Yes') {"Session info provides information about settings of the R console and used packages and their versions which were used for the analysis."}`
 
-```{r session-info, echo = FALSE}
+```{r session-info, echo = FALSE, results = ifelse(params$sessionInfo == 'Yes',"markup","hide")}
 sessionInfo()
 ```
 

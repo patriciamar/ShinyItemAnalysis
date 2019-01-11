@@ -148,6 +148,34 @@ itemanalysis_table_Input <- reactive({
   tab
 })
 
+# ** Traditional item analysis table for report ######
+itemanalysis_table_report_Input <- reactive({
+  a <- nominal()
+  k <- key()
+  correct <- binary()
+
+  range1 <- ifelse(input$customizeCheck,
+                   input$DDplotRangeSlider_report[[1]],
+                   input$DDplotRangeSlider[[1]])
+  range2 <- ifelse(input$customizeCheck,
+                   input$DDplotRangeSlider_report[[2]],
+                   input$DDplotRangeSlider[[2]])
+  num.groups <- ifelse(input$customizeCheck,
+                       input$DDplotNumGroupsSlider_report,
+                       input$DDplotNumGroupsSlider)
+
+  alphadrop <- psych::alpha(correct)$alpha.drop[, 1]
+  tab <- item.exam(correct, discr = TRUE)[, 1:5]
+  tab <- data.table(item_numbers(),
+                    tab[, c(4, 1, 5, 2, 3)],
+                    alphadrop)
+  tab <- cbind(tab, gDiscrim(correct, k = num.groups, l = range1, u = range2))
+  colnames(tab) <- c("Item", "Difficulty", "SD", "Discrimination ULI",
+                     "Discrimination RIT", "Discrimination RIR", "Alpha Drop",
+                     "Customized Discrimination")
+  tab
+})
+
 # ** Output traditional item analysis table ######
 output$itemanalysis_table <- renderTable({
   itemanalysis_table_Input()

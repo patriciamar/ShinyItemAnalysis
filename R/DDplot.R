@@ -233,8 +233,10 @@ DDplot <- function (data, item.names, k = 3, l = 1, u = 3,  discrim = "ULI",
       scale_fill_manual(breaks = parameter, values = col) +
       scale_colour_manual(breaks = parameter, values = col) +
       theme_app() +
-      theme(axis.text.x = element_text(angle = 90,vjust = 0.5), legend.position = c(0.01, 0.98),
-            legend.justification = c(0, 1))
+      theme(axis.text.x = element_text(angle = 90, vjust = 0.5),
+            legend.position = c(0.01, 0.98),
+            legend.justification = c(0, 1),
+            legend.spacing.x = unit(0.1, 'cm'))
   } else {
     value <- difc[order(difc)]
     parameter <- rep(c(diffName[j]), ncol(data))
@@ -246,11 +248,13 @@ DDplot <- function (data, item.names, k = 3, l = 1, u = 3,  discrim = "ULI",
       xlab(xlabel[j]) + ylab(diffName[j]) +
       scale_y_continuous(expand = c(0, 0), limits = c(min(min(df$value) - 0.01, 0), 1)) +
       scale_fill_manual(breaks = parameter,
-                        values = col) + scale_colour_manual(breaks = parameter, values = col) +
+                        values = col) +
+      scale_colour_manual(breaks = parameter, values = col) +
       theme_app() +
       theme(axis.text.x = element_text(angle = 90, vjust = 0.5),
             legend.position = c(0.01, 0.98),
-            legend.justification = c(0, 1))
+            legend.justification = c(0, 1),
+            legend.spacing.x = unit(0.1, 'cm'))
   }
 }
 
