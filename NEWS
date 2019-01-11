@@ -5,6 +5,19 @@
         ***************************************************************
 
 -------------------------------------------------------
+- Changes in ShinyItemAnalysis 1.2.9-2. (2019-01-11) -
+-------------------------------------------------------
+
+BUG FIXING
+  o Generalized ULI index is now correctly displayed in traditional
+    item analysis table in reports.
+  o Item names are now correctly displayed in reports.
+  o Item names are now correctly displayed in DDF section.
+
+MINOR UPDATES
+  o Legend of DDplot was modified.
+
+-------------------------------------------------------
 - Changes in ShinyItemAnalysis 1.2.9-1. (2018-12-10) -
 -------------------------------------------------------
 

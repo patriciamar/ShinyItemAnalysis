@@ -646,6 +646,7 @@ function(input, output, session) {
         # datasets
         a = nominal(),
         k = key(),
+        itemNames = item_names(),
         # total scores
         incProgress(0.05),
         results = t(totalscores_table_Input()),
@@ -670,7 +671,7 @@ function(input, output, session) {
         DDplotRange2 = ifelse(input$customizeCheck, input$DDplotRangeSlider_report[[2]], input$DDplotRangeSlider[[2]]),
         DDplotNumGroups = ifelse(input$customizeCheck, input$DDplotNumGroupsSlider_report, input$DDplotNumGroupsSlider),
         DDplotDiscType = ifelse(input$customizeCheck, input$DDplotDiscriminationSelect_report, input$DDplotDiscriminationSelect),
-        itemexam = itemanalysis_table_Input(),
+        itemexam = itemanalysis_table_report_Input(),
         incProgress(0.05),
         # distractors
         hist_distractor_by_group = distractor_histogram_Input(),
@@ -733,6 +734,7 @@ function(input, output, session) {
         # datasets
         a = nominal(),
         k = key(),
+        itemNames = item_names(),
         # total scores
         results = t(totalscores_table_Input()),
         histogram_totalscores = totalscores_histogram_Input(),
@@ -754,7 +756,7 @@ function(input, output, session) {
         DDplotRange2 = ifelse(input$customizeCheck, input$DDplotRangeSlider_report[[2]], input$DDplotRangeSlider[[2]]),
         DDplotNumGroups = ifelse(input$customizeCheck, input$DDplotNumGroupsSlider_report, input$DDplotNumGroupsSlider),
         DDplotDiscType = ifelse(input$customizeCheck, input$DDplotDiscriminationSelect_report, input$DDplotDiscriminationSelect),
-        itemexam = itemanalysis_table_Input(),
+        itemexam = itemanalysis_table_report_Input(),
         # distractors
         hist_distractor_by_group = distractor_histogram_Input(),
         graf = report_distractor_plot(),

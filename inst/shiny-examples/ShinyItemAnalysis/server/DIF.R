@@ -540,7 +540,7 @@ DIF_logistic_plotReport <- reactive({
       g <- plotDIFLogistic(data, group,
                            type = type_report,
                            item =  mod$DIFitems[i],
-                           item.name = item_names(mod$DIFitems[i]),
+                           item.name = item_names()[mod$DIFitems[i]],
                            IRT = F,
                            p.adjust.method = p.adjust.method_report,
                            purify = purify_report)
