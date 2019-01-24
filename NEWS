@@ -13,6 +13,8 @@ BUG FIXING
     item analysis table in reports.
   o Item names are now correctly displayed in reports.
   o Item names are now correctly displayed in DDF section.
+  o Function plotDIFLogistic() now handles user-specified matching
+    criterion.
 
 MINOR UPDATES
   o Legend of DDplot was modified.

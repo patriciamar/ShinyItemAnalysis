@@ -5,7 +5,7 @@
 \title{Function for characteristic curve of 2PL logistic DIF model}
 \usage{
 plotDIFLogistic(data, group, type = "both", item, item.name,
-IRT = F, p.adjust.method = "none", purify = F)
+IRT = F, p.adjust.method = "none", purify = F, match = "score")
 }
 \arguments{
 \item{data}{numeric: the data matrix. See Details.}
@@ -26,6 +26,10 @@ parameterization (\code{FALSE}) may be applied.}
 multiple comparisons. See Details.}
 
 \item{purify}{logical: if item purification may be applied.}
+
+\item{match}{specifies the type of matching criterion. Can be either \code{"score"} (default)
+to compute the test score, or any continuous or discrete variable with the same length as the number
+of rows of \code{Data}.}
 }
 \description{
 Plots characteristic curve of 2PL logistic DIF model
