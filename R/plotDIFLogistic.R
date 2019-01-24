@@ -15,9 +15,12 @@
 #' @param p.adjust.method character:  the acronym of the method for p-value adjustment for
 #' multiple comparisons. See Details.
 #' @param purify logical: if item purification may be applied.
+#' @param match specifies the type of matching criterion. Can be either \code{"score"} (default)
+#' to compute the test score, or any continuous or discrete variable with the same length as the number
+#' of rows of \code{Data}.
 #'
 #' @usage plotDIFLogistic(data, group, type = "both", item, item.name,
-#' IRT = F, p.adjust.method = "none", purify = F)
+#' IRT = F, p.adjust.method = "none", purify = F, match = "score")
 #'
 #' @details
 #' This function plots characteristic curve of 2PL logistic DIF model.
@@ -57,14 +60,20 @@
 
 
 plotDIFLogistic <- function(data, group, type = "both", item, item.name,
-                            IRT = F, p.adjust.method = "none", purify = F){
-  if (IRT){
-    match <- c(scale(apply(data, 1, sum)))
+                            IRT = F, p.adjust.method = "none", purify = F,
+                            match = "score"){
+  if (IRT) {
+    MATCH <- c(scale(apply(data, 1, sum)))
   } else {
-    match <- "score"
+    if (any(match == "score")){
+      MATCH <- apply(data, 1, sum)
+    } else {
+      MATCH <- match
+    }
   }
+
   fit <- difR::difLogistic(Data = data, group = group, focal.name = 1, type = type,
-                           match = match, p.adjust.method = p.adjust.method,
+                           match = MATCH, p.adjust.method = p.adjust.method,
                            purify = purify)
 
   LR_plot <- function(x, group, beta0, beta1, beta2, beta3){
@@ -72,14 +81,8 @@ plotDIFLogistic <- function(data, group, type = "both", item, item.name,
   }
 
   ### data
-  if (IRT){
-    score_R <- scale(apply(data[group == 0, ], 1, sum))
-    score_F <- scale(apply(data[group == 1, ], 1, sum))
-  } else {
-    score_R <- apply(data[group == 0, ], 1, sum)
-    score_F <- apply(data[group == 1, ], 1, sum)
-  }
-
+  score_R <- MATCH[group == 0]
+  score_F <- MATCH[group == 1]
 
   max_score <- max(score_R, score_F)
   min_score <- min(score_R, score_F)
@@ -92,7 +95,11 @@ plotDIFLogistic <- function(data, group, type = "both", item, item.name,
   if (IRT){
     xlab <- "Standardized total score (Z-score)"
   } else {
-    xlab <- "Total score"
+    if (any(match == "score")){
+      xlab <- "Total score"
+    } else {
+      xlab <- "Matching criterion"
+    }
   }
 
   if (missing(item.name)){
