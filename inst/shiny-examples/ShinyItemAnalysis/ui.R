@@ -55,6 +55,11 @@ ui = tagList(
                        display: table-row;
                        width: 80%;
                        }"),
+            tags$head(tags$style(HTML("
+                           .navbar-nav {
+                                      float: none !important;
+                                      clear : both;
+                                      }"))),
             # JS
             tags$script(type = "text/javascript",
                         src = "busy.js"),
@@ -63,8 +68,10 @@ ui = tagList(
             tags$script(type = "text/javascript",
                         src = "report_downloading_message.js"),
             tags$script(type = "text/javascript",
-                        src = "collapsible_menu_click.js")
-            ),
+                        src = "collapsible_menu_click.js"),
+      			tags$script(type = "text/javascript",
+						src = "test.js")
+       ),
   div(class = "busy",
       p("Loading"),
       img(src = "busy_indicator.gif", height = 100, width = 100)
@@ -95,7 +102,7 @@ ui = tagList(
                     ShinyItemAnalysis
                     </div>
                     <div class = "footer-subtitle">
-                    Test and item analysis | Version 1.2.9-2
+                    Test and item analysis | Version 1.2.9-3
                     </div>
                     <span style = "float:right">
                     <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysis/" id = "tooltipweb" target="_blank">
@@ -131,7 +138,7 @@ ui = tagList(
              #%%%%%%%%%%%%%%%%%%%%%
              # ABOUT ##############
              #%%%%%%%%%%%%%%%%%%%%%
-             About,
+             #About,
              #%%%%%%%%%%%%%%%%%%%%%
              # DATA ###############
              #%%%%%%%%%%%%%%%%%%%%%
@@ -2379,6 +2386,11 @@ ui = tagList(
                       p(strong("Recommendation: "), "Report generation can be faster and more reliable when you first check
                         sections of intended contents. For example, if you wish to include a ", strong("3PL IRT"),
                         " model, you can first visit ", strong("IRT models"), "section and ", strong("3PL"), " subsection."),
+						radioButtons("include_session",
+									 "Include session info",
+									 c("Yes" = "yes", "No" = "no"),
+									 selected = "no",
+									 inline = TRUE),
                       #p(strong("Warning: "), "Download of reports takes some time. Please, be patient."),
                       fluidRow(
                         column(width = 5,
@@ -2393,10 +2405,16 @@ ui = tagList(
                       br()
                       ),
 
+			  #%%%%%%%%%%%%%%%%%%%%%
+             # ABOUT ##############
+             #%%%%%%%%%%%%%%%%%%%%%
+             About,
+
              #%%%%%%%%%%%%%%%%%%%%%
              # REFERENCES #########
              #%%%%%%%%%%%%%%%%%%%%%
-             tabPanel("References",
+             tabPanel("",
+					  icon = icon("fas fa-book"),
                       #------------------------------------------------------------------------------------#
                       # Packages ####
                       #------------------------------------------------------------------------------------#

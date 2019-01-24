@@ -1,14 +1,6 @@
-@media (min-width: 1680px) {
+@media (min-width: 1417px) {
     body {
-      padding-top:80px;
-      padding-left:100px;
-      padding-right:100px;
-      padding-bottom:100px;
-    }
-}
-@media (max-width: 1680px) {
-    body {
-      padding-top:80px;
+      padding-top:120px;
       padding-left:100px;
       padding-right:100px;
       padding-bottom:100px;
@@ -17,17 +9,25 @@
 @media (max-width: 1416px) {
     body {
       padding-top:120px;
+      padding-left:90px;
+      padding-right:90px;
+      padding-bottom:90px;
+    }
+}
+@media (max-width: 1280px) {
+    body {
+      padding-top:120px;
       padding-left:80px;
       padding-right:80px;
       padding-bottom:80px;
     }
 }
-@media (max-width: 1024px) {
+@media (max-width: 1103px) {
     body {
-      padding-top:160px;
-      padding-left:60px;
-      padding-right:60px;
-      padding-bottom:60px;
+      padding-top:60px;
+      padding-left:70px;
+      padding-right:70px;
+      padding-bottom:70px;
     }
 }
 @media (max-width: 768px) {

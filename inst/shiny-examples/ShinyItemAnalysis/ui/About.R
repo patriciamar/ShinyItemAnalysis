@@ -1,4 +1,6 @@
-About <- tabPanel("About",
+About <- tabPanel("",
+				  icon = icon("fas fa-home"),
+				  value = "About",
                   #------------------------------------------------------------------------------------#
                   # Description ####
                   #------------------------------------------------------------------------------------#
@@ -63,7 +65,7 @@ About <- tabPanel("About",
                              a("online", href = "https://shiny.cs.cas.cz/ShinyItemAnalysis/", target = "_blank"), "is 1.2.9.",
                              br(),
                              "The newest development version available on ",
-                             a("GitHub", href = "https://github.com/patriciamar/ShinyItemAnalysis", target = "_blank"), "is 1.2.9-2.",
+                             a("GitHub", href = "https://github.com/patriciamar/ShinyItemAnalysis", target = "_blank"), "is 1.2.9-3.",
                              br(),
                              "See also older versions: ",
                              a("0.1.0, ", href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV01/", target = "_blank"),

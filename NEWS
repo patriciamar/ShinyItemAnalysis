@@ -5,6 +5,15 @@
         ***************************************************************
 
 -------------------------------------------------------
+- Changes in ShinyItemAnalysis 1.2.9-3. (2019-01-24) -
+-------------------------------------------------------
+
+MAJOR UPDATES
+  o Sections About, References and Settings are displayed only with icon
+    and are right-aligned.
+  o Margins and padding were updated.
+
+-------------------------------------------------------
 - Changes in ShinyItemAnalysis 1.2.9-2. (2019-01-11) -
 -------------------------------------------------------
 
