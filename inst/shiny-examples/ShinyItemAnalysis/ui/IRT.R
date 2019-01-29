@@ -746,8 +746,8 @@ IRT <- navbarMenu("IRT models",
                                         probabilities, while category probabilities are calculated as their difference. These models are also
                                         sometimes called cumulative logit models, as they set linear form to cumulative logits."),
                                       h4("Parameters"),
-                                      p("Select number of responses and difficulty for cummulative probabilities", strong("b"), "and common
-                                        discrimination parameter", strong("a"), ". Cummulative probability \\(P(Y \\geq 0)\\) is always equal to 1
+                                      p("Select number of responses and difficulty for cummulative probabilities \\(b\\) and common
+                                        discrimination parameter \\(a\\). Cummulative probability \\(P(Y \\geq 0)\\) is always equal to 1
                                         and it is not displayed, corresponding category probability \\(P(Y = 0)\\) is displayed with black color."),
                                       div(style = "display: inline-block; vertical-align: middle; width: 18%;",
                                           numericInput(inputId = "irt_training_grm_numresp",
@@ -758,7 +758,7 @@ IRT <- navbarMenu("IRT models",
                                       br(),
                                       div(style = "display: inline-block; vertical-align: middle; width: 18%;",
                                           sliderInput(inputId = "irt_training_grm_a",
-                                                      label = "a - discrimination",
+                                                      label = "\\(a\\) - discrimination",
                                                       value = 1,
                                                       min = 0,
                                                       max = 4,
@@ -792,14 +792,14 @@ IRT <- navbarMenu("IRT models",
                                         probabilities are then ratios between category-related functions (cumulative sums of exponentials)
                                         and their sum."),
                                       p("Two simpler models can be derived from GPCM by restricting some parameters: Partial Credit Model
-                                        (PCM; Masters, 1982) uses 1PL IRT model to describe this probability, thus parameters a = 1.
+                                        (PCM; Masters, 1982) uses 1PL IRT model to describe this probability, thus parameters \\(\\alpha = 1\\).
                                         Even more restricted version, the Rating Scale Model (RSM; Andrich, 1978) assumes exactly the same
                                         K response categories for each item and threshold parameters which can be split into a response-threshold
                                         parameter \\(\\lambda_t\\) and an item-specific location parameter \\(\\delta_i\\). These models are
                                         also sometimes called adjacent logit models, as they set linear form to adjacent logits."),
                                       h4("Parameters"),
-                                      p("Select number of responses and their threshold parameters ", strong("d"), "and common
-                                        discrimination parameter", strong("a"), ". With a = 1 you get PCM. Numerator of \\(\\pi_0 = P(Y = 0)\\) is
+                                      p("Select number of responses and their threshold parameters \\(\\delta\\)  and common
+                                        discrimination parameter \\(\\alpha\\). With \\(\\alpha = 1\\) you get PCM. Numerator of \\(\\pi_0 = P(Y = 0)\\) is
                                         set to 1 and \\(\\pi_0\\) is displayed with black color."),
                                       div(style = "display: inline-block; vertical-align: middle; width: 18%;",
                                           numericInput(inputId = "irt_training_gpcm_numresp",
@@ -810,7 +810,7 @@ IRT <- navbarMenu("IRT models",
                                       br(),
                                       div(style = "display: inline-block; vertical-align: middle; width: 18%;",
                                           sliderInput(inputId = "irt_training_gpcm_a",
-                                                      label = "a - discrimination",
+                                                      label = "\\(\\alpha\\) - discrimination",
                                                       value = 1,
                                                       min = 0,
                                                       max = 4,
@@ -843,8 +843,8 @@ IRT <- navbarMenu("IRT models",
                                         NRM model is generalization of GPCM model by setting item-specific and category-specific intercept and
                                         slope parameters."),
                                       h4("Parameters"),
-                                      p("Select number of distractors and their threshold parameters ", strong("d"), "and discrimination parameters",
-                                        strong("a"), ". Parameters of \\(\\pi_0 = P(Y = 0)\\) are set to zeros and \\(\\pi_0\\) is displayed with black color."),
+                                      p("Select number of distractors and their threshold parameters  \\(\\delta\\) and discrimination parameters \\(\\alpha\\).
+                                        Parameters of \\(\\pi_0 = P(Y = 0)\\) are set to zeros and \\(\\pi_0\\) is displayed with black color."),
                                       div(style = "display: inline-block; vertical-align: middle; width: 18%;",
                                           numericInput(inputId = "irt_training_nrm_numresp",
                                                        label = "Number of distractors",

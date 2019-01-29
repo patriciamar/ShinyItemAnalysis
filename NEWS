@@ -5,13 +5,17 @@
         ***************************************************************
 
 -------------------------------------------------------
-- Changes in ShinyItemAnalysis 1.2.9-3. (2019-01-24) -
+- Changes in ShinyItemAnalysis 1.2.9-3. (2019-01-29) -
 -------------------------------------------------------
 
 MAJOR UPDATES
   o Sections About, References and Settings are displayed only with icon
     and are right-aligned.
   o Margins and padding were updated.
+
+MINOR UPDATES
+  o Some math mode was fixed in IRT section.
+  o Some typos were fixed.
 
 -------------------------------------------------------
 - Changes in ShinyItemAnalysis 1.2.9-2. (2019-01-11) -
