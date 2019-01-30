@@ -24,6 +24,7 @@ MINOR UPDATES
   o Some math mode was fixed in IRT section.
   o Some typos were fixed.
   o Selected R code was updated in DIF/Total scores.
+  o Animate function for sliders was slowed down.
 
 -------------------------------------------------------
 - Changes in ShinyItemAnalysis 1.2.9-2. (2019-01-11) -
