@@ -651,6 +651,7 @@ function(input, output, session) {
         incProgress(0.05),
         results = t(totalscores_table_Input()),
         histogram_totalscores = totalscores_histogram_Input(),
+        cutScore = input$slider_totalscores_histogram,
         # standard scores
         standardscores_table = scores_tables_Input(),
         incProgress(0.05),
@@ -696,6 +697,7 @@ function(input, output, session) {
         ### histograms by group
         histCheck = input$histCheck,
         resultsgroup = {if (groupPresent()) {if (input$histCheck) {resultsgroupInput()}}},
+        cutScoregroup = input$inSlider2group,
         histbyscoregroup0 = {if (groupPresent()) {if (input$histCheck) {histbyscoregroup0Input()}}},
         histbyscoregroup1 = {if (groupPresent()) {if (input$histCheck) {histbyscoregroup1Input()}}},
         DIF_scores_ttest = {if (groupPresent()) {if (input$histCheck) {DIF_scores_ttest_Input()}}},
@@ -739,6 +741,7 @@ function(input, output, session) {
         # total scores
         results = t(totalscores_table_Input()),
         histogram_totalscores = totalscores_histogram_Input(),
+        cutScore = input$slider_totalscores_histogram,
         # standard scores
         standardscores_table = scores_tables_Input(),
         # validity section
@@ -778,6 +781,7 @@ function(input, output, session) {
         ### histograms by groups
         histCheck = input$histCheck,
         resultsgroup = {if (groupPresent()) {if (input$histCheck) {resultsgroupInput()}}},
+        cutScoregroup = input$inSlider2group,
         histbyscoregroup0 = {if (groupPresent()) {if (input$histCheck) {histbyscoregroup0Input()}}},
         histbyscoregroup1 = {if (groupPresent()) {if (input$histCheck) {histbyscoregroup1Input()}}},
         DIF_scores_ttest = {if (groupPresent()) {if (input$histCheck) {DIF_scores_ttest_Input()}}},
