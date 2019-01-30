@@ -15,7 +15,7 @@ author: |
   
   This report was created on `r format(Sys.Date(), "%d.%m.%Y")`
 
-  &copy; 2018 ShinyItemAnalysis: Test and item analysis, version `r packageVersion("ShinyItemAnalysis")`
+  &copy; 2019 ShinyItemAnalysis: Test and item analysis, version `r packageVersion("ShinyItemAnalysis")`
     
   **************
   
@@ -62,6 +62,7 @@ params:
   irtability: NA
   isGroupPresent: NA
   histCheck: NA
+  cutScoregroup: NA
   resultsgroup: NA
   histbyscoregroup0: NA
   histbyscoregroup1: NA
@@ -518,7 +519,7 @@ if (params$histCheck) {
 
 `r if(params$isGroupPresent & params$histCheck) {"### Histogram of total score by group"}`
 
-`r if(params$isGroupPresent & params$histCheck) {"For a selected cut-score, the blue part of histograms shows respondents with a total score above the cut-score, the grey column shows respondents with a  total score equal to the cut-score and the red part of histograms shows respondents below the cut-score."}`
+`r if(params$isGroupPresent & params$histCheck) {paste0("For a selected cut-score ", params$cutScoregroup, ", the blue part of histograms shows respondents with a total score above the cut-score, the grey column shows respondents with a  total score equal to the cut-score and the red part of histograms shows respondents below the cut-score.")}`
 
 ```{r hist-by-group, echo = FALSE, fig.width = 11, fig.height = 4, fig.align = 'center', dpi = 300}
 if (params$histCheck) {
@@ -556,14 +557,14 @@ if (params$histCheck) {
 
 `r if(params$isGroupPresent & params$deltaplotCheck) {"### Summary table"}`
 
-`r if(params$deltaplotCheck){if(params$isGroupPresent){res <- params$DIF_deltaplot_text; paste("Detection threshold is ", round(res$thr, 2), ". ", ifelse(res$DIFitems == "no DIF item detected", "**No DIF item was detected.**  ", paste("**Items were detected as DIF: ", res$DIFitems, ". **  ", sep = "")), sep = "")}}`
+`r if(params$deltaplotCheck){if(params$isGroupPresent){res <- params$DIF_deltaplot_text; paste("Detection threshold is ", round(res$thr[length(res$thr)], 2), ". ", ifelse(res$DIFitems == "no DIF item detected", "**No DIF item was detected.**  ", paste("**Items were detected as DIF: ", res$DIFitems, ". **  ", sep = "")), sep = "")}}`
 `r if(params$isGroupPresent & params$logregCheck) {res <- params$DIF_deltaplot_text; paste(ifelse(res$purify, "Item purification was used.", "Item purification was not applied."))}`
 
 ```{r delta-plot-output, echo = FALSE}
 if (params$deltaplotCheck) {
   if(params$isGroupPresent){
     res <- params$DIF_deltaplot_text
-    tab <- cbind(res$Props, res$Deltas, res$Dist)
+    tab <- cbind(res$Props, res$Deltas, res$Dist[, ncol(res$Dist)])
     colnames(tab) <- c("Prop. Ref", "Prop. Foc", "Delta Ref", "Delta Foc", "Dist.")
     rownames(tab) <- params$itemNames
     

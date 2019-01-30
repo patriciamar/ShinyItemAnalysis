@@ -551,7 +551,7 @@ ui = tagList(
                                                                       value = 1,
                                                                       max = 10,
                                                                       step = 1,
-                                                                      animate = TRUE))),
+                                                                      animate = animationOptions(interval = 1200)))),
                                             plotOutput('validity_distractor_plot'),
                                             downloadButton(outputId = "DB_validity_distractor_plot", label = "Download figure"),
                                             h4('Correlation of criterion variable and scored item'),
@@ -657,7 +657,7 @@ ui = tagList(
                                                            max = 10,
                                                            value = 1,
                                                            step = 1,
-                                                           animate = TRUE))),
+                                                           animate = animationOptions(interval = 1200)))),
                                  plotOutput('distractor_plot'),
                                  downloadButton("DB_distractor_plot", label = "Download figure"),
                                  br(),
@@ -703,7 +703,7 @@ ui = tagList(
                                    total score.'),
                                  sliderInput("logregSlider", "Item",
                                              min = 1, value = 1, max = 10,
-                                             step = 1, animate = TRUE),
+                                             step = 1, animate = animationOptions(interval = 1200)),
                                  plotOutput('logreg_plot'),
                                  downloadButton("DB_logreg_plot", label = "Download figure"),
                                  h4("Equation"),
@@ -734,7 +734,7 @@ ui = tagList(
                                    level of standardized total score.'),
                                  sliderInput("zlogregSlider", "Item",
                                              min = 1, value = 1, max = 10,
-                                             step = 1, animate = TRUE),
+                                             step = 1, animate = animationOptions(interval = 1200)),
                                  plotOutput('z_logreg_plot'),
                                  downloadButton("DB_z_logreg_plot", label = "Download figure"),
                                  h4("Equation"),
@@ -764,7 +764,7 @@ ui = tagList(
                                    level of standardized total score.'),
                                  sliderInput("zlogreg_irtSlider", "Item",
                                              min = 1, value = 1, max = 10,
-                                             step = 1, animate = TRUE),
+                                             step = 1, animate = animationOptions(interval = 1200)),
                                  plotOutput('z_logreg_irt_plot'),
                                  downloadButton("DB_z_logreg_irt_plot", label = "Download figure"),
                                  h4("Equation"),
@@ -794,7 +794,7 @@ ui = tagList(
                                    total score. Their size is determined by count of respondents who achieved given
                                    level of standardized total score.'),
                                  sliderInput(inputId = "slider_nlr_3P_item", label = "Item",
-                                             min = 1, value = 1, max = 10, step = 1, animate = TRUE),
+                                             min = 1, value = 1, max = 10, step = 1, animate = animationOptions(interval = 1200)),
                                  plotOutput('nlr_3P_plot'),
                                  downloadButton("DB_nlr_3P_plot", label = "Download figure"),
                                  h4("Equation"),
@@ -823,7 +823,7 @@ ui = tagList(
                                    total score. Their size is determined by count of respondents who achieved given
                                    level of standardized total score.'),
                                  sliderInput(inputId = "slider_nlr_4P_item", label = "Item",
-                                             min = 1, value = 1, max = 10, step = 1, animate = TRUE),
+                                             min = 1, value = 1, max = 10, step = 1, animate = animationOptions(interval = 1200)),
                                  plotOutput('nlr_4P_plot'),
                                  downloadButton("DB_nlr_4P_plot", label = "Download figure"),
                                  h4("Equation"),
@@ -882,7 +882,7 @@ ui = tagList(
                                    level of standardized total score and who selected given option.'),
                                  sliderInput("multiSlider", "Item",
                                              min = 1, value = 1, max = 10,
-                                             step = 1, animate = TRUE),
+                                             step = 1, animate = animationOptions(interval = 1200)),
                                  plotOutput('multi_plot'),
                                  downloadButton("DB_multi_plot", label = "Download figure"),
                                  h4("Equation"),
@@ -940,8 +940,8 @@ ui = tagList(
                                  h4("Summary of total scores for groups"),
                                  tableOutput('resultsgroup'),
                                  h4("Histograms of total scores for groups"),
-                                 sliderInput("inSlider2group", "Cut-score", min = 1, value = 1, max = 10,
-                                             step = 1, animate = TRUE),
+                                 sliderInput("inSlider2group", "Cut-score", min = 0, value = 1, max = 10,
+                                             step = 1, animate = animationOptions(interval = 1200)),
                                  p('For selected cut-score, blue part of histogram shows respondents with total score
                                    above the cut-score, grey column shows respondents with total score equal
                                    to cut-score and red part of histogram shows respondents below the cut-score.'),
@@ -1080,7 +1080,7 @@ ui = tagList(
                                             fluidPage(div(style = "display: inline-block; vertical-align: top; width: 20%; ",
                                                           sliderInput("difMHSlider_item",
                                                                       "Item",
-                                                                      animate = TRUE,
+                                                                      animate = animationOptions(interval = 1200),
                                                                       min = 1,
                                                                       max = 10,
                                                                       value = 1,
@@ -1242,7 +1242,7 @@ ui = tagList(
                                                                       value = 1,
                                                                       max = 10,
                                                                       step = 1,
-                                                                      animate = TRUE))),
+                                                                      animate = animationOptions(interval = 1200)))),
                                             p('Points represent proportion of correct answer with respect to total score.
                                               Their size is determined by count of respondents who achieved given level of
                                               total score with respect to the group membership.'),
@@ -1390,7 +1390,7 @@ ui = tagList(
                         #                                               value = 1,
                         #                                               max = 10,
                         #                                               step = 1,
-                        #                                               animate = TRUE))),
+                        #                                               animate = animationOptions(interval = 1200)))),
                         #                     p('Points represent proportion of correct answer with respect to standardized
                         #                       total score. Their size is determined by count of respondents who achieved
                         #                       given level of standardized total score with respect to the group membership.'),
@@ -1599,7 +1599,7 @@ ui = tagList(
                                                                         value = 1,
                                                                         max = 10,
                                                                         step = 1,
-                                                                        animate = TRUE))),
+                                                                        animate = animationOptions(interval = 1200)))),
                                             p('Points represent proportion of correct answer with respect to standardized
                                               total score. Their size is determined by count of respondents who achieved
                                               given level of standardized total score with respect to the group membership.'),
@@ -1739,7 +1739,7 @@ ui = tagList(
                                                                       value = 1,
                                                                       max = 10,
                                                                       step = 1,
-                                                                      animate = TRUE))),
+                                                                      animate = animationOptions(interval = 1200)))),
                                             p('NOTE: Plots and tables are based on larger DIF IRT model. '),
                                             plotOutput('plot_DIF_IRT_Lord'),
                                             downloadButton("DP_plot_DIF_IRT_Lord", label = "Download figure"),
@@ -1941,7 +1941,7 @@ ui = tagList(
                                                                       value = 1,
                                                                       max = 10,
                                                                       step = 1,
-                                                                      animate = TRUE))),
+                                                                      animate = animationOptions(interval = 1200)))),
                                             p('NOTE: Plots and tables are based on larger DIF IRT model. '),
                                             plotOutput('plot_DIF_IRT_Raju'),
                                             downloadButton("DP_plot_DIF_IRT_Raju", label = "Download figure"),
@@ -2160,7 +2160,7 @@ ui = tagList(
                                                                       value = 1,
                                                                       max = 10,
                                                                       step = 1,
-                                                                      animate = TRUE))),
+                                                                      animate = animationOptions(interval = 1200)))),
                                             p('Points represent proportion of selected answer with respect to standardized
                                               total score. Their size is determined by count of respondents who achieved
                                               given level of standardized total score and who selected given option with

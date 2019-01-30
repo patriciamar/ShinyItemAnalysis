@@ -8,6 +8,13 @@
 - Changes in ShinyItemAnalysis 1.2.9-3. (2019-01-30) -
 -------------------------------------------------------
 
+BUG FIXING
+  o Histograms for total scores now handle cut-scores out of range of
+    observed values
+  o Bug in reports when using delta plot with purification was fixed.
+  o Cut-scores for histograms are properly displayed in reports.
+  o Year in reports was updated.
+
 MAJOR UPDATES
   o Sections About, References and Settings are displayed only with icon
     and are right-aligned.
@@ -20,6 +27,7 @@ MINOR UPDATES
   o Some math mode was fixed in IRT section.
   o Some typos were fixed.
   o Selected R code was updated in DIF/Total scores.
+  o Animate function for sliders was slowed down.
 
 -------------------------------------------------------
 - Changes in ShinyItemAnalysis 1.2.9-2. (2019-01-11) -
