@@ -5,17 +5,21 @@
         ***************************************************************
 
 -------------------------------------------------------
-- Changes in ShinyItemAnalysis 1.2.9-3. (2019-01-29) -
+- Changes in ShinyItemAnalysis 1.2.9-3. (2019-01-30) -
 -------------------------------------------------------
 
 MAJOR UPDATES
   o Sections About, References and Settings are displayed only with icon
     and are right-aligned.
   o Margins and padding were updated.
+  o t-test was added for comparison of total scores between groups
+    into DIF section and into reports.
+  o Histograms for total scores are now displayed in plotly mode.
 
 MINOR UPDATES
   o Some math mode was fixed in IRT section.
   o Some typos were fixed.
+  o Selected R code was updated in DIF/Total scores.
 
 -------------------------------------------------------
 - Changes in ShinyItemAnalysis 1.2.9-2. (2019-01-11) -
