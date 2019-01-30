@@ -8,6 +8,10 @@
 - Changes in ShinyItemAnalysis 1.2.9-3. (2019-01-30) -
 -------------------------------------------------------
 
+BUG FIXING
+  o Histograms for total scores now handle cut-scores out of range of
+    observed values
+
 MAJOR UPDATES
   o Sections About, References and Settings are displayed only with icon
     and are right-aligned.

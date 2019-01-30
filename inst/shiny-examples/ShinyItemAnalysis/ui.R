@@ -940,7 +940,7 @@ ui = tagList(
                                  h4("Summary of total scores for groups"),
                                  tableOutput('resultsgroup'),
                                  h4("Histograms of total scores for groups"),
-                                 sliderInput("inSlider2group", "Cut-score", min = 1, value = 1, max = 10,
+                                 sliderInput("inSlider2group", "Cut-score", min = 0, value = 1, max = 10,
                                              step = 1, animate = TRUE),
                                  p('For selected cut-score, blue part of histogram shows respondents with total score
                                    above the cut-score, grey column shows respondents with total score equal

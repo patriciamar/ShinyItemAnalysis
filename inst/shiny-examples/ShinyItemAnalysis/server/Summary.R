@@ -68,16 +68,22 @@ output$totalscores_histogram <- renderPlotly ({
   bin <- as.numeric(input$slider_totalscores_histogram)
   data <- binary()
 
+  if (min(sc) <= bin & bin <= max(sc)){
+    breaks <- unique(c(min(sc) - 1, bin - 1, bin, max(sc)))
+  } else {
+    breaks <- c(0, ncol(data))
+  }
+
   df <- data.table(score = sc,
                    gr = cut(sc,
-                            breaks = unique(c(0, bin - 1, bin, ncol(data))),
+                            breaks = breaks,
                             include.lowest = T))
 
   g <- totalscores_histogram_Input()
   p <- ggplotly(g)
   k <- length(levels(df$gr))
   m <- length(p$x$data[[1]]$text)
-  ints <- unique(c(0, bin - 1, bin, ncol(data)))
+  ints <- breaks
 
   for(i in 1:k){
     t <- subset(df, df$gr == levels(df$gr)[i])
