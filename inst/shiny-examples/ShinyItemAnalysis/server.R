@@ -698,6 +698,7 @@ function(input, output, session) {
         resultsgroup = {if (groupPresent()) {if (input$histCheck) {resultsgroupInput()}}},
         histbyscoregroup0 = {if (groupPresent()) {if (input$histCheck) {histbyscoregroup0Input()}}},
         histbyscoregroup1 = {if (groupPresent()) {if (input$histCheck) {histbyscoregroup1Input()}}},
+        DIF_scores_ttest = {if (groupPresent()) {if (input$histCheck) {DIF_scores_ttest_Input()}}},
         ### delta plot
         deltaplotCheck = input$deltaplotCheck,
         deltaplot = {if (groupPresent()) {if (input$deltaplotCheck) {deltaplotInput_report()}}},
@@ -779,6 +780,7 @@ function(input, output, session) {
         resultsgroup = {if (groupPresent()) {if (input$histCheck) {resultsgroupInput()}}},
         histbyscoregroup0 = {if (groupPresent()) {if (input$histCheck) {histbyscoregroup0Input()}}},
         histbyscoregroup1 = {if (groupPresent()) {if (input$histCheck) {histbyscoregroup1Input()}}},
+        DIF_scores_ttest = {if (groupPresent()) {if (input$histCheck) {DIF_scores_ttest_Input()}}},
         ### delta plot
         deltaplotCheck = input$deltaplotCheck,
         DIF_deltaplot = {if (groupPresent()) {if (input$deltaplotCheck) {deltaplotInput_report()}}},

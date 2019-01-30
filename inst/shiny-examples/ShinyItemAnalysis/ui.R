@@ -123,7 +123,7 @@ ui = tagList(
                     </script>
                     <br>
                     <div class = "footer-copyright">
-                    &copy; 2018  ShinyItemAnalysis
+                    &copy; 2019  ShinyItemAnalysis
                     </div>'),
                HTML('<div class = "footer-counter">'),
                textOutput('counter', inline = T),
@@ -172,7 +172,7 @@ ui = tagList(
                                  p('For selected cut-score, blue part of histogram shows respondents with total score
                                    above the cut-score, grey column shows respondents with total score equal
                                    to the cut-score and red part of histogram shows respondents below the cut-score.'),
-                                 plotOutput('totalscores_histogram'),
+                                 plotlyOutput('totalscores_histogram'),
                                  downloadButton(outputId = "DB_totalscores_histogram", label = "Download figure"),
                                  br(),
                                  br(),
@@ -933,7 +933,7 @@ ui = tagList(
                                  h3("Total scores"),
                                  p('DIF is not about total scores! Two groups may have the same distribution of total scores, yet,
                                    some item may function differently for two groups. Also, one of the groups may have signifficantly
-                                   lower total score, yet, it may happen that there is no DIF item!',
+                                   lower total score, yet, it may happen that there is no DIF item ',
                                    a('(Martinkova et al., 2017). ',
                                      href = "https://www.lifescied.org/doi/10.1187/cbe.16-10-0307",
                                      target = "_blank")),
@@ -943,31 +943,22 @@ ui = tagList(
                                  sliderInput("inSlider2group", "Cut-score", min = 1, value = 1, max = 10,
                                              step = 1, animate = TRUE),
                                  p('For selected cut-score, blue part of histogram shows respondents with total score
-                                   above the cut-score, grey column shows respondents with Total Score equal
+                                   above the cut-score, grey column shows respondents with total score equal
                                    to cut-score and red part of histogram shows respondents below the cut-score.'),
-                                 splitLayout(cellWidths = c("50%", "50%"), plotOutput('histbyscoregroup0'),plotOutput('histbyscoregroup1')),
+                                 splitLayout(cellWidths = c("50%", "50%"), plotlyOutput('histbyscoregroup0'), plotlyOutput('histbyscoregroup1')),
                                  splitLayout(cellWidths = c("50%", "50%"), downloadButton("DP_histbyscoregroup0", label = "Download figure"),
                                              downloadButton("DP_histbyscoregroup1", label = "Download figure")),
                                  br(),
+                                 h4("Comparison of total scores"),
+                                 p("Test for difference in total scores between reference and focal group is based od Welch two sample
+                                   t-test. ", br(),
+                                   strong("Explanation: "), strong("Diff. (CI)"), "- difference in means of total scores with 95% confidence interval, ",
+                                   strong("t-value"), "- test statistic, ", strong("df"), "- degrees of freedom, ",
+                                   strong("p-value"), "- if it is lower than 0.05, it means significant difference in total scores. "),
+                                 tableOutput("DIF_scores_ttest"),
+                                 br(),
                                  h4("Selected R code"),
-                                 div(code('library(difNLR)'),
-                                     br(),
-                                     code('data <- GMAT[, 1:20]'),
-                                     br(),
-                                     code('group <- GMAT[, "group"]'),
-                                     br(),
-                                     br(),
-                                     code('# Summary table'),
-                                     br(),
-                                     code('sc_zero <- apply(data[group == 0, ], 1, sum); summary(sc_zero) # total scores of reference group'),
-                                     br(),
-                                     code('sc_one  <- apply(data[group == 1, ], 1, sum); summary(sc_one)  # total scores of focal group'),
-                                     br(),
-                                     code('# Histograms'),
-                                     br(),
-                                     code('hist(sc_zero, breaks = 0:20)'),
-                                     br(),
-                                     code('hist(sc_one, breaks = 0:20)')),
+                                 div(code(HTML("library(difNLR)<br>library(ggplot2)<br>library(moments)<br><br>#&nbsp;loading&nbsp;data<br>data(GMAT)<br>data&nbsp;<-&nbsp;GMAT[,&nbsp;1:20]<br>group&nbsp;<-&nbsp;GMAT[,&nbsp;\"group\"]<br><br>#&nbsp;total&nbsp;score&nbsp;calculation&nbsp;wrt&nbsp;group<br>score0&nbsp;<-&nbsp;apply(data,&nbsp;1,&nbsp;sum)[group&nbsp;==&nbsp;0]<br>score1&nbsp;<-&nbsp;apply(data,&nbsp;1,&nbsp;sum)[group&nbsp;==&nbsp;1]<br><br>#&nbsp;summary&nbsp;of&nbsp;total&nbsp;score&nbsp;<br>rbind(c(length(score0),&nbsp;min(score0),&nbsp;max(score0),&nbsp;mean(score0),&nbsp;median(score0),&nbsp;sd(score0),&nbsp;skewness(score0),&nbsp;kurtosis(score0)),<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;c(length(score1),&nbsp;min(score1),&nbsp;max(score1),&nbsp;mean(score1),&nbsp;median(score1),&nbsp;sd(score1),&nbsp;skewness(score1),&nbsp;kurtosis(score1)))<br><br>#&nbsp;colors&nbsp;by&nbsp;cut-score&nbsp;wrt&nbsp;group<br>cut&nbsp;<-&nbsp;12&nbsp;#&nbsp;cut-score&nbsp;<br>color0&nbsp;<-&nbsp;c(rep(\"red\",&nbsp;cut&nbsp;-&nbsp;min(score0)),&nbsp;\"gray\",&nbsp;rep(\"blue\",&nbsp;max(score0)&nbsp;-&nbsp;cut))<br>color1&nbsp;<-&nbsp;c(rep(\"red\",&nbsp;cut&nbsp;-&nbsp;min(score1)),&nbsp;\"gray\",&nbsp;rep(\"blue\",&nbsp;max(score1)&nbsp;-&nbsp;cut))<br><br>#&nbsp;histogram&nbsp;for&nbsp;reference&nbsp;group<br>ggplot(data&nbsp;=&nbsp;data.frame(score0),&nbsp;aes(score0))&nbsp;+&nbsp;<br>&nbsp;&nbsp;geom_histogram(binwidth&nbsp;=&nbsp;1,&nbsp;fill&nbsp;=&nbsp;color0,&nbsp;col&nbsp;=&nbsp;\"black\")&nbsp;+&nbsp;<br>&nbsp;&nbsp;xlab(\"Total&nbsp;score\")&nbsp;+&nbsp;<br>&nbsp;&nbsp;ylab(\"Number&nbsp;of&nbsp;respondents\")&nbsp;+&nbsp;<br>&nbsp;&nbsp;ggtitle(\"Reference&nbsp;group\")&nbsp;+&nbsp;<br>&nbsp;&nbsp;theme_app()<br><br>#&nbsp;histogram&nbsp;for&nbsp;focal&nbsp;group<br>ggplot(data&nbsp;=&nbsp;data.frame(score1),&nbsp;aes(score1))&nbsp;+&nbsp;<br>&nbsp;&nbsp;geom_histogram(binwidth&nbsp;=&nbsp;1,&nbsp;fill&nbsp;=&nbsp;color1,&nbsp;col&nbsp;=&nbsp;\"black\")&nbsp;+&nbsp;<br>&nbsp;&nbsp;xlab(\"Total&nbsp;score\")&nbsp;+&nbsp;<br>&nbsp;&nbsp;ylab(\"Number&nbsp;of&nbsp;respondents\")&nbsp;+&nbsp;<br>&nbsp;&nbsp;ggtitle(\"Focal&nbsp;group\")&nbsp;+&nbsp;<br>&nbsp;&nbsp;theme_app()<br><br>#&nbsp;t-test&nbsp;to&nbsp;compare&nbsp;total&nbsp;scores<br>t.test(score0,&nbsp;score1)"))),
                                  br()
                                  ),
                         # * DELTA PLOTS ####

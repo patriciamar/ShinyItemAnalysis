@@ -67,6 +67,7 @@ params:
   histbyscoregroup1: NA
   maxScore0: NA
   maxScore1: NA
+  DIF_scores_ttest: NA
   deltaplotCheck: NA
   DIF_deltaplot: NA
   DIF_deltaplot_text: NA
@@ -508,7 +509,9 @@ if (params$irt_type != "none") {
 ```{r table-by-group, echo = FALSE}
 if (params$histCheck) {
   if(params$isGroupPresent){
-    kable(params$resultsgroup, digits = c(0, 0, 3, 0, 3, 3, 3), align = c('l', rep('c', 6)))
+    kable(params$resultsgroup, 
+          digits = c(0, 0, 0, 3, 3, 3, 3), 
+          align = c('l', rep('c', 6)))
   }
 }
 ```
@@ -533,6 +536,20 @@ if (params$histCheck) {
 }
 ```
 
+`r if(params$isGroupPresent & params$histCheck) {"### Comparison of total scores"}`
+
+`r if(params$isGroupPresent & params$histCheck) {"Test for difference in total scores between reference and focal group is based od Welch two sample t-test. Explanation: Diff. (CI) - difference in means of total scores with 95% confidence interval, t-value - test statistic, df - degrees of freedom, p-value - if it is lower than 0.05, it means significant difference in total scores. "}`
+
+```{r ttest-by-group, echo = FALSE}
+if (params$histCheck) {
+  if(params$isGroupPresent){
+    kable(params$DIF_scores_ttest,
+          align = rep('c', 4), 
+          row.names = F)
+  }
+}
+```
+
 `r if(params$isGroupPresent & params$deltaplotCheck) {"## Delta plot method"}`
 
 `r if(params$isGroupPresent & params$deltaplotCheck) {"A delta plot compares the proportions of correct answers per item in the two groups. It displays non-linear transformation of these proportions using quantiles of standard normal distributions (so called delta scores) of each item for the two groups in a scatterplot called diagonal plot or delta plot . An item is under suspicion of DIF if the delta point departs considerably from the major axis. "}`
@@ -550,7 +567,7 @@ if (params$deltaplotCheck) {
     colnames(tab) <- c("Prop. Ref", "Prop. Foc", "Delta Ref", "Delta Foc", "Dist.")
     rownames(tab) <- params$itemNames
     
-    kable(tab, digits = c(0, 3, 3, 3, 3, 3), align = c('l', rep('c', 5)))
+    kable(tab, digits = c(0, 0, 3, 3, 3, 3, 3), align = c('l', rep('c', 6)))
   }
 }
 ```
