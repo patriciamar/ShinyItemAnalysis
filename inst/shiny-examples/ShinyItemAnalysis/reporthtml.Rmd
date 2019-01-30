@@ -15,7 +15,7 @@ author: |
   
   This report was created on `r format(Sys.Date(), "%d.%m.%Y")`
 
-  &copy; 2018 ShinyItemAnalysis: Test and item analysis, version `r packageVersion("ShinyItemAnalysis")`
+  &copy; 2019 ShinyItemAnalysis: Test and item analysis, version `r packageVersion("ShinyItemAnalysis")`
     
   **************
   

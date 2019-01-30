@@ -13,6 +13,7 @@ BUG FIXING
     observed values
   o Bug in reports when using delta plot with purification was fixed.
   o Cut-scores for histograms are properly displayed in reports.
+  o Year in reports was updated.
 
 MAJOR UPDATES
   o Sections About, References and Settings are displayed only with icon
