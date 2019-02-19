@@ -3,7 +3,7 @@
 Test and item analysis via shiny
 
 ![GHversion](https://img.shields.io/github/release/patriciamar/ShinyItemAnalysis.svg)
-[![online](https://img.shields.io/badge/online-1.2.9-yellow.svg)](https://shiny.cs.cas.cz/ShinyItemAnalysis/)
+[![online](https://img.shields.io/badge/online-1.3.0-yellow.svg)](https://shiny.cs.cas.cz/ShinyItemAnalysis/)
 [![version](https://www.r-pkg.org/badges/version/ShinyItemAnalysis)](https://CRAN.R-project.org/package=ShinyItemAnalysis)
 ![cranlogs](https://cranlogs.r-pkg.org/badges/ShinyItemAnalysis)
 
@@ -31,9 +31,9 @@ install.packages("ShinyItemAnalysis")
 devtools::install_github("patriciamar/ShinyItemAnalysis")
 ```
 ## Version
-Current version available on [**CRAN**](https://CRAN.R-project.org/package=ShinyItemAnalysis) is 1.2.9. <br> 
-Version available online at [Czech Academy of Sciences](https://shiny.cs.cas.cz/ShinyItemAnalysis/) and [shinyapps.io](https://cemp.shinyapps.io/ShinyItemAnalysis/) is 1.2.9. <br> 
-The newest development version available on [**GitHub**](https://github.com/patriciamar/ShinyItemAnalysis) is 1.2.9-3.
+Current version available on [**CRAN**](https://CRAN.R-project.org/package=ShinyItemAnalysis) is 1.3.0. <br> 
+Version available online at [Czech Academy of Sciences](https://shiny.cs.cas.cz/ShinyItemAnalysis/) and [shinyapps.io](https://cemp.shinyapps.io/ShinyItemAnalysis/) is 1.3.0. <br> 
+The newest development version available on [**GitHub**](https://github.com/patriciamar/ShinyItemAnalysis) is 1.3.0.
 
 ## Usage
 It's very easy to run `ShinyItemAnalysis`:
@@ -52,4 +52,5 @@ If you find any bug or just need help with `ShinyItemAnalysis` you can leave you
 This program is free software and you can redistribute it and or modify it under the terms of the [GNU GPL 3](https://www.gnu.org/licenses/gpl-3.0.en.html).
 
 ## References
-For Czech speakers new paper is available [online!](http://testforum.cz/domains/testforum.cz/index.php/testforum/article/view/TF2017-9-129/146#.WZvuzyhJa70)
+New paper is available in [The R Journal](https://journal.r-project.org/archive/2018/RJ-2018-074/RJ-2018-074.pdf). Czech speakers can also 
+read another paper [online!](http://testforum.cz/domains/testforum.cz/index.php/testforum/article/view/TF2017-9-129/146#.WZvuzyhJa70)

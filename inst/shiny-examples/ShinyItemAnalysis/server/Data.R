@@ -235,11 +235,11 @@ data_description_Input <- reactive({
   data_name <- input$dataSelect
   txt <- switch(data_name,
                 GMAT_difNLR = "<code>GMAT</code> <a href='https://doi.org/10.1187/cbe.16-10-0307' target='_blank'>
-                (Martinkova, et al., 2017) </a> is generated dataset based on parameters of real Graduate Management
+                (Martinkova et al., 2017) </a> is generated dataset based on parameters of real Graduate Management
                 Admission Test (GMAT; Kingston et al., 1985). However, first two items were simulated to function
                 differently in uniform and non-uniform way respectively. The dataset represents responses of 2,000 subjects
                 (1,000 males, 1,000 females) to multiple-choice test of 20 items. The distribution of total scores is the
-                same for both groups. See <a href='https://doi.org/10.1187/cbe.16-10-0307' target='_blank'> Martinkova, et al.
+                same for both groups. See <a href='https://doi.org/10.1187/cbe.16-10-0307' target='_blank'> Martinkova et al.
                 (2017)</a> for further discussion. <code>GMAT</code> also containts simulated continuous criterion variable. ",
                 GMAT2_difNLR = "<code>GMAT2</code> (Drabinova & Martinkova, 2017) is simulated dataset based on parameters
                 of real Graduate Management Admission Test (GMAT; Kingston et al., 1985) from <code>difNLR</code> R package .
