@@ -2666,10 +2666,10 @@ ui = tagList(
                            </li>
 
                            <li><code>ShinyItemAnalysis</code>
-                           Martinkova, P., Drabinova, A., Leder, O. & Houdek, J. (2018).
-                           ShinyItemAnalysis: Test and item analysis via shiny.
-                           R package version 1.3.0.
-                           <a href = "https://CRAN.R-project.org/package=ShinyItemAnalysis", target = "_blank">See online.</a>
+                           Martinkova, P., & Drabinova, A. (2018).
+                           ShinyItemAnalysis for teaching psychometrics and to enforce routine analysis of educational tests.
+                           The R Journal, 10(2), 503-515.
+                           <a href = "https://journal.r-project.org/archive/2018/RJ-2018-074/", target = "_blank">See online.</a>
                            </li>
 
                            <li><code>shinyjs</code>

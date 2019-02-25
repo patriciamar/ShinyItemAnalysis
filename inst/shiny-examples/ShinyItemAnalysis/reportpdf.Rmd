@@ -105,7 +105,7 @@ To cite ShinyItemAnalysis application in publications, please, use:
   Martinkov\'a P., \& Drabinov\'a A.
   (2018)
   ShinyItemAnalysis for teaching psychometrics and to enforce routine analysis of educational tests. 
-  \textit{The R Journal 10}(2). \\
+  \textit{The R Journal, 10}(2), 503-515. \\
   doi: 10.32614/RJ-2018-074
 
 \bibitem{martinkova2019}

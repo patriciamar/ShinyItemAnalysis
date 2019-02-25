@@ -4,14 +4,15 @@ vers <- paste("R package version", meta$Version)
 citHeader("To cite package 'ShinyItemAnalysis' in publications use:")
 
 citEntry(entry = "Article",
-         title = "{ShinyItemAnalysis} for teaching psychometrics and to enforce routine analysis of educational tests. ",
+         title = "{ShinyItemAnalysis} for teaching psychometrics and to enforce routine analysis of educational tests.",
          author = personList(as.person("Patricia Martinkova"), as.person("Adela Drabinova")),
          year = "2018",
          journal = "The R Journal",
          volume = "10",
          number = "2",
+         pages = "503--515",
          doi = "10.32614/RJ-2018-074",
-         textVersion = "Martinková, P., & Drabinová, A. (2018). ShinyItemAnalysis for Teaching Psychometrics and to Enforce Routine Analysis of Educational Tests. The R Journal, 10(2). doi: 10.32614/RJ-2018-074")
+         textVersion = "Martinková, P., & Drabinová, A. (2018). ShinyItemAnalysis for Teaching Psychometrics and to Enforce Routine Analysis of Educational Tests. The R Journal, 10(2), 503-515. doi: 10.32614/RJ-2018-074")
 
 
 citEntry(entry = "Article",

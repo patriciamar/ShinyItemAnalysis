@@ -131,7 +131,7 @@ About <- tabPanel("",
                   div(class = "cite-box",
                     "Martinkova P., & Drabinova A. (2018).", br(), "
                     ShinyItemAnalysis for teaching psychometrics and to enforce routine analysis of educational tests.", br(), "
-                    The R Journal 10(2). doi: 10.32614/RJ-2018-074"),
+                    The R Journal, 10(2), 503-515. doi: 10.32614/RJ-2018-074"),
                   p("In Czech written papers you can also use "),
                   div(class = "cite-box",
                     "Martinkova, P., Drabinova, A., & Houdek, J. (2017).", br(), "
