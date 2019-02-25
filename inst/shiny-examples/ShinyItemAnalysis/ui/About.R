@@ -73,7 +73,8 @@ About <- tabPanel("",
                              a("1.0.0, ", href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV100/", target = "_blank"),
                              a("1.1.0, ", href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV110/", target = "_blank"),
                              a("1.2.3, ", href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV123/", target = "_blank"),
-                             a("1.2.6. ", href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV126/", target = "_blank")))),
+                             a("1.2.6, ", href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV126/", target = "_blank"),
+                             a("1.2.9. ", href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV129/", target = "_blank")))),
                   tags$hr(),
                   #------------------------------------------------------------------------------------#
                   # Team ####
@@ -94,7 +95,10 @@ About <- tabPanel("",
                            HTML("<figcaption>Jakub<br>Houdek</figcaption>")),
                     column(1, align = "center",
                            img(src = "author_lubos.jpg", width = 75),
-                           HTML("<figcaption>Lubomir<br>Stepanek</figcaption>"))),
+                           HTML("<figcaption>Lubomir<br>Stepanek</figcaption>")),
+                    column(1, align = "center",
+                           img(src = "author_tomas.jpg", width = 75),
+                           HTML("<figcaption>Tomas<br>Jurica</figcaption>"))),
                   tags$hr(),
                   #------------------------------------------------------------------------------------#
                   # Feedback ####
