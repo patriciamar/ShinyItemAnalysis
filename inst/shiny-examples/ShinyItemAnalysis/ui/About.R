@@ -59,13 +59,13 @@ About <- tabPanel("",
                     column(6, h4("Versions"),
                            p("Current",
                              a("CRAN", href = "https://CRAN.R-project.org/package=ShinyItemAnalysis", target = "_blank"),
-                             "version is 1.2.9.",
+                             "version is 1.3.0.",
                              br(),
                              "Version available",
-                             a("online", href = "https://shiny.cs.cas.cz/ShinyItemAnalysis/", target = "_blank"), "is 1.2.9.",
+                             a("online", href = "https://shiny.cs.cas.cz/ShinyItemAnalysis/", target = "_blank"), "is 1.3.0.",
                              br(),
                              "The newest development version available on ",
-                             a("GitHub", href = "https://github.com/patriciamar/ShinyItemAnalysis", target = "_blank"), "is 1.2.9-3.",
+                             a("GitHub", href = "https://github.com/patriciamar/ShinyItemAnalysis", target = "_blank"), "is 1.3.0.",
                              br(),
                              "See also older versions: ",
                              a("0.1.0, ", href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV01/", target = "_blank"),
@@ -73,7 +73,8 @@ About <- tabPanel("",
                              a("1.0.0, ", href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV100/", target = "_blank"),
                              a("1.1.0, ", href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV110/", target = "_blank"),
                              a("1.2.3, ", href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV123/", target = "_blank"),
-                             a("1.2.6. ", href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV126/", target = "_blank")))),
+                             a("1.2.6, ", href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV126/", target = "_blank"),
+                             a("1.2.9. ", href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV129/", target = "_blank")))),
                   tags$hr(),
                   #------------------------------------------------------------------------------------#
                   # Team ####
@@ -94,7 +95,10 @@ About <- tabPanel("",
                            HTML("<figcaption>Jakub<br>Houdek</figcaption>")),
                     column(1, align = "center",
                            img(src = "author_lubos.jpg", width = 75),
-                           HTML("<figcaption>Lubomir<br>Stepanek</figcaption>"))),
+                           HTML("<figcaption>Lubomir<br>Stepanek</figcaption>")),
+                    column(1, align = "center",
+                           img(src = "author_tomas.jpg", width = 75),
+                           HTML("<figcaption>Tomas<br>Jurica</figcaption>"))),
                   tags$hr(),
                   #------------------------------------------------------------------------------------#
                   # Feedback ####
@@ -129,16 +133,15 @@ About <- tabPanel("",
 
                   p("To cite ShinyItemAnalysis in publications, please use:"),
                   div(class = "cite-box",
-                    "Martinkova P., Drabinova A., Leder O., & Houdek J. (2018).", br(), "
-                    ShinyItemAnalysis: Test and item analysis via shiny.", br(), "
-                    R package version 1.2.9. ", br(), "
-                    https://CRAN.R-project.org/package=ShinyItemAnalysis"),
+                    "Martinkova P., & Drabinova A. (2018).", br(), "
+                    ShinyItemAnalysis for teaching psychometrics and to enforce routine analysis of educational tests.", br(), "
+                    The R Journal, 10(2), 503-515. doi: 10.32614/RJ-2018-074"),
                   p("In Czech written papers you can also use "),
                   div(class = "cite-box",
                     "Martinkova, P., Drabinova, A., & Houdek, J. (2017).", br(), "
                     ShinyItemAnalysis: Analyza prijimacich a jinych znalostnich ci psychologickych testu", br(), "
                     [ShinyItemAnalysis: Analyzing admission and other educational and psychological tests].", br(), "
-                    TESTFORUM, 6(9), 16-35. doi:10.5817/TF2017-9-129"),
+                    TESTFORUM, 6(9), 16-35. doi: 10.5817/TF2017-9-129"),
                   tags$hr(),
 
                   #------------------------------------------------------------------------------------#

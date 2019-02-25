@@ -4,7 +4,7 @@ setInterval(function(){
       if ($('html').attr('class')=='shiny-busy') {
         $('div.busy').show()
       }
-    }, 800)
+    }, 2400)
   } else {
     $('div.busy').hide()
   }

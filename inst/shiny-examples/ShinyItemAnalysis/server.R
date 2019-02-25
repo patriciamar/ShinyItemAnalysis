@@ -720,7 +720,9 @@ function(input, output, session) {
     output$download_report_button <- renderUI({
 
       if(is.null(input$generate)){return(NULL)}
-      downloadButton("report", "Download report")
+      downloadButton(outputId = "report",
+                     label = "Download report",
+                     class = "btn btn-primary")
 
     })
 

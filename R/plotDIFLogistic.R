@@ -63,12 +63,15 @@ plotDIFLogistic <- function(data, group, type = "both", item, item.name,
                             IRT = F, p.adjust.method = "none", purify = F,
                             match = "score"){
   if (IRT) {
-    MATCH <- c(scale(apply(data, 1, sum)))
+    MATCHCRIT <- c(scale(apply(data, 1, sum)))
+    MATCH <- MATCHCRIT
   } else {
     if (any(match == "score")){
-      MATCH <- apply(data, 1, sum)
+      MATCH <- "score"
+      MATCHCRIT <- apply(data, 1, sum)
     } else {
-      MATCH <- match
+      MATCHCRIT <- match
+      MATCH <- MATCHCRIT
     }
   }
 
@@ -81,8 +84,8 @@ plotDIFLogistic <- function(data, group, type = "both", item, item.name,
   }
 
   ### data
-  score_R <- MATCH[group == 0]
-  score_F <- MATCH[group == 1]
+  score_R <- MATCHCRIT[group == 0]
+  score_F <- MATCHCRIT[group == 1]
 
   max_score <- max(score_R, score_F)
   min_score <- min(score_R, score_F)

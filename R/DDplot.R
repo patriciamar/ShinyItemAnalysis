@@ -30,6 +30,7 @@
 #' calculates difference in ratio of correct answers in upper and lower third of students.
 #' "RIT" index caluclates correlation between item score and test total score.
 #' "RIR" index caclulates correlation between item score and total score for the rest of the items.
+#' With option "none", only difficulty is displayed.
 #'
 #' "ULI" index can be generalized using arguments \code{k}, \code{l} and \code{u}. Generalized ULI
 #' discrimination is then computed as follows: The function takes data on individuals,
@@ -102,6 +103,8 @@
 #' DDplot(dataOrd, discrim = "RIT")
 #' # DDplot of ordinal data set using RIR
 #' DDplot(dataOrd, discrim = "RIR")
+#' # DDplot of ordinal data set disaplaying only difficulty
+#' DDplot(dataBin, discrim = "none")
 #' }
 #' @export
 #' @import difNLR
