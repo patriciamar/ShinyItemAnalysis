@@ -17,7 +17,7 @@ Test and item analysis via shiny
  * training plots for dichotomous and polytomous IRT models,
  * DIF and DDF detection methods.
  
-It also offers some training data sets but you can also upload your own data. Moreover it is also possible to generate reports. 
+It offers some training data sets but you can also upload your own data. Moreover it is also possible to generate reports. 
 
 `ShinyItemAnalysis` is available online at [Czech Academy of Sciences](https://shiny.cs.cas.cz/ShinyItemAnalysis/) and [shinyapps.io](https://cemp.shinyapps.io/ShinyItemAnalysis/). It can be also downloaded from [**CRAN**](https://CRAN.R-project.org/package=ShinyItemAnalysis). Visit our new [**web page**](http://www.shinyitemanalysis.org/) about ShinyItemAnalysis to learn more!
 
@@ -52,5 +52,4 @@ If you find any bug or just need help with `ShinyItemAnalysis` you can leave you
 This program is free software and you can redistribute it and or modify it under the terms of the [GNU GPL 3](https://www.gnu.org/licenses/gpl-3.0.en.html).
 
 ## References
-New paper is available in [The R Journal](https://journal.r-project.org/archive/2018/RJ-2018-074/). Czech speakers can also 
-read another paper [online!](http://testforum.cz/domains/testforum.cz/index.php/testforum/article/view/TF2017-9-129/146#.WZvuzyhJa70)
+New paper is available in [The R Journal](https://journal.r-project.org/archive/2018/RJ-2018-074/). Czech speakers can also refer to paper in journal [Testforum](http://dx.doi.org/10.5817/TF2017-9-129).

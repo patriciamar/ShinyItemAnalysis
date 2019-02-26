@@ -135,13 +135,19 @@ About <- tabPanel("",
                   div(class = "cite-box",
                     "Martinkova P., & Drabinova A. (2018).", br(), "
                     ShinyItemAnalysis for teaching psychometrics and to enforce routine analysis of educational tests.", br(), "
-                    The R Journal, 10(2), 503-515. doi: 10.32614/RJ-2018-074"),
-                  p("In Czech written papers you can also use "),
+                    The R Journal, 10(2), 503-515. doi:",
+                    a("10.32614/RJ-2018-074",
+                      href = "https://journal.r-project.org/archive/2018/RJ-2018-074/",
+                      target = "_blank")),
+				          p("In Czech written papers you can also use "),
                   div(class = "cite-box",
                     "Martinkova, P., Drabinova, A., & Houdek, J. (2017).", br(), "
-                    ShinyItemAnalysis: Analyza prijimacich a jinych znalostnich ci psychologickych testu", br(), "
-                    [ShinyItemAnalysis: Analyzing admission and other educational and psychological tests].", br(), "
-                    TESTFORUM, 6(9), 16-35. doi: 10.5817/TF2017-9-129"),
+                    ShinyItemAnalysis: Analyza prijimacich a jinych znalostnich ci psychologickych testu. [ShinyItemAnalysis: Analyzing admission and other educational and psychological tests. In Czech].", br(), "
+                    TESTFORUM, 6(9), 16-35. doi:",
+				            a("10.5817/TF2017-9-129",
+				              href = "http://dx.doi.org/10.5817/TF2017-9-129",
+				              target = "_blank")),
+
                   tags$hr(),
 
                   #------------------------------------------------------------------------------------#
