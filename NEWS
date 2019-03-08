@@ -3,6 +3,21 @@
         *  Changes and Developments in the ShinyItemAnalysis Package  *
         *                                                             *
         ***************************************************************
+-------------------------------------------------------
+- Changes in ShinyItemAnalysis 1.3.1. (2019-03-08) -
+-------------------------------------------------------
+
+BUG FIXING
+  o Equations for 3PL and 4PL regression models were fixed.
+
+MAJOR UPDATES
+  o Math symbols are now displayed using MathJax.
+  o Exercises were added in IRT section / Polytomous Training.
+  o DIF section now includes method comparison.
+
+MINOR UPDATES
+  o Labeling of correction methods in DIF section was improved.
+  o Ability parameters are now available also for Bock's model.
 
 -------------------------------------------------------
 - Changes in ShinyItemAnalysis 1.3.0. (2019-02-25) -

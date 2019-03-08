@@ -618,14 +618,24 @@ output$tab_coef_DIF_logistic <- renderTable({
   tab_sd <- fit$logitSe[i, ]
 
   tab <- data.frame(tab_coef, tab_sd)
-
-  rownames(tab) <- c('b0', 'b1', 'b2', 'b3')
+  rownames(tab) <- c('%%mathit{b}_0%%', '%%mathit{b}_1%%', '%%mathit{b}_2%%', '%%mathit{b}_3%%')
   colnames(tab) <- c("Estimate", "SD")
 
   tab
 },
 include.rownames = T,
 include.colnames = T)
+
+#output$ui_tab_coef_DIF_logistic <- renderUI({
+#
+#	tagList(
+#
+#		withMathJax(),
+#		withMathJax(tableOutput("tab_coef_DIF_logistic"))
+#
+#	)
+#
+#})
 
 DIF_logistic_plotReport <- reactive({
   group <- unlist(group())
@@ -1029,12 +1039,15 @@ output$tab_coef_DIF_NLR <- renderTable({
   tab_sd <- fit$nlrSE[[item]]
 
   tab <- t(rbind(tab_coef, tab_sd))
-  # rownames(tab) <- c('a', 'b', 'aDIF', 'bDIF', 'c')
+  withMathJax()
+  rownames(tab) <- c('%%mathit{a}%%', '%%mathit{b}%%', '%%mathit{a}_{DIF}%%', '%%mathit{b}_{DIF}%%', '%%mathit{c}%%')
   colnames(tab) <- c("Estimate", "SD")
 
   tab
 },
 include.rownames = T)
+
+
 
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # * IRT LORD ######
@@ -1157,11 +1170,10 @@ tab_coef_DIF_IRT_Lord <- reactive({
 
 
   tab <- data.frame(tab_coef, tab_sd)
-
   rownames(tab) <- switch(input$type_plot_DIF_IRT_lord,
-                          "1PL" = c("bR", "bF"),
-                          "2PL" = c("aR", "aF", "bR", "bF"),
-                          "3PL" = c("aR", "aF", "bR", "bF", "c"))
+                          "1PL" = c("%%mathit{b}_{R}%%", "%%mathit{b}_{F}%%"),
+                          "2PL" = c("%%mathit{a}_{R}%%", "%%mathit{a}_{F}%%", "%%mathit{b}_{R}%%", "%%mathit{b}_{F}%%"),
+                          "3PL" = c("%%mathit{a}_{R}%%", "%%mathit{a}_{F}%%", "%%mathit{b}_{R}%%", "%%mathit{b}_{F}%%", "%%mathit{c}%%"))
   colnames(tab) <- c("Estimate", "SD")
 
   tab
@@ -1170,23 +1182,24 @@ tab_coef_DIF_IRT_Lord <- reactive({
 # ** Interpretation ######
 output$irtint_lord <- renderUI({
   type <- input$type_plot_DIF_IRT_lord
+  withMathJax()
   txt <- switch(type,
                 '1PL'= paste('As the parameters are estimated separately for groups, there is one
-                             equation for each group. Parameters <b> bR </b> and <b> bF </b>
+                             equation for each group. Parameters \\(b_{R}\\) and \\(b_{F}\\)
                              are difficulties for reference and focal group. '),
                 '2PL'= paste('As the parameters are estimated
                              separately for groups, there is one equation for each group.
-                             Parameters <b> aR </b> and <b> bR </b> are discrimination and
-                             difficulty for reference group. Parameters <b> aF </b> and
-                             <b> bF </b>
+                             Parameters \\(a_{R}\\) and \\(b_{R}\\) are discrimination and
+                             difficulty for reference group. Parameters \\(a_{F}\\) and
+                             \\(b_{F}\\)
                              are discrimination and difficulty for focal group. '),
                 '3PL'= paste('As the parameters are estimated
                              separately for groups, there is one equation for each group.
-                             Parameters <b> aR </b> and <b> bR </b> are discrimination and
-                             difficulty for reference group. Parameters <b> aF </b> and <b> bF </b>
+                             Parameters \\(a_{R}\\) and \\(b_{R}\\) are discrimination and
+                             difficulty for reference group. Parameters  \\(a_{F}\\) and \\(b_{F}\\)
                              are discrimination and difficulty for focal group.
-                             Parameter <b> c </b> is a common guessing parameter. '))
-  HTML(txt)
+                             Parameter \\(c\\) is a common guessing parameter. '))
+  withMathJax(HTML(txt))
 })
 
 # ** Equation ######
@@ -1224,6 +1237,8 @@ output$tab_coef_DIF_IRT_Lord <- renderTable({
 },
 include.rownames = T,
 include.colnames = T)
+
+
 
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # * IRT Raju ######
@@ -1316,23 +1331,24 @@ output$DP_plot_DIF_IRT_Raju <- downloadHandler(
 # ** Interpretation ######
 output$irtint_raju <- renderUI({
   type <- input$type_plot_DIF_IRT_raju
+  withMathJax()
   txt <- switch(type,
                 '1PL'= paste('As the parameters are estimated separately for groups, there is one
-                             equation for each group. Parameters <b> bR </b> and <b> bF </b>
+                             equation for each group. Parameters \\(b_{R}\\) and  \\(b_{F}\\)
                              are difficulties for reference and focal group. '),
                 '2PL'= paste('As the parameters are estimated
                              separately for groups, there is one equation for each group.
-                             Parameters <b> aR </b> and <b> bR </b> are discrimination and
-                             difficulty for reference group. Parameters <b> aF </b> and
-                             <b> bF </b>
+                             Parameters \\(a_{R}\\) and \\(b_{R}\\) are discrimination and
+                             difficulty for reference group. Parameters \\(a_{F}\\) and
+                             \\(b_{F}\\)
                              are discrimination and difficulty for focal group. '),
                 '3PL'= paste('As the parameters are estimated
                              separately for groups, there is one equation for each group.
-                             Parameters <b> aR </b> and <b> bR </b> are discrimination and
-                             difficulty for reference group. Parameters <b> aF </b> and <b> bF </b>
+                             Parameters \\(a_{R}\\) and \\(b_{R}\\) are discrimination and
+                             difficulty for reference group. Parameters \\(a_{F}\\) and \\(b_{F}\\)
                              are discrimination and difficulty for focal group.
-                             Parameter <b> c </b> is a common guessing parameter. '))
-  HTML(txt)
+                             Parameter \\(c\\) is a common guessing parameter. '))
+  withMathJax(HTML(txt))
 })
 
 
@@ -1399,11 +1415,10 @@ tab_coef_DIF_IRT_Raju <- reactive({
     tab_sd <- c(tab_sd, NA)
 
   tab <- data.frame(tab_coef, tab_sd)
-
   rownames(tab) <- switch(input$type_plot_DIF_IRT_raju,
-                          "1PL" = c("bR", "bF"),
-                          "2PL" = c("aR", "aF", "bR", "bF"),
-                          "3PL" = c("aR", "aF", "bR", "bF", "c"))
+                          "1PL" = c("%%mathit{b}_{R}%%", "%%mathit{b}_{F}%%"),
+                          "2PL" = c("%%mathit{a}_{R}%%", "%%mathit{a}_{F}%%", "%%mathit{b}_{R}%%", "%%mathit{b}_{F}%%"),
+                          "3PL" = c("%%mathit{a}_{R}%%", "%%mathit{a}_{F}%%", "%%mathit{b}_{R}%%", "%%mathit{b}_{F}%%", "%%mathit{c}%%"))
   colnames(tab) <- c("Estimate", "SD")
 
   tab
@@ -1415,6 +1430,7 @@ output$tab_coef_DIF_IRT_Raju <- renderTable({
 },
 include.rownames = T,
 include.colnames = T)
+
 
 
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1617,14 +1633,15 @@ output$tab_coef_DDF <- renderTable({
   df2 <- melt(tab_se, id = "answ")
   tab <- data.frame(df1$value,
                     df2$value)
-
-  rownames(tab) <- paste(substr(df1$variable, 1, 1),
+  rownames(tab) <- paste('%%mathit{',substr(df1$variable, 1, 1),'}_{',
                          df1$answ,
-                         substr(df1$variable, 2, 2), sep = "")
+                         substr(df1$variable, 2, 2),'}%%', sep = "")
   colnames(tab) <- c("Estimate", "SD")
   tab
+
 },
 include.rownames = T)
+
 
 # ** Equation ######
 output$DDFeq <- renderUI ({
@@ -1645,3 +1662,58 @@ output$DDFeq <- renderUI ({
     )
   )
 })
+
+output$method_comparison_table <- renderTable({
+
+	delta <- deltaGpurn()$DIFitems
+	DIF_MH <-model_DIF_MH()$DIFitems
+	DIF_LOG <- model_DIF_logistic_print()$DIFitems
+	DIF_NLR <- model_DIF_NLR_print()$DIFitems
+	DIF_IRT <- model_DIF_IRT_Lord_print()$DIFitems
+	DIF_RAJU <- model_DIF_IRT_Raju_print()$DIFitems
+	DIF_SIBTEST <- DIF_SIBTEST_model()$DIFitems
+	DFF <- model_DDF_print()$DIFitems
+
+	k <- length(item_names())
+
+	v1 <- rep(0, k)
+	v2 <- rep(0, k)
+	v3 <- rep(0, k)
+	v4 <- rep(0, k)
+	v5 <- rep(0, k)
+	v6 <- rep(0, k)
+	v7 <- rep(0, k)
+	v8 <- rep(0, k)
+
+	invisible(ifelse(delta == 'no DIF item detected', TRUE, v1[delta] <- 1))
+	invisible(ifelse(DIF_MH == 'no DIF item detected', TRUE, v2[DIF_MH] <- 1))
+	invisible(ifelse(DIF_LOG == 'no DIF item detected', TRUE, v3[DIF_LOG] <- 1))
+	invisible(ifelse(DIF_NLR == 'no DIF item detected', TRUE, v4[DIF_NLR] <- 1))
+	invisible(ifelse(DIF_IRT == 'no DIF item detected', TRUE, v5[DIF_IRT] <- 1))
+	invisible(ifelse(DIF_RAJU == 'no DIF item detected', TRUE, v6[DIF_RAJU] <- 1))
+	invisible(ifelse(DIF_SIBTEST == 'no DIF item detected', TRUE, v7[DIF_SIBTEST] <- 1))
+	invisible(ifelse(DFF == 'no DDF item detected', TRUE, v8[DFF] <- 1))
+
+	tab <- as.data.frame(cbind(v1, v2, v3, v4, v5, v6, v7, v8))
+	tab <- as.data.frame(apply(tab, c(1, 2), as.integer))
+	rownames(tab) <- item_names()
+	colnames(tab) <- c("Delta", "MH", "Logistic", "GLogistic", "Lord", "Raju", "SIBTEST", "DFF")
+
+	n <- nrow(tab)
+	k <- ncol(tab)
+
+	rDIF <- apply(tab, 1, sum)
+	cDIF <- apply(tab, 2, sum)
+	cDIF[k + 1] <- 0
+
+	tab <- cbind(tab, as.integer(rDIF))
+	tab <- rbind(tab, as.integer(cDIF))
+
+	rownames(tab)[n + 1] <- "Total"
+	colnames(tab)[k + 1] <- "Total"
+
+	tab
+},
+include.rownames = T,
+include.colnames = T)
+

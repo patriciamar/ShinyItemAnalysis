@@ -67,16 +67,17 @@ output$DB_logreg_plot <- downloadHandler(
 )
 
 # ** Table of estimated parameters of logistic curve ######
-output$logreg_table <- renderTable({
+output$coef_logreg_table <- renderTable({
 
   tab <- summary(logreg_model())$coef[1:2, 1:2]
-
   colnames(tab) <- c("Estimate", "SD")
-  rownames(tab) <- c("b0", "b1")
+  rownames(tab) <- c("%%mathit{b}_{0}%%", "%%mathit{b}_{1}%%")
   tab
 },
 include.rownames = T,
 include.colnames = T)
+
+
 
 # ** Interpretation of estimated parameters of logistic curve ######
 output$logreg_interpretation <- renderUI({
@@ -160,15 +161,17 @@ output$DB_z_logreg_plot <- downloadHandler(
 )
 
 # ** Table of estimated parameters of logistic regression on Z-scores ######
-output$z_logreg_table <- renderTable({
+output$coef_z_logreg <- renderTable({
 
   tab <- summary(z_logreg_model())$coef[1:2, 1:2]
   colnames(tab) <- c("Estimate", "SD")
-  rownames(tab) <- c("b0", "b1")
+  rownames(tab) <- c("%%mathit{b}_{0}%%", "%%mathit{b}_{1}%%")
   tab
 },
 include.rownames = T,
 include.colnames = T)
+
+
 
 # * Interpretation of estimated parameters of logistic regression on Z-scores ######
 output$z_logreg_interpretation <- renderUI({
@@ -254,7 +257,7 @@ output$DB_z_logreg_irt_plot <- downloadHandler(
 )
 
 # ** Table of estimated parameters of logistic curve on Z scores with IRT param. ######
-output$z_logreg_irt_table <- renderTable({
+output$coef_z_logreg_irt <- renderTable({
   fit <- z_logreg_irt_model()
   tab_coef_old <- coef(fit)
 
@@ -273,12 +276,13 @@ output$z_logreg_irt_table <- renderTable({
 
   tab_coef <- c(tab_coef_old[2], -tab_coef_old[1]/tab_coef_old[2])
   tab <- cbind(tab_coef, tab_sd)
-
   colnames(tab) <- c("Estimate", "SD")
-  rownames(tab) <- c("a", "b")
+  rownames(tab) <- c("%%mathit{a}%%", "%%mathit{b}%%")
   tab
 },
 include.rownames = T)
+
+
 
 # ** Interpretation of estimated parameters of logistic curve on Z scores with IRT param. ######
 output$z_logreg_irt_interpretation <- renderUI({
@@ -373,16 +377,18 @@ output$DB_nlr_3P_plot <- downloadHandler(
 )
 
 # Table of estimated parameters of nonlinear curve ######
-output$nlr_3P_table <- renderTable({
+output$coef_nlr_3P <- renderTable({
   fit <- nlr_3P_model()
 
   tab <- summary(fit)$parameters[, 1:2]
   colnames(tab) <- c("Estimate", "SD")
+  rownames(tab) <- c("%%mathit{a}%%","%%mathit{b}%%","%%mathit{c}%%")
   tab
 },
 include.rownames = T,
 include.colnames = T
 )
+
 
 # ** Interpretation of estimated parameters of nonlinear curve ######
 output$nlr_3P_interpretation <- renderUI({
@@ -476,16 +482,18 @@ output$DB_nlr_4P_plot <- downloadHandler(
 )
 
 # Table of estimated parameters of nonlinear curve ######
-output$nlr_4P_table <- renderTable({
+output$coef_nlr_4P <- renderTable({
   fit <- nlr_4P_model()
-
   tab <- summary(fit)$parameters[, 1:2]
   colnames(tab) <- c("Estimate", "SD")
+  rownames(tab) <- c("%%mathit{a}%%","%%mathit{b}%%","%%mathit{c}%%","%%mathit{d}%%")
   tab
 },
 include.rownames = T,
 include.colnames = T
 )
+
+
 
 # ** Interpretation of estimated parameters of nonlinear curve ######
 output$nlr_4P_interpretation <- renderUI({
@@ -784,7 +792,7 @@ output$multi_equation <- renderUI ({
 })
 
 # ** Table of parameters of curves of multinomial regression ######
-output$multi_table <- renderTable({
+output$coef_multi <- renderTable({
   fit <- multi_model()
 
   key <- t(as.data.table(key()))
@@ -802,13 +810,14 @@ output$multi_table <- renderTable({
   if (is.null(dim(coef(fit))[1]) & !(all(levels(temp) %in% c("1", "0")))){
     rnam <- rev(levels(temp))[1]
   }
-
+  
   colnames(tab) <- c("Estimate", "SD")
-  rownames(tab) <- c(paste("b", rnam, "0", sep = ""),
-                     paste("b", rnam, "1", sep = ""))
+  rownames(tab) <- c(paste("%%mathit{b", rnam, "}_{0}%%", sep = ""),
+                     paste("%%mathit{b", rnam, "}_{1}%%", sep = ""))
   tab
 },
 include.rownames = T)
+
 
 # ** Interpretation of parameters of curves of multinomial regression ######
 output$multi_interpretation <- renderUI({
