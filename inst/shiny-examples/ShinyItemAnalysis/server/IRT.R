@@ -3594,6 +3594,9 @@ output$irt_training_dich3_answer <- renderUI({
 # *** GRADED RESPONSE MODEL ####
 
 output$irt_training_grm_sliders <- renderUI({
+  
+  req(input$irt_training_grm_numresp,input$irt_training_grm_numresp >= 2,input$irt_training_grm_numresp <= 6)
+  
   num <- input$irt_training_grm_numresp
 
   sliders <- tagList(
@@ -3641,6 +3644,8 @@ output$irt_training_grm_sliders <- renderUI({
 })
 # *** Cummulative ######
 irt_training_grm_plot_cummulative_Input <- reactive({
+  
+  req(input$irt_training_grm_numresp,input$irt_training_grm_numresp >= 2, input$irt_training_grm_numresp <= 6 )
   
   input$irt_training_grm_numresp
   
@@ -3719,6 +3724,9 @@ output$DB_irt_training_grm_plot_cummulative <- downloadHandler(
 
 # *** Category probabilities ######
 irt_training_grm_plot_category_Input <- reactive({
+  
+  req(input$irt_training_grm_numresp,input$irt_training_grm_numresp >= 2,input$irt_training_grm_numresp < 6)
+  
   num <- input$irt_training_grm_numresp
 
   a <- input$irt_training_grm_a
@@ -3798,6 +3806,9 @@ output$DB_irt_training_grm_plot_category <- downloadHandler(
 
 # *** Expected item score ######
 irt_training_grm_plot_expected_Input <- reactive({
+  
+  req(input$irt_training_grm_numresp,input$irt_training_grm_numresp >= 2,input$irt_training_grm_numresp <= 6  )
+  
   num <- input$irt_training_grm_numresp
 
   a <- input$irt_training_grm_a
@@ -3899,7 +3910,7 @@ irt_training_grm_answer <- reactive({
  prob_k3 <- as.numeric(apply(as.data.frame(rbind(prob_k0,prob_k1,prob_k2)),2,function(x) 1 - sum(x)))
  
  exp_v <- as.numeric(as.matrix(cbind(prob_k0,prob_k1,prob_k2,prob_k3)) %*% 0:3)
-
+bb <- input$irt_training_grm_numresp
  
  answers <- list(ans1_1 = ck0,
 				 ans1_2 = ck1,
@@ -4190,6 +4201,9 @@ output$irt_training_grm_answer <- renderUI({
 # *** GENERALIZED PARTIAL CREDIT MODEL ####
 
 output$irt_training_gpcm_sliders <- renderUI({
+  
+  req(input$irt_training_gpcm_numresp, input$irt_training_gpcm_numresp >= 2,input$irt_training_gpcm_numresp <= 6)
+  
   num <- input$irt_training_gpcm_numresp
 
   sliders <- tagList(
@@ -4238,6 +4252,9 @@ output$irt_training_gpcm_sliders <- renderUI({
 
 # *** Category probabilities ######
 irt_training_gpcm_plot_Input <- reactive({
+  
+  req(input$irt_training_gpcm_numresp, input$irt_training_gpcm_numresp >= 2, input$irt_training_gpcm_numresp <= 6 )
+  
   num <- input$irt_training_gpcm_numresp
 
   a <- input$irt_training_gpcm_a
@@ -4323,6 +4340,9 @@ output$DB_irt_training_gpcm_plot <- downloadHandler(
 
 # *** Expected item score ######
 irt_training_gpcm_plot_expected_Input <- reactive({
+  
+  req(input$irt_training_gpcm_numresp,input$irt_training_gpcm_numresp >= 2, input$irt_training_gpcm_numresp <= 6 )
+  
   num <- input$irt_training_gpcm_numresp
 
   a <- input$irt_training_gpcm_a
@@ -4705,3 +4725,50 @@ output$DB_irt_training_nrm_plot <- downloadHandler(
            dpi = setting_figures$dpi)
   }
 )
+
+observeEvent(!is.na(input$irt_training_grm_numresp)| is.na(input$irt_training_grm_numresp),{
+
+if (!is.na(input$irt_training_grm_numresp)) {
+  
+  if(input$irt_training_grm_numresp < 2) {
+  
+	updateNumericInput(session,'irt_training_grm_numresp', value = 2)
+  
+  } else if ( input$irt_training_grm_numresp > 6) {
+  
+	updateNumericInput(session,'irt_training_grm_numresp', value = 6)
+  
+  }
+}  else if (is.na(input$irt_training_grm_numresp)) {
+  
+	updateNumericInput(session,'irt_training_grm_numresp', value = 4)
+  
+  }
+
+
+})
+
+
+observeEvent(!is.na(input$irt_training_gpcm_numresp)| is.na(input$irt_training_gpcm_numresp),{
+
+if (!is.na(input$irt_training_gpcm_numresp)) {
+
+  if(input$irt_training_gpcm_numresp < 2) {
+  
+	updateNumericInput(session,'irt_training_gpcm_numresp', value = 2)
+  
+  } else if ( input$irt_training_gpcm_numresp > 6) {
+  
+	updateNumericInput(session,'irt_training_gpcm_numresp', value = 6)
+  
+  } 
+
+} else if ( is.na(input$irt_training_gpcm_numresp) ) {
+  
+	updateNumericInput(session,'irt_training_gpcm_numresp', value = 4)
+  
+  }
+
+
+})
+

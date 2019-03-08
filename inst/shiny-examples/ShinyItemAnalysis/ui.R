@@ -79,7 +79,7 @@ ui = tagList(
 			
 			$(document).on('shiny:value', function(event) {
 
-						if(event.name.indexOf(event.name.match(/\\btab_coef_\\w+\\b/g)) > -1){
+						if(event.name.indexOf(event.name.match(/\\b\\w*coef_\\w+\\b/g)) > -1){
 		
 							var matches = event.value.match(/(%%+[^%]+%%)/g);
 							var newvalue = event.value;
@@ -92,22 +92,7 @@ ui = tagList(
 							}
 		
 							event.value = newvalue;
-
-						} else if (event.name.indexOf(event.name.match(/\\bcoef\\w+\\b/g)) > -1) {
-
-							var matches = event.value.match(/(%%+[^%]+%%)/g);
-							var newvalue = event.value;
-			
-							for(var i=0; i<matches.length; i++){
-
-								var code = '\\\\' + matches[i].slice(2,-2);
-								newvalue = newvalue.replace(matches[i], katex.renderToString(code));
-
-							}
-
-							event.value = newvalue;
-
-						}
+                        }
 			});"))
             ),
   div(class = "busy",
@@ -835,7 +820,7 @@ ui = tagList(
                                  plotOutput('nlr_3P_plot'),
                                  downloadButton("DB_nlr_3P_plot", label = "Download figure"),
                                  h4("Equation"),
-                                 ('$$\\mathrm{P}(Y = 1|Z, b_0, b_1, c) = \\mathrm{E}(Y|Z, b_0, b_1, c) = c + \\left( 1-c \\right) \\cdot \\frac{e^{a\\left(Z-b\\right) }}{1+e^{a\\left(Z-b\\right) }} $$'),
+                                 ('$$\\mathrm{P}(Y = 1|Z, a, b, c) = \\mathrm{E}(Y|Z, a, b, c) = c + \\left( 1-c \\right) \\cdot \\frac{e^{a\\left(Z-b\\right) }}{1+e^{a\\left(Z-b\\right) }} $$'),
                                  h4("Table of parameters"),
                                  fluidRow(column(12, align = "center", tableOutput('coef_nlr_3P'))),
                                  htmlOutput("nlr_3P_interpretation"),
@@ -864,7 +849,7 @@ ui = tagList(
                                  plotOutput('nlr_4P_plot'),
                                  downloadButton("DB_nlr_4P_plot", label = "Download figure"),
                                  h4("Equation"),
-                                 ('$$\\mathrm{P}(Y = 1|Z, b_0, b_1, c) = \\mathrm{E}(Y|Z, b_0, b_1, c) = c + \\left( d-c \\right) \\cdot \\frac{e^{a\\left(Z-b\\right) }}{1+e^{a\\left(Z-b\\right) }} $$'),
+                                 ('$$\\mathrm{P}(Y = 1|Z, a, b, c,d) = \\mathrm{E}(Y|Z, a, b, c, d) = c + \\left( d-c \\right) \\cdot \\frac{e^{a\\left(Z-b\\right) }}{1+e^{a\\left(Z-b\\right) }} $$'),
                                  h4("Table of parameters"),
                                  fluidRow(column(12, align = "center", tableOutput('coef_nlr_4P'))),
                                  htmlOutput("nlr_4P_interpretation"),
