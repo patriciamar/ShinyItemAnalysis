@@ -812,8 +812,8 @@ output$coef_multi <- renderTable({
   }
   
   colnames(tab) <- c("Estimate", "SD")
-  rownames(tab) <- c(paste("%%mathit{b", rnam, "}_{0}%%", sep = ""),
-                     paste("%%mathit{b", rnam, "}_{1}%%", sep = ""))
+  rownames(tab) <- c(paste("%%mathit{b}_{", rnam, "0}%%", sep = ""),
+                     paste("%%mathit{b}_{", rnam, "1}%%", sep = ""))
   tab
 },
 include.rownames = T)

@@ -820,7 +820,7 @@ oneparamirtcoefInput_mirt <- reactive({
   tab.comp[, colnames(tab.comp) %in% colnames(tab)] <- tab
 
   colnames(tab.comp) <- c("%%mathit{a}%%", "SE(%%mathit{a}%%)", "%%mathit{b}%%", "SE(%%mathit{b}%%)", "%%mathit{c}%%", 
-						  "SE(%%mathit{c}%%)", "%%mathit{d}%%", "SE%%mathit{d}%%)",
+						  "SE(%%mathit{c}%%)", "%%mathit{d}%%", "SE(%%mathit{d}%%)",
                           "SX2-value", "df", "p-value")
   tab.comp
 })
@@ -1802,8 +1802,8 @@ threeparamirtcoefInput_mirt <- reactive({
   tab.comp
 })
 
-output$threeparamirtcoef_mirt <- renderTable({
-  threeparamirtcoefInput_mirt()
+output$coef_threeparamirt_mirt <- renderTable({
+threeparamirtcoefInput_mirt()
 },
 include.rownames = T,
 include.colnames = T)
@@ -4552,6 +4552,9 @@ output$irt_training_gpcm_answer <- renderUI({
 # *** NOMINAL RESPONSE MODEL ####
 
 output$irt_training_nrm_sliders <- renderUI({
+  
+  req(input$irt_training_nrm_numresp,input$irt_training_nrm_numresp >= 2,input$irt_training_nrm_numresp <= 6)
+  
   num <- input$irt_training_nrm_numresp
 
   sliders <- tagList(
@@ -4636,6 +4639,9 @@ output$irt_training_nrm_sliders <- renderUI({
 
 # *** Category probabilities ######
 irt_training_nrm_plot_Input <- reactive({
+  
+  req(input$irt_training_nrm_numresp,input$irt_training_nrm_numresp >= 2,input$irt_training_nrm_numresp <= 6)
+  
   num <- input$irt_training_nrm_numresp
 
   if (is.null(input$irt_training_nrm_a1)){
@@ -4766,6 +4772,29 @@ if (!is.na(input$irt_training_gpcm_numresp)) {
 } else if ( is.na(input$irt_training_gpcm_numresp) ) {
   
 	updateNumericInput(session,'irt_training_gpcm_numresp', value = 4)
+  
+  }
+
+
+})
+
+observeEvent(!is.na(input$irt_training_nrm_numresp)| is.na(input$irt_training_nrm_numresp),{
+
+if (!is.na(input$irt_training_nrm_numresp)) {
+
+  if(input$irt_training_nrm_numresp < 2) {
+  
+	updateNumericInput(session,'irt_training_nrm_numresp', value = 2)
+  
+  } else if ( input$irt_training_nrm_numresp > 6) {
+  
+	updateNumericInput(session,'irt_training_nrm_numresp', value = 6)
+  
+  } 
+
+} else if ( is.na(input$irt_training_nrm_numresp) ) {
+  
+	updateNumericInput(session,'irt_training_nrm_numresp', value = 4)
   
   }
 

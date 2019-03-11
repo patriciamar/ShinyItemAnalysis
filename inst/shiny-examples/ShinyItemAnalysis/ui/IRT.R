@@ -348,7 +348,7 @@ IRT <- navbarMenu("IRT models",
                                       h4("Table of estimated parameters"),
                                       p('Estimates of parameters are completed by SX2 item fit statistics (Orlando and Thissen, 2000).
                                         SX2 statistics are computed only when no missing data are present.'),
-                                      tableOutput('tab_coef_threeparamirtcoef_mirt'),
+                                      tableOutput('coef_threeparamirt_mirt'),
                                       br(),
                                       downloadButton(outputId = "download_3pl_table",
                                                      label    = "Download table"),
