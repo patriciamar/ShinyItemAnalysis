@@ -8,7 +8,7 @@
 
 # ** Polychoric correlation matrix ######
 corr_structure <- reactive({
-  data <- binary()
+  data <- ordinal()
 
   # calculate correlations depending on selected method
   if (input$type_of_corr == 'spearman') {
@@ -133,7 +133,7 @@ dendrogram_plot_Input <- reactive({
 
   clustmethod <- input$corr_plot_clustmethod
   numclust <- input$corr_plot_clust
-
+  
   hc <- hclust(dist, method = clustmethod)
 
   if (numclust == 1){

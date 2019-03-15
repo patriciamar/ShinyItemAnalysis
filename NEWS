@@ -3,8 +3,19 @@
         *  Changes and Developments in the ShinyItemAnalysis Package  *
         *                                                             *
         ***************************************************************
+
 -------------------------------------------------------
-- Changes in ShinyItemAnalysis 1.3.1. (2019-03-08) -
+- Changes in ShinyItemAnalysis 1.3.0-2. (2019-03-15) -
+-------------------------------------------------------
+
+MAJOR UPDATES
+  o Analysis for ordinal items has been added. This includes use of ordinal
+    data in sections Summary (histogram of Total scores, success rate), 
+    Reliability, Validity (correlations, predictive validity), 
+
+
+-------------------------------------------------------
+- Changes in ShinyItemAnalysis 1.3.0-1. (2019-03-08) -
 -------------------------------------------------------
 
 BUG FIXING

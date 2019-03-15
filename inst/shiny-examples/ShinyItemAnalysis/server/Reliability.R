@@ -143,7 +143,7 @@ output$reliability_splithalf_text <- renderUI({
 
 # ** Update numeric inputs ######
 observe({
-  data <- binary()
+  data <- ordinal()
   n <- ncol(data)
 
   k <- ceiling(n/2)
@@ -156,7 +156,7 @@ observe({
 
 # ** Split-half all possible split-halves ######
 output$reliability_splithalf_allpossible_text <- renderUI({
-  data <- binary()
+  data <- ordinal()
   n <- ncol(data)
 
   k <- ceiling(n/2)
@@ -170,7 +170,7 @@ output$reliability_splithalf_allpossible_text <- renderUI({
 
 # ** Split-half correlation and reliability calculation for average/worst method ######
 reliability_splithalf_raw <- reactive({
-  data <- binary()
+  data <- ordinal()
 
   n.sample <- input$reliability_splithalf_number
   split <- psych::splitHalf(data, raw = T, n.sample = n.sample)
@@ -189,7 +189,7 @@ reliability_splithalf_estimate <- reactive({
 
   n <- length(i_num)
 
-  data <- binary()
+  data <- ordinal()
 
   if (is.null(items1)){
     split <- reliability_splithalf_raw()
@@ -241,7 +241,7 @@ digits = 3)
 
 # ** Split-halves histogram ######
 reliability_splithalf_histogram_Input <- reactive({
-  data <- binary()
+  data <- ordinal()
 
   split <- reliability_splithalf_raw()
 
@@ -285,7 +285,7 @@ output$DB_reliability_splithalf_histogram <- downloadHandler(
 
 # ** Cronbach's alpha table ######
 reliability_cronbachalpha_table_Input <- reactive({
-  data <- binary()
+  data <- ordinal()
 
   a <- psychometric::alpha(data)
   a.low <- psychometric::alpha.CI(a, k = ncol(data), N = nrow(data), level = 0.95)[1]
