@@ -368,7 +368,7 @@ function(input, output, session) {
   })
 
   total_score <- reactive({
-    apply(binary(), 1, sum)
+    apply(ordinal(), 1, sum)
   })
 
   z_score <- reactive({
@@ -377,7 +377,7 @@ function(input, output, session) {
 
   # * Item numbers and item names ######
   item_numbers <- reactive({
-    if (!input$itemnam){
+     if (!input$itemnam){
       nam <- 1:ncol(dataset$nominal)
     } else {
       nam <- colnames(dataset$nominal)
@@ -424,7 +424,9 @@ function(input, output, session) {
     )
 
     itemCount = ncol(ordinal())
-    updateSliderInput(session = session, inputId = "slider_totalscores_histogram", max = itemCount, value = round(median(total_score(), na.rm = T)))
+	minItemScore = min(total_score())
+	maxItemScore = max(total_score())
+    updateSliderInput(session = session, inputId = "slider_totalscores_histogram", min = minItemScore , max = maxItemScore, value = round(median(total_score(), na.rm = T)))
     updateNumericInput(session = session, inputId = "corr_plot_clust", value = 1, max = itemCount)
     updateNumericInput(session = session, inputId = "corr_plot_clust_report", value = 1, max = itemCount)
     updateSliderInput(session = session, inputId = "validitydistractorSlider", max = itemCount)

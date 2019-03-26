@@ -16,6 +16,7 @@ source("ui/About.R", local = T)
 source("ui/Data.R", local = T)
 source("ui/IRT.R", local = T)
 
+
 #%%%%%%%%%%%%%%%%%%%%%
 # UI #################
 #%%%%%%%%%%%%%%%%%%%%%
@@ -30,6 +31,8 @@ ui = tagList(
             tags$link(rel = "stylesheet",
                       type = "text/css",
                       href = "margins_and_paddings.css"),
+            tags$link(rel="stylesheet", 
+                      href="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.css", integrity="sha384-9tPv11A+glH/on/wEu99NVwDPwkMQESOocs/ZGXPoIiLE8MU/qkqUcZ3zzL+6DuH", crossorigin="anonymous"),
             tags$style(type = "text/css",
                        ".panel-footer {
                        position: fixed;
@@ -70,7 +73,27 @@ ui = tagList(
             tags$script(type = "text/javascript",
                         src = "collapsible_menu_click.js"),
             tags$script(type = "text/javascript",
-                        src = "tabs_icons_right.js")
+                        src = "tabs_icons_right.js"),
+			tags$script(src="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.js", integrity="sha384-U8Vrjwb8fuHMt6ewaCy8uqeUXv4oitYACKdB0VziCerzt011iQ/0TqlSlv8MReCm", crossorigin="anonymous"),
+            tags$script(HTML("
+			
+			$(document).on('shiny:value', function(event) {
+
+						if(event.name.indexOf(event.name.match(/\\b\\w*coef_\\w+\\b/g)) > -1){
+		
+							var matches = event.value.match(/(%%+[^%]+%%)/g);
+							var newvalue = event.value;
+			
+							for(var i=0; i<matches.length; i++){
+
+								var code = '\\\\' + matches[i].slice(2,-2);
+								newvalue = newvalue.replace(matches[i], katex.renderToString(code));
+		
+							}
+		
+							event.value = newvalue;
+                        }
+			});"))
             ),
   div(class = "busy",
       p("Loading"),
@@ -102,7 +125,7 @@ ui = tagList(
                     ShinyItemAnalysis
                     </div>
                     <div class = "footer-subtitle">
-                    Test and item analysis | Version 1.3.0
+                    Test and item analysis | Version 1.3.1
                     </div>
                     <span style = "float:right">
                     <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysis/" id = "tooltipweb" target="_blank">
@@ -421,7 +444,7 @@ ui = tagList(
                                                                  class = 'btn btn-primary'))),
                                  conditionalPanel(condition = "input.type_of_corr == 'pearson'",
                                                   p(HTML('<b>Pearson correlation coefficient</b>'), 'describes linear correlation between
-                                                    two random variables X and Y. It is given by formula'),
+                                                    two random variables \\(X\\) and \\(Y\\). It is given by formula'),
                                                   withMathJax(),
                                                   ('$$\\rho = \\frac{cov(X,Y)}{\\sqrt{var(X)}\\sqrt{var(Y)}}.$$'),
                                                   p('Sample Pearson corelation coefficient may be calculated as'),
@@ -434,19 +457,19 @@ ui = tagList(
                                                   p(HTML("<b>Polychoric/tetrachoric correlation</b>"), "between two ordinal/binary variables is calculated from their contingency table,
                                                     under the assumption that the ordinal variables dissect continuous latent variables that are bivariate normal.")),
                                  conditionalPanel(condition = "input.type_of_corr == 'spearman'",
-                                                  p(HTML("<b>Spearman's rank correlation coefficient</b>"), 'describes strength and direction of monotonic relationship between random variables X
-                                                    and Y, i.e. dependence between the rankings of two variables. It is given by formula'),
+                                                  p(HTML("<b>Spearman's rank correlation coefficient</b>"), 'describes strength and direction of monotonic relationship between random variables \\(X\\)
+                                                    and \\(Y\\), i.e. dependence between the rankings of two variables. It is given by formula'),
                                                   withMathJax(),
                                                   ('$$\\rho = \\frac{cov(rg_{X},rg_{Y})}{\\sqrt{var(rg_{X})}\\sqrt{var(rg_{Y})}},$$'),
-                                                  p('where rgX and rgY are transformed random variables X and Y into ranks, i.e Spearman correlation coefficient is the Pearson correlation coefficient between the ranked variables.'),
-                                                  p('Sample Spearman correlation is calculated by converting X and Y to ranks (average ranks are used in case of ties) and by applying Pearson correlation formula. If both X and Y have',HTML('<i>n</i>'),'unique ranks, i.e. there are no ties, then sample correlation coefficient is given by formula'),
+                                                  p('where \\(rg_{X}\\) and \\(rg_{Y}\\) are transformed random variables \\(X\\) and \\(Y\\) into ranks, i.e Spearman correlation coefficient is the Pearson correlation coefficient between the ranked variables.'),
+                                                  p('Sample Spearman correlation is calculated by converting \\(X\\) and \\(Y\\) to ranks (average ranks are used in case of ties) and by applying Pearson correlation formula. If both \\(X\\) and \\(Y\\) have \\(n\\) unique ranks, i.e. there are no ties, then sample correlation coefficient is given by formula'),
                                                   withMathJax(),
                                                   ('$$ r = 1 - \\frac{6\\sum_{i = 1}^{n}d_i^{2}}{n(n-1)}$$'),
-                                                  p('where d = rgX - rgY is the difference between two ranks and ',HTML('<i>n</i>'), 'is size of X and Y.
+                                                  p('where \\(d = rg_{X} - rg_{Y}\\) is the difference between two ranks and \\(n\\) is size of \\(X\\) and \\(Y\\).
                                                     Spearman rank correlation coefficient has value between -1 and 1, where 1  means perfect increasing relationship
                                                     between variables and -1 means decreasing relationship between the two variables.
                                                     In case of no repeated values, Spearman correlation of +1 or -1 means all data points lying exactly on some monotone line.
-                                                    If coefficient is equal to 0, it means, there is no tendency for Y to either increase or decrease with X increasing.')),
+                                                    If coefficient is equal to 0, it means, there is no tendency for \\(Y\\) to either increase or decrease with \\(X\\) increasing.')),
                                  p(HTML("<b>Clustering methods.</b>"),
                                    "Ward's method aims at finding compact clusters based on minimizing the within-cluster
                                    sum of squares.
@@ -690,11 +713,12 @@ ui = tagList(
                         # * LOGISTIC ####
                         tabPanel("Logistic",
                                  h3("Logistic regression on total scores"),
+                                 withMathJax(),
                                  p('Various regression models may be fitted to describe
                                    item properties in more detail.',
                                    strong('Logistic regression'),'can model dependency of probability of correct answer on total score by
-                                   S-shaped logistic curve. Parameter', strong( "b0"),' describes horizontal position of the fitted curve,
-                                   parameter ', strong( 'b1'),' describes its slope.'),
+                                   S-shaped logistic curve. Parameter', strong( "\\(b_{0}\\)"),' describes horizontal position of the fitted curve,
+                                   parameter ', strong( '\\(b_{1}\\)'),' describes its slope.'),
                                  br(),
                                  h4("Plot with estimated logistic curve"),
                                  p('Points represent proportion of correct answer with respect to total score.
@@ -708,9 +732,8 @@ ui = tagList(
                                  h4("Equation"),
                                  withMathJax(),
                                  ('$$\\mathrm{P}(Y = 1|X, b_0, b_1) = \\mathrm{E}(Y|X, b_0, b_1) = \\frac{e^{\\left( b_{0} + b_1 X\\right)}}{1+e^{\\left( b_{0} + b_1 X\\right) }} $$'),
-
                                  h4("Table of parameters"),
-                                 fluidRow(column(12, align = "center", tableOutput('logreg_table'))),
+                                 fluidRow(column(12, align = "center",tableOutput('coef_logreg_table'))),
                                  htmlOutput("logreg_interpretation"),
                                  br(),
                                  h4("Selected R code"),
@@ -723,8 +746,8 @@ ui = tagList(
                                  p('Various regression models may be fitted to describe
                                    item properties in more detail.',
                                    strong('Logistic regression'), 'can model dependency of probability of correct answer on
-                                   standardized total score (Z-score) by S-shaped logistic curve. Parameter ', strong( 'b0'), ' describes
-                                   horizontal position of the fitted curve (difficulty), parameter ', strong('b1'),' describes its slope at
+                                   standardized total score (Z-score) by S-shaped logistic curve. Parameter ', strong( '\\(b_{0}\\)'), ' describes
+                                   horizontal position of the fitted curve (difficulty), parameter ', strong('\\(b_{1}\\)'),' describes its slope at
                                    inflection point (discrimination). '),
                                  br(),
                                  h4("Plot with estimated logistic curve"),
@@ -739,7 +762,7 @@ ui = tagList(
                                  h4("Equation"),
                                  ('$$\\mathrm{P}(Y = 1|Z, b_0, b_1) = \\mathrm{E}(Y|Z, b_0, b_1) = \\frac{e^{\\left( b_{0} + b_1 Z\\right) }}{1+e^{\\left( b_{0} + b_1 Z\\right) }} $$'),
                                  h4("Table of parameters"),
-                                 fluidRow(column(12, align = "center", tableOutput('z_logreg_table'))),
+                                 fluidRow(column(12, align = "center",tableOutput('coef_z_logreg'))),
                                  htmlOutput("z_logreg_interpretation"),
                                  br(),
                                  h4("Selected R code"),
@@ -754,8 +777,8 @@ ui = tagList(
                                    strong('Logistic regression'), 'can model dependency of probability of correct answer on
                                    standardized total score (Z-score) by s-shaped logistic curve. Note change in parametrization - the IRT parametrization
                                    used here corresponds to the parametrization used in IRT models.
-                                   Parameter', strong('b') , 'describes horizontal position of the fitted curve (difficulty),
-                                   parameter' , strong('a') , ' describes its slope at inflection point (discrimination). '),
+                                   Parameter', strong('\\(b\\)') , 'describes horizontal position of the fitted curve (difficulty),
+                                   parameter' , strong('\\(a\\)') , ' describes its slope at inflection point (discrimination). '),
                                  br(),
                                  h4("Plot with estimated logistic curve"),
                                  p('Points represent proportion of correct answer with respect to standardized
@@ -769,7 +792,7 @@ ui = tagList(
                                  h4("Equation"),
                                  ('$$\\mathrm{P}(Y = 1|Z, a, b) = \\mathrm{E}(Y|Z, a, b) = \\frac{e^{ a\\left(Z - b\\right) }}{1+e^{a\\left(Z - b\\right)}} $$'),
                                  h4("Table of parameters"),
-                                 fluidRow(column(12, align = "center", tableOutput('z_logreg_irt_table'))),
+                                 fluidRow(column(12, align = "center",tableOutput('coef_z_logreg_irt'))),
                                  htmlOutput("z_logreg_irt_interpretation"),
                                  br(),
                                  h4("Selected R code"),
@@ -784,9 +807,9 @@ ui = tagList(
                                    item properties in more detail.',
                                    strong('Nonlinear regression'), 'can model dependency of probability of correct answer on
                                    standardized total score (Z-score) by s-shaped logistic curve. The IRT parametrization used here corresponds
-                                   to the parametrization used in IRT models. Parameter ', strong( 'b'),' describes horizontal position of the fitted curve (difficulty),
-                                   parameter ',strong( 'a'), ' describes its slope at inflection point (discrimination). This model allows for nonzero lower left
-                                   asymptote ', strong( 'c'), ' (pseudo-guessing parameter). '),
+                                   to the parametrization used in IRT models. Parameter ', strong( '\\(b\\)'),' describes horizontal position of the fitted curve (difficulty),
+                                   parameter ',strong( '\\(a\\)'), ' describes its slope at inflection point (discrimination). This model allows for nonzero lower left
+                                   asymptote ', strong( '\\(c\\)'), ' (pseudo-guessing parameter). '),
                                  br(),
                                  h4("Plot with estimated nonlinear curve"),
                                  p('Points represent proportion of correct answer with respect to standardized
@@ -797,9 +820,9 @@ ui = tagList(
                                  plotOutput('nlr_3P_plot'),
                                  downloadButton("DB_nlr_3P_plot", label = "Download figure"),
                                  h4("Equation"),
-                                 ('$$\\mathrm{P}(Y = 1|Z, b_0, b_1, c) = \\mathrm{E}(Y|Z, b_0, b_1, c) = c + \\left( 1-c \\right) \\cdot \\frac{e^{a\\left(Z-b\\right) }}{1+e^{a\\left(Z-b\\right) }} $$'),
+                                 ('$$\\mathrm{P}(Y = 1|Z, a, b, c) = \\mathrm{E}(Y|Z, a, b, c) = c + \\left( 1-c \\right) \\cdot \\frac{e^{a\\left(Z-b\\right) }}{1+e^{a\\left(Z-b\\right) }} $$'),
                                  h4("Table of parameters"),
-                                 fluidRow(column(12, align = "center", tableOutput('nlr_3P_table'))),
+                                 fluidRow(column(12, align = "center", tableOutput('coef_nlr_3P'))),
                                  htmlOutput("nlr_3P_interpretation"),
                                  br(),
                                  h4("Selected R code"),
@@ -813,9 +836,9 @@ ui = tagList(
                                    item properties in more detail.',
                                    strong('Nonlinear four parameter regression'), 'can model dependency of probability of correct answer on
                                    standardized total score (Z-score) by s-shaped logistic curve. The IRT parametrization used here corresponds
-                                   to the parametrization used in IRT models. Parameter ', strong( 'b'),' describes horizontal position of the fitted curve (difficulty),
-                                   parameter ', strong( 'a'), ' describes its slope at inflection point (discrimination), pseudo-guessing parameter ', strong('c'), '
-                                   is describes lower asymptote and inattention parameter ', strong('d'), 'describes upper asymptote.'),
+                                   to the parametrization used in IRT models. Parameter ', strong( '\\(b\\)'),' describes horizontal position of the fitted curve (difficulty),
+                                   parameter ', strong( '\\(a\\)'), ' describes its slope at inflection point (discrimination), pseudo-guessing parameter ', strong('\\(c\\)'), '
+                                   is describes lower asymptote and inattention parameter ', strong('\\(d\\)'), 'describes upper asymptote.'),
                                  br(),
                                  h4("Plot with estimated nonlinear curve"),
                                  p('Points represent proportion of correct answer with respect to standardized
@@ -826,9 +849,9 @@ ui = tagList(
                                  plotOutput('nlr_4P_plot'),
                                  downloadButton("DB_nlr_4P_plot", label = "Download figure"),
                                  h4("Equation"),
-                                 ('$$\\mathrm{P}(Y = 1|Z, b_0, b_1, c) = \\mathrm{E}(Y|Z, b_0, b_1, c) = c + \\left( d-c \\right) \\cdot \\frac{e^{a\\left(Z-b\\right) }}{1+e^{a\\left(Z-b\\right) }} $$'),
+                                 ('$$\\mathrm{P}(Y = 1|Z, a, b, c,d) = \\mathrm{E}(Y|Z, a, b, c, d) = c + \\left( d-c \\right) \\cdot \\frac{e^{a\\left(Z-b\\right) }}{1+e^{a\\left(Z-b\\right) }} $$'),
                                  h4("Table of parameters"),
-                                 fluidRow(column(12, align = "center", tableOutput('nlr_4P_table'))),
+                                 fluidRow(column(12, align = "center", tableOutput('coef_nlr_4P'))),
                                  htmlOutput("nlr_4P_interpretation"),
                                  br(),
                                  h4("Selected R code"),
@@ -848,14 +871,13 @@ ui = tagList(
                                    Significance level is set to 0.05. As tests are performed item by item, it is
                                    possible to use multiple comparison correction method. '),
                                  selectInput("correction_method_regrmodels", "Correction method",
-                                             c("BH" = "BH",
-                                               "Holm" = "holm",
-                                               "Hochberg" = "hochberg",
-                                               "Hommel" = "hommel",
-                                               "BY" = "BY",
-                                               "FDR" = "fdr",
-                                               "none" = "none"),
-                                             selected="none"),
+                                             choices = c("Benjamini-Hochberg" = "BH",
+                                                         "Benjamini-Yekutieli" = "BY",
+                                                         "Holm" = "holm",
+                                                         "Hochberg" = "hochberg",
+                                                         "Hommel" = "hommel",
+                                                         "None" = "none"),
+                                             selected = "none"),
                                  h4("Table of comparison statistics"),
                                  p('Rows ', strong('BEST'), 'indicate which model has the lowest value of criterion, or is the largest
                                    significant model by likelihood ratio test.'),
@@ -887,7 +909,7 @@ ui = tagList(
                                  h4("Equation"),
                                  uiOutput('multi_equation'),
                                  h4("Table of parameters"),
-                                 fluidRow(column(12, align = "center", tableOutput('multi_table'))),
+                                 fluidRow(column(12, align = "center", tableOutput('coef_multi'))),
                                  strong("Interpretation:"),
                                  htmlOutput("multi_interpretation"),
                                  br(),
@@ -1035,17 +1057,14 @@ ui = tagList(
                                               tables that are calculated for each level of total score (Mantel &
                                               Haenszel, 1959).'),
                                             h4('Summary table'),
-                                            p('Here you can select ', strong('correction method'), 'for multiple comparison or ',
-                                              strong('item purification.')),
+                                            p('Here you can select ',strong('correction method'),' for multiple comparison or', strong('item purification.')),
                                             selectInput("correction_method_MZ_print", "Correction method",
-                                                        c("BH" = "BH",
-                                                          "Holm" = "holm",
-                                                          "Hochberg" = "hochberg",
-                                                          "Hommel" = "hommel",
-                                                          "BY" = "BY",
-                                                          "FDR" = "fdr",
-                                                          "none" = "none"
-                                                        ),
+                                                        choices = c("Benjamini-Hochberg" = "BH",
+                                                                    "Benjamini-Yekutieli" = "BY",
+                                                                    "Holm" = "holm",
+                                                                    "Hochberg" = "hochberg",
+                                                                    "Hommel" = "hommel",
+                                                                    "None" = "none"),
                                                         selected = "none"),
                                             checkboxInput('puri_MH', 'Item purification', FALSE),
                                             verbatimTextOutput("print_DIF_MH"),
@@ -1149,31 +1168,29 @@ ui = tagList(
                                    tabPanel('Summary',
                                             h3('Logistic regression on total scores'),
                                             p('Logistic regression allows for detection of uniform and non-uniform DIF (Swaminathan & Rogers, 1990) by adding a group
-                                              specific intercept', strong('b2'), '(uniform DIF) and group specific interaction', strong('b3'), '(non-uniform DIF) into model and
+                                              specific intercept', strong('\\(b_{2}\\)'), '(uniform DIF) and group specific interaction', strong('\\(b_{3}\\)'), '(non-uniform DIF) into model and
                                               by testing for their significance.'),
                                             h4("Equation"),
                                             ('$$\\mathrm{P}\\left(Y_{ij} = 1 | X_i, G_i, b_0, b_1, b_2, b_3\\right) = \\frac{e^{b_0 + b_1 X_i + b_2 G_i + b_3 X_i G_i}}{1+e^{b_0 + b_1 X_i + b_2 G_i + b_3 X_i G_i}} $$'),
                                             h4("Summary table"),
-                                            p('Here you can choose what', strong('type'), 'of DIF to test. You can also select ',
-                                              strong('correction method'), 'for multiple comparison or ', strong('item purification. ')),
+                                            p('Here you can choose what ',strong('type'),' of DIF to test. You can also select ',strong('correction method'),' for multiple comparison or', strong('item purification.')),
                                             fluidPage(div(style = "display: inline-block; vertical-align: top; width: 27%; ",
+                                                          withMathJax(),
                                                           radioButtons(inputId = 'type_print_DIF_logistic',
                                                                        label = 'Type',
-                                                                       choices = c("H0: Any DIF vs. H1: No DIF" = 'both',
-                                                                                   "H0: Uniform DIF vs. H1: No DIF" = 'udif',
-                                                                                   "H0: Non-Uniform DIF vs. H1: Uniform DIF" = 'nudif'),
+                                                                       choices = c("\\(H_{0}\\): Any DIF vs. \\(H_{1}\\): No DIF" = 'both',
+                                                                                   "\\(H_{0}\\): Uniform DIF vs. \\(H_{1}\\): No DIF" = 'udif',
+                                                                                   "\\(H_{0}\\): Non-Uniform DIF vs. \\(H_{1}\\): Uniform DIF" = 'nudif'),
                                                                        selected = 'both')),
                                                       div(style = "display: inline-block; vertical-align: top; width: 5%; "),
                                                       div(style = "display: inline-block; vertical-align: top; width: 20%; ",
-                                                          selectInput(inputId = "correction_method_logSummary",
-                                                                      label = "Correction method",
-                                                                      choices = c("BH" = "BH",
+                                                          selectInput("correction_method_logSummary", "Correction method",
+                                                                      choices = c("Benjamini-Hochberg" = "BH",
+                                                                                  "Benjamini-Yekutieli" = "BY",
                                                                                   "Holm" = "holm",
                                                                                   "Hochberg" = "hochberg",
                                                                                   "Hommel" = "hommel",
-                                                                                  "BY" = "BY",
-                                                                                  "FDR" = "fdr",
-                                                                                  "none" = "none"),
+                                                                                  "None" = "none"),
                                                                       selected = "none"),
                                                           checkboxInput(inputId = 'puri_LR',
                                                                         label = 'Item purification',
@@ -1207,29 +1224,27 @@ ui = tagList(
                                    tabPanel('Items',
                                             h3('Logistic regression on total scores'),
                                             p('Logistic regression allows for detection of uniform and non-uniform DIF (Swaminathan & Rogers, 1990) by adding a group
-                                              specific intercept', strong('b2'), '(uniform DIF) and group specific interaction', strong('b3'), '(non-uniform DIF) into model and
+                                              specific intercept', strong('\\(b_{2}\\)'), '(uniform DIF) and group specific interaction', strong('\\(b_{3}\\)'), '(non-uniform DIF) into model and
                                               by testing for their significance.'),
                                             h4("Plot with estimated DIF logistic curve"),
-                                            p('Here you can choose what', strong('type'), 'of DIF to test. You can also select ',
-                                              strong('correction method'), 'for multiple comparison or ', strong('item purification. ')),
+                                            p('Here you can choose what ',strong('type'),' of DIF to test. You can also select ',strong('correction method'),' for multiple comparison or', strong('item purification.')),
                                             fluidPage(div(style = "display: inline-block; vertical-align: top; width: 27%; ",
                                                           radioButtons(inputId = 'type_plot_DIF_logistic',
                                                                        label = 'Type',
-                                                                       choices = c("H0: Any DIF vs. H1: No DIF" = 'both',
-                                                                                   "H0: Uniform DIF vs. H1: No DIF" = 'udif',
-                                                                                   "H0: Non-Uniform DIF vs. H1: Uniform DIF" = 'nudif'),
+                                                                       choices = c("\\(H_{0}\\): Any DIF vs. \\(H_{1}\\): No DIF" = 'both',
+                                                                                   "\\(H_{0}\\): Uniform DIF vs. \\(H_{1}\\): No DIF" = 'udif',
+                                                                                   "\\(H_{0}\\): Non-Uniform DIF vs. \\(H_{1}\\): Uniform DIF" = 'nudif'),
                                                                        selected = 'both')),
                                                       div(style = "display: inline-block; vertical-align: top; width: 5%; "),
                                                       div(style = "display: inline-block; vertical-align: top; width: 20%; ",
                                                           selectInput(inputId = "correction_method_logItems",
                                                                       label = "Correction method",
-                                                                      choices = c("BH" = "BH",
+                                                                      choices = c("Benjamini-Hochberg" = "BH",
+                                                                                  "Benjamini-Yekutieli" = "BY",
                                                                                   "Holm" = "holm",
                                                                                   "Hochberg" = "hochberg",
                                                                                   "Hommel" = "hommel",
-                                                                                  "BY" = "BY",
-                                                                                  "FDR" = "fdr",
-                                                                                  "none" = "none"),
+                                                                                  "None" = "none"),
                                                                       selected = "none"),
                                                           checkboxInput(inputId = 'puri_LR_plot',
                                                                         label = 'Item purification',
@@ -1474,18 +1489,17 @@ ui = tagList(
                                               (non-uniform) differ for groups and by testing for significance difference in their
                                               values. Moreover, these extensions allow for testing differences in pseudoguessing and
                                               inattention parameters. '),
+                                            withMathJax(),
                                             p('With ', strong('model'), 'you can specify what parameters should be kept the same for
                                               both groups and what parameters should differ. The notation is similar to IRT models.
-                                              In 3PL and 4PL models abbreviations cg or dg mean that parameters c or d are the same for
+                                              In 3PL and 4PL models abbreviations \\(c_{g}\\) or \\(d_{g}\\) mean that parameters \\(c\\) or \\(d\\) are the same for
                                               both groups. With ', strong('type'), 'you can choose parameters in which difference between
                                               groups should be tested.'),
                                             h4("Equation"),
                                             p("Displayed equation is based on selected model"),
                                             uiOutput("DIF_NLR_equation_print"),
                                             h4("Summary table"),
-                                            p('Here you can choose what', strong('model'), "to use and what", strong('type'), 'of DIF to test.
-                                              You can also select ', strong('correction method'), 'for multiple comparison or ',
-                                              strong('item purification. ')),
+                                            p('Here you can choose what ',strong('type'),' of DIF to test. You can also select ',strong('correction method'),' for multiple comparison or', strong('item purification.')),
                                             fluidRow(column(3,
                                                             selectInput(inputId = "DIF_NLR_model_print",
                                                                         label = "Model",
@@ -1504,21 +1518,20 @@ ui = tagList(
                                                      column(1,
                                                             checkboxGroupInput(inputId = 'DIF_NLR_type_print',
                                                                                label = 'Type',
-                                                                               choices = c("a" = "a",
-                                                                                           "b" = "b",
-                                                                                           "c" = "c",
-                                                                                           "d" = "d"),
-                                                                               selected = c("a", "b"))),
+                                                                               choices = c("\\(a\\)" = "a",
+                                                                                           "\\(b\\)" = "b",
+                                                                                           "\\(c\\)" = "c",
+                                                                                           "\\(d\\)" = "d"),
+                                                                               selected = c("\\(a\\)", "b"))),
                                                      column(3,
                                                             selectInput(inputId = "DIF_NLR_correction_method_print",
                                                                         label = "Correction method",
-                                                                        choices = c("BH" = "BH",
+                                                                        choices = c("Benjamini-Hochberg" = "BH",
+                                                                                    "Benjamini-Yekutieli" = "BY",
                                                                                     "Holm" = "holm",
                                                                                     "Hochberg" = "hochberg",
                                                                                     "Hommel" = "hommel",
-                                                                                    "BY" = "BY",
-                                                                                    "FDR" = "fdr",
-                                                                                    "none" = "none"),
+                                                                                    "None" = "none"),
                                                                         selected = "none"),
                                                             checkboxInput(inputId = 'DIF_NLR_purification_print',
                                                                           label = 'Item purification',
@@ -1547,13 +1560,11 @@ ui = tagList(
                                               inattention parameters. '),
                                             p('With ', strong('model'), 'you can specify what parameters should be kept the same for
                                               both groups and what parameters should differ. The notation is similar to IRT models.
-                                              In 3PL and 4PL models abbreviations cg or dg mean that parameters c or d are the same for
+                                              In 3PL and 4PL models abbreviations \\(c_{g}\\) or \\(d_{g}\\) mean that parameters \\(c\\) or \\(d\\) are the same for
                                               both groups. With ', strong('type'), 'you can choose parameters in which difference between
                                               groups should be tested.'),
                                             h4("Plot with estimated DIF generalized logistic curve"),
-                                            p('Here you can choose what', strong('model'), "to use and what", strong('type'), 'of DIF to test.
-                                              You can also select ', strong('correction method'), 'for multiple comparison or ',
-                                              strong('item purification. ')),
+                                            p('Here you can choose what ',strong('type'),' of DIF to test. You can also select ',strong('correction method'),' for multiple comparison or', strong('item purification.')),
                                             fluidRow(column(3,
                                                             selectInput(inputId = "DIF_NLR_model_plot",
                                                                         label = "Model",
@@ -1570,23 +1581,23 @@ ui = tagList(
                                                                                     "4PL" = "4PL"),
                                                                         selected = "3PLcg")),
                                                      column(1,
+                                                            withMathJax(),
                                                             checkboxGroupInput(inputId = 'DIF_NLR_type_plot',
                                                                                label = 'Type',
-                                                                               choices = c("a" = "a",
-                                                                                           "b" = "b",
-                                                                                           "c" = "c",
-                                                                                           "d" = "d"),
+                                                                               choices = c("\\(a\\)" = "a",
+                                                                                           "\\(b\\)" = "b",
+                                                                                           "\\(c\\)" = "c",
+                                                                                           "\\(d\\)" = "d"),
                                                                                selected = c("a", "b"))),
                                                      column(3,
                                                             selectInput(inputId = "DIF_NLR_correction_method_plot",
                                                                         label = "Correction method",
-                                                                        choices = c("BH" = "BH",
+                                                                        choices = c("Benjamini-Hochberg" = "BH",
+                                                                                    "Benjamini-Yekutieli" = "BY",
                                                                                     "Holm" = "holm",
                                                                                     "Hochberg" = "hochberg",
                                                                                     "Hommel" = "hommel",
-                                                                                    "BY" = "BY",
-                                                                                    "FDR" = "fdr",
-                                                                                    "none" = "none"),
+                                                                                    "None" = "none"),
                                                                         selected = "none"),
                                                             checkboxInput(inputId = 'DIF_NLR_purification_plot',
                                                                           label = 'Item purification',
@@ -1614,7 +1625,7 @@ ui = tagList(
                                             br()
                                             )
                                             )
-                                            ),
+                                   ),
                         # * IRT LORD ####
                         tabPanel("IRT Lord",
                                  tabsetPanel(
@@ -1633,8 +1644,7 @@ ui = tagList(
                                                 style = "float: left; width: 32%; margin-right: 16%; margin-left: 2%; margin-bottom: 0.5em;"),
                                             br(),
                                             h4('Summary table'),
-                                            p('Here you can choose ', strong('model'), ' to test DIF. You can also select ',
-                                              strong('correction method'), 'for multiple comparison or ', strong('item purification. ')),
+                                            p('Here you can choose ',strong('model'),' to test. You can also select ',strong('correction method'),' for multiple comparison or', strong('item purification.')),
                                             fluidPage(div(style = "display: inline-block; vertical-align: top; width: 10%; ",
                                                           radioButtons(inputId = 'type_print_DIF_IRT_lord',
                                                                        label = 'Model',
@@ -1646,13 +1656,12 @@ ui = tagList(
                                                       div(style = "display: inline-block; vertical-align: top; width: 20%; ",
                                                           selectInput(inputId = "correction_method_DIF_IRT_lordSummary",
                                                                       label = "Correction method",
-                                                                      choices = c("BH" = "BH",
+                                                                      choices = c("Benjamini-Hochberg" = "BH",
+                                                                                  "Benjamini-Yekutieli" = "BY",
                                                                                   "Holm" = "holm",
                                                                                   "Hochberg" = "hochberg",
                                                                                   "Hommel" = "hommel",
-                                                                                  "BY" = "BY",
-                                                                                  "FDR" = "fdr",
-                                                                                  "none" = "none"),
+                                                                                  "None" = "none"),
                                                                       selected = "none"),
                                                           checkboxInput('puri_Lord', 'Item purification', FALSE))),
                                             verbatimTextOutput('print_DIF_IRT_Lord'),
@@ -1708,8 +1717,7 @@ ui = tagList(
                                               equal to Wald statistic.'),
                                             br(),
                                             h4('Plot with estimated DIF characteristic curve'),
-                                            p('Here you can choose ', strong('model'), ' to test DIF. You can also select ',
-                                              strong('correction method'), 'for multiple comparison or ', strong('item purification. ')),
+                                            p('Here you can choose ',strong('model'),' to test. You can also select ',strong('correction method'),' for multiple comparison or', strong('item purification.')),
                                             fluidPage(div(style = "display: inline-block; vertical-align: top; width: 10%; ",
                                                           radioButtons(inputId = 'type_plot_DIF_IRT_lord',
                                                                        label = 'Model',
@@ -1721,13 +1729,12 @@ ui = tagList(
                                                       div(style = "display: inline-block; vertical-align: top; width: 20%; ",
                                                           selectInput(inputId = "correction_method_DIF_IRT_lordItems",
                                                                       label = "Correction method",
-                                                                      choices = c("BH" = "BH",
+                                                                      choices = c("Benjamini-Hochberg" = "BH",
+                                                                                  "Benjamini-Yekutieli" = "BY",
                                                                                   "Holm" = "holm",
                                                                                   "Hochberg" = "hochberg",
                                                                                   "Hommel" = "hommel",
-                                                                                  "BY" = "BY",
-                                                                                  "FDR" = "fdr",
-                                                                                  "none" = "none"),
+                                                                                  "None" = "none"),
                                                                       selected = "none"),
                                                           checkboxInput('puri_Lord_plot', 'Item purification', FALSE)),
                                                       div(style = "display: inline-block; vertical-align: top; width: 5%; "),
@@ -1832,8 +1839,7 @@ ui = tagList(
                                                 style = "float: left; width: 32%; margin-right: 16%; margin-left: 2%; margin-bottom: 0.5em;"),
                                             br(),
                                             h4('Summary table'),
-                                            p('Here you can choose ', strong('model'), ' to test DIF. You can also select ',
-                                              strong('correction method'), 'for multiple comparison or ', strong('item purification. ')),
+                                            p('Here you can choose ',strong('model'),' to test. You can also select ',strong('correction method'),' for multiple comparison or', strong('item purification.')),
                                             fluidPage(div(style = "display: inline-block; vertical-align: top; width: 10%; ",
                                                           radioButtons(inputId = 'type_print_DIF_IRT_raju',
                                                                        label = 'Model',
@@ -1845,13 +1851,12 @@ ui = tagList(
                                                       div(style = "display: inline-block; vertical-align: top; width: 20%; ",
                                                           selectInput(inputId = "correction_method_DIF_IRT_rajuSummary",
                                                                       label = "Correction method",
-                                                                      choices = c("BH" = "BH",
+                                                                      choices = c("Benjamini-Hochberg" = "BH",
+                                                                                  "Benjamini-Yekutieli" = "BY",
                                                                                   "Holm" = "holm",
                                                                                   "Hochberg" = "hochberg",
                                                                                   "Hommel" = "hommel",
-                                                                                  "BY" = "BY",
-                                                                                  "FDR" = "fdr",
-                                                                                  "none" = "none"),
+                                                                                  "None" = "none"),
                                                                       selected = "none"),
                                                           checkboxInput(inputId = 'puri_Raju',
                                                                         label = 'Item purification',
@@ -1908,8 +1913,7 @@ ui = tagList(
                                               for the two groups to detect DIF.'),
                                             br(),
                                             h4('Plot with estimated DIF characteristic curve'),
-                                            p('Here you can choose ', strong('model'), ' to test DIF. You can also select ',
-                                              strong('correction method'), 'for multiple comparison or ', strong('item purification. ')),
+                                            p('Here you can choose ',strong('model'),' to test. You can also select ',strong('correction method'),' for multiple comparison or', strong('item purification.')),
                                             fluidPage(div(style = "display: inline-block; vertical-align: top; width: 10%; ",
                                                           radioButtons(inputId = 'type_plot_DIF_IRT_raju',
                                                                        label = 'Model',
@@ -1921,13 +1925,12 @@ ui = tagList(
                                                       div(style = "display: inline-block; vertical-align: top; width: 20%; ",
                                                           selectInput(inputId = "correction_method_DIF_IRT_rajuItems",
                                                                       label = "Correction method",
-                                                                      choices = c("BH" = "BH",
+                                                                      choices = c("Benjamini-Hochberg" = "BH",
+                                                                                  "Benjamini-Yekutieli" = "BY",
                                                                                   "Holm" = "holm",
                                                                                   "Hochberg" = "hochberg",
                                                                                   "Hommel" = "hommel",
-                                                                                  "BY" = "BY",
-                                                                                  "FDR" = "fdr",
-                                                                                  "none" = "none"),
+                                                                                  "None" = "none"),
                                                                       selected = "none"),
                                                           checkboxInput(inputId = 'puri_Raju_plot',
                                                                         label = 'Item purification',
@@ -2019,13 +2022,11 @@ ui = tagList(
                         # * SIBTEST ####
                         tabPanel("SIBTEST",
                                  h3("SIBTEST"),
-                                 p("The SIBTEST method (Shealy and Stout, 1993) allows for detection of uniform DIF without requiring
-                                   an item response model approach. Its modified version, the Crossing-SIBTEST (Chalmers, 2018; Li and Stout, 1996),
+                                 p("The SIBTEST method (Shealy & Stout, 1993) allows for detection of uniform DIF without requiring
+                                   an item response model approach. Its modified version, the Crossing-SIBTEST (Chalmers, 2018; Li & Stout, 1996),
                                    focuses on detection of non-uniform DIF."),
                                  h4("Summary table"),
-                                 p("Here you can choose ", strong("type"), " of DIF to be tested. With uniform DIF, SIBTEST is applied,
-                                   while with non-uniform DIF, the Crossing-SIBTEST method is used instead. You can also select ",
-                                   strong("correction method"), "for multiple comparison or ", strong("item purification. ")),
+                                 p('Here you can choose ',strong('type'),' of DIF to test.  With uniform DIF, SIBTEST is applied, while with non-uniform DIF, the Crossing-SIBTEST method is used instead. You can also select ',strong('correction method'),' for multiple comparison or', strong('item purification.')),
                                  fluidRow(column(2,
                                                  radioButtons(inputId = "DIF_SIBTEST_type",
                                                               label = "Type",
@@ -2035,13 +2036,12 @@ ui = tagList(
                                           column(3,
                                                  selectInput(inputId = "DIF_SIBTEST_correction_method",
                                                              label = "Correction method",
-                                                             choices = c("BH" = "BH",
+                                                             choices = c("Benjamini-Hochberg" = "BH",
+                                                                         "Benjamini-Yekutieli" = "BY",
                                                                          "Holm" = "holm",
                                                                          "Hochberg" = "hochberg",
                                                                          "Hommel" = "hommel",
-                                                                         "BY" = "BY",
-                                                                         "FDR" = "fdr",
-                                                                         "none" = "none"),
+                                                                         "None" = "none"),
                                                              selected = "none"),
                                                  checkboxInput(inputId = "DIF_SIBTEST_purification",
                                                                label = "Item purification",
@@ -2059,8 +2059,8 @@ ui = tagList(
                                             h3('Differential Distractor Functioning with multinomial log-linear regression model'),
                                             p('Differential Distractor Functioning (DDF) occurs when people from different
                                               groups but with the same knowledge have different probability of selecting
-                                              at least one distractor choice. DDF is here examined by Multinomial Log-linear
-                                              Regression model with Z-score and group membership as covariates. '),
+                                              at least one distractor choice. DDF is here examined by multinomial log-linear
+                                              regression model with Z-score and group membership as covariates. '),
                                             h4('Equation'),
                                             p('For ', strong('K'), ' possible test choices is the probability of the correct answer for
                                               person ', strong('i'), ' with standardized total score ', strong('Z'), ' and group
@@ -2073,26 +2073,25 @@ ui = tagList(
                                              {1 + \\sum_l e^{\\left( b_{jl0} + b_{jl1} Z_i + b_{jl2} G_i + b_{jl3} Z_i:G_i\\right)}}$$'),
                                             br(),
                                             h4('Summary table'),
-                                            p('Here you can choose what', strong('type'), 'of DIF to test. You can also select ',
-                                              strong('correction method'), 'for multiple comparison or ', strong('item purification. ')),
+                                            p('Here you can choose ',strong('type'),' of DIF to test.  With uniform DIF, SIBTEST is applied, while with non-uniform DIF, the Crossing-SIBTEST method is used instead. You can also select ',strong('correction method'),' for multiple comparison or', strong('item purification.')),
                                             fluidPage(div(style = "display: inline-block; vertical-align: top; width: 27%; ",
+                                                          withMathJax(),
                                                           radioButtons(inputId = 'type_print_DDF',
                                                                        label = 'Type',
-                                                                       choices = c("H0: Any DIF vs. H1: No DIF" = 'both',
-                                                                                   "H0: Uniform DIF vs. H1: No DIF" = 'udif',
-                                                                                   "H0: Non-Uniform DIF vs. H1: Uniform DIF" = 'nudif'),
+                                                                       choices = c("\\(H_{0}\\): Any DIF vs. \\(H_{1}\\): No DIF" = 'both',
+                                                                                   "\\(H_{0}\\): Uniform DIF vs. \\(H_{1}\\): No DIF" = 'udif',
+                                                                                   "\\(H_{0}\\): Non-Uniform DIF vs. \\(H_{1}\\): Uniform DIF" = 'nudif'),
                                                                        selected = 'both')),
                                                       div(style = "display: inline-block; vertical-align: top; width: 5%; "),
                                                       div(style = "display: inline-block; vertical-align: top; width: 20%; ",
                                                           selectInput(inputId = "correction_method_print_DDF",
                                                                       label = "Correction method",
-                                                                      choices = c("BH" = "BH",
+                                                                      choices = c("Benjamini-Hochberg" = "BH",
+                                                                                  "Benjamini-Yekutieli" = "BY",
                                                                                   "Holm" = "holm",
                                                                                   "Hochberg" = "hochberg",
                                                                                   "Hommel" = "hommel",
-                                                                                  "BY" = "BY",
-                                                                                  "FDR" = "fdr",
-                                                                                  "none" = "none"),
+                                                                                  "None" = "none"),
                                                                       selected = "none"),
                                                           checkboxInput(inputId = 'puri_DDF_print',
                                                                         label = 'Item purification',
@@ -2127,26 +2126,25 @@ ui = tagList(
                                               at least one distractor choice. DDF is here examined by Multinomial Log-linear
                                               Regression model with Z-score and group membership as covariates. '),
                                             h4("Plot with estimated DDF curves"),
-                                            p('Here you can choose what', strong('type'), 'of DIF to test. You can also select ',
-                                              strong('correction method'), 'for multiple comparison or ', strong('item purification. ')),
+                                            p('Here you can choose ',strong('type'),' of DIF to test.  With uniform DIF, SIBTEST is applied, while with non-uniform DIF, the Crossing-SIBTEST method is used instead. You can also select ',strong('correction method'),' for multiple comparison or', strong('item purification.')),
                                             fluidPage(div(style = "display: inline-block; vertical-align: top; width: 27%; ",
+                                                          withMathJax(),
                                                           radioButtons(inputId = 'type_plot_DDF',
                                                                        label = 'Type',
-                                                                       choices = c("H0: Any DIF vs. H1: No DIF" = 'both',
-                                                                                   "H0: Uniform DIF vs. H1: No DIF" = 'udif',
-                                                                                   "H0: Non-Uniform DIF vs. H1: Uniform DIF" = 'nudif'),
+                                                                       choices = c("\\(H_{0}\\): Any DIF vs. \\(H_{1}\\): No DIF" = 'both',
+                                                                                   "\\(H_{0}\\): Uniform DIF vs. \\(H_{1}\\): No DIF" = 'udif',
+                                                                                   "\\(H_{0}\\): Non-Uniform DIF vs. \\(H_{1}\\): Uniform DIF" = 'nudif'),
                                                                        selected = 'both')),
                                                       div(style = "display: inline-block; vertical-align: top; width: 5%; "),
                                                       div(style = "display: inline-block; vertical-align: top; width: 20%; ",
                                                           selectInput(inputId = "correction_method_plot_DDF",
                                                                       label = "Correction method",
-                                                                      choices = c("BH" = "BH",
+                                                                      choices = c("Benjamini-Hochberg" = "BH",
+                                                                                  "Benjamini-Yekutieli" = "BY",
                                                                                   "Holm" = "holm",
                                                                                   "Hochberg" = "hochberg",
                                                                                   "Hommel" = "hommel",
-                                                                                  "BY" = "BY",
-                                                                                  "FDR" = "fdr",
-                                                                                  "none" = "none"),
+                                                                                  "None" = "none"),
                                                                       selected = "none"),
                                                           checkboxInput(inputId = 'puri_DDF_plot',
                                                                         label = 'Item purification',
@@ -2194,8 +2192,30 @@ ui = tagList(
                                             br()
                                             )
                                             )
-                                   )
-                                            ),
+                                   ),
+                        # * Method comparsion ####
+                        tabPanel("Method comparison",
+                                 h3("Method comparison"),
+                                 p("Here you can compare all offered DIF detection methods. In the table below, columns represent DIF detection methods, and rows represent item number. If
+                                   the method detects item as DIF, value 1 is assigned to that item, otherwise 0 is assigned. Methods in columns: "),
+                                 tags$ul(
+                                   tags$li(strong('Delta'), 'is delta plot method (Angoff & Ford, 1973; Magis & Facon, 2012),'),
+                                   tags$li(strong('MH'), 'is Mantel-Haenszel test (Mantel & Haenszel, 1959), '),
+                                   tags$li(strong('Logistic'), 'is logistic regression (Swaminathan & Rogers, 1990),'),
+                                   tags$li(strong('GLogistic'), 'is generalized logistic regression (Drabinova & Martinkova, 2017),'),
+                                   tags$li(strong('Lord'), 'is Lord’s chi-square test (Lord, 1980),'),
+                                   tags$li(strong('Raju'), 'is Raju’s area method (Raju, 1990),'),
+                                   tags$li(strong('SIBTEST'), 'is SIBTEST (Shealy & Stout, 1993) and crossing-SIBTEST (Chalmers, 2018; Li & Stout, 1996) methods, '),
+                                   tags$li(strong('DDF'), 'is differential distractor functioning with multinomial log-linear regression model. ')
+                                 ),
+                                 h3("Table with method comparison"),
+                                 p("Methods in the table using all settings that were set in the previous tabs. The last column shows how
+                                   many methods out of 8 detect certain item as DIF. The last row shows how many items are detected as DIF by certain method. "),
+                                 fluidRow(column(12, align = "center", tableOutput("method_comparison_table"))),
+                                 br(),
+                                 br()
+                                 )
+                        ),
              #%%%%%%%%%%%%%%%%%%%%%
              # REPORTS ############
              #%%%%%%%%%%%%%%%%%%%%%
@@ -2362,21 +2382,21 @@ ui = tagList(
                                          ),
                                          conditionalPanel(condition = "input.logregCheck",
                                                           column(3, p(strong("Logistic regression settings")),
+                                                                 withMathJax(),
                                                                  radioButtons(inputId = 'type_print_DIF_logistic_report',
                                                                               label = 'Type',
-                                                                              choices = c("H0: Any DIF vs. H1: No DIF" = 'both',
-                                                                                          "H0: Uniform DIF vs. H1: No DIF" = 'udif',
-                                                                                          "H0: Non-Uniform DIF vs. H1: Uniform DIF" = 'nudif'),
+                                                                              choices = c("\\(H_{0}\\): Any DIF vs. \\(H_{1}\\): No DIF" = 'both',
+                                                                                          "\\(H_{0}\\): Uniform DIF vs. \\(H_{1}\\): No DIF" = 'udif',
+                                                                                          "\\(H_{0}\\): Non-Uniform DIF vs. \\(H_{1}\\): Uniform DIF" = 'nudif'),
                                                                               selected = 'both'),
                                                                  selectInput(inputId = "correction_method_log_report",
                                                                              label = "Correction method",
-                                                                             choices = c("BH" = "BH",
+                                                                             choices = c("Benjamini-Hochberg" = "BH",
+                                                                                         "Benjamini-Yekutieli" = "BY",
                                                                                          "Holm" = "holm",
                                                                                          "Hochberg" = "hochberg",
                                                                                          "Hommel" = "hommel",
-                                                                                         "BY" = "BY",
-                                                                                         "FDR" = "fdr",
-                                                                                         "none" = "none"),
+                                                                                         "None" = "none"),
                                                                              selected = "none",
                                                                              width = "80%"),
                                                                  checkboxInput(inputId = 'puri_LR_report',
@@ -2386,21 +2406,21 @@ ui = tagList(
                                          ),
                                          conditionalPanel(condition = "input.multiCheck",
                                                           column(3, p(strong("Multinomial regression settings")),
+                                                                 withMathJax(),
                                                                  radioButtons(inputId = 'type_DDF_report',
                                                                               label = 'Type',
-                                                                              choices = c("H0: Any DIF vs. H1: No DIF" = 'both',
-                                                                                          "H0: Uniform DIF vs. H1: No DIF" = 'udif',
-                                                                                          "H0: Non-Uniform DIF vs. H1: Uniform DIF" = 'nudif'),
+                                                                              choices = c("\\(H_{0}\\): Any DIF vs. \\(H_{1}\\): No DIF" = 'both',
+                                                                                          "\\(H_{0}\\): Uniform DIF vs. \\(H_{1}\\): No DIF" = 'udif',
+                                                                                          "\\(H_{0}\\): Non-Uniform DIF vs. \\(H_{1}\\): Uniform DIF" = 'nudif'),
                                                                               selected = 'both'),
                                                                  selectInput(inputId = "correction_method_DDF_report",
                                                                              label = "Correction method",
-                                                                             choices = c("BH" = "BH",
+                                                                             choices = c("Benjamini-Hochberg" = "BH",
+                                                                                         "Benjamini-Yekutieli" = "BY",
                                                                                          "Holm" = "holm",
                                                                                          "Hochberg" = "hochberg",
                                                                                          "Hommel" = "hommel",
-                                                                                         "BY" = "BY",
-                                                                                         "FDR" = "fdr",
-                                                                                         "none" = "none"),
+                                                                                         "None" = "none"),
                                                                              selected = "none",
                                                                              width = "80%"),
                                                                  checkboxInput(inputId = 'puri_DDF_report',
