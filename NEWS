@@ -5,13 +5,24 @@
         ***************************************************************
 
 -------------------------------------------------------
+- Changes in ShinyItemAnalysis 1.3.0-3. (2019-03-26) -
+-------------------------------------------------------
+
+MINOR UPDATES
+  o ggWrightMap() now can display user-specified names of items
+    (Reported by Matthew G R Courtney)
+  o plotDIFLogistic() now can display user-specified names
+    of reference and focal group.
+  o Some typos were fixed.
+
+-------------------------------------------------------
 - Changes in ShinyItemAnalysis 1.3.0-2. (2019-03-15) -
 -------------------------------------------------------
 
 MAJOR UPDATES
   o Analysis for ordinal items has been added. This includes use of ordinal
-    data in sections Summary (histogram of Total scores, success rate), 
-    Reliability, Validity (correlations, predictive validity), 
+    data in sections Summary (histogram of Total scores, success rate),
+    Reliability, Validity (correlations, predictive validity),
 
 
 -------------------------------------------------------

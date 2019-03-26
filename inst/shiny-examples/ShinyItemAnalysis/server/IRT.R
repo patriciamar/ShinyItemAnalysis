@@ -819,7 +819,7 @@ oneparamirtcoefInput_mirt <- reactive({
   tab <- round(tab, 3)
   tab.comp[, colnames(tab.comp) %in% colnames(tab)] <- tab
 
-  colnames(tab.comp) <- c("%%mathit{a}%%", "SE(%%mathit{a}%%)", "%%mathit{b}%%", "SE(%%mathit{b}%%)", "%%mathit{c}%%", 
+  colnames(tab.comp) <- c("%%mathit{a}%%", "SE(%%mathit{a}%%)", "%%mathit{b}%%", "SE(%%mathit{b}%%)", "%%mathit{c}%%",
 						  "SE(%%mathit{c}%%)", "%%mathit{d}%%", "SE(%%mathit{d}%%)",
                           "SX2-value", "df", "p-value")
   tab.comp
@@ -1325,7 +1325,7 @@ twoparamirtcoefInput_mirt <- reactive({
   tab <- round(tab, 3)
   tab.comp[, colnames(tab.comp) %in% colnames(tab)] <- tab
 
-  colnames(tab.comp) <- c("%%mathit{a}%%", "SE(%%mathit{a}%%)", "%%mathit{b}%%", "SE(%%mathit{b}%%)", "%%mathit{c}%%", 
+  colnames(tab.comp) <- c("%%mathit{a}%%", "SE(%%mathit{a}%%)", "%%mathit{b}%%", "SE(%%mathit{b}%%)", "%%mathit{c}%%",
 						  "SE(%%mathit{c}%%)", "%%mathit{d}%%", "SE(%%mathit{d}%%)",
                           "SX2-value", "df", "p-value")
 
@@ -1795,7 +1795,7 @@ threeparamirtcoefInput_mirt <- reactive({
   tab.comp[, colnames(tab.comp) %in% colnames(tab)] <- tab
 
   withMathJax()
-  colnames(tab.comp) <- c("%%mathit{a}%%", "SE(%%mathit{a}%%)", "%%mathit{b}%%", "SE(%%mathit{b}%%)", "%%mathit{c}%%", 
+  colnames(tab.comp) <- c("%%mathit{a}%%", "SE(%%mathit{a}%%)", "%%mathit{b}%%", "SE(%%mathit{b}%%)", "%%mathit{c}%%",
 						  "SE(%%mathit{c}%%)", "%%mathit{d}%%", "SE(%%mathit{d}%%)",
                           "SX2-value", "df", "p-value")
 
@@ -2264,7 +2264,7 @@ irt_4PL_coef_Input <- reactive({
   tab <- round(tab, 3)
   tab.comp[, colnames(tab.comp) %in% colnames(tab)] <- tab
 
-  colnames(tab.comp) <- c("%%mathit{a}%%", "SE(%%mathit{a}%%)", "%%mathit{b}%%", "SE(%%mathit{b}%%)", "%%mathit{c}%%", 
+  colnames(tab.comp) <- c("%%mathit{a}%%", "SE(%%mathit{a}%%)", "%%mathit{b}%%", "SE(%%mathit{b}%%)", "%%mathit{c}%%",
 						  "SE(%%mathit{c}%%)", "%%mathit{d}%%", "SE(%%mathit{d}%%)",
                           "SX2-value", "df", "p-value")
 
@@ -2585,6 +2585,7 @@ output$bock_CC <- renderPlotly({
 
   p %>% plotly::config(displayModeBar = F)
 })
+
 output$DP_bock_CC <- downloadHandler(
   filename =  function() {
     paste("fig_BockItemCharacteristicCurves.png", sep = "")
@@ -2700,6 +2701,7 @@ bock_IIC_Input <- reactive({
     ylab('Information') +
     theme_app()
 })
+
 output$bock_IIC <- renderPlotly({
   p <- ggplotly(bock_IIC_Input())
 
@@ -2713,6 +2715,7 @@ output$bock_IIC <- renderPlotly({
 
   p %>% plotly::config(displayModeBar = F)
 })
+
 output$DP_bock_IIC <- downloadHandler(
   filename =  function() {
     paste("fig_BockItemInformationCurve.png", sep = "")
@@ -3594,9 +3597,9 @@ output$irt_training_dich3_answer <- renderUI({
 # *** GRADED RESPONSE MODEL ####
 
 output$irt_training_grm_sliders <- renderUI({
-  
+
   req(input$irt_training_grm_numresp,input$irt_training_grm_numresp >= 2,input$irt_training_grm_numresp <= 6)
-  
+
   num <- input$irt_training_grm_numresp
 
   sliders <- tagList(
@@ -3644,11 +3647,11 @@ output$irt_training_grm_sliders <- renderUI({
 })
 # *** Cummulative ######
 irt_training_grm_plot_cummulative_Input <- reactive({
-  
+
   req(input$irt_training_grm_numresp,input$irt_training_grm_numresp >= 2, input$irt_training_grm_numresp <= 6 )
-  
+
   input$irt_training_grm_numresp
-  
+
   num <- input$irt_training_grm_numresp
 
   a <- input$irt_training_grm_a
@@ -3724,9 +3727,9 @@ output$DB_irt_training_grm_plot_cummulative <- downloadHandler(
 
 # *** Category probabilities ######
 irt_training_grm_plot_category_Input <- reactive({
-  
+
   req(input$irt_training_grm_numresp,input$irt_training_grm_numresp >= 2,input$irt_training_grm_numresp < 6)
-  
+
   num <- input$irt_training_grm_numresp
 
   a <- input$irt_training_grm_a
@@ -3806,9 +3809,9 @@ output$DB_irt_training_grm_plot_category <- downloadHandler(
 
 # *** Expected item score ######
 irt_training_grm_plot_expected_Input <- reactive({
-  
+
   req(input$irt_training_grm_numresp,input$irt_training_grm_numresp >= 2,input$irt_training_grm_numresp <= 6  )
-  
+
   num <- input$irt_training_grm_numresp
 
   a <- input$irt_training_grm_a
@@ -3881,37 +3884,37 @@ output$DB_irt_training_grm_plot_expected <- downloadHandler(
 irt_training_grm_answer <- reactive({
 
  cdf_k1 <- function(theta,a,b1) {
-    
+
 	return( exp(a * (theta - b1) )/(1 + exp(a * ( theta - b1 ) ) ) )
- 
+
  }
  cdf_k2 <- function(theta,a,b2) {
- 
+
 	return( exp(a * (theta - b2) )/(1 + exp(a * ( theta - b2 ) ) ) )
- 
+
  }
  cdf_k3 <- function(theta,a,b3) {
- 
+
 	return( exp(a * (	theta - b3	) )/(1 + exp(a * ( theta - b3 ) ) ) )
- 
+
  }
- 
+
  theta0 <- c(-2,-1,0,1,2)
  a <- 1; b1 <- -0.5; b2 <- 1; b3 <- 1.5;
- 
+
  ck0 <- rep(1,5)
  ck1 <- cdf_k1(theta0,a,b1)
  ck2 <- cdf_k2(theta0,a,b2)
  ck3 <- cdf_k3(theta0,a,b3)
- 
+
  prob_k0 <- c(1 - ck1)
  prob_k1 <- c(ck1 - ck2)
  prob_k2 <- c(ck2 - ck3)
  prob_k3 <- as.numeric(apply(as.data.frame(rbind(prob_k0,prob_k1,prob_k2)),2,function(x) 1 - sum(x)))
- 
+
  exp_v <- as.numeric(as.matrix(cbind(prob_k0,prob_k1,prob_k2,prob_k3)) %*% 0:3)
 bb <- input$irt_training_grm_numresp
- 
+
  answers <- list(ans1_1 = ck0,
 				 ans1_2 = ck1,
 				 ans1_3 = ck2,
@@ -3922,70 +3925,70 @@ bb <- input$irt_training_grm_numresp
 				 ans2_4 = prob_k3,
 				 ans3 = exp_v)
   answers
-  
-  
+
+
  })
- 
+
 irt_training_grm_check <- eventReactive(input$irt_training_grm_1_submit, {
 
  answers <- irt_training_grm_answer()
- 
+
  #answ 1_1
- cdf_k1_input <- c(input$irt_training_grm_1_1a, input$irt_training_grm_1_1b, 
-				input$irt_training_grm_1_1c,input$irt_training_grm_1_1d, 
+ cdf_k1_input <- c(input$irt_training_grm_1_1a, input$irt_training_grm_1_1b,
+				input$irt_training_grm_1_1c,input$irt_training_grm_1_1d,
 				input$irt_training_grm_1_1e)
  ans1_1 <- c(abs(answers[[1]] - cdf_k1_input) <= 0.05)
- 
- 
+
+
  #answ 1_2
- cdf_k2_input <- c(input$irt_training_grm_1_2a, input$irt_training_grm_1_2b, 
-				input$irt_training_grm_1_2c,input$irt_training_grm_1_2d, 
+ cdf_k2_input <- c(input$irt_training_grm_1_2a, input$irt_training_grm_1_2b,
+				input$irt_training_grm_1_2c,input$irt_training_grm_1_2d,
 				input$irt_training_grm_1_2e)
  ans1_2 <- c(abs(answers[[2]] - cdf_k2_input) <= 0.05)
- 
+
  #answ 1_3
- cdf_k3_input <- c(input$irt_training_grm_1_3a, input$irt_training_grm_1_3b, 
-				input$irt_training_grm_1_3c,input$irt_training_grm_1_3d, 
+ cdf_k3_input <- c(input$irt_training_grm_1_3a, input$irt_training_grm_1_3b,
+				input$irt_training_grm_1_3c,input$irt_training_grm_1_3d,
 				input$irt_training_grm_1_3e)
  ans1_3 <- c(abs(answers[[3]] - cdf_k3_input) <= 0.05)
- 
+
  #answ 1_4
- cdf_k4_input <- c(input$irt_training_grm_1_4a, input$irt_training_grm_1_4b, 
-				input$irt_training_grm_1_4c,input$irt_training_grm_1_4d, 
+ cdf_k4_input <- c(input$irt_training_grm_1_4a, input$irt_training_grm_1_4b,
+				input$irt_training_grm_1_4c,input$irt_training_grm_1_4d,
 				input$irt_training_grm_1_4e)
  ans1_4 <- c(abs(answers[[4]] - cdf_k4_input) <= 0.05)
- 
+
  #answ 2_1
- prob_k0_input <- c(input$irt_training_grm_2_1a, input$irt_training_grm_2_1b, 
-				input$irt_training_grm_2_1c,input$irt_training_grm_2_1d, 
+ prob_k0_input <- c(input$irt_training_grm_2_1a, input$irt_training_grm_2_1b,
+				input$irt_training_grm_2_1c,input$irt_training_grm_2_1d,
 				input$irt_training_grm_2_1e)
  ans2_1 <- c(abs(answers[[5]] - prob_k0_input) <= 0.05)
- 
+
  #answ 2_2
- prob_k1_input <- c(input$irt_training_grm_2_2a, input$irt_training_grm_2_2b, 
-				input$irt_training_grm_2_2c,input$irt_training_grm_2_2d, 
+ prob_k1_input <- c(input$irt_training_grm_2_2a, input$irt_training_grm_2_2b,
+				input$irt_training_grm_2_2c,input$irt_training_grm_2_2d,
 				input$irt_training_grm_2_2e)
  ans2_2 <- c(abs(answers[[6]] - prob_k1_input) <= 0.05)
- 
+
  #answ 2_3
- prob_k2_input <- c(input$irt_training_grm_2_3a, input$irt_training_grm_2_3b, 
-				input$irt_training_grm_2_3c,input$irt_training_grm_2_3d, 
+ prob_k2_input <- c(input$irt_training_grm_2_3a, input$irt_training_grm_2_3b,
+				input$irt_training_grm_2_3c,input$irt_training_grm_2_3d,
 				input$irt_training_grm_2_3e)
  ans2_3 <- c(abs(answers[[7]] - prob_k2_input) <= 0.05)
- 
+
  #answ 2_4
- prob_k3_input <- c(input$irt_training_grm_2_4a, input$irt_training_grm_2_4b, 
-				input$irt_training_grm_2_4c,input$irt_training_grm_2_4d, 
+ prob_k3_input <- c(input$irt_training_grm_2_4a, input$irt_training_grm_2_4b,
+				input$irt_training_grm_2_4c,input$irt_training_grm_2_4d,
 				input$irt_training_grm_2_4e)
  ans2_4 <- c(abs(answers[[8]] - prob_k3_input) <= 0.05)
- 
+
  #answ 3
- exp_v_input <- c(input$irt_training_grm_3_1a, input$irt_training_grm_3_2a, 
-				input$irt_training_grm_3_3a,input$irt_training_grm_3_4a, 
+ exp_v_input <- c(input$irt_training_grm_3_1a, input$irt_training_grm_3_2a,
+				input$irt_training_grm_3_3a,input$irt_training_grm_3_4a,
 				input$irt_training_grm_3_5a)
  ans3 <- c(abs(answers[[9]] - exp_v_input) <= 0.05)
- 
- 
+
+
  ans <- list( ans1 = ans1_1,
               ans2 = ans1_2,
               ans3 = ans1_3,
@@ -3995,7 +3998,7 @@ irt_training_grm_check <- eventReactive(input$irt_training_grm_1_submit, {
               ans7 = ans2_3,
               ans8 = ans2_4,
 			  ans9 = ans3)
- 
+
  res <- sum(sapply(ans, sum))/sum(sapply(ans, length))
  ans <- lapply(ans, function(x) ifelse(is.na(x),
 										"<b><font color = 'red'>!</font></b>",
@@ -4201,9 +4204,9 @@ output$irt_training_grm_answer <- renderUI({
 # *** GENERALIZED PARTIAL CREDIT MODEL ####
 
 output$irt_training_gpcm_sliders <- renderUI({
-  
+
   req(input$irt_training_gpcm_numresp, input$irt_training_gpcm_numresp >= 2,input$irt_training_gpcm_numresp <= 6)
-  
+
   num <- input$irt_training_gpcm_numresp
 
   sliders <- tagList(
@@ -4252,9 +4255,9 @@ output$irt_training_gpcm_sliders <- renderUI({
 
 # *** Category probabilities ######
 irt_training_gpcm_plot_Input <- reactive({
-  
+
   req(input$irt_training_gpcm_numresp, input$irt_training_gpcm_numresp >= 2, input$irt_training_gpcm_numresp <= 6 )
-  
+
   num <- input$irt_training_gpcm_numresp
 
   a <- input$irt_training_gpcm_a
@@ -4340,9 +4343,9 @@ output$DB_irt_training_gpcm_plot <- downloadHandler(
 
 # *** Expected item score ######
 irt_training_gpcm_plot_expected_Input <- reactive({
-  
+
   req(input$irt_training_gpcm_numresp,input$irt_training_gpcm_numresp >= 2, input$irt_training_gpcm_numresp <= 6 )
-  
+
   num <- input$irt_training_gpcm_numresp
 
   a <- input$irt_training_gpcm_a
@@ -4422,78 +4425,78 @@ output$DB_irt_training_gpcm_plot_expected <- downloadHandler(
 irt_gpcm_answer <- reactive({
 
 	ans1 <- c("No","No","No","Yes","Yes","Yes","No","No","No")
-	
-	a <- 1 
-	d <- c(-1, 1) 
-	theta <- seq(-4, 4, 0.01) 
- 
-	ccgpcm <- function(theta, a, d){ a*(theta - d) } 
-	df <- sapply(1:length(d), function(i) ccgpcm(theta, a, d[i])) 
-	pk <- sapply(1:ncol(df), function(k) apply(as.data.frame(df[, 1:k]), 1, sum)) 
-	pk <- cbind(0, pk) 
-	pk <- exp(pk) 
-	denom <- apply(pk, 1, sum) 
-	df <-  apply(pk, 2, function(x) x/denom)
-	df1 <- melt(data.frame(df, theta), id.vars = "theta") 
 
-	df2 <- data.frame(exp = as.matrix(df) %*% 0:2, theta) 
-	
-	ans2 <- c(df2$exp[which(theta %in% c(-1.50,0,1.50))])
-	ans3 <- "Yes"
-	
-	a2 <- 2
- 
-	df <- sapply(1:length(d), function(i) ccgpcm(theta, a2, d[i])) 
-	pk <- sapply(1:ncol(df), function(k) apply(as.data.frame(df[, 1:k]), 1, sum)) 
-	pk <- cbind(0, pk) 
-	pk <- exp(pk) 
-	denom <- apply(pk, 1, sum) 
+	a <- 1
+	d <- c(-1, 1)
+	theta <- seq(-4, 4, 0.01)
+
+	ccgpcm <- function(theta, a, d){ a*(theta - d) }
+	df <- sapply(1:length(d), function(i) ccgpcm(theta, a, d[i]))
+	pk <- sapply(1:ncol(df), function(k) apply(as.data.frame(df[, 1:k]), 1, sum))
+	pk <- cbind(0, pk)
+	pk <- exp(pk)
+	denom <- apply(pk, 1, sum)
 	df <-  apply(pk, 2, function(x) x/denom)
-	df1 <- melt(data.frame(df, theta), id.vars = "theta") 
+	df1 <- melt(data.frame(df, theta), id.vars = "theta")
 
 	df2 <- data.frame(exp = as.matrix(df) %*% 0:2, theta)
-	
+
+	ans2 <- c(df2$exp[which(theta %in% c(-1.50,0,1.50))])
+	ans3 <- "Yes"
+
+	a2 <- 2
+
+	df <- sapply(1:length(d), function(i) ccgpcm(theta, a2, d[i]))
+	pk <- sapply(1:ncol(df), function(k) apply(as.data.frame(df[, 1:k]), 1, sum))
+	pk <- cbind(0, pk)
+	pk <- exp(pk)
+	denom <- apply(pk, 1, sum)
+	df <-  apply(pk, 2, function(x) x/denom)
+	df1 <- melt(data.frame(df, theta), id.vars = "theta")
+
+	df2 <- data.frame(exp = as.matrix(df) %*% 0:2, theta)
+
 	ans4 <- c(df2$exp[which(theta %in% c(-1.50,0,1.50))])
-	
+
 	answers <- list(ans1 = ans1,
 					ans2 = ans2,
 					ans3 = ans3,
 					ans4 = ans4)
-	
+
 	answers
-	 
+
  })
- 
+
 irt_gpcm_check <- eventReactive(input$irt_training_gpcm_1_submit, {
 
  answers <- irt_gpcm_answer()
- 
-	
- 
+
+
+
 	#answ 1_1
 	idx <- as.integer(input$irt_training_gpcm_1)
 	theta_input <- rep("No",9)
 	theta_input[idx] <- "Yes"
 	ans1 <- all(theta_input == answers[[1]])
-	
+
 	exp_theta_input_1 <- c(input$irt_training_gpcm_2_1,input$irt_training_gpcm_2_2,input$irt_training_gpcm_2_3)
-	
+
 	ans2 <- c(abs(answers[[2]] - exp_theta_input_1) <= 0.05)
-	
+
 	ans3 <- input$irt_training_gpcm_3 == answers[[3]]
-	
+
 	exp_theta_input_2 <- c(input$irt_training_gpcm_4_1,input$irt_training_gpcm_4_2,input$irt_training_gpcm_4_3)
-	
+
 	ans4 <- c(abs(answers[[4]] - exp_theta_input_2) <= 0.05)
-	
-	
-	
-	
+
+
+
+
 	ans <- list( ans1 = ans1,
 				 ans2 = ans2,
 				 ans3 = ans3,
 				 ans4 = ans4)
-	
+
 	res <- sum(sapply(ans, sum))/sum(sapply(ans, length))
 	ans <- lapply(ans, function(x) ifelse(is.na(x),
 										"<b><font color = 'red'>!</font></b>",
@@ -4547,14 +4550,14 @@ output$irt_training_gpcm_answer <- renderUI({
 })
 
 
-  
+
 
 # *** NOMINAL RESPONSE MODEL ####
 
 output$irt_training_nrm_sliders <- renderUI({
-  
+
   req(input$irt_training_nrm_numresp,input$irt_training_nrm_numresp >= 2,input$irt_training_nrm_numresp <= 6)
-  
+
   num <- input$irt_training_nrm_numresp
 
   sliders <- tagList(
@@ -4639,9 +4642,9 @@ output$irt_training_nrm_sliders <- renderUI({
 
 # *** Category probabilities ######
 irt_training_nrm_plot_Input <- reactive({
-  
+
   req(input$irt_training_nrm_numresp,input$irt_training_nrm_numresp >= 2,input$irt_training_nrm_numresp <= 6)
-  
+
   num <- input$irt_training_nrm_numresp
 
   if (is.null(input$irt_training_nrm_a1)){
@@ -4735,20 +4738,20 @@ output$DB_irt_training_nrm_plot <- downloadHandler(
 observeEvent(!is.na(input$irt_training_grm_numresp)| is.na(input$irt_training_grm_numresp),{
 
 if (!is.na(input$irt_training_grm_numresp)) {
-  
+
   if(input$irt_training_grm_numresp < 2) {
-  
+
 	updateNumericInput(session,'irt_training_grm_numresp', value = 2)
-  
+
   } else if ( input$irt_training_grm_numresp > 6) {
-  
+
 	updateNumericInput(session,'irt_training_grm_numresp', value = 6)
-  
+
   }
 }  else if (is.na(input$irt_training_grm_numresp)) {
-  
+
 	updateNumericInput(session,'irt_training_grm_numresp', value = 4)
-  
+
   }
 
 
@@ -4760,19 +4763,19 @@ observeEvent(!is.na(input$irt_training_gpcm_numresp)| is.na(input$irt_training_g
 if (!is.na(input$irt_training_gpcm_numresp)) {
 
   if(input$irt_training_gpcm_numresp < 2) {
-  
+
 	updateNumericInput(session,'irt_training_gpcm_numresp', value = 2)
-  
+
   } else if ( input$irt_training_gpcm_numresp > 6) {
-  
+
 	updateNumericInput(session,'irt_training_gpcm_numresp', value = 6)
-  
-  } 
+
+  }
 
 } else if ( is.na(input$irt_training_gpcm_numresp) ) {
-  
+
 	updateNumericInput(session,'irt_training_gpcm_numresp', value = 4)
-  
+
   }
 
 
@@ -4783,19 +4786,19 @@ observeEvent(!is.na(input$irt_training_nrm_numresp)| is.na(input$irt_training_nr
 if (!is.na(input$irt_training_nrm_numresp)) {
 
   if(input$irt_training_nrm_numresp < 2) {
-  
+
 	updateNumericInput(session,'irt_training_nrm_numresp', value = 2)
-  
+
   } else if ( input$irt_training_nrm_numresp > 6) {
-  
+
 	updateNumericInput(session,'irt_training_nrm_numresp', value = 6)
-  
-  } 
+
+  }
 
 } else if ( is.na(input$irt_training_nrm_numresp) ) {
-  
+
 	updateNumericInput(session,'irt_training_nrm_numresp', value = 4)
-  
+
   }
 
 

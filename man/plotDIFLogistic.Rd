@@ -5,7 +5,8 @@
 \title{Function for characteristic curve of 2PL logistic DIF model}
 \usage{
 plotDIFLogistic(data, group, type = "both", item, item.name,
-IRT = F, p.adjust.method = "none", purify = F, match = "score")
+IRT = F, p.adjust.method = "none", purify = F, match = "score",
+group.names = c("Reference", "Focal"))
 }
 \arguments{
 \item{data}{numeric: the data matrix. See Details.}
@@ -30,6 +31,8 @@ multiple comparisons. See Details.}
 \item{match}{specifies the type of matching criterion. Can be either \code{"score"} (default)
 to compute the test score, or any continuous or discrete variable with the same length as the number
 of rows of \code{Data}.}
+
+\item{group.names}{character: names of reference and focal group.}
 }
 \description{
 Plots characteristic curve of 2PL logistic DIF model
@@ -52,6 +55,9 @@ plotDIFLogistic(data, group, item = 1)
 
 # Characteristic curve by logistic regression model using scaled score
 plotDIFLogistic(data, group, item = 1, IRT = T)
+
+# Renaming reference and focal group
+plotDIFLogistic(data, group, item = 1, group.names = c("Group 1", "Group 2"))
 }
 
 

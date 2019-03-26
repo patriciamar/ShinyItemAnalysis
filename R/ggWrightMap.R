@@ -12,8 +12,9 @@
 #' @param binwidth numeric: the width of the bins of histogram.
 #' @param color character: color of histogram.
 #' @param size text size in pts.
+#' @param item.names names of items to be displayed.
 #'
-#' @usage ggWrightMap(theta, b, binwidth = 0.5, color = "blue", size = 15)
+#' @usage ggWrightMap(theta, b, binwidth = 0.5, color = "blue", size = 15, item.names)
 #'
 #' @author
 #' Adela Drabinova \cr
@@ -48,16 +49,24 @@
 #' b <- coef(fit, simplify = T)$items[, "d"]
 #'
 #' ggWrightMap(theta, b)
+#'
+#' item.names <- paste("Item", 1:20)
+#' ggWrightMap(theta, b, item.names = item.names)
 #' }
 #' @export
 
 
-ggWrightMap <- function(theta, b, binwidth = 0.5, color = "blue", size = 15){
+ggWrightMap <- function(theta, b, binwidth = 0.5, color = "blue", size = 15, item.names){
   if (missing(theta)){
     stop("'theta' needs to be specified", call. = FALSE)
   }
   if (missing(b)){
     stop("'theta' needs to be specified", call. = FALSE)
+  }
+  if (missing(item.names)){
+    ITEM.NAMES <- 1:length(b)
+  } else {
+    ITEM.NAMES <- item.names
   }
 
   df.theta <- data.frame(theta = theta)
@@ -67,17 +76,25 @@ ggWrightMap <- function(theta, b, binwidth = 0.5, color = "blue", size = 15){
   levels(b.cut.points) <- theta.cut.points[-length(theta.cut.points)] + diff(theta.cut.points)/2
   b.cut.points <- as.numeric(paste(b.cut.points))
 
-  df.b <- data.frame(item = 1:length(b), b = b, y = b.cut.points)
+  df.b <- data.frame(item = as.character(ITEM.NAMES), b = b, y = b.cut.points)
   df.b$x <- 0
   for (i in unique(df.b$y)){
     n <- nrow(df.b[df.b$y == i, ])
     df.b[df.b$y == i, "x"] <- 1:n
   }
 
+  df.b$item <- as.character(df.b$item)
   maxn <- max(nchar(df.b$item))
 
-  while(any(nchar(df.b$item) < maxn)){
-    df.b$item <- ifelse(nchar(df.b$item) < maxn, paste0("0", df.b$item), df.b$item)
+  if (missing(item.names)){
+    while(any(nchar(df.b$item) < maxn)){
+      df.b$item <- ifelse(nchar(df.b$item) < maxn, paste0("0", df.b$item), df.b$item)
+    }
+  } else {
+    df.b$item <- as.character(df.b$item)
+    while(any(nchar(df.b$item) < maxn)){
+      df.b$item <- ifelse(nchar(df.b$item) < maxn, paste0(" ", df.b$item), df.b$item)
+    }
   }
 
   if(any(df.b$x > 1)){

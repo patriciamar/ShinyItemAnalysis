@@ -18,9 +18,11 @@
 #' @param match specifies the type of matching criterion. Can be either \code{"score"} (default)
 #' to compute the test score, or any continuous or discrete variable with the same length as the number
 #' of rows of \code{Data}.
+#' @param group.names character: names of reference and focal group.
 #'
 #' @usage plotDIFLogistic(data, group, type = "both", item, item.name,
-#' IRT = F, p.adjust.method = "none", purify = F, match = "score")
+#' IRT = F, p.adjust.method = "none", purify = F, match = "score",
+#' group.names = c("Reference", "Focal"))
 #'
 #' @details
 #' This function plots characteristic curve of 2PL logistic DIF model.
@@ -51,17 +53,18 @@
 #'
 #' # Characteristic curve by logistic regression model using scaled score
 #' plotDIFLogistic(data, group, item = 1, IRT = T)
+#'
+#' # Renaming reference and focal group
+#' plotDIFLogistic(data, group, item = 1, group.names = c("Group 1", "Group 2"))
 #' }
 #'
 #'
 #' @export
 #' @importFrom ggplot2 guides guide_legend
 
-
-
 plotDIFLogistic <- function(data, group, type = "both", item, item.name,
                             IRT = F, p.adjust.method = "none", purify = F,
-                            match = "score"){
+                            match = "score", group.names = c("Reference", "Focal")){
   if (IRT) {
     MATCHCRIT <- c(scale(apply(data, 1, sum)))
     MATCH <- MATCHCRIT
@@ -94,7 +97,7 @@ plotDIFLogistic <- function(data, group, type = "both", item, item.name,
   alpha <- .5
   shape <-  21
   size  <- .8
-  linetype <- c(2, 1)
+  linetype <- c("solid", "dashed")
   if (IRT){
     xlab <- "Standardized total score (Z-score)"
   } else {
@@ -113,7 +116,8 @@ plotDIFLogistic <- function(data, group, type = "both", item, item.name,
                      X2 = tapply(data[group == 0, item], as.factor(score_R), mean))
   hv_F <- data.frame(X1 = as.numeric(levels(as.factor(score_F))),
                      X2 = tapply(data[group == 1, item], as.factor(score_F), mean))
-  hv   <- data.frame(rbind(cbind(hv_R, Group = "Reference"), cbind(hv_F, Group = "Focal")))
+  hv   <- data.frame(rbind(cbind(hv_R, Group = "gr1"),
+                           cbind(hv_F, Group = "gr2")))
   rownames(hv) <- 1:dim(hv)[1]
   hv$size <- c(table(score_R), table(score_F))
 
@@ -125,7 +129,7 @@ plotDIFLogistic <- function(data, group, type = "both", item, item.name,
                           size = "size"),
                alpha = alpha, shape = shape) +
     ### lines
-    stat_function(aes(colour = "Reference", linetype = "Reference"),
+    stat_function(aes(colour = "gr1", linetype = "gr1"),
                   fun = LR_plot,
                   args = list(group = 0,
                               beta0 = coef[1],
@@ -133,7 +137,7 @@ plotDIFLogistic <- function(data, group, type = "both", item, item.name,
                               beta2 = coef[3],
                               beta3 = coef[4]),
                   size = size, geom = "line") +
-    stat_function(aes(colour = "Focal", linetype = "Focal"),
+    stat_function(aes(colour = "gr2", linetype = "gr2"),
                   fun = LR_plot,
                   args = list(group = 1,
                               beta0 = coef[1],
@@ -144,12 +148,16 @@ plotDIFLogistic <- function(data, group, type = "both", item, item.name,
     ### style
     scale_size_continuous(name = "Counts")  +
     scale_colour_manual(name = "Group",
-                        breaks = hv$Group,
-                        values = col) +
-    scale_fill_manual(values = col) +
+                        values = col,
+                        breaks = c("gr1", "gr2"),
+                        labels = group.names) +
+    scale_fill_manual(values = col,
+                      breaks = c("gr1", "gr2"),
+                      labels = group.names) +
     scale_linetype_manual(name = "Group",
-                          breaks = hv$Group,
-                          values = linetype) +
+                          values = linetype,
+                          breaks = c("gr1", "gr2"),
+                          labels = group.names) +
     guides(colour = guide_legend(title = "Group", order = 1)) +
     guides(fill = guide_legend(title = "Group", order = 1)) +
     guides(linetype = guide_legend(title = "Group", order = 1)) +
@@ -169,5 +177,3 @@ plotDIFLogistic <- function(data, group, type = "both", item, item.name,
   plot_CC
 
 }
-
-
