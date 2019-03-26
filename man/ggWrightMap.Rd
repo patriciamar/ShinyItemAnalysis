@@ -4,7 +4,7 @@
 \alias{ggWrightMap}
 \title{Wright Map using ggplot}
 \usage{
-ggWrightMap(theta, b, binwidth = 0.5, color = "blue", size = 15)
+ggWrightMap(theta, b, binwidth = 0.5, color = "blue", size = 15, item.names)
 }
 \arguments{
 \item{theta}{numeric: vector of ability estimates.}
@@ -16,6 +16,8 @@ ggWrightMap(theta, b, binwidth = 0.5, color = "blue", size = 15)
 \item{color}{character: color of histogram.}
 
 \item{size}{text size in pts.}
+
+\item{item.names}{names of items to be displayed.}
 }
 \description{
 This function allows to generate Wright Map (also called item-person map)
@@ -40,6 +42,9 @@ theta <- as.vector(fscores(fit))
 b <- coef(fit, simplify = T)$items[, "d"]
 
 ggWrightMap(theta, b)
+
+item.names <- paste("Item", 1:20)
+ggWrightMap(theta, b, item.names = item.names)
 }
 }
 \references{
