@@ -38,7 +38,7 @@ output$DDplot_text <- renderUI({
 
 # ** Difficulty/Discrimination plot ######
 DDplot_Input <- reactive({
-  correct <- binary()
+  correct <- ordinal()
   DDplot(correct, item.names = item_numbers(),
          k = input$DDplotNumGroupsSlider,
          l = input$DDplotRangeSlider[[1]], u = input$DDplotRangeSlider[[2]],
@@ -47,7 +47,7 @@ DDplot_Input <- reactive({
 
 # ** Difficulty/Discrimination plot for report######
 DDplot_Input_report<-reactive({
-  correct <- binary()
+  correct <- ordinal()
   if (input$customizeCheck) {
     DDplot(correct, item.names = item_numbers(),
            k = input$DDplotNumGroupsSlider_report,
@@ -130,17 +130,16 @@ output$itemanalysis_table_text <- renderUI({
 itemanalysis_table_Input <- reactive({
   a <- nominal()
   k <- key()
-  correct <- binary()
+  correct <- ordinal()
 
   num.groups <- input$DDplotNumGroupsSlider
   range1 <- input$DDplotRangeSlider[[1]]
   range2 <- input$DDplotRangeSlider[[2]]
 
   alphadrop <- psych::alpha(correct)$alpha.drop[, 1]
-  tab <- item.exam(correct, discr = TRUE)[, 1:5]
+  tab <- ItemAnalysis(correct)
   tab <- data.table(item_numbers(),
-                    tab[, c(4, 1, 5, 2, 3)],
-                    alphadrop)
+                    tab[, c('Scaled score', 'Sample SD', 'ULI default', 'RIT', 'RIR','Alpha drop')])
   tab <- cbind(tab, gDiscrim(correct, k = num.groups, l = range1, u = range2))
   colnames(tab) <- c("Item", "Difficulty", "SD", "Discrimination ULI",
                      "Discrimination RIT", "Discrimination RIR", "Alpha Drop",
@@ -152,7 +151,7 @@ itemanalysis_table_Input <- reactive({
 itemanalysis_table_report_Input <- reactive({
   a <- nominal()
   k <- key()
-  correct <- binary()
+  correct <- ordinal()
 
   range1 <- ifelse(input$customizeCheck,
                    input$DDplotRangeSlider_report[[1]],
@@ -165,10 +164,9 @@ itemanalysis_table_report_Input <- reactive({
                        input$DDplotNumGroupsSlider)
 
   alphadrop <- psych::alpha(correct)$alpha.drop[, 1]
-  tab <- item.exam(correct, discr = TRUE)[, 1:5]
+  tab <- ItemAnalysis(correct)
   tab <- data.table(item_numbers(),
-                    tab[, c(4, 1, 5, 2, 3)],
-                    alphadrop)
+                    tab[, c('Scaled score', 'Sample SD', 'ULI default', 'RIT', 'RIR','Alpha drop')])
   tab <- cbind(tab, gDiscrim(correct, k = num.groups, l = range1, u = range2))
   colnames(tab) <- c("Item", "Difficulty", "SD", "Discrimination ULI",
                      "Discrimination RIT", "Discrimination RIR", "Alpha Drop",
