@@ -80,7 +80,9 @@ ui = tagList(
 			$(document).on('shiny:value', function(event) {
 
 						if(event.name.indexOf(event.name.match(/\\b\\w*coef_\\w+\\b/g)) > -1){
-		
+		                  
+						  if(event.value.match(/(%%+[^%]+%%)/g) != null) {
+							
 							var matches = event.value.match(/(%%+[^%]+%%)/g);
 							var newvalue = event.value;
 			
@@ -92,6 +94,11 @@ ui = tagList(
 							}
 		
 							event.value = newvalue;
+							
+							} else {
+							
+								event.value
+							}
                         }
 			});"))
             ),
