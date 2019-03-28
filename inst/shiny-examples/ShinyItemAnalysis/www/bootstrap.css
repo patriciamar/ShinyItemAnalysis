@@ -7008,7 +7008,12 @@ button.close {
   }
 }
 
-
+.panel-footer {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
 .footer-title {
   font-size: large;
   display: inline;
@@ -7131,3 +7136,22 @@ button.close {
     display:block !important;
   }
 }
+#inline-left {
+  display: table;
+  width: 100%;
+}
+#inline-left label{
+  display: table-cell;
+  text-align: center;
+  vertical-align: middle;
+  padding-right: 5px;
+}
+#inline-left .form-group {
+  display: table-row;
+  width: 80%;
+}
+.navbar-nav {
+  float: none !important;
+  clear : both;
+}
+

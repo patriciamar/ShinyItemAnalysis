@@ -38,7 +38,7 @@ totalscores_histogram_Input<- reactive({
 
   df <- data.table(score = sc,
                    gr = cut(sc,
-                            breaks = unique(c(min(sc), bin - 1, bin, max(sc))),
+                            breaks = unique(c(min(sc, na.rm = T), bin - 1, bin, max(sc, na.rm = T))),
                             include.lowest = T))
 
   if (bin < min(sc, na.rm = T)){
@@ -56,7 +56,7 @@ totalscores_histogram_Input<- reactive({
     scale_fill_manual("", breaks = df$gr, values = col) +
     labs(x = "Total score",
          y = "Proportion of respondents") +
-    scale_x_continuous(limits = c(min(sc) - 0.5, max(sc) + 0.5)) +
+    scale_x_continuous(limits = c(min(sc, na.rm = T) - 0.5, max(sc, na.rm = T) + 0.5)) +
     theme_app()
   g
 })
@@ -68,10 +68,10 @@ output$totalscores_histogram <- renderPlotly ({
   bin <- as.numeric(input$slider_totalscores_histogram)
   data <- binary()
 
-  if (min(sc) <= bin & bin <= max(sc)){
-    breaks <- unique(c(min(sc), bin - 1, bin, max(sc)))
+  if (min(sc, na.rm = T) <= bin & bin <= max(sc, na.rm = T)){
+    breaks <- unique(c(min(sc, na.rm = T), bin - 1, bin, max(sc, na.rm = T)))
   } else {
-    breaks <- c(0, max(sc))
+    breaks <- c(0, max(sc, na.rm = T))
   }
 
   df <- data.table(score = sc,
@@ -88,15 +88,15 @@ output$totalscores_histogram <- renderPlotly ({
   for(i in 1:k){
     t <- subset(df, df$gr == levels(df$gr)[i])
     t <- t[order(t$score)]
-    
+
     t <- as.data.frame(table(t$score))
-    lbnd <- ifelse(i == 1,ints[i],ints[i] + 1)
+    lbnd <- ifelse(i == 1, ints[i], ints[i] + 1)
     hbnd <- ints[i + 1]
     idx <- which(p$x$data[[i]]$x %in% lbnd:hbnd)
-    
-	c <- 1
-    
-	for (j in idx) {
+
+    c <- 1
+
+    for (j in idx) {
       text <- strsplit(p$x$data[[i]]$text[j], "<br />")[[1]][1]
       text <- sub("/", "", text)
       text <- sub("countsum\\(count\\)", "Proportion", text)
@@ -106,7 +106,7 @@ output$totalscores_histogram <- renderPlotly ({
                                               t$Var1[c] %in% p$x$data[[i]]$x[idx] &
                                               t$Var1[c] == p$x$data[[i]]$x[j], t$Freq[c], 0),
                                      "<br /> Score:", p$x$data[[i]]$x[j])
-    c <- ifelse(t$Var1[c] != p$x$data[[i]]$x[j], c, c + 1)
+      c <- ifelse(t$Var1[c] != p$x$data[[i]]$x[j], c, c + 1)
     }
   }
 
@@ -135,7 +135,7 @@ output$DB_totalscores_histogram <- downloadHandler(
 scores_tables_Input <- reactive({
   sc <- total_score()
   k <- ifelse(is.character(key()), length(key()), sum(key()))
-  
+
   # total score
   tosc <- sort(unique(sc))
   # percentile

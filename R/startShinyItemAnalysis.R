@@ -37,5 +37,5 @@ startShinyItemAnalysis <- function() {
   if (appDir == "") {
     stop("Could not find example directory. Try re-installing `ShinyItemAnalysis`.", call. = FALSE)
   }
-  shiny::runApp(appDir, display.mode = "normal")
+  shiny::runApp(appDir, display.mode = "normal", launch.browser = T)
 }

@@ -41,38 +41,13 @@ ui = tagList(
             tags$link(rel = "stylesheet",
                       type = "text/css",
                       href = "margins_and_paddings.css"),
-            tags$link(rel="stylesheet", 
-                      href="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.css", integrity="sha384-9tPv11A+glH/on/wEu99NVwDPwkMQESOocs/ZGXPoIiLE8MU/qkqUcZ3zzL+6DuH", crossorigin="anonymous"),
-            tags$style(type = "text/css",
-                       ".panel-footer {
-                       position: fixed;
-                       right: 0;
-                       bottom: 0;
-                       left: 0;
-                       }"),
+            tags$link(rel = "stylesheet",
+                      href = "https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.css",
+                      integrity = "sha384-9tPv11A+glH/on/wEu99NVwDPwkMQESOocs/ZGXPoIiLE8MU/qkqUcZ3zzL+6DuH",
+                      crossorigin = "anonymous"),
             tags$link(rel = "stylesheet",
                       type = "text/css",
                       href = "box.css"),
-            tags$style(type = "text/css",
-                       "#inline-left {
-                       display: table;
-                       width: 100%;
-                       }
-                       #inline-left label{
-                       display: table-cell;
-                       text-align: center;
-                       vertical-align: middle;
-                       padding-right: 5px;
-                       }
-                       #inline-left .form-group {
-                       display: table-row;
-                       width: 80%;
-                       }"),
-            tags$head(tags$style(HTML("
-                                      .navbar-nav {
-                                      float: none !important;
-                                      clear : both;
-                                      }"))),
             # JS
             tags$script(type = "text/javascript",
                         src = "busy.js"),
@@ -84,33 +59,11 @@ ui = tagList(
                         src = "collapsible_menu_click.js"),
             tags$script(type = "text/javascript",
                         src = "tabs_icons_right.js"),
-			tags$script(src="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.js", integrity="sha384-U8Vrjwb8fuHMt6ewaCy8uqeUXv4oitYACKdB0VziCerzt011iQ/0TqlSlv8MReCm", crossorigin="anonymous"),
-            tags$script(HTML("
-			
-			$(document).on('shiny:value', function(event) {
-
-						if(event.name.indexOf(event.name.match(/\\b\\w*coef_\\w+\\b/g)) > -1){
-		                  
-						  if(event.value.match(/(%%+[^%]+%%)/g) != null) {
-
-							var matches = event.value.match(/(%%+[^%]+%%)/g);
-							var newvalue = event.value;
-			
-							for(var i=0; i<matches.length; i++){
-
-								var code = '\\\\' + matches[i].slice(2,-2);
-								newvalue = newvalue.replace(matches[i], katex.renderToString(code));
-		
-							}
-		
-							event.value = newvalue;
-							
-							} else {
-							
-								event.value
-							}
-                        }
-			});"))
+            tags$script(src = "https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.js",
+                        integrity = "sha384-U8Vrjwb8fuHMt6ewaCy8uqeUXv4oitYACKdB0VziCerzt011iQ/0TqlSlv8MReCm",
+                        crossorigin = "anonymous"),
+            tags$script(type = "text/javascript",
+                        src = "math_in_tables.js")
             ),
   div(class = "busy",
       p("Loading"),
@@ -142,7 +95,7 @@ ui = tagList(
                     ShinyItemAnalysis
                     </div>
                     <div class = "footer-subtitle">
-                    Test and item analysis | Version 1.3.1
+                    Test and item analysis | Version 1.3.0-4
                     </div>
                     <span style = "float:right">
                     <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysis/" id = "tooltipweb" target="_blank">
@@ -180,17 +133,17 @@ ui = tagList(
              # DATA ###############
              #%%%%%%%%%%%%%%%%%%%%%
              uiData,
-             
+
              #%%%%%%%%%%%%%%%%%%%%%
              # SUMMARY ############
              #%%%%%%%%%%%%%%%%%%%%%
              uiSummary,
-             
+
              #%%%%%%%%%%%%%%%%%%%%%
              # RELIABILITY ########
              #%%%%%%%%%%%%%%%%%%%%%
              uiReliability,
-             
+
              #%%%%%%%%%%%%%%%%%%%%%
              # VALIDITY ###########
              #%%%%%%%%%%%%%%%%%%%%%
@@ -205,17 +158,17 @@ ui = tagList(
              # REGRESSION #########
              #%%%%%%%%%%%%%%%%%%%%%
              uiRegression,
-             
+
              #%%%%%%%%%%%%%%%%%%%%%
              # IRT MODELS #########
              #%%%%%%%%%%%%%%%%%%%%%
              uiIRT,
-             
+
              #%%%%%%%%%%%%%%%%%%%%%
              # DIF/FAIRNESS #######
              #%%%%%%%%%%%%%%%%%%%%%
              uiDIF,
-             
+
              #%%%%%%%%%%%%%%%%%%%%%
              # REPORTS ############
              #%%%%%%%%%%%%%%%%%%%%%
@@ -230,7 +183,7 @@ ui = tagList(
              # REFERENCES #########
              #%%%%%%%%%%%%%%%%%%%%%
              uiReferences,
-             
+
              #%%%%%%%%%%%%%%%%%%%%%
              # SETTING #########
              #%%%%%%%%%%%%%%%%%%%%%

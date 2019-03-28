@@ -305,7 +305,7 @@ range1 <- params$DDplotRange1
 range2 <- params$DDplotRange2
 numgroups <- params$DDplotNumGroups
 
-txt1 <- "Diff. - Difficulty of an item is estimated as the percent of respondents who correctly answered that item. SD - standard deviation, ULI - Upper-Lower Index calculated as the difference in the percent correct between the upper and lower third of respondents, RIT - Pearson correlation between an item and the total score, RIR - Pearson correlation between an item and the rest of the items, Alpha Drop - Cronbach's alpha of a test without a given item"
+txt1 <- "Diff. - difficulty of the item is estimated as its average score divided by its range, Avg. score - average score of the item, SD - standard deviation, ULI - Upper-Lower Index calculated as the difference in the percent correct between the upper and lower third of respondents, RIT - Pearson correlation between an item and the total score, RIR - Pearson correlation between an item and the rest of the items, Alpha Drop - Cronbach's alpha of a test without a given item"
 
 if(params$DDplotNumGroups == 3 & params$DDplotRange1 == 1 & params$DDplotRange2 == 3){
   txt2 <- ". "
@@ -329,20 +329,20 @@ HTML(paste0(txt1, txt2))
 if(params$DDplotNumGroups == 3 & params$DDplotRange1 == 1 & params$DDplotRange2 == 3){
   table = params$itemexam
   tab = format(round(table[, -1], 2), nsmall = 2)
-  table = data.frame(table[, 1], tab[,-7])
-  colnames(table) = c("Item", "Diff.", "SD", "ULI", "RIT", "RIR", "Alpha Drop")
+  table = data.frame(table[, 1], tab[, -8])
+  colnames(table) = c("Item", "Diff.", "Avg. score", "SD", "ULI", "RIT", "RIR", "Alpha Drop")
   rownames(table) = NULL
 
-  kable(table, digits = c(0, 2, 2, 2, 2, 2), align = 'c')
+  kable(table, digits = c(0, 2, 2, 2, 2, 2, 2), align = 'c')
   
 } else {
   table = params$itemexam
   tab = format(round(table[, -1], 2), nsmall = 2)
   table = data.frame(table[, 1], tab)
-  colnames(table) = c("Item", "Diff.", "SD", "ULI", "RIT", "RIR", "Alpha Drop",   "gULI")
+  colnames(table) = c("Item", "Diff.", "Avg. score", "SD", "ULI", "RIT", "RIR", "Alpha Drop",   "gULI")
   rownames(table) = NULL
 
-  kable(table, digits = c(0, 2, 2, 2, 2, 2, 2), align = 'c')
+  kable(table, digits = c(0, 2, 2, 2, 2, 2, 2, 2), align = 'c')
 }
 ```
 
