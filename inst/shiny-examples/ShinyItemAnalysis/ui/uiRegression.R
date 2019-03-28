@@ -192,16 +192,17 @@ uiRegression <-
                       p("Lines determine the cumulative probabilities \\(P(Y \\geq k)\\). Circles represent proportion of answers with
                         at least k points with respect to the total score, i.e., the empirical cumulative probabilities. The size of the circles is
                         determined by the count of respondents who achieved given level of the total score."),
-                      plotOutput("cum_log"),
+                      #plotOutput("cum_log"),
                       h4("Plot of category probabilities"),
                       p("Lines determine the category probabilities \\(P(Y=k)\\). Circles represent proportion of answers with k
                         points with respect to the total score, i.e., the empirical category probabilities. The size of the circles is determined 
                         by the count of respondents who achieved given level of the total score."),
-                      plotOutput("cum_cat_log"),
+                      #plotOutput("cum_cat_log"),
                       h4("Equation"),
                       ('$$P(Y \\geq k|X,b_{0k},b_{1}) = \\frac{e^{b_{0k} + b_{1}X}}{1 + e^{b_{0k} + b_{1}X}}$$'),
-                      h4("Table of parameters"),
-                      tableOutput("coef_cum_log")),
+                      h4("Table of parameters")#,
+                      #tableOutput("coef_cum_log")
+                      ),
              tabPanel("Cumulative Logistic Z",
                       h3("Cumulative logistic regression on standardized total scores"),
                       p("Various regression models may be fitted to describe item properties in more detail.", strong("Cumulative
@@ -213,16 +214,17 @@ uiRegression <-
                       p("Lines determine the cumulative probabilities \\(P(Y \\geq k)\\). Circles represent proportion of answers with
                         at least k points with respect to the standardized total score, i.e., the empirical cumulative probabilities. The size of the circles is
                         determined by the count of respondents who achieved given level of the standardized total score."),
-                      plotOutput("cum_log"),
+                      #plotOutput("cum_log"),
                       h4("Plot of category probabilities"),
                       p("Lines determine the category probabilities \\(P(Y=k)\\). Circles represent proportion of answers with k
                         points with respect to the standardized total score, i.e., the empirical category probabilities. The size of the circles is determined 
                         by the count of respondents who achieved given level of the standardized total score."),
-                      plotOutput("cum_cat_log"),
+                      #plotOutput("cum_cat_log"),
                       h4("Equation"),
                       ('$$P(Y \\geq k|Z,b_{0k},b_{1}) = \\frac{e^{b_{0k} + b_{1}Z}}{1 + e^{b_{0k} + b_{1}Z}}$$'),
-                      h4("Table of parameters"),
-                      tableOutput("coef_cum_log")),
+                      h4("Table of parameters")#,
+                      #tableOutput("coef_cum_log")
+                      ),
              tabPanel("Cumulative Logistic IRT Z",
                       h3("Cumulative logistic regression on standardized total scores with IRT parameterization"),
                       p("Various regression models may be fitted to describe item properties in more detail.", strong("Cumulative
@@ -236,16 +238,17 @@ uiRegression <-
                       p("Lines determine the cumulative probabilities \\(P(Y \\geq k)\\). Circles represent proportion of answers with
                         at least k points with respect to the standardized total score, i.e. the empirical cumulative probabilities. 
                         The size of the circles is determined by the count of respondents who achieved given level of the standardized total score."),
-                      plotOutput("cum_log_irt_z"),
+                      #plotOutput("cum_log_irt_z"),
                       h4("Plot with category probabilities"),
                       p("Lines determine the category probabilities \\(P(Y=k)\\). Circles represent proportion of answers with k
                         points with respect to the total score, i.e. the empirical category probabilities. The size of the circles is determined by
                         count of the respondents who achieved given level of the standardized total score."),
-                      plotOutput("cum_cat_log_irt_z"),
+                      #plotOutput("cum_cat_log_irt_z"),
                       h4("Equation"),
                       ('$$P(Y \\geq k|Z,b_{k},b_{1}) = \\frac{e^{a(Z - b_{k})}}{1 + e^{a(Z - b_{k})}}$$'),
-                      h4("Table of parameters"),
-                      tableOutput("coef_cum_log_irt_z")),
+                      h4("Table of parameters")#,
+                      #tableOutput("coef_cum_log_irt_z")
+                      ),
              tabPanel("Adjacent Logistic ",
                       h3("Adjacent logistic regression on total scores"),
                       p("Models for ordinal responses need not use cumulative probabilities.",strong("Adjacent
@@ -255,11 +258,12 @@ uiRegression <-
                       p("Lines determine the category probabilities \\(P(Y=k)\\). Circles represent the proportion of answers with k
                         points with respect to the total score, i. e., the empirical category probabilities. The size of the circles is determined by
                         the count of respondents who achieved given level of the total score."),
-                      plotOutput("adj_log"),
+                      #plotOutput("adj_log"),
                       h4("Equation"),
                       ('$$P(Y = k|X,a,d_{1},d_{2},\\cdots) = \\frac{e^{\\sum_{t = 0}^{k}(d_{t} + aX)}}{\\sum_{r = 0}^{K}e^{\\sum_{t = 0}^{r}(d_{t} + aX)}}$$'),
-                      h4("Table of parameters"),
-                      tableOutput("coef_adj_log")),
+                      h4("Table of parameters")#,
+                      #tableOutput("coef_adj_log")
+                      ),
              tabPanel("Adjacent Logistic Z",
                       h3("Adjacent logistic regression on standardized scores"),
                       p("Models for ordinal responses need not use cumulative probabilities.",strong("Adjacent
@@ -269,11 +273,12 @@ uiRegression <-
                       p("Lines determine the category probabilities \\(P(Y=k)\\). Circles represent the proportion of answers with k
                         points with respect to the standardized total score, i. e., the empirical category probabilities. The size of the circles is determined by
                         the count of respondents who achieved given level of the standardized total score."),
-                      plotOutput("adj_log_z"),
+                      #plotOutput("adj_log_z"),
                       h4("Equation"),
                       ('$$P(Y = k|Z,a,d_{1},d_{2},\\cdots) = \\frac{e^{\\sum_{t = 0}^{k}(d_{t} + aZ)}}{\\sum_{r = 0}^{K}e^{\\sum_{t = 0}^{r}(d_{t} + aZ)}}$$'),
-                      h4("Table of parameters"),
-                      tableOutput("coef_adj_log_z")),
+                      h4("Table of parameters")#,
+                      #tableOutput("coef_adj_log_z")
+                      ),
              tabPanel("Adjacent Logistic IRT Z",
                       h3("Adjacent logistic regression on standardized total scores with IRT parameterization"),
                       p("Models for ordinal responses need not use cumulative probabilities.",strong("Adjacent
@@ -283,11 +288,12 @@ uiRegression <-
                       p("Lines determine the category probabilities \\(P(Y=k)\\). Circles represent the proportion of answers with k
                         points with respect to the standardized total score, i. e., the empirical category probabilities. The size of the circles is determined by
                         the count of respondents who achieved given level of the standardized total score."),
-                      plotOutput("adj_log_irt_z"),
+                      #plotOutput("adj_log_irt_z"),
                       h4("Equation"),
                       ('$$P(Y = k|Z,a - \\delta_{1},\\delta_{2},\\cdots) = \\frac{e^{\\sum_{t = 0}^{k}(Z - \\delta_{t})}}{\\sum_{r = 0}^{K}e^{\\sum_{t = 0}^{r}(Z-\\delta_{t})}}$$'),
-                      h4("Table of parameters"),
-                      tableOutput("coef_adj_log_irt_z")),
+                      h4("Table of parameters")#,
+                      #tableOutput("coef_adj_log_irt_z")
+                      ),
              tabPanel("Multinomial",
                       h3("Multinomial regression on standardized total scores"),
                       p('Various regression models may be fitted to describe
