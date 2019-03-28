@@ -105,7 +105,9 @@ output$itemanalysis_table_text <- renderUI({
   num.groups <- input$DDplotNumGroupsSlider
   HTML(paste(
     " <b> Explanation: Difficulty </b> ",
-    " - Difficulty of item is estimated as percent of respondents who answered correctly to that item. ",
+    " - difficulty of the item is estimated as its average score divided by its range, ",
+    " <b> Average score </b> ",
+    " - average score of the item, ",
     " <b> SD </b> ",
     " - standard deviation, ",
     " <b> RIT </b> ",
@@ -139,9 +141,9 @@ itemanalysis_table_Input <- reactive({
   alphadrop <- psych::alpha(correct)$alpha.drop[, 1]
   tab <- ItemAnalysis(correct)
   tab <- data.table(item_numbers(),
-                    tab[, c('Scaled score', 'Sample SD', 'ULI default', 'RIT', 'RIR','Alpha drop')])
+                    tab[, c('Difficulty', 'Average score', 'SD', 'ULI default', 'RIT', 'RIR','Alpha drop')])
   tab <- cbind(tab, gDiscrim(correct, k = num.groups, l = range1, u = range2))
-  colnames(tab) <- c("Item", "Difficulty", "SD", "Discrimination ULI",
+  colnames(tab) <- c("Item", "Difficulty", "Average score", "SD", "Discrimination ULI",
                      "Discrimination RIT", "Discrimination RIR", "Alpha Drop",
                      "Customized Discrimination")
   tab
@@ -166,9 +168,9 @@ itemanalysis_table_report_Input <- reactive({
   alphadrop <- psych::alpha(correct)$alpha.drop[, 1]
   tab <- ItemAnalysis(correct)
   tab <- data.table(item_numbers(),
-                    tab[, c('Scaled score', 'Sample SD', 'ULI default', 'RIT', 'RIR','Alpha drop')])
+                    tab[, c('Difficulty', 'Average score', 'SD', 'ULI default', 'RIT', 'RIR','Alpha drop')])
   tab <- cbind(tab, gDiscrim(correct, k = num.groups, l = range1, u = range2))
-  colnames(tab) <- c("Item", "Difficulty", "SD", "Discrimination ULI",
+  colnames(tab) <- c("Item", "Difficulty", "Average score", "SD", "Discrimination ULI",
                      "Discrimination RIT", "Discrimination RIR", "Alpha Drop",
                      "Customized Discrimination")
   tab
@@ -184,7 +186,7 @@ include.rownames = FALSE)
 # ** Download traditional item analysis table ######
 output$download_itemanal_table <- downloadHandler(
   filename = function() {
-    paste("Item_Analysis",".csv",sep = "")
+    paste("Item_Analysis", ".csv", sep = "")
   },
   content = function(file) {
     data <- itemanalysis_table_Input()

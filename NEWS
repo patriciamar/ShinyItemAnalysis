@@ -5,6 +5,27 @@
         ***************************************************************
 
 -------------------------------------------------------
+- Changes in ShinyItemAnalysis 1.3.0-4. (2019-03-28) -
+-------------------------------------------------------
+
+BUG FIXING
+  o Bug in slider in histogram of total scores was fixed. Range is now
+    correctly displayed when NA values are present.
+  o Fixing versions.
+
+MAJOR UPDATES
+  o Math mode is now stable in tables.
+    (Thanks to Stéphane Laurent)
+  o UI for polytomous models in Regression section was added.
+  o Traditional item analysis table is done via ItemAnalysis() function.
+    It now includes also average score.
+
+MINOR UPDATES
+  o startShinyItemAnalysis() automatically launches default web browser.
+  o Sample code and wording was updated for traditional item analysis table
+    in app and also in reports.
+
+-------------------------------------------------------
 - Changes in ShinyItemAnalysis 1.3.0-3. (2019-03-26) -
 -------------------------------------------------------
 

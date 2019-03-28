@@ -133,7 +133,8 @@ function(input, output, session) {
         criterion <- dataNominal[, length(key) + 2]
       }
 
-      dataNominal <- as.data.frame(apply(dataNominal[, 1:length(key)],c(1,2),function(x) ifelse(is.na(x),0,x)))
+      # dataNominal <- as.data.frame(apply(dataNominal[, 1:length(key)], c(1, 2), function(x) ifelse(is.na(x), 0, x)))
+      dataNominal <- dataNominal[, 1:length(key)]
       dataOrdinal <- mirt::key2binary(dataNominal, key)
       dataBinary <- mirt::key2binary(dataNominal, key)
     }
@@ -423,8 +424,8 @@ function(input, output, session) {
     )
 
     itemCount = ncol(ordinal())
-	minItemScore = min(total_score())
-	maxItemScore = max(total_score())
+	  minItemScore = min(total_score(), na.rm = T)
+	  maxItemScore = max(c(max(total_score(), na.rm = T), ncol(binary())))
     updateSliderInput(session = session, inputId = "slider_totalscores_histogram", min = minItemScore , max = maxItemScore, value = round(median(total_score(), na.rm = T)))
     updateNumericInput(session = session, inputId = "corr_plot_clust", value = 1, max = itemCount)
     updateNumericInput(session = session, inputId = "corr_plot_clust_report", value = 1, max = itemCount)

@@ -32,9 +32,10 @@ If missing, vector of maximal scores is imputed. See \strong{Details}.}
 \value{
 \code{ItemAnalysis} function computes various traditional item analysis indices. Output
 is a \code{data.frame} with following columns:
-  \item{\code{Difficulty}}{item difficulty based on ratio of correct answers}
-  \item{\code{Scaled score}}{}
-  \item{\code{Sample SD}}{standard deviation of the item}
+  \item{\code{Difficulty}}{average score of the item divided by its range}
+  \item{\code{Average score}}{average score of the item}
+  \item{\code{SD}}{standard deviation of the item score}
+  \item{\code{SD bin}}{standard deviation of the item score for binarized data}
   \item{\code{Correct answers}}{proportion of correct answers}
   \item{\code{Min score}}{minimal score specified in \code{minscore}; if not provided, observed minimal score}
   \item{\code{Max score}}{maximal score specified in \code{maxscore}; if not provided, observed maximal score}
