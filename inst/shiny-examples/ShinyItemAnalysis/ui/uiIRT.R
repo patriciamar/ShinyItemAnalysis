@@ -1,6 +1,6 @@
-source("ui/IRT/DIRT.R")
+source("ui/uiIRT/uiDIRT.R")
 
-IRT <- navbarMenu("IRT models",
+uiIRT <- navbarMenu("IRT models",
                   "Dichotomous models",
                   # * RASCH ####
                   tabPanel("Rasch",
@@ -703,7 +703,7 @@ IRT <- navbarMenu("IRT models",
                   "Training",
                   # * TRAINING  ####
                   # ** Dichotomous models ####
-                  DIRT,
+                  uiDIRT,
                   # ** Polytomous models ####
                   tabPanel("Polytomous models",
                            tabsetPanel(

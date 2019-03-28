@@ -125,7 +125,6 @@ function(input, output, session) {
 
       do.call(data, args = list(paste0(datasetName, "key"), package = packageName))
       key <- as.character(unlist(get(paste0(datasetName, "key"))))
-
       group <- dataNominal[, length(key) + 1]
 
       if (datasetName %in% c("GMAT2", "MSATB")){
@@ -134,7 +133,7 @@ function(input, output, session) {
         criterion <- dataNominal[, length(key) + 2]
       }
 
-      dataNominal <- dataNominal[, 1:length(key)]
+      dataNominal <- as.data.frame(apply(dataNominal[, 1:length(key)],c(1,2),function(x) ifelse(is.na(x),0,x)))
       dataOrdinal <- mirt::key2binary(dataNominal, key)
       dataBinary <- mirt::key2binary(dataNominal, key)
     }
@@ -347,7 +346,7 @@ function(input, output, session) {
                errorClass = "warning_group_missing")
     } else {
       validate(need(nrow(nominal()) == length(dataset$group),
-                    "The length of group need to be the same as number of observation in the main dataset!"),
+                    "The length of group vector needs to be the same as the number of observations in the main dataset!"),
                errorClass = "error_dimension")
     }
     dataset$group
@@ -361,7 +360,7 @@ function(input, output, session) {
                errorClass = "warning_criterion_variable_missing")
     } else {
       validate(need(nrow(nominal()) == length(dataset$criterion),
-                    "The length of criterion variable need to be the same as number of observation in the main dataset!"),
+                    "The length of criterion variable needs to be the same as the number of observations in the main dataset!"),
                errorClass = "error_dimension")
     }
     dataset$criterion

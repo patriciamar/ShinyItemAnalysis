@@ -1,4 +1,4 @@
-About <- tabPanel("",
+uiAbout <- tabPanel("",
 				  icon = icon("fas fa-home"),
 				  value = "About",
                   #------------------------------------------------------------------------------------#
