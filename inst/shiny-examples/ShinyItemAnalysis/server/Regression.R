@@ -70,7 +70,7 @@ output$DB_logreg_plot <- downloadHandler(
 output$coef_logreg_table <- renderTable({
 
   tab <- summary(logreg_model())$coef[1:2, 1:2]
-  colnames(tab) <- c("Estimate", "SD")
+  colnames(tab) <- c("Estimate", "SE")
   rownames(tab) <- c("%%mathit{b}_{0}%%", "%%mathit{b}_{1}%%")
   tab
 },
@@ -164,7 +164,7 @@ output$DB_z_logreg_plot <- downloadHandler(
 output$coef_z_logreg <- renderTable({
 
   tab <- summary(z_logreg_model())$coef[1:2, 1:2]
-  colnames(tab) <- c("Estimate", "SD")
+  colnames(tab) <- c("Estimate", "SE")
   rownames(tab) <- c("%%mathit{b}_{0}%%", "%%mathit{b}_{1}%%")
   tab
 },
@@ -276,7 +276,7 @@ output$coef_z_logreg_irt <- renderTable({
 
   tab_coef <- c(tab_coef_old[2], -tab_coef_old[1]/tab_coef_old[2])
   tab <- cbind(tab_coef, tab_sd)
-  colnames(tab) <- c("Estimate", "SD")
+  colnames(tab) <- c("Estimate", "SE")
   rownames(tab) <- c("%%mathit{a}%%", "%%mathit{b}%%")
   tab
 },
@@ -381,7 +381,7 @@ output$coef_nlr_3P <- renderTable({
   fit <- nlr_3P_model()
 
   tab <- summary(fit)$parameters[, 1:2]
-  colnames(tab) <- c("Estimate", "SD")
+  colnames(tab) <- c("Estimate", "SE")
   rownames(tab) <- c("%%mathit{a}%%","%%mathit{b}%%","%%mathit{c}%%")
   tab
 },
@@ -400,7 +400,7 @@ output$nlr_3P_interpretation <- renderUI({
 
   txt0 <- paste0("<b>", "Interpretation:", "</b>")
   txt1 <- paste0("A one-unit increase in the Z-score (one SD increase in original scores) is associated with the ",
-                  ifelse(a < 0, "decrease", "increase"), " in the log odds of answering the item correctly vs.
+                 ifelse(a < 0, "decrease", "increase"), " in the log odds of answering the item correctly vs.
                  not correctly in the amount of <b>", abs(a), "</b>. ")
   txt2 <- paste0("Probability of guessing is <b>", c, "</b>. ")
 
@@ -485,7 +485,7 @@ output$DB_nlr_4P_plot <- downloadHandler(
 output$coef_nlr_4P <- renderTable({
   fit <- nlr_4P_model()
   tab <- summary(fit)$parameters[, 1:2]
-  colnames(tab) <- c("Estimate", "SD")
+  colnames(tab) <- c("Estimate", "SE")
   rownames(tab) <- c("%%mathit{a}%%","%%mathit{b}%%","%%mathit{c}%%","%%mathit{d}%%")
   tab
 },
@@ -620,6 +620,398 @@ output$regr_comp_table <- DT::renderDataTable({
   tab
 
 })
+
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+# * CUMULATIVE LOGISTIC ######
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+# ** Matching criterion for cumulative model ######
+cumreg_matching <- reactive({
+  if (input$cumreg_matching == "total"){
+    matching <- total_score()
+  } else {
+    matching <- z_score()
+  }
+  matching
+})
+
+# ** Update select input for different parametrization ######
+observe({
+  if (input$cumreg_parametrization == "irt")
+    updateSelectInput(session = session,
+                      inputId = "cumreg_matching",
+                      selected = "zscore")
+})
+
+# ** Model for cumulative logistic regression ######
+cumreg_model <- reactive({
+  matching <- cumreg_matching()
+  data <- as.data.frame(ordinal())
+  maxval <- sapply(data, max)
+
+  for (i in 1:ncol(data)){
+    data[, i] <- factor(data[, i], levels = 0:maxval[i])
+  }
+
+  fit.cum <- apply(data, 2,
+                   function(x) VGAM::vglm(x ~ matching,
+                                          family = cumulative(reverse = TRUE, parallel = TRUE)))
+  fit.cum
+})
+
+
+# ** Calculation of sizes ######
+cumreg_calculation_sizes <- reactive({
+  data <- as.data.frame(ordinal())
+  maxval <- sapply(data, max)
+  matching <- cumreg_matching()
+
+  # relevel data
+  for (i in 1:ncol(data)){
+    data[, i] <- factor(data[, i], levels = 0:maxval[i])
+  }
+
+  # calculation of number of observations wrt matching
+  sizes <- list()
+  for (i in 1:ncol(data)) {
+    sizes[[i]] <- ftable(xtabs(~ data[, i] + matching))
+  }
+
+  sizes
+})
+
+# ** Calculation of empirical cumulative probabilities ######
+cumreg_calculation_cumprob_points <- reactive({
+  matching <- cumreg_matching()
+  sizes <- cumreg_calculation_sizes()
+
+  # calculation of cumulative probabilities wrt matching
+  dfs <- list()
+  for(i in 1:length(sizes)) {
+    # categories
+    K <- as.numeric(attributes(sizes[[i]])$row.vars[[1]]) # categories
+    # seK <- 0:max(K)
+    # seK <- seK[(which(seK != 0))] # excluding 0
+
+    seK <- K[(which(K != 0))]
+
+    # creating matrix
+    rows <- length(sort(unique(matching)))
+    cols <- 2 * length(seK) + 1
+    mtrx <- matrix(rep(0, rows * cols), nrow = rows, ncol = cols)
+
+    idx <- if(any(K == 0)) seq(2, max(K) + 1) else seq(1, length(K))
+    df <- as.data.frame(mtrx)
+    df[, 1] <- sort(unique(matching))
+
+    # number of observations per category wrt matching
+    for (j in seK) {
+      df[, j + 1] <- if(j != length(seK)) colSums(sizes[[i]][idx[j]:max(idx), ]) else sizes[[i]][max(idx), ]
+    }
+
+    colNam1 <- paste0("k", seK)
+
+    # empirical probabilities per category wrt matching
+    for (l in seK) {
+      df[, length(seK) + 1 + l] <- df[, (l + 1)]/(colSums(sizes[[i]]))
+    }
+
+    colNam2 <- paste0("P", seK)
+    colNams <- append(colNam1, colNam2)
+    colnames(df) <- c("x", colNams)
+
+    dfs[[i]] <- df
+  }
+  dfs
+})
+
+# ** Calculation of empirical cumulative probabilities ######
+cumreg_calculation_cumprob_lines <- reactive({
+  item <- input$cumreg_slider_item
+  matching <- cumreg_matching()
+  dfs <- cumreg_calculation_cumprob_points()
+  fit.cum <- cumreg_model()
+  data <- as.data.frame(ordinal())
+
+  # function for plot
+  cum.prob <- function(x, b0, b1){(exp(b0 + b1 * x) / (1 + exp(b0 + b1 * x)))}
+
+  # index
+  c <- length(coef(fit.cum[[item]])) - 1
+
+  # dataset for lines
+  x <- seq(min(matching, na.rm = T), max(matching, na.rm = T), 0.01)
+  df.lines.tmp <- data.frame(x = x,
+                             y = sapply(1:c, function(k) {cum.prob(x = x,
+                                                                   b0 = coef(fit.cum[[item]])[k],
+                                                                   b1 = coef(fit.cum[[item]])[c + 1])}))
+
+  colnames(df.lines.tmp) <- c("x", paste0("k", sort(unique(data[, item]))[-1]))
+  df.lines.tmp
+})
+
+# ** Plot with cumulative curves ######
+cumreg_plot_cum_Input <- reactive({
+  item <- input$cumreg_slider_item
+  matching <- cumreg_matching()
+  dfs <- cumreg_calculation_cumprob_points()
+  fit.cum <- cumreg_model()
+  df.lines.tmp <- cumreg_calculation_cumprob_lines()
+
+  # index
+  c <- (ncol(dfs[[item]]) - 1)/2
+
+  # dataset for points
+  df.points <- melt(dfs[[item]][, 1:(c + 1)], id.vars = "x",
+                    value.name = "size", variable.name = "category")
+  df.points <- data.frame(df.points,
+                          melt(dfs[[item]][, c(1, (c + 2):ncol(dfs[[item]]))], id.vars = "x",
+                               value.name = "prob", variable.name = "category"))
+  df.points <- df.points[, c(1, 2, 3, 6)]
+
+  # dataset for lines
+  df.lines <- melt(df.lines.tmp, id.vars = "x", value.name = "prob", variable.name = "category")
+
+  # changing labels for plot
+  levels(df.points$category) <- gsub("k", "P >= ", levels(df.points$category))
+  levels(df.lines$category) <- gsub("k", "P >= ", levels(df.lines$category))
+
+
+  # plot
+  ### points
+  g <- ggplot() +
+    geom_point(data = df.points, aes(x = x, y = prob, group = category,
+                                     size = size,
+                                     col = category,
+                                     fill = category),
+               shape = 21, alpha = 0.5)
+  ### lines
+  g <- g +
+    geom_line(data = df.lines, aes(x = x, y = prob, group = category,
+                                   col = category)) +
+    xlab(ifelse(input$cumreg_matching == "total", "Total score",
+                "Standardized total score (Z-score)")) +
+    ylab("Cumulative probability") +
+    ylim(0, 1) +
+    xlim(min(matching), max(matching)) +
+    ggtitle(item_names()[item]) +
+    theme_app() +
+    theme(legend.position = c(0.97, 0.03),
+          legend.justification = c(0.97, 0.03),
+          legend.box = "horizontal")
+  g
+})
+
+# ** Output plot with estimated curves of cumulative regression ######
+output$cumreg_plot_cum <- renderPlot({
+  cumreg_plot_cum_Input()
+})
+
+# ** DB plot with estimated curves of cumulative regression ######
+output$DB_cumreg_plot_cum <- downloadHandler(
+  filename =  function() {
+    paste("fig_CumulativeRegressionCurve_cumulative_", item_names()[input$cumreg_slider_item], ".png", sep = "")
+  },
+  content = function(file) {
+    ggsave(file, plot = cumreg_plot_cum_Input() +
+             theme(text = element_text(size = setting_figures$text_size)),
+           device = "png",
+           height = setting_figures$height, width = setting_figures$width,
+           dpi = setting_figures$dpi)
+  }
+)
+
+
+# ** Calculation of sizes and empirical category probabilities ######
+cumreg_calculation_catprob <- reactive({
+  matching <- cumreg_matching()
+  sizes <- cumreg_calculation_sizes()
+
+  dfs.cat <- list()
+  for(i in 1:length(sizes)) {
+    K <- as.numeric(attributes(sizes[[i]])$row.vars[[1]])
+
+    # seK <- 0:max(K)
+    seK <- K
+
+    rows <- length(sort(unique(matching)))
+    cols <- 2 * length(seK) + 1
+    mtrx <- matrix(rep(0, rows * cols), nrow = rows, ncol = cols)
+    idx <- seq(1, length(K))
+    df <- as.data.frame(mtrx)
+    df[, 1] <- sort(unique(matching))
+
+    for (j in 1:length(seK)) {
+      df[, j + 1] <- if(j != length(seK)) sizes[[i]][idx[j], ] else sizes[[i]][max(idx), ]
+    }
+
+    colNam1 <- paste0("k", seK)
+
+    for (l in 1:length(seK)) {
+      df[, length(seK) + 1 + l] <- df[, (l + 1)]/(colSums(sizes[[i]]))
+    }
+
+    colNam2 <- paste0("P", seK)
+    colNams <- append(colNam1, colNam2)
+    colnames(df) <- c('x', colNams)
+
+    dfs.cat[[i]] <- df
+  }
+
+  dfs.cat
+})
+
+# ** Plot with category curves ######
+cumreg_plot_cat_Input <- reactive({
+  item <- input$cumreg_slider_item
+  matching <- cumreg_matching()
+  dfs.cat <- cumreg_calculation_catprob()
+  fit.cum <- cumreg_model()
+  df.lines.tmp <- cumreg_calculation_cumprob_lines()
+
+  # index (it is + 1 compare to cumulative as it includes 0)
+  c <- (ncol(dfs.cat[[item]]) - 1)/2
+
+  # dataset for points
+  df.points.cat <- melt(dfs.cat[[item]][, 1:(c + 1)], id.vars = "x",
+                        value.name = "size", variable.name = "category")
+  df.points.cat <- data.frame(df.points.cat[, c("x", "size")],
+                              melt(dfs.cat[[item]][, c(1, (c + 2):ncol(dfs.cat[[item]]))], id.vars = "x",
+                                   value.name = "prob", variable.name = "category"))
+  df.points.cat <- df.points.cat[, c(1, 2, 4, 5)]
+
+  # dataset for lines
+  df.lines.cat <- as.data.frame(matrix(1, nrow = nrow(df.lines.tmp), ncol = c))
+  colnames(df.lines.cat) <- paste0("k", 0:(c - 1))
+  df.lines.cat[, intersect(colnames(df.lines.cat), colnames(df.lines.tmp))] <- df.lines.tmp[, intersect(colnames(df.lines.cat), colnames(df.lines.tmp))]
+
+  df.lines.cat <- data.frame(x = df.lines.tmp$x,
+                             sapply(1:(c - 1), function(k) {df.lines.cat[, k] - df.lines.cat[, k + 1]}),
+                             df.lines.cat[, c])
+  colnames(df.lines.cat) <- c("x", paste0("k", 0:(c - 1)))
+  head(df.lines.cat)
+  df.lines.cat <- melt(df.lines.cat, id.vars = "x", value.name = "prob", variable.name = "category")
+
+  # changing labels for plot
+  levels(df.points.cat$category) <- levels(df.lines.cat$category) <- paste0("P = ", 0:(c - 1))
+
+
+  # plot
+  # get baseline colour palette
+  gg_color_hue <- function(n) {
+    hues = seq(15, 375, length = n + 1)
+    hcl(h = hues, l = 65, c = 100)[1:n]
+  }
+
+  cols <- c("black", gg_color_hue(c - 1))
+
+
+  ### points
+  g <- ggplot() +
+    geom_point(data = df.points.cat, aes(x = x, y = prob, group = category,
+                                         size = size,
+                                         col = category,
+                                         fill = category),
+               shape = 21, alpha = 0.5)
+  ### lines
+  g <- g +
+    geom_line(data = df.lines.cat, aes(x = x, y = prob, group = category,
+                                       col = category)) +
+    scale_color_manual(values = cols) +
+    scale_fill_manual(values = cols) +
+    xlab(ifelse(input$cumreg_matching == "total", "Total score",
+                "Standardized total score (Z-score)")) +
+    ylab("Category probability") +
+    ylim(0, 1) +
+    xlim(min(matching), max(matching)) +
+    ggtitle(item_names()[item]) +
+    theme_app() +
+    theme(legend.position = c(0.97, 0.03),
+          legend.justification = c(0.97, 0.03),
+          legend.box = "horizontal")
+
+  g
+})
+
+# ** Output plot with estimated curves of cumulative regression ######
+output$cumreg_plot_cat <- renderPlot({
+  cumreg_plot_cat_Input()
+})
+
+# ** DB plot with estimated curves of cumulative regression ######
+output$DB_cumreg_plot_cat <- downloadHandler(
+  filename =  function() {
+    paste("fig_CumulativeRegressionCurve_category_", item_names()[input$cumreg_slider_item], ".png", sep = "")
+  },
+  content = function(file) {
+    ggsave(file, plot = cumreg_plot_cat_Input() +
+             theme(text = element_text(size = setting_figures$text_size)),
+           device = "png",
+           height = setting_figures$height, width = setting_figures$width,
+           dpi = setting_figures$dpi)
+  }
+)
+
+# ** Equation ######
+output$cumreg_equation <- renderUI({
+  txt1 <- ifelse(input$cumreg_matching == "total", "X", "Z")
+
+  if (input$cumreg_parametrization == "classic"){
+    txt2 <- paste("b_{0k} + b_1", txt1)
+    txt3 <- paste(txt1, ", b_{0k},  b_1")
+  } else {
+    txt2 <- paste("a(", txt1, "- d_{0k})")
+    txt3 <- paste(txt1, ", a,  d_{0k}")
+  }
+
+  txt <- paste("$$P(Y \\geq k|", txt3, ") = \\frac{e^{", txt2, "}}{1 + e^{", txt2, "}}$$")
+
+  withMathJax(HTML(txt))
+})
+
+# ** Interpretation ######
+output$cumreg_interpretation <- renderUI({
+  if (input$cumreg_parametrization == "classic"){
+    par <- c("\\(b_{0k}\\)", "\\(b_1\\)")
+  } else {
+    par <- c("\\(d_{0k}\\)", "\\(a\\)")
+  }
+
+  txt <- paste("Parameters", par[1], "describe horizontal position of the fitted curves,
+               where \\(k = 0, 1,2,..\\) is number of obtained scores, parameter", par[2],
+               "describes their common slope. Category probabilities are then described as
+               differences of two subsequent cumulative probabilities.")
+  withMathJax(HTML(txt))
+})
+
+# ** Table of parameters ######
+cumreg_coef_tab_Input <- reactive({
+  fit.cum <- cumreg_model()
+  item <- input$cumreg_slider_item
+
+  if (input$cumreg_parametrization == "classic"){
+    tab.coef <- coef(fit.cum[[item]])
+    tab.se <- sqrt(diag(vcov(fit.cum[[item]])))
+
+    tab <- data.frame(Estimate = tab.coef, SE = tab.se)
+    rownames(tab) <- c(paste0("%%mathit{b}_{0", 1:(nrow(tab) - 1), "}%%"), "%%mathit{b}_{1}%%")
+  } else {
+    tab.coef <- coef(fit.cum[[item]])
+    tab.coef <- c(-tab.coef[-length(tab.coef)]/tab.coef[length(tab.coef)], tab.coef[length(tab.coef)])
+    tab.se <- rep(NA, length(tab.coef))
+
+    tab <- data.frame(Estimate = tab.coef, SE = tab.se)
+    rownames(tab) <- c(paste0("%%mathit{d}_{0", 1:(nrow(tab) - 1), "}%%"), "%%mathit{a}%%")
+  }
+
+  tab
+})
+
+output$cumreg_coef_tab <- renderTable({
+  cumreg_coef_tab_Input()
+},
+include.rownames = T,
+include.colnames = T)
 
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # * MULTINOMIAL ######
@@ -810,8 +1202,8 @@ output$coef_multi <- renderTable({
   if (is.null(dim(coef(fit))[1]) & !(all(levels(temp) %in% c("1", "0")))){
     rnam <- rev(levels(temp))[1]
   }
-  
-  colnames(tab) <- c("Estimate", "SD")
+
+  colnames(tab) <- c("Estimate", "SE")
   rownames(tab) <- c(paste("%%mathit{b}_{", rnam, "0}%%", sep = ""),
                      paste("%%mathit{b}_{", rnam, "1}%%", sep = ""))
   tab

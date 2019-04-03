@@ -1,4 +1,4 @@
-uiRegression <- 
+uiRegression <-
   navbarMenu("Regression",
              "Dichotomous models",
              # * LOGISTIC ####
@@ -90,7 +90,7 @@ uiRegression <-
                       div(code(HTML("library(difNLR)&nbsp;<br>library(ggplot2)<br><br>#&nbsp;loading&nbsp;data<br>data(GMAT)&nbsp;<br>data&nbsp;<-&nbsp;GMAT[,&nbsp;1:20]&nbsp;<br>zscore&nbsp;<-&nbsp;scale(apply(data,&nbsp;1,&nbsp;sum))&nbsp;#&nbsp;standardized&nbsp;total&nbsp;score<br><br>#&nbsp;logistic&nbsp;model&nbsp;for&nbsp;item&nbsp;1&nbsp;<br>fit&nbsp;<-&nbsp;glm(data[,&nbsp;1]&nbsp;~&nbsp;zscore,&nbsp;family&nbsp;=&nbsp;binomial)&nbsp;<br><br>#&nbsp;coefficients<br>coef&nbsp;<-&nbsp;c(a&nbsp;=&nbsp;coef(fit)[2],&nbsp;b&nbsp;=&nbsp;-&nbsp;coef(fit)[1]&nbsp;/&nbsp;coef(fit)[2])&nbsp;<br>coef&nbsp;&nbsp;<br><br>#&nbsp;function&nbsp;for&nbsp;plot&nbsp;<br>fun&nbsp;<-&nbsp;function(x,&nbsp;a,&nbsp;b){exp(a&nbsp;*&nbsp;(x&nbsp;-&nbsp;b))&nbsp;/&nbsp;(1&nbsp;+&nbsp;exp(a&nbsp;*&nbsp;(x&nbsp;-&nbsp;b)))}&nbsp;<br><br>#&nbsp;empirical&nbsp;probabilities&nbsp;calculation<br>df&nbsp;<-&nbsp;data.frame(x&nbsp;=&nbsp;sort(unique(zscore)),<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y&nbsp;=&nbsp;tapply(data[,&nbsp;1],&nbsp;zscore,&nbsp;mean),<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;size&nbsp;=&nbsp;as.numeric(table(zscore)))<br><br>#&nbsp;plot&nbsp;of&nbsp;estimated&nbsp;curve<br>ggplot(df,&nbsp;aes(x&nbsp;=&nbsp;x,&nbsp;y&nbsp;=&nbsp;y))&nbsp;+<br>&nbsp;&nbsp;geom_point(aes(size&nbsp;=&nbsp;size),<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;color&nbsp;=&nbsp;\"darkblue\",<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fill&nbsp;=&nbsp;\"darkblue\",<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;shape&nbsp;=&nbsp;21,&nbsp;alpha&nbsp;=&nbsp;0.5)&nbsp;+<br>&nbsp;&nbsp;stat_function(fun&nbsp;=&nbsp;fun,&nbsp;geom&nbsp;=&nbsp;\"line\",<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;args&nbsp;=&nbsp;list(a&nbsp;=&nbsp;coef[1],<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;b&nbsp;=&nbsp;coef[2]),<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;size&nbsp;=&nbsp;1,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;color&nbsp;=&nbsp;\"darkblue\")&nbsp;+<br>&nbsp;&nbsp;xlab(\"Standardized&nbsp;total&nbsp;score\")&nbsp;+<br>&nbsp;&nbsp;ylab(\"Probability&nbsp;of&nbsp;correct&nbsp;answer\")&nbsp;+<br>&nbsp;&nbsp;ylim(0,&nbsp;1)&nbsp;+<br>&nbsp;&nbsp;ggtitle(\"Item&nbsp;1\")&nbsp;+&nbsp;<br>&nbsp;&nbsp;theme_app()"))),
                       br()
                       ),
-             
+
              # * NONLINEAR 3P IRT Z ####
              tabPanel("Nonlinear 3P IRT Z",
                       h3("Nonlinear three parameter regression on standardized total scores with IRT parameterization"),
@@ -180,75 +180,55 @@ uiRegression <-
                       ),
              "----",
              "Polytomous models",
-             # * MULTINOMIAL ####
-             tabPanel("Cumulative Logistic ",
-                      h3("Cumulative logistic regression on total scores"),
+             # * CUMULATIVE LOGIT ####
+             tabPanel("Cumulative logistic ",
+                      h3("Cumulative logistic regression"),
                       p("Various regression models may be fitted to describe item properties in more detail.", strong("Cumulative
                          logistic regression")," can model cumulative probabilities, i.e., probabilities to obtain item score higher than or equal to 1,
-                        2, 3, etc. Parameters \\(b_{0k}\\) describe horizontal position of the fitted curves, where \\(k = 0, 1,2,..\\) is number
-                        of obtained scores, parameter \\(b_1\\) describes their common slope. Category probabilities are then described as
-                        differences of two subsequent cumulative probabilities."),
+                        2, 3, etc. "),
+                      p("Cumulative logistic model can be fitted on selected ", strong("matching criterion"), "- total scores or standardized
+                        scores using classic or IRT ", strong("parametrization. ")),
+                      br(),
+                      fluidRow(column(3, selectInput(inputId = "cumreg_matching",
+                                                     label = "Matching criterion",
+                                                     choices = c("Total score" = "total",
+                                                                 "Standardized score" = "zscore"),
+                                                     selected = "total")),
+                               column(3, selectInput(inputId = "cumreg_parametrization",
+                                                     label = "Parametrization",
+                                                     choices = c("Classic" = "classic",
+                                                                 "IRT" = "irt"),
+                                                     selected = "classic")),
+                               column(3, sliderInput(inputId = "cumreg_slider_item",
+                                                     label = "Item",
+                                                     min = 1,
+                                                     max = 10,
+                                                     value = 1,
+                                                     step = 1,
+                                                     animate = animationOptions(interval = 1200)))),
                       h4("Plot of cumulative probabilities"),
                       p("Lines determine the cumulative probabilities \\(P(Y \\geq k)\\). Circles represent proportion of answers with
-                        at least k points with respect to the total score, i.e., the empirical cumulative probabilities. The size of the circles is
-                        determined by the count of respondents who achieved given level of the total score."),
-                      #plotOutput("cum_log"),
+                        at least \\(k\\) points with respect to the matching criterion, i.e., the empirical cumulative probabilities.
+                        The size of the points is determined by the count of respondents who achieved given level of the matching
+                        criterion."),
+                      plotOutput("cumreg_plot_cum"),
+                      downloadButton("DB_cumreg_plot_cum", label = "Download figure"),
                       h4("Plot of category probabilities"),
-                      p("Lines determine the category probabilities \\(P(Y=k)\\). Circles represent proportion of answers with k
-                        points with respect to the total score, i.e., the empirical category probabilities. The size of the circles is determined 
-                        by the count of respondents who achieved given level of the total score."),
-                      #plotOutput("cum_cat_log"),
+                      p("Lines determine the category probabilities \\(P(Y = k)\\). Circles represent proportion of answers with \\(k\\)
+                        points with respect to the matching criterion, i.e., the empirical category probabilities. The size of the points
+                        is determined by the count of respondents who achieved given level of the matching criterion."),
+                      plotOutput("cumreg_plot_cat"),
+                      downloadButton("DB_cumreg_plot_cat", label = "Download figure"),
                       h4("Equation"),
-                      ('$$P(Y \\geq k|X,b_{0k},b_{1}) = \\frac{e^{b_{0k} + b_{1}X}}{1 + e^{b_{0k} + b_{1}X}}$$'),
-                      h4("Table of parameters")#,
-                      #tableOutput("coef_cum_log")
+                      uiOutput("cumreg_equation"),
+                      uiOutput("cumreg_interpretation"),
+                      h4("Table of parameters"),
+                      tableOutput("cumreg_coef_tab"),
+                      h4("Selected R code"),
+                      br(),
+                      br()
                       ),
-             tabPanel("Cumulative Logistic Z",
-                      h3("Cumulative logistic regression on standardized total scores"),
-                      p("Various regression models may be fitted to describe item properties in more detail.", strong("Cumulative
-                        logistic regression")," can model cumulative probabilities, i.e., probabilities to obtain item score higher than or equal to 1,
-                        2, 3, etc. Parameters \\(b_{0k}\\) describe horizontal position of the fitted curves, where \\(k = 0, 1,2,..\\) is number
-                        of obtained scores, parameter \\(b_1\\) describes their common slope. Category probabilities are then described as
-                        differences of two subsequent cumulative probabilities."),
-                      h4("Plot of cumulative probabilities"),
-                      p("Lines determine the cumulative probabilities \\(P(Y \\geq k)\\). Circles represent proportion of answers with
-                        at least k points with respect to the standardized total score, i.e., the empirical cumulative probabilities. The size of the circles is
-                        determined by the count of respondents who achieved given level of the standardized total score."),
-                      #plotOutput("cum_log"),
-                      h4("Plot of category probabilities"),
-                      p("Lines determine the category probabilities \\(P(Y=k)\\). Circles represent proportion of answers with k
-                        points with respect to the standardized total score, i.e., the empirical category probabilities. The size of the circles is determined 
-                        by the count of respondents who achieved given level of the standardized total score."),
-                      #plotOutput("cum_cat_log"),
-                      h4("Equation"),
-                      ('$$P(Y \\geq k|Z,b_{0k},b_{1}) = \\frac{e^{b_{0k} + b_{1}Z}}{1 + e^{b_{0k} + b_{1}Z}}$$'),
-                      h4("Table of parameters")#,
-                      #tableOutput("coef_cum_log")
-                      ),
-             tabPanel("Cumulative Logistic IRT Z",
-                      h3("Cumulative logistic regression on standardized total scores with IRT parameterization"),
-                      p("Various regression models may be fitted to describe item properties in more detail.", strong("Cumulative
-                        logistic regression")," can model cumulative probabilities, i.e., probabilities to obtain item score higher than or equal to 1,
-                        2, 3, etc. Note the change in the parametrization - the IRT parametrization used here corresponds to the
-                        parametrization used in IRT models. Parameter \\(b_k\\), where \\(k = 0, 1,2,\\cdots \\) describes horizontal
-                        position of the fitted curves (difficulties), parameter \\(a\\) describes their slope at inflection point
-                        (discrimination). Category probabilities are then described as differences of two subsequent
-                        cumulative probabilities."),
-                      h4("Plot with cumulative probabilities"),
-                      p("Lines determine the cumulative probabilities \\(P(Y \\geq k)\\). Circles represent proportion of answers with
-                        at least k points with respect to the standardized total score, i.e. the empirical cumulative probabilities. 
-                        The size of the circles is determined by the count of respondents who achieved given level of the standardized total score."),
-                      #plotOutput("cum_log_irt_z"),
-                      h4("Plot with category probabilities"),
-                      p("Lines determine the category probabilities \\(P(Y=k)\\). Circles represent proportion of answers with k
-                        points with respect to the total score, i.e. the empirical category probabilities. The size of the circles is determined by
-                        count of the respondents who achieved given level of the standardized total score."),
-                      #plotOutput("cum_cat_log_irt_z"),
-                      h4("Equation"),
-                      ('$$P(Y \\geq k|Z,b_{k},b_{1}) = \\frac{e^{a(Z - b_{k})}}{1 + e^{a(Z - b_{k})}}$$'),
-                      h4("Table of parameters")#,
-                      #tableOutput("coef_cum_log_irt_z")
-                      ),
+             # * ADJACENT LOGISTIC ####
              tabPanel("Adjacent Logistic ",
                       h3("Adjacent logistic regression on total scores"),
                       p("Models for ordinal responses need not use cumulative probabilities.",strong("Adjacent
@@ -294,6 +274,7 @@ uiRegression <-
                       h4("Table of parameters")#,
                       #tableOutput("coef_adj_log_irt_z")
                       ),
+             # * MULTINOMIAL ####
              tabPanel("Multinomial",
                       h3("Multinomial regression on standardized total scores"),
                       p('Various regression models may be fitted to describe

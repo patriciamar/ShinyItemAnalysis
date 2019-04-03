@@ -30,6 +30,7 @@ require(shinyBS)
 require(ShinyItemAnalysis)
 require(shinyjs)
 require(stringr)
+require(VGAM)
 require(xtable)
 
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -305,11 +306,21 @@ function(input, output, session) {
   })
 
   ordinal <- reactive({
-    dataset$ordinal
+    data <- dataset$ordinal
+    if (!input$missval){
+      data[is.na(data)] <- 0
+    }
+
+    data
   })
 
   binary <- reactive({
-    dataset$binary
+    data <- dataset$binary
+    if (!input$missval){
+      data[is.na(data)] <- 0
+    }
+
+    data
   })
 
   key <- reactive({
@@ -410,6 +421,7 @@ function(input, output, session) {
       "zlogreg_irtSlider",
       "slider_nlr_3P_item",
       "slider_nlr_4P_item",
+      "cumreg_slider_item",
       "multiSlider",
       "difMHSlider_item",
       "diflogSlider",
@@ -436,6 +448,7 @@ function(input, output, session) {
     updateSliderInput(session = session, inputId = "zlogreg_irtSlider", max = itemCount)
     updateSliderInput(session = session, inputId = "slider_nlr_3P_item", max = itemCount)
     updateSliderInput(session = session, inputId = "slider_nlr_4P_item", max = itemCount)
+    updateSliderInput(session = session, inputId = "cumreg_slider_item", max = itemCount)
     updateSliderInput(session = session, inputId = "multiSlider", max = itemCount)
     updateSliderInput(session = session, inputId = "difMHSlider_item", max = itemCount)
     updateSliderInput(session = session, inputId = "diflogSlider", max = itemCount)

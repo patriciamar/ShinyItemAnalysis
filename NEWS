@@ -5,6 +5,18 @@
         ***************************************************************
 
 -------------------------------------------------------
+- Changes in ShinyItemAnalysis 1.3.0-5. (2019-04-03) -
+-------------------------------------------------------
+
+BUG FIXING
+  o SD in Regression section was changed to SE.
+  o Keep missing values button is now functioning and it is applied
+    for ordinal and binary data.
+
+MAJOR UPDATES
+  o Cumulative logistic regression model was implemented for ordinal data.
+
+-------------------------------------------------------
 - Changes in ShinyItemAnalysis 1.3.0-4. (2019-03-28) -
 -------------------------------------------------------
 
