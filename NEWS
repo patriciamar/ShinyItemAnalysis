@@ -15,6 +15,8 @@ BUG FIXING
 
 MAJOR UPDATES
   o Cumulative logistic regression model was implemented for ordinal data.
+  o Delta method is now applied for calculation of SE in IRT parametrization
+    in cumulative logistic regression.
 
 -------------------------------------------------------
 - Changes in ShinyItemAnalysis 1.3.0-4. (2019-03-28) -

@@ -885,6 +885,9 @@ cumreg_plot_cat_Input <- reactive({
   colnames(df.lines.cat) <- paste0("k", 0:(c - 1))
   df.lines.cat[, intersect(colnames(df.lines.cat), colnames(df.lines.tmp))] <- df.lines.tmp[, intersect(colnames(df.lines.cat), colnames(df.lines.tmp))]
 
+  check.probs <- which(sapply(1:(c - 1), function(i) any(df.lines.cat[, i] < df.lines.cat[, i + 1])))
+  df.lines.cat[, check.probs + 1] <- df.lines.cat[, check.probs]
+
   df.lines.cat <- data.frame(x = df.lines.tmp$x,
                              sapply(1:(c - 1), function(k) {df.lines.cat[, k] - df.lines.cat[, k + 1]}),
                              df.lines.cat[, c])
@@ -893,8 +896,8 @@ cumreg_plot_cat_Input <- reactive({
   df.lines.cat <- melt(df.lines.cat, id.vars = "x", value.name = "prob", variable.name = "category")
 
   # changing labels for plot
-  levels(df.points.cat$category) <- levels(df.lines.cat$category) <- paste0("P = ", 0:(c - 1))
-
+  levels(df.points.cat$category) <- gsub("P", "P >= ", levels(df.points.cat$category))
+  levels(df.lines.cat$category) <- gsub("k", "P >= ", levels(df.lines.cat$category))
 
   # plot
   # get baseline colour palette
@@ -904,7 +907,6 @@ cumreg_plot_cat_Input <- reactive({
   }
 
   cols <- c("black", gg_color_hue(c - 1))
-
 
   ### points
   g <- ggplot() +
@@ -978,9 +980,9 @@ output$cumreg_interpretation <- renderUI({
   }
 
   txt <- paste("Parameters", par[1], "describe horizontal position of the fitted curves,
-               where \\(k = 0, 1,2,..\\) is number of obtained scores, parameter", par[2],
-               "describes their common slope. Category probabilities are then described as
-               differences of two subsequent cumulative probabilities.")
+               where \\(k = 0, 1, 2, ...\\) is number of obtained scores, parameter", par[2],
+               "describes their common slope. Category probabilities are then calculated as
+               differences of two subsequent cumulative probabilities. ")
   withMathJax(HTML(txt))
 })
 
@@ -988,20 +990,30 @@ output$cumreg_interpretation <- renderUI({
 cumreg_coef_tab_Input <- reactive({
   fit.cum <- cumreg_model()
   item <- input$cumreg_slider_item
+  data <- as.data.frame(ordinal())
 
   if (input$cumreg_parametrization == "classic"){
     tab.coef <- coef(fit.cum[[item]])
     tab.se <- sqrt(diag(vcov(fit.cum[[item]])))
 
     tab <- data.frame(Estimate = tab.coef, SE = tab.se)
-    rownames(tab) <- c(paste0("%%mathit{b}_{0", 1:(nrow(tab) - 1), "}%%"), "%%mathit{b}_{1}%%")
+    rownames(tab) <- c(paste0("%%mathit{b}_{0", sort(unique(data[, item]))[-1], "}%%"), "%%mathit{b}_{1}%%")
   } else {
-    tab.coef <- coef(fit.cum[[item]])
-    tab.coef <- c(-tab.coef[-length(tab.coef)]/tab.coef[length(tab.coef)], tab.coef[length(tab.coef)])
-    tab.se <- rep(NA, length(tab.coef))
+    tab.coef.tmp <- coef(fit.cum[[item]])
+    c <- length(tab.coef.tmp)
 
-    tab <- data.frame(Estimate = tab.coef, SE = tab.se)
-    rownames(tab) <- c(paste0("%%mathit{d}_{0", 1:(nrow(tab) - 1), "}%%"), "%%mathit{a}%%")
+    tab.coef <- c(-tab.coef.tmp[-c]/tab.coef.tmp[c], tab.coef.tmp[c])
+
+    Sigma <- vcov(fit.cum[[item]])
+    c <- length(tab.coef)
+    D <- matrix(0, nrow = c, ncol = c)
+    diag(D)[-c] <- -1/tab.coef.tmp[c]
+    D[c, ] <- c(tab.coef.tmp[1:(c - 1)]/(tab.coef.tmp[c])^2, 1)
+
+    Sigma.new <- t(D) %*% Sigma %*% D
+
+    tab <- data.frame(Estimate = tab.coef, SE = sqrt(diag(Sigma.new)))
+    rownames(tab) <- c(paste0("%%mathit{d}_{0", sort(unique(data[, item]))[-1], "}%%"), "%%mathit{a}%%")
   }
 
   tab
