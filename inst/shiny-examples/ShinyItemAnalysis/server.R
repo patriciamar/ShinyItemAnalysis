@@ -449,6 +449,7 @@ function(input, output, session) {
     updateSliderInput(session = session, inputId = "slider_nlr_3P_item", max = itemCount)
     updateSliderInput(session = session, inputId = "slider_nlr_4P_item", max = itemCount)
     updateSliderInput(session = session, inputId = "cumreg_slider_item", max = itemCount)
+    updateSliderInput(session = session, inputId = "adjreg_slider_item", max = itemCount)
     updateSliderInput(session = session, inputId = "multiSlider", max = itemCount)
     updateSliderInput(session = session, inputId = "difMHSlider_item", max = itemCount)
     updateSliderInput(session = session, inputId = "diflogSlider", max = itemCount)
