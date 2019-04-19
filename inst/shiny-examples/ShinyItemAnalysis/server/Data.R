@@ -264,7 +264,9 @@ data_description_Input <- reactive({
                 HCI_ShinyItemAnalysis = "<code>HCI</code> (McFarland et al., 2017) is a real dataset of Homeostasis
                 Concept Inventory (HCI) from <code>ShinyItemAnalysis</code> R package. The dataset represents responses of
                 651 subjects (405 males, 246 females) to multiple-choice test of 20 items. <code>HCI</code> contains
-                criterion variable -  indicator whether student plans to major in the life sciences. ")
+                criterion variable -  indicator whether student plans to major in the life sciences. ",
+				Science_mirt = "<code>Science</code> is a 4-item dataset from library <code>mirt/ltm</code> describing attitude to science and technology. Selected items are <code>Comfort</code>, <code>Work</code>, <code>Future</code>, and <code>Benefit</code>. All items are measured on the same scale with response categories:
+				'strongly disagree', 'disagree to some extent', 'agree to some extent', and 'strongly agree'. See Bartholomew et al. (2002) for more details.")
   txt
 
 })

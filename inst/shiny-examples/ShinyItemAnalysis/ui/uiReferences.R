@@ -277,6 +277,10 @@ uiReferences <-
                 <a href = "https://www.jstor.org/stable/1433905?seq=1#page_scan_tab_contents",
                 target = "_blank">See online.</a>
                 </li>
+				
+				<li>Bartholomew, D., Steel, F., Moustaki, I. and Galbraith, J. (2002). The Analysis and Interpretation of Multivariate 
+				Data for Social Scientists. London: Chapman and Hall.
+                </li>
                 
                 <li>Bock, R. D. (1972). Estimating Item Parameters and Latent Ability when
                 Responses Are Scored in Two or More Nominal Categories.

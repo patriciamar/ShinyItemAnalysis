@@ -104,11 +104,11 @@ function(input, output, session) {
     if (datasetName == "dataMedicalgraded") {
       do.call(data, args = list(paste0(datasetName), package = packageName))
       dataOrdinal <- get(paste0(datasetName))
-
-      group <- dataOrdinal[, "gender"]
-      criterion <- dataOrdinal[, "StudySuccess"]
-
-      dataOrdinal <- dataOrdinal[, 1:(dim(dataOrdinal)[2] - 2)]
+      
+	  group <- dataOrdinal[, "gender"]
+	  criterion <- dataOrdinal[, "StudySuccess"]
+	
+	  dataOrdinal <- dataOrdinal[, 1:(dim(dataOrdinal)[2] - 2)]
       dataNominal <- dataOrdinal
 
       dataType <- "ordinal"
@@ -118,7 +118,26 @@ function(input, output, session) {
       dataBinary <- matrix(as.numeric(dataOrdinal >= df.key),
                            ncol = ncol(dataOrdinal), nrow = nrow(dataOrdinal))
 
-    } else {
+    } else if (datasetName == "Science") { 
+	  do.call(data, args = list(paste0(datasetName), package = packageName))
+      dataOrdinal <- get(paste0(datasetName))
+	  
+	  dataNominal <- dataOrdinal
+	  
+	  group <- "missing"
+	  criterion <- "missing"
+	  
+	  colnames(dataOrdinal) <- paste0("Item",1:4)
+	  colnames(dataNominal) <- paste0("Item",1:4)
+	  
+      dataType <- "ordinal"
+	  
+	  key <- sapply(dataOrdinal, max)
+      df.key <- sapply(key, rep, each = nrow(dataOrdinal))
+      dataBinary <- matrix(as.numeric(dataOrdinal >= df.key),
+                           ncol = ncol(dataOrdinal), nrow = nrow(dataOrdinal))
+	
+	} else {
       do.call(data, args = list(paste0(datasetName, "test"), package = packageName))
       dataNominal <- get(paste0(datasetName, "test"))
 
@@ -442,7 +461,7 @@ function(input, output, session) {
     updateNumericInput(session = session, inputId = "corr_plot_clust", value = 1, max = itemCount)
     updateNumericInput(session = session, inputId = "corr_plot_clust_report", value = 1, max = itemCount)
     updateSliderInput(session = session, inputId = "validitydistractorSlider", max = itemCount)
-    updateSliderInput(session = session, inputId = "distractorSlider", max = itemCount)
+    updateSliderInput(session = session, inputId = "distractorSlider", max = itemCount, step = 1)
     updateSliderInput(session = session, inputId = "logregSlider", max = itemCount)
     updateSliderInput(session = session, inputId = "zlogregSlider", max = itemCount)
     updateSliderInput(session = session, inputId = "zlogreg_irtSlider", max = itemCount)
