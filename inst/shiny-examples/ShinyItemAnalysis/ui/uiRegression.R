@@ -184,10 +184,10 @@ uiRegression <-
              tabPanel("Cumulative logistic ",
                       h3("Cumulative logistic regression"),
                       p("Various regression models may be fitted to describe item properties in more detail.", strong("Cumulative
-                         logistic regression")," can model cumulative probabilities, i.e., probabilities to obtain item score higher than or equal to 1,
+                                                                                                                      logistic regression")," can model cumulative probabilities, i.e., probabilities to obtain item score higher than or equal to 1,
                         2, 3, etc. "),
                       p("Cumulative logistic model can be fitted on selected ", strong("matching criterion"), "- total scores or standardized
-                        scores using classic or IRT ", strong("parametrization. ")),
+                        scores, using classical (slope/intercept) or IRT ", strong("parametrization. ")),
                       br(),
                       fluidRow(column(3, selectInput(inputId = "cumreg_matching",
                                                      label = "Matching criterion",
@@ -196,7 +196,7 @@ uiRegression <-
                                                      selected = "total")),
                                column(3, selectInput(inputId = "cumreg_parametrization",
                                                      label = "Parametrization",
-                                                     choices = c("Classic" = "classic",
+                                                     choices = c("Slope/intercept" = "classic",
                                                                  "IRT" = "irt"),
                                                      selected = "classic")),
                                column(3, sliderInput(inputId = "cumreg_slider_item",
@@ -229,50 +229,50 @@ uiRegression <-
                       br()
                       ),
              # * ADJACENT LOGISTIC ####
-             tabPanel("Adjacent Logistic ",
-                      h3("Adjacent logistic regression on total scores"),
-                      p("Models for ordinal responses need not use cumulative probabilities.",strong("Adjacent
-                        categories model"), "assumes linear form of logarithm of ratio of probabilities of two successive scores (e.g. 1 vs. 2, 2 vs. 3, etc.),
-                        i.e., of the adjacent category logits."),
+             tabPanel("Adjacent logistic ",
+                      h3("Adjacent logistic regression"),
+                      p("Models for ordinal responses need not use cumulative probabilities.",
+                        strong("Adjacent categories model"), "assumes linear form of logarithm of ratio of
+                        probabilities of two successive scores (e.g. 1 vs. 2, 2 vs. 3, etc.), i.e., of the
+                        adjacent category logits."),
+                      p("Adjacent logistic model can be fitted on selected ", strong("matching criterion"), "- total scores or standardized
+                        scores, using classical (slope/intercept) or IRT ", strong("parametrization. ")),
+                      br(),
+                      fluidRow(
+                        column(3,
+                               selectInput(inputId = "adjreg_matching",
+                                           choices = c("Total score" = "total",
+                                                       "Standardized score" = "zscore"),
+                                           selected = "total",
+                                           label = "Matching criterion")),
+                        column(3,
+                               selectInput(inputId = "adjreg_parametrization",
+                                           choices = c("Slope/intercept" = "classic",
+                                                       "IRT" = "irt"),
+                                           selected = "classic",
+                                           label = "Parametrization")),
+                        column(3,
+                               sliderInput(inputId = "adjreg_slider_item",
+                                           min = 1,
+                                           max = 20,
+                                           step = 1,
+                                           value = 1,
+                                           label = "Item",
+                                           animate = animationOptions(interval = 1200)))),
                       h4("Plot with category probabilities"),
-                      p("Lines determine the category probabilities \\(P(Y=k)\\). Circles represent the proportion of answers with k
+                      p("Lines determine the category probabilities \\(P(Y = k)\\). Circles represent the proportion of answers with k
                         points with respect to the total score, i. e., the empirical category probabilities. The size of the circles is determined by
                         the count of respondents who achieved given level of the total score."),
-                      #plotOutput("adj_log"),
+                      plotOutput("adjreg_plot_cat"),
+                      downloadButton("DB_adjreg_plot_cat", label = "Download figure"),
                       h4("Equation"),
-                      ('$$P(Y = k|X,a,d_{1},d_{2},\\cdots) = \\frac{e^{\\sum_{t = 0}^{k}(d_{t} + aX)}}{\\sum_{r = 0}^{K}e^{\\sum_{t = 0}^{r}(d_{t} + aX)}}$$'),
-                      h4("Table of parameters")#,
-                      #tableOutput("coef_adj_log")
-                      ),
-             tabPanel("Adjacent Logistic Z",
-                      h3("Adjacent logistic regression on standardized scores"),
-                      p("Models for ordinal responses need not use cumulative probabilities.",strong("Adjacent
-                        categories model"), "assumes linear form of logarithm of ratio of probabilities of two successive scores (e.g. 1 vs. 2, 2 vs. 3, etc.),
-                        i.e., of the adjacent category logits."),
-                      h4("Plot with category probabilities"),
-                      p("Lines determine the category probabilities \\(P(Y=k)\\). Circles represent the proportion of answers with k
-                        points with respect to the standardized total score, i. e., the empirical category probabilities. The size of the circles is determined by
-                        the count of respondents who achieved given level of the standardized total score."),
-                      #plotOutput("adj_log_z"),
-                      h4("Equation"),
-                      ('$$P(Y = k|Z,a,d_{1},d_{2},\\cdots) = \\frac{e^{\\sum_{t = 0}^{k}(d_{t} + aZ)}}{\\sum_{r = 0}^{K}e^{\\sum_{t = 0}^{r}(d_{t} + aZ)}}$$'),
-                      h4("Table of parameters")#,
-                      #tableOutput("coef_adj_log_z")
-                      ),
-             tabPanel("Adjacent Logistic IRT Z",
-                      h3("Adjacent logistic regression on standardized total scores with IRT parameterization"),
-                      p("Models for ordinal responses need not use cumulative probabilities.",strong("Adjacent
-                        categories model"), "assumes linear form of logarithm of ratio of probabilities of two successive scores (e.g. 1 vs. 2, 2 vs. 3, etc.),
-                        i.e., of the adjacent category logits."),
-                      h4("Plot with category probabilities"),
-                      p("Lines determine the category probabilities \\(P(Y=k)\\). Circles represent the proportion of answers with k
-                        points with respect to the standardized total score, i. e., the empirical category probabilities. The size of the circles is determined by
-                        the count of respondents who achieved given level of the standardized total score."),
-                      #plotOutput("adj_log_irt_z"),
-                      h4("Equation"),
-                      ('$$P(Y = k|Z,a - \\delta_{1},\\delta_{2},\\cdots) = \\frac{e^{\\sum_{t = 0}^{k}(Z - \\delta_{t})}}{\\sum_{r = 0}^{K}e^{\\sum_{t = 0}^{r}(Z-\\delta_{t})}}$$'),
-                      h4("Table of parameters")#,
-                      #tableOutput("coef_adj_log_irt_z")
+                      uiOutput("adjreg_equation"),
+                      uiOutput("adjreg_interpretation"),
+                      h4("Table of parameters"),
+                      tableOutput("adjreg_coef_tab"),
+                      h4("Selected R code"),
+                      br(),
+                      br()
                       ),
              # * MULTINOMIAL ####
              tabPanel("Multinomial",
@@ -301,5 +301,5 @@ uiRegression <-
                       h4("Selected R code"),
                       div(code(HTML("library(difNLR)&nbsp;<br>library(nnet)&nbsp;<br><br>#&nbsp;loading&nbsp;data<br>data(GMAT,&nbsp;GMATtest,&nbsp;GMATkey)&nbsp;<br>zscore&nbsp;<-&nbsp;scale(apply(GMAT[,&nbsp;1:20]&nbsp;,&nbsp;1,&nbsp;sum))&nbsp;#&nbsp;standardized&nbsp;total&nbsp;score<br>data&nbsp;<-&nbsp;GMATtest[,&nbsp;1:20]&nbsp;<br>key&nbsp;<-GMATkey<br><br>#&nbsp;multinomial&nbsp;model&nbsp;for&nbsp;item&nbsp;1&nbsp;<br>fit&nbsp;<-&nbsp;multinom(relevel(data[,&nbsp;1],&nbsp;ref&nbsp;=&nbsp;paste(key[1]))&nbsp;~&nbsp;zscore)&nbsp;<br><br>#&nbsp;coefficients&nbsp;<br>coef(fit)"))),
                       br()
-                      )
              )
+                      )
