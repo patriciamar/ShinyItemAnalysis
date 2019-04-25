@@ -1,4 +1,4 @@
-﻿        ***************************************************************
+        ***************************************************************
         *                                                             *
         *  Changes and Developments in the ShinyItemAnalysis Package  *
         *                                                             *
@@ -10,9 +10,13 @@
 
 BUG FIXING
   o Busy indicator now properly displays above input tabs.
+  o Bug when using matching in DistractorAnalysis was fixed.
 
 MAJOR UPDATES
-  o New ordinal toy dataset SCIENCE was added. 
+  o New ordinal toy dataset SCIENCE was added.
+
+MINOR UPDATES
+  o Each tab is now open at the top of the page.
 
 
 -------------------------------------------------------

@@ -63,7 +63,9 @@ ui = tagList(
                         integrity = "sha384-U8Vrjwb8fuHMt6ewaCy8uqeUXv4oitYACKdB0VziCerzt011iQ/0TqlSlv8MReCm",
                         crossorigin = "anonymous"),
             tags$script(type = "text/javascript",
-                        src = "math_in_tables.js")
+                        src = "math_in_tables.js"),
+			tags$script(type = "text/javascript",
+                        src = "toppage.js")
             ),
   div(class = "busy",
       p("Loading"),

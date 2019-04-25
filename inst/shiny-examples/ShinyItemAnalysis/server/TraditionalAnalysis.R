@@ -133,7 +133,6 @@ itemanalysis_table_Input <- reactive({
   a <- nominal()
   k <- key()
   correct <- ordinal()
-
   num.groups <- input$DDplotNumGroupsSlider
   range1 <- input$DDplotRangeSlider[[1]]
   range2 <- input$DDplotRangeSlider[[2]]
@@ -218,7 +217,6 @@ distractor_plot_Input <- reactive({
   a <- nominal()
   k <- key()
   i <- input$distractorSlider
-
   multiple.answers <- c(input$type_combinations_distractor == "Combinations")
   plotDistractorAnalysis(data = a, key = k, num.group = input$gr,
                          item = i,
@@ -281,10 +279,9 @@ distractor_table_counts_Input <- reactive({
   k <- key()
   num.group <- input$gr
   item <- input$distractorSlider
-
   DA <- DistractorAnalysis(a, k, num.groups = num.group)[[item]]
   df <- dcast(as.data.frame(DA), response ~ score.level, sum, margins = T, value.var = "Freq")
-  colnames(df) <- c("Response", paste("Group", 1:num.group), "Total")
+  colnames(df) <- c("Response", paste("Group", 1:ifelse(num.group > (ncol(df) - 2), ncol(df) - 2, num.group)), "Total")
   levels(df$Response)[nrow(df)] <- "Total"
   df
 })
@@ -300,10 +297,9 @@ distractor_table_proportions_Input <- reactive({
   k <- key()
   num.group <- input$gr
   item <- input$distractorSlider
-
   DA <- DistractorAnalysis(a, k, num.groups = num.group, p.table = TRUE)[[item]]
   df <- dcast(as.data.frame(DA), response ~ score.level, sum, value.var = "Freq")
-  colnames(df) <- c("Response", paste("Group", 1:num.group))
+  colnames(df) <- c("Response", paste("Group", 1:ifelse(num.group > (ncol(df) - 1), ncol(df) - 1, num.group)))
   df
 })
 
