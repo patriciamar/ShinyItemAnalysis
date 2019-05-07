@@ -1,8 +1,23 @@
-        ***************************************************************
+﻿        ***************************************************************
         *                                                             *
         *  Changes and Developments in the ShinyItemAnalysis Package  *
         *                                                             *
         ***************************************************************
+
+-------------------------------------------------------
+- Changes in ShinyItemAnalysis 1.3.0-8. (2019-05-07) -
+-------------------------------------------------------
+
+BUG FIXING
+  o With option 'Keep missing values' unfunctioning analyses were fixed
+    (missing data removed, warning message added)
+
+MAJOR UPDATES
+  o Multinomial regression plot is now displayed using smooth function
+
+MINOR UPDATES
+  o With option 'Keep missing values' warning messages are displayed 
+    for those analyses for which missing values are omitted
 
 -------------------------------------------------------
 - Changes in ShinyItemAnalysis 1.3.0-7. (2019-04-19) -

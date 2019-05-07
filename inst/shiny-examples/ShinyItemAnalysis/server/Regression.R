@@ -96,6 +96,11 @@ output$logreg_interpretation <- renderUI({
   HTML(paste(txt1, txt2, txt3))
 })
 
+output$logreg_na_alert <- renderUI({
+  txt <- na_score()
+  HTML(txt)
+})
+
 
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # * LOGISTIC Z ######
@@ -106,7 +111,6 @@ z_logreg_model <- reactive({
   zscore <- z_score()
   item <- input$zlogregSlider
   data <- binary()
-
   model <- glm(unlist(data[, item, with = F]) ~ zscore, family = "binomial")
 })
 
@@ -191,6 +195,11 @@ output$z_logreg_interpretation <- renderUI({
 )
   txt3 <- paste ("<b>", abs(b1), "</b>")
   HTML(paste(txt1, txt2, txt3))
+})
+
+output$z_logreg_na_alert <- renderUI({
+  txt <- na_score()
+  HTML(txt)
 })
 
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -304,6 +313,11 @@ output$z_logreg_irt_interpretation <- renderUI({
   HTML(paste(txt1, txt2, txt3))
 })
 
+output$z_logreg_irt_na_alert <- renderUI({
+  txt <- na_score()
+  HTML(txt)
+})
+
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # * NONLINEAR 3P IRT Z ######
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -313,7 +327,16 @@ nlr_3P_model <- reactive({
   data <- binary()
   zscore <- z_score()
   i <- input$slider_nlr_3P_item
-
+  
+  
+  if(any(is.na(zscore)) == TRUE) {
+  
+	idx_NA <- which(is.na(zscore) == TRUE)
+	data <- data[-idx_NA,]
+	zscore <- na.omit(zscore)
+  }
+  
+  
   start <- startNLR(data, group = c(rep(0, nrow(data)/2), rep(1, nrow(data)/2)),
                     model = "3PLcg", parameterization = "classic", simplify = T)[, 1:3]
 
@@ -407,6 +430,10 @@ output$nlr_3P_interpretation <- renderUI({
   HTML(paste0(txt0, txt1, txt2))
 })
 
+output$nlr_3P_na_alert <- renderUI({
+  txt <- na_score()
+  HTML(txt)
+})
 
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # * NONLINEAR 4P IRT Z ######
@@ -417,6 +444,14 @@ nlr_4P_model <- reactive({
   data <- binary()
   zscore <- z_score()
   i <- input$slider_nlr_4P_item
+  
+  if(any(is.na(zscore)) == TRUE) {
+  
+	idx_NA <- which(is.na(zscore) == TRUE)
+    data <- data[-idx_NA,]
+	zscore <- na.omit(zscore)
+  }
+  
 
   start <- startNLR(data, group = c(rep(0, nrow(data)/2), rep(1, nrow(data)/2)),
                     model = "4PLcgdg", parameterization = "classic", simplify = T)[, 1:4]
@@ -511,6 +546,11 @@ output$nlr_4P_interpretation <- renderUI({
   txt2 <- paste0("Probability of guessing is <b>", c, "</b>. ")
   txt3 <- paste0("Probability of inattention is <b>", round(1-d,2), "</b>. ")
   HTML(paste0(txt0, txt1, txt2, txt3))
+})
+
+output$nlr_4P_na_alert <- renderUI({
+  txt <- na_score()
+  HTML(txt)
 })
 
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -647,7 +687,7 @@ observe({
 cumreg_model <- reactive({
   matching <- cumreg_matching()
   data <- as.data.frame(ordinal())
-  maxval <- sapply(data, max)
+  maxval <- sapply(data, function(x) max(x,na.rm=TRUE))
 
   for (i in 1:ncol(data)){
     data[, i] <- factor(data[, i], levels = 0:maxval[i])
@@ -663,7 +703,7 @@ cumreg_model <- reactive({
 # ** Calculation of sizes ######
 cumreg_calculation_sizes <- reactive({
   data <- as.data.frame(ordinal())
-  maxval <- sapply(data, max)
+  maxval <- sapply(data, function(x) max(x,na.rm = TRUE))
   matching <- cumreg_matching()
 
   # relevel data
@@ -1049,6 +1089,11 @@ output$cumreg_coef_tab <- renderTable({
 include.rownames = T,
 include.colnames = T)
 
+output$cumreg_na_alert <- renderUI({
+  txt <- na_score()
+  HTML(txt)
+})
+
 
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # * ADJACENT LOGISTIC ######
@@ -1077,7 +1122,7 @@ observe({
 adjreg_model <- reactive({
   matching <- adjreg_matching()
   data <- as.data.frame(ordinal())
-  maxval <- sapply(data, max)
+  maxval <- sapply(data, function(x) max(x,na.rm = TRUE))
 
   for (i in 1:ncol(data)){
     data[, i] <- factor(data[, i], levels = 0:maxval[i])
@@ -1091,7 +1136,7 @@ adjreg_model <- reactive({
 # ** Calculation of sizes ######
 adjreg_calculation_sizes <- reactive({
   data <- as.data.frame(ordinal())
-  maxval <- sapply(data, max)
+  maxval <- sapply(data, function(x) max(x,na.rm = TRUE))
   matching <- adjreg_matching()
 
   # relevel data
@@ -1351,8 +1396,10 @@ include.rownames = T,
 include.colnames = T)
 
 
-# ** Calculation points ** #
-
+output$adjreg_na_alert <- renderUI({
+  txt <- na_score()
+  HTML(txt)
+})
 
 
 
@@ -1384,27 +1431,87 @@ multi_plot_Input <- reactive({
   item <- input$multiSlider
 
   fitM <- multi_model()
-
+  
   data <- sapply(1:ncol(data), function(i) as.factor(unlist(data[, i, with = F])))
+  
+  f <- function(Z,b_i0,b_i1) {
+    
+	coefs <- as.vector(coef(fitM))
+	j <- length(coefs)/2
+	
+	idx1 <- 1:j
+	idx2 <- (j+1):length(coefs)
+	
+	num <- exp( b_i0 + b_i1 * Z )
+	den <- sapply( 1:j, function(x) exp(coefs[idx1[x]] + coefs[idx2[x]] * Z) )
+	den <- apply(den,1,sum)
+	
+	num/(1 + den )
+  
+  
+  }
 
+  f2 <- function(Z) {
+    
+	coefs <- as.vector(coef(fitM))
+	j <- length(coefs)/2
+	
+	idx1 <- 1:j
+	idx2 <- (j+1):length(coefs)
+	
+	den <- sapply( 1:j, function(x) exp(coefs[idx1[x]] + coefs[idx2[x]] * Z) )
+	den <- apply(den,1,sum)
+	
+	1/(1 + den )
+  
+  
+  }
+  
+  #take x axis
+  x <- seq(min(zscore),max(zscore),0.01)
+  #take number of categories (except the correct one) - but those are in coef(fitM)
+  no_cat <- length(coef(fitM))/2
+  df.probs <- matrix(c(rep(0,no_cat * length(x))), nrow = length(x),ncol = no_cat + 1)
+  
+  #take coefs
+  coefs <- coef(fitM)
+  # b_io
+  idx1 <- 1:no_cat
+  # b_i1
+  idx2 <- (no_cat + 1) : length(coef(fitM))
+  
+  for (i in 1:(length(coef(fitM))/2)) {
+	
+	df.probs[,i+1] <- f(x,coefs[idx1[i]],coefs[idx2[i]])
+  
+  
+  }
+  
+  df.probs[,1] <- f2(x)
+  
   dfhw <- data.table(data[, item], zscore)
   dfhw <- dfhw[complete.cases(dfhw), ]
 
-  pp <- fitted(fitM)
-
+  #pp <- fitted(fitM)
+  
   temp <- as.factor(unlist(dfhw[, 1]))
   temp <- relevel(temp, ref = paste(key[item]))
+  
+  colnames(df.probs) <- levels(temp)
 
-  if(ncol(pp) == 1){
-    pp <- cbind(pp, 1 - pp)
-    colnames(pp) <- rev(levels(temp))
+  if(ncol(df.probs) == 1){
+    df_test <- cbind(df_test, 1 - df_test)
+    colnames(df_test) <- rev(levels(df_test))
   }
 
-  stotals <- rep(unlist(dfhw[, 2]),
-                 length(levels(temp)))
+  #stotals <- rep(unlist(dfhw[, 2]),
+  #              length(levels(temp)))
 
-  df <- cbind(melt(pp), stotals)
+  #df <- cbind(melt(pp), stotals)
+  
+  df <- cbind(melt(df.probs), x)
   df$Var2 <- relevel(as.factor(df$Var2), ref = paste(key[item]))
+  
 
   df2 <- data.table(table(data[, item], zscore),
                     y = data.table(prop.table(table(data[, item], zscore), 2))[, 3])
@@ -1414,7 +1521,7 @@ multi_plot_Input <- reactive({
 
   ggplot() +
     geom_line(data = df,
-              aes(x = stotals , y = value,
+              aes(x = x , y = value,
                   colour = Var2, linetype = Var2), size = 1) +
     geom_point(data = df2,
                aes(x = zscore, y = y.N,
@@ -1586,4 +1693,9 @@ output$multi_interpretation <- renderUI({
     }
   }
   HTML(paste(txt))
+})
+
+output$multi_na_alert <- renderUI({
+  txt <- na_score()
+  HTML(txt)
 })

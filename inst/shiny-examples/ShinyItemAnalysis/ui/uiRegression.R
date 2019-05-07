@@ -18,6 +18,7 @@ uiRegression <-
                       sliderInput("logregSlider", "Item",
                                   min = 1, value = 1, max = 10,
                                   step = 1, animate = animationOptions(interval = 1200)),
+					  uiOutput("logreg_na_alert"),
                       plotOutput('logreg_plot'),
                       downloadButton("DB_logreg_plot", label = "Download figure"),
                       h4("Equation"),
@@ -48,6 +49,7 @@ uiRegression <-
                       sliderInput("zlogregSlider", "Item",
                                   min = 1, value = 1, max = 10,
                                   step = 1, animate = animationOptions(interval = 1200)),
+					  uiOutput("z_logreg_na_alert"),
                       plotOutput('z_logreg_plot'),
                       downloadButton("DB_z_logreg_plot", label = "Download figure"),
                       h4("Equation"),
@@ -78,6 +80,7 @@ uiRegression <-
                       sliderInput("zlogreg_irtSlider", "Item",
                                   min = 1, value = 1, max = 10,
                                   step = 1, animate = animationOptions(interval = 1200)),
+					  uiOutput("z_logreg_irt_na_alert"),
                       plotOutput('z_logreg_irt_plot'),
                       downloadButton("DB_z_logreg_irt_plot", label = "Download figure"),
                       h4("Equation"),
@@ -108,6 +111,7 @@ uiRegression <-
                         level of standardized total score.'),
                       sliderInput(inputId = "slider_nlr_3P_item", label = "Item",
                                   min = 1, value = 1, max = 10, step = 1, animate = animationOptions(interval = 1200)),
+					  uiOutput("nlr_3P_na_alert"),
                       plotOutput('nlr_3P_plot'),
                       downloadButton("DB_nlr_3P_plot", label = "Download figure"),
                       h4("Equation"),
@@ -137,6 +141,7 @@ uiRegression <-
                         level of standardized total score.'),
                       sliderInput(inputId = "slider_nlr_4P_item", label = "Item",
                                   min = 1, value = 1, max = 10, step = 1, animate = animationOptions(interval = 1200)),
+					  uiOutput("nlr_4P_na_alert"),
                       plotOutput('nlr_4P_plot'),
                       downloadButton("DB_nlr_4P_plot", label = "Download figure"),
                       h4("Equation"),
@@ -206,6 +211,7 @@ uiRegression <-
                                                      value = 1,
                                                      step = 1,
                                                      animate = animationOptions(interval = 1200)))),
+					  uiOutput("cumreg_na_alert"),
                       h4("Plot of cumulative probabilities"),
                       p("Lines determine the cumulative probabilities \\(P(Y \\geq k)\\). Circles represent proportion of answers with
                         at least \\(k\\) points with respect to the matching criterion, i.e., the empirical cumulative probabilities.
@@ -259,6 +265,7 @@ uiRegression <-
                                            value = 1,
                                            label = "Item",
                                            animate = animationOptions(interval = 1200)))),
+					  uiOutput("adjreg_na_alert"),
                       h4("Plot with category probabilities"),
                       p("Lines determine the category probabilities \\(P(Y = k)\\). Circles represent the proportion of answers with k
                         points with respect to the total score, i. e., the empirical category probabilities. The size of the circles is determined by
@@ -289,6 +296,7 @@ uiRegression <-
                       sliderInput("multiSlider", "Item",
                                   min = 1, value = 1, max = 10,
                                   step = 1, animate = animationOptions(interval = 1200)),
+					  uiOutput("multi_na_alert"),
                       plotOutput('multi_plot'),
                       downloadButton("DB_multi_plot", label = "Download figure"),
                       h4("Equation"),
