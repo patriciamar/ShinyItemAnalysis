@@ -564,7 +564,21 @@ output$regr_comp_table <- DT::renderDataTable({
   m <- ncol(data)
 
   glr <- function(x, a, b, c, d){c + (d - c) / (1 + exp(-a * (x - b)))}
-
+  
+  # If zscore has NA values, those need to be ommited.
+  # While nls does that automatically, nevertheless the indices of those values
+  # would cause unlist(data[, i, with = F]) have higher dimension 
+  # than output of function glr(zscore, a, b, c = 0, d = 1).
+  # Thus the following code is needed:
+  
+  if(any(is.na(zscore)) == TRUE) {
+  
+	idx_NA <- which(is.na(zscore) == TRUE)
+    data <- data[-idx_NA,]
+	zscore <- na.omit(zscore)
+  
+  }
+  
   start <- startNLR(data, group = c(rep(0, nrow(data)/2), rep(1, nrow(data)/2)),
                     model = "4PLcgdg",
                     parameterization = "classic",
@@ -1468,7 +1482,7 @@ multi_plot_Input <- reactive({
   }
   
   #take x axis
-  x <- seq(min(zscore),max(zscore),0.01)
+  x <- seq(min(zscore, na.rm = TRUE),max(zscore, na.rm = TRUE),0.01)
   #take number of categories (except the correct one) - but those are in coef(fitM)
   no_cat <- length(coef(fitM))/2
   df.probs <- matrix(c(rep(0,no_cat * length(x))), nrow = length(x),ncol = no_cat + 1)
