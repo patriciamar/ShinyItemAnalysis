@@ -82,7 +82,7 @@ output$DB_DDplot <- downloadHandler(
 
 # ** Cronbach's alpha table ######
 cronbachalpha_table_Input <- reactive({
-  correct <- binary()
+  correct <- ordinal()
   tab <- c(psych::alpha(correct)$total[1], psych::alpha(correct)$total[8])
 
   tab <- as.data.table(tab)
@@ -197,6 +197,42 @@ output$download_itemanal_table <- downloadHandler(
 # * DISTRACTORS ######
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+# ** Reactive, which will check number of output groups after applying DistractorAnalysis
+
+distractor_final_groups <- reactive({
+  
+  a <- nominal()
+  k <- key()
+  num.group <- input$gr
+  item <- input$distractorSlider
+  sc <- total_score()
+  DA <- DistractorAnalysis(a, k, num.groups = num.group,matching = sc)[[item]]
+  dimension <- attributes(DA)$'dim'[2]
+  
+  if(dimension < num.group) {
+  
+	bool <- TRUE
+	txt <- paste('<font color = "orange">The cut of criterion variable was not unique. The number of
+                      groups was decreased to ', dimension, ".</font>", sep = "")
+  
+  } else {
+  
+	bool <- FALSE
+	txt <- ""
+  
+  }
+  
+  return(list(bool,dimension,txt))
+
+})
+
+output$distractor_groups_alert <- renderUI({
+
+	HTML(distractor_final_groups()[[3]])
+
+})
+
+
 # ** Distractor text ######
 output$distractor_text <- renderUI({
   txt1 <- paste ('Respondents are divided into ')
@@ -217,11 +253,14 @@ distractor_plot_Input <- reactive({
   a <- nominal()
   k <- key()
   i <- input$distractorSlider
+  sc <- total_score()
+  const <- distractor_final_groups()[[2]]
   multiple.answers <- c(input$type_combinations_distractor == "Combinations")
-  plotDistractorAnalysis(data = a, key = k, num.group = input$gr,
+  plotDistractorAnalysis(data = a, key = k, num.group = ifelse(input$gr > const,const,input$gr),
                          item = i,
                          item.name = item_names()[i],
-                         multiple.answers = multiple.answers)
+                         multiple.answers = multiple.answers,
+						 matching = sc)
 })
 
 # ** Output distractors plot ######
@@ -279,7 +318,9 @@ distractor_table_counts_Input <- reactive({
   k <- key()
   num.group <- input$gr
   item <- input$distractorSlider
-  DA <- DistractorAnalysis(a, k, num.groups = num.group)[[item]]
+  sc <- total_score()
+  const <- distractor_final_groups()[[2]]
+  DA <- DistractorAnalysis(a, k, num.groups = ifelse(num.group > const,const,num.group),matching = sc)[[item]]
   df <- dcast(as.data.frame(DA), response ~ score.level, sum, margins = T, value.var = "Freq")
   colnames(df) <- c("Response", paste("Group", 1:ifelse(num.group > (ncol(df) - 2), ncol(df) - 2, num.group)), "Total")
   levels(df$Response)[nrow(df)] <- "Total"
@@ -297,7 +338,9 @@ distractor_table_proportions_Input <- reactive({
   k <- key()
   num.group <- input$gr
   item <- input$distractorSlider
-  DA <- DistractorAnalysis(a, k, num.groups = num.group, p.table = TRUE)[[item]]
+  sc <- total_score()
+  const <- distractor_final_groups()[[2]]
+  DA <- DistractorAnalysis(a, k, num.groups = ifelse(num.group > const,const,num.group), p.table = TRUE,matching = sc)[[item]]
   df <- dcast(as.data.frame(DA), response ~ score.level, sum, value.var = "Freq")
   colnames(df) <- c("Response", paste("Group", 1:ifelse(num.group > (ncol(df) - 1), ncol(df) - 1, num.group)))
   df
@@ -314,8 +357,9 @@ distractor_barplot_item_response_patterns_Input <- reactive({
   k <- key()
   num.group <- 1
   item <- input$distractorSlider
-
-  DA <- DistractorAnalysis(a, k, num.groups = num.group, p.table = TRUE)[[item]]
+  sc <- total_score()
+  const <- distractor_final_groups()[[2]]
+  DA <- DistractorAnalysis(a, k, num.groups = ifelse(num.group > const,const,num.group),p.table = TRUE,matching = sc)[[item]]
   df <- dcast(as.data.frame(DA), response ~ score.level, sum, value.var = "Freq")
   colnames(df) <- c("Response", "Proportion")
 
@@ -351,11 +395,23 @@ output$DB_distractor_barplot_item_response_patterns <- downloadHandler(
 distractor_histogram_Input <- reactive({
   a <- nominal()
   k <- key()
+  num.groups <- input$gr
   sc <- total_score()
-
+  sc.level <- quantile(sc, seq(0, 1, by = 1/num.groups), na.rm = TRUE)
+  
+  if (length(unique(sc.level)) <= num.groups){
+        
+      while (length(unique(sc.level)) <= num.groups){
+          num.groups <- num.groups - 1
+          sc.level <- quantile(sc, seq(0, 1, by = 1/num.groups), na.rm = TRUE)
+        }
+        sc.level <- cut(sc, sc.level, include.lowest = TRUE,na.rm = TRUE)
+      } else {
+        sc.level <- cut(sc, sc.level, include.lowest = TRUE,na.rm = TRUE)
+      }
+  
   df <- data.table(sc,
-                   gr = cut(sc, quantile(sc, seq(0, 1, by = 1/input$gr), na.rm = T),
-                            include.lowest = T))
+                   gr = sc.level)
   col <- c("darkred", "red", "orange", "gold", "green3")
   col <- switch(input$gr,
                 "1" = col[4],
@@ -370,7 +426,7 @@ distractor_histogram_Input <- reactive({
          y = "Number of respondents") +
     scale_y_continuous(expand = c(0, 0),
                        limits = c(0, max(table(sc)) + 0.01 * nrow(a))) +
-    scale_x_continuous(limits = c(-0.5, ncol(a) + 0.5)) +
+    scale_x_continuous(limits = c(-0.5 + min(sc), max(sc) + 0.5)) +
     theme_app()
 })
 
@@ -397,13 +453,15 @@ output$DB_distractor_histogram <- downloadHandler(
 # ** Distractor analysis table by group ######
 distractor_table_total_score_by_group_Input <- reactive({
   sc <- total_score()
-  num.group <- input$gr
+  const <- distractor_final_groups()[[2]]
+  num.group <- ifelse(input$gr > const,const,input$gr)
+  
+  sc.level <- quantile(sc, seq(0, 1, by = 1/num.group), na.rm = TRUE)
 
-  score.level <- quantile(sc, seq(0, 1, by = 1/num.group), na.rm = T)
   tab <- table(cut(sc,
-                   score.level,
+                   sc.level,
                    include.lowest = T,
-                   labels = score.level[-1]))
+                   labels = sc.level[-1]))
   tab <- t(data.frame(tab))
   tab <- matrix(round(as.numeric(tab), 2), nrow = 2)
 
@@ -418,4 +476,11 @@ output$distractor_table_total_score_by_group <- renderTable({
 },
 include.colnames = TRUE,
 include.rownames = TRUE)
+
+observeEvent(distractor_final_groups()[[1]],{
+	
+	c <- distractor_final_groups()[[2]]
+	updateSliderInput(session,"gr",value = c)
+
+})
 

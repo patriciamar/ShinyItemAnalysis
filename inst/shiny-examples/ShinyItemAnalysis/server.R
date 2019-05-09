@@ -404,6 +404,27 @@ function(input, output, session) {
   z_score <- reactive({
     scale(total_score())
   })
+  
+  #warning, if total_score or zscore will have NA's
+  
+  na_score <- reactive({
+  
+	if (any(is.na(total_score())) | any(is.na(z_score()))) {
+	
+		txt <- "<font color = 'orange'>
+				For this analysis, observations with missing values have been omitted.
+				</font>"
+	
+	} else {
+		
+		txt <- ""
+	
+	}
+	
+	txt
+  
+  
+  })
 
   # * Item numbers and item names ######
   item_numbers <- reactive({

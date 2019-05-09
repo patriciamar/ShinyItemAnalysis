@@ -79,8 +79,8 @@ output$histbyscoregroup1 <- renderPlotly ({
   bin <- as.numeric(input$inSlider2group)
   data <- binary()
 
-  if (min(sc) <= bin & bin <= max(sc)){
-    breaks <- unique(c(min(sc) - 1, bin - 1, bin, max(sc)))
+  if (min(sc, na.rm = TRUE) <= bin & bin <= max(sc,na.rm = TRUE)){
+    breaks <- unique(c(min(sc, na.rm = TRUE) - 1, bin - 1, bin, max(sc, na.rm = TRUE)))
   } else {
     breaks <- c(0, ncol(data))
   }
@@ -149,10 +149,10 @@ histbyscoregroup0Input <- reactive ({
                             breaks = unique(c(0, bin - 1, bin, ncol(data))),
                             include.lowest = T))
 
-  if (bin < min(sc, na.rm = T)){
+  if (bin < min(sc, na.rm = TRUE)){
     col <- "blue"
   } else {
-    if (bin == min(sc, na.rm = T)){
+    if (bin == min(sc, na.rm = TRUE)){
       col <- c("grey", "blue")
     } else {
       col <- c("red", "grey", "blue")
@@ -176,8 +176,8 @@ output$histbyscoregroup0 <- renderPlotly ({
   bin <- as.numeric(input$inSlider2group)
   data <- binary()
 
-  if (min(sc) <= bin & bin <= max(sc)){
-    breaks <- unique(c(min(sc) - 1, bin - 1, bin, max(sc)))
+  if (min(sc,na.rm = TRUE) <= bin & bin <= max(sc, na.rm = TRUE)){
+    breaks <- unique(c(min(sc,na.rm = TRUE) - 1, bin - 1, bin, max(sc,na.rm = TRUE)))
   } else {
     breaks <- c(0, ncol(data))
   }

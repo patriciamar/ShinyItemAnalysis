@@ -43,7 +43,7 @@ tabPanel("Traditional item analysis",
          plotOutput('DDplot'),
          downloadButton("DB_DDplot", label = "Download figure"),
          h4("Cronbach's alpha"),
-         p("Chronbach's alpha is an estimate of the reliability of a psychometric test. It is a function
+         p("Cronbach's alpha is an estimate of the reliability of a psychometric test. It is a function
             of the number of items in a test, the average covariance between item-pairs, and the variance
             of the total score (Cronbach, 1951)."),
          tableOutput('cronbachalpha_table'),
@@ -90,6 +90,7 @@ tabPanel("Distractors",
                                    value = 1,
                                    step = 1,
                                    animate = animationOptions(interval = 1200)))),
+		 uiOutput("distractor_groups_alert"),
          plotOutput('distractor_plot'),
          downloadButton("DB_distractor_plot", label = "Download figure"),
          br(),
