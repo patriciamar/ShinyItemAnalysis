@@ -79,7 +79,7 @@ output$histbyscoregroup1 <- renderPlotly ({
   bin <- as.numeric(input$inSlider2group)
   data <- binary()
 
-  if (min(sc, na.rm = TRUE) <= bin & bin <= max(sc,na.rm = TRUE)){
+  if (min(sc, na.rm = TRUE) <= bin & bin <= max(sc, na.rm = TRUE)){
     breaks <- unique(c(min(sc, na.rm = TRUE) - 1, bin - 1, bin, max(sc, na.rm = TRUE)))
   } else {
     breaks <- c(0, ncol(data))
@@ -176,8 +176,8 @@ output$histbyscoregroup0 <- renderPlotly ({
   bin <- as.numeric(input$inSlider2group)
   data <- binary()
 
-  if (min(sc,na.rm = TRUE) <= bin & bin <= max(sc, na.rm = TRUE)){
-    breaks <- unique(c(min(sc,na.rm = TRUE) - 1, bin - 1, bin, max(sc,na.rm = TRUE)))
+  if (min(sc, na.rm = TRUE) <= bin & bin <= max(sc, na.rm = TRUE)){
+    breaks <- unique(c(min(sc, na.rm = TRUE) - 1, bin - 1, bin, max(sc, na.rm = TRUE)))
   } else {
     breaks <- c(0, ncol(data))
   }

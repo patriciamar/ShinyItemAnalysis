@@ -192,7 +192,7 @@ output$z_logreg_interpretation <- renderUI({
       scores) is associated with the", txt0, " in the log
       odds of answering the item correctly
       vs. not correctly in the amount of"
-)
+    )
   txt3 <- paste ("<b>", abs(b1), "</b>")
   HTML(paste(txt1, txt2, txt3))
 })
@@ -308,7 +308,7 @@ output$z_logreg_irt_interpretation <- renderUI({
       scores) is associated with the", txt0, " in the log
       odds of answering the item correctly
       vs. not correctly in the amount of"
-)
+    )
   txt3 <- paste ("<b>", abs(b1), "</b>")
   HTML(paste(txt1, txt2, txt3))
 })
@@ -327,16 +327,14 @@ nlr_3P_model <- reactive({
   data <- binary()
   zscore <- z_score()
   i <- input$slider_nlr_3P_item
-  
-  
-  if(any(is.na(zscore)) == TRUE) {
-  
-	idx_NA <- which(is.na(zscore) == TRUE)
-	data <- data[-idx_NA,]
-	zscore <- na.omit(zscore)
+
+  if(any(is.na(zscore))) {
+    idx_NA <- which(is.na(zscore))
+    data <- data[-idx_NA, ]
+    zscore <- na.omit(zscore)
   }
-  
-  
+
+
   start <- startNLR(data, group = c(rep(0, nrow(data)/2), rep(1, nrow(data)/2)),
                     model = "3PLcg", parameterization = "classic", simplify = T)[, 1:3]
 
@@ -444,14 +442,12 @@ nlr_4P_model <- reactive({
   data <- binary()
   zscore <- z_score()
   i <- input$slider_nlr_4P_item
-  
-  if(any(is.na(zscore)) == TRUE) {
-  
-	idx_NA <- which(is.na(zscore) == TRUE)
-    data <- data[-idx_NA,]
-	zscore <- na.omit(zscore)
+
+  if(any(is.na(zscore))) {
+    idx_NA <- which(is.na(zscore))
+    data <- data[-idx_NA, ]
+    zscore <- na.omit(zscore)
   }
-  
 
   start <- startNLR(data, group = c(rep(0, nrow(data)/2), rep(1, nrow(data)/2)),
                     model = "4PLcgdg", parameterization = "classic", simplify = T)[, 1:4]
@@ -564,21 +560,19 @@ output$regr_comp_table <- DT::renderDataTable({
   m <- ncol(data)
 
   glr <- function(x, a, b, c, d){c + (d - c) / (1 + exp(-a * (x - b)))}
-  
+
   # If zscore has NA values, those need to be ommited.
   # While nls does that automatically, nevertheless the indices of those values
-  # would cause unlist(data[, i, with = F]) have higher dimension 
+  # would cause unlist(data[, i, with = F]) have higher dimension
   # than output of function glr(zscore, a, b, c = 0, d = 1).
   # Thus the following code is needed:
-  
-  if(any(is.na(zscore)) == TRUE) {
-  
-	idx_NA <- which(is.na(zscore) == TRUE)
-    data <- data[-idx_NA,]
-	zscore <- na.omit(zscore)
-  
+
+  if(any(is.na(zscore))){
+    idx_NA <- which(is.na(zscore))
+    data <- data[-idx_NA, ]
+    zscore <- na.omit(zscore)
   }
-  
+
   start <- startNLR(data, group = c(rep(0, nrow(data)/2), rep(1, nrow(data)/2)),
                     model = "4PLcgdg",
                     parameterization = "classic",
@@ -701,7 +695,7 @@ observe({
 cumreg_model <- reactive({
   matching <- cumreg_matching()
   data <- as.data.frame(ordinal())
-  maxval <- sapply(data, function(x) max(x,na.rm=TRUE))
+  maxval <- sapply(data, function(x) max(x, na.rm = TRUE))
 
   for (i in 1:ncol(data)){
     data[, i] <- factor(data[, i], levels = 0:maxval[i])
@@ -717,7 +711,7 @@ cumreg_model <- reactive({
 # ** Calculation of sizes ######
 cumreg_calculation_sizes <- reactive({
   data <- as.data.frame(ordinal())
-  maxval <- sapply(data, function(x) max(x,na.rm = TRUE))
+  maxval <- sapply(data, function(x) max(x, na.rm = TRUE))
   matching <- cumreg_matching()
 
   # relevel data
@@ -1136,21 +1130,21 @@ observe({
 adjreg_model <- reactive({
   matching <- adjreg_matching()
   data <- as.data.frame(ordinal())
-  maxval <- sapply(data, function(x) max(x,na.rm = TRUE))
+  maxval <- sapply(data, function(x) max(x, na.rm = TRUE))
 
   for (i in 1:ncol(data)){
     data[, i] <- factor(data[, i], levels = 0:maxval[i])
   }
 
   fit.adj <- apply(data, 2, function(x)
-							vglm(x ~ matching, family = acat(reverse = FALSE, parallel = TRUE)))
+    vglm(x ~ matching, family = acat(reverse = FALSE, parallel = TRUE)))
   fit.adj
 })
 
 # ** Calculation of sizes ######
 adjreg_calculation_sizes <- reactive({
   data <- as.data.frame(ordinal())
-  maxval <- sapply(data, function(x) max(x,na.rm = TRUE))
+  maxval <- sapply(data, function(x) max(x, na.rm = TRUE))
   matching <- adjreg_matching()
 
   # relevel data
@@ -1445,72 +1439,63 @@ multi_plot_Input <- reactive({
   item <- input$multiSlider
 
   fitM <- multi_model()
-  
+
   data <- sapply(1:ncol(data), function(i) as.factor(unlist(data[, i, with = F])))
-  
-  f <- function(Z,b_i0,b_i1) {
-    
-	coefs <- as.vector(coef(fitM))
-	j <- length(coefs)/2
-	
-	idx1 <- 1:j
-	idx2 <- (j+1):length(coefs)
-	
-	num <- exp( b_i0 + b_i1 * Z )
-	den <- sapply( 1:j, function(x) exp(coefs[idx1[x]] + coefs[idx2[x]] * Z) )
-	den <- apply(den,1,sum)
-	
-	num/(1 + den )
-  
-  
+
+  f <- function(Z, b_i0, b_i1) {
+    coefs <- as.vector(coef(fitM))
+    j <- length(coefs)/2
+
+    idx1 <- 1:j
+    idx2 <- (j+1):length(coefs)
+
+    num <- exp(b_i0 + b_i1 * Z)
+    den <- sapply(1:j, function(x) exp(coefs[idx1[x]] + coefs[idx2[x]] * Z))
+    den <- apply(den, 1, sum)
+
+    num/(1 + den)
   }
 
   f2 <- function(Z) {
-    
-	coefs <- as.vector(coef(fitM))
-	j <- length(coefs)/2
-	
-	idx1 <- 1:j
-	idx2 <- (j+1):length(coefs)
-	
-	den <- sapply( 1:j, function(x) exp(coefs[idx1[x]] + coefs[idx2[x]] * Z) )
-	den <- apply(den,1,sum)
-	
-	1/(1 + den )
-  
-  
+    coefs <- as.vector(coef(fitM))
+    j <- length(coefs)/2
+
+    idx1 <- 1:j
+    idx2 <- (j+1):length(coefs)
+
+    den <- sapply(1:j, function(x) exp(coefs[idx1[x]] + coefs[idx2[x]] * Z))
+    den <- apply(den, 1, sum)
+
+    1/(1 + den)
   }
-  
-  #take x axis
-  x <- seq(min(zscore, na.rm = TRUE),max(zscore, na.rm = TRUE),0.01)
-  #take number of categories (except the correct one) - but those are in coef(fitM)
+
+  # take x axis
+  x <- seq(min(zscore, na.rm = TRUE), max(zscore, na.rm = TRUE), 0.01)
+  # take number of categories (except the correct one) - but those are in coef(fitM)
   no_cat <- length(coef(fitM))/2
-  df.probs <- matrix(c(rep(0,no_cat * length(x))), nrow = length(x),ncol = no_cat + 1)
-  
-  #take coefs
+  df.probs <- matrix(c(rep(0, no_cat * length(x))), nrow = length(x), ncol = no_cat + 1)
+
+  # take coefs
   coefs <- coef(fitM)
   # b_io
   idx1 <- 1:no_cat
   # b_i1
-  idx2 <- (no_cat + 1) : length(coef(fitM))
-  
+  idx2 <- (no_cat + 1):length(coef(fitM))
+
   for (i in 1:(length(coef(fitM))/2)) {
-	
-	df.probs[,i+1] <- f(x,coefs[idx1[i]],coefs[idx2[i]])
-  
-  
+    df.probs[, i+1] <- f(x, coefs[idx1[i]], coefs[idx2[i]])
   }
-  
-  df.probs[,1] <- f2(x)
-  
+
+  df.probs[, 1] <- f2(x)
+
   dfhw <- data.table(data[, item], zscore)
   dfhw <- dfhw[complete.cases(dfhw), ]
 
-  #pp <- fitted(fitM)
-  
+  # pp <- fitted(fitM)
+
   temp <- as.factor(unlist(dfhw[, 1]))
   temp <- relevel(temp, ref = paste(key[item]))
-  
+
   colnames(df.probs) <- levels(temp)
 
   if(ncol(df.probs) == 1){
@@ -1518,14 +1503,14 @@ multi_plot_Input <- reactive({
     colnames(df_test) <- rev(levels(df_test))
   }
 
-  #stotals <- rep(unlist(dfhw[, 2]),
-  #              length(levels(temp)))
+  # stotals <- rep(unlist(dfhw[, 2]),
+  #                length(levels(temp)))
 
-  #df <- cbind(melt(pp), stotals)
-  
+  # df <- cbind(melt(pp), stotals)
+
   df <- cbind(melt(df.probs), x)
   df$Var2 <- relevel(as.factor(df$Var2), ref = paste(key[item]))
-  
+
 
   df2 <- data.table(table(data[, item], zscore),
                     y = data.table(prop.table(table(data[, item], zscore), 2))[, 3])

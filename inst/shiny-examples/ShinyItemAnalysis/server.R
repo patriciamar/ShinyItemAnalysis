@@ -104,10 +104,10 @@ function(input, output, session) {
     if (datasetName == "dataMedicalgraded") {
       do.call(data, args = list(paste0(datasetName), package = packageName))
       dataOrdinal <- get(paste0(datasetName))
-      
+
 	  group <- dataOrdinal[, "gender"]
 	  criterion <- dataOrdinal[, "StudySuccess"]
-	
+
 	  dataOrdinal <- dataOrdinal[, 1:(dim(dataOrdinal)[2] - 2)]
       dataNominal <- dataOrdinal
 
@@ -118,25 +118,25 @@ function(input, output, session) {
       dataBinary <- matrix(as.numeric(dataOrdinal >= df.key),
                            ncol = ncol(dataOrdinal), nrow = nrow(dataOrdinal))
 
-    } else if (datasetName == "Science") { 
+    } else if (datasetName == "Science") {
 	  do.call(data, args = list(paste0(datasetName), package = packageName))
       dataOrdinal <- get(paste0(datasetName))
-	  
+
 	  dataNominal <- dataOrdinal
-	  
+
 	  group <- "missing"
 	  criterion <- "missing"
-	  
+
 	  colnames(dataOrdinal) <- paste0("Item",1:4)
 	  colnames(dataNominal) <- paste0("Item",1:4)
-	  
+
       dataType <- "ordinal"
-	  
+
 	  key <- sapply(dataOrdinal, max)
       df.key <- sapply(key, rep, each = nrow(dataOrdinal))
       dataBinary <- matrix(as.numeric(dataOrdinal >= df.key),
                            ncol = ncol(dataOrdinal), nrow = nrow(dataOrdinal))
-	
+
 	} else {
       do.call(data, args = list(paste0(datasetName, "test"), package = packageName))
       dataNominal <- get(paste0(datasetName, "test"))
@@ -404,26 +404,17 @@ function(input, output, session) {
   z_score <- reactive({
     scale(total_score())
   })
-  
-  #warning, if total_score or zscore will have NA's
-  
+
+  # warning, if total_score or zscore will have NA's
   na_score <- reactive({
-  
-	if (any(is.na(total_score())) | any(is.na(z_score()))) {
-	
-		txt <- "<font color = 'orange'>
+    if (any(is.na(total_score())) | any(is.na(z_score()))) {
+      txt <- "<font color = 'orange'>
 				For this analysis, observations with missing values have been omitted.
 				</font>"
-	
-	} else {
-		
-		txt <- ""
-	
-	}
-	
-	txt
-  
-  
+    } else {
+      txt <- ""
+    }
+    txt
   })
 
   # * Item numbers and item names ######
