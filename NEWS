@@ -1,4 +1,4 @@
-﻿        ***************************************************************
+        ***************************************************************
         *                                                             *
         *  Changes and Developments in the ShinyItemAnalysis Package  *
         *                                                             *
@@ -9,9 +9,13 @@
 -------------------------------------------------------
 
 MAJOR UPDATES
-  o DistractorAnalysis() and plotDistractorAnalysis() functions were 
-    updated to allow for lowering the number of categories in cases when 
+  o DistractorAnalysis() and plotDistractorAnalysis() functions were
+    updated to allow for lowering the number of categories in cases when
     cuts are not uniquely defined. Application was updated accordingly.
+
+MINOR UPDATES
+  o Tables and equations of polytomous models in Regression section are
+    now center-aligned.
 
 -------------------------------------------------------
 - Changes in ShinyItemAnalysis 1.3.0-8. (2019-05-07) -
@@ -25,11 +29,11 @@ MAJOR UPDATES
   o Multinomial regression plot is now displayed using smooth function
 
 MINOR UPDATES
-  o With option 'Keep missing values' warning message is now displayed 
+  o With option 'Keep missing values' warning message is now displayed
     for those analyses for which missing values are omitted.
-  o For ordinal data, Cronbach's alpha is now calculated from original 
+  o For ordinal data, Cronbach's alpha is now calculated from original
     ordinal (non-binarized) data both in Reliability and in Item analysis
-    section. 
+    section.
 
 -------------------------------------------------------
 - Changes in ShinyItemAnalysis 1.3.0-7. (2019-04-19) -
