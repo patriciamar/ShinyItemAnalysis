@@ -56,7 +56,7 @@ DistractorAnalysis(data, key, num.group = 6)
 \code{\link[CTT]{distractor.analysis}}
 }
 \author{
-Adela Hladka \cr
+Adela Hladka  \cr
 Institute of Computer Science, The Czech Academy of Sciences \cr
 Faculty of Mathematics and Physics, Charles University \cr
 drabinova@cs.cas.cz \cr
