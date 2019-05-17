@@ -1497,8 +1497,6 @@ multi_plot_Input <- reactive({
   dfhw <- data.table(data[, item], zscore)
   dfhw <- dfhw[complete.cases(dfhw), ]
 
-  # pp <- fitted(fitM)
-
   temp <- as.factor(unlist(dfhw[, 1]))
   temp <- relevel(temp, ref = paste(key[item]))
 
@@ -1508,11 +1506,6 @@ multi_plot_Input <- reactive({
     df_test <- cbind(df_test, 1 - df_test)
     colnames(df_test) <- rev(levels(df_test))
   }
-
-  # stotals <- rep(unlist(dfhw[, 2]),
-  #                length(levels(temp)))
-
-  # df <- cbind(melt(pp), stotals)
 
   df <- cbind(melt(df.probs), x)
   df$Var2 <- relevel(as.factor(df$Var2), ref = paste(key[item]))
@@ -1553,16 +1546,7 @@ multiplotReportInput <- reactive({
 
   data <- sapply(1:ncol(data), function(i) as.factor(unlist(data[, i, with = F])))
 
-  for (item in 1:length(key)) {
-    dfhw <- data.table(data[, item], zscore)
-    dfhw <- dfhw[complete.cases(dfhw), ]
-
-    fitM <- multinom(relevel(as.factor(unlist(dfhw[, 1])),
-                             ref = paste(key[item])) ~ unlist(dfhw[, 2]),
-                     trace = F)
-
-
-	f <- function(Z, b_i0, b_i1) {
+  f <- function(Z, b_i0, b_i1) {
     coefs <- as.vector(coef(fitM))
     j <- length(coefs)/2
 
@@ -1589,36 +1573,46 @@ multiplotReportInput <- reactive({
     1/(1 + den)
   }
 
-  x <- seq(min(zscore, na.rm = TRUE), max(zscore, na.rm = TRUE), 0.01)
-  # take number of categories (except the correct one) - but those are in coef(fitM)
-  no_cat <- length(coef(fitM))/2
-  df.probs <- matrix(c(rep(0, no_cat * length(x))), nrow = length(x), ncol = no_cat + 1)
+  for (item in 1:length(key)) {
+    dfhw <- data.table(data[, item], zscore)
+    dfhw <- dfhw[complete.cases(dfhw), ]
 
-  # take coefs
-  coefs <- coef(fitM)
-  # b_io
-  idx1 <- 1:no_cat
-  # b_i1
-  idx2 <- (no_cat + 1):length(coef(fitM))
+    fitM <- multinom(relevel(as.factor(unlist(dfhw[, 1])),
+                             ref = paste(key[item])) ~ unlist(dfhw[, 2]),
+                     trace = F)
 
-  for (i in 1:(length(coef(fitM))/2)) {
-    df.probs[, i+1] <- f(x, coefs[idx1[i]], coefs[idx2[i]])
-  }
+    x <- seq(min(zscore, na.rm = TRUE), max(zscore, na.rm = TRUE), 0.01)
 
-  df.probs[, 1] <- f2(x)
+    # take number of categories (except the correct one) - but those are in coef(fitM)
+    no_cat <- length(coef(fitM))/2
+    df.probs <- matrix(c(rep(0, no_cat * length(x))), nrow = length(x), ncol = no_cat + 1)
 
+    # take coefs
+    coefs <- coef(fitM)
+    # b_io
+    idx1 <- 1:no_cat
+    # b_i1
+    idx2 <- (no_cat + 1):length(coef(fitM))
 
+    for (i in 1:(length(coef(fitM))/2)) {
+      df.probs[, i+1] <- f(x, coefs[idx1[i]], coefs[idx2[i]])
+    }
 
-  #pp <- fitted(fitM)
-  temp <- as.factor(unlist(dfhw[, 1]))
-  temp <- relevel(temp, ref = paste(key[item]))
+    df.probs[, 1] <- f2(x)
 
-  if(ncol(df.probs) == 1){
-    df_test <- cbind(df_test, 1 - df_test)
-    colnames(df_test) <- rev(levels(df_test))
-  }
+    dfhw <- data.table(data[, item], zscore)
+    dfhw <- dfhw[complete.cases(dfhw), ]
 
-    #stotals <- rep(unlist(dfhw[, 2]), length(levels(as.factor(unlist(dfhw[, 1, with = F])))))
+    temp <- as.factor(unlist(dfhw[, 1]))
+    temp <- relevel(temp, ref = paste(key[item]))
+
+    colnames(df.probs) <- levels(temp)
+
+    if(ncol(df.probs) == 1){
+      df_test <- cbind(df_test, 1 - df_test)
+      colnames(df_test) <- rev(levels(df_test))
+    }
+
     df <- cbind(melt(df.probs), x)
     df$Var2 <- relevel(as.factor(df$Var2), ref = paste(key[item]))
     df2 <- data.table(table(data[, item], zscore),

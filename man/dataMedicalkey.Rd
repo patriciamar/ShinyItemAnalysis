@@ -36,7 +36,7 @@ Institute of Computer Science, The Czech Academy of Sciences \cr
 The Faculty of Informatics and Statistics, University of Economics, Prague \cr
 houdek.james@gmail.com \cr
 
-Adela Hladka \cr
+Adela Hladka  \cr
 Institute of Computer Science, The Czech Academy of Sciences \cr
 Faculty of Mathematics and Physics, Charles University \cr
 drabinova@cs.cas.cz \cr

@@ -63,7 +63,7 @@ plotDIFLogistic(data, group, item = 1, group.names = c("Group 1", "Group 2"))
 
 }
 \author{
-Adela Hladka \cr
+Adela Hladka  \cr
 Institute of Computer Science, The Czech Academy of Sciences \cr
 Faculty of Mathematics and Physics, Charles University \cr
 drabinova@cs.cas.cz \cr

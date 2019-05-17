@@ -54,7 +54,7 @@ Wright, B. D., & Stone, M. H. (1979). Best test design.
 \code{\link[WrightMap]{wrightMap}}
 }
 \author{
-Adela Hladka \cr
+Adela Hladka  \cr
 Institute of Computer Science, The Czech Academy of Sciences \cr
 Faculty of Mathematics and Physics, Charles University \cr
 drabinova@cs.cas.cz \cr

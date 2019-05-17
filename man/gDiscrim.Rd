@@ -74,7 +74,7 @@ http://dx.doi.org/10.15439/2017F380
 \code{\link{DDplot}}
 }
 \author{
-Adela Hladka \cr
+Adela Hladka  \cr
 Institute of Computer Science, The Czech Academy of Sciences \cr
 Faculty of Mathematics and Physics, Charles University \cr
 drabinova@cs.cas.cz \cr
