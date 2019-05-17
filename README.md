@@ -1,5 +1,4 @@
-<div><h1 style = "display: inline-block">ShinyItemAnalysis</h1><img style = "float: right; display: inline-block" src="inst/shiny-examples/ShinyItemAnalysis/hexbin_html.png" width="110"></img></div>
-
+# ShinyItemAnalysis <img src="inst/shiny-examples/ShinyItemAnalysis/hexbin_html.png" align="right" width=150/> 
 Test and item analysis via shiny
 
 ![GHversion](https://img.shields.io/github/release/patriciamar/ShinyItemAnalysis.svg)
@@ -33,7 +32,7 @@ devtools::install_github("patriciamar/ShinyItemAnalysis")
 ## Version
 Current version available on [**CRAN**](https://CRAN.R-project.org/package=ShinyItemAnalysis) is 1.3.0. <br> 
 Version available online at [Czech Academy of Sciences](https://shiny.cs.cas.cz/ShinyItemAnalysis/) and [shinyapps.io](https://cemp.shinyapps.io/ShinyItemAnalysis/) is 1.3.0. <br> 
-The newest development version available on [**GitHub**](https://github.com/patriciamar/ShinyItemAnalysis) is 1.3.0-9.
+The newest development version available on [**GitHub**](https://github.com/patriciamar/ShinyItemAnalysis) is 1.3.0-10.
 
 ## Usage
 It's very easy to run `ShinyItemAnalysis`:

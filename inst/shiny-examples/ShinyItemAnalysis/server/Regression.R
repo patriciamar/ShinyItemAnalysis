@@ -96,6 +96,7 @@ output$logreg_interpretation <- renderUI({
   HTML(paste(txt1, txt2, txt3))
 })
 
+# ** Warning for missing values ####
 output$logreg_na_alert <- renderUI({
   txt <- na_score()
   HTML(txt)
@@ -197,6 +198,7 @@ output$z_logreg_interpretation <- renderUI({
   HTML(paste(txt1, txt2, txt3))
 })
 
+# ** Warning for missing values ####
 output$z_logreg_na_alert <- renderUI({
   txt <- na_score()
   HTML(txt)
@@ -313,6 +315,7 @@ output$z_logreg_irt_interpretation <- renderUI({
   HTML(paste(txt1, txt2, txt3))
 })
 
+# ** Warning for missing values ####
 output$z_logreg_irt_na_alert <- renderUI({
   txt <- na_score()
   HTML(txt)
@@ -428,6 +431,7 @@ output$nlr_3P_interpretation <- renderUI({
   HTML(paste0(txt0, txt1, txt2))
 })
 
+# ** Warning for missing values ####
 output$nlr_3P_na_alert <- renderUI({
   txt <- na_score()
   HTML(txt)
@@ -544,6 +548,7 @@ output$nlr_4P_interpretation <- renderUI({
   HTML(paste0(txt0, txt1, txt2, txt3))
 })
 
+# ** Warning for missing values ####
 output$nlr_4P_na_alert <- renderUI({
   txt <- na_score()
   HTML(txt)
@@ -1097,6 +1102,7 @@ output$cumreg_coef_tab <- renderTable({
 include.rownames = T,
 include.colnames = T)
 
+# ** Warning for missing values ####
 output$cumreg_na_alert <- renderUI({
   txt <- na_score()
   HTML(txt)
@@ -1403,7 +1409,7 @@ output$adjreg_coef_tab <- renderTable({
 include.rownames = T,
 include.colnames = T)
 
-
+# ** Warning for missing values ####
 output$adjreg_na_alert <- renderUI({
   txt <- na_score()
   HTML(txt)
@@ -1555,17 +1561,65 @@ multiplotReportInput <- reactive({
                              ref = paste(key[item])) ~ unlist(dfhw[, 2]),
                      trace = F)
 
-    pp <- fitted(fitM)
-    temp <- as.factor(unlist(dfhw[, 1]))
-    temp <- relevel(temp, ref = paste(key[item]))
 
-    if(ncol(pp) == 1){
-      pp <- cbind(pp, 1 - pp)
-      colnames(pp) <- rev(levels(temp))
-    }
+	f <- function(Z, b_i0, b_i1) {
+    coefs <- as.vector(coef(fitM))
+    j <- length(coefs)/2
 
-    stotals <- rep(unlist(dfhw[, 2]), length(levels(as.factor(unlist(dfhw[, 1, with = F])))))
-    df <- cbind(melt(pp), stotals)
+    idx1 <- 1:j
+    idx2 <- (j+1):length(coefs)
+
+    num <- exp(b_i0 + b_i1 * Z)
+    den <- sapply(1:j, function(x) exp(coefs[idx1[x]] + coefs[idx2[x]] * Z))
+    den <- apply(den, 1, sum)
+
+    num/(1 + den)
+  }
+
+  f2 <- function(Z) {
+    coefs <- as.vector(coef(fitM))
+    j <- length(coefs)/2
+
+    idx1 <- 1:j
+    idx2 <- (j+1):length(coefs)
+
+    den <- sapply(1:j, function(x) exp(coefs[idx1[x]] + coefs[idx2[x]] * Z))
+    den <- apply(den, 1, sum)
+
+    1/(1 + den)
+  }
+
+  x <- seq(min(zscore, na.rm = TRUE), max(zscore, na.rm = TRUE), 0.01)
+  # take number of categories (except the correct one) - but those are in coef(fitM)
+  no_cat <- length(coef(fitM))/2
+  df.probs <- matrix(c(rep(0, no_cat * length(x))), nrow = length(x), ncol = no_cat + 1)
+
+  # take coefs
+  coefs <- coef(fitM)
+  # b_io
+  idx1 <- 1:no_cat
+  # b_i1
+  idx2 <- (no_cat + 1):length(coef(fitM))
+
+  for (i in 1:(length(coef(fitM))/2)) {
+    df.probs[, i+1] <- f(x, coefs[idx1[i]], coefs[idx2[i]])
+  }
+
+  df.probs[, 1] <- f2(x)
+
+
+
+  #pp <- fitted(fitM)
+  temp <- as.factor(unlist(dfhw[, 1]))
+  temp <- relevel(temp, ref = paste(key[item]))
+
+  if(ncol(df.probs) == 1){
+    df_test <- cbind(df_test, 1 - df_test)
+    colnames(df_test) <- rev(levels(df_test))
+  }
+
+    #stotals <- rep(unlist(dfhw[, 2]), length(levels(as.factor(unlist(dfhw[, 1, with = F])))))
+    df <- cbind(melt(df.probs), x)
     df$Var2 <- relevel(as.factor(df$Var2), ref = paste(key[item]))
     df2 <- data.table(table(data[, item], zscore),
                       y = data.table(prop.table(table(data[, item], zscore), 2))[, 3])
@@ -1574,7 +1628,7 @@ multiplotReportInput <- reactive({
 
     g <-  ggplot() +
       geom_line(data = df,
-                aes(x = stotals , y = value,
+                aes(x = x , y = value,
                     colour = Var2, linetype = Var2), size = 1) +
       geom_point(data = df2,
                  aes(x = zscore, y = y.N,
@@ -1694,6 +1748,7 @@ output$multi_interpretation <- renderUI({
   HTML(paste(txt))
 })
 
+# ** Warning for missing values ####
 output$multi_na_alert <- renderUI({
   txt <- na_score()
   HTML(txt)

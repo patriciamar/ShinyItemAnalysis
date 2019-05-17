@@ -5,7 +5,7 @@
 \title{Graphical representation of difficulty and (generalized) discrimination in item analysis}
 \usage{
 DDplot(data, item.names, k = 3, l = 1, u = 3,
-discrim = "ULI", maxscore, minscore, bin = FALSE, cutscore)
+discrim = "ULI", maxscore, minscore, bin = FALSE, cutscore, average.score = FALSE)
 }
 \arguments{
 \item{data}{numeric: binary or ordinal data matrix or data frame. See \strong{Details}.}
@@ -28,6 +28,9 @@ Default value is 3.  See \strong{Details}.}
 \item{bin}{logical: should the ordinal data be binarized. Deafult value is FALSE. See \strong{Details}.}
 
 \item{cutscore}{vector or numeric: cutscore used to binarize the data.set. If numeric, the same cutscore is used for all items. If missing, vector of maximal scores is used in calculations.}
+
+\item{average.score}{logical: should average score of the item disaplyed instead of difficulty. Default
+value is FALSE. See \strong{Details}.}
 }
 \description{
 Plots difficulty and (generalized) discrimination for items ordered by difficulty.
@@ -53,6 +56,8 @@ the ordering is defined by increasing total score.
 
 For ordinal data, difficulty is defined as relative score (achieved - minimal)/(maximal - minimal).
 Minimal score can be specified by \code{minscore}, maximal score can be specified by \code{maxscore}.
+Average score of items can be displayed with argument \code{average.score = T}. Note that for binary
+data difficulty estimate is the same as average score of the item.
 
 Binarization of data is allowed in \code{bin}, for this purpose \code{cutscore} is used.
 }
@@ -90,6 +95,11 @@ DDplot(dataOrd, discrim = "RIT")
 DDplot(dataOrd, discrim = "RIR")
 # DDplot of ordinal data set disaplaying only difficulty
 DDplot(dataBin, discrim = "none")
+
+# DDplot of ordinal data set disaplaying difficulty estimates
+DDplot(dataOrd)
+# DDplot of ordinal data set disaplaying average item scores
+DDplot(dataOrd, average.score = TRUE)
 }
 }
 \references{
@@ -101,7 +111,7 @@ In: Proceedings of the 2017 Federated Conference on Computer Science and Informa
 \code{\link{gDiscrim}}, \code{\link{discrim}}
 }
 \author{
-Adela Drabinova \cr
+Adela Hladka \cr
 Institute of Computer Science, The Czech Academy of Sciences \cr
 Faculty of Mathematics and Physics, Charles University \cr
 drabinova@cs.cas.cz \cr

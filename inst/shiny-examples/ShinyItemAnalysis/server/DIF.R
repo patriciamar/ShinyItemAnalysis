@@ -677,6 +677,18 @@ DIF_logistic_plotReport <- reactive({
   graflist
 })
 
+# ** Warning for missing values ####
+output$DIF_logistic_na_alert <- renderUI({
+  txt <- na_score()
+  HTML(txt)
+})
+
+# ** Warning for missing values ####
+output$DIF_logistic_item_na_alert <- renderUI({
+  txt <- na_score()
+  HTML(txt)
+})
+
 
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # * NLR DIF ######
@@ -1047,6 +1059,18 @@ output$tab_coef_DIF_NLR <- renderTable({
 },
 include.rownames = T)
 
+# ** Warning for missing values ####
+output$DIF_NLR_na_alert <- renderUI({
+  txt <- na_score()
+  HTML(txt)
+})
+
+# ** Warning for missing values ####
+output$DIF_NLR_item_na_alert <- renderUI({
+  txt <- na_score()
+  HTML(txt)
+})
+
 
 
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1237,6 +1261,18 @@ output$tab_coef_DIF_IRT_Lord <- renderTable({
 },
 include.rownames = T,
 include.colnames = T)
+
+# ** Warning for missing values ####
+output$DIF_IRT_LORD_na_alert <- renderUI({
+  txt <- na_score()
+  HTML(txt)
+})
+
+# ** Warning for missing values ####
+output$DIF_IRT_LORD_item_na_alert <- renderUI({
+  txt <- na_score()
+  HTML(txt)
+})
 
 
 
@@ -1431,6 +1467,17 @@ output$tab_coef_DIF_IRT_Raju <- renderTable({
 include.rownames = T,
 include.colnames = T)
 
+# ** Warning for missing values ####
+output$DIF_Raju_na_alert <- renderUI({
+  txt <- na_score()
+  HTML(txt)
+})
+
+# ** Warning for missing values ####
+output$DIF_Raju_item_na_alert <- renderUI({
+  txt <- na_score()
+  HTML(txt)
+})
 
 
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1460,6 +1507,18 @@ DIF_SIBTEST_model <- reactive({
 # ** Output print ######
 output$DIF_SIBTEST_print <- renderPrint({
   print(DIF_SIBTEST_model())
+})
+
+# ** Warning for missing values ####
+output$DIF_SIBTEST_na_alert <- renderUI({
+  txt <- na_score()
+  HTML(txt)
+})
+
+# ** Warning for missing values ####
+output$DIF_SIBTEST_item_na_alert <- renderUI({
+  txt <- na_score()
+  HTML(txt)
 })
 
 
@@ -1716,4 +1775,16 @@ output$method_comparison_table <- renderTable({
 },
 include.rownames = T,
 include.colnames = T)
+
+# ** Warning for missing values ####
+output$DIF_DDF_na_alert <- renderUI({
+  txt <- na_score()
+  HTML(txt)
+})
+
+# ** Warning for missing values ####
+output$DIF_DDF_item_na_alert <- renderUI({
+  txt <- na_score()
+  HTML(txt)
+})
 

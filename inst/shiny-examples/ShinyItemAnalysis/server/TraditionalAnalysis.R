@@ -39,25 +39,31 @@ output$DDplot_text <- renderUI({
 # ** Difficulty/Discrimination plot ######
 DDplot_Input <- reactive({
   correct <- ordinal()
+
+  difc_type <- input$DDplotDiscriminationDifficulty
+  average.score <- (difc_type == "AVGS")
+
   DDplot(correct, item.names = item_numbers(),
          k = input$DDplotNumGroupsSlider,
          l = input$DDplotRangeSlider[[1]], u = input$DDplotRangeSlider[[2]],
-         discrim = input$DDplotDiscriminationSelect)
+         discrim = input$DDplotDiscriminationSelect,
+         average.score = average.score)
 })
 
 # ** Difficulty/Discrimination plot for report######
 DDplot_Input_report<-reactive({
   correct <- ordinal()
   if (input$customizeCheck) {
+
+    # difc_type <- input$DDplotDiscriminationDifficulty_report
+    # average.score <- (difc_type == "AVGS")
+
     DDplot(correct, item.names = item_numbers(),
            k = input$DDplotNumGroupsSlider_report,
            l = input$DDplotRangeSlider_report[[1]], u = input$DDplotRangeSlider_report[[2]],
            discrim = input$DDplotDiscriminationSelect_report)
   } else {
-    DDplot(correct, item.names = item_numbers(),
-           k = input$DDplotNumGroupsSlider,
-           l = input$DDplotRangeSlider[[1]], u = input$DDplotRangeSlider[[2]],
-           discrim = input$DDplotDiscriminationSelect)
+    DDplot_Input()
   }
 })
 
@@ -199,37 +205,36 @@ output$download_itemanal_table <- downloadHandler(
 
 # ** Reactive, which will check number of output groups after applying DistractorAnalysis
 
+change_indicator <- reactiveValues(change = FALSE,
+                                   not_changed = FALSE)
+
 distractor_final_groups <- reactive({
-  
+
   a <- nominal()
   k <- key()
-  num.group <- input$gr
-  item <- input$distractorSlider
   sc <- total_score()
-  DA <- DistractorAnalysis(a, k, num.groups = num.group,matching = sc)[[item]]
-  dimension <- attributes(DA)$'dim'[2]
-  
-  if(dimension < num.group) {
-  
-	bool <- TRUE
-	txt <- paste('<font color = "orange">The cut of criterion variable was not unique. The number of
-                      groups was decreased to ', dimension, ".</font>", sep = "")
-  
-  } else {
-  
-	bool <- FALSE
-	txt <- ""
-  
-  }
-  
-  return(list(bool,dimension,txt))
+  uniq_idx <- c()
 
+  for(i in 1:5) {
+    sc.level <- quantile(sc, seq(0, 1, by = 1/i), na.rm = TRUE)
+    uniq_idx[i] <- ifelse(any(duplicated(sc.level)), 0, i)
+  }
+
+  uniq_idx <- uniq_idx[which(uniq_idx != 0)]
+
+  return(list(uniq_idx))
 })
 
+# ** Warning for missing values ####
 output$distractor_groups_alert <- renderUI({
-
-	HTML(distractor_final_groups()[[3]])
-
+  if (change_indicator$change == TRUE) {
+    txt <- paste('<font color = "orange">The cut of criterion variable was not unique. The maximum number of
+                 groups, for which criterion variable is unique is ', max(distractor_final_groups()[[1]]), ".</font>", sep = "")
+    HTML(txt)
+  } else {
+    txt <- " "
+    HTML(txt)
+  }
 })
 
 
@@ -250,17 +255,19 @@ output$distractor_text <- renderUI({
 
 # ** Distractors plot ######
 distractor_plot_Input <- reactive({
+
+  inp <- input$gr
+  req(inp %in% distractor_final_groups()[[1]])
   a <- nominal()
   k <- key()
   i <- input$distractorSlider
   sc <- total_score()
-  const <- distractor_final_groups()[[2]]
   multiple.answers <- c(input$type_combinations_distractor == "Combinations")
-  plotDistractorAnalysis(data = a, key = k, num.group = ifelse(input$gr > const,const,input$gr),
+  plotDistractorAnalysis(data = a, key = k, num.group = input$gr,
                          item = i,
                          item.name = item_names()[i],
                          multiple.answers = multiple.answers,
-						 matching = sc)
+                         matching = sc)
 })
 
 # ** Output distractors plot ######
@@ -314,13 +321,13 @@ report_distractor_plot <- reactive({
 
 # ** Distractor table with counts ######
 distractor_table_counts_Input <- reactive({
+  num.group <- input$gr
+  req(num.group %in% distractor_final_groups()[[1]])
   a <- nominal()
   k <- key()
-  num.group <- input$gr
   item <- input$distractorSlider
   sc <- total_score()
-  const <- distractor_final_groups()[[2]]
-  DA <- DistractorAnalysis(a, k, num.groups = ifelse(num.group > const,const,num.group),matching = sc)[[item]]
+  DA <- DistractorAnalysis(a, k, num.groups = num.group,matching = sc)[[item]]
   df <- dcast(as.data.frame(DA), response ~ score.level, sum, margins = T, value.var = "Freq")
   colnames(df) <- c("Response", paste("Group", 1:ifelse(num.group > (ncol(df) - 2), ncol(df) - 2, num.group)), "Total")
   levels(df$Response)[nrow(df)] <- "Total"
@@ -334,13 +341,14 @@ output$distractor_table_counts <- renderTable({
 
 # ** Distractor table with proportions ######
 distractor_table_proportions_Input <- reactive({
+
+  req(input$gr %in% distractor_final_groups()[[1]])
   a <- nominal()
   k <- key()
   num.group <- input$gr
   item <- input$distractorSlider
   sc <- total_score()
-  const <- distractor_final_groups()[[2]]
-  DA <- DistractorAnalysis(a, k, num.groups = ifelse(num.group > const,const,num.group), p.table = TRUE,matching = sc)[[item]]
+  DA <- DistractorAnalysis(a, k, num.groups = num.group, p.table = TRUE,matching = sc)[[item]]
   df <- dcast(as.data.frame(DA), response ~ score.level, sum, value.var = "Freq")
   colnames(df) <- c("Response", paste("Group", 1:ifelse(num.group > (ncol(df) - 1), ncol(df) - 1, num.group)))
   df
@@ -353,13 +361,14 @@ output$distractor_table_proportions <- renderTable({
 
 # ** Item response patterns barplot ######
 distractor_barplot_item_response_patterns_Input <- reactive({
+
+  req(input$gr %in% distractor_final_groups()[[1]])
   a <- nominal()
   k <- key()
   num.group <- 1
   item <- input$distractorSlider
   sc <- total_score()
-  const <- distractor_final_groups()[[2]]
-  DA <- DistractorAnalysis(a, k, num.groups = ifelse(num.group > const,const,num.group),p.table = TRUE,matching = sc)[[item]]
+  DA <- DistractorAnalysis(a, k, num.groups = num.group,p.table = TRUE,matching = sc)[[item]]
   df <- dcast(as.data.frame(DA), response ~ score.level, sum, value.var = "Freq")
   colnames(df) <- c("Response", "Proportion")
 
@@ -393,23 +402,25 @@ output$DB_distractor_barplot_item_response_patterns <- downloadHandler(
 
 # ** Distractors histograms by group ######
 distractor_histogram_Input <- reactive({
+
+  req(input$gr %in% distractor_final_groups()[[1]])
   a <- nominal()
   k <- key()
   num.groups <- input$gr
   sc <- total_score()
   sc.level <- quantile(sc, seq(0, 1, by = 1/num.groups), na.rm = TRUE)
-  
+
   if (length(unique(sc.level)) <= num.groups){
-        
-      while (length(unique(sc.level)) <= num.groups){
-          num.groups <- num.groups - 1
-          sc.level <- quantile(sc, seq(0, 1, by = 1/num.groups), na.rm = TRUE)
-        }
-        sc.level <- cut(sc, sc.level, include.lowest = TRUE,na.rm = TRUE)
-      } else {
-        sc.level <- cut(sc, sc.level, include.lowest = TRUE,na.rm = TRUE)
-      }
-  
+
+    while (length(unique(sc.level)) <= num.groups){
+      num.groups <- num.groups - 1
+      sc.level <- quantile(sc, seq(0, 1, by = 1/num.groups), na.rm = TRUE)
+    }
+    sc.level <- cut(sc, sc.level, include.lowest = TRUE,na.rm = TRUE)
+  } else {
+    sc.level <- cut(sc, sc.level, include.lowest = TRUE,na.rm = TRUE)
+  }
+
   df <- data.table(sc,
                    gr = sc.level)
   col <- c("darkred", "red", "orange", "gold", "green3")
@@ -452,10 +463,11 @@ output$DB_distractor_histogram <- downloadHandler(
 
 # ** Distractor analysis table by group ######
 distractor_table_total_score_by_group_Input <- reactive({
+
+  req(input$gr %in% distractor_final_groups()[[1]])
   sc <- total_score()
-  const <- distractor_final_groups()[[2]]
-  num.group <- ifelse(input$gr > const,const,input$gr)
-  
+  num.group <- input$gr
+
   sc.level <- quantile(sc, seq(0, 1, by = 1/num.group), na.rm = TRUE)
 
   tab <- table(cut(sc,
@@ -477,10 +489,16 @@ output$distractor_table_total_score_by_group <- renderTable({
 include.colnames = TRUE,
 include.rownames = TRUE)
 
-observeEvent(distractor_final_groups()[[1]],{
-	
-	c <- distractor_final_groups()[[2]]
-	updateSliderInput(session,"gr",value = c)
+observeEvent(!(input$gr %in% distractor_final_groups()[[1]]),{
+
+  if (input$gr %in% distractor_final_groups()[[1]]) {
+    change_indicator$not_changed = TRUE
+    return(NULL)
+  } else {
+    c <- max(distractor_final_groups()[[1]])
+    change_indicator$change = TRUE
+    updateSliderInput(session, "gr", value = c)
+  }
 
 })
 
