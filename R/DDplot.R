@@ -15,9 +15,11 @@
 #' @param minscore vector or numeric: minimal scores of items. If numeric, the same minimal score is used for all items. If missing, vector of achieved minimal scores is calculated and used in calculations.
 #' @param bin logical: should the ordinal data be binarized. Deafult value is FALSE. See \strong{Details}.
 #' @param cutscore vector or numeric: cutscore used to binarize the data.set. If numeric, the same cutscore is used for all items. If missing, vector of maximal scores is used in calculations.
+#' @param average.score logical: should average score of the item disaplyed instead of difficulty. Default
+#' value is FALSE. See \strong{Details}.
 #'
 #' @usage DDplot(data, item.names, k = 3, l = 1, u = 3,
-#' discrim = "ULI", maxscore, minscore, bin = FALSE, cutscore)
+#' discrim = "ULI", maxscore, minscore, bin = FALSE, cutscore, average.score = FALSE)
 #'
 #' @details
 #' The \code{data} is a matrix or data frame whose rows represents examinee answers
@@ -40,12 +42,14 @@
 #'
 #' For ordinal data, difficulty is defined as relative score (achieved - minimal)/(maximal - minimal).
 #' Minimal score can be specified by \code{minscore}, maximal score can be specified by \code{maxscore}.
+#' Average score of items can be displayed with argument \code{average.score = T}. Note that for binary
+#' data difficulty estimate is the same as average score of the item.
 #'
 #' Binarization of data is allowed in \code{bin}, for this purpose \code{cutscore} is used.
 #'
 #'
 #' @author
-#' Adela Drabinova \cr
+#' Adela Hladka \cr
 #' Institute of Computer Science, The Czech Academy of Sciences \cr
 #' Faculty of Mathematics and Physics, Charles University \cr
 #' drabinova@cs.cas.cz \cr
@@ -105,6 +109,11 @@
 #' DDplot(dataOrd, discrim = "RIR")
 #' # DDplot of ordinal data set disaplaying only difficulty
 #' DDplot(dataBin, discrim = "none")
+#'
+#' # DDplot of ordinal data set disaplaying difficulty estimates
+#' DDplot(dataOrd)
+#' # DDplot of ordinal data set disaplaying average item scores
+#' DDplot(dataOrd, average.score = TRUE)
 #' }
 #' @export
 #' @import difNLR
@@ -136,12 +145,11 @@
 #' @importFrom utils data head read.csv
 
 
-DDplot <- function (data, item.names, k = 3, l = 1, u = 3,  discrim = "ULI",
-                    maxscore, minscore, bin = FALSE, cutscore)
+DDplot <- function (data, item.names, k = 3, l = 1, u = 3, discrim = "ULI",
+                    maxscore, minscore, bin = FALSE, cutscore, average.score = FALSE)
 {
   if(!is.matrix(data) & !is.data.frame(data)) {
-    stop("'data' must be data frame or matrix ",
-         call. = FALSE)
+    stop("'data' must be data frame or matrix ", call. = FALSE)
   }
   if(missing(maxscore)) {
     maxscore <- apply(data, 2, max, na.rm = T)
@@ -160,8 +168,8 @@ DDplot <- function (data, item.names, k = 3, l = 1, u = 3,  discrim = "ULI",
   if(bin == TRUE) {
     data2 <- data
     for(i in 1:dim(data)[2]){
-      data[data2[,i] >= cutscore[i], i] <- 1
-      data[data2[,i] < cutscore[i], i] <- 0
+      data[data2[, i] >= cutscore[i], i] <- 1
+      data[data2[, i] < cutscore[i], i] <- 0
 
     }
     head(data)
@@ -183,12 +191,15 @@ DDplot <- function (data, item.names, k = 3, l = 1, u = 3,  discrim = "ULI",
   if(l >= u){
     stop("'l' should be lower than 'u'", call. = FALSE)
   }
-  diffName <- c("Difficulty", "Average Scaled Score")
+  diffName <- c("Difficulty", "Difficulty", "Average score")
   discName <- c("Discrimination ULI", "Discrimination RIR", "Discrimination RIT")
-  xlabel <- c("Item (ordered by difficulty)", "Item (ordered by scaled score)")
+  xlabel <- c("Item (ordered by difficulty)",
+              "Item (ordered by difficulty)",
+              "Item (ordered by average item score)")
   average <- apply(data, 2, mean)
   if(discrim == "ULI") {
-    disc <- as.numeric(gDiscrim(data, minscore = minscore, maxscore = maxscore, k = k, l = l,u = u))
+    disc <- as.numeric(gDiscrim(data, minscore = minscore, maxscore = maxscore,
+                                k = k, l = l, u = u))
     i <- 1
   }
   if(discrim ==  "RIR") {
@@ -199,20 +210,25 @@ DDplot <- function (data, item.names, k = 3, l = 1, u = 3,  discrim = "ULI",
   }
   if(discrim ==  "RIT") {
     TOT <- apply(data, 1, sum)
-    disc<- t(cor(data, TOT, use = "complete"))
+    disc <- t(cor(data, TOT, use = "complete"))
     i <-3
   }
-  if(!all((maxscore-minscore) != 0)){
+  if(!all((maxscore - minscore) != 0)){
     warning("'cutscore' is equal to 'minscore' for some item")
 
-    difc <- (average - minscore)/(maxscore-minscore)
+    difc <- (average - minscore)/(maxscore - minscore)
     difc[(maxscore - minscore) == 0] <- 1
     disc[(maxscore - minscore) == 0] <- 0
   } else {
-    difc <- (average - minscore)/(maxscore - minscore)
+
+    if(average.score) {
+      difc <- average
+    } else {
+      difc <- (average - minscore)/(maxscore - minscore)
+    }
   }
-  if(max(maxscore-minscore) > 1){
-    j <- 2
+  if(max(maxscore - minscore) > 1){
+    j <- ifelse(average.score, 3, 2)
   } else {
     j <- 1
   }
@@ -232,7 +248,8 @@ DDplot <- function (data, item.names, k = 3, l = 1, u = 3,  discrim = "ULI",
       xlab(xlabel[j]) +
       ylab(paste0(diffName[j], "/", discName[i])) +
       scale_y_continuous(expand = c(0, 0),
-                         limits = c(min(min(df$value) - 0.01, 0), 1)) +
+                         limits = c(min(min(df$value) - 0.01, 0),
+                                    max(max(df$value) + 0.01*maxscore, 1))) +
       scale_fill_manual(breaks = parameter, values = col) +
       scale_colour_manual(breaks = parameter, values = col) +
       theme_app() +
@@ -249,7 +266,9 @@ DDplot <- function (data, item.names, k = 3, l = 1, u = 3,  discrim = "ULI",
     ggplot(df, aes_string(x = "item", y = "value", fill = "parameter", color = "parameter")) +
       stat_summary(fun.y = mean, position = "dodge", geom = "bar", alpha = 0.7, width = 0.8) +
       xlab(xlabel[j]) + ylab(diffName[j]) +
-      scale_y_continuous(expand = c(0, 0), limits = c(min(min(df$value) - 0.01, 0), 1)) +
+      scale_y_continuous(expand = c(0, 0),
+                         limits = c(min(min(df$value) - 0.01, 0),
+                                    max(max(df$value) + 0.01, 1))) +
       scale_fill_manual(breaks = parameter,
                         values = col) +
       scale_colour_manual(breaks = parameter, values = col) +

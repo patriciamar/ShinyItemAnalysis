@@ -1,4 +1,4 @@
-uiValidity <- 
+uiValidity <-
   navbarMenu("Validity",
              # * CORRELATION STRUCTURE ####
              tabPanel("Correlation structure",
@@ -82,6 +82,7 @@ uiValidity <-
                         Median linkage calculates the distance as the median of distances between an observation
                         in one cluster and observation in the other cluster.
                         Centroid method uses distance between centroids of clusters. "),
+                      uiOutput("corr_na_alert"),
                       br(),
                       plotOutput('corr_plot'),
                       br(),

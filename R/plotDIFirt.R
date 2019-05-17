@@ -33,7 +33,7 @@
 #' For default option \code{"all"}, all characteristic curves are plotted.
 #'
 #' @author
-#' Adela Drabinova \cr
+#' Adela Hladka \cr
 #' Institute of Computer Science, The Czech Academy of Sciences \cr
 #' Faculty of Mathematics and Physics, Charles University \cr
 #' drabinova@cs.cas.cz \cr

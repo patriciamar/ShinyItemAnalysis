@@ -26,7 +26,7 @@
 #' The \code{key} must be a vector of the same length as \code{ncol(data)}.
 #'
 #' @author
-#' Adela Drabinova \cr
+#' Adela Hladka \cr
 #' Institute of Computer Science, The Czech Academy of Sciences \cr
 #' Faculty of Mathematics and Physics, Charles University \cr
 #' drabinova@cs.cas.cz \cr
@@ -63,7 +63,7 @@ DistractorAnalysis <-  function(data, key, p.table = FALSE, num.groups = 3, matc
     warning("p.table must be logical.")
   }
   data <- as.data.frame(data)
-  
+
   if (missing(key))
     warning("Answer key is not provided")
   else {
@@ -72,10 +72,10 @@ DistractorAnalysis <-  function(data, key, p.table = FALSE, num.groups = 3, matc
     }
     key <- unlist(key)
   }
-  
+
   if (length(key) == 1)
     key <- c(rep(key, ncol(data)))
-  
+
   if (is.null(matching)){
     scored.data <- CTT::score(data, key, output.scored = T)$scored
     scored.data[is.na(scored.data)] <- 0
@@ -88,10 +88,10 @@ DistractorAnalysis <-  function(data, key, p.table = FALSE, num.groups = 3, matc
     score.level <- cut(scores, score.level, include.lowest = TRUE,
                        labels = paste("Group", 1:num.groups, sep = " "))
   } else {
-    
+
     scores <- matching
     score.level <- quantile(matching, seq(0, 1, by = 1/num.groups), na.rm = T)
-    
+
     # k <- 6
     # if (length(levels(as.factor(scores))) <= length(scores)/k){
     #   score.level <- as.factor(scores)
@@ -99,9 +99,9 @@ DistractorAnalysis <-  function(data, key, p.table = FALSE, num.groups = 3, matc
     #   levels(score.level) <- paste("Group", 1:length(levels(score.level)), sep = " ")
     #   warning(paste('Critetion variable is probably discrete. Its cut is based on
     #                 its factors (', length(levels(score.level)), ").", sep = ""))
-    
+
     if (length(unique(score.level)) <= num.groups){
-        
+
       while (length(unique(score.level)) <= num.groups){
           num.groups <- num.groups - 1
           score.level <- quantile(scores, seq(0, 1, by = 1/num.groups), na.rm = T)

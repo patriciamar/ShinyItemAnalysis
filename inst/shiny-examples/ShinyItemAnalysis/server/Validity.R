@@ -12,11 +12,11 @@ corr_structure <- reactive({
 
   # calculate correlations depending on selected method
   if (input$type_of_corr == 'spearman') {
-    corP <- cor(data, method = 'spearman')
+    corP <- cor(data, method = 'spearman', use = "pairwise.complete.obs")
   } else if (input$type_of_corr == 'pearson') {
-    corP <- cor(data, method = 'pearson')
+    corP <- cor(data, method = 'pearson', use = "pairwise.complete.obs")
   } else if (input$type_of_corr == 'polychoric') {
-    corP <- polychoric(data)
+    corP <- polychoric(data, na.rm = T)
     corP <- corP$rho
   }
   corP
@@ -25,7 +25,6 @@ corr_structure <- reactive({
 # ** Correlation plot ######
 corr_plot_Input <- reactive({
   corP <- corr_structure()
-
   tlcex <- max(ifelse(dim(corP)[1] < 30, 1, 0.9 - (dim(corP)[1] - 30)*0.05), 0.5)
 
   numclust <- input$corr_plot_clust
@@ -96,7 +95,6 @@ output$DB_corr_plot <- downloadHandler(
   content = function(file) {
     # in corrplot this must be plotted completely again!
     corP <- corr_structure()
-
     tlcex <- max(ifelse(dim(corP)[1] < 30, 1, 0.9 - (dim(corP)[1] - 30)*0.05), 0.5)
 
     numclust <- input$corr_plot_clust
@@ -133,7 +131,7 @@ dendrogram_plot_Input <- reactive({
 
   clustmethod <- input$corr_plot_clustmethod
   numclust <- input$corr_plot_clust
-  
+
   hc <- hclust(dist, method = clustmethod)
 
   if (numclust == 1){
@@ -453,4 +451,10 @@ output$validity_table_item_interpretation <- renderUI({
                    We cannot conclude that a significant correlation between scored item", i,
                        "and criterion variable exists."))
   HTML(paste(txt1, txt3))
+})
+
+# ** Warning for missing values ####
+output$corr_na_alert <- renderUI({
+  txt <- na_score()
+  HTML(txt)
 })

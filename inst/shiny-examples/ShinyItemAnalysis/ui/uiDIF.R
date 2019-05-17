@@ -1,4 +1,4 @@
-uiDIF <- 
+uiDIF <-
   navbarMenu("DIF/Fairness",
              # * SUMMARY ####
              "Description",
@@ -66,7 +66,7 @@ uiDIF <-
                         suspicion of DIF if the delta point considerably departs from the diagonal. The detection
                         threshold is either fixed to value 1.5 or based on bivariate normal approximation (Magis &
                         Facon, 2012).'),
-                      
+
                       radioButtons('type_threshold', 'Threshold',
                                    list("Fixed", "Normal")
                       ),
@@ -212,10 +212,10 @@ uiDIF <-
                                      br(),
                                      code('score <- apply(data, 1, sum)'),
                                      br(),
-                                     
+
                                      code('df <- df[score == 12, ]'),
                                      br(),
-                                     
+
                                      code('tab <- dcast(data.frame(xtabs(~ Group + Answer, data = df)),
                                           Group ~ Answer,
                                           value.var = "Freq",
@@ -224,7 +224,7 @@ uiDIF <-
                                      br(),
                                      code('tab'),
                                      br(),
-                                     
+
                                      code('# Mantel-Haenszel estimate of OR'),
                                      br(),
                                      code('fit <- difMH(Data = data, group = group, focal.name = 1,
@@ -269,6 +269,7 @@ uiDIF <-
                                                checkboxInput(inputId = 'puri_LR',
                                                              label = 'Item purification',
                                                              value = FALSE))),
+                                 uiOutput("DIF_logistic_na_alert"),
                                  verbatimTextOutput('print_DIF_logistic'),
                                  br(),
                                  h4("Selected R code"),
@@ -283,7 +284,7 @@ uiDIF <-
                                      code('group <- GMAT[, "group"]'),
                                      br(),
                                      br(),
-                                     
+
                                      code('# Logistic regression DIF detection method'),
                                      br(),
                                      code('fit <- difLogistic(Data = data, group = group, focal.name = 1,
@@ -354,7 +355,7 @@ uiDIF <-
                                      code('group <- GMAT[, "group"]'),
                                      br(),
                                      br(),
-                                     
+
                                      code('# Logistic regression DIF detection method'),
                                      br(),
                                      code('fit <- difLogistic(Data = data, group = group, focal.name = 1,
@@ -363,7 +364,7 @@ uiDIF <-
                                      br(),
                                      code('fit'),
                                      br(),
-                                     
+
                                      code('# Plot of characteristic curve for item 1'),
                                      br(),
                                      code('plotDIFLogistic(data, group,
@@ -380,7 +381,7 @@ uiDIF <-
                                  )
                                  )
                         ),
-             
+
              # # * LOGISTIC Z ####
              # tabPanel("Logistic IRT Z",
              #          tabsetPanel(
@@ -611,6 +612,7 @@ uiDIF <-
                                                                label = 'Item purification',
                                                                value = FALSE))
                                  ),
+                                 uiOutput("DIF_NLR_na_alert"),
                                  verbatimTextOutput('print_DIF_NLR'),
                                  br(),
                                  h4("Selected R code"),
@@ -738,6 +740,7 @@ uiDIF <-
                                                                        "None" = "none"),
                                                            selected = "none"),
                                                checkboxInput('puri_Lord', 'Item purification', FALSE))),
+                                 uiOutput("DIF_IRT_LORD_na_alert"),
                                  verbatimTextOutput('print_DIF_IRT_Lord'),
                                  br(),
                                  h4("Selected R code"),
@@ -935,6 +938,7 @@ uiDIF <-
                                                checkboxInput(inputId = 'puri_Raju',
                                                              label = 'Item purification',
                                                              value = FALSE))),
+                                 uiOutput("DIF_IRT_Raju_na_alert"),
                                  verbatimTextOutput('print_DIF_IRT_Raju'),
                                  br(),
                                  h4("Selected R code"),
@@ -1120,6 +1124,7 @@ uiDIF <-
                                       checkboxInput(inputId = "DIF_SIBTEST_purification",
                                                     label = "Item purification",
                                                     value = FALSE))),
+                      uiOutput("DIF_SIBTEST_na_alert"),
                       verbatimTextOutput("DIF_SIBTEST_print"),
                       br(),
                       h4("Selected code"),
@@ -1170,6 +1175,7 @@ uiDIF <-
                                                checkboxInput(inputId = 'puri_DDF_print',
                                                              label = 'Item purification',
                                                              value = FALSE))),
+                                 uiOutput("DDF_na_alert"),
                                  verbatimTextOutput('print_DDF'),
                                  br(),
                                  h4("Selected R code"),
