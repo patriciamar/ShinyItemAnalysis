@@ -97,7 +97,7 @@ To cite ShinyItemAnalysis application in publications, please, use:
   (2018)
   ShinyItemAnalysis for teaching psychometrics and to enforce routine analysis of educational tests. 
   The R Journal, 10(2), 503-515.
-  doi: 10.32614/RJ-2018-074
+  [doi: 10.32614/RJ-2018-074](https://doi.org/10.32614/RJ-2018-074)
   
   Martinkova P., Drabinova A., Leder O., \& Houdek J.
   (2019)
@@ -365,7 +365,7 @@ for (i in 1:length(params$graf)){
 }
 ```
 
-**************
+`r if (params$irt_type != "none") {"**************"}`
 
 `r if (params$irt_type != "none") {"# IRT models"}`
 
@@ -488,6 +488,7 @@ if (params$irt_type != "none") {
 ```{r irt-estim, echo = FALSE}
 if (params$irt_type != "none") {
   table = params$irtcoef
+  colnames(table) = c("a", "SE(a)", "b", "SE(b)", "c", "SE(c)", "d", "SE(d)", "SX-2", "df", "p-value")
   
   kable(table, align = c('l', rep('c', 11)))
 }
@@ -724,14 +725,16 @@ if (params$multiCheck) {
 ```
 
 
-**************
+`r if(params$sessionInfo == 'yes') {"**************"} `
 
-`r if(params$sessionInfo == 'Yes') {"# Session info"} `
+`r if(params$sessionInfo == 'yes') {"# Session info"} `
 
-`r if(params$sessionInfo == 'Yes') {"Session info provides information about settings of the R console and used packages and their versions which were used for the analysis."}`
+`r if(params$sessionInfo == 'yes') {"Session info provides information about settings of the R console and used packages and their versions which were used for the analysis."}`
 
-```{r session-info, echo = FALSE, results = ifelse(params$sessionInfo == 'Yes',"markup","hide")}
-sessionInfo()
+```{r session-info, echo = FALSE}
+if (params$sessionInfo == 'yes'){
+  sessionInfo()  
+}
 ```
 
-\pagebreak
+`r if(params$sessionInfo == 'yes') {"**************"} `

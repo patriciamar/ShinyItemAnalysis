@@ -713,145 +713,15 @@ cumreg_model <- reactive({
 })
 
 
-# ** Calculation of sizes ######
-cumreg_calculation_sizes <- reactive({
-  data <- as.data.frame(ordinal())
-  maxval <- sapply(data, function(x) max(x, na.rm = TRUE))
-  matching <- cumreg_matching()
-
-  # relevel data
-  for (i in 1:ncol(data)){
-    data[, i] <- factor(data[, i], levels = 0:maxval[i])
-  }
-
-  # calculation of number of observations wrt matching
-  sizes <- list()
-  for (i in 1:ncol(data)) {
-    sizes[[i]] <- ftable(xtabs(~ data[, i] + matching))
-  }
-
-  sizes
-})
-
-# ** Calculation of empirical cumulative probabilities ######
-cumreg_calculation_cumprob_points <- reactive({
-  matching <- cumreg_matching()
-  sizes <- cumreg_calculation_sizes()
-
-  # calculation of cumulative probabilities wrt matching
-  dfs <- list()
-  for(i in 1:length(sizes)) {
-    # categories
-    K <- as.numeric(attributes(sizes[[i]])$row.vars[[1]]) # categories
-    # seK <- 0:max(K)
-    # seK <- seK[(which(seK != 0))] # excluding 0
-
-    seK <- K[(which(K != 0))]
-
-    # creating matrix
-    rows <- length(sort(unique(matching)))
-    cols <- 2 * length(seK) + 1
-    mtrx <- matrix(rep(0, rows * cols), nrow = rows, ncol = cols)
-
-    idx <- if(any(K == 0)) seq(2, max(K) + 1) else seq(1, length(K))
-    df <- as.data.frame(mtrx)
-    df[, 1] <- sort(unique(matching))
-
-    # number of observations per category wrt matching
-    for (j in seK) {
-      df[, j + 1] <- if(j != length(seK)) colSums(sizes[[i]][idx[j]:max(idx), ]) else sizes[[i]][max(idx), ]
-    }
-
-    colNam1 <- paste0("k", seK)
-
-    # empirical probabilities per category wrt matching
-    for (l in seK) {
-      df[, length(seK) + 1 + l] <- df[, (l + 1)]/(colSums(sizes[[i]]))
-    }
-
-    colNam2 <- paste0("P", seK)
-    colNams <- append(colNam1, colNam2)
-    colnames(df) <- c("x", colNams)
-
-    dfs[[i]] <- df
-  }
-  dfs
-})
-
-# ** Calculation of empirical cumulative probabilities ######
-cumreg_calculation_cumprob_lines <- reactive({
-  item <- input$cumreg_slider_item
-  matching <- cumreg_matching()
-  dfs <- cumreg_calculation_cumprob_points()
-  fit.cum <- cumreg_model()
-  data <- as.data.frame(ordinal())
-
-  # function for plot
-  cum.prob <- function(x, b0, b1){(exp(b0 + b1 * x) / (1 + exp(b0 + b1 * x)))}
-
-  # index
-  c <- length(coef(fit.cum[[item]])) - 1
-
-  # dataset for lines
-  x <- seq(min(matching, na.rm = T), max(matching, na.rm = T), 0.01)
-  df.lines.tmp <- data.frame(x = x,
-                             y = sapply(1:c, function(k) {cum.prob(x = x,
-                                                                   b0 = coef(fit.cum[[item]])[k],
-                                                                   b1 = coef(fit.cum[[item]])[c + 1])}))
-
-  colnames(df.lines.tmp) <- c("x", paste0("k", sort(unique(data[, item]))[-1]))
-  df.lines.tmp
-})
-
 # ** Plot with cumulative curves ######
 cumreg_plot_cum_Input <- reactive({
   item <- input$cumreg_slider_item
   matching <- cumreg_matching()
-  dfs <- cumreg_calculation_cumprob_points()
   fit.cum <- cumreg_model()
-  df.lines.tmp <- cumreg_calculation_cumprob_lines()
+  matching.name <- ifelse(input$cumreg_matching == "total", "Total score", "Standardized total score")
 
-  # index
-  c <- (ncol(dfs[[item]]) - 1)/2
+  g <- plotCumulative(fit.cum[[item]], type = "cumulative", matching.name = matching.name)
 
-  # dataset for points
-  df.points <- melt(dfs[[item]][, 1:(c + 1)], id.vars = "x",
-                    value.name = "size", variable.name = "category")
-  df.points <- data.frame(df.points,
-                          melt(dfs[[item]][, c(1, (c + 2):ncol(dfs[[item]]))], id.vars = "x",
-                               value.name = "prob", variable.name = "category"))
-  df.points <- df.points[, c(1, 2, 3, 6)]
-
-  # dataset for lines
-  df.lines <- melt(df.lines.tmp, id.vars = "x", value.name = "prob", variable.name = "category")
-
-  # changing labels for plot
-  levels(df.points$category) <- gsub("k", "P >= ", levels(df.points$category))
-  levels(df.lines$category) <- gsub("k", "P >= ", levels(df.lines$category))
-
-
-  # plot
-  ### points
-  g <- ggplot() +
-    geom_point(data = df.points, aes(x = x, y = prob, group = category,
-                                     size = size,
-                                     col = category,
-                                     fill = category),
-               shape = 21, alpha = 0.5)
-  ### lines
-  g <- g +
-    geom_line(data = df.lines, aes(x = x, y = prob, group = category,
-                                   col = category)) +
-    xlab(ifelse(input$cumreg_matching == "total", "Total score",
-                "Standardized total score (Z-score)")) +
-    ylab("Cumulative probability") +
-    ylim(0, 1) +
-    xlim(min(matching), max(matching)) +
-    ggtitle(item_names()[item]) +
-    theme_app() +
-    theme(legend.position = c(0.97, 0.03),
-          legend.justification = c(0.97, 0.03),
-          legend.box = "horizontal")
   g
 })
 
@@ -874,141 +744,13 @@ output$DB_cumreg_plot_cum <- downloadHandler(
   }
 )
 
-
-# ** Calculation of sizes and empirical category probabilities ######
-cumreg_calculation_catprob <- reactive({
-  matching <- cumreg_matching()
-  sizes <- cumreg_calculation_sizes()
-
-  dfs.cat <- list()
-  for(i in 1:length(sizes)) {
-    K <- as.numeric(attributes(sizes[[i]])$row.vars[[1]])
-
-    # seK <- 0:max(K)
-    seK <- K
-
-    rows <- length(sort(unique(matching)))
-    cols <- 2 * length(seK) + 1
-    mtrx <- matrix(rep(0, rows * cols), nrow = rows, ncol = cols)
-    idx <- seq(1, length(K))
-    df <- as.data.frame(mtrx)
-    df[, 1] <- sort(unique(matching))
-
-    for (j in 1:length(seK)) {
-      df[, j + 1] <- if(j != length(seK)) sizes[[i]][idx[j], ] else sizes[[i]][max(idx), ]
-    }
-
-    colNam1 <- paste0("k", seK)
-
-    for (l in 1:length(seK)) {
-      df[, length(seK) + 1 + l] <- df[, (l + 1)]/(colSums(sizes[[i]]))
-    }
-
-    colNam2 <- paste0("P", seK)
-    colNams <- append(colNam1, colNam2)
-    colnames(df) <- c('x', colNams)
-
-    dfs.cat[[i]] <- df
-  }
-
-  dfs.cat
-})
-
 # ** Calculation of empirical cumulative probabilities ######
-cumreg_calculation_cumprob_lines <- reactive({
-  item <- input$cumreg_slider_item
-  matching <- cumreg_matching()
-  dfs <- cumreg_calculation_cumprob_points()
-  fit.cum <- cumreg_model()
-  data <- as.data.frame(ordinal())
-
-  # function for plot
-  cum.prob <- function(x, b0, b1){(exp(b0 + b1 * x) / (1 + exp(b0 + b1 * x)))}
-
-  # index
-  c <- length(coef(fit.cum[[item]])) - 1
-
-  # dataset for lines
-  x <- seq(min(matching, na.rm = T), max(matching, na.rm = T), 0.01)
-  df.lines.tmp <- data.frame(x = x,
-                             y = sapply(1:c, function(k) {cum.prob(x = x,
-                                                                   b0 = coef(fit.cum[[item]])[k],
-                                                                   b1 = coef(fit.cum[[item]])[c + 1])}))
-  colnames(df.lines.tmp) <- c("x", paste0("k", sort(unique(data[, item]))[-1]))
-  df.lines.tmp
-})
-
-# ** Plot with category curves ######
 cumreg_plot_cat_Input <- reactive({
   item <- input$cumreg_slider_item
-  matching <- cumreg_matching()
-  dfs.cat <- cumreg_calculation_catprob()
   fit.cum <- cumreg_model()
-  df.lines.tmp <- cumreg_calculation_cumprob_lines()
+  matching.name <- ifelse(input$cumreg_matching == "total", "Total score", "Standardized total score")
 
-  # index (it is + 1 compare to cumulative as it includes 0)
-  c <- (ncol(dfs.cat[[item]]) - 1)/2
-
-  # dataset for points
-  df.points.cat <- melt(dfs.cat[[item]][, 1:(c + 1)], id.vars = "x",
-                        value.name = "size", variable.name = "category")
-  df.points.cat <- data.frame(df.points.cat[, c("x", "size")],
-                              melt(dfs.cat[[item]][, c(1, (c + 2):ncol(dfs.cat[[item]]))], id.vars = "x",
-                                   value.name = "prob", variable.name = "category"))
-  df.points.cat <- df.points.cat[, c(1, 2, 4, 5)]
-
-  # dataset for lines
-  df.lines.cat <- as.data.frame(matrix(1, nrow = nrow(df.lines.tmp), ncol = c))
-  colnames(df.lines.cat) <- paste0("k", 0:(c - 1))
-  df.lines.cat[, intersect(colnames(df.lines.cat), colnames(df.lines.tmp))] <- df.lines.tmp[, intersect(colnames(df.lines.cat), colnames(df.lines.tmp))]
-
-  check.probs <- which(sapply(1:(c - 1), function(i) any(df.lines.cat[, i] < df.lines.cat[, i + 1])))
-  df.lines.cat[, check.probs + 1] <- df.lines.cat[, check.probs]
-
-  df.lines.cat <- data.frame(x = df.lines.tmp$x,
-                             sapply(1:(c - 1), function(k) {df.lines.cat[, k] - df.lines.cat[, k + 1]}),
-                             df.lines.cat[, c])
-  colnames(df.lines.cat) <- c("x", paste0("k", 0:(c - 1)))
-  head(df.lines.cat)
-  df.lines.cat <- melt(df.lines.cat, id.vars = "x", value.name = "prob", variable.name = "category")
-
-  # changing labels for plot
-  levels(df.points.cat$category) <- gsub("P", "P = ", levels(df.points.cat$category))
-  levels(df.lines.cat$category) <- gsub("k", "P = ", levels(df.lines.cat$category))
-
-  # plot
-  # get baseline colour palette
-  gg_color_hue <- function(n) {
-    hues = seq(15, 375, length = n + 1)
-    hcl(h = hues, l = 65, c = 100)[1:n]
-  }
-
-  cols <- c("black", gg_color_hue(c - 1))
-
-  ### points
-  g <- ggplot() +
-    geom_point(data = df.points.cat, aes(x = x, y = prob, group = category,
-                                         size = size,
-                                         col = category,
-                                         fill = category),
-               shape = 21, alpha = 0.5)
-  ### lines
-  g <- g +
-    geom_line(data = df.lines.cat, aes(x = x, y = prob, group = category,
-                                       col = category)) +
-    scale_color_manual(values = cols) +
-    scale_fill_manual(values = cols) +
-    xlab(ifelse(input$cumreg_matching == "total", "Total score",
-                "Standardized total score (Z-score)")) +
-    ylab("Category probability") +
-    ylim(0, 1) +
-    xlim(min(matching), max(matching)) +
-    ggtitle(item_names()[item]) +
-    theme_app() +
-    theme(legend.position = c(0.97, 0.03),
-          legend.justification = c(0.97, 0.03),
-          legend.box = "horizontal")
-
+  g <- plotCumulative(fit.cum[[item]], type = "category", matching.name = matching.name)
   g
 })
 
@@ -1113,8 +855,7 @@ output$cumreg_na_alert <- renderUI({
 # * ADJACENT LOGISTIC ######
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-# ** Model for adjacent logistic regression ######
-
+# ** Matching criterion adjacent logistic regression ######
 adjreg_matching <- reactive({
   if (input$adjreg_matching == "total"){
     matching <- total_score()
@@ -1147,174 +888,14 @@ adjreg_model <- reactive({
   fit.adj
 })
 
-# ** Calculation of sizes ######
-adjreg_calculation_sizes <- reactive({
-  data <- as.data.frame(ordinal())
-  maxval <- sapply(data, function(x) max(x, na.rm = TRUE))
-  matching <- adjreg_matching()
-
-  # relevel data
-  for (i in 1:ncol(data)){
-    data[, i] <- factor(data[, i], levels = 0:maxval[i])
-  }
-
-  # calculation of number of observations wrt matching
-  sizes <- list()
-  for (i in 1:ncol(data)) {
-    sizes[[i]] <- ftable(xtabs(~ data[, i] + matching))
-  }
-
-  sizes
-})
-
-
-# ** Calculation of sizes and empirical category probabilities ######
-adjreg_calculation_catprob_points <- reactive({
-  matching <- adjreg_matching()
-  sizes <- adjreg_calculation_sizes()
-
-  dfs.cat <- list()
-  for(i in 1:length(sizes)) {
-    K <- as.numeric(attributes(sizes[[i]])$row.vars[[1]])
-
-    # seK <- 0:max(K)
-    seK <- K
-
-    rows <- length(sort(unique(matching)))
-    cols <- 2 * length(seK) + 1
-    mtrx <- matrix(rep(0, rows * cols), nrow = rows, ncol = cols)
-    idx <- seq(1, length(K))
-    df <- as.data.frame(mtrx)
-    df[, 1] <- sort(unique(matching))
-
-    for (j in 1:length(seK)) {
-      df[, j + 1] <- if(j != length(seK)) sizes[[i]][idx[j], ] else sizes[[i]][max(idx), ]
-    }
-
-    colNam1 <- paste0("k", seK)
-
-    for (l in 1:length(seK)) {
-      df[, length(seK) + 1 + l] <- df[, (l + 1)]/(colSums(sizes[[i]]))
-    }
-
-    colNam2 <- paste0("P", seK)
-    colNams <- append(colNam1, colNam2)
-    colnames(df) <- c('x', colNams)
-
-    dfs.cat[[i]] <- df
-  }
-
-  dfs.cat
-})
-
-
-# ** Category lines ** #
-adjreg_calculation_catprob_lines <- reactive({
-  item <- input$adjreg_slider_item
-  matching <- adjreg_matching()
-  dfs <- adjreg_calculation_catprob_points()
-  fit.adj <- adjreg_model()
-  data <- as.data.frame(ordinal())
-
-  coefs <- lapply(fit.adj, function(x) coef(x))
-  # take a length of coeficient for item i
-  coefs_no <- length(coefs[[item]])
-  # take all intercepts, except score
-  coefs_b0 <- coefs[[item]][-coefs_no]
-  # take score
-  coefs_b1 <- coefs[[item]][coefs_no]
-
-  # function for plot
-  cat.prob <- function(x, b0, b1){
-    k <- length(b0)
-
-    # term b0 + b1X
-    mat <- data.frame(0, sapply(1:k, function(i) b0[i] + b1 * x))
-    # cumulative sum
-    mat <- t(apply(mat, 1, cumsum))
-    # exponential
-    mat <- exp(mat)
-    # norming
-    norm <- apply(mat, 1, sum)
-    mat <- mat/norm
-
-    mat
-  }
-
-  # dataset for lines
-  x <- seq(min(matching, na.rm = T), max(matching, na.rm = T), 0.01)
-  df.lines.tmp <- data.frame(x = x,
-                             y = cat.prob(x = x, b0 = coefs_b0, b1 = coefs_b1))
-  colnames(df.lines.tmp) <- c("x", paste0("k", sort(unique(data[, item]))))
-  df.lines.tmp
-})
-
-
-
 # ** Plot with category curves ######
 adjreg_plot_cat_Input <- reactive({
   item <- input$adjreg_slider_item
   matching <- adjreg_matching()
-  dfs.cat <- adjreg_calculation_catprob_points()
   fit.adj <- adjreg_model()
-  df.lines.tmp <- adjreg_calculation_catprob_lines()
+  matching.name <- ifelse(input$adjreg_matching == "total", "Total score", "Standardized total score")
 
-  # index (it is + 1 compare to cumulative as it includes 0)
-  c <- (ncol(dfs.cat[[item]]) - 1)/2
-
-  # dataset for points
-  df.points.cat <- melt(dfs.cat[[item]][, 1:(c + 1)], id.vars = "x",
-                        value.name = "size", variable.name = "category")
-  df.points.cat <- data.frame(df.points.cat[, c("x", "size")],
-                              melt(dfs.cat[[item]][, c(1, (c + 2):ncol(dfs.cat[[item]]))], id.vars = "x",
-                                   value.name = "prob", variable.name = "category"))
-  df.points.cat <- df.points.cat[, c(1, 2, 4, 5)]
-
-  # dataset for lines
-  # df.lines.cat <- as.data.frame(matrix(1, nrow = nrow(df.lines.tmp), ncol = c))
-  # colnames(df.lines.cat) <- paste0("k", 0:(c - 1))
-  # df.lines.cat[, intersect(colnames(df.lines.cat), colnames(df.lines.tmp))] <- df.lines.tmp[, intersect(colnames(df.lines.cat), colnames(df.lines.tmp))]
-  # df.lines.cat <- data.frame(x = df.lines.tmp$x,
-  #                            df.lines.cat)
-
-  df.lines.cat <- melt(df.lines.tmp, id.vars = "x", value.name = "prob", variable.name = "category")
-
-  # changing labels for plot
-  levels(df.points.cat$category) <- gsub("P", "P = ", levels(df.points.cat$category))
-  levels(df.lines.cat$category) <- gsub("k", "P = ", levels(df.lines.cat$category))
-
-  # plot
-  # get baseline colour palette
-  gg_color_hue <- function(n) {
-    hues = seq(15, 375, length = n + 1)
-    hcl(h = hues, l = 65, c = 100)[1:n]
-  }
-
-  cols <- c("black", gg_color_hue(c - 1))
-
-  ### points
-  g <- ggplot() +
-    geom_point(data = df.points.cat, aes(x = x, y = prob, group = category,
-                                         size = size,
-                                         col = category,
-                                         fill = category),
-               shape = 21, alpha = 0.5)
-  ### lines
-  g <- g +
-    geom_line(data = df.lines.cat, aes(x = x, y = prob, group = category,
-                                       col = category)) +
-    scale_color_manual(values = cols) +
-    scale_fill_manual(values = cols) +
-    xlab(ifelse(input$adjreg_matching == "total", "Total score",
-                "Standardized total score (Z-score)")) +
-    ylab("Category probability") +
-    ylim(0, 1) +
-    xlim(min(matching), max(matching)) +
-    ggtitle(item_names()[item]) +
-    theme_app() +
-    theme(legend.position = c(0.97, 0.03),
-          legend.justification = c(0.97, 0.03),
-          legend.box = "horizontal")
+  g <- plotAdjacent(fit.adj[[item]], matching.name = matching.name)
 
   g
 })
@@ -1421,14 +1002,24 @@ output$adjreg_na_alert <- renderUI({
 # * MULTINOMIAL ######
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+# ** Matching criterion for multinomial regression ######
+multi_matching <- reactive({
+  if (input$multi_matching == "total"){
+    matching <- total_score()
+  } else {
+    matching <- z_score()
+  }
+  matching
+})
+
 # ** Model for multinomial regression ######
 multi_model <- reactive({
-  zscore <- z_score()
+  matching <- multi_matching()
   key <- t(as.data.table(key()))
-  item <- input$multiSlider
+  item <- input$multi_slider_item
   data <- nominal()
 
-  dfhw <- data.table(data[, item, with = F], zscore)
+  dfhw <- data.table(data[, item, with = F], matching)
   dfhw <- dfhw[complete.cases(dfhw), ]
 
   fitM <- multinom(relevel(as.factor(unlist(dfhw[, 1])),
@@ -1439,213 +1030,14 @@ multi_model <- reactive({
 
 # ** Plot with estimated curves of multinomial regression ######
 multi_plot_Input <- reactive({
-  key <- t(as.data.table(key()))
-  data <- nominal()
-  zscore <- z_score()
-  item <- input$multiSlider
+  fit <- multi_model()
+  matching <- multi_matching()
+  matching_name <- ifelse(input$multi_matching == "total", "Total score", "Standardized total score")
+  item <- input$multi_slider_item
 
-  fitM <- multi_model()
-
-  data <- sapply(1:ncol(data), function(i) as.factor(unlist(data[, i, with = F])))
-
-  f <- function(Z, b_i0, b_i1) {
-    coefs <- as.vector(coef(fitM))
-    j <- length(coefs)/2
-
-    idx1 <- 1:j
-    idx2 <- (j+1):length(coefs)
-
-    num <- exp(b_i0 + b_i1 * Z)
-    den <- sapply(1:j, function(x) exp(coefs[idx1[x]] + coefs[idx2[x]] * Z))
-    den <- apply(den, 1, sum)
-
-    num/(1 + den)
-  }
-
-  f2 <- function(Z) {
-    coefs <- as.vector(coef(fitM))
-    j <- length(coefs)/2
-
-    idx1 <- 1:j
-    idx2 <- (j+1):length(coefs)
-
-    den <- sapply(1:j, function(x) exp(coefs[idx1[x]] + coefs[idx2[x]] * Z))
-    den <- apply(den, 1, sum)
-
-    1/(1 + den)
-  }
-
-  # take x axis
-  x <- seq(min(zscore, na.rm = TRUE), max(zscore, na.rm = TRUE), 0.01)
-  # take number of categories (except the correct one) - but those are in coef(fitM)
-  no_cat <- length(coef(fitM))/2
-  df.probs <- matrix(c(rep(0, no_cat * length(x))), nrow = length(x), ncol = no_cat + 1)
-
-  # take coefs
-  coefs <- coef(fitM)
-  # b_io
-  idx1 <- 1:no_cat
-  # b_i1
-  idx2 <- (no_cat + 1):length(coef(fitM))
-
-  for (i in 1:(length(coef(fitM))/2)) {
-    df.probs[, i+1] <- f(x, coefs[idx1[i]], coefs[idx2[i]])
-  }
-
-  df.probs[, 1] <- f2(x)
-
-  dfhw <- data.table(data[, item], zscore)
-  dfhw <- dfhw[complete.cases(dfhw), ]
-
-  temp <- as.factor(unlist(dfhw[, 1]))
-  temp <- relevel(temp, ref = paste(key[item]))
-
-  colnames(df.probs) <- levels(temp)
-
-  if(ncol(df.probs) == 1){
-    df_test <- cbind(df_test, 1 - df_test)
-    colnames(df_test) <- rev(levels(df_test))
-  }
-
-  df <- cbind(melt(df.probs), x)
-  df$Var2 <- relevel(as.factor(df$Var2), ref = paste(key[item]))
-
-
-  df2 <- data.table(table(data[, item], zscore),
-                    y = data.table(prop.table(table(data[, item], zscore), 2))[, 3])
-  df2$zscore <- as.numeric(paste(df2$zscore))
-  df2$Var2 <- relevel(factor(df2$V2), ref = paste(key[item]))
-
-
-  ggplot() +
-    geom_line(data = df,
-              aes(x = x , y = value,
-                  colour = Var2, linetype = Var2), size = 1) +
-    geom_point(data = df2,
-               aes(x = zscore, y = y.N,
-                   colour = Var2, fill = Var2,
-                   size = N),
-               alpha = 0.5, shape = 21) +
-
-    ylim(0, 1) +
-    labs(x = "Standardized total score",
-         y = "Probability of answer") +
-    theme_app() +
-    theme(legend.box = "horizontal",
-          legend.position = c(0.01, 0.98),
-          legend.justification = c(0, 1)) +
-    ggtitle(item_names()[item])
-})
-
-# ** Reports: Plot with estimated curves of multinomial regression ######
-multiplotReportInput <- reactive({
-  graflist <- list()
-  key <- unlist(key())
-  data <- nominal()
-  zscore <- z_score()
-
-  data <- sapply(1:ncol(data), function(i) as.factor(unlist(data[, i, with = F])))
-
-  f <- function(Z, b_i0, b_i1) {
-    coefs <- as.vector(coef(fitM))
-    j <- length(coefs)/2
-
-    idx1 <- 1:j
-    idx2 <- (j+1):length(coefs)
-
-    num <- exp(b_i0 + b_i1 * Z)
-    den <- sapply(1:j, function(x) exp(coefs[idx1[x]] + coefs[idx2[x]] * Z))
-    den <- apply(den, 1, sum)
-
-    num/(1 + den)
-  }
-
-  f2 <- function(Z) {
-    coefs <- as.vector(coef(fitM))
-    j <- length(coefs)/2
-
-    idx1 <- 1:j
-    idx2 <- (j+1):length(coefs)
-
-    den <- sapply(1:j, function(x) exp(coefs[idx1[x]] + coefs[idx2[x]] * Z))
-    den <- apply(den, 1, sum)
-
-    1/(1 + den)
-  }
-
-  for (item in 1:length(key)) {
-    dfhw <- data.table(data[, item], zscore)
-    dfhw <- dfhw[complete.cases(dfhw), ]
-
-    fitM <- multinom(relevel(as.factor(unlist(dfhw[, 1])),
-                             ref = paste(key[item])) ~ unlist(dfhw[, 2]),
-                     trace = F)
-
-    x <- seq(min(zscore, na.rm = TRUE), max(zscore, na.rm = TRUE), 0.01)
-
-    # take number of categories (except the correct one) - but those are in coef(fitM)
-    no_cat <- length(coef(fitM))/2
-    df.probs <- matrix(c(rep(0, no_cat * length(x))), nrow = length(x), ncol = no_cat + 1)
-
-    # take coefs
-    coefs <- coef(fitM)
-    # b_io
-    idx1 <- 1:no_cat
-    # b_i1
-    idx2 <- (no_cat + 1):length(coef(fitM))
-
-    for (i in 1:(length(coef(fitM))/2)) {
-      df.probs[, i+1] <- f(x, coefs[idx1[i]], coefs[idx2[i]])
-    }
-
-    df.probs[, 1] <- f2(x)
-
-    dfhw <- data.table(data[, item], zscore)
-    dfhw <- dfhw[complete.cases(dfhw), ]
-
-    temp <- as.factor(unlist(dfhw[, 1]))
-    temp <- relevel(temp, ref = paste(key[item]))
-
-    colnames(df.probs) <- levels(temp)
-
-    if(ncol(df.probs) == 1){
-      df_test <- cbind(df_test, 1 - df_test)
-      colnames(df_test) <- rev(levels(df_test))
-    }
-
-    df <- cbind(melt(df.probs), x)
-    df$Var2 <- relevel(as.factor(df$Var2), ref = paste(key[item]))
-    df2 <- data.table(table(data[, item], zscore),
-                      y = data.table(prop.table(table(data[, item], zscore), 2))[, 3])
-    df2$zscore <- as.numeric(paste(df2$zscore))
-    df2$Var2 <- relevel(factor(df2$V2), ref = paste(key[item]))
-
-    g <-  ggplot() +
-      geom_line(data = df,
-                aes(x = x , y = value,
-                    colour = Var2, linetype = Var2), size = 1) +
-      geom_point(data = df2,
-                 aes(x = zscore, y = y.N,
-                     colour = Var2, fill = Var2,
-                     size = N),
-                 alpha = 0.5, shape = 21) +
-      ylim(0, 1) +
-      labs(x = "Standardized total score",
-           y = "Probability of answer") +
-      guides(colour = guide_legend(order = 1),
-             linetype = guide_legend(order = 1),
-             fill = guide_legend(order = 1),
-             size = guide_legend(order = 2)) +
-      theme_app() +
-      theme(legend.box = "horizontal",
-            legend.position = c(0.01, 0.98),
-            legend.justification = c(0, 1))
-    g = g +
-      ggtitle(paste("Multinomial plot for item", item_numbers()[item]))
-    g = ggplotGrob(g)
-    graflist[[item]] = g
-  }
-  graflist
+  g <- plotMultinomial(fit, matching, matching.name = matching_name)
+  g <- g + ggtitle(item_names()[item])
+  g
 })
 
 # ** Output plot with estimated curves of multinomial regression ######
@@ -1656,7 +1048,7 @@ output$multi_plot <- renderPlot({
 # ** DB plot with estimated curves of multinomial regression ######
 output$DB_multi_plot <- downloadHandler(
   filename =  function() {
-    paste("fig_MultinomialRegressionCurve_", item_names()[input$multiSlider], ".png", sep = "")
+    paste("fig_MultinomialRegressionCurve_", item_names()[input$multi_slider_item], ".png", sep = "")
   },
   content = function(file) {
     ggsave(file, plot = multi_plot_Input() +
@@ -1667,9 +1059,36 @@ output$DB_multi_plot <- downloadHandler(
   }
 )
 
+# ** Reports: Plot with estimated curves of multinomial regression ######
+multiplotReportInput <- reactive({
+  graflist <- list()
+  key <- unlist(key())
+  data <- nominal()
+  matching <- multi_matching()
+  matching_name <- ifelse(input$multi_matching == "total", "Total score", "Standardized total score")
+
+  data <- sapply(1:ncol(data), function(i) as.factor(unlist(data[, i, with = F])))
+
+  for (item in 1:length(key)) {
+    dfhw <- data.table(data[, item], matching)
+    dfhw <- dfhw[complete.cases(dfhw), ]
+
+    fitM <- multinom(relevel(as.factor(unlist(dfhw[, 1])),
+                             ref = paste(key[item])) ~ unlist(dfhw[, 2]),
+                     trace = F)
+
+    g <- plotMultinomial(fitM, matching, matching.name = matching_name)
+
+    g <- g + ggtitle(paste("Multinomial plot for item", item_numbers()[item]))
+    g <- ggplotGrob(g)
+    graflist[[item]] <- g
+  }
+  graflist
+})
+
 # ** Equation of multinomial regression ######
 output$multi_equation <- renderUI ({
-  cor_option <- key()[input$multiSlider]
+  cor_option <- key()[input$multi_slider_item]
   withMathJax(
     sprintf(
       '$$\\mathrm{P}(Y = i|Z, b_{i0}, b_{i1}) = \\frac{e^{\\left( b_{i0} + b_{i1} Z\\right)}}{1 + \\sum_j e^{\\left( b_{j0} + b_{j1} Z\\right)}}, \\\\
@@ -1686,7 +1105,7 @@ output$coef_multi <- renderTable({
 
   key <- t(as.data.table(key()))
   data <- nominal()
-  item <- input$multiSlider
+  item <- input$multi_slider_item
 
   dfhw <- na.omit(data.table(data[, item, with = FALSE]))
   temp <- as.factor(unlist(dfhw[, 1]))
@@ -1713,30 +1132,24 @@ output$multi_interpretation <- renderUI({
 
   koef <- summary(multi_model())$coefficients
   txt  <- c()
+  matching_name <- ifelse(input$multi_matching == "total",
+                          "total score",
+                          "Z-score (one SD increase in original scores)")
 
   if(is.null(dim(koef))){
     m <- length(koef)
     txt0 <- ifelse(koef[2] < 0, "decrease", "increase")
-    txt <-  paste (
-      "A one-unit increase in the Z-score (one SD increase in original
-      scores)  is associated with the ", txt0, " in the log odds of
-      answering the item "
-      ,"<b> 0 </b>", "vs.", "<b> 1 </b>", " in the amount of ",
-      "<b>", abs(round(koef[2], 2)), "</b>", '<br/>')
+    txt <-  paste("A one-unit increase in the", matching_name, "is associated with the ",
+                  txt0, " in the log odds of answering the item " ,"<b> 0 </b>", "vs.",
+                  "<b> 1 </b>", " in the amount of ", "<b>", abs(round(koef[2], 2)), "</b>", '<br/>')
   } else {
     m <- nrow(koef)
     for (i in 1:m){
       txt0 <- ifelse(koef[i, 2] < 0, "decrease", "increase")
-      txt[i] <- paste (
-        "A one-unit increase in the Z-score (one SD increase in original
-        scores)  is associated with the ", txt0, " in the log odds of
-        answering the item "
-        ,"<b>", row.names(koef)[i], "</b>", "vs.", "<b>",
-
-        key()[input$multiSlider],
-
-        "</b>","in the amount of ",
-        "<b>", abs(round(koef[i, 2], 2)), "</b>", '<br/>')
+      txt[i] <- paste("A one-unit increase in the", matching_name, "is associated with the ",
+                      txt0, " in the log odds of answering the item " ,"<b>", row.names(koef)[i],
+                      "</b>", "vs.", "<b>", key()[input$multi_slider_item], "</b>","in the amount of ",
+                      "<b>", abs(round(koef[i, 2], 2)), "</b>", '<br/>')
     }
   }
   HTML(paste(txt))

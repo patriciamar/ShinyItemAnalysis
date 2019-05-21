@@ -453,7 +453,7 @@ function(input, output, session) {
       "slider_nlr_3P_item",
       "slider_nlr_4P_item",
       "cumreg_slider_item",
-      "multiSlider",
+      "multi_slider_item",
       "difMHSlider_item",
       "diflogSlider",
       "diflog_irtSlider",
@@ -481,7 +481,7 @@ function(input, output, session) {
     updateSliderInput(session = session, inputId = "slider_nlr_4P_item", max = itemCount)
     updateSliderInput(session = session, inputId = "cumreg_slider_item", max = itemCount)
     updateSliderInput(session = session, inputId = "adjreg_slider_item", max = itemCount)
-    updateSliderInput(session = session, inputId = "multiSlider", max = itemCount)
+    updateSliderInput(session = session, inputId = "multi_slider_item", max = itemCount)
     updateSliderInput(session = session, inputId = "difMHSlider_item", max = itemCount)
     updateSliderInput(session = session, inputId = "diflogSlider", max = itemCount)
     updateSliderInput(session = session, inputId = "diflog_irtSlider", max = itemCount)
@@ -760,7 +760,9 @@ function(input, output, session) {
         multiCheck = input$multiCheck,
         DDF_multinomial_print = {if (groupPresent()) {if (input$multiCheck) {model_DDF_print_report()}}},
         DDF_multinomial_plot = {if (groupPresent()) {if (input$multiCheck) {plot_DDFReportInput()}}},
-        incProgress(0.25)
+        incProgress(0.25),
+        ### sessionInfo
+        sessionInfo = input$include_session
       )
     })
 
@@ -845,7 +847,9 @@ function(input, output, session) {
         ### multinomial regression
         multiCheck = input$multiCheck,
         DDF_multinomial_print = {if (groupPresent()) {if (input$multiCheck) {model_DDF_print_report()}}},
-        DDF_multinomial_plot = {if (groupPresent()) {if (input$multiCheck) {plot_DDFReportInput()}}}
+        DDF_multinomial_plot = {if (groupPresent()) {if (input$multiCheck) {plot_DDFReportInput()}}},
+        ### sessionInfo
+        sessionInfo = input$include_session
       )
       rmarkdown::render(reportPath, output_file = file,
                         params = parameters, envir = new.env(parent = globalenv()))

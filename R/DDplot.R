@@ -130,7 +130,7 @@
 #' scale_y_reverse
 #' stat_function stat_summary theme theme_bw unit xlab xlim ylab ylim
 #' @importFrom graphics lines plot plot.new
-#' @importFrom grDevices dev.off png rainbow recordPlot
+#' @importFrom grDevices dev.off hcl png rainbow recordPlot
 #' @importFrom ltm ltm rasch tpm
 #' @importFrom mirt fscores itemfit mirt
 #' @importFrom moments kurtosis skewness

@@ -55,8 +55,8 @@ DDplot_Input_report<-reactive({
   correct <- ordinal()
   if (input$customizeCheck) {
 
-    # difc_type <- input$DDplotDiscriminationDifficulty_report
-    # average.score <- (difc_type == "AVGS")
+     difc_type <- input$DDplotDiscriminationDifficulty_report
+     average.score <- (difc_type == "AVGS")
 
     DDplot(correct, item.names = item_numbers(),
            k = input$DDplotNumGroupsSlider_report,
@@ -237,6 +237,17 @@ output$distractor_groups_alert <- renderUI({
   }
 })
 
+output$distractor_report_groups_alert <- renderUI({
+  if (change_indicator$change == TRUE) {
+    txt <- paste('<font color = "orange">The cut of criterion variable was not unique. The maximum number of
+                 groups, for which criterion variable is unique is ', max(distractor_final_groups()[[1]]), ".</font>", sep = "")
+    HTML(txt)
+  } else {
+    txt <- " "
+    HTML(txt)
+  }
+})
+
 
 # ** Distractor text ######
 output$distractor_text <- renderUI({
@@ -309,11 +320,11 @@ report_distractor_plot <- reactive({
                                 item = i,
                                 item.name = item_names()[i],
                                 multiple.answers = multiple.answers_report)
-    g = g +
+    g <- g +
       ggtitle(paste("Distractor plot for item", item_numbers()[i])) +
       theme_app()
-    g = ggplotGrob(g)
-    graflist[[i]] = g
+    g <- ggplotGrob(g)
+    graflist[[i]] <- g
   }
   graflist
 })
@@ -498,6 +509,8 @@ observeEvent(!(input$gr %in% distractor_final_groups()[[1]]),{
     c <- max(distractor_final_groups()[[1]])
     change_indicator$change = TRUE
     updateSliderInput(session, "gr", value = c)
+	updateSliderInput(session, "distractorGroupSlider", value = c)
+
   }
 
 })
