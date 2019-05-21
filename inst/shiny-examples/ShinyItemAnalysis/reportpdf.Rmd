@@ -4,18 +4,21 @@ title: |
 author: |
   `r ifelse(params$author == "", "", params$author)`
 output: 
-    pdf_document:
-       number_sections: false
-       fig_caption: false
-header-includes:
-   - \usepackage{titlepage}
-   - \renewcommand{\refname}{}
-   - \usepackage{ragged2e}
-   - \usepackage{longtable}
-   - \hyphenation{Shi-ny-Item-A-na-ly-sis}
-includes:
-    before_body: latex/before_body.tex
-fontsize:
+  pdf_document: 
+    number_sections: false
+    fig_caption: false
+header-includes: 
+  - \usepackage{graphicx, geometry, lmodern, xcolor, booktabs, fancyhdr}
+  - \usepackage[pages=some]{background}
+  - \usepackage[T1]{fontenc}
+  - \usepackage[default]{raleway}
+  - \usepackage{ragged2e}
+  - \usepackage{longtable}
+  - \hyphenation{Shi-ny-Item-A-na-ly-sis}
+  - \usepackage{titlepage}
+includes: 
+  before_body: latex/before_body.tex
+fontsize: 
   12pt
 geometry: "left = 0.6in, right = 0.6in, top = 0.8in, bottom = 0.8in"
 params:
@@ -79,8 +82,9 @@ params:
   DDF_multinomial_plot: NA
   sessionInfo: NA
 ---
-\pagenumbering{gobble} 
+\pagenumbering{gobble}
 
+\maketitle
 
 \raggedright
 \clearpage
@@ -88,9 +92,9 @@ params:
 
 \pagebreak
 
-\pagenumbering{arabic} 
-
 \justify
+
+\pagenumbering{arabic}
 
 # Introduction
 
@@ -106,12 +110,12 @@ To cite ShinyItemAnalysis application in publications, please, use:
   (2018)
   ShinyItemAnalysis for teaching psychometrics and to enforce routine analysis of educational tests. 
   \textit{The R Journal, 10}(2), 503-515. \\
-  doi: 10.32614/RJ-2018-074
+  https://doi.org/10.32614/RJ-2018-074
 
 \bibitem{martinkova2019}
   Martinkov\'a P., Drabinov\'a A., Leder O., \& Houdek J.
   (2019)
-  ShinyItemAnalysis: Test and item ana\-ly\-sis via shiny. R package version 1.3.0.
+  ShinyItemAnalysis: Test and item ana\-ly\-sis via shiny. R package version 1.3.0. \\
   https://CRAN.R-project.org/package=ShinyItemAnalysis
 
 \bibitem{martinkova2017}
@@ -120,7 +124,7 @@ To cite ShinyItemAnalysis application in publications, please, use:
   ShinyItemAnalysis: Anal\'yza p\v{r}ij\'imac\'ich a jin\'ych znalostn\'ich \v{c}i psychologick\'ych test\r{u}
   [ShinyItemAnalysis: Analyzing admission and other educational and psychological tests, in Czech]. 
   \textit{TESTF\'ORUM, 6}(9), 16-35. \\
-  doi: 10.5817/TF2017-9-129
+  https://doi.org/10.5817/TF2017-9-129
 
 \end{thebibliography}
 
@@ -148,7 +152,7 @@ colnames(table) = NULL
 
 print(xtable(t(table), 
              digits = c(0, 0, 0, 2, 2, 2, 2, 2), 
-             align = rep('c', 8)), 
+             align = rep('c', 8)),
       booktabs = T, comment = F, include.rownames = F,
       tabular.environment = "longtable", floating = F)
 ```
@@ -180,7 +184,7 @@ table = params$standardscores_table
 
 print(xtable(table, 
              digits = c(0, 0, 2, 0, 2, 2), 
-             align = rep('c', 6)), 
+             align = rep('c', 6)),
       booktabs = T, comment = F, include.rownames = F,
       tabular.environment = "longtable", floating = F)
 ```
@@ -200,15 +204,7 @@ print(xtable(table,
 
 `r if (any(params$corr_plot != "")) {if (params$corr_type == "spearman") {"A correlation heat map displays Polychoric correlations of items. Spearman's rank correlation coefficient describes strength and direction of monotonic relationship between random variables X and Y, i.e. dependence between the rankings of two variables."}}`
 
-`r clustmethod_names <- c("None" = "none",
-                          "Ward's"  = "ward.D",
-                          "Ward's n. 2" = "ward.D2",
-                          "single" = "single",
-                          "complete" = "complete",
-                          "average" = "average",
-                          "McQuitty" = "mcquitty",
-                          "median" = "median",
-                          "centroid" = "centroid")`
+`r clustmethod_names <- c("None" = "none", "Ward's"  = "ward.D", "Ward's n. 2" = "ward.D2", "single" = "single", "complete" = "complete", "average" = "average", "McQuitty" = "mcquitty", "median" = "median", "centroid" = "centroid")`
                           
 `r if (any(params$corr_plot != "") & params$corr_plot_clustmethod != "none") {paste("A correlation heat map is reordered using hierarchical clustering with", names(clustmethod_names)[clustmethod_names == params$corr_plot_clustmethod], "linkage method. The number of highlighted clusters is", params$corr_plot_numclust, ". ")}`
 
@@ -372,7 +368,7 @@ if(params$DDplotNumGroups == 3 & params$DDplotRange1 == 1 & params$DDplotRange2 
 
   print(xtable(table, 
               digits = c(0, 0, 2, 2, 2, 2, 2, 2, 2), 
-              align = rep('c', 9)), 
+              align = rep('c', 9)),
         booktabs = T, comment = F, include.rownames = FALSE,
         tabular.environment = "longtable", floating = F)
 } else {
@@ -384,7 +380,7 @@ if(params$DDplotNumGroups == 3 & params$DDplotRange1 == 1 & params$DDplotRange2 
 
 print(xtable(table, 
              digits = c(0, 0, 2, 2, 2, 2, 2, 2, 2, 2), 
-             align = rep('c', 10)), 
+             align = rep('c', 10)),
       booktabs = T, comment = F, include.rownames = FALSE,
       tabular.environment = "longtable", floating = F)  
   
@@ -488,7 +484,7 @@ if (params$irt_type != "none"){
   
   print(xtable(table, 
               digits = 2, 
-              align = c('l', rep('c', 7))), 
+              align = c('l', rep('c', 7))),
         booktabs = T, comment = F, include.rownames = T,
         tabular.environment = "longtable", floating = F)
 }
@@ -570,12 +566,13 @@ if (params$irt_type != "none") {
 ```{r irt-estim, echo = FALSE, results = "asis"}
 if (params$irt_type != "none") {
   table = params$irtcoef
+  colnames(table) = c("$a$", "SE($a$)", "$b$", "SE($b$)", "$c$", "SE($c$)", "$d$", "SE($d$)", "SX-2", "df", "p-value")
   
   print(xtable(table, 
              digits = c(0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 2), 
-             align = c('l',rep('c', 11))), 
-      booktabs = T, comment = F, include.rownames = T,
-      tabular.environment = "longtable", floating = F)
+             align = c('l',rep('c', 11))),
+        booktabs = T, comment = F, include.rownames = T, sanitize.text.function = function(x){x}, 
+        tabular.environment = "longtable", floating = F)
 }
 ```
 
@@ -596,7 +593,7 @@ if (params$histCheck) {
   if(params$isGroupPresent){
     print(xtable(params$resultsgroup, 
                  digits = c(0, 0, 0, 0, 2, 2, 2, 2, 2), 
-                 align = c('l', rep('c', 8))), 
+                 align = c('l', rep('c', 8))),
           booktabs = T, comment = F,
           tabular.environment = "longtable", floating = F)
   }
@@ -723,7 +720,7 @@ if (params$logregCheck) {
   
   print(xtable(tab, 
                  digits = c(0, 3, 3, 3, 0, 0), 
-                 align = c('l', 'c', 'l', 'c', 'c', 'c')), 
+                 align = c('l', 'c', 'l', 'c', 'c', 'c')),
         booktabs = T, comment = F,
         tabular.environment = "longtable", floating = F)
   } 
@@ -834,14 +831,16 @@ if (params$multiCheck) {
 ```
 
 
-\pagebreak
+`r if(params$sessionInfo == 'yes') {"\\pagebreak"}`
 
 `r if(params$sessionInfo == 'yes') {"# Session info"}`
 
 `r if(params$sessionInfo == 'yes') {"Session info provides information about settings of the R console and used packages and their versions which were used for the analysis."}`
 
-```{r session-info, echo = FALSE, results= ifelse(params$sessionInfo == 'yes',"markup","hide")}
-sessionInfo()
+```{r session-info, echo = FALSE, results = "markup"}
+if (params$sessionInfo == 'yes'){
+  sessionInfo()  
+}
 ```
 
-\pagebreak
+

@@ -5,6 +5,30 @@
         ***************************************************************
 
 -------------------------------------------------------
+- Changes in ShinyItemAnalysis 1.3.0-11. (2019-05-21) -
+-------------------------------------------------------
+
+BUG FIXING
+  o Option for displaying session info in reports now function properly.
+
+MAJOR UPDATES
+  o New function plotCumulative() which plots category probabilities
+    functions estimated by \code{multinom()} from \code{nnet} package
+    was added. It is now used in application.
+  o New function plotAdjacent() which plots category probabilities
+    functions estimated by \code{multinom()} from \code{nnet} package
+    was added. It is now used in application.
+  o New function plotMultinomial() which plots category probabilities
+    functions estimated by \code{multinom()} from \code{nnet} package
+    was added. It is now used in application.
+
+MINOR UPDATES
+  o Selected R codes for cumulative, adjacent and multinomial models
+    were updated.
+  o Option for matching criterion (total vs Z-score) in multinomial
+    model was added.
+
+-------------------------------------------------------
 - Changes in ShinyItemAnalysis 1.3.0-10. (2019-05-17) -
 -------------------------------------------------------
 

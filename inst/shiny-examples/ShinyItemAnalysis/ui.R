@@ -25,8 +25,6 @@ source("ui/uiReports.R", local = T)
 source("ui/uiReferences.R", local = T)
 source("ui/uiSetting.R", local = T)
 
-
-
 #%%%%%%%%%%%%%%%%%%%%%
 # UI #################
 #%%%%%%%%%%%%%%%%%%%%%
@@ -97,7 +95,7 @@ ui = tagList(
                     ShinyItemAnalysis
                     </div>
                     <div class = "footer-subtitle">
-                    Test and item analysis | Version 1.3.0-10
+                    Test and item analysis | Version 1.3.0-11
                     </div>
                     <span style = "float:right">
                     <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysis/" id = "tooltipweb" target="_blank">

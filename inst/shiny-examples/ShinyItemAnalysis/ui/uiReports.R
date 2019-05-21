@@ -70,6 +70,12 @@ uiReports <-
                             fluidRow(column(9,
                                             p(strong("Difficulty/discrimination plot")),
                                             column(3,
+												   selectInput(inputId = "DDplotDiscriminationDifficulty",
+                                                                            label = "Difficulty type:",
+                                                                            choices = c("Average scaled score" = "AVGSS",
+                                                                                        "Average item score" = "AVGS"),
+                                                                            selected = "AVGSS")),
+											column(3,
                                                    selectInput(inputId = "DDplotDiscriminationSelect_report",
                                                                label = "Discrimination type:",
                                                                choices = c("ULI" = "ULI",
@@ -106,7 +112,9 @@ uiReports <-
                                                                label = 'Number of groups:',
                                                                min = 1,
                                                                max = 5,
-                                                               value = 3)))),
+                                                               value = 3)),
+											column(3,
+                                                   uiOutput("distractor_report_groups_alert")))),
                             tags$hr()),
            
            fluidRow(

@@ -231,6 +231,7 @@ uiRegression <-
                       h4("Table of parameters"),
                       fluidRow(column(12, align = "center", tableOutput("cumreg_coef_tab"))),
                       h4("Selected R code"),
+					  div(code(HTML("library(ShinyItemAnalysis)<br>library(VGAM)<br><br>#&nbsp;loading&nbsp;data<br>data&nbsp;<-&nbsp;dataMedicalgraded[,&nbsp;1:100]<br><br>#&nbsp;total&nbsp;score&nbsp;calculation<br>score&nbsp;<-&nbsp;apply(data,&nbsp;1,&nbsp;sum,&nbsp;na.rm&nbsp;=&nbsp;TRUE)<br>key&nbsp;<-&nbsp;sapply(data,&nbsp;max)<br>maxval&nbsp;<-&nbsp;max(data[,&nbsp;1])<br>data[,&nbsp;1]&nbsp;<-&nbsp;factor(data[,&nbsp;1],&nbsp;levels&nbsp;=&nbsp;0:maxval)<br><br>#&nbsp;cummulative&nbsp;logistic&nbsp;model&nbsp;for&nbsp;item&nbsp;1<br>fit.cum&nbsp;<-&nbsp;vglm(data[,&nbsp;1]&nbsp;~&nbsp;score,&nbsp;family&nbsp;=&nbsp;cumulative(reverse&nbsp;=&nbsp;TRUE,&nbsp;parallel&nbsp;=&nbsp;TRUE))<br>#&nbsp;coefficients&nbsp;for&nbsp;item&nbsp;1<br>coefs&nbsp;<-&nbsp;coef(fit.cum)<br><br>#&nbsp;plotting&nbsp;cumulative&nbsp;probabilities<br>plotCumulative(fit.cum,&nbsp;type&nbsp;=&nbsp;\"cumulative\",&nbsp;matching.name&nbsp;=&nbsp;\"Total&nbsp;score\")<br>#&nbsp;plotting&nbsp;category&nbsp;probabilities<br>plotCumulative(fit.cum,&nbsp;type&nbsp;=&nbsp;\"category\",&nbsp;matching.name&nbsp;=&nbsp;\"Total&nbsp;score\")"))),
                       br(),
                       br()
              ),
@@ -278,7 +279,8 @@ uiRegression <-
                       h4("Table of parameters"),
                       fluidRow(column(12, align = "center", tableOutput("adjreg_coef_tab"))),
                       h4("Selected R code"),
-                      br(),
+					  div(code(HTML("library(ShinyItemAnalysis)<br>library(VGAM)<br><br>#&nbsp;loading&nbsp;data<br>data&nbsp;<-&nbsp;dataMedicalgraded[,&nbsp;1:100]<br><br>#&nbsp;total&nbsp;score&nbsp;calculation<br>score&nbsp;<-&nbsp;apply(data,&nbsp;1,&nbsp;sum,&nbsp;na.rm&nbsp;=&nbsp;TRUE)<br>key&nbsp;<-&nbsp;sapply(data,&nbsp;max)<br>maxval&nbsp;<-&nbsp;max(data[,&nbsp;1])<br>data[,&nbsp;1]&nbsp;<-&nbsp;factor(data[,&nbsp;1],&nbsp;levels&nbsp;=&nbsp;0:maxval)<br><br>#&nbsp;adjacent&nbsp;logistic&nbsp;model&nbsp;for&nbsp;item&nbsp;1<br>fit.adj&nbsp;<-&nbsp;vglm(data[,&nbsp;1]&nbsp;~&nbsp;score,&nbsp;family&nbsp;=&nbsp;acat(reverse&nbsp;=&nbsp;FALSE,&nbsp;parallel&nbsp;=&nbsp;TRUE))<br>#&nbsp;coefficients&nbsp;for&nbsp;item&nbsp;1<br>coefs&nbsp;<-&nbsp;coef(fit.adj)<br><br>#&nbsp;plotting&nbsp;category&nbsp;probabilities<br>plotAdjacent(fit.adj,&nbsp;matching.name&nbsp;=&nbsp;\"Total&nbsp;score\")"))),
+					  br(),
                       br()
              ),
              # * MULTINOMIAL ####
@@ -293,9 +295,21 @@ uiRegression <-
                       p('Points represent proportion of selected option with respect to standardized
                         total score. Their size is determined by count of respondents who achieved given
                         level of standardized total score and who selected given option.'),
-                      sliderInput("multiSlider", "Item",
-                                  min = 1, value = 1, max = 10,
-                                  step = 1, animate = animationOptions(interval = 1200)),
+                      fluidRow(
+                        column(3,
+                               selectInput(inputId = "multi_matching",
+                                           choices = c("Total score" = "total",
+                                                       "Standardized score" = "zscore"),
+                                           selected = "total",
+                                           label = "Matching criterion")),
+                        column(3,
+                               sliderInput(inputId = "multi_slider_item",
+                                           min = 1,
+                                           max = 20,
+                                           step = 1,
+                                           value = 1,
+                                           label = "Item",
+                                           animate = animationOptions(interval = 1200)))),
                       uiOutput("multi_na_alert"),
                       plotOutput('multi_plot'),
                       downloadButton("DB_multi_plot", label = "Download figure"),
@@ -307,7 +321,7 @@ uiRegression <-
                       htmlOutput("multi_interpretation"),
                       br(),
                       h4("Selected R code"),
-                      div(code(HTML("library(difNLR)&nbsp;<br>library(nnet)&nbsp;<br><br>#&nbsp;loading&nbsp;data<br>data(GMAT,&nbsp;GMATtest,&nbsp;GMATkey)&nbsp;<br>zscore&nbsp;<-&nbsp;scale(apply(GMAT[,&nbsp;1:20]&nbsp;,&nbsp;1,&nbsp;sum))&nbsp;#&nbsp;standardized&nbsp;total&nbsp;score<br>data&nbsp;<-&nbsp;GMATtest[,&nbsp;1:20]&nbsp;<br>key&nbsp;<-GMATkey<br><br>#&nbsp;multinomial&nbsp;model&nbsp;for&nbsp;item&nbsp;1&nbsp;<br>fit&nbsp;<-&nbsp;multinom(relevel(data[,&nbsp;1],&nbsp;ref&nbsp;=&nbsp;paste(key[1]))&nbsp;~&nbsp;zscore)&nbsp;<br><br>#&nbsp;coefficients&nbsp;<br>coef(fit)"))),
+                      div(code(HTML("library(difNLR)&nbsp;<br>library(nnet)&nbsp;<br>library(ShinyItemAnalysis)<br><br>#&nbsp;loading&nbsp;data<br>data(GMAT,&nbsp;GMATtest,&nbsp;GMATkey)&nbsp;<br>zscore&nbsp;<-&nbsp;scale(apply(GMAT[,&nbsp;1:20]&nbsp;,&nbsp;1,&nbsp;sum))&nbsp;#&nbsp;standardized&nbsp;total&nbsp;score<br>data&nbsp;<-&nbsp;GMATtest[,&nbsp;1:20]&nbsp;<br>key&nbsp;<-&nbsp;GMATkey<br><br>#&nbsp;multinomial&nbsp;model&nbsp;for&nbsp;item&nbsp;1&nbsp;<br>fit&nbsp;<-&nbsp;multinom(relevel(data[,&nbsp;1],&nbsp;ref&nbsp;=&nbsp;paste(key[1]))&nbsp;~&nbsp;zscore)&nbsp;<br><br>#&nbsp;coefficients&nbsp;<br>coef(fit)<br><br>#&nbsp;plot&nbsp;for&nbsp;item&nbsp;1<br>plotMultinomial(fit,&nbsp;zscore,&nbsp;matching.name&nbsp;=&nbsp;\"Z-score\")"))),
                       br()
              )
   )
