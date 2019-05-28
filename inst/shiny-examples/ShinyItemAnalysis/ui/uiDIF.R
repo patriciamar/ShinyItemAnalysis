@@ -55,7 +55,7 @@ uiDIF <-
                       h4("Selected R code"),
                       div(code(HTML("library(difNLR)<br>library(ggplot2)<br>library(moments)<br><br>#&nbsp;loading&nbsp;data<br>data(GMAT)<br>data&nbsp;<-&nbsp;GMAT[,&nbsp;1:20]<br>group&nbsp;<-&nbsp;GMAT[,&nbsp;\"group\"]<br><br>#&nbsp;total&nbsp;score&nbsp;calculation&nbsp;wrt&nbsp;group<br>score0&nbsp;<-&nbsp;apply(data,&nbsp;1,&nbsp;sum)[group&nbsp;==&nbsp;0]<br>score1&nbsp;<-&nbsp;apply(data,&nbsp;1,&nbsp;sum)[group&nbsp;==&nbsp;1]<br><br>#&nbsp;summary&nbsp;of&nbsp;total&nbsp;score&nbsp;<br>rbind(c(length(score0),&nbsp;min(score0),&nbsp;max(score0),&nbsp;mean(score0),&nbsp;median(score0),&nbsp;sd(score0),&nbsp;skewness(score0),&nbsp;kurtosis(score0)),<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;c(length(score1),&nbsp;min(score1),&nbsp;max(score1),&nbsp;mean(score1),&nbsp;median(score1),&nbsp;sd(score1),&nbsp;skewness(score1),&nbsp;kurtosis(score1)))<br><br>#&nbsp;colors&nbsp;by&nbsp;cut-score&nbsp;wrt&nbsp;group<br>cut&nbsp;<-&nbsp;12&nbsp;#&nbsp;cut-score&nbsp;<br>color0&nbsp;<-&nbsp;c(rep(\"red\",&nbsp;cut&nbsp;-&nbsp;min(score0)),&nbsp;\"gray\",&nbsp;rep(\"blue\",&nbsp;max(score0)&nbsp;-&nbsp;cut))<br>color1&nbsp;<-&nbsp;c(rep(\"red\",&nbsp;cut&nbsp;-&nbsp;min(score1)),&nbsp;\"gray\",&nbsp;rep(\"blue\",&nbsp;max(score1)&nbsp;-&nbsp;cut))<br><br>#&nbsp;histogram&nbsp;for&nbsp;reference&nbsp;group<br>ggplot(data&nbsp;=&nbsp;data.frame(score0),&nbsp;aes(score0))&nbsp;+&nbsp;<br>&nbsp;&nbsp;geom_histogram(binwidth&nbsp;=&nbsp;1,&nbsp;fill&nbsp;=&nbsp;color0,&nbsp;col&nbsp;=&nbsp;\"black\")&nbsp;+&nbsp;<br>&nbsp;&nbsp;xlab(\"Total&nbsp;score\")&nbsp;+&nbsp;<br>&nbsp;&nbsp;ylab(\"Number&nbsp;of&nbsp;respondents\")&nbsp;+&nbsp;<br>&nbsp;&nbsp;ggtitle(\"Reference&nbsp;group\")&nbsp;+&nbsp;<br>&nbsp;&nbsp;theme_app()<br><br>#&nbsp;histogram&nbsp;for&nbsp;focal&nbsp;group<br>ggplot(data&nbsp;=&nbsp;data.frame(score1),&nbsp;aes(score1))&nbsp;+&nbsp;<br>&nbsp;&nbsp;geom_histogram(binwidth&nbsp;=&nbsp;1,&nbsp;fill&nbsp;=&nbsp;color1,&nbsp;col&nbsp;=&nbsp;\"black\")&nbsp;+&nbsp;<br>&nbsp;&nbsp;xlab(\"Total&nbsp;score\")&nbsp;+&nbsp;<br>&nbsp;&nbsp;ylab(\"Number&nbsp;of&nbsp;respondents\")&nbsp;+&nbsp;<br>&nbsp;&nbsp;ggtitle(\"Focal&nbsp;group\")&nbsp;+&nbsp;<br>&nbsp;&nbsp;theme_app()<br><br>#&nbsp;t-test&nbsp;to&nbsp;compare&nbsp;total&nbsp;scores<br>t.test(score0,&nbsp;score1)"))),
                       br()
-                      ),
+             ),
              # * DELTA PLOTS ####
              tabPanel("Delta plots",
                       h3("Delta plot"),
@@ -120,7 +120,7 @@ uiDIF <-
                           br(),
                           code('diagPlot(deltascores, thr.draw = T)')),
                       br()
-                      ),
+             ),
              # * MANTEL-HAENSZEL ####
              tabPanel("Mantel-Haenszel",
                       tabsetPanel(
@@ -162,7 +162,7 @@ uiDIF <-
                                      br(),
                                      code('fit')),
                                  br()
-                                 ),
+                        ),
                         tabPanel('Items',
                                  h3("Mantel-Haenszel test"),
                                  p('Mantel-Haenszel test is DIF detection method based on contingency
@@ -232,7 +232,7 @@ uiDIF <-
                                      br(),
                                      code('fit$alphaMH')),
                                  br()
-                                 )
+                        )
                       )
              ),
              # * LOGISTIC ####
@@ -294,7 +294,7 @@ uiDIF <-
                                      br(),
                                      code('fit')),
                                  br()
-                                 ),
+                        ),
                         # ** Items ####
                         tabPanel('Items',
                                  h3('Logistic regression on total scores'),
@@ -378,9 +378,9 @@ uiDIF <-
                                      br(),
                                      code('fit$logitPar')),
                                  br()
-                                 )
-                                 )
-                        ),
+                        )
+                      )
+             ),
 
              # # * LOGISTIC Z ####
              # tabPanel("Logistic IRT Z",
@@ -546,7 +546,7 @@ uiDIF <-
              #                         )
              #                     )
              #            ),
-             # * NONLINEAR Z ####
+             # * GENERALIZED LOGISTIC ####
              tabPanel("Generalized logistic",
                       tabsetPanel(
                         # ** Summary ####
@@ -572,7 +572,7 @@ uiDIF <-
                                    groups should be tested.'),
                                  h4("Equation"),
                                  p("Displayed equation is based on selected model"),
-                                 uiOutput("DIF_NLR_equation_print"),
+                                 fluidRow(column(12, align = "center", uiOutput("DIF_NLR_equation_print"))),
                                  h4("Summary table"),
                                  p('Here you can choose what ',strong('type'),' of DIF to test. You can also select ',strong('correction method'),' for multiple comparison or', strong('item purification.')),
                                  fluidRow(column(3,
@@ -618,7 +618,7 @@ uiDIF <-
                                  h4("Selected R code"),
                                  div(code(HTML("library(difNLR)&nbsp;<br><br>#&nbsp;loading&nbsp;data&nbsp;<br>data(GMAT)&nbsp;<br>Data&nbsp;<-&nbsp;GMAT[,&nbsp;1:20]&nbsp;<br>group&nbsp;<-&nbsp;GMAT[,&nbsp;\"group\"]&nbsp;<br><br>#&nbsp;generalized&nbsp;logistic&nbsp;regression&nbsp;DIF&nbsp;method&nbsp;<br>#&nbsp;using&nbsp;3PL&nbsp;model&nbsp;with&nbsp;the&nbsp;same&nbsp;guessing&nbsp;parameter&nbsp;for&nbsp;both&nbsp;groups&nbsp;<br>fit&nbsp;<-&nbsp;difNLR(Data&nbsp;=&nbsp;Data,&nbsp;group&nbsp;=&nbsp;group,&nbsp;focal.name&nbsp;=&nbsp;1,&nbsp;model&nbsp;=&nbsp;\"3PLcg\",&nbsp;type&nbsp;=&nbsp;\"both\",&nbsp;p.adjust.method&nbsp;=&nbsp;\"none\")&nbsp;<br>fit"))),
                                  br()
-                                 ),
+                        ),
                         # ** Items ####
                         tabPanel('Items',
                                  h3('Generalized logistic regression'),
@@ -626,7 +626,7 @@ uiDIF <-
                                    DIF detection using standardized total score as estimate of knowledge.
                                    They can allow for nonzero lower asymptote - pseudoguessing \\(c\\)',
                                    a('(Drabinova & Martinkova, 2017) ',
-                                     href = "http://onlinelibrary.wiley.com/doi/10.1111/jedm.12158/full",
+                                     href = "https://doi.org/10.1111/jedm.12158",
                                      target = "_blank"),
                                    'or upper asymptote lower than one - inattention \\(d\\). Similarly to logistic
                                    regression, also its extensions provide detection of uniform and non-uniform DIF by
@@ -640,7 +640,8 @@ uiDIF <-
                                    both groups. With ', strong('type'), 'you can choose parameters in which difference between
                                    groups should be tested.'),
                                  h4("Plot with estimated DIF generalized logistic curve"),
-                                 p('Here you can choose what ',strong('type'),' of DIF to test. You can also select ',strong('correction method'),' for multiple comparison or', strong('item purification.')),
+                                 p('Here you can choose what ', strong('type'),' of DIF to test. You can also select ',
+                                   strong('correction method'), ' for multiple comparison or', strong('item purification.')),
                                  fluidRow(column(3,
                                                  selectInput(inputId = "DIF_NLR_model_plot",
                                                              label = "Model",
@@ -692,16 +693,16 @@ uiDIF <-
                                  plotOutput('plot_DIF_NLR'),
                                  downloadButton("DP_plot_DIF_NLR", label = "Download figure"),
                                  h4("Equation"),
-                                 uiOutput("DIF_NLR_equation_plot"),
+                                 fluidRow(column(12, align = "center", uiOutput("DIF_NLR_equation_plot"))),
                                  h4("Table of parameters"),
                                  fluidRow(column(12, align = "center", tableOutput('tab_coef_DIF_NLR'))),
                                  br(),
                                  h4("Selected R code"),
                                  div(code(HTML("library(difNLR)&nbsp;<br><br>#&nbsp;loading&nbsp;data&nbsp;<br>data(GMAT)&nbsp;<br>Data&nbsp;<-&nbsp;GMAT[,&nbsp;1:20]&nbsp;<br>group&nbsp;<-&nbsp;GMAT[,&nbsp;\"group\"]&nbsp;<br><br>#&nbsp;generalized&nbsp;logistic&nbsp;regression&nbsp;DIF&nbsp;method&nbsp;<br>#&nbsp;using&nbsp;3PL&nbsp;model&nbsp;with&nbsp;the&nbsp;same&nbsp;guessing&nbsp;parameter&nbsp;for&nbsp;both&nbsp;groups&nbsp;<br>fit&nbsp;<-&nbsp;difNLR(Data&nbsp;=&nbsp;Data,&nbsp;group&nbsp;=&nbsp;group,&nbsp;focal.name&nbsp;=&nbsp;1,&nbsp;model&nbsp;=&nbsp;\"3PLcg\",&nbsp;type&nbsp;=&nbsp;\"both\",&nbsp;p.adjust.method&nbsp;=&nbsp;\"none\")&nbsp;<br><br>#&nbsp;plot&nbsp;of&nbsp;characteristic&nbsp;curve&nbsp;of&nbsp;item&nbsp;1&nbsp;<br>plot(fit,&nbsp;item&nbsp;=&nbsp;1)&nbsp;<br><br>#&nbsp;table&nbsp;of&nbsp;estimated&nbsp;coefficients&nbsp;<br>fit$nlrPAR"))),
                                  br()
-                                 )
-                                 )
-                        ),
+                        )
+                      )
+             ),
              # * IRT LORD ####
              tabPanel("IRT Lord",
                       tabsetPanel(
@@ -783,7 +784,7 @@ uiDIF <-
                                      br(),
                                      code('fit3PL')),
                                  br()
-                                 ),
+                        ),
                         # ** Items ####
                         tabPanel('Items',
                                  h3('Lord test for IRT models'),
@@ -828,7 +829,7 @@ uiDIF <-
                                  downloadButton("DP_plot_DIF_IRT_Lord", label = "Download figure"),
                                  h4("Equation"),
                                  uiOutput('irtint_lord'),
-                                 uiOutput('irteq_lord'),
+                                 fluidRow(column(12, align = "center", uiOutput('irteq_lord'))),
                                  h4("Table of parameters"),
                                  fluidRow(column(12, align = "center", tableOutput('tab_coef_DIF_IRT_Lord'))),
                                  br(),
@@ -896,9 +897,9 @@ uiDIF <-
                                      br(),
                                      code('plotDIFirt(parameters = tab_coef3PL, item = 1, test = "Lord")')),
                                  br()
-                                 )
                         )
-                        ),
+                      )
+             ),
              # * IRT RAJU ####
              tabPanel("IRT Raju",
                       tabsetPanel(
@@ -981,7 +982,7 @@ uiDIF <-
                                      br(),
                                      code('fit3PL')),
                                  br()
-                                 ),
+                        ),
                         # ** Items ####
                         tabPanel('Items',
                                  h3('Raju test for IRT models'),
@@ -1027,7 +1028,7 @@ uiDIF <-
                                  downloadButton("DP_plot_DIF_IRT_Raju", label = "Download figure"),
                                  h4("Equation"),
                                  uiOutput('irtint_raju'),
-                                 uiOutput('irteq_raju'),
+                                 fluidRow(column(12, align = "center", uiOutput('irteq_raju'))),
                                  h4("Table of parameters"),
                                  fluidRow(column(12, align = "center", tableOutput('tab_coef_DIF_IRT_Raju'))),
                                  br(),
@@ -1095,8 +1096,8 @@ uiDIF <-
                                      br(),
                                      code('plotDIFirt(parameters = tab_coef3PL, item = 1, test = "Raju")')),
                                  br())
-                        )
-                        ),
+                      )
+             ),
              # * SIBTEST ####
              tabPanel("SIBTEST",
                       h3("SIBTEST"),
@@ -1197,7 +1198,7 @@ uiDIF <-
                                      br(),
                                      code('fit')),
                                  br()
-                                 ),
+                        ),
                         # ** Items ####
                         tabPanel('Items',
                                  h3('Differential Distractor Functioning with multinomial log-linear regression model'),
@@ -1245,7 +1246,7 @@ uiDIF <-
                                  plotOutput('plot_DDF'),
                                  downloadButton("DP_plot_DDF", label = "Download figure"),
                                  h4("Equation"),
-                                 uiOutput('DDFeq'),
+                                 fluidRow(column(12, align = "center", uiOutput('DDFeq'))),
                                  h4("Table of parameters"),
                                  fluidRow(column(12, align = "center", tableOutput('tab_coef_DDF'))),
                                  br(),
@@ -1270,9 +1271,9 @@ uiDIF <-
                                      br(),
                                      code('fit$mlrPAR[[1]]')),
                                  br()
-                                 )
-                                 )
-                        ),
+                        )
+                      )
+             ),
              # * Method comparsion ####
              tabPanel("Method comparison",
                       h3("Method comparison"),
@@ -1283,8 +1284,8 @@ uiDIF <-
                         tags$li(strong('MH'), 'is Mantel-Haenszel test (Mantel & Haenszel, 1959), '),
                         tags$li(strong('Logistic'), 'is logistic regression (Swaminathan & Rogers, 1990),'),
                         tags$li(strong('GLogistic'), 'is generalized logistic regression (Drabinova & Martinkova, 2017),'),
-                        tags$li(strong('Lord'), 'is Lord’s chi-square test (Lord, 1980),'),
-                        tags$li(strong('Raju'), 'is Raju’s area method (Raju, 1990),'),
+                        tags$li(strong('Lord'), 'is Lord chi-square test (Lord, 1980),'),
+                        tags$li(strong('Raju'), 'is Raju area method (Raju, 1990),'),
                         tags$li(strong('SIBTEST'), 'is SIBTEST (Shealy & Stout, 1993) and crossing-SIBTEST (Chalmers, 2018; Li & Stout, 1996) methods, '),
                         tags$li(strong('DDF'), 'is differential distractor functioning with multinomial log-linear regression model. ')
                       ),
@@ -1294,5 +1295,5 @@ uiDIF <-
                       fluidRow(column(12, align = "center", tableOutput("method_comparison_table"))),
                       br(),
                       br()
-                      )
              )
+  )
