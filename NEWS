@@ -5,11 +5,12 @@
         ***************************************************************
 
 -------------------------------------------------------
-- Changes in ShinyItemAnalysis 1.3.0-11. (2019-05-21) -
+- Changes in ShinyItemAnalysis 1.3.0-11. (2019-05-28) -
 -------------------------------------------------------
 
 BUG FIXING
-  o Option for displaying session info in reports now function properly.
+  o Option for displaying session info in reports now functions properly.
+  o Option to display average score in DDplot in reports fixed.
 
 MAJOR UPDATES
   o New function plotCumulative() which plots category probabilities
@@ -27,6 +28,7 @@ MINOR UPDATES
     were updated.
   o Option for matching criterion (total vs Z-score) in multinomial
     model was added.
+  o Equations in DIF section are now center-aligned.
 
 -------------------------------------------------------
 - Changes in ShinyItemAnalysis 1.3.0-10. (2019-05-17) -

@@ -1,4 +1,4 @@
-uiReports <- 
+uiReports <-
   tabPanel("Reports",
            h3("Download report"),
            h4("Settings of report"),
@@ -70,12 +70,12 @@ uiReports <-
                             fluidRow(column(9,
                                             p(strong("Difficulty/discrimination plot")),
                                             column(3,
-												   selectInput(inputId = "DDplotDiscriminationDifficulty",
-                                                                            label = "Difficulty type:",
-                                                                            choices = c("Average scaled score" = "AVGSS",
-                                                                                        "Average item score" = "AVGS"),
-                                                                            selected = "AVGSS")),
-											column(3,
+                                                   selectInput(inputId = "DDplotDiscriminationDifficulty_report",
+                                                               label = "Difficulty type:",
+                                                               choices = c("Average scaled score" = "AVGSS",
+                                                                           "Average item score" = "AVGS"),
+                                                               selected = "AVGSS")),
+                                            column(3,
                                                    selectInput(inputId = "DDplotDiscriminationSelect_report",
                                                                label = "Discrimination type:",
                                                                choices = c("ULI" = "ULI",
@@ -113,10 +113,10 @@ uiReports <-
                                                                min = 1,
                                                                max = 5,
                                                                value = 3)),
-											column(3,
+                                            column(3,
                                                    uiOutput("distractor_report_groups_alert")))),
                             tags$hr()),
-           
+
            fluidRow(
              column(2,
                     radioButtons(inputId = "irt_type_report",
@@ -243,4 +243,4 @@ uiReports <-
            br(),
            br(),
            br()
-           )
+  )
