@@ -50,4 +50,4 @@ If you find any bug or just need help with `ShinyItemAnalysis` you can leave you
 This program is free software and you can redistribute it and or modify it under the terms of the [GNU GPL 3](https://www.gnu.org/licenses/gpl-3.0.en.html).
 
 ## References
-New paper is available in [The R Journal](https://journal.r-project.org/archive/2018/RJ-2018-074/). Czech speakers can also refer to paper in journal [Testforum](http://dx.doi.org/10.5817/TF2017-9-129).
+New paper is available in [The R Journal](https://journal.r-project.org/archive/2018/RJ-2018-074/). Czech speakers can also refer to paper in journal [Testforum](https://doi.org/10.5817/TF2017-9-129).

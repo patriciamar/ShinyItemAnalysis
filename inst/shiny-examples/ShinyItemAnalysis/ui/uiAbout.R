@@ -145,7 +145,7 @@ uiAbout <- tabPanel("",
                     ShinyItemAnalysis: Analyza prijimacich a jinych znalostnich ci psychologickych testu. [ShinyItemAnalysis: Analyzing admission and other educational and psychological tests. In Czech].", br(), "
                     TESTFORUM, 6(9), 16-35. doi:",
 				            a("10.5817/TF2017-9-129",
-				              href = "http://dx.doi.org/10.5817/TF2017-9-129",
+				              href = "https://doi.org/10.5817/TF2017-9-129",
 				              target = "_blank")),
 
                   tags$hr(),

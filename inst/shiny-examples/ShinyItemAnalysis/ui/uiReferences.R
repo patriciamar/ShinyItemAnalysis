@@ -367,7 +367,7 @@ uiReferences <-
                 In
                 <i>Proceedings of the 2017 Federated Conference on Computer Science and Information Systems</i>,
                 189-194.
-                <a href="http://dx.doi.org/10.15439/2017F380",
+                <a href="https://doi.org/10.15439/2017F380",
                 target="_blank">See online.</a>
                 </li>
                 

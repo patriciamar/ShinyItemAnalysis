@@ -82,7 +82,7 @@
 #' Martinkova, P., Stepanek, L., Drabinova, A., Houdek, J., Vejrazka, M., & Stuka, C. (2017).
 #' Semi-real-time analyses of item characteristics for medical school admission tests.
 #' In: Proceedings of the 2017 Federated Conference on Computer Science and Information Systems.
-#' http://dx.doi.org/10.15439/2017F380
+#' https://doi.org/10.15439/2017F380
 #'
 #' Allen, M. J. & Yen, W. M. (1979). Introduction to measurement theory. Monterey, CA: Brooks/Cole.
 #'

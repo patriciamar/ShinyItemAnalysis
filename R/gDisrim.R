@@ -50,7 +50,7 @@
 #' Martinkova, P., Stepanek, L., Drabinova, A., Houdek, J., Vejrazka, M., & Stuka, C. (2017).
 #' Semi-real-time analyses of item characteristics for medical school admission tests.
 #' In: Proceedings of the 2017 Federated Conference on Computer Science and Information Systems.
-#' http://dx.doi.org/10.15439/2017F380
+#' https://doi.org/10.15439/2017F380
 #'
 #' @note
 #' \code{gDiscrim} is used by \code{\link{DDplot}} function.
