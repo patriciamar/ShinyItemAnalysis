@@ -228,6 +228,8 @@ uiReports <-
            p(strong("Recommendation: "), "Report generation can be faster and more reliable when you first check
              sections of intended contents. For example, if you wish to include a ", strong("3PL IRT"),
              " model, you can first visit ", strong("IRT models"), "section and ", strong("3PL"), " subsection."),
+		   uiOutput("report_na_alert"),
+		   # uiOutput("report_multinomial_report"),
            br(),
            fluidRow(
              column(width = 5,

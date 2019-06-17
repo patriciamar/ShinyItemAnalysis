@@ -26,10 +26,10 @@
 #' The \code{key} must be a vector of the same length as \code{ncol(data)}.
 #'
 #' @author
-#' Adela Hladka  \cr
+#' Adela Hladka \cr
 #' Institute of Computer Science, The Czech Academy of Sciences \cr
 #' Faculty of Mathematics and Physics, Charles University \cr
-#' drabinova@cs.cas.cz \cr
+#' hladka@cs.cas.cz \cr
 #'
 #' Patricia Martinkova \cr
 #' Institute of Computer Science, The Czech Academy of Sciences \cr
@@ -92,17 +92,17 @@ DistractorAnalysis <-  function(data, key, p.table = FALSE, num.groups = 3, matc
     scores <- matching
     score.level <- quantile(matching, seq(0, 1, by = 1/num.groups), na.rm = T)
 
-    # k <- 6
-    # if (length(levels(as.factor(scores))) <= length(scores)/k){
-    #   score.level <- as.factor(scores)
-    #   num.groups <- length(levels(scores))
-    #   levels(score.level) <- paste("Group", 1:length(levels(score.level)), sep = " ")
-    #   warning(paste('Critetion variable is probably discrete. Its cut is based on
-    #                 its factors (', length(levels(score.level)), ").", sep = ""))
+    k <- 6
+    if (length(levels(as.factor(scores))) <= length(scores)/k){
+      score.level <- as.factor(scores)
+      num.groups <- length(levels(scores))
+      levels(score.level) <- paste("Group", 1:length(levels(score.level)), sep = " ")
+      warning(paste('Critetion variable is probably discrete. Its cut is based on
+                    its factors (', length(levels(score.level)), ").", sep = ""))
+    } else {
+      if (length(unique(score.level)) <= num.groups){
 
-    if (length(unique(score.level)) <= num.groups){
-
-      while (length(unique(score.level)) <= num.groups){
+        while (length(unique(score.level)) <= num.groups){
           num.groups <- num.groups - 1
           score.level <- quantile(scores, seq(0, 1, by = 1/num.groups), na.rm = T)
         }
@@ -114,7 +114,8 @@ DistractorAnalysis <-  function(data, key, p.table = FALSE, num.groups = 3, matc
         score.level <- cut(scores, score.level, include.lowest = TRUE,
                            labels = paste("Group", 1:num.groups, sep = " "))
       }
-}
+    }
+  }
   itemtab <- function(response) {
     xtabs( ~ response + score.level)
   }

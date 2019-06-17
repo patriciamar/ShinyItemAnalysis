@@ -15,6 +15,16 @@ observe({
   updateSliderInput(session, 'rachSliderChar', max = length(item_names()))
 })
 
+output$rasch_mirt_model_converged <- renderUI({
+  fit <- rasch_model_mirt()
+  txt <- ifelse(fit@OptimInfo$converged,
+                "",
+                "<font color = 'orange'> Estimation process terminated without convergence.
+                Estimates are not reliable. Try to increase number of iterations of EM algorithm in Settings.
+                </font>")
+  HTML(txt)
+})
+
 # *** CC ######
 raschInput_mirt <- reactive({
   plt <- plot(rasch_model_mirt(), type = 'trace', facet_items = F)
@@ -321,7 +331,7 @@ raschcoefInput_mirt <- reactive({
   tab.comp[, colnames(tab.comp) %in% colnames(tab)] <- tab
 
   colnames(tab.comp) <- c("%%mathit{a}%%", "SE(%%mathit{a}%%)", "%%mathit{b}%%", "SE(%%mathit{b}%%)", "%%mathit{c}%%",
-						"SE(%%mathit{c}%%)", "%%mathit{d}%%", "SE(%%mathit{d}%%)",
+                          "SE(%%mathit{c}%%)", "%%mathit{d}%%", "SE(%%mathit{d}%%)",
                           "SX2-value", "df", "p-value")
   tab.comp
 })
@@ -498,6 +508,16 @@ one_param_irt_mirt <- reactive({
 # Updating number of items in slider input, in ITEMS tab #
 observe({
   updateSliderInput(session, 'onePLSliderChar', max = length(item_names()))
+})
+
+output$irt_1PL_model_converged <- renderUI({
+  fit <- one_param_irt_mirt()
+  txt <- ifelse(fit@OptimInfo$converged,
+                "",
+                "<font color = 'orange'> Estimation process terminated without convergence.
+                Estimates are not reliable. Try to increase number of iterations of EM algorithm in Settings.
+                </font>")
+  HTML(txt)
 })
 
 
@@ -820,7 +840,7 @@ oneparamirtcoefInput_mirt <- reactive({
   tab.comp[, colnames(tab.comp) %in% colnames(tab)] <- tab
 
   colnames(tab.comp) <- c("%%mathit{a}%%", "SE(%%mathit{a}%%)", "%%mathit{b}%%", "SE(%%mathit{b}%%)", "%%mathit{c}%%",
-						  "SE(%%mathit{c}%%)", "%%mathit{d}%%", "SE(%%mathit{d}%%)",
+                          "SE(%%mathit{c}%%)", "%%mathit{d}%%", "SE(%%mathit{d}%%)",
                           "SX2-value", "df", "p-value")
   tab.comp
 })
@@ -847,12 +867,12 @@ include.rownames = T)
 
 output$oneparamirtcoef_mirt_tab_ui <- renderUI({
 
-	tagList(
+  tagList(
 
-		withMathJax(),
-		withMathJax(tableOutput("oneparamirtcoef_mirt_tab"))
+    withMathJax(),
+    withMathJax(tableOutput("oneparamirtcoef_mirt_tab"))
 
-	)
+  )
 
 
 })
@@ -1015,6 +1035,16 @@ two_param_irt_mirt <- reactive({
 # Updating number of items in slider input, in ITEMS tab #
 observe({
   updateSliderInput(session, 'twoPLSliderChar', max = length(item_names()))
+})
+
+output$irt_2PL_model_converged <- renderUI({
+  fit <- two_param_irt_mirt()
+  txt <- ifelse(fit@OptimInfo$converged,
+                "",
+                "<font color = 'orange'> Estimation process terminated without convergence.
+                Estimates are not reliable. Try to increase number of iterations of EM algorithm in Settings.
+                </font>")
+  HTML(txt)
 })
 
 # *** CC ######
@@ -1326,7 +1356,7 @@ twoparamirtcoefInput_mirt <- reactive({
   tab.comp[, colnames(tab.comp) %in% colnames(tab)] <- tab
 
   colnames(tab.comp) <- c("%%mathit{a}%%", "SE(%%mathit{a}%%)", "%%mathit{b}%%", "SE(%%mathit{b}%%)", "%%mathit{c}%%",
-						  "SE(%%mathit{c}%%)", "%%mathit{d}%%", "SE(%%mathit{d}%%)",
+                          "SE(%%mathit{c}%%)", "%%mathit{d}%%", "SE(%%mathit{d}%%)",
                           "SX2-value", "df", "p-value")
 
   tab.comp
@@ -1476,9 +1506,8 @@ output$irt_3PL_model_converged <- renderUI({
   fit <- three_param_irt_mirt()
   txt <- ifelse(fit@OptimInfo$converged,
                 "",
-                "<font color = 'orange'>
-                Estimation process terminated without convergence.
-                Estimates are not reliable.
+                "<font color = 'orange'> Estimation process terminated without convergence.
+                Estimates are not reliable. Try to increase number of iterations of EM algorithm in Settings.
                 </font>")
   HTML(txt)
 })
@@ -1796,14 +1825,14 @@ threeparamirtcoefInput_mirt <- reactive({
 
   withMathJax()
   colnames(tab.comp) <- c("%%mathit{a}%%", "SE(%%mathit{a}%%)", "%%mathit{b}%%", "SE(%%mathit{b}%%)", "%%mathit{c}%%",
-						  "SE(%%mathit{c}%%)", "%%mathit{d}%%", "SE(%%mathit{d}%%)",
+                          "SE(%%mathit{c}%%)", "%%mathit{d}%%", "SE(%%mathit{d}%%)",
                           "SX2-value", "df", "p-value")
 
   tab.comp
 })
 
 output$coef_threeparamirt_mirt <- renderTable({
-threeparamirtcoefInput_mirt()
+  threeparamirtcoefInput_mirt()
 },
 include.rownames = T,
 include.colnames = T)
@@ -1878,10 +1907,12 @@ threeparamirtFactorCorInput_mirt <- reactive({
   cor <- cor(fs[whok], sts[whok])
   cor
 })
+
 output$threeparamirtFactorCor_mirt <- renderText({
   paste("The Pearson correlation coefficient between standardized total score (Z-score)
         and factor score estimated by IRT model is", round(threeparamirtFactorCorInput_mirt(), 3))
 })
+
 # *** Factor scores plot ####
 threeparamirtFactorInput_mirt <- reactive({
 
@@ -1926,10 +1957,23 @@ output$DP_threeparamirtFactor_mirt <- downloadHandler(
 
 irt_4PL_model <- reactive({
   data <- binary()
-  fit <- mirt(data, model = 1, itemtype = "4PL",
-              constrain = NULL,
-              SE = T, technical = list(NCYCLES = input$ncycles),
-              verbose = F)
+  model <- tryCatch(mirt(data, model = 1, itemtype = "4PL",
+                         constrain = NULL,
+                         SE = T, technical = list(NCYCLES = input$ncycles),
+                         verbose = F),
+                    error = function(x) print(x))
+
+  if(mode(model) == 'character') {
+    failure <- FALSE
+    fit <- ''
+    message <- model$message
+  } else {
+    failure <- TRUE
+    fit <- model
+    message <- NULL
+  }
+
+  return(list(fit, failure, message))
 })
 
 # Updating number of items in slider input, in ITEMS tab #
@@ -1938,19 +1982,37 @@ observe({
 })
 
 output$irt_4PL_model_converged <- renderUI({
-  fit <- irt_4PL_model()
+
+  req(irt_4PL_model()[[2]])
+  fit <- irt_4PL_model()[[1]]
   txt <- ifelse(fit@OptimInfo$converged,
                 "",
-                "<font color = 'orange'>
-                Estimation process terminated without convergence.
-                Estimates are not reliable.
+                "<font color = 'orange'> Estimation process terminated without convergence.
+                Estimates are not reliable. Try to increase number of iterations of EM algorithm in Settings.
                 </font>")
+  HTML(txt)
+})
+
+output$irt_4PL_failure_alert <- renderUI({
+
+  indicator <- ifelse(irt_4PL_model()[[2]], 0, 1)
+
+  if (indicator == 1) {
+    txt <- paste0("<font color = 'orange'>
+                This method cannot be fitted on this dataset. The error message returned: ", strong(irt_4PL_model()[[3]]),
+                  "</font>")
+  } else {
+    txt <- ''
+  }
+
   HTML(txt)
 })
 
 # *** ICC ######
 irt_4PL_icc_Input <- reactive({
-  fit <- irt_4PL_model()
+
+  req(irt_4PL_model()[[2]])
+  fit <-irt_4PL_model()[[1]]
 
   plt <- plot(fit, type = 'trace', facet_items = F)
   vals <- plt$panel.args
@@ -1980,6 +2042,7 @@ irt_4PL_icc_Input <- reactive({
 })
 
 output$irt_4PL_icc <- renderPlotly({
+  req(irt_4PL_model()[[2]])
   p <- ggplotly(irt_4PL_icc_Input())
 
   for (j in 1:length(p$x$data)) {
@@ -2006,7 +2069,9 @@ output$DB_irt_4PL_icc <- downloadHandler(
 )
 # *** CC items ####
 irt_4PL_icc_Input_tab <- reactive({
-  fit <- irt_4PL_model()
+
+  req(irt_4PL_model()[[2]])
+  fit <-irt_4PL_model()[[1]]
   item <- input$fourPLSliderChar
 
   plt <- plot(fit, type = 'trace', which.item = item, facet_items = F)
@@ -2034,6 +2099,8 @@ irt_4PL_icc_Input_tab <- reactive({
 })
 
 output$irt_4PL_icc_item_tab <- renderPlotly({
+
+  req(irt_4PL_model()[[2]])
   p <- ggplotly(irt_4PL_icc_Input_tab())
 
   for (j in 1:length(p$x$data)) {
@@ -2061,7 +2128,9 @@ output$DB_irt_4PL_icc_tab <- downloadHandler(
 
 # *** IIC ######
 irt_4PL_iic_Input <- reactive({
-  plt <- plot(irt_4PL_model(), type = 'infotrace', facet_items = F)
+
+  req(irt_4PL_model()[[2]])
+  plt <- plot(irt_4PL_model()[[1]], type = 'infotrace', facet_items = F)
   vals <- plt$panel.args
   x <- vals[[1]]$x
   y <- vals[[1]]$y
@@ -2090,6 +2159,8 @@ irt_4PL_iic_Input <- reactive({
 })
 
 output$irt_4PL_iic <- renderPlotly({
+
+  req(irt_4PL_model()[[2]])
   p <- ggplotly(irt_4PL_iic_Input())
 
   for (j in 1:length(p$x$data)) {
@@ -2118,7 +2189,10 @@ output$DB_irt_4PL_iic <- downloadHandler(
 )
 # *** IIC items ####
 irt_4PL_iic_Input_tab <- reactive({
-  fit <- irt_4PL_model()
+
+  req(irt_4PL_model()[[2]])
+
+  fit <-irt_4PL_model()[[1]]
   item <- input$fourPLSliderChar
 
   plt <- plot(fit, type = 'infotrace', which.item = item, facet_items = F)
@@ -2146,6 +2220,9 @@ irt_4PL_iic_Input_tab <- reactive({
 })
 
 output$irt_4PL_iic_item_tab <- renderPlotly({
+
+  req(irt_4PL_model()[[2]])
+
   p <- ggplotly(irt_4PL_iic_Input_tab())
 
   for (j in 1:length(p$x$data)) {
@@ -2173,7 +2250,10 @@ output$DB_irt_4PL_iic_tab <- downloadHandler(
 
 # *** TIF ######
 irt_4PL_tif_Input <- reactive({
-  fit <- irt_4PL_model()
+
+  req(irt_4PL_model()[[2]])
+
+  fit <-irt_4PL_model()[[1]]
 
   plt <- plot(fit, type = "infoSE")
 
@@ -2195,6 +2275,9 @@ irt_4PL_tif_Input <- reactive({
 })
 
 output$irt_4PL_tif <- renderPlotly({
+
+  req(irt_4PL_model()[[2]])
+
   g <- irt_4PL_tif_Input()
   p <- ggplotly(g)
 
@@ -2221,7 +2304,10 @@ output$DB_irt_4PL_tif <- downloadHandler(
 
 # *** Table of parameters in summary page ######
 irt_4PL_coef_Input <- reactive({
-  fit <- irt_4PL_model()
+
+  req(irt_4PL_model()[[2]])
+
+  fit <-irt_4PL_model()[[1]]
 
   par_tab <- coef(fit, IRTpars = T, simplify = T)$items[, c("a", "b", "g", "u")]
 
@@ -2265,13 +2351,16 @@ irt_4PL_coef_Input <- reactive({
   tab.comp[, colnames(tab.comp) %in% colnames(tab)] <- tab
 
   colnames(tab.comp) <- c("%%mathit{a}%%", "SE(%%mathit{a}%%)", "%%mathit{b}%%", "SE(%%mathit{b}%%)", "%%mathit{c}%%",
-						  "SE(%%mathit{c}%%)", "%%mathit{d}%%", "SE(%%mathit{d}%%)",
+                          "SE(%%mathit{c}%%)", "%%mathit{d}%%", "SE(%%mathit{d}%%)",
                           "SX2-value", "df", "p-value")
 
   tab.comp
 })
 
 output$coef_irt_4PL <- renderTable({
+
+  req(irt_4PL_model()[[2]])
+
   irt_4PL_coef_Input()
 },
 include.rownames = T,
@@ -2281,6 +2370,8 @@ include.colnames = T)
 
 # *** Table of parameters in item page ######
 irt_4PL_coef_Input_tab <- reactive({
+
+  req(irt_4PL_model()[[2]] != 0)
   item <- input$fourPLSliderChar
   tab <- irt_4PL_coef_Input()[item, ]
 
@@ -2288,6 +2379,8 @@ irt_4PL_coef_Input_tab <- reactive({
 })
 
 output$tab_coef_irt_4PL <- renderTable({
+
+  req(irt_4PL_model()[[2]])
   irt_4PL_coef_Input_tab()
 },
 include.rownames = T,
@@ -2295,12 +2388,12 @@ include.colnames = T)
 
 output$irt_4PL_coef_tab_ui <- renderUI({
 
-	tagList(
+  tagList(
 
-		withMathJax(),
-		withMathJax(tableOutput("irt_4PL_coef_tab"))
+    withMathJax(),
+    withMathJax(tableOutput("irt_4PL_coef_tab"))
 
-	)
+  )
 
 })
 
@@ -2317,7 +2410,9 @@ output$download_4pl_table <- downloadHandler(
 
 # * Abilities estimates parameters * #
 fourPlAbilities <- reactive({
-  fit <- irt_4PL_model()
+
+  req(irt_4PL_model()[[2]])
+  fit <-irt_4PL_model()[[1]]
 
   ts <- as.vector(total_score())
   sts <- as.vector(z_score())
@@ -2333,6 +2428,8 @@ fourPlAbilities <- reactive({
 })
 
 output$four_PL_abilities <- renderTable({
+
+  req(irt_4PL_model()[[2]])
   head(fourPlAbilities(), 6)
 }, include.rownames = TRUE)
 
@@ -2350,7 +2447,8 @@ output$download_fourPL_abilities <- downloadHandler(
 # *** Factor scores plot ######
 irt_4PL_factorscores_correlation_Input <- reactive({
 
-  fs <- as.vector(fscores(irt_4PL_model()))
+  req(irt_4PL_model()[[2]])
+  fs <- as.vector(fscores(irt_4PL_model()[[1]]))
   sts <- z_score()
 
   whok <- !(is.na(fs) | is.na(sts))
@@ -2360,6 +2458,8 @@ irt_4PL_factorscores_correlation_Input <- reactive({
 })
 
 output$irt_4PL_factorscores_correlation <- renderText({
+
+  req(irt_4PL_model()[[2]])
   paste("The Pearson correlation coefficient between standardized total score (Z-score)
         and factor score estimated by IRT model is",
         round(irt_4PL_factorscores_correlation_Input(), 3))
@@ -2367,7 +2467,8 @@ output$irt_4PL_factorscores_correlation <- renderText({
 # *** Factor scores plot ####
 irt_4PL_factorscores_plot_Input <- reactive({
 
-  fs <- as.vector(fscores(irt_4PL_model()))
+  req(irt_4PL_model()[[2]])
+  fs <- as.vector(fscores(irt_4PL_model()[[1]]))
   sts <- z_score()
 
   df <- data.frame(fs, sts)
@@ -2386,6 +2487,8 @@ irt_4PL_factorscores_plot_Input <- reactive({
 })
 
 output$irt_4PL_factorscores_plot <- renderPlot({
+
+  req(irt_4PL_model()[[2]])
   irt_4PL_factorscores_plot_Input()
 })
 
@@ -2410,7 +2513,7 @@ irtcomparisonInput <- reactive({
   fit1PL <- one_param_irt_mirt()
   fit2PL <- two_param_irt_mirt()
   fit3PL <- three_param_irt_mirt()
-  fit4PL <- irt_4PL_model()
+  fit4PL <- irt_4PL_model()[[1]]
 
   models <- list(fit1PL = fit1PL,
                  fit2PL = fit2PL,
@@ -2524,8 +2627,8 @@ bock_irt_mirt <- reactive({
 # *** CC ######
 bock_CC_Input <- reactive({
   fit <- bock_irt_mirt()
-  data <- nominal()
 
+  data <- nominal()
   # plotting with mirt pckg
   plt <- plot(fit, type = 'trace', facet_items = F)
   # extract data from plot
@@ -2539,6 +2642,7 @@ bock_CC_Input <- reactive({
   k <- sapply(data, function(x) length(unique(x)))
   # how many values respond to each item
   k <- k * n / sum(k)
+  # k <- round(k)
 
   names <- list()
 
@@ -2930,17 +3034,16 @@ bock_coef_Input_tab <- reactive({
   item <- input$bockSlider
   tab <- bock_coef_Input()[item, ]
 
+  validate(need(!is.null(tab), paste0('Table is not available for item ', item)))
+
   tab
 })
 
 output$tab_coef_bock <- renderTable({
   t(bock_coef_Input_tab())
 },
-include.rownames = T,
+include.rownames = F,
 include.colnames = T)
-
-
-
 
 # *** Factor scores plot ######
 bock_factor_Input <- reactive({
@@ -2950,7 +3053,7 @@ bock_factor_Input <- reactive({
 
   df <- data.frame(fs, sts)
 
-  ggplot(df, aes_string("sts", "fs")) +
+  g <- ggplot(df, aes_string("sts", "fs")) +
     geom_point(size = 3) +
     labs(x = "Standardized total score", y = "Factor score") +
     theme_app() +
@@ -2961,10 +3064,14 @@ bock_factor_Input <- reactive({
           legend.key.size = unit(1, "lines"),
           legend.text.align = 0,
           legend.title.align = 0)
+
+  print(g)
 })
+
 output$bock_factor <- renderPlot({
   bock_factor_Input()
 })
+
 output$DP_bock_factor <- downloadHandler(
   filename =  function() {
     paste("fig_BockFactorVsStandardized.png", sep = "")
@@ -3341,10 +3448,10 @@ irt_training_dich1_check <- eventReactive(input$irt_training_dich1_submit, {
               ans4 = ans4)
   res <- sum(sapply(ans, sum))/sum(sapply(ans, length))
   ans <- lapply(ans, function(x) ifelse(is.na(x),
-										"<b><font color = 'red'>!</font></b>",
+                                        "<b><font color = 'red'>!</font></b>",
                                         ifelse(x,
-											   "<font color='green'>&#10004;</font>",
-												"<font color='red'>&#10006;</font>")))
+                                               "<font color='green'>&#10004;</font>",
+                                               "<font color='red'>&#10006;</font>")))
   ans[["ans"]] <- res
   ans
 })
@@ -3412,10 +3519,10 @@ output$irt_training_dich1_4c_answer <- renderUI({
 output$irt_training_dich1_answer <- renderUI({
   res <- irt_training_dich1_check()[["ans"]]
   HTML(ifelse(is.na(res),
-			  "<font color = 'red'>Check the format</font>",
+              "<font color = 'red'>Check the format</font>",
               ifelse(res == 1,
-					"<font color='green'>Everything correct! Well done!</font>",
-					paste0("<font color='red'>", round(100*res), "% correct. Try again.</font>"))))
+                     "<font color='green'>Everything correct! Well done!</font>",
+                     paste0("<font color='red'>", round(100*res), "% correct. Try again.</font>"))))
 })
 
 
@@ -3472,10 +3579,10 @@ irt_training_dich2_check <- eventReactive(input$irt_training_dich2_submit, {
               ans3 = ans3)
   res <- sum(sapply(ans, sum))/sum(sapply(ans, length))
   ans <- lapply(ans, function(x) ifelse(is.na(x),
-										"<b><font color = 'red'>!</font></b>",
+                                        "<b><font color = 'red'>!</font></b>",
                                         ifelse(x,
-											   "<font color='green'>&#10004;</font>",
-												"<font color='red'>&#10006;</font>")))
+                                               "<font color='green'>&#10004;</font>",
+                                               "<font color='red'>&#10006;</font>")))
   ans[["ans"]] <- res
   ans
 })
@@ -3503,10 +3610,10 @@ output$irt_training_dich2_3_answer <- renderUI({
 output$irt_training_dich2_answer <- renderUI({
   res <- irt_training_dich2_check()[["ans"]]
   HTML(ifelse(is.na(res),
-			  "<font color = 'red'>Check the format</font>",
+              "<font color = 'red'>Check the format</font>",
               ifelse(res == 1,
-					"<font color='green'>Everything correct! Well done!</font>",
-					paste0("<font color='red'>", round(100*res), "% correct. Try again.</font>"))))
+                     "<font color='green'>Everything correct! Well done!</font>",
+                     paste0("<font color='red'>", round(100*res), "% correct. Try again.</font>"))))
 })
 
 # **** Exercises 3 ####
@@ -3556,10 +3663,10 @@ irt_training_dich3_check <- eventReactive(input$irt_training_dich3_submit, {
               ans3 = ans3)
   res <- sum(sapply(ans, sum))/sum(sapply(ans, length))
   ans <- lapply(ans, function(x) ifelse(is.na(x),
-										"<b><font color = 'red'>!</font></b>",
+                                        "<b><font color = 'red'>!</font></b>",
                                         ifelse(x,
-											   "<font color='green'>&#10004;</font>",
-												"<font color='red'>&#10006;</font>")))
+                                               "<font color='green'>&#10004;</font>",
+                                               "<font color='red'>&#10006;</font>")))
   ans[["ans"]] <- res
   ans
 })
@@ -3587,10 +3694,10 @@ output$irt_training_dich3_3_answer <- renderUI({
 output$irt_training_dich3_answer <- renderUI({
   res <- irt_training_dich3_check()[["ans"]]
   HTML(ifelse(is.na(res),
-			  "<font color = 'red'>Check the format</font>",
+              "<font color = 'red'>Check the format</font>",
               ifelse(res == 1,
-					"<font color='green'>Everything correct! Well done!</font>",
-					paste0("<font color='red'>", round(100*res), "% correct. Try again.</font>"))))
+                     "<font color='green'>Everything correct! Well done!</font>",
+                     paste0("<font color='red'>", round(100*res), "% correct. Try again.</font>"))))
 })
 
 # ** POLYTOMOUS MODELS ####
@@ -3883,128 +3990,128 @@ output$DB_irt_training_grm_plot_expected <- downloadHandler(
 # *** Exercise ###
 irt_training_grm_answer <- reactive({
 
- cdf_k1 <- function(theta,a,b1) {
+  cdf_k1 <- function(theta,a,b1) {
 
-	return( exp(a * (theta - b1) )/(1 + exp(a * ( theta - b1 ) ) ) )
+    return( exp(a * (theta - b1) )/(1 + exp(a * ( theta - b1 ) ) ) )
 
- }
- cdf_k2 <- function(theta,a,b2) {
+  }
+  cdf_k2 <- function(theta,a,b2) {
 
-	return( exp(a * (theta - b2) )/(1 + exp(a * ( theta - b2 ) ) ) )
+    return( exp(a * (theta - b2) )/(1 + exp(a * ( theta - b2 ) ) ) )
 
- }
- cdf_k3 <- function(theta,a,b3) {
+  }
+  cdf_k3 <- function(theta,a,b3) {
 
-	return( exp(a * (	theta - b3	) )/(1 + exp(a * ( theta - b3 ) ) ) )
+    return( exp(a * (	theta - b3	) )/(1 + exp(a * ( theta - b3 ) ) ) )
 
- }
+  }
 
- theta0 <- c(-2,-1,0,1,2)
- a <- 1; b1 <- -0.5; b2 <- 1; b3 <- 1.5;
+  theta0 <- c(-2,-1,0,1,2)
+  a <- 1; b1 <- -0.5; b2 <- 1; b3 <- 1.5;
 
- ck0 <- rep(1,5)
- ck1 <- cdf_k1(theta0,a,b1)
- ck2 <- cdf_k2(theta0,a,b2)
- ck3 <- cdf_k3(theta0,a,b3)
+  ck0 <- rep(1,5)
+  ck1 <- cdf_k1(theta0,a,b1)
+  ck2 <- cdf_k2(theta0,a,b2)
+  ck3 <- cdf_k3(theta0,a,b3)
 
- prob_k0 <- c(1 - ck1)
- prob_k1 <- c(ck1 - ck2)
- prob_k2 <- c(ck2 - ck3)
- prob_k3 <- as.numeric(apply(as.data.frame(rbind(prob_k0,prob_k1,prob_k2)),2,function(x) 1 - sum(x)))
+  prob_k0 <- c(1 - ck1)
+  prob_k1 <- c(ck1 - ck2)
+  prob_k2 <- c(ck2 - ck3)
+  prob_k3 <- as.numeric(apply(as.data.frame(rbind(prob_k0,prob_k1,prob_k2)),2,function(x) 1 - sum(x)))
 
- exp_v <- as.numeric(as.matrix(cbind(prob_k0,prob_k1,prob_k2,prob_k3)) %*% 0:3)
-bb <- input$irt_training_grm_numresp
+  exp_v <- as.numeric(as.matrix(cbind(prob_k0,prob_k1,prob_k2,prob_k3)) %*% 0:3)
+  bb <- input$irt_training_grm_numresp
 
- answers <- list(ans1_1 = ck0,
-				 ans1_2 = ck1,
-				 ans1_3 = ck2,
-				 ans1_4 = ck3,
-				 ans2_1 = prob_k0,
-				 ans2_2 = prob_k1,
-				 ans2_3 = prob_k2,
-				 ans2_4 = prob_k3,
-				 ans3 = exp_v)
+  answers <- list(ans1_1 = ck0,
+                  ans1_2 = ck1,
+                  ans1_3 = ck2,
+                  ans1_4 = ck3,
+                  ans2_1 = prob_k0,
+                  ans2_2 = prob_k1,
+                  ans2_3 = prob_k2,
+                  ans2_4 = prob_k3,
+                  ans3 = exp_v)
   answers
 
 
- })
+})
 
 irt_training_grm_check <- eventReactive(input$irt_training_grm_1_submit, {
 
- answers <- irt_training_grm_answer()
+  answers <- irt_training_grm_answer()
 
- #answ 1_1
- cdf_k1_input <- c(input$irt_training_grm_1_1a, input$irt_training_grm_1_1b,
-				input$irt_training_grm_1_1c,input$irt_training_grm_1_1d,
-				input$irt_training_grm_1_1e)
- ans1_1 <- c(abs(answers[[1]] - cdf_k1_input) <= 0.05)
-
-
- #answ 1_2
- cdf_k2_input <- c(input$irt_training_grm_1_2a, input$irt_training_grm_1_2b,
-				input$irt_training_grm_1_2c,input$irt_training_grm_1_2d,
-				input$irt_training_grm_1_2e)
- ans1_2 <- c(abs(answers[[2]] - cdf_k2_input) <= 0.05)
-
- #answ 1_3
- cdf_k3_input <- c(input$irt_training_grm_1_3a, input$irt_training_grm_1_3b,
-				input$irt_training_grm_1_3c,input$irt_training_grm_1_3d,
-				input$irt_training_grm_1_3e)
- ans1_3 <- c(abs(answers[[3]] - cdf_k3_input) <= 0.05)
-
- #answ 1_4
- cdf_k4_input <- c(input$irt_training_grm_1_4a, input$irt_training_grm_1_4b,
-				input$irt_training_grm_1_4c,input$irt_training_grm_1_4d,
-				input$irt_training_grm_1_4e)
- ans1_4 <- c(abs(answers[[4]] - cdf_k4_input) <= 0.05)
-
- #answ 2_1
- prob_k0_input <- c(input$irt_training_grm_2_1a, input$irt_training_grm_2_1b,
-				input$irt_training_grm_2_1c,input$irt_training_grm_2_1d,
-				input$irt_training_grm_2_1e)
- ans2_1 <- c(abs(answers[[5]] - prob_k0_input) <= 0.05)
-
- #answ 2_2
- prob_k1_input <- c(input$irt_training_grm_2_2a, input$irt_training_grm_2_2b,
-				input$irt_training_grm_2_2c,input$irt_training_grm_2_2d,
-				input$irt_training_grm_2_2e)
- ans2_2 <- c(abs(answers[[6]] - prob_k1_input) <= 0.05)
-
- #answ 2_3
- prob_k2_input <- c(input$irt_training_grm_2_3a, input$irt_training_grm_2_3b,
-				input$irt_training_grm_2_3c,input$irt_training_grm_2_3d,
-				input$irt_training_grm_2_3e)
- ans2_3 <- c(abs(answers[[7]] - prob_k2_input) <= 0.05)
-
- #answ 2_4
- prob_k3_input <- c(input$irt_training_grm_2_4a, input$irt_training_grm_2_4b,
-				input$irt_training_grm_2_4c,input$irt_training_grm_2_4d,
-				input$irt_training_grm_2_4e)
- ans2_4 <- c(abs(answers[[8]] - prob_k3_input) <= 0.05)
-
- #answ 3
- exp_v_input <- c(input$irt_training_grm_3_1a, input$irt_training_grm_3_2a,
-				input$irt_training_grm_3_3a,input$irt_training_grm_3_4a,
-				input$irt_training_grm_3_5a)
- ans3 <- c(abs(answers[[9]] - exp_v_input) <= 0.05)
+  #answ 1_1
+  cdf_k1_input <- c(input$irt_training_grm_1_1a, input$irt_training_grm_1_1b,
+                    input$irt_training_grm_1_1c,input$irt_training_grm_1_1d,
+                    input$irt_training_grm_1_1e)
+  ans1_1 <- c(abs(answers[[1]] - cdf_k1_input) <= 0.05)
 
 
- ans <- list( ans1 = ans1_1,
-              ans2 = ans1_2,
-              ans3 = ans1_3,
-              ans4 = ans1_4,
-			  ans5 = ans2_1,
-              ans6 = ans2_2,
-              ans7 = ans2_3,
-              ans8 = ans2_4,
-			  ans9 = ans3)
+  #answ 1_2
+  cdf_k2_input <- c(input$irt_training_grm_1_2a, input$irt_training_grm_1_2b,
+                    input$irt_training_grm_1_2c,input$irt_training_grm_1_2d,
+                    input$irt_training_grm_1_2e)
+  ans1_2 <- c(abs(answers[[2]] - cdf_k2_input) <= 0.05)
 
- res <- sum(sapply(ans, sum))/sum(sapply(ans, length))
- ans <- lapply(ans, function(x) ifelse(is.na(x),
-										"<b><font color = 'red'>!</font></b>",
+  #answ 1_3
+  cdf_k3_input <- c(input$irt_training_grm_1_3a, input$irt_training_grm_1_3b,
+                    input$irt_training_grm_1_3c,input$irt_training_grm_1_3d,
+                    input$irt_training_grm_1_3e)
+  ans1_3 <- c(abs(answers[[3]] - cdf_k3_input) <= 0.05)
+
+  #answ 1_4
+  cdf_k4_input <- c(input$irt_training_grm_1_4a, input$irt_training_grm_1_4b,
+                    input$irt_training_grm_1_4c,input$irt_training_grm_1_4d,
+                    input$irt_training_grm_1_4e)
+  ans1_4 <- c(abs(answers[[4]] - cdf_k4_input) <= 0.05)
+
+  #answ 2_1
+  prob_k0_input <- c(input$irt_training_grm_2_1a, input$irt_training_grm_2_1b,
+                     input$irt_training_grm_2_1c,input$irt_training_grm_2_1d,
+                     input$irt_training_grm_2_1e)
+  ans2_1 <- c(abs(answers[[5]] - prob_k0_input) <= 0.05)
+
+  #answ 2_2
+  prob_k1_input <- c(input$irt_training_grm_2_2a, input$irt_training_grm_2_2b,
+                     input$irt_training_grm_2_2c,input$irt_training_grm_2_2d,
+                     input$irt_training_grm_2_2e)
+  ans2_2 <- c(abs(answers[[6]] - prob_k1_input) <= 0.05)
+
+  #answ 2_3
+  prob_k2_input <- c(input$irt_training_grm_2_3a, input$irt_training_grm_2_3b,
+                     input$irt_training_grm_2_3c,input$irt_training_grm_2_3d,
+                     input$irt_training_grm_2_3e)
+  ans2_3 <- c(abs(answers[[7]] - prob_k2_input) <= 0.05)
+
+  #answ 2_4
+  prob_k3_input <- c(input$irt_training_grm_2_4a, input$irt_training_grm_2_4b,
+                     input$irt_training_grm_2_4c,input$irt_training_grm_2_4d,
+                     input$irt_training_grm_2_4e)
+  ans2_4 <- c(abs(answers[[8]] - prob_k3_input) <= 0.05)
+
+  #answ 3
+  exp_v_input <- c(input$irt_training_grm_3_1a, input$irt_training_grm_3_2a,
+                   input$irt_training_grm_3_3a,input$irt_training_grm_3_4a,
+                   input$irt_training_grm_3_5a)
+  ans3 <- c(abs(answers[[9]] - exp_v_input) <= 0.05)
+
+
+  ans <- list( ans1 = ans1_1,
+               ans2 = ans1_2,
+               ans3 = ans1_3,
+               ans4 = ans1_4,
+               ans5 = ans2_1,
+               ans6 = ans2_2,
+               ans7 = ans2_3,
+               ans8 = ans2_4,
+               ans9 = ans3)
+
+  res <- sum(sapply(ans, sum))/sum(sapply(ans, length))
+  ans <- lapply(ans, function(x) ifelse(is.na(x),
+                                        "<b><font color = 'red'>!</font></b>",
                                         ifelse(x,
-											   "<font color='green'>&#10004;</font>",
-												"<font color='red'>&#10006;</font>")))
+                                               "<font color='green'>&#10004;</font>",
+                                               "<font color='red'>&#10006;</font>")))
   ans[["ans"]] <- res
   ans
 })
@@ -4194,10 +4301,10 @@ output$irt_training_grm_3_5a_answer <- renderUI({
 output$irt_training_grm_answer <- renderUI({
   res <- irt_training_grm_check()[["ans"]]
   HTML(ifelse(is.na(res),
-			  "<font color = 'red'>Check the format</font>",
+              "<font color = 'red'>Check the format</font>",
               ifelse(res == 1,
-					"<font color='green'>Everything correct! Well done!</font>",
-					paste0("<font color='red'>", round(100*res), "% correct. Try again.</font>"))))
+                     "<font color='green'>Everything correct! Well done!</font>",
+                     paste0("<font color='red'>", round(100*res), "% correct. Try again.</font>"))))
 })
 
 
@@ -4421,90 +4528,90 @@ output$DB_irt_training_gpcm_plot_expected <- downloadHandler(
            dpi = setting_figures$dpi)
   })
 
-  # *** Exercise ###
+# *** Exercise ###
 irt_gpcm_answer <- reactive({
 
-	ans1 <- c("No","No","No","Yes","Yes","Yes","No","No","No")
+  ans1 <- c("No","No","No","Yes","Yes","Yes","No","No","No")
 
-	a <- 1
-	d <- c(-1, 1)
-	theta <- seq(-4, 4, 0.01)
+  a <- 1
+  d <- c(-1, 1)
+  theta <- seq(-4, 4, 0.01)
 
-	ccgpcm <- function(theta, a, d){ a*(theta - d) }
-	df <- sapply(1:length(d), function(i) ccgpcm(theta, a, d[i]))
-	pk <- sapply(1:ncol(df), function(k) apply(as.data.frame(df[, 1:k]), 1, sum))
-	pk <- cbind(0, pk)
-	pk <- exp(pk)
-	denom <- apply(pk, 1, sum)
-	df <-  apply(pk, 2, function(x) x/denom)
-	df1 <- melt(data.frame(df, theta), id.vars = "theta")
+  ccgpcm <- function(theta, a, d){ a*(theta - d) }
+  df <- sapply(1:length(d), function(i) ccgpcm(theta, a, d[i]))
+  pk <- sapply(1:ncol(df), function(k) apply(as.data.frame(df[, 1:k]), 1, sum))
+  pk <- cbind(0, pk)
+  pk <- exp(pk)
+  denom <- apply(pk, 1, sum)
+  df <-  apply(pk, 2, function(x) x/denom)
+  df1 <- melt(data.frame(df, theta), id.vars = "theta")
 
-	df2 <- data.frame(exp = as.matrix(df) %*% 0:2, theta)
+  df2 <- data.frame(exp = as.matrix(df) %*% 0:2, theta)
 
-	ans2 <- c(df2$exp[which(theta %in% c(-1.50,0,1.50))])
-	ans3 <- "Yes"
+  ans2 <- c(df2$exp[which(theta %in% c(-1.50,0,1.50))])
+  ans3 <- "Yes"
 
-	a2 <- 2
+  a2 <- 2
 
-	df <- sapply(1:length(d), function(i) ccgpcm(theta, a2, d[i]))
-	pk <- sapply(1:ncol(df), function(k) apply(as.data.frame(df[, 1:k]), 1, sum))
-	pk <- cbind(0, pk)
-	pk <- exp(pk)
-	denom <- apply(pk, 1, sum)
-	df <-  apply(pk, 2, function(x) x/denom)
-	df1 <- melt(data.frame(df, theta), id.vars = "theta")
+  df <- sapply(1:length(d), function(i) ccgpcm(theta, a2, d[i]))
+  pk <- sapply(1:ncol(df), function(k) apply(as.data.frame(df[, 1:k]), 1, sum))
+  pk <- cbind(0, pk)
+  pk <- exp(pk)
+  denom <- apply(pk, 1, sum)
+  df <-  apply(pk, 2, function(x) x/denom)
+  df1 <- melt(data.frame(df, theta), id.vars = "theta")
 
-	df2 <- data.frame(exp = as.matrix(df) %*% 0:2, theta)
+  df2 <- data.frame(exp = as.matrix(df) %*% 0:2, theta)
 
-	ans4 <- c(df2$exp[which(theta %in% c(-1.50,0,1.50))])
+  ans4 <- c(df2$exp[which(theta %in% c(-1.50,0,1.50))])
 
-	answers <- list(ans1 = ans1,
-					ans2 = ans2,
-					ans3 = ans3,
-					ans4 = ans4)
+  answers <- list(ans1 = ans1,
+                  ans2 = ans2,
+                  ans3 = ans3,
+                  ans4 = ans4)
 
-	answers
+  answers
 
- })
+})
 
 irt_gpcm_check <- eventReactive(input$irt_training_gpcm_1_submit, {
 
- answers <- irt_gpcm_answer()
+  answers <- irt_gpcm_answer()
 
 
 
-	#answ 1_1
-	idx <- as.integer(input$irt_training_gpcm_1)
-	theta_input <- rep("No",9)
-	theta_input[idx] <- "Yes"
-	ans1 <- all(theta_input == answers[[1]])
+  #answ 1_1
+  idx <- as.integer(input$irt_training_gpcm_1)
+  theta_input <- rep("No",9)
+  theta_input[idx] <- "Yes"
+  ans1 <- all(theta_input == answers[[1]])
 
-	exp_theta_input_1 <- c(input$irt_training_gpcm_2_1,input$irt_training_gpcm_2_2,input$irt_training_gpcm_2_3)
+  exp_theta_input_1 <- c(input$irt_training_gpcm_2_1,input$irt_training_gpcm_2_2,input$irt_training_gpcm_2_3)
 
-	ans2 <- c(abs(answers[[2]] - exp_theta_input_1) <= 0.05)
+  ans2 <- c(abs(answers[[2]] - exp_theta_input_1) <= 0.05)
 
-	ans3 <- input$irt_training_gpcm_3 == answers[[3]]
+  ans3 <- input$irt_training_gpcm_3 == answers[[3]]
 
-	exp_theta_input_2 <- c(input$irt_training_gpcm_4_1,input$irt_training_gpcm_4_2,input$irt_training_gpcm_4_3)
+  exp_theta_input_2 <- c(input$irt_training_gpcm_4_1,input$irt_training_gpcm_4_2,input$irt_training_gpcm_4_3)
 
-	ans4 <- c(abs(answers[[4]] - exp_theta_input_2) <= 0.05)
-
-
+  ans4 <- c(abs(answers[[4]] - exp_theta_input_2) <= 0.05)
 
 
-	ans <- list( ans1 = ans1,
-				 ans2 = ans2,
-				 ans3 = ans3,
-				 ans4 = ans4)
 
-	res <- sum(sapply(ans, sum))/sum(sapply(ans, length))
-	ans <- lapply(ans, function(x) ifelse(is.na(x),
-										"<b><font color = 'red'>!</font></b>",
+
+  ans <- list( ans1 = ans1,
+               ans2 = ans2,
+               ans3 = ans3,
+               ans4 = ans4)
+
+  res <- sum(sapply(ans, sum))/sum(sapply(ans, length))
+  ans <- lapply(ans, function(x) ifelse(is.na(x),
+                                        "<b><font color = 'red'>!</font></b>",
                                         ifelse(x,
-											   "<font color='green'>&#10004;</font>",
-												"<font color='red'>&#10006;</font>")))
-	ans[["ans"]] <- res
-	ans
+                                               "<font color='green'>&#10004;</font>",
+                                               "<font color='red'>&#10006;</font>")))
+  ans[["ans"]] <- res
+  ans
 })
 
 output$irt_training_gpcm_1_answer <- renderUI({
@@ -4543,10 +4650,10 @@ output$irt_training_gpcm_4_3_answer <- renderUI({
 output$irt_training_gpcm_answer <- renderUI({
   res <- irt_gpcm_check()[["ans"]]
   HTML(ifelse(is.na(res),
-			  "<font color = 'red'>Check the format</font>",
+              "<font color = 'red'>Check the format</font>",
               ifelse(res == 1,
-					"<font color='green'>Everything correct! Well done!</font>",
-					paste0("<font color='red'>", round(100*res), "% correct. Try again.</font>"))))
+                     "<font color='green'>Everything correct! Well done!</font>",
+                     paste0("<font color='red'>", round(100*res), "% correct. Try again.</font>"))))
 })
 
 
@@ -4737,20 +4844,20 @@ output$DB_irt_training_nrm_plot <- downloadHandler(
 
 observeEvent(!is.na(input$irt_training_grm_numresp)| is.na(input$irt_training_grm_numresp),{
 
-if (!is.na(input$irt_training_grm_numresp)) {
+  if (!is.na(input$irt_training_grm_numresp)) {
 
-  if(input$irt_training_grm_numresp < 2) {
+    if(input$irt_training_grm_numresp < 2) {
 
-	updateNumericInput(session,'irt_training_grm_numresp', value = 2)
+      updateNumericInput(session,'irt_training_grm_numresp', value = 2)
 
-  } else if ( input$irt_training_grm_numresp > 6) {
+    } else if ( input$irt_training_grm_numresp > 6) {
 
-	updateNumericInput(session,'irt_training_grm_numresp', value = 6)
+      updateNumericInput(session,'irt_training_grm_numresp', value = 6)
 
-  }
-}  else if (is.na(input$irt_training_grm_numresp)) {
+    }
+  }  else if (is.na(input$irt_training_grm_numresp)) {
 
-	updateNumericInput(session,'irt_training_grm_numresp', value = 4)
+    updateNumericInput(session,'irt_training_grm_numresp', value = 4)
 
   }
 
@@ -4760,21 +4867,21 @@ if (!is.na(input$irt_training_grm_numresp)) {
 
 observeEvent(!is.na(input$irt_training_gpcm_numresp)| is.na(input$irt_training_gpcm_numresp),{
 
-if (!is.na(input$irt_training_gpcm_numresp)) {
+  if (!is.na(input$irt_training_gpcm_numresp)) {
 
-  if(input$irt_training_gpcm_numresp < 2) {
+    if(input$irt_training_gpcm_numresp < 2) {
 
-	updateNumericInput(session,'irt_training_gpcm_numresp', value = 2)
+      updateNumericInput(session,'irt_training_gpcm_numresp', value = 2)
 
-  } else if ( input$irt_training_gpcm_numresp > 6) {
+    } else if ( input$irt_training_gpcm_numresp > 6) {
 
-	updateNumericInput(session,'irt_training_gpcm_numresp', value = 6)
+      updateNumericInput(session,'irt_training_gpcm_numresp', value = 6)
 
-  }
+    }
 
-} else if ( is.na(input$irt_training_gpcm_numresp) ) {
+  } else if ( is.na(input$irt_training_gpcm_numresp) ) {
 
-	updateNumericInput(session,'irt_training_gpcm_numresp', value = 4)
+    updateNumericInput(session,'irt_training_gpcm_numresp', value = 4)
 
   }
 
@@ -4783,21 +4890,21 @@ if (!is.na(input$irt_training_gpcm_numresp)) {
 
 observeEvent(!is.na(input$irt_training_nrm_numresp)| is.na(input$irt_training_nrm_numresp),{
 
-if (!is.na(input$irt_training_nrm_numresp)) {
+  if (!is.na(input$irt_training_nrm_numresp)) {
 
-  if(input$irt_training_nrm_numresp < 2) {
+    if(input$irt_training_nrm_numresp < 2) {
 
-	updateNumericInput(session,'irt_training_nrm_numresp', value = 2)
+      updateNumericInput(session,'irt_training_nrm_numresp', value = 2)
 
-  } else if ( input$irt_training_nrm_numresp > 6) {
+    } else if ( input$irt_training_nrm_numresp > 6) {
 
-	updateNumericInput(session,'irt_training_nrm_numresp', value = 6)
+      updateNumericInput(session,'irt_training_nrm_numresp', value = 6)
 
-  }
+    }
 
-} else if ( is.na(input$irt_training_nrm_numresp) ) {
+  } else if ( is.na(input$irt_training_nrm_numresp) ) {
 
-	updateNumericInput(session,'irt_training_nrm_numresp', value = 4)
+    updateNumericInput(session,'irt_training_nrm_numresp', value = 4)
 
   }
 

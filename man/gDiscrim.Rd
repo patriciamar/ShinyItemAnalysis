@@ -68,20 +68,19 @@ gDiscrim(dataOrd,  k = 5, l = 4, u = 5, maxscore = 4, minscore = 0)[1:5]
 Martinkova, P., Stepanek, L., Drabinova, A., Houdek, J., Vejrazka, M., & Stuka, C. (2017).
 Semi-real-time analyses of item characteristics for medical school admission tests.
 In: Proceedings of the 2017 Federated Conference on Computer Science and Information Systems.
-http://dx.doi.org/10.15439/2017F380
+https://doi.org/10.15439/2017F380
 }
 \seealso{
 \code{\link{DDplot}}
 }
 \author{
-Adela Hladka  \cr
+Adela Hladka \cr
 Institute of Computer Science, The Czech Academy of Sciences \cr
 Faculty of Mathematics and Physics, Charles University \cr
-drabinova@cs.cas.cz \cr
+hladka@cs.cas.cz \cr
 
 Lubos Stepanek \cr
 First Faculty of Medicine, Charles University \cr
-lubomir.stepanek@lf1.cuni.cz \cr
 
 Jana Vorlickova \cr
 Institute of Computer Science, The Czech Academy of Sciences \cr

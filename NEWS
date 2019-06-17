@@ -5,6 +5,38 @@
         ***************************************************************
 
 -------------------------------------------------------
+- Changes in ShinyItemAnalysis 1.3.0-12. (2019-06-17) -
+-------------------------------------------------------
+
+BUG FIXING
+  o Reports are now rendered even in case that multinomial model
+    cannot be fitted for some items.
+  o With option Keep item names, names of items are properly
+    displayed in Report for DIF detection methods.
+  o Model comparison table returns now also partial results when
+    some models cannot be fitted.
+  o Bug in plotMultinomial() was fixed. In case of only two categories
+    observed, plot is displayed properly now.
+  o Bug in DistractorAnalysis() was fixed. In case of possibly discrete
+    matching, matching is cutted based on its factors.
+
+MAJOR UPDATES
+  o Uploaded data can be now unloaded without restarting app.
+  o Distractor plot for validity analysis was updated to allow
+    for lowering the number of categories in cases when cuts
+    are not uniquely defined. Application was updated accordingly.
+
+MINOR UPDATES
+  o Errors and warnings were customized.
+  o In all dichotomous models the number of EM cycles can be
+    increased in Settings.
+  o Seed was set for validity boxplot for reproducibility of
+    jitter points.
+  o All static DOI links were updated.
+    (Thanks to Katrin Leinweber)
+  o Some typos were fixed in reports.
+
+-------------------------------------------------------
 - Changes in ShinyItemAnalysis 1.3.0-11. (2019-05-28) -
 -------------------------------------------------------
 

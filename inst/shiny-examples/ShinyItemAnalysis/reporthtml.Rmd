@@ -99,19 +99,8 @@ To cite ShinyItemAnalysis application in publications, please, use:
   The R Journal, 10(2), 503-515.
   [doi: 10.32614/RJ-2018-074](https://doi.org/10.32614/RJ-2018-074)
   
-  Martinkova P., Drabinova A., Leder O., \& Houdek J.
-  (2019)
-  ShinyItemAnalysis: Test and item analysis via shiny. R package version 1.3.0.
-  [https://CRAN.R-project.org/package=ShinyItemAnalysis](https://CRAN.R-project.org/package=ShinyItemAnalysis)
-
-
-  Martinkova P., Drabinova A., \& Houdek J.
-  (2017)
-  ShinyItemAnalysis: Analyza prijimacich a jinych znalostnich ci psychologickych testu
-  [ShinyItemAnalysis: Analyzing admission and other educational and psychological tests, in Czech].
-  TESTFORUM, 6(9), 16-35. [doi: 10.5817/TF2017-9-129](http://www.testforum.cz/domains/testforum.cz/index.php/testforum/article/view/129)
-
-This program is free software and you can redistribute it and or modify it under the terms of the GNU GPL 3 as published by the Free Software Foundation. This program is distributed in the hope that it will be useful, but without any warranty; without even the implied warranty of merchantability of fitness for a particular purpose. 
+  
+This program is free software and you can redistribute it and or modify it under the terms of the GNU GPL 3 as published by the Free Software Foundation. This program is distributed in the hope that it will be useful, but without any warranty; without even the implied warranty of merchantability of fitness for a particular purpose. Visit [www.ShinyItemAnalysis.org](www.ShinyItemAnalysis.org) to learn more!
 
 This project was supported by Czech Science Foundation under grant number [GJ15-15856Y](http://www.cs.cas.cz/martinkova/psychometrics.html).
 
@@ -357,10 +346,11 @@ Respondents are divided into a selected number of groups by their total score. S
 In the multinomial plot, points represent proportion of selected option with respect to standardized total score. Their size is determined by count of respondents who achieved given level of standardized total score and who selected given option.
 
 ```{r distractor-multi-plot, echo = FALSE, fig.width = 11, fig.height = 4, fig.align = 'center', dpi = 300}
-library(gridExtra)
 for (i in 1:length(params$graf)){
-  g1 <- params$graf[[i]]
-  g2 <- params$multiplot[[i]]
+  g1 <- params$graf[[i]] 
+  g2 <- params$multiplot[[i]] 
+  if (is.null(g2)) g2 <- textGrob("")
+  
   grid.arrange(g1, g2, ncol = 2)
 }
 ```
@@ -483,7 +473,7 @@ if (params$irt_type != "none") {
 
 `r if (params$irt_type != "none") {"## Parameter estimates and item fit"}`
 
-`r if (params$irt_type != "none") {"Estimates of parameters are completed by their standard errors (SE) and by signed Chi-squared statistics SX2 (see Orlando and Thissen, 2000). P-values lower than 0.05 indicate suspicious items are not fitting the selected IRT model. SX2 is computed only when no missing data are present."}`
+`r if (params$irt_type != "none") {"Estimates of parameters are completed by their standard errors (SE) and by signed Chi-squared statistics SX2 (see Orlando and Thissen, 2000). P-values lower than 0.05 indicate suspicious items not fitting the selected IRT model. SX2 is computed only when no missing data are present."}`
 
 ```{r irt-estim, echo = FALSE}
 if (params$irt_type != "none") {
@@ -505,7 +495,7 @@ if (params$irt_type != "none") {
 
 `r if(params$isGroupPresent & params$histCheck) {"### Summary table of total scores in a reference and focal group"}`
 
-`r if(params$isGroupPresent & params$histCheck) {"DIF is not about total scores! Two groups may have the same distribution of total scores, yet, some item may function differently for the two groups. Also, one of the groups may have a signifficantly lower total score, yet, it may happen that there is no DIF item!"}`
+`r if(params$isGroupPresent & params$histCheck) {"DIF is not about total scores! Two groups may have the same distribution of total scores, yet, some item may function differently for the two groups. Also, one of the groups may have a signifficantly lower total score, yet, it may happen that there is no DIF item [(see Martinkova et al., 2017)](https://doi.org/10.1187/cbe.16-10-0307)!"}`
 
 ```{r table-by-group, echo = FALSE}
 if (params$histCheck) {
@@ -557,7 +547,8 @@ if (params$histCheck) {
 
 `r if(params$isGroupPresent & params$deltaplotCheck) {"### Summary table"}`
 
-`r if(params$deltaplotCheck){if(params$isGroupPresent){res <- params$DIF_deltaplot_text; paste("Detection threshold is ", round(res$thr[length(res$thr)], 2), ". ", ifelse(res$DIFitems == "no DIF item detected", "**No DIF item was detected.**  ", paste("**Items were detected as DIF: ", res$DIFitems, ". **  ", sep = "")), sep = "")}}`
+`r if(params$isGroupPresent & params$deltaplotCheck){res <- params$DIF_deltaplot_text; paste0("Detection threshold is ", round(res$thr[length(res$thr)], 2), ". ", ifelse(res$DIFitems == "no DIF item detected", "\\textbf{No DIF item was detected.}", paste0("\\textbf{Items detected as DIF: ", paste(params$itemNames[res$DIFitems], collapse = ", "), ".} ")))}`
+
 `r if(params$isGroupPresent & params$logregCheck) {res <- params$DIF_deltaplot_text; paste(ifelse(res$purify, "Item purification was used.", "Item purification was not applied."))}`
 
 ```{r delta-plot-output, echo = FALSE}
@@ -594,7 +585,7 @@ if (params$deltaplotCheck) {
 `r if(params$isGroupPresent & params$logregCheck) {"### Summary table"}`
 
 `r if(params$isGroupPresent & params$logregCheck) {res <- params$DIF_logistic_print; switch(res$type, "both" = "Both types of DIF were tested.", "udif" = "Uniform DIF was tested only.", "nudif" = "Non-uniform  DIF was tested only.")}`
-`r if(params$isGroupPresent & params$logregCheck) {res <- params$DIF_logistic_print; paste("The detection threshold is ", round(res$thr, 2), ". ", ifelse(any(res$DIFitems == "No DIF item detected"), "**No DIF item was detected. **  ", paste("**Items were detected as DIF: ", paste(res$DIFitems, collapse = ", "), ". **  ", sep = "")), sep = "")}`
+`r if(params$isGroupPresent & params$logregCheck) {res <- params$DIF_logistic_print; paste("The detection threshold is ", round(res$thr, 2), ". ", ifelse(any(res$DIFitems == "No DIF item detected"), "**No DIF item was detected. **  ", paste("**Items detected as DIF: ", paste(params$itemNames[res$DIFitems], collapse = ", "), ". **  ", sep = "")), sep = "")}`
 `r if(params$isGroupPresent & params$logregCheck) {res <- params$DIF_logistic_print; paste(ifelse(res$purification, "Item purification was used.", "Item purification was not applied."), ifelse(is.null(res$p.adjust.method), "No p-value adjustment for multiple comparisons was used.", paste(switch(res$p.adjust.method, "holm" = "Holm's", "hochberg" = "Hochberg's", "hommel" = "Hommel's", "bonferroni" = "Bonferroni", "BH" = "Benjamini-Hochberg", "BY" = "Benjamini-Yekutieli", "fdr" = "Benjamini-Hochberg", "none" = "No"), "p-value adjustment for multiple comparisons was used.")))}`
 
 ```{r dif-logistic-output, echo = FALSE}
@@ -665,7 +656,7 @@ if (params$logregCheck) {
 `r if(params$isGroupPresent & params$multiCheck) {"### Summary table"}`
 
 `r if(params$isGroupPresent & params$multiCheck) {res <- params$DDF_multinomial_print; switch(res$type, "both" = "Both types of DDF were tested.", "udif" = "Uniform DDF was tested only.", "nudif" = "Non-uniform DDF was tested only.")}`
-`r if(params$isGroupPresent & params$multiCheck) {res <- params$DDF_multinomial_print; paste(ifelse(any(res$DDFitems == "No DDF item detected"), "**No DDF item was detected. **  ", paste("**Items detected as DDF: ", paste(res$DDFitems, collapse = ", "), ". **  ", sep = "")), sep = "")}`
+`r if(params$isGroupPresent & params$multiCheck) {res <- params$DDF_multinomial_print; paste(ifelse(any(res$DDFitems == "No DDF item detected"), "**No DDF item was detected. **  ", paste("**Items detected as DDF: ", paste(params$itemNames[res$DDFitems], collapse = ", "), ". **  ", sep = "")), sep = "")}`
 `r if(params$isGroupPresent & params$multiCheck) {res <- params$DDF_multinomial_print; paste(ifelse(res$purification, "Item purification was used.", "Item purification was not applied."), ifelse(is.null(res$p.adjust.method), "No p-value adjustment for multiple comparisons was used.", paste(switch(res$p.adjust.method, "holm" = "Holm's", "hochberg" = "Hochberg's", "hommel" = "Hommel's", "bonferroni" = "Bonferroni", "BH" = "Benjamini-Hochberg", "BY" = "Benjamini-Yekutieli", "fdr" = "Benjamini-Hochberg", "none" = "No"), "p-value adjustment for multiple comparisons was used.")))}`
 
 ```{r ddf-multi-output, echo = FALSE}

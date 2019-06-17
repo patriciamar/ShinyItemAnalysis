@@ -92,7 +92,7 @@ function(input, output, session) {
   #%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
   # * Load toy data ######
-  observeEvent(input$dataSelect, {
+  observeEvent(c(input$dataSelect, removeCounter$Click == 1), {
 
     inputData <- input$dataSelect
     pos <- regexpr("_", inputData)[1]
@@ -415,6 +415,22 @@ function(input, output, session) {
       txt <- ""
     }
     txt
+  })
+
+  # warning, if total_score or zscore will have NA's - error in report
+  na_score_reports <- reactive({
+    if (any(is.na(total_score())) | any(is.na(z_score()))) {
+      txt <- "<font color = 'orange'>
+				For some analysis methods, observations with missing values have been omitted.
+				</font>"
+    } else {
+      txt <- ""
+    }
+    txt
+  })
+
+  output$report_na_alert <- renderUI({
+    HTML(na_score_reports())
   })
 
   # * Item numbers and item names ######

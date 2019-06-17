@@ -1,7 +1,10 @@
 # DATA CHECKING ####
+
 # * Error and warning messages for upload ####
 checkDataText_Input <- eventReactive(input$submitButton, {
   error_setting <- F
+  submitCounter$Click <- 1
+  removeCounter$Click <- 0
 
   if (dataset$data_status == "missing"){
     str_errors <- "No data found! Please, upload data. Default dataset GMAT is now in use."
@@ -65,8 +68,54 @@ checkDataText_Input <- eventReactive(input$submitButton, {
     }
   }
 })
+
 output$checkDataText <- renderUI({
   HTML(checkDataText_Input())
+})
+
+# * Click counter ####
+submitCounter <- reactiveValues()
+removeCounter <- reactiveValues()
+submitCounter$Click <- 0
+removeCounter$Click <- 0
+
+# * Render remove button after data load ####
+output$removeBut_output <- renderUI({
+  if(submitCounter$Click > 0) {
+    tagList(actionButton(inputId = "removeButton",
+                         label = "Unload data",
+                         class = "btn btn-large btn-primary",
+                         icon = icon("trash"),
+                         width = "150px"))
+  }
+})
+
+# * Remove loaded data ####
+observeEvent(input$removeButton, {
+  # reset function reset values in input
+  # html function change text in corresponding html tag
+  reset("data")
+  reset("key")
+  reset("groups")
+  reset("criterion_variable")
+  reset("maxOrdinal")
+  reset("minOrdinal")
+  reset("globalMax")
+  reset("globalMin")
+  reset("globalCut")
+  reset("submitButton")
+  html('removedItemsText',html = '')
+  html('checkDataText',html = '')
+  html('checkDataColumns01Text',html = '')
+  html('renderdeleteButtonColumns01',html = '')
+  html('removedItemsText',html = '')
+  html('checkGroupText',html = '')
+  html('renderdeleteButtonGroup',html = '')
+  html('removedGroupText',html = '')
+  submitCounter$Click <- 0
+  removeCounter$Click <- 1
+  removeUI(selector = '#removeButton')
+  removeCounter$Click <- 0
 })
 
 # * Checking uploaded scored data ####
@@ -290,6 +339,8 @@ output$data_key_file_input <- renderUI({
                        ".csv",
                        ".tsv"))
 })
+
+
 
 # BASIC SUMMARY ####
 

@@ -236,6 +236,8 @@ validity_plot_boxplot_Input <- reactive({
   df <- data.table(ts, cv)
   df <- df[complete.cases(df), ]
 
+  set.seed(1)
+
   g <- ggplot(df, aes(y = ts, x = as.factor(cv), fill = as.factor(cv))) +
     geom_boxplot() +
     geom_jitter(shape = 16, position = position_jitter(0.2)) +
@@ -357,12 +359,12 @@ output$validity_distractor_text <- renderUI({
   ## this is fixed value to recognize discrete variable
   k <- 6
   if (length(unique(cv)) <= length(cv)/k){
-    num.group <- length(levels(as.factor(cv)))
+   num.group <- length(levels(as.factor(cv)))
   } else {
-    num.group <- input$validity_group
+   num.group <- input$validity_group
   }
 
-  txt1 <- paste ('Respondents are divided into ')
+  txt1 <- paste('Respondents are divided into ')
   txt2 <- ifelse((length(unique(cv)) <= length(cv)/k),
                  paste("<b>", num.group, "</b> groups as it seems that criterion variable is discrete. "),
                  paste("<b>", num.group, "</b> groups by their criterion variable. "))
@@ -376,13 +378,60 @@ output$validity_distractor_text <- renderUI({
   HTML(paste(txt1, txt2, txt3, txt4, txt5, txt6))
 })
 
+# ** Admisible groups for cut ####
+validity_admisible_groups <- reactive({
+  cv <- criterion()
+  k <- 6
+
+  if (length(unique(cv)) <= length(cv)/k){
+    groups <- length(levels(as.factor(cv)))
+    validity_change_cut_indicator$discrete <- TRUE
+  } else {
+    cv_quant <- lapply(1:5, function(i) quantile(cv, seq(0, 1, by = 1/i), na.rm = TRUE))
+    cv_quant_unique <- sapply(cv_quant, function(i) !any(duplicated(i)))
+    validity_change_cut_indicator$discrete <- FALSE
+    groups <- c(1:5)[cv_quant_unique]
+  }
+
+  groups
+})
+
+# ** Status of changing cut ####
+validity_change_cut_indicator <- reactiveValues(change = FALSE,
+                                                discrete = FALSE)
+
+# ** Updating cut slider ####
+observeEvent(!(input$validity_group %in% validity_admisible_groups()),{
+  validity_change_cut_indicator$change <- TRUE
+  c <- max(validity_admisible_groups())
+  updateSliderInput(session, "validity_group", value = c)
+})
+
+# ** Warning for non-unique cut ####
+output$validity_groups_alert <- renderUI({
+  if (validity_change_cut_indicator$change) {
+    if (validity_change_cut_indicator$discrete){
+      txt <- paste0('<font color = "orange">The criterion seems to be discrete. The number of groups was set to ',
+                    validity_admisible_groups(), ".</font>")
+    } else {
+      txt <- paste0('<font color = "orange">The cut of criterion variable was not unique. The maximum number of
+                    groups, for which criterion variable is unique is ', max(validity_admisible_groups()), ".</font>")
+    }
+  } else {
+    txt <- " "
+  }
+  HTML(txt)
+})
+
 # ** Validity distractors plot ######
 validity_distractor_plot_Input <- reactive({
+
+  num.group <- input$validity_group
+
   a <- nominal()
   k <- key()
   i <- input$validitydistractorSlider
   cv <- criterion()
-  num.group <- input$validity_group
 
   multiple.answers <- c(input$type_validity_combinations_distractor == "Combinations")
   plotDistractorAnalysis(data = a, key = k, num.group = num.group,
@@ -458,3 +507,5 @@ output$corr_na_alert <- renderUI({
   txt <- na_score()
   HTML(txt)
 })
+
+

@@ -6914,6 +6914,9 @@ button.close {
 .shiny-output-error-warning_criterion_variable_missing {
     color: orange;
 }
+.shiny-output-error-validation {
+	color: red;
+}
 .js-irs-blue .irs-single, .js-irs-blue .irs-bar-edge, .js-irs-blue .irs-bar {
   background: blue;
   border-top-color: blue;
