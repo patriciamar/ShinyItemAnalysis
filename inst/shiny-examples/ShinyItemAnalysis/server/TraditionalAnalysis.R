@@ -510,7 +510,6 @@ observeEvent(!(input$gr %in% distractor_final_groups()[[1]]),{
     change_indicator$change = TRUE
     updateSliderInput(session, "gr", value = c)
 	updateSliderInput(session, "distractorGroupSlider", value = c)
-
   }
 
 })

@@ -111,14 +111,13 @@ In: Proceedings of the 2017 Federated Conference on Computer Science and Informa
 \code{\link{gDiscrim}}, \code{\link{discrim}}
 }
 \author{
-Adela Hladka  \cr
+Adela Hladka \cr
 Institute of Computer Science, The Czech Academy of Sciences \cr
 Faculty of Mathematics and Physics, Charles University \cr
-drabinova@cs.cas.cz \cr
+hladka@cs.cas.cz \cr
 
 Lubos Stepanek \cr
 First Faculty of Medicine, Charles University \cr
-lubomir.stepanek@lf1.cuni.cz \cr
 
 Jana Vorlickova \cr
 Institute of Computer Science, The Czech Academy of Sciences \cr

@@ -329,7 +329,7 @@ output$z_logreg_irt_na_alert <- renderUI({
 nlr_3P_model <- reactive({
   data <- binary()
   zscore <- z_score()
-  i <- input$slider_nlr_3P_item
+  item <- input$slider_nlr_3P_item
 
   if(any(is.na(zscore))) {
     idx_NA <- which(is.na(zscore))
@@ -337,15 +337,19 @@ nlr_3P_model <- reactive({
     zscore <- na.omit(zscore)
   }
 
-
   start <- startNLR(data, group = c(rep(0, nrow(data)/2), rep(1, nrow(data)/2)),
                     model = "3PLcg", parameterization = "classic", simplify = T)[, 1:3]
 
   glr <- function(x, a, b, c){c + (1 - c) / (1 + exp(-a * (x - b)))}
 
-  fit <- nls(unlist(data[, i, with = F]) ~ glr(zscore, a, b, c),
-             algorithm = "port", start = start[i, ],
-             lower = c(-Inf, -Inf, 0), upper = c(Inf, Inf, 1))
+  fit <- tryCatch(nls(unlist(data[, item, with = F]) ~ glr(zscore, a, b, c),
+                            algorithm = "port", start = start[item, ],
+                            lower = c(-Inf, -Inf, 0), upper = c(Inf, Inf, 1)),
+                        error = function(e) e)
+
+  validate(need(class(fit) == "nls",
+                HTML(paste0('Error: Method cannot be fitted for item ', item, '. The error message returned: ', fit$message))))
+
   fit
 })
 
@@ -354,6 +358,7 @@ nlr_3P_plot_Input <- reactive({
   zscore <- z_score()
   item <- input$slider_nlr_3P_item
   data <- binary()
+
   fit <- nlr_3P_model()
 
   fun <- function(x, a, b, c){c + (1 - c) / (1 + exp(-a * (x - b)))}
@@ -379,6 +384,7 @@ nlr_3P_plot_Input <- reactive({
     theme(legend.position = c(0.01, 0.98),
           legend.justification = c(0, 1)) +
     ggtitle(item_names()[item])
+
 })
 
 # ** Output plot of estimated nonlinear curve ######
@@ -445,7 +451,7 @@ output$nlr_3P_na_alert <- renderUI({
 nlr_4P_model <- reactive({
   data <- binary()
   zscore <- z_score()
-  i <- input$slider_nlr_4P_item
+  item <- input$slider_nlr_4P_item
 
   if(any(is.na(zscore))) {
     idx_NA <- which(is.na(zscore))
@@ -458,9 +464,14 @@ nlr_4P_model <- reactive({
 
   glr <- function(x, a, b, c, d){c + (d - c) / (1 + exp(-a * (x - b)))}
 
-  fit <- nls(unlist(data[, i, with = F]) ~ glr(zscore, a, b, c, d),
-             algorithm = "port", start = start[i, ],
-             lower = c(-Inf, -Inf, 0, 0), upper = c(Inf, Inf, 1, 1))
+  fit <- tryCatch(nls(unlist(data[, item, with = F]) ~ glr(zscore, a, b, c, d),
+                      algorithm = "port", start = start[item, ],
+                      lower = c(-Inf, -Inf, 0, 0), upper = c(Inf, Inf, 1, 1)),
+                  error = function(e) e)
+
+  validate(need(class(fit) == "nls",
+                HTML(paste0('Error: Method cannot be fitted for item ', item, '. The error message returned: ', fit$message))))
+
   fit
 })
 
@@ -519,6 +530,7 @@ output$DB_nlr_4P_plot <- downloadHandler(
 # Table of estimated parameters of nonlinear curve ######
 output$coef_nlr_4P <- renderTable({
   fit <- nlr_4P_model()
+
   tab <- summary(fit)$parameters[, 1:2]
   colnames(tab) <- c("Estimate", "SE")
   rownames(tab) <- c("%%mathit{a}%%","%%mathit{b}%%","%%mathit{c}%%","%%mathit{d}%%")
@@ -603,38 +615,46 @@ output$regr_comp_table <- DT::renderDataTable({
                                                    cat("ERROR : ", conditionMessage(e), "\n")}))
 
 
-  whok <- !c(sapply(fit2PL, is.null) | sapply(fit3PL, is.null) | sapply(fit4PL, is.null))
+  whok2PL <- !sapply(fit2PL, is.null)
+  whok3PL <- !sapply(fit3PL, is.null)
+  whok4PL <- !sapply(fit4PL, is.null)
   AIC2PL <- AIC3PL <- AIC4PL <- BIC2PL <- BIC3PL <- BIC4PL <- rep(NA, m)
 
-  AIC2PL[whok] <- sapply(fit2PL[whok], AIC)
-  AIC3PL[whok] <- sapply(fit3PL[whok], AIC)
-  AIC4PL[whok] <- sapply(fit4PL[whok], AIC)
+  AIC2PL[whok2PL] <- sapply(fit2PL[whok2PL], AIC)
+  AIC3PL[whok3PL] <- sapply(fit3PL[whok3PL], AIC)
+  AIC4PL[whok4PL] <- sapply(fit4PL[whok4PL], AIC)
 
-  BIC2PL[whok] <- sapply(fit2PL[whok], BIC)
-  BIC3PL[whok] <- sapply(fit3PL[whok], BIC)
-  BIC4PL[whok] <- sapply(fit4PL[whok], BIC)
+  BIC2PL[whok2PL] <- sapply(fit2PL[whok2PL], BIC)
+  BIC3PL[whok3PL] <- sapply(fit3PL[whok3PL], BIC)
+  BIC4PL[whok4PL] <- sapply(fit4PL[whok4PL], BIC)
 
   bestAIC <- bestBIC <- rep(NA, m)
-  dfAIC <- cbind(AIC2PL[whok], AIC3PL[whok], AIC4PL[whok])
-  bestAIC[whok] <- paste0(apply(dfAIC, 1, function(x) which(x == min(x))[1]) + 1, "PL")
+  dfAIC <- cbind(AIC2PL, AIC3PL, AIC4PL)
+  bestAIC <- apply(dfAIC, 1, function(x) which(x == min(x, na.rm = T))[1])
+  bestAIC <- ifelse(is.na(bestAIC), bestAIC, paste0(bestAIC + 1, "PL"))
 
-  dfBIC <- cbind(BIC2PL[whok], BIC3PL[whok], BIC4PL[whok])
-  bestBIC[whok] <- paste0(apply(dfBIC, 1, function(x) which(x == min(x))[1]) + 1, "PL")
+  dfBIC <- cbind(BIC2PL, BIC3PL, BIC4PL)
+  bestBIC <- apply(dfBIC, 1, function(x) which(x == min(x, na.rm = T))[1])
+  bestBIC <- ifelse(is.na(bestBIC), bestBIC, paste0(bestBIC + 1, "PL"))
 
   LRstat23 <- LRpval23 <- rep(NA, m)
-  LRstat23[whok] <- -2 * (sapply(fit2PL[whok], logLik) - sapply(fit3PL[whok], logLik))
+  whok23PL <- c(whok2PL & whok3PL)
+  LRstat23[whok23PL] <- -2 * (sapply(fit2PL[whok23PL], logLik) - sapply(fit3PL[whok23PL], logLik))
   LRdf <- 1
-  LRpval23[whok] <- 1 - pchisq(LRstat23[whok], LRdf)
-  LRpval23 <- p.adjust(LRpval23, method = input$correction_method_regrmodels)
+  LRpval23[whok23PL] <- 1 - pchisq(LRstat23[whok23PL], LRdf)
+  LRpval23[whok23PL] <- p.adjust(LRpval23[whok23PL], method = input$correction_method_regrmodels)
 
   LRstat34 <- LRpval34 <- rep(NA, m)
-  LRstat34[whok] <- -2 * (sapply(fit3PL[whok], logLik) - sapply(fit4PL[whok], logLik))
+  whok34PL <- c(whok3PL & whok4PL)
+  LRstat34[whok34PL] <- -2 * (sapply(fit3PL[whok34PL], logLik) - sapply(fit4PL[whok34PL], logLik))
   LRdf <- 1
-  LRpval34[whok] <- 1 - pchisq(LRstat34[whok], LRdf)
-  LRpval34 <- p.adjust(LRpval34, method = input$correction_method_regrmodels)
+  LRpval34[whok34PL] <- 1 - pchisq(LRstat34[whok34PL], LRdf)
+  LRpval34[whok34PL] <- p.adjust(LRpval34[whok34PL], method = input$correction_method_regrmodels)
 
-  bestLR <- ifelse(LRpval34 < 0.05, "4PL",
-                   ifelse(LRpval23 < 0.05, "3PL", "2PL"))
+  bestLR <- rep(NA, m)
+
+  bestLR[whok34PL] <- ifelse(LRpval23[whok34PL] < 0.05, "4PL", "3PL")
+  bestLR[whok23PL] <- ifelse(LRpval23[whok23PL] != "4PL" & LRpval23[whok23PL] < 0.05, "3PL", "2PL")
 
   tab <- rbind(sprintf("%.2f", round(AIC2PL, 2)),
                sprintf("%.2f", round(AIC3PL, 2)),
@@ -1022,22 +1042,34 @@ multi_model <- reactive({
   dfhw <- data.table(data[, item, with = F], matching)
   dfhw <- dfhw[complete.cases(dfhw), ]
 
-  fitM <- multinom(relevel(as.factor(unlist(dfhw[, 1])),
-                           ref = paste(key[item])) ~ unlist(dfhw[, 2]),
-                   trace = F)
-  fitM
+  fit <- tryCatch(multinom(relevel(as.factor(unlist(dfhw[, 1])),
+                                    ref = paste(key[item])) ~ unlist(dfhw[, 2]),
+                            trace = F),
+                   error = function(e) e)
+
+  validate(need(class(fit) == "nnet",
+                HTML(paste0('Error: Method cannot be fitted for item ', item, '. The error message returned: ', fit$message))))
+
+  fit
 })
 
 # ** Plot with estimated curves of multinomial regression ######
 multi_plot_Input <- reactive({
   fit <- multi_model()
-  matching <- multi_matching()
-  matching_name <- ifelse(input$multi_matching == "total", "Total score", "Standardized total score")
-  item <- input$multi_slider_item
 
-  g <- plotMultinomial(fit, matching, matching.name = matching_name)
-  g <- g + ggtitle(item_names()[item])
+  matching <- multi_matching()
+  item <- input$multi_slider_item
+  data <- nominal()
+
+  dfhw <- data.table(data[, item, with = F], matching)
+  matching <- unlist(dfhw[complete.cases(dfhw), 2])
+
+  matching_name <- ifelse(input$multi_matching == "total", "Total score", "Standardized total score")
+
+  g <- plotMultinomial(fit, matching, matching.name = matching_name) +
+    ggtitle(item_names()[item])
   g
+
 })
 
 # ** Output plot with estimated curves of multinomial regression ######
@@ -1061,6 +1093,7 @@ output$DB_multi_plot <- downloadHandler(
 
 # ** Reports: Plot with estimated curves of multinomial regression ######
 multiplotReportInput <- reactive({
+
   graflist <- list()
   key <- unlist(key())
   data <- nominal()
@@ -1069,25 +1102,53 @@ multiplotReportInput <- reactive({
 
   data <- sapply(1:ncol(data), function(i) as.factor(unlist(data[, i, with = F])))
 
+  error_measages <- c()
   for (item in 1:length(key)) {
     dfhw <- data.table(data[, item], matching)
     dfhw <- dfhw[complete.cases(dfhw), ]
+    matching <- unlist(dfhw[, 2])
 
     fitM <- multinom(relevel(as.factor(unlist(dfhw[, 1])),
                              ref = paste(key[item])) ~ unlist(dfhw[, 2]),
                      trace = F)
 
-    g <- plotMultinomial(fitM, matching, matching.name = matching_name)
+    test <- tryCatch(plotMultinomial(fitM, matching, matching.name = matching_name),
+                     error = function(x) print(x))
 
-    g <- g + ggtitle(paste("Multinomial plot for item", item_numbers()[item]))
-    g <- ggplotGrob(g)
-    graflist[[item]] <- g
+    if (mode(test$message) == "character"){
+      graflist[[item]] <- NULL
+      error_measages[item] <- test$message
+    } else {
+      g <- plotMultinomial(fitM, matching, matching.name = matching_name)
+      g <- g + ggtitle(paste("Multinomial plot for item", item_numbers()[item]))
+      g <- ggplotGrob(g)
+      graflist[[item]] <- g
+    }
   }
+
+  null_idx_true <- which(sapply(graflist, is.null))
+  null_idx_false <- which(!sapply(graflist, is.null))
+
   graflist
 })
 
+# AH: momentalne zakomentovavam, protoze stranka Reports hrozne dlouho nabiha
+# # ** Warning for report ######
+# output$report_multinomial_report <- renderUI({
+#   items <- multiplotReportInput()[[2]]
+#   messages <- unique(multiplotReportInput()[[3]])
+#   txt <- paste0("<font color = 'orange'>
+# 				Multinomial plot for items ", items, " is missing.
+#         Error message returned: ", strong(messages[2]),".
+# 				</font>")
+#   HTML(txt)
+# })
+
 # ** Equation of multinomial regression ######
 output$multi_equation <- renderUI ({
+
+  req(multi_model()[[2]])
+
   cor_option <- key()[input$multi_slider_item]
   withMathJax(
     sprintf(
@@ -1129,7 +1190,6 @@ include.rownames = T)
 
 # ** Interpretation of parameters of curves of multinomial regression ######
 output$multi_interpretation <- renderUI({
-
   koef <- summary(multi_model())$coefficients
   txt  <- c()
   matching_name <- ifelse(input$multi_matching == "total",
@@ -1160,3 +1220,5 @@ output$multi_na_alert <- renderUI({
   txt <- na_score()
   HTML(txt)
 })
+
+

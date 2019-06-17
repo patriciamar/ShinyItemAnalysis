@@ -174,6 +174,7 @@ uiValidity <-
                                                            max = 10,
                                                            step = 1,
                                                            animate = animationOptions(interval = 1200)))),
+								 uiOutput("validity_groups_alert"),
                                  plotOutput('validity_distractor_plot'),
                                  downloadButton(outputId = "DB_validity_distractor_plot", label = "Download figure"),
                                  h4('Correlation of criterion variable and scored item'),

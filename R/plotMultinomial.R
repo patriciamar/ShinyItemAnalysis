@@ -14,11 +14,10 @@
 #' Adela Hladka \cr
 #' Institute of Computer Science, The Czech Academy of Sciences \cr
 #' Faculty of Mathematics and Physics, Charles University \cr
-#' drabinova@cs.cas.cz \cr
+#' hladka@cs.cas.cz \cr
 #'
 #' Tomas Jurica \cr
 #' Faculty of Mathematics and Physics, Charles University \cr
-#' tomasjurica1997@gmail.com \cr
 #'
 #' Patricia Martinkova \cr
 #' Institute of Computer Science, The Czech Academy of Sciences \cr
@@ -47,12 +46,20 @@
 plotMultinomial <- function(x, matching, matching.name = "matching"){
   # extracting data
   cat <- colnames(x$fitted.values)
-  y <- (x$fitted.values + x$residuals) %*% 1:ncol(x$fitted.values)
-  y <- factor(y, levels = 1:ncol(x$fitted.values))
-  levels(y) <- cat
+  if (is.null(cat)){
+    y <- (x$fitted.values + x$residuals) %*% 1:ncol(x$fitted.values)
+    y <- factor(y, levels = 0:1)
+    cat <- x$lev
+    levels(y) <- cat
+  } else {
+    y <- (x$fitted.values + x$residuals) %*% 1:ncol(x$fitted.values)
+    y <- factor(y, levels = 1:ncol(x$fitted.values))
+    levels(y) <- cat
+  }
+
   match <- seq(min(matching, na.rm = T), max(matching, na.rm = T), 0.01) # matching for curves
 
-  coefs <- coef(x)
+  coefs <- matrix(coef(x), ncol = 2)
 
   # calculation of fitted curves
   df.probs <- data.frame(1, apply(coefs, 1, function(x) exp(x[1] + x[2] * match)))

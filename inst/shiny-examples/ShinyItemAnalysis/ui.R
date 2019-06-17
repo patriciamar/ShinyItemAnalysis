@@ -62,7 +62,7 @@ ui = tagList(
                         crossorigin = "anonymous"),
             tags$script(type = "text/javascript",
                         src = "math_in_tables.js"),
-			tags$script(type = "text/javascript",
+			      tags$script(type = "text/javascript",
                         src = "toppage.js")
             ),
   div(class = "busy",
@@ -95,7 +95,7 @@ ui = tagList(
                     ShinyItemAnalysis
                     </div>
                     <div class = "footer-subtitle">
-                    Test and item analysis | Version 1.3.0-11
+                    Test and item analysis | Version 1.3.0-12
                     </div>
                     <span style = "float:right">
                     <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysis/" id = "tooltipweb" target="_blank">

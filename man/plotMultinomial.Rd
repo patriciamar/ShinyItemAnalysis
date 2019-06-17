@@ -39,11 +39,10 @@ plotMultinomial(fit, matching, matching.name = "Z-score")
 Adela Hladka \cr
 Institute of Computer Science, The Czech Academy of Sciences \cr
 Faculty of Mathematics and Physics, Charles University \cr
-drabinova@cs.cas.cz \cr
+hladka@cs.cas.cz \cr
 
 Tomas Jurica \cr
 Faculty of Mathematics and Physics, Charles University \cr
-tomasjurica1997@gmail.com \cr
 
 Patricia Martinkova \cr
 Institute of Computer Science, The Czech Academy of Sciences \cr

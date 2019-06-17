@@ -33,10 +33,10 @@
 #' For default option \code{"all"}, all characteristic curves are plotted.
 #'
 #' @author
-#' Adela Hladka  \cr
+#' Adela Hladka \cr
 #' Institute of Computer Science, The Czech Academy of Sciences \cr
 #' Faculty of Mathematics and Physics, Charles University \cr
-#' drabinova@cs.cas.cz \cr
+#' hladka@cs.cas.cz \cr
 #'
 #' Patricia Martinkova \cr
 #' Institute of Computer Science, The Czech Academy of Sciences \cr

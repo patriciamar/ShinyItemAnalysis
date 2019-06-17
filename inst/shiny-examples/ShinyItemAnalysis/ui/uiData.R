@@ -11,8 +11,7 @@ uiData <- tabPanel("Data",
                             p("For demonstration purposes, 20-item dataset", code("GMAT"), "from", code("difNLR"),"
                               R package is used. On this page, you may select one of five datasets offered by",
                               code("difNLR"), "and", code("ShinyItemAnalysis"), "packages or you may upload your own
-                              dataset (see below). To return to demonstration dataset, refresh this page in your
-                              browser", strong("(F5)"), "."),
+                              dataset (see below). To return to demonstration dataset, click on", strong("Unload data"), " button."),
                             tags$hr(),
                             #------------------------------------------------------------------------------------#
                             # * Training datasets ####
@@ -262,13 +261,17 @@ uiData <- tabPanel("Data",
                               If the criterion variable is not provided then it wont be possible to run validity analysis in ",
                                        strong("Predictive validity"), " section on ", strong("Validity"), " page."))
                             ),
-
-                            div(style = "vertical-align: top; float: right;",
-                                actionButton(inputId = "submitButton",
-                                             label = "Upload data",
-                                             class = "btn btn-large btn-primary",
-                                             icon = icon("upload"),
-                                             width = "150px")),
+							fluidRow(
+								column(10,
+									div(style = "vertical-align: top; float: right;",
+									uiOutput('removeBut_output'))),
+								column(2,
+									div(style = "vertical-align: top; float: right;",
+									actionButton(inputId = "submitButton",
+												label = "Upload data",
+												class = "btn btn-large btn-primary",
+												icon = icon("upload"),
+												width = "150px")))),
                             div(style = "vertical-align: top; float: left;",
                                 htmlOutput("checkDataText")),
                             br(),
