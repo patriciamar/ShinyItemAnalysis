@@ -2593,7 +2593,6 @@ adj_data_bock <- reactive({
        lev_a_num = lev_a_num)
 })
 
-
 bock_irt_mirt <- reactive({
   data <- adj_data_bock()$data
   key <- adj_data_bock()$key
@@ -2642,7 +2641,7 @@ bock_CC_Input <- reactive({
   k <- sapply(data, function(x) length(unique(x)))
   # how many values respond to each item
   k <- k * n / sum(k)
-  # k <- round(k)
+  k <- round(k)
 
   names <- list()
 
@@ -2662,7 +2661,7 @@ bock_CC_Input <- reactive({
   df$line <- paste0("line", (rep(1:(n/200), 200)))
 
   df$Option <- factor(df$line, levels = paste0("line", 1:(n/200)))
-  levels(df$Option) <- as.vector(sapply(data, levels))
+  levels(df$Option) <- unlist(as.vector(sapply(data, levels)))
 
   colnames(df) <- c('Ability', 'Probability', 'Item', 'line', 'Option')
 
@@ -2672,8 +2671,8 @@ bock_CC_Input <- reactive({
     scale_linetype_manual(values = rep("solid", length(df$Option))) +
     ylab('Probability of answer') +
     theme_app()
-
 })
+
 output$bock_CC <- renderPlotly({
   g <- bock_CC_Input()
   p <- ggplotly(g)
@@ -2865,6 +2864,7 @@ bock_IIC_Input_tab <- reactive({
     ggtitle(item_names()[item]) +
     theme_app()
 })
+
 output$bock_IIC_tab <- renderPlotly({
   p <- ggplotly(bock_IIC_Input_tab())
 
@@ -2878,6 +2878,7 @@ output$bock_IIC_tab <- renderPlotly({
 
   p %>% plotly::config(displayModeBar = F)
 })
+
 output$DP_bock_IIC_tab <- downloadHandler(
   filename =  function() {
     paste("fig_BockItemInformationCurves.png", sep = "")
@@ -2937,23 +2938,7 @@ output$DP_bock_TIF <- downloadHandler(
   }
 )
 
-# *** Table of parameters in summary page ######
-output$bock_coef_warning <- renderText({
-  fit <- bock_irt_mirt()
-
-  coeftab <- coef(fit, printSE = T)
-  m <- length(coeftab) - 1
-
-  dims <- sapply(coeftab, dim)[, -(m+1)]
-  if (length(unique(dims[2, ])) == 1){
-    hide("bock_coef_warning")
-  } else {
-    show("bock_coef_warning")
-  }
-  paste("Sorry, for this dataset table is not available!")
-
-})
-
+# *** Table of parameters ######
 bock_coef_Input <- reactive({
   fit <- bock_irt_mirt()
 
@@ -2961,6 +2946,10 @@ bock_coef_Input <- reactive({
   m <- length(coeftab) - 1
 
   dims <- sapply(coeftab, dim)[, -(m+1)]
+
+  validate(need(length(unique(dims[2, ])) == 1,
+           "Sorry, for this dataset table is not available!"))
+
   if (length(unique(dims[2, ])) == 1){
     partab <- t(sapply(1:m, function(i) coeftab[[i]][1, ]))
     if (unique(dims[1, ]) == 1){
@@ -2993,10 +2982,7 @@ output$coef_bock <- renderTable({
 include.rownames = T,
 include.colnames = T)
 
-
-
 # *** Ability estimates ######
-
 bockAbilities <- reactive({
   fit <- bock_irt_mirt()
 
@@ -3017,7 +3003,7 @@ output$bock_abilities <- renderTable({
   head(bockAbilities(), 6)
 }, include.rownames = TRUE)
 
-# ** Download abilities ######
+# *** Download abilities ######
 output$DP_bock_ability <- downloadHandler(
   filename = function() {
     paste0("bocks_abilities", ".csv")
@@ -3027,7 +3013,6 @@ output$DP_bock_ability <- downloadHandler(
     write.csv(data, file, col.names = TRUE)
   }
 )
-
 
 # *** Table of parameters in item page ######
 bock_coef_Input_tab <- reactive({

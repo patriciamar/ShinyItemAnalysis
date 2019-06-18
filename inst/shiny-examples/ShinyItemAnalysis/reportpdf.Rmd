@@ -74,6 +74,22 @@ params:
   DDF_multinomial_plot: NA
   sessionInfo: NA
 ---
+```{r global_options, echo = FALSE, results = 'hide'}
+options(tinytex.verbose = TRUE)
+pdf.options(useDingbats = TRUE)
+opts_chunk$set(dpi = 300)
+
+add.to.row <- list(pos = list(0), command = NULL)
+command <- function(table){
+  paste0("\\midrule\\endhead\n",
+                  "\\midrule\n",
+                  "\\multicolumn{", dim(table)[2], "}{l}",
+                  "{\\footnotesize Continued on next page}\n",
+                  "\\endfoot\n",
+                  "\\endlastfoot\n")
+}
+```
+
 \pagenumbering{gobble}
 
 \raggedright
@@ -121,28 +137,18 @@ The table below summarizes basic characteristics of total scores including minim
 
 
 ```{r total-scores-table, echo = FALSE, results = 'asis'}
-options(tinytex.verbose = TRUE)
-pdf.options(useDingbats = TRUE)
 library(xtable)
 table = params$results
 colnames(table) = NULL
 
-addtorow          <- list()
-addtorow$pos      <- list()
-addtorow$pos[[1]] <- c(0)
-addtorow$command  <- c(paste0("\\midrule \n",
-                             "\\endhead \n",
-                             "\\midrule \n",
-                             "{\\footnotesize Continued on next page} \n",
-                             "\\endfoot \n",
-                             "\\endlastfoot \n"))
 table = t(table)
+add.to.row$command <- command(table)
 print(xtable(table, 
              digits = c(0, 0, 0, 2, 2, 2, 2, 2), 
              align = rep('c', 8)),
       booktabs = T, comment = F, include.rownames = F,
-      tabular.environment = "longtable", floating = F,
-      add.to.row = addtorow, hline.after = c(-1))
+      tabular.environment = "longtable", floating = F, 
+      add.to.row = add.to.row, hline.after = c(-1, nrow(table)))
 ```
 
 \vspace{1em}
@@ -150,7 +156,7 @@ print(xtable(table,
 ### Histogram of total scores
 For selected cut-score `r params$cutScore`, the blue part of a histogram shows respondents with a total score above the cut-score, the grey column shows respondents with a total score equal to the cut-score and the red part of a histogram shows respondents below the cut-score.
 
-```{r total-scores-histogram, echo = FALSE, fig.height = 4.5, fig.width = 11, dpi = 300}
+```{r total-scores-histogram, echo = FALSE, fig.height = 4.5, fig.width = 11}
 params$histogram_totalscores + 
   ggtitle('Histogram of total scores') + 
   theme(text = element_text(size = 16), 
@@ -169,12 +175,13 @@ The total score, also known as the raw score, is the total number of correct ans
 
 ```{r standard-scores-table, echo = FALSE, results = 'asis'}
 table = params$standardscores_table
-
+add.to.row$command <- command(table)
 print(xtable(table, 
              digits = c(0, 0, 2, 0, 2, 2), 
              align = rep('c', 6)),
       booktabs = T, comment = F, include.rownames = F,
-      tabular.environment = "longtable", floating = F)
+      tabular.environment = "longtable", floating = F, 
+      add.to.row = add.to.row, hline.after = c(-1, nrow(table)))
 ```
 
 `r if (params$irt_type != "none") {"More complex estimates of ability are provided in the IRT section."}`
@@ -198,7 +205,7 @@ print(xtable(table,
 
 `r if (any(params$corr_plot != "") & params$corr_plot_clustmethod != "none") {"\\vspace{2em}"}`
 
-```{r corr-plot, fig.align = 'center', echo = FALSE, fig.height = 5, fig.width = 9, dpi = 300}
+```{r corr-plot, fig.align = 'center', echo = FALSE, fig.height = 5, fig.width = 9}
 if (any(params$corr_plot != "")) {
   corP <- params$corr_plot
   numclust <- params$corr_plot_numclust
@@ -221,7 +228,7 @@ if (any(params$corr_plot != "")) {
 
 `r if (any(params$corr_plot != "")) {"A scree plot displays the eigenvalues associated with a component or a factor in descending order."}`
 
-```{r scree-plot, echo = FALSE, fig.height = 4.5, fig.width = 11, dpi = 300}
+```{r scree-plot, echo = FALSE, fig.height = 4.5, fig.width = 11}
 if (any(params$corr_plot != "")) {
   params$scree_plot + 
     ggtitle("") + 
@@ -259,7 +266,7 @@ if(params$isCriterionPresent & params$validity_check){
 
 `r if(params$isCriterionPresent & params$validity_check){txt}`
 
-```{r validity-plot, echo = FALSE, results = "hide", fig.height = 4.5, fig.width = 11, dpi = 300}
+```{r validity-plot, echo = FALSE, results = "hide", fig.height = 4.5, fig.width = 11}
 if(params$isCriterionPresent & params$validity_check){
   params$validity_plot + 
     theme(text = element_text(size = 16), 
@@ -308,7 +315,7 @@ HTML(paste0(txt1, txt2))
 
 \vspace{1em}
 
-```{r DD-plot, echo = FALSE, fig.height = 4.5, fig.width = 11, dpi = 300}
+```{r DD-plot, echo = FALSE, fig.height = 4.5, fig.width = 11}
 params$difPlot + 
   theme(text = element_text(size = 16), 
         plot.title = element_text(face = "bold")) + 
@@ -347,30 +354,30 @@ HTML(paste0(txt1, txt2))
 
 ```{r item-table, echo = FALSE, results = "asis"}
 
-if(params$DDplotNumGroups == 3 & params$DDplotRange1 == 1 & params$DDplotRange2 == 3){
-
+if (params$DDplotNumGroups == 3 & params$DDplotRange1 == 1 & params$DDplotRange2 == 3){
   table = params$itemexam
   tab = format(round(table[, -1], 2), nsmall = 2)
   table = data.frame(table[, 1], tab[, -8])
   colnames(table) = c("Item", "Diff.", "Avg. score", "SD", "ULI", "RIT", "RIR", "Alpha Drop")
-
+  add.to.row$command <- command(table)
   print(xtable(table, 
               digits = c(0, 0, 2, 2, 2, 2, 2, 2, 2), 
               align = rep('c', 9)),
         booktabs = T, comment = F, include.rownames = FALSE,
-        tabular.environment = "longtable", floating = F)
+        tabular.environment = "longtable", floating = F, 
+        add.to.row = add.to.row, hline.after = c(-1, nrow(table)))  
 } else {
-  
   table = params$itemexam
   tab = format(round(table[, -1], 2), nsmall = 2)
   table = data.frame(table[, 1], tab)
   colnames(table) = c("Item", "Diff.", "Avg. score", "SD", "ULI", "RIT", "RIR", "Alpha Drop", "gULI")
-
-print(xtable(table, 
-             digits = c(0, 0, 2, 2, 2, 2, 2, 2, 2, 2), 
-             align = rep('c', 10)),
-      booktabs = T, comment = F, include.rownames = FALSE,
-      tabular.environment = "longtable", floating = F)  
+  add.to.row$command <- command(table)
+  print(xtable(table, 
+              digits = c(0, 0, 2, 2, 2, 2, 2, 2, 2, 2), 
+              align = rep('c', 10)),
+        booktabs = T, comment = F, include.rownames = FALSE,
+        tabular.environment = "longtable", floating = F, 
+        add.to.row = add.to.row, hline.after = c(-1, nrow(table)))  
   
 }
 ```
@@ -391,7 +398,7 @@ In the multinomial plot, points represent proportion of selected option with res
 
 \vspace{0.5em}
 
-```{r distractor-multi-plot, echo = FALSE, fig.height = 4.5, fig.width = 11, dpi = 300}
+```{r distractor-multi-plot, echo = FALSE, fig.height = 4.5, fig.width = 11}
 for (i in 1:length(params$graf)){
   g1 <- params$graf[[i]] 
   g2 <- params$multiplot[[i]] 
@@ -444,7 +451,7 @@ if (params$irt_type == "none") {
 `r if (any(params$wrightMap!="")) {"A Wright map, also called an item-person map, is a graphical tool to display person estimates and item parameters. The person side (left) represents a histogram of estimated knowledge of the  respondents. The item side (right) displays estimates of the difficulty of particular items."}`
 
 
-```{r wright-map, echo = FALSE, results = "hide", fig.height = 4.5, fig.width = 11, dpi = 300}
+```{r wright-map, echo = FALSE, results = "hide", fig.height = 4.5, fig.width = 11}
 if (any(params$wrightMap != "")) {
   ggWrightMap(params$wrightMap[[1]], params$wrightMap[[2]], size = 16)
 }
@@ -470,16 +477,17 @@ if (any(params$wrightMap != "")) {
 ```{r irtability, echo = FALSE, results = 'asis'}
 if (params$irt_type != "none"){
   table = params$irtability
-  
+  add.to.row$command <- command(table)
   print(xtable(table, 
               digits = 2, 
               align = c('l', rep('c', 7))),
         booktabs = T, comment = F, include.rownames = T,
-        tabular.environment = "longtable", floating = F)
+        tabular.environment = "longtable", floating = F, 
+      add.to.row = add.to.row, hline.after = c(-1, nrow(table)))
 }
 ```
 
-```{r irt-3, echo = FALSE, results = "hide", fig.height = 4.5, fig.width = 11, dpi = 300}
+```{r irt-3, echo = FALSE, results = "hide", fig.height = 4.5, fig.width = 11}
 if (params$irt_type != "none") {
   params$irtfactor + 
     ggtitle('') + 
@@ -491,60 +499,83 @@ if (params$irt_type != "none") {
 
 `r if (params$irt_type != "none") {"## Item characteristic and information curves"}`
 
-```{r irt-0, echo = FALSE, results = "hide", fig.height = 4.3, fig.width = 11, dpi = 300}
+```{r irt-plots-short, echo = FALSE, results = "hide", fig.height = 14.5, fig.width = 11}
 if (params$irt_type != "none") {
   if (ncol(params$a) < 50){
-  params$irt + 
+  g1 <- params$irt + 
     ggtitle("Item characteristic curves") + 
     xlab(expression(theta)) + 
     ylab(expression("P("*theta*")")) + 
-    guides(colour = guide_legend(ncol = max(ncol(params$a) %/% 10, 1))) + 
+    guides(colour = guide_legend(ncol = max(ncol(params$a) %/% 30, 1))) + 
     theme(legend.position = "right", 
           legend.text = element_text(size = 10))
-  } else {
-    params$irt + 
+  g2 <- params$irtiic + 
+      ggtitle("Item information curves") + 
+      xlab(expression(theta)) + 
+      ylab(expression("I("*theta*")")) + 
+      guides(colour = guide_legend(ncol = max(ncol(params$a) %/% 30, 1))) + 
+      theme(legend.position = "right", 
+            legend.text = element_text(size = 10))
+  g3 <- params$irttif + 
+      ggtitle("Test information function") + 
+      xlab(expression(theta)) + 
+      ylab(expression("I("*theta*")")) + 
+      theme(legend.position = c(0.9, 0.8), 
+            legend.text = element_text(size = 10))
+  
+  tmp <- ggplotGrob(g1)$grobs
+  legend <- tmp[[which(sapply(tmp, function(x) x$name) == "guide-box")]]
+
+  grid.arrange(arrangeGrob(arrangeGrob(g1 + theme(legend.position = "none"), 
+                                       g2 + theme(legend.position = "none"), ncol = 1), 
+                           legend, ncol = 2, widths = c(0.85, 0.15)), 
+               arrangeGrob(g3, textGrob(""), ncol = 2, widths = c(0.9, 0.1)), 
+               ncol = 1, heights = c(0.66, 0.33))
+  }
+}
+```
+
+```{r irt-plots-long, echo = FALSE, results = "hide", fig.height = 16, fig.width = 11}
+if (params$irt_type != "none") {
+  if (ncol(params$a) >= 50){
+    g1 <- params$irt + 
       ggtitle("Item characteristic curves") + 
       xlab(expression(theta)) + 
       ylab(expression("P("*theta*")")) + 
-      guides(colour = guide_legend(nrow = max(ncol(params$a) %/% 13, 1))) + 
+      guides(colour = guide_legend(nrow = max(ncol(params$a) %/% 12, 1))) + 
       theme(legend.position = "bottom", 
-            legend.text = element_text(size = 10))
+            plot.margin = unit(c(0, 0, 0, 0), "cm"),
+            legend.margin = margin(t = -5, unit = 'cm'),
+            legend.text = element_text(size = 10),
+            legend.key.size = unit(0.8, 'lines'))
+    g2 <- params$irtiic + 
+      ggtitle("Item information curves") + 
+      xlab(expression(theta)) + 
+      ylab(expression("I("*theta*")")) + 
+      guides(colour = guide_legend(nrow = max(ncol(params$a) %/% 12, 1))) + 
+      theme(legend.position = "none", 
+            plot.margin = unit(c(0, 0, 0, 0), "cm"))
+    g3 <- params$irttif + 
+      ggtitle("Test information function") + 
+      xlab(expression(theta)) + 
+      ylab(expression("I("*theta*")")) + 
+      theme(legend.position = c(0.9, 0.8), 
+            legend.text = element_text(size = 10), 
+            plot.margin = unit(c(-4, 0, 4, 0), "cm"))
+    
+    tmp <- ggplotGrob(g1)$grobs
+    legend <- tmp[[which(sapply(tmp, function(x) x$name) == "guide-box")]]
+
+    grid.arrange(g1 + theme(legend.position = "none"), 
+                 g2,
+                 legend,
+                 g3,
+                 ncol = 1)
+    
   }
 }
 ```
 
-```{r irt-1, echo = FALSE, results = "hide", fig.height = 4.3, fig.width = 11, dpi = 300}
-if (params$irt_type != "none") {
-  if (ncol(params$a) < 50){
-    params$irtiic + 
-      ggtitle("Item information curves") + 
-      xlab(expression(theta)) + 
-      ylab(expression("I("*theta*")")) + 
-      guides(colour = guide_legend(ncol = max(ncol(params$a) %/% 10, 1))) + 
-      theme(legend.position = "right", 
-            legend.text = element_text(size = 10))
-  } else {
-    params$irtiic + 
-      ggtitle("Item information curves") + 
-      xlab(expression(theta)) + 
-      ylab(expression("I("*theta*")")) + 
-      guides(colour = guide_legend(nrow = max(ncol(params$a) %/% 13, 1))) + 
-      theme(legend.position = "bottom", 
-            legend.text = element_text(size = 10))
-  }
-}
-```
-
-```{r irt-2, echo = FALSE, results = "hide", fig.height = 4.3, fig.width = 11, dpi = 300}
-if (params$irt_type != "none") {
-  params$irttif + 
-    ggtitle("Test information function") + 
-    xlab(expression(theta)) + 
-    ylab(expression("I("*theta*")")) + 
-    theme(legend.position = "right", 
-          legend.text = element_text(size = 10))
-}
-```
 
 `r if (any(params$wrightMap!="")) {"\\pagebreak"}`
 
@@ -556,12 +587,13 @@ if (params$irt_type != "none") {
 if (params$irt_type != "none") {
   table = params$irtcoef
   colnames(table) = c("$a$", "SE($a$)", "$b$", "SE($b$)", "$c$", "SE($c$)", "$d$", "SE($d$)", "SX-2", "df", "p-value")
-  
+  add.to.row$command <- command(table)
   print(xtable(table, 
              digits = c(0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 2), 
              align = c('l',rep('c', 11))),
         booktabs = T, comment = F, include.rownames = T, sanitize.text.function = function(x){x}, 
-        tabular.environment = "longtable", floating = F)
+        tabular.environment = "longtable", floating = F, 
+      add.to.row = add.to.row, hline.after = c(-1, nrow(table)))
 }
 ```
 
@@ -580,11 +612,14 @@ if (params$irt_type != "none") {
 ```{r table-by-group, echo = FALSE, results = "asis"}
 if (params$histCheck) {
   if(params$isGroupPresent){
-    print(xtable(params$resultsgroup, 
+    table = params$resultsgroup
+    add.to.row$command <- command(table)
+    print(xtable(table, 
                  digits = c(0, 0, 0, 0, 2, 2, 2, 2, 2), 
                  align = c('l', rep('c', 8))),
           booktabs = T, comment = F,
-          tabular.environment = "longtable", floating = F)
+          tabular.environment = "longtable", floating = F, 
+          add.to.row = add.to.row, hline.after = c(-1, nrow(table)))
   }
 }
 ```
@@ -593,7 +628,7 @@ if (params$histCheck) {
 
 `r if(params$isGroupPresent & params$histCheck) {paste0("For selected cut-score ", params$cutScoregroup, ", the blue part of histograms shows respondents with a total score above the cut-score, the grey column shows respondents with a  total score equal to the cut-score and the red part of histograms shows respondents below the cut-score.")}`
 
-```{r hist-by-group, echo = FALSE, fig.height = 4.5, fig.width = 11.5, dpi = 300}
+```{r hist-by-group, echo = FALSE, fig.height = 4.5, fig.width = 11.5}
 if (params$histCheck) {
   if(params$isGroupPresent){
     g1 = params$histbyscoregroup0 + 
@@ -618,11 +653,14 @@ if (params$histCheck) {
 ```{r ttest-by-group, echo = FALSE, results = "asis"}
 if (params$histCheck) {
   if(params$isGroupPresent){
-    print(xtable(params$DIF_scores_ttest, 
+    table = params$DIF_scores_ttest
+    add.to.row$command <- command(table)
+    print(xtable(table, 
                  align = rep('c', 5)), 
           include.rownames = F,
           booktabs = T, comment = F,
-          tabular.environment = "longtable", floating = F)
+          tabular.environment = "longtable", floating = F, 
+          add.to.row = add.to.row, hline.after = c(-1, nrow(table)))
   }
 }
 ```
@@ -646,19 +684,20 @@ if (params$deltaplotCheck) {
     tab <- cbind(res$Props, res$Deltas, res$Dist[, ncol(res$Dist)])
     colnames(tab) <- c("Prop. Ref", "Prop. Foc", "Delta Ref", "Delta Foc", "Dist.")
     rownames(tab) <- params$itemNames
-    
+    add.to.row$command <- command(tab)
     print(xtable(tab, 
                  digits = c(0, 3, 3, 3, 3, 3), 
                  align = c('l', rep('c', 5))), 
           booktabs = T, comment = F,
-          tabular.environment = "longtable", floating = F)
+          tabular.environment = "longtable", floating = F, 
+          add.to.row = add.to.row, hline.after = c(-1, nrow(tab)))
   }
 }
 ```
 
 `r if(params$isGroupPresent & params$deltaplotCheck) {"### Delta plot"}`
 
-```{r delta-plot, echo = FALSE, fig.height = 4.5, fig.width = 11, dpi = 300}
+```{r delta-plot, echo = FALSE, fig.height = 4.5, fig.width = 11}
 if (params$deltaplotCheck) {
 
   if(params$isGroupPresent){
@@ -707,12 +746,13 @@ if (params$logregCheck) {
                sprintf("%.3f", res$deltaR2), ZT, JG)
   rownames(tab) <- params$itemNames
   colnames(tab) <- c("Stat.", "P-value", "R^2", "ZT", "JG")
-  
+  add.to.row$command <- command(tab)
   print(xtable(tab, 
                  digits = c(0, 3, 3, 3, 0, 0), 
                  align = c('l', 'c', 'l', 'c', 'c', 'c')),
         booktabs = T, comment = F,
-        tabular.environment = "longtable", floating = F)
+        tabular.environment = "longtable", floating = F, 
+        add.to.row = add.to.row, hline.after = c(-1, nrow(tab)))
   } 
 }
 ```
@@ -729,7 +769,7 @@ if (params$logregCheck) {
 `r if(params$isGroupPresent & params$logregCheck & !is.null(params$DIF_logistic_plot[[1]])) {"Plots are based on DIF logistic procedure without any correction method."}`
 `r if(params$isGroupPresent & params$logregCheck & !is.null(params$DIF_logistic_plot[[1]])) {"Points represent a proportion of a correct answer with respect to standardized total score. Their size is determined by count of the respondents who achieved a given level of standardized total score."}`
 
-```{r dif-logistic-plot, echo = FALSE, fig.height = 4.5, fig.width = 11, dpi = 300}
+```{r dif-logistic-plot, echo = FALSE, fig.height = 4.5, fig.width = 11}
 if (params$logregCheck) {
   if (params$isGroupPresent){
     if (!is.null(params$DIF_logistic_plot[[1]])){
@@ -786,15 +826,19 @@ if (params$multiCheck) {
     if (ncol(tab) == 2){
       colnames(tab) <- c("Stat.", "P-value")
       rownames(tab) <- params$itemNames
+      add.to.row$command <- command(tab)
       print(xtable(tab, align = c('l', 'c', 'l')),
             booktabs = T, comment = F,
-            tabular.environment = "longtable", floating = F)
+            tabular.environment = "longtable", floating = F, 
+            add.to.row = add.to.row, hline.after = c(-1, nrow(tab)))
     } else {
       colnames(tab) <- c("Stat.", "P-value", "Adj. p-value")
       rownames(tab) <- params$itemNames
+      add.to.row$command <- command(tab)
       print(xtable(tab, align = c('l', 'c', 'c', 'l')),
             booktabs = T, comment = F,
-            tabular.environment = "longtable", floating = F)
+            tabular.environment = "longtable", floating = F, 
+            add.to.row = add.to.row, hline.after = c(-1, nrow(tab)))
     }
   }
 }
@@ -806,7 +850,7 @@ if (params$multiCheck) {
 
 `r if(params$isGroupPresent & params$multiCheck & !is.null(params$DDF_multinomial_plot[[1]])) {"Points represent a proportion of a selected answer with respect to standardized total score. Their size is determined by count of the respondents who achieved a given level of standardized total score and who selected a given option with respect to the group membership. "}`
 
-```{r ddf-multi-plot, echo = FALSE, fig.height = 4.5, fig.width = 11, dpi = 300}
+```{r ddf-multi-plot, echo = FALSE, fig.height = 4.5, fig.width = 11}
 if (params$multiCheck) {
   if(params$isGroupPresent){
     if (!is.null(params$DDF_multinomial_plot[[1]])){
