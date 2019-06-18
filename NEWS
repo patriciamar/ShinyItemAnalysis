@@ -12,12 +12,15 @@ BUG FIXING
   o Bug in Bock's nominal IRT model was fixed. ICCs are now properly
     displayed for Czech Trivia dataset. Error for non-displayable
     table of parameters was improved.
+  o Bug in DistractorAnalysis was partially fixed, need to be revised.
 
 MAJOR UPDATES
   o Reports:
       - long tables have now header on each new page
       - legend is now visible for IRT plots even when dataset consists
         of more than 50 items
+  o Matching criterion in plotMultinomial() was relaxed to decrease
+    size of reports.
 
 -------------------------------------------------------
 - Changes in ShinyItemAnalysis 1.3.0-12. (2019-06-17) -

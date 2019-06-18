@@ -57,7 +57,7 @@ plotMultinomial <- function(x, matching, matching.name = "matching"){
     levels(y) <- cat
   }
 
-  match <- seq(min(matching, na.rm = T), max(matching, na.rm = T), 0.01) # matching for curves
+  match <- seq(min(matching, na.rm = T), max(matching, na.rm = T), 0.1) # matching for curves
 
   coefs <- matrix(coef(x), ncol = 2)
 
