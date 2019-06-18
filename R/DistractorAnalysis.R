@@ -92,14 +92,14 @@ DistractorAnalysis <-  function(data, key, p.table = FALSE, num.groups = 3, matc
     scores <- matching
     score.level <- quantile(matching, seq(0, 1, by = 1/num.groups), na.rm = T)
 
-    k <- 6
-    if (length(levels(as.factor(scores))) <= length(scores)/k){
-      score.level <- as.factor(scores)
-      num.groups <- length(levels(scores))
-      levels(score.level) <- paste("Group", 1:length(levels(score.level)), sep = " ")
-      warning(paste('Critetion variable is probably discrete. Its cut is based on
-                    its factors (', length(levels(score.level)), ").", sep = ""))
-    } else {
+    # k <- 6
+    # if (length(levels(as.factor(scores))) <= length(scores)/k){
+    #   score.level <- as.factor(scores)
+    #   num.groups <- length(levels(scores))
+    #   levels(score.level) <- paste("Group", 1:length(levels(score.level)), sep = " ")
+    #   warning(paste('Critetion variable is probably discrete. Its cut is based on
+    #                 its factors (', length(levels(score.level)), ").", sep = ""))
+    # } else {
       if (length(unique(score.level)) <= num.groups){
 
         while (length(unique(score.level)) <= num.groups){
@@ -113,7 +113,7 @@ DistractorAnalysis <-  function(data, key, p.table = FALSE, num.groups = 3, matc
       } else {
         score.level <- cut(scores, score.level, include.lowest = TRUE,
                            labels = paste("Group", 1:num.groups, sep = " "))
-      }
+      # }
     }
   }
   itemtab <- function(response) {
