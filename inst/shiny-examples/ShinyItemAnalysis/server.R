@@ -738,8 +738,9 @@ function(input, output, session) {
         itemexam = itemanalysis_table_report_Input(),
         incProgress(0.05),
         # distractors
-        hist_distractor_by_group = distractor_histogram_Input(),
-        graf = report_distractor_plot(),
+        distractor_plot = report_distractor_plot(),
+        type_distractor_plot = input$type_combinations_distractor_report,
+        distractor_plot_legend_length = report_distractor_plot_legend_length(),
         incProgress(0.25),
         # regression
         multiplot = multiplotReportInput(),
@@ -829,8 +830,9 @@ function(input, output, session) {
         DDplotDiscType = ifelse(input$customizeCheck, input$DDplotDiscriminationSelect_report, input$DDplotDiscriminationSelect),
         itemexam = itemanalysis_table_report_Input(),
         # distractors
-        hist_distractor_by_group = distractor_histogram_Input(),
-        graf = report_distractor_plot(),
+        distractor_plot = report_distractor_plot(),
+        type_distractor_plot = input$type_combinations_distractor_report,
+        distractor_plot_legend_length = report_distractor_plot_legend_length(),
         # regression
         multiplot = multiplotReportInput(),
         # irt

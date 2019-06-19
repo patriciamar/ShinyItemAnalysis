@@ -10,7 +10,7 @@
 #' @usage plotAdjacent(x, matching.name = "matching")
 #'
 #' @author
-#' #' Tomas Jurica \cr
+#' Tomas Jurica \cr
 #' Faculty of Mathematics and Physics, Charles University \cr
 #'
 #' Adela Hladka \cr

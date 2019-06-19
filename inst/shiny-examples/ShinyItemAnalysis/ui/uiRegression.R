@@ -25,7 +25,7 @@ uiRegression <-
                       withMathJax(),
                       ('$$\\mathrm{P}(Y = 1|X, b_0, b_1) = \\mathrm{E}(Y|X, b_0, b_1) = \\frac{e^{\\left( b_{0} + b_1 X\\right)}}{1+e^{\\left( b_{0} + b_1 X\\right) }} $$'),
                       h4("Table of parameters"),
-                      fluidRow(column(12, align = "center",tableOutput('coef_logreg_table'))),
+                      fluidRow(column(12, align = "center", tableOutput('coef_logreg_table'))),
                       htmlOutput("logreg_interpretation"),
                       br(),
                       h4("Selected R code"),

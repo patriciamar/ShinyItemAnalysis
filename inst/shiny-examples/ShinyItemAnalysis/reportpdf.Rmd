@@ -39,8 +39,9 @@ params:
   DDplotNumGroups: NA
   DDplotDiscType: NA
   itemexam: NA
-  hist_distractor_by_group: NA
-  graf: NA
+  distractor_plot: NA
+  type_distractor_plot: NA
+  distractor_plot_legend_length: NA
   logreg: NA
   zlogreg: NA
   zlogreg_irt: NA
@@ -398,13 +399,81 @@ In the multinomial plot, points represent proportion of selected option with res
 
 \vspace{0.5em}
 
-```{r distractor-multi-plot, echo = FALSE, fig.height = 4.5, fig.width = 11}
-for (i in 1:length(params$graf)){
-  g1 <- params$graf[[i]] 
-  g2 <- params$multiplot[[i]] 
-  if (is.null(g2)) g2 <- textGrob("")
-  
-  grid.arrange(g1, g2, ncol = 2)
+```{r distractor-multi-plot-short, echo = FALSE, fig.height = 4.5, fig.width = 11}
+if (params$distractor_plot_legend_length <= 6){
+  if (params$type_distractor_plot == "Combinations"){
+    for (i in 1:length(params$distractor_plot)){
+      g1 <- params$distractor_plot[[i]]
+      g2 <- params$multiplot[[i]]
+      if (is.null(g2)) {
+        g2 <- textGrob("")
+        g1 <- g1 + theme(legend.position = c(0.14, 0.8),
+                         legend.margin = margin(0, 0, 0, 0, "cm"))
+      } else {
+        g2 <- g2 + theme(legend.position = c(0.04, 0.97),
+                         legend.margin = margin(0, 0, 0, 0, "cm"),
+                         legend.spacing.x = unit(0.25, "cm"))
+      }
+      grid.arrange(g1, g2, ncol = 2)
+    }
+  } else {
+    for (i in 1:length(params$distractor_plot)){
+      g1 <- params$distractor_plot[[i]] + theme(legend.position = c(0.14, 0.8),
+                                                legend.margin = margin(0, 0, 0, 0, "cm"))
+      g2 <- params$multiplot[[i]] + theme(legend.position = c(0.04, 0.97),
+                                          legend.margin = margin(0, 0, 0, 0, "cm"),
+                                          legend.spacing.x = unit(0.25, "cm"))
+      if (is.null(g2)) g2 <- textGrob("")
+      grid.arrange(g1, g2, ncol = 2)
+    }
+  }
+}
+```
+
+```{r distractor-multi-plot-long, echo = FALSE, fig.height = 4.5, fig.width = 11}
+if (params$distractor_plot_legend_length > 6){
+  if (params$type_distractor_plot == "Combinations"){
+    for (i in 1:length(params$distractor_plot)){
+      g1 <- params$distractor_plot[[i]]
+      g2 <- params$multiplot[[i]] 
+      if (is.null(g2)) {
+        g2 <- textGrob("")
+        tmp <- ggplotGrob(g1 + theme(legend.position = "right",
+                                     legend.text = element_text(size = 10),
+                                     legend.key.size = unit(0.8, 'lines')))$grobs
+        legend <- tmp[[which(sapply(tmp, function(x) x$name) == "guide-box")]]
+      } else {
+        tmp <- ggplotGrob(g2 + theme(legend.position = "right", 
+                                     legend.box = "vertical",
+                                     legend.spacing = unit(-0.2, "cm"),
+                                     legend.text = element_text(size = 10),
+                                     legend.key.size = unit(0.8, 'lines')))$grobs
+        legend <- tmp[[which(sapply(tmp, function(x) x$name) == "guide-box")]]
+        g2 <- g2 + theme(legend.position = "none")
+      }
+      grid.arrange(g1, g2, legend, ncol = 3, widths = c(0.45, 0.45, 0.1))
+    }
+  } else {
+    for (i in 1:length(params$distractor_plot)){
+      g1 <- params$distractor_plot[[i]] + theme(legend.position = c(0.18, 0.75), 
+                                                legend.margin = margin(0, 0, 0, 0, "cm"))
+      g2 <- params$multiplot[[i]] 
+        
+      if (is.null(g2)) {
+        g2 <- textGrob("")
+        legend <- textGrob("")
+      } else {
+        tmp <- ggplotGrob(g2 + theme(legend.position = "right", 
+                                     legend.box = "vertical",
+                                     legend.spacing = unit(-0.2, "cm"),
+                                     legend.text = element_text(size = 10),
+                                     legend.key.size = unit(0.8, 'lines')))$grobs
+        legend <- tmp[[which(sapply(tmp, function(x) x$name) == "guide-box")]]
+        g2 <- g2 + theme(legend.position = "none")
+      }
+      grid.arrange(g1, g2, legend, ncol = 3, widths = c(0.45, 0.45, 0.1))
+    }  
+  }
 }
 ```
 
@@ -624,20 +693,24 @@ if (params$histCheck) {
 }
 ```
 
-`r if(params$isGroupPresent & params$histCheck) {"### Histogram of total score by group"}`
+\vspace{-2em}
 
-`r if(params$isGroupPresent & params$histCheck) {paste0("For selected cut-score ", params$cutScoregroup, ", the blue part of histograms shows respondents with a total score above the cut-score, the grey column shows respondents with a  total score equal to the cut-score and the red part of histograms shows respondents below the cut-score.")}`
+`r if (params$isGroupPresent & params$histCheck) {"### Histogram of total score by group"}`
 
-```{r hist-by-group, echo = FALSE, fig.height = 4.5, fig.width = 11.5}
+`r if (params$isGroupPresent & params$histCheck) {paste0("For selected cut-score ", params$cutScoregroup, ", the blue part of histograms shows respondents with a total score above the cut-score, the grey column shows respondents with a  total score equal to the cut-score and the red part of histograms shows respondents below the cut-score.")}`
+
+```{r hist-by-group, echo = FALSE, fig.height = 4.3, fig.width = 11}
 if (params$histCheck) {
   if(params$isGroupPresent){
     g1 = params$histbyscoregroup0 + 
       theme(text = element_text(size = 16), 
-            plot.title = element_text(face = "bold")) + 
+            plot.title = element_text(face = "bold"),
+            plot.margin = margin(0, 0, 0, 0, "cm")) + 
       ggtitle("Reference group")
     g2 = params$histbyscoregroup1 + 
       theme(text = element_text(size = 16), 
-            plot.title = element_text(face = "bold")) + 
+            plot.title = element_text(face = "bold"),
+            plot.margin = margin(0, 0, 0, 0, "cm")) + 
       ggtitle("Focal group")
     grid.arrange(g1, g2, nrow = 1)
   }
@@ -673,7 +746,7 @@ if (params$histCheck) {
 
 `r if(params$isGroupPresent & params$deltaplotCheck) {"### Summary table"}`
 
-`r if(params$isGroupPresent & params$deltaplotCheck){res <- params$DIF_deltaplot_text; paste0("Detection threshold is ", round(res$thr[length(res$thr)], 2), ". ", ifelse(res$DIFitems == "no DIF item detected", "\\textbf{No DIF item was detected.}", paste0("\\textbf{Items detected as DIF: ", paste(params$itemNames[res$DIFitems], collapse = ", "), ".} ")))}`
+`r if (params$isGroupPresent & params$deltaplotCheck){res <- params$DIF_deltaplot_text; paste0("The detection threshold is ", round(res$thr[length(res$thr)], 2), ". ", ifelse(any(res$DIFitems == "no DIF item detected"), "\\textbf{No DIF item was detected.}", paste0("\\textbf{Items detected as DIF: ", paste(params$itemNames[res$DIFitems], collapse = ", "), ".} ")))}`
 
 `r if(params$isGroupPresent & params$logregCheck) {res <- params$DIF_deltaplot_text; paste(ifelse(res$purify, "Item purification was used.", "Item purification was not applied."))}`
 
@@ -719,7 +792,9 @@ if (params$deltaplotCheck) {
 `r if(params$isGroupPresent & params$logregCheck) {"### Summary table"}`
 
 `r if(params$isGroupPresent & params$logregCheck) {res <- params$DIF_logistic_print; switch(res$type, "both" = "Both types of DIF were tested.", "udif" = "Uniform DIF was tested only.", "nudif" = "Non-uniform DIF was tested only.")}`
-`r if(params$isGroupPresent & params$logregCheck) {res <- params$DIF_logistic_print; paste("The detection threshold is ", round(res$thr, 2), ". ", ifelse(any(res$DIFitems == "No DIF item detected"), "\\textbf{No DIF item was detected. }  ", paste("\\textbf{Items detected as DIF: ", paste(params$itemNames[res$DIFitems], collapse = ", "), ".}  ", sep = "")), sep = "")}`
+
+`r if (params$isGroupPresent & params$logregCheck) {res <- params$DIF_logistic_print; paste0("The detection threshold is ", round(res$thr[length(res$thr)], 2), ". ", ifelse(any(res$DIFitems == "No DIF item detected"), "\\textbf{No DIF item was detected. }  ", paste0("\\textbf{Items detected as DIF: ", paste(params$itemNames[res$DIFitems], collapse = ", "), ".}  ")))}`
+
 `r if(params$isGroupPresent & params$logregCheck) {res <- params$DIF_logistic_print; paste(ifelse(res$purification, "Item purification was used.", "Item purification was not applied."), ifelse(is.null(res$p.adjust.method), "No p-value adjustment for multiple comparisons was used.", paste(switch(res$p.adjust.method, "holm" = "Holm's", "hochberg" = "Hochberg's", "hommel" = "Hommel's", "bonferroni" = "Bonferroni", "BH" = "Benjamini-Hochberg", "BY" = "Benjamini-Yekutieli", "fdr" = "Benjamini-Hochberg", "none" = "No"), "p-value adjustment for multiple comparisons was used.")))}`
 
 ```{r dif-logistic-output, echo = FALSE, results = "asis"}
@@ -767,6 +842,7 @@ if (params$logregCheck) {
 `r if(params$isGroupPresent & params$logregCheck & !is.null(params$DIF_logistic_plot[[1]])) {"### Characteristic curves of DIF items"}`
 
 `r if(params$isGroupPresent & params$logregCheck & !is.null(params$DIF_logistic_plot[[1]])) {"Plots are based on DIF logistic procedure without any correction method."}`
+
 `r if(params$isGroupPresent & params$logregCheck & !is.null(params$DIF_logistic_plot[[1]])) {"Points represent a proportion of a correct answer with respect to standardized total score. Their size is determined by count of the respondents who achieved a given level of standardized total score."}`
 
 ```{r dif-logistic-plot, echo = FALSE, fig.height = 4.5, fig.width = 11}
@@ -797,7 +873,9 @@ if (params$logregCheck) {
 `r if(params$isGroupPresent & params$multiCheck) {"### Summary table"}`
 
 `r if(params$isGroupPresent & params$multiCheck) {res <- params$DDF_multinomial_print; switch(res$type, "both" = "Both types were of DDF tested.", "udif" = "Uniform DDF was tested only.", "nudif" = "Non-uniform DDF was tested only.")}`
-`r if(params$isGroupPresent & params$multiCheck) {res <- params$DDF_multinomial_print; paste(ifelse(any(res$DDFitems == "No DDF item detected"), "**No DDF item was detected. **  ", paste("**Items detected as DDF: ", paste(params$itemNames[res$DDFitems], collapse = ", "), ". **  ", sep = "")), sep = "")}`
+
+`r if (params$isGroupPresent & params$multiCheck) {res <- params$DDF_multinomial_print; paste0(ifelse(any(res$DDFitems == "No DDF item detected"), "**No DDF item was detected. **  ", paste0("**Items detected as DDF: ", paste(params$itemNames[res$DDFitems], collapse = ", "), ". **  ")))}`
+
 `r if(params$isGroupPresent & params$multiCheck) {res <- params$DDF_multinomial_print; paste(ifelse(res$purification, "Item purification was used.", "Item purification was not applied."), ifelse(is.null(res$p.adjust.method), "No p-value adjustment for multiple comparisons was used.", paste(switch(res$p.adjust.method, "holm" = "Holm's", "hochberg" = "Hochberg's", "hommel" = "Hommel's", "bonferroni" = "Bonferroni", "BH" = "Benjamini-Hochberg", "BY" = "Benjamini-Yekutieli", "fdr" = "Benjamini-Hochberg", "none" = "No"), "p-value adjustment for multiple comparisons was used.")))}`
 
 ```{r ddf-multi-output, echo = FALSE, results = "asis"}

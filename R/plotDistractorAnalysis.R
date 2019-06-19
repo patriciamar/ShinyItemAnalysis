@@ -55,12 +55,6 @@
 #' data <- dataMedicaltest[, 1:100]
 #' key <- unlist(dataMedicalkey)
 #'
-#' # Difficulty/Discriminaton plot for medical admission test
-#' DDplot(dataBin)
-#' # item 48 is very hard, thus does not discriminate well
-#' # item 57 discriminates well
-#' # item 32 does not discriminate well
-#'
 #' plotDistractorAnalysis(data, key, item = 48, multiple.answers = F)
 #' # correct answer B does not function well
 #' plotDistractorAnalysis(data, key, item = 57, multiple.answers = F)
