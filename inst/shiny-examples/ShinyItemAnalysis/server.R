@@ -486,6 +486,7 @@ function(input, output, session) {
 	  minItemScore = min(total_score(), na.rm = T)
 	  maxItemScore = max(c(max(total_score(), na.rm = T), ncol(binary())))
     updateSliderInput(session = session, inputId = "slider_totalscores_histogram", min = minItemScore , max = maxItemScore, value = round(median(total_score(), na.rm = T)))
+	updateSliderInput(session = session, inputId = "inSlider2group", min = minItemScore , max = maxItemScore, value = round(median(total_score(), na.rm = T)))
     updateNumericInput(session = session, inputId = "corr_plot_clust", value = 1, max = itemCount)
     updateNumericInput(session = session, inputId = "corr_plot_clust_report", value = 1, max = itemCount)
     updateSliderInput(session = session, inputId = "validitydistractorSlider", max = itemCount)

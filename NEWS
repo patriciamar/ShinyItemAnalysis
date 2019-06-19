@@ -1,4 +1,4 @@
-        ***************************************************************
+﻿        ***************************************************************
         *                                                             *
         *  Changes and Developments in the ShinyItemAnalysis Package  *
         *                                                             *
@@ -14,6 +14,10 @@ BUG FIXING
     table of parameters was further improved. Tables for items are
     displayed even in case that table for all items is not.
   o DIF items are now correctly written in reports.
+  o Corrplot now properly replaces item names when Keep item names 
+    is not selected in Data upload section.
+  o In DIF/Fairness section, histograms of Total scores for groups
+    are now properly displayed also for ordinal items. 
 
 MAJOR UPDATES
   o Legends for multinomial and distractor plots were improved.
