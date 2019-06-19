@@ -2628,6 +2628,10 @@ bock_CC_Input <- reactive({
   fit <- bock_irt_mirt()
 
   data <- nominal()
+  vars <- colnames(data)
+  data <- data.frame(sapply(data, as.factor))
+  colnames(data) <- vars
+
   # plotting with mirt pckg
   plt <- plot(fit, type = 'trace', facet_items = F)
   # extract data from plot
@@ -2639,12 +2643,11 @@ bock_CC_Input <- reactive({
 
   # calculate number of different levels in each item
   k <- sapply(data, function(x) length(unique(x)))
+  k <- ifelse(k == 2, k - 1, k)
   # how many values respond to each item
   k <- k * n / sum(k)
-  k <- round(k)
 
   names <- list()
-
   for (j in 1:m){
     names[[j]] <- rep(item_names()[j], k[j])
   }
@@ -2706,6 +2709,9 @@ output$DP_bock_CC <- downloadHandler(
 bock_CC_Input_tab <- reactive({
   fit <- bock_irt_mirt()
   data <- nominal()
+  vars <- colnames(data)
+  data <- data.frame(sapply(data, as.factor))
+  colnames(data) <- vars
   item <- input$bockSlider
 
   # plotting with mirt pckg
@@ -2732,7 +2738,7 @@ bock_CC_Input_tab <- reactive({
 
   # 200 is length of sequence from -6 to 6
   df$Option <- as.factor(paste0("line", (rep(1:(n/200), 200))))
-  levels(df$Option) <- levels(as.data.frame(data)[, item])
+  levels(df$Option) <- levels(data[, item])
 
   g <- ggplot(data = df, aes(x = Ability, y = Probability, group = Option,
                              linetype = Option)) +
@@ -2948,7 +2954,8 @@ bock_coef_Input <- reactive({
   dims <- sapply(coeftab, dim)[, -(m+1)]
 
   validate(need(length(unique(dims[2, ])) == 1,
-           "Sorry, for this dataset table is not available!"))
+           "Sorry, for this dataset summary table for all items is not available!
+           Try to explore tab Item for parameters of selected items."))
 
   if (length(unique(dims[2, ])) == 1){
     partab <- t(sapply(1:m, function(i) coeftab[[i]][1, ]))
@@ -3017,17 +3024,26 @@ output$DP_bock_ability <- downloadHandler(
 # *** Table of parameters in item page ######
 bock_coef_Input_tab <- reactive({
   item <- input$bockSlider
-  tab <- bock_coef_Input()[item, ]
+  fit <- bock_irt_mirt()
 
-  validate(need(!is.null(tab), paste0('Table is not available for item ', item)))
+  coeftab <- coef(fit, printSE = T)
+  tab <- coeftab[[item]]
+
+  if (dim(tab)[1] == 1){
+    tab <- rbind(tab, rep(NA, dim(tab)[2]))
+  }
+
+  rownames(tab) <- c("Estimate", "SE")
+  colnames(tab) <- paste0('%%mathit{', str_sub(colnames(tab), 1, 1), '}_{',
+                          str_sub(colnames(tab), 2, 3), '}%%')
 
   tab
 })
 
 output$tab_coef_bock <- renderTable({
-  t(bock_coef_Input_tab())
+  bock_coef_Input_tab()
 },
-include.rownames = F,
+include.rownames = T,
 include.colnames = T)
 
 # *** Factor scores plot ######

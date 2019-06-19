@@ -35,7 +35,7 @@ plotAdjacent(fit, matching.name = "Total score")
 \code{\link[VGAM]{vglm}}
 }
 \author{
-#' Tomas Jurica \cr
+Tomas Jurica \cr
 Faculty of Mathematics and Physics, Charles University \cr
 
 Adela Hladka \cr

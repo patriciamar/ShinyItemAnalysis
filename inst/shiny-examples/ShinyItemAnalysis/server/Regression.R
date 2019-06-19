@@ -1121,7 +1121,7 @@ multiplotReportInput <- reactive({
     } else {
       g <- plotMultinomial(fitM, matching, matching.name = matching_name)
       g <- g + ggtitle(paste("Multinomial plot for item", item_numbers()[item]))
-      g <- ggplotGrob(g)
+      # g <- ggplotGrob(g)
       graflist[[item]] <- g
     }
   }
@@ -1130,6 +1130,14 @@ multiplotReportInput <- reactive({
   null_idx_false <- which(!sapply(graflist, is.null))
 
   graflist
+})
+
+# ** Reports: Length of legend in multinomial plot ######
+report_distractor_plot_legend_length <- reactive({
+  data <- nominal()
+
+  legend_length <- max(sapply(data, function(x) length(unique(x))), na.rm = T)
+  legend_length
 })
 
 # AH: momentalne zakomentovavam, protoze stranka Reports hrozne dlouho nabiha

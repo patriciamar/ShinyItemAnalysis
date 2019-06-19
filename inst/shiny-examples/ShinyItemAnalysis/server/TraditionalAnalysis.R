@@ -323,7 +323,7 @@ report_distractor_plot <- reactive({
     g <- g +
       ggtitle(paste("Distractor plot for item", item_numbers()[i])) +
       theme_app()
-    g <- ggplotGrob(g)
+    # g <- ggplotGrob(g)
     graflist[[i]] <- g
   }
   graflist
