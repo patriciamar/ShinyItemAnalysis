@@ -11,9 +11,14 @@
 BUG FIXING
   o DIF summary table bug was fixed. Table is disaplayed when
     some DIF methods cannot be fitted.
+  o DDF parameter tables were fixed for data BOV and Czech Trivia.
+  o With difNLR package version 1.2.3 plots for DDF are displayed
+    even for binary data. Plots were also fixed for data Bov.
 
 MINOR UPDATES
   o Authors' and contributors' details were updated.
+  o Function plotMultinomial() was updated to return smooth curves
+    for any matching criterion.
 
 -------------------------------------------------------
 - Changes in ShinyItemAnalysis 1.3.0-14. (2019-06-19) -
