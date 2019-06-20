@@ -39,6 +39,14 @@ digits = 2,
 include.rownames = T,
 include.colnames = T)
 
+# ** Update slider for histogram ####
+observe({
+  updateSliderInput(session = session, inputId = "inSlider2group",
+                    min = min(total_score(), na.rm = T) ,
+                    max = max(c(max(total_score(), na.rm = T), ncol(binary()))),
+                    value = round(median(total_score(), na.rm = T)))
+})
+
 # ** Histogram of total score for group = 1 (focal) ######
 histbyscoregroup1Input <- reactive({
   data <- binary()
@@ -139,7 +147,7 @@ output$DP_histbyscoregroup1 <- downloadHandler(
 
 # ** Histogram of total score for group = 0 (reference) ######
 histbyscoregroup0Input <- reactive ({
-  
+
   data <- binary()
   sc  <- total_score()[group() == 0]
   bin <- as.numeric(input$inSlider2group)
@@ -174,7 +182,7 @@ histbyscoregroup0Input <- reactive ({
 })
 
 output$histbyscoregroup0 <- renderPlotly ({
-  
+
   sc <- total_score()[group() == 0]
   bin <- as.numeric(input$inSlider2group)
   data <- binary()
@@ -552,6 +560,7 @@ model_DIF_logistic_print <- reactive({
   mod
 })
 
+# ** Model for report ######
 model_DIF_logistic_print_report <- reactive({
   group <- unlist(group())
   data <- data.frame(binary())
@@ -599,6 +608,7 @@ output$plot_DIF_logistic <- renderPlot({
   plot_DIF_logisticInput()
 })
 
+# ** DB for plot ######
 output$DP_plot_DIF_logistic <- downloadHandler(
   filename =  function() {
     paste("fig_DifLogisticRegression_", item_names()[input$diflogSlider], ".png", sep = "")
@@ -630,17 +640,7 @@ output$tab_coef_DIF_logistic <- renderTable({
 include.rownames = T,
 include.colnames = T)
 
-#output$ui_tab_coef_DIF_logistic <- renderUI({
-#
-#	tagList(
-#
-#		withMathJax(),
-#		withMathJax(tableOutput("tab_coef_DIF_logistic"))
-#
-#	)
-#
-#})
-
+# ** Plot for report ######
 DIF_logistic_plotReport <- reactive({
   group <- unlist(group())
   data <- data.frame(binary())
@@ -708,29 +708,16 @@ model_DIF_NLR_print <- reactive({
   adj.method <- input$DIF_NLR_correction_method_print
   purify <- input$DIF_NLR_purification_print
 
-  errorCatch <- tryCatch(difNLR(Data = data, group = group, focal.name = 1,
+  fit <- tryCatch(difNLR(Data = data, group = group, focal.name = 1,
                                 model = model, type = type,
                                 p.adjust.method = adj.method, purify = purify,
                                 test = "LR"),
-                         error = function(x) print(x))
+                         error = function(e) e)
 
-  if (mode(errorCatch$message) == 'character') {
-    validate(need(mode(errorCatch$message) != 'character',
-                  paste0('This method cannot be used on this data. Error returned: ',
-                         errorCatch$message)))
-  } else {
-    fit <- errorCatch
-  }
+  validate(need(class(fit) == "difNLR",
+                paste0('This method cannot be used on this data. Error returned: ', fit$message)))
 
-})
-
-observe({
-
-  updateSliderInput(session = session, inputId = "inSlider2group", min = min(total_score(), na.rm = T) , 
-  max = max(c(max(total_score(), na.rm = T), ncol(binary()))), 
-  value = round(median(total_score(), na.rm = T)))
-
-
+  fit
 })
 
 # ** Enabling/disabling options for type of DIF in print ####
@@ -958,19 +945,17 @@ model_DIF_NLR_plot <- reactive({
   adj.method <- input$DIF_NLR_correction_method_print
   purify <- input$DIF_NLR_purification_print
 
-  errorCatch <- tryCatch(difNLR(Data = data, group = group, focal.name = 1,
-								model = model, type = type,
-								p.adjust.method = adj.method, purify = purify),
-						error = function(x) print(x))
 
-  if (mode(errorCatch$message) == 'character') {
-    validate(need(mode(errorCatch$message) != 'character',
-                  paste0('This method cannot be used on this data. Error returned: ',
-                         errorCatch$message)))
-  } else {
-    fit <- errorCatch
-  }
+  fit <- tryCatch(difNLR(Data = data, group = group, focal.name = 1,
+                         model = model, type = type,
+                         p.adjust.method = adj.method, purify = purify,
+                         test = "LR"),
+                  error = function(e) e)
 
+  validate(need(class(fit) == "difNLR",
+                paste0('This method cannot be used on this data. Error returned: ', fit$message)))
+
+  fit
 })
 
 # ** Plot ######
@@ -994,7 +979,7 @@ output$plot_DIF_NLR <- renderPlot({
   plot_DIF_NLRInput()
 })
 
-# ** Plot download ######
+# ** DB for plot ######
 output$DP_plot_DIF_NLR <- downloadHandler(
   filename =  function() {
     paste0("fig_DIFNonlinear_", item_names()[input$DIF_NLR_item_plot], ".png")
@@ -1103,8 +1088,6 @@ output$DIF_NLR_item_na_alert <- renderUI({
   HTML(txt)
 })
 
-
-
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # * IRT LORD ######
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1118,28 +1101,24 @@ model_DIF_IRT_Lord_plot <- reactive({
     guess <- itemPar3PL(data)[, 3]
   }
 
-  errorCatch <- tryCatch(switch(input$type_print_DIF_IRT_lord,
-                "1PL" = difLord(Data = data, group = group, focal.name = 1,
-                                model = "1PL",
-                                p.adjust.method = input$correction_method_DIF_IRT_lordItems,
-                                purify = input$puri_Lord_plot),
-                "2PL" = difLord(Data = data, group = group, focal.name = 1,
-                                model = "2PL",
-                                p.adjust.method = input$correction_method_DIF_IRT_lordItems,
-                                purify = input$puri_Lord_plot),
-                "3PL" = difLord(Data = data, group = group, focal.name = 1,
-                                model = "3PL", c = guess,
-                                p.adjust.method = input$correction_method_DIF_IRT_lordItems,
-                                purify = input$puri_Lord_plot)),
-                error = function(x) print(x))
+  fit <- tryCatch(switch(input$type_print_DIF_IRT_lord,
+                         "1PL" = difLord(Data = data, group = group, focal.name = 1,
+                                         model = "1PL",
+                                         p.adjust.method = input$correction_method_DIF_IRT_lordItems,
+                                         purify = input$puri_Lord_plot),
+                         "2PL" = difLord(Data = data, group = group, focal.name = 1,
+                                         model = "2PL",
+                                         p.adjust.method = input$correction_method_DIF_IRT_lordItems,
+                                         purify = input$puri_Lord_plot),
+                         "3PL" = difLord(Data = data, group = group, focal.name = 1,
+                                         model = "3PL", c = guess,
+                                         p.adjust.method = input$correction_method_DIF_IRT_lordItems,
+                                         purify = input$puri_Lord_plot)),
+                  error = function(e) e)
 
-  if (mode(errorCatch$message) == 'character') {
-    validate(need(mode(errorCatch$message) != 'character',
-                  paste0('This method cannot be used on this data. Error returned: ',
-                         errorCatch$message)))
-  } else {
-    mod <- errorCatch
-  }
+  validate(need(class(fit) == 'Lord',
+                paste0('This method cannot be used on this data. Error returned: ', fit$message)))
+  fit
 })
 
 # ** Model for print ######
@@ -1151,28 +1130,24 @@ model_DIF_IRT_Lord_print <- reactive({
     guess <- itemPar3PL(data)[, 3]
   }
 
-  errorCatch <- tryCatch(switch(input$type_print_DIF_IRT_lord,
-                "1PL" = difLord(Data = data, group = group, focal.name = 1,
-                                model = "1PL",
-                                p.adjust.method = input$correction_method_DIF_IRT_lordSummary,
-                                purify = input$puri_Lord),
-                "2PL" = difLord(Data = data, group = group, focal.name = 1,
-                                model = "2PL",
-                                p.adjust.method = input$correction_method_DIF_IRT_lordSummary,
-                                purify = input$puri_Lord),
-                "3PL" = difLord(Data = data, group = group, focal.name = 1,
-                                model = "3PL", c = guess,
-                                p.adjust.method = input$correction_method_DIF_IRT_lordSummary,
-                                purify = input$puri_Lord)),
-                error = function(x) print(x))
+  fit <- tryCatch(switch(input$type_print_DIF_IRT_lord,
+                         "1PL" = difLord(Data = data, group = group, focal.name = 1,
+                                         model = "1PL",
+                                         p.adjust.method = input$correction_method_DIF_IRT_lordSummary,
+                                         purify = input$puri_Lord),
+                         "2PL" = difLord(Data = data, group = group, focal.name = 1,
+                                         model = "2PL",
+                                         p.adjust.method = input$correction_method_DIF_IRT_lordSummary,
+                                         purify = input$puri_Lord),
+                         "3PL" = difLord(Data = data, group = group, focal.name = 1,
+                                         model = "3PL", c = guess,
+                                         p.adjust.method = input$correction_method_DIF_IRT_lordSummary,
+                                         purify = input$puri_Lord)),
+                  error = function(e) e)
 
-  if (mode(errorCatch$message) == 'character') {
-    validate(need(mode(errorCatch$message) != 'character',
-                  paste0('This method cannot be used on this data. Error returned: ',
-                         errorCatch$message)))
-  } else {
-    mod <- errorCatch
-  }
+  validate(need(class(fit) == 'Lord',
+                paste0('This method cannot be used on this data. Error returned: ', fit$message)))
+  fit
 })
 
 # ** Output print ######
@@ -1195,6 +1170,7 @@ output$plot_DIF_IRT_Lord <- renderPlot({
   plot_DIF_IRT_LordInput()
 })
 
+# ** DB for plot ######
 output$DP_plot_DIF_IRT_Lord <- downloadHandler(
   filename =  function() {
     paste("fig_DIFIRTLord_",item_names()[input$difirt_lord_itemSlider], ".png", sep = "")
@@ -1321,8 +1297,6 @@ output$DIF_IRT_LORD_item_na_alert <- renderUI({
   HTML(txt)
 })
 
-
-
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # * IRT Raju ######
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1349,15 +1323,26 @@ model_DIF_IRT_Raju_plot <- reactive({
                                 model = "3PL", c = guess,
                                 p.adjust.method = input$correction_method_DIF_IRT_rajuItems,
                                 purify = input$puri_Raju_plot)),
-				error = function(x) print(x))
+				error = function(e) e)
 
-  if (mode(errorCatch$message) == 'character') {
-    validate(need(mode(errorCatch$message) != 'character',
-                  paste0('This method cannot be used on this data. Error returned: ',
-                         errorCatch$message)))
-  } else {
-    mod <- errorCatch
-  }
+  fit <- tryCatch(switch(input$type_print_DIF_IRT_lord,
+                         "1PL" = difLord(Data = data, group = group, focal.name = 1,
+                                         model = "1PL",
+                                         p.adjust.method = input$correction_method_DIF_IRT_lordSummary,
+                                         purify = input$puri_Lord),
+                         "2PL" = difLord(Data = data, group = group, focal.name = 1,
+                                         model = "2PL",
+                                         p.adjust.method = input$correction_method_DIF_IRT_lordSummary,
+                                         purify = input$puri_Lord),
+                         "3PL" = difLord(Data = data, group = group, focal.name = 1,
+                                         model = "3PL", c = guess,
+                                         p.adjust.method = input$correction_method_DIF_IRT_lordSummary,
+                                         purify = input$puri_Lord)),
+                  error = function(e) e)
+
+  validate(need(class(fit) == 'Raj',
+                paste0('This method cannot be used on this data. Error returned: ', fit$message)))
+  fit
 })
 
 # ** Model for print ######
@@ -1369,28 +1354,24 @@ model_DIF_IRT_Raju_print <- reactive({
     guess <- itemPar3PL(data)[, 3]
   }
 
-  errorCatch <- tryCatch(switch(input$type_plot_DIF_IRT_raju,
-                "1PL" = difRaju(Data = data, group = group, focal.name = 1,
-                                model = "1PL",
-                                p.adjust.method = input$correction_method_DIF_IRT_rajuSummary,
-                                purify = input$puri_Raju),
-                "2PL" = difRaju(Data = data, group = group, focal.name = 1,
-                                model = "2PL",
-                                p.adjust.method = input$correction_method_DIF_IRT_rajuSummary,
-                                purify = input$puri_Raju),
-                "3PL" = difRaju(Data = data, group = group, focal.name = 1,
-                                model = "3PL", c = guess,
-                                p.adjust.method = input$correction_method_DIF_IRT_rajuSummary,
-                                purify = input$puri_Raju)),
-				error = function(x) print(x))
+  fit <- tryCatch(switch(input$type_plot_DIF_IRT_raju,
+                         "1PL" = difRaju(Data = data, group = group, focal.name = 1,
+                                         model = "1PL",
+                                         p.adjust.method = input$correction_method_DIF_IRT_rajuSummary,
+                                         purify = input$puri_Raju),
+                         "2PL" = difRaju(Data = data, group = group, focal.name = 1,
+                                         model = "2PL",
+                                         p.adjust.method = input$correction_method_DIF_IRT_rajuSummary,
+                                         purify = input$puri_Raju),
+                         "3PL" = difRaju(Data = data, group = group, focal.name = 1,
+                                         model = "3PL", c = guess,
+                                         p.adjust.method = input$correction_method_DIF_IRT_rajuSummary,
+                                         purify = input$puri_Raju)),
+                  error = function(e) e)
 
-  if (mode(errorCatch$message) == 'character') {
-    validate(need(mode(errorCatch$message) != 'character',
-                  paste0('This method cannot be used on this data. Error returned: ',
-                         errorCatch$message)))
-  } else {
-    mod <- errorCatch
-  }
+  validate(need(class(fit) == 'Raj',
+                paste0('This method cannot be used on this data. Error returned: ', fit$message)))
+  fit
 })
 
 # ** Output print ######
@@ -1540,7 +1521,6 @@ output$DIF_Raju_item_na_alert <- renderUI({
   HTML(txt)
 })
 
-
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # * SIBTEST ######
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1621,9 +1601,13 @@ model_DDF_print_report <- reactive({
     purify <- input$puri_DDF_report
   }
 
-  fit <- ddfMLR(Data = a, group = group, focal.name = 1,
-                key = k, p.adjust.method = adj.method,
-                type = type, purify = purify)
+  fit <- tryCatch(ddfMLR(Data = a, group = group, focal.name = 1,
+                         key = k, p.adjust.method = adj.method,
+                         type = type, purify = purify),
+                  error = function(e) e)
+
+  validate(need(class(fit) == 'ddfMLR',
+                paste0('This method cannot be used on this data. Error returned: ', fit$message)))
 
   fit
 })
@@ -1645,35 +1629,23 @@ model_DDF_plot <- reactive({
   type <- input$type_plot_DDF
   purify <- input$puri_DDF_plot
 
-  errorCatch <- tryCatch(ddfMLR(Data = a, group = group, focal.name = 1,
-                key = k, p.adjust.method = adj.method,
-                type = type, purify = purify),
-				error = function(x) print(x))
+  fit <- tryCatch(ddfMLR(Data = a, group = group, focal.name = 1,
+                         key = k, p.adjust.method = adj.method,
+                         type = type, purify = purify),
+                  error = function(e) e)
 
-  if(mode(errorCatch$message) == 'character') {
-    validate(need(mode(errorCatch$message) != 'character',
-                  paste0('Plot cannot be shown for this item. Error returned: ',
-                         errorCatch$message)))
-  } else {
-    fit <- errorCatch
-  }
+  validate(need(class(fit) == 'ddfMLR',
+                paste0('This method cannot be used on this data. Error returned: ', fit$message)))
 
+  fit
 })
 
 # ** Plot ######
 plot_DDFInput <- reactive({
   fit <- model_DDF_plot()
   item <- input$ddfSlider
-
-  errorCatch <- tryCatch(plot(fit, item = item)[[1]], error = function(x) print(x))
-
-  if(mode(errorCatch$message) == 'character') {
-    validate(need(mode(errorCatch$message) != 'character',
-                  paste0('Plot cannot be shown for item ', item)))
-  } else {
-    g <- plot(fit, item = item)[[1]]
-  }
-
+  browser()
+  g <- plot(fit, item = item)[[1]]
   g <- g +
     theme_app() +
     theme(legend.box.just = "top",
@@ -1801,7 +1773,7 @@ output$DDFeq <- renderUI ({
 })
 
 output$method_comparison_table <- renderTable({
-    
+
 	l_methods <- list()
 	l_methods[['Delta']] <- try(deltaGpurn()$DIFitems)
 	l_methods[['MH']] <- try(model_DIF_MH()$DIFitems)
@@ -1810,69 +1782,37 @@ output$method_comparison_table <- renderTable({
 	l_methods[['IRT']] <- try(model_DIF_IRT_Lord_print()$DIFitems)
 	l_methods[['RAJU']] <- try(model_DIF_IRT_Raju_print()$DIFitems)
 	l_methods[['SIBTEST']] <- try(DIF_SIBTEST_model()$DIFitems)
-	l_methods[['DFF']] <- try(model_DDF_print()$DIFitems)
+	l_methods[['DFF']] <- try(model_DDF_print()$DDFitems)
 
 	k <- length(item_names())
-
 	idx <- lapply(l_methods, class)
-
 	idx <- which(unlist(idx) != 'try-error')
 
+	v <- matrix(NA, ncol = length(l_methods), nrow = k)
+	v[, idx] <- 0
 
-	l <- length(idx)
-
-	v <- list()
-
-	for (i in 1:l) {
-
-		v[[i]] <- rep(0,k)
-
+	# there is need to handle Delta method and DDF differently
+	for (j in idx) {
+	  if (names(l_methods)[j] == "Delta"){
+	    if (all(l_methods[[j]] != 'no DIF item detected')) v[as.numeric(paste(l_methods[[j]])), j] <- 1
+	  } else {
+	    if (names(l_methods)[j] == "DDF"){
+	      if (all(l_methods[[j]] != 'No DDF item detected')) v[as.numeric(paste(l_methods[[j]])), j] <- 1
+	    } else {
+	      if (all(l_methods[[j]] != 'No DIF item detected')) v[as.numeric(paste(l_methods[[j]])), j] <- 1
+	    }
+	  }
 	}
 
-	#v1 <- rep(0, k)
-	#v2 <- rep(0, k)
-	#v3 <- rep(0, k)
-	#v4 <- rep(0, k)
-	#v5 <- rep(0, k)
-	#v6 <- rep(0, k)
-	#v7 <- rep(0, k)
-	#v8 <- rep(0, k)
-
-	#invisible(ifelse(delta == 'no DIF item detected', TRUE, v1[delta] <- 1))
-	#invisible(ifelse(DIF_MH == 'no DIF item detected', TRUE, v2[DIF_MH] <- 1))
-	#invisible(ifelse(DIF_LOG == 'no DIF item detected', TRUE, v3[DIF_LOG] <- 1))
-	#invisible(ifelse(DIF_NLR == 'no DIF item detected', TRUE, v4[DIF_NLR] <- 1))
-	#invisible(ifelse(DIF_IRT == 'no DIF item detected', TRUE, v5[DIF_IRT] <- 1))
-	#invisible(ifelse(DIF_RAJU == 'no DIF item detected', TRUE, v6[DIF_RAJU] <- 1))
-	#invisible(ifelse(DIF_SIBTEST == 'no DIF item detected', TRUE, v7[DIF_SIBTEST] <- 1))
-	#invisible(ifelse(DFF == 'no DDF item detected', TRUE, v8[DFF] <- 1))
-
-	for (j in 1:length(v)) {
-
-		if(l_methods[idx[[j]]] != 'no DIF item detected') {
-
-				v[[j]][l_methods[idx][[j]]] <- 1
-
-		} else {
-
-			next
-
-		}
-
-
-	}
-
-	#tab <- as.data.frame(cbind(v1, v2, v3, v4, v5, v6, v7, v8))
-	tab <- as.data.frame(matrix(unlist(v), ncol = length(v)))
-	tab <- as.data.frame(apply(tab, c(1, 2), as.integer))
+	tab <- as.data.frame(apply(v, c(1, 2), as.integer))
 	rownames(tab) <- item_names()
-	colnames(tab) <- names(idx)
+	colnames(tab) <- names(l_methods)
 
 	n <- nrow(tab)
 	k <- ncol(tab)
 
-	rDIF <- apply(tab, 1, sum)
-	cDIF <- apply(tab, 2, sum)
+	rDIF <- rowSums(tab, na.rm = T)
+	cDIF <- colSums(tab, na.rm = T)
 	cDIF[k + 1] <- 0
 
 	tab <- cbind(tab, as.integer(rDIF))

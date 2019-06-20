@@ -29,26 +29,23 @@ corr_plot_Input <- reactive({
   numclust <- input$corr_plot_clust
   clustmethod <- input$corr_plot_clustmethod
 
-  if(input$itemnam == FALSE) {
-  
-	dimnames(corP)[[1]] <- item_names()
-	dimnames(corP)[[2]] <- item_names()
-  
+  if(!input$itemnam) {
+	  dimnames(corP)[[1]] <- dimnames(corP)[[2]] <- item_names()
   }
-  
+
   # option to display correlation values
   if(input$show_corr %% 2 == 1 ) {
     updateActionButton(session, "show_corr", label = "Hide correlation values")
 	  if (clustmethod == "none"){
-	    corrplot(corP, tl.cex = tlcex, tl.pos ='lt', method = 'number',
+	    corrplot(corP, tl.cex = tlcex, tl.pos = 'lt', method = 'number',
 	             number.cex = 0.7, col = 'black', cl.pos = 'n')
     } else {
       corrplot(corP, tl.cex = tlcex, order = "hclust", hclust.method = clustmethod,
-               addrect = numclust, tl.pos = 'lt',, method = 'number',
+               addrect = numclust, tl.pos = 'lt', method = 'number',
                number.cex  = 0.7, col = 'black', cl.pos = 'n')
     }
    } else {
-      updateActionButton(session,"show_corr", label = "Display correlation values")
+      updateActionButton(session, "show_corr", label = "Display correlation values")
     if (clustmethod == "none"){
 	    corrplot(corP, tl.cex = tlcex, tl.pos = 'lt')
 	  } else {
@@ -65,12 +62,9 @@ corr_plot_Input_report <- reactive({
 
   numclust <- ifelse(input$customizeCheck, input$corr_plot_clust_report, input$corr_plot_clust)
   clustmethod <- ifelse(input$customizeCheck, input$corr_plot_clustmethod_report, input$corr_plot_clustmethod)
-  
-  if(input$itemnam == FALSE) {
-  
-	dimnames(corP)[[1]] <- item_names()
-	dimnames(corP)[[2]] <- item_names()
-  
+
+  if(!input$itemnam) {
+	  dimnames(corP)[[1]] <- dimnames(corP)[[2]] <- item_names()
   }
 
   # option to display correlation values
@@ -85,7 +79,7 @@ corr_plot_Input_report <- reactive({
                number.cex  = 0.7, col = 'black', cl.pos = 'n')
     }
   } else {
-    updateActionButton(session,"show_corr", label = "Display correlation values")
+    updateActionButton(session, "show_corr", label = "Display correlation values")
     if (clustmethod == "none"){
       corrplot(corP, tl.cex = tlcex, tl.pos = 'lt')
     } else {
@@ -127,7 +121,7 @@ output$DB_corr_plot <- downloadHandler(
   }
 )
 
-
+# ** DB correlation matrix ######
 output$corr_matrix <- downloadHandler(
 	filename = function() {
 		paste("Correlation_matrix", ".csv", sep = "")
@@ -179,12 +173,12 @@ dendrogram_plot_Input <- reactive({
           axis.title.y = element_blank())
 })
 
-# ** Output scree plot ######
+# ** Output dendrogram ######
 output$dendrogram_plot <- renderPlot({
   dendrogram_plot_Input()
 })
 
-# ** DB scree plot ######
+# ** DB dendrogram ######
 output$DB_dendrogram <- downloadHandler(
   filename =  function() {
     paste("fig_Dendrogram.png", sep = "")

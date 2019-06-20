@@ -477,7 +477,6 @@ function(input, output, session) {
       "difirt_lord_itemSlider",
       "difirt_raju_itemSlider",
       "ddfSlider",
-      "inSlider2group",
       "reportSlider",
       "difMHSlider_score"
     )
@@ -486,7 +485,6 @@ function(input, output, session) {
 	  minItemScore = min(total_score(), na.rm = T)
 	  maxItemScore = max(c(max(total_score(), na.rm = T), ncol(binary())))
     updateSliderInput(session = session, inputId = "slider_totalscores_histogram", min = minItemScore , max = maxItemScore, value = round(median(total_score(), na.rm = T)))
-	updateSliderInput(session = session, inputId = "inSlider2group", min = minItemScore , max = maxItemScore, value = round(median(total_score(), na.rm = T)))
     updateNumericInput(session = session, inputId = "corr_plot_clust", value = 1, max = itemCount)
     updateNumericInput(session = session, inputId = "corr_plot_clust_report", value = 1, max = itemCount)
     updateSliderInput(session = session, inputId = "validitydistractorSlider", max = itemCount)
@@ -506,8 +504,6 @@ function(input, output, session) {
     updateSliderInput(session = session, inputId = "difirt_lord_itemSlider", max = itemCount)
     updateSliderInput(session = session, inputId = "difirt_raju_itemSlider", max = itemCount)
     updateSliderInput(session = session, inputId = "ddfSlider", max = itemCount)
-    updateSliderInput(session = session, inputId = "inSlider2group", max = itemCount,
-                      value = round(median(total_score()[group() == 1], na.rm = T)))
     updateSliderInput(session = session, inputId = "difMHSlider_score", max = itemCount,
                       value = round(median(total_score(), na.rm = T)))
 
