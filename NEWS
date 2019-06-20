@@ -1,8 +1,19 @@
-﻿        ***************************************************************
+        ***************************************************************
         *                                                             *
         *  Changes and Developments in the ShinyItemAnalysis Package  *
         *                                                             *
         ***************************************************************
+
+-------------------------------------------------------
+- Changes in ShinyItemAnalysis 1.3.0-15. (2019-06-20) -
+-------------------------------------------------------
+
+BUG FIXING
+  o DIF summary table bug was fixed. Table is disaplayed when
+    some DIF methods cannot be fitted.
+
+MINOR UPDATES
+  o Authors' and contributors' details were updated.
 
 -------------------------------------------------------
 - Changes in ShinyItemAnalysis 1.3.0-14. (2019-06-19) -
@@ -14,10 +25,10 @@ BUG FIXING
     table of parameters was further improved. Tables for items are
     displayed even in case that table for all items is not.
   o DIF items are now correctly written in reports.
-  o Corrplot now properly replaces item names when Keep item names 
+  o Corrplot now properly replaces item names when Keep item names
     is not selected in Data upload section.
   o In DIF/Fairness section, histograms of Total scores for groups
-    are now properly displayed also for ordinal items. 
+    are now properly displayed also for ordinal items.
 
 MAJOR UPDATES
   o Legends for multinomial and distractor plots were improved.

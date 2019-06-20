@@ -1274,11 +1274,12 @@ uiDIF <-
                         )
                       )
              ),
-             # * Method comparsion ####
+             # * METHOD COMPARISON ####
              tabPanel("Method comparison",
                       h3("Method comparison"),
                       p("Here you can compare all offered DIF detection methods. In the table below, columns represent DIF detection methods, and rows represent item number. If
-                        the method detects item as DIF, value 1 is assigned to that item, otherwise 0 is assigned. Methods in columns: "),
+                        the method detects item as DIF, value 1 is assigned to that item, otherwise 0 is assigned. In case that any method fail to converge or cannot be
+                        fitted, NA is displayed instead of 0/1 values. Methods in columns: "),
                       tags$ul(
                         tags$li(strong('Delta'), 'is delta plot method (Angoff & Ford, 1973; Magis & Facon, 2012),'),
                         tags$li(strong('MH'), 'is Mantel-Haenszel test (Mantel & Haenszel, 1959), '),
