@@ -1,10 +1,8 @@
 ---
-title: |
-  `r ifelse(params$dataset == "", "", params$dataset)`
-author: |
-  `r ifelse(params$author == "", "", params$author)`
 output: 
   pdf_document: 
+    toc: true
+    toc_depth: 3
     number_sections: false
     fig_caption: false 
     includes:
@@ -12,7 +10,7 @@ output:
       in_header: packages.sty
 fontsize: 
   12pt
-geometry: "left = 0.6in, right = 0.6in, top = 0.8in, bottom = 0.8in"
+geometry: left = 0.6in, right = 0.6in, top = 0.8in, bottom = 0.8in
 params:
   author: NA
   dataset: NA
@@ -75,6 +73,7 @@ params:
   DDF_multinomial_plot: NA
   sessionInfo: NA
 ---
+
 ```{r global_options, echo = FALSE, results = 'hide'}
 options(tinytex.verbose = TRUE)
 pdf.options(useDingbats = TRUE)
@@ -91,11 +90,15 @@ command <- function(table){
 }
 ```
 
+---
+title: `r ifelse(params$dataset == "", "", params$dataset)`
+author: `r ifelse(params$author == "", "", params$author)`
+---
+
 \pagenumbering{gobble}
 
 \raggedright
 \clearpage
-\tableofcontents
 
 \pagebreak
 
@@ -563,8 +566,6 @@ if (params$irt_type != "none") {
     theme(text = element_text(size = 16))
 }
 ```
-
-`r if (params$irt_type != "none") {"\\pagebreak"}`
 
 `r if (params$irt_type != "none") {"## Item characteristic and information curves"}`
 

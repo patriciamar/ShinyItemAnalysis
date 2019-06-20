@@ -14,6 +14,7 @@ BUG FIXING
   o DDF parameter tables were fixed for data BOV and Czech Trivia.
   o With difNLR package version 1.2.3 plots for DDF are displayed
     even for binary data. Plots were also fixed for data Bov.
+  o PDF Reports now work locally and on shinyapps.io.
 
 MINOR UPDATES
   o Authors' and contributors' details were updated.
