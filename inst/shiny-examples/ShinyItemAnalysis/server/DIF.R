@@ -1621,9 +1621,9 @@ output$print_DDF <- renderPrint({
 model_DDF_plot <- reactive({
   group <- unlist(group())
   a <- data.frame(nominal())
+  a <- sapply(a, as.factor)
   colnames(a) <- item_names()
-  k <- key()
-
+  k <- as.factor(key())
 
   adj.method <- input$correction_method_plot_DDF
   type <- input$type_plot_DDF
@@ -1644,7 +1644,7 @@ model_DDF_plot <- reactive({
 plot_DDFInput <- reactive({
   fit <- model_DDF_plot()
   item <- input$ddfSlider
-  browser()
+
   g <- plot(fit, item = item)[[1]]
   g <- g +
     theme_app() +
@@ -1716,8 +1716,14 @@ output$DP_plot_DDF <- downloadHandler(
 output$tab_coef_DDF <- renderTable({
   item <- input$ddfSlider
   fit <- model_DDF_plot()
+  data <- as.data.frame(nominal())
+  key <- as.factor(key())
+
+  tmp <- as.factor(data[, item])
+  nams <- levels(tmp)[!(levels(tmp) %in% key[item])]
 
   tab_coef <- fit$mlrPAR[[item]]
+  if (is.null(dim(tab_coef))) tab_coef <- matrix(tab_coef, nrow = 1)
   tab_se <- fit$mlrSE[[item]]
   tab_se <- matrix(tab_se, ncol = ncol(tab_coef), byrow = T)
 
@@ -1731,9 +1737,8 @@ output$tab_coef_DDF <- renderTable({
     }
   }
 
-
   colnames(tab_se) <- colnames(tab_coef) <- c("b0", "b1", "b2", "b3")
-  rownames(tab_se) <- rownames(tab_coef)
+  rownames(tab_se) <- rownames(tab_coef) <- nams
 
   tab_coef <- data.frame(tab_coef, answ = rownames(tab_coef))
   tab_se <- data.frame(tab_se, answ = rownames(tab_se))
@@ -1742,9 +1747,9 @@ output$tab_coef_DDF <- renderTable({
   df2 <- melt(tab_se, id = "answ")
   tab <- data.frame(df1$value,
                     df2$value)
-  rownames(tab) <- paste('%%mathit{',substr(df1$variable, 1, 1),'}_{',
+  rownames(tab) <- paste0('%%mathit{', substr(df1$variable, 1, 1), '}_{',
                          df1$answ,
-                         substr(df1$variable, 2, 2),'}%%', sep = "")
+                         substr(df1$variable, 2, 2), '}%%')
   colnames(tab) <- c("Estimate", "SD")
   tab
 
