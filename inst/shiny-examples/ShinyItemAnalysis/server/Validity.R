@@ -135,7 +135,6 @@ output$corr_matrix <- downloadHandler(
 dendrogram_plot_Input <- reactive({
   corP <- corr_structure()
   dist <- as.dist(1 - corP)
-
   clustmethod <- input$corr_plot_clustmethod
   numclust <- input$corr_plot_clust
 
@@ -143,13 +142,13 @@ dendrogram_plot_Input <- reactive({
 
   if (numclust == 1){
     order <- hc$order
-    label <- hc$labels[hc$order]
+    label <- if (!input$itemnam) item_names()[hc$order] else hc$label[hc$order]
     times <- length(label)
   } else {
     plot(hc)
     rhc <- rect.hclust(hc, k = numclust)
     order <- unlist(rhc)
-    label <- names(order)
+    label <- if (!input$itemnam) item_names()[order] else names(order)
     times <- sapply(rhc, length)
   }
 
@@ -157,6 +156,12 @@ dendrogram_plot_Input <- reactive({
                    num = order,
                    cluster = rep(paste("Cluster", 1:numclust), times))
   dendr <- dendro_data(hc, type = "rectangle")
+  if(!input$itemnam){
+	
+	dendr$labels$label <- label
+  
+  }
+  
   dfd <- merge(dendr$labels, df, by = "label")
 
   ggplot() +
