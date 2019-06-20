@@ -49,7 +49,7 @@ histbyscoregroup1Input <- reactive({
 
   df <- data.table(score = sc,
                    gr = cut(sc,
-                            breaks = unique(c(0, bin - 1, bin, ncol(data))),
+                            breaks = unique(c(min(sc,na.rm = T), bin - 1, bin, max(sc,na.rm = T))),
                             include.lowest = T))
 
   if (bin < min(sc, na.rm = T)){
@@ -67,8 +67,8 @@ histbyscoregroup1Input <- reactive({
     scale_fill_manual("", breaks = df$gr, values = col) +
     labs(x = "Total score",
          y = "Proportion of respondents") +
-    scale_x_continuous(limits = c(-0.5, ncol(data) + 0.5)) +
-    scale_y_continuous(limits = c(0, max.val)) +
+    scale_x_continuous(limits = c(min(sc, na.rm = T) - 0.5, max(sc, na.rm = T) + 0.5)) +
+    #scale_y_continuous(limits = c(0, max.val)) +
     ggtitle("Focal group") +
     theme_app()
   g
@@ -102,11 +102,12 @@ output$histbyscoregroup1 <- renderPlotly ({
     t <- t[order(t$score)]
 
     t <- as.data.frame(table(t$score))
-    lbnd <- ints[i] + 1
-    hbnd <- ints[i + 1] + 1
+    lbnd <- ifelse(i == 1, ints[i], ints[i] + 1)
+    hbnd <- ints[i + 1]
+    idx <- which(p$x$data[[i]]$x %in% lbnd:hbnd)
 
     c <- 1
-    for (j in lbnd:hbnd) {
+    for (j in idx) {
       text <- strsplit(p$x$data[[i]]$text[j], "<br />")[[1]][1]
       text <- sub("/", "", text)
       text <- sub("countsum\\(count\\)", "Proportion", text)
@@ -138,6 +139,7 @@ output$DP_histbyscoregroup1 <- downloadHandler(
 
 # ** Histogram of total score for group = 0 (reference) ######
 histbyscoregroup0Input <- reactive ({
+  
   data <- binary()
   sc  <- total_score()[group() == 0]
   bin <- as.numeric(input$inSlider2group)
@@ -146,7 +148,7 @@ histbyscoregroup0Input <- reactive ({
 
   df <- data.table(score = sc,
                    gr = cut(sc,
-                            breaks = unique(c(0, bin - 1, bin, ncol(data))),
+                            breaks = unique(c(min(sc,na.rm = T), bin - 1, bin, max(sc,na.rm = T))),
                             include.lowest = T))
 
   if (bin < min(sc, na.rm = TRUE)){
@@ -164,14 +166,15 @@ histbyscoregroup0Input <- reactive ({
     scale_fill_manual("", breaks = df$gr, values = col) +
     labs(x = "Total score",
          y = "Proportion of respondents") +
-    scale_x_continuous(limits = c(-0.5, ncol(data) + 0.5)) +
-    scale_y_continuous(limits = c(0, max.val)) +
+    scale_x_continuous(limits = c(min(sc, na.rm = T) - 0.5, max(sc, na.rm = T) + 0.5)) +
+    #scale_y_continuous(limits = c(0, max.val)) +
     ggtitle("Reference group") +
     theme_app()
   g
 })
 
 output$histbyscoregroup0 <- renderPlotly ({
+  
   sc <- total_score()[group() == 0]
   bin <- as.numeric(input$inSlider2group)
   data <- binary()
@@ -199,11 +202,12 @@ output$histbyscoregroup0 <- renderPlotly ({
     t <- t[order(t$score)]
 
     t <- as.data.frame(table(t$score))
-    lbnd <- ints[i] + 1
-    hbnd <- ints[i + 1] + 1
+    lbnd <- ifelse(i == 1, ints[i], ints[i] + 1)
+    hbnd <- ints[i + 1]
+    idx <- which(p$x$data[[i]]$x %in% lbnd:hbnd)
 
     c <- 1
-    for (j in lbnd:hbnd) {
+    for (j in idx) {
       text <- strsplit(p$x$data[[i]]$text[j], "<br />")[[1]][1]
       text <- sub("/", "", text)
       text <- sub("countsum\\(count\\)", "Proportion", text)
@@ -717,6 +721,15 @@ model_DIF_NLR_print <- reactive({
   } else {
     fit <- errorCatch
   }
+
+})
+
+observe({
+
+  updateSliderInput(session = session, inputId = "inSlider2group", min = min(total_score(), na.rm = T) , 
+  max = max(c(max(total_score(), na.rm = T), ncol(binary()))), 
+  value = round(median(total_score(), na.rm = T)))
+
 
 })
 
@@ -1788,7 +1801,7 @@ output$DDFeq <- renderUI ({
 })
 
 output$method_comparison_table <- renderTable({
-
+    
 	l_methods <- list()
 	l_methods[['Delta']] <- try(deltaGpurn()$DIFitems)
 	l_methods[['MH']] <- try(model_DIF_MH()$DIFitems)
@@ -1836,7 +1849,7 @@ output$method_comparison_table <- renderTable({
 
 	for (j in 1:length(v)) {
 
-		if(l_methods[idx[[j]]] != 'No DIF item detected') {
+		if(l_methods[idx[[j]]] != 'no DIF item detected') {
 
 				v[[j]][l_methods[idx][[j]]] <- 1
 
@@ -1848,7 +1861,6 @@ output$method_comparison_table <- renderTable({
 
 
 	}
-
 
 	#tab <- as.data.frame(cbind(v1, v2, v3, v4, v5, v6, v7, v8))
 	tab <- as.data.frame(matrix(unlist(v), ncol = length(v)))

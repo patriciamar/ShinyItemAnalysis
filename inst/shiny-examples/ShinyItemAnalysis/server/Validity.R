@@ -26,19 +26,25 @@ corr_structure <- reactive({
 corr_plot_Input <- reactive({
   corP <- corr_structure()
   tlcex <- max(ifelse(dim(corP)[1] < 30, 1, 0.9 - (dim(corP)[1] - 30)*0.05), 0.5)
-
   numclust <- input$corr_plot_clust
   clustmethod <- input$corr_plot_clustmethod
 
+  if(input$itemnam == FALSE) {
+  
+	dimnames(corP)[[1]] <- item_names()
+	dimnames(corP)[[2]] <- item_names()
+  
+  }
+  
   # option to display correlation values
   if(input$show_corr %% 2 == 1 ) {
     updateActionButton(session, "show_corr", label = "Hide correlation values")
 	  if (clustmethod == "none"){
-	    corrplot(corP, tl.cex = tlcex, tl.pos = 'lt', method = 'number',
+	    corrplot(corP, tl.cex = tlcex, tl.pos ='lt', method = 'number',
 	             number.cex = 0.7, col = 'black', cl.pos = 'n')
     } else {
       corrplot(corP, tl.cex = tlcex, order = "hclust", hclust.method = clustmethod,
-               addrect = numclust, tl.pos = 'lt', method = 'number',
+               addrect = numclust, tl.pos = 'lt',, method = 'number',
                number.cex  = 0.7, col = 'black', cl.pos = 'n')
     }
    } else {
@@ -59,6 +65,13 @@ corr_plot_Input_report <- reactive({
 
   numclust <- ifelse(input$customizeCheck, input$corr_plot_clust_report, input$corr_plot_clust)
   clustmethod <- ifelse(input$customizeCheck, input$corr_plot_clustmethod_report, input$corr_plot_clustmethod)
+  
+  if(input$itemnam == FALSE) {
+  
+	dimnames(corP)[[1]] <- item_names()
+	dimnames(corP)[[2]] <- item_names()
+  
+  }
 
   # option to display correlation values
   if(input$show_corr %% 2 == 1 ) {

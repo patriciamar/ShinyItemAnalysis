@@ -742,7 +742,7 @@ if (params$histCheck) {
 
 `r if(params$isGroupPresent & params$deltaplotCheck) {"## Delta plot method"}`
 
-`r if(params$isGroupPresent & params$deltaplotCheck) {"A delta plot compares the proportions of correct answers per item in the two groups. It displays non-linear transformation of these proportions using quantiles of standard normal distributions (so called delta scores) of each item for the two groups in a scatterplot called diagonal plot or delta plot . An item is under suspicion of DIF if the delta point departs considerably from the major axis. "}`
+`r if(params$isGroupPresent & params$deltaplotCheck) {"A delta plot compares the proportions of correct answers per item in the two groups. It displays non-linear transformation of these proportions using quantiles of standard normal distributions (so called delta scores) of each item for the two groups in a scatterplot called diagonal plot or delta plot. An item is under suspicion of DIF if the delta point departs considerably from the major axis. "}`
 
 `r if(params$isGroupPresent & params$deltaplotCheck) {"### Summary table"}`
 
