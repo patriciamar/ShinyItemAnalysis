@@ -5,6 +5,22 @@
         ***************************************************************
 
 -------------------------------------------------------
+- Changes in ShinyItemAnalysis 1.3.0-16. (2019-06-21) -
+-------------------------------------------------------
+
+BUG FIXING
+  o Bug in Bock's model for binary items was fixed in reports.
+  o Histogram when some levels of total scores are missing were fixed
+    in Summary and DIF tab.
+
+MAJOR UPDATES
+  o Legend was added into IRT plots when downloaded.
+  o IRT models now respect ordering of items.
+
+MINOR UPDATES
+  o Some typos in IRT models tab were fixed.
+
+-------------------------------------------------------
 - Changes in ShinyItemAnalysis 1.3.0-15. (2019-06-20) -
 -------------------------------------------------------
 
@@ -15,6 +31,8 @@ BUG FIXING
   o With difNLR package version 1.2.3 plots for DDF are displayed
     even for binary data. Plots were also fixed for data Bov.
   o PDF Reports now work locally and on shinyapps.io.
+  o Dendrogram now properly replaces item names when Keep item names
+    is not selected in Data upload section.
 
 MINOR UPDATES
   o Authors' and contributors' details were updated.

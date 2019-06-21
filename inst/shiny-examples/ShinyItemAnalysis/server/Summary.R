@@ -36,13 +36,21 @@ totalscores_histogram_Input<- reactive({
   bin <- as.numeric(input$slider_totalscores_histogram)
   data <- binary()
 
+  if (length(unique(c(min(sc, na.rm = T), bin - 1, bin, max(sc, na.rm = T)))) == 3 & bin != min(sc, na.rm = T)) {
+    breaks <- unique(c(min(sc, na.rm = T), bin - 1, bin, bin + 1, max(sc, na.rm = T)))
+  } else {
+    breaks <- unique(c(min(sc, na.rm = T), bin - 1, bin, max(sc, na.rm = T)))
+  }
+
   df <- data.table(score = sc,
                    gr = cut(sc,
-                            breaks = unique(c(min(sc, na.rm = T), bin - 1, bin, max(sc, na.rm = T))),
+                            breaks = breaks,
                             include.lowest = T))
 
   if (bin < min(sc, na.rm = T)){
-    col <- "blue"
+    col <- c("blue",'blue')
+  } else if (!(bin %in% unique(sc))) {
+    col <- c('red','blue')
   } else {
     if (bin == min(sc, na.rm = T)){
       col <- c("grey", "blue")
@@ -69,7 +77,11 @@ output$totalscores_histogram <- renderPlotly ({
   data <- binary()
 
   if (min(sc, na.rm = T) <= bin & bin <= max(sc, na.rm = T)){
-    breaks <- unique(c(min(sc, na.rm = T), bin - 1, bin, max(sc, na.rm = T)))
+    if (bin %in% unique(sc)) {
+      breaks <- unique(c(min(sc, na.rm = T), bin - 1, bin, max(sc, na.rm = T)))
+    } else {
+      breaks <- unique(c(min(sc, na.rm = T), bin - 1, max(sc, na.rm = T)))
+    }
   } else {
     breaks <- c(0, max(sc, na.rm = T))
   }
@@ -84,32 +96,33 @@ output$totalscores_histogram <- renderPlotly ({
   k <- length(levels(df$gr))
   m <- length(p$x$data[[1]]$text)
   ints <- breaks
+  l <- length(p$x$data)
 
   for(i in 1:k){
-    t <- subset(df, df$gr == levels(df$gr)[i])
-    t <- t[order(t$score)]
-
-    t <- as.data.frame(table(t$score))
-    lbnd <- ifelse(i == 1, ints[i], ints[i] + 1)
-    hbnd <- ints[i + 1]
-    idx <- which(p$x$data[[i]]$x %in% lbnd:hbnd)
-
-    c <- 1
-
-    for (j in idx) {
-      text <- strsplit(p$x$data[[i]]$text[j], "<br />")[[1]][1]
-      text <- sub("/", "", text)
-      text <- sub("countsum\\(count\\)", "Proportion", text)
-      p$x$data[[i]]$text[j] <- paste(text, "<br />",
-                                     "Number of respodents:",
-                                     ifelse(c <= nrow(t) &
-                                              t$Var1[c] %in% p$x$data[[i]]$x[idx] &
-                                              t$Var1[c] == p$x$data[[i]]$x[j], t$Freq[c], 0),
-                                     "<br /> Score:", p$x$data[[i]]$x[j])
-      c <- ifelse(t$Var1[c] != p$x$data[[i]]$x[j], c, c + 1)
+    if (i <= l) {
+      t <- subset(df, df$gr == levels(df$gr)[i])
+      t <- t[order(t$score)]
+      t <- as.data.frame(table(t$score))
+      lbnd <- ifelse(i == 1, ints[i], ints[i] + 1)
+      hbnd <- ints[i+1]
+      idx <- which(p$x$data[[i]]$x %in% lbnd:hbnd)
+      c <- 1
+      for (j in idx) {
+        text <- strsplit(p$x$data[[i]]$text[j], "<br />")[[1]][1]
+        text <- sub("/", "", text)
+        text <- sub("countsum\\(count\\)", "Proportion", text)
+        p$x$data[[i]]$text[j] <- paste(text, "<br />",
+                                       "Number of respodents:",
+                                       ifelse(c <= nrow(t) &
+                                                t$Var1[c] %in% lbnd:hbnd &
+                                                t$Var1[c] == p$x$data[[i]]$x[j], t$Freq[c], 0),
+                                       "<br /> Score:", p$x$data[[i]]$x[j])
+        c <- ifelse(t$Var1[c] != p$x$data[[i]]$x[j], c, c + 1)
+      }
+    } else {
+      break
     }
   }
-
   p %>% plotly::config(displayModeBar = F)
 })
 
