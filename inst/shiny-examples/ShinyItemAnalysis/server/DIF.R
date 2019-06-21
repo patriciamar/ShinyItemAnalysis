@@ -51,17 +51,26 @@ observe({
 histbyscoregroup1Input <- reactive({
   data <- binary()
   sc  <- total_score()[group() == 1]
+  sc_lim <- total_score()
   bin <- as.numeric(input$inSlider2group)
   max.val <- max(prop.table(table(total_score()[group() == 0])),
                  prop.table(table(total_score()[group() == 1])))
 
+  if (length(unique(c(min(sc, na.rm = T), bin - 1, bin, max(sc, na.rm = T)))) == 3 & bin != min(sc, na.rm = T)) {
+    breaks <- unique(c(min(sc, na.rm = T), bin - 1, bin,bin + 1, max(sc, na.rm = T)))
+  } else {
+    breaks <- unique(c(min(sc, na.rm = T), bin - 1, bin, max(sc, na.rm = T)))
+  }
+
   df <- data.table(score = sc,
                    gr = cut(sc,
-                            breaks = unique(c(min(sc,na.rm = T), bin - 1, bin, max(sc,na.rm = T))),
+                            breaks = breaks,
                             include.lowest = T))
 
   if (bin < min(sc, na.rm = T)){
-    col <- "blue"
+    col <- c("blue",'blue')
+  } else if (!(bin %in% unique(sc))) {
+    col <- c('red','blue')
   } else {
     if (bin == min(sc, na.rm = T)){
       col <- c("grey", "blue")
@@ -75,7 +84,7 @@ histbyscoregroup1Input <- reactive({
     scale_fill_manual("", breaks = df$gr, values = col) +
     labs(x = "Total score",
          y = "Proportion of respondents") +
-    scale_x_continuous(limits = c(min(sc, na.rm = T) - 0.5, max(sc, na.rm = T) + 0.5)) +
+    scale_x_continuous(limits = c(min(sc_lim, na.rm = T) - 0.5, max(sc_lim, na.rm = T) + 0.5)) +
     #scale_y_continuous(limits = c(0, max.val)) +
     ggtitle("Focal group") +
     theme_app()
@@ -84,11 +93,16 @@ histbyscoregroup1Input <- reactive({
 
 output$histbyscoregroup1 <- renderPlotly ({
   sc <- total_score()[group() == 1]
+
   bin <- as.numeric(input$inSlider2group)
   data <- binary()
 
   if (min(sc, na.rm = TRUE) <= bin & bin <= max(sc, na.rm = TRUE)){
-    breaks <- unique(c(min(sc, na.rm = TRUE) - 1, bin - 1, bin, max(sc, na.rm = TRUE)))
+    if (bin %in% unique(sc)) {
+      breaks <- unique(c(min(sc, na.rm = T), bin - 1,bin, max(sc, na.rm = T)))
+    } else {
+      breaks <- unique(c(min(sc, na.rm = T), bin - 1, max(sc, na.rm = T)))
+    }
   } else {
     breaks <- c(0, ncol(data))
   }
@@ -103,29 +117,30 @@ output$histbyscoregroup1 <- renderPlotly ({
   k <- length(levels(df$gr))
   m <- length(p$x$data[[1]]$text)
   ints <- breaks
-
-
+  l <- length(p$x$data)
   for(i in 1:k){
-    t <- subset(df, df$gr == levels(df$gr)[i])
-    t <- t[order(t$score)]
-
-    t <- as.data.frame(table(t$score))
-    lbnd <- ifelse(i == 1, ints[i], ints[i] + 1)
-    hbnd <- ints[i + 1]
-    idx <- which(p$x$data[[i]]$x %in% lbnd:hbnd)
-
-    c <- 1
-    for (j in idx) {
-      text <- strsplit(p$x$data[[i]]$text[j], "<br />")[[1]][1]
-      text <- sub("/", "", text)
-      text <- sub("countsum\\(count\\)", "Proportion", text)
-      p$x$data[[i]]$text[j] <- paste(text, "<br />",
-                                     "Number of respodents:",
-                                     ifelse(c <= nrow(t) &
-                                              t$Var1[c] %in% p$x$data[[i]]$x[lbnd:hbnd] &
-                                              t$Var1[c] == p$x$data[[i]]$x[j], t$Freq[c], 0),
-                                     "<br /> Score:", p$x$data[[i]]$x[j])
-      c <- ifelse(t$Var1[c] != p$x$data[[i]]$x[j], c, c + 1)
+    if (i <= l) {
+      t <- subset(df, df$gr == levels(df$gr)[i])
+      t <- t[order(t$score)]
+      t <- as.data.frame(table(t$score))
+      lbnd <- ifelse(i == 1, ints[i], ints[i] + 1)
+      hbnd <- ints[i+1]
+      idx <- which(p$x$data[[i]]$x %in% lbnd:hbnd)
+      c <- 1
+      for (j in idx) {
+        text <- strsplit(p$x$data[[i]]$text[j], "<br />")[[1]][1]
+        text <- sub("/", "", text)
+        text <- sub("countsum\\(count\\)", "Proportion", text)
+        p$x$data[[i]]$text[j] <- paste(text, "<br />",
+                                       "Number of respodents:",
+                                       ifelse(c <= nrow(t) &
+                                                t$Var1[c] %in% lbnd:hbnd &
+                                                t$Var1[c] == p$x$data[[i]]$x[j], t$Freq[c], 0),
+                                       "<br /> Score:", p$x$data[[i]]$x[j])
+        c <- ifelse(t$Var1[c] != p$x$data[[i]]$x[j], c, c + 1)
+      }
+    } else {
+      break
     }
   }
 
@@ -150,18 +165,27 @@ histbyscoregroup0Input <- reactive ({
 
   data <- binary()
   sc  <- total_score()[group() == 0]
+  sc_lim <- total_score()
   bin <- as.numeric(input$inSlider2group)
   max.val <- max(prop.table(table(total_score()[group() == 0])),
                  prop.table(table(total_score()[group() == 1])))
 
+  if (length(unique(c(min(sc, na.rm = T), bin - 1, bin, max(sc, na.rm = T)))) == 3 & bin != min(sc, na.rm = T)) {
+    breaks <- unique(c(min(sc, na.rm = T), bin - 1, bin,bin + 1, max(sc, na.rm = T)))
+  } else {
+    breaks <- unique(c(min(sc, na.rm = T), bin - 1, bin, max(sc, na.rm = T)))
+  }
+
   df <- data.table(score = sc,
                    gr = cut(sc,
-                            breaks = unique(c(min(sc,na.rm = T), bin - 1, bin, max(sc,na.rm = T))),
+                            breaks = breaks,
                             include.lowest = T))
 
   if (bin < min(sc, na.rm = TRUE)){
-    col <- "blue"
-  } else {
+    col <- c("blue",'blue')
+  } else if (!(bin %in% unique(sc))) {
+    col <- c('red','blue')
+   } else {
     if (bin == min(sc, na.rm = TRUE)){
       col <- c("grey", "blue")
     } else {
@@ -174,7 +198,7 @@ histbyscoregroup0Input <- reactive ({
     scale_fill_manual("", breaks = df$gr, values = col) +
     labs(x = "Total score",
          y = "Proportion of respondents") +
-    scale_x_continuous(limits = c(min(sc, na.rm = T) - 0.5, max(sc, na.rm = T) + 0.5)) +
+    scale_x_continuous(limits = c(min(sc_lim, na.rm = T) - 0.5, max(sc_lim, na.rm = T) + 0.5)) +
     #scale_y_continuous(limits = c(0, max.val)) +
     ggtitle("Reference group") +
     theme_app()
@@ -188,7 +212,11 @@ output$histbyscoregroup0 <- renderPlotly ({
   data <- binary()
 
   if (min(sc, na.rm = TRUE) <= bin & bin <= max(sc, na.rm = TRUE)){
-    breaks <- unique(c(min(sc, na.rm = TRUE) - 1, bin - 1, bin, max(sc, na.rm = TRUE)))
+    if (bin %in% unique(sc)) {
+      breaks <- unique(c(min(sc, na.rm = T), bin - 1,bin, max(sc, na.rm = T)))
+    } else {
+      breaks <- unique(c(min(sc, na.rm = T), bin - 1, max(sc, na.rm = T)))
+    }
   } else {
     breaks <- c(0, ncol(data))
   }
@@ -203,29 +231,31 @@ output$histbyscoregroup0 <- renderPlotly ({
   k <- length(levels(df$gr))
   m <- length(p$x$data[[1]]$text)
   ints <- breaks
-
+  l <- length(p$x$data)
 
   for(i in 1:k){
-    t <- subset(df, df$gr == levels(df$gr)[i])
-    t <- t[order(t$score)]
-
-    t <- as.data.frame(table(t$score))
-    lbnd <- ifelse(i == 1, ints[i], ints[i] + 1)
-    hbnd <- ints[i + 1]
-    idx <- which(p$x$data[[i]]$x %in% lbnd:hbnd)
-
-    c <- 1
-    for (j in idx) {
-      text <- strsplit(p$x$data[[i]]$text[j], "<br />")[[1]][1]
-      text <- sub("/", "", text)
-      text <- sub("countsum\\(count\\)", "Proportion", text)
-      p$x$data[[i]]$text[j] <- paste(text, "<br />",
-                                     "Number of respodents:",
-                                     ifelse(c <= nrow(t) &
-                                              t$Var1[c] %in% p$x$data[[i]]$x[lbnd:hbnd] &
-                                              t$Var1[c] == p$x$data[[i]]$x[j], t$Freq[c], 0),
-                                     "<br /> Score:", p$x$data[[i]]$x[j])
-      c <- ifelse(t$Var1[c] != p$x$data[[i]]$x[j], c, c + 1)
+    if (i <= l) {
+      t <- subset(df, df$gr == levels(df$gr)[i])
+      t <- t[order(t$score)]
+      t <- as.data.frame(table(t$score))
+      lbnd <- ifelse(i == 1, ints[i], ints[i] + 1)
+      hbnd <- ints[i+1]
+      idx <- which(p$x$data[[i]]$x %in% lbnd:hbnd)
+      c <- 1
+      for (j in idx) {
+        text <- strsplit(p$x$data[[i]]$text[j], "<br />")[[1]][1]
+        text <- sub("/", "", text)
+        text <- sub("countsum\\(count\\)", "Proportion", text)
+        p$x$data[[i]]$text[j] <- paste(text, "<br />",
+                                       "Number of respodents:",
+                                       ifelse(c <= nrow(t) &
+                                                t$Var1[c] %in% lbnd:hbnd &
+                                                t$Var1[c] == p$x$data[[i]]$x[j], t$Freq[c], 0),
+                                       "<br /> Score:", p$x$data[[i]]$x[j])
+        c <- ifelse(t$Var1[c] != p$x$data[[i]]$x[j], c, c + 1)
+      }
+    } else {
+      break
     }
   }
 
@@ -1657,11 +1687,13 @@ plot_DDFInput <- reactive({
   g
 })
 
+# ** Plot for reports ######
 plot_DDFReportInput <- reactive({
   group <- unlist(group())
   a <- data.frame(nominal())
+  a <- sapply(a, as.factor)
   colnames(a) <- item_names()
-  k <- key()
+  k <- as.factor(key())
 
   if (!input$customizeCheck) {
     adj.method_report <- input$correction_method_plot_DDF
@@ -1679,15 +1711,15 @@ plot_DDFReportInput <- reactive({
 
   graflist = list()
   if (mod$DDFitems[[1]] != "No DDF item detected"){
-  for (i in 1:length(mod$DDFitems)) {
-    g <- plot(mod, item = mod$DDFitems[i])[[1]] +
-      theme(text = element_text(size = 12),
-            plot.title = element_text(size = 12, face = "bold", vjust = 1.5)) +
-      ggtitle(paste("\nDDF multinomial plot for item ", item_numbers()[mod$DDFitems[i]]))
-    graflist[[i]] <- g
-  }
+    for (i in 1:length(mod$DDFitems)) {
+      g <- plot(mod, item = mod$DDFitems[i])[[1]] +
+        theme(text = element_text(size = 12),
+              plot.title = element_text(size = 12, face = "bold", vjust = 1.5)) +
+        ggtitle(paste("\nDDF multinomial plot for item ", item_numbers()[mod$DDFitems[i]]))
+      graflist[[i]] <- g
+    }
   } else {
-   graflist = NULL
+    graflist = NULL
   }
   graflist
 })
