@@ -108,13 +108,14 @@ uiReports <-
                                                                 label = 'Type',
                                                                 choices = list("Combinations", "Distractors"))),
                                             column(3,
-                                                   sliderInput(inputId = 'distractorGroupSlider',
+                                                   sliderInput(inputId = 'distractor_group_report',
                                                                label = 'Number of groups:',
                                                                min = 1,
                                                                max = 5,
                                                                value = 3)),
                                             column(3,
                                                    uiOutput("distractor_report_groups_alert")))),
+                            uiOutput("distractor_groups_alert_report"),
                             tags$hr()),
 
            fluidRow(

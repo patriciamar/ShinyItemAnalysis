@@ -1,8 +1,28 @@
-﻿        ***************************************************************
+        ***************************************************************
         *                                                             *
         *  Changes and Developments in the ShinyItemAnalysis Package  *
         *                                                             *
         ***************************************************************
+
+-------------------------------------------------------
+- Changes in ShinyItemAnalysis 1.3.0-17. (2019-06-24) -
+-------------------------------------------------------
+
+BUG FIXING
+  o DistractorAnalysis() and plotDistractorAnalysis() now handle discrete
+    matching and groups specified via argument cut.points.
+  o Distractor plots in Validity/Items tab now properly handle discrete
+    criterion and the number of groups is correctly descreased when criterion
+    does not have unique cuts.
+  o Bug in Raju in DIF/Fairness tab was fixed. Plots for items are now
+    displayed for dataBov dataset.
+
+MAJOR UPDATES
+  o Checking of unique cuts for distractor plots was added into Reports.
+    Warning is displayed when cuts are not unique and slider is updated.
+
+MINOR UPDATES
+  o Some typos were fixed.
 
 -------------------------------------------------------
 - Changes in ShinyItemAnalysis 1.3.0-16. (2019-06-21) -

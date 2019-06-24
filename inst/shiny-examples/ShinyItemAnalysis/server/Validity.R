@@ -157,11 +157,11 @@ dendrogram_plot_Input <- reactive({
                    cluster = rep(paste("Cluster", 1:numclust), times))
   dendr <- dendro_data(hc, type = "rectangle")
   if(!input$itemnam){
-	
+
 	dendr$labels$label <- label
-  
+
   }
-  
+
   dfd <- merge(dendr$labels, df, by = "label")
 
   ggplot() +
@@ -413,10 +413,12 @@ validity_change_cut_indicator <- reactiveValues(change = FALSE,
                                                 discrete = FALSE)
 
 # ** Updating cut slider ####
-observeEvent(!(input$validity_group %in% validity_admisible_groups()),{
-  validity_change_cut_indicator$change <- TRUE
-  c <- max(validity_admisible_groups())
-  updateSliderInput(session, "validity_group", value = c)
+observeEvent(!(input$validity_group %in% validity_admisible_groups()), {
+  if (!(input$validity_group %in% validity_admisible_groups())){
+    validity_change_cut_indicator$change <- TRUE
+    c <- max(validity_admisible_groups())
+    updateSliderInput(session, "validity_group", value = c)
+  }
 })
 
 # ** Warning for non-unique cut ####
@@ -444,13 +446,14 @@ validity_distractor_plot_Input <- reactive({
   k <- key()
   i <- input$validitydistractorSlider
   cv <- criterion()
-
   multiple.answers <- c(input$type_validity_combinations_distractor == "Combinations")
+
   plotDistractorAnalysis(data = a, key = k, num.group = num.group,
                          item = i,
                          item.name = item_names()[i],
                          multiple.answers = multiple.answers,
-                         matching = cv)
+                         matching = cv,
+                         match.discrete = validity_change_cut_indicator$discrete)
 })
 
 # ** Output validity distractors plot ######
