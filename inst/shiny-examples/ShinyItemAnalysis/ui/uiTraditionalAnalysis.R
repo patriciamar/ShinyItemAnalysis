@@ -74,7 +74,7 @@ uiTraditionalAnalysis <- navbarMenu('Item analysis',
                                              p('With option ', strong('Combinations'), 'all item selection patterns are plotted (e.g. AB, ACD, BC). With
                                                option', strong('Distractors'), 'answers are splitted into distractors (e.g. A, B, C, D).'),
                                              fluidPage(div(class = "input-slider",
-                                                           sliderInput(inputId = 'gr',
+                                                           sliderInput(inputId = 'distractor_group',
                                                                        label = 'Number of groups:',
                                                                        min = 1,
                                                                        max   = 5,

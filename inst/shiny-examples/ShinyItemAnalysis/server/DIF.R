@@ -1131,7 +1131,7 @@ model_DIF_IRT_Lord_plot <- reactive({
     guess <- itemPar3PL(data)[, 3]
   }
 
-  fit <- tryCatch(switch(input$type_print_DIF_IRT_lord,
+  fit <- tryCatch(switch(input$type_plot_DIF_IRT_lord,
                          "1PL" = difLord(Data = data, group = group, focal.name = 1,
                                          model = "1PL",
                                          p.adjust.method = input$correction_method_DIF_IRT_lordItems,
@@ -1340,34 +1340,19 @@ model_DIF_IRT_Raju_plot <- reactive({
     guess <- itemPar3PL(data)[, 3]
   }
 
-  errorCatch <- tryCatch(switch(input$type_plot_DIF_IRT_raju,
-                "1PL" = difRaju(Data = data, group = group, focal.name = 1,
-                                model = "1PL",
-                                p.adjust.method = input$correction_method_DIF_IRT_rajuItems,
-                                purify = input$puri_Raju_plot),
-                "2PL" = difRaju(Data = data, group = group, focal.name = 1,
-                                model = "2PL",
-                                p.adjust.method = input$correction_method_DIF_IRT_rajuItems,
-                                purify = input$puri_Raju_plot),
-                "3PL" = difRaju(Data = data, group = group, focal.name = 1,
-                                model = "3PL", c = guess,
-                                p.adjust.method = input$correction_method_DIF_IRT_rajuItems,
-                                purify = input$puri_Raju_plot)),
-				error = function(e) e)
-
-  fit <- tryCatch(switch(input$type_print_DIF_IRT_lord,
-                         "1PL" = difLord(Data = data, group = group, focal.name = 1,
+  fit <- tryCatch(switch(input$type_plot_DIF_IRT_raju,
+                         "1PL" = difRaju(Data = data, group = group, focal.name = 1,
                                          model = "1PL",
-                                         p.adjust.method = input$correction_method_DIF_IRT_lordSummary,
-                                         purify = input$puri_Lord),
-                         "2PL" = difLord(Data = data, group = group, focal.name = 1,
+                                         p.adjust.method = input$correction_method_DIF_IRT_rajuItems,
+                                         purify = input$puri_Raju_plot),
+                         "2PL" = difRaju(Data = data, group = group, focal.name = 1,
                                          model = "2PL",
-                                         p.adjust.method = input$correction_method_DIF_IRT_lordSummary,
-                                         purify = input$puri_Lord),
-                         "3PL" = difLord(Data = data, group = group, focal.name = 1,
+                                         p.adjust.method = input$correction_method_DIF_IRT_rajuItems,
+                                         purify = input$puri_Raju_plot),
+                         "3PL" = difRaju(Data = data, group = group, focal.name = 1,
                                          model = "3PL", c = guess,
-                                         p.adjust.method = input$correction_method_DIF_IRT_lordSummary,
-                                         purify = input$puri_Lord)),
+                                         p.adjust.method = input$correction_method_DIF_IRT_rajuItems,
+                                         purify = input$puri_Raju_plot)),
                   error = function(e) e)
 
   validate(need(class(fit) == 'Raj',
@@ -1384,7 +1369,7 @@ model_DIF_IRT_Raju_print <- reactive({
     guess <- itemPar3PL(data)[, 3]
   }
 
-  fit <- tryCatch(switch(input$type_plot_DIF_IRT_raju,
+  fit <- tryCatch(switch(input$type_print_DIF_IRT_raju,
                          "1PL" = difRaju(Data = data, group = group, focal.name = 1,
                                          model = "1PL",
                                          p.adjust.method = input$correction_method_DIF_IRT_rajuSummary,
@@ -1425,7 +1410,7 @@ output$plot_DIF_IRT_Raju <- renderPlot({
 
 output$DP_plot_DIF_IRT_Raju <- downloadHandler(
   filename =  function() {
-    paste("fig_DIFIRTRaju_",item_names()[input$difirt_raju_itemSlider],".png", sep = "")
+    paste0("fig_DIFIRTRaju_", item_names()[input$difirt_raju_itemSlider], ".png")
   },
   content = function(file) {
     ggsave(file, plot = plot_DIF_IRT_RajuInput() +
