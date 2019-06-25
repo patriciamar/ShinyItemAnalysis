@@ -102,7 +102,7 @@ DistractorAnalysis <-  function(data, key, p.table = FALSE, num.groups = 3, matc
 
   if (match.discrete){
     score.cut <- sort(unique(scores))
-    if (!missing(cut.points)) warning("Cut points specified in group argument are ignored. Used match.discrete = FALSE to use them. ")
+    if (!missing(cut.points)) warning("Cut points specified in cut.points argument are ignored. Used match.discrete = FALSE to use them. ")
     num.groups <- length(score.cut)
     score.level <- scores
   } else {
@@ -111,7 +111,8 @@ DistractorAnalysis <-  function(data, key, p.table = FALSE, num.groups = 3, matc
       if (any(duplicated(score.cut))) stop("Cut points based on quantiles are not unique. Consider smaller number of groups specified in num.groups argument.")
     } else {
       if (any(duplicated(cut.points))) warning("Cut points provided in cut.points argument are not unique. ")
-      if (any(!(cut.points %in% scores))) stop("Cut points provided in cut.points do not match matching criterion. ")
+      if (any(range(scores)[1] > cut.points | cut.points > range(scores)[2])) warning("Some of cut points provided in cut.points are out of range of matching criterion. ")
+      if (all(range(scores)[1] > cut.points | cut.points > range(scores)[2])) stop("All of cut points provided in cut.points are out of range of matching criterion. ")
       score.cut <- as.numeric(paste(cut.points))
       score.cut <- c(min(scores, na.rm = T), max(scores, na.rm = T), score.cut)
       score.cut <- sort(unique(score.cut))
