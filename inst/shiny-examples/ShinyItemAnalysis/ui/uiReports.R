@@ -229,20 +229,14 @@ uiReports <-
            p(strong("Recommendation: "), "Report generation can be faster and more reliable when you first check
              sections of intended contents. For example, if you wish to include a ", strong("3PL IRT"),
              " model, you can first visit ", strong("IRT models"), "section and ", strong("3PL"), " subsection."),
-		   uiOutput("report_na_alert"),
-		   # uiOutput("report_multinomial_report"),
+           uiOutput("report_na_alert"),
            br(),
-           fluidRow(
-             column(width = 5,
-                    splitLayout(cellWidths = c("45%", "55%"),
-                                actionButton(inputId = "generate",
-                                             label = "Generate report",
-                                             class = "btn btn-primary",
-                                             icon = icon("bar-chart-o")),
-                                uiOutput("download_report_button")
-                    )
-             )
-           ),
+           div(style = "display:inline-block", actionButton(inputId = "generate",
+                                                            label = "Generate report",
+                                                            class = "btn btn-primary",
+                                                            icon = icon("bar-chart-o"))),
+           tags$style(HTML('#download_report_button { margin-left: 10px }')),
+           div(style = "display:inline-block", uiOutput("download_report_button")),
            br(),
            br(),
            br()

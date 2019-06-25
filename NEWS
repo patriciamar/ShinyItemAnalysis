@@ -12,6 +12,11 @@ BUG FIXING
   o Bug in plotDistractorAnalysis() was fixed. X-ticks are now displayed
     even with discrete = T argument.
 
+MINOR UPDATES
+  o Inputs in Validity/Correlation overlaped when window was narrow. Fixed.
+  o Generate and Download buttons overlaped in Reports when window was narrow.
+    Fixed.
+
 -------------------------------------------------------
 - Changes in ShinyItemAnalysis 1.3.0-17. (2019-06-24) -
 -------------------------------------------------------
