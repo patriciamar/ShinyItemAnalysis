@@ -47,9 +47,9 @@ is a \code{data.frame} with following columns:
   \item{\code{RIT}}{correlation between item score and overall test score}
   \item{\code{RIR}}{correlation between item score and overall test score}
   \item{\code{Item criterion}}{correlation of item score with criterion}
-  \item{\code{Item reliability}}{item reliability index}
+  \item{\code{Item reliability}}{item reliability index calculated as \code{cor(item, test)*sqrt(((N-1)/N)*var(item))}, see Allen & Yen (1979), Ch.6.4}
   \item{\code{Item reliability woi}}{item reliability index (scored without item)}
-  \item{\code{Item validity}}{item validity index}
+  \item{\code{Item validity}}{item validity index calculated as \code{cor(item, y)*sqrt(((N-1)/N)*var(item))}, see Allen & Yen (1979), Ch.6.4}
   \item{\code{Item criterion}}{correlation between item and criterion \code{y}}
   \item{\code{Alpha drop}}{Cronbach's alpha without given item}
 With \code{add.bin == TRUE}, indices based on binarized data set are also provided
