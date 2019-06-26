@@ -1,8 +1,21 @@
-        ***************************************************************
+﻿        ***************************************************************
         *                                                             *
         *  Changes and Developments in the ShinyItemAnalysis Package  *
         *                                                             *
         ***************************************************************
+-------------------------------------------------------
+- Changes in ShinyItemAnalysis 1.3.1. (2019-06-26) -
+-------------------------------------------------------
+
+** This is CRAN version, it includes version 1.3.0.-1.-18. **
+
+Besides, following updates are included:
+
+MINOR UPDATES
+  o For proper functionality, package now requires difNLR >=1.2.3
+  o In ItemAnalysis() function, documentation for item reliability and
+    item validity indices has been added (Reported by Lot Fonteyne).
+
 
 -------------------------------------------------------
 - Changes in ShinyItemAnalysis 1.3.0-18. (2019-06-25) -
