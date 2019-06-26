@@ -1,4 +1,4 @@
-﻿        ***************************************************************
+        ***************************************************************
         *                                                             *
         *  Changes and Developments in the ShinyItemAnalysis Package  *
         *                                                             *
@@ -12,7 +12,6 @@
 Besides, following updates are included:
 
 MINOR UPDATES
-  o For proper functionality, package now requires difNLR >=1.2.3
   o In ItemAnalysis() function, documentation for item reliability and
     item validity indices has been added (Reported by Lot Fonteyne).
 

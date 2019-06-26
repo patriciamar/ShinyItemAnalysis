@@ -15,7 +15,7 @@ Imports:
     data.table,
     deltaPlotR,
     DT,
-    difNLR (>= 1.2.3),
+    difNLR (>= 1.2.2),
     difR (>= 5.0),
     ggdendro,
     ggplot2 (>= 2.2.1),
