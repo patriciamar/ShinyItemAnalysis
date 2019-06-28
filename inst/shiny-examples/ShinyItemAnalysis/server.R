@@ -686,7 +686,7 @@ function(input, output, session) {
                       min = 1,
                       max = val,
                       step = 1,
-                      value = c(1, min(3, val)))
+                      value = c(1, val))
   })
   # ** Group present ####
   groupPresent <- reactive({
@@ -766,6 +766,9 @@ function(input, output, session) {
         deltaplotCheck = input$deltaplotCheck,
         deltaplot = {if (groupPresent()) {if (input$deltaplotCheck) {deltaplotInput_report()}}},
         DP_text_normal = {if (groupPresent()) {if (input$deltaplotCheck) {deltaGpurn_report()}}},
+        ### Mantel-Haenszel
+        MHCheck = input$MHCheck,
+        DIF_MH_print = {if (groupPresent()) {if (input$MHCheck) {DIF_MH_model_report()}}},
         ### logistic regression
         logregCheck = input$logregCheck,
         DIF_logistic_plot = {if (groupPresent()) {if (input$logregCheck) {DIF_logistic_plotReport()}}},
@@ -855,6 +858,9 @@ function(input, output, session) {
         deltaplotCheck = input$deltaplotCheck,
         DIF_deltaplot = {if (groupPresent()) {if (input$deltaplotCheck) {deltaplotInput_report()}}},
         DIF_deltaplot_text = {if (groupPresent()) {if (input$deltaplotCheck) {deltaGpurn_report()}}},
+        ### Mantel-Haenszel
+        MHCheck = input$MHCheck,
+        DIF_MH_print = {if (groupPresent()) {if (input$MHCheck) {DIF_MH_model_report()}}},
         ### logistic regression
         logregCheck = input$logregCheck,
         DIF_logistic_plot = {if (groupPresent()) {if (input$logregCheck) {DIF_logistic_plotReport()}}},

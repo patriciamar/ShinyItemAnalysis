@@ -65,6 +65,8 @@ params:
   deltaplotCheck: NA
   DIF_deltaplot: NA
   DIF_deltaplot_text: NA
+  MHCheck: NA
+  DIF_MH_print: NA
   logregCheck: NA
   DIF_logistic_print: NA
   DIF_logistic_plot: NA
@@ -667,191 +669,367 @@ if (params$irt_type != "none") {
 }
 ```
 
-`r if (any(c(params$histCheck, params$deltaplotCheck, params$logregCheck, params$multiCheck)) & params$isGroupPresent) {"\\pagebreak"}`
+<!-- DIF SECTION -->
 
-`r if(any(c(params$histCheck, params$deltaplotCheck, params$logregCheck, params$multiCheck))) {"# DIF/Fairness analysis"}`
-
-`r if(any(c(params$histCheck, params$deltaplotCheck, params$logregCheck, params$multiCheck)) & !params$isGroupPresent){"No group vector is present. DIF and DDF analyses could have not been generated!"}`
-
-`r if(params$isGroupPresent & params$histCheck) {"## Total scores by group"}`
-
-`r if(params$isGroupPresent & params$histCheck) {"### Summary table of total scores in a reference and focal group"}`
-
-`r if(params$isGroupPresent & params$histCheck) {"DIF is not about total scores! Two groups may have the same distribution of total scores, yet, some item may function differently for the two groups. Also, one of the groups may have a signifficantly lower total score, yet, it may happen that there is no DIF item [(see Martinkova et al., 2017)](https://doi.org/10.1187/cbe.16-10-0307)!"}`
-
-```{r table-by-group, echo = FALSE, results = "asis"}
-if (params$histCheck) {
-  if(params$isGroupPresent){
-    table = params$resultsgroup
-    add.to.row$command <- command(table)
-    print(xtable(table, 
-                 digits = c(0, 0, 0, 0, 2, 2, 2, 2, 2), 
-                 align = c('l', rep('c', 8))),
-          booktabs = T, comment = F,
-          tabular.environment = "longtable", floating = F, 
-          add.to.row = add.to.row, hline.after = c(-1, nrow(table)))
-  }
-}
+```{r DIF-section-settings, echo = FALSE}
+show_DIF <- any(c(params$histCheck, params$deltaplotCheck, params$MHCheck, params$logregCheck, params$multiCheck))
+check_group <- !params$isGroupPresent
 ```
 
-\vspace{-2em}
+```{r DIF-section, eval = show_DIF, echo = FALSE, results = 'asis'}
+txt <- ifelse(check_group, "No group vector is present. DIF and DDF analyses could have not been generated!", "")
+cat(paste("\\pagebreak # DIF/Fairness analysis", txt))
+```
 
-`r if (params$isGroupPresent & params$histCheck) {"### Histogram of total score by group"}`
+<!-- DIF SECTION - histograms -->
 
-`r if (params$isGroupPresent & params$histCheck) {paste0("For selected cut-score ", params$cutScoregroup, ", the blue part of histograms shows respondents with a total score above the cut-score, the grey column shows respondents with a  total score equal to the cut-score and the red part of histograms shows respondents below the cut-score.")}`
+```{r DIF-section-histograms-settings, echo = FALSE, results = 'asis'}
+eval_histograms <- (params$histCheck & params$isGroupPresent)
+```
 
-```{r hist-by-group, echo = FALSE, fig.height = 4.3, fig.width = 11}
-if (params$histCheck) {
-  if(params$isGroupPresent){
-    g1 = params$histbyscoregroup0 + 
+```{r DIF-section-histograms-part1, eval = eval_histograms, echo = FALSE, results = 'asis'}
+cat("
+## Total scores by group
+### Summary table of total scores in a reference and focal group
+DIF is not about total scores! Two groups may have the same distribution of total scores, yet, some item may function differently for the two groups. Also, one of the groups may have a signifficantly lower total score, yet, it may happen that there is no DIF item [(see Martinkova et al., 2017)](https://doi.org/10.1187/cbe.16-10-0307)!
+")
+```
+
+```{r DIF-section-histograms-table, echo = FALSE, results = "asis", eval = eval_histograms}
+table = params$resultsgroup
+add.to.row$command <- command(table)
+print(xtable(table, 
+             digits = c(0, 0, 0, 0, 2, 2, 2, 2, 2), 
+             align = c('l', rep('c', 8))),
+      booktabs = T, comment = F,
+      tabular.environment = "longtable", floating = F, 
+      add.to.row = add.to.row, hline.after = c(-1, nrow(table)))
+```
+
+```{r DIF-section-histograms-part2, eval = eval_histograms, echo = FALSE, results = 'asis'}
+txt <- paste0("For selected cut-score ", params$cutScoregroup, ", the blue part of histograms shows respondents with a total score above the cut-score, the grey column shows respondents with a  total score equal to the cut-score and the red part of histograms shows respondents below the cut-score.")
+
+cat(paste("\\vspace{-2em} ### Histogram of total score by group \n", txt))
+```
+
+```{r DIF-section-histograms-plot, echo = FALSE, fig.height = 4.3, fig.width = 11, eval = eval_histograms}
+g1 = params$histbyscoregroup0 + 
       theme(text = element_text(size = 16), 
             plot.title = element_text(face = "bold"),
             plot.margin = margin(0, 0, 0, 0, "cm")) + 
       ggtitle("Reference group")
-    g2 = params$histbyscoregroup1 + 
+g2 = params$histbyscoregroup1 + 
       theme(text = element_text(size = 16), 
             plot.title = element_text(face = "bold"),
             plot.margin = margin(0, 0, 0, 0, "cm")) + 
       ggtitle("Focal group")
-    grid.arrange(g1, g2, nrow = 1)
-  }
-}
+grid.arrange(g1, g2, nrow = 1)
 ```
 
-\vspace{-2em}
-
-`r if(params$isGroupPresent & params$histCheck) {"### Comparison of total scores"}`
-
-`r if(params$isGroupPresent & params$histCheck) {"Test for difference in total scores between reference and focal group is based od Welch two sample t-test. Explanation: Diff. (CI) - difference in means of total scores with 95% confidence interval, t-value - test statistic, df - degrees of freedom, p-value - if it is lower than 0.05, it means significant difference in total scores. "}`
-
-```{r ttest-by-group, echo = FALSE, results = "asis"}
-if (params$histCheck) {
-  if(params$isGroupPresent){
-    table = params$DIF_scores_ttest
-    add.to.row$command <- command(table)
-    print(xtable(table, 
-                 align = rep('c', 5)), 
-          include.rownames = F,
-          booktabs = T, comment = F,
-          tabular.environment = "longtable", floating = F, 
-          add.to.row = add.to.row, hline.after = c(-1, nrow(table)))
-  }
-}
+```{r DIF-section-histograms-part3, eval = eval_histograms, echo = FALSE, results = 'asis'}
+cat("
+\\vspace{-2em} 
+### Comparison of total scores 
+Test for difference in total scores between reference and focal group is based od Welch two sample t-test. Explanation: Diff. (CI) - difference in means of total scores with 95% confidence interval, t-value - test statistic, df - degrees of freedom, p-value - if it is lower than 0.05, it means significant difference in total scores.
+")
 ```
 
-`r if (any(c(params$deltaplotCheck, params$logregCheck, params$multiCheck)) & params$isGroupPresent & params$histCheck) {"\\pagebreak"}`
-
-`r if(params$isGroupPresent & params$deltaplotCheck) {"## Delta plot method"}`
-
-`r if(params$isGroupPresent & params$deltaplotCheck) {"A delta plot compares the proportions of correct answers per item in the two groups. It displays non-linear transformation of these proportions using quantiles of standard normal distributions (so called delta scores) of each item for the two groups in a scatterplot called diagonal plot or delta plot. An item is under suspicion of DIF if the delta point departs considerably from the major axis. "}`
-
-`r if(params$isGroupPresent & params$deltaplotCheck) {"### Summary table"}`
-
-`r if (params$isGroupPresent & params$deltaplotCheck){res <- params$DIF_deltaplot_text; paste0("The detection threshold is ", round(res$thr[length(res$thr)], 2), ". ", ifelse(any(res$DIFitems == "no DIF item detected"), "\\textbf{No DIF item was detected.}", paste0("\\textbf{Items detected as DIF: ", paste(params$itemNames[res$DIFitems], collapse = ", "), ".} ")))}`
-
-`r if(params$isGroupPresent & params$logregCheck) {res <- params$DIF_deltaplot_text; paste(ifelse(res$purify, "Item purification was used.", "Item purification was not applied."))}`
-
-```{r delta-plot-output, echo = FALSE, results = "asis"}
-if (params$deltaplotCheck) {
-  if(params$isGroupPresent){
-    res <- params$DIF_deltaplot_text
-    tab <- cbind(res$Props, res$Deltas, res$Dist[, ncol(res$Dist)])
-    colnames(tab) <- c("Prop. Ref", "Prop. Foc", "Delta Ref", "Delta Foc", "Dist.")
-    rownames(tab) <- params$itemNames
-    add.to.row$command <- command(tab)
-    print(xtable(tab, 
-                 digits = c(0, 3, 3, 3, 3, 3), 
-                 align = c('l', rep('c', 5))), 
-          booktabs = T, comment = F,
-          tabular.environment = "longtable", floating = F, 
-          add.to.row = add.to.row, hline.after = c(-1, nrow(tab)))
-  }
-}
+```{r DIF-section-histograms-ttest, echo = FALSE, results = "asis", eval = eval_histograms}
+table = params$DIF_scores_ttest
+add.to.row$command <- command(table)
+    
+print(xtable(table, align = rep('c', 5)), 
+      include.rownames = F,
+      booktabs = T, comment = F,
+      tabular.environment = "longtable", floating = F, 
+      add.to.row = add.to.row, hline.after = c(-1, nrow(table)))
 ```
 
-`r if(params$isGroupPresent & params$deltaplotCheck) {"### Delta plot"}`
+```{r DIF-section-histograms-part4, eval = eval_histograms, echo = FALSE, results = 'asis'}
+cat("\\pagebreak")
+```
 
-```{r delta-plot, echo = FALSE, fig.height = 4.5, fig.width = 11}
-if (params$deltaplotCheck) {
+<!-- DIF SECTION - delta plot -->
 
-  if(params$isGroupPresent){
-    print(params$DIF_deltaplot +
-            geom_text(size = 0.1) +
-            theme(text = element_text(size = 16), 
-                  plot.title = element_text(face = "bold")) + 
+```{r DIF-section-deltaplot-settings, echo = FALSE, results = 'asis'}
+eval_deltaplot <- (params$deltaplotCheck & params$isGroupPresent)
+if (eval_deltaplot) res_deltaplot <- params$DIF_deltaplot_text
+```
+
+```{r DIF-section-deltaplot-part1, eval = eval_deltaplot, echo = FALSE, results = 'asis'}
+txt1 <- ifelse(res_deltaplot$purify, 
+                     "Item purification was used.", 
+                     "Item purification was not applied.")
+txt2 <- paste0("The detection threshold is ", round(res_deltaplot$thr[length(res_deltaplot$thr)], 2), ". ")
+txt3 <- ifelse(any(res_deltaplot$DIFitems == "no DIF item detected"), 
+              "\\textbf{No DIF item was detected. }", 
+              paste0("\\textbf{Items detected as DIF: ", 
+                     paste(params$itemNames[res_deltaplot$DIFitems], collapse = ", "), ".} "))
+
+cat(paste("
+## Delta plot method
+A delta plot compares the proportions of correct answers per item in the two groups. It displays non-linear transformation of these proportions using quantiles of standard normal distributions (so called delta scores) of each item for the two groups in a scatterplot called diagonal plot or delta plot. An item is under suspicion of DIF if the delta point departs considerably from the major axis. \n
+
+### Summary table \n", 
+txt1, txt2, "\n\n", 
+txt3, "\\vspace{1em}"))
+```
+
+```{r DIF-section-deltaplot-table, echo = FALSE, results = "asis", eval = eval_deltaplot}
+tab <- cbind(res_deltaplot$Props, res_deltaplot$Deltas, res_deltaplot$Dist[, ncol(res_deltaplot$Dist)])
+colnames(tab) <- c("Prop. Ref", "Prop. Foc", "Delta Ref", "Delta Foc", "Dist.")
+rownames(tab) <- params$itemNames
+add.to.row$command <- command(tab)
+    
+print(xtable(tab, 
+             digits = c(0, 3, 3, 3, 3, 3), 
+             align = c('l', rep('c', 5))), 
+      booktabs = T, comment = F,
+      tabular.environment = "longtable", floating = F, 
+      add.to.row = add.to.row, hline.after = c(-1, nrow(tab)))
+```
+
+```{r DIF-section-deltaplot-part2, eval = eval_deltaplot, echo = FALSE, results = 'asis'}
+txt <- ifelse(ncol(tab) < 26, "\\pagebreak", "")
+cat(paste(txt,
+"
+### Delta plot
+Points represents delta scores. Black solid is a major axis. Red dashed lines stand for detection threshold.
+"))
+```
+
+```{r DIF-section-deltaplot-plot, echo = FALSE, fig.height = 4.5, fig.width = 11, eval = eval_deltaplot}
+print(params$DIF_deltaplot +
+        geom_text(size = 0.1) +
+        theme(text = element_text(size = 16), 
+              plot.title = element_text(face = "bold")) + 
       ggtitle(""))
-  }
-}
 ```
 
-`r if(params$isGroupPresent & params$logregCheck & params$deltaplotCheck) {"\\pagebreak"}`
+```{r DIF-section-deltaplot-part3, eval = eval_deltaplot, echo = FALSE, results = 'asis'}
+cat("\\pagebreak")
+```
 
-`r if(params$isGroupPresent & params$logregCheck) {"## Logistic regression method"}`
+<!-- DIF SECTION - Mantel-Haenszel -->
 
-`r if(params$isGroupPresent & params$logregCheck) {"Logistic regression allows for detection of uniform and non-uniform DIF by adding a group specific intercept (uniform DIF) and group specific interaction (non-uniform DIF) into the model and by testing for their significance."}`
+```{r DIF-section-MH-settings, echo = FALSE, results = 'asis'}
+eval_MH <- (params$MHCheck & params$isGroupPresent)
+if (eval_MH) res_MH <- params$DIF_MH_print
+```
 
-`r if(params$isGroupPresent & params$logregCheck) {"### Summary table"}`
+```{r DIF-section-MH-part1, eval = eval_MH, echo = FALSE, results = 'asis'}
+txt1 <- paste(ifelse(res_MH$purification, 
+                     "Item purification was used.", 
+                     "Item purification was not applied."),
+              ifelse(is.null(res_MH$p.adjust.method), 
+                     "No p-value adjustment for multiple comparisons was used.",
+                     paste(switch(res_MH$p.adjust.method, 
+                                  "holm" = "Holm's", 
+                                  "hochberg" = "Hochberg's", 
+                                  "hommel" = "Hommel's", 
+                                  "bonferroni" = "Bonferroni", 
+                                  "BH" = "Benjamini-Hochberg", 
+                                  "BY" = "Benjamini-Yekutieli", 
+                                  "fdr" = "Benjamini-Hochberg", 
+                                  "none" = "No"), 
+                           "p-value adjustment for multiple comparisons was used.")))
+txt2 <- paste0("The detection threshold is ", round(res_MH$thr[length(res_MH$thr)], 2), ". ")
+txt3 <- ifelse(any(res_MH$DIFitems == "No DIF item detected"), 
+                      "\\textbf{No DIF item was detected. }  ", 
+                      paste0("\\textbf{Items detected as DIF: ", 
+                             paste(params$itemNames[res_MH$DIFitems], collapse = ", "), ".}  "))
 
-`r if(params$isGroupPresent & params$logregCheck) {res <- params$DIF_logistic_print; switch(res$type, "both" = "Both types of DIF were tested.", "udif" = "Uniform DIF was tested only.", "nudif" = "Non-uniform DIF was tested only.")}`
+cat(paste("
+## Mantel-Haenszel test
+ \n
 
-`r if (params$isGroupPresent & params$logregCheck) {res <- params$DIF_logistic_print; paste0("The detection threshold is ", round(res$thr[length(res$thr)], 2), ". ", ifelse(any(res$DIFitems == "No DIF item detected"), "\\textbf{No DIF item was detected. }  ", paste0("\\textbf{Items detected as DIF: ", paste(params$itemNames[res$DIFitems], collapse = ", "), ".}  ")))}`
+### Summary table \n", 
+txt1, txt2, "\n\n",
+txt3, "\\vspace{1em}"))
+```
 
-`r if(params$isGroupPresent & params$logregCheck) {res <- params$DIF_logistic_print; paste(ifelse(res$purification, "Item purification was used.", "Item purification was not applied."), ifelse(is.null(res$p.adjust.method), "No p-value adjustment for multiple comparisons was used.", paste(switch(res$p.adjust.method, "holm" = "Holm's", "hochberg" = "Hochberg's", "hommel" = "Hommel's", "bonferroni" = "Bonferroni", "BH" = "Benjamini-Hochberg", "BY" = "Benjamini-Yekutieli", "fdr" = "Benjamini-Hochberg", "none" = "No"), "p-value adjustment for multiple comparisons was used.")))}`
+```{r DIF-section-MH-table, echo = FALSE, results = "asis", eval = eval_MH}
+if (res_MH$p.adjust.method == "none"){
+  star <- symnum(round(res_MH$p.value, 4), 
+               c(0, 0.001, 0.01, 0.05, 0.1, 1), 
+               symbols = c("***", "**", "*", ".", ""))
+  pval <- paste0(sprintf("%.3f", res_MH$p.value), star)
+} else {
+  star <- symnum(round(res_MH$adjusted.p, 4), 
+               c(0, 0.001, 0.01, 0.05, 0.1, 1), 
+               symbols = c("***", "**", "*", ".", ""))
+  pval <- paste0(sprintf("%.3f", res_MH$adjusted.p), star)
+  pval <- cbind(sprintf("%.3f", res_MH$p.value),
+                paste0(sprintf("%.3f", res_MH$adjusted.p), star))
+}
 
-```{r dif-logistic-output, echo = FALSE, results = "asis"}
-if (params$logregCheck) {
- if(params$isGroupPresent){
-  res <- params$DIF_logistic_print
-  
-  if (is.null(res$adjusted.p)){
-    pval <- 1 - pchisq(res$Logistik, df = 2)
-    } else {
-      pval <- res$adjusted.p
-    }
-  star <- ifelse(pval < 0.001, "***", 
-                 ifelse(pval < 0.01, "**",
-                        ifelse(pval < 0.05, "*",
-                               ifelse(pval < 0.1, ".", ""))))
-  pval <- paste(sprintf("%.3f", pval), star, sep = "")
-  ZT <- ifelse(res$deltaR2 < 0.13, "A", 
-               ifelse(res$deltaR2 < 0.26, "B", "C"))
-  JG <- ifelse(res$deltaR2 < 0.035, "A", 
-               ifelse(res$deltaR2 < 0.07, "B", "C"))
-  
-  tab <- cbind(sprintf("%.3f", res$Logistik), pval, 
-               sprintf("%.3f", res$deltaR2), ZT, JG)
-  rownames(tab) <- params$itemNames
-  colnames(tab) <- c("Stat.", "P-value", "R^2", "ZT", "JG")
-  add.to.row$command <- command(tab)
+deltaMH <- round(-2.35 * log(res_MH$alphaMH), 4)
+esize <- symnum(abs(deltaMH), 
+                c(0, 1, 1.5, Inf), 
+                symbols = c("A", "B", "C"))  
+deltaMH <- paste(sprintf("%.3f", deltaMH), esize)
+
+        
+tab <- cbind(sprintf("%.3f", res_MH$MH), pval, 
+             sprintf("%.3f", res_MH$alphaMH), deltaMH)
+rownames(tab) <- params$itemNames
+
+if (dim(tab)[2] == 5){
+  colnames(tab) <- c("Stat.", "P-value", "Adj. p-value", "$\\alpha_{\\text{MH}}$", "$\\delta__{\\text{MH}}$")
   print(xtable(tab, 
-                 digits = c(0, 3, 3, 3, 0, 0), 
-                 align = c('l', 'c', 'l', 'c', 'c', 'c')),
-        booktabs = T, comment = F,
-        tabular.environment = "longtable", floating = F, 
-        add.to.row = add.to.row, hline.after = c(-1, nrow(tab)))
-  } 
+               digits = c(0, 3, 3, 0, 0, 0), 
+               align = c('l', 'r', 'r', 'l', 'r', 'r')),
+        booktabs = T, comment = F, tabular.environment = "longtable", floating = F, 
+        sanitize.text.function = function(x){x}, add.to.row = add.to.row, hline.after = c(-1, nrow(tab)))
+} else {
+  colnames(tab) <- c("Stat.", "P-value", "$\\alpha_{\\text{MH}}$", "$\\delta__{\\text{MH}}$")
+  print(xtable(tab, 
+               digits = c(0, 3, 0, 0, 0, 0), 
+               align = c('l', 'r', 'l', 'r', 'r')),
+        booktabs = T, comment = F, tabular.environment = "longtable", floating = F, 
+        sanitize.text.function = function(x){x}, add.to.row = add.to.row, hline.after = c(-1, nrow(tab)))
 }
 ```
 
-`r if(params$isGroupPresent & params$logregCheck) {"Signif. codes: 0 '\\mbox{*}\\mbox{*}\\mbox{*}' 0.001 '\\mbox{*}\\mbox{*}' 0.01 '\\mbox{*}' 0.05 '.' 0.1 '&nbsp;' 1  "}`
-`r if(params$isGroupPresent & params$logregCheck) {paste("Effect size is based on Nagelkerke's R^2.  ")}`
-`r if(params$isGroupPresent & params$logregCheck) {paste("'A' means negligible, 'B' moderate and 'C' large effect size  ")}`
-`r if(params$isGroupPresent & params$logregCheck) {"The thresholds are:  "}`
-`r if(params$isGroupPresent & params$logregCheck) {"Zumbo & Thomas (ZT): 0 'A' 0.13 'B' 0.26 'C' 1  "}`
-`r if(params$isGroupPresent & params$logregCheck) {"Jodoin & Gierl (JG): 0 'A' 0.035 'B' 0.07 'C' 1.  "}`
+```{r DIF-section-MH-part2, eval = eval_MH, echo = FALSE, results = 'asis'}
+cat("Signif. codes: 0 '\\mbox{*}\\mbox{*}\\mbox{*}' 0.001 '\\mbox{*}\\mbox{*}' 0.01 '\\mbox{*}' 0.05 '.' 0.1 '&nbsp;' 1  
 
-`r if(params$isGroupPresent & params$logregCheck & !is.null(params$DIF_logistic_plot[[1]])) {"### Characteristic curves of DIF items"}`
+Effect size (ETS Delta scale): 
 
-`r if(params$isGroupPresent & params$logregCheck & !is.null(params$DIF_logistic_plot[[1]])) {"Plots are based on DIF logistic procedure without any correction method."}`
+ 'A': negligible effect 
+ 
+ 'B': moderate effect 
+ 
+ 'C': large effect  
 
-`r if(params$isGroupPresent & params$logregCheck & !is.null(params$DIF_logistic_plot[[1]])) {"Points represent a proportion of a correct answer with respect to standardized total score. Their size is determined by count of the respondents who achieved a given level of standardized total score."}`
+Effect size codes: 0 'A' 1.0 'B' 1.5 'C' (for absolute values of $\\delta_{\\text{MH}}$) 
+")
+```
 
-```{r dif-logistic-plot, echo = FALSE, fig.height = 4.5, fig.width = 11}
-if (params$logregCheck) {
-  if (params$isGroupPresent){
-    if (!is.null(params$DIF_logistic_plot[[1]])){
-          for (i in 1:length(params$DIF_logistic_print$DIFitems)){
-      print(params$DIF_logistic_plot[[i]] + 
+```{r DIF-section-MH-part3, eval = eval_MH, echo = FALSE, results = 'asis'}
+cat("\\pagebreak")
+```
+
+<!-- DIF SECTION - logistic regression -->
+
+```{r DIF-section-logistic-settings, echo = FALSE, results = 'asis'}
+eval_logistic <- (params$logregCheck & params$isGroupPresent)
+eval_logistic_plot <- eval_logistic & !is.null(params$DIF_logistic_plot[[1]])
+
+if (eval_logistic) res_logistic <- params$DIF_logistic_print
+```
+
+```{r DIF-section-logistic-part1, eval = eval_logistic, echo = FALSE, results = 'asis'}
+
+txt1 <- switch(res_logistic$type, 
+               "both" = "Both types of DIF were tested.", 
+               "udif" = "Uniform DIF was tested only.", 
+               "nudif" = "Non-uniform DIF was tested only.")
+txt2 <- paste(ifelse(res_logistic$purification, 
+                     "Item purification was used.", 
+                     "Item purification was not applied."),
+              ifelse(is.null(res_logistic$p.adjust.method), 
+                     "No p-value adjustment for multiple comparisons was used.",
+                     paste(switch(res_logistic$p.adjust.method, 
+                                  "holm" = "Holm's", 
+                                  "hochberg" = "Hochberg's", 
+                                  "hommel" = "Hommel's", 
+                                  "bonferroni" = "Bonferroni", 
+                                  "BH" = "Benjamini-Hochberg", 
+                                  "BY" = "Benjamini-Yekutieli", 
+                                  "fdr" = "Benjamini-Hochberg", 
+                                  "none" = "No"), 
+                           "p-value adjustment for multiple comparisons was used.")))
+txt3 <- paste0("The detection threshold is ", round(res_logistic$thr[length(res_logistic$thr)], 2), ". ")
+txt4 <- ifelse(any(res_logistic$DIFitems == "No DIF item detected"), 
+                      "\\textbf{No DIF item was detected. }  ", 
+                      paste0("\\textbf{Items detected as DIF: ", 
+                             paste(params$itemNames[res_logistic$DIFitems], collapse = ", "), ".}  "))
+
+cat(paste("
+## Logistic regression method
+Logistic regression allows for detection of uniform and non-uniform DIF by adding a group specific intercept (uniform DIF) and group specific interaction (non-uniform DIF) into the model and by testing for their significance. \n
+
+### Summary table \n", 
+txt1, txt2, txt3, "\n\n",
+txt4, "\\vspace{1em}"))
+```
+
+```{r DIF-section-logistic-table, echo = FALSE, results = "asis", eval = eval_logistic}
+if (res_logistic$p.adjust.method == "none"){
+  star <- symnum(round(res_logistic$p.value, 4), 
+               c(0, 0.001, 0.01, 0.05, 0.1, 1), 
+               symbols = c("***", "**", "*", ".", ""))
+  pval <- paste0(sprintf("%.3f", res_logistic$p.value), star)
+} else {
+  pval <- res_logistic$adjusted.p
+  star <- symnum(round(res_logistic$adjusted.p, 4), 
+               c(0, 0.001, 0.01, 0.05, 0.1, 1), 
+               symbols = c("***", "**", "*", ".", ""))
+  pval <- cbind(sprintf("%.3f", res_logistic$p.value),
+                paste0(sprintf("%.3f", res_logistic$adjusted.p), star))
+}
+
+ZT <- symnum(round(res_logistic$deltaR2, 4), 
+             c(0, 0.13, 0.26, 1), 
+             symbols = c("A", "B", "C"))
+JG <- symnum(res_logistic$deltaR2, 
+             c(0, 0.035, 0.07, 1), 
+             symbols = c("A","B", "C"))
+  
+tab <- cbind(sprintf("%.3f", res_logistic$Logistik), pval, 
+             sprintf("%.3f", res_logistic$deltaR2), ZT, JG)
+rownames(tab) <- params$itemNames
+if (dim(tab)[2] == 6){
+  colnames(tab) <- c("Stat.", "P-value", "Adj. p-value", "$R^2$", "ZT", "JG")
+  add.to.row$command <- command(tab)
+
+  print(xtable(tab, 
+               digits = c(0, 3, 3, 0, 0, 0, 0), 
+               align = c('l', 'r', 'r', 'l', 'c', 'c', 'c')),
+        booktabs = T, comment = F, tabular.environment = "longtable", floating = F, 
+        sanitize.text.function = function(x){x}, add.to.row = add.to.row, 
+        hline.after = c(-1, nrow(tab)))
+} else {
+  colnames(tab) <- c("Stat.", "P-value", "$R^2$", "ZT", "JG")
+  add.to.row$command <- command(tab)
+
+  print(xtable(tab,
+               digits = c(0, 3, 0, 0, 0, 0),
+               align = c('l', 'r', 'l', 'c', 'c', 'c')),
+        booktabs = T, comment = F, tabular.environment = "longtable", floating = F,
+        sanitize.text.function = function(x){x}, add.to.row = add.to.row,
+        hline.after = c(-1, nrow(tab)))
+}
+```
+
+```{r DIF-section-logistic-part2, eval = eval_logistic, echo = FALSE, results = 'asis'}
+cat("Signif. codes: 0 '\\mbox{*}\\mbox{*}\\mbox{*}' 0.001 '\\mbox{*}\\mbox{*}' 0.01 '\\mbox{*}' 0.05 '.' 0.1 '&nbsp;' 1 
+
+Effect size is based on Nagelkerke's R^2. 
+
+'A' means negligible, 'B' moderate and 'C' large effect size 
+
+The thresholds are: 
+
+Zumbo & Thomas (ZT): 0 'A' 0.13 'B' 0.26 'C' 1 
+
+Jodoin & Gierl (JG): 0 'A' 0.035 'B' 0.07 'C' 1.
+")
+```
+
+```{r DIF-section-logistic-part3, eval = eval_logistic_plot, echo = FALSE, results = 'asis'}
+cat("
+### Characteristic curves of DIF items
+
+Plots are based on DIF logistic procedure without any correction method.
+Points represent a proportion of a correct answer with respect to standardized total score. Their size is determined by count of the respondents who achieved a given level of standardized total score.
+")
+```
+
+```{r DIF-section-logistic-plot, echo = FALSE, fig.height = 4.1, fig.width = 11, eval = eval_logistic_plot}
+for (i in 1:length(params$DIF_logistic_print$DIFitems)){
+  print(params$DIF_logistic_plot[[i]] + 
               theme(text = element_text(size = 16), 
                     plot.title = element_text(size = 16, face = "bold")) + 
               theme(legend.box.just = "top",
@@ -859,50 +1037,77 @@ if (params$logregCheck) {
                     legend.position = c(0, 1), 
                     legend.box = "horizontal", 
                     legend.box.margin = margin(3, 3, 3, 3)))
-      }
-    }
-  }
 }
 ```
 
-`r if (params$multiCheck & params$isGroupPresent & params$logregCheck) {"\\pagebreak"}`
+```{r DIF-section-logistic-part4, eval = eval_logistic, echo = FALSE, results = 'asis'}
+cat("\\pagebreak")
+```
 
-`r if(params$isGroupPresent & params$multiCheck) {"## DDF detection using multinomial regression method"}`
+<!-- DIF SECTION - DDF -->
 
-`r if(params$isGroupPresent & params$multiCheck) {"Differential Distractor Functioning (DDF) occurs when respondents from different groups but with the same knowledge have a different probability of selecting at least one distractor choice. DDF is examined here by a  multinomial log-linear regression model with Z-score and group membership as covariates. "}`
+```{r DIF-section-DDF-settings, echo = FALSE, results = 'asis'}
+eval_DDF <- (params$multiCheck & params$isGroupPresent)
+eval_DDF_plot <- eval_DDF & !is.null(params$DDF_multinomial_plot[[1]])
 
-`r if(params$isGroupPresent & params$multiCheck) {"### Summary table"}`
+if (eval_DDF) res_DDF <- params$DDF_multinomial_print
+```
 
-`r if(params$isGroupPresent & params$multiCheck) {res <- params$DDF_multinomial_print; switch(res$type, "both" = "Both types were of DDF tested.", "udif" = "Uniform DDF was tested only.", "nudif" = "Non-uniform DDF was tested only.")}`
+```{r DIF-section-DDF-part1, eval = eval_DDF, echo = FALSE, results = 'asis'}
+txt1 <- switch(res_DDF$type, 
+               "both" = "Both types were of DDF tested.", 
+               "udif" = "Uniform DDF was tested only.", 
+               "nudif" = "Non-uniform DDF was tested only.")
+txt2 <- ifelse(res_DDF$purification, 
+                     "Item purification was used.", 
+                     "Item purification was not applied.")
+txt3 <- ifelse(is.null(res_DDF$p.adjust.method), 
+               "No p-value adjustment for multiple comparisons was used.", 
+               paste(switch(res_DDF$p.adjust.method, 
+                            "holm" = "Holm's", 
+                            "hochberg" = "Hochberg's", 
+                            "hommel" = "Hommel's", 
+                            "bonferroni" = "Bonferroni", 
+                            "BH" = "Benjamini-Hochberg", 
+                            "BY" = "Benjamini-Yekutieli", 
+                            "fdr" = "Benjamini-Hochberg", 
+                            "none" = "No"), 
+                     "p-value adjustment for multiple comparisons was used."))
+txt4 <- ifelse(any(res_DDF$DDFitems == "No DDF item detected"), 
+               "**No DDF item was detected. **  ", 
+               paste0("**Items detected as DDF: ", paste(params$itemNames[res_DDF$DDFitems], collapse = ", "), ". **  "))
 
-`r if (params$isGroupPresent & params$multiCheck) {res <- params$DDF_multinomial_print; paste0(ifelse(any(res$DDFitems == "No DDF item detected"), "**No DDF item was detected. **  ", paste0("**Items detected as DDF: ", paste(params$itemNames[res$DDFitems], collapse = ", "), ". **  ")))}`
+cat(paste("
+## DDF detection using multinomial regression method
 
-`r if(params$isGroupPresent & params$multiCheck) {res <- params$DDF_multinomial_print; paste(ifelse(res$purification, "Item purification was used.", "Item purification was not applied."), ifelse(is.null(res$p.adjust.method), "No p-value adjustment for multiple comparisons was used.", paste(switch(res$p.adjust.method, "holm" = "Holm's", "hochberg" = "Hochberg's", "hommel" = "Hommel's", "bonferroni" = "Bonferroni", "BH" = "Benjamini-Hochberg", "BY" = "Benjamini-Yekutieli", "fdr" = "Benjamini-Hochberg", "none" = "No"), "p-value adjustment for multiple comparisons was used.")))}`
+Differential Distractor Functioning (DDF) occurs when respondents from different groups but with the same knowledge have a different probability of selecting at least one distractor choice. DDF is examined here by a  multinomial log-linear regression model with Z-score and group membership as covariates. \n
 
-```{r ddf-multi-output, echo = FALSE, results = "asis"}
-if (params$multiCheck) {
-  if(params$isGroupPresent){
-        res <- params$DDF_multinomial_print
-    if (all(res$pval == res$adj.pval)){
-      pval <- res$pval
+### Summary table \n",
+
+txt1, txt2, txt3, "\n\n",
+txt4, "\\vspace{1em}"))
+```
+
+```{r DIF-section-DDF-table, echo = FALSE, results = "asis", eval = eval_DDF}
+if (res_DDF$p.adjust.method == "none"){
+      pval <- res_DDF$pval
       star <- ifelse(pval < 0.001, "***", 
                  ifelse(pval < 0.01, "**",
                         ifelse(pval < 0.05, "*",
                                ifelse(pval < 0.1, ".", ""))))
-      pval <- paste(sprintf("%.3f", res$pval), star, sep = "")
+      pval <- paste(sprintf("%.3f", res_DDF$pval), star, sep = "")
     } else {
-      star <- ifelse(res$adj.pval < 0.001, "***", 
-                 ifelse(res$adj.pval < 0.01, "**",
-                        ifelse(res$adj.pval < 0.05, "*",
-                               ifelse(res$adj.pval < 0.1, ".", ""))))
-      apval <- paste(sprintf("%.3f", res$adj.pval), star, sep = "")
-      pval <- cbind(sprintf("%.3f", res$pval), apval)
+      star <- ifelse(res_DDF$adj.pval < 0.001, "***", 
+                 ifelse(res_DDF$adj.pval < 0.01, "**",
+                        ifelse(res_DDF$adj.pval < 0.05, "*",
+                               ifelse(res_DDF$adj.pval < 0.1, ".", ""))))
+      apval <- paste(sprintf("%.3f", res_DDF$adj.pval), star, sep = "")
+      pval <- cbind(sprintf("%.3f", res_DDF$pval), apval)
     }
     
-    
-    tab <- cbind(sprintf("%.3f", res$Sval), pval)
-    rownames(tab) <- colnames(res$Data)
-    if (ncol(tab) == 2){
+tab <- cbind(sprintf("%.3f", res_DDF$Sval), pval)
+
+if (ncol(tab) == 2){
       colnames(tab) <- c("Stat.", "P-value")
       rownames(tab) <- params$itemNames
       add.to.row$command <- command(tab)
@@ -910,7 +1115,7 @@ if (params$multiCheck) {
             booktabs = T, comment = F,
             tabular.environment = "longtable", floating = F, 
             add.to.row = add.to.row, hline.after = c(-1, nrow(tab)))
-    } else {
+} else {
       colnames(tab) <- c("Stat.", "P-value", "Adj. p-value")
       rownames(tab) <- params$itemNames
       add.to.row$command <- command(tab)
@@ -918,42 +1123,52 @@ if (params$multiCheck) {
             booktabs = T, comment = F,
             tabular.environment = "longtable", floating = F, 
             add.to.row = add.to.row, hline.after = c(-1, nrow(tab)))
-    }
-  }
 }
 ```
 
-`r if(params$isGroupPresent & params$logregCheck) {"Signif. codes: 0 '\\mbox{*}\\mbox{*}\\mbox{*}' 0.001 '\\mbox{*}\\mbox{*}' 0.01 '\\mbox{*}' 0.05 '.' 0.1 '&nbsp;' 1  "}`
+```{r DIF-section-DDF-part2, eval = eval_DDF, echo = FALSE, results = 'asis'}
+cat("
+Signif. codes: 0 '\\mbox{*}\\mbox{*}\\mbox{*}' 0.001 '\\mbox{*}\\mbox{*}' 0.01 '\\mbox{*}' 0.05 '.' 0.1 '&nbsp;' 1  
+")
+```
 
-`r if(params$isGroupPresent & params$multiCheck & !is.null(params$DDF_multinomial_plot[[1]])) {"### Characteristic curves of DDF items"}`
+```{r DIF-section-DDF-part3, eval = eval_DDF_plot, echo = FALSE, results = 'asis'}
+txt <- ifelse(ncol(tab) < 26, "\\pagebreak", "")
+cat(paste(txt,
+"
+### Characteristic curves of DDF items
 
-`r if(params$isGroupPresent & params$multiCheck & !is.null(params$DDF_multinomial_plot[[1]])) {"Points represent a proportion of a selected answer with respect to standardized total score. Their size is determined by count of the respondents who achieved a given level of standardized total score and who selected a given option with respect to the group membership. "}`
+Points represent a proportion of a selected answer with respect to standardized total score. Their size is determined by count of the respondents who achieved a given level of standardized total score and who selected a given option with respect to the group membership. 
+"))
+```
 
-```{r ddf-multi-plot, echo = FALSE, fig.height = 4.5, fig.width = 11}
-if (params$multiCheck) {
-  if(params$isGroupPresent){
-    if (!is.null(params$DDF_multinomial_plot[[1]])){
-      for (i in 1:length(params$DDF_multinomial_print$DDFitems)){
-      print(params$DDF_multinomial_plot[[i]] + 
+
+```{r DIF-section-DDF-plot, echo = FALSE, fig.height = 4.1, fig.width = 11, eval = eval_DDF_plot}
+for (i in 1:length(params$DDF_multinomial_print$DDFitems)){
+  print(params$DDF_multinomial_plot[[i]] + 
               theme(text = element_text(size = 16), 
                     plot.title = element_text(size = 16, face = "bold")))
-      }
-    }
-  }
 }
 ```
 
-
-`r if(params$sessionInfo == 'yes') {"\\pagebreak"}`
-
-`r if(params$sessionInfo == 'yes') {"# Session info"}`
-
-`r if(params$sessionInfo == 'yes') {"Session info provides information about settings of the R console and used packages and their versions which were used for the analysis."}`
-
-```{r session-info, echo = FALSE, results = "markup"}
-if (params$sessionInfo == 'yes'){
-  sessionInfo()  
-}
+```{r DIF-section-closing, eval = show_DIF, echo = FALSE, results = 'asis'}
+cat("\\pagebreak")
 ```
 
+<!-- SESSION INFO -->
 
+```{r session-info-settings, echo = FALSE, results = 'asis'}
+show_sessioninfo <- (params$sessionInfo == 'yes')
+```
+
+```{r session-info-part1, echo = FALSE, results = 'asis', eval = show_sessioninfo}
+cat("
+# Session info
+
+Session info provides information about settings of the R console and used packages and their versions which were used for the analysis.
+")
+```
+
+```{r session-info-print, echo = FALSE, results = "markup", eval = show_sessioninfo}
+sessionInfo()  
+```

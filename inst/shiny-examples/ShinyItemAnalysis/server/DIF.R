@@ -471,7 +471,7 @@ model_DIF_MH <- reactive({
   data <- data.frame(binary())
 
   mod <- difMH(Data = data, group = group, focal.name = 1,
-               p.adjust.method = input$correction_method_MZ_print,
+               p.adjust.method = input$correction_method_MH_print,
                purify = input$puri_MH)
   mod
 })
@@ -483,6 +483,25 @@ model_DIF_MH_tables <- reactive({
 
   mod <- difMH(Data = data, group = group, focal.name = 1)
   # no need for correction, estimates of OR are the same
+  mod
+})
+
+# ** Model for report ######
+DIF_MH_model_report <- reactive({
+  group <- unlist(group())
+  data <- data.frame(binary())
+
+  if (!input$customizeCheck) {
+    p.adjust.method_report = input$correction_method_MH_print
+    purify_report = input$puri_MH
+  } else {
+    p.adjust.method_report = input$correction_method_MH_report
+    purify_report = input$puri_MH_report
+  }
+
+  mod <- difMH(Data = data, group = group, focal.name = 1,
+               p.adjust.method = p.adjust.method_report,
+               purify = purify_report)
   mod
 })
 
@@ -571,11 +590,16 @@ model_DIF_logistic_plot <- reactive({
   group <- unlist(group())
   data <- data.frame(binary())
 
-  mod <- difLogistic(Data = data, group = group, focal.name = 1,
-                     type = input$type_plot_DIF_logistic,
-                     p.adjust.method = input$correction_method_logItems,
-                     purify = input$puri_LR_plot)
-  mod
+  fit <- tryCatch(difLogistic(Data = data, group = group, focal.name = 1,
+                              type = input$type_plot_DIF_logistic,
+                              p.adjust.method = input$correction_method_logItems,
+                              purify = input$puri_LR_plot),
+                  error = function(e) e)
+
+  validate(need(class(fit) == "Logistic",
+                paste0('This method cannot be used on this data. Error returned: ', fit$message)))
+
+  fit
 })
 
 # ** Model for print ######
@@ -583,11 +607,16 @@ model_DIF_logistic_print <- reactive({
   group <- unlist(group())
   data <- data.frame(binary())
 
-  mod <- difLogistic(Data = data, group = group, focal.name = 1,
+  fit <- tryCatch(difLogistic(Data = data, group = group, focal.name = 1,
                      type = input$type_print_DIF_logistic,
                      p.adjust.method = input$correction_method_logSummary,
-                     purify = input$puri_LR)
-  mod
+                     purify = input$puri_LR),
+                  error = function(e) e)
+
+  validate(need(class(fit) == "Logistic",
+                paste0('This method cannot be used on this data. Error returned: ', fit$message)))
+
+  fit
 })
 
 # ** Model for report ######
