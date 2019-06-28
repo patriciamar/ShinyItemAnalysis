@@ -132,7 +132,7 @@ uiDIF <-
                                    Haenszel, 1959).'),
                                  h4('Summary table'),
                                  p('Here you can select ',strong('correction method'),' for multiple comparison or', strong('item purification.')),
-                                 selectInput("correction_method_MZ_print", "Correction method",
+                                 selectInput("correction_method_MH_print", "Correction method",
                                              choices = c("Benjamini-Hochberg" = "BH",
                                                          "Benjamini-Yekutieli" = "BY",
                                                          "Holm" = "holm",

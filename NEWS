@@ -3,6 +3,25 @@
         *  Changes and Developments in the ShinyItemAnalysis Package  *
         *                                                             *
         ***************************************************************
+
+-------------------------------------------------------
+- Changes in ShinyItemAnalysis 1.3.1-1. (2019-06-28) -
+-------------------------------------------------------
+
+BUG FIXING
+  o Minimal number of groups for gULI in DDplot was set to 2 in both Item
+    analysis and Report tabs.
+
+MAJOR UPDATES
+  o Mantel-Haenszel test was added into reports.
+
+MINOR UPDATES
+  o Error for DIF/Logistic was customized.
+  o Text in reports in DIF section was updated.
+  o Tables in DIF section now includes both p-values and adjusted p-values
+    when correction method is applied.
+  o Warning for fancyhdr latex package was solved.
+
 -------------------------------------------------------
 - Changes in ShinyItemAnalysis 1.3.1. (2019-06-26) -
 -------------------------------------------------------
@@ -14,7 +33,6 @@ Besides, following updates are included:
 MINOR UPDATES
   o In ItemAnalysis() function, documentation for item reliability and
     item validity indices has been added (Reported by Lot Fonteyne).
-
 
 -------------------------------------------------------
 - Changes in ShinyItemAnalysis 1.3.0-18. (2019-06-25) -
@@ -240,7 +258,6 @@ MAJOR UPDATES
 MINOR UPDATES
   o Each tab is now open at the top of the page.
 
-
 -------------------------------------------------------
 - Changes in ShinyItemAnalysis 1.3.0-6. (2019-04-18) -
 -------------------------------------------------------
@@ -305,7 +322,6 @@ MAJOR UPDATES
   o Analysis for ordinal items has been added. This includes use of ordinal
     data in sections Summary (histogram of Total scores, success rate),
     Reliability, Validity (correlations, predictive validity),
-
 
 -------------------------------------------------------
 - Changes in ShinyItemAnalysis 1.3.0-1. (2019-03-08) -

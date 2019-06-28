@@ -12,7 +12,7 @@ observe({
                     min = 1,
                     max = val,
                     step = 1,
-                    value = c(1, min(3, val)))
+                    value = c(1, val))
 })
 
 # ** DD plot text ######
@@ -20,7 +20,7 @@ output$DDplot_text <- renderUI({
   range1 <- input$DDplotRangeSlider[[1]]
   range2 <- input$DDplotRangeSlider[[2]]
 
-  if (any(range1!=1, range2!=3, input$DDplotNumGroupsSlider!=3)) {
+  if (any(range1 != 1, range2 != 3, input$DDplotNumGroupsSlider != 3)) {
     HTML(paste(
       "Discrimination is here a difference between the difficulty recorded in the ",
       "<b>", range1, "</b>",
@@ -42,6 +42,9 @@ DDplot_Input <- reactive({
 
   difc_type <- input$DDplotDiscriminationDifficulty
   average.score <- (difc_type == "AVGS")
+
+  validate(need(input$DDplotRangeSlider[[2]] <= input$DDplotNumGroupsSlider,
+                ""))
 
   DDplot(correct, item.names = item_numbers(),
          k = input$DDplotNumGroupsSlider,
