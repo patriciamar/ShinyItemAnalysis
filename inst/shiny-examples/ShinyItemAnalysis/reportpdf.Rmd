@@ -31,11 +31,12 @@ params:
   validity_check: NA
   validity_plot: NA
   validity_table: NA
-  difPlot: NA
+  DDplot: NA
   DDplotRange1: NA
   DDplotRange2: NA
   DDplotNumGroups: NA
   DDplotDiscType: NA
+  cronbachs_alpha_table: NA
   itemexam: NA
   distractor_plot: NA
   type_distractor_plot: NA
@@ -140,7 +141,6 @@ This project was supported by Czech Science Foundation under grant number [GJ15-
 
 ### Summary table of total scores
 The table below summarizes basic characteristics of total scores including minimum and maximum, mean, median, standard deviation, skewness and kurtosis. The kurtosis here is estimated by a sample kurtosis $\frac{m_4}{m_2^2}$, where $m_4$ is the fourth central moment and $m_2$ is the second central moment. The skewness is estimated by a sample skewness $\frac{m_3}{m_2^{3/2}}$, where $m_3$ is the third central moment. The kurtosis for normally distributed scores is near the value of 3 and the skewness is near the value of 0. 
-
 
 ```{r total-scores-table, echo = FALSE, results = 'asis'}
 library(xtable)
@@ -322,13 +322,27 @@ HTML(paste0(txt1, txt2))
 \vspace{1em}
 
 ```{r DD-plot, echo = FALSE, fig.height = 4.5, fig.width = 11}
-params$difPlot + 
+params$DDplot + 
   theme(text = element_text(size = 16), 
         plot.title = element_text(face = "bold")) + 
   ggtitle("")
 ```
 
 \pagebreak
+
+### Cronbach's alpha
+
+Cronbach's alpha is an estimate of internal consistency of a psychometric test. It is a function of the number of items in a test, the average covariance between item-pairs, and the variance of the total score (Cronbach, 1951).
+
+```{r cronbachs-alpha, echo = FALSE, results = "asis"}
+table = params$cronbachs_alpha_table
+add.to.row$command = command(table)
+
+print(xtable(table, digits = c(0, 3, 0), align = rep('c', 3)),
+      booktabs = T, comment = F, include.rownames = FALSE,
+      tabular.environment = "longtable", floating = F,
+      add.to.row = add.to.row, hline.after = c(-1, nrow(table)))
+```
 
 ### Traditional item analysis table 
 
@@ -482,96 +496,95 @@ if (params$distractor_plot_legend_length > 6){
 }
 ```
 
-\pagebreak
+<!-- IRT SECTION -->
 
-`r if (params$irt_type != "none") {"# IRT models"}`
-
-`r if (params$irt_type != "none") {"Item Response Theory (IRT) models are mixed-effect regression models in which the respondent's ability $\\theta$ is assumed to be a latent and is estimated together with item parameters."}`
-
-```{r irt-eq, echo = FALSE, results = "hide"}
-if (params$irt_type == "rasch") {
-  head = " Rasch model"
-  eq = "$$ {P}(Y_{ij} = 1|\\theta_{i}, a, b_j) =\\frac{e^{(\\theta_i - b_j)}}{1 + e^{(\\theta_i - b_j)}} $$"
-}
-
-if (params$irt_type == "1pl") {
-  head = " 1PL IRT model"
-  eq = "$$ {P}(Y_{ij} = 1|\\theta_{i}, a, b_j) =\\frac{e^{a(\\theta_i - b_j)}}{1 + e^{a(\\theta_i - b_j)}} $$"
-}
-
-if (params$irt_type == "2pl") {
-  head = " 2PL IRT model"
-  eq = "$$ {P}(Y_{ij} = 1|\\theta_{i}, a_j, b_j) = \\frac{e^{a_j(\\theta_i - b_j)}}{1 + e^{a_j(\\theta_i - b_j)}}$$"
-}
-
-if (params$irt_type == "3pl") {
-  head = " 3PL IRT model"
-  eq = "$$ {P}(Y_{ij} = 1|\\theta_{i}, a_j, b_j, c_j) = c_j + (1 + c_j) \\frac{e^{a_j(\\theta_i - b_j)}}{1 + e^{a_j(\\theta_i - b_j)}} $$"
-}
-
-if (params$irt_type == "4pl") {
-  head = " 4PL IRT model"
-  eq = "$$ {P}(Y_{ij} = 1|\\theta_{i}, a_j, b_j, c_j, d_j) = c_j + (d_j + c_j) \\frac{e^{a_j(\\theta_i - b_j)}}{1 + e^{a_j(\\theta_i - b_j)}}$$"
-}
-
-if (params$irt_type == "none") {
-  head = " None"
-  eq = ""
-}
+```{r IRT-section-settings, echo = FALSE}
+show_IRT <- (params$irt_type != "none")
 ```
 
-`r if (any(params$wrightMap!="")) {"## Wright (item-person) map using 1PL IRT model"}`
+```{r IRT-section, eval = show_IRT, echo = FALSE, results = "asis"}
+cat("
+\\pagebreak 
+# IRT models
 
-`r if (any(params$wrightMap!="")) {"A Wright map, also called an item-person map, is a graphical tool to display person estimates and item parameters. The person side (left) represents a histogram of estimated knowledge of the  respondents. The item side (right) displays estimates of the difficulty of particular items."}`
-
-
-```{r wright-map, echo = FALSE, results = "hide", fig.height = 4.5, fig.width = 11}
-if (any(params$wrightMap != "")) {
-  ggWrightMap(params$wrightMap[[1]], params$wrightMap[[2]], size = 16)
-}
+Item Response Theory (IRT) models are mixed-effect regression models in which the respondent's ability $\\theta$ is assumed to be a latent and is estimated together with item parameters.")
 ```
 
-\vspace{-2em}
+```{r IRT-wright-map-text, echo = FALSE, results = "asis", eval = show_IRT}
+cat("
+## Wright (item-person) map using 1PL IRT model
+    
+A Wright map, also called an item-person map, is a graphical tool to display person estimates and item parameters. The person side (left) represents a histogram of estimated knowledge of the  respondents. The item side (right) displays estimates of the difficulty of particular items.
+")
+```
 
-`r if (params$irt_type != "none") {"## Selected model"}`
+```{r IRT-wright-map-plot, eval = show_IRT, echo = FALSE, fig.height = 4.5, fig.width = 11}
+params$wrightMap + theme(text = element_text(size = 16))
+```
 
-`r if (params$irt_type != "none") {paste0("All subsequent analyses are based on the selected ", head, ":")}`
-`r if (params$irt_type != "none") {eq}`
+```{r IRT-equation, echo = FALSE, results = "hide", eval = show_IRT}
+IRT_selected_model <- switch(params$irt_type,
+                             "rasch" = "Rasch IRT model",
+                             "1pl"   = "1PL IRT model",
+                             "2pl"   = "2PL IRT model",
+                             "3pl"   = "3PL IRT model",
+                             "4pl"   = "4PL IRT model")
 
-`r if (params$irt_type == "rasch") {"Model parameters are estimated using a marginal maximum likelihood method. Ability $\\theta$ is assumed to follow normal distribution with a freely estimated variance. "}`
+IRT_equation <- switch(params$irt_type,
+                             "rasch" = "$${P}(Y_{ij} = 1|\\theta_{i}, a, b_j) = \\frac{e^{(\\theta_i - b_j)}}{1 + e^{(\\theta_i - b_j)}}$$",
+                             "1pl"   = "$${P}(Y_{ij} = 1|\\theta_{i}, a, b_j) = \\frac{e^{a(\\theta_i - b_j)}}{1 + e^{a(\\theta_i - b_j)}}$$",
+                             "2pl"   = "$${P}(Y_{ij} = 1|\\theta_{i}, a_j, b_j) = \\frac{e^{a_j(\\theta_i - b_j)}}{1 + e^{a_j(\\theta_i - b_j)}}$$",
+                             "3pl"   = "$${P}(Y_{ij} = 1|\\theta_{i}, a_j, b_j, c_j) = c_j + (1 + c_j) \\frac{e^{a_j(\\theta_i - b_j)}}{1 + e^{a_j(\\theta_i - b_j)}}$$",
+                             "4pl"   = "$${P}(Y_{ij} = 1|\\theta_{i}, a_j, b_j, c_j, d_j) = c_j + (d_j + c_j) \\frac{e^{a_j(\\theta_i - b_j)}}{1 + e^{a_j(\\theta_i - b_j)}}$$")
+```
 
-`r if (params$irt_type %in% c("1pl", "2pl", "3pl", "4pl")) {"Model parameters are estimated using a marginal maximum likelihood method. Ability $\\theta$ is assumed to follow standard normal distribution. "}`
+```{r IRT-equation-text, echo = FALSE, results = "asis", eval = show_IRT}
+txt <- ifelse(params$irt_type == "rasch", 
+              "Model parameters are estimated using a marginal maximum likelihood method. Ability $\\theta$ is assumed to follow normal distribution with a freely estimated variance.",
+              "Model parameters are estimated using a marginal maximum likelihood method. Ability $\\theta$ is assumed to follow standard normal distribution." )
 
-`r if (params$irt_type != "none") {"\\pagebreak"}`
+cat("
+## Equation \n\n",
 
-`r if (params$irt_type != "none") {"## Ability estimates"}`
+paste0("All subsequent analyses are based on the selected ", IRT_selected_model, ":"),
+IRT_equation,
+txt
+)
+```
 
-`r if (params$irt_type != "none") {paste0("Ability is estimated using  an EAP algorithm and a ", head ,"  IRT model. The relationship between ability estimates (factor scores, F-scores) and standardized total test scores (Z-scores) can be seen on the scatter plot below. A table with ability estimates for all respondents can be downloaded from the application. ")}`
+```{r IRT-ability-estimates-text, echo = FALSE, results = "asis", eval = show_IRT}
+cat("
+## Ability estimates \n\n",
 
-```{r irtability, echo = FALSE, results = 'asis'}
-if (params$irt_type != "none"){
-  table = params$irtability
-  add.to.row$command <- command(table)
-  print(xtable(table, 
-              digits = 2, 
-              align = c('l', rep('c', 7))),
-        booktabs = T, comment = F, include.rownames = T,
-        tabular.environment = "longtable", floating = F, 
+paste0("Ability is estimated using an EAP algorithm and a ", IRT_selected_model, ". The relationship between ability estimates (factor scores, F-scores) and standardized total test scores (Z-scores) can be seen on the scatter plot below. A table with ability estimates for all respondents can be downloaded from the application. ")
+)
+```
+
+```{r IRT-ability-estimates-table, echo = FALSE, results = "asis", eval = show_IRT}
+table = params$irtability
+add.to.row$command <- command(table)
+  
+print(xtable(table, 
+             digits = 2, 
+             align = c('l', rep('c', 7))),
+      booktabs = T, comment = F, include.rownames = T,
+      tabular.environment = "longtable", floating = F, 
       add.to.row = add.to.row, hline.after = c(-1, nrow(table)))
-}
 ```
 
-```{r irt-3, echo = FALSE, results = "hide", fig.height = 4.5, fig.width = 11}
-if (params$irt_type != "none") {
-  params$irtfactor + 
-    ggtitle('') + 
-    theme(text = element_text(size = 16))
-}
+```{r IRT-ability-scatterplot, echo = FALSE, results = "hide", fig.height = 4.5, fig.width = 11, eval = show_IRT}
+params$irtfactor + 
+  ggtitle('') + 
+  theme(text = element_text(size = 16))
 ```
 
-`r if (params$irt_type != "none") {"## Item characteristic and information curves"}`
+```{r IRT-curves-text, echo = FALSE, results = "asis", eval = show_IRT}
+cat("
+## Item characteristic and information curves
+")
+```
 
-```{r irt-plots-short, echo = FALSE, results = "hide", fig.height = 14.5, fig.width = 11}
+```{r IRT-curves-plots-short, echo = FALSE, results = "hide", fig.height = 14.5, fig.width = 11}
 if (params$irt_type != "none") {
   if (ncol(params$a) < 50){
   g1 <- params$irt + 
@@ -607,7 +620,7 @@ if (params$irt_type != "none") {
 }
 ```
 
-```{r irt-plots-long, echo = FALSE, results = "hide", fig.height = 16, fig.width = 11}
+```{r IRT-curves-plots-long, echo = FALSE, results = "hide", fig.height = 16, fig.width = 11}
 if (params$irt_type != "none") {
   if (ncol(params$a) >= 50){
     g1 <- params$irt + 
@@ -648,25 +661,26 @@ if (params$irt_type != "none") {
 }
 ```
 
+```{r IRT-parameter-estimates-text, echo = FALSE, results = "asis", eval = show_IRT}
+cat("
+\\pagebreak
+## Parameter estimates and item fit
 
-`r if (any(params$wrightMap!="")) {"\\pagebreak"}`
+Estimates of parameters are completed by their standard errors (SE) and by signed Chi-squared statistics S-X2 (see Orlando and Thissen, 2000). P-values lower than 0.05 indicate suspicious items not fitting the selected IRT model. S-X2 is computed only when no missing data are present.
+")
+```
 
-`r if (params$irt_type != "none") {"## Parameter estimates and item fit"}`
-
-`r if (params$irt_type != "none") {"Estimates of parameters are completed by their standard errors (SE) and by signed Chi-squared statistics SX2 (see Orlando and Thissen, 2000). P-values lower than 0.05 indicate suspicious items not fitting the selected IRT model. SX2 is computed only when no missing data are present."}`
-
-```{r irt-estim, echo = FALSE, results = "asis"}
-if (params$irt_type != "none") {
-  table = params$irtcoef
-  colnames(table) = c("$a$", "SE($a$)", "$b$", "SE($b$)", "$c$", "SE($c$)", "$d$", "SE($d$)", "SX-2", "df", "p-value")
-  add.to.row$command <- command(table)
-  print(xtable(table, 
+```{r IRT-parameter-estimates-table, echo = FALSE, eval = show_IRT}
+table = params$irtcoef
+colnames(table) = c("a", "SE(a)", "b", "SE(b)", "c", "SE(c)", "d", "SE(d)", "S-X2", "df", "p-value")
+add.to.row$command <- command(table)
+  
+print(xtable(table, 
              digits = c(0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 2), 
-             align = c('l',rep('c', 11))),
-        booktabs = T, comment = F, include.rownames = T, sanitize.text.function = function(x){x}, 
-        tabular.environment = "longtable", floating = F, 
-      add.to.row = add.to.row, hline.after = c(-1, nrow(table)))
-}
+             align = c('l', rep('c', 11))),
+      booktabs = T, comment = F, include.rownames = T, sanitize.text.function = function(x){x}, 
+      tabular.environment = "longtable", floating = F, add.to.row = add.to.row, 
+      hline.after = c(-1, nrow(table)))
 ```
 
 <!-- DIF SECTION -->

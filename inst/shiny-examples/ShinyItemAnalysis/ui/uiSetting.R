@@ -1,6 +1,7 @@
-uiSetting <- 
+uiSetting <-
   tabPanel("",
            icon = icon("fas fa-cog"),
+           h3("Settings"),
            h4("IRT models setting"),
            p("Set the number of cycles for IRT 1PL, 2PL, 3PL and 4PL models."),
            fluidPage(column(2, numericInput(inputId = "ncycles",

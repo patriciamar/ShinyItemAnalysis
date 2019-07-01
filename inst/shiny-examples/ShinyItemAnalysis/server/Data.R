@@ -314,8 +314,10 @@ data_description_Input <- reactive({
                 Concept Inventory (HCI) from <code>ShinyItemAnalysis</code> R package. The dataset represents responses of
                 651 subjects (405 males, 246 females) to multiple-choice test of 20 items. <code>HCI</code> contains
                 criterion variable -  indicator whether student plans to major in the life sciences. ",
-				Science_mirt = "<code>Science</code> is a 4-item dataset from library <code>mirt/ltm</code> describing attitude to science and technology. Selected items are <code>Comfort</code>, <code>Work</code>, <code>Future</code>, and <code>Benefit</code>. All items are measured on the same scale with response categories:
-				'strongly disagree', 'disagree to some extent', 'agree to some extent', and 'strongly agree'. See Bartholomew et al. (2002) for more details.")
+				        Science_mirt = "<code>Science</code> dataset represents responses of 392 subjects on a 4-item test describing attitude to science and technology from <code>mirt/ltm</code> R package.
+				        Selected items are <code>Comfort</code>, <code>Work</code>, <code>Future</code>, and <code>Benefit</code>. All items are measured on the
+				        same scale with response categories: <code>'strongly disagree'</code>, <code>'disagree to some extent'</code>, <code>'agree to some extent'</code>,
+				        and <code>'strongly agree'</code>. See Bartholomew et al. (2002) for more details.")
   txt
 
 })
