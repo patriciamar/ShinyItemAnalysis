@@ -584,11 +584,13 @@ function(input, output, session) {
                     inputId = "reportDataName",
                     value = paste(dataName(), "dataset"))
   })
+
   # * Report format ####
   formatInput <- reactive({
     format <- input$report_format
     format
   })
+
   # * Setting for report ####
   # ** IRT models ####
   irt_typeInput <- reactive({
@@ -658,28 +660,27 @@ function(input, output, session) {
 
   irtabilityTableInput <- reactive({
     type = input$irt_type_report
-    if (type == "rasch"){out = raschAbilities()}
-    if (type == "1pl")  {out = onePlAbilities()}
-    if (type == "2pl")  {out = twoPlAbilities()}
-    if (type == "3pl")  {out = threePlAbilities()}
-    if (type == "4pl")  {out = fourPlAbilities()}
+    if (type == "rasch"){out = raschAbilities()[, 1:3]}
+    if (type == "1pl")  {out = onePlAbilities()[, 1:3]}
+    if (type == "2pl")  {out = twoPlAbilities()[, 1:3]}
+    if (type == "3pl")  {out = threePlAbilities()[, 1:3]}
+    if (type == "4pl")  {out = fourPlAbilities()[, 1:3]}
     if (type == "none") {out = ""}
 
     if (type != "none") {
-      out<-data.table(Min = apply(X=out[,1:3], FUN=min, 2),
-                      Max = apply(X=out[,1:3], FUN=max, 2),
-                      Mean = apply(X=out[,1:3], FUN=mean, 2),
-                      Median = apply(X=out[,1:3], FUN=median, 2),
-                      SD = apply(X=out[,1:3], FUN=sd, 2),
-                      Skewness = apply(X=out[,1:3], FUN=skewness, 2),
-                      Kurtosis = apply(X=out[,1:3], FUN=kurtosis, 2))
+      out <- data.table(Min = sapply(out, min),
+                        Max = sapply(out, max),
+                        Mean = sapply(out, mean),
+                        Median = sapply(out, median),
+                        SD = sapply(out, sd),
+                        Skewness = sapply(out, skewness),
+                        Kurtosis = sapply(out, kurtosis))
       rownames(out) = c("Total Scores", "Z-Scores", "F-scores")
     }
-
     out
   })
 
-  # ** Double slider inicialization for DD plot report ######
+  # * Double slider inicialization for DD plot report ######
   observe({
     val <- input$DDplotNumGroupsSlider_report
     updateSliderInput(session, "DDplotRangeSlider_report",
@@ -688,16 +689,18 @@ function(input, output, session) {
                       step = 1,
                       value = c(1, val))
   })
-  # ** Group present ####
+
+  # * Group present ####
   groupPresent <- reactive({
     (any(dataset$group != "missing") | is.null(dataset$group))
   })
-  # ** Critetion present ####
+
+  # * Critetion present ####
   criterionPresent <- reactive({
     (any(dataset$criterion != "missing") | is.null(dataset$criterion))
   })
 
-
+  # * Progress bar ####
   observeEvent(input$generate, {
     withProgress(message = "Creating content", value = 0, style = "notification", {
       list(# header
@@ -727,12 +730,13 @@ function(input, output, session) {
         validity_table = {if (input$predict_report) {if (criterionPresent()) {validity_table_Input()} else {""}}},
         incProgress(0.05),
         # item analysis
-        difPlot = DDplot_Input_report(),
+        DDplot = DDplot_Input_report(),
         DDplotRange1 = ifelse(input$customizeCheck, input$DDplotRangeSlider_report[[1]], input$DDplotRangeSlider[[1]]),
         DDplotRange2 = ifelse(input$customizeCheck, input$DDplotRangeSlider_report[[2]], input$DDplotRangeSlider[[2]]),
         DDplotNumGroups = ifelse(input$customizeCheck, input$DDplotNumGroupsSlider_report, input$DDplotNumGroupsSlider),
         DDplotDiscType = ifelse(input$customizeCheck, input$DDplotDiscriminationSelect_report, input$DDplotDiscriminationSelect),
         itemexam = itemanalysis_table_report_Input(),
+        cronbachs_alpha_table = reliability_cronbachalpha_table_Input(),
         incProgress(0.05),
         # distractors
         distractor_plot = report_distractor_plot(),
@@ -743,7 +747,7 @@ function(input, output, session) {
         multiplot = multiplotReportInput(),
         incProgress(0.05),
         # irt
-        wrightMap = oneparamirtWrightMapReportInput_mirt(),
+        wrightMap = oneparamirtWrightMapInput_mirt(),
         irt_type = irt_typeInput(),
         irt = irtInput(),
         irtiic = irtiicInput(),
@@ -784,20 +788,17 @@ function(input, output, session) {
     })
 
     output$download_report_button <- renderUI({
-
-      if(is.null(input$generate)){return(NULL)}
+      if (is.null(input$generate)){return(NULL)}
       downloadButton(outputId = "report",
                      label = "Download report",
                      class = "btn btn-primary")
-
     })
-
   })
 
+  # * Download report ####
   output$report <- downloadHandler(
     filename = reactive({paste0("report.", input$report_format)}),
     content = function(file) {
-
       reportPath <- file.path(getwd(), paste0("report", formatInput(), ".Rmd"))
       parameters <- list(# header
         author = input$reportAuthor,
@@ -823,12 +824,13 @@ function(input, output, session) {
         validity_plot = {if (input$predict_report) {if (criterionPresent()) {validity_plot_Input()} else {""}}},
         validity_table = {if (input$predict_report) {if (criterionPresent()) {validity_table_Input()} else {""}}},
         # item analysis
-        difPlot = DDplot_Input_report(),
+        DDplot = DDplot_Input_report(),
         DDplotRange1 = ifelse(input$customizeCheck, input$DDplotRangeSlider_report[[1]], input$DDplotRangeSlider[[1]]),
         DDplotRange2 = ifelse(input$customizeCheck, input$DDplotRangeSlider_report[[2]], input$DDplotRangeSlider[[2]]),
         DDplotNumGroups = ifelse(input$customizeCheck, input$DDplotNumGroupsSlider_report, input$DDplotNumGroupsSlider),
         DDplotDiscType = ifelse(input$customizeCheck, input$DDplotDiscriminationSelect_report, input$DDplotDiscriminationSelect),
         itemexam = itemanalysis_table_report_Input(),
+        cronbachs_alpha_table = reliability_cronbachalpha_table_Input(),
         # distractors
         distractor_plot = report_distractor_plot(),
         type_distractor_plot = input$type_combinations_distractor_report,
@@ -836,7 +838,7 @@ function(input, output, session) {
         # regression
         multiplot = multiplotReportInput(),
         # irt
-        wrightMap = oneparamirtWrightMapReportInput_mirt(),
+        wrightMap = oneparamirtWrightMapInput_mirt(),
         irt_type = irt_typeInput(),
         irt = irtInput(),
         irtiic = irtiicInput(),
@@ -876,7 +878,6 @@ function(input, output, session) {
                         params = parameters, envir = new.env(parent = globalenv()))
     }
   )
-
 
   #%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   # SETTING ######

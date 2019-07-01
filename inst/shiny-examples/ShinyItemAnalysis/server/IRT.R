@@ -337,7 +337,7 @@ raschWrightMapInput_mirt <- reactive({
   b <- coef(fit, IRTpars = T, simplify = T)$items[, "b"]
   names(b) <- item_names()
 
-  ggWrightMap(fs, b)
+  ggWrightMap(fs, b, item.names = item_names())
 
 })
 
@@ -837,28 +837,7 @@ oneparamirtWrightMapInput_mirt <- reactive({
   b <- coef(fit, IRTpars = T, simplify = T)$items[, "b"]
   names(b) <- item_names()
 
-  ggWrightMap(fs, b)
-})
-
-
-oneparamirtWrightMapReportInput_mirt <- reactive({
-  if (input$irt_type_report != "none") {
-    fit <- one_param_irt_mirt()
-    fs <- as.vector(fscores(fit))
-
-    b <- coef(fit, IRTpars = T, simplify = T)$items[, "b"]
-    names(b) <- item_names()
-
-    list <- list()
-    list$fs <- fs
-    list$b <- b
-
-    list
-  } else {
-    list <- ""
-    list
-  }
-
+  ggWrightMap(fs, b, item.names = item_names())
 })
 
 output$oneparamirtWrightMap_mirt<- renderPlot({
@@ -2743,8 +2722,7 @@ bock_coef_Input <- reactive({
   dims <- sapply(coeftab, dim)[, -(m+1)]
 
   validate(need(length(unique(dims[2, ])) == 1,
-           "Sorry, for this dataset summary table for all items is not available!
-           Try to explore tab Item for parameters of selected items."))
+           "Sorry, for this dataset summary table for all items is not available because of different response patterns in items. Try to explore tab Item for parameters of selected items."))
 
   if (length(unique(dims[2, ])) == 1){
     partab <- t(sapply(1:m, function(i) coeftab[[i]][1, ]))

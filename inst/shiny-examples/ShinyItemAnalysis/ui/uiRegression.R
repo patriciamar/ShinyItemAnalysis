@@ -169,6 +169,7 @@ uiRegression <-
                       selectInput("correction_method_regrmodels", "Correction method",
                                   choices = c("Benjamini-Hochberg" = "BH",
                                               "Benjamini-Yekutieli" = "BY",
+                                              "Bonferroni" = "bonferroni",
                                               "Holm" = "holm",
                                               "Hochberg" = "hochberg",
                                               "Hommel" = "hommel",

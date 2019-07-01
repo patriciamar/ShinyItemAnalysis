@@ -5,6 +5,21 @@
         ***************************************************************
 
 -------------------------------------------------------
+- Changes in ShinyItemAnalysis 1.3.1-2. (2019-07-01) -
+-------------------------------------------------------
+
+MAJOR UPDATES
+  o Cronbach's alpha with CI was added into reports.
+  o Bonferroni correction for multiple comparison was added as an option
+    for correction methods in Regression, DIF and Reports tabs.
+
+MINOR UPDATES
+  o Warning for table for parameters in Bock's IRT model was modified.
+  o Wright map now considers item names when option Keep item names.
+  o Some wording was updated.
+  o Some typos were fixed.
+
+-------------------------------------------------------
 - Changes in ShinyItemAnalysis 1.3.1-1. (2019-06-28) -
 -------------------------------------------------------
 
