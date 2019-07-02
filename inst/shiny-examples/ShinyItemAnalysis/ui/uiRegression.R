@@ -189,9 +189,9 @@ uiRegression <-
              # * CUMULATIVE LOGIT ####
              tabPanel("Cumulative logistic ",
                       h3("Cumulative logistic regression"),
-                      p("Various regression models may be fitted to describe item properties in more detail.", strong("Cumulative
-                                                                                                                      logistic regression")," can model cumulative probabilities, i.e., probabilities to obtain item score higher than or equal to 1,
-                        2, 3, etc. "),
+                      p("Various regression models may be fitted to describe item properties in more detail.",
+                      strong("Cumulative logistic regression")," can model cumulative probabilities, i.e., probabilities
+                      to obtain item score higher than or equal to 1, 2, 3, etc. "),
                       p("Cumulative logistic model can be fitted on selected ", strong("matching criterion"), "- total scores or standardized
                         scores, using classical (slope/intercept) or IRT ", strong("parametrization. ")),
                       br(),

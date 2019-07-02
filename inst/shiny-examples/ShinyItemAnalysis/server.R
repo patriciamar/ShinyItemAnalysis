@@ -469,6 +469,7 @@ function(input, output, session) {
       "slider_nlr_3P_item",
       "slider_nlr_4P_item",
       "cumreg_slider_item",
+      "adjreg_slider_item",
       "multi_slider_item",
       "difMHSlider_item",
       "diflogSlider",
