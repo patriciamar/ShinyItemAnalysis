@@ -119,6 +119,9 @@ plotCumulative <- function(x, type = "cumulative", matching.name = "matching"){
   }
   cols <- c("black", gg_color_hue(num.cat - 1))
 
+  rangex <- c(min(c(df.probs.cum$matching, df.probs.cat$matching, df.emp.cum$matching)),
+              max(c(df.probs.cum$matching, df.probs.cat$matching, df.emp.cum$matching)))
+
   if (type == "cumulative") {
 
     ltys <- as.numeric(cat.obs)
@@ -147,7 +150,7 @@ plotCumulative <- function(x, type = "cumulative", matching.name = "matching"){
       xlab(matching.name) +
       ylab("Cumulative probability") +
       ylim(0, 1) +
-      xlim(min(matching), max(matching)) +
+      xlim(rangex[1], rangex[2]) +
       theme_app() +
       theme(legend.position = c(0.97, 0.03),
             legend.justification = c(0.97, 0.03),
@@ -177,7 +180,7 @@ plotCumulative <- function(x, type = "cumulative", matching.name = "matching"){
       xlab(matching.name) +
       ylab("Category probability") +
       ylim(0, 1) +
-      xlim(min(matching), max(matching)) +
+      xlim(rangex[1], rangex[2]) +
       theme_app() +
       theme(legend.box = "horizontal",
             legend.position = c(0.03, 0.97),

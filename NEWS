@@ -5,6 +5,21 @@
         ***************************************************************
 
 -------------------------------------------------------
+- Changes in ShinyItemAnalysis 1.3.1-3. (2019-07-02) -
+-------------------------------------------------------
+
+BUG FIXING
+  o Bug in Adjacent model in Regression tab was fixed. Matching criterion
+    and parametrization inputs now have effect on model.
+  o Bug in plotMultinomial() was fixed. Function now displays more than 12
+    response patterns as linetype.
+
+MINOR UPDATES
+  o Range for x-axes in plotAdjacent() and plotCumulative() were updated to
+    avoid removing data.
+  o Some typos were fixed.
+
+-------------------------------------------------------
 - Changes in ShinyItemAnalysis 1.3.1-2. (2019-07-01) -
 -------------------------------------------------------
 

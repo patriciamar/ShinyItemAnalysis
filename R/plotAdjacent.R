@@ -92,6 +92,9 @@ plotAdjacent <- function(x, matching.name = "matching") {
   df.emp.cat <- df.emp.cat[df.emp.cat$category %in% paste0("P=", cat), ]
   df.probs.cat <- df.probs.cat[df.probs.cat$category %in% paste0("P=", cat), ]
 
+  rangex <- c(min(c(df.emp.cat$matching, df.probs.cat$matching)),
+              max(c(df.emp.cat$matching, df.probs.cat$matching)))
+
   g <- ggplot() +
     geom_point(data = df.emp.cat,
                aes_string(x = "matching", y = "probability", group = "category",
@@ -106,7 +109,7 @@ plotAdjacent <- function(x, matching.name = "matching") {
     xlab(matching.name) +
     ylab("Category probability") +
     ylim(0, 1) +
-    xlim(min(matching), max(matching)) +
+    xlim(rangex[1], rangex[2]) +
     theme_app() +
     theme(legend.box = "horizontal",
           legend.position = c(0.03, 0.97),

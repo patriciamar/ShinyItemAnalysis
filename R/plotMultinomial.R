@@ -57,6 +57,9 @@ plotMultinomial <- function(x, matching, matching.name = "matching"){
     levels(y) <- cat
   }
 
+  # omit NA values
+  matching <- matching[-as.vector(x$na.action)]
+
   match <- seq(min(matching, na.rm = T), max(matching, na.rm = T), length.out = 300) # matching for curves
 
   coefs <- matrix(coef(x), ncol = 2)
@@ -76,6 +79,10 @@ plotMultinomial <- function(x, matching, matching.name = "matching"){
   df.emp$category <- paste0("P=", df.emp$category)
   df.emp$category <- factor(df.emp$category, levels = levels(df.probs$category))
 
+  k1 <- length(levels(df.probs$category)) %/% 12
+  k2 <- length(levels(df.probs$category)) - 12
+  linetypes <- c(rep(1:12, k1), c(1:12)[1:k2])
+
   # plotting category probabilities
   g <- ggplot() +
     geom_point(data = df.emp,
@@ -86,18 +93,18 @@ plotMultinomial <- function(x, matching, matching.name = "matching"){
               aes_string(x = "matching", y = "probability",
                          colour = "category", linetype = "category"),
               size = 1) +
-
     ylim(0, 1) +
     labs(x = matching.name,
          y = "Probability of answer") +
+    scale_linetype_manual(values = linetypes) +
     theme_app() +
     theme(legend.box = "horizontal",
           legend.position = c(0.03, 0.97),
           legend.justification = c(0.03, 0.97)) +
-    guides(size = guide_legend(order = 1),
-           colour = guide_legend(order = 2),
-           fill = guide_legend(order = 2),
-           linetype = guide_legend(order = 2))
+    guides(size = guide_legend(order = 2),
+           colour = guide_legend(order = 1),
+           fill = guide_legend(order = 1),
+           linetype = guide_legend(order = 1))
 
   return(g)
 }

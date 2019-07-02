@@ -736,7 +736,6 @@ cumreg_model <- reactive({
 # ** Plot with cumulative curves ######
 cumreg_plot_cum_Input <- reactive({
   item <- input$cumreg_slider_item
-  matching <- cumreg_matching()
   fit.cum <- cumreg_model()
   matching.name <- ifelse(input$cumreg_matching == "total", "Total score", "Standardized total score")
 
@@ -905,13 +904,13 @@ adjreg_model <- reactive({
 
   fit.adj <- apply(data, 2, function(x)
     vglm(x ~ matching, family = acat(reverse = FALSE, parallel = TRUE)))
+
   fit.adj
 })
 
 # ** Plot with category curves ######
 adjreg_plot_cat_Input <- reactive({
   item <- input$adjreg_slider_item
-  matching <- adjreg_matching()
   fit.adj <- adjreg_model()
   matching.name <- ifelse(input$adjreg_matching == "total", "Total score", "Standardized total score")
 
@@ -928,7 +927,7 @@ output$adjreg_plot_cat <- renderPlot({
 # ** DB plot with estimated curves of adjacent regression ######
 output$DB_adjreg_plot_cat <- downloadHandler(
   filename =  function() {
-    paste("fig_AdjacentRegressionCurve_category_", item_names()[input$adjreg_slider_item], ".png", sep = "")
+    paste0("fig_AdjacentRegressionCurve_category_", item_names()[input$adjreg_slider_item], ".png")
   },
   content = function(file) {
     ggsave(file, plot = adjreg_plot_cat_Input() +
@@ -944,21 +943,21 @@ output$adjreg_equation <- renderUI({
   txt1 <- ifelse(input$adjreg_matching == "total", "X", "Z")
 
   if (input$adjreg_parametrization == "classic"){
-    txt2 <- paste("b_{0t} + b_1", txt1)
+    txt2 <- paste0("b_{0t} + b_1", txt1)
     txt3 <- paste(txt1, ", b_1, b_{01}, ..., b_{0k}")
   } else {
-    txt2 <- paste("a(", txt1, "- d_{0k})")
+    txt2 <- paste0("a(", txt1, " - d_{0k})")
     txt3 <- paste(txt1, ", a, d_{01}, ..., d_{0k}")
   }
 
-  txt <- paste("$$P(Y = k|", txt3, ") = \\frac{e^{\\sum_{t = 0}^{k}", txt2, "}}{\\sum_{r = 0}^{K}e^{\\sum_{t = 0}^{r}", txt2, "}}$$")
+  txt <- paste0("$$P(Y = k|", txt3, ") = \\frac{e^{\\sum_{t = 0}^{k}", txt2, "}}{\\sum_{r = 0}^{K}e^{\\sum_{t = 0}^{r}", txt2, "}}$$")
 
   withMathJax(HTML(txt))
 })
 
 # ** Interpretation ######
 output$adjreg_interpretation <- renderUI({
-  if (input$cumreg_parametrization == "classic"){
+  if (input$adjreg_parametrization == "classic"){
     par <- c("\\(b_{0k}\\)", "\\(b_1\\)")
   } else {
     par <- c("\\(d_{0k}\\)", "\\(a\\)")
@@ -966,30 +965,30 @@ output$adjreg_interpretation <- renderUI({
 
   txt <- paste("Parameters", par[1], "describe horizontal position of the fitted curves,
                where \\(k = 0, 1, 2, ...\\) is number of obtained scores, parameter", par[2],
-               "describes their common slope. Category probabilities are then calculated as
-               differences of two subsequent cumulative probabilities. ")
+               "describes their common slope. ")
+
   withMathJax(HTML(txt))
 })
 
 # ** Table of parameters ######
 adjreg_coef_tab_Input <- reactive({
-  fit.cum <- cumreg_model()
-  item <- input$cumreg_slider_item
+  item <- input$adjreg_slider_item
+  fit.adj <- adjreg_model()[[item]]
   data <- as.data.frame(ordinal())
 
-  if (input$cumreg_parametrization == "classic"){
-    tab.coef <- coef(fit.cum[[item]])
-    tab.se <- sqrt(diag(vcov(fit.cum[[item]])))
+  if (input$adjreg_parametrization == "classic"){
+    tab.coef <- coef(fit.adj)
+    tab.se <- sqrt(diag(vcov(fit.adj)))
 
     tab <- data.frame(Estimate = tab.coef, SE = tab.se)
-    rownames(tab) <- c(paste0("%%mathit{b}_{", sort(unique(data[, item]))[-1], "}%%"), "%%a%%")
+    rownames(tab) <- c(paste0("%%mathit{b}_{", sort(unique(data[, item]))[-1], "}%%"), "%%mathit{b}_{1}%%")
   } else {
-    tab.coef.tmp <- coef(fit.cum[[item]])
+    tab.coef.tmp <- coef(fit.adj)
     c <- length(tab.coef.tmp)
 
     tab.coef <- c(-tab.coef.tmp[-c]/tab.coef.tmp[c], tab.coef.tmp[c])
 
-    Sigma <- vcov(fit.cum[[item]])
+    Sigma <- vcov(fit.adj)
     c <- length(tab.coef)
     D <- matrix(0, nrow = c, ncol = c)
     diag(D)[-c] <- -1/tab.coef.tmp[c]
@@ -1005,7 +1004,7 @@ adjreg_coef_tab_Input <- reactive({
 })
 
 output$adjreg_coef_tab <- renderTable({
-  cumreg_coef_tab_Input()
+  adjreg_coef_tab_Input()
 },
 include.rownames = T,
 include.colnames = T)
@@ -1015,8 +1014,6 @@ output$adjreg_na_alert <- renderUI({
   txt <- na_score()
   HTML(txt)
 })
-
-
 
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # * MULTINOMIAL ######
@@ -1195,7 +1192,6 @@ output$coef_multi <- renderTable({
 },
 include.rownames = T)
 
-
 # ** Interpretation of parameters of curves of multinomial regression ######
 output$multi_interpretation <- renderUI({
   koef <- summary(multi_model())$coefficients
@@ -1228,5 +1224,3 @@ output$multi_na_alert <- renderUI({
   txt <- na_score()
   HTML(txt)
 })
-
-
