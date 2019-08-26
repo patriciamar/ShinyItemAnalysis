@@ -692,7 +692,9 @@ check_group <- !params$isGroupPresent
 
 ```{r DIF-section, eval = show_DIF, echo = FALSE, results = 'asis'}
 txt <- ifelse(check_group, "No group vector is present. DIF and DDF analyses could have not been generated!", "")
-cat(paste("\\pagebreak # DIF/Fairness analysis", txt))
+cat(paste("\\pagebreak 
+          # DIF/Fairness analysis", 
+          txt))
 ```
 
 <!-- DIF SECTION - histograms -->
@@ -889,16 +891,16 @@ tab <- cbind(sprintf("%.3f", res_MH$MH), pval,
 rownames(tab) <- params$itemNames
 
 if (dim(tab)[2] == 5){
-  colnames(tab) <- c("Stat.", "P-value", "Adj. p-value", "$\\alpha_{\\text{MH}}$", "$\\delta__{\\text{MH}}$")
+  colnames(tab) <- c("Stat.", "P-value", "Adj. p-value", "$\\alpha_{\\text{MH}}$", "$\\delta_{\\text{MH}}$")
   print(xtable(tab, 
                digits = c(0, 3, 3, 0, 0, 0), 
                align = c('l', 'r', 'r', 'l', 'r', 'r')),
         booktabs = T, comment = F, tabular.environment = "longtable", floating = F, 
         sanitize.text.function = function(x){x}, add.to.row = add.to.row, hline.after = c(-1, nrow(tab)))
 } else {
-  colnames(tab) <- c("Stat.", "P-value", "$\\alpha_{\\text{MH}}$", "$\\delta__{\\text{MH}}$")
+  colnames(tab) <- c("Stat.", "P-value", "$\\alpha_{\\text{MH}}$", "$\\delta_{\\text{MH}}$")
   print(xtable(tab, 
-               digits = c(0, 3, 0, 0, 0, 0), 
+               digits = c(0, 3, 0, 0, 0), 
                align = c('l', 'r', 'l', 'r', 'r')),
         booktabs = T, comment = F, tabular.environment = "longtable", floating = F, 
         sanitize.text.function = function(x){x}, add.to.row = add.to.row, hline.after = c(-1, nrow(tab)))

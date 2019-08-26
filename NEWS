@@ -1,8 +1,19 @@
-﻿        ***************************************************************
+        ***************************************************************
         *                                                             *
         *  Changes and Developments in the ShinyItemAnalysis Package  *
         *                                                             *
         ***************************************************************
+
+-------------------------------------------------------
+- Changes in ShinyItemAnalysis 1.3.1-5. (2019-08-26) -
+-------------------------------------------------------
+
+BUG FIXING
+  o Table for MH in PDF reports was fixed.
+
+MAJOR UPDATES
+  o DIF/DDF detection methods for ordinal data were added. DIF/Fairness
+    section was updated.
 
 -------------------------------------------------------
 - Changes in ShinyItemAnalysis 1.3.1-4. (2019-08-07) -

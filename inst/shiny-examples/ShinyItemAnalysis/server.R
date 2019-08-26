@@ -780,8 +780,8 @@ function(input, output, session) {
         DIF_logistic_print = {if (groupPresent()) {if (input$logregCheck) {model_DIF_logistic_print_report()}}},
         ### DDF multinomial
         multiCheck = input$multiCheck,
-        DDF_multinomial_print = {if (groupPresent()) {if (input$multiCheck) {model_DDF_print_report()}}},
-        DDF_multinomial_plot = {if (groupPresent()) {if (input$multiCheck) {plot_DDFReportInput()}}},
+        DDF_multinomial_print = {if (groupPresent()) {if (input$multiCheck) {DDF_multi_model_report()}}},
+        DDF_multinomial_plot = {if (groupPresent()) {if (input$multiCheck) {DDF_multi_plot_report()}}},
         incProgress(0.25),
         ### sessionInfo
         sessionInfo = input$include_session
@@ -870,8 +870,8 @@ function(input, output, session) {
         DIF_logistic_print = {if (groupPresent()) {if (input$logregCheck) {model_DIF_logistic_print_report()}}},
         ### multinomial regression
         multiCheck = input$multiCheck,
-        DDF_multinomial_print = {if (groupPresent()) {if (input$multiCheck) {model_DDF_print_report()}}},
-        DDF_multinomial_plot = {if (groupPresent()) {if (input$multiCheck) {plot_DDFReportInput()}}},
+        DDF_multinomial_print = {if (groupPresent()) {if (input$multiCheck) {DDF_multi_model_report()}}},
+        DDF_multinomial_plot = {if (groupPresent()) {if (input$multiCheck) {DDF_multi_plot_report()}}},
         ### sessionInfo
         sessionInfo = input$include_session
       )

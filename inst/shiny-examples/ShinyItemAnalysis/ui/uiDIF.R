@@ -1,17 +1,18 @@
 uiDIF <-
   navbarMenu("DIF/Fairness",
-             # * SUMMARY ####
+             # DESCRIPTION ####
              "Description",
-             tabPanel('About DIF',
-                      h3('Differential Item Functioning / Item Fairness'),
+             # * ABOUT DIF and DDF ####
+             tabPanel('About DIF and DDF',
+                      h3('Differential Item/Distractor Functioning'),
                       p('Differential item functioning (DIF) occurs when people from different
                         social groups (commonly gender or ethnicity) with the same underlying true
                         ability have a different probability of answering the item correctly.
                         If item functions differently for two groups, it is potentially unfair.
                         In general, two type of DIF can be recognized: if the item has different
-                        difficulty for given two groups with the same discrimination, ',
+                        difficulty (location) for given two groups with the same discrimination, ',
                         strong('uniform'), 'DIF is present (left figure). If the item has different
-                        discrimination and possibly also different difficulty for given two groups, ',
+                        discrimination (slope) and possibly also different difficulty for given two groups, ',
                         strong('non-uniform'), 'DIF is present (right figure)'),
                       br(),
                       img(src = "fig_DIF_uniform.png",
@@ -19,10 +20,12 @@ uiDIF <-
                       img(src = "fig_DIF_nonuniform.png",
                           style = "float: left; width: 32%; margin-right: 16%; margin-left: 2%; margin-bottom: 0.5em;"),
                       br(),
+                      p('Differential distractor functioning (DDF) occurs when people from different
+                        groups but with the same knowledge have different probability of selecting
+                        at least one distractor choice. Again, we recognized two types of DDF - ',
+                        strong('uniform'), ' (left figure) and ', strong('non-uniform'), ' (right figure)'),
                       br()
              ),
-             "----",
-             "Used methods",
              # * TOTAL SCORES ####
              tabPanel("Total scores",
                       h3("Total scores"),
@@ -55,7 +58,10 @@ uiDIF <-
                       h4("Selected R code"),
                       div(code(HTML("library(difNLR)<br>library(ggplot2)<br>library(moments)<br><br>#&nbsp;loading&nbsp;data<br>data(GMAT)<br>data&nbsp;<-&nbsp;GMAT[,&nbsp;1:20]<br>group&nbsp;<-&nbsp;GMAT[,&nbsp;\"group\"]<br><br>#&nbsp;total&nbsp;score&nbsp;calculation&nbsp;wrt&nbsp;group<br>score0&nbsp;<-&nbsp;apply(data,&nbsp;1,&nbsp;sum)[group&nbsp;==&nbsp;0]<br>score1&nbsp;<-&nbsp;apply(data,&nbsp;1,&nbsp;sum)[group&nbsp;==&nbsp;1]<br><br>#&nbsp;summary&nbsp;of&nbsp;total&nbsp;score&nbsp;<br>rbind(c(length(score0),&nbsp;min(score0),&nbsp;max(score0),&nbsp;mean(score0),&nbsp;median(score0),&nbsp;sd(score0),&nbsp;skewness(score0),&nbsp;kurtosis(score0)),<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;c(length(score1),&nbsp;min(score1),&nbsp;max(score1),&nbsp;mean(score1),&nbsp;median(score1),&nbsp;sd(score1),&nbsp;skewness(score1),&nbsp;kurtosis(score1)))<br><br>#&nbsp;colors&nbsp;by&nbsp;cut-score&nbsp;wrt&nbsp;group<br>cut&nbsp;<-&nbsp;12&nbsp;#&nbsp;cut-score&nbsp;<br>color0&nbsp;<-&nbsp;c(rep(\"red\",&nbsp;cut&nbsp;-&nbsp;min(score0)),&nbsp;\"gray\",&nbsp;rep(\"blue\",&nbsp;max(score0)&nbsp;-&nbsp;cut))<br>color1&nbsp;<-&nbsp;c(rep(\"red\",&nbsp;cut&nbsp;-&nbsp;min(score1)),&nbsp;\"gray\",&nbsp;rep(\"blue\",&nbsp;max(score1)&nbsp;-&nbsp;cut))<br><br>#&nbsp;histogram&nbsp;for&nbsp;reference&nbsp;group<br>ggplot(data&nbsp;=&nbsp;data.frame(score0),&nbsp;aes(score0))&nbsp;+&nbsp;<br>&nbsp;&nbsp;geom_histogram(binwidth&nbsp;=&nbsp;1,&nbsp;fill&nbsp;=&nbsp;color0,&nbsp;col&nbsp;=&nbsp;\"black\")&nbsp;+&nbsp;<br>&nbsp;&nbsp;xlab(\"Total&nbsp;score\")&nbsp;+&nbsp;<br>&nbsp;&nbsp;ylab(\"Number&nbsp;of&nbsp;respondents\")&nbsp;+&nbsp;<br>&nbsp;&nbsp;ggtitle(\"Reference&nbsp;group\")&nbsp;+&nbsp;<br>&nbsp;&nbsp;theme_app()<br><br>#&nbsp;histogram&nbsp;for&nbsp;focal&nbsp;group<br>ggplot(data&nbsp;=&nbsp;data.frame(score1),&nbsp;aes(score1))&nbsp;+&nbsp;<br>&nbsp;&nbsp;geom_histogram(binwidth&nbsp;=&nbsp;1,&nbsp;fill&nbsp;=&nbsp;color1,&nbsp;col&nbsp;=&nbsp;\"black\")&nbsp;+&nbsp;<br>&nbsp;&nbsp;xlab(\"Total&nbsp;score\")&nbsp;+&nbsp;<br>&nbsp;&nbsp;ylab(\"Number&nbsp;of&nbsp;respondents\")&nbsp;+&nbsp;<br>&nbsp;&nbsp;ggtitle(\"Focal&nbsp;group\")&nbsp;+&nbsp;<br>&nbsp;&nbsp;theme_app()<br><br>#&nbsp;t-test&nbsp;to&nbsp;compare&nbsp;total&nbsp;scores<br>t.test(score0,&nbsp;score1)"))),
                       br()
-             ),
+                      ),
+             # DICHOTOMOUS METHODS ####
+             "----",
+             "Dichotomous methods",
              # * DELTA PLOTS ####
              tabPanel("Delta plots",
                       h3("Delta plot"),
@@ -120,7 +126,7 @@ uiDIF <-
                           br(),
                           code('diagPlot(deltascores, thr.draw = T)')),
                       br()
-             ),
+                      ),
              # * MANTEL-HAENSZEL ####
              tabPanel("Mantel-Haenszel",
                       tabsetPanel(
@@ -163,7 +169,7 @@ uiDIF <-
                                      br(),
                                      code('fit')),
                                  br()
-                        ),
+                                 ),
                         tabPanel('Items',
                                  h3("Mantel-Haenszel test"),
                                  p('Mantel-Haenszel test is DIF detection method based on contingency
@@ -233,7 +239,7 @@ uiDIF <-
                                      br(),
                                      code('fit$alphaMH')),
                                  br()
-                        )
+                                 )
                       )
              ),
              # * LOGISTIC ####
@@ -255,7 +261,7 @@ uiDIF <-
                                                             label = 'Type',
                                                             choices = c("\\(H_{0}\\): Any DIF vs. \\(H_{1}\\): No DIF" = 'both',
                                                                         "\\(H_{0}\\): Uniform DIF vs. \\(H_{1}\\): No DIF" = 'udif',
-                                                                        "\\(H_{0}\\): Non-Uniform DIF vs. \\(H_{1}\\): Uniform DIF" = 'nudif'),
+                                                                        "\\(H_{0}\\): Non-uniform DIF vs. \\(H_{1}\\): Uniform DIF" = 'nudif'),
                                                             selected = 'both')),
                                            div(style = "display: inline-block; vertical-align: top; width: 5%; "),
                                            div(style = "display: inline-block; vertical-align: top; width: 20%; ",
@@ -296,7 +302,7 @@ uiDIF <-
                                      br(),
                                      code('fit')),
                                  br()
-                        ),
+                                 ),
                         # ** Items ####
                         tabPanel('Items',
                                  h3('Logistic regression on total scores'),
@@ -310,7 +316,7 @@ uiDIF <-
                                                             label = 'Type',
                                                             choices = c("\\(H_{0}\\): Any DIF vs. \\(H_{1}\\): No DIF" = 'both',
                                                                         "\\(H_{0}\\): Uniform DIF vs. \\(H_{1}\\): No DIF" = 'udif',
-                                                                        "\\(H_{0}\\): Non-Uniform DIF vs. \\(H_{1}\\): Uniform DIF" = 'nudif'),
+                                                                        "\\(H_{0}\\): Non-uniform DIF vs. \\(H_{1}\\): Uniform DIF" = 'nudif'),
                                                             selected = 'both')),
                                            div(style = "display: inline-block; vertical-align: top; width: 5%; "),
                                            div(style = "display: inline-block; vertical-align: top; width: 20%; ",
@@ -381,9 +387,9 @@ uiDIF <-
                                      br(),
                                      code('fit$logitPar')),
                                  br()
-                        )
-                      )
-             ),
+                                 )
+                                 )
+                        ),
              # * GENERALIZED LOGISTIC ####
              tabPanel("Generalized logistic",
                       tabsetPanel(
@@ -457,7 +463,7 @@ uiDIF <-
                                  h4("Selected R code"),
                                  div(code(HTML("library(difNLR)&nbsp;<br><br>#&nbsp;loading&nbsp;data&nbsp;<br>data(GMAT)&nbsp;<br>Data&nbsp;<-&nbsp;GMAT[,&nbsp;1:20]&nbsp;<br>group&nbsp;<-&nbsp;GMAT[,&nbsp;\"group\"]&nbsp;<br><br>#&nbsp;generalized&nbsp;logistic&nbsp;regression&nbsp;DIF&nbsp;method&nbsp;<br>#&nbsp;using&nbsp;3PL&nbsp;model&nbsp;with&nbsp;the&nbsp;same&nbsp;guessing&nbsp;parameter&nbsp;for&nbsp;both&nbsp;groups&nbsp;<br>fit&nbsp;<-&nbsp;difNLR(Data&nbsp;=&nbsp;Data,&nbsp;group&nbsp;=&nbsp;group,&nbsp;focal.name&nbsp;=&nbsp;1,&nbsp;model&nbsp;=&nbsp;\"3PLcg\",&nbsp;type&nbsp;=&nbsp;\"both\",&nbsp;p.adjust.method&nbsp;=&nbsp;\"none\")&nbsp;<br>fit"))),
                                  br()
-                        ),
+                                 ),
                         # ** Items ####
                         tabPanel('Items',
                                  h3('Generalized logistic regression'),
@@ -540,9 +546,9 @@ uiDIF <-
                                  h4("Selected R code"),
                                  div(code(HTML("library(difNLR)&nbsp;<br><br>#&nbsp;loading&nbsp;data&nbsp;<br>data(GMAT)&nbsp;<br>Data&nbsp;<-&nbsp;GMAT[,&nbsp;1:20]&nbsp;<br>group&nbsp;<-&nbsp;GMAT[,&nbsp;\"group\"]&nbsp;<br><br>#&nbsp;generalized&nbsp;logistic&nbsp;regression&nbsp;DIF&nbsp;method&nbsp;<br>#&nbsp;using&nbsp;3PL&nbsp;model&nbsp;with&nbsp;the&nbsp;same&nbsp;guessing&nbsp;parameter&nbsp;for&nbsp;both&nbsp;groups&nbsp;<br>fit&nbsp;<-&nbsp;difNLR(Data&nbsp;=&nbsp;Data,&nbsp;group&nbsp;=&nbsp;group,&nbsp;focal.name&nbsp;=&nbsp;1,&nbsp;model&nbsp;=&nbsp;\"3PLcg\",&nbsp;type&nbsp;=&nbsp;\"both\",&nbsp;p.adjust.method&nbsp;=&nbsp;\"none\")&nbsp;<br><br>#&nbsp;plot&nbsp;of&nbsp;characteristic&nbsp;curve&nbsp;of&nbsp;item&nbsp;1&nbsp;<br>plot(fit,&nbsp;item&nbsp;=&nbsp;1)&nbsp;<br><br>#&nbsp;table&nbsp;of&nbsp;estimated&nbsp;coefficients&nbsp;<br>fit$nlrPAR"))),
                                  br()
-                        )
-                      )
-             ),
+                                 )
+                                 )
+                        ),
              # * IRT LORD ####
              tabPanel("IRT Lord",
                       tabsetPanel(
@@ -625,7 +631,7 @@ uiDIF <-
                                      br(),
                                      code('fit3PL')),
                                  br()
-                        ),
+                                 ),
                         # ** Items ####
                         tabPanel('Items',
                                  h3('Lord test for IRT models'),
@@ -739,9 +745,9 @@ uiDIF <-
                                      br(),
                                      code('plotDIFirt(parameters = tab_coef3PL, item = 1, test = "Lord")')),
                                  br()
+                                 )
                         )
-                      )
-             ),
+                        ),
              # * IRT RAJU ####
              tabPanel("IRT Raju",
                       tabsetPanel(
@@ -825,7 +831,7 @@ uiDIF <-
                                      br(),
                                      code('fit3PL')),
                                  br()
-                        ),
+                                 ),
                         # ** Items ####
                         tabPanel('Items',
                                  h3('Raju test for IRT models'),
@@ -941,8 +947,8 @@ uiDIF <-
                                      br(),
                                      code('plotDIFirt(parameters = tab_coef3PL, item = 1, test = "Raju")')),
                                  br())
-                      )
-             ),
+                        )
+                        ),
              # * SIBTEST ####
              tabPanel("SIBTEST",
                       h3("SIBTEST"),
@@ -977,151 +983,6 @@ uiDIF <-
                       h4("Selected code"),
                       div(code(HTML("library(difNLR)<br>library(difR)<br><br>#&nbsp;loading&nbsp;data<br>data(GMAT)<br>data&nbsp;<-&nbsp;GMAT[,&nbsp;1:20]<br>group&nbsp;<-&nbsp;GMAT[,&nbsp;\"group\"]<br><br>#&nbsp;SIBTEST&nbsp;(uniform&nbsp;DIF)<br>fit&nbsp;<-&nbsp;difMH(Data&nbsp;=&nbsp;data,&nbsp;group&nbsp;=&nbsp;group,&nbsp;focal.name&nbsp;=&nbsp;1,&nbsp;type&nbsp;=&nbsp;\"udif\",&nbsp;p.adjust.method&nbsp;=&nbsp;\"none\",&nbsp;purify&nbsp;=&nbsp;F)<br>fit<br><br>#&nbsp;Crossing-SIBTEST&nbsp;(non-uniform&nbsp;DIF)<br>fit&nbsp;<-&nbsp;difMH(Data&nbsp;=&nbsp;data,&nbsp;group&nbsp;=&nbsp;group,&nbsp;focal.name&nbsp;=&nbsp;1,&nbsp;type&nbsp;=&nbsp;\"nudif\",&nbsp;p.adjust.method&nbsp;=&nbsp;\"none\",&nbsp;purify&nbsp;=&nbsp;F)<br>fit"))),
                       br()),
-             # * DDF ####
-             tabPanel("DDF",
-                      tabsetPanel(
-                        # ** Summary ####
-                        tabPanel('Summary',
-                                 h3('Differential Distractor Functioning with multinomial log-linear regression model'),
-                                 p('Differential Distractor Functioning (DDF) occurs when people from different
-                                   groups but with the same knowledge have different probability of selecting
-                                   at least one distractor choice. DDF is here examined by multinomial log-linear
-                                   regression model with Z-score and group membership as covariates. '),
-                                 h4('Equation'),
-                                 p('For ', strong('K'), ' possible test choices is the probability of the correct answer for
-                                   person ', strong('i'), ' with standardized total score ', strong('Z'), ' and group
-                                   membership ', strong('G'),' in item ', strong('j'), 'given by the following equation: '),
-                                 ('$$\\mathrm{P}(Y_{ij} = K|Z_i, G_i, b_{jl0}, b_{jl1}, b_{jl2}, b_{jl3}, l = 1, \\dots, K-1) =
-                                  \\frac{1}{1 + \\sum_l e^{\\left( b_{il0} + b_{il1} Z + b_{il2} G + b_{il3} Z:G\\right)}}$$'),
-                                 p('The probability of choosing distractor ', strong('k'), ' is then given by: '),
-                                 ('$$\\mathrm{P}(Y_{ij} = k|Z_i, G_i, b_{jl0}, b_{jl1}, b_{jl2}, b_{jl3}, l = 1, \\dots, K-1) =
-                                  \\frac{e^{\\left( b_{jk0} + b_{jk1} Z_i + b_{jk2} G_i + b_{jk3} Z_i:G_i\\right)}}
-                                  {1 + \\sum_l e^{\\left( b_{jl0} + b_{jl1} Z_i + b_{jl2} G_i + b_{jl3} Z_i:G_i\\right)}}$$'),
-                                 br(),
-                                 h4('Summary table'),
-                                 p('Here you can choose ', strong('type'), ' of DIF to test.  With uniform DIF, SIBTEST is applied, while with non-uniform DIF, the Crossing-SIBTEST method is used instead. You can also select ', strong('correction method'), ' for multiple comparison or', strong('item purification.')),
-                                 fluidPage(div(style = "display: inline-block; vertical-align: top; width: 27%; ",
-                                               withMathJax(),
-                                               radioButtons(inputId = 'type_print_DDF',
-                                                            label = 'Type',
-                                                            choices = c("\\(H_{0}\\): Any DIF vs. \\(H_{1}\\): No DIF" = 'both',
-                                                                        "\\(H_{0}\\): Uniform DIF vs. \\(H_{1}\\): No DIF" = 'udif',
-                                                                        "\\(H_{0}\\): Non-Uniform DIF vs. \\(H_{1}\\): Uniform DIF" = 'nudif'),
-                                                            selected = 'both')),
-                                           div(style = "display: inline-block; vertical-align: top; width: 5%; "),
-                                           div(style = "display: inline-block; vertical-align: top; width: 20%; ",
-                                               selectInput(inputId = "correction_method_print_DDF",
-                                                           label = "Correction method",
-                                                           choices = c("Benjamini-Hochberg" = "BH",
-                                                                       "Benjamini-Yekutieli" = "BY",
-                                                                       "Bonferroni" = "bonferroni",
-                                                                       "Holm" = "holm",
-                                                                       "Hochberg" = "hochberg",
-                                                                       "Hommel" = "hommel",
-                                                                       "None" = "none"),
-                                                           selected = "none"),
-                                               checkboxInput(inputId = 'puri_DDF_print',
-                                                             label = 'Item purification',
-                                                             value = FALSE))),
-                                 uiOutput("DDF_na_alert"),
-                                 verbatimTextOutput('print_DDF'),
-                                 br(),
-                                 h4("Selected R code"),
-                                 div(code('library(difNLR)'),
-                                     br(),
-                                     code('data(GMATtest, GMATkey)'),
-                                     br(),
-                                     code('Data <- GMATtest[, 1:20]'),
-                                     br(),
-                                     code('group <- GMATtest[, "group"]'),
-                                     br(),
-                                     code('key <- GMATkey'),
-                                     br(),
-                                     br(),
-                                     code('# DDF with difNLR package'),
-                                     br(),
-                                     code('fit <- ddfMLR(Data, group, focal.name = 1, key, type = "both",
-                                          p.adjust.method = "none")'),
-                                     br(),
-                                     code('fit')),
-                                 br()
-                        ),
-                        # ** Items ####
-                        tabPanel('Items',
-                                 h3('Differential Distractor Functioning with multinomial log-linear regression model'),
-                                 p('Differential Distractor Functioning (DDF) occurs when people from different
-                                   groups but with the same knowledge have different probability of selecting
-                                   at least one distractor choice. DDF is here examined by Multinomial Log-linear
-                                   Regression model with Z-score and group membership as covariates. '),
-                                 h4("Plot with estimated DDF curves"),
-                                 p('Here you can choose ', strong('type'), ' of DIF to test.  With uniform DIF, SIBTEST is applied, while with non-uniform DIF, the Crossing-SIBTEST method is used instead. You can also select ', strong('correction method'),' for multiple comparison or', strong('item purification.')),
-                                 fluidPage(div(style = "display: inline-block; vertical-align: top; width: 27%; ",
-                                               withMathJax(),
-                                               radioButtons(inputId = 'type_plot_DDF',
-                                                            label = 'Type',
-                                                            choices = c("\\(H_{0}\\): Any DIF vs. \\(H_{1}\\): No DIF" = 'both',
-                                                                        "\\(H_{0}\\): Uniform DIF vs. \\(H_{1}\\): No DIF" = 'udif',
-                                                                        "\\(H_{0}\\): Non-Uniform DIF vs. \\(H_{1}\\): Uniform DIF" = 'nudif'),
-                                                            selected = 'both')),
-                                           div(style = "display: inline-block; vertical-align: top; width: 5%; "),
-                                           div(style = "display: inline-block; vertical-align: top; width: 20%; ",
-                                               selectInput(inputId = "correction_method_plot_DDF",
-                                                           label = "Correction method",
-                                                           choices = c("Benjamini-Hochberg" = "BH",
-                                                                       "Benjamini-Yekutieli" = "BY",
-                                                                       "Bonferroni" = "bonferroni",
-                                                                       "Holm" = "holm",
-                                                                       "Hochberg" = "hochberg",
-                                                                       "Hommel" = "hommel",
-                                                                       "None" = "none"),
-                                                           selected = "none"),
-                                               checkboxInput(inputId = 'puri_DDF_plot',
-                                                             label = 'Item purification',
-                                                             value = FALSE)),
-                                           div(style = "display: inline-block; vertical-align: top; width: 5%; "),
-                                           div(style = "display: inline-block; vertical-align: top; width: 20%; ",
-                                               sliderInput(inputId = "ddfSlider",
-                                                           label = "Item",
-                                                           min = 1,
-                                                           value = 1,
-                                                           max = 10,
-                                                           step = 1,
-                                                           animate = animationOptions(interval = 1600)))),
-                                 p('Points represent proportion of selected answer with respect to standardized
-                                   total score. Their size is determined by count of respondents who achieved
-                                   given level of standardized total score and who selected given option with
-                                   respect to the group membership.'),
-                                 plotOutput('plot_DDF'),
-                                 downloadButton("DP_plot_DDF", label = "Download figure"),
-                                 h4("Equation"),
-                                 fluidRow(column(12, align = "center", uiOutput('DDFeq'))),
-                                 h4("Table of parameters"),
-                                 fluidRow(column(12, align = "center", tableOutput('tab_coef_DDF'))),
-                                 br(),
-                                 h4("Selected R code"),
-                                 div(code('library(difNLR)'),
-                                     br(),
-                                     code('data(GMATtest, GMATkey)'),
-                                     br(),
-                                     code('Data <- GMATtest[, 1:20]'),
-                                     br(),
-                                     code('group <- GMATtest[, "group"]'),
-                                     br(),
-                                     code('key <- GMATkey'),
-                                     br(),
-                                     br(),
-                                     code('# DDF with difNLR package'),
-                                     br(),
-                                     code('fit <- ddfMLR(Data, group, focal.name = 1, key, type = "both",
-                                          p.adjust.method = "none")'),
-                                     br(),
-                                     code('# Estimated coefficients of item 1'),
-                                     br(),
-                                     code('fit$mlrPAR[[1]]')),
-                                 br()
-                        )
-                      )
-             ),
              # * METHOD COMPARISON ####
              tabPanel("Method comparison",
                       h3("Method comparison"),
@@ -1144,5 +1005,344 @@ uiDIF <-
                       fluidRow(column(12, align = "center", tableOutput("method_comparison_table"))),
                       br(),
                       br()
+                      ),
+             # POLYTOMOUS METHODS ####
+             "----",
+             "Polytomous methods",
+             # * CUMULATIVE ####
+             tabPanel("Cumulative logit",
+                      tabsetPanel(
+                        # ** Summary ####
+                        tabPanel('Summary',
+                                 h3('Cumulative logit regression model for DDF detection'),
+                                 p('Cumulative logit regression allows for detection of uniform and non-uniform DDF among ordinal data by
+                                    adding a group specific intercept ', strong('\\(b_2\\)'), ' (uniform DDF) and interaction ', strong('\\(b_3\\)'),
+                                   ' between group and standardized total score (non-uniform DDF) into model and by testing
+                                   for their significance.'),
+                                 h4('Equation'),
+                                 p('The probability that person ', strong('\\(p\\)'), ' with standardized total score ',
+                                   strong('\\(Z_p\\)'), ' and group membership ', strong('\\(G_p\\)'), ' obtained at least ',
+                                   strong('\\(k\\)'), ' points in item ', strong('\\(i\\)'), ' is given by the following equation: '),
+                                 fluidRow(column(12, align = "center", uiOutput("DDF_cum_equation1_summary"))),
+                                 p('The probability that person ', strong('\\(p\\)'), ' with standardized total score ',
+                                   strong('\\(Z_p\\)'), ' and group membership ', strong('\\(G_p\\)'), ' obtained exactly ',
+                                   strong('\\(k\\)'), ' points in item ', strong('\\(i\\)'), ' is then given as differnce between
+                                   probabilities of obtaining at least', strong('\\(k\\)'), ' and ', strong('\\(k + 1\\)'), 'points:'),
+                                 fluidRow(column(12, align = "center", uiOutput("DDF_cum_equation2_summary"))),
+                                 h4('Summary table'),
+                                 p('Here you can choose ', strong('type'), ' of DDF to test. You can also select ',
+                                   strong('correction method'), ' for multiple comparison or ', strong('item purification')),
+                                 fluidRow(
+                                   column(3,
+                                          radioButtons(inputId = 'DDF_cum_type_summary',
+                                                       label = 'Type',
+                                                       choices = c("\\(H_{0}\\): Any DDF vs. \\(H_{1}\\): No DDF" = 'both',
+                                                                   "\\(H_{0}\\): Uniform DDF vs. \\(H_{1}\\): No DDF" = 'udif',
+                                                                   "\\(H_{0}\\): Non-uniform DDF vs. \\(H_{1}\\): Uniform DDF" = 'nudif'),
+                                                       selected = 'both')),
+                                   column(2,
+                                          selectInput(inputId = "DDF_cum_correction_summary",
+                                                      label = "Correction method",
+                                                      choices = c("Benjamini-Hochberg" = "BH",
+                                                                  "Benjamini-Yekutieli" = "BY",
+                                                                  "Bonferroni" = "bonferroni",
+                                                                  "Holm" = "holm",
+                                                                  "Hochberg" = "hochberg",
+                                                                  "Hommel" = "hommel",
+                                                                  "None" = "none"),
+                                                      selected = "none"),
+                                          checkboxInput(inputId = 'DDF_cum_purification_summary',
+                                                        label = 'Item purification',
+                                                        value = FALSE))),
+                                 uiOutput('DDF_cum_NA_warning_summary'),
+                                 verbatimTextOutput('DDF_cum_print'),
+                                 br(),
+                                 h4('Selected R code'),
+                                 div(code(HTML("library(difNLR)<br>library(ShinyItemAnalysis)<br><br>#&nbsp;loading&nbsp;data<br>data(dataMedicalgraded)<br>Data&nbsp;<-&nbsp;dataMedicalgraded[,&nbsp;1:100]<br>group&nbsp;<-&nbsp;dataMedicalgraded[,&nbsp;101]<br><br>#&nbsp;DDF&nbsp;with&nbsp;cumulative&nbsp;logit&nbsp;regression&nbsp;model<br>ddfOrd(Data,&nbsp;group,&nbsp;focal.name&nbsp;=&nbsp;1,&nbsp;model&nbsp;=&nbsp;\"cumulative\")"))),
+                                 br(),
+                                 br()
+                                 ),
+                        # ** Items ####
+                        tabPanel('Items',
+                                 h3('Cumulative logit regression model for DDF detection'),
+                                 p('Cumulative logit regression allows for detection of uniform and non-uniform DDF among ordinal data by
+                                    adding a group specific intercept ', strong('\\(b_2\\)'), ' (uniform DDF) and interaction ', strong('\\(b_3\\)'),
+                                   ' between group and standardized total score (non-uniform DDF) into model and by testing
+                                   for their significance.'),
+                                 h4('Plot with estimated DDF curves'),
+                                 p('Here you can choose ', strong('type'), ' of DDF to test. You can also select ',
+                                   strong('correction method'), ' for multiple comparison or ', strong('item purification')),
+                                 fluidRow(
+                                   column(3,
+                                          radioButtons(inputId = 'DDF_cum_type_items',
+                                                       label = 'Type',
+                                                       choices = c("\\(H_{0}\\): Any DDF vs. \\(H_{1}\\): No DDF" = 'both',
+                                                                   "\\(H_{0}\\): Uniform DDF vs. \\(H_{1}\\): No DDF" = 'udif',
+                                                                   "\\(H_{0}\\): Non-uniform DDF vs. \\(H_{1}\\): Uniform DDF" = 'nudif'),
+                                                       selected = 'both')),
+                                   column(2,
+                                          selectInput(inputId = "DDF_cum_correction_items",
+                                                      label = "Correction method",
+                                                      choices = c("Benjamini-Hochberg" = "BH",
+                                                                  "Benjamini-Yekutieli" = "BY",
+                                                                  "Bonferroni" = "bonferroni",
+                                                                  "Holm" = "holm",
+                                                                  "Hochberg" = "hochberg",
+                                                                  "Hommel" = "hommel",
+                                                                  "None" = "none"),
+                                                      selected = "none"),
+                                          checkboxInput(inputId = 'DDF_cum_purification_items',
+                                                        label = 'Item purification',
+                                                        value = FALSE)),
+                                   column(2,
+                                          sliderInput(inputId = "DDF_cum_items",
+                                                      label = "Item",
+                                                      min = 1,
+                                                      value = 1,
+                                                      max = 10,
+                                                      step = 1,
+                                                      animate = animationOptions(interval = 1600)))),
+                                 uiOutput('DDF_cum_NA_warning_items'),
+                                 p('Points represent proportion of obtained score with respect to standardized
+                                   total score. Their size is determined by count of respondents who achieved
+                                   given level of standardized total score and who selected given option with
+                                   respect to the group membership.'),
+                                 splitLayout(cellWidths = c("50%", "50%"),
+                                             plotOutput('DDF_cum_plot_cumulative'),
+                                             plotOutput('DDF_cum_plot_category')),
+                                 splitLayout(cellWidths = c("50%", "50%"),
+                                             downloadButton("DB_DDF_cum_plot_cumulative", label = "Download figure"),
+                                             downloadButton("DB_DDF_cum_plot_category", label = "Download figure")),
+                                 h4('Equation'),
+                                 fluidRow(column(12, align = "center", uiOutput("DDF_cum_equation1_items"))),
+                                 fluidRow(column(12, align = "center", uiOutput("DDF_cum_equation2_items"))),
+                                 h4('Table of parameters'),
+                                 fluidRow(column(12, align = "center", tableOutput('DDF_cum_coef_tab'))),
+                                 br(),
+                                 h4('Selected R code'),
+                                 div(code(HTML("library(difNLR)<br>library(ShinyItemAnalysis)<br><br>#&nbsp;loading&nbsp;data<br>data(dataMedicalgraded)<br>Data&nbsp;<-&nbsp;dataMedicalgraded[,&nbsp;1:100]<br>group&nbsp;<-&nbsp;dataMedicalgraded[,&nbsp;101]<br><br>#&nbsp;DDF&nbsp;with&nbsp;cumulative&nbsp;logit&nbsp;regression&nbsp;model<br>fit&nbsp;<-&nbsp;ddfOrd(Data,&nbsp;group,&nbsp;focal.name&nbsp;=&nbsp;1,&nbsp;model&nbsp;=&nbsp;\"cumulative\")<br><br>#&nbsp;plot&nbsp;of&nbsp;characteristic&nbsp;curves&nbsp;for&nbsp;item&nbsp;1,&nbsp;cumulative&nbsp;probabilities<br>plot(fit,&nbsp;item&nbsp;=&nbsp;1,&nbsp;plot.type&nbsp;=&nbsp;\"cumulative\")<br><br>#&nbsp;plot&nbsp;of&nbsp;characteristic&nbsp;curves&nbsp;for&nbsp;item&nbsp;1,&nbsp;category&nbsp;probabilities<br>plot(fit,&nbsp;item&nbsp;=&nbsp;1,&nbsp;plot.type&nbsp;=&nbsp;\"category\")<br><br>#&nbsp;estimated&nbsp;coefficients&nbsp;for&nbsp;item&nbsp;1<br>coef(fit,&nbsp;SE&nbsp;=&nbsp;T)[[1]]"))),
+                                 br(),
+                                 br()
+                        )
+                      )
+             ),
+             # * ADJACENT ####
+             tabPanel("Adjacent category logit",
+                      tabsetPanel(
+                        # ** Summary ####
+                        tabPanel('Summary',
+                                 h3('Adjacent category logit regression model for DDF detection'),
+                                 p('Adjacent category logit regression model allows for detection of uniform and non-uniform DDF among
+                                   ordinal data by adding a group specific intercept', strong('\\(b_2\\)'), '(uniform DDF) and interaction',
+                                   strong('\\(b_3\\)'), 'between group and standardized total score (non-uniform DDF)
+                                   into model and by testing for their significance. '),
+                                 h4('Equation'),
+                                 p('The probability that person ', strong('\\(p\\)'), ' with standardized total score ',
+                                   strong('\\(Z_p\\)'), ' and group membership ', strong('\\(G_p\\)'), ' obtained ',
+                                   strong('\\(k\\)'), ' points in item ', strong('\\(i\\)'), ' is given by the following equation: '),
+                                 fluidRow(column(12, align = "center", uiOutput("DDF_adj_equation_summary"))),
+                                 h4('Summary table'),
+                                 p('Here you can choose ', strong('type'), ' of DDF to test. You can also select ',
+                                   strong('correction method'), ' for multiple comparison or ', strong('item purification')),
+                                 fluidRow(
+                                   column(3,
+                                          radioButtons(inputId = 'DDF_adj_type_summary',
+                                                       label = 'Type',
+                                                       choices = c("\\(H_{0}\\): Any DDF vs. \\(H_{1}\\): No DDF" = 'both',
+                                                                   "\\(H_{0}\\): Uniform DDF vs. \\(H_{1}\\): No DDF" = 'udif',
+                                                                   "\\(H_{0}\\): Non-uniform DDF vs. \\(H_{1}\\): Uniform DDF" = 'nudif'),
+                                                       selected = 'both')),
+                                   column(2,
+                                          selectInput(inputId = "DDF_adj_correction_summary",
+                                                      label = "Correction method",
+                                                      choices = c("Benjamini-Hochberg" = "BH",
+                                                                  "Benjamini-Yekutieli" = "BY",
+                                                                  "Bonferroni" = "bonferroni",
+                                                                  "Holm" = "holm",
+                                                                  "Hochberg" = "hochberg",
+                                                                  "Hommel" = "hommel",
+                                                                  "None" = "none"),
+                                                      selected = "none"),
+                                          checkboxInput(inputId = 'DDF_adj_purification_summary',
+                                                        label = 'Item purification',
+                                                        value = FALSE))),
+                                 uiOutput('DDF_adj_NA_warning_summary'),
+                                 verbatimTextOutput('DDF_adj_print'),
+                                 br(),
+                                 h4('Selected R code'),
+                                 div(code(HTML("library(difNLR)<br>library(ShinyItemAnalysis)<br><br>#&nbsp;loading&nbsp;data<br>data(dataMedicalgraded)<br>Data&nbsp;<-&nbsp;dataMedicalgraded[,&nbsp;1:100]<br>group&nbsp;<-&nbsp;dataMedicalgraded[,&nbsp;101]<br><br>#&nbsp;DDF&nbsp;with&nbsp;adjacent&nbsp;category logit&nbsp;regression&nbsp;model<br>ddfOrd(Data,&nbsp;group,&nbsp;focal.name&nbsp;=&nbsp;1,&nbsp;model&nbsp;=&nbsp;\"adjacent\")"))),
+                                 br(),
+                                 br()
+                                 ),
+                        # ** Items ####
+                        tabPanel('Items',
+                                 h3('Adjacent category logit regression model for DDF detection'),
+                                 p('Adjacent category logit regression model allows for detection of uniform and non-uniform DDF among
+                                   ordinal data by adding a group specific intercept', strong('\\(b_2\\)'), '(uniform DDF) and interaction',
+                                   strong('\\(b_3\\)'), 'between group and standardized total score (non-uniform DDF)
+                                   into model and by testing for their significance. '),
+                                 h4('Plot with estimated DDF curves'),
+                                 p('Here you can choose ', strong('type'), ' of DDF to test. You can also select ',
+                                   strong('correction method'), ' for multiple comparison or', strong('item purification')),
+                                 fluidRow(
+                                   column(3,
+                                          radioButtons(inputId = 'DDF_adj_type_items',
+                                                       label = 'Type',
+                                                       choices = c("\\(H_{0}\\): Any DDF vs. \\(H_{1}\\): No DDF" = 'both',
+                                                                   "\\(H_{0}\\): Uniform DDF vs. \\(H_{1}\\): No DDF" = 'udif',
+                                                                   "\\(H_{0}\\): Non-uniform DDF vs. \\(H_{1}\\): Uniform DDF" = 'nudif'),
+                                                       selected = 'both')),
+                                   column(2,
+                                          selectInput(inputId = "DDF_adj_correction_items",
+                                                      label = "Correction method",
+                                                      choices = c("Benjamini-Hochberg" = "BH",
+                                                                  "Benjamini-Yekutieli" = "BY",
+                                                                  "Bonferroni" = "bonferroni",
+                                                                  "Holm" = "holm",
+                                                                  "Hochberg" = "hochberg",
+                                                                  "Hommel" = "hommel",
+                                                                  "None" = "none"),
+                                                      selected = "none"),
+                                          checkboxInput(inputId = 'DDF_adj_purification_items',
+                                                        label = 'Item purification',
+                                                        value = FALSE)),
+                                   column(2,
+                                          sliderInput(inputId = "DDF_adj_items",
+                                                      label = "Item",
+                                                      min = 1,
+                                                      value = 1,
+                                                      max = 10,
+                                                      step = 1,
+                                                      animate = animationOptions(interval = 1600)))),
+                                 uiOutput('DDF_adj_NA_warning_items'),
+                                 p('Points represent proportion of obtained score with respect to standardized
+                                   total score. Their size is determined by count of respondents who achieved
+                                   given level of standardized total score and who selected given option with
+                                   respect to the group membership.'),
+                                 plotOutput('DDF_adj_plot'),
+                                 downloadButton("DB_DDF_adj_plot", label = "Download figure"),
+                                 h4('Equation'),
+                                 fluidRow(column(12, align = "center", uiOutput("DDF_adj_equation_items"))),
+                                 h4('Table of parameters'),
+                                 fluidRow(column(12, align = "center", tableOutput('DDF_adj_coef_tab'))),
+                                 br(),
+                                 h4('Selected R code'),
+                                 div(code(HTML("library(difNLR)<br>library(ShinyItemAnalysis)<br><br>#&nbsp;loading&nbsp;data<br>data(dataMedicalgraded)<br>Data&nbsp;<-&nbsp;dataMedicalgraded[,&nbsp;1:100]<br>group&nbsp;<-&nbsp;dataMedicalgraded[,&nbsp;101]<br><br>#&nbsp;DDF&nbsp;with&nbsp;adjacent&nbsp;category logit&nbsp;regression&nbsp;model<br>fit&nbsp;<-&nbsp;ddfOrd(Data,&nbsp;group,&nbsp;focal.name&nbsp;=&nbsp;1,&nbsp;model&nbsp;=&nbsp;\"adjacent\")<br><br>#&nbsp;plot&nbsp;of&nbsp;characteristic&nbsp;curves&nbsp;for&nbsp;item&nbsp;1<br>plot(fit,&nbsp;item&nbsp;=&nbsp;1)<br><br>#&nbsp;estimated&nbsp;coefficients&nbsp;for&nbsp;item&nbsp;1<br>coef(fit,&nbsp;SE&nbsp;=&nbsp;T)[[1]]"))),
+                                 br(),
+                                 br()
+                                 )
+                      )
+                      ),
+             # * MULTINOMIAL ####
+             tabPanel("Multinomial",
+                      tabsetPanel(
+                        # ** Summary ####
+                        tabPanel('Summary',
+                                 h3('Multinomial regression model for DDF detection'),
+                                 p('Differential Distractor Functioning (DDF) occurs when people from different
+                                   groups but with the same knowledge have different probability of selecting
+                                   at least one distractor choice. DDF is here examined by multinomial log-linear
+                                   regression model with Z-score and group membership as covariates. '),
+                                 h4('Equation'),
+                                 p('For ', strong('\\(K\\)'), ' possible test choices is the probability of the correct answer for
+                                   person ', strong('\\(p\\)'), ' with standardized total score ', strong('\\(Z_p\\)'), ' and group
+                                   membership ', strong('\\(G_p\\)'),' in item ', strong('\\(i\\)'), 'given by the following equation: '),
+                                 ('$$\\mathrm{P}(Y_{ip} = K|Z_p, G_p, b_{il0}, b_{il1}, b_{il2}, b_{il3}, l = 1, \\dots, K-1) =
+                                  \\frac{1}{1 + \\sum_l e^{\\left( b_{il0} + b_{il1} Z_p + b_{il2} G_p + b_{il3} Z_p:G_p\\right)}}$$'),
+                                 p('The probability of choosing distractor ', strong('\\(k\\)'), ' is then given by: '),
+                                 ('$$\\mathrm{P}(Y_{ip} = k|Z_p, G_p, b_{il0}, b_{il1}, b_{il2}, b_{il3}, l = 1, \\dots, K-1) =
+                                  \\frac{e^{\\left( b_{ik0} + b_{ik1} Z_p + b_{ik2} G_p + b_{ik3} Z_p:G_p\\right)}}
+                                  {1 + \\sum_l e^{\\left( b_{il0} + b_{il1} Z_p + b_{il2} G_p + b_{il3} Z_p:G_p\\right)}}$$'),
+                                 br(),
+                                 h4('Summary table'),
+                                 p('Here you can choose ', strong('type'), ' of DDF to test. You can also select ', strong('correction method'),
+                                   ' for multiple comparison or ', strong('item purification. ')),
+                                 fluidRow(
+                                   column(3,
+                                          radioButtons(inputId = 'DDF_multi_type_summary',
+                                                       label = 'Type',
+                                                       choices = c("\\(H_{0}\\): Any DDF vs. \\(H_{1}\\): No DDF" = 'both',
+                                                                   "\\(H_{0}\\): Uniform DDF vs. \\(H_{1}\\): No DDF" = 'udif',
+                                                                   "\\(H_{0}\\): Non-uniform DDF vs. \\(H_{1}\\): Uniform DDF" = 'nudif'),
+                                                       selected = 'both')),
+                                   column(2,
+                                          selectInput(inputId = "DDF_multi_correction_summary",
+                                                      label = "Correction method",
+                                                      choices = c("Benjamini-Hochberg" = "BH",
+                                                                  "Benjamini-Yekutieli" = "BY",
+                                                                  "Bonferroni" = "bonferroni",
+                                                                  "Holm" = "holm",
+                                                                  "Hochberg" = "hochberg",
+                                                                  "Hommel" = "hommel",
+                                                                  "None" = "none"),
+                                                      selected = "none"),
+                                          checkboxInput(inputId = 'DDF_multi_purification_summary',
+                                                        label = 'Item purification',
+                                                        value = FALSE))),
+                                 uiOutput("DDF_multi_NA_warning_summary"),
+                                 verbatimTextOutput('DDF_multi_print'),
+                                 br(),
+                                 h4("Selected R code"),
+                                 div(code(HTML("library(difNLR)&nbsp;<br><br>#&nbsp;loading&nbsp;data<br>data(GMATtest,&nbsp;GMATkey)&nbsp;<br>Data&nbsp;<-&nbsp;GMATtest[,&nbsp;1:20]&nbsp;<br>group&nbsp;<-&nbsp;GMATtest[,&nbsp;\"group\"]&nbsp;<br>key&nbsp;<-&nbsp;GMATkey&nbsp;<br><br>#&nbsp;DDF&nbsp;with&nbsp;multinomial&nbsp;&nbsp;regression&nbsp;model<br>fit&nbsp;<-&nbsp;ddfMLR(Data,&nbsp;group,&nbsp;focal.name&nbsp;=&nbsp;1,&nbsp;key,&nbsp;type&nbsp;=&nbsp;\"both\",&nbsp;p.adjust.method&nbsp;=&nbsp;\"none\")&nbsp;<br>fit"))),
+                                 br(),
+                                 br()
+                                 ),
+                        # ** Items ####
+                        tabPanel('Items',
+                                 h3('Multinomial  regression model for DDF detection'),
+                                 p('Differential Distractor Functioning (DDF) occurs when people from different
+                                   groups but with the same knowledge have different probability of selecting
+                                   at least one distractor choice. DDF is here examined by Multinomial Log-linear
+                                   Regression model with Z-score and group membership as covariates. '),
+                                 h4("Plot with estimated DDF curves"),
+                                 p('Here you can choose ', strong('type'), ' of DDF to test. You can also select ', strong('correction method'),
+                                   ' for multiple comparison or ', strong('item purification. ')),
+                                 fluidRow(
+                                   column(3,
+                                          radioButtons(inputId = 'DDF_multi_type_items',
+                                                       label = 'Type',
+                                                       choices = c("\\(H_{0}\\): Any DDF vs. \\(H_{1}\\): No DDF" = 'both',
+                                                                   "\\(H_{0}\\): Uniform DDF vs. \\(H_{1}\\): No DDF" = 'udif',
+                                                                   "\\(H_{0}\\): Non-uniform DDF vs. \\(H_{1}\\): Uniform DDF" = 'nudif'),
+                                                       selected = 'both')),
+                                   column(2,
+                                          selectInput(inputId = "DDF_multi_correction_items",
+                                                      label = "Correction method",
+                                                      choices = c("Benjamini-Hochberg" = "BH",
+                                                                  "Benjamini-Yekutieli" = "BY",
+                                                                  "Bonferroni" = "bonferroni",
+                                                                  "Holm" = "holm",
+                                                                  "Hochberg" = "hochberg",
+                                                                  "Hommel" = "hommel",
+                                                                  "None" = "none"),
+                                                      selected = "none"),
+                                          checkboxInput(inputId = 'DDF_multi_purification_items',
+                                                        label = 'Item purification',
+                                                        value = FALSE)),
+                                   column(2,
+                                          sliderInput(inputId = "DDF_multi_items",
+                                                      label = "Item",
+                                                      min = 1,
+                                                      value = 1,
+                                                      max = 10,
+                                                      step = 1,
+                                                      animate = animationOptions(interval = 1600)))),
+                                 p('Points represent proportion of selected answer with respect to standardized
+                                   total score. Their size is determined by count of respondents who achieved
+                                   given level of standardized total score and who selected given option with
+                                   respect to the group membership.'),
+                                 plotOutput('DDF_multi_plot'),
+                                 downloadButton("DB_DDF_multi_plot", label = "Download figure"),
+                                 h4("Equation"),
+                                 fluidRow(column(12, align = "center", uiOutput('DDF_multi_equation_items'))),
+                                 h4("Table of parameters"),
+                                 fluidRow(column(12, align = "center", tableOutput('DDF_multi_coef_tab'))),
+                                 br(),
+                                 h4("Selected R code"),
+                                 div(code(HTML("library(difNLR)&nbsp;<br><br>#&nbsp;loading&nbsp;data<br>data(GMATtest,&nbsp;GMATkey)&nbsp;<br>Data&nbsp;<-&nbsp;GMATtest[,&nbsp;1:20]&nbsp;<br>group&nbsp;<-&nbsp;GMATtest[,&nbsp;\"group\"]&nbsp;<br>key&nbsp;<-&nbsp;GMATkey&nbsp;<br><br>#&nbsp;DDF&nbsp;with&nbsp;multinomial&nbsp;&nbsp;regression&nbsp;model<br>fit&nbsp;<-&nbsp;ddfMLR(Data,&nbsp;group,&nbsp;focal.name&nbsp;=&nbsp;1,&nbsp;key,&nbsp;type&nbsp;=&nbsp;\"both\",&nbsp;p.adjust.method&nbsp;=&nbsp;\"none\")&nbsp;<br><br>#&nbsp;plot&nbsp;of&nbsp;characteristic&nbsp;curves&nbsp;for&nbsp;item&nbsp;1<br>plot(fit,&nbsp;item&nbsp;=&nbsp;1)<br><br>#&nbsp;estimated&nbsp;coefficients&nbsp;for&nbsp;item&nbsp;1<br>coef(fit,&nbsp;SE&nbsp;=&nbsp;T)[[1]]"))),
+                                 br(),
+                                 br()
+                                 )
+                        )
+                      )
              )
-  )
