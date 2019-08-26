@@ -505,6 +505,7 @@ show_IRT <- (params$irt_type != "none")
 ```{r IRT-section, eval = show_IRT, echo = FALSE, results = "asis"}
 cat("
 \\pagebreak 
+
 # IRT models
 
 Item Response Theory (IRT) models are mixed-effect regression models in which the respondent's ability $\\theta$ is assumed to be a latent and is estimated together with item parameters.")
@@ -664,13 +665,14 @@ if (params$irt_type != "none") {
 ```{r IRT-parameter-estimates-text, echo = FALSE, results = "asis", eval = show_IRT}
 cat("
 \\pagebreak
+
 ## Parameter estimates and item fit
 
 Estimates of parameters are completed by their standard errors (SE) and by signed Chi-squared statistics S-X2 (see Orlando and Thissen, 2000). P-values lower than 0.05 indicate suspicious items not fitting the selected IRT model. S-X2 is computed only when no missing data are present.
 ")
 ```
 
-```{r IRT-parameter-estimates-table, echo = FALSE, eval = show_IRT}
+```{r IRT-parameter-estimates-table, echo = FALSE, eval = show_IRT, results = "asis", }
 table = params$irtcoef
 colnames(table) = c("a", "SE(a)", "b", "SE(b)", "c", "SE(c)", "d", "SE(d)", "S-X2", "df", "p-value")
 add.to.row$command <- command(table)
@@ -690,10 +692,16 @@ show_DIF <- any(c(params$histCheck, params$deltaplotCheck, params$MHCheck, param
 check_group <- !params$isGroupPresent
 ```
 
+```{r DIF-section-pagebreak, eval = show_DIF, echo = FALSE, results = 'asis'}
+cat("\\pagebreak")
+```
+
 ```{r DIF-section, eval = show_DIF, echo = FALSE, results = 'asis'}
-txt <- ifelse(check_group, "No group vector is present. DIF and DDF analyses could have not been generated!", "")
-cat(paste("\\pagebreak 
-          # DIF/Fairness analysis", 
+txt <- ifelse(check_group, 
+              "No group vector is present. DIF and DDF analyses could have not been generated!",
+              "")
+
+cat(paste("# DIF/Fairness analysis \n", 
           txt))
 ```
 
