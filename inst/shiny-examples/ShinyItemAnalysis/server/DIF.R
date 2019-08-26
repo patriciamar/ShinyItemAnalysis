@@ -10,7 +10,7 @@
 resultsgroupInput <- reactive({
   sc_one  <- total_score()[group() == 1]
   sc_zero <- total_score()[group() == 0]
-  tab <- data.frame(rbind(round(c(length(sc_one),
+  tab <- data.frame(rbind(round(c(length(sc_zero),
                                   min(sc_zero, na.rm = T),
                                   max(sc_zero, na.rm = T),
                                   mean(sc_zero, na.rm = T),
@@ -18,7 +18,7 @@ resultsgroupInput <- reactive({
                                   sd(sc_zero, na.rm = T),
                                   skewness(sc_zero, na.rm = T),
                                   kurtosis(sc_zero, na.rm = T)), 2),
-                          round(c(length(sc_zero),
+                          round(c(length(sc_one),
                                   min(sc_one, na.rm = T),
                                   max(sc_one, na.rm = T),
                                   mean(sc_one, na.rm = T),
