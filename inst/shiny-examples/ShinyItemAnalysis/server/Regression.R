@@ -981,7 +981,7 @@ adjreg_coef_tab_Input <- reactive({
     tab.se <- sqrt(diag(vcov(fit.adj)))
 
     tab <- data.frame(Estimate = tab.coef, SE = tab.se)
-    rownames(tab) <- c(paste0("%%mathit{b}_{", sort(unique(data[, item]))[-1], "}%%"), "%%mathit{b}_{1}%%")
+    rownames(tab) <- c(paste0("%%mathit{b}_{0", sort(unique(data[, item]))[-1], "}%%"), "%%mathit{b}_{1}%%")
   } else {
     tab.coef.tmp <- coef(fit.adj)
     c <- length(tab.coef.tmp)

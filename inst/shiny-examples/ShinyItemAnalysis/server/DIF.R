@@ -185,7 +185,7 @@ histbyscoregroup0Input <- reactive ({
     col <- c("blue",'blue')
   } else if (!(bin %in% unique(sc))) {
     col <- c('red','blue')
-   } else {
+  } else {
     if (bin == min(sc, na.rm = TRUE)){
       col <- c("grey", "blue")
     } else {
@@ -608,9 +608,9 @@ model_DIF_logistic_print <- reactive({
   data <- data.frame(binary())
 
   fit <- tryCatch(difLogistic(Data = data, group = group, focal.name = 1,
-                     type = input$type_print_DIF_logistic,
-                     p.adjust.method = input$correction_method_logSummary,
-                     purify = input$puri_LR),
+                              type = input$type_print_DIF_logistic,
+                              p.adjust.method = input$correction_method_logSummary,
+                              purify = input$puri_LR),
                   error = function(e) e)
 
   validate(need(class(fit) == "Logistic",
@@ -768,10 +768,10 @@ model_DIF_NLR_print <- reactive({
   purify <- input$DIF_NLR_purification_print
 
   fit <- tryCatch(difNLR(Data = data, group = group, focal.name = 1,
-                                model = model, type = type,
-                                p.adjust.method = adj.method, purify = purify,
-                                test = "LR"),
-                         error = function(e) e)
+                         model = model, type = type,
+                         p.adjust.method = adj.method, purify = purify,
+                         test = "LR"),
+                  error = function(e) e)
 
   validate(need(class(fit) == "difNLR",
                 paste0('This method cannot be used on this data. Error returned: ', fit$message)))
@@ -874,8 +874,8 @@ output$DIF_NLR_equation_print <- renderUI({
   txtp <- txtp[txtp != ""]
 
   txt1 <- paste0("\\mathrm{P}\\left(Y_{ij} = 1 | Z_i, G_i, ",
-                paste(txtp, collapse = ", "),
-                "\\right) = ")
+                 paste(txtp, collapse = ", "),
+                 "\\right) = ")
 
   txt <- withMathJax(paste0("$$", txt1, txt3, txt2, "$$"))
   txt
@@ -975,7 +975,7 @@ observeEvent(input$DIF_NLR_type_plot,{
           updateCheckboxGroupInput(session = session,
                                    inputId = "DIF_NLR_type_print",
                                    selected = input$DIF_NLR_type_plot)
-  })
+        })
 })
 
 observeEvent(input$DIF_NLR_correction_method_plot,{
@@ -1606,48 +1606,651 @@ output$DIF_SIBTEST_item_na_alert <- renderUI({
   HTML(txt)
 })
 
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+# * METHOD COMPARISON ######
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+output$method_comparison_table <- renderTable({
+
+  l_methods <- list()
+  l_methods[['Delta']] <- try(deltaGpurn()$DIFitems)
+  l_methods[['MH']] <- try(model_DIF_MH()$DIFitems)
+  l_methods[['LOG']] <- try(model_DIF_logistic_print()$DIFitems)
+  l_methods[['NLR']] <- try(model_DIF_NLR_print()$DIFitems)
+  l_methods[['IRT']] <- try(model_DIF_IRT_Lord_print()$DIFitems)
+  l_methods[['RAJU']] <- try(model_DIF_IRT_Raju_print()$DIFitems)
+  l_methods[['SIBTEST']] <- try(DIF_SIBTEST_model()$DIFitems)
+  # l_methods[['DFF']] <- try(DDF_multi_model()$DDFitems)
+
+  k <- length(item_names())
+  idx <- lapply(l_methods, class)
+  idx <- which(unlist(idx) != 'try-error')
+
+  v <- matrix(NA, ncol = length(l_methods), nrow = k)
+  v[, idx] <- 0
+
+  # there is need to handle Delta method and DDF differently
+  for (j in idx) {
+    if (names(l_methods)[j] == "Delta"){
+      if (all(l_methods[[j]] != 'no DIF item detected')) v[as.numeric(paste(l_methods[[j]])), j] <- 1
+    } else {
+      # if (names(l_methods)[j] == "DDF"){
+      #   if (all(l_methods[[j]] != 'No DDF item detected')) v[as.numeric(paste(l_methods[[j]])), j] <- 1
+      # } else {
+      if (all(l_methods[[j]] != 'No DIF item detected')) v[as.numeric(paste(l_methods[[j]])), j] <- 1
+      # }
+    }
+  }
+
+  tab <- as.data.frame(apply(v, c(1, 2), as.integer))
+  rownames(tab) <- item_names()
+  colnames(tab) <- names(l_methods)
+
+  n <- nrow(tab)
+  k <- ncol(tab)
+
+  rDIF <- rowSums(tab, na.rm = T)
+  cDIF <- colSums(tab, na.rm = T)
+  cDIF[k + 1] <- 0
+
+  tab <- cbind(tab, as.integer(rDIF))
+  tab <- rbind(tab, as.integer(cDIF))
+
+  rownames(tab)[n + 1] <- "Total"
+  colnames(tab)[k + 1] <- "Total"
+
+  tab
+},
+include.rownames = T,
+include.colnames = T)
 
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-# * DDF ######
+# * CUMULATIVE ######
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-# ** Model for print ####
-model_DDF_print <- reactive({
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+# ** UPDATING INPUTS ######
+
+DDF_cum <- reactiveValues(type = NULL,
+                          correction = NULL,
+                          purification = NULL,
+                          matching = NULL)
+
+# ** Updating type ######
+observeEvent(input$DDF_cum_type_summary, {
+  DDF_cum$type <- input$DDF_cum_type_summary
+})
+observeEvent(input$DDF_cum_type_items, {
+  DDF_cum$type <- input$DDF_cum_type_items
+})
+observeEvent(DDF_cum$type, {
+  if (DDF_cum$type != input$DDF_cum_type_summary) {
+    updateCheckboxGroupInput(session = session,
+                             inputId = "DDF_cum_type_summary",
+                             selected = DDF_cum$type)
+  }
+  if (DDF_cum$type != input$DDF_cum_type_items) {
+    updateCheckboxGroupInput(session = session,
+                             inputId = "DDF_cum_type_items",
+                             selected = DDF_cum$type)
+  }
+})
+
+# ** Updating correction ######
+observeEvent(input$DDF_cum_correction_summary, {
+  DDF_cum$correction <- input$DDF_cum_correction_summary
+})
+observeEvent(input$DDF_cum_correction_items, {
+  DDF_cum$correction <- input$DDF_cum_correction_items
+})
+observeEvent(DDF_cum$correction, {
+  if (DDF_cum$correction != input$DDF_cum_correction_summary) {
+    updateSelectInput(session = session,
+                      inputId = "DDF_cum_correction_summary",
+                      selected = DDF_cum$correction)
+  }
+  if (DDF_cum$correction != input$DDF_cum_correction_items) {
+    updateSelectInput(session = session,
+                      inputId = "DDF_cum_correction_items",
+                      selected = DDF_cum$correction)
+  }
+})
+
+# ** Updating purification ######
+observeEvent(input$DDF_cum_purification_summary, {
+  DDF_cum$purification <- input$DDF_cum_purification_summary
+})
+observeEvent(input$DDF_cum_purification_items, {
+  DDF_cum$purification <- input$DDF_cum_purification_items
+})
+observeEvent(DDF_cum$purification, {
+  if (DDF_cum$purification != input$DDF_cum_purification_summary) {
+    updateCheckboxInput(session = session,
+                        inputId = "DDF_cum_purification_summary",
+                        value = DDF_cum$purification)
+  }
+  if (DDF_cum$purification != input$DDF_cum_purification_items) {
+    updateCheckboxInput(session = session,
+                        inputId = "DDF_cum_purification_items",
+                        value = DDF_cum$purification)
+  }
+})
+
+# ** Updating item slider ######
+observe({
+  item_count = ncol(ordinal())
+  updateSliderInput(session = session,
+                    inputId = "DDF_cum_items",
+                    max = item_count)
+})
+
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+# ** SUMMARY ######
+
+# ** Model for cumulative regression - summary ######
+# it's the same as for items as the inputs are synchronized
+DDF_cum_model <- reactive({
+  data <- ordinal()
   group <- unlist(group())
-  a <- data.frame(nominal())
-  colnames(a) <- item_names()
-  k <- key()
+  type <- input$DDF_cum_type_summary
+  puri <- input$DDF_cum_purification_summary
+  corr <- input$DDF_cum_correction_summary
 
-  adj.method <- input$correction_method_print_DDF
-  type <- input$type_print_DDF
-  purify <- input$puri_DDF_print
-
-  fit <- ddfMLR(Data = a, group = group, focal.name = 1,
-                key = k, p.adjust.method = adj.method,
-                type = type, purify = purify)
-
+  fit <- ddfORD(data, group, focal.name = 1, model = "cumulative",
+                type = type, purify = puri, p.adjust.method = corr,
+                parametrization = "classic")
   fit
 })
 
-model_DDF_print_report <- reactive({
-  group <- unlist(group())
-  a <- data.frame(nominal())
-  colnames(a) <- item_names()
-  k <- key()
+# ** Output print ######
+output$DDF_cum_print <- renderPrint({
+  print(DDF_cum_model())
+})
 
-  if (!input$customizeCheck) {
-    adj.method <- input$correction_method_print_DDF
-    type <- input$type_print_DDF
-    purify <- input$puri_DDF_print
-  } else {
-    adj.method <- input$correction_method_DDF_report
-    type <- input$type_DDF_report
-    purify <- input$puri_DDF_report
+# ** Equation - cumulative probability ######
+DDF_cum_equation1_summary_Input <- reactive({
+  # txt1 <- ifelse(input$DDF_cum_matching_summary == "score", "X_p", "Z_p")
+  txt1 <- "Z_p"
+  txt2 <- paste0("b_{0ik} + b_{i1} ", txt1, " + b_{i2} G_p + b_{i3} ", txt1, " G_p")
+  txt3 <- paste0(txt1, ", b_{i0k}, b_{i1}, b_{i2}, b_{i3}")
+
+  txt <- paste0("$$P(Y_{ip} \\geq k|", txt3, ") = \\frac{e^{", txt2, "}}{1 + e^{", txt2, "}}$$")
+
+  txt
+})
+
+output$DDF_cum_equation1_summary <- renderUI({
+  withMathJax(HTML(DDF_cum_equation1_summary_Input()))
+})
+
+# ** Equation - category probability ######
+DDF_cum_equation2_summary_Input <- reactive({
+  # txt1 <- ifelse(input$DDF_cum_matching_summary == "score", "X_p", "Z_p")
+  txt1 <- "Z_p"
+  txt3 <- paste0(txt1, ", b_{i0k}, b_{i1}, b_{i2}, b_{i3}")
+  txt4 <- paste0(txt1, ", b_{i0k+1}, b_{i1}, b_{i2}, b_{i3}")
+
+  txt <- paste0("$$P(Y_{ip} = k|", txt3, ") = P(Y_{ip} \\geq k|", txt3, ") - P(Y_{ip} \\geq k + 1|", txt4, ")$$")
+
+  txt
+})
+
+output$DDF_cum_equation2_summary <- renderUI({
+  withMathJax(HTML(DDF_cum_equation2_summary_Input()))
+})
+
+# ** Warning for missing values ####
+output$DDF_cum_NA_warning_summary <- renderUI({
+  txt <- na_score()
+  HTML(txt)
+})
+
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+# ** ITEMS ######
+
+# ** Plot - cumulative ######
+DDF_cum_plot_cumulative_Input <- reactive({
+  fit <- DDF_cum_model()
+  item <- input$DDF_cum_items
+
+  g <- plot(fit, item = item, plot.type = "cumulative")[[1]] +
+    theme_app() +
+    ggtitle(item_names()[item]) +
+    theme(legend.box.just = "top",
+          legend.justification = c("right", "bottom"),
+          legend.position = c(0.98, 0.02),
+          legend.box = "horizontal",
+          legend.margin = margin(0, 0, 0, 0, unit = "cm"))
+  g
+})
+
+output$DDF_cum_plot_cumulative <- renderPlot({
+  DDF_cum_plot_cumulative_Input()
+})
+
+# ** DB for plot - cumulative ######
+output$DB_DDF_cum_plot_cumulative <- downloadHandler(
+  filename =  function() {
+    paste0("fig_DDF_cum_cumulative_", item_names()[input$DDF_cum_items], ".png")
+  },
+  content = function(file) {
+    ggsave(file,
+           plot = DDF_cum_plot_cumulative_Input() +
+             theme(text = element_text(size = setting_figures$text_size)),
+           device = "png",
+           height = setting_figures$height,
+           width = setting_figures$width,
+           dpi = setting_figures$dpi)
   }
+)
 
-  fit <- tryCatch(ddfMLR(Data = a, group = group, focal.name = 1,
-                         key = k, p.adjust.method = adj.method,
-                         type = type, purify = purify),
+# ** Plot - category ######
+DDF_cum_plot_category_Input <- reactive({
+  fit <- DDF_cum_model()
+  item <- input$DDF_cum_items
+
+  g <- plot(fit, item = item, plot.type = "category")[[1]] +
+    theme_app() +
+    ggtitle(item_names()[item]) +
+    theme(legend.box.just = "top",
+          legend.justification = c("left", "top"),
+          legend.position = c(0.02, 0.98),
+          legend.box = "horizontal",
+          legend.margin = margin(0, 0, 0, 0, unit = "cm"))
+  g
+})
+
+output$DDF_cum_plot_category <- renderPlot({
+  DDF_cum_plot_category_Input()
+})
+
+# ** DB for plot - cumulative ######
+output$DB_DDF_cum_plot_category <- downloadHandler(
+  filename =  function() {
+    paste0("fig_DDF_cum_category_", item_names()[input$DDF_cum_items], ".png")
+  },
+  content = function(file) {
+    ggsave(file,
+           plot = DDF_cum_plot_category_Input() +
+             theme(text = element_text(size = setting_figures$text_size)),
+           device = "png",
+           height = setting_figures$height,
+           width = setting_figures$width,
+           dpi = setting_figures$dpi)
+  }
+)
+
+# ** Table of coefficients ######
+DDF_cum_coef_tab_Input <- reactive({
+  fit <- DDF_cum_model()
+  item <- input$DDF_cum_items
+  cat <- sort(unique(data.frame(ordinal())[, item]))[-1]
+
+  tab <- matrix(0, nrow = length(cat) + 3, ncol = 2)
+  rownames(tab) <- c(paste0("(Intercept):", 1:length(cat)), "x", "group", "x:group")
+  colnames(tab) <- c("estimate", "SE")
+
+  tmp <- t(coef(fit, SE = T)[[item]])
+  tab[rownames(tmp), ] <- tmp
+  colnames(tab) <- c("Estimate", "SE")
+  rownames(tab) <- c(paste0("%%mathit{b}_{0", cat, "}%%"), "%%mathit{b}_{1}%%",
+                     "%%mathit{b}_{2}%%", "%%mathit{b}_{3}%%")
+
+  tab
+})
+
+output$DDF_cum_coef_tab <- renderTable({
+  DDF_cum_coef_tab_Input()
+},
+include.rownames = T,
+include.colnames = T)
+
+# ** Equation - cumulative probability ######
+DDF_cum_equation1_items_Input <- reactive({
+  # txt1 <- ifelse(input$DDF_cum_matching_summary == "score", "X_p", "Z_p")
+  txt1 <- "Z_p"
+  txt2 <- paste0("b_{0k} + b_{1} ", txt1, " + b_{2} G_p + b_{3} ", txt1, " G_p")
+  txt3 <- paste0(txt1, ", b_{0k}, b_{1}, b_{2}, b_{3}")
+
+  txt <- paste0("$$P(Y_{p} \\geq k|", txt3, ") = \\frac{e^{", txt2, "}}{1 + e^{", txt2, "}}$$")
+
+  txt
+})
+
+output$DDF_cum_equation1_items <- renderUI({
+  withMathJax(HTML(DDF_cum_equation1_items_Input()))
+})
+
+# ** Equation - category probability ######
+DDF_cum_equation2_items_Input <- reactive({
+  # txt1 <- ifelse(input$DDF_cum_matching_summary == "score", "X_p", "Z_p")
+  txt1 <- "Z_p"
+  txt3 <- paste0(txt1, ", b_{0k}, b_{1}, b_{2}, b_{3}")
+  txt4 <- paste0(txt1, ", b_{0k+1}, b_{1}, b_{2}, b_{3}")
+
+  txt <- paste0("$$P(Y_{p} = k|", txt3, ") = P(Y_{p} \\geq k|", txt3, ") - P(Y_{p} \\geq k + 1|", txt4, ")$$")
+
+  txt
+})
+
+output$DDF_cum_equation2_items <- renderUI({
+  withMathJax(HTML(DDF_cum_equation2_items_Input()))
+})
+
+# ** Warning for missing values ####
+output$DDF_cum_NA_warning_items <- renderUI({
+  txt <- na_score()
+  HTML(txt)
+})
+
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+# * ADJACENT ######
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+# ** UPDATING INPUTS ######
+
+DDF_adj <- reactiveValues(type = NULL,
+                          correction = NULL,
+                          purification = NULL,
+                          matching = NULL)
+
+# ** Updating type ######
+observeEvent(input$DDF_adj_type_summary, {
+  DDF_adj$type <- input$DDF_adj_type_summary
+})
+observeEvent(input$DDF_adj_type_items, {
+  DDF_adj$type <- input$DDF_adj_type_items
+})
+observeEvent(DDF_adj$type, {
+  if (DDF_adj$type != input$DDF_adj_type_summary) {
+    updateCheckboxGroupInput(session = session,
+                             inputId = "DDF_adj_type_summary",
+                             selected = DDF_adj$type)
+  }
+  if (DDF_adj$type != input$DDF_adj_type_items) {
+    updateCheckboxGroupInput(session = session,
+                             inputId = "DDF_adj_type_items",
+                             selected = DDF_adj$type)
+  }
+})
+
+# ** Updating correction ######
+observeEvent(input$DDF_adj_correction_summary, {
+  DDF_adj$correction <- input$DDF_adj_correction_summary
+})
+observeEvent(input$DDF_adj_correction_items, {
+  DDF_adj$correction <- input$DDF_adj_correction_items
+})
+observeEvent(DDF_adj$correction, {
+  if (DDF_adj$correction != input$DDF_adj_correction_summary) {
+    updateSelectInput(session = session,
+                      inputId = "DDF_adj_correction_summary",
+                      selected = DDF_adj$correction)
+  }
+  if (DDF_adj$correction != input$DDF_adj_correction_items) {
+    updateSelectInput(session = session,
+                      inputId = "DDF_adj_correction_items",
+                      selected = DDF_adj$correction)
+  }
+})
+
+# ** Updating purification ######
+observeEvent(input$DDF_adj_purification_summary, {
+  DDF_adj$purification <- input$DDF_adj_purification_summary
+})
+observeEvent(input$DDF_adj_purification_items, {
+  DDF_adj$purification <- input$DDF_adj_purification_items
+})
+observeEvent(DDF_adj$purification, {
+  if (DDF_adj$purification != input$DDF_adj_purification_summary) {
+    updateCheckboxInput(session = session,
+                        inputId = "DDF_adj_purification_summary",
+                        value = DDF_adj$purification)
+  }
+  if (DDF_adj$purification != input$DDF_adj_purification_items) {
+    updateCheckboxInput(session = session,
+                        inputId = "DDF_adj_purification_items",
+                        value = DDF_adj$purification)
+  }
+})
+
+# ** Updating item slider ######
+observe({
+  item_count = ncol(ordinal())
+  updateSliderInput(session = session,
+                    inputId = "DDF_adj_items",
+                    max = item_count)
+})
+
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+# ** SUMMARY ######
+
+# ** Model for adjacent regression - summary ######
+# it's the same as for items as the inputs are synchronized
+DDF_adj_model <- reactive({
+  data <- ordinal()
+  group <- unlist(group())
+  type <- input$DDF_adj_type_summary
+  puri <- input$DDF_adj_purification_summary
+  corr <- input$DDF_adj_correction_summary
+
+  fit <- ddfORD(data, group, focal.name = 1, model = "adjacent",
+                type = type, purify = puri, p.adjust.method = corr,
+                parametrization = "classic")
+  fit
+})
+
+# ** Output print ######
+output$DDF_adj_print <- renderPrint({
+  print(DDF_adj_model())
+})
+
+# ** Equation ######
+DDF_adj_equation_summary_Input <- reactive({
+  # txt1 <- ifelse(input$DDF_adj_matching_summary == "score", "X_p", "Z_p")
+  txt1 <- "Z_p"
+  txt2 <- paste0("b_{0it} + b_{i1} ", txt1, " + b_{i2} G_p + b_{i3} ", txt1, " G_p")
+  txt3 <- paste0(txt1, ", b_{0i1}, ..., b_{0iK}, b_{i1}, b_{i2}, b_{i3}")
+
+  txt <- paste0("$$P(Y_{ip} = k|", txt3, ") = \\frac{e^{\\sum_{t = 0}^{k}", txt2, "}}{\\sum_{r = 0}^{K}e^{\\sum_{t = 0}^{r}", txt2, "}}$$")
+
+  txt
+})
+
+output$DDF_adj_equation_summary <- renderUI({
+  withMathJax(HTML(DDF_adj_equation_summary_Input()))
+})
+
+# ** Warning for missing values ####
+output$DDF_adj_NA_warning_summary <- renderUI({
+  txt <- na_score()
+  HTML(txt)
+})
+
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+# ** ITEMS ######
+
+# ** Plot ######
+DDF_adj_plot_Input <- reactive({
+  fit <- DDF_adj_model()
+  item <- input$DDF_adj_items
+
+  g <- plot(fit, item = item)[[1]] +
+    theme_app() +
+    ggtitle(item_names()[item]) +
+    theme(legend.box.just = "top",
+          legend.justification = c("left", "top"),
+          legend.position = c(0.02, 0.98),
+          legend.box = "horizontal",
+          legend.margin = margin(0, 0, 0, 0, unit = "cm"))
+  g
+})
+
+output$DDF_adj_plot <- renderPlot({
+  DDF_adj_plot_Input()
+})
+
+# ** DB for plot ######
+output$DB_DDF_adj_plot <- downloadHandler(
+  filename =  function() {
+    paste0("fig_DDF_adj_", item_names()[input$DDF_adj_items], ".png")
+  },
+  content = function(file) {
+    ggsave(file,
+           plot = DDF_adj_plot_Input() +
+             theme(text = element_text(size = setting_figures$text_size)),
+           device = "png",
+           height = setting_figures$height,
+           width = setting_figures$width,
+           dpi = setting_figures$dpi)
+  }
+)
+
+# ** Table of coefficients ######
+DDF_adj_coef_tab_Input <- reactive({
+  fit <- DDF_adj_model()
+  item <- input$DDF_adj_items
+  cat <- sort(unique(data.frame(ordinal())[, item]))[-1]
+
+  tab <- matrix(0, nrow = length(cat) + 3, ncol = 2)
+  rownames(tab) <- c(paste0("(Intercept):", 1:length(cat)), "x", "group", "x:group")
+  colnames(tab) <- c("estimate", "SE")
+
+  tmp <- t(coef(fit, SE = T)[[item]])
+  tab[rownames(tmp), ] <- tmp
+  colnames(tab) <- c("Estimate", "SE")
+  rownames(tab) <- c(paste0("%%mathit{b}_{0", cat, "}%%"), "%%mathit{b}_{1}%%",
+                     "%%mathit{b}_{2}%%", "%%mathit{b}_{3}%%")
+
+  tab
+})
+
+output$DDF_adj_coef_tab <- renderTable({
+  DDF_adj_coef_tab_Input()
+},
+include.rownames = T,
+include.colnames = T)
+
+# ** Equation ######
+DDF_adj_equation_items_Input <- reactive({
+  # txt1 <- ifelse(input$DDF_adj_matching_summary == "score", "X_p", "Z_p")
+  txt1 <- "Z_p"
+  txt2 <- paste0("b_{0t} + b_{1} ", txt1, " + b_{2} G_p + b_{3} ", txt1, " G_p")
+  txt3 <- paste0(txt1, ", b_{01}, ..., b_{0K}, b_{1}, b_{2}, b_{3}")
+
+  txt <- paste0("$$P(Y_{p} = k|", txt3, ") = \\frac{e^{\\sum_{t = 0}^{k}", txt2, "}}{\\sum_{r = 0}^{K}e^{\\sum_{t = 0}^{r}", txt2, "}}$$")
+
+  txt
+})
+
+output$DDF_adj_equation_items <- renderUI({
+  withMathJax(HTML(DDF_adj_equation_items_Input()))
+})
+
+# ** Warning for missing values ####
+output$DDF_adj_NA_warning_items <- renderUI({
+  txt <- na_score()
+  HTML(txt)
+})
+
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+# * MULTINOMIAL ######
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+# ** UPDATING INPUTS ######
+
+DDF_multi <- reactiveValues(type = NULL,
+                            correction = NULL,
+                            purification = NULL,
+                            matching = NULL)
+
+# ** Updating type ######
+observeEvent(input$DDF_multi_type_summary, {
+  DDF_multi$type <- input$DDF_multi_type_summary
+})
+observeEvent(input$DDF_multi_type_items, {
+  DDF_multi$type <- input$DDF_multi_type_items
+})
+observeEvent(DDF_multi$type, {
+  if (DDF_multi$type != input$DDF_multi_type_summary) {
+    updateCheckboxGroupInput(session = session,
+                             inputId = "DDF_multi_type_summary",
+                             selected = DDF_multi$type)
+  }
+  if (DDF_multi$type != input$DDF_multi_type_items) {
+    updateCheckboxGroupInput(session = session,
+                             inputId = "DDF_multi_type_items",
+                             selected = DDF_multi$type)
+  }
+})
+
+# ** Updating correction ######
+observeEvent(input$DDF_multi_correction_summary, {
+  DDF_multi$correction <- input$DDF_multi_correction_summary
+})
+observeEvent(input$DDF_multi_correction_items, {
+  DDF_multi$correction <- input$DDF_multi_correction_items
+})
+observeEvent(DDF_multi$correction, {
+  if (DDF_multi$correction != input$DDF_multi_correction_summary) {
+    updateSelectInput(session = session,
+                      inputId = "DDF_multi_correction_summary",
+                      selected = DDF_multi$correction)
+  }
+  if (DDF_multi$correction != input$DDF_multi_correction_items) {
+    updateSelectInput(session = session,
+                      inputId = "DDF_multi_correction_items",
+                      selected = DDF_multi$correction)
+  }
+})
+
+# ** Updating purification ######
+observeEvent(input$DDF_multi_purification_summary, {
+  DDF_multi$purification <- input$DDF_multi_purification_summary
+})
+observeEvent(input$DDF_multi_purification_items, {
+  DDF_multi$purification <- input$DDF_multi_purification_items
+})
+observeEvent(DDF_multi$purification, {
+  if (DDF_multi$purification != input$DDF_multi_purification_summary) {
+    updateCheckboxInput(session = session,
+                        inputId = "DDF_multi_purification_summary",
+                        value = DDF_multi$purification)
+  }
+  if (DDF_multi$purification != input$DDF_multi_purification_items) {
+    updateCheckboxInput(session = session,
+                        inputId = "DDF_multi_purification_items",
+                        value = DDF_multi$purification)
+  }
+})
+
+# ** Updating item slider ######
+observe({
+  item_count = ncol(ordinal())
+  updateSliderInput(session = session,
+                    inputId = "DDF_multi_items",
+                    max = item_count)
+})
+
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+# ** SUMMARY ######
+
+# ** Model for print ####
+# it's the same as for items as the inputs are synchronized
+DDF_multi_model <- reactive({
+  data <- nominal()
+  group <- unlist(group())
+  key <- key()
+
+  type <- input$DDF_multi_type_summary
+  puri <- input$DDF_multi_purification_summary
+  corr <- input$DDF_multi_correction_summary
+
+  fit <- tryCatch(ddfMLR(Data = data, group = group, focal.name = 1,
+                         key = key, p.adjust.method = corr,
+                         type = type, purify = puri, parametrization = "classic"),
                   error = function(e) e)
 
   validate(need(class(fit) == 'ddfMLR',
@@ -1657,111 +2260,61 @@ model_DDF_print_report <- reactive({
 })
 
 # ** Output print ######
-output$print_DDF <- renderPrint({
-  print(model_DDF_print())
+output$DDF_multi_print <- renderPrint({
+  print(DDF_multi_model())
 })
 
-# ** Model for plot ######
-model_DDF_plot <- reactive({
-  group <- unlist(group())
-  a <- data.frame(nominal())
-  a <- sapply(a, as.factor)
-  colnames(a) <- item_names()
-  k <- as.factor(key())
-
-  adj.method <- input$correction_method_plot_DDF
-  type <- input$type_plot_DDF
-  purify <- input$puri_DDF_plot
-
-  fit <- tryCatch(ddfMLR(Data = a, group = group, focal.name = 1,
-                         key = k, p.adjust.method = adj.method,
-                         type = type, purify = purify),
-                  error = function(e) e)
-
-  validate(need(class(fit) == 'ddfMLR',
-                paste0('This method cannot be used on this data. Error returned: ', fit$message)))
-
-  fit
+# ** Warning for missing values ####
+output$DDF_multi_NA_warning_summary <- renderUI({
+  txt <- na_score()
+  HTML(txt)
 })
+
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+# ** ITEMS ######
 
 # ** Plot ######
-plot_DDFInput <- reactive({
-  fit <- model_DDF_plot()
-  item <- input$ddfSlider
+DDF_multi_plot_Input <- reactive({
+  fit <- DDF_multi_model()
+  item <- input$DDF_multi_items
 
-  g <- plot(fit, item = item)[[1]]
-  g <- g +
+  g <- plot(fit, item = item)[[1]] +
     theme_app() +
+    ggtitle(item_names()[item]) +
     theme(legend.box.just = "top",
-          legend.position = c(0.01, 0.98),
-          legend.justification = c(0, 1),
-          legend.key.width = unit(1, "cm"),
-          legend.box = "horizontal") +
-    ggtitle(item_names()[item])
+          legend.justification = c("left", "top"),
+          legend.position = c(0.02, 0.98),
+          legend.box = "horizontal",
+          legend.margin = margin(0, 0, 0, 0, unit = "cm"))
   g
 })
 
-# ** Plot for reports ######
-plot_DDFReportInput <- reactive({
-  group <- unlist(group())
-  a <- data.frame(nominal())
-  a <- sapply(a, as.factor)
-  colnames(a) <- item_names()
-  k <- as.factor(key())
-
-  if (!input$customizeCheck) {
-    adj.method_report <- input$correction_method_plot_DDF
-    type_report <- input$type_plot_DDF
-    purify_report <- input$puri_DDF_plot
-  } else {
-    adj.method_report <- input$correction_method_DDF_report
-    type_report <- input$type_DDF_report
-    purify_report <- input$puri_DDF_report
-  }
-
-  mod <- ddfMLR(Data = a, group = group, focal.name = 1,
-                key = k, p.adjust.method = adj.method_report,
-                type = type_report, purify = purify_report)
-
-  graflist = list()
-  if (mod$DDFitems[[1]] != "No DDF item detected"){
-    for (i in 1:length(mod$DDFitems)) {
-      g <- plot(mod, item = mod$DDFitems[i])[[1]] +
-        theme(text = element_text(size = 12),
-              plot.title = element_text(size = 12, face = "bold", vjust = 1.5)) +
-        ggtitle(paste("\nDDF multinomial plot for item ", item_numbers()[mod$DDFitems[i]]))
-      graflist[[i]] <- g
-    }
-  } else {
-    graflist = NULL
-  }
-  graflist
+# ** Output plot ######
+output$DDF_multi_plot <- renderPlot({
+  DDF_multi_plot_Input()
 })
 
-
-# ** Output Plot ######
-output$plot_DDF <- renderPlot({
-  plot_DDFInput()
-})
-
-# ** Plot download ######
-output$DP_plot_DDF <- downloadHandler(
+# ** DB for plot ######
+output$DB_DDF_multi_plot <- downloadHandler(
   filename =  function() {
-    paste("fig_DDF_",item_names()[input$ddfSlider],".png", sep = "")
+    paste0("fig_DDF_multi_", item_names()[input$DDF_multi_items], ".png")
   },
   content = function(file) {
-    ggsave(file, plot = plot_DDFInput() +
+    ggsave(file,
+           plot = DDF_multi_plot_Input() +
              theme(text = element_text(size = setting_figures$text_size)),
            device = "png",
-           height = setting_figures$height, width = setting_figures$width,
+           height = setting_figures$height,
+           width = setting_figures$width,
            dpi = setting_figures$dpi)
   }
 )
 
 # ** Table of coefficients ######
-output$tab_coef_DDF <- renderTable({
-  item <- input$ddfSlider
-  fit <- model_DDF_plot()
+output$DDF_multi_coef_tab <- renderTable({
+  fit <- DDF_multi_model()
+  item <- input$DDF_multi_items
+
   data <- as.data.frame(nominal())
   key <- as.factor(key())
 
@@ -1794,98 +2347,89 @@ output$tab_coef_DDF <- renderTable({
   tab <- data.frame(df1$value,
                     df2$value)
   rownames(tab) <- paste0('%%mathit{', substr(df1$variable, 1, 1), '}_{',
-                         df1$answ,
-                         substr(df1$variable, 2, 2), '}%%')
+                          df1$answ,
+                          substr(df1$variable, 2, 2), '}%%')
   colnames(tab) <- c("Estimate", "SD")
   tab
 
 },
 include.rownames = T)
 
-
 # ** Equation ######
-output$DDFeq <- renderUI ({
-  item <- input$ddfSlider
+output$DDF_multi_equation_items <- renderUI ({
+  item <- input$DDF_multi_items
   key <- key()
 
   cor_option <- key[item]
   withMathJax(
     sprintf(
       '$$\\text{For item } %s \\text{ are corresponding equations of multinomial model given by: } \\\\
-           \\mathrm{P}(Y_{i} = %s|Z_i, G_i, b_{l0}, b_{l1}, b_{l2}, b_{l3}, l = 1,\\dots,K-1) =
-           \\frac{1}{1 + \\sum_l e^{\\left( b_{l0} + b_{l1} Z_i + b_{l2} G_i + b_{l3} Z_i:G_i\\right)}}, \\\\
-\\mathrm{P}(Y_{i} = k|Z_i, G_i, b_{l0}, b_{l1}, b_{l2}, b_{l3}, l = 1,\\dots,K-1) =
-           \\frac{e^{\\left( b_{k0} + b_{k1} Z_i + b_{k2} G_i + b_{k3} Z_i:G_i\\right)}}
-                 {1 + \\sum_l e^{\\left( b_{l0} + b_{l1} Z_i + b_{l2} G_i + b_{l3} Z_i:G_i\\right)}}, \\\\
-        \\text{where } %s \\text{ is the correct answer and } k \\text{ is one of the wrong options.}$$',
+      \\mathrm{P}(Y_{p} = %s|Z_p, G_p, b_{l0}, b_{l1}, b_{l2}, b_{l3}, l = 1, \\dots, K-1) =
+      \\frac{1}{1 + \\sum_l e^{\\left( b_{l0} + b_{l1} Z_p + b_{l2} G_p + b_{l3} Z_p:G_p\\right)}}, \\\\
+      \\mathrm{P}(Y_{p} = k|Z_p, G_p, b_{l0}, b_{l1}, b_{l2}, b_{l3}, l = 1, \\dots, K-1) =
+      \\frac{e^{\\left( b_{k0} + b_{k1} Z_p + b_{k2} G_p + b_{k3} Z_p:G_p\\right)}}
+      {1 + \\sum_l e^{\\left( b_{l0} + b_{l1} Z_p + b_{l2} G_p + b_{l3} Z_p:G_p\\right)}}, \\\\
+      \\text{where } %s \\text{ is the correct answer and } k \\text{ is one of the wrong options. }$$',
       item, cor_option, cor_option, cor_option, cor_option
     )
   )
 })
 
-output$method_comparison_table <- renderTable({
-
-	l_methods <- list()
-	l_methods[['Delta']] <- try(deltaGpurn()$DIFitems)
-	l_methods[['MH']] <- try(model_DIF_MH()$DIFitems)
-	l_methods[['LOG']] <- try(model_DIF_logistic_print()$DIFitems)
-	l_methods[['NLR']] <- try(model_DIF_NLR_print()$DIFitems)
-	l_methods[['IRT']] <- try(model_DIF_IRT_Lord_print()$DIFitems)
-	l_methods[['RAJU']] <- try(model_DIF_IRT_Raju_print()$DIFitems)
-	l_methods[['SIBTEST']] <- try(DIF_SIBTEST_model()$DIFitems)
-	l_methods[['DFF']] <- try(model_DDF_print()$DDFitems)
-
-	k <- length(item_names())
-	idx <- lapply(l_methods, class)
-	idx <- which(unlist(idx) != 'try-error')
-
-	v <- matrix(NA, ncol = length(l_methods), nrow = k)
-	v[, idx] <- 0
-
-	# there is need to handle Delta method and DDF differently
-	for (j in idx) {
-	  if (names(l_methods)[j] == "Delta"){
-	    if (all(l_methods[[j]] != 'no DIF item detected')) v[as.numeric(paste(l_methods[[j]])), j] <- 1
-	  } else {
-	    if (names(l_methods)[j] == "DDF"){
-	      if (all(l_methods[[j]] != 'No DDF item detected')) v[as.numeric(paste(l_methods[[j]])), j] <- 1
-	    } else {
-	      if (all(l_methods[[j]] != 'No DIF item detected')) v[as.numeric(paste(l_methods[[j]])), j] <- 1
-	    }
-	  }
-	}
-
-	tab <- as.data.frame(apply(v, c(1, 2), as.integer))
-	rownames(tab) <- item_names()
-	colnames(tab) <- names(l_methods)
-
-	n <- nrow(tab)
-	k <- ncol(tab)
-
-	rDIF <- rowSums(tab, na.rm = T)
-	cDIF <- colSums(tab, na.rm = T)
-	cDIF[k + 1] <- 0
-
-	tab <- cbind(tab, as.integer(rDIF))
-	tab <- rbind(tab, as.integer(cDIF))
-
-	rownames(tab)[n + 1] <- "Total"
-	colnames(tab)[k + 1] <- "Total"
-
-	tab
-},
-include.rownames = T,
-include.colnames = T)
-
 # ** Warning for missing values ####
-output$DIF_DDF_na_alert <- renderUI({
+output$DDF_multi_NA_warning_items <- renderUI({
   txt <- na_score()
   HTML(txt)
 })
 
-# ** Warning for missing values ####
-output$DIF_DDF_item_na_alert <- renderUI({
-  txt <- na_score()
-  HTML(txt)
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+# ** REPORTS ######
+
+# ** Model for report ######
+DDF_multi_model_report <- reactive({
+
+  if (!input$customizeCheck) {
+    adj.method <- input$correction_method_print_DDF
+    type <- input$type_print_DDF
+    purify <- input$puri_DDF_print
+
+
+    fit <- DDF_multi_model()
+  } else {
+    data <- nominal()
+    group <- unlist(group())
+    key <- key()
+
+    type <- input$type_DDF_report
+    puri <- input$puri_DDF_report
+    corr <- input$correction_method_DDF_report
+
+    fit <- tryCatch(ddfMLR(Data = data, group = group, focal.name = 1,
+                           key = key, p.adjust.method = corr,
+                           type = type, purify = puri, parametrization = "classic"),
+                    error = function(e) e)
+
+    validate(need(class(fit) == 'ddfMLR',
+                  paste0('This method cannot be used on this data. Error returned: ', fit$message)))
+  }
+
+  fit
 })
 
+# ** Plot for report ######
+DDF_multi_plot_report <- reactive({
+  fit <- DDF_multi_model_report()
+
+  graflist <- list()
+  if (fit$DDFitems[[1]] != "No DDF item detected"){
+    for (i in 1:length(fit$DDFitems)) {
+      g <- plot(fit, item = fit$DDFitems[i])[[1]] +
+        theme(text = element_text(size = 12),
+              plot.title = element_text(size = 12, face = "bold", vjust = 1.5)) +
+        ggtitle(paste("\nDDF multinomial plot for item ", item_numbers()[fit$DDFitems[i]]))
+      graflist[[i]] <- g
+    }
+  } else {
+    graflist <- NULL
+  }
+  graflist
+})
