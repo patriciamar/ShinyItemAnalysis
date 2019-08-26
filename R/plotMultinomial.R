@@ -58,10 +58,10 @@ plotMultinomial <- function(x, matching, matching.name = "matching"){
   }
 
   # omit NA values
-  matching <- matching[-as.vector(x$na.action)]
+  if (!is.null(x$na.action))
+    matching <- matching[-as.vector(x$na.action)]
 
   match <- seq(min(matching, na.rm = T), max(matching, na.rm = T), length.out = 300) # matching for curves
-
   coefs <- matrix(coef(x), ncol = 2)
 
   # calculation of fitted curves
@@ -79,8 +79,9 @@ plotMultinomial <- function(x, matching, matching.name = "matching"){
   df.emp$category <- paste0("P=", df.emp$category)
   df.emp$category <- factor(df.emp$category, levels = levels(df.probs$category))
 
-  k1 <- length(levels(df.probs$category)) %/% 12
-  k2 <- length(levels(df.probs$category)) - 12
+  num.cat <- length(levels(df.probs$category))
+  k1 <- num.cat %/% 12
+  k2 <- ifelse(num.cat < 12, num.cat, num.cat - 12)
   linetypes <- c(rep(1:12, k1), c(1:12)[1:k2])
 
   # plotting category probabilities

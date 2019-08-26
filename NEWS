@@ -12,6 +12,7 @@ BUG FIXING
   o Table for MH in PDF reports was fixed.
   o Header of sections were fixed in PDF reports.
   o IRT parameter estimates table was fixed in PDF reports.
+  o Bug in plotMultinomial() for data without NAs was fixed.
 
 MAJOR UPDATES
   o DIF/DDF detection methods for ordinal data were added. DIF/Fairness
