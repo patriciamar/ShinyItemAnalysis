@@ -18,6 +18,12 @@ MAJOR UPDATES
   o DIF/DDF detection methods for ordinal data were added. DIF/Fairness
     section was updated.
 
+MINOR CHANGES
+  o Tabs in Regression were renamed.
+  o Warning when group vector is missing was added into Method comparison tab
+    in DIF/Fairness section.
+  o Method comparison tab for DIF/Fairness section was updated.
+
 -------------------------------------------------------
 - Changes in ShinyItemAnalysis 1.3.1-4. (2019-08-07) -
 -------------------------------------------------------

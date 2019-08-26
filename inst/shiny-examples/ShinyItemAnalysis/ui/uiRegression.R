@@ -187,12 +187,12 @@ uiRegression <-
              "----",
              "Polytomous models",
              # * CUMULATIVE LOGIT ####
-             tabPanel("Cumulative logistic ",
-                      h3("Cumulative logistic regression"),
+             tabPanel("Cumulative logit ",
+                      h3("Cumulative logit regression"),
                       p("Various regression models may be fitted to describe item properties in more detail.",
-                      strong("Cumulative logistic regression")," can model cumulative probabilities, i.e., probabilities
+                      strong("Cumulative logit regression")," can model cumulative probabilities, i.e., probabilities
                       to obtain item score higher than or equal to 1, 2, 3, etc. "),
-                      p("Cumulative logistic model can be fitted on selected ", strong("matching criterion"), "- total scores or standardized
+                      p("Cumulative logit model can be fitted on selected ", strong("matching criterion"), "- total scores or standardized
                         scores, using classical (slope/intercept) or IRT ", strong("parametrization. ")),
                       br(),
                       fluidRow(column(3, selectInput(inputId = "cumreg_matching",
@@ -232,18 +232,18 @@ uiRegression <-
                       h4("Table of parameters"),
                       fluidRow(column(12, align = "center", tableOutput("cumreg_coef_tab"))),
                       h4("Selected R code"),
-					  div(code(HTML("library(ShinyItemAnalysis)<br>library(VGAM)<br><br>#&nbsp;loading&nbsp;data<br>data&nbsp;<-&nbsp;dataMedicalgraded[,&nbsp;1:100]<br><br>#&nbsp;total&nbsp;score&nbsp;calculation<br>score&nbsp;<-&nbsp;apply(data,&nbsp;1,&nbsp;sum,&nbsp;na.rm&nbsp;=&nbsp;TRUE)<br>key&nbsp;<-&nbsp;sapply(data,&nbsp;max)<br>maxval&nbsp;<-&nbsp;max(data[,&nbsp;1])<br>data[,&nbsp;1]&nbsp;<-&nbsp;factor(data[,&nbsp;1],&nbsp;levels&nbsp;=&nbsp;0:maxval)<br><br>#&nbsp;cummulative&nbsp;logistic&nbsp;model&nbsp;for&nbsp;item&nbsp;1<br>fit.cum&nbsp;<-&nbsp;vglm(data[,&nbsp;1]&nbsp;~&nbsp;score,&nbsp;family&nbsp;=&nbsp;cumulative(reverse&nbsp;=&nbsp;TRUE,&nbsp;parallel&nbsp;=&nbsp;TRUE))<br>#&nbsp;coefficients&nbsp;for&nbsp;item&nbsp;1<br>coefs&nbsp;<-&nbsp;coef(fit.cum)<br><br>#&nbsp;plotting&nbsp;cumulative&nbsp;probabilities<br>plotCumulative(fit.cum,&nbsp;type&nbsp;=&nbsp;\"cumulative\",&nbsp;matching.name&nbsp;=&nbsp;\"Total&nbsp;score\")<br>#&nbsp;plotting&nbsp;category&nbsp;probabilities<br>plotCumulative(fit.cum,&nbsp;type&nbsp;=&nbsp;\"category\",&nbsp;matching.name&nbsp;=&nbsp;\"Total&nbsp;score\")"))),
+					  div(code(HTML("library(ShinyItemAnalysis)<br>library(VGAM)<br><br>#&nbsp;loading&nbsp;data<br>data&nbsp;<-&nbsp;dataMedicalgraded[,&nbsp;1:100]<br><br>#&nbsp;total&nbsp;score&nbsp;calculation<br>score&nbsp;<-&nbsp;apply(data,&nbsp;1,&nbsp;sum,&nbsp;na.rm&nbsp;=&nbsp;TRUE)<br>key&nbsp;<-&nbsp;sapply(data,&nbsp;max)<br>maxval&nbsp;<-&nbsp;max(data[,&nbsp;1])<br>data[,&nbsp;1]&nbsp;<-&nbsp;factor(data[,&nbsp;1],&nbsp;levels&nbsp;=&nbsp;0:maxval)<br><br>#&nbsp;cummulative&nbsp;logit&nbsp;model&nbsp;for&nbsp;item&nbsp;1<br>fit.cum&nbsp;<-&nbsp;vglm(data[,&nbsp;1]&nbsp;~&nbsp;score,&nbsp;family&nbsp;=&nbsp;cumulative(reverse&nbsp;=&nbsp;TRUE,&nbsp;parallel&nbsp;=&nbsp;TRUE))<br>#&nbsp;coefficients&nbsp;for&nbsp;item&nbsp;1<br>coefs&nbsp;<-&nbsp;coef(fit.cum)<br><br>#&nbsp;plotting&nbsp;cumulative&nbsp;probabilities<br>plotCumulative(fit.cum,&nbsp;type&nbsp;=&nbsp;\"cumulative\",&nbsp;matching.name&nbsp;=&nbsp;\"Total&nbsp;score\")<br>#&nbsp;plotting&nbsp;category&nbsp;probabilities<br>plotCumulative(fit.cum,&nbsp;type&nbsp;=&nbsp;\"category\",&nbsp;matching.name&nbsp;=&nbsp;\"Total&nbsp;score\")"))),
                       br(),
                       br()
              ),
-             # * ADJACENT LOGISTIC ####
-             tabPanel("Adjacent logistic ",
-                      h3("Adjacent logistic regression"),
+             # * ADJACENT CATEGORY LOGIT ####
+             tabPanel("Adjacent category logit ",
+                      h3("Adjacent category logit regression"),
                       p("Models for ordinal responses need not use cumulative probabilities.",
                         strong("Adjacent categories model"), "assumes linear form of logarithm of ratio of
                         probabilities of two successive scores (e.g. 1 vs. 2, 2 vs. 3, etc.), i.e., of the
                         adjacent category logits."),
-                      p("Adjacent logistic model can be fitted on selected ", strong("matching criterion"), "- total scores or standardized
+                      p("Adjacent category logit model can be fitted on selected ", strong("matching criterion"), "- total scores or standardized
                         scores, using classical (slope/intercept) or IRT ", strong("parametrization. ")),
                       br(),
                       fluidRow(
@@ -280,7 +280,7 @@ uiRegression <-
                       h4("Table of parameters"),
                       fluidRow(column(12, align = "center", tableOutput("adjreg_coef_tab"))),
                       h4("Selected R code"),
-					  div(code(HTML("library(ShinyItemAnalysis)<br>library(VGAM)<br><br>#&nbsp;loading&nbsp;data<br>data&nbsp;<-&nbsp;dataMedicalgraded[,&nbsp;1:100]<br><br>#&nbsp;total&nbsp;score&nbsp;calculation<br>score&nbsp;<-&nbsp;apply(data,&nbsp;1,&nbsp;sum,&nbsp;na.rm&nbsp;=&nbsp;TRUE)<br>key&nbsp;<-&nbsp;sapply(data,&nbsp;max)<br>maxval&nbsp;<-&nbsp;max(data[,&nbsp;1])<br>data[,&nbsp;1]&nbsp;<-&nbsp;factor(data[,&nbsp;1],&nbsp;levels&nbsp;=&nbsp;0:maxval)<br><br>#&nbsp;adjacent&nbsp;logistic&nbsp;model&nbsp;for&nbsp;item&nbsp;1<br>fit.adj&nbsp;<-&nbsp;vglm(data[,&nbsp;1]&nbsp;~&nbsp;score,&nbsp;family&nbsp;=&nbsp;acat(reverse&nbsp;=&nbsp;FALSE,&nbsp;parallel&nbsp;=&nbsp;TRUE))<br>#&nbsp;coefficients&nbsp;for&nbsp;item&nbsp;1<br>coefs&nbsp;<-&nbsp;coef(fit.adj)<br><br>#&nbsp;plotting&nbsp;category&nbsp;probabilities<br>plotAdjacent(fit.adj,&nbsp;matching.name&nbsp;=&nbsp;\"Total&nbsp;score\")"))),
+					  div(code(HTML("library(ShinyItemAnalysis)<br>library(VGAM)<br><br>#&nbsp;loading&nbsp;data<br>data&nbsp;<-&nbsp;dataMedicalgraded[,&nbsp;1:100]<br><br>#&nbsp;total&nbsp;score&nbsp;calculation<br>score&nbsp;<-&nbsp;apply(data,&nbsp;1,&nbsp;sum,&nbsp;na.rm&nbsp;=&nbsp;TRUE)<br>key&nbsp;<-&nbsp;sapply(data,&nbsp;max)<br>maxval&nbsp;<-&nbsp;max(data[,&nbsp;1])<br>data[,&nbsp;1]&nbsp;<-&nbsp;factor(data[,&nbsp;1],&nbsp;levels&nbsp;=&nbsp;0:maxval)<br><br>#&nbsp;adjacent&nbsp;category logit&nbsp;model&nbsp;for&nbsp;item&nbsp;1<br>fit.adj&nbsp;<-&nbsp;vglm(data[,&nbsp;1]&nbsp;~&nbsp;score,&nbsp;family&nbsp;=&nbsp;acat(reverse&nbsp;=&nbsp;FALSE,&nbsp;parallel&nbsp;=&nbsp;TRUE))<br>#&nbsp;coefficients&nbsp;for&nbsp;item&nbsp;1<br>coefs&nbsp;<-&nbsp;coef(fit.adj)<br><br>#&nbsp;plotting&nbsp;category&nbsp;probabilities<br>plotAdjacent(fit.adj,&nbsp;matching.name&nbsp;=&nbsp;\"Total&nbsp;score\")"))),
 					  br(),
                       br()
              ),

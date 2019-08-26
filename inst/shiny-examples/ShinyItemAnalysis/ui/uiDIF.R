@@ -996,12 +996,12 @@ uiDIF <-
                         tags$li(strong('GLogistic'), 'is generalized logistic regression (Drabinova & Martinkova, 2017),'),
                         tags$li(strong('Lord'), 'is Lord chi-square test (Lord, 1980),'),
                         tags$li(strong('Raju'), 'is Raju area method (Raju, 1990),'),
-                        tags$li(strong('SIBTEST'), 'is SIBTEST (Shealy & Stout, 1993) and crossing-SIBTEST (Chalmers, 2018; Li & Stout, 1996) methods, '),
-                        tags$li(strong('DDF'), 'is differential distractor functioning with multinomial log-linear regression model. ')
+                        tags$li(strong('SIBTEST'), 'is SIBTEST (Shealy & Stout, 1993) and crossing-SIBTEST (Chalmers, 2018; Li & Stout, 1996) methods, ')
+                        # tags$li(strong('DDF'), 'is differential distractor functioning with multinomial log-linear regression model. ')
                       ),
                       h3("Table with method comparison"),
                       p("Methods in the table using all settings that were set in the previous tabs. The last column shows how
-                        many methods out of 8 detect certain item as DIF. The last row shows how many items are detected as DIF by certain method. "),
+                        many methods out of 7 detect certain item as DIF. The last row shows how many items are detected as DIF by certain method. "),
                       fluidRow(column(12, align = "center", tableOutput("method_comparison_table"))),
                       br(),
                       br()

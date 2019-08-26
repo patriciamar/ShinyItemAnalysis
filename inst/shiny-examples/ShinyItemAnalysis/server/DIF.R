@@ -1612,6 +1612,8 @@ output$DIF_SIBTEST_item_na_alert <- renderUI({
 
 output$method_comparison_table <- renderTable({
 
+  group <- group()
+
   l_methods <- list()
   l_methods[['Delta']] <- try(deltaGpurn()$DIFitems)
   l_methods[['MH']] <- try(model_DIF_MH()$DIFitems)
