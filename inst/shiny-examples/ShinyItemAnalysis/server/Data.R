@@ -81,7 +81,7 @@ removeCounter$Click <- 0
 
 # * Render remove button after data load ####
 output$removeBut_output <- renderUI({
-  if(submitCounter$Click > 0) {
+  if (submitCounter$Click > 0) {
     tagList(actionButton(inputId = "removeButton",
                          label = "Unload data",
                          class = "btn btn-large btn-primary",
@@ -90,10 +90,15 @@ output$removeBut_output <- renderUI({
   }
 })
 
+observeEvent(input$key, {
+  dataset$key_upload_status <- "uploaded"
+}, priority = 1000)
+
 # * Remove loaded data ####
 observeEvent(input$removeButton, {
   # reset function reset values in input
   # html function change text in corresponding html tag
+  useShinyjs()
   reset("data")
   reset("key")
   reset("groups")
@@ -104,14 +109,18 @@ observeEvent(input$removeButton, {
   reset("globalMin")
   reset("globalCut")
   reset("submitButton")
-  html('removedItemsText',html = '')
-  html('checkDataText',html = '')
-  html('checkDataColumns01Text',html = '')
-  html('renderdeleteButtonColumns01',html = '')
-  html('removedItemsText',html = '')
-  html('checkGroupText',html = '')
-  html('renderdeleteButtonGroup',html = '')
-  html('removedGroupText',html = '')
+
+  dataset$key_upload_status <- "reset"
+
+  html('removedItemsText', html = "")
+  html('checkDataText', html = "")
+  html('checkDataColumns01Text', html = "")
+  html('renderdeleteButtonColumns01', html = "")
+  html('removedItemsText', html = "")
+  html('checkGroupText', html = "")
+  html('renderdeleteButtonGroup', html = "")
+  html('removedGroupText', html = "")
+
   submitCounter$Click <- 0
   removeCounter$Click <- 1
   removeUI(selector = '#removeButton')
@@ -379,7 +388,7 @@ data_ordinal_summary_Input <- reactive({
                                     sapply(data_table, sd),
                                     as.numeric(key))
     rownames(data_table_summary) <- item_names()
-    colnames(data_table_summary) <- c("NAME", "MIN", "MEDIAN", "MEAN", "MAX", "SD", "KEY")
+    colnames(data_table_summary) <- c("Name", "Min", "Median", "Mean", "Max", "SD", "Cut")
     data_table_summary
   } else {
     data_table <- sapply(data_table, as.factor)
@@ -441,7 +450,7 @@ output$data_group_summary <- renderPrint({
 
 # * Criterion ####
 data_criterion_summary_Input <- reactive({
-  summary(criterion())
+	summary(criterion())
 })
 
 output$data_criterion_summary <- renderPrint({

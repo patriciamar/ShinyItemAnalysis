@@ -68,7 +68,7 @@ plotMultinomial <- function(x, matching, matching.name = "matching"){
   df.probs <- data.frame(1, apply(coefs, 1, function(x) exp(x[1] + x[2] * match)))
   df.probs <- df.probs/apply(df.probs, 1, sum)
   df.probs <- data.frame(match, df.probs)
-  colnames(df.probs) <- c("matching", paste0("P=", cat))
+  colnames(df.probs) <- c("matching", paste0("P(Y=", cat, ")"))
   df.probs <- melt(df.probs, id.vars = "matching", variable.name = "category", value.name = "probability")
 
   # calculation of empirical values
@@ -76,7 +76,7 @@ plotMultinomial <- function(x, matching, matching.name = "matching"){
                        y = prop.table(table(y, matching), 2))[, c(1, 2, 3, 6)]
   df.emp$matching <- as.numeric(paste(df.emp$matching))
   colnames(df.emp) <- c("category", "matching", "size", "probability")
-  df.emp$category <- paste0("P=", df.emp$category)
+  df.emp$category <- paste0("P(Y=", df.emp$category, ")")
   df.emp$category <- factor(df.emp$category, levels = levels(df.probs$category))
 
   num.cat <- length(levels(df.probs$category))

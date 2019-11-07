@@ -71,7 +71,7 @@ plotAdjacent <- function(x, matching.name = "matching") {
 
   # melting data
   df.probs.cat <- data.frame(match, df.probs.cat)
-  colnames(df.probs.cat) <- c("matching", paste0("P=", cat))
+  colnames(df.probs.cat) <- c("matching", paste0("P(Y=", cat, ")"))
   df.probs.cat <- melt(df.probs.cat, id.vars = "matching", variable.name = "category", value.name = "probability")
 
   # empirical category values
@@ -80,7 +80,7 @@ plotAdjacent <- function(x, matching.name = "matching") {
   df.emp.cat$matching <- as.numeric(paste(df.emp.cat$matching))
   colnames(df.emp.cat) <- c("category", "matching", "size", "probability")
   df.emp.cat$category <- as.factor(df.emp.cat$category)
-  levels(df.emp.cat$category) <- paste0("P=", levels(df.emp.cat$category))
+  levels(df.emp.cat$category) <- paste0("P(Y=", levels(df.emp.cat$category), ")")
 
   # colours
   gg_color_hue <- function(n) {
@@ -89,8 +89,8 @@ plotAdjacent <- function(x, matching.name = "matching") {
   }
   cols <- c("black", gg_color_hue(num.cat - 1))
 
-  df.emp.cat <- df.emp.cat[df.emp.cat$category %in% paste0("P=", cat), ]
-  df.probs.cat <- df.probs.cat[df.probs.cat$category %in% paste0("P=", cat), ]
+  df.emp.cat <- df.emp.cat[df.emp.cat$category %in% paste0("P(Y=", cat, ")"), ]
+  df.probs.cat <- df.probs.cat[df.probs.cat$category %in% paste0("P(Y=", cat, ")"), ]
 
   rangex <- c(min(c(df.emp.cat$matching, df.probs.cat$matching)),
               max(c(df.emp.cat$matching, df.probs.cat$matching)))

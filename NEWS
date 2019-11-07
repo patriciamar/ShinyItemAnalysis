@@ -1,8 +1,39 @@
-        ***************************************************************
+﻿        ***************************************************************
         *                                                             *
         *  Changes and Developments in the ShinyItemAnalysis Package  *
         *                                                             *
         ***************************************************************
+-------------------------------------------------------
+- Changes in ShinyItemAnalysis 1.3.1-8. (2019-11-02) -
+-------------------------------------------------------
+
+BUG FIXING
+  o Typos in plotAdjacent(), plotCumulative() and plotMultinomial() were fixed.
+
+-------------------------------------------------------
+- Changes in ShinyItemAnalysis 1.3.1-7. (2019-09-30) -
+-------------------------------------------------------
+
+MAJOR CHANGES
+  o Functions DistractorAnalysis() and plotDistractorAnalysis()
+    were updated to not requiring key input.
+
+-------------------------------------------------------
+- Changes in ShinyItemAnalysis 1.3.1-6. (2019-09-25) -
+-------------------------------------------------------
+
+BUG FIXING
+  o Bug in key uploading was fixed. When nominal data was uploaded and
+    then ordinal (without cut-score specified in file), key was kept
+    from nominal data.
+  o Bug in ordinal data was fixed. Recalculation of factors to numeric
+    is done.
+  o Some calculations with NA values were fixed.
+  o Double file input "key" was unified.
+
+MINOR CHANGES
+  o Item names for toy dataset Science were updated.
+  o Basic summary table for ordinal data was updated.
 
 -------------------------------------------------------
 - Changes in ShinyItemAnalysis 1.3.1-5. (2019-08-26) -

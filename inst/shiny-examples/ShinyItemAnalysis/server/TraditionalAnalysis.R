@@ -224,7 +224,7 @@ distractor_change_cut_indicator <- reactiveValues(change = FALSE)
 observeEvent(!(input$distractor_group %in% distractor_admisible_groups()), {
   if (!(input$distractor_group %in% distractor_admisible_groups())){
     distractor_change_cut_indicator$change <- TRUE
-    c <- max(distractor_admisible_groups())
+    c <- max(distractor_admisible_groups(), na.rm = T)
     updateSliderInput(session, "distractor_group", value = c)
   }
 })
@@ -233,7 +233,8 @@ observeEvent(!(input$distractor_group %in% distractor_admisible_groups()), {
 output$distractor_groups_alert <- renderUI({
   if (distractor_change_cut_indicator$change) {
     txt <- paste0('<font color = "orange">The cut of criterion variable was not unique. The maximum number of
-                  groups, for which criterion variable is unique is ', max(distractor_admisible_groups()), ".</font>")
+                  groups, for which criterion variable is unique is ',
+                  max(distractor_admisible_groups(), na.rm = T), ".</font>")
     HTML(txt)
   } else {
     txt <- " "
@@ -463,7 +464,7 @@ distractor_change_cut_indicator_report <- reactiveValues(change = FALSE)
 observeEvent(list(input$customizeCheck, !(input$distractor_group_report %in% distractor_admisible_groups())), {
   if (!(input$distractor_group_report %in% distractor_admisible_groups())){
     distractor_change_cut_indicator_report$change <- TRUE
-    c <- max(distractor_admisible_groups())
+    c <- max(distractor_admisible_groups(), na.rm = T)
     updateSliderInput(session, "distractor_group_report", value = c)
   }
 })
@@ -472,7 +473,7 @@ observeEvent(list(input$customizeCheck, !(input$distractor_group_report %in% dis
 output$distractor_groups_alert_report <- renderUI({
   if (distractor_change_cut_indicator_report$change) {
     txt <- paste0('<font color = "orange">The cut of criterion variable was not unique. The maximum number of
-                  groups, for which criterion variable is unique is ', max(distractor_admisible_groups()), ".</font>")
+                  groups, for which criterion variable is unique is ', max(distractor_admisible_groups(), na.rm = T), ".</font>")
     HTML(txt)
   } else {
     txt <- " "

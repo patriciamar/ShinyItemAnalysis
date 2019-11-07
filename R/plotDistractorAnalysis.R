@@ -89,7 +89,21 @@
 plotDistractorAnalysis <-  function (data, key, num.groups = 3, item = 1, item.name, multiple.answers = TRUE,
                                      matching = NULL, match.discrete = FALSE, cut.points)
 {
-  key <- unlist(key)
+  if (missing(key)){
+    if (all(sapply(data, is.numeric))){
+      warning("Answer key is not provided")
+      key <- sapply(data, max, na.rm = T)
+    } else if (missing(matching)){
+      stop("Answer key is not provided")
+    } else {
+      key <- NULL
+    }
+  } else {
+    if (!length(key) == ncol(data)) {
+      stop("Answer key is not provided or some item keys are missing.")
+    }
+    key <- unlist(key)
+  }
 
   # distractor analysis
   tabDA <- DistractorAnalysis(data = data, key = key, p.table = TRUE, num.groups = num.groups, matching = matching,
@@ -106,7 +120,8 @@ plotDistractorAnalysis <-  function (data, key, num.groups = 3, item = 1, item.n
   x <- x[complete.cases(x), ]
   x$response <- as.factor(x$response)
   levels(x$response)[which(levels(x$response) == "")] <- "NaN"
-  x$response <- relevel(x$response, as.character(key[item]))
+  if (!is.null(key))
+    x$response <- relevel(x$response, as.character(key[item]))
 
   if (multiple.answers){
     # all combinations

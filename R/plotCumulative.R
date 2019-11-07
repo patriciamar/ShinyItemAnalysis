@@ -78,11 +78,11 @@ plotCumulative <- function(x, type = "cumulative", matching.name = "matching"){
 
   # melting data
   df.probs.cum <- data.frame(match, df.probs.cum)
-  colnames(df.probs.cum) <- c("matching", paste0("P>=", cat))
+  colnames(df.probs.cum) <- c("matching", paste0("P(Y>=", cat,")"))
   df.probs.cum <- melt(df.probs.cum, id.vars = "matching", variable.name = "category", value.name = "probability")
 
   df.probs.cat <- data.frame(match, df.probs.cat)
-  colnames(df.probs.cat) <- c("matching", paste0("P=", cat))
+  colnames(df.probs.cat) <- c("matching", paste0("P(Y=", cat,")"))
   df.probs.cat <- melt(df.probs.cat, id.vars = "matching", variable.name = "category", value.name = "probability")
 
 
@@ -92,7 +92,7 @@ plotCumulative <- function(x, type = "cumulative", matching.name = "matching"){
   df.emp.cat$matching <- as.numeric(paste(df.emp.cat$matching))
   colnames(df.emp.cat) <- c("category", "matching", "size", "probability")
   df.emp.cat$category <- as.factor(df.emp.cat$category)
-  levels(df.emp.cat$category) <- paste0("P=", levels(df.emp.cat$category))
+  levels(df.emp.cat$category) <- paste0("P(Y=", levels(df.emp.cat$category),")")
 
 
   # empirical cumulative values
@@ -100,14 +100,14 @@ plotCumulative <- function(x, type = "cumulative", matching.name = "matching"){
   df.emp.cum.count <- t(apply(df.emp.cum.count, 1, function(x) sum(x) - cumsum(x) + x))
   df.emp.cum.count <- data.frame(as.numeric(paste(rownames(df.emp.cum.count))),
                                  df.emp.cum.count)
-  colnames(df.emp.cum.count) <- c("matching", paste0("P>=", cat))
+  colnames(df.emp.cum.count) <- c("matching", paste0("P(Y>=", cat,")"))
   df.emp.cum.count <- melt(df.emp.cum.count, id.vars = "matching", variable.name = "category", value.name = "size")
 
   df.emp.cum.prob <- as.data.frame.matrix(prop.table(table(matching, y), 1))
   df.emp.cum.prob <- t(apply(df.emp.cum.prob, 1, function(x) sum(x) - cumsum(x) + x))
   df.emp.cum.prob <- data.frame(as.numeric(paste(rownames(df.emp.cum.prob))),
                                 df.emp.cum.prob)
-  colnames(df.emp.cum.prob) <- c("matching", paste0("P>=", cat))
+  colnames(df.emp.cum.prob) <- c("matching", paste0("P(Y>=", cat,")"))
   df.emp.cum.prob <- melt(df.emp.cum.prob, id.vars = "matching", variable.name = "category", value.name = "probability")
 
   df.emp.cum <- merge(df.emp.cum.count, df.emp.cum.prob, by = c("matching", "category"))
@@ -132,8 +132,8 @@ plotCumulative <- function(x, type = "cumulative", matching.name = "matching"){
       cols <- cols[as.numeric(cat.obs)]
     }
 
-    df.emp.cum <- df.emp.cum[df.emp.cum$category %in% paste0("P>=", cat.obs), ]
-    df.probs.cum <- df.probs.cum[df.probs.cum$category %in% paste0("P>=", cat.obs), ]
+    df.emp.cum <- df.emp.cum[df.emp.cum$category %in% paste0("P(Y>=", cat.obs, ")"), ]
+    df.probs.cum <- df.probs.cum[df.probs.cum$category %in% paste0("P(Y>=", cat.obs, ")"), ]
 
     g <- ggplot() +
       geom_point(data = df.emp.cum,

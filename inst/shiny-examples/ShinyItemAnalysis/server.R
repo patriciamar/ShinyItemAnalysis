@@ -66,6 +66,7 @@ function(input, output, session) {
   dataset$criterion <- NULL
 
   dataset$data_status <- NULL
+  dataset$key_upload_status <- "toy"
 
   # * Setting ####
   setting_figures <- reactiveValues()
@@ -105,10 +106,10 @@ function(input, output, session) {
       do.call(data, args = list(paste0(datasetName), package = packageName))
       dataOrdinal <- get(paste0(datasetName))
 
-	  group <- dataOrdinal[, "gender"]
-	  criterion <- dataOrdinal[, "StudySuccess"]
+	    group <- dataOrdinal[, "gender"]
+	    criterion <- dataOrdinal[, "StudySuccess"]
 
-	  dataOrdinal <- dataOrdinal[, 1:(dim(dataOrdinal)[2] - 2)]
+	    dataOrdinal <- dataOrdinal[, 1:(dim(dataOrdinal)[2] - 2)]
       dataNominal <- dataOrdinal
 
       dataType <- "ordinal"
@@ -119,24 +120,20 @@ function(input, output, session) {
                            ncol = ncol(dataOrdinal), nrow = nrow(dataOrdinal))
 
     } else if (datasetName == "Science") {
-	  do.call(data, args = list(paste0(datasetName), package = packageName))
+      do.call(data, args = list(paste0(datasetName), package = packageName))
       dataOrdinal <- get(paste0(datasetName))
 
-	  dataNominal <- dataOrdinal
+	    dataNominal <- dataOrdinal
 
-	  group <- "missing"
-	  criterion <- "missing"
-
-	  colnames(dataOrdinal) <- paste0("Item",1:4)
-	  colnames(dataNominal) <- paste0("Item",1:4)
+	    group <- "missing"
+	    criterion <- "missing"
 
       dataType <- "ordinal"
 
-	  key <- sapply(dataOrdinal, max)
+	    key <- sapply(dataOrdinal, max)
       df.key <- sapply(key, rep, each = nrow(dataOrdinal))
       dataBinary <- matrix(as.numeric(dataOrdinal >= df.key),
                            ncol = ncol(dataOrdinal), nrow = nrow(dataOrdinal))
-
 	} else {
       do.call(data, args = list(paste0(datasetName, "test"), package = packageName))
       dataNominal <- get(paste0(datasetName, "test"))
@@ -152,8 +149,6 @@ function(input, output, session) {
       } else {
         criterion <- dataNominal[, length(key) + 2]
       }
-
-      # dataNominal <- as.data.frame(apply(dataNominal[, 1:length(key)], c(1, 2), function(x) ifelse(is.na(x), 0, x)))
       dataNominal <- dataNominal[, 1:length(key)]
       dataOrdinal <- mirt::key2binary(dataNominal, key)
       dataBinary <- mirt::key2binary(dataNominal, key)
@@ -203,13 +198,15 @@ function(input, output, session) {
                             quote = input$quote)
       dataset$data_status <- "OK"
 
-
       # loading max/min values for ordinal data
       if (input$data_type == "ordinal"){
+        ### changing factors to numeric
+        inputData <- data.frame(sapply(inputData, function(x) as.numeric(paste(x))))
+
         ### minimal values
         if (is.null(input$minOrdinal)) {
           if (input$globalMin == "") {
-            inputOrdinalMin <- sapply(inputData, min)
+            inputOrdinalMin <- sapply(inputData, min, na.rm = T)
           } else {
             inputOrdinalMin <- rep(input$globalMin, ncol(inputData))
           }
@@ -223,7 +220,7 @@ function(input, output, session) {
         ### maximal values
         if (is.null(input$maxOrdinal)) {
           if (input$globalMax == "") {
-            inputOrdinalMax <- sapply(inputData, max)
+            inputOrdinalMax <- sapply(inputData, max, na.rm = T)
           } else {
             inputOrdinalMax <- rep(input$globalMax, ncol(inputData))
           }
@@ -236,7 +233,7 @@ function(input, output, session) {
       }
 
       # loading key
-      if (is.null(input$key)){
+      if (is.null(input$key) | dataset$key_upload_status == "reset"){
         if (input$globalCut == "") {
           if (input$data_type == "binary"){
             inputKey <- rep(1, ncol(inputData))
@@ -248,7 +245,7 @@ function(input, output, session) {
             }
           }
         } else {
-          inputKey <- rep(as.numeric(input$globalCut), ncol(inputData))
+          inputKey <- rep(as.numeric(paste(input$globalCut)), ncol(inputData))
         }
       } else {
         inputKey <- read.csv(input$key$datapath,
@@ -303,6 +300,7 @@ function(input, output, session) {
 
       dataset$nominal <- as.data.table(dataset$nominal)
       dataset$data_type <- inputData_type
+
       ### min/max values
       if (input$data_type == "ordinal"){
         dataset$minimal <- inputOrdinalMin
@@ -398,7 +396,7 @@ function(input, output, session) {
   })
 
   total_score <- reactive({
-    apply(ordinal(), 1, sum)
+    rowSums(ordinal())
   })
 
   z_score <- reactive({

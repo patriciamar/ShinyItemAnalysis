@@ -81,9 +81,14 @@ DistractorAnalysis <-  function(data, key, p.table = FALSE, num.groups = 3, matc
 
   data <- as.data.frame(data)
 
-  if (missing(key))
-    warning("Answer key is not provided")
-  else {
+  if (missing(key) | is.null(key)){
+    if (all(sapply(data, is.numeric))){
+      warning("Answer key is not provided")
+      key <- sapply(data, max, na.rm = T)
+    } else if (missing(matching)){
+      stop("Answer key is not provided")
+    }
+  } else {
     if (!length(key) == ncol(data)) {
       warning("Answer key is not provided or some item keys are missing.")
     }
