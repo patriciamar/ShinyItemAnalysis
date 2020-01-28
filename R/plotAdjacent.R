@@ -11,22 +11,23 @@
 #'
 #' @author
 #' Tomas Jurica \cr
-#' Faculty of Mathematics and Physics, Charles University \cr
 #'
 #' Adela Hladka \cr
-#' Institute of Computer Science, The Czech Academy of Sciences \cr
+#' Institute of Computer Science of the Czech Academy of Sciences \cr
 #' Faculty of Mathematics and Physics, Charles University \cr
-#' hladka@cs.cas.cz \cr
+#' \email{hladka@@cs.cas.cz} \cr
 #'
 #' Patricia Martinkova \cr
-#' Institute of Computer Science, The Czech Academy of Sciences \cr
-#' martinkova@cs.cas.cz \cr
+#' Institute of Computer Science of the Czech Academy of Sciences \cr
+#' \email{martinkova@@cs.cas.cz} \cr
 #'
 #' @seealso
 #' \code{\link[VGAM]{vglm}}
 #'
 #' @examples
-#' \dontrun{
+#' # loading packages
+#' library(VGAM)
+#'
 #' # loading data
 #' data <- dataMedicalgraded[, 1:100]
 #'
@@ -40,21 +41,18 @@
 #' coefs <- coef(fit)
 #'
 #' plotAdjacent(fit, matching.name = "Total score")
-#' }
-#'@export
-
+#' @export
 plotAdjacent <- function(x, matching.name = "matching") {
-
-  y <- x@y %*% as.numeric(colnames(x@y))  # responses
+  y <- x@y %*% as.numeric(colnames(x@y)) # responses
   cat <- as.numeric(paste(colnames(x@y))) # all categories
-  num.cat <- length(cat)                  # number of all categories
-  y <- factor(y, levels = cat)            # releveling
-  matching <- x@x[, 2]                    # matching
+  num.cat <- length(cat) # number of all categories
+  y <- factor(y, levels = cat) # releveling
+  matching <- x@x[, 2] # matching
   match <- seq(min(matching, na.rm = T), max(matching, na.rm = T), 0.01)
 
-  coefs <- coef(x)                          # extracting coefficients
+  coefs <- coef(x) # extracting coefficients
   cat.obs <- names(which(table(y) > 0)[-1]) # observed categories = categories with at least one observation
-  num.cat.obs <- length(coefs) - 1          # number of categories with at least one observation
+  num.cat.obs <- length(coefs) - 1 # number of categories with at least one observation
 
   # category probabilities
   df.probs.cat <- matrix(0, nrow = length(match), ncol = num.cat)
@@ -67,7 +65,7 @@ plotAdjacent <- function(x, matching.name = "matching") {
   # exponential
   df.probs.cat <- exp(df.probs.cat)
   # norming
-  df.probs.cat <- df.probs.cat/apply(df.probs.cat, 1, sum)
+  df.probs.cat <- df.probs.cat / apply(df.probs.cat, 1, sum)
 
   # melting data
   df.probs.cat <- data.frame(match, df.probs.cat)
@@ -76,7 +74,8 @@ plotAdjacent <- function(x, matching.name = "matching") {
 
   # empirical category values
   df.emp.cat <- data.frame(table(y, matching),
-                           y = prop.table(table(y, matching), 2))[, c(1, 2, 3, 6)]
+    y = prop.table(table(y, matching), 2)
+  )[, c(1, 2, 3, 6)]
   df.emp.cat$matching <- as.numeric(paste(df.emp.cat$matching))
   colnames(df.emp.cat) <- c("category", "matching", "size", "probability")
   df.emp.cat$category <- as.factor(df.emp.cat$category)
@@ -84,7 +83,7 @@ plotAdjacent <- function(x, matching.name = "matching") {
 
   # colours
   gg_color_hue <- function(n) {
-    hues = seq(15, 375, length = n + 1)
+    hues <- seq(15, 375, length = n + 1)
     hcl(h = hues, l = 65, c = 100)[1:n]
   }
   cols <- c("black", gg_color_hue(num.cat - 1))
@@ -92,18 +91,28 @@ plotAdjacent <- function(x, matching.name = "matching") {
   df.emp.cat <- df.emp.cat[df.emp.cat$category %in% paste0("P(Y=", cat, ")"), ]
   df.probs.cat <- df.probs.cat[df.probs.cat$category %in% paste0("P(Y=", cat, ")"), ]
 
-  rangex <- c(min(c(df.emp.cat$matching, df.probs.cat$matching)),
-              max(c(df.emp.cat$matching, df.probs.cat$matching)))
+  rangex <- c(
+    min(c(df.emp.cat$matching, df.probs.cat$matching)),
+    max(c(df.emp.cat$matching, df.probs.cat$matching))
+  )
 
   g <- ggplot() +
-    geom_point(data = df.emp.cat,
-               aes_string(x = "matching", y = "probability", group = "category",
-                          size = "size", col = "category", fill = "category"),
-               shape = 21, alpha = 0.5) +
-    geom_line(data = df.probs.cat,
-              aes_string(x = "matching", y = "probability",
-                         col = "category", linetype = "category"),
-              size = 1) +
+    geom_point(
+      data = df.emp.cat,
+      aes_string(
+        x = "matching", y = "probability", group = "category",
+        size = "size", col = "category", fill = "category"
+      ),
+      shape = 21, alpha = 0.5
+    ) +
+    geom_line(
+      data = df.probs.cat,
+      aes_string(
+        x = "matching", y = "probability",
+        col = "category", linetype = "category"
+      ),
+      size = 1
+    ) +
     scale_fill_manual(values = cols) +
     scale_colour_manual(values = cols) +
     xlab(matching.name) +
@@ -111,13 +120,17 @@ plotAdjacent <- function(x, matching.name = "matching") {
     ylim(0, 1) +
     xlim(rangex[1], rangex[2]) +
     theme_app() +
-    theme(legend.box = "horizontal",
-          legend.position = c(0.03, 0.97),
-          legend.justification = c(0.03, 0.97)) +
-    guides(size = guide_legend(order = 1),
-           colour = guide_legend(order = 2),
-           fill = guide_legend(order = 2),
-           linetype = guide_legend(order = 2))
+    theme(
+      legend.box = "horizontal",
+      legend.position = c(0.03, 0.97),
+      legend.justification = c(0.03, 0.97)
+    ) +
+    guides(
+      size = guide_legend(order = 1),
+      colour = guide_legend(order = 2),
+      fill = guide_legend(order = 2),
+      linetype = guide_legend(order = 2)
+    )
 
   return(g)
 }

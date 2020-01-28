@@ -26,7 +26,6 @@ from \code{cowplot}. Wright Map is used to display histogram
 of factor scores and the item difficulty parameters estimated by the Rasch IRT model.
 }
 \examples{
-\dontrun{
 library(mirt)
 
 # loading 100-item medical admission test data sets
@@ -39,13 +38,12 @@ fit <- mirt(dataBin, model = 1, itemtype = "Rasch")
 # factor scores
 theta <- as.vector(fscores(fit))
 # difficulty estimates
-b <- coef(fit, simplify = T)$items[, "d"]
+b <- coef(fit, simplify = TRUE)$items[, "d"]
 
 ggWrightMap(theta, b)
 
 item.names <- paste("Item", 1:20)
 ggWrightMap(theta, b, item.names = item.names)
-}
 }
 \references{
 Wright, B. D., & Stone, M. H. (1979). Best test design.
@@ -55,11 +53,11 @@ Wright, B. D., & Stone, M. H. (1979). Best test design.
 }
 \author{
 Adela Hladka \cr
-Institute of Computer Science, The Czech Academy of Sciences \cr
+Institute of Computer Science of the Czech Academy of Sciences \cr
 Faculty of Mathematics and Physics, Charles University \cr
-hladka@cs.cas.cz \cr
+\email{hladka@cs.cas.cz} \cr
 
 Patricia Martinkova \cr
-Institute of Computer Science, The Czech Academy of Sciences \cr
-martinkova@cs.cas.cz \cr
+Institute of Computer Science of the Czech Academy of Sciences \cr
+\email{martinkova@cs.cas.cz} \cr
 }

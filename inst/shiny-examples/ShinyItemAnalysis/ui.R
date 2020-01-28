@@ -95,7 +95,7 @@ ui = tagList(
                     ShinyItemAnalysis
                     </div>
                     <div class = "footer-subtitle">
-                    Test and item analysis | Version 1.3.1-8
+                    Test and item analysis | Version 1.3.2
                     </div>
                     <span style = "float:right">
                     <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysis/" id = "tooltipweb" target="_blank">
@@ -116,7 +116,7 @@ ui = tagList(
                     </script>
                     <br>
                     <div class = "footer-copyright">
-                    &copy; 2019  ShinyItemAnalysis
+                    &copy; <script>document.write(new Date().getFullYear())</script> ShinyItemAnalysis
                     </div>'),
                HTML('<div class = "footer-counter">'),
                textOutput('counter', inline = T),

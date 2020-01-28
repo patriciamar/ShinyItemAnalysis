@@ -8,7 +8,7 @@ uiReferences <-
            HTML('<ul class = "biblio">
                 <li><code>corrplot</code>
                 Wei, T. & Simko, V. (2017).
-                R package `corrplot`: Visualization of a Correlation Matrix.
+                R package "corrplot": Visualization of a Correlation Matrix.
                 R package version 0.84.
                 <a href = "https://github.com/taiyun/corrplot", target = "_blank">See online.</a>
                 </li>
@@ -23,14 +23,14 @@ uiReferences <-
                 <li><code>CTT</code>
                 Willse, J. & Willse, T. (2018).
                 CTT: Classical Test Theory Functions.
-                R package version 2.3.2.
+                R package version 2.3.3.
                 <a href = "https://CRAN.R-project.org/package=CTT", target = "_blank">See online.</a>
                 </li>
 
                 <li><code>data.table</code>
-                Dowle, M. & Srinivasan, A. (2018).
-                data.table: Extension of `data.frame`.
-                R package version 1.11.4.
+                Dowle, M. & Srinivasan, A. (2019).
+                data.table: Extension of "data.frame".
+                R package version 1.12.8.
                 <a href = "https://CRAN.R-project.org/package=data.table", target = "_blank">See online.</a>
                 </li>
 
@@ -38,33 +38,32 @@ uiReferences <-
                 <li><code>deltaPlotR</code>
                 Magis, D. & Facon, B. (2014).
                 deltaPlotR: An R Package for Differential Item Functioning Analysis with Angoff`s Delta Plot.
-                <i>Journal of Statistical Software, Code Snippets, 59</i>(1), 1--19.
+                <i>Journal of Statistical Software, Code Snippets, 59</i>(1), 1-19.
                 <a href = "http://www.jstatsoft.org/v59/c01/", target = "_blank">See online.</a>
                 </li>
 
                 <li><code>difNLR</code>
-                Drabinova, A., Martinkova, P. & Zvara, K. (2018).
+                Drabinova, A., Martinkova, P. (2020).
                 difNLR: DIF and DDF Detection by Non-Linear Regression Models.
-                R package version 1.2.2.
+                R package version 1.3.2.
                 <a href = "https://CRAN.R-project.org/package=difNLR", target = "_blank">See online.</a>
                 </li>
-
 
                 <li><code>difR</code>
                 Magis, D., Beland, S., Tuerlinckx, F. & De Boeck, P. (2010).
                 A general framework and an R package for the detection of dichotomous differential item functioning.
-                <i>Behavior Research Methods, 42</i>847--862.
+                <i>Behavior Research Methods, 42</i>847-862.
                 </li>
 
                 <li><code>DT</code>
-                Xie, Y. (2018).
-                DT: A Wrapper of the JavaScript Library `DataTables`.
-                R package version 0.4.
+                Xie, Y., Cheng, J. & Tan, X. (2019).
+                DT: A Wrapper of the JavaScript Library "DataTables".
+                R package version 0.10.
                 <a href = "https://CRAN.R-project.org/package=DT", target = "_blank">See online.</a>
                 </li>
 
                 <li><code>ggdendro</code>
-                Andrie de Vries & Brian D. Ripley (2018).
+                de Vries, A. & Ripley, B.D. (2016).
                 ggdendro: Create Dendrograms and Tree Diagrams Using "ggplot2".
                 R package version 0.1-20.
                 <a href = "https://CRAN.R-project.org/package=ggdendro", target = "_blank">See online.</a>
@@ -78,22 +77,16 @@ uiReferences <-
 
                 <li><code>gridExtra</code>
                 Auguie, B. (2017).
-                gridExtra: Miscellaneous Functions for `Grid` Graphics.
+                gridExtra: Miscellaneous Functions for "Grid" Graphics.
                 R package version 2.3.
                 <a href = "https://CRAN.R-project.org/package=gridExtra", target = "_blank">See online.</a>
                 </li>
 
                 <li><code>knitr</code>
-                Xie, Y. (2018).
+                Xie, Y. (2019).
                 knitr: A General-Purpose Package for Dynamic Report Generation in R.
-                R package version 1.20.
+                R package version 1.26.
                 <a href = "https://yihui.name/knitr/", target = "_blank">See online.</a>
-                </li>
-
-                <li><code>lattice</code>
-                Sarkar, D. (2008).
-                Lattice: Multivariate Data Visualization with R.
-                <a href = "http://lmdvr.r-forge.r-project.org", target = "_blank">See online.</a>
                 </li>
 
                 <li><code>latticeExtra</code>
@@ -106,20 +99,14 @@ uiReferences <-
                 <li><code>ltm</code>
                 Rizopoulos, D. (2006).
                 ltm: An R package for Latent Variable Modelling and Item Response Theory Analyses.
-                <i>Journal of Statistical Software, 17</i>(5), 1--25.
+                <i>Journal of Statistical Software, 17</i>(5), 1-25.
                 <a href = "http://www.jstatsoft.org/v17/i05/", target = "_blank">See online.</a>
-                </li>
-
-                <li><code>MASS</code>
-                Venables, C. & Ripley, C. (2002).
-                Modern Applied Statistics with S.
-                <a href = "http://www.stats.ox.ac.uk/pub/MASS4", target = "_blank">See online.</a>
                 </li>
 
                 <li><code>mirt</code>
                 Chalmers, R. & Chalmers, P. (2012).
                 mirt: A Multidimensional Item Response Theory Package for the R Environment.
-                <i>Journal of Statistical Software, 48</i>(6), 1--29.
+                <i>Journal of Statistical Software, 48</i>(6), 1-29.
                 </li>
 
                 <li><code>moments</code>
@@ -132,22 +119,8 @@ uiReferences <-
                 <li><code>msm</code>
                 Jackson, C. & Jackson, H. (2011).
                 Multi-State Models for Panel Data: The msm Package for R.
-                <i>Journal of Statistical Software, 38</i>(8), 1--29.
+                <i>Journal of Statistical Software, 38</i>(8), 1-29.
                 <a href = "http://www.jstatsoft.org/v38/i08/", target = "_blank">See online.</a>
-                </li>
-
-                <li><code>multilevel</code>
-                Bliese, P. (2016).
-                multilevel: Multilevel Functions.
-                R package version 2.6.
-                <a href = "https://CRAN.R-project.org/package=multilevel", target = "_blank">See online.</a>
-                </li>
-
-                <li><code>nlme</code>
-                Pinheiro, J., Bates, D., DebRoy, S., Sarkar, D. & NULL, R. (2018).
-                nlme: Linear and Nonlinear Mixed Effects Models.
-                R package version 3.1-137.
-                <a href = "https://CRAN.R-project.org/package=nlme", target = "_blank">See online.</a>
                 </li>
 
                 <li><code>nnet</code>
@@ -158,22 +131,15 @@ uiReferences <-
 
                 <li><code>plotly</code>
                 Sievert, C., Parmer, C., Hocking, T., Chamberlain, S., Ram, K., Corvellec, M. & Despouy, P. (2017).
-                plotly: Create Interactive Web Graphics via `plotly.js`.
-                R package version 4.7.1.
+                plotly: Create Interactive Web Graphics via "plotly.js".
+                R package version 4.9.1.
                 <a href = "https://CRAN.R-project.org/package=plotly", target = "_blank">See online.</a>
-                </li>
-
-                <li><code>polycor</code>
-                Fox, J. (2016).
-                polycor: Polychoric and Polyserial Correlations.
-                R package version 0.7-9.
-                <a href = "https://CRAN.R-project.org/package=polycor", target = "_blank">See online.</a>
                 </li>
 
                 <li><code>psych</code>
                 Revelle, W. (2018).
                 psych: Procedures for Psychological, Psychometric, and Personality Research.
-                R package version 1.8.4.
+                R package version 1.8.12.
                 <a href = "https://CRAN.R-project.org/package=psych", target = "_blank">See online.</a>
                 </li>
 
@@ -184,31 +150,23 @@ uiReferences <-
                 <a href = "https://CRAN.R-project.org/package=psychometric", target = "_blank">See online.</a>
                 </li>
 
-                <li><code>RColorBrewer</code>
-                Neuwirth, E. (2014).
-                RColorBrewer: ColorBrewer Palettes.
-                R package version 1.1-2.
-                <a href = "https://CRAN.R-project.org/package=RColorBrewer", target = "_blank">See online.</a>
-                </li>
-
                 <li><code>reshape2</code>
                 Wickham, H. (2007).
                 Reshaping Data with the reshape Package.
-                <i>Journal of Statistical Software, 21</i>(12), 1--20.
+                <i>Journal of Statistical Software, 21</i>(12), 1-20.
                 <a href = "http://www.jstatsoft.org/v21/i12/", target = "_blank">See online.</a>
                 </li>
 
                 <li><code>rmarkdown</code>
-                Allaire, J., Xie, Y., McPherson, J., Luraschi, J., Ushey, K., Atkins, A., Wickham, H., Cheng, J. & Chang, W. (2018).
-                rmarkdown: Dynamic Documents for R.
-                R package version 1.10.
-                <a href = "https://CRAN.R-project.org/package=rmarkdown", target = "_blank">See online.</a>
+                Xie, Y., Allaire, J.J. & Grolemund G. (2018). R Markdown: The Definitive Guide.
+                Chapman and Hall/CRC. ISBN 9781138359338.
+                <a href = "https://bookdown.org/yihui/rmarkdown", target = "_blank">See online.</a>
                 </li>
 
                 <li><code>shiny</code>
-                Chang, W., Cheng, J., Allaire, J., Xie, Y. & McPherson, J. (2018).
+                Chang, W., Cheng, J., Allaire, J., Xie, Y. & McPherson, J. (2019).
                 shiny: Web Application Framework for R.
-                R package version 1.1.0.
+                R package version 1.4.0.
                 <a href = "https://CRAN.R-project.org/package=shiny", target = "_blank">See online.</a>
                 </li>
 
@@ -217,6 +175,13 @@ uiReferences <-
                 shinyBS: Twitter Bootstrap Components for Shiny.
                 R package version 0.61.
                 <a href = "https://CRAN.R-project.org/package=shinyBS", target = "_blank">See online.</a>
+                </li>
+
+                <li><code>shinydashboard</code>
+                Chang, W. & Borges Ribeiro, B. (2018).
+                shinydashboard: Create Dashboards with "Shiny".
+                R package version 0.7.1
+                <a href = "https://CRAN.R-project.org/package=shinydashboard", target = "_blank">See online.</a>
                 </li>
 
                 <li><code>ShinyItemAnalysis</code>
@@ -234,17 +199,24 @@ uiReferences <-
                 </li>
 
                 <li><code>stringr</code>
-                Wickham, H. (2018).
+                Wickham, H. (2019).
                 stringr: Simple, Consistent Wrappers for Common String Operations.
-                R package version 1.3.1.
+                R package version 1.4.0.
                 <a href = "https://CRAN.R-project.org/package=stringr", target = "_blank">See online.</a>
                 </li>
 
                 <li><code>xtable</code>
-                Dahl, D. & Dahl, B. (2016).
+                Dahl, D., Scott, D., Roosen, C., Magnusson, A.& Swinton, J. (2019).
                 xtable: Export Tables to LaTeX or HTML.
-                R package version 1.8-2.
+                R package version 1.8-4.
                 <a href = "https://CRAN.R-project.org/package=xtable", target = "_blank">See online.</a>
+                </li>
+
+                <li><code>VGAM</code>
+                Yee, T. W. (2019).
+                VGAM: Vector Generalized Linear and Additive Models.
+                R package version 1.1-2.
+                <a href = "https://CRAN.R-project.org/package=VGAM", target = "_blank">See online.</a>
                 </li>
                 </ul>'),
            #------------------------------------------------------------------------------------#
@@ -278,8 +250,8 @@ uiReferences <-
                 target = "_blank">See online.</a>
                 </li>
 
-				<li>Bartholomew, D., Steel, F., Moustaki, I. and Galbraith, J. (2002). The Analysis and Interpretation of Multivariate
-				Data for Social Scientists. London: Chapman and Hall.
+				        <li>Bartholomew, D., Steel, F., Moustaki, I. and Galbraith, J. (2002). The Analysis and Interpretation of Multivariate
+				        Data for Social Scientists. London: Chapman and Hall.
                 </li>
 
                 <li>Bock, R. D. (1972). Estimating Item Parameters and Latent Ability when
@@ -291,13 +263,13 @@ uiReferences <-
 
                 <li>Brown, W. (1910).
                 Some experimental results in the correlation of mental abilities.
-                <i>British Journal of Psychology, 1904‐1920, 3</i>(3), 296-322.
+                <i>British Journal of Psychology, 1904-1920, 3</i>(3), 296-322.
                 <a href = "https://onlinelibrary.wiley.com/doi/abs/10.1111/j.2044-8295.1910.tb00207.x",
                 target = "_blank">See online.</a>
                 </li>
 
                 <li>Chalmers, R. P. (2018). Improving the Crossing-SIBTEST Statistic for Detecting Non-uniform DIF.
-                <i>Psychometrika, 83</i>(2), 376–386.
+                <i>Psychometrika, 83</i>(2), 376-386.
                 <a href = "https://link.springer.com/article/10.1007/s11336-017-9583-8",
                 target = "_blank">See online.</a>
                 </li>
@@ -323,7 +295,7 @@ uiReferences <-
                 </li>
 
                 <li>Li, H.-H., and Stout, W. (1996). A New Procedure for Detection of Crossing DIF.
-                <i>Psychometrika, 61</i>(4), 647–677.
+                <i>Psychometrika, 61</i>(4), 647-677.
                 <a href = "https://link.springer.com/article/10.1007/BF02294041",
                 target = "_blank">See online.</a>
                 </li>
@@ -343,13 +315,14 @@ uiReferences <-
                 Retrospective Studies.
                 <i>Journal of the National Cancer Institute, 22</i>(4), 719-748.
                 <a href = "http://www.medicine.mcgill.ca/epidemiology/hanley/c634/stratified/Mantel_Haenszel_1.pdf",
-                target = "_blank">See online.</a>                                                                                    )),
+                target = "_blank">See online.</a>
+
                 </li>
 
                 <li>Martinkova, P., Drabinova, A., & Houdek, J. (2017). ShinyItemAnalysis: Analyza Prijimacich a
-                Jinych Znalostnich ci Psychologických Testu. [ShinyItemAnalysis: Analyzing Admission and Other
+                Jinych Znalostnich ci Psychologickych Testu. [ShinyItemAnalysis: Analyzing Admission and Other
                 Educational and Psychological Tests]
-                <i>TESTFORUM, 6</i>(9), 16–35.
+                <i>TESTFORUM, 6</i>(9), 16-35.
                 <a href = "http://testforum.cz/domains/testforum.cz/index.php/testforum/article/view/TF2017-9-129",
                 target = "_blank">See online.</a>
                 </li>
@@ -369,6 +342,15 @@ uiReferences <-
                 189-194.
                 <a href="https://doi.org/10.15439/2017F380",
                 target="_blank">See online.</a>
+                </li>
+
+                <li>Martinkova, P., Drabinova, A., & Potuznikova, E.
+                (2020). Is academic tracking related to gains in learning competence?
+                Using propensity score matching and differential item change functioning analysis for better understanding
+                of tracking implications.
+                <i>Learning and Instruction 66</i>(April).
+                <a href = "https://doi.org/10.1016/j.learninstruc.2019.101286",
+                target = "_blank">See online</a>
                 </li>
 
                 <li>Masters, G. N. (1982). A Rasch model for partial credit scoring.
@@ -449,7 +431,7 @@ uiReferences <-
 
                 <li>Spearman, C. (1910).
                 Correlation calculated from faulty data.
-                <i>British Journal of Psychology, 1904‐1920, 3</i>(3), 271-295.
+                <i>British Journal of Psychology, 1904-1920, 3</i>(3), 271-295.
                 <a href = "https://onlinelibrary.wiley.com/doi/abs/10.1111/j.2044-8295.1910.tb00206.x",
                 target = "_blank">See online.</a>
                 </li>

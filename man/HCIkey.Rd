@@ -4,8 +4,8 @@
 \name{HCIkey}
 \alias{HCIkey}
 \title{Key of Correct Answers for Homeostasis Concept Inventory Dataset}
-\format{A \code{data.frame} with 20 values representing correct answers to items of \code{HCItest} dataset.
-For more details see \code{\link{HCItest}}.}
+\format{A nominal vector with 20 values representing correct answers to items of \code{HCItest}
+dataset. For more details see \code{\link{HCItest}}.}
 \usage{
 data(HCIkey)
 }

@@ -30,20 +30,19 @@
 #'
 #' @author
 #' Adela Hladka \cr
-#' Institute of Computer Science, The Czech Academy of Sciences \cr
+#' Institute of Computer Science of the Czech Academy of Sciences \cr
 #' Faculty of Mathematics and Physics, Charles University \cr
-#' hladka@cs.cas.cz \cr
+#' \email{hladka@@cs.cas.cz} \cr
 #'
 #' Lubomir Stepanek \cr
 #' First Faculty of Medicine, Charles University \cr
 #'
 #' Jana Vorlickova \cr
-#' Institute of Computer Science, The Czech Academy of Sciences \cr
-#' Faculty of Mathematics and Physics, Charles University \cr
+#' Institute of Computer Science of the Czech Academy of Sciences \cr
 #'
 #' Patricia Martinkova \cr
-#' Institute of Computer Science, The Czech Academy of Sciences \cr
-#' martinkova@cs.cas.cz \cr
+#' Institute of Computer Science of the Czech Academy of Sciences \cr
+#' \email{martinkova@@cs.cas.cz} \cr
 #'
 #' @references
 #' Martinkova, P., Stepanek, L., Drabinova, A., Houdek, J., Vejrazka, M., & Stuka, C. (2017).
@@ -58,7 +57,6 @@
 #' \code{\link{DDplot}}
 #'
 #' @examples
-#' \dontrun{
 #' # loading 100-item medical admission test data sets
 #' data(dataMedical, dataMedicalgraded)
 #' # binary data set
@@ -77,12 +75,10 @@
 #' # generalized ULI using 5 groups, compare 4th and 5th for binary data set
 #' gDiscrim(dataOrd, k = 5, l = 4, u = 5)[1:5]
 #' # maximum (4) and minimum (0) score are same for all items
-#' gDiscrim(dataOrd,  k = 5, l = 4, u = 5, maxscore = 4, minscore = 0)[1:5]
-#' }
+#' gDiscrim(dataOrd, k = 5, l = 4, u = 5, maxscore = 4, minscore = 0)[1:5]
 #' @export
 
-gDiscrim <- function (x, k = 3, l = 1, u = 3, maxscore, minscore)
-{
+gDiscrim <- function(x, k = 3, l = 1, u = 3, maxscore, minscore) {
   if (u > k) {
     stop("'u' need to be lower or equal to 'k'", call. = FALSE)
   }
@@ -96,48 +92,47 @@ gDiscrim <- function (x, k = 3, l = 1, u = 3, maxscore, minscore)
     stop("'l' should be lower than 'u'", call. = FALSE)
   }
   if (missing(maxscore)) {
-    maxscore <- apply(x,2,max,na.rm=T)
-  }  else {
-    if (length(maxscore) == 1){
+    maxscore <- apply(x, 2, max, na.rm = T)
+  } else {
+    if (length(maxscore) == 1) {
       maxscore <- rep(maxscore, ncol(x))
     }
   }
-  obtainedmax <- apply(x,2,max,na.rm=T)
-  if ( !all(maxscore >= obtainedmax)) {
+  obtainedmax <- apply(x, 2, max, na.rm = T)
+  if (!all(maxscore >= obtainedmax)) {
     warning("'maxscore' is lower than maximum score in the data set for some item")
   }
 
   if (missing(minscore)) {
-    minscore <- apply(x,2,min,na.rm=T)
+    minscore <- apply(x, 2, min, na.rm = T)
   } else {
-    if (length(minscore) == 1){
+    if (length(minscore) == 1) {
       minscore <- rep(minscore, ncol(x))
     }
   }
-  obtainedmin <- apply(x,2,min,na.rm=T)
-  if ( !all(minscore <= obtainedmin)) {
+  obtainedmin <- apply(x, 2, min, na.rm = T)
+  if (!all(minscore <= obtainedmin)) {
     warning("'minscore' is higher than minimum score in the data set for some item")
   }
-  if ( !all(minscore <= maxscore)) {
+  if (!all(minscore <= maxscore)) {
     warning("'minscore' is higher than 'maxscore' for some item")
   }
 
   x <- na.exclude(as.matrix(x))
   n <- ncol(x)
   N <- nrow(x)
-  ni <- as.integer(N/k)
+  ni <- as.integer(N / k)
   MaxMin <- maxscore - minscore
-  MaxSum <- sum(apply(x,2,max,na.rm=T))
-  MinSum <- sum(apply(x,2,min,na.rm=T))
-  TOT <- apply(x, 1, sum)/(MaxSum-MinSum)
+  MaxSum <- sum(apply(x, 2, max, na.rm = T))
+  MinSum <- sum(apply(x, 2, min, na.rm = T))
+  TOT <- apply(x, 1, sum) / (MaxSum - MinSum)
   tmpx <- x[order(TOT), ]
-  tmpxU <- tmpx[as.integer((u - 1) * N/k + 1):as.integer(u *
-                                                           N/k), ]
-  tmpxL <- tmpx[as.integer((l - 1) * N/k + 1):as.integer(l *
-                                                           N/k), ]
-  Ui <- apply(tmpxU, 2, sum)/MaxMin
-  Li <- apply(tmpxL, 2, sum)/MaxMin
-  discrim <- (Ui - Li)/ni
+  tmpxU <- tmpx[as.integer((u - 1) * N / k + 1):as.integer(u *
+    N / k), ]
+  tmpxL <- tmpx[as.integer((l - 1) * N / k + 1):as.integer(l *
+    N / k), ]
+  Ui <- apply(tmpxU, 2, sum) / MaxMin
+  Li <- apply(tmpxL, 2, sum) / MaxMin
+  discrim <- (Ui - Li) / ni
   return(discrim[1:n])
 }
-

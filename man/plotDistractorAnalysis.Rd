@@ -43,28 +43,29 @@ cut points can be specified via \code{cut.points} argument.
 The \code{data} is a matrix or data frame whose rows represents unscored item response from a
 multiple-choice test and columns correspond to the items.
 
-The \code{key} must be a vector of the same length as \code{ncol(data)}.
+The \code{key} must be a vector of the same length as \code{ncol(data)}. In case it is not provided,
+\code{matching} need to be specified.
 
 If \code{multiple.answers = TRUE} (default) all reported combinations of answers are plotted.
 If \code{multiple.answers = FALSE} all combinations are splitted into distractors and only these
 are then plotted with correct combination.
 }
 \examples{
-\dontrun{
+
 # loading 100-item medical admission test data
-data(dataMedicaltest, dataMedicalkey)
+data(dataMedical, dataMedicaltest, dataMedicalkey)
 data <- dataMedicaltest[, 1:100]
 dataBin <- dataMedical[, 1:100]
 key <- unlist(dataMedicalkey)
 
 # distractor plot for items 48, 57 and 32 displaying distractors only
-plotDistractorAnalysis(data, key, item = 48, multiple.answers = F)
+plotDistractorAnalysis(data, key, item = 48, multiple.answers = FALSE)
 # correct answer B does not function well
-plotDistractorAnalysis(data, key, item = 57, multiple.answers = F)
+plotDistractorAnalysis(data, key, item = 57, multiple.answers = FALSE)
 # all options function well, thus the whole item discriminates well
-plotDistractorAnalysis(data, key, item = 32, multiple.answers = F)
+plotDistractorAnalysis(data, key, item = 32, multiple.answers = FALSE)
 # functions well, thus the whole item discriminates well
-
+\dontrun{
 # distractor plot for items 48, 57 and 32 displaying all combinations
 plotDistractorAnalysis(data, key, item = 48)
 plotDistractorAnalysis(data, key, item = 57)
@@ -73,9 +74,11 @@ plotDistractorAnalysis(data, key, item = 32)
 # distractor plot for item 57 with all combinations and 6 groups
 plotDistractorAnalysis(data, key, item = 57, num.group = 6)
 
-# distractor plot for item 57 using specified matching
+# distractor plot for item 57 using specified matching and key option
 matching <- round(rowSums(dataBin), -1)
 plotDistractorAnalysis(data, key, item = 57, matching = matching)
+# distractor plot for item 57 using specified matching without key option
+plotDistractorAnalysis(data, item = 57, matching = matching)
 
 # distractor plot for item 57 using discrete matching
 plotDistractorAnalysis(data, key, item = 57, matching = matching, match.discrete = T)
@@ -85,17 +88,15 @@ plotDistractorAnalysis(data, key, item = 57, cut.points = seq(10, 100, 10))
 }
 }
 \seealso{
-\code{\link{DistractorAnalysis}}
-
-\code{\link[CTT]{distractor.analysis}}
+\code{\link{DistractorAnalysis}}, \code{\link[CTT]{distractor.analysis}}
 }
 \author{
 Adela Hladka \cr
-Institute of Computer Science, The Czech Academy of Sciences \cr
+Institute of Computer Science of the Czech Academy of Sciences \cr
 Faculty of Mathematics and Physics, Charles University \cr
-hladka@cs.cas.cz \cr
+\email{hladka@cs.cas.cz} \cr
 
 Patricia Martinkova \cr
-Institute of Computer Science, The Czech Academy of Sciences \cr
-martinkova@cs.cas.cz \cr
+Institute of Computer Science of the Czech Academy of Sciences \cr
+\email{martinkova@cs.cas.cz} \cr
 }

@@ -270,7 +270,8 @@ distractor_plot_Input <- reactive({
                          item = i,
                          item.name = item_names()[i],
                          multiple.answers = multiple.answers,
-                         matching = sc)
+                         matching = sc) +
+    xlab("Group by total score")
 })
 
 # ** Output distractors plot ######
@@ -291,18 +292,6 @@ output$DB_distractor_plot <- downloadHandler(
            dpi = setting_figures$dpi)
   }
 )
-
-
-# ** Admisible groups for cut ####
-distractor_admisible_groups <- reactive({
-  sc <- total_score()
-
-  sc_quant <- lapply(1:5, function(i) quantile(sc, seq(0, 1, by = 1/i), na.rm = TRUE))
-  sc_quant_unique <- sapply(sc_quant, function(i) !any(duplicated(i)))
-
-  groups <- c(1:5)[sc_quant_unique]
-  groups
-})
 
 # ** Distractor table with counts ######
 distractor_table_counts_Input <- reactive({
@@ -486,6 +475,7 @@ report_distractor_plot <- reactive({
   a <- nominal()
   colnames(a) <- item_names()
   k <- key()
+  sc <- total_score()
 
   if (!input$customizeCheck) {
     multiple.answers_report <- c(input$type_combinations_distractor == "Combinations")
@@ -501,7 +491,9 @@ report_distractor_plot <- reactive({
     g <- plotDistractorAnalysis(data = a, key = k, num.group = num.group,
                                 item = i,
                                 item.name = item_names()[i],
-                                multiple.answers = multiple.answers_report)
+                                multiple.answers = multiple.answers_report,
+                                matching = sc) +
+      xlab("Group by total score")
     g <- g +
       ggtitle(paste("Distractor plot for item", item_numbers()[i])) +
       theme_app()

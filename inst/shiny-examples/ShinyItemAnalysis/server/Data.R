@@ -44,8 +44,19 @@ checkDataText_Input <- eventReactive(input$submitButton, {
         error_setting <- T
       }
     }
-    str_errors <- c(error_key, error_group, error_criterion_variable)
-    str_warnin <- c(warni_group, warni_criterion_variable)
+    ### DIF matching
+    error_DIFmatching_variable <- ""
+    warni_DIFmatching_variable <- ""
+    if (any(DIFmatching() == "missing", na.rm = T)){
+      warni_DIFmatching_variable <- "The DIF matching variable is not provided! DIF analyses will use total scores!"
+    } else {
+      if (nrow(nominal()) != length(DIFmatching())){
+        error_DIFmatching_variable <- "The length of DIF matching variable need to be the same as number of observations in the main dataset!"
+        error_setting <- T
+      }
+    }
+    str_errors <- c(error_key, error_group, error_criterion_variable, error_DIFmatching_variable)
+    str_warnin <- c(warni_group, warni_criterion_variable, warni_DIFmatching_variable)
   }
   if (any(str_warnin != "")){
     str_warnin <- str_warnin[str_warnin != ""]
@@ -100,9 +111,16 @@ observeEvent(input$removeButton, {
   # html function change text in corresponding html tag
   useShinyjs()
   reset("data")
-  reset("key")
+
+  if (input$data_type == "nominal") {
+    reset("key_nominal")
+  } else {
+    reset("key_ordinal")
+  }
+
   reset("groups")
   reset("criterion_variable")
+  reset("dif_matching")
   reset("maxOrdinal")
   reset("minOrdinal")
   reset("globalMax")
@@ -112,18 +130,18 @@ observeEvent(input$removeButton, {
 
   dataset$key_upload_status <- "reset"
 
-  html('removedItemsText', html = "")
-  html('checkDataText', html = "")
-  html('checkDataColumns01Text', html = "")
-  html('renderdeleteButtonColumns01', html = "")
-  html('removedItemsText', html = "")
-  html('checkGroupText', html = "")
-  html('renderdeleteButtonGroup', html = "")
-  html('removedGroupText', html = "")
+  html("removedItemsText", html = "")
+  html("checkDataText", html = "")
+  html("checkDataColumns01Text", html = "")
+  html("renderdeleteButtonColumns01", html = "")
+  html("removedItemsText", html = "")
+  html("checkGroupText", html = "")
+  html("renderdeleteButtonGroup", html = "")
+  html("removedGroupText", html = "")
 
   submitCounter$Click <- 0
   removeCounter$Click <- 1
-  removeUI(selector = '#removeButton')
+  removeUI(selector = "#removeButton")
   removeCounter$Click <- 0
 })
 
@@ -303,31 +321,46 @@ data_description_Input <- reactive({
                 of real Graduate Management Admission Test (GMAT; Kingston et al., 1985) from <code>difNLR</code> R package .
                 First two items were simulated to function differently in uniform and non-uniform way respectively.
                 The dataset represents responses of 1,000 subjects (500 males, 500 females) to multiple-choice test of 20
-                items. ",
+                items.",
                 MSATB_difNLR = "<code>MSAT-B</code> (Drabinova & Martinkova, 2017) is a subset of real Medical School
                 Admission Test in Biology (MSAT-B) in Czech Republic from <code>difNLR</code> R package. The dataset
                 represents responses of 1,407 subjects (484 males, 923 females) to multiple-choice test of 20 items.
                 First item was previously detected as functioning differently. For more details of item selection see
-                Drabinova and Martinkova (2017). ",
+                Drabinova and Martinkova (2017).",
                 dataMedical_ShinyItemAnalysis = "<code>Medical 100</code> is a real <code>dataMedical</code> dataset of admission test to medical
                 school from <code>ShinyItemAnalysis</code> R package. The data set represents responses of 2,392 subjects
                 (750 males, 1,633 females and 9 subjects without gender specification) to multiple-choice test of 100
                 items.  This dataset contains criterion variable - indicator whether student studies standardly
-                or not. ",
+                or not.",
                 dataMedicalgraded_ShinyItemAnalysis = "<code>Medical 100 Graded</code> is a real <code>dataMedicalgraded</code> dataset of admission test to medical
                 school from <code>ShinyItemAnalysis</code> R package. The data set represents responses of 2,392 subjects
                 (750 males, 1,633 females and 9 subjects without gender specification) to multiple-choice test of 100
                 items. Each item is graded with 0 to 4 points. Maximum of 4 points were set if all correct answers and none of incorrect answers were selected. This dataset contains criterion variable - indicator whether student studies standardly
-                or not. ",
+                or not.",
                 HCI_ShinyItemAnalysis = "<code>HCI</code> (McFarland et al., 2017) is a real dataset of Homeostasis
                 Concept Inventory (HCI) from <code>ShinyItemAnalysis</code> R package. The dataset represents responses of
                 651 subjects (405 males, 246 females) to multiple-choice test of 20 items. <code>HCI</code> contains
-                criterion variable -  indicator whether student plans to major in the life sciences. ",
+                criterion variable -  indicator whether student plans to major in the life sciences.",
 				        Science_mirt = "<code>Science</code> dataset represents responses of 392 subjects on a 4-item test describing attitude to science and technology from <code>mirt/ltm</code> R package.
 				        Selected items are <code>Comfort</code>, <code>Work</code>, <code>Future</code>, and <code>Benefit</code>. All items are measured on the
 				        same scale with response categories: <code>'strongly disagree'</code>, <code>'disagree to some extent'</code>, <code>'agree to some extent'</code>,
-				        and <code>'strongly agree'</code>. See Bartholomew et al. (2002) for more details.")
-  txt
+				        and <code>'strongly agree'</code>. See Bartholomew et al. (2002) for more details.",
+				        LearningToLearn_ShinyItemAnalysis_6 = "<code>Learning To Learn 6</code> is a subset of longitudinal <code>LearningToLearn</code> dataset from
+				        <code>ShinyItemAnalysis</code> R package. It consists of answers to the Learning to Learn test in Grade 6 only. The same respondents were also
+                tested in Grade 9 &ndash; respective data is available in <code>Learning To Learn 9</code> dataset.
+				        The dataset represents binary-coded responses of 782 subjects (391 from basic school track, BS, coded here as 0; 391 from selecive academic track, AS,
+                coded here as 1) to (mostly) multiple-choice test consisting of 41 items within 7 subscales. This dataset was created using propensity score matching
+                algorithm to achieve similar characteristics in both tracks. For further details see <a href='https://doi.org/10.1016/j.learninstruc.2019.101286' target='_blank'>
+				        Martinkova, Hladka, and Potuznikova (2020)</a>.",
+				        LearningToLearn_ShinyItemAnalysis_9 = "<code>Learning To Learn 9</code> is a subset of longitudinal <code>LearningToLearn</code> dataset from
+				        <code>ShinyItemAnalysis</code> R package. It consists of answers to the Learning to Learn test in Grade 9 only. The same respondents were also
+                tested in Grade 6 &ndash; respective data is available in <code>Learning To Learn 6</code> dataset.
+				        The dataset represents binary-coded responses of 782 subjects (391 from basic school track, BS, coded here as 0; 391 from selecive academic track, AS,
+                coded here as 1) to (mostly) multiple-choice test consisting of 41 items within 7 subscales. This dataset was created using propensity score matching
+                algorithm to achieve similar characteristics in both tracks. Matching variable for DIF analysis is a total score gained in Grade 6.
+                For further details see <a href='https://doi.org/10.1016/j.learninstruc.2019.101286' target='_blank'>
+				        Martinkova, Hladka, and Potuznikova (2020)</a>.")
+txt
 
 })
 
@@ -336,20 +369,19 @@ output$data_description <- renderUI({
 })
 
 # KEY INPUT ####
-output$data_key_file_input <- renderUI({
-  label <- switch(input$data_type,
-                 "nominal" = "Choose key (CSV file)",
-                 "ordinal" = "Choose cut-score (CSV file)",
-                 "binary" = "Choose key (CSV file)")
-  fileInput(inputId = "key",
-            label = label,
-            accept = c("text/csv",
-                       "text/comma-separated-values",
-                       "text/tab-separated-values",
-                       "text/plain",
-                       ".csv",
-                       ".tsv"))
-})
+# output$data_key_file_input <- renderUI({
+#   label <- switch(input$data_type,
+#                  "nominal" = "Choose key (CSV file)",
+#                  "ordinal" = "Choose cut-score (CSV file)")
+#   fileInput(inputId = "key",
+#             label = label,
+#             accept = c("text/csv",
+#                        "text/comma-separated-values",
+#                        "text/tab-separated-values",
+#                        "text/plain",
+#                        ".csv",
+#                        ".tsv"))
+# })
 
 
 
@@ -457,8 +489,34 @@ output$data_criterion_summary <- renderPrint({
   data_criterion_summary_Input()
 })
 
+# * DIF matching ####
+data_DIFmatching_summary_Input <- reactive({
+  summary(DIFmatching())
+})
+
+output$data_DIFmatching_summary <- renderPrint({
+  data_DIFmatching_summary_Input()
+})
 
 
+# TEST OF APPLICATION ####
+#source('tests/helper_functions/DataTest.R',local = T)
+#
+#exportTestValues(data = switch(dataset$data_type,
+#                               "ordinal" = data_ordinal_summary_Input(),
+#                               "nominal" = data_nominal_summary_Input(),
+#                               "binary" = data_binary_summary_Input()),
+#                 tab_bin = data_binary_summary_Input(),
+#                 group = if (check_group() == 'OK'){
+#                   data_group_summary_Input()
+#                 } else {
+#                   check_group()
+#                 },
+#                 crit = if (check_crit() == 'OK') {
+#                   data_criterion_summary_Input()
+#                 } else {
+#                   check_crit()
+#                 })
 
 # DATA EXPLORATION ####
 
@@ -518,6 +576,18 @@ output$critvar <- DT::renderDataTable({
   critvar_table <- t(criterion())
   colnames(critvar_table) <- 1:ncol(critvar_table)
   critvar_table
+},
+rownames = F,
+options = list(scrollX = TRUE,
+               server = TRUE,
+               scrollCollapse = TRUE,
+               dom = 'tipr'))
+
+# DIF MATCHING VARIABLE CONTROL ######
+output$difvar <- DT::renderDataTable({
+  difvar_table <- t(DIFmatching())
+  colnames(difvar_table) <- 1:ncol(difvar_table)
+  difvar_table
 },
 rownames = F,
 options = list(scrollX = TRUE,

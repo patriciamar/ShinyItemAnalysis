@@ -4,71 +4,73 @@
 \alias{plotDIFLogistic}
 \title{Function for characteristic curve of 2PL logistic DIF model}
 \usage{
-plotDIFLogistic(data, group, type = "both", item, item.name,
-IRT = F, p.adjust.method = "none", purify = F, match = "score",
-group.names = c("Reference", "Focal"))
+plotDIFLogistic(x, item = 1, item.name, group.names = c("Reference", "Focal"),
+Data, group, match, draw.empirical = TRUE)
 }
 \arguments{
-\item{data}{numeric: the data matrix. See Details.}
-
-\item{group}{numeric: the vector of group membership. See Details.}
-
-\item{type}{character: a character string specifying which DIF effects must be tested.
-Possible values are "both" (default), "udif" and "nudif". See Details.}
+\item{x}{an object of \code{"Logistic"} class. See \strong{Details}.}
 
 \item{item}{numeric: number of item to be plotted}
 
-\item{item.name}{character: the name of item.}
-
-\item{IRT}{logical: if IRT parameterization (\code{TRUE}, default) or classic logistic
-parameterization (\code{FALSE}) may be applied.}
-
-\item{p.adjust.method}{character:  the acronym of the method for p-value adjustment for
-multiple comparisons. See Details.}
-
-\item{purify}{logical: if item purification may be applied.}
-
-\item{match}{specifies the type of matching criterion. Can be either \code{"score"} (default)
-to compute the test score, or any continuous or discrete variable with the same length as the number
-of rows of \code{Data}.}
+\item{item.name}{character: the name of item to be used as title of plot.}
 
 \item{group.names}{character: names of reference and focal group.}
+
+\item{Data}{numeric: the data matrix. See \strong{Details}.}
+
+\item{group}{numeric: the vector of group membership. See \strong{Details}.}
+
+\item{match}{character or numeric: specifies matching criterion. Can be either \code{"score"},
+or numeric vector of the same length as number of observations in \code{Data}. See \strong{Details}.}
+
+\item{draw.empirical}{logical: whether empirical probabilities should be calculated and plotted.
+Default value is \code{TRUE}.}
 }
 \description{
 Plots characteristic curve of 2PL logistic DIF model
 }
 \details{
-This function plots characteristic curve of 2PL logistic DIF model.
+This function plots characteristic curves of 2PL logistic DIF model fitted
+by \code{difLogistic()} function from difR package using ggplot2.
+
+\code{Data} and \code{group} are used to calculate empirical probabilities for reference
+and focal group. \code{match} should be the same as in \code{x$match}. In case that matching
+variable is used instead of total score or standardized score, \code{match} needs to be
+a numeric vector of the same the same length as number of observations in \code{Data}.
 }
 \examples{
-\dontrun{
 # loading libraries
-library(difNLR, difR)
+library(difR)
 
- # loading data based on GMAT
+# loading data based on GMAT
 data(GMAT, package = "difNLR")
-data  <- GMAT[, 1:20]
+Data <- GMAT[, 1:20]
 group <- GMAT[, 21]
 
+# DIF detection using difLogistic() function
+x <- difLogistic(Data, group, focal.name = 1)
 # Characteristic curve by logistic regression model
-plotDIFLogistic(data, group, item = 1)
+plotDIFLogistic(x, item = 1, Data = Data, group = group)
 
-# Characteristic curve by logistic regression model using scaled score
-plotDIFLogistic(data, group, item = 1, IRT = T)
+# Using name of column as item identifier
+plotDIFLogistic(x, item = "Item1", Data = Data, group = group)
 
 # Renaming reference and focal group
-plotDIFLogistic(data, group, item = 1, group.names = c("Group 1", "Group 2"))
+plotDIFLogistic(x, item = 1, group.names = c("Group 1", "Group 2"), Data = Data, group = group)
+
+# Not plotting empirical probabilities
+plotDIFLogistic(x, item = 1, draw.empirical = FALSE)
 }
-
-
+\seealso{
+\code{\link[difR]{difLogistic}}, \code{\link[ggplot2]{ggplot}}
 }
 \author{
 Adela Hladka \cr
-Institute of Computer Science, The Czech Academy of Sciences \cr
+Institute of Computer Science of the Czech Academy of Sciences \cr
 Faculty of Mathematics and Physics, Charles University \cr
-hladka@cs.cas.cz \cr
+\email{hladka@cs.cas.cz} \cr
 
 Patricia Martinkova \cr
-Institute of Computer Science, The Czech Academy of Sciences \cr
-martinkova@cs.cas.cz \cr
+Institute of Computer Science of the Czech Academy of Sciences \cr
+\email{martinkova@cs.cas.cz} \cr
 }

@@ -9,8 +9,8 @@ uiData <- tabPanel("Data",
                               # * Data ####
                               #------------------------------------------------------------------------------------#
                               p("For demonstration purposes, 20-item dataset", code("GMAT"), "from", code("difNLR"),"
-                              R package is used. On this page, you may select one of five datasets offered by",
-                                code("difNLR"), "and", code("ShinyItemAnalysis"), "packages or you may upload your own
+                              R package is used. On this page, you may select one of several toy datasets, mostly offered by",
+                                code("ShinyItemAnalysis"), "and", code("difNLR"), "packages or you may upload your own
                               dataset (see below). To return to demonstration dataset, click on", strong("Unload data"), " button."),
                               tags$hr(),
                               #------------------------------------------------------------------------------------#
@@ -28,7 +28,9 @@ uiData <- tabPanel("Data",
                                                                "Medical 100" = "dataMedical_ShinyItemAnalysis",
                                                                "Medical 100 Graded" = "dataMedicalgraded_ShinyItemAnalysis",
                                                                "HCI" = "HCI_ShinyItemAnalysis",
-                                                               "Science" = "Science_mirt"),
+                                                               "Science" = "Science_mirt",
+                                                               "Learning To Learn 6" = "LearningToLearn_ShinyItemAnalysis_6",
+                                                               "Learning To Learn 9" = "LearningToLearn_ShinyItemAnalysis_9"),
                                                    selected = "GMAT_difNLR")),
                                 column(9,
                                        uiOutput("data_description"))),
@@ -170,17 +172,60 @@ uiData <- tabPanel("Data",
                                                                     placeholder = "Not administred values")
                                                  )))))),
                               conditionalPanel(
-                                condition = "input.data_type != 'binary'",
+                                condition = "input.data_type == 'ordinal'",
                                 fluidRow(
                                   box(width = 3,
-                                      uiOutput("data_key_file_input"),
+                                      #uiOutput("data_key_file_input"),
                                       # conditional panel is needed for changing labels
                                       # which depends on data type of data's which user
                                       # want to load.
-                                      conditionalPanel(
-                                        condition = "input.data_type == 'ordinal'",
-                                        textInput(inputId = "globalCut",
-                                                  label = "Dataset cut-score"))
+                                      #conditionalPanel(
+                                      #  condition = "input.data_type == 'ordinal'",
+                                      #  textInput(inputId = "globalCut",
+                                      #            label = "Dataset cut-score"))
+                                      fileInput(inputId = "key_ordinal",
+                                                label = "Choose cut-score (CSV file)",
+                                                accept = c("text/csv",
+                                                            "text/comma-separated-values",
+                                                            "text/tab-separated-values",
+                                                            "text/plain",
+                                                            ".csv",
+                                                            ".tsv")),
+                                      textInput(inputId = "globalCut",
+                                                label = "Dataset cut-score")
+                                  ),
+                                  column(9,
+                                         conditionalPanel(
+                                           condition = "input.data_type == 'nominal'",
+                                           p("For nominal data, it is necessary to upload ", strong("key"), "of correct answers.")),
+                                         conditionalPanel(
+                                           condition = "input.data_type == 'ordinal'",
+                                           p("For ordinal data, you are advised to include vector containing", strong("cut-score"), "which is used for binarization of uploaded data, i.e.,
+                                           values greater or equal to provided cut-score are set to 1, otherwise to 0. You can either upload dataset of item-specific values, or you can
+                                           provide one value for whole dataset."),
+                                           p(strong("Note: "), "In case that cut-score is not provided, vector of maximal values is used. "))
+                                  )
+                                )),
+                                conditionalPanel(
+                                condition = "input.data_type == 'nominal'",
+                                fluidRow(
+                                  box(width = 3,
+                                      #uiOutput("data_key_file_input"),
+                                      # conditional panel is needed for changing labels
+                                      # which depends on data type of data's which user
+                                      # want to load.
+                                      #conditionalPanel(
+                                      #  condition = "input.data_type == 'ordinal'",
+                                      #  textInput(inputId = "globalCut",
+                                      #            label = "Dataset cut-score"))
+                                      fileInput(inputId = "key_nominal",
+                                                label = "Choose key (CSV file)",
+                                                accept = c("text/csv",
+                                                            "text/comma-separated-values",
+                                                            "text/tab-separated-values",
+                                                            "text/plain",
+                                                            ".csv",
+                                                            ".tsv"))
                                   ),
                                   column(9,
                                          conditionalPanel(
@@ -263,6 +308,20 @@ uiData <- tabPanel("Data",
                                          strong("Predictive validity"), " section on ", strong("Validity"), " page."))
                               ),
                               fluidRow(
+                                box(width = 3,
+                                    fileInput(inputId = "dif_matching",
+                                              label = "Choose DIF matching variable (optional)",
+                                              accept = c("text/csv",
+                                                         "text/comma-separated-values",
+                                                         "text/tab-separated-values",
+                                                         "text/plain",
+                                                         ".csv",
+                                                         ".tsv"))),
+                                column(9,
+                                       p(strong("DIF matching variable"), " is a vector of the same length as number
+                                         of observations in your data. If not supplied, total score is automatically computed and utilized by default."))
+                              ),
+                              fluidRow(
                                 column(10,
                                        div(style = "vertical-align: top; float: right;",
                                            uiOutput('removeBut_output'))),
@@ -311,6 +370,8 @@ uiData <- tabPanel("Data",
                               verbatimTextOutput("data_group_summary"),
                               h4("Criterion variable"),
                               verbatimTextOutput("data_criterion_summary"),
+                              h4("DIF matching variable"),
+                              verbatimTextOutput("data_DIFmatching_summary"),
                               br(),
                               br()
                      ),
@@ -354,6 +415,12 @@ uiData <- tabPanel("Data",
                               #------------------------------------------------------------------------------------#
                               h4("Criterion variable vector"),
                               DT::dataTableOutput('critvar'),
+                              br(),
+                              #------------------------------------------------------------------------------------#
+                              # * DIF matching variable vector ####
+                              #------------------------------------------------------------------------------------#
+                              h4("DIF matching variable vector"),
+                              DT::dataTableOutput('difvar'),
 
                               br(),
                               br())

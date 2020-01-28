@@ -4,11 +4,14 @@
 \name{dataMedicaltest}
 \alias{dataMedicaltest}
 \title{Dataset of Admission Test to Medical School}
-\format{\code{dataMedicaltest} is a \code{data.frame} consisting of 2,392 observations on
-the following 102 variables. The first 100 columns represent answers of subject to
-items of the test. The 101st column is vector of gender membership; values 0 and 1
-refer to males and females. The 102nd columns in criterion variable; value 1 means
-that student studies standardly, 0 otherwise (e.g. leaving or interrupting studies).}
+\format{A `dataMedicaltest` is a `data.frame` consisting of 2,392 observations on
+the following 102 variables.
+\describe{
+\item{X}{the first 100 columns represent items answers.}
+\item{gender}{variable describing gender; values `"0"` and `"1"` refer to males and females.}
+\item{StudySuccess}{criterion variable; value `"1"` means that student studies standardly,
+`"0"` otherwise (e.g. leaving or interrupting studies).}
+}}
 \usage{
 data(dataMedicaltest)
 }
@@ -27,21 +30,13 @@ Improvement of Tests. Workshop held at conference MEFANET, 2016, Brno, Czech Rep
 }
 \author{
 Cestmir Stuka \cr
-First Faculty of Medicine, Charles University in Prague \cr
+First Faculty of Medicine, Charles University \cr
 
 Martin Vejrazka \cr
-First Faculty of Medicine, Charles University in Prague \cr
+First Faculty of Medicine, Charles University \cr
 
 Patricia Martinkova \cr
-Institute of Computer Science, The Czech Academy of Sciences \cr
+Institute of Computer Science of the Czech Academy of Sciences \cr
 martinkova@cs.cas.cz \cr
-
-Jakub Houdek \cr
-Institute of Computer Science, The Czech Academy of Sciences \cr
-
-Adela Hladka \cr
-Institute of Computer Science, The Czech Academy of Sciences \cr
-Faculty of Mathematics and Physics, Charles University \cr
-hladka@cs.cas.cz \cr
 }
 \keyword{datasets}

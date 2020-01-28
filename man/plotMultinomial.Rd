@@ -17,11 +17,10 @@ plotMultinomial(x, matching, matching.name = "matching")
 Plots category probabilities functions estimated by \code{multinom()} from \code{nnet} package.
 }
 \examples{
-\dontrun{
 # loading data
 data(GMAT, GMATtest, GMATkey, package = "difNLR")
 
-matching <- scale(apply(GMAT[, 1:20] , 1, sum)) # Z-score
+matching <- scale(apply(GMAT[, 1:20], 1, sum)) # Z-score
 data <- GMATtest[, 1:20]
 key <- GMATkey
 
@@ -31,20 +30,18 @@ fit <- nnet::multinom(relevel(data[, 1], ref = paste(key[1])) ~ matching)
 # plotting category probabilities
 plotMultinomial(fit, matching, matching.name = "Z-score")
 }
-}
 \seealso{
 \code{\link[nnet]{multinom}}
 }
 \author{
 Adela Hladka \cr
-Institute of Computer Science, The Czech Academy of Sciences \cr
+Institute of Computer Science of the Czech Academy of Sciences \cr
 Faculty of Mathematics and Physics, Charles University \cr
-hladka@cs.cas.cz \cr
+\email{hladka@cs.cas.cz} \cr
 
 Tomas Jurica \cr
-Faculty of Mathematics and Physics, Charles University \cr
 
 Patricia Martinkova \cr
-Institute of Computer Science, The Czech Academy of Sciences \cr
-martinkova@cs.cas.cz \cr
+Institute of Computer Science of the Czech Academy of Sciences \cr
+\email{martinkova@cs.cas.cz} \cr
 }

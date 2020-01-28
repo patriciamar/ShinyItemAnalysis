@@ -1,9 +1,8 @@
 #' Key of Correct Answers for Homeostasis Concept Inventory Dataset
 #'
-#' @docType data
-#' @name HCIkey
 #' @description The \code{HCIkey} is a vector of factors representing correct answers of
 #' \code{HCItest} dataset.
+#'
 #' @usage data(HCIkey)
 #'
 #' @author
@@ -18,7 +17,6 @@
 #'
 #' @seealso \code{\link{HCI}}, \code{\link{HCItest}}
 #'
-#' @format A \code{data.frame} with 20 values representing correct answers to items of \code{HCItest} dataset.
-#' For more details see \code{\link{HCItest}}.
+#' @format A nominal vector with 20 values representing correct answers to items of \code{HCItest}
+#' dataset. For more details see \code{\link{HCItest}}.
 "HCIkey"
-

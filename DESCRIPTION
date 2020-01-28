@@ -1,10 +1,10 @@
 Package: ShinyItemAnalysis
 Type: Package
 Title: Test and Item Analysis via Shiny
-Version: 1.3.1-8
-Date: 2019-11-02
-Author: Patricia Martinkova [aut, cre], Adela Hladka [aut], Ondrej Leder [ctb], Jakub Houdek [ctb], Lubomir Stepanek [ctb], Tomas Jurica [ctb], Jana Vorlickova [ctb]
-Authors@R: c(person("Patricia", "Martinkova", role = c("aut", "cre"), email = "martinkova@cs.cas.cz"), person("Adela", "Hladka", role = c("aut")), person("Ondrej", "Leder", role = "ctb"), person("Jakub", "Houdek", role = "ctb"), person("Lubomir", "Stepanek", role = "ctb"), person("Tomas", "Jurica", role = "ctb"), person("Jana", "Vorlickova", role = "ctb"))
+Version: 1.3.2
+Date: 2020-01-27
+Author: Patricia Martinkova [aut, cre], Adela Hladka [aut], Ondrej Leder [ctb], Jakub Houdek [ctb], Lubomir Stepanek [ctb], Tomas Jurica [ctb], Jana Vorlickova [ctb], Jan Netik [ctb]
+Authors@R: c(person("Patricia", "Martinkova", role = c("aut", "cre"), email = "martinkova@cs.cas.cz"), person("Adela", "Hladka", role = c("aut")), person("Ondrej", "Leder", role = "ctb"), person("Jakub", "Houdek", role = "ctb"), person("Lubomir", "Stepanek", role = "ctb"), person("Tomas", "Jurica", role = "ctb"), person("Jana", "Vorlickova", role = "ctb"), person("Jan", "Netik", role = "ctb"))
 Maintainer: Patricia Martinkova <martinkova@cs.cas.cz>
 Depends:
     R (>= 3.5.0)
@@ -43,6 +43,6 @@ Description: Interactive shiny application for analysis of educational tests and
     their items.
 License: GPL-3
 LazyData: TRUE
-RoxygenNote: 6.1.1
+RoxygenNote: 7.0.2
 BugReports: https://github.com/patriciamar/ShinyItemAnalysis/issues
 Encoding: UTF-8

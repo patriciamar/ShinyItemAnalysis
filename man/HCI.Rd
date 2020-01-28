@@ -5,16 +5,17 @@
 \alias{HCI}
 \title{Homeostasis Concept Inventory Dichotomous Dataset}
 \format{\code{HCI} is a \code{data.frame} consisting of 651 observations on the 22 variables.
-First 20 variables represent dichotomously scored responses to multiple-choice items (1 means
-correct, 0 is incorrect). 21st column is a vector of gender membership; values 0 and 1
-refer to males and females. 22nd column is a identificator whether students planning to
-major in the life sciences.}
+\describe{
+\item{Item1-Item20}{dichotomously scored items of the HCI test.}
+\item{gender}{gender membership vector, \code{"0"} males, \code{"1"} females.}
+\item{major}{identificator whether students planning to major in the life sciences.}
+}}
 \usage{
 data(HCI)
 }
 \description{
 (\code{HCI}) dataset consists of the dichotomously scored responses of 651 students
-(405 males, 246 females) to Homeostasis Concept Inventory multiple-choice test. It containts 20
+(405 males, 246 females) to Homeostasis Concept Inventory (HCI) multiple-choice test. It containts 20
 items, vector of gender membership and identificator whether students plan to major.
 }
 \references{

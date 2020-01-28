@@ -5,15 +5,17 @@
 \alias{HCItest}
 \title{Homeostasis Concept Inventory Dataset}
 \format{\code{HCItest} is a \code{data.frame} consisting of 651 observations on the 22 variables.
-First 20 variables represent responses to multiple-choice items. 21st column is a vector of gender
-membership; values 0 and 1 refer to males and females. 22nd column is a identificator whether
-students planning to major in the life sciences.}
+\describe{
+\item{Item1-Item20}{multiple-choice items of the HCI test.}
+\item{gender}{gender membership vector, \code{"0"} males, \code{"1"} females.}
+\item{major}{identificator whether students planning to major in the life sciences.}
+}}
 \usage{
 data(HCItest)
 }
 \description{
 (\code{HCItest}) dataset consists of the responses of 651 students (405 males,
-246 females) to Homeostasis Concept Inventory multiple-choice test. It containts 20
+246 females) to Homeostasis Concept Inventory (HCI) multiple-choice test. It containts 20
 items, vector of gender membership and identificator whether students plan to major.
 }
 \references{

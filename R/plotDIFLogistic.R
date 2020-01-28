@@ -4,176 +4,218 @@
 #'
 #' @description Plots characteristic curve of 2PL logistic DIF model
 #'
-#' @param data numeric: the data matrix. See Details.
-#' @param group numeric: the vector of group membership. See Details.
-#' @param type character: a character string specifying which DIF effects must be tested.
-#' Possible values are "both" (default), "udif" and "nudif". See Details.
+#' @param x an object of \code{"Logistic"} class. See \strong{Details}.
 #' @param item numeric: number of item to be plotted
-#' @param item.name character: the name of item.
-#' @param IRT logical: if IRT parameterization (\code{TRUE}, default) or classic logistic
-#' parameterization (\code{FALSE}) may be applied.
-#' @param p.adjust.method character:  the acronym of the method for p-value adjustment for
-#' multiple comparisons. See Details.
-#' @param purify logical: if item purification may be applied.
-#' @param match specifies the type of matching criterion. Can be either \code{"score"} (default)
-#' to compute the test score, or any continuous or discrete variable with the same length as the number
-#' of rows of \code{Data}.
+#' @param item.name character: the name of item to be used as title of plot.
 #' @param group.names character: names of reference and focal group.
+#' @param Data numeric: the data matrix. See \strong{Details}.
+#' @param group numeric: the vector of group membership. See \strong{Details}.
+#' @param match character or numeric: specifies matching criterion. Can be either \code{"score"},
+#' or numeric vector of the same length as number of observations in \code{Data}. See \strong{Details}.
+#' @param draw.empirical logical: whether empirical probabilities should be calculated and plotted.
+#' Default value is \code{TRUE}.
 #'
-#' @usage plotDIFLogistic(data, group, type = "both", item, item.name,
-#' IRT = F, p.adjust.method = "none", purify = F, match = "score",
-#' group.names = c("Reference", "Focal"))
+#' @usage plotDIFLogistic(x, item = 1, item.name, group.names = c("Reference", "Focal"),
+#' Data, group, match, draw.empirical = TRUE)
 #'
 #' @details
-#' This function plots characteristic curve of 2PL logistic DIF model.
+#' This function plots characteristic curves of 2PL logistic DIF model fitted
+#' by \code{difLogistic()} function from difR package using ggplot2.
 #'
+#' \code{Data} and \code{group} are used to calculate empirical probabilities for reference
+#' and focal group. \code{match} should be the same as in \code{x$match}. In case that matching
+#' variable is used instead of total score or standardized score, \code{match} needs to be
+#' a numeric vector of the same the same length as number of observations in \code{Data}.
 #'
 #' @author
 #' Adela Hladka \cr
-#' Institute of Computer Science, The Czech Academy of Sciences \cr
+#' Institute of Computer Science of the Czech Academy of Sciences \cr
 #' Faculty of Mathematics and Physics, Charles University \cr
-#' hladka@cs.cas.cz \cr
+#' \email{hladka@@cs.cas.cz} \cr
 #'
 #' Patricia Martinkova \cr
-#' Institute of Computer Science, The Czech Academy of Sciences \cr
-#' martinkova@cs.cas.cz \cr
+#' Institute of Computer Science of the Czech Academy of Sciences \cr
+#' \email{martinkova@@cs.cas.cz} \cr
 #'
 #' @examples
-#' \dontrun{
 #' # loading libraries
-#' library(difNLR, difR)
+#' library(difR)
 #'
-#'  # loading data based on GMAT
+#' # loading data based on GMAT
 #' data(GMAT, package = "difNLR")
-#' data  <- GMAT[, 1:20]
+#' Data <- GMAT[, 1:20]
 #' group <- GMAT[, 21]
 #'
+#' # DIF detection using difLogistic() function
+#' x <- difLogistic(Data, group, focal.name = 1)
 #' # Characteristic curve by logistic regression model
-#' plotDIFLogistic(data, group, item = 1)
+#' plotDIFLogistic(x, item = 1, Data = Data, group = group)
 #'
-#' # Characteristic curve by logistic regression model using scaled score
-#' plotDIFLogistic(data, group, item = 1, IRT = T)
+#' # Using name of column as item identifier
+#' plotDIFLogistic(x, item = "Item1", Data = Data, group = group)
 #'
 #' # Renaming reference and focal group
-#' plotDIFLogistic(data, group, item = 1, group.names = c("Group 1", "Group 2"))
-#' }
+#' plotDIFLogistic(x, item = 1, group.names = c("Group 1", "Group 2"), Data = Data, group = group)
 #'
-#'
+#' # Not plotting empirical probabilities
+#' plotDIFLogistic(x, item = 1, draw.empirical = FALSE)
+#' @seealso \code{\link[difR]{difLogistic}}, \code{\link[ggplot2]{ggplot}}
 #' @export
 #' @importFrom ggplot2 guides guide_legend
-
-plotDIFLogistic <- function(data, group, type = "both", item, item.name,
-                            IRT = F, p.adjust.method = "none", purify = F,
-                            match = "score", group.names = c("Reference", "Focal")){
-  if (IRT) {
-    MATCHCRIT <- c(scale(apply(data, 1, sum)))
-    MATCH <- MATCHCRIT
-  } else {
-    if (any(match == "score")){
-      MATCH <- "score"
-      MATCHCRIT <- apply(data, 1, sum)
+plotDIFLogistic <- function(x, item = 1, item.name, group.names = c("Reference", "Focal"),
+                            Data, group, match, draw.empirical = TRUE) {
+  res <- x
+  i <- ifelse(is.character(item) | is.factor(item),
+    (1:length(res$names))[res$names == item],
+    item
+  )
+  if (missing(item.name)) {
+    if (is.character(item) | is.factor(item)) {
+      item.name <- paste(item)
     } else {
-      MATCHCRIT <- match
-      MATCH <- MATCHCRIT
+      item.name <- paste("Item", item)
     }
   }
 
-  fit <- difR::difLogistic(Data = data, group = group, focal.name = 1, type = type,
-                           match = MATCH, p.adjust.method = p.adjust.method,
-                           purify = purify)
+  if (any(is.na(res$logitPar[i, ]))) {
+    stop("Selected item is an anchor item!",
+      call. = FALSE
+    )
+  }
+  coef <- res$logitPar[i, ]
 
-  LR_plot <- function(x, group, beta0, beta1, beta2, beta3){
-    return(1/(1 + exp(-(beta0 + beta1*x + beta2*group + beta3*x*group))))
+  if (missing(Data) & draw.empirical) {
+    stop("'Data' needs to be specified! ", .call = FALSE)
+  }
+  if (missing(group) & draw.empirical) {
+    stop("'group' needs to be specified! ", .call = FALSE)
   }
 
-  ### data
-  score_R <- MATCHCRIT[group == 0]
-  score_F <- MATCHCRIT[group == 1]
+  if (missing(match)) {
+    match <- res$match
+  }
 
-  max_score <- max(score_R, score_F)
-  min_score <- min(score_R, score_F)
+  if (match[1] == "score") {
+    xlab <- "Total score"
+    if (draw.empirical) {
+      MATCHCRIT <- rowSums(Data)
+    } else {
+      MATCHCRIT <- c(0, nrow(res$logitPar))
+    }
+  } else if (match[1] == "zscore") {
+    xlab <- "Standardized total score"
+    if (draw.empirical) {
+      MATCHCRIT <- scale(apply(as.data.frame(Data), 1, sum))
+    } else {
+      MATCHCRIT <- c(0, nrow(res$logitPar))
+    }
+  } else if (length(match) != nrow(Data)) {
+    stop("'match' needs to be either 'score', 'zscore' or numeric vector of the same length as number of observations in 'Data'. ", .call = FALSE)
+  } else {
+    MATCHCRIT <- match
+    xlab <- "Matching criterion"
+  }
 
-  col   <- c("dodgerblue2", "goldenrod2")
+  LR_plot <- function(x, group, b0, b1, b2, b3) {
+    return(1 / (1 + exp(-(b0 + b1 * x + b2 * group + b3 * x * group))))
+  }
+
+  if (draw.empirical) {
+    score_R <- MATCHCRIT[group == 0]
+    score_F <- MATCHCRIT[group == 1]
+
+    empirical_R <- data.frame(
+      score = as.numeric(levels(as.factor(score_R))),
+      probability = tapply(Data[group == 0, i], as.factor(score_R), mean)
+    )
+    empirical_F <- data.frame(
+      score = as.numeric(levels(as.factor(score_F))),
+      probability = tapply(Data[group == 1, i], as.factor(score_F), mean)
+    )
+    empirical <- data.frame(rbind(
+      cbind(empirical_R, Group = "gr1"),
+      cbind(empirical_F, Group = "gr2")
+    ))
+    empirical$size <- c(table(score_R), table(score_F))
+  }
+
+  max_score <- max(MATCHCRIT, na.rm = T) + 0.1
+  min_score <- min(MATCHCRIT, na.rm = T) - 0.1
+
+  col <- c("dodgerblue2", "goldenrod2")
   alpha <- .5
-  shape <-  21
-  size  <- .8
+  shape <- 21
+  size <- .8
   linetype <- c("solid", "dashed")
-  if (IRT){
-    xlab <- "Standardized total score (Z-score)"
-  } else {
-    if (any(match == "score")){
-      xlab <- "Total score"
-    } else {
-      xlab <- "Matching criterion"
-    }
-  }
 
-  if (missing(item.name)){
-    item.name <- paste("Item", item)
-  }
-
-  hv_R <- data.frame(X1 = as.numeric(levels(as.factor(score_R))),
-                     X2 = tapply(data[group == 0, item], as.factor(score_R), mean))
-  hv_F <- data.frame(X1 = as.numeric(levels(as.factor(score_F))),
-                     X2 = tapply(data[group == 1, item], as.factor(score_F), mean))
-  hv   <- data.frame(rbind(cbind(hv_R, Group = "gr1"),
-                           cbind(hv_F, Group = "gr2")))
-  rownames(hv) <- 1:dim(hv)[1]
-  hv$size <- c(table(score_R), table(score_F))
-
-  coef <- fit$logitPar[item, ]
-
-  plot_CC <- ggplot(hv, aes_string("X1", "X2")) +
-    ### points
-    geom_point(aes_string(colour = "Group", fill = "Group",
-                          size = "size"),
-               alpha = alpha, shape = shape) +
+  g <- ggplot() +
     ### lines
+    xlim(min_score, max_score) +
     stat_function(aes(colour = "gr1", linetype = "gr1"),
-                  fun = LR_plot,
-                  args = list(group = 0,
-                              beta0 = coef[1],
-                              beta1 = coef[2],
-                              beta2 = coef[3],
-                              beta3 = coef[4]),
-                  size = size, geom = "line") +
+      fun = LR_plot,
+      args = list(
+        group = 0,
+        b0 = coef[1],
+        b1 = coef[2],
+        b2 = coef[3],
+        b3 = coef[4]
+      ),
+      size = size, geom = "line"
+    ) +
     stat_function(aes(colour = "gr2", linetype = "gr2"),
-                  fun = LR_plot,
-                  args = list(group = 1,
-                              beta0 = coef[1],
-                              beta1 = coef[2],
-                              beta2 = coef[3],
-                              beta3 = coef[4]),
-                  size = size, geom = "line")  +
+      fun = LR_plot,
+      args = list(
+        group = 1,
+        b0 = coef[1],
+        b1 = coef[2],
+        b2 = coef[3],
+        b3 = coef[4]
+      ),
+      size = size, geom = "line"
+    ) +
     ### style
-    scale_size_continuous(name = "Counts")  +
-    scale_colour_manual(name = "Group",
-                        values = col,
-                        breaks = c("gr1", "gr2"),
-                        labels = group.names) +
-    scale_fill_manual(values = col,
-                      breaks = c("gr1", "gr2"),
-                      labels = group.names) +
-    scale_linetype_manual(name = "Group",
-                          values = linetype,
-                          breaks = c("gr1", "gr2"),
-                          labels = group.names) +
-    guides(colour = guide_legend(title = "Group", order = 1)) +
-    guides(fill = guide_legend(title = "Group", order = 1)) +
-    guides(linetype = guide_legend(title = "Group", order = 1)) +
-    guides(size = guide_legend(title = "Counts", order = 2)) +
+    scale_colour_manual(
+      values = col,
+      breaks = c("gr1", "gr2"),
+      labels = group.names
+    ) +
+    scale_linetype_manual(
+      values = linetype,
+      breaks = c("gr1", "gr2"),
+      labels = group.names
+    ) +
+    guides(colour = guide_legend(title = "Group", order = 2)) +
+    guides(linetype = guide_legend(title = "Group", order = 2)) +
     ### theme
     xlab(xlab) +
     ylab("Probability of correct answer") +
     scale_y_continuous(limits = c(0, 1)) +
     theme_app() +
-    theme(legend.box.just = "top",
-          legend.position = c(0.01, 0.98),
-          legend.justification = c(0, 1),
-          legend.key.width = unit(1, "cm"),
-          legend.box = "horizontal") +
+    theme(
+      legend.box.just = "top",
+      legend.position = c(0.01, 0.98),
+      legend.justification = c(0, 1),
+      legend.key.width = unit(1, "cm"),
+      legend.box = "horizontal"
+    ) +
     ggtitle(item.name)
 
-  plot_CC
+  if (draw.empirical) {
+    g <- g +
+      ### points
+      geom_point(
+        data = empirical,
+        aes_string(x = "score", y = "probability", colour = "Group", fill = "Group", size = "size"),
+        alpha = alpha, shape = shape
+      ) +
+      guides(size = guide_legend(title = "Count", order = 1)) +
+      scale_fill_manual(
+        values = col,
+        breaks = c("gr1", "gr2"),
+        labels = group.names
+      ) +
+      guides(fill = guide_legend(title = "Group", order = 2))
+  }
 
+  return(g)
 }

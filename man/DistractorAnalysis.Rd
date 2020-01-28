@@ -42,7 +42,6 @@ is discrete (\code{match.discrete = TRUE}), \code{matching} is splitted based on
 cut points can be specified via \code{cut.points} argument.
 }
 \examples{
-\dontrun{
 # loading 100-item medical admission test data
 data(dataMedicaltest, dataMedicalkey)
 data <- dataMedicaltest[, 1:100]
@@ -51,7 +50,7 @@ key <- unlist(dataMedicalkey)
 
 # distractor analysis for dataMedicaltest data set
 DistractorAnalysis(data, key)
-
+\dontrun{
 # distractor analysis for dataMedicaltest data set with proportions
 DistractorAnalysis(data, key, p.table = T)
 
@@ -69,18 +68,17 @@ DistractorAnalysis(data, key, matching = matching, match.discrete = T)
 DistractorAnalysis(data, key, cut.points = seq(10, 100, 10))
 }
 
-
 }
 \seealso{
 \code{\link[CTT]{distractor.analysis}}
 }
 \author{
 Adela Hladka \cr
-Institute of Computer Science, The Czech Academy of Sciences \cr
+Institute of Computer Science of the Czech Academy of Sciences \cr
 Faculty of Mathematics and Physics, Charles University \cr
-hladka@cs.cas.cz \cr
+\email{hladka@cs.cas.cz} \cr
 
 Patricia Martinkova \cr
-Institute of Computer Science, The Czech Academy of Sciences \cr
-martinkova@cs.cas.cz \cr
+Institute of Computer Science of the Czech Academy of Sciences \cr
+\email{martinkova@cs.cas.cz} \cr
 }

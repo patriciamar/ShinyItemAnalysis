@@ -17,9 +17,11 @@
 #' @param cutscore vector or numeric: cutscore used to binarize the data.set. If numeric, the same cutscore is used for all items. If missing, vector of maximal scores is used in calculations.
 #' @param average.score logical: should average score of the item disaplyed instead of difficulty. Default
 #' value is FALSE. See \strong{Details}.
+#' @param thr numeric: value of discrimination threshold. See \strong{Details}.
 #'
 #' @usage DDplot(data, item.names, k = 3, l = 1, u = 3,
-#' discrim = "ULI", maxscore, minscore, bin = FALSE, cutscore, average.score = FALSE)
+#' discrim = "ULI", maxscore, minscore, bin = FALSE, cutscore, average.score = FALSE,
+#' thr = 0.2)
 #'
 #' @details
 #' The \code{data} is a matrix or data frame whose rows represents examinee answers
@@ -47,23 +49,25 @@
 #'
 #' Binarization of data is allowed in \code{bin}, for this purpose \code{cutscore} is used.
 #'
+#' By rule of thums, discrimination of items should not be lower than 0.2. The value of threshold
+#' can be specified via \code{thr} argument. In case that \code{thr = NULL}, no horizontal line
+#' is displayed in the plot.
 #'
 #' @author
 #' Adela Hladka \cr
-#' Institute of Computer Science, The Czech Academy of Sciences \cr
+#' Institute of Computer Science of the Czech Academy of Sciences \cr
 #' Faculty of Mathematics and Physics, Charles University \cr
-#' hladka@cs.cas.cz \cr
+#' \email{hladka@@cs.cas.cz} \cr
 #'
 #' Lubomir Stepanek \cr
 #' First Faculty of Medicine, Charles University \cr
 #'
 #' Jana Vorlickova \cr
-#' Institute of Computer Science, The Czech Academy of Sciences \cr
-#' Faculty of Mathematics and Physics, Charles University \cr
+#' Institute of Computer Science of the Czech Academy of Sciences \cr
 #'
 #' Patricia Martinkova \cr
-#' Institute of Computer Science, The Czech Academy of Sciences \cr
-#' martinkova@cs.cas.cz \cr
+#' Institute of Computer Science of the Czech Academy of Sciences \cr
+#' \email{martinkova@@cs.cas.cz} \cr
 #'
 #'
 #' @references
@@ -78,7 +82,6 @@
 #' \code{\link{gDiscrim}}, \code{\link{discrim}}
 #'
 #' @examples
-#' \dontrun{
 #' # loading 100-item medical admission test data sets
 #' data(dataMedical, dataMedicalgraded)
 #' # binary data set
@@ -88,6 +91,8 @@
 #'
 #' # DDplot of binary data set
 #' DDplot(dataBin)
+#' #' # DDplot of binary data set without threshold
+#' DDplot(dataBin, thr = NULL)
 #' # compared to DDplot using ordinal data set and 'bin = TRUE'
 #' DDplot(dataOrd, bin = TRUE)
 #' # compared to binarized data set using bin = TRUE and cutscore equal to 3
@@ -95,13 +100,15 @@
 #'
 #' # DDplot of binary data using generalized ULI
 #' # discrimination based on 5 groups, comparing 4th and 5th
-#' DDplot(dataBin, k = 5, l = 4, u = 5)
+#' # threshold lowered to 0.1
+#' DDplot(dataBin, k = 5, l = 4, u = 5, thr = 0.1)
 #'
 #' # DDplot of ordinal data set using ULI
 #' DDplot(dataOrd)
 #' # DDplot of ordinal data set using generalized ULI
 #' # discrimination based on 5 groups, comparing 4th and 5th
-#' DDplot(dataOrd, k = 5, l = 4, u = 5)
+#' # threshold lowered to 0.1
+#' DDplot(dataOrd, k = 5, l = 4, u = 5, thr = 0.1)
 #' # DDplot of ordinal data set using RIT
 #' DDplot(dataOrd, discrim = "RIT")
 #' # DDplot of ordinal data set using RIR
@@ -113,7 +120,6 @@
 #' DDplot(dataOrd)
 #' # DDplot of ordinal data set disaplaying average item scores
 #' DDplot(dataOrd, average.score = TRUE)
-#' }
 #' @export
 #' @import difNLR
 #' difR
@@ -139,143 +145,188 @@
 #' @importFrom reshape2 dcast melt
 #' @importFrom rmarkdown render
 #' @importFrom shinyjs show hide useShinyjs
-#' @importFrom stats aggregate coef complete.cases cor deriv deriv3 fitted glm median na.exclude nls quantile relevel sd vcov xtabs
+#' @importFrom stats aggregate coef coefficients complete.cases cor deriv deriv3 deviance fitted glm median na.exclude nls p.adjust pnorm pchisq qnorm qchisq quantile relevel sd symnum vcov xtabs
 #' @importFrom stringr str_sub
-#' @importFrom utils data head read.csv
+#' @importFrom utils capture.output data head read.csv
 
 
-DDplot <- function (data, item.names, k = 3, l = 1, u = 3, discrim = "ULI",
-                    maxscore, minscore, bin = FALSE, cutscore, average.score = FALSE)
-{
-  if(!is.matrix(data) & !is.data.frame(data)) {
+DDplot <- function(data, item.names, k = 3, l = 1, u = 3, discrim = "ULI",
+                   maxscore, minscore, bin = FALSE, cutscore, average.score = FALSE,
+                   thr = 0.2) {
+  if (!is.matrix(data) & !is.data.frame(data)) {
     stop("'data' must be data frame or matrix ", call. = FALSE)
   }
-  if(missing(maxscore)) {
+  if (missing(maxscore)) {
     maxscore <- apply(data, 2, max, na.rm = T)
   }
-  if(missing(minscore)) {
+  if (missing(minscore)) {
     minscore <- apply(data, 2, min, na.rm = T)
   }
-  if(missing(cutscore)) {
+  if (missing(cutscore)) {
     cutscore <- apply(data, 2, max, na.rm = T)
   } else {
-    if(length(cutscore) == 1){
+    if (length(cutscore) == 1) {
       cutscore <- rep(cutscore, ncol(data))
     }
   }
   data <- data[complete.cases(data), ]
-  if(bin == TRUE) {
+  if (bin) {
     data2 <- data
-    for(i in 1:dim(data)[2]){
+    for (i in 1:dim(data)[2]) {
       data[data2[, i] >= cutscore[i], i] <- 1
       data[data2[, i] < cutscore[i], i] <- 0
-
     }
     head(data)
     minscore <- apply(data, 2, min, na.rm = T)
     maxscore <- apply(data, 2, max, na.rm = T)
   }
-  if(missing(item.names)) {
+  if (missing(item.names)) {
     item.names <- colnames(data)
   }
-  if(u > k){
-    stop("'u' need to be lower or equal to 'k'", call. = FALSE)
+  if (u > k) {
+    stop("'u' needs to be lower or equal to 'k'", call. = FALSE)
   }
-  if(l > k){
-    stop("'l' need to be lower than 'k'", call. = FALSE)
+  if (l > k) {
+    stop("'l' needs to be lower than 'k'", call. = FALSE)
   }
-  if(l <= 0){
-    stop("'l' need to be greater than 0", call. = FALSE)
+  if (l <= 0) {
+    stop("'l' needs to be greater than 0", call. = FALSE)
   }
-  if(l >= u){
+  if (l >= u) {
     stop("'l' should be lower than 'u'", call. = FALSE)
   }
+  if (!is.null(thr)) {
+    if (!is.numeric(thr)) {
+      stop("'thr' needs to be either NULL or numeric. ", call. = FALSE)
+    } else if (thr < 0 | thr > 1) {
+      warning("'thr' needs value between 0 and 1. Current threshold is not displayed in the plot. ",
+        call. = FALSE
+      )
+    }
+  }
+
   diffName <- c("Difficulty", "Difficulty", "Average score")
   discName <- c("Discrimination ULI", "Discrimination RIR", "Discrimination RIT")
-  xlabel <- c("Item (ordered by difficulty)",
-              "Item (ordered by difficulty)",
-              "Item (ordered by average item score)")
-  average <- apply(data, 2, mean)
-  if(discrim == "ULI") {
-    disc <- as.numeric(gDiscrim(data, minscore = minscore, maxscore = maxscore,
-                                k = k, l = l, u = u))
+  xlabel <- c(
+    "Item (ordered by difficulty)",
+    "Item (ordered by difficulty)",
+    "Item (ordered by average item score)"
+  )
+  average <- colMeans(data)
+  if (discrim == "ULI") {
+    disc <- as.numeric(gDiscrim(data,
+      minscore = minscore, maxscore = maxscore,
+      k = k, l = l, u = u
+    ))
     i <- 1
   }
-  if(discrim ==  "RIR") {
-    TOT <- apply(data, 1, sum)
+  if (discrim == "RIR") {
+    TOT <- rowSums(data)
     TOT.woi <- TOT - (data)
     disc <- diag(cor(data, TOT.woi, use = "complete"))
-    i <-2
+    i <- 2
   }
-  if(discrim ==  "RIT") {
-    TOT <- apply(data, 1, sum)
+  if (discrim == "RIT") {
+    TOT <- rowSums(data)
     disc <- t(cor(data, TOT, use = "complete"))
-    i <-3
+    i <- 3
   }
-  if(!all((maxscore - minscore) != 0)){
+  if (!all((maxscore - minscore) != 0)) {
     warning("'cutscore' is equal to 'minscore' for some item")
 
-    difc <- (average - minscore)/(maxscore - minscore)
+    difc <- (average - minscore) / (maxscore - minscore)
     difc[(maxscore - minscore) == 0] <- 1
     disc[(maxscore - minscore) == 0] <- 0
   } else {
-
-    if(average.score) {
+    if (average.score) {
       difc <- average
     } else {
-      difc <- (average - minscore)/(maxscore - minscore)
+      difc <- (average - minscore) / (maxscore - minscore)
     }
   }
-  if(max(maxscore - minscore) > 1){
+  if (max(maxscore - minscore) > 1) {
     j <- ifelse(average.score, 3, 2)
   } else {
     j <- 1
   }
-  if(discrim != "none") {
-    if(any(disc < 0)) {
-      warning("Estimated discrimination is lower than 0.",
-              call. = F)
+  if (discrim != "none") {
+    if (any(disc < 0)) {
+      warning("Estimated discrimination is lower than 0.", call. = FALSE)
     }
     value <- c(rbind(difc, disc)[, order(difc)])
     parameter <- rep(c(diffName[j], discName[i]), ncol(data))
     item <- factor(rep(item.names[order(difc)], each = 2), levels = item.names[order(difc)])
     df <- data.frame(item, parameter, value)
     col <- c("red", "darkblue")
-    ggplot(df, aes_string(x = "item", y = "value", fill = "parameter", color = "parameter")) +
-      stat_summary(fun.y = mean, position = "dodge", geom = "bar", alpha = 0.7, width = 0.8) +
-      geom_hline(yintercept = 0.2) +
+
+    g <- ggplot(df, aes_string(
+      x = "item",
+      y = "value",
+      fill = "parameter",
+      color = "parameter"
+    )) +
+      stat_summary(
+        fun.y = mean, position = "dodge", geom = "bar",
+        alpha = 0.7, width = 0.8
+      ) +
       xlab(xlabel[j]) +
       ylab(paste0(diffName[j], "/", discName[i])) +
-      scale_y_continuous(expand = c(0, 0),
-                         limits = c(min(min(df$value) - 0.01, 0),
-                                    max(max(df$value) + 0.01*maxscore, 1))) +
+      scale_y_continuous(
+        expand = c(0, 0),
+        limits = c(
+          min(min(df$value) - 0.01, 0),
+          max(max(df$value) + 0.01 * maxscore, 1)
+        )
+      ) +
       scale_fill_manual(breaks = parameter, values = col) +
       scale_colour_manual(breaks = parameter, values = col) +
       theme_app() +
-      theme(axis.text.x = element_text(angle = 90, vjust = 0.5),
-            legend.position = c(0.01, 0.98),
-            legend.justification = c(0, 1),
-            legend.spacing.x = unit(0.1, 'cm'))
+      theme(
+        axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1),
+        legend.position = c(0.01, 0.98),
+        legend.justification = c(0, 1),
+        legend.spacing.x = unit(0.1, "cm")
+      )
+
+    if (!is.null(thr)) {
+      g <- g + geom_hline(yintercept = thr)
+    }
   } else {
     value <- difc[order(difc)]
     parameter <- rep(c(diffName[j]), ncol(data))
     item <- factor(item.names[order(difc)], levels = item.names[order(difc)])
     df <- data.frame(item, parameter, value)
     col <- c("red", "darkblue")
-    ggplot(df, aes_string(x = "item", y = "value", fill = "parameter", color = "parameter")) +
-      stat_summary(fun.y = mean, position = "dodge", geom = "bar", alpha = 0.7, width = 0.8) +
+    g <- ggplot(df, aes_string(
+      x = "item",
+      y = "value",
+      fill = "parameter",
+      color = "parameter"
+    )) +
+      stat_summary(
+        fun.y = mean, position = "dodge", geom = "bar",
+        alpha = 0.7, width = 0.8
+      ) +
       xlab(xlabel[j]) + ylab(diffName[j]) +
-      scale_y_continuous(expand = c(0, 0),
-                         limits = c(min(min(df$value) - 0.01, 0),
-                                    max(max(df$value) + 0.01, 1))) +
-      scale_fill_manual(breaks = parameter,
-                        values = col) +
+      scale_y_continuous(
+        expand = c(0, 0),
+        limits = c(
+          min(min(df$value) - 0.01, 0),
+          max(max(df$value) + 0.01, 1)
+        )
+      ) +
+      scale_fill_manual(
+        breaks = parameter,
+        values = col
+      ) +
       scale_colour_manual(breaks = parameter, values = col) +
       theme_app() +
-      theme(axis.text.x = element_text(angle = 90, vjust = 0.5),
-            legend.position = c(0.01, 0.98),
-            legend.justification = c(0, 1),
-            legend.spacing.x = unit(0.1, 'cm'))
+      theme(
+        axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1),
+        legend.position = c(0.01, 0.98),
+        legend.justification = c(0, 1),
+        legend.spacing.x = unit(0.1, "cm")
+      )
   }
+  g
 }
-

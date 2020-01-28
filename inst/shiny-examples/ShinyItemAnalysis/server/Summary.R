@@ -172,6 +172,9 @@ output$scores_tables <- renderTable({
 },
 include.rownames = FALSE)
 
+#exportTestValues(summ_ts = totalscores_table_Input(),
+#                 summ_ss = scores_tables_Input())
+
 # ** Download table with standard scores ** ####
 output$download_standard_scores <- downloadHandler(
   filename = function() {

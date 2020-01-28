@@ -4,14 +4,14 @@
 \name{dataMedicalkey}
 \alias{dataMedicalkey}
 \title{Key of Correct Answers for \code{dataMedicaltest} Dataset}
-\format{A \code{data.frame} with 100 values representing correct answers to items of \code{dataMedicaltest}
+\format{A vector with 100 values representing correct answers to items of \code{dataMedicaltest}
 dataset. For more details see \code{\link{dataMedicaltest}}.}
 \usage{
 data(dataMedicalkey)
 }
 \description{
 The \code{dataMedicalkey} is a vector of factors representing correct answers of
-\code{dataMedicaltest} data set.
+\code{dataMedicaltest} dataset.
 }
 \references{
 Stuka, C. Vejrazka, M., Martinkova, P. Komenda, M. & Stepanek, L. (2016). The Use of  Test and Item Analisis for
@@ -22,21 +22,13 @@ Improvement of Tests. Workshop held at conference MEFANET, 2016, Brno, Czech Rep
 }
 \author{
 Cestmir Stuka \cr
-First Faculty of Medicine, Charles University in Prague \cr
+First Faculty of Medicine, Charles University \cr
 
 Martin Vejrazka \cr
-First Faculty of Medicine, Charles University in Prague \cr
+First Faculty of Medicine, Charles University \cr
 
 Patricia Martinkova \cr
-Institute of Computer Science, The Czech Academy of Sciences \cr
-martinkova@cs.cas.cz \cr
-
-Jakub Houdek \cr
-Institute of Computer Science, The Czech Academy of Sciences \cr
-
-Adela Hladka  \cr
-Institute of Computer Science, The Czech Academy of Sciences \cr
-Faculty of Mathematics and Physics, Charles University \cr
-hladka@cs.cas.cz \cr
+Institute of Computer Science of the Czech Academy of Sciences \cr
+\email{martinkova@cs.cas.cz} \cr
 }
 \keyword{datasets}

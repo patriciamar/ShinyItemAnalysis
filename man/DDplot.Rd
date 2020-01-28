@@ -5,7 +5,8 @@
 \title{Graphical representation of difficulty and (generalized) discrimination in item analysis}
 \usage{
 DDplot(data, item.names, k = 3, l = 1, u = 3,
-discrim = "ULI", maxscore, minscore, bin = FALSE, cutscore, average.score = FALSE)
+discrim = "ULI", maxscore, minscore, bin = FALSE, cutscore, average.score = FALSE,
+thr = 0.2)
 }
 \arguments{
 \item{data}{numeric: binary or ordinal data matrix or data frame. See \strong{Details}.}
@@ -31,6 +32,8 @@ Default value is 3.  See \strong{Details}.}
 
 \item{average.score}{logical: should average score of the item disaplyed instead of difficulty. Default
 value is FALSE. See \strong{Details}.}
+
+\item{thr}{numeric: value of discrimination threshold. See \strong{Details}.}
 }
 \description{
 Plots difficulty and (generalized) discrimination for items ordered by difficulty.
@@ -60,12 +63,15 @@ Average score of items can be displayed with argument \code{average.score = T}. 
 data difficulty estimate is the same as average score of the item.
 
 Binarization of data is allowed in \code{bin}, for this purpose \code{cutscore} is used.
+
+By rule of thums, discrimination of items should not be lower than 0.2. The value of threshold
+can be specified via \code{thr} argument. In case that \code{thr = NULL}, no horizontal line
+is displayed in the plot.
 }
 \note{
 Generalized discrimination is calculated by \code{\link{gDiscrim}} function.
 }
 \examples{
-\dontrun{
 # loading 100-item medical admission test data sets
 data(dataMedical, dataMedicalgraded)
 # binary data set
@@ -75,6 +81,8 @@ dataOrd <- dataMedicalgraded[, 1:100]
 
 # DDplot of binary data set
 DDplot(dataBin)
+#' # DDplot of binary data set without threshold
+DDplot(dataBin, thr = NULL)
 # compared to DDplot using ordinal data set and 'bin = TRUE'
 DDplot(dataOrd, bin = TRUE)
 # compared to binarized data set using bin = TRUE and cutscore equal to 3
@@ -82,13 +90,15 @@ DDplot(dataOrd, bin = TRUE, cutscore = 3)
 
 # DDplot of binary data using generalized ULI
 # discrimination based on 5 groups, comparing 4th and 5th
-DDplot(dataBin, k = 5, l = 4, u = 5)
+# threshold lowered to 0.1
+DDplot(dataBin, k = 5, l = 4, u = 5, thr = 0.1)
 
 # DDplot of ordinal data set using ULI
 DDplot(dataOrd)
 # DDplot of ordinal data set using generalized ULI
 # discrimination based on 5 groups, comparing 4th and 5th
-DDplot(dataOrd, k = 5, l = 4, u = 5)
+# threshold lowered to 0.1
+DDplot(dataOrd, k = 5, l = 4, u = 5, thr = 0.1)
 # DDplot of ordinal data set using RIT
 DDplot(dataOrd, discrim = "RIT")
 # DDplot of ordinal data set using RIR
@@ -101,7 +111,6 @@ DDplot(dataOrd)
 # DDplot of ordinal data set disaplaying average item scores
 DDplot(dataOrd, average.score = TRUE)
 }
-}
 \references{
 Martinkova, P., Stepanek, L., Drabinova, A., Houdek, J., Vejrazka, M., & Stuka, C. (2017).
 Semi-real-time analyses of item characteristics for medical school admission tests.
@@ -112,18 +121,17 @@ In: Proceedings of the 2017 Federated Conference on Computer Science and Informa
 }
 \author{
 Adela Hladka \cr
-Institute of Computer Science, The Czech Academy of Sciences \cr
+Institute of Computer Science of the Czech Academy of Sciences \cr
 Faculty of Mathematics and Physics, Charles University \cr
-hladka@cs.cas.cz \cr
+\email{hladka@cs.cas.cz} \cr
 
 Lubomir Stepanek \cr
 First Faculty of Medicine, Charles University \cr
 
 Jana Vorlickova \cr
-Institute of Computer Science, The Czech Academy of Sciences \cr
-Faculty of Mathematics and Physics, Charles University \cr
+Institute of Computer Science of the Czech Academy of Sciences \cr
 
 Patricia Martinkova \cr
-Institute of Computer Science, The Czech Academy of Sciences \cr
-martinkova@cs.cas.cz \cr
+Institute of Computer Science of the Czech Academy of Sciences \cr
+\email{martinkova@cs.cas.cz} \cr
 }

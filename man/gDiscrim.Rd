@@ -42,7 +42,6 @@ Discrimination is calculated as difference in difficulty between upper and lower
 \code{gDiscrim} is used by \code{\link{DDplot}} function.
 }
 \examples{
-\dontrun{
 # loading 100-item medical admission test data sets
 data(dataMedical, dataMedicalgraded)
 # binary data set
@@ -61,8 +60,7 @@ gDiscrim(dataOrd)[1:5]
 # generalized ULI using 5 groups, compare 4th and 5th for binary data set
 gDiscrim(dataOrd, k = 5, l = 4, u = 5)[1:5]
 # maximum (4) and minimum (0) score are same for all items
-gDiscrim(dataOrd,  k = 5, l = 4, u = 5, maxscore = 4, minscore = 0)[1:5]
-}
+gDiscrim(dataOrd, k = 5, l = 4, u = 5, maxscore = 4, minscore = 0)[1:5]
 }
 \references{
 Martinkova, P., Stepanek, L., Drabinova, A., Houdek, J., Vejrazka, M., & Stuka, C. (2017).
@@ -75,18 +73,17 @@ https://doi.org/10.15439/2017F380
 }
 \author{
 Adela Hladka \cr
-Institute of Computer Science, The Czech Academy of Sciences \cr
+Institute of Computer Science of the Czech Academy of Sciences \cr
 Faculty of Mathematics and Physics, Charles University \cr
-hladka@cs.cas.cz \cr
+\email{hladka@cs.cas.cz} \cr
 
 Lubomir Stepanek \cr
 First Faculty of Medicine, Charles University \cr
 
 Jana Vorlickova \cr
-Institute of Computer Science, The Czech Academy of Sciences \cr
-Faculty of Mathematics and Physics, Charles University \cr
+Institute of Computer Science of the Czech Academy of Sciences \cr
 
 Patricia Martinkova \cr
-Institute of Computer Science, The Czech Academy of Sciences \cr
-martinkova@cs.cas.cz \cr
+Institute of Computer Science of the Czech Academy of Sciences \cr
+\email{martinkova@cs.cas.cz} \cr
 }

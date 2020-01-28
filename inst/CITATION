@@ -13,15 +13,3 @@ citEntry(entry = "Article",
          pages = "503--515",
          doi = "10.32614/RJ-2018-074",
          textVersion = "Martinková, P., & Drabinová, A. (2018). ShinyItemAnalysis for Teaching Psychometrics and to Enforce Routine Analysis of Educational Tests. The R Journal, 10(2), 503-515. doi: 10.32614/RJ-2018-074")
-
-
-citEntry(entry = "Article",
-         title = "{ShinyItemAnalysis}: {A}nalyza prijimacich a jinych znalostnich ci psychologickych testu [{ShinyItemAnalysis}: {A}nalyzing admission and other educational and psychological tests. In Czech.]",
-         author = personList(as.person("Patricia Martinkova"), as.person("Adela Drabinova"), as.person("Jakub Houdek")),
-         year = "2017",
-         journal = "TESTFORUM",
-         volume = "6",
-         number = "9",
-         pages = "16-35",
-         doi = "10.5817/TF2017-9-129",
-         textVersion = "Martinkova, P., Drabinova, A., & Houdek, J. (2017). ShinyItemAnalysis: Analyza prijimacich a jinych znalostnich ci psychologickych testu [ShinyItemAnalysis: Analyzing admission and other educational and psychological tests. In Czech]. TESTFORUM, 6(9), 16-35. doi: 10.5817/TF2017-9-129")

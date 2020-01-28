@@ -1,8 +1,55 @@
-﻿        ***************************************************************
+        ***************************************************************
         *                                                             *
         *  Changes and Developments in the ShinyItemAnalysis Package  *
         *                                                             *
         ***************************************************************
+
+-------------------------------------------------------
+- Changes in ShinyItemAnalysis 1.3.2. (2020-01-27) -
+-------------------------------------------------------
+
+** This is CRAN version, it includes version 1.3.1.-1.-8. **
+
+Besides, following updates are included:
+
+BUG FIXING
+  o Mismatch in specification of H0 and H1 was corrected in DIF/Fairness section 
+    and in Report section.
+  o plotDIFLogistic() now correctly plots matching criterion.
+  o Logistic method in DIF/Fairness section now correctly plots best fitting
+    model when p.adjust.method is applied.
+
+MAJOR CHANGES
+  o New dataset LearningToLearn was added to the package.
+  o New toy datasets LearningToLearn6 and LearningToLearn9 were added to the app.
+  o Upload of the DIF matching criterion is now available in Data section of the app.
+  o D-DIF index calculation was added into DIF/MH/Item to evaluate DIF effect size
+  o OR calculation in DIF/MH was edited.
+  o plotDIFLogistic() function was updated to accept class of 'Logistik'
+    as input.
+  o plotDIFLogistic() now accepts character input for 'item' argument.
+  o Summary and Item inputs in DIF/Logistic are connected now. Model is now
+    fitted only once.
+
+MINOR CHANGES
+  o Citation and list of References were updated.
+  o Authors' details were updated.
+  o Due to changes in difNLR, function ddfORD was renamed to difORD.
+  o About page was updated.
+  o Error messages for DistractorAnalysis() and plotDistractorAnalysis() were unified.
+  o Copyright year in footer is nove responsive.
+  o Description of toy datasets was updated.
+  o styler package was used for all functions. Documentation was updated.
+  o For plotDIFLogistc() it is now possible to turn off plotting empirical probabilities.
+    This can be done using draw.empirical = FALSE.
+  o Selected R code was updated in DIF/MH
+  o Some typos were fixed in DIF/MH and other sections
+  o Threshold for discrimination can be now specified in DDplot()
+    function via argument 'thr'. Default value is 0.2.
+  o Warning and error messages were updated for plotDistractorAnalysis()
+    function when 'key' is missing.
+  o Width of inputs was unified in DIF/Fairness section.
+
 -------------------------------------------------------
 - Changes in ShinyItemAnalysis 1.3.1-8. (2019-11-02) -
 -------------------------------------------------------

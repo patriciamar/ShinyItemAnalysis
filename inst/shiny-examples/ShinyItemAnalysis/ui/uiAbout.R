@@ -6,13 +6,13 @@ uiAbout <- tabPanel("",
                   #------------------------------------------------------------------------------------#
                   h3("Welcome"),
                   p("Welcome to ShinyItemAnalysis!"),
-                  p("ShinyItemAnalysis is an interactive online application, built
+                  p("ShinyItemAnalysis is an interactive online application for psychometric analysis of educational
+                     and other psychological tests and their items, built
                     on ",
                     a("R", href = "https://cran.r-project.org/", target = "_blank"),
                     "and",
-                    a("shiny,", href = "http://www.rstudio.com/shiny/", target = "_blank"),
-                    "for psychometric analysis of educational and other psychological tests and their items.
-                    You can simply start using the application by choosing toy dataset (or upload your own one)
+                    a("shiny. ", href = "http://www.rstudio.com/shiny/", target = "_blank"),
+                    "You can simply start using the application by choosing toy dataset (or upload your own one)
                     in section ", strong("Data"), " and run analysis including:" ),
                   tags$ul(tags$li("Exploration of total and standard scores in ", strong("Summary"), "section"),
                           tags$li("Analysis of measurement error in ", strong("Reliability"), "section"),
@@ -26,6 +26,8 @@ uiAbout <- tabPanel("",
                     generate HTML or PDF report in", strong("Reports"), "section. All offered analyses
                     are complemented by selected R code which is ready to be copy-pasted into your R console, hence
                     a similar analysis can be run and modified in R."),
+				          p("Visit ",a(strong("www.ShinyItemAnalysis.org"), href = "http://www.shinyitemanalysis.org",
+				                       target = "_blank"), "webpage to learn more about ShinyItemAnalysis!"),
                   tags$hr(),
                   #------------------------------------------------------------------------------------#
                   # Availability ####
@@ -48,10 +50,7 @@ uiAbout <- tabPanel("",
                                target = "_blank"),
                              HTML("<a href = 'https://cemp.shinyapps.io/ShinyItemAnalysis/' target = '_blank'>
                          <img src = 'flag_USA.png' height = '16' border = '0' align = 'middle'></a>.")),
-                           p("Visit our",
-                             a("web page",
-                               href = "http://www.shinyitemanalysis.org",
-                               target = "_blank"), "about ShinyItemAnalysis to learn more!")),
+                           ),
 
                     #------------------------------------------------------------------------------------#
                     # Version ####
@@ -59,48 +58,16 @@ uiAbout <- tabPanel("",
                     column(6, h4("Versions"),
                            p("Current",
                              a("CRAN", href = "https://CRAN.R-project.org/package=ShinyItemAnalysis", target = "_blank"),
-                             "version is 1.3.1.",
+                             "version is 1.3.2.",
                              br(),
                              "Version available",
-                             a("online", href = "https://shiny.cs.cas.cz/ShinyItemAnalysis/", target = "_blank"), "is 1.3.1.",
+                             a("online", href = "https://shiny.cs.cas.cz/ShinyItemAnalysis/", target = "_blank"), "is 1.3.2.",
                              br(),
                              "The newest development version available on ",
-                             a("GitHub", href = "https://github.com/patriciamar/ShinyItemAnalysis", target = "_blank"), "is 1.3.1-8.",
-                             br(),
-                             "See also older versions: ",
-                             a("0.1.0, ", href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV01/", target = "_blank"),
-                             a("0.2.0, ", href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV02/", target = "_blank"),
-                             a("1.0.0, ", href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV100/", target = "_blank"),
-                             a("1.1.0, ", href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV110/", target = "_blank"),
-                             a("1.2.3, ", href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV123/", target = "_blank"),
-                             a("1.2.6, ", href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV126/", target = "_blank"),
-                             a("1.2.9, ", href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV129/", target = "_blank"),
-                             a("1.3.0. ", href = "https://shiny.cs.cas.cz/ShinyItemAnalysisV130/", target = "_blank")))),
+                             a("GitHub", href = "https://github.com/patriciamar/ShinyItemAnalysis", target = "_blank"), "is 1.3.2.",
+                             ))),
                   tags$hr(),
-                  #------------------------------------------------------------------------------------#
-                  # Team ####
-                  #------------------------------------------------------------------------------------#
-                  h4("Meet the team"),
-                  fluidRow(
-                    column(1, align = "center",
-                           img(src = "author_patricia.png", width = 75),
-                           HTML("<figcaption><a href='http://www.cs.cas.cz/martinkova/' target='_blank'>Patricia<br>Martinkova</a></figcaption>")),
-                    column(1, align = "center",
-                           img(src = "author_adela.jpg", width = 75),
-                           HTML("<figcaption><a href='http://www.cs.cas.cz/hladka/' target='_blank'>Adela<br>Hladka</a></figcaption>")),
-                    column(1, align = "center",
-                           img(src = "author_ondra.png", width = 75),
-                           HTML("<figcaption>Ondrej<br>Leder</figcaption>")),
-                    column(1, align = "center",
-                           img(src = "author_jakub.png", width = 75),
-                           HTML("<figcaption>Jakub<br>Houdek</figcaption>")),
-                    column(1, align = "center",
-                           img(src = "author_lubos.jpg", width = 75),
-                           HTML("<figcaption>Lubomir<br>Stepanek</figcaption>")),
-                    column(1, align = "center",
-                           img(src = "author_tomas.jpg", width = 75),
-                           HTML("<figcaption>Tomas<br>Jurica</figcaption>"))),
-                  tags$hr(),
+
                   #------------------------------------------------------------------------------------#
                   # Feedback ####
                   #------------------------------------------------------------------------------------#
@@ -140,14 +107,14 @@ uiAbout <- tabPanel("",
                     a("10.32614/RJ-2018-074",
                       href = "https://doi.org/10.32614/RJ-2018-074",
                       target = "_blank")),
-				          p("In Czech written papers you can also use "),
-                  div(class = "cite-box",
-                    "Martinkova, P., Drabinova, A., & Houdek, J. (2017).", br(), "
-                    ShinyItemAnalysis: Analyza prijimacich a jinych znalostnich ci psychologickych testu. [ShinyItemAnalysis: Analyzing admission and other educational and psychological tests. In Czech].", br(), "
-                    TESTFORUM, 6(9), 16-35. doi:",
-				            a("10.5817/TF2017-9-129",
-				              href = "https://doi.org/10.5817/TF2017-9-129",
-				              target = "_blank")),
+				          #p("In Czech written papers you can also use:"),
+                  #div(class = "cite-box",
+                  #  "Martinkova, P., Drabinova, A., & Houdek, J. (2017).", br(), "
+                  #  ShinyItemAnalysis: Analyza prijimacich a jinych znalostnich ci psychologickych testu. [ShinyItemAnalysis: Analyzing admission and other educational and psychological tests. In Czech].", br(), "
+                  #  TESTFORUM, 6(9), 16-35. doi:",
+				          #  a("10.5817/TF2017-9-129",
+				          #    href = "https://doi.org/10.5817/TF2017-9-129",
+				          #    target = "_blank")),
 
                   tags$hr(),
 
@@ -156,7 +123,7 @@ uiAbout <- tabPanel("",
                   #------------------------------------------------------------------------------------#
                   h4("Acknowledgments"),
                   p("Project was supported by Czech Science Foundation grant GJ15-15856Y 'Estimation of psychometric
-                    measures as part of admission test development' and by Charles University grant PRIMUS/17/HUM/11
+                    measures as part of admission test development' and by Charles University under project PRIMUS/17/HUM/11
                     'Center for Educational Measurement and Psychometrics (CEMP)'."),
                   br(),
                   br()

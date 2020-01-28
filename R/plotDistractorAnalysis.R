@@ -31,7 +31,8 @@
 #' The \code{data} is a matrix or data frame whose rows represents unscored item response from a
 #' multiple-choice test and columns correspond to the items.
 #'
-#' The \code{key} must be a vector of the same length as \code{ncol(data)}.
+#' The \code{key} must be a vector of the same length as \code{ncol(data)}. In case it is not provided,
+#' \code{matching} need to be specified.
 #'
 #' If \code{multiple.answers = TRUE} (default) all reported combinations of answers are plotted.
 #' If \code{multiple.answers = FALSE} all combinations are splitted into distractors and only these
@@ -39,33 +40,32 @@
 #'
 #' @author
 #' Adela Hladka \cr
-#' Institute of Computer Science, The Czech Academy of Sciences \cr
+#' Institute of Computer Science of the Czech Academy of Sciences \cr
 #' Faculty of Mathematics and Physics, Charles University \cr
-#' hladka@cs.cas.cz \cr
+#' \email{hladka@@cs.cas.cz} \cr
 #'
 #' Patricia Martinkova \cr
-#' Institute of Computer Science, The Czech Academy of Sciences \cr
-#' martinkova@cs.cas.cz \cr
+#' Institute of Computer Science of the Czech Academy of Sciences \cr
+#' \email{martinkova@@cs.cas.cz} \cr
 #'
-#' @seealso \code{\link{DistractorAnalysis}}
-#' @seealso \code{\link[CTT]{distractor.analysis}}
+#' @seealso \code{\link{DistractorAnalysis}}, \code{\link[CTT]{distractor.analysis}}
 #'
 #' @examples
-#' \dontrun{
+#'
 #' # loading 100-item medical admission test data
-#' data(dataMedicaltest, dataMedicalkey)
+#' data(dataMedical, dataMedicaltest, dataMedicalkey)
 #' data <- dataMedicaltest[, 1:100]
 #' dataBin <- dataMedical[, 1:100]
 #' key <- unlist(dataMedicalkey)
 #'
 #' # distractor plot for items 48, 57 and 32 displaying distractors only
-#' plotDistractorAnalysis(data, key, item = 48, multiple.answers = F)
+#' plotDistractorAnalysis(data, key, item = 48, multiple.answers = FALSE)
 #' # correct answer B does not function well
-#' plotDistractorAnalysis(data, key, item = 57, multiple.answers = F)
+#' plotDistractorAnalysis(data, key, item = 57, multiple.answers = FALSE)
 #' # all options function well, thus the whole item discriminates well
-#' plotDistractorAnalysis(data, key, item = 32, multiple.answers = F)
+#' plotDistractorAnalysis(data, key, item = 32, multiple.answers = FALSE)
 #' # functions well, thus the whole item discriminates well
-#'
+#' \dontrun{
 #' # distractor plot for items 48, 57 and 32 displaying all combinations
 #' plotDistractorAnalysis(data, key, item = 48)
 #' plotDistractorAnalysis(data, key, item = 57)
@@ -74,9 +74,11 @@
 #' # distractor plot for item 57 with all combinations and 6 groups
 #' plotDistractorAnalysis(data, key, item = 57, num.group = 6)
 #'
-#'# distractor plot for item 57 using specified matching
+#' # distractor plot for item 57 using specified matching and key option
 #' matching <- round(rowSums(dataBin), -1)
 #' plotDistractorAnalysis(data, key, item = 57, matching = matching)
+#' # distractor plot for item 57 using specified matching without key option
+#' plotDistractorAnalysis(data, item = 57, matching = matching)
 #'
 #' # distractor plot for item 57 using discrete matching
 #' plotDistractorAnalysis(data, key, item = 57, matching = matching, match.discrete = T)
@@ -86,33 +88,36 @@
 #' }
 #' @export
 
-plotDistractorAnalysis <-  function (data, key, num.groups = 3, item = 1, item.name, multiple.answers = TRUE,
-                                     matching = NULL, match.discrete = FALSE, cut.points)
-{
-  if (missing(key)){
-    if (all(sapply(data, is.numeric))){
-      warning("Answer key is not provided")
+plotDistractorAnalysis <- function(data, key, num.groups = 3, item = 1, item.name, multiple.answers = TRUE,
+                                   matching = NULL, match.discrete = FALSE, cut.points) {
+  if (missing(key)) {
+    if (all(sapply(data, is.numeric))) {
+      warning("Answer key is not provided. Maximum value is used as key.", call. = FALSE)
       key <- sapply(data, max, na.rm = T)
-    } else if (missing(matching)){
-      stop("Answer key is not provided")
+    } else if (missing(matching)) {
+      stop("Answer key is not provided. Please, specify key to be able to calculate total score or provide matching. ",
+        call. = FALSE
+      )
     } else {
       key <- NULL
     }
   } else {
     if (!length(key) == ncol(data)) {
-      stop("Answer key is not provided or some item keys are missing.")
+      stop("Answer key is not provided or some item keys are missing.", call. = FALSE)
     }
     key <- unlist(key)
   }
 
   # distractor analysis
-  tabDA <- DistractorAnalysis(data = data, key = key, p.table = TRUE, num.groups = num.groups, matching = matching,
-                              match.discrete = match.discrete, cut.points = cut.points)
+  tabDA <- DistractorAnalysis(
+    data = data, key = key, p.table = TRUE, num.groups = num.groups, matching = matching,
+    match.discrete = match.discrete, cut.points = cut.points
+  )
 
   x <- tabDA[[item]]
 
   # only rows where is possitive proportion of correct answers
-  if (dim(x)[2] != 1){
+  if (dim(x)[2] != 1) {
     x <- x[!(apply(x, 1, function(y) all(y == 0))), ]
   }
 
@@ -120,13 +125,13 @@ plotDistractorAnalysis <-  function (data, key, num.groups = 3, item = 1, item.n
   x <- x[complete.cases(x), ]
   x$response <- as.factor(x$response)
   levels(x$response)[which(levels(x$response) == "")] <- "NaN"
-  if (!is.null(key))
+  if (!is.null(key)) {
     x$response <- relevel(x$response, as.character(key[item]))
+  }
 
-  if (multiple.answers){
+  if (multiple.answers) {
     # all combinations
     df <- x
-
     CA <- CAall <- as.character(key[item])
     col <- rainbow(n = length(levels(df$response)))
     names(col) <- levels(df$response)
@@ -142,7 +147,7 @@ plotDistractorAnalysis <-  function (data, key, num.groups = 3, item = 1, item.n
     CAdf <- x[x$response == as.character(key[item]), ]
     CAdf$response <- paste(key[item], "-correct", sep = "")
     df <- rbind(df, CAdf)
-    CA <-  unique(CAdf$response)
+    CA <- unique(CAdf$response)
 
     levels(df$response)[which(levels(df$response) == "x")] <- "NaN"
 
@@ -155,41 +160,62 @@ plotDistractorAnalysis <-  function (data, key, num.groups = 3, item = 1, item.n
     CAall <- c(CA, unlist(strsplit(as.character(key[item]), "")))
   }
 
-  if (missing(item.name)){
+  if (missing(item.name)) {
     item.name <- paste("Item", item)
   }
 
   # plot settings
-  linetype <- rep(2, length(levels(df$response)))
-  shape <- rep(1, length(levels(df$response)))
-  names(linetype) <- names(shape) <- levels(df$response)
-  linetype[CAall] <- 1
-  shape[CAall] <- 19
+  if (is.null(key)) {
+    linetype <- rep(1, length(levels(df$response)))
+    shape <- rep(19, length(levels(df$response)))
+    names(linetype) <- names(shape) <- levels(df$response)
+  } else {
+    linetype <- rep(2, length(levels(df$response)))
+    shape <- rep(1, length(levels(df$response)))
+    names(linetype) <- names(shape) <- levels(df$response)
+    linetype[CAall] <- 1
+    shape[CAall] <- 19
+  }
+
   xlab <- ifelse(is.null(matching), "Group by total score", "Group by criterion variable")
 
   df$score.level <- as.factor(df$score.level)
   num.groups <- length(unique(df$score.level))
 
   # plot
-  ggplot(df, aes_string(x = "score.level",
-                        y = "value",
-                        group = "response",
-                        colour = "response",
-                        linetype = "response",
-                        shape = "response"),
-         size = 1) +
+  g <- ggplot(df, aes_string(
+    x = "score.level",
+    y = "value",
+    group = "response",
+    colour = "response",
+    linetype = "response",
+    shape = "response"
+  ),
+  size = 1
+  ) +
     geom_line() +
     geom_point(size = 3) +
     xlab(xlab) +
     ylab("Option selection percentage") +
     scale_y_continuous(limits = c(0, 1)) +
-    scale_x_discrete(labels = 1:num.groups, expand = c(0, 0.2)) +
+    scale_x_discrete(labels = 1:num.groups, expand = c(0, 0.15)) +
     scale_linetype_manual(values = linetype) +
     scale_shape_manual(values = shape) +
     scale_color_manual(values = col) +
     theme_app() +
-    theme(legend.position = c(0.01, 0.98),
-          legend.justification = c(0, 1),
-          legend.key.width = unit(1, "cm")) +
+    theme(
+      legend.position = c(0.01, 0.98),
+      legend.justification = c(0, 1),
+      legend.key.width = unit(1, "cm")
+    ) +
     ggtitle(item.name)
+
+  if (length(col) > 11) {
+    g <- g + guides(
+      linetype = guide_legend(ncol = 2),
+      shape = guide_legend(ncol = 2),
+      color = guide_legend(ncol = 2)
+    )
+  }
+  return(g)
 }
