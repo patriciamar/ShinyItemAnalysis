@@ -38,18 +38,21 @@ MINOR CHANGES
   o Due to changes in difNLR, function ddfORD was renamed to difORD.
   o About page was updated.
   o Error messages for DistractorAnalysis() and plotDistractorAnalysis() were unified.
-  o Copyright year in footer is nove responsive.
+  o Copyright year in footer is now responsive.
   o Description of toy datasets was updated.
   o styler package was used for all functions. Documentation was updated.
   o For plotDIFLogistc() it is now possible to turn off plotting empirical probabilities.
     This can be done using draw.empirical = FALSE.
   o Selected R code was updated in DIF/MH
-  o Some typos were fixed in DIF/MH and other sections
   o Threshold for discrimination can be now specified in DDplot()
     function via argument 'thr'. Default value is 0.2.
   o Warning and error messages were updated for plotDistractorAnalysis()
     function when 'key' is missing.
   o Width of inputs was unified in DIF/Fairness section.
+  o Wording was updated.
+  o Some typos were fixed.
+  o Text in reports was updated.
+  o Some examples were set to run to allow for automatic checks of the package.
 
 -------------------------------------------------------
 - Changes in ShinyItemAnalysis 1.3.1-8. (2019-11-02) -
