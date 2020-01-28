@@ -91,6 +91,7 @@
 #'
 #' # DDplot of binary data set
 #' DDplot(dataBin)
+#' \dontrun{
 #' #' # DDplot of binary data set without threshold
 #' DDplot(dataBin, thr = NULL)
 #' # compared to DDplot using ordinal data set and 'bin = TRUE'
@@ -120,6 +121,7 @@
 #' DDplot(dataOrd)
 #' # DDplot of ordinal data set disaplaying average item scores
 #' DDplot(dataOrd, average.score = TRUE)
+#' }
 #' @export
 #' @import difNLR
 #' difR
@@ -147,8 +149,7 @@
 #' @importFrom shinyjs show hide useShinyjs
 #' @importFrom stats aggregate coef coefficients complete.cases cor deriv deriv3 deviance fitted glm median na.exclude nls p.adjust pnorm pchisq qnorm qchisq quantile relevel sd symnum vcov xtabs
 #' @importFrom stringr str_sub
-#' @importFrom utils capture.output data head read.csv
-
+#' @importFrom utils capture.output data head packageVersion read.csv
 
 DDplot <- function(data, item.names, k = 3, l = 1, u = 3, discrim = "ULI",
                    maxscore, minscore, bin = FALSE, cutscore, average.score = FALSE,

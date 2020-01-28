@@ -15,7 +15,7 @@ author: |
   
   This report was created on `r format(Sys.Date(), "%d.%m.%Y")`
 
-  &copy; 2019 ShinyItemAnalysis: Test and item analysis, version `r packageVersion("ShinyItemAnalysis")`
+  &copy; 2020 ShinyItemAnalysis: Test and item analysis, version `r packageVersion("ShinyItemAnalysis")`
     
   **************
   
@@ -92,7 +92,7 @@ body {text-align: justify}
 
 # Introduction
 
-This report was created by by R version `r getRversion()` and its package ShinyItemAnalysis application version `r packageVersion("ShinyItemAnalysis")`. ShinyItemAnalysis provides test and item analysis and it is available on [CRAN](https://CRAN.R-project.org/package=ShinyItemAnalysis) and also [online](https://shiny.cs.cas.cz/ShinyItemAnalysis/). 
+This report was created by by R version `r getRversion()` and its package ShinyItemAnalysis version `r packageVersion("ShinyItemAnalysis")`. ShinyItemAnalysis provides test and item analysis and it is available on [CRAN](https://CRAN.R-project.org/package=ShinyItemAnalysis) and also [online](https://shiny.cs.cas.cz/ShinyItemAnalysis/). 
 
 To cite ShinyItemAnalysis application in publications, please, use:
 
@@ -354,7 +354,7 @@ Respondents are divided into a selected number of groups by their total score. S
 
 ### Multinomial plot
 
-In the multinomial plot, points represent proportion of selected option with respect to standardized total score. Their size is determined by count of respondents who achieved given level of standardized total score and who selected given option.
+In the multinomial plot, points represent proportion of selected option with respect to total score. Their size is determined by count of respondents who achieved given level of total score and who selected given option.
 
 ```{r distractor-multi-plot-short, echo = FALSE, fig.height = 4.5, fig.width = 11}
 if (params$distractor_plot_legend_length <= 6){
@@ -631,8 +631,9 @@ eval_histograms <- (params$histCheck & params$isGroupPresent)
 ```{r DIF-section-histograms-part1, eval = eval_histograms, echo = FALSE, results = 'asis'}
 cat("
 ## Total scores by group
+DIF analysis may come to a different conclusion than test of group differences in total scores. Two groups may have the same distribution of total scores, yet, some item may function differently for the two groups. Also, one of the groups may have a signifficantly lower total score, yet, it may happen that there is no DIF item [(see Martinkova et al., 2017)](https://doi.org/10.1187/cbe.16-10-0307).
+
 ### Summary table of total scores in a reference and focal group
-DIF is not about total scores! Two groups may have the same distribution of total scores, yet, some item may function differently for the two groups. Also, one of the groups may have a signifficantly lower total score, yet, it may happen that there is no DIF item [(see Martinkova et al., 2017)](https://doi.org/10.1187/cbe.16-10-0307)!
 ")
 ```
 
@@ -645,7 +646,7 @@ kable(params$resultsgroup,
 ```{r DIF-section-histograms-part2, eval = eval_histograms, echo = FALSE, results = 'asis'}
 txt <- paste0("For selected cut-score ", params$cutScoregroup, ", the blue part of histograms shows respondents with a total score above the cut-score, the grey column shows respondents with a  total score equal to the cut-score and the red part of histograms shows respondents below the cut-score.")
 
-cat(paste("### Histogram of total score by group \n", txt))
+cat(paste("### Histograms of total scores by group \n", txt))
 ```
 
 ```{r DIF-section-histograms-plot, eval = eval_histograms, echo = FALSE, fig.width = 11, fig.height = 4, fig.align = 'center', dpi = 300}

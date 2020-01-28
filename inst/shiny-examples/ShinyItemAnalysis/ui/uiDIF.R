@@ -31,8 +31,9 @@ uiDIF <-
              # * TOTAL SCORES ####
              tabPanel("Total scores",
                       h3("Total scores"),
-                      p('DIF is not about total scores! Two groups may have the same distribution of total scores, yet,
-                        some item may function differently for two groups. Also, one of the groups may have signifficantly
+                      p('DIF analysis may come to a different conclusion than test of group differences in total scores.
+                        Two groups may have the same distribution of total scores, yet,
+                        some item may function differently for the two groups. Also, one of the groups may have signifficantly
                         lower total score, yet, it may happen that there is no DIF item ',
                         a('(Martinkova et al., 2017). ',
                           href = "https://www.lifescied.org/doi/10.1187/cbe.16-10-0307",
@@ -206,14 +207,14 @@ uiDIF <-
                       tabsetPanel(
                         # ** Summary ####
                         tabPanel("Summary",
-                                 h3("Logistic regression on total scores"),
-                                 p("Logistic regression on total scores allows for detection of uniform and non-uniform DIF (Swaminathan & Rogers, 1990) by adding a group
+                                 h3("Logistic regression"),
+                                 p("Logistic regression allows for detection of uniform and non-uniform DIF (Swaminathan & Rogers, 1990) by adding a group
                                    specific intercept", strong("\\(b_{2}\\)"), "(uniform DIF) and group specific interaction", strong("\\(b_{3}\\)"), "(non-uniform DIF) into model and
                                    by testing for their significance."),
                                  h4("Equation"),
                                  ("$$\\mathrm{P}\\left(Y_{ij} = 1 | X_i, G_i, b_0, b_1, b_2, b_3\\right) = \\frac{e^{b_0 + b_1 X_i + b_2 G_i + b_3 X_i G_i}}{1+e^{b_0 + b_1 X_i + b_2 G_i + b_3 X_i G_i}} $$"),
                                  h4("Summary table"),
-                                 p("Here you can change ", strong("DIF matching variable"), " and choose what", strong("type"), " of DIF to test. You can also select ", strong("correction method"), " for multiple comparison or", strong("item purification.")),
+                                 p("Here you can change ", strong("DIF matching variable"), " and choose what", strong("type"), " of DIF to be tested. You can also select ", strong("correction method"), " for multiple comparison or", strong("item purification.")),
                                  fluidRow(
                                    column(2,
                                           selectInput(inputId = "DIF_logistic_summary_matching",
@@ -253,12 +254,12 @@ uiDIF <-
                         ),
                         # ** Items ####
                         tabPanel("Items",
-                                 h3("Logistic regression on total scores"),
-                                 p("Logistic regression on total scores allows for detection of uniform and non-uniform DIF (Swaminathan & Rogers, 1990) by adding a group
-                                   specific intercept", strong("\\(b_{2}\\)"), "(uniform DIF) and group specific interaction", strong("\\(b_{3}\\)"), "(non-uniform DIF) into model and
+                                 h3("Logistic regression"),
+                                 p("Logistic regression allows for detection of uniform and non-uniform DIF (Swaminathan & Rogers, 1990) by adding a group
+                                   specific intercept", strong("\\(b_{2}\\)"), "(uniform DIF) and group specific interaction", strong("\\(b_{3}\\)"), "(non-uniform DIF) into the model and
                                    by testing for their significance."),
                                  h4("Plot with estimated DIF logistic curve"),
-                                 p("Here you can change ", strong("DIF matching variable"), " and choose what ", strong("type"), " of DIF to test. You can also select ", strong("correction method"), " for multiple comparison or", strong("item purification.")),
+                                 p("Here you can change ", strong("DIF matching variable"), " and choose ", strong("type"), " of DIF to be tested. You can also select ", strong("correction method"), " for multiple comparison or", strong("item purification.")),
                                  fluidRow(
                                    column(2,
                                           selectInput(inputId = "DIF_logistic_items_matching",
@@ -296,9 +297,9 @@ uiDIF <-
                                                       max = 10,
                                                       step = 1,
                                                       animate = animationOptions(interval = 1600)))),
-                                 p("Points represent proportion of correct answer with respect to total score.
+                                 p("Points represent proportion of correct answer with respect to DIF matching variable.
                                    Their size is determined by count of respondents who achieved given level of
-                                   total score with respect to the group membership."),
+                                   DIF matching variable with respect to the group membership."),
                                  plotOutput("DIF_logistic_items_plot"),
                                  downloadButton("DB_DIF_logistic_items_plot", label = "Download figure"),
                                  h4("Equation"),
@@ -318,16 +319,16 @@ uiDIF <-
                         # ** Summary ####
                         tabPanel('Summary',
                                  h3('Generalized logistic regression'),
-                                 p('Generalized logistic regression models can be seen as proxies of IRT models for
-                                   DIF detection using standardized total score as estimate of knowledge.
+                                 p('Generalized logistic regression models can be seen as proxies of 3PL and 4PL IRT models for
+                                   DIF detection.
                                    They can allow for nonzero lower asymptote - pseudoguessing \\(c\\)',
                                    a('(Drabinova & Martinkova, 2017) ',
                                      href = "http://onlinelibrary.wiley.com/doi/10.1111/jedm.12158/full",
                                      target = "_blank"),
                                    'or upper asymptote lower than one - inattention \\(d\\). Similarly to logistic
-                                   regression, also its extensions provide detection of uniform and non-uniform DIF by
+                                   regression, its extensions also provide detection of uniform and non-uniform DIF by
                                    letting difficulty parameter \\(b\\) (uniform) and discrimination parameter \\(a\\)
-                                   (non-uniform) differ for groups and by testing for significance difference in their
+                                   (non-uniform) differ for groups and by testing for difference in their
                                    values. Moreover, these extensions allow for testing differences in pseudoguessing and
                                    inattention parameters. '),
                                  withMathJax(),
@@ -340,7 +341,7 @@ uiDIF <-
                                  p("Displayed equation is based on selected model"),
                                  fluidRow(column(12, align = "center", uiOutput("DIF_NLR_equation_print"))),
                                  h4("Summary table"),
-                                 p('Here you can change ', strong('DIF matching variable'), ' and choose what ', strong('type'), ' of DIF to test. You can also select ', strong('correction method'), ' for multiple comparison or', strong('item purification.')),
+                                 p('Here you can change ', strong('DIF matching variable'), ' and choose ', strong('type'), ' of DIF to be tested. You can also select ', strong('correction method'), ' for multiple comparison or', strong('item purification.')),
                                  fluidRow(
                                    column(2,
                                           selectInput(inputId = "DIF_NLR_summary_matching",
@@ -396,14 +397,14 @@ uiDIF <-
                         # ** Items ####
                         tabPanel('Items',
                                  h3('Generalized logistic regression'),
-                                 p('Generalized logistic regression models can be seen as proxies of IRT models for
-                                   DIF detection using standardized total score as estimate of knowledge.
+                                 p('Generalized logistic regression models can be seen as proxies of 3PL and 4PL IRT models for
+                                   DIF detection.
                                    They can allow for nonzero lower asymptote - pseudoguessing \\(c\\)',
                                    a('(Drabinova & Martinkova, 2017) ',
                                      href = "https://doi.org/10.1111/jedm.12158",
                                      target = "_blank"),
                                    'or upper asymptote lower than one - inattention \\(d\\). Similarly to logistic
-                                   regression, also its extensions provide detection of uniform and non-uniform DIF by
+                                   regression, its extensions also provide detection of uniform and non-uniform DIF by
                                    letting difficulty parameter \\(b\\) (uniform) and discrimination parameter \\(a\\)
                                    (non-uniform) differ for groups and by testing for significance difference in their
                                    values. Moreover, these extensions allow for testing differences in pseudoguessing and
@@ -414,7 +415,7 @@ uiDIF <-
                                    both groups. With ', strong('type'), 'you can choose parameters in which difference between
                                    groups should be tested.'),
                                  h4("Plot with estimated DIF generalized logistic curve"),
-                                 p('Here you can change ', strong('DIF matching variable'), ' and choose what ', strong('type'),' of DIF to test. You can also select ',
+                                 p('Here you can change ', strong('DIF matching variable'), ' and choose ', strong('type'),' of DIF to be tested. You can also select ',
                                    strong('correction method'), ' for multiple comparison or', strong('item purification.')),
                                  fluidRow(
                                    column(2,
@@ -469,9 +470,9 @@ uiDIF <-
                                                       max = 10,
                                                       step = 1,
                                                       animate = animationOptions(interval = 1600)))),
-                                 p('Points represent proportion of correct answer with respect to standardized
-                                   total score. Their size is determined by count of respondents who achieved
-                                   given level of standardized total score with respect to the group membership.'),
+                                 p('Points represent proportion of correct answer with respect to DIF matching variable.
+                                   Their size is determined by count of respondents who achieved
+                                   given level of DIF matching variable with respect to the group membership.'),
                                  plotOutput('plot_DIF_NLR'),
                                  downloadButton("DP_plot_DIF_NLR", label = "Download figure"),
                                  h4("Equation"),
@@ -922,7 +923,7 @@ uiDIF <-
                       h3("Method comparison"),
                       p("Here you can compare all offered DIF detection methods. In the table below, columns represent DIF detection methods, and rows represent item number. If
                         the method detects item as DIF, value 1 is assigned to that item, otherwise 0 is assigned. In case that any method fail to converge or cannot be
-                        fitted, NA is displayed instead of 0/1 values. Methods in columns: "),
+                        fitted, NA is displayed instead of 0/1 values. Available methods: "),
                       tags$ul(
                         tags$li(strong('Delta'), 'is delta plot method (Angoff & Ford, 1973; Magis & Facon, 2012),'),
                         tags$li(strong('MH'), 'is Mantel-Haenszel test (Mantel & Haenszel, 1959), '),
@@ -930,11 +931,12 @@ uiDIF <-
                         tags$li(strong('GLogistic'), 'is generalized logistic regression (Drabinova & Martinkova, 2017),'),
                         tags$li(strong('Lord'), 'is Lord chi-square test (Lord, 1980),'),
                         tags$li(strong('Raju'), 'is Raju area method (Raju, 1990),'),
-                        tags$li(strong('SIBTEST'), 'is SIBTEST (Shealy & Stout, 1993) and crossing-SIBTEST (Chalmers, 2018; Li & Stout, 1996) methods, ')
+                        tags$li(strong('SIBTEST'), 'is SIBTEST (Shealy & Stout, 1993) and crossing-SIBTEST method (Chalmers, 2018; Li & Stout, 1996). ')
                         # tags$li(strong('DDF'), 'is differential distractor functioning with multinomial log-linear regression model. ')
                       ),
                       h3("Table with method comparison"),
-                      p("Methods in the table using all settings that were set in the previous tabs. The last column shows how
+                      p("Settings for individual methods (DIF matching criterion, type of DIF to be tested, correction method,
+                        item purification) are taken from subsection pages of given methods. Make sure your settings are unified. The last column shows how
                         many methods out of 7 detect certain item as DIF. The last row shows how many items are detected as DIF by certain method. "),
                       fluidRow(column(12, align = "center", tableOutput("method_comparison_table"))),
                       br(),
@@ -951,20 +953,20 @@ uiDIF <-
                                  h3('Cumulative logit regression model for DIF detection'),
                                  p('Cumulative logit regression allows for detection of uniform and non-uniform DIF among ordinal data by
                                     adding a group specific intercept ', strong('\\(b_2\\)'), ' (uniform DIF) and interaction ', strong('\\(b_3\\)'),
-                                   ' between group and standardized total score (non-uniform DIF) into model and by testing
+                                   ' between group and DIF matching variable (non-uniform DIF) into model and by testing
                                    for their significance.'),
                                  h4('Equation'),
-                                 p('The probability that person ', strong('\\(p\\)'), ' with standardized total score ',
+                                 p('The probability that person ', strong('\\(p\\)'), ' with DIF matching variable (e.g., standardized total score) ',
                                    strong('\\(Z_p\\)'), ' and group membership ', strong('\\(G_p\\)'), ' obtained at least ',
                                    strong('\\(k\\)'), ' points in item ', strong('\\(i\\)'), ' is given by the following equation: '),
                                  fluidRow(column(12, align = "center", uiOutput("DIF_cum_equation1_summary"))),
-                                 p('The probability that person ', strong('\\(p\\)'), ' with standardized total score ',
+                                 p('The probability that person ', strong('\\(p\\)'), ' with DIF matching variable (e.g., standardized total score) ',
                                    strong('\\(Z_p\\)'), ' and group membership ', strong('\\(G_p\\)'), ' obtained exactly ',
                                    strong('\\(k\\)'), ' points in item ', strong('\\(i\\)'), ' is then given as differnce between
                                    probabilities of obtaining at least', strong('\\(k\\)'), ' and ', strong('\\(k + 1\\)'), 'points:'),
                                  fluidRow(column(12, align = "center", uiOutput("DIF_cum_equation2_summary"))),
                                  h4('Summary table'),
-                                 p('Here you can change ', strong('DIF matching variable'), ' and choose ', strong('type'), ' of DIF to test. You can also select ',
+                                 p('Here you can change ', strong('DIF matching variable'), ' and choose ', strong('type'), ' of DIF to be tested. You can also select ',
                                    strong('correction method'), ' for multiple comparison or ', strong('item purification')),
                                  fluidRow(
                                    column(2,
@@ -1007,10 +1009,10 @@ uiDIF <-
                                  h3('Cumulative logit regression model for DIF detection'),
                                  p('Cumulative logit regression allows for detection of uniform and non-uniform DIF among ordinal data by
                                     adding a group specific intercept ', strong('\\(b_2\\)'), ' (uniform DIF) and interaction ', strong('\\(b_3\\)'),
-                                   ' between group and standardized total score (non-uniform DIF) into model and by testing
+                                   ' between group and DIF matching variable (non-uniform DIF) into model and by testing
                                    for their significance.'),
                                  h4('Plot with estimated DIF curves'),
-                                 p('Here you can change ', strong('DIF matching variable'), ' and choose ', strong('type'), ' of DIF to test. You can also select ',
+                                 p('Here you can change ', strong('DIF matching variable'), ' and choose ', strong('type'), ' of DIF to be tested. You can also select ',
                                    strong('correction method'), ' for multiple comparison or ', strong('item purification')),
                                  fluidRow(
                                    column(2,
@@ -1049,9 +1051,9 @@ uiDIF <-
                                                       step = 1,
                                                       animate = animationOptions(interval = 1600)))),
                                  uiOutput('DIF_cum_NA_warning_items'),
-                                 p('Points represent proportion of obtained score with respect to standardized
-                                   total score. Their size is determined by count of respondents who achieved
-                                   given level of standardized total score and who selected given option with
+                                 p('Points represent proportion of obtained score with respect to DIF matching
+                                   variable. Their size is determined by count of respondents who achieved
+                                   given level of DIF matching variable and who selected given option with
                                    respect to the group membership.'),
                                  splitLayout(cellWidths = c("50%", "50%"),
                                              plotOutput('DIF_cum_plot_cumulative'),
@@ -1080,15 +1082,15 @@ uiDIF <-
                                  h3('Adjacent category logit regression model for DIF detection'),
                                  p('Adjacent category logit regression model allows for detection of uniform and non-uniform DIF among
                                    ordinal data by adding a group specific intercept', strong('\\(b_2\\)'), '(uniform DIF) and interaction',
-                                   strong('\\(b_3\\)'), 'between group and standardized total score (non-uniform DIF)
+                                   strong('\\(b_3\\)'), 'between group and DIF matching variable (non-uniform DIF)
                                    into model and by testing for their significance. '),
                                  h4('Equation'),
-                                 p('The probability that person ', strong('\\(p\\)'), ' with standardized total score ',
+                                 p('The probability that person ', strong('\\(p\\)'), ' with DIF matching variable (e.g., standardized total score) ',
                                    strong('\\(Z_p\\)'), ' and group membership ', strong('\\(G_p\\)'), ' obtained ',
                                    strong('\\(k\\)'), ' points in item ', strong('\\(i\\)'), ' is given by the following equation: '),
                                  fluidRow(column(12, align = "center", uiOutput("DIF_adj_equation_summary"))),
                                  h4('Summary table'),
-                                 p('Here you can change ', strong('DIF matching variable'), ' and choose ', strong('type'), ' of DIF to test. You can also select ',
+                                 p('Here you can change ', strong('DIF matching variable'), ' and choose ', strong('type'), ' of DIF to be tested. You can also select ',
                                    strong('correction method'), ' for multiple comparison or ', strong('item purification')),
                                  fluidRow(
                                    column(2,
@@ -1131,10 +1133,10 @@ uiDIF <-
                                  h3('Adjacent category logit regression model for DIF detection'),
                                  p('Adjacent category logit regression model allows for detection of uniform and non-uniform DIF among
                                    ordinal data by adding a group specific intercept', strong('\\(b_2\\)'), '(uniform DIF) and interaction',
-                                   strong('\\(b_3\\)'), 'between group and standardized total score (non-uniform DIF)
+                                   strong('\\(b_3\\)'), 'between group and DIF matching variable (non-uniform DIF)
                                    into model and by testing for their significance. '),
                                  h4('Plot with estimated DIF curves'),
-                                 p('Here you can change ', strong('DIF matching variable'), ' and choose ', strong('type'), ' of DIF to test. You can also select ',
+                                 p('Here you can change ', strong('DIF matching variable'), ' and choose ', strong('type'), ' of DIF to be tested. You can also select ',
                                    strong('correction method'), ' for multiple comparison or', strong('item purification')),
                                  fluidRow(
                                    column(2,
@@ -1173,9 +1175,9 @@ uiDIF <-
                                                       step = 1,
                                                       animate = animationOptions(interval = 1600)))),
                                  uiOutput('DIF_adj_NA_warning_items'),
-                                 p('Points represent proportion of obtained score with respect to standardized
-                                   total score. Their size is determined by count of respondents who achieved
-                                   given level of standardized total score and who selected given option with
+                                 p('Points represent proportion of obtained score with respect to DIF matching variable.
+                                   Their size is determined by count of respondents who achieved
+                                   given level of DIF matching variable and who selected given option with
                                    respect to the group membership.'),
                                  plotOutput('DIF_adj_plot'),
                                  downloadButton("DB_DIF_adj_plot", label = "Download figure"),
@@ -1203,7 +1205,7 @@ uiDIF <-
                                    regression model with Z-score and group membership as covariates. '),
                                  h4('Equation'),
                                  p('For ', strong('\\(K\\)'), ' possible test choices is the probability of the correct answer for
-                                   person ', strong('\\(p\\)'), ' with standardized total score ', strong('\\(Z_p\\)'), ' and group
+                                   person ', strong('\\(p\\)'), ' with DIF matching variable (e.g., standardized total score) ', strong('\\(Z_p\\)'), ' and group
                                    membership ', strong('\\(G_p\\)'),' in item ', strong('\\(i\\)'), 'given by the following equation: '),
                                  ('$$\\mathrm{P}(Y_{ip} = K|Z_p, G_p, b_{il0}, b_{il1}, b_{il2}, b_{il3}, l = 1, \\dots, K-1) =
                                   \\frac{1}{1 + \\sum_l e^{\\left( b_{il0} + b_{il1} Z_p + b_{il2} G_p + b_{il3} Z_p:G_p\\right)}}$$'),
@@ -1213,7 +1215,7 @@ uiDIF <-
                                   {1 + \\sum_l e^{\\left( b_{il0} + b_{il1} Z_p + b_{il2} G_p + b_{il3} Z_p:G_p\\right)}}$$'),
                                  br(),
                                  h4('Summary table'),
-                                 p('Here you can change ', strong('DIF matching variable'), ' and choose ', strong('type'), ' of DDF to test. You can also select ', strong('correction method'),
+                                 p('Here you can change ', strong('DIF matching variable'), ' and choose ', strong('type'), ' of DDF to be tested. You can also select ', strong('correction method'),
                                    ' for multiple comparison or ', strong('item purification. ')),
                                  fluidRow(
                                    column(2,
@@ -1259,7 +1261,7 @@ uiDIF <-
                                    at least one distractor choice. DDF is here examined by Multinomial Log-linear
                                    Regression model with Z-score and group membership as covariates. '),
                                  h4("Plot with estimated DDF curves"),
-                                 p('Here you can change ', strong('DIF matching variable'), ' and choose ', strong('type'), ' of DDF to test. You can also select ', strong('correction method'),
+                                 p('Here you can change ', strong('DIF matching variable'), ' and choose ', strong('type'), ' of DDF to be tested. You can also select ', strong('correction method'),
                                    ' for multiple comparison or ', strong('item purification. ')),
                                  fluidRow(
                                    column(2,
@@ -1297,9 +1299,9 @@ uiDIF <-
                                                       max = 10,
                                                       step = 1,
                                                       animate = animationOptions(interval = 1600)))),
-                                 p('Points represent proportion of selected answer with respect to standardized
-                                   total score. Their size is determined by count of respondents who achieved
-                                   given level of standardized total score and who selected given option with
+                                 p('Points represent proportion of selected answer with respect to DIF matching variable.
+                                   Their size is determined by count of respondents who achieved
+                                   given level of DIF matching variable and who selected given option with
                                    respect to the group membership.'),
                                  plotOutput('DDF_multi_plot'),
                                  downloadButton("DB_DDF_multi_plot", label = "Download figure"),

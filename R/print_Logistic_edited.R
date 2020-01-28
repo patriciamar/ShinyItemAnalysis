@@ -80,8 +80,7 @@ print.Logistic <- function(x, ...) {
       "No set of anchor items was provided", "\n",
       "\n"
     )
-  }
-  else {
+  } else {
     itk <- (1:length(res$Logistik))[!is.na(res$Logistik)]
     cat("Anchor items (provided by the user):", "\n")
     if (is.numeric(res$anchor.names)) {
@@ -211,14 +210,12 @@ print.Logistic <- function(x, ...) {
   cat(" 'B': moderate effect", "\n")
   cat(" 'C': large effect", "\n", "\n")
   r2 <- round(res$deltaR2, 4)
-  symb1 <- symnum(r2, c(0, 0.13, 0.26, 1), symbols = c(
-    "A",
-    "B", "C"
-  ))
-  symb2 <- symnum(r2, c(0, 0.035, 0.07, 1), symbols = c(
-    "A",
-    "B", "C"
-  ))
+  symb1 <- symnum(r2, c(0, 0.13, 0.26, 1),
+    symbols = c("A", "B", "C")
+  )
+  symb2 <- symnum(r2, c(0, 0.035, 0.07, 1),
+    symbols = c("A", "B", "C")
+  )
   matR2 <- noquote(cbind(
     format(r2[itk], justify = "right"),
     symb1[itk], symb2[itk]

@@ -89,6 +89,7 @@
 #' \code{\link{DDplot}}, \code{\link{gDiscrim}}
 #'
 #' @examples
+#' \dontrun{
 #' # loading 100-item medical admission test data sets
 #' data(dataMedical, dataMedicalgraded)
 #' # binary data set
@@ -112,6 +113,7 @@
 #'   y = StudySuccess, k = 5, l = 4, u = 5,
 #'   maxscore = 4, minscore = 0, cutscore = 4, add.bin = TRUE
 #' ))
+#' }
 #' @export
 
 ItemAnalysis <- function(data, y = NULL, k = 3, l = 1, u = 3, maxscore, minscore, cutscore, add.bin = FALSE) {

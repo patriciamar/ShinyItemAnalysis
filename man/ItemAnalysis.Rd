@@ -77,6 +77,7 @@ When binarizing the data, values greater or equal to cut-score are set to \code{
 other values are set to \code{0}.
 }
 \examples{
+\dontrun{
 # loading 100-item medical admission test data sets
 data(dataMedical, dataMedicalgraded)
 # binary data set
@@ -100,6 +101,7 @@ head(ItemAnalysis(dataOrd,
   y = StudySuccess, k = 5, l = 4, u = 5,
   maxscore = 4, minscore = 0, cutscore = 4, add.bin = TRUE
 ))
+}
 }
 \references{
 Martinkova, P., Stepanek, L., Drabinova, A., Houdek, J., Vejrazka, M., & Stuka, C. (2017).

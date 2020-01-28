@@ -32,18 +32,19 @@
       if (sum(anchor == item) == 0) {
         data2 <- cbind(data2, data[, item])
       }
-      SCORES <- scale(apply(as.data.frame(data), 1, sum))
+      SCORES <- scale(rowSums(data2, na.rm = TRUE))
     } else {
       SCORES <- match
     }
     ITEM <- data[, item]
 
-    m0 <- switch(type, both = glm(ITEM ~ SCORES * GROUP,
-      family = "binomial"
-    ), udif = glm(ITEM ~ SCORES +
-      GROUP, family = "binomial"), nudif = glm(ITEM ~
-    SCORES * GROUP, family = "binomial"))
-    m1 <- switch(type, both = glm(ITEM ~ SCORES, family = "binomial"),
+    m0 <- switch(type,
+      both = glm(ITEM ~ SCORES * GROUP, family = "binomial"),
+      udif = glm(ITEM ~ SCORES + GROUP, family = "binomial"),
+      nudif = glm(ITEM ~ SCORES * GROUP, family = "binomial")
+    )
+    m1 <- switch(type,
+      both = glm(ITEM ~ SCORES, family = "binomial"),
       udif = glm(ITEM ~ SCORES, family = "binomial"),
       nudif = glm(ITEM ~ SCORES + GROUP, family = "binomial")
     )

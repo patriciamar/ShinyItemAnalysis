@@ -81,6 +81,7 @@ dataOrd <- dataMedicalgraded[, 1:100]
 
 # DDplot of binary data set
 DDplot(dataBin)
+\dontrun{
 #' # DDplot of binary data set without threshold
 DDplot(dataBin, thr = NULL)
 # compared to DDplot using ordinal data set and 'bin = TRUE'
@@ -110,6 +111,7 @@ DDplot(dataBin, discrim = "none")
 DDplot(dataOrd)
 # DDplot of ordinal data set disaplaying average item scores
 DDplot(dataOrd, average.score = TRUE)
+}
 }
 \references{
 Martinkova, P., Stepanek, L., Drabinova, A., Houdek, J., Vejrazka, M., & Stuka, C. (2017).

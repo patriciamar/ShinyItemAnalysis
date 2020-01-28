@@ -13,11 +13,12 @@
 Besides, following updates are included:
 
 BUG FIXING
-  o Mismatch in specification of H0 and H1 was corrected in DIF/Fairness section 
+  o Mismatch in specification of H0 and H1 was corrected in DIF/Fairness section
     and in Report section.
   o plotDIFLogistic() now correctly plots matching criterion.
   o Logistic method in DIF/Fairness section now correctly plots best fitting
     model when p.adjust.method is applied.
+  o Logistic method in DIF/Fairness section now excludes missing values.
 
 MAJOR CHANGES
   o New dataset LearningToLearn was added to the package.

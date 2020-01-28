@@ -30,11 +30,22 @@
       gr <- group
       DATA <- Data
     }
-
     if (member.type == "group") {
       Group <- as.numeric(gr == focal.name)
     } else {
       Group <- gr
+    }
+    if (length(match) == dim(DATA)[1]) {
+      df <- data.frame(DATA, Group, match, check.names = F)
+    } else {
+      df <- data.frame(DATA, Group, check.names = F)
+    }
+    df <- df[complete.cases(df), ]
+    Group <- df[, "Group"]
+    DATA <- as.data.frame(df[, !(colnames(df) %in% c("Group", "match"))])
+    colnames(DATA) <- colnames(df)[!(colnames(df) %in% c("Group", "match"))]
+    if (length(match) > 1) {
+      match <- df[, "match"]
     }
 
     Q <- switch(type,
