@@ -4,14 +4,16 @@
 \name{dataMedicaltest}
 \alias{dataMedicaltest}
 \title{Dataset of Admission Test to Medical School}
-\format{A `dataMedicaltest` is a `data.frame` consisting of 2,392 observations on
+\format{
+A `dataMedicaltest` is a `data.frame` consisting of 2,392 observations on
 the following 102 variables.
 \describe{
 \item{X}{the first 100 columns represent items answers.}
 \item{gender}{variable describing gender; values `"0"` and `"1"` refer to males and females.}
 \item{StudySuccess}{criterion variable; value `"1"` means that student studies standardly,
 `"0"` otherwise (e.g. leaving or interrupting studies).}
-}}
+}
+}
 \usage{
 data(dataMedicaltest)
 }

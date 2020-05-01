@@ -40,11 +40,26 @@
     } else {
       df <- data.frame(DATA, Group, check.names = F)
     }
+    if (any(is.na(DATA))) {
+      warning("'Data' contains missing values. Observations with missing values are discarded.",
+        call. = FALSE
+      )
+    }
+    if (any(is.na(Group))) {
+      warning("'group' contains missing values. Observations with missing values are discarded.",
+        call. = FALSE
+      )
+    }
     df <- df[complete.cases(df), ]
     Group <- df[, "Group"]
     DATA <- as.data.frame(df[, !(colnames(df) %in% c("Group", "match"))])
     colnames(DATA) <- colnames(df)[!(colnames(df) %in% c("Group", "match"))]
     if (length(match) > 1) {
+      if (any(is.na(match))) {
+        warning("'match' contains missing values. Observations with missing values are discarded.",
+          call. = FALSE
+        )
+      }
       match <- df[, "match"]
     }
 
@@ -99,7 +114,7 @@
       logitPar <- PROV$parM1
       logitSe <- PROV$seM1
 
-      if (min(P.ADJUST, na.rm = T) >= 0.05) {
+      if (min(P.ADJUST, na.rm = T) >= alpha) {
         DIFitems <- "No DIF item detected"
       } else {
         DIFitems <- which(P.ADJUST < alpha)
@@ -125,9 +140,6 @@
         save.output = save.output, output = output,
         Data = DATA, group = Group
       )
-
-
-
       if (!is.null(anchor) & match[1] == "score") { # match is "score"
         RES$Logistik[ANCHOR] <- NA
         RES$logitPar[ANCHOR, ] <- NA
@@ -189,8 +201,6 @@
             if (length(dif) != length(dif2)) {
               dif <- dif2
             } else {
-              dif <- sort(dif)
-              dif2 <- sort(dif2)
               if (all(dif == dif2)) {
                 noLoop <- TRUE
                 break

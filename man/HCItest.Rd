@@ -4,12 +4,14 @@
 \name{HCItest}
 \alias{HCItest}
 \title{Homeostasis Concept Inventory Dataset}
-\format{\code{HCItest} is a \code{data.frame} consisting of 651 observations on the 22 variables.
+\format{
+\code{HCItest} is a \code{data.frame} consisting of 651 observations on the 22 variables.
 \describe{
 \item{Item1-Item20}{multiple-choice items of the HCI test.}
 \item{gender}{gender membership vector, \code{"0"} males, \code{"1"} females.}
 \item{major}{identificator whether students planning to major in the life sciences.}
-}}
+}
+}
 \usage{
 data(HCItest)
 }

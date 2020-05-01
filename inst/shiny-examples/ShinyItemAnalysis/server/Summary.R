@@ -36,7 +36,7 @@ totalscores_histogram_Input<- reactive({
   bin <- as.numeric(input$slider_totalscores_histogram)
   data <- binary()
 
-  if (length(unique(c(min(sc, na.rm = T), bin - 1, bin, max(sc, na.rm = T)))) == 3 & bin != min(sc, na.rm = T)) {
+  if (length(unique(c(min(sc, na.rm = T), bin - 1, bin, max(sc, na.rm = T)))) == 3 & bin != min(sc, na.rm = T) & bin %in% sc) {
     breaks <- unique(c(min(sc, na.rm = T), bin - 1, bin, bin + 1, max(sc, na.rm = T)))
   } else {
     breaks <- unique(c(min(sc, na.rm = T), bin - 1, bin, max(sc, na.rm = T)))
@@ -45,23 +45,16 @@ totalscores_histogram_Input<- reactive({
   df <- data.table(score = sc,
                    gr = cut(sc,
                             breaks = breaks,
-                            include.lowest = T))
+                            include.lowest = T),
+                   col = ifelse(sc == bin, "gray",
+                                ifelse(sc < bin, "red", "blue")))
 
-  if (bin < min(sc, na.rm = T)){
-    col <- c("blue",'blue')
-  } else if (!(bin %in% unique(sc))) {
-    col <- c('red','blue')
-  } else {
-    if (bin == min(sc, na.rm = T)){
-      col <- c("grey", "blue")
-    } else {
-      col <- c("red", "grey", "blue")
-    }
-  }
+  cols <- c("red", "gray", "blue")[c("red", "gray", "blue") %in% unique(df$col)]
+  df$col <- factor(df$col, cols)
 
-  g <- ggplot(df, aes(x = score)) +
+  g <- ggplot(df, aes(x = score, fill = col)) +
     geom_histogram(aes(fill = gr, y = ..count../sum(..count..)), binwidth = 1, color = "black") +
-    scale_fill_manual("", breaks = df$gr, values = col) +
+    scale_fill_manual(values = cols) +
     labs(x = "Total score",
          y = "Proportion of respondents") +
     scale_x_continuous(limits = c(min(sc, na.rm = T) - 0.5, max(sc, na.rm = T) + 0.5)) +

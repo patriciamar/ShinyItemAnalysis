@@ -4,14 +4,16 @@
 \name{dataMedicalgraded}
 \alias{dataMedicalgraded}
 \title{Graded Dataset of Admission Test to Medical School}
-\format{A \code{dataMedicalgraded} is a \code{data.frame} consisting of 2,392 observations on
+\format{
+A \code{dataMedicalgraded} is a \code{data.frame} consisting of 2,392 observations on
 the following 102 variables.
 \describe{
 \item{X}{the first 100 columns represent ordinal item scores of the test.}
 \item{gender}{variable describing gender; values \code{"0"} and \code{"1"} refer to males and females.}
 \item{StudySuccess}{criterion variable; value \code{"1"} means that student studies standardly,
 \code{"0"} otherwise (e.g. leaving or interrupting studies).}
-}}
+}
+}
 \usage{
 data(dataMedicalgraded)
 }

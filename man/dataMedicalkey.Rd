@@ -4,8 +4,10 @@
 \name{dataMedicalkey}
 \alias{dataMedicalkey}
 \title{Key of Correct Answers for \code{dataMedicaltest} Dataset}
-\format{A vector with 100 values representing correct answers to items of \code{dataMedicaltest}
-dataset. For more details see \code{\link{dataMedicaltest}}.}
+\format{
+A vector with 100 values representing correct answers to items of \code{dataMedicaltest}
+dataset. For more details see \code{\link{dataMedicaltest}}.
+}
 \usage{
 data(dataMedicalkey)
 }

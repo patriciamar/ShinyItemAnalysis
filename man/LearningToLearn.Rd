@@ -4,7 +4,8 @@
 \name{LearningToLearn}
 \alias{LearningToLearn}
 \title{Dichotomous Data Set of Learning to Learn Test}
-\format{A \code{LearningToLearn} data frame consists of 782 observations on the following 141 variables:
+\format{
+A \code{LearningToLearn} data frame consists of 782 observations on the following 141 variables:
 \describe{
 \item{track_01}{dichotomously scored school track, where \code{"1"} denotes the selective academic school one.}
 \item{track}{school track, where \code{"AS"} represents the selective academic school track, and \code{"BS"} stands
@@ -24,7 +25,8 @@ the correct answer to the particular item.}
 \item a student did not respond correctly in Grade 6 but responded correctly in Grade 9 (improved, \code{"01"}), and
 \item a student responded correctly in both grades (did not deteriorate, \code{"11"})}
 }
-}}
+}
+}
 \usage{
 data(LearningToLearn)
 }

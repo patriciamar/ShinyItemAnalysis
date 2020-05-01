@@ -64,13 +64,9 @@ params:
   irtability: NA
   isGroupPresent: NA
   histCheck: NA
-  cutScoregroup: NA
-  resultsgroup: NA
-  histbyscoregroup0: NA
-  histbyscoregroup1: NA
-  maxScore0: NA
-  maxScore1: NA
-  DIF_scores_ttest: NA
+  DIF_total_table: NA
+  DIF_total_hist: NA
+  DIF_total_ttest: NA
   deltaplotCheck: NA
   DIF_deltaplot: NA
   DIF_deltaplot_text: NA
@@ -638,27 +634,20 @@ DIF analysis may come to a different conclusion than test of group differences i
 ```
 
 ```{r DIF-section-histograms-table, echo = FALSE, results = "asis", eval = eval_histograms}
-kable(params$resultsgroup, 
+kable(params$DIF_total_table, 
           digits = c(0, 0, 0, 3, 3, 3, 3), 
           align = c('l', rep('c', 6)))
 ```
 
 ```{r DIF-section-histograms-part2, eval = eval_histograms, echo = FALSE, results = 'asis'}
-txt <- paste0("For selected cut-score ", params$cutScoregroup, ", the blue part of histograms shows respondents with a total score above the cut-score, the grey column shows respondents with a  total score equal to the cut-score and the red part of histograms shows respondents below the cut-score.")
-
-cat(paste("### Histograms of total scores by group \n", txt))
+cat(paste("### Histograms of total scores by group \n"))
 ```
 
 ```{r DIF-section-histograms-plot, eval = eval_histograms, echo = FALSE, fig.width = 11, fig.height = 4, fig.align = 'center', dpi = 300}
-g1 = params$histbyscoregroup0 +
+params$DIF_total_hist +
   theme(text = element_text(size = 11), 
-        plot.title = element_text(face = "bold")) + 
-  ggtitle("Reference group")
-g2 = params$histbyscoregroup1 + 
-  theme(text = element_text(size = 11), 
-        plot.title = element_text(face = "bold")) + 
-  ggtitle("Focal group")
-grid.arrange(g1, g2, nrow = 1)
+        plot.title = element_text(face = "bold"),
+        legend.position = c(0.1, 0.87)) 
 ```
 
 ```{r DIF-section-histograms-part3, eval = eval_histograms, echo = FALSE, results = 'asis'}
@@ -670,7 +659,7 @@ Test for difference in total scores between reference and focal group is based o
 ```
 
 ```{r DIF-section-histograms-ttest, echo = FALSE, eval = eval_histograms}
-kable(params$DIF_scores_ttest,
+kable(params$DIF_total_ttest,
       align = rep('c', 4), row.names = F)
 ```
 

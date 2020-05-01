@@ -311,6 +311,12 @@ uiReferences <-
                 target = "_blank">See online.</a>
                 </li>
 
+                <li>Magis, D., & Facon, B. (2013). Item purification does not always improve DIF detection: a counter-example with Angoffs Delta plot.
+                <i>Educational and Psychological Measurement, 73</i>(2), 293-311.
+                <a href = "https://doi.org/10.1177%2F0013164412451903",
+                target = "_blank">See online.</a>
+                </li>
+
                 <li>Mantel, N., & Haenszel, W. (1959). Statistical Aspects of the Analysis of Data from
                 Retrospective Studies.
                 <i>Journal of the National Cancer Institute, 22</i>(4), 719-748.

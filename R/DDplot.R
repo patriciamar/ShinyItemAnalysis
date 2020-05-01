@@ -123,33 +123,6 @@
 #' DDplot(dataOrd, average.score = TRUE)
 #' }
 #' @export
-#' @import difNLR
-#' difR
-#' shiny
-#' @importFrom corrplot corrplot
-#' @importFrom CTT score
-#' @importFrom cowplot plot_grid
-#' @importFrom deltaPlotR deltaPlot
-#' @importFrom ggplot2 aes aes_string coord_flip element_blank element_line element_rect element_text geom_abline
-#' ggplot_build position_dodge geom_histogram geom_hline geom_line geom_point geom_ribbon geom_text ggplot
-#' ggsave ggtitle labs scale_color_manual scale_colour_manual scale_fill_manual scale_linetype_manual
-#' scale_shape_manual scale_size_continuous scale_x_continuous scale_x_discrete scale_y_continuous
-#' scale_y_reverse
-#' stat_function stat_summary theme theme_bw unit xlab xlim ylab ylim
-#' @importFrom graphics lines plot plot.new
-#' @importFrom grDevices dev.off hcl png rainbow recordPlot
-#' @importFrom ltm ltm rasch tpm
-#' @importFrom mirt fscores itemfit mirt
-#' @importFrom moments kurtosis skewness
-#' @importFrom nnet multinom
-#' @importFrom psych alpha polychoric
-#' @importFrom psychometric item.exam
-#' @importFrom reshape2 dcast melt
-#' @importFrom rmarkdown render
-#' @importFrom shinyjs show hide useShinyjs
-#' @importFrom stats aggregate coef coefficients complete.cases cor deriv deriv3 deviance fitted glm median na.exclude nls p.adjust pnorm pchisq qnorm qchisq quantile relevel sd symnum vcov xtabs
-#' @importFrom stringr str_sub
-#' @importFrom utils capture.output data head packageVersion read.csv
 
 DDplot <- function(data, item.names, k = 3, l = 1, u = 3, discrim = "ULI",
                    maxscore, minscore, bin = FALSE, cutscore, average.score = FALSE,

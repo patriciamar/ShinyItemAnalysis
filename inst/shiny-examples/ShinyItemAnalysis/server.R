@@ -829,11 +829,9 @@ function(input, output, session) {
         isGroupPresent = groupPresent(),
         ### histograms by group
         histCheck = input$histCheck,
-        resultsgroup = {if (groupPresent()) {if (input$histCheck) {resultsgroupInput()}}},
-        cutScoregroup = input$inSlider2group,
-        histbyscoregroup0 = {if (groupPresent()) {if (input$histCheck) {histbyscoregroup0Input()}}},
-        histbyscoregroup1 = {if (groupPresent()) {if (input$histCheck) {histbyscoregroup1Input()}}},
-        DIF_scores_ttest = {if (groupPresent()) {if (input$histCheck) {DIF_scores_ttest_Input()}}},
+        DIF_total_table = {if (groupPresent()) {if (input$histCheck) {DIF_total_table_Input()}}},
+        DIF_total_hist = {if (groupPresent()) {if (input$histCheck) {DIF_total_hist_Input()}}},
+        DIF_total_ttest = {if (groupPresent()) {if (input$histCheck) {DIF_total_ttest_Input()}}},
         ### delta plot
         deltaplotCheck = input$deltaplotCheck,
         deltaplot = {if (groupPresent()) {if (input$deltaplotCheck) {deltaplotInput_report()}}},
@@ -919,11 +917,9 @@ function(input, output, session) {
         isGroupPresent = groupPresent(),
         ### histograms by groups
         histCheck = input$histCheck,
-        resultsgroup = {if (groupPresent()) {if (input$histCheck) {resultsgroupInput()}}},
-        cutScoregroup = input$inSlider2group,
-        histbyscoregroup0 = {if (groupPresent()) {if (input$histCheck) {histbyscoregroup0Input()}}},
-        histbyscoregroup1 = {if (groupPresent()) {if (input$histCheck) {histbyscoregroup1Input()}}},
-        DIF_scores_ttest = {if (groupPresent()) {if (input$histCheck) {DIF_scores_ttest_Input()}}},
+        DIF_total_table = {if (groupPresent()) {if (input$histCheck) {DIF_total_table_Input()}}},
+        DIF_total_hist = {if (groupPresent()) {if (input$histCheck) {DIF_total_hist_Input()}}},
+        DIF_total_ttest = {if (groupPresent()) {if (input$histCheck) {DIF_total_ttest_Input()}}},
         ### delta plot
         deltaplotCheck = input$deltaplotCheck,
         DIF_deltaplot = {if (groupPresent()) {if (input$deltaplotCheck) {deltaplotInput_report()}}},

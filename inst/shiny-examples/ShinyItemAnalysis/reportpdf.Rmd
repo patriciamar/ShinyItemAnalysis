@@ -56,13 +56,9 @@ params:
   irtability: NA
   isGroupPresent: NA
   histCheck: NA
-  cutScoregroup: NA
-  resultsgroup: NA
-  histbyscoregroup0: NA
-  histbyscoregroup1: NA
-  maxScore0: NA
-  maxScore1: NA
-  DIF_scores_ttest: NA
+  DIF_total_table: NA
+  DIF_total_hist: NA
+  DIF_total_ttest: NA
   deltaplotCheck: NA
   DIF_deltaplot: NA
   DIF_deltaplot_text: NA
@@ -714,7 +710,7 @@ eval_histograms <- (params$histCheck & params$isGroupPresent)
 ```{r DIF-section-histograms-part1, eval = eval_histograms, echo = FALSE, results = 'asis'}
 cat("
 ## Total scores by group
-DIF analysis may come to a different conclusion than test of group differences in total scores. Two groups may have the same distribution of total scores, yet, some item may function differently for the two groups. Also, one of the groups may have a signifficantly lower total score, yet, it may happen that there is no DIF item [(see Martinkova et al., 2017)](https://doi.org/10.1187/cbe.16-10-0307).
+DIF analysis may come to a different conclusion than test of group differences in total scores. Two groups may have the same distribution of total scores, yet, some items may function differently for the two groups. Also, one of the groups may have a signifficantly lower total score, yet, it may happen that there is no DIF item [(see Martinkova et al., 2017)](https://doi.org/10.1187/cbe.16-10-0307).
 \\vspace{-1.5em} 
 
 ### Summary table of total scores in a reference and focal group
@@ -723,7 +719,7 @@ DIF analysis may come to a different conclusion than test of group differences i
 ```
 
 ```{r DIF-section-histograms-table, echo = FALSE, results = "asis", eval = eval_histograms}
-table = params$resultsgroup
+table = params$DIF_total_table
 add.to.row$command <- command(table)
 print(xtable(table, 
              digits = c(0, 0, 0, 0, 2, 2, 2, 2, 2), 
@@ -734,27 +730,18 @@ print(xtable(table,
 ```
 
 ```{r DIF-section-histograms-part2, eval = eval_histograms, echo = FALSE, results = 'asis'}
-txt <- paste0("For selected cut-score ", params$cutScoregroup, ", the blue part of histograms shows respondents with a total score above the cut-score, the grey column shows respondents with a  total score equal to the cut-score and the red part of histograms shows respondents below the cut-score.")
-
 cat(paste("
 \\vspace{-1em} 
 
-### Histograms of total scores by group \n \\vspace{-0.5em}", 
-txt))
+### Histograms of total scores by group \n \\vspace{-0.5em}"))
 ```
 
 ```{r DIF-section-histograms-plot, echo = FALSE, fig.height = 4.3, fig.width = 11, eval = eval_histograms}
-g1 = params$histbyscoregroup0 + 
+params$DIF_total_hist + 
       theme(text = element_text(size = 16), 
             plot.title = element_text(face = "bold"),
-            plot.margin = margin(0, 0, 0, 0, "cm")) + 
-      ggtitle("Reference group")
-g2 = params$histbyscoregroup1 + 
-      theme(text = element_text(size = 16), 
-            plot.title = element_text(face = "bold"),
-            plot.margin = margin(0, 0, 0, 0, "cm")) + 
-      ggtitle("Focal group")
-grid.arrange(g1, g2, nrow = 1)
+            plot.margin = margin(0, 0, 0, 0, "cm"),
+            legend.position = c(0.1, 0.87)) 
 ```
 
 ```{r DIF-section-histograms-part3, eval = eval_histograms, echo = FALSE, results = 'asis'}
@@ -768,7 +755,7 @@ Test for difference in total scores between reference and focal group is based o
 ```
 
 ```{r DIF-section-histograms-ttest, echo = FALSE, results = "asis", eval = eval_histograms}
-table = params$DIF_scores_ttest
+table = params$DIF_total_ttest
 add.to.row$command <- command(table)
     
 print(xtable(table, align = rep('c', 5)), 

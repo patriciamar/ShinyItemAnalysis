@@ -95,17 +95,23 @@ plotDIFLogistic <- function(x, item = 1, item.name, group.names = c("Reference",
     match <- res$match
   }
 
+  if (res$purification & res$DIFitems[1] != "No DIF item detected") {
+    ANCHOR <- c(1:nrow(res$logitPar))[-res$DIFitems]
+  } else {
+    ANCHOR <- c(1:nrow(res$logitPar))
+  }
+
   if (match[1] == "score") {
     xlab <- "Total score"
     if (draw.empirical) {
-      MATCHCRIT <- rowSums(Data)
+      MATCHCRIT <- rowSums(Data[, ANCHOR])
     } else {
       MATCHCRIT <- c(0, nrow(res$logitPar))
     }
   } else if (match[1] == "zscore") {
     xlab <- "Standardized total score"
     if (draw.empirical) {
-      MATCHCRIT <- scale(apply(as.data.frame(Data), 1, sum))
+      MATCHCRIT <- scale(apply(as.data.frame(Data[, ANCHOR]), 1, sum))
     } else {
       MATCHCRIT <- c(0, nrow(res$logitPar))
     }

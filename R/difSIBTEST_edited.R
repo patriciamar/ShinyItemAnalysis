@@ -22,6 +22,22 @@
     }
     Group <- as.numeric(gr == focal.name)
 
+    df <- data.frame(DATA, Group, check.names = F)
+    if (any(is.na(DATA))) {
+      warning("'Data' contains missing values. Observations with missing values are discarded.",
+        call. = FALSE
+      )
+    }
+    if (any(is.na(Group))) {
+      warning("'group' contains missing values. Observations with missing values are discarded.",
+        call. = FALSE
+      )
+    }
+    df <- df[complete.cases(df), ]
+    Group <- df[, "Group"]
+    DATA <- as.data.frame(df[, !(colnames(df) %in% c("Group"))])
+    colnames(DATA) <- colnames(df)[!(colnames(df) %in% c("Group"))]
+
     if (is.null(anchor)) {
       ANCHOR <- 1:ncol(DATA)
       anchor.names <- NULL
