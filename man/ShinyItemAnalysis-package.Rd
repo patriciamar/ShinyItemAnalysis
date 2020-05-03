@@ -25,7 +25,7 @@ Martinkova and Drabinova (2018).\cr
 Package: ShinyItemAnalysis\cr
 Type: Package\cr
 Version: 1.3.3\cr
-Date: 2020-04-29\cr
+Date: 2020-05-04\cr
 Depends: R (>= 3.5.0)\cr
 Imports: corrplot, cowplot, CTT, data.table, deltaPlotR, DT, difNLR (>= 1.3.2), difR (>= 5.0),
 ggdendro, ggplot2 (>= 2.2.1), gridExtra, knitr, latticeExtra, ltm, mirt (>= 1.24), moments,

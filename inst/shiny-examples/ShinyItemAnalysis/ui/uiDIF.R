@@ -12,14 +12,14 @@ uiDIF <-
                         ability have a different probability of answering the item correctly or
                         endorsing the item. If some item functions differently for two groups,
                         it is potentially unfair and should be checked for wording.
-                        In general, two types of DIF can be distinguished: When ',strong('uniform'), 'DIF
-                        is present, the item advantages one of the groups at all levels of latent ability
-                        (left figure), and the item has different difficulty (location parameter) for
-                        given two groups, while the item discrimination is the same. Contrary, the ',
-                        strong('non-uniform'), 'DIF (right figure) means that the item advantages one
-                        of the groups at lower ability levels, and the other group at higher ability levels
-                        and the item has different discrimination (slope) and possibly also different
-                        difficulty for given two groups.'),
+                        In general, two types of DIF can be distinguished: The ',strong('uniform'), 'DIF
+                        describes a situation when the item advantages one of the groups at all levels of
+                        the latent ability (left figure). In such a case, the item has different difficulty
+                        (location parameters) for given two groups, while the item discrimination is the same.
+                        Contrary, the ', strong('non-uniform'), 'DIF (right figure) means that the item
+                        advantages one of the groups at lower ability levels, and the other group at higher
+                        ability levels. In this case, the item has different discrimination (slope) parameters
+                        and possibly also different difficulty parameters for the given two groups.'),
                       br(),
                       img(src = "fig_DIF_uniform.png",
                           style = "float: left; width: 32%; margin-right: 2%; margin-left: 16%; margin-bottom: 0.5em;"),
@@ -29,7 +29,7 @@ uiDIF <-
                       p('Differential distractor functioning (DDF) occurs when respondents from different
                         groups but with the same latent ability have different probability of selecting
                         at least one distractor choice. Again, two types of DDF can be distinguished - ',
-                        strong('uniform'), ' (left figure) and ', strong('non-uniform'), ' DDF (right figure).'),
+                        strong('uniform'), ' (left figure below) and ', strong('non-uniform'), ' DDF (right figure below).'),
                       img(src = "fig_DDF_uniform.png",
                           style = "float: left; width: 32%; margin-right: 2%; margin-left: 16%; margin-bottom: 0.5em;"),
                       img(src = "fig_DDF_nonuniform.png",
@@ -48,7 +48,7 @@ uiDIF <-
                           target = "_blank"),
                         "This section examines the differences in total scores only. Explore further DIF sections to analyze
                         differential item functioning."),
-                      p("DIF can also be explored with respect to other matching criteria than total score of analyzed items.
+                      p("DIF can also be explored with respect to matching criteria other than the total score of analyzed items.
                         For example, to analyze instructional sensitivity, ",
                         a('Martinkova et al. (2020)',
                           href = "https://doi.org/10.1016/j.learninstruc.2019.101286",
@@ -77,14 +77,14 @@ uiDIF <-
                       downloadButton("DB_DIF_total_hist", label = "Download figure"),
                       br(),
                       h4("Comparison of ", textOutput("DIF_total_matching_title3", inline = T)),
-                      HTML(paste0("Test for difference in ", textOutput("DIF_total_matching_title4", inline = T), " between reference and focal
-                      group is based on Welch two sample t-test. ", br(),
-                        strong("Explanation: "), strong("Diff. (CI)"), " - difference in means of ",
+                      tableOutput("DIF_total_ttest"),
+                      HTML(paste0("Notes: Test for difference in ", textOutput("DIF_total_matching_title4", inline = T), " between
+                      the reference and the focal group is based on Welch two sample t-test. ", br(),
+                        strong("Diff. (CI)"), " - difference in means of ",
                         textOutput("DIF_total_matching_title5", inline = T), " with 95% confidence interval, ",
                         strong("\\(t\\)-value"), " - test statistic, ", strong("df"), " - degrees of freedom, ",
-                        strong("\\(p\\)-value"), " - if it is lower than 0.05, it means significant difference in ",
-                        textOutput("DIF_total_matching_title6", inline = T), '.')),
-                      tableOutput("DIF_total_ttest"),
+                        strong("\\(p\\)-value"), " - value lower than 0.05 means significant difference in ",
+                        textOutput("DIF_total_matching_title6", inline = T), ' between the reference and the focal group.')),
                       br(),
                       h4("Selected R code"),
                       div(code(HTML('library(ggplot2)<br>library(moments)<br>library(ShinyItemAnalysis)<br><br>#&nbsp;Loading&nbsp;data<br>data(GMAT,&nbsp;package&nbsp;=&nbsp;\"difNLR\")<br>Data&nbsp;<-&nbsp;GMAT[,&nbsp;1:20]<br>group&nbsp;<-&nbsp;GMAT[,&nbsp;\"group\"]<br><br>#&nbsp;Total&nbsp;score&nbsp;calculation&nbsp;wrt&nbsp;group<br>score&nbsp;<-&nbsp;rowSums(Data)<br>score0&nbsp;<-&nbsp;score[group&nbsp;==&nbsp;0]&nbsp;#&nbsp;reference&nbsp;group<br>score1&nbsp;<-&nbsp;score[group&nbsp;==&nbsp;1]&nbsp;#&nbsp;focal&nbsp;group<br><br>#&nbsp;Summary&nbsp;of&nbsp;total&nbsp;score<br>rbind(<br>&nbsp;&nbsp;c(length(score0),&nbsp;min(score0),&nbsp;max(score0),&nbsp;mean(score0),&nbsp;median(score0),&nbsp;sd(score0),&nbsp;skewness(score0),&nbsp;kurtosis(score0)),<br>&nbsp;&nbsp;c(length(score1),&nbsp;min(score1),&nbsp;max(score1),&nbsp;mean(score1),&nbsp;median(score1),&nbsp;sd(score1),&nbsp;skewness(score1),&nbsp;kurtosis(score1))<br>)<br><br>df&nbsp;<-&nbsp;data.frame(score,&nbsp;group&nbsp;=&nbsp;as.factor(group))<br><br>#&nbsp;Histogram&nbsp;of&nbsp;total&nbsp;scores&nbsp;wrt&nbsp;group<br>ggplot(data&nbsp;=&nbsp;df,&nbsp;aes(x&nbsp;=&nbsp;score,&nbsp;fill&nbsp;=&nbsp;group,&nbsp;col&nbsp;=&nbsp;group))&nbsp;+<br>&nbsp;&nbsp;geom_histogram(binwidth&nbsp;=&nbsp;1,&nbsp;position&nbsp;=&nbsp;\"dodge2\",&nbsp;alpha&nbsp;=&nbsp;0.75)&nbsp;+<br>&nbsp;&nbsp;xlab(\"Total&nbsp;score\")&nbsp;+<br>&nbsp;&nbsp;ylab(\"Number&nbsp;of&nbsp;respondents\")&nbsp;+<br>&nbsp;&nbsp;scale_fill_manual(values&nbsp;=&nbsp;c(\"dodgerblue2\",&nbsp;\"goldenrod2\"),&nbsp;labels&nbsp;=&nbsp;c(\"Reference\",&nbsp;\"Focal\"))&nbsp;+<br>&nbsp;&nbsp;scale_colour_manual(values&nbsp;=&nbsp;c(\"dodgerblue2\",&nbsp;\"goldenrod2\"),&nbsp;labels&nbsp;=&nbsp;c(\"Reference\",&nbsp;\"Focal\"))&nbsp;+<br>&nbsp;&nbsp;theme_app()&nbsp;+<br>&nbsp;&nbsp;theme(legend.position&nbsp;=&nbsp;\"left\"))<br><br>#&nbsp;t-test&nbsp;to&nbsp;compare&nbsp;total&nbsp;scores<br>t.test(score0,&nbsp;score1)'))),
@@ -98,29 +98,30 @@ uiDIF <-
                       h3("Delta plot"),
                       p('Delta plot (Angoff & Ford, 1973) compares the proportions of correct answers per
                         item in the two groups. It displays non-linear transformation of these proportions using
-                        quantiles of standard normal distributions (so called delta scores) for each item for the two
-                        genders in a scatterplot called diagonal plot or delta plot (see Figure). Item is under
-                        suspicion of DIF if the delta point considerably departs from the main axis of ellipsoid formed
+                        quantiles of standard normal distributions (so-called delta scores) for each item for the two
+                        genders in a scatterplot called diagonal plot or delta plot (see Figure below). Item is under
+                        suspicion of DIF if the delta point considerably departs from the main axis of the ellipsoid formed
                         by delta scores. '),
                       h4("Method specification"),
                       p("The ", strong("detection threshold"), " is either fixed to the value of 1.5 or it is based on bivariate
-                        normal approximation (Magis & Facon, 2012). The", strong("item purification"), "algorithms offered are as
-                        follows: When using the fixed threshold, this threshold (1.5) stays the same henceforward. When using the
-                        threshold based on normal approximation, one may choose from three approaches:
-                        IPP1 uses the threshold obtained after the first run in all following runs,
-                        IPP2 updates only the slope parameter of the threshold formula and thus lessens the impact of DIF items,
-                        IPP3 adjusts every single parameter and completely discards the effect of items flagged as DIF
-                        from the computation of the threshold (for further details see Magis & Facon, 2013). "),
+                        normal approximation (Magis & Facon, 2012). The", strong("item purification"), "algorithms offered when
+                        using the threshold based on normal approximationare are as follows: IPP1 uses the threshold obtained
+                        after the first run in all following runs, IPP2 updates only the slope parameter of the threshold formula
+                        and thus lessens the impact of DIF items, IPP3 adjusts every single parameter and completely discards the
+                        effect of items flagged as DIF from the computation of the threshold (for further details see Magis & Facon,
+                        2013). When using the fixed threshold and item purification, this threshold (1.5) stays the same henceforward
+                        during the purification algorithm."),
                       fluidRow(
                         column(1,
                                radioButtons(inputId = 'type_threshold',
                                             label = 'Threshold',
                                             choices = list("Fixed", "Normal")
                                )),
-                        column(2,
+                        column(2, br(),
                                checkboxInput(inputId = 'puri_DP',
                                              label = 'Item purification',
-                                             value = FALSE),
+                                             value = FALSE)),
+                        column(2,
                                conditionalPanel(
                                  condition = "input.puri_DP && input.type_threshold == 'Normal'",
                                  selectInput(inputId = "puri_DP_type",
@@ -134,24 +135,18 @@ uiDIF <-
                       h4("Delta plot"),
                       plotOutput('deltaplot'),
                       downloadButton("DP_deltaplot", label = "Download figure"),
+                      br(), br(),
                       h4("Summary table"),
-                      p("Summary table contains information about proportions of correct answers in the reference and focal group together
+                      p("Summary table contains information about proportions of correct answers in the reference and the focal group together
                         with their transformations into delta scores. It also includes distances of delta scores from the main axis of the
                         ellipsoid formed by delta scores. "),
                       strong(textOutput("dp_dif_items")),
                       br(),
-                      fluidRow(column(12, align = "center", tableOutput('coef_dp_table'))),
-                      fluidRow(
-                        column(2,
-                               downloadButton(outputId = "download_dp_table",
-                                              label = "Download table")
-                        ),
-                        column(6,
-                               div(HTML("Items detected as DIF are flagged with '***'")),
-                               textOutput("dp_thr"),
-                               textOutput("dp_axis")
-                        )
-                      ),
+                      fluidRow(column(12, align = "left", tableOutput('coef_dp_table'))),
+                      fluidRow(column(12, align = "left", uiOutput("note_dp"))),
+                      br(),
+                      fluidRow(column(2, downloadButton(outputId = "download_dp_table",
+                                                        label = "Download table"))),
                       br(),
                       h4("Purification process"),
                       textOutput("dp_puri_info"),
@@ -169,8 +164,8 @@ uiDIF <-
                         # Summary
                         tabPanel("Summary",
                                  h3("Mantel-Haenszel test"),
-                                 p("Mantel-Haenszel test is a DIF detection method based on contingency tables that are calculated for each
-                                    level of total score (Mantel & Haenszel, 1959)."),
+                                 p("Mantel-Haenszel test is a DIF detection method based on contingency tables which are calculated for each
+                                    level of the total score (Mantel & Haenszel, 1959)."),
                                  h4("Method specification"),
                                  p("Here you can select ", strong("correction method"), " for multiple comparison, and/or ",
                                    strong("item purification.")),
@@ -185,33 +180,24 @@ uiDIF <-
                                                                   "Hochberg" = "hochberg",
                                                                   "Hommel" = "hommel",
                                                                   "None" = "none"),
-                                                      selected = "none"),
+                                                      selected = "none")),
+                                   column(2, br(),
                                           checkboxInput(inputId = "DIF_MH_summary_purification",
                                                         label = "Item purification",
                                                         value = FALSE))
                                  ),
                                  h4("Summary table"),
                                  p("Summary table contains information about Mantel-Haenszel \\(\\chi^2\\) statistics, corresponding
-                                   \\(p\\)-values considering selected adjustement, and significant codes. Moreover, table offers values
-                                   of Mantel-Haenszel estimates of odds ratio \\(\\alpha_{\\mathrm{MH}}\\) which incorporate all levels of
-                                   total score and their transformations into D-DIF indices \\(\\Delta_{\\mathrm{MH}} =
+                                   \\(p\\)-values considering selected adjustement, and significance codes. Moreover, table offers values
+                                   of Mantel-Haenszel estimates of odds ratio \\(\\alpha_{\\mathrm{MH}}\\), which incorporate all levels of
+                                   total score, and their transformations into D-DIF indices \\(\\Delta_{\\mathrm{MH}} =
                                    -2.35 \\log(\\alpha_{\\mathrm{MH}})\\) to evaluate DIF effect size. "),
                                  strong(textOutput("mh_dif_items")),
                                  br(),
-                                 fluidRow(column(12, align = "center", tableOutput('coef_mh_table'))),
-                                 fluidRow(column(2,
-                                   downloadButton(outputId = "download_mh_table",
-                                                  label = "Download table")
-                                 ),
-                                 column(3,
-                                        div(HTML("Signif. codes: 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1"),
-                                            textOutput("mh_thr")
-                                        )),
-                                 column(7,
-                                        div(HTML("DIF effect sizes (ETS Delta scale):
-                                        <i>A</i> = negligible effect; <i>B</i> = moderate effect; <i>C</i> = large effect<br>
-                                        Effect size codes (for absolute values of 'MH delta'): 0 'A' 1.0 'B' 1.5 'C'")
-                                        ))),
+                                 fluidRow(column(12, align = "left", tableOutput('coef_mh_table'))),
+                                 fluidRow(column(12, align = "left", uiOutput("note_mh"))),
+                                 br(),
+                                 fluidRow(column(2, downloadButton(outputId = "download_mh_table", label = "Download table"))),
                                  br(),
                                  h4("Purification process"),
                                  textOutput("mh_puri_info"),
@@ -226,12 +212,12 @@ uiDIF <-
                         ),
                         tabPanel("Items",
                                  h3("Mantel-Haenszel test"),
-                                 p("Mantel-Haenszel test is a DIF detection method based on contingency tables that are calculated for each
+                                 p("Mantel-Haenszel test is a DIF detection method based on contingency tables which are calculated for each
                                     level of total score (Mantel & Haenszel, 1959)."),
                                  h4("Contingency tables and odds ratio calculation"),
                                  p("For selected", strong("item"), "and for selected", strong("level of total score"), "you can
                                    display contingency table and calculates odds ratio of answering item correctly. This can be compared
-                                   to Mantel-Haenszel estimate of odds ratio \\(\\alpha_{\\mathrm{MH}}\\) which incorporates all levels of total score.
+                                   to Mantel-Haenszel estimate of odds ratio \\(\\alpha_{\\mathrm{MH}}\\), which incorporates all levels of total score.
                                    Further, \\(\\alpha_{\\mathrm{MH}}\\) can be transformed into Mantel-Haenszel D-DIF index
                                    \\(\\Delta_{\\mathrm{MH}}\\) to evaluate DIF effect size. "),
                                  fluidRow(
@@ -270,8 +256,8 @@ uiDIF <-
                                    by testing for their significance."),
                                  h4("Method specification"),
                                  p("Here you can choose what", strong("type"), " of DIF to be tested. You can also select ", strong("correction method"), " for multiple comparison or", strong("item purification."),
-                                 " Finally, you may change ", strong("DIF matching variable."), " While matching on standardized total score is typical, upload of other DIF-matching variable is possible in Section ",
-                                 strong("Data. "), "Using a pre-test (standardized) total score allows for testing differential item functioning in change (DIF-C) to provide proofs of instructional sensitivity ",
+                                 " Finally, you may change the ", strong("DIF matching variable."), " While matching on the standardized total score is typical, upload of other DIF matching variable is possible in Section ",
+                                 strong("Data. "), "Using a pre-test (standardized) total score as DIF matching variable allows for testing differential item functioning in change (DIF-C) to provide proofs of instructional sensitivity ",
                                  a('(Martinkova et al., 2020), ',
                                    href = "https://doi.org/10.1016/j.learninstruc.2019.101286",
                                    target = "_blank"), "also see", code("Learning To Learn 9"), " toy dataset."),
@@ -310,7 +296,7 @@ uiDIF <-
                                  ("$$\\mathrm{P}\\left(Y_{ij} = 1 | X_i, G_i, b_0, b_1, b_2, b_3\\right) = \\frac{e^{b_0 + b_1 X_i + b_2 G_i + b_3 X_i G_i}}{1+e^{b_0 + b_1 X_i + b_2 G_i + b_3 X_i G_i}} $$"),
                                  h4("Summary table"),
                                  p("Summary table contains information about DIF test statistics \\(LR(\\chi^2)\\), corresponding \\(p\\)-values
-                                 considering selected adjustement, and significant codes. Moreover, it offers values of Nagelkerke's
+                                 considering selected adjustement, and significance codes. Moreover, it offers values of Nagelkerke's
                                  \\(R^2\\) with DIF effect size classifications. Table also provides estimated parameters for the best
                                  fitted model for each item. "),
                                  uiOutput("DIF_logistic_summary_NA_alert"),
@@ -339,8 +325,8 @@ uiDIF <-
                                    by testing for their significance."),
                                  h4("Method specification"),
                                  p("Here you can choose what", strong("type"), " of DIF to be tested. You can also select ", strong("correction method"), " for multiple comparison or", strong("item purification."),
-                                   " Finally, you may change ", strong("DIF matching variable."), " While matching on standardized total score is typical, upload of other DIF-matching variable is possible in Section ",
-                                   strong("Data. "), "Using a pre-test (standardized) total score allows for testing differential item functioning in change (DIF-C) to provide proofs of instructional sensitivity ",
+                                   " Finally, you may change the ", strong("DIF matching variable."), " While matching on the standardized total score is typical, upload of other DIF matching variable is possible in Section ",
+                                   strong("Data. "), "Using a pre-test (standardized) total score as DIF matching criterion allows for testing differential item functioning in change (DIF-C) to provide proofs of instructional sensitivity ",
                                    a('(Martinkova et al., 2020), ',
                                      href = "https://doi.org/10.1016/j.learninstruc.2019.101286",
                                      target = "_blank"), "also see", code("Learning To Learn 9"), " toy dataset. For selected", strong("item"),
@@ -413,7 +399,7 @@ uiDIF <-
                                      target = "_blank"),
                                    'or upper asymptote lower than one - inattention \\(d\\). Similarly to logistic
                                    regression, its extensions also provide detection of uniform and non-uniform DIF by
-                                   letting difficulty parameter \\(b\\) (uniform) and discrimination parameter \\(a\\)
+                                   letting the difficulty parameter \\(b\\) (uniform) and the discrimination parameter \\(a\\)
                                    (non-uniform) differ for groups and by testing for difference in their
                                    values. Moreover, these extensions allow for testing differences in pseudo-guessing and
                                    inattention parameters and they can be seen as proxies of 3PL and 4PL IRT models for
@@ -424,8 +410,8 @@ uiDIF <-
                                     With ', strong('type'), 'you can specify the type of DIF to be tested by choosing the parameters in which difference between
                                     groups should be tested. You can also select', strong("correction method"), " for multiple comparison or",
                                     strong("item purification. ")),
-                                 p("Finally, you may change ", strong("DIF matching variable."), " While matching on standardized total score is typical, upload
-                                   of other DIF-matching variable is possible in section ", strong("Data. "), "Using a pre-test (standardized) total score allows
+                                 p("Finally, you may change the ", strong("DIF matching variable."), " While matching on standardized total score is typical, upload
+                                   of other DIF matching variable is possible in section ", strong("Data. "), "Using a pre-test (standardized) total score allows
                                    for testing differential item functioning in change (DIF-C) to provide proofs of instructional sensitivity ",
                                    a('(Martinkova et al., 2020),',
                                      href = "https://doi.org/10.1016/j.learninstruc.2019.101286",
@@ -480,11 +466,11 @@ uiDIF <-
                                  fluidRow(column(12, align = "center", uiOutput("DIF_NLR_equation_print"))),
                                  h4("Summary table"),
                                  p("Summary table contains information about DIF test statistic \\(LR(\\chi^2)\\), corresponding \\(p\\)-values
-                                   considering selected adjustement, and significant codes. Table also provides estimated parameters for
-                                   the best fitted model for each the item. Note that \\(a_{jG_i}\\) (and also other parameters) from the equation
+                                   considering selected adjustement, and significance codes. Table also provides estimated parameters for
+                                   the best fitted model for each item. Note that \\(a_{jG_i}\\) (and also other parameters) from the equation
                                    above consists of parameter for the reference group and parameter for the difference between focal and reference
-                                   groups, i.e., \\(a_{jG_i} = a_{j} + a_{jDif}G_{i}\\), where \\(G_{i} = 0\\) for reference group and \\(G_{i} = 1\\)
-                                   for focal group, as stated in table below. "),
+                                   groups, i.e., \\(a_{jG_i} = a_{j} + a_{jDif}G_{i}\\), where \\(G_{i} = 0\\) for the reference group and \\(G_{i} = 1\\)
+                                   for the focal group, as stated in the table below. "),
                                  uiOutput("DIF_NLR_na_alert"),
                                  strong(textOutput("nlr_dif_items")),
                                  br(),
@@ -516,7 +502,7 @@ uiDIF <-
                                      target = "_blank"),
                                    'or upper asymptote lower than one - inattention \\(d\\). Similarly to logistic
                                    regression, its extensions also provide detection of uniform and non-uniform DIF by
-                                   letting difficulty parameter \\(b\\) (uniform) and discrimination parameter \\(a\\)
+                                   letting the difficulty parameter \\(b\\) (uniform) and the discrimination parameter \\(a\\)
                                    (non-uniform) differ for groups and by testing for difference in their
                                    values. Moreover, these extensions allow for testing differences in pseudo-guessing and
                                    inattention parameters and they can be seen as proxies of 3PL and 4PL IRT models for
@@ -527,8 +513,8 @@ uiDIF <-
                                     With ', strong('type'), 'you can specify the type of DIF to be tested by choosing the parameters in which difference between
                                     groups should be tested. You can also select', strong("correction method"), " for multiple comparison or",
                                    strong("item purification. ")),
-                                 p("Finally, you may change ", strong("DIF matching variable."), " While matching on standardized total score is typical, upload
-                                   of other DIF-matching variable is possible in section ", strong("Data. "), "Using a pre-test (standardized) total score allows
+                                 p("Finally, you may change the ", strong("DIF matching variable."), " While matching on standardized total score is typical, upload
+                                   of other DIF matching variable is possible in section ", strong("Data. "), "Using a pre-test (standardized) total score allows
                                    for testing differential item functioning in change (DIF-C) to provide proofs of instructional sensitivity ",
                                    a('(Martinkova et al., 2020),',
                                      href = "https://doi.org/10.1016/j.learninstruc.2019.101286",
@@ -598,8 +584,8 @@ uiDIF <-
                                  h4("Table of parameters"),
                                  p("Table summarizes estimated item parameters together with standard errors. Note that \\(a_{jG_i}\\) (and also other
                                    parameters) from the equation above consists of parameter for the reference group and parameter for the difference between
-                                   focal and reference groups, i.e., \\(a_{jG_i} = a_{j} + a_{jDIF}G_{i}\\), where \\(G_{i} = 0\\) for reference group and
-                                   \\(G_{i} = 1\\) for focal group, as stated in table below. "),
+                                   focal and reference groups, i.e., \\(a_{jG_i} = a_{j} + a_{jDif}G_{i}\\), where \\(G_{i} = 0\\) for the reference group and
+                                   \\(G_{i} = 1\\) for the focal group, as stated in the table below. "),
                                  fluidRow(column(12, align = "center", tableOutput('tab_coef_DIF_NLR'))),
                                  br(),
                                  h4("Selected R code"),
@@ -646,7 +632,7 @@ uiDIF <-
                                  fluidRow(column(12, align = "center", uiOutput("DIF_Lord_equation_summary"))),
                                  h4("Summary table"),
                                  p("Summary table contains information about Lord's \\(\\chi^2\\)-statistics, corresponding \\(p\\)-values
-                                   considering selected adjustement, and significant codes. Table also provides estimated parameters for
+                                   considering selected adjustement, and significance codes. Table also provides estimated parameters for
                                    both groups. Note that item parameters might slightly differ even for non-DIF items as two seperate models are
                                    fitted, however this difference is non-significant. "),
                                  uiOutput("DIF_IRT_LORD_na_alert"),
@@ -764,11 +750,26 @@ uiDIF <-
                                  fluidRow(column(12, align = "center", uiOutput("DIF_Raju_equation_summary"))),
                                  h4("Summary table"),
                                  p("Summary table contains information about Raju's \\(Z\\)-statistics, corresponding \\(p\\)-values
-                                   considering selected adjustement, and significant codes. Table also provides estimated parameters for
+                                   considering selected adjustement, and significance codes. Table also provides estimated parameters for
                                    both groups. Note that item parameters might slightly differ even for non-DIF items as two seperate models are
                                    fitted, however this difference is non-significant. "),
+                                 # verbatimTextOutput('print_DIF_IRT_Raju'),
                                  uiOutput("DIF_IRT_Raju_na_alert"),
-                                 verbatimTextOutput('print_DIF_IRT_Raju'),
+                                 strong(textOutput("raju_dif_items")),
+                                 br(),
+                                 tags$head(tags$style("#coef_raju_dif  {white-space: nowrap;}")),
+                                 fluidRow(column(12, align = "left", tableOutput('coef_raju_dif'))),
+                                 fluidRow(column(12, align = "left", uiOutput("note_raju"))),
+                                 br(),
+                                 fluidRow(column(2, downloadButton(outputId = "download_raju_dif", label = "Download table"))),
+                                 br(),
+                                 h4("Purification process"),
+                                 textOutput("dif_raju_puri_info"),
+                                 br(),
+                                 tags$head(tags$style("#dif_raju_puri_table  {white-space: nowrap;}")),
+                                 fluidRow(column(12, align = "center", tableOutput("dif_raju_puri_table"))),
+                                 conditionalPanel("input.puri_Raju == 1",
+                                                  downloadButton(outputId = "download_raju_dif_puri", label = "Download table"), br(), br()),
                                  br(),
                                  h4("Selected R code"),
                                  div(code(HTML('library(difR)<br>library(ltm)<br><br>#&nbsp;Loading&nbsp;data<br>data(GMAT,&nbsp;package&nbsp;=&nbsp;\"difNLR\")<br>Data&nbsp;<-&nbsp;GMAT[,&nbsp;1:20]<br>group&nbsp;<-&nbsp;GMAT[,&nbsp;\"group\"]<br><br>#&nbsp;1PL&nbsp;IRT&nbsp;MODEL<br>(fit1PL&nbsp;<-&nbsp;difRaju(Data&nbsp;=&nbsp;Data,&nbsp;group&nbsp;=&nbsp;group,&nbsp;focal.name&nbsp;=&nbsp;1,&nbsp;model&nbsp;=&nbsp;\"1PL\",&nbsp;p.adjust.method&nbsp;=&nbsp;\"none\",&nbsp;purify&nbsp;=&nbsp;FALSE))<br><br>#&nbsp;2PL&nbsp;IRT&nbsp;MODEL<br>(fit2PL&nbsp;<-&nbsp;difRaju(Data&nbsp;=&nbsp;Data,&nbsp;group&nbsp;=&nbsp;group,&nbsp;focal.name&nbsp;=&nbsp;1,&nbsp;model&nbsp;=&nbsp;\"2PL\",&nbsp;p.adjust.method&nbsp;=&nbsp;\"none\",&nbsp;purify&nbsp;=&nbsp;FALSE))<br><br>#&nbsp;3PL&nbsp;IRT&nbsp;MODEL&nbsp;with&nbsp;the&nbsp;same&nbsp;guessing&nbsp;for&nbsp;groups<br>guess&nbsp;<-&nbsp;itemParEst(Data,&nbsp;model&nbsp;=&nbsp;\"3PL\")[,&nbsp;3]<br>(fit3PL&nbsp;<-&nbsp;difRaju(Data&nbsp;=&nbsp;Data,&nbsp;group&nbsp;=&nbsp;group,&nbsp;focal.name&nbsp;=&nbsp;1,&nbsp;model&nbsp;=&nbsp;\"3PL\",&nbsp;c&nbsp;=&nbsp;guess,&nbsp;p.adjust.method&nbsp;=&nbsp;\"none\",&nbsp;purify&nbsp;=&nbsp;FALSE))'))),
@@ -857,15 +858,31 @@ uiDIF <-
                                                               "Hochberg" = "hochberg",
                                                               "Hommel" = "hommel",
                                                               "None" = "none"),
-                                                  selected = "none"),
+                                                  selected = "none")),
+                               column(2, br(),
                                       checkboxInput(inputId = "DIF_SIBTEST_purification",
                                                     label = "Item purification",
                                                     value = FALSE))),
                       h4("Summary table"),
-                      p("Summary table contains estimates of \\(\\beta\\) together with standard errors, corresponding \\(\\chi^2\\)-statistics
-                        with \\(p\\)-values considering selected adjustement, and significant codes. "),
+                      p("Summary table contains estimates of \\(\\beta\\) together with standard errors (when testing uniform DIF), corresponding \\(\\chi^2\\)-statistics
+                        with \\(p\\)-values considering selected adjustement, and significance codes. "),
                       uiOutput("DIF_SIBTEST_NA_alert"),
-                      verbatimTextOutput("DIF_SIBTEST_print"),
+                      # verbatimTextOutput("DIF_SIBTEST_print"),
+                      strong(textOutput("sibtest_dif_items")),
+                      br(),
+                      tags$head(tags$style("#coef_sibtest_dif  {white-space: nowrap;}")),
+                      fluidRow(column(12, align = "left", tableOutput('coef_sibtest_dif'))),
+                      fluidRow(column(12, align = "left", uiOutput("note_sibtest"))),
+                      br(),
+                      fluidRow(column(2, downloadButton(outputId = "download_sibtest_dif", label = "Download table"))),
+                      br(),
+                      h4("Purification process"),
+                      textOutput("dif_sibtest_puri_info"),
+                      br(),
+                      tags$head(tags$style("#dif_sibtest_puri_table  {white-space: nowrap;}")),
+                      fluidRow(column(12, align = "center", tableOutput("dif_sibtest_puri_table"))),
+                      conditionalPanel("input.DIF_SIBTEST_purification == 1",
+                                       downloadButton(outputId = "download_sibtest_dif_puri", label = "Download table"), br(), br()),
                       br(),
                       h4("Selected code"),
                       div(code(HTML('library(difR)<br><br>#&nbsp;Loading&nbsp;data<br>data(GMAT,&nbsp;package&nbsp;=&nbsp;\"difNLR\")<br>Data&nbsp;<-&nbsp;GMAT[,&nbsp;1:20]<br>group&nbsp;<-&nbsp;GMAT[,&nbsp;\"group\"]<br><br>#&nbsp;SIBTEST&nbsp;(uniform&nbsp;DIF)<br>(fit_udif&nbsp;<-&nbsp;difSIBTEST(Data&nbsp;=&nbsp;Data,&nbsp;group&nbsp;=&nbsp;group,&nbsp;focal.name&nbsp;=&nbsp;1,&nbsp;type&nbsp;=&nbsp;\"udif\",&nbsp;p.adjust.method&nbsp;=&nbsp;\"none\",&nbsp;purify&nbsp;=&nbsp;FALSE))<br><br>#&nbsp;Crossing-SIBTEST&nbsp;(non-uniform&nbsp;DIF)<br>(fit_nudif&nbsp;<-&nbsp;difSIBTEST(Data&nbsp;=&nbsp;Data,&nbsp;group&nbsp;=&nbsp;group,&nbsp;focal.name&nbsp;=&nbsp;1,&nbsp;type&nbsp;=&nbsp;\"nudif\",&nbsp;p.adjust.method&nbsp;=&nbsp;\"none\",&nbsp;purify&nbsp;=&nbsp;FALSE))'))),
@@ -887,17 +904,65 @@ uiDIF <-
                         # tags$li(strong('DDF'), 'is differential distractor functioning with multinomial log-linear regression model. ')
                       ),
                       h3("Table with method comparison"),
-                      p("Settings for individual methods (DIF matching criterion, type of DIF to be tested, correction method,
-                        item purification) are taken from subsection pages of given methods. Make sure your settings are unified. The last column shows how
-                        many methods out of 7 detect certain item as DIF. The last row shows how many items are detected as DIF by certain method. "),
-                      tags$div(tags$style("#same_puri {color:red; }")),
-                      htmlOutput("same_puri"),
+                      p("Settings for individual methods (DIF matching criterion, type of DIF to be tested,
+                        correction method, item purification) are taken from subsection pages of given methods.
+                        In case your settings are not unified, you can set some of them below. Note that changing
+                        the options globaly can be computationaly demanding. This especially applies for purification request.
+                        To see the complete setting of all analyses, please refer to the note below the table.
+                        The last column shows how many methods detect certain item as DIF.
+                        The last row shows how many items are detected as DIF by a certain method. "),
                       tags$div(tags$style("#same_dmv {color:red; }")),
                       htmlOutput("same_dmv"),
-                      tags$div(tags$style("#same_corr {color:red; }")),
+                      tags$div(tags$style("#same_puri {color:orange; }")),
+                      htmlOutput("same_puri"),
+                      tags$div(tags$style("#same_corr {color:orange; }")),
                       htmlOutput("same_corr"),
-                      conditionalPanel("output.unify_methods_condition == 1", actionButton("unify_methods", "Unify options")),
-                      fluidRow(column(12, align = "center", tableOutput("method_comparison_table"))),
+                      conditionalPanel("output.unify_methods_condition == 1", br()),
+                      fluidRow(
+                        column(2,
+                               selectInput(
+                                 "mc_dmv",
+                                 "DIF matching variable",
+                                 c(
+                                   "as is" = "asis",
+                                   "(standardized) total scores" = "score"
+                                 ),
+                                 "asis"
+                               )),
+                        column(2,
+                               selectInput(
+                                 "mc_puri",
+                                 "Item purification",
+                                 c(
+                                   "as is" = "asis",
+                                   "yes" = "purify",
+                                   "no" = "dontpurify"
+                                 ),
+                                 "asis"
+                               )),
+                        column(3,
+                               selectInput(
+                                 "mc_corr",
+                                 "Correction method",
+                                 c(
+                                   "as is" = "asis",
+                                   "Benjamini-Hochberg" = "BH",
+                                   "Benjamini-Yekutieli" = "BY",
+                                   "Bonferroni" = "bonferroni",
+                                   "Holm" = "holm",
+                                   "Hochberg" = "hochberg",
+                                   "Hommel" = "hommel",
+                                   "none" = "none"
+                                 ),
+                                 "asis"
+                               )),
+                        column(1, br(),
+                               actionButton("unify_button", "Apply setting")
+                               )
+                      ),
+                      # br(),
+                      fluidRow(column(12, align = "left", tableOutput("method_comparison_table"))),
+                      fluidRow((column(12, align = "left", uiOutput("mc_settings")))),
                       br(),
                       br()
              ),
@@ -958,7 +1023,7 @@ uiDIF <-
                                  fluidRow(column(12, align = "center", uiOutput("DIF_cum_equation2_summary"))),
                                  h4("Summary table"),
                                  p("Summary table contains information about \\(\\chi^2\\)-statistics, corresponding \\(p\\)-values
-                                 considering selected adjustement, and significant codes. Table also provides estimated parameters for the best
+                                 considering selected adjustement, and significance codes. Table also provides estimated parameters for the best
                                  fitted model for each item. "),
                                  uiOutput('DIF_cum_NA_warning_summary'),
                                  verbatimTextOutput('DIF_cum_print'),
@@ -1090,7 +1155,7 @@ uiDIF <-
                                  fluidRow(column(12, align = "center", uiOutput("DIF_adj_equation_summary"))),
                                  h4("Summary table"),
                                  p("Summary table contains information about \\(\\chi^2\\)-statistics, corresponding \\(p\\)-values
-                                 considering selected adjustement, and significant codes. Table also provides estimated parameters for the best
+                                 considering selected adjustement, and significance codes. Table also provides estimated parameters for the best
                                  fitted model for each item. "),
                                  uiOutput('DIF_adj_NA_warning_summary'),
                                  verbatimTextOutput('DIF_adj_print'),
@@ -1222,7 +1287,7 @@ uiDIF <-
                                   {1 + \\sum_l e^{\\left( b_{il0} + b_{il1} Z_p + b_{il2} G_p + b_{il3} Z_p:G_p\\right)}}$$'),
                                  h4("Summary table"),
                                  p("Summary table contains information about \\(\\chi^2\\)-statistics, corresponding \\(p\\)-values
-                                 considering selected adjustement, and significant codes. Table also provides estimated parameters for the best
+                                 considering selected adjustement, and significance codes. Table also provides estimated parameters for the best
                                  fitted model for each item. "),
                                  uiOutput("DDF_multi_NA_warning_summary"),
                                  verbatimTextOutput('DDF_multi_print'),

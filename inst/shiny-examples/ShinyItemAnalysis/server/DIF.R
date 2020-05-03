@@ -114,7 +114,7 @@ output$DIF_total_hist <- renderPlotly ({
     input$DIF_total_matching,
            "score" =  "Score",
            # "zscore" = "Standardized score",
-           "uploaded" = "Uploaded matchhing"
+           "uploaded" = "Uploaded matching"
            # "zuploaded" = "Standardized uploaded matchhing"
     )
 
@@ -180,14 +180,16 @@ output$DIF_total_ttest <- renderTable ({
 # * DELTA PLOT ######
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-deltaGpurn <- reactive ({
+deltaGpurn <- reactive({
   data <- data.table(binary(), group = group())
   switch(input$type_threshold,
          "Fixed" = deltaPlot(data, group = "group",
                              focal.name = 1,
                              thr = 1.5,
-                             purify = input$puri_DP,
-                             purType = input$puri_DP_type),
+                             purify = input$puri_DP
+                             # purType = input$puri_DP_type
+                             # (only 1IPP is used, so no need to pass this arg)
+                             ),
          "Normal"= deltaPlot(data, group = "group",
                              focal.name = 1,
                              thr = "norm",
@@ -212,8 +214,9 @@ deltaGpurn_report <- reactive({
          "Fixed" = deltaPlot(data, group = "group",
                              focal.name = 1,
                              thr = 1.5,
-                             purify = purify_report,
-                             purType = purType_report),
+                             purify = purify_report
+                             # purType = purType_report
+                             ),
          "Normal"= deltaPlot(data, group = "group",
                              focal.name = 1,
                              thr = "norm",
@@ -370,27 +373,6 @@ output$dp_dif_items <- renderPrint({
   HTML(txt)
 })
 
-# ** Axis parameters ####
-output$dp_axis <- renderPrint({
-  axis <- round(deltaGpurn()$axis.par, 2)
-  last <- nrow(axis)
-  if (is.null(last)) {
-    a <- axis[1]
-    b <- axis[2]
-  } else {
-    a <- axis[last, 1]
-    b <- axis[last, 2]
-  }
-
-  cat("Parameters of the major axis (last iteration): a = ", a, ", b = ", b)
-})
-
-# ** Threshold used
-output$dp_thr <- renderPrint({
-  thr <- deltaGpurn()$thr
-  cat("Detection threshold (last iteration): ", round(thr[length(thr)], 3))
-})
-
 # ** Purification table ######
 dp_puri_table <- reactive({
   model <- deltaGpurn()
@@ -423,28 +405,86 @@ output$dp_puri_info <- renderPrint({
   }
 })
 
+# Note setup
+note_dp <- reactive({
+  res <- NULL
+
+  model <- deltaGpurn()
+  thr <- model$thr
+  thr <- thr[length(thr)]
+
+  axis <- round(model$axis.par, 2)
+  last <- nrow(axis)
+  if (is.null(last)) {
+    a <- axis[1]
+    b <- axis[2]
+  } else {
+    a <- axis[last, 1]
+    b <- axis[last, 2]
+  }
+
+  res$axes <- paste0("Parameters of the major axis (last iteration): a = ", a, ", b = ", b)
+  res$puri <- paste("Item purification:", ifelse("purType" %in% names(model), model$purType, "unutilized"))
+
+  res$thr <-
+    paste0(
+      "Detection threshold (last iteration): ",
+      round(thr, 3),
+      ifelse(thr == 1.5, " (fixed)", " (normal aproximation)")
+    )
+
+  res
+})
+
+output$note_dp <- renderUI({
+  withMathJax()
+  HTML(
+    paste(
+      "Notes:",
+      note_dp()$puri,
+      note_dp()$axes,
+      note_dp()$thr,
+      "Items detected as DIF are flagged with '***'",
+      sep = "</br>"
+    )
+  )
+})
+
 # ** Download tables ######
 output$download_dp_table <- downloadHandler(
   filename = function() {
-    paste("DIF_DeltaPlot_statistics",".csv",sep = "")
+    paste("DIF_DP_statistics",".csv",sep = "")
   },
   content = function(file) {
-    data <- dp_table()[,-6]
-    colnames(data) <- c("Ref. prop. correct", "Foc. prop. correct",
-                        "Delta (Ref.)", "Delta (Foc.)",
-                        "Distance")
+    data <- dp_table()
+    colnames(data) <- c("Ref. prop. correct",
+                        "Foc. prop. correct",
+                        "Delta (Ref.)",
+                        "Delta (Foc.)",
+                        "Distance",
+                        "")
+
     write.csv(data, file)
+    write(paste(
+      "Note:",
+      note_dp()$puri,
+      note_dp()$axes,
+      note_dp()$thr,
+      "Items detected as DIF are flagged with '***'",
+      sep = "\n"), file, append = T)
   }
 )
 output$download_dp_puri <- downloadHandler(
   filename = function() {
-    paste0("DIF_deltaPlot_purification", ".csv")
+    paste0("DIF_DP_purification", ".csv")
   },
   content = function(file) {
     data <- dp_puri_table()
     write.csv(data, file)
   }
 )
+
+########################################
 
 # Central DIF matching variable (DMV) presence control ######
 dif_present <-
@@ -520,21 +560,39 @@ mh_table <- reactive({
   effsize <- symnum(abs(deltaMH), c(0, 1, 1.5, Inf), symbols = c("A", "B", "C"))
   blank <- character(length(res$alphaMH))
 
-  if (res$p.adjust.method == "none") {
-
-    symb <- symnum(res$p.value,
+  pval <- if (res$p.adjust.method == "none") {
+    round(res$p.value, 2)
+  } else {
+    round(res$adjusted.p, 2)
+  }
+    symb <- symnum(pval,
                    c(0, 0.001, 0.01, 0.05, 0.1, 1),
                    symbols = c("***", "**", "*", ".", ""))
-    tab <- data.frame(round(res$MH, 2), round(res$p.value, 2), symb, blank, res$alphaMH, deltaMH, effsize)
-    colnames(tab) <- c("MH (%%mathit{\\chi^2}%%)", "%%mathit{p}%%-value", "", "", "%%mathit{\\alpha}_{\\mathrm{MH}}%%", "%%mathit{\\Delta}_{\\mathrm{MH}}%%", "")
-  } else {
-    symb <- symnum(
-      round(res$adjusted.p, 4),
-      c(0, 0.001, 0.01, 0.05, 0.1, 1),
-      symbols = c("***", "**", "*", ".", ""))
-    tab <- data.frame(round(res$MH, 2), round(res$adjusted.p, 2), symb,  blank, res$alphaMH, deltaMH, effsize)
-    colnames(tab) <- c("MH (%%mathit{\\chi^2}%%)", "Adj. %%mathit{p}%%-value", "","", "%%mathit{\\alpha}_{\\mathrm{MH}}%%", "%%mathit{\\Delta}_{\\mathrm{MH}}%%", "")
-  }
+
+    tab <-
+      data.frame(round(res$MH, 2),
+                 pval,
+                 symb,
+                 blank,
+                 res$alphaMH,
+                 deltaMH,
+                 effsize)
+
+    colnames(tab) <-
+      c(
+        "MH (%%mathit{\\chi^2}%%)",
+        ifelse(
+          res$p.adjust.method == "none",
+          "%%mathit{p}%%-value",
+          "adj. %%mathit{p}%%-value"
+        ),
+        "",
+        "",
+        "%%mathit{\\alpha}_{\\mathrm{MH}}%%",
+        "%%mathit{\\Delta}_{\\mathrm{MH}}%%",
+        ""
+      )
+
   rownames(tab) <- item_names()
 
   tab
@@ -551,12 +609,6 @@ output$mh_dif_items <- renderPrint({
     txt <- paste0("Items detected as DIF items: ", paste(item_names()[DIFitems], collapse = ", "))
   }
   HTML(txt)
-})
-
-# ** Threshold used
-output$mh_thr <- renderPrint({
-  thr <- DIF_MH_model()$thr
-  cat("Detection threshold: ", round(thr[length(thr)], 3))
 })
 
 # ** Purification table ######
@@ -591,20 +643,73 @@ output$mh_puri_info <- renderPrint({
   }
 })
 
+# Note setup
+note_mh <- reactive({
+  res <- NULL
+
+  model <- DIF_MH_model()
+  thr <- DIF_MH_model()$thr
+
+  res$p_adj <- paste("P-value correction method:", switch(
+    model$p.adjust.method,
+    "BH" = "Benjamini-Hochberg",
+    "BY" = "Benjamini-Yekutieli",
+    "bonferroni" = "Bonferroni",
+    "holm" = "Holm",
+    "hochberg" = "Hochberg",
+    "hommel" = "Hommel",
+    "none" = "none"
+  ))
+
+  res$puri <- paste("Item purification:", ifelse(model$purification == T, "used", "unutilized"))
+
+  res$thr_rounded <- paste("Detection threshold:", round(thr[length(thr)], 3))
+
+  res
+})
+
+output$note_mh <- renderUI({
+  withMathJax()
+
+  HTML(
+    paste(
+      "Notes:",
+      note_mh()$p_adj,
+      note_mh()$puri,
+      note_mh()$thr_rounded,
+      "Signif. codes: 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1",
+      "DIF effect sizes (ETS Delta scale):
+      <i>A</i> = negligible effect; <i>B</i> = moderate effect; <i>C</i> = large effect<br>
+      Effect size codes (for absolute values of 'MH delta'): 0 'A' 1.0 'B' 1.5 'C'",
+      sep = "</br>"
+    )
+  )
+})
+
 # ** Download tables ######
 output$download_mh_table <- downloadHandler(
   filename = function() {
     paste("DIF_MH_statistics",".csv",sep = "")
   },
   content = function(file) {
-    if (ncol(mh_table()) == 8) { # in case of correction requested
-      data <- mh_table()[, c(1:3, 6, 7, 8)]
-      colnames(data) <- c("MH (chi-square)", "p-value", "Adj. p-value", "MH alpha", "MH delta", "Effect size")
+    data <- mh_table()
+    if ("adj. %%mathit{p}%%-value" %in% colnames(data)) {
+      colnames(data) <- c("MH (chi-square)", "adj. p-value", "Adj. p-value", "MH alpha", "MH delta", "Effect size", "")
     } else {
-      data <- mh_table()[, c(1:2, 5, 6, 7)]
-      colnames(data) <- c("MH (chi-square)", "p-value", "MH alpha", "MH delta", "Effect size")
+      colnames(data) <- c("MH (chi-square)", "p-value", "Adj. p-value", "MH alpha", "MH delta", "Effect size", "")
     }
-    write.csv(data, file)
+
+    write.csv(data[, -4], file)
+    write(paste(
+      "Note:",
+      note_mh()$p_adj,
+      note_mh()$puri,
+      note_mh()$thr_rounded,
+      "Signif. codes: 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1",
+      "DIF effect sizes (ETS Delta scale):
+      A = negligible effect; B = moderate effect; C = large effect",
+      "Effect size codes (for absolute values of 'MH delta'): 0 'A' 1.0 'B' 1.5 'C'",
+      sep = "\n"), file, append = T)
   }
 )
 output$download_mh_puri <- downloadHandler(
@@ -908,9 +1013,14 @@ coef_logistic_dif <- reactive({
   model <- DIF_logistic_model()
 
   stat <- model$Logistik
-  pval <- model$p.value
-  adj_pval <- model$adjusted.p
-  pval_symb <- symnum(model$adjusted.p,
+
+  pval <- if (model$p.adjust.method == "none") {
+    model$p.value
+  } else {
+    model$adjusted.p
+  }
+
+  pval_symb <- symnum(pval,
                       c(0, 0.001, 0.01, 0.05, 0.1, 1),
                       symbols = c("***", "**", "*", ".", ""))
   blank <- character(length(model$names))
@@ -920,51 +1030,53 @@ coef_logistic_dif <- reactive({
   jg <- symnum(r2, c(0, 0.035, 0.07, 1),
                symbols = c("A", "B", "C"))
 
-if (identical(model$p.value, model$adjusted.p)) {
-    tab <- data.frame(
-      formatC(stat, format = "f", digits = 3), # round is ignored by renderTable, but formatC locks decimals in downloadTable on the other hand...
-      formatC(adj_pval, format = "f", digits = 3),
-      pval_symb,
-      blank,
-      formatC(r2, format = "f", digits = 3),
-      zt,
-      jg,
-      blank,
-      model$logitPar[, 1],
-      model$logitSe[, 1],
-      model$logitPar[, 2],
-      model$logitSe[, 2],
-      model$logitPar[, 3],
-      model$logitSe[, 3],
-      model$logitPar[, 4],
-      model$logitSe[, 4]
+  tab <- data.frame(
+    formatC(stat, format = "f", digits = 3),
+    # round is ignored by renderTable, but formatC locks decimals in downloadTable on the other hand...
+    formatC(pval, format = "f", digits = 3),
+    pval_symb,
+    blank,
+    formatC(r2, format = "f", digits = 3),
+    zt,
+    jg,
+    blank,
+    model$logitPar[, 1],
+    model$logitSe[, 1],
+    model$logitPar[, 2],
+    model$logitSe[, 2],
+    model$logitPar[, 3],
+    model$logitSe[, 3],
+    model$logitPar[, 4],
+    model$logitSe[, 4]
+  )
+
+  colnames(tab) <-
+    c(
+      "LR (%%mathit{\\chi^2}%%)",
+      "%%mathit{p}%%-value",
+      "",
+      "",
+      "%%mathit{R^2}%%",
+      "ZT",
+      "JG",
+      "",
+      "%%mathit{b_0}%%",
+      "SE(%%mathit{b_0}%%)",
+      "%%mathit{b_1}%%",
+      "SE(%%mathit{b_1}%%)",
+      "%%mathit{b_2}%%",
+      "SE(%%mathit{b_2}%%)",
+      "%%mathit{b_3}%%",
+      "SE(%%mathit{b_3}%%)"
     )
-    colnames(tab) <- c("LR (%%mathit{\\chi^2}%%)", "%%mathit{p}%%-value", "", "", "%%mathit{R^2}%%", "ZT", "JG", "",
-                       "%%mathit{b_0}%%", "SE(%%mathit{b_0}%%)", "%%mathit{b_1}%%", "SE(%%mathit{b_1}%%)",
-                       "%%mathit{b_2}%%", "SE(%%mathit{b_2}%%)", "%%mathit{b_3}%%", "SE(%%mathit{b_3}%%)")
-  } else {
-   tab <- data.frame(
-      formatC(stat, format = "f", digits = 3),
-      formatC(adj_pval, format = "f", digits = 3),
-      pval_symb,
-      blank,
-      formatC(r2, format = "f", digits = 3),
-      zt,
-      jg,
-      blank,
-      model$logitPar[, 1],
-      model$logitSe[, 1],
-      model$logitPar[, 2],
-      model$logitSe[, 2],
-      model$logitPar[, 3],
-      model$logitSe[, 3],
-      model$logitPar[, 4],
-      model$logitSe[, 4]
-    )
-    colnames(tab) <- c("LR (%%mathit{\\chi^2}%%)", "adj. %%mathit{p}%%-value", "", "", "%%mathit{R^2}%%", "ZT", "JG", "",
-                       "%%mathit{b_0}%%", "SE(%%mathit{b_0}%%)", "%%mathit{b_1}%%", "SE(%%mathit{b_1}%%)",
-                       "%%mathit{b_2}%%", "SE(%%mathit{b_2}%%)", "%%mathit{b_3}%%", "SE(%%mathit{b_3}%%)")
+
+  if (model$p.adjust.method != "none") {
+    colnames(tab) <-
+      gsub("%%mathit\\{p\\}%%-value",
+           "adj. %%mathit{p}%%-value",
+           colnames(tab))
   }
+
   rownames(tab) <- item_names()
 
   tab
@@ -1239,8 +1351,105 @@ report_DIF_logistic_plot <- reactive({
 # * NLR DIF ######
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-# update selectInput & disable purification if DMV present
+# ** UPDATING INPUTS ######
+DIF_nlr <- reactiveValues(model = NULL,
+                          type = NULL,
+                          correction = NULL,
+                          purification = NULL)
 
+# ** Updating model ######
+observeEvent(input$DIF_NLR_model_print, {
+  DIF_nlr$model <- input$DIF_NLR_model_print
+})
+observeEvent(input$DIF_NLR_model_plot, {
+  DIF_nlr$model <- input$DIF_NLR_model_plot
+})
+observeEvent(DIF_nlr$model, {
+  if (DIF_nlr$model != input$DIF_NLR_model_print) {
+    updateCheckboxGroupInput(session = session,
+                             inputId = "DIF_NLR_model_print",
+                             selected = DIF_nlr$model)
+  }
+  if (DIF_nlr$model != input$DIF_NLR_model_plot) {
+    updateCheckboxGroupInput(session = session,
+                             inputId = "DIF_NLR_model_plot",
+                             selected = DIF_nlr$model)
+  }
+})
+
+# ** Updating type ######
+observeEvent(input$DIF_NLR_type_print, {
+  DIF_nlr$type <- input$DIF_NLR_type_print
+})
+observeEvent(input$DIF_NLR_type_plot, {
+  DIF_nlr$type <- input$DIF_NLR_type_plot
+})
+observeEvent(DIF_nlr$type, {
+  if (length(DIF_nlr$type) != length(input$DIF_NLR_type_print)) {
+    updateCheckboxGroupInput(session = session,
+                             inputId = "DIF_NLR_type_print",
+                             selected = DIF_nlr$type)
+  } else {
+    if (any(DIF_nlr$type != input$DIF_NLR_type_print)) {
+      updateCheckboxGroupInput(session = session,
+                               inputId = "DIF_NLR_type_print",
+                               selected = DIF_nlr$type)
+    }
+  }
+  if (length(DIF_nlr$type) != length(input$DIF_NLR_type_plot)) {
+    updateCheckboxGroupInput(session = session,
+                             inputId = "DIF_NLR_type_plot",
+                             selected = DIF_nlr$type)
+  } else {
+    if (any(DIF_nlr$type != input$DIF_NLR_type_plot)) {
+      updateCheckboxGroupInput(session = session,
+                               inputId = "DIF_NLR_type_plot",
+                               selected = DIF_nlr$type)
+    }
+  }
+})
+
+# ** Updating correction ######
+observeEvent(input$DIF_NLR_correction_method_print, {
+  DIF_nlr$correction <- input$DIF_NLR_correction_method_print
+})
+observeEvent(input$DIF_NLR_correction_method_plot, {
+  DIF_nlr$correction <- input$DIF_NLR_correction_method_plot
+})
+observeEvent(DIF_nlr$correction, {
+  if (DIF_nlr$correction != input$DIF_NLR_correction_method_print) {
+    updateSelectInput(session = session,
+                      inputId = "DIF_NLR_correction_method_print",
+                      selected = DIF_nlr$correction)
+  }
+  if (DIF_nlr$correction != input$DIF_NLR_correction_method_plot) {
+    updateSelectInput(session = session,
+                      inputId = "DIF_NLR_correction_method_plot",
+                      selected = DIF_nlr$correction)
+  }
+})
+
+# ** Updating purification ######
+observeEvent(input$DIF_NLR_purification_print, {
+  DIF_nlr$purification <- input$DIF_NLR_purification_print
+})
+observeEvent(input$DIF_NLR_purification_plot, {
+  DIF_nlr$purification <- input$DIF_NLR_purification_plot
+})
+observeEvent(DIF_nlr$purification, {
+  if (DIF_nlr$purification != input$DIF_NLR_purification_print) {
+    updateCheckboxInput(session = session,
+                        inputId = "DIF_NLR_purification_print",
+                        value = DIF_nlr$purification)
+  }
+  if (DIF_nlr$purification != input$DIF_NLR_purification_plot) {
+    updateCheckboxInput(session = session,
+                        inputId = "DIF_NLR_purification_plot",
+                        value = DIF_nlr$purification)
+  }
+})
+
+# update selectInput & disable purification if DMV present
 observe({
   if (dif_present() == TRUE) {
     lapply(match_NLR, function(i) {
@@ -1280,8 +1489,8 @@ mapply(function(match, puri) {
 },
 match = match_NLR, puri = puri_NLR)
 
-# ** Model for print ######
-model_DIF_NLR_print <- reactive({
+# ** MODEL ######
+model_DIF_NLR <- reactive({
   data <- data.frame(binary())
   group <- unlist(group())
 
@@ -1345,7 +1554,7 @@ observeEvent(input$DIF_NLR_model_print, {
   shinyjs::disable(selector = disElement)
 })
 
-# ** Equation ####
+# ** Equation ######
 output$DIF_NLR_equation_print <- renderUI({
   model <- input$DIF_NLR_model_print
 
@@ -1411,54 +1620,6 @@ output$DIF_NLR_equation_print <- renderUI({
 
 })
 
-# ** Output print ######
-output$print_DIF_NLR <- renderPrint({
-  print(model_DIF_NLR_print())
-})
-
-# ** Updating inputs for plot based on print ####
-observeEvent(input$DIF_NLR_model_print,{
-  if (all(input$DIF_NLR_model_plot != input$DIF_NLR_model_print)){
-    updateSelectInput(session = session,
-                      inputId = "DIF_NLR_model_plot",
-                      selected = input$DIF_NLR_model_print)
-  }
-})
-
-observeEvent(input$DIF_NLR_type_print,{
-  delay(3000,
-        if (length(input$DIF_NLR_type_plot) != length(input$DIF_NLR_type_print) ||
-            all(input$DIF_NLR_type_plot != input$DIF_NLR_type_print)){
-          updateCheckboxGroupInput(session = session,
-                                   inputId = "DIF_NLR_type_plot",
-                                   selected = input$DIF_NLR_type_print)
-        })
-})
-
-observeEvent(input$DIF_NLR_summary_matching,{
-  if (all(input$DIF_NLR_items_matching != input$DIF_NLR_summary_matching)){
-    updateSelectInput(session = session,
-                      inputId = "DIF_NLR_items_matching",
-                      selected = input$DIF_NLR_summary_matching)
-  }
-})
-
-observeEvent(input$DIF_NLR_correction_method_print,{
-  if (all(input$DIF_NLR_correction_method_plot != input$DIF_NLR_correction_method_print)){
-    updateSelectInput(session = session,
-                      inputId = "DIF_NLR_correction_method_plot",
-                      selected = input$DIF_NLR_correction_method_print)
-  }
-})
-
-observeEvent(input$DIF_NLR_purification_print,{
-  if (all(input$DIF_NLR_purification_plot != input$DIF_NLR_purification_print)){
-    updateCheckboxInput(session = session,
-                        inputId = "DIF_NLR_purification_plot",
-                        value = input$DIF_NLR_purification_print)
-  }
-})
-
 # ** Enabling/disabling options for type of DIF in plot ####
 observeEvent(input$DIF_NLR_model_plot, {
   # what parameters can be selected with choice of model
@@ -1496,80 +1657,252 @@ observeEvent(input$DIF_NLR_model_plot, {
   shinyjs::disable(selector = disElement)
 })
 
-# ** Updating inputs for plot print on plot ####
-observeEvent(input$DIF_NLR_model_plot,{
-  if (all(input$DIF_NLR_model_plot != input$DIF_NLR_model_print)){
-    updateSelectInput(session = session,
-                      inputId = "DIF_NLR_model_print",
-                      selected = input$DIF_NLR_model_plot)
+# ** SUMMARY ######
+
+# ** Summary table ######
+coef_nlr_dif <- reactive({
+  model <- model_DIF_NLR()
+
+  stat <- model$Sval
+
+  # deal with only one pval base od model specs
+  pval <- if (model$p.adjust.method == "none") {
+    model$pval
+  } else {
+    model$adj.pval
+  }
+
+  pval_symb <- symnum(pval,
+                      c(0, 0.001, 0.01, 0.05, 0.1, 1),
+                      symbols = c("***", "**", "*", ".", ""))
+  pval_symb[pval_symb == "?"] <- ""
+
+  blank <- character(length(stat))
+
+  coeffs <- coeffs_se_names()$coeffs
+  se <- coeffs_se_names()$se
+
+  colnames(coeffs) <- paste0("%%mathit{", gsub("Dif", "_{Dif}", colnames(coeffs)), "}%%")
+  colnames(se) <- paste0("SE(%%mathit{", gsub("Dif", "_{Dif}", colnames(se)), "}%%)")
+
+  #zigzag
+  coeffs_se <- cbind(coeffs, se)[, order(c(seq(ncol(coeffs)), seq(ncol(se))))]
+
+  tab <- data.frame(
+    stat,
+    pval,
+    pval_symb,
+    blank,
+    coeffs_se
+  )
+
+  colnames(tab) <-
+    c(
+      "LR (%%mathit{\\chi^2}%%)",
+      ifelse(
+        model$p.adjust.method == "none",
+        "%%mathit{p}%%-value",
+        "adj. %%mathit{p}%%-value"
+      ),
+      "",
+      "",
+      colnames(coeffs_se)
+    )
+
+  rownames(tab) <- item_names()
+
+  tab
+
+})
+
+output$coef_nlr_dif <- renderTable({coef_nlr_dif()}, rownames = T, colnames = T)
+
+coeffs_se_names <- reactive({
+  model <- model_DIF_NLR()
+  res <- NULL
+
+  # res$coeffs <- do.call(rbind, lapply(model$nlrPAR, function(x) {na.omit(x[c("a", "b", "c", "d", "aDif", "bDif", "cDif", "dDif")])}))
+  # res$se <- do.call(rbind, lapply(model$nlrSE, function(x) {na.omit(x[c("a", "b", "c", "d", "aDif", "bDif", "cDif", "dDif")])}))
+  # colnames(se) <- paste0("SE(", colnames(se), ")")
+
+  res$se <- do.call(rbind, model$nlrSE)
+  res$coeffs <- do.call(rbind, model$nlrPAR)
+  res
+})
+
+# ** Items detected text ######
+output$nlr_dif_items <- renderPrint({
+  DIFitems <- model_DIF_NLR()$DIFitems
+  if (DIFitems[1] == "No DIF item detected") {
+    txt <- "No item was detected as DIF."
+  } else {
+    txt <- paste0("Items detected as DIF items: ", paste(item_names()[DIFitems], collapse = ", "))
+  }
+  HTML(txt)
+})
+
+# ** Purification table ######
+dif_nlr_puri_table <- reactive({
+  tab <- model_DIF_NLR()$difPur
+
+  if (!is.null(tab)) {
+    colnames(tab) <- item_names()
+    rownames(tab) <- paste0("Step ", seq(0, nrow(tab) - 1))
+    tab
+  }
+})
+output$dif_nlr_puri_table <- renderTable({dif_nlr_puri_table()},
+                                         rownames = T, colnames = T, digits = 0)
+
+# ** Purification info - number of iter ######
+output$dif_nlr_puri_info <- renderPrint({
+  model <- model_DIF_NLR()
+  if (input$DIF_NLR_purification_print & !is.null(model_DIF_NLR()$difPur)) {
+    cat("Table below describes purification process, where rows correspond to purification iteration and columns to items.
+        Value of '1' in the i-th row means that an item was detected as DIF in (i-1)-th step, while value of '0' means that
+        item was not detected as DIF. The first row corresponds to the initial classification of the items when all items
+        were used for calculation of DIF matching criterion. ")
+    nrIter <- model$nrPur
+    cat("In this case, the convergence was", ifelse(model$conv.puri, "reached", "NOT reached even"), "after", nrIter,
+        ifelse(nrIter == 1, "iteration.", "iterations."))
+  } else if (input$DIF_NLR_purification_print & is.null(model_DIF_NLR()$difPur)) {
+    cat("No DIF items detected whatsoever, nothing to show.")
+  } else {
+    cat("Item purification not requested! Nothing to show.")
   }
 })
 
-observeEvent(input$DIF_NLR_type_plot,{
-  delay(3000,
-        if (length(input$DIF_NLR_type_plot) != length(input$DIF_NLR_type_print) ||
-            all(input$DIF_NLR_type_plot != input$DIF_NLR_type_print)){
-          updateCheckboxGroupInput(session = session,
-                                   inputId = "DIF_NLR_type_print",
-                                   selected = input$DIF_NLR_type_plot)
-        })
-})
+# ** Note setup ######
+note_nlr <- reactive({
+  res <- NULL
 
-observeEvent(input$DIF_NLR_items_matching,{
-  if (all(input$DIF_NLR_items_matching != input$DIF_NLR_summary_matching)){
-    updateSelectInput(session = session,
-                      inputId = "DIF_NLR_summary_matching",
-                      selected = input$DIF_NLR_items_matching)
-  }
-})
-
-observeEvent(input$DIF_NLR_correction_method_plot,{
-  if (all(input$DIF_NLR_correction_method_plot != input$DIF_NLR_correction_method_print)){
-    updateSelectInput(session = session,
-                      inputId = "DIF_NLR_correction_method_print",
-                      selected = input$DIF_NLR_correction_method_plot)
-  }
-})
-
-observeEvent(input$DIF_NLR_purification_plot,{
-  if (all(input$DIF_NLR_purification_plot != input$DIF_NLR_purification_print)){
-    updateCheckboxInput(session = session,
-                        inputId = "DIF_NLR_purification_print",
-                        value = input$DIF_NLR_purification_plot)
-  }
-})
-
-# ** Model for plot ######
-model_DIF_NLR_plot <- reactive({
-  data <- data.frame(binary())
-  group <- unlist(group())
-
-  model <- input$DIF_NLR_model_print
-  type <- paste0(input$DIF_NLR_type_print, collapse = "")
-  adj.method <- input$DIF_NLR_correction_method_print
-  purify <- input$DIF_NLR_purification_print
-
-  if (input$DIF_NLR_summary_matching == "zscore") {
-    match <- "zscore"
-  } else if (input$DIF_NLR_summary_matching == "zuploaded") {
-    match <- scale(apply(as.data.frame(unlist(DIFmatching())), 1, sum))
+  model <- model_DIF_NLR()
+  thr <- if (length(unique(model$df)) == 1) {
+    unique(qchisq(1 - model$alpha, model$df))
+  } else {
+    NULL
   }
 
-  fit <- tryCatch(difNLR(Data = data, group = group, focal.name = 1, match = match,
-                         model = model, type = type,
-                         p.adjust.method = adj.method, purify = purify,
-                         test = "LR"),
-                  error = function(e) e)
+  res$mod <- paste("Model:", switch(unique(model$model),
+                                    "Rasch" = "Rasch model", "1PL" = "1PL model", "2PL" = "2PL model",
+                                    "3PL" = "3PL model", "3PLcg" = "3PL model with fixed guessing for groups",
+                                    "3PLdg" = "3PL model with fixed inattention parameter for groups",
+                                    "3PLc" = "3PL model", "3PLd" = "3PL model with inattention parameter",
+                                    "4PLcgdg" = "4PL model with fixed guessing and inattention parameter for groups",
+                                    "4PLcgd" = "4PL model with fixed guessing for groups",
+                                    "4PLd" = "4PL model with fixed guessing for groups",
+                                    "4PLcdg" = "4PL model with fixed inattention parameter for groups",
+                                    "4PLc" = "4PL model with fixed inattention parameter for groups",
+                                    "4PL" = "4PL model"
+  ))
 
-  validate(need(class(fit) == "difNLR",
-                paste0('This method cannot be used on this data. Error returned: ', fit$message)))
+  res$dmv <- paste("DIF matching variable:", switch(
+    as.character(model$match[1]), # ensures number is recognize as unnamed element
+    "score" = "total score",
+    "zscore" = "standardized total score",
+    "uploaded"
+  ))
 
-  fit
+  res$type <-
+    paste0(
+      "DIF type tested: difference in parameters ",
+      paste0(input$DIF_NLR_type_print, collapse = ", ")
+    )
+
+  res$p_adj <- paste("P-value correction method:", switch(
+    model$p.adjust.method,
+    holm = "Holm", hochberg = "Hochberg", hommel = "Hommel",
+    bonferroni = "Bonferroni", BH = "Benjamini-Hochberg",
+    BY = "Benjamini-Yekutieli", fdr = "FDR",
+    none = "none"
+  ))
+
+  res$puri <- paste("Item purification:", ifelse(model$purification == T, "used", "unutilized"))
+  res$thr_rounded <- paste("Detection threshold:", round(thr, 3))
+
+  res
 })
+
+output$note_nlr <- renderUI({
+  withMathJax()
+
+  HTML(
+    paste(
+      "Notes:",
+      note_nlr()$dmv,
+      note_nlr()$mod,
+      note_nlr()$type,
+      note_nlr()$p_adj,
+      note_nlr()$puri,
+      note_nlr()$thr_rounded,
+      "Signif. codes: 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1",
+      sep = "</br>"
+    )
+  )
+})
+
+# ** Download tables ######
+output$download_nlr_dif <- downloadHandler(
+  filename = function() {
+    paste("DIF_NLR_statistics",".csv",sep = "")
+  },
+  content = function(file) {
+    data <- coef_nlr_dif()
+
+    coef_names <- colnames(coeffs_se_names()$coeffs)
+    se_names <- paste0("SE(", colnames(coeffs_se_names()$se), ")")
+
+    par_names <- c(coef_names, se_names)[order(c(seq(coef_names), seq(se_names)))]
+
+    colnames(data) <-
+      c(
+        "LR (X^2)",
+        ifelse(
+          "%%mathit{p}%%-value" %in% colnames(data),
+          "p-value",
+          "adj. p-value"
+        ),
+        "",
+        "",
+        par_names
+      )
+
+    rownames(data) <- item_names()
+
+    write.csv(data[,-4], file) # w/o blank col
+    write(paste(
+      "Note:",
+      note_nlr()$dmv,
+      note_nlr()$mod,
+      gsub(",", "", note_nlr()$type), # get rid of the comma - it separates col in CSV
+      note_nlr()$p_adj,
+      note_nlr()$puri,
+      note_nlr()$thr_rounded,
+      "Signif. codes: 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1",
+      sep = "\n"), file, append = T)
+  }
+)
+output$download_nlr_dif_puri <- downloadHandler(
+  filename = function() {
+    paste0("DIF_NLR_purification", ".csv")
+  },
+  content = function(file) {
+    data <- dif_nlr_puri_table()
+    write.csv(data, file)
+  }
+)
+
+# ** Warning for missing values ####
+output$DIF_NLR_na_alert <- renderUI({
+  txt <- na_score()
+  HTML(txt)
+})
+
+# ** ITEMS ######
 
 # ** Plot ######
 plot_DIF_NLRInput <- reactive({
-  fit <- model_DIF_NLR_plot()
+  fit <- model_DIF_NLR()
   item <- input$DIF_NLR_item_plot
 
   g <- plot(fit, item = item)[[1]] +
@@ -1671,14 +2004,15 @@ output$DIF_NLR_equation_plot <- renderUI({
 # ** Table of coefficients ######
 output$tab_coef_DIF_NLR <- renderTable({
   item <- input$DIF_NLR_item_plot
-  fit <- model_DIF_NLR_plot()
+  fit <- model_DIF_NLR()
 
   tab_coef <- fit$nlrPAR[[item]]
   tab_sd <- fit$nlrSE[[item]]
 
   tab <- t(rbind(tab_coef, tab_sd))
   withMathJax()
-  rownames(tab) <- c('%%mathit{a}%%', '%%mathit{b}%%', '%%mathit{a}_{DIF}%%', '%%mathit{b}_{DIF}%%', '%%mathit{c}%%')
+
+  rownames(tab) <- paste0("%%mathit{", gsub("Dif", "_{Dif}", rownames(tab)), "}%%")
   colnames(tab) <- c("Estimate", "SE")
 
   tab
@@ -1686,288 +2020,82 @@ output$tab_coef_DIF_NLR <- renderTable({
 include.rownames = T)
 
 # ** Warning for missing values ####
-output$DIF_NLR_na_alert <- renderUI({
-  txt <- na_score()
-  HTML(txt)
-})
-
-# ** Warning for missing values ####
 output$DIF_NLR_item_na_alert <- renderUI({
   txt <- na_score()
   HTML(txt)
 })
 
-
-
-
-
-
-
-
-####### ** DIF statistic and parameters tables ####
-coef_nlr_dif <- reactive({
-  model <- model_DIF_NLR_print()
-
-  stat <- model$Sval
-
-  # deal with only one pval base od model specs
-  pval <- if (model$p.adjust.method == "none") {
-    model$pval
-  } else {
-    model$adj.pval
-  }
-
-  pval_symb <- symnum(pval,
-                      c(0, 0.001, 0.01, 0.05, 0.1, 1),
-                      symbols = c("***", "**", "*", ".", ""))
-
-  blank <- character(length(stat))
-
-  coeffs <- coeffs_se_names()$coeffs
-  se <- coeffs_se_names()$se
-
-  colnames(coeffs) <- paste0("%%mathit{", gsub("Dif", "_{Dif}", colnames(coeffs)), "}%%")
-  colnames(se) <- paste0("SE(%%mathit{", gsub("Dif", "_{Dif}", colnames(se)), "}%%)")
-
-  #zigzag
-  coeffs_se <- cbind(coeffs, se)[, order(c(seq(ncol(coeffs)), seq(ncol(se))))]
-
-  tab <- data.frame(
-    stat,
-    pval,
-    pval_symb,
-    blank,
-    coeffs_se
-  )
-
-  colnames(tab) <-
-    c(
-      "LR (%%mathit{\\chi^2}%%)",
-      ifelse(
-        model$p.adjust.method == "none",
-        "%%mathit{p}%%-value",
-        "adj. %%mathit{p}%%-value"
-      ),
-      "",
-      "",
-      colnames(coeffs_se)
-    )
-
-  rownames(tab) <- item_names()
-
-  tab
-
-})
-
-output$coef_nlr_dif <- renderTable({coef_nlr_dif()}, rownames = T, colnames = T)
-
-coeffs_se_names <- reactive({
-  model <- model_DIF_NLR_print()
-res <- NULL
-  res$coeffs <- do.call(rbind, lapply(model$nlrPAR, function(x) {na.omit(x[c("a", "b", "c", "d", "aDif", "bDif", "cDif", "dDif")])}))
-  res$se <- do.call(rbind, lapply(model$nlrSE, function(x) {na.omit(x[c("a", "b", "c", "d", "aDif", "bDif", "cDif", "dDif")])}))
-  # colnames(se) <- paste0("SE(", colnames(se), ")")
-res
-})
-
-# ** Items detected text ######
-output$nlr_dif_items <- renderPrint({
-  DIFitems <- model_DIF_NLR_print()$DIFitems
-  if (DIFitems[1] == "No DIF item detected") {
-    txt <- "No item was detected as DIF."
-  } else {
-    txt <- paste0("Items detected as DIF items: ", paste(item_names()[DIFitems], collapse = ", "))
-  }
-  HTML(txt)
-})
-
-# ** Purification table ######
-dif_nlr_puri_table <- reactive({
-  tab <- model_DIF_NLR_print()$difPur
-
-  if (!is.null(tab)) {
-    colnames(tab) <- item_names()
-    rownames(tab) <- paste0("Step ", seq(0, nrow(tab) - 1))
-    tab
-  }
-})
-output$dif_nlr_puri_table <- renderTable({dif_nlr_puri_table()},
-                                         rownames = T, colnames = T, digits = 0)
-
-# ** Purification info - number of iter ######
-output$dif_nlr_puri_info <- renderPrint({
-  model <- model_DIF_NLR_print()
-  if (input$DIF_NLR_purification_print & !is.null(model_DIF_NLR_print()$difPur)) {
-    cat("Table below describes purification process, where rows correspond to purification iteration and columns to items.
-        Value of '1' in the i-th row means that an item was detected as DIF in (i-1)-th step, while value of '0' means that
-        item was not detected as DIF. The first row corresponds to the initial classification of the items when all items
-        were used for calculation of DIF matching criterion. ")
-    nrIter <- model$nrPur
-    cat("In this case, the convergence was", ifelse(model$conv.puri, "reached", "NOT reached even"), "after", nrIter,
-        ifelse(nrIter == 1, "iteration.", "iterations."))
-  } else if (input$DIF_NLR_purification_print & is.null(model_DIF_NLR_print()$difPur)) {
-    cat("No DIF items detected whatsoever, nothing to show.")
-  } else {
-    cat("Item purification not requested! Nothing to show.")
-  }
-})
-
-# Note setup
-note_nlr <- reactive({
-  res <- NULL
-
-  model <- model_DIF_NLR_print()
-  thr <- if (length(unique(model$df)) == 1) {
-    unique(qchisq(1 - model$alpha, model$df))
-  } else {
-    NULL
-  }
-
-  res$mod <- paste("Model:", switch(unique(model$model),
-                "Rasch" = "Rasch model", "1PL" = "1PL model", "2PL" = "2PL model",
-                "3PL" = "3PL model", "3PLcg" = "3PL model with fixed guessing for groups",
-                "3PLdg" = "3PL model with fixed inattention parameter for groups",
-                "3PLc" = "3PL model", "3PLd" = "3PL model with inattention parameter",
-                "4PLcgdg" = "4PL model with fixed guessing and inattention parameter for groups",
-                "4PLcgd" = "4PL model with fixed guessing for groups",
-                "4PLd" = "4PL model with fixed guessing for groups",
-                "4PLcdg" = "4PL model with fixed inattention parameter for groups",
-                "4PLc" = "4PL model with fixed inattention parameter for groups",
-                "4PL" = "4PL model"
-  ))
-
-  res$dmv <- paste("DIF matching variable:", switch(
-    as.character(model$match[1]), # ensures number is recognize as unnamed element
-    "score" = "total score",
-    "zscore" = "standardized total score",
-    "uploaded"
-  ))
-
-  res$type <-
-    paste0(
-      "DIF type tested: difference in parameters ",
-      paste0(input$DIF_NLR_type_print, collapse = ", ")
-    )
-
-  res$p_adj <- paste("P-value correction method:", switch(
-    model$p.adjust.method,
-    holm = "Holm", hochberg = "Hochberg", hommel = "Hommel",
-    bonferroni = "Bonferroni", BH = "Benjamini-Hochberg",
-    BY = "Benjamini-Yekutieli", fdr = "FDR",
-    none = "none"
-  ))
-
-  res$puri <- paste("Item purification:", ifelse(model$purification == T, "used", "unutilized"))
-  res$thr_rounded <- paste("Detection threshold:", round(thr, 3))
-
-  res
-})
-
-output$note_nlr <- renderUI({
-  withMathJax()
-
-  HTML(
-    paste(
-      "Notes:",
-      note_nlr()$dmv,
-      note_nlr()$mod,
-      note_nlr()$type,
-      note_nlr()$p_adj,
-      note_nlr()$puri,
-      note_nlr()$thr_rounded,
-      "Signif. codes: 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1",
-      sep = "</br>"
-    )
-  )
-})
-
-# ** Download tables ######
-output$download_nlr_dif <- downloadHandler(
-  filename = function() {
-    paste("DIF_NLR_statistics",".csv",sep = "")
-  },
-  content = function(file) {
-    data <- coef_nlr_dif()
-
-    coef_names <- colnames(coeffs_se_names()$coeffs)
-    se_names <- paste0("SE(", colnames(coeffs_se_names()$se), ")")
-
-    par_names <- c(coef_names, se_names)[order(c(seq(coef_names), seq(se_names)))]
-
-    colnames(data) <-
-      c(
-        "LR (X^2)",
-        ifelse(
-          "%%mathit{p}%%-value" %in% colnames(data),
-          "p-value",
-          "adj. p-value"
-        ),
-        "",
-        "",
-        par_names
-        )
-
-    rownames(data) <- item_names()
-
-    write.csv(data[,-4], file) # w/o blank col
-    write(paste(
-      "Note:",
-      note_nlr()$dmv,
-      note_nlr()$mod,
-      gsub(",", "", note_nlr()$type), # get rid of the comma - it separates col in CSV
-      note_nlr()$p_adj,
-      note_nlr()$puri,
-      note_nlr()$thr_rounded,
-      "Signif. codes: 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1",
-      sep = "\n"), file, append = T)
-  }
-)
-output$download_nlr_dif_puri <- downloadHandler(
-  filename = function() {
-    paste0("DIF_NLR_purification", ".csv")
-  },
-  content = function(file) {
-    data <- dif_nlr_puri_table()
-    write.csv(data, file)
-  }
-)
-
-
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # * IRT LORD ######
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-# ** Model for plot ######
-model_DIF_IRT_Lord_plot <- reactive({
-  group <- unlist(group())
-  data <- data.frame(binary())
+# ** UPDATING INPUTS ######
+DIF_lord <- reactiveValues(type = NULL,
+                           correction = NULL,
+                           purification = NULL)
 
-  if (input$type_plot_DIF_IRT_lord == "3PL"){
-    guess <- itemPar3PL(data)[, 3]
+# ** Updating type ######
+observeEvent(input$type_print_DIF_IRT_lord, {
+  DIF_lord$type <- input$type_print_DIF_IRT_lord
+})
+observeEvent(input$type_plot_DIF_IRT_lord, {
+  DIF_lord$type <- input$type_plot_DIF_IRT_lord
+})
+observeEvent(DIF_lord$type, {
+  if (DIF_lord$type != input$type_print_DIF_IRT_lord) {
+    updateCheckboxGroupInput(session = session,
+                             inputId = "type_print_DIF_IRT_lord",
+                             selected = DIF_lord$type)
   }
-
-  fit <- tryCatch(switch(input$type_plot_DIF_IRT_lord,
-                         "1PL" = difLord(Data = data, group = group, focal.name = 1,
-                                         model = "1PL",
-                                         p.adjust.method = input$correction_method_DIF_IRT_lordItems,
-                                         purify = input$puri_Lord_plot),
-                         "2PL" = difLord(Data = data, group = group, focal.name = 1,
-                                         model = "2PL",
-                                         p.adjust.method = input$correction_method_DIF_IRT_lordItems,
-                                         purify = input$puri_Lord_plot),
-                         "3PL" = difLord(Data = data, group = group, focal.name = 1,
-                                         model = "3PL", c = guess,
-                                         p.adjust.method = input$correction_method_DIF_IRT_lordItems,
-                                         purify = input$puri_Lord_plot)),
-                  error = function(e) e)
-
-  validate(need(class(fit) == 'Lord',
-                paste0('This method cannot be used on this data. Error returned: ', fit$message)))
-  fit
+  if (DIF_lord$type != input$type_plot_DIF_IRT_lord) {
+    updateCheckboxGroupInput(session = session,
+                             inputId = "type_plot_DIF_IRT_lord",
+                             selected = DIF_lord$type)
+  }
 })
 
-# ** Model for print ######
-model_DIF_IRT_Lord_print <- reactive({
+# ** Updating correction ######
+observeEvent(input$correction_method_DIF_IRT_lordSummary, {
+  DIF_lord$correction <- input$correction_method_DIF_IRT_lordSummary
+})
+observeEvent(input$correction_method_DIF_IRT_lordItems, {
+  DIF_lord$correction <- input$correction_method_DIF_IRT_lordItems
+})
+observeEvent(DIF_lord$correction, {
+  if (DIF_lord$correction != input$correction_method_DIF_IRT_lordSummary) {
+    updateSelectInput(session = session,
+                      inputId = "correction_method_DIF_IRT_lordSummary",
+                      selected = DIF_lord$correction)
+  }
+  if (DIF_lord$correction != input$correction_method_DIF_IRT_lordItems) {
+    updateSelectInput(session = session,
+                      inputId = "correction_method_DIF_IRT_lordItems",
+                      selected = DIF_lord$correction)
+  }
+})
+
+# ** Updating purification ######
+observeEvent(input$puri_Lord, {
+  DIF_lord$purification <- input$puri_Lord
+})
+observeEvent(input$puri_Lord_plot, {
+  DIF_lord$purification <- input$puri_Lord_plot
+})
+observeEvent(DIF_lord$purification, {
+  if (DIF_lord$purification != input$puri_Lord) {
+    updateCheckboxInput(session = session,
+                        inputId = "puri_Lord",
+                        value = DIF_lord$purification)
+  }
+  if (DIF_lord$purification != input$puri_Lord_plot) {
+    updateCheckboxInput(session = session,
+                        inputId = "puri_Lord_plot",
+                        value = DIF_lord$purification)
+  }
+})
+
+# ** MODEL ######
+model_DIF_IRT_Lord <- reactive({
   group <- unlist(group())
   data <- data.frame(binary())
 
@@ -1976,15 +2104,15 @@ model_DIF_IRT_Lord_print <- reactive({
   }
 
   fit <- tryCatch(switch(input$type_print_DIF_IRT_lord,
-                         "1PL" = difLord(Data = data, group = group, focal.name = 1,
+                         "1PL" = .difLord_edited(Data = data, group = group, focal.name = 1,
                                          model = "1PL",
                                          p.adjust.method = input$correction_method_DIF_IRT_lordSummary,
                                          purify = input$puri_Lord),
-                         "2PL" = difLord(Data = data, group = group, focal.name = 1,
+                         "2PL" = .difLord_edited(Data = data, group = group, focal.name = 1,
                                          model = "2PL",
                                          p.adjust.method = input$correction_method_DIF_IRT_lordSummary,
                                          purify = input$puri_Lord),
-                         "3PL" = difLord(Data = data, group = group, focal.name = 1,
+                         "3PL" = .difLord_edited(Data = data, group = group, focal.name = 1,
                                          model = "3PL", c = guess,
                                          p.adjust.method = input$correction_method_DIF_IRT_lordSummary,
                                          purify = input$puri_Lord)),
@@ -1994,6 +2122,8 @@ model_DIF_IRT_Lord_print <- reactive({
                 paste0('This method cannot be used on this data. Error returned: ', fit$message)))
   fit
 })
+
+# ** SUMMARY ######
 
 # ** Interpretation for summary ######
 output$DIF_Lord_interpretation_summary <- renderUI({
@@ -2044,14 +2174,329 @@ output$DIF_Lord_equation_summary <- renderUI({
   withMathJax(paste(eqR, eqF))
 })
 
-# ** Output print ######
-output$print_DIF_IRT_Lord <- renderPrint({
-  print(model_DIF_IRT_Lord_print())
+# ** Warning for missing values ######
+output$DIF_IRT_LORD_na_alert <- renderUI({
+  txt <- na_score()
+  HTML(txt)
 })
+
+# ** Summary table ######
+coef_lord_dif <- reactive({
+  res <- model_DIF_IRT_Lord()
+
+  # deal with only one pval base od model specs
+  pval <- if (res$p.adjust.method == "none") {
+    res$p.value
+  } else {
+    res$adjusted.p
+  }
+
+  pval_symb <- symnum(pval,
+                      c(0, 0.001, 0.01, 0.05, 0.1, 1),
+                      symbols = c("***", "**", "*", ".", ""))
+  blank <- character(length(res$names))
+
+  # IRT pars
+  if (res$purification) {
+    m <- nrow(res$itemParFinal) / 2
+
+    mR <- res$itemParFinal[1:m,]
+    mF <- res$itemParFinal[(m + 1):(2 * m),]
+  } else {
+    m <- nrow(res$itemParInit) / 2
+
+    mR <- res$itemParInit[1:m,]
+    mF <- res$itemParInit[(m + 1):(2 * m),]
+
+    mF <- itemRescale(mR, mF) # rescaling!
+  }
+
+  par <- rbind(mR, mF)
+
+  wh_coef <- switch(res$model,
+                    "1PL" = 1,
+                    "2PL" = 1:2,
+                    "3PL" = c(1, 2))
+  wh_sd <- switch(res$model,
+                  "1PL" = 2,
+                  "2PL" = 3:4,
+                  "3PL" = 3:4)
+
+  R_indices <- seq(1, m)
+  F_indices <- seq(m + 1, 2 * m)
+
+  if (res$model == "3PL") {
+    guess_both <- par[R_indices, 6]
+  }
+
+  coefs_R <- par[R_indices, wh_coef]
+  coefs_F <- par[F_indices, wh_coef]
+
+  if (res$model != "1PL") {
+    colnames(coefs_R) <- paste0(colnames(coefs_R), "_R")
+    colnames(coefs_F) <- paste0(colnames(coefs_F), "_F")
+  }
+
+  coefs <- cbind(coefs_R, coefs_F)
+
+  if (res$model == "1PL") {
+    colnames(coefs) <- c("b_R", "b_F")
+  }
+
+  se_R <- par[R_indices, wh_sd]
+  se_F <- par[F_indices, wh_sd]
+
+  if (res$model != "1PL") {
+    colnames(se_R) <- paste0(colnames(se_R), "_R")
+    colnames(se_F) <- paste0(colnames(se_F), "_F")
+  }
+
+  ses <- cbind(se_R, se_F)
+
+  if (res$model == "1PL") {
+    colnames(ses) <- c("se(b)_R", "se(b)_F")
+  }
+
+  pars_zigzag <-
+    cbind(coefs, ses)[, order(c(seq(ncol(coefs)), seq(ncol(ses))))]
+  if (res$model == "3PL") {
+    pars_zigzag <- cbind(pars_zigzag, guess_both)
+  }
+
+
+  colnames(pars_zigzag) <- switch(
+    res$model,
+    "1PL" = c(
+      "%%mathit{b}_{R}%%",
+      "SE(%%mathit{b}_{R}%%)",
+      "%%mathit{b}_{F}%%",
+      "SE(%%mathit{b}_{F}%%)"
+    ),
+
+    "2PL" = c(
+      "%%mathit{a}_{R}%%",
+      "SE(%%mathit{a}_{R}%%)",
+      "%%mathit{b}_{R}%%",
+      "SE(%%mathit{b}_{R}%%)",
+      "%%mathit{a}_{F}%%",
+      "SE(%%mathit{a}_{F}%%)",
+      "%%mathit{b}_{F}%%",
+      "SE(%%mathit{b}_{F}%%)"
+    ),
+
+    "3PL" = c(
+      "%%mathit{a}_{R}%%",
+      "SE(%%mathit{a}_{R}%%)",
+      "%%mathit{b}_{R}%%",
+      "SE(%%mathit{b}_{R}%%)",
+      "%%mathit{a}_{F}%%",
+      "SE(%%mathit{a}_{F}%%)",
+      "%%mathit{b}_{F}%%",
+      "SE(%%mathit{b}_{F}%%)",
+      "%%mathit{c}%%"
+    )
+  )
+
+  # from print.Lord:
+  if (is.null(res$anchor.names)) {
+    itk <- 1:length(res$LordChi)
+  } else {
+    itk <- (1:length(res$LordChi))[!is.na(res$LordChi)]
+  }
+
+  if (res$model == "1PL") {
+    if (res$purification & is.null(res$anchor.names)) {
+      pars <- res$itemParFinal
+    } else {
+      pars <- res$itemParInit
+    }
+    J <- nrow(pars) / 2
+    mR <- pars[1:J, 1]
+    mF <- itemRescale(pars[1:J, ], pars[(J + 1):(2 * J), ])[, 1]
+    rr1 <- round(mF - mR, 4)
+    rr2 <- round(-2.35 * rr1, 4)
+    symb1 <-
+      symnum(abs(rr2), c(0, 1, 1.5, Inf), symbols = c("A", "B", "C"))
+    matR2 <- cbind(rr1, rr2)[itk, ]
+  }
+
+  tab <- if (res$model == "1PL") {
+    data.frame(res$LordChi,
+               pval,
+               pval_symb,
+               blank,
+               matR2[, 1],
+               matR2[, 2],
+               symb1,# eff size based on delta
+               blank,
+               pars_zigzag)
+  } else {
+    data.frame(res$LordChi,
+               pval,
+               pval_symb,
+               blank,
+               pars_zigzag)
+  }
+  colnames(tab) <- if (res$model != "1PL") {
+    c(
+      "Lord's %%mathit{\\chi^2}%%",
+      ifelse(
+        res$p.adjust.method == "none",
+        "%%mathit{p}%%-value",
+        "adj. %%mathit{p}%%-value"
+      ),
+      "",
+      "",
+      colnames(pars_zigzag)
+    )
+  } else {
+    c(
+      "Lord's %%mathit{\\chi^2}%%",
+      ifelse(
+        res$p.adjust.method == "none",
+        "%%mathit{p}%%-value",
+        "adj. %%mathit{p}%%-value"
+      ),
+      "",
+      "",
+      "mF-mR",
+      "deltaLord",
+      "",
+      "",
+      colnames(pars_zigzag)
+    )
+  }
+
+  rownames(tab) <- item_names()
+
+  tab
+})
+
+output$coef_lord_dif <- renderTable({coef_lord_dif()}, rownames = T, colnames = T)
+
+# ** Items detected text ######
+output$lord_dif_items <- renderPrint({
+  DIFitems <- model_DIF_IRT_Lord()$DIFitems
+  if (DIFitems[1] == "No DIF item detected") {
+    txt <- "No item was detected as DIF."
+  } else {
+    txt <- paste0("Items detected as DIF items: ", paste(item_names()[DIFitems], collapse = ", "))
+  }
+  HTML(txt)
+})
+
+# ** Purification table ######
+dif_lord_puri_table <- reactive({
+  tab <- model_DIF_IRT_Lord()$difPur
+
+  if (!is.null(tab)) {
+    colnames(tab) <- item_names()
+    rownames(tab) <- paste0("Step ", seq(0, nrow(tab) - 1))
+    tab
+  }
+})
+output$dif_lord_puri_table <- renderTable({dif_lord_puri_table()},
+                                          rownames = T, colnames = T, digits = 0)
+
+# ** Purification info - number of iter ######
+output$dif_lord_puri_info <- renderPrint({
+  model <- model_DIF_IRT_Lord()
+  if (input$puri_Lord & !is.null(model_DIF_IRT_Lord()$difPur)) {
+    cat("Table below describes purification process, where rows correspond to purification iteration and columns to items.
+        Value of '1' in the i-th row means that an item was detected as DIF in (i-1)-th step, while value of '0' means that
+        item was not detected as DIF. The first row corresponds to the initial classification of the items when all items
+        were used for calculation of DIF matching criterion. ")
+    nrIter <- model$nrPur
+    cat("In this case, the convergence was", ifelse(model$convergence, "reached", "NOT reached even"), "after", nrIter,
+        ifelse(nrIter == 1, "iteration.", "iterations."))
+  } else if (input$puri_Lord & is.null(model_DIF_IRT_Lord()$difPur)) {
+    cat("No DIF items detected whatsoever, nothing to show.")
+  } else {
+    cat("Item purification not requested! Nothing to show.")
+  }
+})
+
+# ** Note setup ######
+note_lord <- reactive({
+  res <- NULL
+
+  model <- model_DIF_IRT_Lord()
+
+  res$mod <- paste0("Model: ", model$model)
+
+  res$p_adj <- paste("P-value correction method:", switch(
+    model$p.adjust.method,
+    holm = "Holm", hochberg = "Hochberg", hommel = "Hommel",
+    bonferroni = "Bonferroni", BH = "Benjamini-Hochberg",
+    BY = "Benjamini-Yekutieli",
+    none = "none"
+  ))
+
+  res$puri <- paste("Item purification:", ifelse(model$purification, "used", "unutilized"))
+
+  res$thr <- paste0("Detection threshold: ", round(model$thr, 3))
+
+  res
+})
+
+output$note_lord <- renderUI({
+  txt_effect <- ifelse(input$type_print_DIF_IRT_lord == "1PL",
+                       "Effect size codes: 'A': negligible effect; 'B': moderate effect; 'C': large effect </br>
+                       Effect size codes: 0 'A' 1.0 'B' 1.5 'C' (for absolute values of 'deltaLord')",
+                       "")
+  HTML(
+    paste(
+      "Notes:",
+      note_lord()$mod,
+      note_lord()$p_adj,
+      note_lord()$puri,
+      note_lord()$thr,
+      "Signif. codes: 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1",
+      txt_effect,
+      sep = "</br>"
+    )
+  )
+})
+
+# ** Download tables ######
+output$download_lord_dif <- downloadHandler(
+  filename = function() {
+    paste("DIF_Lord_statistics",".csv",sep = "")
+  },
+  content = function(file) {
+    data <- coef_lord_dif()
+
+    colnames(data) <- c("Lord's X^2", gsub("[%{}]|(mathit)", "", colnames(data)[-1]))
+    rownames(data) <- item_names()
+
+    write.csv(data[,-4], file) # w/o blank col
+    write(paste(
+      "Notes:",
+      note_lord()$mod,
+      note_lord()$p_adj,
+      note_lord()$puri,
+      note_lord()$thr,
+      "Signif. codes: 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1",
+      "Effect size codes: 'A': negligible effect; 'B': moderate effect; 'C': large effect",
+      "Effect size codes: 0 'A' 1.0 'B' 1.5 'C' (for absolute values of 'deltaLord')",
+      sep = "\n"), file, append = T)
+  }
+)
+output$download_lord_dif_puri <- downloadHandler(
+  filename = function() {
+    paste0("DIF_Lord_purification", ".csv")
+  },
+  content = function(file) {
+    data <- dif_lord_puri_table()
+    write.csv(data, file)
+  }
+)
+
+# ** ITEMS ######
 
 # ** Plot ######
 plot_DIF_IRT_LordInput <- reactive({
-  fitLord <- model_DIF_IRT_Lord_plot()
+  fitLord <- model_DIF_IRT_Lord()
   item <- input$difirt_lord_itemSlider
 
   g <- plotDIFirt(parameters = fitLord$itemParInit,
@@ -2081,12 +2526,18 @@ output$DP_plot_DIF_IRT_Lord <- downloadHandler(
 # ** Table with coefficients ######
 tab_coef_DIF_IRT_Lord <- reactive({
 
-  fitLord <- model_DIF_IRT_Lord_plot()
-  m <- nrow(fitLord$itemParInit)/2
+  fitLord <- model_DIF_IRT_Lord()
 
-  mR <- fitLord$itemParInit[1:m, ]
-  mF <- fitLord$itemParInit[(m+1):(2*m), ]
-  mF <- itemRescale(mR, mF)
+  if (input$puri_Lord_plot) {
+    m <- nrow(fitLord$itemParFinal)/2
+    mR <- fitLord$itemParFinal[1:m, ]
+    mF <- fitLord$itemParFinal[(m+1):(2*m), ]
+  } else {
+    m <- nrow(fitLord$itemParInit)/2
+    mR <- fitLord$itemParInit[1:m, ]
+    mF <- fitLord$itemParInit[(m+1):(2*m), ]
+    mF <- itemRescale(mR, mF)
+  }
 
   par <- rbind(mR, mF)
 
@@ -2177,251 +2628,82 @@ include.rownames = T,
 include.colnames = T)
 
 # ** Warning for missing values ####
-output$DIF_IRT_LORD_na_alert <- renderUI({
-  txt <- na_score()
-  HTML(txt)
-})
-
-# ** Warning for missing values ####
 output$DIF_IRT_LORD_item_na_alert <- renderUI({
   txt <- na_score()
   HTML(txt)
 })
 
-
-
-####### ** DIF statistic and parameters tables ####
-coef_lord_dif <- reactive({
-  res <- model_DIF_IRT_Lord_print()
-
-  # deal with only one pval base od model specs
-  pval <- if (res$p.adjust.method == "none") {
-    res$p.value
-  } else {
-    res$adjusted.p
-  }
-
-  pval_symb <- symnum(pval,
-                      c(0, 0.001, 0.01, 0.05, 0.1, 1),
-                      symbols = c("***", "**", "*", ".", ""))
-
-  blank <- character(length(res$names))
-
-  # from print.Lord:
-  if (is.null(res$anchor.names)) {
-    itk <- 1:length(res$LordChi)
-  } else {
-    itk <- (1:length(res$LordChi))[!is.na(res$LordChi)]
-  }
-
-  if (res$model == "1PL") {
-    if (res$purification & is.null(res$anchor.names)) {
-      pars <- res$itemParFinal
-    } else {
-      pars <- res$itemParInit
-    }
-    J <- nrow(pars) / 2
-    mR <- pars[1:J, 1]
-    mF <- itemRescale(pars[1:J, ], pars[(J + 1):(2 * J), ])[, 1]
-    rr1 <- round(mF - mR, 4)
-    rr2 <- round(-2.35 * rr1, 4)
-    symb1 <-
-      symnum(abs(rr2), c(0, 1, 1.5, Inf), symbols = c("A", "B", "C"))
-    matR2 <- cbind(rr1, rr2)[itk, ]
-  }
-
-  tab <- if (res$model == "1PL") {
-    data.frame(res$LordChi,
-               pval,
-               pval_symb,
-               blank,
-               matR2[, 1],
-               matR2[, 2],
-               symb1) # eff size based on delta
-  } else {
-    data.frame(res$LordChi,
-               pval,
-               pval_symb)
-  }
-  colnames(tab) <- if (res$model != "1PL") {
-    c(
-      "Lord's %%mathit{\\chi^2}%%",
-      ifelse(
-        res$p.adjust.method == "none",
-        "%%mathit{p}%%-value",
-        "adj. %%mathit{p}%%-value"
-      ),
-      ""
-    )
-  } else {
-    c(
-      "Lord's %%mathit{\\chi^2}%%",
-      ifelse(
-        res$p.adjust.method == "none",
-        "%%mathit{p}%%-value",
-        "adj. %%mathit{p}%%-value"
-      ),
-      "",
-      "",
-      "mF-mR",
-      "deltaLord",
-      ""
-    )
-  }
-
-  rownames(tab) <- item_names()
-
-  tab
-})
-
-output$coef_lord_dif <- renderTable({coef_lord_dif()}, rownames = T, colnames = T)
-
-# ** Items detected text ######
-output$lord_dif_items <- renderPrint({
-  DIFitems <- model_DIF_IRT_Lord_print()$DIFitems
-  if (DIFitems[1] == "No DIF item detected") {
-    txt <- "No item was detected as DIF."
-  } else {
-    txt <- paste0("Items detected as DIF items: ", paste(item_names()[DIFitems], collapse = ", "))
-  }
-  HTML(txt)
-})
-
-# ** Purification table ######
-dif_lord_puri_table <- reactive({
-  tab <- model_DIF_IRT_Lord_print()$difPur
-
-  if (!is.null(tab)) {
-    colnames(tab) <- item_names()
-    rownames(tab) <- paste0("Step ", seq(0, nrow(tab) - 1))
-    tab
-  }
-})
-output$dif_lord_puri_table <- renderTable({dif_lord_puri_table()},
-                                         rownames = T, colnames = T, digits = 0)
-
-# ** Purification info - number of iter ######
-output$dif_lord_puri_info <- renderPrint({
-  model <- model_DIF_IRT_Lord_print()
-  if (input$puri_Lord & !is.null(model_DIF_IRT_Lord_print()$difPur)) {
-    cat("Table below describes purification process, where rows correspond to purification iteration and columns to items.
-        Value of '1' in the i-th row means that an item was detected as DIF in (i-1)-th step, while value of '0' means that
-        item was not detected as DIF. The first row corresponds to the initial classification of the items when all items
-        were used for calculation of DIF matching criterion. ")
-    nrIter <- model$nrPur
-    cat("In this case, the convergence was", ifelse(model$convergence, "reached", "NOT reached even"), "after", nrIter,
-        ifelse(nrIter == 1, "iteration.", "iterations."))
-  } else if (input$puri_Lord & is.null(model_DIF_IRT_Lord_print()$difPur)) {
-    cat("No DIF items detected whatsoever, nothing to show.")
-  } else {
-    cat("Item purification not requested! Nothing to show.")
-  }
-})
-
-# Note setup
-note_lord <- reactive({
-  res <- NULL
-
-  model <- model_DIF_IRT_Lord_print()
-
-  res$mod <- paste0("Model: ", model$model)
-
-  res$p_adj <- paste("P-value correction method:", switch(
-    model$p.adjust.method,
-    holm = "Holm", hochberg = "Hochberg", hommel = "Hommel",
-    bonferroni = "Bonferroni", BH = "Benjamini-Hochberg",
-    BY = "Benjamini-Yekutieli",
-    none = "none"
-  ))
-
-  res$puri <- paste("Item purification:", ifelse(model$purification == T, "used", "unutilized"))
-
-  res
-})
-
-output$note_lord <- renderUI({
-  HTML(
-    paste(
-      "Notes:",
-      note_lord()$mod,
-      note_lord()$p_adj,
-      note_lord()$puri,
-      "Signif. codes: 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1",
-      "Effect size codes: 'A': negligible effect; 'B': moderate effect; 'C': large effect",
-      "Effect size codes: 0 'A' 1.0 'B' 1.5 'C' (for absolute values of 'deltaLord')",
-      sep = "</br>"
-    )
-  )
-})
-
-# ** Download tables ######
-output$download_lord_dif <- downloadHandler(
-  filename = function() {
-    paste("DIF_Lord_statistics",".csv",sep = "")
-  },
-  content = function(file) {
-    data <- coef_lord_dif()
-
-    colnames(data)[1:2] <- c("Lord's X^2", gsub("%%mathit\\{p\\}%%", "p", colnames(data)[2]))
-    rownames(data) <- item_names()
-
-    write.csv(data[,-4], file) # w/o blank col
-    write(paste(
-      "Notes:",
-      note_lord()$mod,
-      note_lord()$p_adj,
-      note_lord()$puri,
-      "Signif. codes: 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1",
-      "Effect size codes: 'A': negligible effect; 'B': moderate effect; 'C': large effect",
-      "Effect size codes: 0 'A' 1.0 'B' 1.5 'C' (for absolute values of 'deltaLord')",
-      sep = "\n"), file, append = T)
-  }
-)
-output$download_lord_dif_puri <- downloadHandler(
-  filename = function() {
-    paste0("DIF_Lord_purification", ".csv")
-  },
-  content = function(file) {
-    data <- dif_lord_puri_table()
-    write.csv(data, file)
-  }
-)
-
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # * IRT Raju ######
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-# ** Model for plot ######
-model_DIF_IRT_Raju_plot <- reactive({
-  group <- unlist(group())
-  data <- data.frame(binary())
+# ** UPDATING INPUTS ######
+DIF_raju <- reactiveValues(type = NULL,
+                           correction = NULL,
+                           purification = NULL)
 
-  if (input$type_plot_DIF_IRT_raju == "3PL"){
-    guess <- itemPar3PL(data)[, 3]
+# ** Updating type ######
+observeEvent(input$type_print_DIF_IRT_raju, {
+  DIF_raju$type <- input$type_print_DIF_IRT_raju
+})
+observeEvent(input$type_plot_DIF_IRT_raju, {
+  DIF_raju$type <- input$type_plot_DIF_IRT_raju
+})
+observeEvent(DIF_raju$type, {
+  if (DIF_raju$type != input$type_print_DIF_IRT_raju) {
+    updateCheckboxGroupInput(session = session,
+                             inputId = "type_print_DIF_IRT_raju",
+                             selected = DIF_raju$type)
   }
-
-  fit <- tryCatch(switch(input$type_plot_DIF_IRT_raju,
-                         "1PL" = difRaju(Data = data, group = group, focal.name = 1,
-                                         model = "1PL",
-                                         p.adjust.method = input$correction_method_DIF_IRT_rajuItems,
-                                         purify = input$puri_Raju_plot),
-                         "2PL" = difRaju(Data = data, group = group, focal.name = 1,
-                                         model = "2PL",
-                                         p.adjust.method = input$correction_method_DIF_IRT_rajuItems,
-                                         purify = input$puri_Raju_plot),
-                         "3PL" = difRaju(Data = data, group = group, focal.name = 1,
-                                         model = "3PL", c = guess,
-                                         p.adjust.method = input$correction_method_DIF_IRT_rajuItems,
-                                         purify = input$puri_Raju_plot)),
-                  error = function(e) e)
-
-  validate(need(class(fit) == 'Raj',
-                paste0('This method cannot be used on this data. Error returned: ', fit$message)))
-  fit
+  if (DIF_raju$type != input$type_plot_DIF_IRT_raju) {
+    updateCheckboxGroupInput(session = session,
+                             inputId = "type_plot_DIF_IRT_raju",
+                             selected = DIF_raju$type)
+  }
 })
 
-# ** Model for print ######
-model_DIF_IRT_Raju_print <- reactive({
+# ** Updating correction ######
+observeEvent(input$correction_method_DIF_IRT_rajuSummary, {
+  DIF_raju$correction <- input$correction_method_DIF_IRT_rajuSummary
+})
+observeEvent(input$correction_method_DIF_IRT_rajuItems, {
+  DIF_raju$correction <- input$correction_method_DIF_IRT_rajuItems
+})
+observeEvent(DIF_raju$correction, {
+  if (DIF_raju$correction != input$correction_method_DIF_IRT_rajuSummary) {
+    updateSelectInput(session = session,
+                      inputId = "correction_method_DIF_IRT_rajuSummary",
+                      selected = DIF_raju$correction)
+  }
+  if (DIF_raju$correction != input$correction_method_DIF_IRT_rajuItems) {
+    updateSelectInput(session = session,
+                      inputId = "correction_method_DIF_IRT_rajuItems",
+                      selected = DIF_raju$correction)
+  }
+})
+
+# ** Updating purification ######
+observeEvent(input$puri_Raju, {
+  DIF_raju$purification <- input$puri_Raju
+})
+observeEvent(input$puri_Raju_plot, {
+  DIF_raju$purification <- input$puri_Raju_plot
+})
+observeEvent(DIF_raju$purification, {
+  if (DIF_raju$purification != input$puri_Raju) {
+    updateCheckboxInput(session = session,
+                        inputId = "puri_Raju",
+                        value = DIF_raju$purification)
+  }
+  if (DIF_raju$purification != input$puri_Raju_plot) {
+    updateCheckboxInput(session = session,
+                        inputId = "puri_Raju_plot",
+                        value = DIF_raju$purification)
+  }
+})
+
+# ** MODEL ######
+model_DIF_IRT_Raju <- reactive({
   group <- unlist(group())
   data <- data.frame(binary())
 
@@ -2430,15 +2712,15 @@ model_DIF_IRT_Raju_print <- reactive({
   }
 
   fit <- tryCatch(switch(input$type_print_DIF_IRT_raju,
-                         "1PL" = difRaju(Data = data, group = group, focal.name = 1,
+                         "1PL" = .difRaju_edited(Data = data, group = group, focal.name = 1,
                                          model = "1PL",
                                          p.adjust.method = input$correction_method_DIF_IRT_rajuSummary,
                                          purify = input$puri_Raju),
-                         "2PL" = difRaju(Data = data, group = group, focal.name = 1,
+                         "2PL" = .difRaju_edited(Data = data, group = group, focal.name = 1,
                                          model = "2PL",
                                          p.adjust.method = input$correction_method_DIF_IRT_rajuSummary,
                                          purify = input$puri_Raju),
-                         "3PL" = difRaju(Data = data, group = group, focal.name = 1,
+                         "3PL" = .difRaju_edited(Data = data, group = group, focal.name = 1,
                                          model = "3PL", c = guess,
                                          p.adjust.method = input$correction_method_DIF_IRT_rajuSummary,
                                          purify = input$puri_Raju)),
@@ -2448,6 +2730,8 @@ model_DIF_IRT_Raju_print <- reactive({
                 paste0('This method cannot be used on this data. Error returned: ', fit$message)))
   fit
 })
+
+# ** SUMMARY ######
 
 # ** Interpretation for summary ######
 output$DIF_Raju_interpretation_summary <- renderUI({
@@ -2497,14 +2781,331 @@ output$DIF_Raju_equation_summary <- renderUI({
   withMathJax(paste(eqR, eqF))
 })
 
-# ** Output print ######
-output$print_DIF_IRT_Raju <- renderPrint({
-  print(model_DIF_IRT_Raju_print())
+# ** Warning for missing values ######
+output$DIF_Raju_na_alert <- renderUI({
+  txt <- na_score()
+  HTML(txt)
 })
+
+# ** Summary table ######
+coef_raju_dif <- reactive({
+  model <- model_DIF_IRT_Raju()
+
+  # deal with only one pval base od model specs
+  pval <- if (model$p.adjust.method == "none") {
+    model$p.value
+  } else {
+    model$adjusted.p
+  }
+
+  pval_symb <- symnum(pval,
+                      c(0, 0.001, 0.01, 0.05, 0.1, 1, Inf),
+                      symbols = c("***", "**", "*", ".", "", "?!"))
+
+  blank <- character(length(model$names))
+
+  # IRT pars
+  if (model$purification) {
+    m <- nrow(model$itemParFinal) / 2
+
+    mR <- model$itemParFinal[1:m,]
+    mF <- model$itemParFinal[(m + 1):(2 * m),]
+  } else {
+    m <- nrow(model$itemParInit) / 2
+
+    mR <- model$itemParInit[1:m,]
+    mF <- model$itemParInit[(m + 1):(2 * m),]
+
+    mF <- itemRescale(mR, mF) # rescaling!
+  }
+
+  par <- rbind(mR, mF)
+
+  wh_coef <- switch(model$model,
+                    "1PL" = 1,
+                    "2PL" = 1:2,
+                    "3PL" = c(1, 2))
+  wh_sd <- switch(model$model,
+                  "1PL" = 2,
+                  "2PL" = 3:4,
+                  "3PL" = 3:4)
+
+  R_indices <- seq(1, m)
+  F_indices <- seq(m + 1, 2 * m)
+
+  if (model$model == "3PL") {
+    guess_both <- par[R_indices, 6]
+  }
+
+  coefs_R <- par[R_indices, wh_coef]
+  coefs_F <- par[F_indices, wh_coef]
+
+  if (model$model != "1PL") {
+    colnames(coefs_R) <- paste0(colnames(coefs_R), "_R")
+    colnames(coefs_F) <- paste0(colnames(coefs_F), "_F")
+  }
+
+  coefs <- cbind(coefs_R, coefs_F)
+
+  if (model$model == "1PL") {
+    colnames(coefs) <- c("b_R", "b_F")
+  }
+
+  se_R <- par[R_indices, wh_sd]
+  se_F <- par[F_indices, wh_sd]
+
+  if (model$model != "1PL") {
+    colnames(se_R) <- paste0(colnames(se_R), "_R")
+    colnames(se_F) <- paste0(colnames(se_F), "_F")
+  }
+
+  ses <- cbind(se_R, se_F)
+
+  if (model$model == "1PL") {
+    colnames(ses) <- c("se(b)_R", "se(b)_F")
+  }
+
+  pars_zigzag <-
+    cbind(coefs, ses)[, order(c(seq(ncol(coefs)), seq(ncol(ses))))]
+  if (model$model == "3PL") {
+    pars_zigzag <- cbind(pars_zigzag, guess_both)
+  }
+
+
+  colnames(pars_zigzag) <- switch(
+    model$model,
+    "1PL" = c(
+      "%%mathit{b}_{R}%%",
+      "SE(%%mathit{b}_{R}%%)",
+      "%%mathit{b}_{F}%%",
+      "SE(%%mathit{b}_{F}%%)"
+    ),
+
+    "2PL" = c(
+      "%%mathit{a}_{R}%%",
+      "SE(%%mathit{a}_{R}%%)",
+      "%%mathit{b}_{R}%%",
+      "SE(%%mathit{b}_{R}%%)",
+      "%%mathit{a}_{F}%%",
+      "SE(%%mathit{a}_{F}%%)",
+      "%%mathit{b}_{F}%%",
+      "SE(%%mathit{b}_{F}%%)"
+    ),
+
+    "3PL" = c(
+      "%%mathit{a}_{R}%%",
+      "SE(%%mathit{a}_{R}%%)",
+      "%%mathit{b}_{R}%%",
+      "SE(%%mathit{b}_{R}%%)",
+      "%%mathit{a}_{F}%%",
+      "SE(%%mathit{a}_{F}%%)",
+      "%%mathit{b}_{F}%%",
+      "SE(%%mathit{b}_{F}%%)",
+      "%%mathit{c}%%"
+    )
+  )
+
+
+  # from print.raju:
+  if (model$model == "1PL") {
+    if (model$purification & is.null(model$anchor.names)) {
+      pars <- model$itemParFinal
+    } else {pars <- model$itemParInit
+    J <- nrow(pars)/2
+    mR <- pars[1:J, 1]
+    mF <- itemRescale(pars[1:J, ], pars[(J + 1):(2 * J),
+                                        ])[, 1]
+    rr1 <- round(mF - mR, 4)
+    rr2 <- round(-2.35 * rr1, 4)
+    symb1 <- symnum(abs(rr2), c(0, 1, 1.5, Inf), symbols = c("A", "B", "C"))
+    matR2 <- cbind(rr1, rr2)
+    # matR2 <- noquote(cbind(format(matR2, justify = "right"), symb1))
+    }
+
+    colnames(matR2) <- c("mF-mR", "deltaRaju")
+  }
+
+  tab <- if (model$model == "1PL") {
+    data.frame(model$RajuZ,
+               pval,
+               pval_symb,
+               blank,
+               matR2[, 1],
+               matR2[, 2],
+               symb1, # eff size based on delta
+               blank,
+               pars_zigzag)
+  } else {
+    data.frame(model$RajuZ,
+               pval,
+               pval_symb,
+               blank,
+               pars_zigzag)
+  }
+
+  colnames(tab) <- if (model$model != "1PL") {
+    c(
+      "Raju's Z",
+      ifelse(
+        model$p.adjust.method == "none",
+        "%%mathit{p}%%-value",
+        "adj. %%mathit{p}%%-value"
+      ),
+      "",
+      "",
+      colnames(pars_zigzag)
+    )
+  } else {
+    c(
+      "Raju's Z",
+      ifelse(
+        model$p.adjust.method == "none",
+        "%%mathit{p}%%-value",
+        "adj. %%mathit{p}%%-value"
+      ),
+      "",
+      "",
+      "mF-mR",
+      "deltaRaju",
+      "",
+      "",
+      colnames(pars_zigzag)
+    )
+  }
+
+  rownames(tab) <- item_names()
+
+  tab
+})
+
+output$coef_raju_dif <- renderTable({coef_raju_dif()}, rownames = T, colnames = T)
+
+# ** Items detected text ######
+output$raju_dif_items <- renderPrint({
+  DIFitems <- model_DIF_IRT_Raju()$DIFitems
+  if (DIFitems[1] == "No DIF item detected") {
+    txt <- "No item was detected as DIF."
+  } else {
+    txt <- paste0("Items detected as DIF items: ", paste(item_names()[DIFitems], collapse = ", "))
+  }
+  HTML(txt)
+})
+
+# ** Purification table ######
+dif_raju_puri_table <- reactive({
+  tab <- model_DIF_IRT_Raju()$difPur
+
+  if (!is.null(tab)) {
+    colnames(tab) <- item_names()
+    rownames(tab) <- paste0("Step ", seq(0, nrow(tab) - 1))
+    tab
+  }
+})
+output$dif_raju_puri_table <- renderTable({dif_raju_puri_table()},
+                                          rownames = T, colnames = T, digits = 0)
+
+# ** Purification info - number of iter ######
+output$dif_raju_puri_info <- renderPrint({
+  model <- model_DIF_IRT_Raju()
+  if (input$puri_Raju & !is.null(model_DIF_IRT_Raju()$difPur)) {
+    cat("Table below describes purification process, where rows correspond to purification iteration and columns to items.
+        Value of '1' in the i-th row means that an item was detected as DIF in (i-1)-th step, while value of '0' means that
+        item was not detected as DIF. The first row corresponds to the initial classification of the items when all items
+        were used for calculation of DIF matching criterion. ")
+    nrIter <- model$nrPur
+    cat("In this case, the convergence was", ifelse(model$convergence, "reached", "NOT reached even"), "after", nrIter,
+        ifelse(nrIter == 1, "iteration.", "iterations."))
+  } else if (input$puri_Raju & is.null(model_DIF_IRT_Raju()$difPur)) {
+    cat("No DIF items detected whatsoever, nothing to show.")
+  } else {
+    cat("Item purification not requested! Nothing to show.")
+  }
+})
+
+# ** Note setup ######
+note_raju <- reactive({
+
+  model <- model_DIF_IRT_Raju()
+
+  res <- NULL
+
+  res$mod <- paste0("Model: ", model$model)
+  res$p_adj <- paste("P-value correction method:", switch(
+    model$p.adjust.method,
+    holm = "Holm", hochberg = "Hochberg", hommel = "Hommel",
+    bonferroni = "Bonferroni", BH = "Benjamini-Hochberg",
+    BY = "Benjamini-Yekutieli",
+    none = "none"
+  ))
+  res$puri <- paste("Item purification:", ifelse(model$purification, "used", "unutilized"))
+  res$thr <-  paste0("Detection threshold: ", -round(model$thr, 4),
+                     " and ", round(model$thr, 4), " (significance level: ",
+                     model$alpha, ")")
+  res$signed <- paste0("Type of Raju's Z statistic: ",
+                       ifelse(model$signed, "based on signed area", "based on unsigned area"))
+  res
+})
+
+output$note_raju <- renderUI({
+  txt_effect <- ifelse(input$type_print_DIF_IRT_lord == "1PL",
+                       "Effect size codes: 'A': negligible effect; 'B': moderate effect; 'C': large effect </br>
+                       Effect size codes: 0 'A' 1.0 'B' 1.5 'C' (for absolute values of 'deltaRaju')",
+                       "")
+  HTML(
+    paste(
+      "Notes:",
+      note_raju()$mod,
+      note_raju()$p_adj,
+      note_raju()$puri,
+      note_raju()$thr,
+      note_raju()$signed,
+      "Signif. codes: 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1",
+      txt_effect,
+      sep = "</br>"
+    )
+  )
+})
+
+# ** Download tables ######
+output$download_raju_dif <- downloadHandler(
+  filename = function() {
+    paste("DIF_Raju_statistics",".csv",sep = "")
+  },
+  content = function(file) {
+    data <- coef_raju_dif()
+
+    colnames(data) <- gsub("[%{}]|(mathit)", "", colnames(data))
+    rownames(data) <- item_names()
+
+    write.csv(data[,-4], file) # w/o blank col
+    write(paste(
+      "Notes:",
+      note_raju()$mod,
+      note_raju()$p_adj,
+      note_raju()$puri,
+      note_raju()$thr,
+      note_raju()$signed,
+      "Signif. codes: 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1",
+      "Effect size codes: 'A': negligible effect; 'B': moderate effect; 'C': large effect",
+      "Effect size codes: 0 'A' 1.0 'B' 1.5 'C' (for absolute values of 'deltaRaju')",
+      sep = "\n"), file, append = T)
+  }
+)
+output$download_raju_dif_puri <- downloadHandler(
+  filename = function() {
+    paste0("DIF_Raju_purification", ".csv")
+  },
+  content = function(file) {
+    data <- dif_raju_puri_table()
+    write.csv(data, file)
+  }
+)
+
+# ** ITEMS ######
 
 # ** Plot ######
 plot_DIF_IRT_RajuInput <- reactive({
-  fitRaju <- model_DIF_IRT_Raju_plot()
+  fitRaju <- model_DIF_IRT_Raju()
   item <- input$difirt_raju_itemSlider
 
   g <- plotDIFirt(parameters = fitRaju$itemParInit, test = "Raju",
@@ -2549,7 +3150,6 @@ output$irtint_raju <- renderUI({
   withMathJax(HTML(txt))
 })
 
-
 # ** Equation ######
 output$irteq_raju <- renderUI({
   type <- input$type_plot_DIF_IRT_raju
@@ -2581,12 +3181,17 @@ output$irteq_raju <- renderUI({
 # ** Table with coefficients ######
 tab_coef_DIF_IRT_Raju <- reactive({
 
-  fitRaju <- model_DIF_IRT_Raju_plot()
+  fitRaju <- model_DIF_IRT_Raju()
   m <- nrow(fitRaju$itemParInit)/2
 
-  mR <- fitRaju$itemParInit[1:m, ]
-  mF <- fitRaju$itemParInit[(m+1):(2*m), ]
-  mF <- itemRescale(mR, mF)
+  if (input$puri_Raju_plot) {
+    mR <- fitRaju$itemParFinal[1:m, ]
+    mF <- fitRaju$itemParFinal[(m+1):(2*m), ]
+  } else {
+    mR <- fitRaju$itemParInit[1:m, ]
+    mF <- fitRaju$itemParInit[(m+1):(2*m), ]
+    mF <- itemRescale(mR, mF)
+  }
 
   par <- rbind(mR, mF)
 
@@ -2627,12 +3232,6 @@ include.rownames = T,
 include.colnames = T)
 
 # ** Warning for missing values ####
-output$DIF_Raju_na_alert <- renderUI({
-  txt <- na_score()
-  HTML(txt)
-})
-
-# ** Warning for missing values ####
 output$DIF_Raju_item_na_alert <- renderUI({
   txt <- na_score()
   HTML(txt)
@@ -2671,139 +3270,264 @@ output$DIF_SIBTEST_NA_alert <- renderUI({
   HTML(txt)
 })
 
+
+####### ** DIF statistic and parameters tables ####
+coef_sibtest_dif <- reactive({
+  res <- DIF_SIBTEST_model()
+
+  # deal with only one pval base od model specs
+  pval <- if (res$p.adjust.method == "none") {
+    res$p.value
+  } else {
+    res$adjusted.p
+  }
+
+  pval_symb <- symnum(pval,
+                      c(0, 0.001, 0.01, 0.05, 0.1, 1),
+                      symbols = c("***", "**", "*", ".", ""))
+
+  tab <- data.frame(
+    res$Beta,
+    res$SE,
+    res$X2,
+    pval,
+    pval_symb
+  )
+
+  colnames(tab) <-
+    c(
+      "%%mathit{\\beta}%%",
+      "SE(%%mathit{\\beta}%%)",
+      "%%mathit{\\chi^2}%%",
+      ifelse(
+        res$p.adjust.method == "none",
+        "%%mathit{p}%%-value",
+        "adj. %%mathit{p}%%-value"
+      ),
+      ""
+    )
+
+  rownames(tab) <- item_names()
+
+  tab
+})
+
+output$coef_sibtest_dif <- renderTable({coef_sibtest_dif()}, rownames = T, colnames = T)
+
+# ** Items detected text ######
+output$sibtest_dif_items <- renderPrint({
+  DIFitems <- DIF_SIBTEST_model()$DIFitems
+  if (DIFitems[1] == "No DIF item detected") {
+    txt <- "No item was detected as DIF."
+  } else {
+    txt <- paste0("Items detected as DIF items: ", paste(item_names()[DIFitems], collapse = ", "))
+  }
+  HTML(txt)
+})
+
+# ** Purification table ######
+dif_sibtest_puri_table <- reactive({
+  tab <- DIF_SIBTEST_model()$difPur
+
+  if (!is.null(tab)) {
+    colnames(tab) <- item_names()
+    rownames(tab) <- paste0("Step ", seq(0, nrow(tab) - 1))
+    tab
+  }
+})
+output$dif_sibtest_puri_table <- renderTable({dif_sibtest_puri_table()},
+                                          rownames = T, colnames = T, digits = 0)
+
+# ** Purification info - number of iter ######
+output$dif_sibtest_puri_info <- renderPrint({
+  model <- DIF_SIBTEST_model()
+  if (input$DIF_SIBTEST_purification & !is.null(model$difPur)) {
+    cat("Table below describes purification process, where rows correspond to purification iteration and columns to items.
+        Value of '1' in the i-th row means that an item was detected as DIF in (i-1)-th step, while value of '0' means that
+        item was not detected as DIF. The first row corresponds to the initial classification of the items when all items
+        were used for calculation of DIF matching criterion. ")
+    nrIter <- model$nrPur
+    cat("In this case, the convergence was", ifelse(model$convergence, "reached", "NOT reached even"), "after", nrIter,
+        ifelse(nrIter == 1, "iteration.", "iterations."))
+  } else if (input$DIF_SIBTEST_purification & is.null(model$difPur)) {
+    cat("No DIF items detected whatsoever, nothing to show.")
+  } else {
+    cat("Item purification not requested! Nothing to show.")
+  }
+})
+
+# Note setup
+note_sibtest <- reactive({
+  res <- NULL
+
+  model <- DIF_SIBTEST_model()
+
+  res$type <- paste0("Tested DIF type: ", switch(model$type,
+                     "udif" = "uniform",
+                     "nudif" = "non-uniform"))
+
+  res$p_adj <-
+    paste("P-value correction method:", switch(
+      model$p.adjust.method,
+      bonferroni = "Bonferroni",
+      holm = "Holm",
+      hochberg = "Hochberg",
+      hommel = "Hommel",
+      BH = "Benjamini-Hochberg",
+      BY = "Benjamini-Yekutieli",
+      none = "none"
+    ))
+
+  res$puri <- paste("Item purification:", ifelse(model$purification == T, "used", "unutilized"))
+
+  thr <- qchisq(1 - model$alpha, model$df[1])
+  res$thr <-
+    paste0("Detection threshold: ",
+           round(thr, 4),
+           " (significance level: ",
+           model$alpha,
+           ")")
+
+  res
+})
+
+output$note_sibtest <- renderUI({
+  HTML(
+    paste(
+      "Notes:",
+      note_sibtest()$type,
+      note_sibtest()$p_adj,
+      note_sibtest()$puri,
+      note_sibtest()$thr,
+      "Signif. codes: 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1",
+      sep = "</br>"
+    )
+  )
+})
+
+# ** Download tables ######
+output$download_sibtest_dif <- downloadHandler(
+  filename = function() {
+    paste("DIF_SIBTEST_statistics",".csv",sep = "")
+  },
+  content = function(file) {
+    data <- coef_sibtest_dif()
+
+    colnames(data) <-
+      c(
+        "Beta",
+        "SE(Beta)",
+        "X^2",
+        ifelse(
+          "%%mathit{p}%%-value" %in% colnames(data),
+          "p-value",
+          "adj. p-value"
+        ),
+        ""
+      )
+
+    rownames(data) <- item_names()
+
+    write.csv(data, file)
+    write(paste(
+      "Notes:",
+      note_sibtest()$type,
+      note_sibtest()$p_adj,
+      note_sibtest()$puri,
+      note_sibtest()$thr,
+      "Signif. codes: 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1",
+      sep = "\n"), file, append = T)
+  }
+)
+output$download_sibtest_dif_puri <- downloadHandler(
+  filename = function() {
+    paste0("DIF_SIBTEST_purification", ".csv")
+  },
+  content = function(file) {
+    data <- dif_sibtest_puri_table()
+    write.csv(data, file)
+  }
+)
+
+
+
+
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # * METHOD COMPARISON ######
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-# if model refits every time option is updated to exactly the same value, it's absolutely
-# necessary to change only options that differ from intended
-# it seems it is not the case however...
+observeEvent(input$unify_button,
+             {
+               if (input$mc_dmv == "score") {
+                 # DMV ---------------------------------------------------------------------
+                 # change DMV only if custom DMV is used
 
-# TODO use Map or lapply, open the question of tidyverse
-# action button for unifying methods settings
+                 if (input$DIF_logistic_summary_matching %in% c("uploaded", "zuploaded")) {
+                   updateSelectInput(session,
+                                     inputId = "DIF_logistic_summary_matching",
+                                     selected = "zscore")
+                 }
 
-# observeEvent(input$unify_methods, {
-#
-#   puri_inputs_list <- list(
-#     "puri_DP",
-#     "DIF_MH_summary_purification",
-#     "DIF_logistic_summary_purification",
-#     "DIF_NLR_purification_print",
-#     "puri_Lord_plot",
-#     "puri_Raju",
-#     "DIF_SIBTEST_purification"
-#   )
-#
-#   corr_inputs_list <- list(
-#     "DIF_MH_summary_correction",
-#     "DIF_logistic_summary_correction",
-#     "DIF_NLR_correction_method_print",
-#     "correction_method_DIF_IRT_lordSummary",
-#     "correction_method_DIF_IRT_rajuSummary",
-#     "DIF_SIBTEST_correction"
-#   )
-#
-#   dmv_inputs_list <- list(
-#     "DIF_logistic_summary_matching",
-#     "DIF_NLR_summary_matching"
-#   )
-#
-#   # require all inputs to be "ready"
-#   lapply(c(corr_inputs_list, puri_inputs_list, dmv_inputs_list), function(x) {
-#     eval(parse(text = paste0("req(input$", x, ")")))
-#   })
-#
-#   # change input(s) to default values
-#   lapply(corr_inputs_list, function(x) {
-#     updateSelectInput(session,
-#                       inputId = paste0(x),
-#                       selected = FALSE)
-#   })
-#
-#   lapply(puri_inputs_list, function(x) {
-#     updateSelectInput(session,
-#                       inputId = paste0(x),
-#                       selected = "none")
-#   })
-#
-#   lapply(dmv_inputs_list, function(x) {
-#     updateSelectInput(session,
-#                       inputId = paste0(x),
-#                       selected = "zscore")
-#   })
-#
-#
-#   })
+                 if (input$DIF_NLR_summary_matching %in% c("uploaded", "zuploaded")) {
+                   updateSelectInput(session,
+                                     inputId = "DIF_NLR_summary_matching",
+                                     selected = "zscore")
+                 }
+               }
 
-# simpler approach...
-observeEvent(input$unify_methods, {
-  # check inputs if available
-  # req(
-  #   # input$puri_DP,
-  #   # input$DIF_MH_summary_purification,
-  #   # input$DIF_logistic_summary_purification,
-  #   # input$DIF_NLR_purification_print,
-  #   # input$puri_Lord_plot,
-  #   # input$puri_Raju,
-  #   # input$DIF_SIBTEST_purification,
-  #   #
-  #   # input$DIF_MH_summary_correction,
-  #   # input$DIF_logistic_summary_correction,
-  #   # input$DIF_NLR_correction_method_print,
-  #   # input$correction_method_DIF_IRT_lordSummary,
-  #   # input$correction_method_DIF_IRT_rajuSummary,
-  #   # input$DIF_SIBTEST_correction,
-  #
-  #   input$DIF_logistic_summary_matching,
-  #   input$DIF_NLR_summary_matching
-  # )
+               # Purification ------------------------------------------------------------
+               # no need to examine already set up values
+               # (when value of reactive remains the same, no additional computation is required)
+               # TODO: use mapply and don't repeat the code...
 
-  # set default option to all DMV (or puri, corr, respectively)
-  # BUT ONLY IF the respective options are not the same
-  # (which would be the case when user intentionally sets different options to all)
-  if (length(same_dmv()) != 0) {
-    lapply(c(
-      "DIF_logistic_summary_matching",
-      "DIF_NLR_summary_matching"
-    ), function(x) {
-      updateSelectInput(session,
-                        inputId = x,
-                        selected = "zscore")
-    })
-  }
+               if (input$mc_puri == "purify") {
+                 lapply(c(
+                   "puri_DP",
+                   "DIF_MH_summary_purification",
+                   "DIF_logistic_summary_purification",
+                   "DIF_NLR_purification_print",
+                   "puri_Lord_plot",
+                   "puri_Raju",
+                   "DIF_SIBTEST_purification"
+                 ), function(x) {
+                   updateCheckboxInput(session,
+                                       inputId = x,
+                                       value = TRUE)
+                 })
+               } else if (input$mc_puri == "dontpurify") {
+                 lapply(c(
+                   "puri_DP",
+                   "DIF_MH_summary_purification",
+                   "DIF_logistic_summary_purification",
+                   "DIF_NLR_purification_print",
+                   "puri_Lord_plot",
+                   "puri_Raju",
+                   "DIF_SIBTEST_purification"
+                 ), function(x) {
+                   updateCheckboxInput(session,
+                                       inputId = x,
+                                       value = FALSE)
+                 })
+               }
 
-  if (length(same_puri()) != 0) {
-    lapply(c(
-      "puri_DP",
-      "DIF_MH_summary_purification",
-      "DIF_logistic_summary_purification",
-      "DIF_NLR_purification_print",
-      "puri_Lord_plot",
-      "puri_Raju",
-      "DIF_SIBTEST_purification"
-    ), function(x) {
-      updateCheckboxInput(session,
-                        inputId = x,
-                        value = FALSE)
-    })
-  }
+               # Correction --------------------------------------------------------------
+               # note that there is no correction method in deltaPlot
 
-  if (length(same_corr()) != 0) {
-    lapply(c(
-      "DIF_MH_summary_correction",
-      "DIF_logistic_summary_correction",
-      "DIF_NLR_correction_method_print",
-      "correction_method_DIF_IRT_lordSummary",
-      "correction_method_DIF_IRT_rajuSummary",
-      "DIF_SIBTEST_correction"
-    ) , function(x) {
-      updateSelectInput(session,
-                        inputId = x,
-                        selected = "none")
-    })
-  }
-
-})
+               if (input$mc_corr != "asis") {
+                 lapply(c(
+                   "DIF_MH_summary_correction",
+                   "DIF_logistic_summary_correction",
+                   "DIF_NLR_correction_method_print",
+                   "correction_method_DIF_IRT_lordSummary",
+                   "correction_method_DIF_IRT_rajuSummary",
+                   "DIF_SIBTEST_correction"
+                 ) , function(x) {
+                   updateSelectInput(session,
+                                     inputId = x,
+                                     selected = input$mc_corr)
+                 })
+               }
+             })
 
 # output to be detected by conditionalPanel which in hand shows the button
 output$unify_methods_condition <- reactive({
@@ -2827,13 +3551,7 @@ same_puri <- reactive({
       input$DIF_SIBTEST_purification
     )
   )) != 1) {
-    HTML(
-      paste0(
-        "Purification has to be requested either for all the methods or none of them.",
-        br(),
-        br()
-      )
-    )
+    HTML("Warning: Purification differs across the methods.")
   }
 })
 
@@ -2848,32 +3566,86 @@ same_corr <- reactive({
       input$DIF_SIBTEST_correction
     )
   )) != 1) {
-    HTML(paste0(
-      "Correction method has to be the same for all the methods.",
-      br(),
-      br()
-    ))
+    HTML("Warning: Correction method varies across the methods.")
   }
 })
 
 same_dmv <- reactive({
-  if (length(unique(
-    list(
-      input$DIF_logistic_summary_matching,
-      input$DIF_NLR_summary_matching
-    )
-  )) != 1) {
-    HTML(paste0(
-      "DIF matching variable has to be the same for all the methods.",
-      br(),
-      br()
-    ))
+  if (input$DIF_logistic_summary_matching %in% c("uploaded", "zuploaded") |
+      input$DIF_NLR_summary_matching %in% c("uploaded", "zuploaded")) {
+    HTML("Warning: DIF matching variable should be unified across the methods!")
   }
 })
 
 output$same_puri <- renderPrint({same_puri()})
 output$same_corr <- renderPrint({same_corr()})
 output$same_dmv <- renderPrint({same_dmv()})
+
+output$mc_settings <- renderUI({
+  HTML(paste(
+    "Notes:",
+    paste(
+      "<b>Delta plot</b>",
+      note_dp()$puri,
+      note_dp()$axes,
+      note_dp()$thr,
+      sep = "<br>"
+    ),
+    paste(
+      "<b>Mantel-Haenszel</b>",
+      note_mh()$p_adj,
+      note_mh()$puri,
+      note_mh()$thr_rounded,
+      sep = "<br>"
+    ),
+    paste(
+      "<b>Logistic regression</b>",
+      note_log()$dmv,
+      note_log()$type,
+      note_log()$p_adj,
+      note_log()$puri,
+      note_log()$thr_rounded,
+      sep = "<br>"
+    ),
+    paste(
+      "<b>Generalized logistic</b>",
+      note_nlr()$dmv,
+      note_nlr()$mod,
+      note_nlr()$type,
+      note_nlr()$p_adj,
+      note_nlr()$puri,
+      note_nlr()$thr_rounded,
+      sep = "<br>"
+    ),
+    paste(
+      "<b>IRT Lord</b>",
+      note_lord()$mod,
+      note_lord()$p_adj,
+      note_lord()$puri,
+      note_lord()$thr,
+      sep = "<br>"
+    ),
+    paste(
+      "<b>IRT Raju</b>",
+      note_raju()$mod,
+      note_raju()$p_adj,
+      note_raju()$puri,
+      note_raju()$thr,
+      note_raju()$signed,
+      sep = "<br>"
+    ),
+    paste(
+      "<b>SIBTEST</b>",
+      note_sibtest()$type,
+      note_sibtest()$p_adj,
+      note_sibtest()$puri,
+      note_sibtest()$thr,
+      sep = "<br>"
+    ),
+    sep = "<p>"
+  ))
+})
+
 
 output$method_comparison_table <- renderTable({
   group <- group()
@@ -2882,9 +3654,9 @@ output$method_comparison_table <- renderTable({
   l_methods[['Delta']] <- try(deltaGpurn()$DIFitems)
   l_methods[['MH']] <- try(DIF_MH_model()$DIFitems)
   l_methods[['LR']] <- try(DIF_logistic_model()$DIFitems)
-  l_methods[['NLR']] <- try(model_DIF_NLR_print()$DIFitems)
-  l_methods[['IRT']] <- try(model_DIF_IRT_Lord_print()$DIFitems)
-  l_methods[['RAJU']] <- try(model_DIF_IRT_Raju_print()$DIFitems)
+  l_methods[['NLR']] <- try(model_DIF_NLR()$DIFitems)
+  l_methods[['LORD']] <- try(model_DIF_IRT_Lord()$DIFitems)
+  l_methods[['RAJU']] <- try(model_DIF_IRT_Raju()$DIFitems)
   l_methods[['SIBTEST']] <- try(DIF_SIBTEST_model()$DIFitems)
   # l_methods[['DFF']] <- try(DDF_multi_model()$DDFitems)
 

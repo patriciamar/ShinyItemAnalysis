@@ -136,15 +136,15 @@
 
       if (min(P.ADJUST, na.rm = T) >= alpha) {
         DIFitems <- "No DIF item detected"
-        itemParBest <- rbind(m_null, m_null)
+        # itemParBest <- rbind(m_null, m_null)
       } else {
         DIFitems <- which(P.ADJUST < alpha)
         nodif <- which(!1:nrItems %in% DIFitems)
-        if (estPar) {
-          itemParBest <- itemParInit
-          itemParBest[nodif, ] <- m_null[nodif, ]
-          itemParBest[nodif + nrItems, ] <- m_null[nodif, ]
-        }
+        # if (estPar) {
+        #   itemParBest <- itemParInit
+        #   itemParBest[nodif, ] <- m_null[nodif, ]
+        #   itemParBest[nodif + nrItems, ] <- m_null[nodif, ]
+        # }
       }
 
       if (is.null(p.adjust.method)) {
@@ -159,7 +159,7 @@
         signed = signed, p.adjust.method = p.adjust.method,
         adjusted.p = adjusted.p, purification = purify, model = model,
         c = Guess, engine = engine, discr = discr,
-        itemParInit = itemParInit, itemParBest = itemParBest,
+        itemParInit = itemParInit, # itemParBest = itemParBest,
         estPar = estPar, names = dataName, anchor.names = dif.anchor,
         save.output = save.output, output = output
       )
@@ -183,15 +183,15 @@
       if (min(p.adjust1, na.rm = T) >= alpha) {
         DIFitems <- "No DIF item detected"
         noLoop <- TRUE
-        if (is.null(Guess)) {
-          m_null <- switch(model,
-            `1PL` = itemParEst(DATA, model = "1PL", engine = engine, discr = discr),
-            `2PL` = itemParEst(DATA, model = "2PL")
-          )
-        } else {
-          m_null <- itemParEst(DATA, model = "3PL", c = Guess)
-        }
-        itemParBest <- rbind(m_null, m_null)
+        # if (is.null(Guess)) {
+        #   m_null <- switch(model,
+        #     `1PL` = itemParEst(DATA, model = "1PL", engine = engine, discr = discr),
+        #     `2PL` = itemParEst(DATA, model = "2PL")
+        #   )
+        # } else {
+        #   m_null <- itemParEst(DATA, model = "3PL", c = Guess)
+        # }
+        # itemParBest <- rbind(m_null, m_null)
         itemParFinal <- rbind(m0, m1p)
         if (is.null(p.adjust.method)) {
           adjusted.p <- NULL
@@ -207,7 +207,7 @@
           difPur = difPur, convergence = noLoop, model = model,
           c = Guess, engine = engine, discr = discr,
           itemParInit = itemParInit, itemParFinal = itemParFinal,
-          itemParBest = itemParBest,
+          # itemParBest = itemParBest,
           estPar = estPar, names = dataName, anchor.names = NULL,
           save.output = save.output, output = output
         )
@@ -269,26 +269,26 @@
         stats1 <- stats2
         pval1 <- 2 * (1 - pnorm(abs(stats1)))
         p.adjust1 <- p.adjust(pval1, method = adj.method)
-        if (is.null(Guess)) {
-          m_null <- switch(model,
-            `1PL` = itemParEst(DATA, model = "1PL", engine = engine, discr = discr),
-            `2PL` = itemParEst(DATA, model = "2PL")
-          )
-        } else {
-          m_null <- itemParEst(DATA, model = "3PL", c = Guess)
-        }
+        # if (is.null(Guess)) {
+        #   m_null <- switch(model,
+        #     `1PL` = itemParEst(DATA, model = "1PL", engine = engine, discr = discr),
+        #     `2PL` = itemParEst(DATA, model = "2PL")
+        #   )
+        # } else {
+        #   m_null <- itemParEst(DATA, model = "3PL", c = Guess)
+        # }
 
         if (min(p.adjust1, na.rm = T) >= alpha) {
           DIFitems <- "No DIF item detected"
-          itemParBest <- rbind(m_null, m_null)
+          # itemParBest <- rbind(m_null, m_null)
         } else {
           DIFitems <- which(p.adjust1 < alpha)
           nodif <- which(!1:nrItems %in% DIFitems)
-          if (estPar) {
-            itemParBest <- itemParInit
-            itemParBest[nodif, ] <- m_null[nodif, ]
-            itemParBest[nodif + nrItems, ] <- m_null[nodif, ]
-          }
+          # if (estPar) {
+          #   itemParBest <- itemParInit
+          #   itemParBest[nodif, ] <- m_null[nodif, ]
+          #   itemParBest[nodif + nrItems, ] <- m_null[nodif, ]
+          # }
         }
 
         if (is.null(p.adjust.method)) {
@@ -297,14 +297,14 @@
           adjusted.p <- p.adjust1
         }
         RES <- list(
-          RajuZ = stats2, p.value = pval2, alpha = alpha,
-          thr = qnorm(1 - alpha / 2), DIFitems = dif2,
+          RajuZ = stats2, p.value = pval1, alpha = alpha,
+          thr = qnorm(1 - alpha / 2), DIFitems = DIFitems,
           signed = signed, p.adjust.method = p.adjust.method,
           adjusted.p = adjusted.p, purification = purify, nrPur = nrPur,
           difPur = difPur, convergence = noLoop, model = model,
           c = Guess, engine = engine, discr = discr,
           itemParInit = itemParInit, itemParFinal = itemParFinal,
-          itemParBest = itemParBest,
+          # itemParBest = itemParBest,
           estPar = estPar, names = dataName, anchor.names = NULL,
           save.output = save.output, output = output
         )

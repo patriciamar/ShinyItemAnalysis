@@ -167,15 +167,15 @@
 
       if (min(P.ADJUST, na.rm = T) >= alpha) {
         DIFitems <- "No DIF item detected"
-        itemParBest <- rbind(m_null, m_null)
+        # itemParBest <- rbind(m_null, m_null)
       } else {
         DIFitems <- which(P.ADJUST < alpha)
         nodif <- which(!1:nrItems %in% DIFitems)
-        if (estPar) {
-          itemParBest <- itemParInit
-          itemParBest[nodif, ] <- m_null[nodif, ]
-          itemParBest[nodif + nrItems, ] <- m_null[nodif, ]
-        }
+        # if (estPar) {
+        #   itemParBest <- itemParInit
+        #   itemParBest[nodif, ] <- m_null[nodif, ]
+        #   itemParBest[nodif + nrItems, ] <- m_null[nodif, ]
+        # }
       }
       if (is.null(p.adjust.method)) {
         adjusted.p <- NULL
@@ -188,7 +188,8 @@
         thr = Q, DIFitems = DIFitems, purification = purify,
         model = model, c = Guess, engine = engine, discr = discr,
         p.adjust.method = p.adjust.method, adjusted.p = adjusted.p,
-        itemParInit = itemParInit, itemParBest = itemParBest, estPar = estPar,
+        itemParInit = itemParInit, # itemParBest = itemParBest,
+        estPar = estPar,
         names = dataName, anchor.names = dif.anchor, save.output = save.output,
         output = output
       )
@@ -213,16 +214,16 @@
       if (min(p.adjust1, na.rm = T) >= alpha) {
         DIFitems <- "No DIF item detected"
         noLoop <- TRUE
-        if (is.null(Guess)) {
-          m_null <- switch(model,
-            `1PL` = itemParEst(DATA, model = "1PL", engine = engine, discr = discr),
-            `2PL` = itemParEst(DATA, model = "2PL"),
-            `3PL` = itemParEst(DATA, model = "3PL")
-          )
-        } else {
-          m_null <- itemParEst(DATA, model = "3PL", c = Guess)
-        }
-        itemParBest <- rbind(m_null, m_null)
+        # if (is.null(Guess)) {
+        #   m_null <- switch(model,
+        #     `1PL` = itemParEst(DATA, model = "1PL", engine = engine, discr = discr),
+        #     `2PL` = itemParEst(DATA, model = "2PL"),
+        #     `3PL` = itemParEst(DATA, model = "3PL")
+        #   )
+        # } else {
+        #   m_null <- itemParEst(DATA, model = "3PL", c = Guess)
+        # }
+        # itemParBest <- rbind(m_null, m_null)
         itemParFinal <- rbind(m0, m1p)
         if (is.null(p.adjust.method)) {
           adjusted.p <- NULL
@@ -237,7 +238,8 @@
           convergence = noLoop, model = model, c = Guess,
           engine = engine, discr = discr, p.adjust.method = p.adjust.method,
           adjusted.p = adjusted.p, itemParInit = itemParInit,
-          itemParFinal = itemParFinal, itemParBest = itemParBest, estPar = estPar,
+          itemParFinal = itemParFinal, # itemParBest = itemParBest,
+          estPar = estPar,
           names = dataName, anchor.names = NULL, save.output = save.output,
           output = output
         )
@@ -300,27 +302,27 @@
         pval1 <- 1 - pchisq(stats1, DF)
         p.adjust1 <- p.adjust(pval1, method = adj.method)
 
-        if (is.null(Guess)) {
-          m_null <- switch(model,
-            `1PL` = itemParEst(DATA, model = "1PL", engine = engine, discr = discr),
-            `2PL` = itemParEst(DATA, model = "2PL"),
-            `3PL` = itemParEst(DATA, model = "3PL")
-          )
-        } else {
-          m_null <- itemParEst(DATA, model = "3PL", c = Guess)
-        }
+        # if (is.null(Guess)) {
+        #   m_null <- switch(model,
+        #     `1PL` = itemParEst(DATA, model = "1PL", engine = engine, discr = discr),
+        #     `2PL` = itemParEst(DATA, model = "2PL"),
+        #     `3PL` = itemParEst(DATA, model = "3PL")
+        #   )
+        # } else {
+        #   m_null <- itemParEst(DATA, model = "3PL", c = Guess)
+        # }
 
         if (min(p.adjust1, na.rm = T) >= alpha) {
           DIFitems <- "No DIF item detected"
-          itemParBest <- rbind(m_null, m_null)
+          # itemParBest <- rbind(m_null, m_null)
         } else {
           DIFitems <- which(p.adjust1 < alpha)
           nodif <- which(!1:nrItems %in% DIFitems)
-          if (estPar) {
-            itemParBest <- itemParInit
-            itemParBest[nodif, ] <- m_null[nodif, ]
-            itemParBest[nodif + nrItems, ] <- m_null[nodif, ]
-          }
+          # if (estPar) {
+          #   itemParBest <- itemParInit
+          #   itemParBest[nodif, ] <- m_null[nodif, ]
+          #   itemParBest[nodif + nrItems, ] <- m_null[nodif, ]
+          # }
         }
         if (is.null(p.adjust.method)) {
           adjusted.p <- NULL
@@ -334,7 +336,8 @@
           model = model, c = Guess, engine = engine,
           discr = discr, p.adjust.method = p.adjust.method,
           adjusted.p = adjusted.p, itemParInit = itemParInit,
-          itemParFinal = itemParFinal, itemParBest = itemParBest, estPar = estPar,
+          itemParFinal = itemParFinal, # itemParBest = itemParBest,
+          estPar = estPar,
           names = dataName, anchor.names = NULL, save.output = save.output,
           output = output
         )

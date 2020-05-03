@@ -281,7 +281,8 @@ DDplot <- function(data, item.names, k = 3, l = 1, u = 3, discrim = "ULI",
         fun.y = mean, position = "dodge", geom = "bar",
         alpha = 0.7, width = 0.8
       ) +
-      xlab(xlabel[j]) + ylab(diffName[j]) +
+      xlab(xlabel[j]) +
+      ylab(diffName[j]) +
       scale_y_continuous(
         expand = c(0, 0),
         limits = c(

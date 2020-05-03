@@ -205,7 +205,7 @@ if (any(params$corr_plot != "")) {
 
 `r if(!(params$isCriterionPresent) & params$validity_check){"No criterion variable vector is present. The predictive validity analysis could not have been generated."}`
 
-```{r validity-plot, echo = FALSE, fig.width = 11, fig.height = 4, fig.align = 'center', dpi = 300}
+```{r validity-plot, echo = FALSE, fig.width = 11, fig.height = 4, fig.align = 'center', dpi = 300, message = FALSE}
 if(params$isCriterionPresent & params$validity_check){
   params$validity_plot + 
     theme(text = element_text(size = 11),

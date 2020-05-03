@@ -2,7 +2,7 @@
 
 ----------
 
-### Changes in version 1.3.3 (2020-04-29)
+### Changes in version 1.3.3 (2020-05-04)
 
 #### BUG FIXING
   * `plotDIFLogistic()` now correctly plots matching criterion when item purification 
@@ -14,6 +14,7 @@
   * Downloadable tables are newly provided in shiny app in DIF sections.
   * Iterations of purification process are now displayed in downloadable tables
     in the DIF sections of shiny app.
+  * DIF method comparison table is provided in DIF section of the shiny app.
 
 #### MINOR UPDATES
   * Help page for the `ShinyItemAnalysis` package was added.

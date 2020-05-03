@@ -268,7 +268,7 @@ if(params$isCriterionPresent & params$validity_check){
 
 `r if(params$isCriterionPresent & params$validity_check){txt}`
 
-```{r validity-plot, echo = FALSE, results = "hide", fig.height = 4.5, fig.width = 11}
+```{r validity-plot, echo = FALSE, results = "hide", fig.height = 4.5, fig.width = 11, message = FALSE}
 if(params$isCriterionPresent & params$validity_check){
   params$validity_plot + 
     theme(text = element_text(size = 16), 
