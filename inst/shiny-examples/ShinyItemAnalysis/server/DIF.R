@@ -92,13 +92,16 @@ include.colnames = T)
 DIF_total_hist_Input <- reactive({
   group <- group()
   match <- DIF_total_matching()
+  xlab <- switch(input$DIF_total_matching,
+                 "score" =  "Total score",
+                 "uploaded" = "Matching criterion")
 
   df <- data.table(score = match,
                    group = as.factor(group))
 
   g <- ggplot(data = df, aes(x = score, fill = group, col = group)) +
     geom_histogram(binwidth = 1, position = "dodge2", alpha = 0.75) +
-    xlab("Total score") +
+    xlab(xlab) +
     ylab("Number of respondents") +
     scale_fill_manual(values = c("dodgerblue2", "goldenrod2"), labels = c("Reference", "Focal")) +
     scale_colour_manual(values = c("dodgerblue2", "goldenrod2"), labels = c("Reference", "Focal")) +

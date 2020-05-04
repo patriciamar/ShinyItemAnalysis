@@ -600,10 +600,12 @@ uiDIF <-
                         # ** Summary ####
                         tabPanel('Summary',
                                  h3('Lord test for IRT models'),
-                                 p('Lord test (Lord, 1980) is based on IRT model (1PL, 2PL, or 3PL with the same guessing). It compares item parameters for the two
-                                    groups to detect DIF. In statistical terms, Lord statistic is equal to Wald statistic.'),
+                                 p('To detect DIF, Lord test (Lord, 1980) compares item parameters of selected IRT model, fitted separately
+                                    on data of the two groups. Model is either 1PL, 2PL, or 3PL with guessing which is the same for the two
+                                    groups. In case of 3PL model, the guessing parameter is estimated based on the whole dataset and is
+                                    subsequently considered fixed. In statistical terms, Lord statistic is equal to Wald statistic.'),
                                  h4("Method specification"),
-                                 p('Here you can choose ', strong('model'), ' to test. You can also select ', strong('correction method'), ' for multiple comparison,
+                                 p('Here you can choose underlying IRT ', strong('model'), ' used to test DIF. You can also select ', strong('correction method'), ' for multiple comparison,
                                    and/or', strong('item purification.')),
                                  fluidRow(
                                    column(1,
@@ -634,7 +636,9 @@ uiDIF <-
                                  p("Summary table contains information about Lord's \\(\\chi^2\\)-statistics, corresponding \\(p\\)-values
                                    considering selected adjustement, and significance codes. Table also provides estimated parameters for
                                    both groups. Note that item parameters might slightly differ even for non-DIF items as two seperate models are
-                                   fitted, however this difference is non-significant. "),
+                                   fitted, however this difference is non-significant. Also note that under the 3PL model, the guessing parameter
+                                   \\(c\\) is estimated from the whole dataset, and is considered fixed in the final models, thus no standard error
+                                   is displayed."),
                                  uiOutput("DIF_IRT_LORD_na_alert"),
                                  strong(textOutput("lord_dif_items")),
                                  br(),
@@ -659,10 +663,12 @@ uiDIF <-
                         # ** Items ####
                         tabPanel('Items',
                                  h3('Lord test for IRT models'),
-                                 p('Lord test (Lord, 1980) is based on IRT model (1PL, 2PL, or 3PL with the same guessing). It compares item parameters for the two
-                                    groups to detect DIF. In statistical terms, Lord statistic is equal to Wald statistic.'),
+                                 p('To detect DIF, Lord test (Lord, 1980) compares item parameters of selected IRT model, fitted separately
+                                    on data of the two groups. Model is either 1PL, 2PL, or 3PL with guessing which is the same for the two
+                                    groups. In case of 3PL model, the guessing parameter is estimated based on the whole dataset and is
+                                    subsequently considered fixed. In statistical terms, Lord statistic is equal to Wald statistic.'),
                                  h4("Method specification"),
-                                 p('Here you can choose ', strong('model'), ' to test. You can also select ', strong('correction method'), ' for multiple comparison,
+                                 p('Here you can choose underlying IRT ', strong('model'), ' used to test DIF. You can also select ', strong('correction method'), ' for multiple comparison,
                                    and/or', strong('item purification.'), "For selected", strong("item"), "you can display plot of its characteristic curves and table
                                    of its estimated parameters with standard errors. "),
                                  fluidPage(
@@ -702,8 +708,10 @@ uiDIF <-
                                  uiOutput('irtint_lord'),
                                  fluidRow(column(12, align = "center", uiOutput('irteq_lord'))),
                                  h4("Table of parameters"),
-                                 p("Table summarizes estimated item parameters together with standard errors. Note that item parameters might slightly differ
-                                    even for non-DIF items as two seperate models are fitted, however this difference is non-significant. "),
+                                 p("Table summarizes estimated item parameters together with standard errors. Note that item parameters might slightly
+                                 differ even for non-DIF items as two seperate models are fitted, however this difference is non-significant.
+                                 Also note that under the 3PL model, the guessing parameter \\(c\\) is estimated from the whole dataset, and
+                                 is considered fixed in the final models, thus no standard error is displayed."),
                                  fluidRow(column(12, align = "center", tableOutput('tab_coef_DIF_IRT_Lord'))),
                                  br(),
                                  h4("Selected R code"),
@@ -718,10 +726,12 @@ uiDIF <-
                         # ** Summary ####
                         tabPanel('Summary',
                                  h3('Raju test for IRT models'),
-                                 p('Raju test (Raju, 1988, 1990) is based on IRT model (1PL, 2PL, or 3PL with the same guessing). It calculates
-                                    the area between the item charateristic curves for the two groups to detect DIF.'),
+                                 p('To detect DIF, Raju test (Raju, 1988, 1990) uses area between the item charateristic curves of selected
+                                    IRT model, fitted separately on data of the two groups. Model is either 1PL, 2PL, or 3PL with guessing
+                                    which is the same for the two groups. In case of 3PL model, the guessing parameter is estimated based on the whole dataset and is
+                                    subsequently considered fixed.'),
                                  h4("Method specification"),
-                                 p('Here you can choose ', strong('model'), ' to test. You can also select ', strong('correction method'), ' for multiple comparison,
+                                 p('Here you can choose underlying IRT ', strong('model'), ' used to test DIF. You can also select ', strong('correction method'), ' for multiple comparison,
                                    and/or', strong('item purification.')),
                                  fluidPage(
                                    column(1,
@@ -752,7 +762,8 @@ uiDIF <-
                                  p("Summary table contains information about Raju's \\(Z\\)-statistics, corresponding \\(p\\)-values
                                    considering selected adjustement, and significance codes. Table also provides estimated parameters for
                                    both groups. Note that item parameters might slightly differ even for non-DIF items as two seperate models are
-                                   fitted, however this difference is non-significant. "),
+                                   fitted, however this difference is non-significant. Also note that under the 3PL model, the guessing parameter \\(c\\) is estimated from the whole dataset, and
+                                   is considered fixed in the final models, thus no standard error is displayed."),
                                  # verbatimTextOutput('print_DIF_IRT_Raju'),
                                  uiOutput("DIF_IRT_Raju_na_alert"),
                                  strong(textOutput("raju_dif_items")),
@@ -778,10 +789,12 @@ uiDIF <-
                         # ** Items ####
                         tabPanel('Items',
                                  h3('Raju test for IRT models'),
-                                 p('Raju test (Raju, 1988, 1990) is based on IRT model (1PL, 2PL, or 3PL with the same guessing). It calculates
-                                    the area between the item charateristic curves for the two groups to detect DIF.'),
+                                 p('To detect DIF, Raju test (Raju, 1988, 1990) uses area between the item charateristic curves of selected
+                                    IRT model, fitted separately on data of the two groups. Model is either 1PL, 2PL, or 3PL with guessing
+                                    which is the same for the two groups. In case of 3PL model, the guessing parameter is estimated based on the whole dataset and is
+                                    subsequently considered fixed.'),
                                  h4("Method specification"),
-                                 p('Here you can choose ', strong('model'), ' to test. You can also select ', strong('correction method'), ' for multiple comparison,
+                                 p('Here you can choose underlying IRT ', strong('model'), ' used to test DIF. You can also select ', strong('correction method'), ' for multiple comparison,
                                    and/or', strong('item purification.'), "For selected", strong("item"), "you can display plot of its characteristic curves and table
                                    of its estimated parameters with standard errors. "),
                                  fluidPage(
@@ -824,7 +837,9 @@ uiDIF <-
                                  fluidRow(column(12, align = "center", uiOutput('irteq_raju'))),
                                  h4("Table of parameters"),
                                  p("Table summarizes estimated item parameters together with standard errors. Note that item parameters might slightly
-                                    differ even for non-DIF items as two seperate models are fitted, however this difference is non-significant. "),
+                                    differ even for non-DIF items as two seperate models are fitted, however this difference is non-significant.
+                                    Also note that under the 3PL model, the guessing parameter \\(c\\) is estimated from the whole dataset, and
+                                    is considered fixed in the final models, thus no standard error is available."),
                                  fluidRow(column(12, align = "center", tableOutput('tab_coef_DIF_IRT_Raju'))),
                                  br(),
                                  h4("Selected R code"),
@@ -836,7 +851,7 @@ uiDIF <-
              tabPanel("SIBTEST",
                       h3("SIBTEST"),
                       p("The SIBTEST method (Shealy & Stout, 1993) allows for detection of uniform DIF without requiring
-                        an item response model approach. Its modified version, the Crossing-SIBTEST (Chalmers, 2018; Li & Stout, 1996),
+                        an item response model. Its modified version, the Crossing-SIBTEST (Chalmers, 2018; Li & Stout, 1996),
                         focuses on detection of non-uniform DIF."),
                       h4("Method specification"),
                       p("Here you can choose ", strong("type"), " of DIF to test. With uniform DIF, SIBTEST is applied, while with non-uniform DIF,
@@ -864,7 +879,8 @@ uiDIF <-
                                                     label = "Item purification",
                                                     value = FALSE))),
                       h4("Summary table"),
-                      p("Summary table contains estimates of \\(\\beta\\) together with standard errors (when testing uniform DIF), corresponding \\(\\chi^2\\)-statistics
+                      p("Summary table contains estimates of \\(\\beta\\) together with standard errors
+                      (only available when testing uniform DIF), corresponding \\(\\chi^2\\)-statistics
                         with \\(p\\)-values considering selected adjustement, and significance codes. "),
                       uiOutput("DIF_SIBTEST_NA_alert"),
                       # verbatimTextOutput("DIF_SIBTEST_print"),
