@@ -32,6 +32,7 @@ Imports:
     psychometric,
     reshape2,
     rmarkdown,
+    rstudioapi,
     shiny (>= 1.0.3),
     shinyBS,
     shinydashboard,

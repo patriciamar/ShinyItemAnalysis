@@ -2,6 +2,10 @@
 
 ----------
 
+### Changes in version 1.3.3-1 (2020-05-18)
+  * startShinyItemAnalysis() now by default starts as a background job in Rstudio.
+    This permits the user to work and try sample R code examples in the console.
+
 ### Changes in version 1.3.3 (2020-05-04)
 
 #### BUG FIXING

@@ -2,18 +2,31 @@
 % Please edit documentation in R/startShinyItemAnalysis.R
 \name{startShinyItemAnalysis}
 \alias{startShinyItemAnalysis}
-\title{This function will start ShinyItemAnalysis application.}
+\title{Start ShinyItemAnalysis application}
 \usage{
-startShinyItemAnalysis()
+startShinyItemAnalysis(run_in = "background")
+}
+\arguments{
+\item{run_in}{character: how the application shloud run; set to anything except "background" to run the application the usual way (in the console)}
+}
+\value{
+No return value. Called for side effects. However, the call creates \code{job_id} object accessible from global scope.
 }
 \description{
 An interactive shiny application for running test and item analysis.
+By default, the function runs the application as a background process
+(Jobs tab in RStudio). User is then free to use the Console for other
+work and to try the sample R code examples.
+You can still run the app the usual way in the console by specifying
+anything but "background" in the \code{run_in} argument.
 }
 \examples{
 \dontrun{
 rm(list = ls())
 startShinyItemAnalysis()
+startShinyItemAnalysis(run_in = "console")
 }
+
 }
 \author{
 Patricia Martinkova \cr

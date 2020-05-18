@@ -10,7 +10,6 @@ require(data.table)
 require(difNLR)
 require(difR)
 require(ggdendro)
-require(ggplot2)
 require(grid)
 require(gridExtra)
 require(knitr)
@@ -29,9 +28,9 @@ require(shiny)
 require(shinyBS)
 require(ShinyItemAnalysis)
 require(shinyjs)
-require(stringr)
 require(VGAM)
 require(xtable)
+require(tidyverse)
 
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # DATA ######
@@ -45,6 +44,8 @@ options(shiny.maxRequestSize = 30*1024^2)
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function(input, output, session) {
+  # kills the local server as the window closes
+  session$onSessionEnded(function(x) {stopApp()})
 
   #%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   ### REACTIVE VALUES ######
