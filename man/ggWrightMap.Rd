@@ -48,9 +48,6 @@ ggWrightMap(theta, b, item.names = item.names)
 \references{
 Wright, B. D., & Stone, M. H. (1979). Best test design.
 }
-\seealso{
-\code{\link[WrightMap]{wrightMap}}
-}
 \author{
 Adela Hladka \cr
 Institute of Computer Science of the Czech Academy of Sciences \cr

@@ -32,28 +32,39 @@ If missing, vector of maximal scores is imputed. See \strong{Details}.}
 \value{
 \code{ItemAnalysis} function computes various traditional item analysis indices. Output
 is a \code{data.frame} with following columns:
-  \item{\code{Difficulty}}{average score of the item divided by its range}
-  \item{\code{Average score}}{average score of the item}
+  \item{\code{diff}}{average score of the item divided by its range}
+  \item{\code{avgSCore}}{average score of the item}
   \item{\code{SD}}{standard deviation of the item score}
-  \item{\code{SD bin}}{standard deviation of the item score for binarized data}
-  \item{\code{Correct answers}}{proportion of correct answers}
-  \item{\code{Min score}}{minimal score specified in \code{minscore}; if not provided, observed minimal score}
-  \item{\code{Max score}}{maximal score specified in \code{maxscore}; if not provided, observed maximal score}
-  \item{\code{Obtained min}}{observed minimal score}
-  \item{\code{Obtained max}}{observed maximal score}
-  \item{\code{Cut score}}{cut-score specified in \code{cutscore}}
-  \item{\code{ULI}}{generalized ULI}
-  \item{\code{ULI default}}{dscrimination with ULI}
-  \item{\code{RIT}}{correlation between item score and overall test score}
-  \item{\code{RIR}}{correlation between item score and overall test score}
-  \item{\code{Item criterion}}{correlation of item score with criterion}
-  \item{\code{Item reliability}}{item reliability index calculated as \code{cor(item, test)*sqrt(((N-1)/N)*var(item))}, see Allen & Yen (1979), Ch.6.4}
-  \item{\code{Item reliability woi}}{item reliability index (scored without item)}
-  \item{\code{Item validity}}{item validity index calculated as \code{cor(item, y)*sqrt(((N-1)/N)*var(item))}, see Allen & Yen (1979), Ch.6.4}
-  \item{\code{Item criterion}}{correlation between item and criterion \code{y}}
-  \item{\code{Alpha drop}}{Cronbach's alpha without given item}
+  \item{\code{SDbin}}{standard deviation of the item score for binarized data}
+  \item{\code{correct}}{proportion of correct answers}
+  \item{\code{min}}{minimal score specified in \code{minscore}; if not provided, observed minimal score}
+  \item{\code{max}}{maximal score specified in \code{maxscore}; if not provided, observed maximal score}
+  \item{\code{obtMin}}{observed minimal score}
+  \item{\code{obtMax}}{observed maximal score}
+  \item{\code{cutScore}}{cut-score specified in \code{cutscore}}
+  \item{\code{gULI}}{generalized ULI}
+  \item{\code{gULIbin}}{generalized ULI for binarized data}
+  \item{\code{ULI}}{discrimination with ULI using the usual parameters (3 groups, comparing 1st and 3rd)}
+  \item{\code{ULIbin}}{discrimination with ULI using the usual parameters for binarized data}
+  \item{\code{RIT}}{item-total correlation (correlation between item score and overall test score)}
+  \item{\code{RITbin}}{item-total correlation for binarized data}
+  \item{\code{RIR}}{item-rest correlation (correlation between item score and overall test score without the given item)}
+  \item{\code{RIRbin}}{item-rest correlation for binarized data}
+  \item{\code{itemCritCor}}{correlation between item score and criterion \code{y}}
+  \item{\code{itemCritCorBin}}{correlation between item score and criterion \code{y} for binarized data}
+  \item{\code{valInd}}{item validity index calculated as \code{cor(item, y)*sqrt(((N-1)/N)*var(item))}, see Allen & Yen (1979), Ch.6.4}
+  \item{\code{valIndBin}}{item validity index for binarized data}
+  \item{\code{rel}}{item reliability index calculated as \code{cor(item, test)*sqrt(((N-1)/N)*var(item))}, see Allen & Yen (1979), Ch.6.4}
+  \item{\code{relBin}}{item reliability index for binarized data}
+
+  \item{\code{relDrop}}{item reliability index 'drop' (scored without item)}
+  \item{\code{relDropBin}}{item reliability index 'drop' (scored without item) for binarized data}
+  \item{\code{alphaDrop}}{Cronbach's alpha without given item}
+  \item{\code{alphaDropBin}}{Cronbach's alpha without given item, for binarized data}
+  \item{\code{missedPerc}}{proportion of missed responses on the particular item}
+  \item{\code{notReachPerc}}{proportion of respondents that did not reached the item nor the subsequent ones, see \code{\link{recode_nr}} function for further details}
 With \code{add.bin == TRUE}, indices based on binarized data set are also provided
-and marked with \code{bin}.
+and marked with \code{bin} suffix.
 }
 \description{
 \code{ItemAnalysis} function computes various traditional item analysis indices
@@ -112,15 +123,16 @@ https://doi.org/10.15439/2017F380
 Allen, M. J. & Yen, W. M. (1979). Introduction to measurement theory. Monterey, CA: Brooks/Cole.
 }
 \seealso{
-\code{\link{DDplot}}, \code{\link{gDiscrim}}
+\code{\link{DDplot}}, \code{\link{gDiscrim}}, \code{\link{recode_nr}}
 }
 \author{
 Patricia Martinkova \cr
 Institute of Computer Science of the Czech Academy of Sciences \cr
 \email{martinkova@cs.cas.cz} \cr
 
+Jan Netik \cr
+
 Jana Vorlickova \cr
-Institute of Computer Science of the Czech Academy of Sciences \cr
 
 Adela Hladka \cr
 Institute of Computer Science of the Czech Academy of Sciences \cr

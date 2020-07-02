@@ -423,7 +423,7 @@ data_ordinal_summary_Input <- reactive({
     colnames(data_table_summary) <- c("Name", "Min", "Median", "Mean", "Max", "SD", "Cut")
     data_table_summary
   } else {
-    data_table <- sapply(data_table, as.factor)
+    # data_table <- sapply(data_table, as.factor)
     colnames(data_table) <- item_names()
     summary(data_table)
   }
@@ -445,13 +445,13 @@ output$data_rawdata_summary <- renderPrint({
 # *** Nominal data ####
 data_nominal_summary_Input <- reactive({
   data_table <- nominal()
-  data_table <- sapply(data_table, as.factor)
+  # data_table <- sapply(data_table, as.factor)
   colnames(data_table) <- item_names()
   summary(data_table)
 })
 
 output$data_nominal_summary <- renderPrint({
-  if (input$data_type == "nominal"){
+  if (input$data_type == "nominal") {
     data_nominal_summary_Input()
   } else {
     ""
@@ -461,7 +461,7 @@ output$data_nominal_summary <- renderPrint({
 # *** Binary data ####
 data_binary_summary_Input <- reactive({
   data_table <- binary()
-  data_table <- sapply(data_table, as.factor)
+  # data_table <- sapply(data_table, as.factor)
   colnames(data_table) <- item_names()
   summary(data_table)
 })

@@ -88,7 +88,7 @@ body {text-align: justify}
 
 # Introduction
 
-This report was created by by R version `r getRversion()` and its package ShinyItemAnalysis version `r packageVersion("ShinyItemAnalysis")`. ShinyItemAnalysis provides test and item analysis and it is available on [CRAN](https://CRAN.R-project.org/package=ShinyItemAnalysis) and also [online](https://shiny.cs.cas.cz/ShinyItemAnalysis/). 
+This report was created by R version `r getRversion()` and its package ShinyItemAnalysis version `r packageVersion("ShinyItemAnalysis")`. ShinyItemAnalysis provides test and item analysis and it is available on [CRAN](https://CRAN.R-project.org/package=ShinyItemAnalysis) and also [online](https://shiny.cs.cas.cz/ShinyItemAnalysis/). 
 
 To cite ShinyItemAnalysis application in publications, please, use:
 

@@ -63,7 +63,7 @@ totalscores_histogram_Input<- reactive({
 })
 
 # ** Output histogram of total scores ######
-output$totalscores_histogram <- renderPlotly ({
+output$totalscores_histogram <- renderPlotly({
 
   sc <- total_score()
   bin <- as.numeric(input$slider_totalscores_histogram)

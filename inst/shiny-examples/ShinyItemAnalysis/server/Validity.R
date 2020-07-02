@@ -240,6 +240,59 @@ output$DB_scree_plot <- downloadHandler(
 # * PREDICTIVE VALIDITY ######
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+# ** DDplot with criterion validity AKA DCplot ######
+DCplot <- reactive({
+  correct <- ordinal()
+
+  difc_type <- input$DCplot_difficulty
+  average.score <- (difc_type == "AVGS")
+
+  DDplot(correct, item.names = item_numbers(),
+         average.score = average.score, criterion = unlist(criterion()),
+         thr = switch(input$DCplotThr_cb, "TRUE" = input$DCplotThr, "FALSE" = NULL),
+         val_type = input$DCplot_validity)
+})
+
+# ** Output for Diif/Disr. plot with plotly ######
+output$DCplot <- renderPlotly({
+  p <- DCplot() %>%
+    ggplotly(tooltip = c("item", "fill", "value", "yintercept"))
+
+  # renaming/removing unnecessary text
+  for (i in 1:2) {
+    for (j in 1:length(p$x$data[[i]][["text"]])) {
+      p$x$data[[i]][["text"]][j] %<>%
+        str_remove_all(("parameter: |value: ")) %>%
+        str_replace("item", "Item") %>%
+        str_remove("(?<=\\.\\d{3}).*")
+
+    }
+    if (input$DCplotThr_cb == TRUE) {
+      for (j in 1:length(p$x$data[[3]][["text"]])) {
+        p$x$date[[3]][["text"]][j] %<>%
+          str_replace("yintercept", "Threshold")
+      }
+    }
+  }
+
+  p %>% plotly::config(displayModeBar = F)
+})
+
+#** DB DC plot ######
+output$DB_DCplot <- downloadHandler(
+  filename =  function() {
+    paste("fig_difficulty-validity_plot.png", sep = "")
+  },
+  content = function(file) {
+    ggsave(file, plot = DCplot() +
+             theme(text = element_text(size = setting_figures$text_size)),
+           device = "png",
+           height = setting_figures$height, width = setting_figures$width,
+           dpi = setting_figures$dpi)
+  }
+)
+
+
 # ** Validity boxplot ######
 validity_plot_boxplot_Input <- reactive({
   ts <- total_score()

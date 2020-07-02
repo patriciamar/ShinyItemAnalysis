@@ -1,8 +1,8 @@
-#' Graphical representation of difficulty and (generalized) discrimination in item analysis
+#' Graphical representation of difficulty and (generalized) discrimination / item validity in item analysis
 #'
 #' @aliases DDplot
 #'
-#' @description Plots difficulty and (generalized) discrimination for items ordered by difficulty.
+#' @description Plots difficulty and (generalized) discrimination / criterion validity for items ordered by difficulty.
 #'
 #' @param data numeric: binary or ordinal data matrix or data frame. See \strong{Details}.
 #' @param item.names character: the names of items.
@@ -18,10 +18,12 @@
 #' @param average.score logical: should average score of the item disaplyed instead of difficulty. Default
 #' value is FALSE. See \strong{Details}.
 #' @param thr numeric: value of discrimination threshold. See \strong{Details}.
+#' @param criterion numeric/logical vector: values of criterion. If supplied, \code{disrim} argument is ignored and item-criterion correlation (validity) is displayed instead. Default value is "none".
+#' @param val_type character: what criterion validity measure should be shown. Possible values are 'simple' (item-criterion correlation; default) and 'index' (item validity index calculated as \code{cor(item, test) * sqrt(((N - 1) / N) * var(item))}, see Allen & Yen, 1979, Ch. 6.4, for details). The argument is ignored if user does not supply any \code{criterion}.
 #'
 #' @usage DDplot(data, item.names, k = 3, l = 1, u = 3,
 #' discrim = "ULI", maxscore, minscore, bin = FALSE, cutscore, average.score = FALSE,
-#' thr = 0.2)
+#' thr = 0.2, criterion = "none", val_type = "simple")
 #'
 #' @details
 #' The \code{data} is a matrix or data frame whose rows represents examinee answers
@@ -91,8 +93,9 @@
 #'
 #' # DDplot of binary data set
 #' DDplot(dataBin)
+#'
 #' \dontrun{
-#' #' # DDplot of binary data set without threshold
+#' # DDplot of binary data set without threshold
 #' DDplot(dataBin, thr = NULL)
 #' # compared to DDplot using ordinal data set and 'bin = TRUE'
 #' DDplot(dataOrd, bin = TRUE)
@@ -121,14 +124,26 @@
 #' DDplot(dataOrd)
 #' # DDplot of ordinal data set disaplaying average item scores
 #' DDplot(dataOrd, average.score = TRUE)
+#'
+#' # item difficulty / criterion validity plot for data with criterion
+#' data <- difNLR::GMAT[, 1:20]
+#' criterion <- difNLR::GMAT[, "criterion"]
+#' DDplot(data, criterion = criterion, val_type = "simple")
 #' }
 #' @export
 
 DDplot <- function(data, item.names, k = 3, l = 1, u = 3, discrim = "ULI",
                    maxscore, minscore, bin = FALSE, cutscore, average.score = FALSE,
-                   thr = 0.2) {
+                   thr = 0.2, criterion = "none", val_type = "simple") {
   if (!is.matrix(data) & !is.data.frame(data)) {
     stop("'data' must be data frame or matrix ", call. = FALSE)
+  }
+  if (any(criterion != "none", na.rm = TRUE)) {
+    if (!is.null(dim(criterion))) {
+      stop("'criterion' must be numeric or logical vector ", call. = FALSE)
+    } else if (length(criterion) != nrow(data)) {
+      stop("'criterion' must be numeric or logical vector\nof same length as a number of observations in 'data'", call. = FALSE)
+    }
   }
   if (missing(maxscore)) {
     maxscore <- apply(data, 2, max, na.rm = T)
@@ -180,7 +195,7 @@ DDplot <- function(data, item.names, k = 3, l = 1, u = 3, discrim = "ULI",
   }
 
   diffName <- c("Difficulty", "Difficulty", "Average score")
-  discName <- c("Discrimination ULI", "Discrimination RIR", "Discrimination RIT")
+  discName <- c("Discrimination ULI", "Discrimination RIR", "Discrimination RIT", "Criterion validity", "Validity index")
   xlabel <- c(
     "Item (ordered by difficulty)",
     "Item (ordered by difficulty)",
@@ -205,6 +220,29 @@ DDplot <- function(data, item.names, k = 3, l = 1, u = 3, discrim = "ULI",
     disc <- t(cor(data, TOT, use = "complete"))
     i <- 3
   }
+
+  # when criterion is not 'none', 'disc' var is used to store item-crit cor
+  if (any(criterion != "none", na.rm = TRUE)) {
+    item_crit_cor <- t(cor(data, criterion, use = "complete"))
+
+    if (val_type == "simple") {
+      disc <- item_crit_cor
+      i <- 4
+    } else if (val_type == "index") {
+      N <- nrow(data)
+      sx <- apply(data, 2, sd)
+      vx <- ((N - 1) / N) * sx ^ 2
+      disc <- item_crit_cor * sqrt(vx)
+      i <- 5
+    } else {
+      stop(
+        "possible values of 'val_type' argument are 'simple' (item-criterion correlation), or 'index' (item validity index). ",
+        call. = FALSE
+      )
+    }
+  }
+
+
   if (!all((maxscore - minscore) != 0)) {
     warning("'cutscore' is equal to 'minscore' for some item")
 
@@ -223,35 +261,33 @@ DDplot <- function(data, item.names, k = 3, l = 1, u = 3, discrim = "ULI",
   } else {
     j <- 1
   }
-  if (discrim != "none") {
+  if (discrim != "none" | any(criterion != "none", na.rm = TRUE)) {
     if (any(disc < 0)) {
-      warning("Estimated discrimination is lower than 0.", call. = FALSE)
+      ifelse(any(criterion != "none", na.rm = TRUE),
+             warning("Item-criterion correlation is lower than 0.", call. = FALSE),
+             warning("Estimated discrimination is lower than 0.", call. = FALSE))
     }
+
     value <- c(rbind(difc, disc)[, order(difc)])
     parameter <- rep(c(diffName[j], discName[i]), ncol(data))
+    parameter <- factor(parameter, levels = parameter[1:2])
     item <- factor(rep(item.names[order(difc)], each = 2), levels = item.names[order(difc)])
     df <- data.frame(item, parameter, value)
     col <- c("red", "darkblue")
 
-    g <- ggplot(df, aes_string(
-      x = "item",
-      y = "value",
-      fill = "parameter",
-      color = "parameter"
-    )) +
-      stat_summary(
-        fun.y = mean, position = "dodge", geom = "bar",
-        alpha = 0.7, width = 0.8
-      ) +
+    g <-
+      ggplot(df, aes(item,
+                     value,
+                     fill = parameter,
+                     color = parameter)) +
+      geom_col(position = "dodge",
+               alpha = 0.7,
+               width = 0.8) +
       xlab(xlabel[j]) +
       ylab(paste0(diffName[j], "/", discName[i])) +
-      scale_y_continuous(
-        expand = c(0, 0),
-        limits = c(
-          min(min(df$value) - 0.01, 0),
-          max(max(df$value) + 0.01 * maxscore, 1)
-        )
-      ) +
+      scale_y_continuous(expand = c(0, 0),
+                         limits = c(min(min(df$value) - 0.01, 0),
+                                    max(max(df$value) + 0.01 * maxscore, 1))) +
       scale_fill_manual(breaks = parameter, values = col) +
       scale_colour_manual(breaks = parameter, values = col) +
       theme_app() +
@@ -263,7 +299,7 @@ DDplot <- function(data, item.names, k = 3, l = 1, u = 3, discrim = "ULI",
       )
 
     if (!is.null(thr)) {
-      g <- g + geom_hline(yintercept = thr)
+      g <- g + geom_hline(yintercept = thr, col = "gray30")
     }
   } else {
     value <- difc[order(difc)]
@@ -278,7 +314,7 @@ DDplot <- function(data, item.names, k = 3, l = 1, u = 3, discrim = "ULI",
       color = "parameter"
     )) +
       stat_summary(
-        fun.y = mean, position = "dodge", geom = "bar",
+        fun = mean, position = "dodge", geom = "bar",
         alpha = 0.7, width = 0.8
       ) +
       xlab(xlabel[j]) +

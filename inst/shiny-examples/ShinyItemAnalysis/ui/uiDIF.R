@@ -655,7 +655,6 @@ uiDIF <-
                                  fluidRow(column(12, align = "center", tableOutput("dif_lord_puri_table"))),
                                  conditionalPanel("input.puri_Lord == 1",
                                                   downloadButton(outputId = "download_lord_dif_puri", label = "Download table"), br(), br()),
-                                 br(),
                                  h4("Selected R code"),
                                  div(code(HTML('library(difR)<br>library(ltm)<br><br>#&nbsp;Loading&nbsp;data<br>data(GMAT,&nbsp;package&nbsp;=&nbsp;\"difNLR\")<br>Data&nbsp;<-&nbsp;GMAT[,&nbsp;1:20]<br>group&nbsp;<-&nbsp;GMAT[,&nbsp;\"group\"]<br><br>#&nbsp;1PL&nbsp;IRT&nbsp;MODEL<br>(fit1PL&nbsp;<-&nbsp;difLord(Data&nbsp;=&nbsp;Data,&nbsp;group&nbsp;=&nbsp;group,&nbsp;focal.name&nbsp;=&nbsp;1,&nbsp;model&nbsp;=&nbsp;\"1PL\",&nbsp;p.adjust.method&nbsp;=&nbsp;\"none\",&nbsp;purify&nbsp;=&nbsp;FALSE))<br><br>#&nbsp;2PL&nbsp;IRT&nbsp;MODEL<br>(fit2PL&nbsp;<-&nbsp;difLord(Data&nbsp;=&nbsp;Data,&nbsp;group&nbsp;=&nbsp;group,&nbsp;focal.name&nbsp;=&nbsp;1,&nbsp;model&nbsp;=&nbsp;\"2PL\",&nbsp;p.adjust.method&nbsp;=&nbsp;\"none\",&nbsp;purify&nbsp;=&nbsp;FALSE))<br><br>#&nbsp;3PL&nbsp;IRT&nbsp;MODEL&nbsp;with&nbsp;the&nbsp;same&nbsp;guessing&nbsp;for&nbsp;groups<br>guess&nbsp;<-&nbsp;itemParEst(Data,&nbsp;model&nbsp;=&nbsp;\"3PL\")[,&nbsp;3]<br>(fit3PL&nbsp;<-&nbsp;difLord(Data&nbsp;=&nbsp;Data,&nbsp;group&nbsp;=&nbsp;group,&nbsp;focal.name&nbsp;=&nbsp;1,&nbsp;model&nbsp;=&nbsp;\"3PL\",&nbsp;c&nbsp;=&nbsp;guess,&nbsp;p.adjust.method&nbsp;=&nbsp;\"none\",&nbsp;purify&nbsp;=&nbsp;FALSE))'))),
                                  br()
@@ -781,7 +780,6 @@ uiDIF <-
                                  fluidRow(column(12, align = "center", tableOutput("dif_raju_puri_table"))),
                                  conditionalPanel("input.puri_Raju == 1",
                                                   downloadButton(outputId = "download_raju_dif_puri", label = "Download table"), br(), br()),
-                                 br(),
                                  h4("Selected R code"),
                                  div(code(HTML('library(difR)<br>library(ltm)<br><br>#&nbsp;Loading&nbsp;data<br>data(GMAT,&nbsp;package&nbsp;=&nbsp;\"difNLR\")<br>Data&nbsp;<-&nbsp;GMAT[,&nbsp;1:20]<br>group&nbsp;<-&nbsp;GMAT[,&nbsp;\"group\"]<br><br>#&nbsp;1PL&nbsp;IRT&nbsp;MODEL<br>(fit1PL&nbsp;<-&nbsp;difRaju(Data&nbsp;=&nbsp;Data,&nbsp;group&nbsp;=&nbsp;group,&nbsp;focal.name&nbsp;=&nbsp;1,&nbsp;model&nbsp;=&nbsp;\"1PL\",&nbsp;p.adjust.method&nbsp;=&nbsp;\"none\",&nbsp;purify&nbsp;=&nbsp;FALSE))<br><br>#&nbsp;2PL&nbsp;IRT&nbsp;MODEL<br>(fit2PL&nbsp;<-&nbsp;difRaju(Data&nbsp;=&nbsp;Data,&nbsp;group&nbsp;=&nbsp;group,&nbsp;focal.name&nbsp;=&nbsp;1,&nbsp;model&nbsp;=&nbsp;\"2PL\",&nbsp;p.adjust.method&nbsp;=&nbsp;\"none\",&nbsp;purify&nbsp;=&nbsp;FALSE))<br><br>#&nbsp;3PL&nbsp;IRT&nbsp;MODEL&nbsp;with&nbsp;the&nbsp;same&nbsp;guessing&nbsp;for&nbsp;groups<br>guess&nbsp;<-&nbsp;itemParEst(Data,&nbsp;model&nbsp;=&nbsp;\"3PL\")[,&nbsp;3]<br>(fit3PL&nbsp;<-&nbsp;difRaju(Data&nbsp;=&nbsp;Data,&nbsp;group&nbsp;=&nbsp;group,&nbsp;focal.name&nbsp;=&nbsp;1,&nbsp;model&nbsp;=&nbsp;\"3PL\",&nbsp;c&nbsp;=&nbsp;guess,&nbsp;p.adjust.method&nbsp;=&nbsp;\"none\",&nbsp;purify&nbsp;=&nbsp;FALSE))'))),
                                  br()
@@ -899,7 +897,6 @@ uiDIF <-
                       fluidRow(column(12, align = "center", tableOutput("dif_sibtest_puri_table"))),
                       conditionalPanel("input.DIF_SIBTEST_purification == 1",
                                        downloadButton(outputId = "download_sibtest_dif_puri", label = "Download table"), br(), br()),
-                      br(),
                       h4("Selected code"),
                       div(code(HTML('library(difR)<br><br>#&nbsp;Loading&nbsp;data<br>data(GMAT,&nbsp;package&nbsp;=&nbsp;\"difNLR\")<br>Data&nbsp;<-&nbsp;GMAT[,&nbsp;1:20]<br>group&nbsp;<-&nbsp;GMAT[,&nbsp;\"group\"]<br><br>#&nbsp;SIBTEST&nbsp;(uniform&nbsp;DIF)<br>(fit_udif&nbsp;<-&nbsp;difSIBTEST(Data&nbsp;=&nbsp;Data,&nbsp;group&nbsp;=&nbsp;group,&nbsp;focal.name&nbsp;=&nbsp;1,&nbsp;type&nbsp;=&nbsp;\"udif\",&nbsp;p.adjust.method&nbsp;=&nbsp;\"none\",&nbsp;purify&nbsp;=&nbsp;FALSE))<br><br>#&nbsp;Crossing-SIBTEST&nbsp;(non-uniform&nbsp;DIF)<br>(fit_nudif&nbsp;<-&nbsp;difSIBTEST(Data&nbsp;=&nbsp;Data,&nbsp;group&nbsp;=&nbsp;group,&nbsp;focal.name&nbsp;=&nbsp;1,&nbsp;type&nbsp;=&nbsp;\"nudif\",&nbsp;p.adjust.method&nbsp;=&nbsp;\"none\",&nbsp;purify&nbsp;=&nbsp;FALSE))'))),
                       br()),
@@ -1042,11 +1039,23 @@ uiDIF <-
                                  considering selected adjustement, and significance codes. Table also provides estimated parameters for the best
                                  fitted model for each item. "),
                                  uiOutput('DIF_cum_NA_warning_summary'),
-                                 verbatimTextOutput('DIF_cum_print'),
+                                 strong(textOutput("cum_dif_items")),
                                  br(),
+                                 tags$head(tags$style("#coef_cum_dif  {white-space: nowrap;}")),
+                                 fluidRow(column(12, align = "left", tableOutput('coef_cum_dif'))),
+                                 fluidRow(column(12, align = "left", uiOutput("note_cum"))),
+                                 br(),
+                                 fluidRow(column(2, downloadButton(outputId = "download_cum_dif", label = "Download table"))),
+                                 br(),
+                                 h4("Purification process"),
+                                 textOutput("dif_cum_puri_info"),
+                                 br(),
+                                 tags$head(tags$style("#dif_cum_puri_table  {white-space: nowrap;}")),
+                                 fluidRow(column(12, align = "center", tableOutput("dif_cum_puri_table"))),
+                                 conditionalPanel("input.DIF_cum_purification_summary == 1",
+                                                  downloadButton(outputId = "download_cum_dif_puri", label = "Download table"), br(), br()),
                                  h4('Selected R code'),
-                                 div(code(HTML('library(difNLR)<br><br>#&nbsp;Loading&nbsp;data<br>data(dataMedicalgraded,&nbsp;package&nbsp;=&nbsp;\"ShinyItemAnalysis\")<br>Data&nbsp;<-&nbsp;dataMedicalgraded[,&nbsp;1:100]<br>group&nbsp;<-&nbsp;dataMedicalgraded[,&nbsp;101]<br><br>#&nbsp;DIF&nbsp;with&nbsp;cumulative&nbsp;logit&nbsp;regression&nbsp;model<br>(fit&nbsp;<-&nbsp;difORD(Data&nbsp;=&nbsp;Data,&nbsp;group&nbsp;=&nbsp;group,&nbsp;focal.name&nbsp;=&nbsp;1,&nbsp;model&nbsp;=&nbsp;\"cumulative\",&nbsp;type&nbsp;=&nbsp;\"both\",&nbsp;match&nbsp;=&nbsp;\"zscore\",&nbsp;p.adjust.method&nbsp;=&nbsp;\"none\",&nbsp;purify&nbsp;=&nbsp;FALSE))'))),
-                                 br(),
+                                 div(code(HTML('library(difNLR)<br><br>#&nbsp;Loading&nbsp;data<br>data(dataMedicalgraded,&nbsp;package&nbsp;=&nbsp;\"ShinyItemAnalysis\")<br>Data&nbsp;<-&nbsp;dataMedicalgraded[,&nbsp;1:100]<br>group&nbsp;<-&nbsp;dataMedicalgraded[,&nbsp;101]<br><br>#&nbsp;DIF&nbsp;with&nbsp;cumulative&nbsp;logit&nbsp;regression&nbsp;model<br>(fit&nbsp;<-&nbsp;difORD(Data&nbsp;=&nbsp;Data,&nbsp;group&nbsp;=&nbsp;group,&nbsp;focal.name&nbsp;=&nbsp;1,&nbsp;model&nbsp;=&nbsp;\"cumulative\",<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type&nbsp;=&nbsp;\"both\",&nbsp;match&nbsp;=&nbsp;\"zscore\",&nbsp;p.adjust.method&nbsp;=&nbsp;\"none\",&nbsp;purify&nbsp;=&nbsp;FALSE,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;parametrization&nbsp;=&nbsp;\"classic\"))'))),
                                  br()
                         ),
                         # ** Items ####
@@ -1116,7 +1125,7 @@ uiDIF <-
                                  fluidRow(column(12, align = "center", tableOutput('DIF_cum_coef_tab'))),
                                  br(),
                                  h4('Selected R code'),
-                                 div(code(HTML('library(difNLR)<br><br>#&nbsp;Loading&nbsp;data<br>data(dataMedicalgraded,&nbsp;package&nbsp;=&nbsp;\"ShinyItemAnalysis\")<br>Data&nbsp;<-&nbsp;dataMedicalgraded[,&nbsp;1:100]<br>group&nbsp;<-&nbsp;dataMedicalgraded[,&nbsp;101]<br><br>#&nbsp;DIF&nbsp;with&nbsp;cumulative&nbsp;logit&nbsp;regression&nbsp;model<br>(fit&nbsp;<-&nbsp;difORD(Data&nbsp;=&nbsp;Data,&nbsp;group&nbsp;=&nbsp;group,&nbsp;focal.name&nbsp;=&nbsp;1,&nbsp;model&nbsp;=&nbsp;\"cumulative\",&nbsp;type&nbsp;=&nbsp;\"both\",&nbsp;match&nbsp;=&nbsp;\"zscore\",&nbsp;p.adjust.method&nbsp;=&nbsp;\"none\",&nbsp;purify&nbsp;=&nbsp;FALSE))<br><br>#&nbsp;Plot&nbsp;of&nbsp;characteristic&nbsp;curves&nbsp;for&nbsp;item&nbsp;X2003,&nbsp;cumulative&nbsp;probabilities<br>plot(fit,&nbsp;item&nbsp;=&nbsp;\"X2003\",&nbsp;plot.type&nbsp;=&nbsp;\"cumulative\")<br><br>#&nbsp;Plot&nbsp;of&nbsp;characteristic&nbsp;curves&nbsp;for&nbsp;item&nbsp;X2003,&nbsp;category&nbsp;probabilities<br>plot(fit,&nbsp;item&nbsp;=&nbsp;\"X2003\",&nbsp;plot.type&nbsp;=&nbsp;\"category\")<br><br>#&nbsp;Estimated&nbsp;coefficients&nbsp;for&nbsp;all&nbsp;items&nbsp;with&nbsp;standard&nbsp;errors<br>coef(fit,&nbsp;SE&nbsp;=&nbsp;TRUE)'))),
+                                 div(code(HTML('library(difNLR)<br><br>#&nbsp;Loading&nbsp;data<br>data(dataMedicalgraded,&nbsp;package&nbsp;=&nbsp;\"ShinyItemAnalysis\")<br>Data&nbsp;<-&nbsp;dataMedicalgraded[,&nbsp;1:100]<br>group&nbsp;<-&nbsp;dataMedicalgraded[,&nbsp;101]<br><br>#&nbsp;DIF&nbsp;with&nbsp;cumulative&nbsp;logit&nbsp;regression&nbsp;model<br>(fit&nbsp;<-&nbsp;difORD(Data&nbsp;=&nbsp;Data,&nbsp;group&nbsp;=&nbsp;group,&nbsp;focal.name&nbsp;=&nbsp;1,&nbsp;model&nbsp;=&nbsp;\"cumulative\",<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type&nbsp;=&nbsp;\"both\",&nbsp;match&nbsp;=&nbsp;\"zscore\",&nbsp;p.adjust.method&nbsp;=&nbsp;\"none\",&nbsp;purify&nbsp;=&nbsp;FALSE,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;parametrization&nbsp;=&nbsp;\"classic\"))<br><br>#&nbsp;Plot&nbsp;of&nbsp;characteristic&nbsp;curves&nbsp;for&nbsp;item&nbsp;X2003,&nbsp;cumulative&nbsp;probabilities<br>plot(fit,&nbsp;item&nbsp;=&nbsp;\"X2003\",&nbsp;plot.type&nbsp;=&nbsp;\"cumulative\")<br><br>#&nbsp;Plot&nbsp;of&nbsp;characteristic&nbsp;curves&nbsp;for&nbsp;item&nbsp;X2003,&nbsp;category&nbsp;probabilities<br>plot(fit,&nbsp;item&nbsp;=&nbsp;\"X2003\",&nbsp;plot.type&nbsp;=&nbsp;\"category\")<br><br>#&nbsp;Estimated&nbsp;coefficients&nbsp;for&nbsp;all&nbsp;items&nbsp;with&nbsp;standard&nbsp;errors<br>coef(fit,&nbsp;SE&nbsp;=&nbsp;TRUE)'))),
                                  br(),
                                  br()
                         )
@@ -1174,10 +1183,23 @@ uiDIF <-
                                  considering selected adjustement, and significance codes. Table also provides estimated parameters for the best
                                  fitted model for each item. "),
                                  uiOutput('DIF_adj_NA_warning_summary'),
-                                 verbatimTextOutput('DIF_adj_print'),
+                                 strong(textOutput("adj_dif_items")),
                                  br(),
+                                 tags$head(tags$style("#coef_adj_dif  {white-space: nowrap;}")),
+                                 fluidRow(column(12, align = "left", tableOutput('coef_adj_dif'))),
+                                 fluidRow(column(12, align = "left", uiOutput("note_adj"))),
+                                 br(),
+                                 fluidRow(column(2, downloadButton(outputId = "download_adj_dif", label = "Download table"))),
+                                 br(),
+                                 h4("Purification process"),
+                                 textOutput("dif_adj_puri_info"),
+                                 br(),
+                                 tags$head(tags$style("#dif_adj_puri_table  {white-space: nowrap;}")),
+                                 fluidRow(column(12, align = "center", tableOutput("dif_adj_puri_table"))),
+                                 conditionalPanel("input.DIF_adj_purification_summary == 1",
+                                                  downloadButton(outputId = "download_adj_dif_puri", label = "Download table"), br(), br()),
                                  h4('Selected R code'),
-                                 div(code(HTML('library(difNLR)<br><br>#&nbsp;Loading&nbsp;data<br>data(dataMedicalgraded,&nbsp;package&nbsp;=&nbsp;\"ShinyItemAnalysis\")<br>Data&nbsp;<-&nbsp;dataMedicalgraded[,&nbsp;1:100]<br>group&nbsp;<-&nbsp;dataMedicalgraded[,&nbsp;101]<br><br>#&nbsp;DIF&nbsp;with&nbsp;cumulative&nbsp;logit&nbsp;regression&nbsp;model<br>(fit&nbsp;<-&nbsp;difORD(Data&nbsp;=&nbsp;Data,&nbsp;group&nbsp;=&nbsp;group,&nbsp;focal.name&nbsp;=&nbsp;1,&nbsp;model&nbsp;=&nbsp;\"adjacent\",&nbsp;type&nbsp;=&nbsp;\"both\",&nbsp;match&nbsp;=&nbsp;\"zscore\",&nbsp;p.adjust.method&nbsp;=&nbsp;\"none\",&nbsp;purify&nbsp;=&nbsp;FALSE))'))),
+                                 div(code(HTML('library(difNLR)<br><br>#&nbsp;Loading&nbsp;data<br>data(dataMedicalgraded,&nbsp;package&nbsp;=&nbsp;\"ShinyItemAnalysis\")<br>Data&nbsp;<-&nbsp;dataMedicalgraded[,&nbsp;1:100]<br>group&nbsp;<-&nbsp;dataMedicalgraded[,&nbsp;101]<br><br>#&nbsp;DIF&nbsp;with&nbsp;cumulative&nbsp;logit&nbsp;regression&nbsp;model<br>(fit&nbsp;<-&nbsp;difORD(Data&nbsp;=&nbsp;Data,&nbsp;group&nbsp;=&nbsp;group,&nbsp;focal.name&nbsp;=&nbsp;1,&nbsp;model&nbsp;=&nbsp;\"adjacent\",&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type&nbsp;=&nbsp;\"both\",&nbsp;match&nbsp;=&nbsp;\"zscore\",&nbsp;p.adjust.method&nbsp;=&nbsp;\"none\",&nbsp;purify&nbsp;=&nbsp;FALSE,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;parametrization&nbsp;=&nbsp;\"classic\"))'))),
                                  br(),
                                  br()
                         ),
@@ -1243,7 +1265,7 @@ uiDIF <-
                                  fluidRow(column(12, align = "center", tableOutput('DIF_adj_coef_tab'))),
                                  br(),
                                  h4('Selected R code'),
-                                 div(code(HTML('library(difNLR)<br><br>#&nbsp;Loading&nbsp;data<br>data(dataMedicalgraded,&nbsp;package&nbsp;=&nbsp;\"ShinyItemAnalysis\")<br>Data&nbsp;<-&nbsp;dataMedicalgraded[,&nbsp;1:100]<br>group&nbsp;<-&nbsp;dataMedicalgraded[,&nbsp;101]<br><br>#&nbsp;DIF&nbsp;with&nbsp;cumulative&nbsp;logit&nbsp;regression&nbsp;model<br>(fit&nbsp;<-&nbsp;difORD(Data&nbsp;=&nbsp;Data,&nbsp;group&nbsp;=&nbsp;group,&nbsp;focal.name&nbsp;=&nbsp;1,&nbsp;model&nbsp;=&nbsp;\"cumulative\",&nbsp;type&nbsp;=&nbsp;\"both\",&nbsp;match&nbsp;=&nbsp;\"zscore\",&nbsp;p.adjust.method&nbsp;=&nbsp;\"none\",&nbsp;purify&nbsp;=&nbsp;FALSE))<br><br>#&nbsp;Plot&nbsp;of&nbsp;characteristic&nbsp;curves&nbsp;for&nbsp;item&nbsp;X2003<br>plot(fit,&nbsp;item&nbsp;=&nbsp;\"X2003\")<br><br>#&nbsp;Estimated&nbsp;coefficients&nbsp;for&nbsp;all&nbsp;items&nbsp;with&nbsp;standard&nbsp;errors<br>coef(fit,&nbsp;SE&nbsp;=&nbsp;TRUE)'))),
+                                 div(code(HTML('library(difNLR)<br><br>#&nbsp;Loading&nbsp;data<br>data(dataMedicalgraded,&nbsp;package&nbsp;=&nbsp;\"ShinyItemAnalysis\")<br>Data&nbsp;<-&nbsp;dataMedicalgraded[,&nbsp;1:100]<br>group&nbsp;<-&nbsp;dataMedicalgraded[,&nbsp;101]<br><br>#&nbsp;DIF&nbsp;with&nbsp;cumulative&nbsp;logit&nbsp;regression&nbsp;model<br>(fit&nbsp;<-&nbsp;difORD(Data&nbsp;=&nbsp;Data,&nbsp;group&nbsp;=&nbsp;group,&nbsp;focal.name&nbsp;=&nbsp;1,&nbsp;model&nbsp;=&nbsp;\"cumulative\",&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type&nbsp;=&nbsp;\"both\",&nbsp;match&nbsp;=&nbsp;\"zscore\",&nbsp;p.adjust.method&nbsp;=&nbsp;\"none\",&nbsp;purify&nbsp;=&nbsp;FALSE,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;parametrization&nbsp;=&nbsp;\"classic\"))<br><br>#&nbsp;Plot&nbsp;of&nbsp;characteristic&nbsp;curves&nbsp;for&nbsp;item&nbsp;X2003<br>plot(fit,&nbsp;item&nbsp;=&nbsp;\"X2003\")<br><br>#&nbsp;Estimated&nbsp;coefficients&nbsp;for&nbsp;all&nbsp;items&nbsp;with&nbsp;standard&nbsp;errors<br>coef(fit,&nbsp;SE&nbsp;=&nbsp;TRUE)'))),
                                  br(),
                                  br()
                         )
@@ -1260,7 +1282,7 @@ uiDIF <-
                                    at least one distractor choice. DDF is here examined by multinomial log-linear
                                    regression model with Z-score and group membership as covariates. '),
                                  h4("Method specification"),
-                                 p('Here you can change ', strong('DIF matching variable'), ' and choose ', strong('type'), ' of DDF to be tested. You can also select ', strong('correction method'),
+                                 p('Here you can change ', strong('DFF matching variable'), ' and choose ', strong('type'), ' of DDF to be tested. You can also select ', strong('correction method'),
                                    ' for multiple comparison or ', strong('item purification. ')),
                                  fluidRow(
                                    column(3,
@@ -1286,14 +1308,15 @@ uiDIF <-
                                                         value = FALSE)),
                                    column(2,
                                           selectInput(inputId = "DIF_multi_summary_matching",
-                                                      label = "DIF matching variable",
+                                                      label = "DDF matching variable",
                                                       choices = c("Standardized total score" = "zscore"),
                                                       selected = "zscore")
                                    )
                                  ),
                                  h4('Equation'),
-                                 p('For ', strong('\\(K\\)'), ' possible test choices is the probability of the correct answer for
-                                   person ', strong('\\(p\\)'), ' with DIF matching variable (e.g., standardized total score) ', strong('\\(Z_p\\)'), ' and group
+                                 p('For ', strong('\\(K\\)'), ' possible test choices is the probability of the correct answer ',
+                                   strong('\\(K\\)'), ' for person ', strong('\\(p\\)'), ' with DIF matching variable
+                                   (e.g., standardized total score) ', strong('\\(Z_p\\)'), ' and group
                                    membership ', strong('\\(G_p\\)'),' in item ', strong('\\(i\\)'), 'given by the following equation: '),
                                  ('$$\\mathrm{P}(Y_{ip} = K|Z_p, G_p, b_{il0}, b_{il1}, b_{il2}, b_{il3}, l = 1, \\dots, K-1) =
                                   \\frac{1}{1 + \\sum_l e^{\\left( b_{il0} + b_{il1} Z_p + b_{il2} G_p + b_{il3} Z_p:G_p\\right)}}$$'),
@@ -1303,13 +1326,33 @@ uiDIF <-
                                   {1 + \\sum_l e^{\\left( b_{il0} + b_{il1} Z_p + b_{il2} G_p + b_{il3} Z_p:G_p\\right)}}$$'),
                                  h4("Summary table"),
                                  p("Summary table contains information about \\(\\chi^2\\)-statistics, corresponding \\(p\\)-values
-                                 considering selected adjustement, and significance codes. Table also provides estimated parameters for the best
-                                 fitted model for each item. "),
+                                 considering selected adjustement, and significance codes. "),
                                  uiOutput("DDF_multi_NA_warning_summary"),
-                                 verbatimTextOutput('DDF_multi_print'),
+                                 strong(textOutput("multi_dif_items")),
                                  br(),
-                                 h4("Selected R code"),
-                                 div(code(HTML('library(difNLR)<br><br>#&nbsp;Loading&nbsp;data<br>data(GMATtest,&nbsp;GMATkey,&nbsp;package&nbsp;=&nbsp;\"difNLR\")<br>Data&nbsp;<-&nbsp;GMATtest[,&nbsp;1:20]<br>group&nbsp;<-&nbsp;GMATtest[,&nbsp;\"group\"]<br>key&nbsp;<-&nbsp;GMATkey<br><br>#&nbsp;DDF&nbsp;with&nbsp;multinomial&nbsp;&nbsp;regression&nbsp;model<br>(fit&nbsp;<-&nbsp;ddfMLR(Data,&nbsp;group,&nbsp;focal.name&nbsp;=&nbsp;1,&nbsp;key,&nbsp;type&nbsp;=&nbsp;\"both\",&nbsp;match&nbsp;=&nbsp;\"zscore\",&nbsp;p.adjust.method&nbsp;=&nbsp;\"none\",&nbsp;purify&nbsp;=&nbsp;FALSE))'))),
+                                 tags$head(tags$style("#coef_multi_dif  {white-space: nowrap;}")),
+                                 fluidRow(column(12, align = "left", tableOutput('coef_multi_dif'))),
+                                 fluidRow(column(12, align = "left", uiOutput("note_multi"))),
+                                 br(),
+                                 fluidRow(column(2, downloadButton(outputId = "download_multi_dif", label = "Download table"))),
+                                 br(),
+                                 h4("Summary table - item parameters"),
+                                 p("Table provides estimated parameters for the fitted model for each item and distractor (incorrect option). "),
+                                 tags$head(tags$style("#coef_multi_dif_pars  {white-space: nowrap;}")),
+                                 fluidRow(column(12, align = "left", tableOutput('coef_multi_dif_pars'))),
+                                 fluidRow(column(12, align = "left", uiOutput("note_multi_2"))),
+                                 br(),
+                                 fluidRow(column(2, downloadButton(outputId = "download_multi_dif_pars", label = "Download table"))),
+                                 br(),
+                                 h4("Purification process"),
+                                 textOutput("dif_multi_puri_info"),
+                                 br(),
+                                 tags$head(tags$style("#dif_multi_puri_table  {white-space: nowrap;}")),
+                                 fluidRow(column(12, align = "center", tableOutput("dif_multi_puri_table"))),
+                                 conditionalPanel("input.DDF_multi_purification_summary == 1",
+                                                  downloadButton(outputId = "download_multi_dif_puri", label = "Download table"), br(), br()),
+                                 h4('Selected R code'),
+                                 div(code(HTML('library(difNLR)<br><br>#&nbsp;Loading&nbsp;data<br>data(GMATtest,&nbsp;GMATkey,&nbsp;package&nbsp;=&nbsp;\"difNLR\")<br>Data&nbsp;<-&nbsp;GMATtest[,&nbsp;1:20]<br>group&nbsp;<-&nbsp;GMATtest[,&nbsp;\"group\"]<br>key&nbsp;<-&nbsp;GMATkey<br><br>#&nbsp;DDF&nbsp;with&nbsp;multinomial&nbsp;&nbsp;regression&nbsp;model<br>(fit&nbsp;<-&nbsp;ddfMLR(Data,&nbsp;group,&nbsp;focal.name&nbsp;=&nbsp;1,&nbsp;key,&nbsp;type&nbsp;=&nbsp;\"both\",&nbsp;match&nbsp;=&nbsp;\"zscore\",&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;p.adjust.method&nbsp;=&nbsp;\"none\",&nbsp;purify&nbsp;=&nbsp;FALSE,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;parametrization&nbsp;=&nbsp;\"classic\"))'))),
                                  br(),
                                  br()
                         ),
@@ -1321,7 +1364,7 @@ uiDIF <-
                                    at least one distractor choice. DDF is here examined by Multinomial Log-linear
                                    Regression model with Z-score and group membership as covariates. '),
                                  h4("Method specification"),
-                                 p('Here you can change ', strong('DIF matching variable'), ' and choose ', strong('type'), ' of DDF to be tested. You can also select ', strong('correction method'),
+                                 p('Here you can change ', strong('DDF matching variable'), ' and choose ', strong('type'), ' of DDF to be tested. You can also select ', strong('correction method'),
                                    ' for multiple comparison or ', strong('item purification. '), "For selected", strong("item"),
                                    "you can display plot of its characteristic curves and table of its estimated parameters with standard errors. "),
                                  fluidRow(
@@ -1348,7 +1391,7 @@ uiDIF <-
                                                         value = FALSE)),
                                    column(2,
                                           selectInput(inputId = "DIF_multi_items_matching",
-                                                      label = "DIF matching variable",
+                                                      label = "DDF matching variable",
                                                       choices = c("Standardized total score" = "zscore"),
                                                       selected = "zscore")
                                    ),
@@ -1374,7 +1417,7 @@ uiDIF <-
                                  fluidRow(column(12, align = "center", tableOutput('DDF_multi_coef_tab'))),
                                  br(),
                                  h4("Selected R code"),
-                                 div(code(HTML('library(difNLR)<br><br>#&nbsp;Loading&nbsp;data<br>data(GMATtest,&nbsp;GMATkey,&nbsp;package&nbsp;=&nbsp;\"difNLR\")<br>Data&nbsp;<-&nbsp;GMATtest[,&nbsp;1:20]<br>group&nbsp;<-&nbsp;GMATtest[,&nbsp;\"group\"]<br>key&nbsp;<-&nbsp;GMATkey<br><br>#&nbsp;DDF&nbsp;with&nbsp;multinomial&nbsp;&nbsp;regression&nbsp;model<br>(fit&nbsp;<-&nbsp;ddfMLR(Data,&nbsp;group,&nbsp;focal.name&nbsp;=&nbsp;1,&nbsp;key,&nbsp;type&nbsp;=&nbsp;\"both\",&nbsp;match&nbsp;=&nbsp;\"zscore\",&nbsp;p.adjust.method&nbsp;=&nbsp;\"none\",&nbsp;purify&nbsp;=&nbsp;FALSE))<br><br>#&nbsp;Plot&nbsp;of&nbsp;characteristic&nbsp;curves&nbsp;for&nbsp;item&nbsp;1<br>plot(fit,&nbsp;item&nbsp;=&nbsp;1)<br><br>#&nbsp;Estimated&nbsp;coefficients&nbsp;for&nbsp;all&nbsp;items&nbsp;with&nbsp;standard&nbsp;errors<br>coef(fit,&nbsp;SE&nbsp;=&nbsp;TRUE)'))),
+                                 div(code(HTML('library(difNLR)<br><br>#&nbsp;Loading&nbsp;data<br>data(GMATtest,&nbsp;GMATkey,&nbsp;package&nbsp;=&nbsp;\"difNLR\")<br>Data&nbsp;<-&nbsp;GMATtest[,&nbsp;1:20]<br>group&nbsp;<-&nbsp;GMATtest[,&nbsp;\"group\"]<br>key&nbsp;<-&nbsp;GMATkey<br><br>#&nbsp;DDF&nbsp;with&nbsp;multinomial&nbsp;&nbsp;regression&nbsp;model<br>(fit&nbsp;<-&nbsp;ddfMLR(Data,&nbsp;group,&nbsp;focal.name&nbsp;=&nbsp;1,&nbsp;key,&nbsp;type&nbsp;=&nbsp;\"both\",&nbsp;match&nbsp;=&nbsp;\"zscore\",&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;p.adjust.method&nbsp;=&nbsp;\"none\",&nbsp;purify&nbsp;=&nbsp;FALSE,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;parametrization&nbsp;=&nbsp;\"classic\"))<br><br>#&nbsp;Plot&nbsp;of&nbsp;characteristic&nbsp;curves&nbsp;for&nbsp;item&nbsp;1<br>plot(fit,&nbsp;item&nbsp;=&nbsp;1)<br><br>#&nbsp;Estimated&nbsp;coefficients&nbsp;for&nbsp;all&nbsp;items&nbsp;with&nbsp;standard&nbsp;errors<br>coef(fit,&nbsp;SE&nbsp;=&nbsp;TRUE)'))),
                                  br(),
                                  br()
                         )

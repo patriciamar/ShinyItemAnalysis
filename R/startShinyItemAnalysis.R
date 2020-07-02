@@ -3,17 +3,18 @@
 #' @aliases startShinyItemAnalysis
 #'
 #' @description
-#' An interactive shiny application for running test and item analysis.
+#' An interactive shiny application to run test and item analysis.
 #' By default, the function runs the application as a background process
-#' (Jobs tab in RStudio). User is then free to use the Console for other
-#' work and to try the sample R code examples.
-#' You can still run the app the usual way in the console by specifying
-#' anything but "background" in the \code{run_in} argument.
+#' (Jobs tab in the 'RStudio'). User is then free to use the Console for other
+#' work and to try the sample R code examples. You can still run the app
+#' the usual way in the console by specifying \code{background = FALSE}.
 #'
-#' @usage startShinyItemAnalysis(run_in = "background")
+#' @usage startShinyItemAnalysis(background = TRUE)
 #'
-#' @param run_in character: how the application shloud run; set to anything except "background" to run the application the usual way (in the console)
-#' @return No return value. Called for side effects. However, the call creates \code{job_id} object accessible from global scope.
+#' @param background logical: should the application be run as a background process (in the 'RStudio')?
+#'
+#' @return No return value. Called for side effects.
+#'
 #' @author
 #' Patricia Martinkova \cr
 #' Institute of Computer Science of the Czech Academy of Sciences \cr
@@ -28,13 +29,13 @@
 #' \dontrun{
 #' rm(list = ls())
 #' startShinyItemAnalysis()
-#' startShinyItemAnalysis(run_in = "console")
+#' startShinyItemAnalysis(background = FALSE)
 #' }
 #'
 #' @import rstudioapi
 #'
 #' @export
-startShinyItemAnalysis <- function(run_in = "background") {
+startShinyItemAnalysis <- function(background = TRUE) {
 
   start_sia <- '
     appDir <-
@@ -46,7 +47,7 @@ startShinyItemAnalysis <- function(run_in = "background") {
     shiny::runApp(appDir, display.mode = "normal", launch.browser = T)
   '
 
-  if (run_in == "background") {
+  if (background) {
     if (rstudioapi::isAvailable()) {
 
       temp_script <- tempfile(fileext = ".R")

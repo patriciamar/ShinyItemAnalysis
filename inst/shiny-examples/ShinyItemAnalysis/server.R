@@ -10,6 +10,7 @@ require(data.table)
 require(difNLR)
 require(difR)
 require(ggdendro)
+require(ggplot2)
 require(grid)
 require(gridExtra)
 require(knitr)
@@ -28,9 +29,10 @@ require(shiny)
 require(shinyBS)
 require(ShinyItemAnalysis)
 require(shinyjs)
+require(stringr)
 require(VGAM)
 require(xtable)
-require(tidyverse)
+
 
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # DATA ######
@@ -459,6 +461,10 @@ function(input, output, session) {
                     of observations in the main dataset!"),
                errorClass = "error_dimension")
     }
+    dataset$criterion
+  })
+
+  crit_wo_val <- reactive({
     dataset$criterion
   })
 

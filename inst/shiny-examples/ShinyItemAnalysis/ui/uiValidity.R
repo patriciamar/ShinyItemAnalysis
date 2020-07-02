@@ -124,6 +124,7 @@ uiValidity <-
                                  p('This section requires criterion variable (e.g. future study success or future GPA in case
                                    of admission tests) which should correlate with the measurement. Criterion variable
                                    can be uploaded in ', strong('Data'), 'section.'),
+
                                  h4('Descriptive plots of criterion variable on total score'),
                                  p('Total scores are plotted according to criterion variable. Boxplot or scatterplot is displayed
                                    depending on the type of criterion variable - whether it is discrete or continuous. Scatterplot is
@@ -145,11 +146,75 @@ uiValidity <-
                                  h3('Criterion validity'),
                                  p('This section requires criterion variable (e.g. future study success or future GPA in case
                                    of admission tests) which should correlate with the measurement. Criterion variable
-                                   can be uploaded in ', strong('Data'), 'section. Here you can explore how the criterion correlates with individual items. '),
-                                 p('In distractor analysis based on criterion variable, we are interested in how test takers
-                                   select the correct answer and how the distractors (wrong answers) with respect to group based
-                                   on criterion variable.'),
+                                   can be uploaded in ', strong('Data'), 'section. Here you can explore how the criterion correlates with individual items. '), br(),
+
+
+
+                                 h4("Item difficulty / criterion validity plot"),
+                                 p('The following plot intelligibly depicts the criterion validity of every individual item (blue) together with its difficulty (red).
+                                   Items are ordered by difficulty. You can choose from two indices of criterion validity – item-criterion correlation and so-called "item validity index".
+                                   The former refers to simple Pearson product-moment correlation (or, in the case of binary dataset, point-biserial correlation),
+                                   the later also takes into account the item varinace (see Allen & Yen, 1979, for details).
+                                   Further item analysis can be performed in Item Analysis tab.'),
+                                 fluidRow(column(
+                                   2,
+                                   selectInput(
+                                     inputId = "DCplot_difficulty",
+                                     label = "Difficulty type:",
+                                     choices = c(
+                                       "Average scaled score" = "AVGSS",
+                                       "Average item score" = "AVGS"
+                                     ),
+                                     selected = "AVGSS"
+                                   )
+                                 ),
+                                 column(2,
+                                        selectInput(
+                                          inputId = "DCplot_validity",
+                                          label = "Validity type:",
+                                          choices = c(
+                                            "item-criterion correlation" = "simple",
+                                            "item validity index" = "index"
+                                          ),
+                                          selected = "simple"
+                                        )
+                                        ),
+                                 column(2,
+                                   div(
+                                     style = "horizontal-align:left",
+                                     checkboxInput(
+                                       inputId = "DCplotThr_cb",
+                                       label = "Show threshold",
+                                       value = FALSE
+                                     )
+                                   ),
+                                   conditionalPanel(condition = "input.DCplotThr_cb",
+                                                    fluidRow(
+                                                      div(style = "display: inline-block; vertical-align:center; padding-left:10pt", HTML("<b>Threshold:</b>")),
+                                                      div(
+                                                        style = "display: inline-block; vertical-align:center; width: 45%;",
+                                                        numericInput(
+                                                          inputId = "DCplotThr",
+                                                          label = NULL,
+                                                          value = .2,
+                                                          min = 0,
+                                                          max = 1,
+                                                          step = .1
+                                                        )
+                                                      )
+                                                    ))
+                                 )),
+                                 plotlyOutput("DCplot"),
+
+                                 # download item analysis table button
+                                 downloadButton("DB_DCplot", label = "Download figure"),
+                                 br(), br(),
+
+
                                  h4('Distractor plot'),
+                                 p('In distractor analysis based on criterion variable, we are interested in how test takers
+                                   select the correct answer and the distractors (wrong answers) with respect to group based
+                                   on criterion variable.'),
                                  htmlOutput("validity_distractor_text"),
                                  p('With option ', strong('Combinations'), 'all item selection patterns are plotted (e.g. AB, ACD, BC). With
                                    option', strong('Distractors'), 'answers are splitted into distractors (e.g. A, B, C, D).'),
@@ -183,7 +248,7 @@ uiValidity <-
                                  tableOutput('validity_table_item'),
                                  htmlOutput('validity_table_item_interpretation'),
                                  h4("Selected R code"),
-                                 div(code(HTML("library(ShinyItemAnalysis)&nbsp;<br>library(difNLR)&nbsp;<br><br>#&nbsp;loading&nbsp;data<br>data(\"GMAT\",&nbsp;\"GMATtest\",&nbsp;\"GMATkey\")&nbsp;<br>data&nbsp;<-&nbsp;GMATtest[,&nbsp;1:20]&nbsp;<br>data01&nbsp;<-&nbsp;GMAT[,&nbsp;1:20]&nbsp;<br>key&nbsp;<-&nbsp;GMATkey&nbsp;<br>criterion&nbsp;<-&nbsp;GMAT[,&nbsp;\"criterion\"]&nbsp;<br><br>#&nbsp;distractor&nbsp;plot&nbsp;for&nbsp;item&nbsp;1&nbsp;and&nbsp;3&nbsp;groups&nbsp;<br>plotDistractorAnalysis(data,&nbsp;key,&nbsp;num.groups&nbsp;=&nbsp;3,&nbsp;item&nbsp;=&nbsp;1,&nbsp;matching&nbsp;=&nbsp;criterion)&nbsp;<br><br>#&nbsp;correlation&nbsp;for&nbsp;item&nbsp;1&nbsp;<br>cor.test(criterion,&nbsp;data01[,&nbsp;1],&nbsp;method&nbsp;=&nbsp;\"spearman\",&nbsp;exact&nbsp;=&nbsp;F)"))),
+                                 div(code(HTML("library(ShinyItemAnalysis)&nbsp;<br>library(difNLR)&nbsp;<br><br>#&nbsp;loading&nbsp;data<br>data(\"GMAT\",&nbsp;\"GMATtest\",&nbsp;\"GMATkey\")&nbsp;<br>data&nbsp;<-&nbsp;GMATtest[,&nbsp;1:20]&nbsp;<br>data01&nbsp;<-&nbsp;GMAT[,&nbsp;1:20]&nbsp;<br>key&nbsp;<-&nbsp;GMATkey&nbsp;<br>criterion&nbsp;<-&nbsp;GMAT[,&nbsp;\"criterion\"]&nbsp;<br><br>#&nbsp;item&nbsp;difficulty&nbsp;/&nbsp;criterion&nbsp;validity&nbsp;plot<br>DDplot(data01,&nbsp;criterion&nbsp;=&nbsp;criterion,&nbsp;val_type&nbsp;=&nbsp;\"simple\")<br><br>#&nbsp;distractor&nbsp;plot&nbsp;for&nbsp;item&nbsp;1&nbsp;and&nbsp;3&nbsp;groups&nbsp;<br>plotDistractorAnalysis(data,&nbsp;key,&nbsp;num.groups&nbsp;=&nbsp;3,&nbsp;item&nbsp;=&nbsp;1,&nbsp;matching&nbsp;=&nbsp;criterion)&nbsp;<br><br>#&nbsp;correlation&nbsp;for&nbsp;item&nbsp;1&nbsp;<br>cor.test(criterion,&nbsp;data01[,&nbsp;1],&nbsp;method&nbsp;=&nbsp;\"spearman\",&nbsp;exact&nbsp;=&nbsp;F)"))),
                                  br()
                                  )
                                  )))

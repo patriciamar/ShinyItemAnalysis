@@ -29,9 +29,6 @@
 #' @references
 #' Wright, B. D., & Stone, M. H. (1979). Best test design.
 #'
-#' @seealso
-#' \code{\link[WrightMap]{wrightMap}}
-#'
 #' @examples
 #' library(mirt)
 #'

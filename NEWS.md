@@ -2,9 +2,27 @@
 
 ----------
 
-### Changes in version 1.3.3-1 (2020-05-18)
-  * startShinyItemAnalysis() now by default starts as a background job in Rstudio.
-    This permits the user to work and try sample R code examples in the console.
+### Changes in version 1.3.3-1 (2020-07-03)
+#### BUG FIXING
+  * In reports, display of Cronbach's alpha was corrected
+  
+#### MAJOR UPDATES
+  * `startShinyItemAnalysis()` function was updated to allow starting the application 
+    as a background job in Rstudio (default setting). This permits the user to work 
+    and try sample R code examples in the console.
+  * Downloadable tables are newly provided in shiny app in DIF sections for ordinal DIF.
+  * DDplot is now displayed in plotly mode in the shiny app.
+  * New function `nr_recode_nr()` for recognizing and recoding not-reached responses 
+    was introduced.
+  * `ItemAnalysis()` function was updated with new columns for ratio of missed and 
+    unreached items, shortened column names and ordering.
+  * Traditional item analysis table in Item analysis section of the app has been 
+    expanded to include item reliability, item validity, and percentage of missing and
+    unreached for each item.
+  * `DDplot()` function now offers argument `criterion`. Without `criterion` specification,
+    difficulty-discrimination plot is provided. When `criterion` is specified, 
+    difficulty-validity plot is provided instead, depicting item criterion validity.
+  * Difficulty-validity plot is newly offered in section Validity/Criterion_Validity/Items
 
 ### Changes in version 1.3.3 (2020-05-04)
 

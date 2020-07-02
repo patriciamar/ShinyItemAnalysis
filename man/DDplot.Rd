@@ -2,11 +2,11 @@
 % Please edit documentation in R/DDplot.R
 \name{DDplot}
 \alias{DDplot}
-\title{Graphical representation of difficulty and (generalized) discrimination in item analysis}
+\title{Graphical representation of difficulty and (generalized) discrimination / item validity in item analysis}
 \usage{
 DDplot(data, item.names, k = 3, l = 1, u = 3,
 discrim = "ULI", maxscore, minscore, bin = FALSE, cutscore, average.score = FALSE,
-thr = 0.2)
+thr = 0.2, criterion = "none", val_type = "simple")
 }
 \arguments{
 \item{data}{numeric: binary or ordinal data matrix or data frame. See \strong{Details}.}
@@ -34,9 +34,13 @@ Default value is 3.  See \strong{Details}.}
 value is FALSE. See \strong{Details}.}
 
 \item{thr}{numeric: value of discrimination threshold. See \strong{Details}.}
+
+\item{criterion}{numeric/logical vector: values of criterion. If supplied, \code{disrim} argument is ignored and item-criterion correlation (validity) is displayed instead. Default value is "none".}
+
+\item{val_type}{character: what criterion validity measure should be shown. Possible values are 'simple' (item-criterion correlation; default) and 'index' (item validity index calculated as \code{cor(item, test) * sqrt(((N - 1) / N) * var(item))}, see Allen & Yen, 1979, Ch. 6.4, for details). The argument is ignored if user does not supply any \code{criterion}.}
 }
 \description{
-Plots difficulty and (generalized) discrimination for items ordered by difficulty.
+Plots difficulty and (generalized) discrimination / criterion validity for items ordered by difficulty.
 }
 \details{
 The \code{data} is a matrix or data frame whose rows represents examinee answers
@@ -81,8 +85,9 @@ dataOrd <- dataMedicalgraded[, 1:100]
 
 # DDplot of binary data set
 DDplot(dataBin)
+
 \dontrun{
-#' # DDplot of binary data set without threshold
+# DDplot of binary data set without threshold
 DDplot(dataBin, thr = NULL)
 # compared to DDplot using ordinal data set and 'bin = TRUE'
 DDplot(dataOrd, bin = TRUE)
@@ -111,6 +116,11 @@ DDplot(dataBin, discrim = "none")
 DDplot(dataOrd)
 # DDplot of ordinal data set disaplaying average item scores
 DDplot(dataOrd, average.score = TRUE)
+
+# item difficulty / criterion validity plot for data with criterion
+data <- difNLR::GMAT[, 1:20]
+criterion <- difNLR::GMAT[, "criterion"]
+DDplot(data, criterion = criterion, val_type = "simple")
 }
 }
 \references{

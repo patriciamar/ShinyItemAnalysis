@@ -1011,7 +1011,7 @@ output$DIF_logistic_summary_NA_alert <- renderUI({
   HTML(txt)
 })
 
-# ** DIF statistic and parameters tables ####
+# ** DIF statistic and parameter tables ####
 coef_logistic_dif <- reactive({
   model <- DIF_logistic_model()
 
@@ -1212,10 +1212,6 @@ output$download_logistic_dif <- downloadHandler(
       note_log()$p_adj,
       note_log()$puri,
       note_log()$thr_rounded,
-      # note_log()$codes,
-      # note_log()$effsize,
-      # note_log()$thr_codes_zt,
-      # note_log()$thr_codes_jg,
       "Signif. codes: 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1",
       "DIF effect sizes (Nagelkerke's R^2): A = negligible effect, B = moderate effect, C = large effect",
       "Thresholds by Zumbo & Thomas (ZT): 0 'A' 0.13 'B' 0.26 'C' 1",
@@ -3274,7 +3270,7 @@ output$DIF_SIBTEST_NA_alert <- renderUI({
 })
 
 
-####### ** DIF statistic and parameters tables ####
+####### ** DIF statistic and parameter tables ####
 coef_sibtest_dif <- reactive({
   res <- DIF_SIBTEST_model()
 
@@ -3913,6 +3909,222 @@ output$DIF_cum_NA_warning_summary <- renderUI({
   HTML(txt)
 })
 
+
+
+# ** DIF statistic and parameter tables ####
+coef_cum_dif <- reactive({
+  res <- DIF_cum_model()
+
+  # only one pval var, based on model specs
+  pval <- if (res$p.adjust.method == "none") {
+    res$pval
+  } else {
+    res$adj.pval
+  }
+
+  pval_symb <- symnum(pval,
+                      c(0, 0.001, 0.01, 0.05, 0.1, 1),
+                      symbols = c("***", "**", "*", ".", ""))
+
+  blank <- character(ncol(res$Data))
+
+  # estimated coefficients for all items with standard errors
+  coefs <- coef(res, SE = TRUE, simplify = TRUE)
+
+  estims <- coefs[c(TRUE, FALSE), ]
+
+  ses <- coefs[c(FALSE, TRUE), ]
+
+  pars_zigzag <-
+    cbind(estims, ses)[, order(c(seq(ncol(estims)), seq(ncol(ses))))]
+
+  pars_digits_only <- stringr::str_extract(colnames(estims), "\\d")
+  colnames(pars_zigzag) <-
+    paste0(c("", "SE("), rep(c(
+      paste0("b_0", pars_digits_only[!is.na(pars_digits_only)]), "b_1", "b_2", "b_3"
+    ), each = 2), c("", ")"))
+
+  # # FOR IRT PARAMETRIZATION!!!
+  # colnames(pars_zigzag) <-
+  #   paste0(
+  #     c("", "SE("),
+  #     stringr::str_replace(
+  #       stringr::str_replace(colnames(pars_zigzag), "(?=\\d)", "}_{"),
+  #       ".*(?=b|a)",
+  #       "%%mathit{"
+  #     )
+  #     ,
+  #     c("}%%", "}%%)")
+  #   )
+
+  # table
+  tab <-
+    data.frame(check.names = FALSE, # in R 4.x.x, this changes parentheses
+               res$Sval,            # to dots (to ensure "syntactical validity")
+               pval,
+               pval_symb,
+               blank,
+               pars_zigzag)
+
+  # colnames rodeo -- add math formatting
+  colnames(tab) <- c(
+    "LR (%%mathit{\\chi^2}%%)",
+    ifelse(
+      res$p.adjust.method == "none",
+      "%%mathit{p}%%-value",
+      "adj. %%mathit{p}%%-value"
+    ),
+    "",
+    "",
+    str_replace(
+      str_replace(
+        str_replace(
+          colnames(pars_zigzag),
+          "(?=b)", "%%mathit{"),
+        "(?<=\\d$)|(?=\\))",
+      "}%%"
+    ),
+    "_",
+    "}_{"
+    )
+  )
+
+
+  rownames(tab) <- item_names()
+
+  tab
+})
+
+output$coef_cum_dif <- renderTable({coef_cum_dif()}, rownames = T, colnames = T)
+
+# ** Items detected text ######
+output$cum_dif_items <- renderPrint({
+  DIFitems <- DIF_cum_model()$DIFitems
+  if (DIFitems[1] == "No DIF item detected") {
+    txt <- "No item was detected as DIF."
+  } else {
+    txt <- paste0("Items detected as DIF items: ", paste(item_names()[DIFitems], collapse = ", "))
+  }
+  HTML(txt)
+})
+
+# ** Purification table ######
+dif_cum_puri_table <- reactive({
+  tab <- DIF_cum_model()$difPur
+
+  if (!is.null(tab)) {
+    colnames(tab) <- item_names()
+    rownames(tab) <- paste0("Step ", seq(0, nrow(tab) - 1))
+    tab
+  }
+})
+output$dif_cum_puri_table <- renderTable({dif_cum_puri_table()}, rownames = T, colnames = T, digits = 0)
+
+# ** Purification info - number of iter ######
+output$dif_cum_puri_info <- renderPrint({
+  model <- DIF_cum_model()
+  if (input$DIF_cum_purification_summary & !is.null(DIF_cum_model()$difPur)) {
+    cat("Table below describes purification process, where rows correspond to purification iteration and columns to items.
+        Value of '1' in the i-th row means that an item was detected as DIF in (i-1)-th step, while value of '0' means that
+        item was not detected as DIF. The first row corresponds to the initial classification of the items when all items
+        were used for calculation of DIF matching criterion. ")
+    nrIter <- model$nrPur
+    cat("In this case, the convergence was", ifelse(model$conv.puri, "reached", "NOT reached even"), "after", nrIter,
+        ifelse(nrIter == 1, "iteration.", "iterations."))
+  } else if (input$DIF_cum_purification_summary & is.null(DIF_cum_model()$difPur)) {
+    cat("No DIF items detected whatsoever, nothing to show.")
+  } else {
+    cat("Item purification not requested! Nothing to show.")
+  }
+})
+
+# Note setup
+note_cum <- reactive({
+  res <- NULL
+
+  model <- DIF_cum_model()
+
+  res$dmv <- paste("DIF matching variable:",
+                   if (model$match[1] == "score") {
+                     "total score"
+                   } else if (model$match[1] == "zscore") {
+                     "standardized total score"
+                   } else {
+                     "standardized uploaded"
+                   })
+
+
+  res$type <- paste("DIF type tested:", switch(
+    model$type,
+    "both" = "any DIF ",
+    "udif" = "uniform DIF ",
+    "nudif" = "non-uniform DIF "
+  ))
+
+  res$p_adj <- paste("P-value correction method:", switch(
+    model$p.adjust.method,
+    "BH" = "Benjamini-Hochberg",
+    "BY" = "Benjamini-Yekutieli",
+    "bonferroni" = "Bonferroni",
+    "holm" = "Holm",
+    "hochberg" = "Hochberg",
+    "hommel" = "Hommel",
+    "none" = "none"
+  ))
+
+  res$puri <- paste("Item purification:", ifelse(model$purification == T, "used", "unutilized"))
+
+  res
+})
+
+output$note_cum <- renderUI({
+  withMathJax()
+
+  HTML(
+    paste(
+      "Notes:",
+      note_cum()$dmv,
+      note_cum()$type,
+      note_cum()$p_adj,
+      note_cum()$puri,
+      "Signif. codes: 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1",
+      sep = "</br>"
+    )
+  )
+})
+
+# ** Download tables ######
+output$download_cum_dif <- downloadHandler(
+  filename = function() {
+    paste("DIF_Cumulative_statistics",".csv",sep = "")
+  },
+  content = function(file) {
+    data <- coef_cum_dif()
+
+    # remove all math-format characters -->> plaintext
+    colnames(data) <- stringr::str_remove_all(colnames(data), "mathit|[%{}]|\\\\")
+
+    write.csv(data[-4], file)
+    write(paste(
+      "Note:",
+      note_cum()$dmv,
+      note_cum()$type,
+      note_cum()$p_adj,
+      note_cum()$puri,
+      "Signif. codes: 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1",
+      sep = "\n"), file, append = T)
+  }
+)
+output$download_cum_dif_puri <- downloadHandler(
+  filename = function() {
+    paste0("DIF_Cumulative_purification", ".csv")
+  },
+  content = function(file) {
+    data <- dif_cum_puri_table()
+    write.csv(data, file)
+  }
+)
+
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # ** ITEMS ######
 
@@ -4245,6 +4457,221 @@ output$DIF_adj_NA_warning_summary <- renderUI({
   HTML(txt)
 })
 
+
+# ** DIF statistic and parameter tables ####
+coef_adj_dif <- reactive({
+  res <- DIF_adj_model()
+
+  # only one pval var, based on model specs
+  pval <- if (res$p.adjust.method == "none") {
+    res$pval
+  } else {
+    res$adj.pval
+  }
+
+  pval_symb <- symnum(pval,
+                      c(0, 0.001, 0.01, 0.05, 0.1, 1),
+                      symbols = c("***", "**", "*", ".", ""))
+
+  blank <- character(ncol(res$Data))
+
+  # estimated coefficients for all items with standard errors
+  coefs <- coef(res, SE = TRUE, simplify = TRUE)
+
+  estims <- coefs[c(TRUE, FALSE), ]
+
+  ses <- coefs[c(FALSE, TRUE), ]
+
+  pars_zigzag <-
+    cbind(estims, ses)[, order(c(seq(ncol(estims)), seq(ncol(ses))))]
+
+  pars_digits_only <- stringr::str_extract(colnames(estims), "\\d")
+  colnames(pars_zigzag) <-
+    paste0(c("", "SE("), rep(c(
+      paste0("b_0", pars_digits_only[!is.na(pars_digits_only)]), "b_1", "b_2", "b_3"
+    ), each = 2), c("", ")"))
+
+  # # FOR IRT PARAMETRIZATION!!!
+  # colnames(pars_zigzag) <-
+  #   paste0(
+  #     c("", "SE("),
+  #     stringr::str_replace(
+  #       stringr::str_replace(colnames(pars_zigzag), "(?=\\d)", "}_{"),
+  #       ".*(?=b|a)",
+  #       "%%mathit{"
+  #     )
+  #     ,
+  #     c("}%%", "}%%)")
+  #   )
+
+  # table
+  tab <-
+    data.frame(check.names = FALSE,
+               res$Sval,
+               pval,
+               pval_symb,
+               blank,
+               pars_zigzag)
+
+  # colnames rodeo -- add math formatting
+  colnames(tab) <- c(
+    "LR (%%mathit{\\chi^2}%%)",
+    ifelse(
+      res$p.adjust.method == "none",
+      "%%mathit{p}%%-value",
+      "adj. %%mathit{p}%%-value"
+    ),
+    "",
+    "",
+    str_replace(
+      str_replace(
+        str_replace(
+          colnames(pars_zigzag),
+          "(?=b)", "%%mathit{"),
+        "(?<=\\d$)|(?=\\))",
+        "}%%"
+      ),
+      "_",
+      "}_{"
+    )
+  )
+
+
+  rownames(tab) <- item_names()
+
+  tab
+})
+
+output$coef_adj_dif <- renderTable({coef_adj_dif()}, rownames = T, colnames = T)
+
+# ** Items detected text ######
+output$adj_dif_items <- renderPrint({
+  DIFitems <- DIF_adj_model()$DIFitems
+  if (DIFitems[1] == "No DIF item detected") {
+    txt <- "No item was detected as DIF."
+  } else {
+    txt <- paste0("Items detected as DIF items: ", paste(item_names()[DIFitems], collapse = ", "))
+  }
+  HTML(txt)
+})
+
+# ** Purification table ######
+dif_adj_puri_table <- reactive({
+  tab <- DIF_adj_model()$difPur
+
+  if (!is.null(tab)) {
+    colnames(tab) <- item_names()
+    rownames(tab) <- paste0("Step ", seq(0, nrow(tab) - 1))
+    tab
+  }
+})
+output$dif_adj_puri_table <- renderTable({dif_adj_puri_table()}, rownames = T, colnames = T, digits = 0)
+
+# ** Purification info - number of iter ######
+output$dif_adj_puri_info <- renderPrint({
+  model <- DIF_adj_model()
+  if (input$DIF_adj_purification_summary & !is.null(DIF_adj_model()$difPur)) {
+    cat("Table below describes purification process, where rows correspond to purification iteration and columns to items.
+        Value of '1' in the i-th row means that an item was detected as DIF in (i-1)-th step, while value of '0' means that
+        item was not detected as DIF. The first row corresponds to the initial classification of the items when all items
+        were used for calculation of DIF matching criterion. ")
+    nrIter <- model$nrPur
+    cat("In this case, the convergence was", ifelse(model$conv.puri, "reached", "NOT reached even"), "after", nrIter,
+        ifelse(nrIter == 1, "iteration.", "iterations."))
+  } else if (input$DIF_adj_purification_summary & is.null(DIF_adj_model()$difPur)) {
+    cat("No DIF items detected whatsoever, nothing to show.")
+  } else {
+    cat("Item purification not requested! Nothing to show.")
+  }
+})
+
+# Note setup
+note_adj <- reactive({
+  res <- NULL
+
+  model <- DIF_adj_model()
+
+  res$dmv <- paste("DIF matching variable:",
+                   if (model$match[1] == "score") {
+                     "total score"
+                   } else if (model$match[1] == "zscore") {
+                     "standardized total score"
+                   } else {
+                     "standardized uploaded"
+                   })
+
+
+  res$type <- paste("DIF type tested:", switch(
+    model$type,
+    "both" = "any DIF ",
+    "udif" = "uniform DIF ",
+    "nudif" = "non-uniform DIF "
+  ))
+
+  res$p_adj <- paste("P-value correction method:", switch(
+    model$p.adjust.method,
+    "BH" = "Benjamini-Hochberg",
+    "BY" = "Benjamini-Yekutieli",
+    "bonferroni" = "Bonferroni",
+    "holm" = "Holm",
+    "hochberg" = "Hochberg",
+    "hommel" = "Hommel",
+    "none" = "none"
+  ))
+
+  res$puri <- paste("Item purification:", ifelse(model$purification == T, "used", "unutilized"))
+
+  res
+})
+
+output$note_adj <- renderUI({
+  withMathJax()
+
+  HTML(
+    paste(
+      "Notes:",
+      note_adj()$dmv,
+      note_adj()$type,
+      note_adj()$p_adj,
+      note_adj()$puri,
+      "Signif. codes: 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1",
+      sep = "</br>"
+    )
+  )
+})
+
+# ** Download tables ######
+output$download_adj_dif <- downloadHandler(
+  filename = function() {
+    paste("DIF_Adjacent_statistics",".csv",sep = "")
+  },
+  content = function(file) {
+    data <- coef_adj_dif()
+
+    # remove all math-format characters -->> plaintext
+    colnames(data) <- stringr::str_remove_all(colnames(data), "mathit|[%{}]|\\\\")
+
+    write.csv(data[-4], file)
+    write(paste(
+      "Note:",
+      note_adj()$dmv,
+      note_adj()$type,
+      note_adj()$p_adj,
+      note_adj()$puri,
+      "Signif. codes: 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1",
+      sep = "\n"), file, append = T)
+  }
+)
+output$download_adj_dif_puri <- downloadHandler(
+  filename = function() {
+    paste0("DIF_Adjacent_purification", ".csv")
+  },
+  content = function(file) {
+    data <- dif_adj_puri_table()
+    write.csv(data, file)
+  }
+)
+
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # ** ITEMS ######
 
@@ -4513,6 +4940,241 @@ output$DDF_multi_NA_warning_summary <- renderUI({
   txt <- na_score()
   HTML(txt)
 })
+
+
+# ** DIF statistic and parameter tables ####
+coef_multi_dif <- reactive({
+  res <- DDF_multi_model()
+
+  # only one pval var, based on model specs
+  pval <- if (res$p.adjust.method == "none") {
+    res$pval
+  } else {
+    res$adj.pval
+  }
+
+  pval_symb <- symnum(pval,
+                      c(0, 0.001, 0.01, 0.05, 0.1, 1),
+                      symbols = c("***", "**", "*", ".", ""))
+  blank <- character(ncol(res$Data))
+
+
+  # table
+  tab_stat <-
+    data.frame(check.names = FALSE,
+               res$Sval,
+               pval,
+               pval_symb)
+
+  colnames(tab_stat) <- c(
+    "LR (%%mathit{\\chi^2}%%)",
+    ifelse(
+      res$p.adjust.method == "none",
+      "%%mathit{p}%%-value",
+      "adj. %%mathit{p}%%-value"
+    ),
+    ""
+  )
+
+  rownames(tab_stat) <- item_names()
+
+  tab_stat
+})
+
+output$coef_multi_dif <- renderTable({coef_multi_dif()}, rownames = T, colnames = T)
+
+coef_multi_dif_pars <- reactive({
+  res <- DDF_multi_model()
+
+  tab_pars <-
+    left_join(
+      res$mlrPAR %>%
+        map2_dfr(
+          .y = item_names(),
+          ~ .x %>% as.data.frame %>%
+            rownames_to_column("resp") %>%
+            add_column(item = .y, .before = 1)
+        ) %>% dplyr::rename(
+          "b_0" = "(Intercept)",
+          "b_1" = "x",
+          "b_2" = "group",
+          "b_3" = "x:group"
+        ),
+      res$mlrSE %>%
+        map2_dfr(
+          .y = item_names(),
+          ~ .x %>% as.data.frame %>%
+            rownames_to_column("resp") %>%
+            add_column(item = .y, .before = 1)
+        ) %>% dplyr::rename(
+          "SE(b_0)" = "(Intercept)",
+          "SE(b_1)" = "x",
+          "SE(b_2)" = "group",
+          "SE(b_3)" = "x:group"
+        ),
+      by = c("item", "resp")
+    ) %>% dplyr::mutate(rowname = paste0(item, " (", resp, ")")) %>%
+    column_to_rownames("rowname") %>%
+    replace(is.na(.), 0) %>%
+    dplyr::select(-item,-resp) %>%
+    dplyr::select(order(c(seq(4), seq(4))))
+
+  colnames(tab_pars) <-
+    str_replace(colnames(tab_pars), "(?=b)", "%%mathit{") %>%
+    str_replace("(?<=\\d)", "}%%")
+
+  tab_pars
+})
+
+output$coef_multi_dif_pars <- renderTable({coef_multi_dif_pars()}, rownames = T, colnames = T)
+
+# ** Items detected text ######
+output$multi_dif_items <- renderPrint({
+  DDFitems <- DDF_multi_model()$DDFitems
+  if (DDFitems[1] == "No DDF item detected") {
+    txt <- "No item was detected as DDF."
+  } else {
+    txt <- paste0("Items detected as DDF items: ", paste(item_names()[DDFitems], collapse = ", "))
+  }
+  HTML(txt)
+})
+
+# ** Purification table ######
+dif_multi_puri_table <- reactive({
+  tab <- DDF_multi_model()$ddfPur
+
+  if (!is.null(tab)) {
+    colnames(tab) <- item_names()
+    rownames(tab) <- paste0("Step ", seq(0, nrow(tab) - 1))
+    tab
+  }
+})
+
+output$dif_multi_puri_table <- renderTable({dif_multi_puri_table()}, rownames = T, colnames = T, digits = 0)
+
+# ** Purification info - number of iter ######
+output$dif_multi_puri_info <- renderPrint({
+  model <- DDF_multi_model()
+  if (input$DDF_multi_purification_summary & !is.null(DDF_multi_model()$ddfPur)) {
+    cat("Table below describes purification process, where rows correspond to purification iteration and columns to items.
+        Value of '1' in the i-th row means that an item was detected as DDF in (i-1)-th step, while value of '0' means that
+        item was not detected as DDF. The first row corresponds to the initial classification of the items when all items
+        were used for calculation of DDF matching criterion. ")
+    nrIter <- model$nrPur
+    cat("In this case, the convergence was", ifelse(model$conv.puri, "reached", "NOT reached even"), "after", nrIter,
+        ifelse(nrIter == 1, "iteration.", "iterations."))
+  } else if (input$DDF_multi_purification_summary & is.null(DDF_multi_model()$ddfPur)) {
+    cat("No DDF items detected whatsoever, nothing to show.")
+  } else {
+    cat("Item purification not requested! Nothing to show.")
+  }
+})
+
+# Note setup
+note_multi <- reactive({
+  res <- NULL
+
+  model <- DDF_multi_model()
+
+  res$dmv <- paste("DDF matching variable:",
+                   if (model$match[1] == "score") {
+                     "total score"
+                   } else if (model$match[1] == "zscore") {
+                     "standardized total score"
+                   } else {
+                     "standardized uploaded"
+                   })
+
+
+  res$type <- paste("DDF type tested:", switch(
+    model$type,
+    "both" = "any DDF ",
+    "udif" = "uniform DDF ",
+    "nudif" = "non-uniform DDF "
+  ))
+
+  res$p_adj <- paste("P-value correction method:", switch(
+    model$p.adjust.method,
+    "BH" = "Benjamini-Hochberg",
+    "BY" = "Benjamini-Yekutieli",
+    "bonferroni" = "Bonferroni",
+    "holm" = "Holm",
+    "hochberg" = "Hochberg",
+    "hommel" = "Hommel",
+    "none" = "none"
+  ))
+
+  res$puri <- paste("Item purification:", ifelse(model$purification == T, "used", "unutilized"))
+
+  res
+})
+
+output$note_multi <- output$note_multi_2 <- renderUI({
+  withMathJax()
+
+  HTML(
+    paste(
+      "Notes:",
+      note_multi()$dmv,
+      note_multi()$type,
+      note_multi()$p_adj,
+      note_multi()$puri,
+      "Signif. codes: 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1",
+      sep = "</br>"
+    )
+  )
+})
+
+# ** Download tables ######
+output$download_multi_dif <- downloadHandler(
+  filename = function() {
+    paste("DDF_Multinomial_statistics",".csv", sep = "")
+  },
+  content = function(file) {
+    data <- coef_multi_dif()
+
+    write.csv(data, file)
+    write(paste(
+      "Note:",
+      note_multi()$dmv,
+      note_multi()$type,
+      note_multi()$p_adj,
+      note_multi()$puri,
+      "Signif. codes: 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1",
+      sep = "\n"), file, append = T)
+  }
+)
+
+# params separately
+output$download_multi_dif_pars <- downloadHandler(
+  filename = function() {
+    paste("DDF_Multinomial_parameters",".csv", sep = "")
+  },
+  content = function(file) {
+    data <- coef_multi_dif_pars()
+
+    write.csv(data, file)
+    write(paste(
+      "Note:",
+      note_multi()$dmv,
+      note_multi()$type,
+      note_multi()$p_adj,
+      note_multi()$puri,
+      "Signif. codes: 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1",
+      sep = "\n"), file, append = T)
+  }
+)
+
+output$download_multi_dif_puri <- downloadHandler(
+  filename = function() {
+    paste0("DDF_Multinomial_purification", ".csv")
+  },
+  content = function(file) {
+    data <- dif_multi_puri_table()
+    write.csv(data, file)
+  }
+)
+
 
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # ** ITEMS ######

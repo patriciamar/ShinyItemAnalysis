@@ -291,7 +291,7 @@ reliability_cronbachalpha_table_Input <- reactive({
   a.low <- psychometric::alpha.CI(a, k = ncol(data), N = nrow(data), level = 0.95)[1]
   a.upp <- psychometric::alpha.CI(a, k = ncol(data), N = nrow(data), level = 0.95)[3]
 
-  tab <- data.table("Estimate" = a,
+  tab <- data.table("Estimate" = sprintf("%.3f", a),
                     "Confidence interval" = paste0("(", sprintf("%.3f", a.low, 3), ", ",
                                                    sprintf("%.3f", a.upp), ")"))
 
