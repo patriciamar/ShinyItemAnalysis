@@ -12,7 +12,7 @@
     and try sample R code examples in the console.
   * Downloadable tables are newly provided in shiny app in DIF sections for ordinal DIF.
   * DDplot is now displayed in plotly mode in the shiny app.
-  * New function `nr_recode_nr()` for recognizing and recoding not-reached responses 
+  * New function `recode_nr()` for recognizing and recoding not-reached responses 
     was introduced.
   * `ItemAnalysis()` function was updated with new columns for ratio of missed and 
     unreached items, shortened column names and ordering.
