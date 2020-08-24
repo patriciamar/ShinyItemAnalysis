@@ -36,20 +36,24 @@ Version available online at [Czech Academy of Sciences](https://shiny.cs.cas.cz/
 Version available online at [shinyapps.io](https://cemp.shinyapps.io/ShinyItemAnalysis/) is 1.3.4. <br> 
 
 ## Usage
-It's very easy to run `ShinyItemAnalysis`:
+It is very easy to run `ShinyItemAnalysis` in `R`:
 ```
 library(ShinyItemAnalysis)
-rm(list = ls())
 startShinyItemAnalysis()
 ```
 Or try it directly online at [Czech Academy of Sciences](https://shiny.cs.cas.cz/ShinyItemAnalysis/) or [shinyapps.io](https://cemp.shinyapps.io/ShinyItemAnalysis/)!
 
+## References
+When using `ShinyItemAnalysis` software, we appreciate if you include a reference in your publications. To cite the software, please, use: 
+
+  Martinková P., & Drabinová A. (2018) ShinyItemAnalysis for teaching psychometrics and to enforce routine analysis of educational tests. The R Journal, 10(2), 503-515.
+[doi: 10.32614/RJ-2018-074](https://doi.org/10.32614/RJ-2018-074). 
+
+Czech speakers can also refer to paper in journal [Testforum](https://doi.org/10.5817/TF2017-9-129).
+
 ## Getting help and provide feedback
 If you find any bug or just need help with `ShinyItemAnalysis` you can leave your message as an issue [here](https://github.com/patriciamar/ShinyItemAnalysis/issues) or directly contact us at martinkova@cs.cas.cz. We warmly encourage you to provide your feedback using [Google form](https://docs.google.com/forms/d/e/1FAIpQLSdbk2mkDacMlhGQmkFPa4A-Z4KcFMMG1IXugM8eSTzN7m4xnA/viewform).
-
 
 ## License
 This program is free software and you can redistribute it and or modify it under the terms of the [GNU GPL 3](https://www.gnu.org/licenses/gpl-3.0.en.html).
 
-## References
-Paper describing `ShinyItemAnalysis` is available in [The R Journal](https://doi.org/10.32614/RJ-2018-074). Czech speakers can also refer to paper in journal [Testforum](https://doi.org/10.5817/TF2017-9-129).
