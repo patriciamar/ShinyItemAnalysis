@@ -8,6 +8,7 @@
   * Item slider bug in ordinal regression models in the app was fixed.
   * DIF matching criterion was synchronized for Summary and Item subtabs in the
     Generalized logistic regression method, DIF/Fairness section of the app. 
+  * Bug in display of table for Regression / Model comparison was fixed.
   
 #### MAJOR UPDATES
   * `startShinyItemAnalysis()` function was updated to allow starting the application 
@@ -29,6 +30,7 @@
 
 #### MINOR UPDATES
   * Documentation of `DDplot()` was updated.
+  * All datatable outputs now have proper bootstrap style/theme.
 ----------
 
 ### Changes in version 1.3.3 (2020-05-04)

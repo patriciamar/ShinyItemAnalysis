@@ -682,17 +682,29 @@ output$regr_comp_table <- DT::renderDataTable({
                      # "BEST LR"
                      )
 
-  tab <- datatable(tab, rownames = T,
-                   options = list(autoWidth = T,
-                                  columnDefs = list(list(width = '140px', targets = list(0)),
-                                                    list(width = '100px', targets = list(1:ncol(tab))),
-                                                    list(targets = "_all")),
-                                  scrollX = T,
-                                  pageLength = 13,
-                                  dom = 'tipr')) %>%
-    formatStyle(0, target = 'row', fontWeight = styleEqual(c('BEST AIC', 'BEST BIC', 'BEST LR'),
-                                                           c('bold', 'bold', 'bold')))
-  tab
+ tab <- datatable(tab,
+  rownames = T,
+  style = "bootstrap",
+  extensions = "FixedColumns",
+  options = list(
+    autoWidth = T,
+    columnDefs = list(
+      list(width = "100px", targets = list(0)),
+      list(width = "65", targets = "_all")
+    ),
+    scrollX = T,
+    ordering = FALSE,
+    fixedColumns = list(leftColumns = 1),
+    pageLength = 13,
+    dom = "tr"
+  )
+) %>%
+  formatStyle(0, target = "row", fontWeight = styleEqual(
+    c("BEST AIC", "BEST BIC"), # "BEST LR"),
+    c("bold", "bold") #, "bold")
+  ))
+
+tab
 
 })
 

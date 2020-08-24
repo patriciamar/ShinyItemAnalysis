@@ -527,6 +527,7 @@ output$headdata <- DT::renderDataTable({
   data_table
 },
 rownames = F,
+style = "bootstrap",
 options = list(scrollX = TRUE,
                pageLength = 6,
                server = TRUE,
@@ -540,6 +541,7 @@ output$key <- DT::renderDataTable({
   key_table
 },
 rownames = F,
+style = "bootstrap",
 options = list(scrollX = TRUE,
                server = TRUE,
                scrollCollapse = TRUE,
@@ -553,6 +555,7 @@ output$sc01 <- DT::renderDataTable({
   scored_table
 },
 rownames = F,
+style = "bootstrap",
 options = list(scrollX = TRUE,
                pageLength = 6,
                server = TRUE,
@@ -566,6 +569,7 @@ output$group <- DT::renderDataTable({
   group_table
 },
 rownames = F,
+style = "bootstrap",
 options = list(scrollX = TRUE,
                server = TRUE,
                scrollCollapse = TRUE,
@@ -578,6 +582,7 @@ output$critvar <- DT::renderDataTable({
   critvar_table
 },
 rownames = F,
+style = "bootstrap",
 options = list(scrollX = TRUE,
                server = TRUE,
                scrollCollapse = TRUE,
@@ -590,6 +595,7 @@ output$difvar <- DT::renderDataTable({
   difvar_table
 },
 rownames = F,
+style = "bootstrap",
 options = list(scrollX = TRUE,
                server = TRUE,
                scrollCollapse = TRUE,
