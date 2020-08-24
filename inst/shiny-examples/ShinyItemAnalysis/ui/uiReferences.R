@@ -1,5 +1,5 @@
 uiReferences <-
-  tabPanel("",
+  tabPanel("", value = "references",
            icon = icon("fas fa-book"),
            #------------------------------------------------------------------------------------#
            # Packages ####

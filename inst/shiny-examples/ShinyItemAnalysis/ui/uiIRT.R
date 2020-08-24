@@ -5,7 +5,7 @@ uiIRT <- navbarMenu("IRT models",
                     # * RASCH ####
                     tabPanel("Rasch",
                              tabsetPanel(
-                               tabPanel("Model",
+                               tabPanel("Model", value = "rasch_mod",
                                         h3("Rasch model"),
                                         p('Item Response Theory (IRT) models are mixed-effect regression models in which
                                         respondent ability \\(\\theta\\) is assumed to be latent and is estimated together with item
@@ -56,7 +56,7 @@ uiIRT <- navbarMenu("IRT models",
                                         div(code(HTML("library(difNLR)<br>library(mirt)&nbsp;<br>library(ShinyItemAnalysis)<br><br>#&nbsp;loading&nbsp;data<br>data(GMAT)&nbsp;<br>data&nbsp;<-&nbsp;GMAT[,&nbsp;1:20]&nbsp;<br><br>#&nbsp;fitting&nbsp;Rasch&nbsp;model<br>fit&nbsp;<-&nbsp;mirt(data,&nbsp;model&nbsp;=&nbsp;1,&nbsp;itemtype&nbsp;=&nbsp;'Rasch',&nbsp;SE&nbsp;=&nbsp;T)&nbsp;<br><br>#&nbsp;Item&nbsp;Characteristic&nbsp;Curves&nbsp;<br>plot(fit,&nbsp;type&nbsp;=&nbsp;'trace',&nbsp;facet_items&nbsp;=&nbsp;F)&nbsp;<br>#&nbsp;Item&nbsp;Information&nbsp;Curves&nbsp;<br>plot(fit,&nbsp;type&nbsp;=&nbsp;'infotrace',&nbsp;facet_items&nbsp;=&nbsp;F)&nbsp;<br>#&nbsp;Test&nbsp;Information&nbsp;Function&nbsp;<br>plot(fit,&nbsp;type&nbsp;=&nbsp;'infoSE')&nbsp;<br><br>#&nbsp;Coefficients&nbsp;<br>coef(fit,&nbsp;simplify&nbsp;=&nbsp;TRUE)&nbsp;<br>coef(fit,&nbsp;IRTpars&nbsp;=&nbsp;TRUE,&nbsp;simplify&nbsp;=&nbsp;TRUE)&nbsp;<br><br>#&nbsp;Item&nbsp;fit&nbsp;statistics&nbsp;<br>itemfit(fit)&nbsp;<br><br>#&nbsp;Factor&nbsp;scores&nbsp;vs&nbsp;Standardized&nbsp;total&nbsp;scores&nbsp;<br>fs&nbsp;<-&nbsp;as.vector(fscores(fit))&nbsp;<br>sts&nbsp;<-&nbsp;as.vector(scale(apply(data,&nbsp;1,&nbsp;sum)))&nbsp;<br>plot(fs&nbsp;~&nbsp;sts)&nbsp;<br><br>#&nbsp;Wright&nbsp;Map&nbsp;<br>b&nbsp;<-&nbsp;sapply(1:ncol(data),&nbsp;function(i)&nbsp;coef(fit)[[i]][,&nbsp;'d'])&nbsp;<br>ggWrightMap(fs,&nbsp;b)"))),
                                         br()
                                ),
-                               tabPanel("Items",
+                               tabPanel("Items", value = "rasch_it",
                                         h3("Rasch model"),
                                         p('Item Response Theory (IRT) models are mixed-effect regression models in which
                                         respondent ability \\(\\theta\\) is assumed to be latent and is estimated together with item
@@ -83,7 +83,7 @@ uiIRT <- navbarMenu("IRT models",
                     # * 1PL ####
                     tabPanel("1PL",
                              tabsetPanel(
-                               tabPanel("Model",
+                               tabPanel("Model", value = "1pl_mod",
                                         h3("One parameter Item Response Theory model"),
                                         p('Item Response Theory (IRT) models are mixed-effect regression models in which
                                         respondent ability \\(\\theta\\) is assumed to be latent and is estimated together with item
@@ -135,7 +135,7 @@ uiIRT <- navbarMenu("IRT models",
                                         div(code(HTML("library(difNLR)<br>library(mirt)&nbsp;<br>library(ShinyItemAnalysis)<br><br>#&nbsp;loading&nbsp;data<br>data(GMAT)&nbsp;<br>data&nbsp;<-&nbsp;GMAT[,&nbsp;1:20]&nbsp;<br><br>#&nbsp;fitting&nbsp;1PL&nbsp;model<br>fit&nbsp;<-&nbsp;mirt(data,&nbsp;model&nbsp;=&nbsp;1,&nbsp;itemtype&nbsp;=&nbsp;'2PL',&nbsp;constrain&nbsp;=&nbsp;list((1:ncol(data))&nbsp;+&nbsp;seq(0,&nbsp;(ncol(data)&nbsp;-&nbsp;1)*3,&nbsp;3)),&nbsp;SE&nbsp;=&nbsp;T)&nbsp;<br><br>#&nbsp;Item&nbsp;Characteristic&nbsp;Curves&nbsp;<br>plot(fit,&nbsp;type&nbsp;=&nbsp;'trace',&nbsp;facet_items&nbsp;=&nbsp;F)&nbsp;<br>#&nbsp;Item&nbsp;Information&nbsp;Curves&nbsp;<br>plot(fit,&nbsp;type&nbsp;=&nbsp;'infotrace',&nbsp;facet_items&nbsp;=&nbsp;F)&nbsp;<br>#&nbsp;Test&nbsp;Information&nbsp;Function&nbsp;<br>plot(fit,&nbsp;type&nbsp;=&nbsp;'infoSE')&nbsp;<br><br>#&nbsp;Coefficients&nbsp;<br>coef(fit,&nbsp;simplify&nbsp;=&nbsp;TRUE)&nbsp;<br>coef(fit,&nbsp;IRTpars&nbsp;=&nbsp;TRUE,&nbsp;simplify&nbsp;=&nbsp;TRUE)&nbsp;<br><br>#&nbsp;Item&nbsp;fit&nbsp;statistics&nbsp;<br>itemfit(fit)&nbsp;<br><br>#&nbsp;Factor&nbsp;scores&nbsp;vs&nbsp;Standardized&nbsp;total&nbsp;scores&nbsp;<br>fs&nbsp;<-&nbsp;as.vector(fscores(fit))&nbsp;<br>sts&nbsp;<-&nbsp;as.vector(scale(apply(data,&nbsp;1,&nbsp;sum)))&nbsp;<br>plot(fs&nbsp;~&nbsp;sts)&nbsp;<br><br>#&nbsp;Wright&nbsp;Map&nbsp;<br>b&nbsp;<-&nbsp;sapply(1:ncol(data),&nbsp;function(i)&nbsp;coef(fit)[[i]][,&nbsp;'d'])&nbsp;<br>ggWrightMap(fs,&nbsp;b)<br><br><br><br>#&nbsp;You&nbsp;can&nbsp;also&nbsp;use&nbsp;ltm&nbsp;library&nbsp;for&nbsp;IRT&nbsp;models&nbsp;<br>#&nbsp;&nbsp;fitting&nbsp;1PL&nbsp;model<br>fit&nbsp;<-&nbsp;rasch(data)&nbsp;<br>#&nbsp;for&nbsp;Rasch&nbsp;model&nbsp;use&nbsp;<br>#&nbsp;fit&nbsp;<-&nbsp;rasch(data,&nbsp;constraint&nbsp;=&nbsp;cbind(ncol(data)&nbsp;+&nbsp;1,&nbsp;1))&nbsp;<br><br>#&nbsp;Item&nbsp;Characteristic&nbsp;Curves&nbsp;<br>plot(fit)&nbsp;<br>#&nbsp;Item&nbsp;Information&nbsp;Curves&nbsp;<br>plot(fit,&nbsp;type&nbsp;=&nbsp;'IIC')&nbsp;<br>#&nbsp;Test&nbsp;Information&nbsp;Function&nbsp;<br>plot(fit,&nbsp;items&nbsp;=&nbsp;0,&nbsp;type&nbsp;=&nbsp;'IIC')&nbsp;<br><br>#&nbsp;Coefficients&nbsp;<br>coef(fit)&nbsp;<br><br>#&nbsp;Factor&nbsp;scores&nbsp;vs&nbsp;Standardized&nbsp;total&nbsp;scores&nbsp;<br>df1&nbsp;<-&nbsp;ltm::factor.scores(fit,&nbsp;return.MIvalues&nbsp;=&nbsp;T)$score.dat&nbsp;<br>FS&nbsp;<-&nbsp;as.vector(df1[,&nbsp;'z1'])&nbsp;<br>df2&nbsp;<-&nbsp;df1&nbsp;<br>df2$Obs&nbsp;<-&nbsp;df2$Exp&nbsp;<-&nbsp;df2$z1&nbsp;<-&nbsp;df2$se.z1&nbsp;<-&nbsp;NULL&nbsp;<br>STS&nbsp;<-&nbsp;as.vector(scale(apply(df2,&nbsp;1,&nbsp;sum)))&nbsp;<br>df&nbsp;<-&nbsp;data.frame(FS,&nbsp;STS)&nbsp;<br>plot(FS&nbsp;~&nbsp;STS,&nbsp;data&nbsp;=&nbsp;df,&nbsp;xlab&nbsp;=&nbsp;'Standardized&nbsp;total&nbsp;score',&nbsp;ylab&nbsp;=&nbsp;'Factor&nbsp;score')"))),
                                         br()
                                ),
-                               tabPanel("Items",
+                               tabPanel("Items", value = "1pl_it",
                                         h3("1PL model"),
                                         p('Item Response Theory (IRT) models are mixed-effect regression models in which
                                         respondent ability \\(\\theta\\) is assumed to be latent and is estimated together with item
@@ -160,9 +160,9 @@ uiIRT <- navbarMenu("IRT models",
                                         SX2 statistics are computed only when no missing data are present.'),
                                         tableOutput('tab_coef_oneparamirt_mirt')))),
                     # * 2PL ####
-                    tabPanel("2PL ",
+                    tabPanel("2PL",
                              tabsetPanel(
-                               tabPanel("Model",
+                               tabPanel("Model", value = "2pl_mod",
                                         h3("Two parameter Item Response Theory model"),
                                         p('Item Response Theory (IRT) models are mixed-effect regression models in which
                                         respondent ability \\(\\theta\\) is assumed to be latent and is estimated together with item
@@ -299,7 +299,7 @@ uiIRT <- navbarMenu("IRT models",
                                                ylab = "Factor score")')),
                                         br()
                                ),
-                               tabPanel("Items",
+                               tabPanel("Items", value = "2pl_it",
                                         h3("Two parameter Item Response Theory model"),
                                         p('Item Response Theory (IRT) models are mixed-effect regression models in which
                                         respondent ability \\(\\theta\\) is assumed to be latent and is estimated together with item
@@ -325,9 +325,9 @@ uiIRT <- navbarMenu("IRT models",
                                         tableOutput('tab_coef_twoparamirt_mirt'))
                              )),
                     # * 3PL ####
-                    tabPanel("3PL ",
+                    tabPanel("3PL",
                              tabsetPanel(
-                               tabPanel("Model",
+                               tabPanel("Model", value = "3pl_mod",
                                         h3("Three parameter Item Response Theory model"),
                                         p('Item Response Theory (IRT) models are mixed-effect regression models in which
                                         respondent ability \\(\\theta\\) is assumed to be latent and is estimated together with item
@@ -463,7 +463,7 @@ uiIRT <- navbarMenu("IRT models",
                                                xlab = "Standardized total score",
                                                ylab = "Factor score")')),
                                         br()),
-                               tabPanel("Items",
+                               tabPanel("Items", value = "3pl_it",
                                         h3("Three parameter Item Response Theory model"),
                                         p('Item Response Theory (IRT) models are mixed-effect regression models in which
                                         respondent ability \\(\\theta\\) is assumed to be latent and is estimated together with item
@@ -490,9 +490,9 @@ uiIRT <- navbarMenu("IRT models",
                                         tableOutput('tab_coef_threeparamirt_mirt'))
                              )),
                     # * 4PL ####
-                    tabPanel("4PL ",
+                    tabPanel("4PL",
                              tabsetPanel(
-                               tabPanel("Model",
+                               tabPanel("Model", value = "4pl_mod",
                                         h3("Four parameter Item Response Theory model"),
                                         p('Item Response Theory (IRT) models are mixed-effect regression models in which
                                         respondent ability \\(\\theta\\) is assumed to be latent and is estimated together with item
@@ -578,7 +578,7 @@ uiIRT <- navbarMenu("IRT models",
                                             br(),
                                             code('plot(fs ~ sts)')),
                                         br()),
-                               tabPanel("Items",
+                               tabPanel("Items", value = "4pl_it",
                                         h3("Four parameter Item Response Theory model"),
                                         p('Item Response Theory (IRT) models are mixed-effect regression models in which
                                         respondent ability \\(\\theta\\) is assumed to be latent and is estimated together with item
@@ -606,7 +606,7 @@ uiIRT <- navbarMenu("IRT models",
                                         tableOutput('tab_coef_irt_4PL'))
                              )),
                     # * MODEL COMPARISON ####
-                    tabPanel("Model comparison ",
+                    tabPanel("Model comparison", value = "irt_mod_comp",
                              h3("Item Response Theory model selection"),
                              withMathJax(),
                              p('Item Response Theory (IRT) models are mixed-effect regression models in which
@@ -620,11 +620,12 @@ uiIRT <- navbarMenu("IRT models",
                                tags$li(strong('BIC'), 'is the Bayesian information criterion (Schwarz, 1978).'),
                                tags$li(strong('SABIC'), 'is the Sample-sized adjusted BIC criterion, ')
                              ),
-                             p('Another approach to compare IRT models can be likelihood ratio chi-squared test.
-                             Significance level is set to 0.05.'),
+                             # p('Another approach to compare IRT models can be likelihood ratio chi-squared test.
+                             # Significance level is set to 0.05.'),
                              h4("Table of comparison statistics"),
-                             p('Row ', strong('BEST'), 'indicates which model has the lowest value of criterion, or is the largest
-                             significant model by likelihood ratio test.'),
+                             # p('Row ', strong('BEST'), 'indicates which model has the lowest value of criterion, or is the largest
+                             # significant model by likelihood ratio test.'),
+                             p('Row ', strong('BEST'), 'indicates which model has the lowest value of given information criterion.'),
                              tableOutput('irtcomparison'),
                              tags$style(type = "text/css", "#irtcomparison tr:last-child {font-weight:bold;}"),
                              br(),
@@ -635,9 +636,9 @@ uiIRT <- navbarMenu("IRT models",
                     "----",
                     "Polytomous models",
                     # * BOCK'S NOMINAL MODEL ####
-                    tabPanel("Bock's nominal model",
+                    tabPanel("Bock's nominal model", value = "bock",
                              tabsetPanel(
-                               tabPanel("Model",
+                               tabPanel("Model", value = "bock_mod",
                                         h3("Bock's nominal Item Response Theory model"),
                                         p('The nominal response model (NRM) was introduced by Bock (1972) as a way to model
                                         responses to items with two or more nominal categories. This model is suitable for
@@ -676,7 +677,7 @@ uiIRT <- navbarMenu("IRT models",
                                         br(),
                                         br()
                                ),
-                               tabPanel("Item",
+                               tabPanel("Item", value = "bock_it",
                                         h3("Bock's nominal Item Response Theory model"),
                                         p('The nominal response model (NRM) was introduced by Bock (1972) as a way to model
                                         responses to items with two or more nominal categories. This model is suitable for
@@ -712,7 +713,7 @@ uiIRT <- navbarMenu("IRT models",
                     tabPanel("Polytomous models",
                              tabsetPanel(
                                # *** Intro ####
-                               tabPanel('Intro',
+                               tabPanel('Intro', value = "polytom_intro",
                                         h3("Polytomous models"),
                                         p('Polytomous models are used when partial score is possible, or when items are graded
                                         on Likert scale (e.g. from Totally disagree to Totally agree); some polytomous
@@ -746,7 +747,7 @@ uiIRT <- navbarMenu("IRT models",
                                         answer or the first answer is chosen.')
                                ),
                                # *** Graded response model ####
-                               tabPanel('Graded response model',
+                               tabPanel('Graded response model', value = "polytom_grm",
                                         h3("Graded response model"),
                                         p("Graded response model (GRM; Samejima, 1970) uses 2PL IRT model to describe cumulative probabilities
                                         (probabilities to obtain score higher than 1, 2, 3, etc.). Category probabilities are then described
@@ -754,6 +755,9 @@ uiIRT <- navbarMenu("IRT models",
                                         p("It belongs to class of difference models, which are defined by setting mathematical form to cumulative
                                         probabilities, while category probabilities are calculated as their difference. These models are also
                                         sometimes called cumulative logit models, as they set linear form to cumulative logits."),
+
+                                        HTML("<div class='pb' style='page-break-after:always'></div>"),
+
                                         h4("Parameters"),
                                         p("Select number of responses and difficulty for cummulative probabilities \\(b\\) and common
                                         discrimination parameter \\(a\\). Cummulative probability \\(P(Y \\geq 0)\\) is always equal to 1
@@ -1011,7 +1015,7 @@ uiIRT <- navbarMenu("IRT models",
                                         br()
                                ),
                                # *** Generalized partial credit model ####
-                               tabPanel('Generalized partial credit model',
+                               tabPanel('Generalized partial credit model', value = "polytom_gpcm",
                                         h3("Generalized partial credit model"),
                                         p("In Generalized Partial Credit Model (GPCM; Muraki, 1992), probability of the successful transition
                                         from one category score to the next category score is modelled by 2PL IRT model. The response category
@@ -1023,6 +1027,8 @@ uiIRT <- navbarMenu("IRT models",
                                         K response categories for each item and threshold parameters which can be split into a response-threshold
                                         parameter \\(\\lambda_t\\) and an item-specific location parameter \\(\\delta_i\\). These models are
                                         also sometimes called adjacent logit models, as they set linear form to adjacent logits."),
+
+                                        HTML("<div class='pb' style='page-break-after:always'></div>"),
                                         h4("Parameters"),
                                         p("Select number of responses and their threshold parameters \\(\\delta\\)  and common
                                         discrimination parameter \\(\\alpha\\). With \\(\\alpha = 1\\) you get PCM. Numerator of \\(\\pi_0 = P(Y = 0)\\) is
@@ -1142,7 +1148,7 @@ uiIRT <- navbarMenu("IRT models",
                                         br()
                                ),
                                # *** Nominal response model ####
-                               tabPanel('Nominal response model',
+                               tabPanel('Nominal response model', value = "polytom_nrm",
                                         h3("Nominal response model"),
                                         p("In Nominal Response Model (NRM; Bock, 1972), probability of selecting given category over baseline
                                         category is modelled by 2PL IRT model. This model is also sometimes called baseline-category logit
@@ -1150,6 +1156,8 @@ uiIRT <- navbarMenu("IRT models",
                                         Baseline can be chosen arbitrary, although usually the correct answer or the first answer is chosen.
                                         NRM model is generalization of GPCM model by setting item-specific and category-specific intercept and
                                         slope parameters."),
+
+                                        HTML("<div class='pb' style='page-break-after:always'></div>"),
                                         h4("Parameters"),
                                         p("Select number of distractors and their threshold parameters  \\(\\delta\\) and discrimination parameters \\(\\alpha\\).
                                         Parameters of \\(\\pi_0 = P(Y = 0)\\) are set to zeros and \\(\\pi_0\\) is displayed with black color."),

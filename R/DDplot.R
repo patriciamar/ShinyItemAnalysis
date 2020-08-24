@@ -1,44 +1,53 @@
-#' Graphical representation of difficulty and (generalized) discrimination / item validity in item analysis
+#' Graphical representation of difficulty and discrimination/item validity in item analysis
 #'
 #' @aliases DDplot
 #'
-#' @description Plots difficulty and (generalized) discrimination / criterion validity for items ordered by difficulty.
+#' @description Plots difficulty and (generalized) discrimination or criterion validity for items of the multi-item
+#' measurement test using \pkg{ggplot2}. Difficulty and discrimination/validity indices are plotted for each item,
+#' items are ordered by their difficulty.
 #'
-#' @param data numeric: binary or ordinal data matrix or data frame. See \strong{Details}.
-#' @param item.names character: the names of items.
-#' @param k numeric: number of groups to which may be data.frame x divided by the total score.
-#' Default value is 3.  See \strong{Details}.
+#' @param data numeric: binary or ordinal data \code{matrix} or \code{data.frame} which rows represent examinee answers
+#' (\code{1} correct, \code{0} incorrect, or ordinal item scores) and columns correspond to the items.
+#' @param item.names character: the names of items. If not specified, the names of \code{data} columns are used.
+#' @param discrim character: type of discrimination index to be calculated. Possible values are \code{"ULI"} (default),
+#' \code{"RIT"}, \code{"RIR"}, and \code{"none"}. See \strong{Details}.
+#' @param k numeric: number of groups to which data may be divided by the total score to estimate discrimination
+#' using \code{discrim = "ULI"}. Default value is 3.  See \strong{Details}.
 #' @param l numeric: lower group. Default value is 1. See \strong{Details}.
 #' @param u numeric: upper group. Default value is 3. See \strong{Details}.
-#' @param discrim character: type of discrimination index to be calculated. Deafult value is "ULI". See \strong{Details}.
-#' @param maxscore vector or numeric: maximal scores of items. If numeric, the same maximal score is used for all items. If missing, vector of achieved maximal scores is calculated and used in calculations.
-#' @param minscore vector or numeric: minimal scores of items. If numeric, the same minimal score is used for all items. If missing, vector of achieved minimal scores is calculated and used in calculations.
-#' @param bin logical: should the ordinal data be binarized. Deafult value is FALSE. See \strong{Details}.
-#' @param cutscore vector or numeric: cutscore used to binarize the data.set. If numeric, the same cutscore is used for all items. If missing, vector of maximal scores is used in calculations.
-#' @param average.score logical: should average score of the item disaplyed instead of difficulty. Default
-#' value is FALSE. See \strong{Details}.
-#' @param thr numeric: value of discrimination threshold. See \strong{Details}.
-#' @param criterion numeric/logical vector: values of criterion. If supplied, \code{disrim} argument is ignored and item-criterion correlation (validity) is displayed instead. Default value is "none".
-#' @param val_type character: what criterion validity measure should be shown. Possible values are 'simple' (item-criterion correlation; default) and 'index' (item validity index calculated as \code{cor(item, test) * sqrt(((N - 1) / N) * var(item))}, see Allen & Yen, 1979, Ch. 6.4, for details). The argument is ignored if user does not supply any \code{criterion}.
+#' @param maxscore numeric: maximal scores of items. If single number is provided, the same maximal score is used for
+#' all items. If missing, vector of achieved maximal scores is calculated and used in calculations.
+#' @param minscore numeric: minimal scores of items. If single number is provided, the same maximal score is used for
+#' all items. If missing, vector of achieved maximal scores is calculated and used in calculations.
+#' @param bin logical: should the ordinal data be binarized? Deafult value is \code{FALSE}. In case that \code{bin = TRUE},
+#' all values of \code{data} equal or greater than \code{cutscore} are marked as \code{1} and all values lower than
+#' \code{cutscore} are marked as \code{0}.
+#' @param cutscore numeric: cut-score used to binarize \code{data}.
+#' If numeric, the same cutscore is used for all items. If missing, vector of maximal scores is used in calculations.
+#' @param average.score logical: should average score of the item be disaplyed instead of difficulty? Default
+#' value is \code{FALSE}. See \strong{Details}.
+#' @param thr numeric: value of discrimination threshold. Default value is 0.2. With \code{thr = NULL}, no horizontal
+#' line is displayed in the plot.
+#' @param criterion numeric or logical vector: values of criterion. If supplied, \code{disrim} argument is ignored
+#' and item-criterion correlation (validity) is displayed instead. Default value is \code{"none"}.
+#' @param val_type character: criterion validity measure. Possible values are \code{"simple"} (correlation between
+#' item score and validity criterion; default) and \code{"index"} (item validity index calculated as
+#' \code{cor(item, criterion) * sqrt(((N - 1) / N) * var(item))}, where N is number of respondents, see Allen & Yen, 1979,
+#' Ch. 6.4, for details). The argument is ignored if user does not supply any \code{criterion}.
 #'
-#' @usage DDplot(data, item.names, k = 3, l = 1, u = 3,
-#' discrim = "ULI", maxscore, minscore, bin = FALSE, cutscore, average.score = FALSE,
-#' thr = 0.2, criterion = "none", val_type = "simple")
+#' @usage
+#' DDplot(data, item.names, discrim = "ULI", k = 3, l = 1, u = 3,
+#'        maxscore, minscore, bin = FALSE, cutscore, average.score = FALSE,
+#'        thr = 0.2, criterion = "none", val_type = "simple")
 #'
 #' @details
-#' The \code{data} is a matrix or data frame whose rows represents examinee answers
-#' (\code{1} correct, \code{0} incorrect, or ordinal item scores) and columns correspond to the items.
-#'
-#' The \code{item.names} argument stands for names of items. If not specified, the names of dataset columns are used.
-#' Difficulty and discrimination indices are plotted for each item, items are ordered by their difficulty.
-#'
-#' Discrimination is calculated using method specified in \code{discrim}. Default option "ULI"
+#' Discrimination is calculated using method specified in \code{discrim}. Default option \code{"ULI"}
 #' calculates difference in ratio of correct answers in upper and lower third of students.
-#' "RIT" index caluclates correlation between item score and test total score.
-#' "RIR" index caclulates correlation between item score and total score for the rest of the items.
-#' With option "none", only difficulty is displayed.
+#' \code{"RIT"} index caluclates correlation between item score and test total score.
+#' \code{"RIR"} index caclulates correlation between item score and total score for the rest of the items.
+#' With option \code{"none"}, only difficulty is displayed.
 #'
-#' "ULI" index can be generalized using arguments \code{k}, \code{l} and \code{u}. Generalized ULI
+#' \code{"ULI"} index can be generalized using arguments \code{k}, \code{l} and \code{u}. Generalized ULI
 #' discrimination is then computed as follows: The function takes data on individuals,
 #' computes their total test score and then divides individuals into \code{k} groups. The lower and
 #' upper group are determined by \code{l} and \code{u} parameters, i.e.  l-th and u-th group where
@@ -46,14 +55,10 @@
 #'
 #' For ordinal data, difficulty is defined as relative score (achieved - minimal)/(maximal - minimal).
 #' Minimal score can be specified by \code{minscore}, maximal score can be specified by \code{maxscore}.
-#' Average score of items can be displayed with argument \code{average.score = T}. Note that for binary
+#' Average score of items can be displayed with argument \code{average.score = TRUE}. Note that for binary
 #' data difficulty estimate is the same as average score of the item.
 #'
-#' Binarization of data is allowed in \code{bin}, for this purpose \code{cutscore} is used.
-#'
-#' By rule of thums, discrimination of items should not be lower than 0.2. The value of threshold
-#' can be specified via \code{thr} argument. In case that \code{thr = NULL}, no horizontal line
-#' is displayed in the plot.
+#' Note that all correlations are estimated using Pearson correlation coefficient.
 #'
 #' @author
 #' Adela Hladka \cr
@@ -71,17 +76,17 @@
 #' Institute of Computer Science of the Czech Academy of Sciences \cr
 #' \email{martinkova@@cs.cas.cz} \cr
 #'
-#'
 #' @references
+#' Allen, M. J., & Yen, W. M. (1979). Introduction to measurement theory. Monterey, CA: Brooks/Cole.
+#'
 #' Martinkova, P., Stepanek, L., Drabinova, A., Houdek, J., Vejrazka, M., & Stuka, C. (2017).
 #' Semi-real-time analyses of item characteristics for medical school admission tests.
 #' In: Proceedings of the 2017 Federated Conference on Computer Science and Information Systems.
 #'
-#' @note
-#' Generalized discrimination is calculated by \code{\link{gDiscrim}} function.
-#'
 #' @seealso
-#' \code{\link{gDiscrim}}, \code{\link{discrim}}
+#' \code{\link[psychometric]{discrim}} for calculation of discrimination \cr
+#' \code{\link[ShinyItemAnalysis]{gDiscrim}} for calculation of generalized ULI \cr
+#' \code{\link[ggplot2]{ggplot}} for general function to plot a \code{"ggplot"} object
 #'
 #' @examples
 #' # loading 100-item medical admission test data sets
@@ -93,7 +98,6 @@
 #'
 #' # DDplot of binary data set
 #' DDplot(dataBin)
-#'
 #' \dontrun{
 #' # DDplot of binary data set without threshold
 #' DDplot(dataBin, thr = NULL)
@@ -132,17 +136,17 @@
 #' }
 #' @export
 
-DDplot <- function(data, item.names, k = 3, l = 1, u = 3, discrim = "ULI",
+DDplot <- function(data, item.names, discrim = "ULI", k = 3, l = 1, u = 3,
                    maxscore, minscore, bin = FALSE, cutscore, average.score = FALSE,
                    thr = 0.2, criterion = "none", val_type = "simple") {
   if (!is.matrix(data) & !is.data.frame(data)) {
-    stop("'data' must be data frame or matrix ", call. = FALSE)
+    stop("'data' must be data frame or matrix. ", call. = FALSE)
   }
   if (any(criterion != "none", na.rm = TRUE)) {
     if (!is.null(dim(criterion))) {
-      stop("'criterion' must be numeric or logical vector ", call. = FALSE)
+      stop("'criterion' must be numeric or logical vector. ", call. = FALSE)
     } else if (length(criterion) != nrow(data)) {
-      stop("'criterion' must be numeric or logical vector\nof same length as a number of observations in 'data'", call. = FALSE)
+      stop("'criterion' must be numeric or logical vector of the same length as a number of observations in 'data'. ", call. = FALSE)
     }
   }
   if (missing(maxscore)) {
@@ -173,16 +177,16 @@ DDplot <- function(data, item.names, k = 3, l = 1, u = 3, discrim = "ULI",
     item.names <- colnames(data)
   }
   if (u > k) {
-    stop("'u' needs to be lower or equal to 'k'", call. = FALSE)
+    stop("'u' needs to be lower or equal to 'k'. ", call. = FALSE)
   }
   if (l > k) {
-    stop("'l' needs to be lower than 'k'", call. = FALSE)
+    stop("'l' needs to be lower than 'k'. ", call. = FALSE)
   }
   if (l <= 0) {
-    stop("'l' needs to be greater than 0", call. = FALSE)
+    stop("'l' needs to be greater than 0. ", call. = FALSE)
   }
   if (l >= u) {
-    stop("'l' should be lower than 'u'", call. = FALSE)
+    stop("'l' needs be lower than 'u'. ", call. = FALSE)
   }
   if (!is.null(thr)) {
     if (!is.numeric(thr)) {
@@ -231,20 +235,19 @@ DDplot <- function(data, item.names, k = 3, l = 1, u = 3, discrim = "ULI",
     } else if (val_type == "index") {
       N <- nrow(data)
       sx <- apply(data, 2, sd)
-      vx <- ((N - 1) / N) * sx ^ 2
+      vx <- ((N - 1) / N) * sx^2
       disc <- item_crit_cor * sqrt(vx)
       i <- 5
     } else {
       stop(
-        "possible values of 'val_type' argument are 'simple' (item-criterion correlation), or 'index' (item validity index). ",
+        "'val_type' needs to be either 'simple' (item-criterion correlation), or 'index' (item validity index). ",
         call. = FALSE
       )
     }
   }
 
-
   if (!all((maxscore - minscore) != 0)) {
-    warning("'cutscore' is equal to 'minscore' for some item")
+    warning("'cutscore' is equal to 'minscore' for some item. ")
 
     difc <- (average - minscore) / (maxscore - minscore)
     difc[(maxscore - minscore) == 0] <- 1
@@ -264,8 +267,9 @@ DDplot <- function(data, item.names, k = 3, l = 1, u = 3, discrim = "ULI",
   if (discrim != "none" | any(criterion != "none", na.rm = TRUE)) {
     if (any(disc < 0)) {
       ifelse(any(criterion != "none", na.rm = TRUE),
-             warning("Item-criterion correlation is lower than 0.", call. = FALSE),
-             warning("Estimated discrimination is lower than 0.", call. = FALSE))
+        warning("Item-criterion correlation is lower than 0. ", call. = FALSE),
+        warning("Estimated discrimination is lower than 0. ", call. = FALSE)
+      )
     }
 
     value <- c(rbind(difc, disc)[, order(difc)])
@@ -277,17 +281,24 @@ DDplot <- function(data, item.names, k = 3, l = 1, u = 3, discrim = "ULI",
 
     g <-
       ggplot(df, aes(item,
-                     value,
-                     fill = parameter,
-                     color = parameter)) +
-      geom_col(position = "dodge",
-               alpha = 0.7,
-               width = 0.8) +
+        value,
+        fill = parameter,
+        color = parameter
+      )) +
+      geom_col(
+        position = "dodge",
+        alpha = 0.7,
+        width = 0.8
+      ) +
       xlab(xlabel[j]) +
       ylab(paste0(diffName[j], "/", discName[i])) +
-      scale_y_continuous(expand = c(0, 0),
-                         limits = c(min(min(df$value) - 0.01, 0),
-                                    max(max(df$value) + 0.01 * maxscore, 1))) +
+      scale_y_continuous(
+        expand = c(0, 0),
+        limits = c(
+          min(min(df$value) - 0.01, 0),
+          max(max(df$value) + 0.01 * maxscore, 1)
+        )
+      ) +
       scale_fill_manual(breaks = parameter, values = col) +
       scale_colour_manual(breaks = parameter, values = col) +
       theme_app() +

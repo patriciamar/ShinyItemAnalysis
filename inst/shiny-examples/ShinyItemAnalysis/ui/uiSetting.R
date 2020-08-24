@@ -1,5 +1,5 @@
 uiSetting <-
-  tabPanel("",
+  tabPanel("", value = "settings",
            icon = icon("fas fa-cog"),
            h3("Settings"),
            h4("IRT models setting"),

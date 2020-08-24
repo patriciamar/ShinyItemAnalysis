@@ -1,8 +1,8 @@
-uiReliability <- 
+uiReliability <-
   navbarMenu("Reliability",
              "Description",
              # * RELIABILITY ####
-             tabPanel("Reliability",
+             tabPanel("Reliability", value = "reliability_description",
                       h3("Reliability"),
                       p("We are typically interested in unobserved true score \\(T\\), but have available only the
                         observed score \\(X\\) which is contaminated by some measurement error \\(e\\), such that
@@ -47,7 +47,7 @@ uiReliability <-
                                                    min = 1,
                                                    step = 1,
                                                    value = 20))),
-                      br(),
+                      # br(),
                       h4("Estimate of reliability with different number of items"),
                       p("Here you can calculate estimate of reliability of a test consisting of different number of
                         items (equally precise, measuring the same construct). "),
@@ -58,7 +58,7 @@ uiReliability <-
                                                    step = 1,
                                                    value = 30))),
                       uiOutput("reliability_SBformula_reliability_text"),
-                      br(),
+                      # br(),
                       h4("Necessary number of items for required level of reliability"),
                       p("Here you can calculate necessary number of items (equally precise, measuring the same construct)
                         to gain required level of reliability. "),
@@ -139,7 +139,7 @@ uiReliability <-
                       br()
                       ),
              # * CRONBACH'S ALPHA ####
-             tabPanel("Cronbach's \\(\\alpha\\)",
+             tabPanel("Cronbach's \\(\\alpha\\)", value = "cronbach",
                       h3("Cronbach's \\(\\alpha\\)"),
                       p("Cronbach's \\(\\alpha\\) is an estimate of internal consistency of a psychometric test.
                         It is a function of the number of items in a test, the average covariance

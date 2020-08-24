@@ -2424,20 +2424,26 @@ irtcomparisonInput <- reactive({
               anova(models[[3]], models[[4]], verbose = F))
 
   df <- round(df[c(1, 2, 4, 6), ], 3)
-  df <- df[, c("AIC", "AICc", "BIC", "SABIC", "logLik", "X2", "df", "p")]
+  # df <- df[, c("AIC", "AICc", "BIC", "SABIC", "logLik", "X2", "df", "p")]
+  df <- df[, c("AIC", "AICc", "BIC", "SABIC", "logLik")]
   nam <- c("1PL", "2PL", "3PL", "4PL")
 
-  if (all(df[, "p"] > 0.05)){
-    hv <- "1PL"
-  } else {
-    p <- which(df[, "p"] < 0.05)
-    hv <- nam[p[length(p)]]
-  }
+  # if (all(df[, "p"] > 0.05)){
+  #   hv <- "1PL"
+  # } else {
+  #   p <- which(df[, "p"] < 0.05)
+  #   hv <- nam[p[length(p)]]
+  # }
 
-  df <- rbind(df,
-              c(nam[sapply(1:4, function(i) which(df[, i] == min(df[, i], na.rm = T)))],
-                rep("", 3),
-                hv))
+  # df <- rbind(df,
+  #             c(nam[sapply(1:4, function(i) which(df[, i] == min(df[, i], na.rm = T)))],
+  #               rep("", 3),
+  #               hv))
+
+ df <- rbind(
+  df,
+  c(nam[sapply(1:4, function(i) which(df[, i] == min(df[, i], na.rm = T)))], "")
+)
 
   rownames(df) <- c(nam, "BEST")
   df

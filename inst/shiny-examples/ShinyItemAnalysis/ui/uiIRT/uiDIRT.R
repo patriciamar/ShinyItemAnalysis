@@ -17,6 +17,8 @@ uiDIRT <- tabPanel("Dichotomous models",
                    \\(\\mathrm{P}\\left(\\theta\\right)\\) and their item information functions
                    \\(\\mathrm{I}\\left(\\theta\\right)\\) in 4PL IRT model. "),
 
+                 HTML("<div class='pb' style='page-break-after:always'></div>"),
+
                  #------------------------------------------------------------------------------------#
                  # Parameters ####
                  #------------------------------------------------------------------------------------#
@@ -28,6 +30,7 @@ uiDIRT <- tabPanel("Dichotomous models",
                  p("When different curve parameters describe properties of the same item but for different groups of respondents, this phenomenon is called Differential
                    Item Functioning (DIF). See further section for more information. "),
                  fluidRow(
+                   style = "margin-left: 0px; margin-right: 0px;",
                    splitLayout(
                      cellWidths = c("20%", "5%", "20%", "5%", "20%", "5%", "20%", "5%"),
                      tags$div(class = "js-irs-red",
@@ -47,6 +50,7 @@ uiDIRT <- tabPanel("Dichotomous models",
                                           min = 0, max = 1, value = 1, step = 0.1)),
                      "")),
                  fluidRow(
+                   style = "margin-left: 0px; margin-right: 0px;",
                    splitLayout(
                      cellWidths = c("20%", "5%", "20%", "5%", "20%", "5%", "20%", "5%"),
                      tags$div(class = "js-irs-blue",
@@ -68,8 +72,9 @@ uiDIRT <- tabPanel("Dichotomous models",
                  p("Select also the value of latent ability \\(\\theta\\) to see the interpretation of the item
                    characteristic curves. "),
                  fluidRow(
+                   style = "margin-left: 0px; margin-right: 0px;",
                    splitLayout(
-                     cellWidths = c("20%", "5%", "75"),
+                     cellWidths = c("20%", "5%", "75%"),
                      tags$div(class = "js-irs-gray",
                               sliderInput("ccIRTSlider_theta", "\\(\\theta\\) - latent ability",
                                           min = -4, max = 4, value = 0, step = 0.1)),

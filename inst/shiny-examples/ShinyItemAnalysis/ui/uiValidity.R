@@ -119,7 +119,7 @@ uiValidity <-
              tabPanel('Criterion validity',
                       tabsetPanel(
                         # ** Summary ####
-                        tabPanel('Summary',
+                        tabPanel('Summary', value = "val_summary",
                                  h3('Criterion validity'),
                                  p('This section requires criterion variable (e.g. future study success or future GPA in case
                                    of admission tests) which should correlate with the measurement. Criterion variable
@@ -142,11 +142,13 @@ uiValidity <-
                                  br()
                                  ),
                         # ** Items ####
-                        tabPanel('Items',
+                        tabPanel('Items', value = "crit_val_items",
                                  h3('Criterion validity'),
                                  p('This section requires criterion variable (e.g. future study success or future GPA in case
                                    of admission tests) which should correlate with the measurement. Criterion variable
                                    can be uploaded in ', strong('Data'), 'section. Here you can explore how the criterion correlates with individual items. '), br(),
+
+                                 HTML("<div class='pb' style='page-break-after:always'></div>"),
 
 
 
@@ -209,6 +211,8 @@ uiValidity <-
                                  # download item analysis table button
                                  downloadButton("DB_DCplot", label = "Download figure"),
                                  br(), br(),
+
+                                 HTML("<div class='pb' style='page-break-after:always'></div>"),
 
 
                                  h4('Distractor plot'),

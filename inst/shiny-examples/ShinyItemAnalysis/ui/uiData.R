@@ -4,6 +4,7 @@ uiData <- tabPanel("Data",
                      # DATA ####
                      #------------------------------------------------------------------------------------#
                      tabPanel("Data",
+                              value = "data_data",
                               h3("Data"),
                               #------------------------------------------------------------------------------------#
                               # * Data ####
@@ -35,6 +36,8 @@ uiData <- tabPanel("Data",
                                 column(9,
                                        uiOutput("data_description"))),
                               tags$hr(),
+
+                              HTML("<div class='pb' style='page-break-after:always'></div>"),
 
                               #------------------------------------------------------------------------------------#
                               # * Upload your own datasets ####

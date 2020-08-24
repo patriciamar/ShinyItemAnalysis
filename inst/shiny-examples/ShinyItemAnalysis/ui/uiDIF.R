@@ -210,7 +210,7 @@ uiDIF <-
                                  div(code(HTML('library(difR)<br><br>#&nbsp;Loading&nbsp;data<br>data(GMAT,&nbsp;package&nbsp;=&nbsp;\"difNLR\")<br>Data&nbsp;<-&nbsp;GMAT[,&nbsp;1:20]<br>group&nbsp;<-&nbsp;GMAT[,&nbsp;\"group\"]<br><br>#&nbsp;Mantel-Haenszel&nbsp;test<br>(fit&nbsp;<-&nbsp;difMH(Data&nbsp;=&nbsp;Data,&nbsp;group&nbsp;=&nbsp;group,&nbsp;focal.name&nbsp;=&nbsp;1,&nbsp;match&nbsp;=&nbsp;\"score\",&nbsp;p.adjust.method&nbsp;=&nbsp;\"none\",&nbsp;purify&nbsp;=&nbsp;FALSE))'))),
                                  br()
                         ),
-                        tabPanel("Items",
+                        tabPanel("Items", value = "mh_it",
                                  h3("Mantel-Haenszel test"),
                                  p("Mantel-Haenszel test is a DIF detection method based on contingency tables which are calculated for each
                                     level of total score (Mantel & Haenszel, 1959)."),
@@ -318,7 +318,7 @@ uiDIF <-
                                  br()
                         ),
                         # ** Items ####
-                        tabPanel("Items",
+                        tabPanel("Items", value = "log_it",
                                  h3("Logistic regression"),
                                  p("Logistic regression method allows for detection of uniform and non-uniform DIF (Swaminathan & Rogers, 1990) by including a group
                                    specific intercept", strong("\\(b_{2}\\)"), "(uniform DIF) and group specific interaction", strong("\\(b_{3}\\)"), "(non-uniform DIF) into model and
@@ -493,7 +493,7 @@ uiDIF <-
                                  br()
                         ),
                         # ** Items ####
-                        tabPanel('Items',
+                        tabPanel('Items', value = "glr_it",
                                  h3('Generalized logistic regression'),
                                  p('Generalized logistic regression models are extensions of logistic regression method which
                                    account for possibility of guessing by allowing for nonzero lower asymptote - pseudo-guessing \\(c\\)',
@@ -660,7 +660,7 @@ uiDIF <-
                                  br()
                         ),
                         # ** Items ####
-                        tabPanel('Items',
+                        tabPanel('Items', value = "lord_it",
                                  h3('Lord test for IRT models'),
                                  p('To detect DIF, Lord test (Lord, 1980) compares item parameters of selected IRT model, fitted separately
                                     on data of the two groups. Model is either 1PL, 2PL, or 3PL with guessing which is the same for the two
@@ -785,7 +785,7 @@ uiDIF <-
                                  br()
                         ),
                         # ** Items ####
-                        tabPanel('Items',
+                        tabPanel('Items', value = "raju_it",
                                  h3('Raju test for IRT models'),
                                  p('To detect DIF, Raju test (Raju, 1988, 1990) uses area between the item charateristic curves of selected
                                     IRT model, fitted separately on data of the two groups. Model is either 1PL, 2PL, or 3PL with guessing
@@ -1059,7 +1059,7 @@ uiDIF <-
                                  br()
                         ),
                         # ** Items ####
-                        tabPanel('Items',
+                        tabPanel('Items', value = "cum_it",
                                  h3('Cumulative logit regression model for DIF detection'),
                                  p('Cumulative logit regression allows for detection of uniform and non-uniform DIF among ordinal data by
                                     adding a group specific intercept ', strong('\\(b_2\\)'), ' (uniform DIF) and interaction ', strong('\\(b_3\\)'),
@@ -1204,7 +1204,7 @@ uiDIF <-
                                  br()
                         ),
                         # ** Items ####
-                        tabPanel('Items',
+                        tabPanel('Items', value = "acl_it",
                                  h3('Adjacent category logit regression model for DIF detection'),
                                  p('Adjacent category logit regression model allows for detection of uniform and non-uniform DIF among
                                    ordinal data by adding a group specific intercept', strong('\\(b_2\\)'), '(uniform DIF) and interaction',
@@ -1357,7 +1357,7 @@ uiDIF <-
                                  br()
                         ),
                         # ** Items ####
-                        tabPanel('Items',
+                        tabPanel('Items', value = "mrm_it",
                                  h3('Multinomial  regression model for DDF detection'),
                                  p('Differential Distractor Functioning (DDF) occurs when people from different
                                    groups but with the same knowledge have different probability of selecting

@@ -2,9 +2,12 @@
 
 ----------
 
-### Changes in version 1.3.3-1 (2020-07-03)
+### Changes in version 1.3.4 (2020-08-24)
 #### BUG FIXING
-  * In reports, display of Cronbach's alpha was corrected
+  * Display of Cronbach's alpha in PDF/HTML reports was corrected.
+  * Item slider bug in ordinal regression models in the app was fixed.
+  * DIF matching criterion was synchronized for Summary and Item subtabs in the
+    Generalized logistic regression method, DIF/Fairness section of the app. 
   
 #### MAJOR UPDATES
   * `startShinyItemAnalysis()` function was updated to allow starting the application 
@@ -23,6 +26,10 @@
     difficulty-discrimination plot is provided. When `criterion` is specified, 
     difficulty-validity plot is provided instead, depicting item criterion validity.
   * Difficulty-validity plot is newly offered in section Validity/Criterion_Validity/Items
+
+#### MINOR UPDATES
+  * Documentation of `DDplot()` was updated.
+----------
 
 ### Changes in version 1.3.3 (2020-05-04)
 

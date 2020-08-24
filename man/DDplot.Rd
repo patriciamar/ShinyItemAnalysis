@@ -2,60 +2,68 @@
 % Please edit documentation in R/DDplot.R
 \name{DDplot}
 \alias{DDplot}
-\title{Graphical representation of difficulty and (generalized) discrimination / item validity in item analysis}
+\title{Graphical representation of difficulty and discrimination/item validity in item analysis}
 \usage{
-DDplot(data, item.names, k = 3, l = 1, u = 3,
-discrim = "ULI", maxscore, minscore, bin = FALSE, cutscore, average.score = FALSE,
-thr = 0.2, criterion = "none", val_type = "simple")
+DDplot(data, item.names, discrim = "ULI", k = 3, l = 1, u = 3,
+       maxscore, minscore, bin = FALSE, cutscore, average.score = FALSE,
+       thr = 0.2, criterion = "none", val_type = "simple")
 }
 \arguments{
-\item{data}{numeric: binary or ordinal data matrix or data frame. See \strong{Details}.}
+\item{data}{numeric: binary or ordinal data \code{matrix} or \code{data.frame} which rows represent examinee answers
+(\code{1} correct, \code{0} incorrect, or ordinal item scores) and columns correspond to the items.}
 
-\item{item.names}{character: the names of items.}
+\item{item.names}{character: the names of items. If not specified, the names of \code{data} columns are used.}
 
-\item{k}{numeric: number of groups to which may be data.frame x divided by the total score.
-Default value is 3.  See \strong{Details}.}
+\item{discrim}{character: type of discrimination index to be calculated. Possible values are \code{"ULI"} (default),
+\code{"RIT"}, \code{"RIR"}, and \code{"none"}. See \strong{Details}.}
+
+\item{k}{numeric: number of groups to which data may be divided by the total score to estimate discrimination
+using \code{discrim = "ULI"}. Default value is 3.  See \strong{Details}.}
 
 \item{l}{numeric: lower group. Default value is 1. See \strong{Details}.}
 
 \item{u}{numeric: upper group. Default value is 3. See \strong{Details}.}
 
-\item{discrim}{character: type of discrimination index to be calculated. Deafult value is "ULI". See \strong{Details}.}
+\item{maxscore}{numeric: maximal scores of items. If single number is provided, the same maximal score is used for
+all items. If missing, vector of achieved maximal scores is calculated and used in calculations.}
 
-\item{maxscore}{vector or numeric: maximal scores of items. If numeric, the same maximal score is used for all items. If missing, vector of achieved maximal scores is calculated and used in calculations.}
+\item{minscore}{numeric: minimal scores of items. If single number is provided, the same maximal score is used for
+all items. If missing, vector of achieved maximal scores is calculated and used in calculations.}
 
-\item{minscore}{vector or numeric: minimal scores of items. If numeric, the same minimal score is used for all items. If missing, vector of achieved minimal scores is calculated and used in calculations.}
+\item{bin}{logical: should the ordinal data be binarized? Deafult value is \code{FALSE}. In case that \code{bin = TRUE},
+all values of \code{data} equal or greater than \code{cutscore} are marked as \code{1} and all values lower than
+\code{cutscore} are marked as \code{0}.}
 
-\item{bin}{logical: should the ordinal data be binarized. Deafult value is FALSE. See \strong{Details}.}
+\item{cutscore}{numeric: cut-score used to binarize \code{data}.
+If numeric, the same cutscore is used for all items. If missing, vector of maximal scores is used in calculations.}
 
-\item{cutscore}{vector or numeric: cutscore used to binarize the data.set. If numeric, the same cutscore is used for all items. If missing, vector of maximal scores is used in calculations.}
+\item{average.score}{logical: should average score of the item be disaplyed instead of difficulty? Default
+value is \code{FALSE}. See \strong{Details}.}
 
-\item{average.score}{logical: should average score of the item disaplyed instead of difficulty. Default
-value is FALSE. See \strong{Details}.}
+\item{thr}{numeric: value of discrimination threshold. Default value is 0.2. With \code{thr = NULL}, no horizontal
+line is displayed in the plot.}
 
-\item{thr}{numeric: value of discrimination threshold. See \strong{Details}.}
+\item{criterion}{numeric or logical vector: values of criterion. If supplied, \code{disrim} argument is ignored
+and item-criterion correlation (validity) is displayed instead. Default value is \code{"none"}.}
 
-\item{criterion}{numeric/logical vector: values of criterion. If supplied, \code{disrim} argument is ignored and item-criterion correlation (validity) is displayed instead. Default value is "none".}
-
-\item{val_type}{character: what criterion validity measure should be shown. Possible values are 'simple' (item-criterion correlation; default) and 'index' (item validity index calculated as \code{cor(item, test) * sqrt(((N - 1) / N) * var(item))}, see Allen & Yen, 1979, Ch. 6.4, for details). The argument is ignored if user does not supply any \code{criterion}.}
+\item{val_type}{character: criterion validity measure. Possible values are \code{"simple"} (correlation between
+item score and validity criterion; default) and \code{"index"} (item validity index calculated as
+\code{cor(item, criterion) * sqrt(((N - 1) / N) * var(item))}, where N is number of respondents, see Allen & Yen, 1979,
+Ch. 6.4, for details). The argument is ignored if user does not supply any \code{criterion}.}
 }
 \description{
-Plots difficulty and (generalized) discrimination / criterion validity for items ordered by difficulty.
+Plots difficulty and (generalized) discrimination or criterion validity for items of the multi-item
+measurement test using \pkg{ggplot2}. Difficulty and discrimination/validity indices are plotted for each item,
+items are ordered by their difficulty.
 }
 \details{
-The \code{data} is a matrix or data frame whose rows represents examinee answers
-(\code{1} correct, \code{0} incorrect, or ordinal item scores) and columns correspond to the items.
-
-The \code{item.names} argument stands for names of items. If not specified, the names of dataset columns are used.
-Difficulty and discrimination indices are plotted for each item, items are ordered by their difficulty.
-
-Discrimination is calculated using method specified in \code{discrim}. Default option "ULI"
+Discrimination is calculated using method specified in \code{discrim}. Default option \code{"ULI"}
 calculates difference in ratio of correct answers in upper and lower third of students.
-"RIT" index caluclates correlation between item score and test total score.
-"RIR" index caclulates correlation between item score and total score for the rest of the items.
-With option "none", only difficulty is displayed.
+\code{"RIT"} index caluclates correlation between item score and test total score.
+\code{"RIR"} index caclulates correlation between item score and total score for the rest of the items.
+With option \code{"none"}, only difficulty is displayed.
 
-"ULI" index can be generalized using arguments \code{k}, \code{l} and \code{u}. Generalized ULI
+\code{"ULI"} index can be generalized using arguments \code{k}, \code{l} and \code{u}. Generalized ULI
 discrimination is then computed as follows: The function takes data on individuals,
 computes their total test score and then divides individuals into \code{k} groups. The lower and
 upper group are determined by \code{l} and \code{u} parameters, i.e.  l-th and u-th group where
@@ -63,17 +71,10 @@ the ordering is defined by increasing total score.
 
 For ordinal data, difficulty is defined as relative score (achieved - minimal)/(maximal - minimal).
 Minimal score can be specified by \code{minscore}, maximal score can be specified by \code{maxscore}.
-Average score of items can be displayed with argument \code{average.score = T}. Note that for binary
+Average score of items can be displayed with argument \code{average.score = TRUE}. Note that for binary
 data difficulty estimate is the same as average score of the item.
 
-Binarization of data is allowed in \code{bin}, for this purpose \code{cutscore} is used.
-
-By rule of thums, discrimination of items should not be lower than 0.2. The value of threshold
-can be specified via \code{thr} argument. In case that \code{thr = NULL}, no horizontal line
-is displayed in the plot.
-}
-\note{
-Generalized discrimination is calculated by \code{\link{gDiscrim}} function.
+Note that all correlations are estimated using Pearson correlation coefficient.
 }
 \examples{
 # loading 100-item medical admission test data sets
@@ -85,7 +86,6 @@ dataOrd <- dataMedicalgraded[, 1:100]
 
 # DDplot of binary data set
 DDplot(dataBin)
-
 \dontrun{
 # DDplot of binary data set without threshold
 DDplot(dataBin, thr = NULL)
@@ -124,12 +124,16 @@ DDplot(data, criterion = criterion, val_type = "simple")
 }
 }
 \references{
+Allen, M. J., & Yen, W. M. (1979). Introduction to measurement theory. Monterey, CA: Brooks/Cole.
+
 Martinkova, P., Stepanek, L., Drabinova, A., Houdek, J., Vejrazka, M., & Stuka, C. (2017).
 Semi-real-time analyses of item characteristics for medical school admission tests.
 In: Proceedings of the 2017 Federated Conference on Computer Science and Information Systems.
 }
 \seealso{
-\code{\link{gDiscrim}}, \code{\link{discrim}}
+\code{\link[psychometric]{discrim}} for calculation of discrimination \cr
+\code{\link[ShinyItemAnalysis]{gDiscrim}} for calculation of generalized ULI \cr
+\code{\link[ggplot2]{ggplot}} for general function to plot a \code{"ggplot"} object
 }
 \author{
 Adela Hladka \cr

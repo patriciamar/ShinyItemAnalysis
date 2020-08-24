@@ -47,7 +47,6 @@
 #'
 #' @export
 recode_nr <- function(df, nr_code = 99) {
-
   if (any(sapply(df, is.factor))) {
     for (i in 1:ncol(df)) {
       if (!is.null(levels(df[, i]))) {
@@ -64,15 +63,15 @@ recode_nr <- function(df, nr_code = 99) {
     })
   })
 
-  nr_indices <- lapply(nr_count, function(x) {
-    if (!is.na(x)) {
-      seq(ncol(df) - x + 1, ncol(df))
-    }
-  })
+  indx <- which(!is.na(nr_count))
+  rows <- rep(indx, nr_count[indx])
+  cols <-
+    unlist(lapply(nr_count[indx], function(x)
+      seq(ncol(df) - x + 1, ncol(df))))
 
-  for (i in 1:nrow(df)) {
-    df[i, nr_indices[[i]]] <- nr_code
-  }
+  arr_indx <- cbind(rows, cols)
+
+  df[arr_indx] <- nr_code
 
   return(df)
 

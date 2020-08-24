@@ -1,7 +1,7 @@
-uiSummary <- 
+uiSummary <-
   navbarMenu("Summary",
              # * TOTAL SCORES ####
-             tabPanel("Total scores",
+             tabPanel("Total scores", value = "tot_scores",
                       h3("Analysis of total scores"),
                       p("Total score, also known as raw score or sum score, is a total number of correct
                         answers."),
@@ -34,7 +34,7 @@ uiSummary <-
                       br()
                       ),
              # * STANDARD SCORES ####
-             tabPanel("Standard scores",
+             tabPanel("Standard scores", value = "stan_scores",
                       h3('Standard scores'),
                       p(strong('Total score'), 'also known as raw score is a total number of correct
                         answers. It can be used to compare individual score to a norm group, e.g. if the mean

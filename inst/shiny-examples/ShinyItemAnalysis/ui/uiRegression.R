@@ -163,31 +163,33 @@ uiRegression <-
                         tags$li(strong('AIC'), 'is the Akaike information criterion (Akaike, 1974), '),
                         tags$li(strong('BIC'), 'is the Bayesian information criterion (Schwarz, 1978)')
                       ),
-                      p('Another approach to nested models can be likelihood ratio chi-squared test.
-                        Significance level is set to 0.05. As tests are performed item by item, it is
-                        possible to use multiple comparison correction method. '),
-                      selectInput("correction_method_regrmodels", "Correction method",
-                                  choices = c("Benjamini-Hochberg" = "BH",
-                                              "Benjamini-Yekutieli" = "BY",
-                                              "Bonferroni" = "bonferroni",
-                                              "Holm" = "holm",
-                                              "Hochberg" = "hochberg",
-                                              "Hommel" = "hommel",
-                                              "None" = "none"),
-                                  selected = "none"),
+                      # p('Another approach to nested models can be likelihood ratio chi-squared test.
+                      #   Significance level is set to 0.05. As tests are performed item by item, it is
+                      #   possible to use multiple comparison correction method. '),
+                      # selectInput("correction_method_regrmodels", "Correction method",
+                      #             choices = c("Benjamini-Hochberg" = "BH",
+                      #                         "Benjamini-Yekutieli" = "BY",
+                      #                         "Bonferroni" = "bonferroni",
+                      #                         "Holm" = "holm",
+                      #                         "Hochberg" = "hochberg",
+                      #                         "Hommel" = "hommel",
+                      #                         "None" = "none"),
+                      #             selected = "none"),
                       h4("Table of comparison statistics"),
-                      p('Rows ', strong('BEST'), 'indicate which model has the lowest value of criterion, or is the largest
-                        significant model by likelihood ratio test.'),
+                      # p('Rows ', strong('BEST'), 'indicate which model has the lowest value of criterion, or is the largest
+                      #   significant model by likelihood ratio test.'),
+                      p('Rows ', strong('BEST'), 'indicate which model has the lowest value of given information criterion.'),
                       DT::dataTableOutput('regr_comp_table'),
                       br(),
                       h4("Selected R code"),
-                      div(code(HTML("library(difNLR)&nbsp;<br><br>#&nbsp;loading&nbsp;data<br>data(GMAT)&nbsp;<br>Data&nbsp;<-&nbsp;GMAT[,&nbsp;1:20]&nbsp;<br>zscore&nbsp;<-&nbsp;scale(apply(Data,&nbsp;1,&nbsp;sum))&nbsp;#&nbsp;standardized&nbsp;total&nbsp;score<br><br>#&nbsp;function&nbsp;for&nbsp;fitting&nbsp;models<br>fun&nbsp;<-&nbsp;function(x,&nbsp;a,&nbsp;b,&nbsp;c,&nbsp;d){c&nbsp;+&nbsp;(d&nbsp;-&nbsp;c)&nbsp;*&nbsp;exp(a&nbsp;*&nbsp;(x&nbsp;-&nbsp;b))&nbsp;/&nbsp;(1&nbsp;+&nbsp;exp(a&nbsp;*&nbsp;(x&nbsp;-&nbsp;b)))}&nbsp;<br><br>#&nbsp;starting&nbsp;values&nbsp;for&nbsp;item&nbsp;1<br>start&nbsp;<-&nbsp;startNLR(Data,&nbsp;GMAT[,&nbsp;\"group\"],&nbsp;model&nbsp;=&nbsp;\"4PLcgdg\",&nbsp;parameterization&nbsp;=&nbsp;\"classic\")[[1]][,&nbsp;1:4]<br><br>#&nbsp;2PL&nbsp;model&nbsp;for&nbsp;item&nbsp;1&nbsp;<br>fit2PL&nbsp;<-&nbsp;nls(Data[,&nbsp;1]&nbsp;~&nbsp;fun(zscore,&nbsp;a,&nbsp;b,&nbsp;c&nbsp;=&nbsp;0,&nbsp;d&nbsp;=&nbsp;1),&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;algorithm&nbsp;=&nbsp;\"port\",&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;start&nbsp;=&nbsp;start[1:2])&nbsp;<br>#&nbsp;NLR&nbsp;3P&nbsp;model&nbsp;for&nbsp;item&nbsp;1&nbsp;<br>fit3PL&nbsp;<-&nbsp;nls(Data[,&nbsp;1]&nbsp;~&nbsp;fun(zscore,&nbsp;a,&nbsp;b,&nbsp;c,&nbsp;d&nbsp;=&nbsp;1),&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;algorithm&nbsp;=&nbsp;\"port\",&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;start&nbsp;=&nbsp;start[1:3],<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lower&nbsp;=&nbsp;c(-Inf,&nbsp;-Inf,&nbsp;0),&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;upper&nbsp;=&nbsp;c(Inf,&nbsp;Inf,&nbsp;1))&nbsp;<br>#&nbsp;NLR&nbsp;4P&nbsp;model&nbsp;for&nbsp;item&nbsp;1&nbsp;<br>fit3PL&nbsp;<-&nbsp;nls(Data[,&nbsp;1]&nbsp;~&nbsp;fun(zscore,&nbsp;a,&nbsp;b,&nbsp;c,&nbsp;d),&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;algorithm&nbsp;=&nbsp;\"port\",&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;start&nbsp;=&nbsp;start,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lower&nbsp;=&nbsp;c(-Inf,&nbsp;-Inf,&nbsp;0,&nbsp;0),&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;upper&nbsp;=&nbsp;c(Inf,&nbsp;Inf,&nbsp;1,&nbsp;1))&nbsp;<br><br>#&nbsp;comparison&nbsp;<br>###&nbsp;AIC<br>AIC(fit2PL);&nbsp;AIC(fit3PL);&nbsp;AIC(fit4PL)&nbsp;<br>###&nbsp;BIC<br>BIC(fit2PL);&nbsp;BIC(fit3PL);&nbsp;BIC(fit4PL)&nbsp;<br>###&nbsp;LR&nbsp;test,&nbsp;using&nbsp;Benjamini-Hochberg&nbsp;correction<br>######&nbsp;2PL&nbsp;vs&nbsp;NLR&nbsp;3P<br>LRstat&nbsp;<-&nbsp;-2&nbsp;*&nbsp;(sapply(fit2PL,&nbsp;logLik)&nbsp;-&nbsp;sapply(fit3PL,&nbsp;logLik))&nbsp;<br>LRdf&nbsp;<-&nbsp;1&nbsp;<br>LRpval&nbsp;<-&nbsp;1&nbsp;-&nbsp;pchisq(LRstat,&nbsp;LRdf)&nbsp;<br>LRpval&nbsp;<-&nbsp;p.adjust(LRpval,&nbsp;method&nbsp;=&nbsp;\"BH\")&nbsp;<br>######&nbsp;NLR&nbsp;3P&nbsp;vs&nbsp;NLR&nbsp;4P<br>LRstat&nbsp;<-&nbsp;-2&nbsp;*&nbsp;(sapply(fit3PL,&nbsp;logLik)&nbsp;-&nbsp;sapply(fit4PL,&nbsp;logLik))&nbsp;<br>LRdf&nbsp;<-&nbsp;1&nbsp;<br>LRpval&nbsp;<-&nbsp;1&nbsp;-&nbsp;pchisq(LRstat,&nbsp;LRdf)&nbsp;<br>LRpval&nbsp;<-&nbsp;p.adjust(LRpval,&nbsp;method&nbsp;=&nbsp;\"BH\")"))),
+                      div(code(HTML("library(difNLR)&nbsp;<br><br>#&nbsp;loading&nbsp;data<br>data(GMAT)&nbsp;<br>Data&nbsp;<-&nbsp;GMAT[,&nbsp;1:20]&nbsp;<br>zscore&nbsp;<-&nbsp;scale(apply(Data,&nbsp;1,&nbsp;sum))&nbsp;#&nbsp;standardized&nbsp;total&nbsp;score<br><br>#&nbsp;function&nbsp;for&nbsp;fitting&nbsp;models<br>fun&nbsp;<-&nbsp;function(x,&nbsp;a,&nbsp;b,&nbsp;c,&nbsp;d){c&nbsp;+&nbsp;(d&nbsp;-&nbsp;c)&nbsp;*&nbsp;exp(a&nbsp;*&nbsp;(x&nbsp;-&nbsp;b))&nbsp;/&nbsp;(1&nbsp;+&nbsp;exp(a&nbsp;*&nbsp;(x&nbsp;-&nbsp;b)))}&nbsp;<br><br>#&nbsp;starting&nbsp;values&nbsp;for&nbsp;item&nbsp;1<br>start&nbsp;<-&nbsp;startNLR(Data,&nbsp;GMAT[,&nbsp;\"group\"],&nbsp;model&nbsp;=&nbsp;\"4PLcgdg\",&nbsp;parameterization&nbsp;=&nbsp;\"classic\")[[1]][,&nbsp;1:4]<br><br>#&nbsp;2PL&nbsp;model&nbsp;for&nbsp;item&nbsp;1&nbsp;<br>fit2PL&nbsp;<-&nbsp;nls(Data[,&nbsp;1]&nbsp;~&nbsp;fun(zscore,&nbsp;a,&nbsp;b,&nbsp;c&nbsp;=&nbsp;0,&nbsp;d&nbsp;=&nbsp;1),&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;algorithm&nbsp;=&nbsp;\"port\",&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;start&nbsp;=&nbsp;start[1:2])&nbsp;<br>#&nbsp;NLR&nbsp;3P&nbsp;model&nbsp;for&nbsp;item&nbsp;1&nbsp;<br>fit3PL&nbsp;<-&nbsp;nls(Data[,&nbsp;1]&nbsp;~&nbsp;fun(zscore,&nbsp;a,&nbsp;b,&nbsp;c,&nbsp;d&nbsp;=&nbsp;1),&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;algorithm&nbsp;=&nbsp;\"port\",&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;start&nbsp;=&nbsp;start[1:3],<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lower&nbsp;=&nbsp;c(-Inf,&nbsp;-Inf,&nbsp;0),&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;upper&nbsp;=&nbsp;c(Inf,&nbsp;Inf,&nbsp;1))&nbsp;<br>#&nbsp;NLR&nbsp;4P&nbsp;model&nbsp;for&nbsp;item&nbsp;1&nbsp;<br>fit3PL&nbsp;<-&nbsp;nls(Data[,&nbsp;1]&nbsp;~&nbsp;fun(zscore,&nbsp;a,&nbsp;b,&nbsp;c,&nbsp;d),&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;algorithm&nbsp;=&nbsp;\"port\",&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;start&nbsp;=&nbsp;start,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lower&nbsp;=&nbsp;c(-Inf,&nbsp;-Inf,&nbsp;0,&nbsp;0),&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;upper&nbsp;=&nbsp;c(Inf,&nbsp;Inf,&nbsp;1,&nbsp;1))&nbsp;<br><br>#&nbsp;comparison&nbsp;<br>###&nbsp;AIC<br>AIC(fit2PL);&nbsp;AIC(fit3PL);&nbsp;AIC(fit4PL)&nbsp;<br>###&nbsp;BIC<br>BIC(fit2PL);&nbsp;BIC(fit3PL);&nbsp;BIC(fit4PL)"))),
+                      # &nbsp;<br>###&nbsp;LR&nbsp;test,&nbsp;using&nbsp;Benjamini-Hochberg&nbsp;correction<br>######&nbsp;2PL&nbsp;vs&nbsp;NLR&nbsp;3P<br>LRstat&nbsp;<-&nbsp;-2&nbsp;*&nbsp;(sapply(fit2PL,&nbsp;logLik)&nbsp;-&nbsp;sapply(fit3PL,&nbsp;logLik))&nbsp;<br>LRdf&nbsp;<-&nbsp;1&nbsp;<br>LRpval&nbsp;<-&nbsp;1&nbsp;-&nbsp;pchisq(LRstat,&nbsp;LRdf)&nbsp;<br>LRpval&nbsp;<-&nbsp;p.adjust(LRpval,&nbsp;method&nbsp;=&nbsp;\"BH\")&nbsp;<br>######&nbsp;NLR&nbsp;3P&nbsp;vs&nbsp;NLR&nbsp;4P<br>LRstat&nbsp;<-&nbsp;-2&nbsp;*&nbsp;(sapply(fit3PL,&nbsp;logLik)&nbsp;-&nbsp;sapply(fit4PL,&nbsp;logLik))&nbsp;<br>LRdf&nbsp;<-&nbsp;1&nbsp;<br>LRpval&nbsp;<-&nbsp;1&nbsp;-&nbsp;pchisq(LRstat,&nbsp;LRdf)&nbsp;<br>LRpval&nbsp;<-&nbsp;p.adjust(LRpval,&nbsp;method&nbsp;=&nbsp;\"BH\")
                       br()
              ),
              "----",
              "Polytomous models",
              # * CUMULATIVE LOGIT ####
-             tabPanel("Cumulative logit ",
+             tabPanel("Cumulative logit", value = "regr_cum_logit",
                       h3("Cumulative logit regression"),
                       p("Various regression models may be fitted to describe item properties in more detail.",
                       strong("Cumulative logit regression")," can model cumulative probabilities, i.e., probabilities
@@ -237,7 +239,7 @@ uiRegression <-
                       br()
              ),
              # * ADJACENT CATEGORY LOGIT ####
-             tabPanel("Adjacent category logit ",
+             tabPanel("Adjacent category logit", value = "regr_adjacent",
                       h3("Adjacent category logit regression"),
                       p("Models for ordinal responses need not use cumulative probabilities.",
                         strong("Adjacent categories model"), "assumes linear form of logarithm of ratio of
@@ -262,7 +264,7 @@ uiRegression <-
                         column(3,
                                sliderInput(inputId = "adjreg_slider_item",
                                            min = 1,
-                                           max = 20,
+                                           max = 10,
                                            step = 1,
                                            value = 1,
                                            label = "Item",
@@ -285,7 +287,7 @@ uiRegression <-
                       br()
              ),
              # * MULTINOMIAL ####
-             tabPanel("Multinomial",
+             tabPanel("Multinomial", value = "regr_multinom",
                       h3("Multinomial regression on standardized total scores"),
                       p('Various regression models may be fitted to describe
                         item properties in more detail.',
@@ -306,7 +308,7 @@ uiRegression <-
                         column(3,
                                sliderInput(inputId = "multi_slider_item",
                                            min = 1,
-                                           max = 20,
+                                           max = 10,
                                            step = 1,
                                            value = 1,
                                            label = "Item",

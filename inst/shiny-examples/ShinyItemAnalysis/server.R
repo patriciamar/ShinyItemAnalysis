@@ -9,6 +9,7 @@ require(DT)
 require(data.table)
 require(difNLR)
 require(difR)
+require(dplyr)
 require(ggdendro)
 require(ggplot2)
 require(grid)
@@ -30,6 +31,7 @@ require(shinyBS)
 require(ShinyItemAnalysis)
 require(shinyjs)
 require(stringr)
+require(tibble)
 require(VGAM)
 require(xtable)
 
@@ -47,7 +49,7 @@ options(shiny.maxRequestSize = 30*1024^2)
 
 function(input, output, session) {
   # kills the local server as the window closes
-  session$onSessionEnded(function(x) {stopApp()})
+  # session$onSessionEnded(function(x) {stopApp()})
 
   #%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   ### REACTIVE VALUES ######
@@ -237,7 +239,8 @@ function(input, output, session) {
       inputData <- read.csv(input$data$datapath,
                             header = input$header,
                             sep = input$sep,
-                            quote = input$quote)
+                            quote = input$quote,
+                            stringsAsFactors = TRUE)
       dataset$data_status <- "OK"
 
       # loading max/min values for ordinal data
@@ -553,6 +556,9 @@ function(input, output, session) {
       "zlogreg_irtSlider",
       "slider_nlr_3P_item",
       "slider_nlr_4P_item",
+      "cumreg_slider_item",
+      "adjreg_slider_item",
+      "multi_slider_item",
       "DIF_NLR_item_plot",
       "difirt_lord_itemSlider",
       "difirt_raju_itemSlider",
@@ -573,6 +579,9 @@ function(input, output, session) {
     updateSliderInput(session = session, inputId = "zlogreg_irtSlider", max = itemCount)
     updateSliderInput(session = session, inputId = "slider_nlr_3P_item", max = itemCount)
     updateSliderInput(session = session, inputId = "slider_nlr_4P_item", max = itemCount)
+    updateSliderInput(session = session, inputId = "cumreg_slider_item", max = itemCount)
+    updateSliderInput(session = session, inputId = "adjreg_slider_item", max = itemCount)
+    updateSliderInput(session = session, inputId = "multi_slider_item", max = itemCount)
     updateSliderInput(session = session, inputId = "DIF_NLR_item_plot", max = itemCount)
     updateSliderInput(session = session, inputId = "difirt_lord_itemSlider", max = itemCount)
     updateSliderInput(session = session, inputId = "difirt_raju_itemSlider", max = itemCount)

@@ -1448,6 +1448,26 @@ observeEvent(DIF_nlr$purification, {
   }
 })
 
+# ** Updating DMV ######
+observeEvent(input$DIF_NLR_summary_matching, {
+  DIF_logistic$matching <- input$DIF_NLR_summary_matching
+})
+observeEvent(input$DIF_NLR_items_matching, {
+  DIF_logistic$matching <- input$DIF_NLR_items_matching
+})
+observeEvent(DIF_logistic$matching, {
+  if (DIF_logistic$matching != input$DIF_NLR_summary_matching) {
+    updateCheckboxInput(session = session,
+                        inputId = "DIF_NLR_summary_matching",
+                        value = DIF_logistic$matching)
+  }
+  if (DIF_logistic$matching != input$DIF_NLR_items_matching) {
+    updateCheckboxInput(session = session,
+                        inputId = "DIF_NLR_items_matching",
+                        value = DIF_logistic$matching)
+  }
+})
+
 # update selectInput & disable purification if DMV present
 observe({
   if (dif_present() == TRUE) {

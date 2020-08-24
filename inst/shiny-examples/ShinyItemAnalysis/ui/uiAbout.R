@@ -1,6 +1,7 @@
 uiAbout <- tabPanel("",
 				  icon = icon("fas fa-home"),
 				  value = "About",
+				  id = "about",
                   #------------------------------------------------------------------------------------#
                   # Description ####
                   #------------------------------------------------------------------------------------#
@@ -58,13 +59,13 @@ uiAbout <- tabPanel("",
                     column(6, h4("Versions"),
                            p("Current",
                              a("CRAN", href = "https://CRAN.R-project.org/package=ShinyItemAnalysis", target = "_blank"),
-                             "version is 1.3.3.",
+                             "version is 1.3.4.",
                              br(),
                              "Version available",
-                             a("online", href = "https://shiny.cs.cas.cz/ShinyItemAnalysis/", target = "_blank"), "is 1.3.3.",
+                             a("online", href = "https://shiny.cs.cas.cz/ShinyItemAnalysis/", target = "_blank"), "is 1.3.4.",
                              br(),
                              "The newest development version available on ",
-                             a("GitHub", href = "https://github.com/patriciamar/ShinyItemAnalysis", target = "_blank"), "is 1.3.3.",
+                             a("GitHub", href = "https://github.com/patriciamar/ShinyItemAnalysis", target = "_blank"), "is 1.3.4.",
                              ))),
                   tags$hr(),
 
