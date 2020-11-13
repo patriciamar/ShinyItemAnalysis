@@ -17,6 +17,7 @@
 #'
 #' @author
 #' Jan Netik \cr
+#' Department of Psychology, Faculty of Arts, Charles University  \cr
 #'
 #' Patricia Martinkova \cr
 #' Institute of Computer Science of the Czech Academy of Sciences \cr

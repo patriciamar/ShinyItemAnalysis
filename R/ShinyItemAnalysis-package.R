@@ -34,7 +34,6 @@
 #' @importFrom grDevices dev.off hcl png rainbow recordPlot
 #' @importFrom ltm ltm rasch tpm
 #' @importFrom mirt fscores itemfit mirt
-#' @importFrom moments kurtosis skewness
 #' @importFrom nnet multinom
 #' @importFrom psych alpha polychoric
 #' @importFrom psychometric item.exam
@@ -70,8 +69,8 @@
 #' @details
 #' Package: ShinyItemAnalysis\cr
 #' Type: Package\cr
-#' Version: 1.3.4\cr
-#' Date: 2020-08-24\cr
+#' Version: 1.3.4-1\cr
+#' Date: 2020-11-12\cr
 #' Depends: R (>= 3.5.0)\cr
 #' Imports: corrplot, cowplot, CTT, data.table, deltaPlotR, DT, difNLR (>= 1.3.2), difR (>= 5.0),
 #' ggdendro, ggplot2 (>= 2.2.1), gridExtra, knitr, latticeExtra, ltm, mirt (>= 1.24), moments,

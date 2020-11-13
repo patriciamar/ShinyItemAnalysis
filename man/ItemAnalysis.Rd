@@ -131,6 +131,7 @@ Institute of Computer Science of the Czech Academy of Sciences \cr
 \email{martinkova@cs.cas.cz} \cr
 
 Jan Netik \cr
+Department of Psychology, Faculty of Arts, Charles University \cr
 
 Jana Vorlickova \cr
 

@@ -81,6 +81,7 @@
 #' \email{martinkova@@cs.cas.cz} \cr
 #'
 #' Jan Netik \cr
+#' Department of Psychology, Faculty of Arts, Charles University \cr
 #'
 #' Jana Vorlickova \cr
 #'
@@ -139,7 +140,7 @@ ItemAnalysis <- function(data, y = NULL, k = 3, l = 1, u = 3, maxscore, minscore
     maxscore <- apply(data, 2, max, na.rm = T)
   }
   if (missing(minscore)) {
-    minscore <- rep(0, dim(data)[2])
+    minscore <- apply(data, 2, min, na.rm = T)
   }
   if (missing(cutscore)) {
     cutscore <- apply(data, 2, max, na.rm = T)
