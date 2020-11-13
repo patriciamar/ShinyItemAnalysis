@@ -46,6 +46,9 @@ ui = tagList(
             tags$link(rel = "stylesheet",
                       type = "text/css",
                       href = "box.css"),
+            tags$link(rel = "stylesheet",
+                      type = "text/css",
+                      href = "tooltip.css"),
             # JS
             tags$script(type = "text/javascript",
                         src = "busy.js"),
@@ -69,6 +72,8 @@ ui = tagList(
       p("Loading"),
       img(src = "busy_indicator.gif", height = 100, width = 100)
   ),
+
+  withMathJax(),
 
   shinyjs::useShinyjs(),
 
@@ -95,7 +100,7 @@ ui = tagList(
                     ShinyItemAnalysis
                     </div>
                     <div class = "footer-subtitle">
-                    Test and item analysis | Version 1.3.4
+                    Test and item analysis | Version 1.3.4-1
                     </div>
                     <span style = "float:right">
                     <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysis/" id = "tooltipweb" target="_blank">

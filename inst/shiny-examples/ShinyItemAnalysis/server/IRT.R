@@ -3019,7 +3019,7 @@ include.colnames = T)
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 # ** DICHOTOMOUS MODELS ######
-# *** CC ######
+# *** ICC ######
 output$ccIRT_interpretation <- renderUI({
   a1 <- input$ccIRTSlider_a1
   b1 <- input$ccIRTSlider_b1
@@ -3033,8 +3033,8 @@ output$ccIRT_interpretation <- renderUI({
 
   theta <- input$ccIRTSlider_theta
 
-  ccirt <- function(theta, a, b, c, d){
-    return(c + (d - c)/(1 + exp(-a*(theta - b))))
+  ccirt <- function(theta, a, b, c, d) {
+    return(c + (d - c)/(1 + exp(-a * (theta - b))))
   }
 
   prob1 <- ccirt(theta, a1, b1, c1, d1)
@@ -3059,8 +3059,6 @@ output$ccIRT_interpretation <- renderUI({
   txt <- paste0("<b>Interpretation: </b>", txt1, txt2)
   HTML(txt)
 })
-
-
 
 ccIRT_plot_Input <- reactive({
   a1 <- input$ccIRTSlider_a1
@@ -3194,8 +3192,8 @@ output$DB_ccIRT <- downloadHandler(
   }
 )
 
-# *** ICC ######
-iccIRT_plot_Input <- reactive({
+# *** IIC ######
+iicIRT_plot_Input <- reactive({
   a1 <- input$ccIRTSlider_a1
   b1 <- input$ccIRTSlider_b1
   c1 <- input$ccIRTSlider_c1
@@ -3208,12 +3206,13 @@ iccIRT_plot_Input <- reactive({
 
   theta <- input$ccIRTSlider_theta
 
-  iccirt <- function(theta, a, b, c, d){
-    return((d - c)*a^2*exp(a*(theta - b))/(1 + exp(a*(theta - b)))^2)
+  iicirt <- function(theta, a, b, c, d) {
+    pi <- c + (d - c) * exp(a * (theta - b)) / (1 + exp(a * (theta - b)))
+    return(a^2 * (pi - c)^2 * (d - pi)^2 / (pi * (1 - pi) * (d - c)^2))
   }
 
-  df <- data.frame(X1 = iccirt(seq(-4, 4, 0.01), a1, b1, c1, d1),
-                   X2 = iccirt(seq(-4, 4, 0.01), a2, b2, c2, d2),
+  df <- data.frame(X1 = iicirt(seq(-4, 4, 0.01), a1, b1, c1, d1),
+                   X2 = iicirt(seq(-4, 4, 0.01), a2, b2, c2, d2),
                    theta = seq(-4, 4, 0.01))
   df <- melt(df, id.vars = "theta")
 
@@ -3235,8 +3234,8 @@ iccIRT_plot_Input <- reactive({
   g
 })
 
-output$iccIRT_plot <- renderPlotly({
-  g <- iccIRT_plot_Input()
+output$iicIRT_plot <- renderPlotly({
+  g <- iicIRT_plot_Input()
 
   p <- ggplotly(g)
 
@@ -3257,12 +3256,12 @@ output$iccIRT_plot <- renderPlotly({
   p %>%  plotly::config(displayModeBar = F)
 })
 
-output$DB_iccIRT <- downloadHandler(
+output$DB_iicIRT <- downloadHandler(
   filename =  function() {
     paste("fig_CustomItemInformationCurve.png", sep = "")
   },
   content = function(file) {
-    ggsave(file, plot = iccIRT_plot_Input() +
+    ggsave(file, plot = iicIRT_plot_Input() +
              theme(legend.position = c(0.97, 0.97),
                    legend.justification = c(0.97, 0.97)) +
              theme(text = element_text(size = setting_figures$text_size)),
@@ -3274,11 +3273,12 @@ output$DB_iccIRT <- downloadHandler(
 # *** EXERCISES ######
 # **** Exercises 1 ######
 irt_dich1_answers <- reactive({
-  ccirt <- function(theta, a, b, c, d){
-    return(c + (d - c)/(1 + exp(-a*(theta - b))))
+  ccirt <- function(theta, a, b, c, d) {
+    return(c + (d - c) / (1 + exp(-a * (theta - b))))
   }
-  iccirt <- function(theta, a, b, c, d){
-    return((d - c)*a^2*exp(a*(theta - b))/(1 + exp(a*(theta - b)))^2)
+  iicirt <- function(theta, a, b, c, d) {
+    pi <- c + (d - c) * exp(a * (theta - b)) / (1 + exp(a * (theta - b)))
+    return(a^2 * (pi - c)^2 * (d - pi)^2 / (pi * (1 - pi) * (d - c)^2))
   }
 
   a1 <- 2.5; b1 <- -0.5; c1 <- 0; d1 <- 1
@@ -3292,24 +3292,24 @@ irt_dich1_answers <- reactive({
   cci1 <- ccirt(theta0, a1, b1, c1, d1)
   cci2 <- ccirt(theta0, a2, b2, c2, d2)
 
-  theta <- (a1*b1 - a2*b2)/(a1 - a2)
+  theta <- (a1 * b1 - a2 * b2) / (a1 - a2)
 
-  iccirt1a <- iccirt(-2, a1, b1, c1, d1)
-  iccirt2a <- iccirt(-2, a2, b2, c2, d2)
-  icca <- as.numeric(iccirt1a < iccirt2a) + 1
-  iccirt1b <- iccirt( 0, a1, b1, c1, d1)
-  iccirt2b <- iccirt( 0, a2, b2, c2, d2)
-  iccb <- as.numeric(iccirt1b < iccirt2b) + 1
-  iccirt1c <- iccirt( 2, a1, b1, c1, d1)
-  iccirt2c <- iccirt( 2, a2, b2, c2, d2)
-  iccc <- as.numeric(iccirt1c < iccirt2c) + 1
+  iicirt1a <- iicirt(-2, a1, b1, c1, d1)
+  iicirt2a <- iicirt(-2, a2, b2, c2, d2)
+  iica <- as.numeric(iicirt1a < iicirt2a) + 1
+  iicirt1b <- iicirt(0, a1, b1, c1, d1)
+  iicirt2b <- iicirt(0, a2, b2, c2, d2)
+  iicb <- as.numeric(iicirt1b < iicirt2b) + 1
+  iicirt1c <- iicirt(2, a1, b1, c1, d1)
+  iicirt2c <- iicirt(2, a2, b2, c2, d2)
+  iicc <- as.numeric(iicirt1c < iicirt2c) + 1
 
   answers <- list(par1 = par1,
                   par2 = par2,
                   cci1 = cci1,
                   cci2 = cci2,
                   theta = theta,
-                  icc = c(icca, iccb, iccc))
+                  iic = c(iica, iicb, iicc))
   answers
 })
 
@@ -3349,8 +3349,8 @@ irt_training_dich1_check <- eventReactive(input$irt_training_dich1_submit, {
   # answer 3
   ans3 <- c(abs(answers[[5]] - input$irt_training_dich1_3) <= 0.05)
 
-  # answer 4,
-  ans4 <- c(answers[["icc"]] == c(input$irt_training_dich1_4a, input$irt_training_dich1_4b, input$irt_training_dich1_4c))
+  # answer 4
+  ans4 <- c(answers[["iic"]] == c(input$irt_training_dich1_4a, input$irt_training_dich1_4b, input$irt_training_dich1_4c))
 
 
   ans <- list(ans1 = ans1,
@@ -3358,7 +3358,7 @@ irt_training_dich1_check <- eventReactive(input$irt_training_dich1_submit, {
               ans2_2 = ans2_2,
               ans3 = ans3,
               ans4 = ans4)
-  res <- sum(sapply(ans, sum))/sum(sapply(ans, length))
+  res <- sum(sapply(ans, sum)) / sum(sapply(ans, length))
   ans <- lapply(ans, function(x) ifelse(is.na(x),
                                         "<b><font color = 'red'>!</font></b>",
                                         ifelse(x,
@@ -3440,18 +3440,11 @@ output$irt_training_dich1_answer <- renderUI({
 
 # **** Exercises 2 ######
 irt_dich2_answers <- reactive({
-  ccirt <- function(theta, a, b, c, d){
-    return(c + (d - c)/(1 + exp(-a*(theta - b))))
-  }
-  iccirt <- function(theta, a, b, c, d){
-    return((d - c)*a^2*exp(a*(theta - b))/(1 + exp(a*(theta - b)))^2)
-  }
-
   a1 <- 1.5; b1 <- 0; c1 <- 0; d1 <- 1
   a2 <- 1.5; b2 <- 0; c2 <- 0.2; d2 <- 1
 
   ans1 <- c(c1, c2)
-  ans2 <- c((1 + c1)/2, (1 + c2)/2)
+  ans2 <- c((1 + c1) / 2, (1 + c2) / 2)
   ans3 <- 1
 
   answers <- list(ans1 = ans1,
@@ -3534,7 +3527,7 @@ irt_dich3_answers <- reactive({
   a2 <- 1.5; b2 <- 0; c2 <- 0; d2 <- 1
 
   ans1 <- c(d1, d2)
-  ans2 <- c(d1/2, d2/2)
+  ans2 <- c(d1 / 2, d2 / 2)
   ans3 <- 2
 
   answers <- list(ans1 = ans1,

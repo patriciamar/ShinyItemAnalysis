@@ -2,6 +2,26 @@
 
 ----------
 
+### Changes in version 1.3.4-1 (2020-11-12)
+#### BUG FIXING
+  * Calculation and display of item information curves was fixed (Reported by Hynek Cigler).
+  * Calculation of minimal scores in ItemAnalysis() function was fixed.
+  
+#### MAJOR UPDATES
+  * New function `plot_corr()` to compute and visualize an item correlation matrix was added
+    and implemented within the ShinyItemAnalysis interactive app
+  * New datasets `HCIgrads`, `HCItestretest`, `HCIprepost` and `HCIdata` were added
+  * `startShinyItemAnalysis()` function was fixed to finish job persisting in the backgroud 
+    after the app is closed
+  * Figures can now be downloaded at once in DDF section of the app.
+  
+#### MINOR UPDATES
+  * Selected R code was updated.
+  * Unnecessary dependencies were removed.
+  * Summary tab was updated within the app, interactive help with formulae is newly offered.
+  
+  ----------
+
 ### Changes in version 1.3.4 (2020-08-24)
 #### BUG FIXING
   * Display of Cronbach's alpha in PDF/HTML reports was corrected.

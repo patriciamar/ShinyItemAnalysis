@@ -59,24 +59,34 @@ observe({
 DIF_total_table_Input <- reactive({
   sc_one  <- DIF_total_matching()[group() == 1]
   sc_zero <- DIF_total_matching()[group() == 0]
+
+  skewness <- function(x) {
+    n <- length(x)
+    (sum((x - mean(x, na.rm = TRUE))^3, na.rm = TRUE) / n) / (sum((x - mean(x, na.rm = TRUE))^2, na.rm = TRUE)/n)^(3/2)
+  }
+  kurtosis <- function(x) {
+    n <- length(x)
+    n * sum((x - mean(x, na.rm = TRUE))^4, na.rm = TRUE)/(sum((x - mean(x, na.rm = TRUE))^2, na.rm = TRUE)^2)
+  }
+
   tab <- data.frame(rbind(round(c(length(sc_zero),
                                   min(sc_zero, na.rm = T),
                                   max(sc_zero, na.rm = T),
                                   mean(sc_zero, na.rm = T),
                                   median(sc_zero, na.rm = T),
                                   sd(sc_zero, na.rm = T),
-                                  skewness(sc_zero, na.rm = T),
-                                  kurtosis(sc_zero, na.rm = T)), 2),
+                                  skewness(sc_zero),
+                                  kurtosis(sc_zero)), 2),
                           round(c(length(sc_one),
                                   min(sc_one, na.rm = T),
                                   max(sc_one, na.rm = T),
                                   mean(sc_one, na.rm = T),
                                   median(sc_one, na.rm = T),
                                   sd(sc_one, na.rm = T),
-                                  skewness(sc_one, na.rm = T),
-                                  kurtosis(sc_one, na.rm = T)), 2)))
-  colnames(tab) <- c("N", "Min", "Max", "Mean", "Median", "SD", "Skewness", "Kurtosis")
-  tab$N <- as.integer(tab$N)
+                                  skewness(sc_one),
+                                  kurtosis(sc_one)), 2)))
+  colnames(tab) <- c("n", "Min", "Max", "Mean", "Median", "SD", "Skewness", "Kurtosis")
+  tab$n <- as.integer(tab$n)
   rownames(tab) <- c("Reference group (0)", "Focal group (1)")
   tab
 })
@@ -5200,19 +5210,45 @@ output$download_multi_dif_puri <- downloadHandler(
 # ** ITEMS ######
 
 # ** Plot ######
-DDF_multi_plot_Input <- reactive({
+# DDF_multi_plot_Input <- reactive({
+#   fit <- DDF_multi_model()
+#   item <- input$DDF_multi_items
+#
+#   g <- plot(fit, item = item)[[1]] +
+#     theme_app() +
+#     ggtitle(item_names()[item]) +
+#     theme(legend.box.just = "top",
+#           legend.justification = c("left", "top"),
+#           legend.position = c(0.02, 0.98),
+#           legend.box = "horizontal",
+#           legend.margin = margin(0, 0, 0, 0, unit = "cm"))
+#   g
+# })
+
+# ** Plot all items ######
+DDF_multi_plot_all_Input <- reactive({
   fit <- DDF_multi_model()
+
+  g <- list()
+  for (i in 1:ncol(nominal())) {
+    g[[i]] <- plot(fit, item = i)[[1]] +
+      theme_app() +
+      ggtitle(item_names()[i]) +
+      theme(legend.box.just = "top",
+            legend.justification = c("left", "top"),
+            legend.position = c(0.02, 0.98),
+            legend.box = "horizontal",
+            legend.margin = margin(0, 0, 0, 0, unit = "cm"))
+  }
+  g
+})
+
+# ** Plot ######
+DDF_multi_plot_Input <- reactive({
   item <- input$DDF_multi_items
 
-  g <- plot(fit, item = item)[[1]] +
-    theme_app() +
-    ggtitle(item_names()[item]) +
-    theme(legend.box.just = "top",
-          legend.justification = c("left", "top"),
-          legend.position = c(0.02, 0.98),
-          legend.box = "horizontal",
-          legend.margin = margin(0, 0, 0, 0, unit = "cm"))
-  g
+  g <- DDF_multi_plot_all_Input()
+  g[[item]]
 })
 
 # ** Output plot ######
@@ -5233,6 +5269,35 @@ output$DB_DDF_multi_plot <- downloadHandler(
            height = setting_figures$height,
            width = setting_figures$width,
            dpi = setting_figures$dpi)
+  }
+)
+
+output$DB_DDF_multi_plot_all <- downloadHandler(
+  filename = function(){
+    paste0("fig_DDF_multi_all.zip")
+
+  },
+  content = function(file){
+    # go to a temp dir to avoid permission issues
+    owd <- setwd(tempdir())
+    on.exit(setwd(owd))
+    files <- NULL;
+
+    # loop through the sheets
+    for (i in 1:ncol(ordinal())){
+      # write each sheet to a csv file, save the name
+      fileName <- paste0("fig_DDF_multi_", item_names()[i], ".png")
+      ggsave(fileName,
+             plot = DDF_multi_plot_all_Input()[[i]] +
+               theme(text = element_text(size = setting_figures$text_size)),
+             device = "png",
+             height = setting_figures$height,
+             width = setting_figures$width,
+             dpi = setting_figures$dpi)
+      files <- c(fileName, files)
+    }
+    # create the zip file
+    zip(file, files)
   }
 )
 

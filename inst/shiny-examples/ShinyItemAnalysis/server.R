@@ -18,10 +18,10 @@ require(knitr)
 require(latticeExtra)
 require(ltm)
 require(mirt)
-require(moments)
 require(msm)
 require(nnet)
 require(plotly)
+require(purrr)
 require(psych)
 require(psychometric)
 require(reshape2)
@@ -49,7 +49,7 @@ options(shiny.maxRequestSize = 30*1024^2)
 
 function(input, output, session) {
   # kills the local server as the window closes
-  # session$onSessionEnded(function(x) {stopApp()})
+  session$onSessionEnded(function(x) {stopApp()})
 
   #%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   ### REACTIVE VALUES ######
@@ -570,7 +570,7 @@ function(input, output, session) {
 	  minItemScore = min(total_score(), na.rm = T)
 	  maxItemScore = max(c(max(total_score(), na.rm = T), ncol(binary())))
     updateSliderInput(session = session, inputId = "slider_totalscores_histogram", min = minItemScore , max = maxItemScore, value = round(median(total_score(), na.rm = T)))
-    updateNumericInput(session = session, inputId = "corr_plot_clust", value = 1, max = itemCount)
+    updateNumericInput(session = session, inputId = "corr_plot_clust", value = 0, max = itemCount)
     updateNumericInput(session = session, inputId = "corr_plot_clust_report", value = 1, max = itemCount)
     updateSliderInput(session = session, inputId = "validitydistractorSlider", max = itemCount)
     updateSliderInput(session = session, inputId = "distractorSlider", max = itemCount, step = 1)

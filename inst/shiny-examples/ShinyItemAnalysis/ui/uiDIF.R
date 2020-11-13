@@ -1410,6 +1410,7 @@ uiDIF <-
                                    respect to the group membership.'),
                                  plotOutput('DDF_multi_plot'),
                                  downloadButton("DB_DDF_multi_plot", label = "Download figure"),
+                                 downloadButton("DB_DDF_multi_plot_all", label = "Download all figures"),
                                  h4("Equation"),
                                  fluidRow(column(12, align = "center", uiOutput('DDF_multi_equation_items'))),
                                  h4("Table of parameters"),

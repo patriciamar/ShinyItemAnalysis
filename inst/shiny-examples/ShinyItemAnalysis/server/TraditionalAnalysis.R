@@ -502,8 +502,8 @@ distractor_histogram_Input <- reactive({
                 "4" = col[2:5],
                 "5" = col)
   ggplot(df, aes(x = sc)) +
-    geom_histogram(aes(fill = gr), binwidth = 1, color = "black") +
-    scale_fill_manual("", breaks = df$gr, values = col) +
+    geom_histogram(aes(fill = gr, group = gr), binwidth = 1, color = "black") +
+    scale_fill_manual("", values = col) +
     labs(x = "Total score",
          y = "Number of respondents") +
     scale_y_continuous(expand = c(0, 0),

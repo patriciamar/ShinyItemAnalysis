@@ -24,35 +24,10 @@ corr_structure <- reactive({
 
 # ** Correlation plot ######
 corr_plot_Input <- reactive({
-  corP <- corr_structure()
-  tlcex <- max(ifelse(dim(corP)[1] < 30, 1, 0.9 - (dim(corP)[1] - 30)*0.05), 0.5)
-  numclust <- input$corr_plot_clust
-  clustmethod <- input$corr_plot_clustmethod
-
-  if(!input$itemnam) {
-	  dimnames(corP)[[1]] <- dimnames(corP)[[2]] <- item_names()
-  }
-
-  # option to display correlation values
-  if(input$show_corr %% 2 == 1 ) {
-    updateActionButton(session, "show_corr", label = "Hide correlation values")
-	  if (clustmethod == "none"){
-	    corrplot(corP, tl.cex = tlcex, tl.pos = 'lt', method = 'number',
-	             number.cex = 0.7, col = 'black', cl.pos = 'n')
-    } else {
-      corrplot(corP, tl.cex = tlcex, order = "hclust", hclust.method = clustmethod,
-               addrect = numclust, tl.pos = 'lt', method = 'number',
-               number.cex  = 0.7, col = 'black', cl.pos = 'n')
-    }
-   } else {
-      updateActionButton(session, "show_corr", label = "Display correlation values")
-    if (clustmethod == "none"){
-	    corrplot(corP, tl.cex = tlcex, tl.pos = 'lt')
-	  } else {
-	    corrplot(corP, tl.cex = tlcex, order = "hclust", hclust.method = clustmethod,
-	             addrect = numclust, tl.pos = 'lt')
-	  }
-  }
+  plot_corr(corr_structure(),
+    cor = "none", clust_method = input$corr_plot_clustmethod,
+    n_clust = input$corr_plot_clust, labels = input$show_corr, labels_size = input$corr_plot_labs_size
+  )
 })
 
 corr_plot_Input_report <- reactive({
@@ -90,36 +65,56 @@ corr_plot_Input_report <- reactive({
 })
 
 # ** Output correlation plot ######
-output$corr_plot <- renderPlot({
-  corr_plot_Input()
+output$corr_plot <- renderPlotly({
+  plt <- corr_plot_Input() %>%
+    ggplotly(tooltip = c("x", "y", "label")) %>%
+    layout(
+      xaxis = list(constrain = "domain",
+                   side = "top",
+                   tickangle = -90), # fix asp. ratio
+      yaxis = list(
+        constrain = "domain",
+        # scaleanchor = 'x',
+        scaleratio = 1
+      )
+    ) %>%
+    plotly::config(displayModeBar = F)
+
+  # editing legend appearance
+  colorbar_ind <- which(sapply(plt$x$data, function(x) any(grepl("marker", names(x)))))
+  colorbar_ind2 <- which(sapply(plt$x$data[colorbar_ind], function(x) any(grepl("colorbar", names(x$marker)))))
+  plt$x$data[[colorbar_ind[colorbar_ind2]]]$marker$colorbar$outlinewidth <- 0
+
+  # disable hoverinfo on clusters
+  cluster_ind <- which(sapply(plt$x$data, function(x) any(grepl("fill", names(x)))))
+  if(length(cluster_ind)) {plt$x$data[[cluster_ind]]$hoverinfo <- "skip"}
+
+  plt
 })
 
 # ** DB correlation plot ######
 output$DB_corr_plot <- downloadHandler(
-  filename =  function() {
-    paste("fig_CorrelationPlot.png", sep = "")
+  filename = function() {
+    "fig_CorrelationPlot.png"
   },
   content = function(file) {
-    # in corrplot this must be plotted completely again!
-    corP <- corr_structure()
-    tlcex <- max(ifelse(dim(corP)[1] < 30, 1, 0.9 - (dim(corP)[1] - 30)*0.05), 0.5)
-
-    numclust <- input$corr_plot_clust
-    clustmethod <- input$corr_plot_clustmethod
-
-    png(file, height = setting_figures$height, width = setting_figures$height,
-        units = "in",
-        res = setting_figures$dpi,
-        pointsize = setting_figures$dpi/72)
-    if (clustmethod == "none"){
-      corrplot(corP, tl.cex = tlcex)
-    } else {
-      corrplot(corP, tl.cex = tlcex, order = "hclust", hclust.method = clustmethod,
-               addrect = numclust)
-    }
-    dev.off()
+    plt <- plot_corr(corr_structure(),
+      cor = "none",
+      clust_method = input$corr_plot_clustmethod,
+      n_clust = input$corr_plot_clust,
+      labels = input$show_corr,
+      labels_size = setting_figures$text_size * 0.25 # size in geom is in mm, settings is in pt
+    ) +
+      theme(text = element_text(size = setting_figures$text_size))
+    ggsave(file,
+      plot = plt,
+      device = "png",
+      height = setting_figures$height, width = setting_figures$width,
+      dpi = setting_figures$dpi
+    )
   }
 )
+
 
 # ** DB correlation matrix ######
 output$corr_matrix <- downloadHandler(
