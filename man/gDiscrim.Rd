@@ -2,41 +2,47 @@
 % Please edit documentation in R/gDisrim.R
 \name{gDiscrim}
 \alias{gDiscrim}
-\title{Generalized Item Discrimination}
+\title{Compute generalized item discrimination}
 \usage{
 gDiscrim(x, k = 3, l = 1, u = 3, maxscore, minscore)
 }
 \arguments{
-\item{x}{matrix or data.frame of items to be examined. Rows represent persons, columns
-reperesent items.}
+\item{x}{matrix or data.frame of items to be examined. Rows represent
+persons, columns represent items.}
 
-\item{k}{numeric: number of groups to which may be data.frame x divided by the total score.
-Default value is 3.  See \strong{Details}.}
+\item{k}{numeric: number of groups to which may be data.frame x divided by
+the total score. Default value is 3.  See \strong{Details}.}
 
 \item{l}{numeric: lower group. Default value is 1. See \strong{Details}.}
 
 \item{u}{numeric: upper group. Default value is 3. See \strong{Details}.}
 
-\item{maxscore}{numeric: maximal score in ordinal items. If missing, vector of obtained maximal scores is imputed. See \strong{Details}.}
+\item{maxscore}{numeric: maximal score in ordinal items. If missing, vector
+of obtained maximal scores is imputed. See \strong{Details}.}
 
-\item{minscore}{numeric: minimal score in ordinal items. If missing, vector of obtained minimal scores is imputed. See \strong{Details}.}
+\item{minscore}{numeric: minimal score in ordinal items. If missing, vector
+of obtained minimal scores is imputed. See \strong{Details}.}
 }
 \description{
-gDiscrim function computes various generalizations of discrimination index ULI.
-It enumerates the ablitity of item to distinguish between individuals from upper (U) vs. lower (L)
-ability groups, i.e. between respondents with high vs. low overall score on the test.
-Number of groups, as well as upper and lower groups can be specified by user.
-Maximal and minimal score in ordinal data sets can be specified by user.
+gDiscrim function computes various generalizations of
+  discrimination index ULI. It enumerates the ability of item to distinguish
+  between individuals from upper (U) vs. lower (L) ability groups, i.e.
+  between respondents with high vs. low overall score on the test. Number of
+  groups, as well as upper and lower groups can be specified by user. Maximal
+  and minimal score in ordinal data sets can be specified by user.
 }
 \details{
-The function computes total test scores for all respondents and then divides
-the respondents into \code{k} groups. The lower and upper groups are determined by \code{l} and \code{u}
-parameters, i.e.  l-th and u-th group where the ordering is defined by increasing total score.
+The function computes total test scores for all respondents and then
+  divides the respondents into \code{k} groups. The lower and upper groups
+  are determined by \code{l} and \code{u} parameters, i.e., l-th and u-th
+  group where the ordering is defined by increasing total score.
 
-In ordinal items, difficulty is calculated as difference of average score divided by range
-(maximal possible score \code{maxscore} minus minimal possible score \code{minscore} for given item).
+  In ordinal items, difficulty is calculated as difference of average score
+  divided by range (maximal possible score \code{maxscore} minus minimal
+  possible score \code{minscore} for given item).
 
-Discrimination is calculated as difference in difficulty between upper and lower group.
+  Discrimination is calculated as difference in difficulty between upper and
+  lower group.
 }
 \note{
 \code{gDiscrim} is used by \code{\link{DDplot}} function.
@@ -63,9 +69,10 @@ gDiscrim(dataOrd, k = 5, l = 4, u = 5)[1:5]
 gDiscrim(dataOrd, k = 5, l = 4, u = 5, maxscore = 4, minscore = 0)[1:5]
 }
 \references{
-Martinkova, P., Stepanek, L., Drabinova, A., Houdek, J., Vejrazka, M., & Stuka, C. (2017).
-Semi-real-time analyses of item characteristics for medical school admission tests.
-In: Proceedings of the 2017 Federated Conference on Computer Science and Information Systems.
+Martinkova, P., Stepanek, L., Drabinova, A., Houdek, J.,
+Vejrazka, M., & Stuka, C. (2017). Semi-real-time analyses of item
+characteristics for medical school admission tests. In: Proceedings of the
+2017 Federated Conference on Computer Science and Information Systems.
 https://doi.org/10.15439/2017F380
 }
 \seealso{

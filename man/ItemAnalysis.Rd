@@ -2,32 +2,47 @@
 % Please edit documentation in R/ItemAnalysis.R
 \name{ItemAnalysis}
 \alias{ItemAnalysis}
-\title{Item Analysis}
+\title{Compute traditional item analysis indices}
 \usage{
-ItemAnalysis(data, y = NULL, k = 3, l = 1, u = 3,
-maxscore, minscore, cutscore, add.bin = FALSE)
+ItemAnalysis(
+  data,
+  y = NULL,
+  k = 3,
+  l = 1,
+  u = 3,
+  maxscore,
+  minscore,
+  cutscore,
+  add.bin = FALSE
+)
 }
 \arguments{
-\item{data}{matrix or data.frame of items to be examined. Rows represent respondents, columns
-reperesent items.}
+\item{data}{matrix or data.frame of items to be examined. Rows represent
+respondents, columns reperesent items.}
 
 \item{y}{vector of criterion values.}
 
-\item{k}{numeric: number of groups to which may be data.frame x divided by the total score.
-Default value is 3.  See \strong{Details}.}
+\item{k}{numeric: number of groups to which may be data.frame x divided by
+the total score. Default value is 3.  See \strong{Details}.}
 
 \item{l}{numeric: lower group. Default value is 1. See \strong{Details}.}
 
 \item{u}{numeric: upper group. Default value is 3. See \strong{Details}.}
 
-\item{maxscore}{numeric or vector: maximal score in ordinal items. If missing, vector of obtained maximal scores is imputed. See \strong{Details}.}
+\item{maxscore}{numeric or vector: maximal score in ordinal items. If
+missing, vector of obtained maximal scores is imputed. See
+\strong{Details}.}
 
-\item{minscore}{numeric or vector: minimal score in ordinal items. If missing, vector of obtained minimal scores is imputed. See \strong{Details}.}
+\item{minscore}{numeric or vector: minimal score in ordinal items. If
+missing, vector of obtained minimal scores is imputed. See
+\strong{Details}.}
 
-\item{cutscore}{numeric or vector: cut score used for binarization of ordinal data.
-If missing, vector of maximal scores is imputed. See \strong{Details}.}
+\item{cutscore}{numeric or vector: cut score used for binarization of ordinal
+data. If missing, vector of maximal scores is imputed. See
+\strong{Details}.}
 
-\item{add.bin}{logical: If TRUE, indices are printed also for binarized data. See \strong{Details}.}
+\item{add.bin}{logical: If TRUE, indices are printed also for binarized data.
+See \strong{Details}.}
 }
 \value{
 \code{ItemAnalysis} function computes various traditional item analysis indices. Output
@@ -52,9 +67,9 @@ is a \code{data.frame} with following columns:
   \item{\code{RIRbin}}{item-rest correlation for binarized data}
   \item{\code{itemCritCor}}{correlation between item score and criterion \code{y}}
   \item{\code{itemCritCorBin}}{correlation between item score and criterion \code{y} for binarized data}
-  \item{\code{valInd}}{item validity index calculated as \code{cor(item, y)*sqrt(((N-1)/N)*var(item))}, see Allen & Yen (1979), Ch.6.4}
+  \item{\code{valInd}}{item validity index calculated as \code{cor(item, y) * sqrt(((N - 1) / N) * var(item))}, see Allen & Yen (1979), Ch.6.4}
   \item{\code{valIndBin}}{item validity index for binarized data}
-  \item{\code{rel}}{item reliability index calculated as \code{cor(item, test)*sqrt(((N-1)/N)*var(item))}, see Allen & Yen (1979), Ch.6.4}
+  \item{\code{rel}}{item reliability index calculated as \code{cor(item, test) * sqrt(((N - 1) / N) * var(item))}, see Allen & Yen (1979), Ch.6.4}
   \item{\code{relBin}}{item reliability index for binarized data}
 
   \item{\code{relDrop}}{item reliability index 'drop' (scored without item)}
@@ -67,25 +82,27 @@ With \code{add.bin == TRUE}, indices based on binarized data set are also provid
 and marked with \code{bin} suffix.
 }
 \description{
-\code{ItemAnalysis} function computes various traditional item analysis indices
-including difficulty, discrimination and item validity. For ordinal items the difficulty and
-discrimination indices take into account minimal item score as well as range.
+\code{ItemAnalysis} function computes various traditional item
+  analysis indices including difficulty, discrimination and item validity.
+  For ordinal items the difficulty and discrimination indices take into
+  account minimal item score as well as range.
 }
 \details{
-For ordinal items the difficulty and discrimination indices take into account
-minimal item score as well as range.
+For ordinal items the difficulty and discrimination indices take
+into account minimal item score as well as range.
 
-For calculation of discimination ULI index, it is possible to
-specify the number of groups \code{k}, and which two groups \code{l} and \code{u}
-are to be compared.
+For calculation of discimination ULI index, it is possible to specify the
+number of groups \code{k}, and which two groups \code{l} and \code{u} are to
+be compared.
 
-In ordinal items, difficulty is calculated as difference of average score divided by range
-(maximal possible score \code{maxscore} minus minimal possible score \code{minscore}).
+In ordinal items, difficulty is calculated as difference of average score
+divided by range (maximal possible score \code{maxscore} minus minimal
+possible score \code{minscore}).
 
 If \code{add.bin} is set to \code{TRUE}, item analysis of binarized data is
-included in the output table. In such a case, \code{cutscore} is used for binarization.
-When binarizing the data, values greater or equal to cut-score are set to \code{1},
-other values are set to \code{0}.
+included in the output table. In such a case, \code{cutscore} is used for
+binarization. When binarizing the data, values greater or equal to cut-score
+are set to \code{1}, other values are set to \code{0}.
 }
 \examples{
 \dontrun{
@@ -115,12 +132,14 @@ head(ItemAnalysis(dataOrd,
 }
 }
 \references{
-Martinkova, P., Stepanek, L., Drabinova, A., Houdek, J., Vejrazka, M., & Stuka, C. (2017).
-Semi-real-time analyses of item characteristics for medical school admission tests.
-In: Proceedings of the 2017 Federated Conference on Computer Science and Information Systems.
-https://doi.org/10.15439/2017F380
+Martinkova, P., Stepanek, L., Drabinova, A., Houdek, J.,
+  Vejrazka, M., & Stuka, C. (2017). Semi-real-time analyses of item
+  characteristics for medical school admission tests. In: Proceedings of the
+  2017 Federated Conference on Computer Science and Information Systems.
+  https://doi.org/10.15439/2017F380
 
-Allen, M. J. & Yen, W. M. (1979). Introduction to measurement theory. Monterey, CA: Brooks/Cole.
+  Allen, M. J. & Yen, W. M. (1979). Introduction to measurement theory.
+  Monterey, CA: Brooks/Cole.
 }
 \seealso{
 \code{\link{DDplot}}, \code{\link{gDiscrim}}, \code{\link{recode_nr}}

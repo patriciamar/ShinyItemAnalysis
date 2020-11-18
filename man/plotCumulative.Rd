@@ -2,20 +2,24 @@
 % Please edit documentation in R/plotCumulative.R
 \name{plotCumulative}
 \alias{plotCumulative}
-\title{Function for plotting cumulative and category probabilities of cumulative logistic regression model}
+\title{Plot cumulative and category probabilities of cumulative logistic regression
+model}
 \usage{
 plotCumulative(x, type = "cumulative", matching.name = "matching")
 }
 \arguments{
 \item{x}{object of class \code{vglm}}
 
-\item{type}{character: type of plot to be displayed. Options are \code{"cumulative"} (default) for cumulative probabilities
-and \code{"category"} for category probabilities.}
+\item{type}{character: type of plot to be displayed. Options are
+\code{"cumulative"} (default) for cumulative probabilities and
+\code{"category"} for category probabilities.}
 
-\item{matching.name}{character: name of matching criterion used for estimation in \code{x}.}
+\item{matching.name}{character: name of matching criterion used for
+estimation in \code{x}.}
 }
 \description{
-Function for plotting cumulative and category probabilities function estimated by \code{vglm()} from \code{VGAM} package
+Function for plotting cumulative and category probabilities
+  function estimated by \code{vglm()} from \code{VGAM} package
 }
 \examples{
 # loading packages

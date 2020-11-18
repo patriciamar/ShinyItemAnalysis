@@ -2,17 +2,19 @@
 % Please edit documentation in R/plotAdjacent.R
 \name{plotAdjacent}
 \alias{plotAdjacent}
-\title{Function for plotting category probabilities of adjacent logistic regression model}
+\title{Plot category probabilities of adjacent logistic regression model}
 \usage{
 plotAdjacent(x, matching.name = "matching")
 }
 \arguments{
 \item{x}{object of class \code{vglm}}
 
-\item{matching.name}{character: name of matching criterion used for estimation in \code{x}.}
+\item{matching.name}{character: name of matching criterion used for
+estimation in \code{x}.}
 }
 \description{
-Function for plotting category probabilities function estimated by \code{vglm()} from \code{VGAM} package
+Function for plotting category probabilities function estimated
+  by \code{vglm()} from \code{VGAM} package.
 }
 \examples{
 # loading packages

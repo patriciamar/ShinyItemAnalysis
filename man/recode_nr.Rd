@@ -28,11 +28,11 @@ HCImissed <- HCI[, 1:20]
 # simulate skipped (missed) and not-reached items in HCI dataset
 set.seed(4211)
 for (i in 1:150) {
-# not-reached (minimum at 10th item, maximum at 20th)
-HCImissed[sample(1:nrow(HCImissed), 1), seq(sample(10:20, 1), 20)] <- NA
+  # not-reached (minimum at 10th item, maximum at 20th)
+  HCImissed[sample(1:nrow(HCImissed), 1), seq(sample(10:20, 1), 20)] <- NA
 
-# missed with random location
-HCImissed[sample(1:nrow(HCImissed), 1), sample(1:20, 1)] <- NA
+  # missed with random location
+  HCImissed[sample(1:nrow(HCImissed), 1), sample(1:20, 1)] <- NA
 }
 
 summary(HCImissed)
@@ -40,7 +40,6 @@ summary(HCImissed)
 HCImissedNR <- recode_nr(HCImissed, nr_code = 99)
 head(HCImissedNR)
 summary(HCImissedNR)
-
 }
 \seealso{
 \code{\link{ItemAnalysis}}

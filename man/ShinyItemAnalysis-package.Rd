@@ -4,67 +4,83 @@
 \name{ShinyItemAnalysis-package}
 \alias{ShinyItemAnalysis-package}
 \alias{_PACKAGE}
-\title{ShinyItemAnalysis: Test and Item Analysis via Shiny}
+\title{ShinyItemAnalysis: Test and Item Analysis via shiny}
 \description{
-The ShinyItemAnalysis package containts an interactive shiny application for analysis of
-educational tests and their items which can be accessed using function \code{startShinyItemAnalysis()}.
-The shiny application covers a broad range of psychometric methods and offers data examples,
-model equations, parameter estimates, interpretation of results, together with a selected R code,
-and is therefore suitable for teaching psychometric concepts with R. It also allows the users to upload
-and analyze their own data and to automatically generate analysis reports in PDF or HTML.\cr
+The ShinyItemAnalysis package contains an interactive shiny
+  application for analysis of educational tests and their items which can be
+  accessed using function \code{startShinyItemAnalysis()}. The shiny
+  application covers a broad range of psychometric methods and offers data
+  examples, model equations, parameter estimates, interpretation of results,
+  together with a selected R code, and is therefore suitable for teaching
+  psychometric concepts with R. It also allows the users to upload and
+  analyze their own data and to automatically generate analysis reports in
+  PDF or HTML.\cr
 
-Besides, the package provides its own functions for test and item analysis within classical test theory framework
-(e.g., functions \code{gDiscrim()}, \code{ItemAnalysis()}, \code{DistractorAnalysis()}, or \code{DDplot()}),
-using various regression models (e.g., \code{plotCummulative()}, \code{plotAdjacent()}, \code{plotMultinomial()},
-or \code{plotDIFLogistic()}), and under IRT framework (e.g., \code{ggWrightMap()}, or \code{plotDIFirt()}).\cr
+  Besides, the package provides its own functions for test and item analysis
+  within classical test theory framework (e.g., functions \code{gDiscrim()},
+  \code{ItemAnalysis()}, \code{DistractorAnalysis()}, or \code{DDplot()}),
+  using various regression models (e.g., \code{plotCumulative()},
+  \code{plotAdjacent()}, \code{plotMultinomial()}, or
+  \code{plotDIFLogistic()}), and under IRT framework (e.g.,
+  \code{ggWrightMap()}, or \code{plotDIFirt()}).\cr
 
-Package also contains several demonstration datasets including \code{HCI} dataset from the reference paper
-Martinkova and Drabinova (2018).\cr
+  Package also contains several demonstration datasets including the
+  \code{HCI} dataset from the reference paper by Martinkova and Drabinova
+  (2018).\cr
 }
 \details{
-Package: ShinyItemAnalysis\cr
-Type: Package\cr
-Version: 1.3.4-1\cr
-Date: 2020-11-12\cr
-Depends: R (>= 3.5.0)\cr
-Imports: corrplot, cowplot, CTT, data.table, deltaPlotR, DT, difNLR (>= 1.3.2), difR (>= 5.0),
-ggdendro, ggplot2 (>= 2.2.1), gridExtra, knitr, latticeExtra, ltm, mirt (>= 1.24), moments,
-msm, nnet, plotly, psych, psychometric, reshape2, rmarkdown, shiny (>= 1.0.3), shinyBS,
-shinydashboard, shinyjs (>= 0.9), stringr, VGAM, xtable
-License: GPL-3\cr
-BugReports: \url{https://github.com/patriciamar/ShinyItemAnalysis/issues}\cr
-Website: \url{http://www.ShinyItemAnalysis.org/}\cr
-Encoding: UTF-8\cr
+Package: ShinyItemAnalysis \cr
+Type: Package \cr
+Version: 1.3.4-1 \cr
+Date: 2020-11-18 \cr
+Depends: R (>= 3.5.0) \cr
+Imports: cowplot, data.table, deltaPlotR, difNLR (>= 1.3.2), difR (>= 5.0),
+dplyr, DT, ggdendro, ggplot2, gridExtra, knitr, latticeExtra, ltm, magrittr,
+mirt (>= 1.24), msm, nnet, plotly, psych, purrr, psychometric, rlang,
+rmarkdown, rstudioapi, scales, shiny (>= 1.0.3), shinyBS, shinydashboard,
+shinyjs (>= 0.9), stringr, tibble, tidyr, VGAM, xtable
+License: GPL-3 \cr
+BugReports: \url{https://github.com/patriciamar/ShinyItemAnalysis/issues} \cr
+Website: \url{http://www.ShinyItemAnalysis.org/} \cr
+Encoding: UTF-8 \cr
 }
 \section{Functions}{
-
-\itemize{
-  \item \code{\link{startShinyItemAnalysis}}
-  \item \code{\link{DDplot}}
-  \item \code{\link{DistractorAnalysis}}
-  \item \code{\link{plotDistractorAnalysis}}
-  \item \code{\link{gDiscrim}}
-  \item \code{\link{ggWrightMap}}
-  \item \code{\link{ItemAnalysis}}
-  \item \code{\link{plotAdjacent}}, \code{\link{plotCumulative}}, \code{\link{plotMultinomial}}
-  \item \code{\link{plotDIFirt}}, \code{\link{plotDIFLogistic}}
+ \itemize{
+\item \code{\link{startShinyItemAnalysis}}
+\item \code{\link{DDplot}}
+\item \code{\link{DistractorAnalysis}}
+\item \code{\link{plotDistractorAnalysis}}
+\item \code{\link{gDiscrim}}
+\item \code{\link{ggWrightMap}}
+\item \code{\link{ItemAnalysis}}
+\item \code{\link{plotAdjacent}}, \code{\link{plotCumulative}}, \code{\link{plotMultinomial}}
+\item \code{\link{plotDIFirt}}, \code{\link{plotDIFLogistic}}
+\item \code{\link{plot_corr}}
+\item \code{\link{recode_nr}}
 }
 }
 
 \section{Datasets}{
 
 \itemize{
-  \item \code{\link{dataMedical}}
-  \item \code{\link{dataMedicalgraded}}
-  \item \code{\link{HCI}}
-  \item \code{\link{LearningToLearn}}
-}
+\item \code{\link{dataMedical}}
+\item \code{\link{dataMedicalgraded}}
+\item \code{\link{dataMedicalkey}}
+\item \code{\link{dataMedicaltest}}
+\item \code{\link{HCI}}
+\item \code{\link{HCIdata}}
+\item \code{\link{HCIgrads}}
+\item \code{\link{HCIkey}}
+\item \code{\link{HCIprepost}}
+\item \code{\link{HCItest}}
+\item \code{\link{HCItestretest}}
+\item \code{\link{LearningToLearn}} }
 }
 
 \references{
-Martinkova, P., & Drabinova, A. (2018). ShinyItemAnalysis for Teaching Psychometrics and to
-Enforce Routine Analysis of Educational Tests. The R Journal, 10(2), 503-515.
-\url{https://doi.org/10.32614/RJ-2018-074}
+Martinkova, P., & Drabinova, A. (2018). ShinyItemAnalysis for
+Teaching Psychometrics and to Enforce Routine Analysis of Educational Tests.
+The R Journal, 10(2), 503-515. \url{https://doi.org/10.32614/RJ-2018-074}
 }
 \seealso{
 Useful links:
@@ -76,8 +92,9 @@ Useful links:
 
 }
 \author{
-Patricia Martinkova \cr
-Institute of Computer Science of the Czech Academy of Sciences \cr
+Patricia Martinkova  \cr
+Institute of Computer Science of the Czech Academy of Sciences  \cr
+Faculty of Education, Charles University \cr
 \email{martinkova@cs.cas.cz} \cr
 
 Adela Hladka (nee Drabinova) \cr

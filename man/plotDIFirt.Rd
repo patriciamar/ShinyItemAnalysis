@@ -2,9 +2,15 @@
 % Please edit documentation in R/plotDIFirt.R
 \name{plotDIFirt}
 \alias{plotDIFirt}
-\title{Function for characteristic curve of DIF IRT model}
+\title{Plot item characteristic curve of DIF IRT model}
 \usage{
-plotDIFirt(parameters, test = "Lord", item = "all", item.name, same.scale = F)
+plotDIFirt(
+  parameters,
+  test = "Lord",
+  item = "all",
+  item.name,
+  same.scale = FALSE
+)
 }
 \arguments{
 \item{parameters}{numeric: data matrix or data frame. See \strong{Details}.}
@@ -26,12 +32,13 @@ Plots characteristic curve of IRT model.
 This function plots characteristic curve of DIF IRT model.
 
 The \code{parameters} matrix has a number of rows equal to twice the number
-of items in the data set. The first J rows refer to the item parameter estimates
-in the reference group, while the last J ones correspond to the same items in the
-focal group. The number of columns depends on the selected IRT model: 2 for the 1PL
-model, 5 for the 2PL model, 6 for the constrained 3PL model and 9 for the
-unconstrained 3PL model. The columns of irtParam have to follow the same structure
-as the output of \code{itemParEst}, \code{difLord} or \code{difRaju} command from
+of items in the data set. The first J rows refer to the item parameter
+estimates in the reference group, while the last J ones correspond to the
+same items in the focal group. The number of columns depends on the selected
+IRT model: 2 for the 1PL model, 5 for the 2PL model, 6 for the constrained
+3PL model and 9 for the unconstrained 3PL model. The columns of
+\code{irtParam()} have to follow the same structure as the output of
+\code{itemParEst()}, \code{difLord()} or \code{difRaju()} command from the
 \code{difR} package.
 
 Two possible type of \code{test} statistics can be visualized - \code{"Lord"}
@@ -61,7 +68,8 @@ fitRaju <- difRaju(GMAT2, group = 21, focal.name = 1, model = "2PL")
 plotDIFirt(fitRaju$itemParInit, test = "Raju", item = 1)
 }
 \seealso{
-\code{\link[difR]{itemParEst}}, \code{\link[difR]{difLord}}, \code{\link[difR]{difRaju}}
+\code{\link[difR]{itemParEst}}, \code{\link[difR]{difLord}},
+  \code{\link[difR]{difRaju}}
 }
 \author{
 Adela Hladka \cr

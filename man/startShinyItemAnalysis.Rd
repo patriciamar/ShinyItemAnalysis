@@ -7,17 +7,18 @@
 startShinyItemAnalysis(background = TRUE)
 }
 \arguments{
-\item{background}{logical: should the application be run as a background process (in the 'RStudio')?}
+\item{background}{logical: should the application be run as a background
+process (in the 'RStudio')?}
 }
 \value{
 No return value. Called for side effects.
 }
 \description{
 An interactive shiny application to run test and item analysis.
-By default, the function runs the application as a background process
-(Jobs tab in the 'RStudio'). User is then free to use the Console for other
-work and to try the sample R code examples. You can still run the app
-the usual way in the console by specifying \code{background = FALSE}.
+By default, the function runs the application as a background process (Jobs
+tab in the 'RStudio'). User is then free to use the Console for other work
+and to try the sample R code examples. You can still run the app the usual
+way in the console by specifying \code{background = FALSE}.
 }
 \examples{
 \dontrun{

@@ -12,8 +12,8 @@ theme_app(base_size = 15, base_family = "")
 \item{base_family}{base font family}
 }
 \description{
-This complete theme is based on \code{theme_bw} and it was modified for purposes
-of \code{ShinyItemAnalysis}.
+This complete theme is based on \code{theme_bw} and it was
+  modified for purposes of \code{ShinyItemAnalysis}.
 }
 \examples{
 library(ggplot2)

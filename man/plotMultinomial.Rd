@@ -2,19 +2,22 @@
 % Please edit documentation in R/plotMultinomial.R
 \name{plotMultinomial}
 \alias{plotMultinomial}
-\title{Function for plotting category probabilities of multinomial log-linear regression model}
+\title{Plot category probabilities of multinomial log-linear regression model}
 \usage{
 plotMultinomial(x, matching, matching.name = "matching")
 }
 \arguments{
 \item{x}{object of class \code{multinom}}
 
-\item{matching}{numeric: vector of matching criterion used for estimation in \code{x}.}
+\item{matching}{numeric: vector of matching criterion used for estimation in
+\code{x}.}
 
-\item{matching.name}{character: name of matching criterion used for estimation in \code{x}.}
+\item{matching.name}{character: name of matching criterion used for
+estimation in \code{x}.}
 }
 \description{
-Plots category probabilities functions estimated by \code{multinom()} from \code{nnet} package.
+Plots category probabilities functions estimated by
+  \code{multinom()} from the \code{nnet} package.
 }
 \examples{
 # loading data

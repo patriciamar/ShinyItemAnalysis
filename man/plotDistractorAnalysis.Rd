@@ -2,53 +2,68 @@
 % Please edit documentation in R/plotDistractorAnalysis.R
 \name{plotDistractorAnalysis}
 \alias{plotDistractorAnalysis}
-\title{Function for graphical representation of item distractor analysis}
+\title{Plot item distractor analysis}
 \usage{
-plotDistractorAnalysis(data, key, num.groups = 3, item = 1, item.name,
-multiple.answers = TRUE, matching = NULL, match.discrete = FALSE, cut.points)
+plotDistractorAnalysis(
+  data,
+  key,
+  num.groups = 3,
+  item = 1,
+  item.name,
+  multiple.answers = TRUE,
+  matching = NULL,
+  match.discrete = FALSE,
+  cut.points
+)
 }
 \arguments{
 \item{data}{character: data matrix or data frame. See \strong{Details}.}
 
 \item{key}{character: answer key for the items.}
 
-\item{num.groups}{numeric: number of groups to that should be respondents splitted.}
+\item{num.groups}{numeric: number of groups to that should be respondents
+splitted.}
 
 \item{item}{numeric: the number of item to be plotted.}
 
 \item{item.name}{character: the name of item.}
 
-\item{multiple.answers}{logical: should be all combinations plotted (default) or should be
-answers splitted into distractors. See \strong{Details}.}
+\item{multiple.answers}{logical: should be all combinations plotted (default)
+or should be answers splitted into distractors. See \strong{Details}.}
 
-\item{matching}{numeric: numeric vector. If not provided, total score is calculated and
-distractor analysis is performed based on it.}
+\item{matching}{numeric: numeric vector. If not provided, total score is
+calculated and distractor analysis is performed based on it.}
 
-\item{match.discrete}{logical: is \code{matching} discrete? Default value is \code{FALSE}. See details.}
+\item{match.discrete}{logical: is \code{matching} discrete? Default value is
+\code{FALSE}. See details.}
 
-\item{cut.points}{numeric: numeric vector specifying cut points of \code{matching}. See details.}
+\item{cut.points}{numeric: numeric vector specifying cut points of
+\code{matching}. See details.}
 }
 \description{
-Plots graphical representation of item distractor analysis with proportions and
-optional number of groups.
+Plots graphical representation of item distractor analysis with
+  proportions and optional number of groups.
 }
 \details{
-This function is graphical representation of \code{\link{DistractorAnalysis}} function.
-In case, no \code{matching} is provided, the scores are calculated using the item data and key.
-The respondents are by default splitted into the \code{num.groups}-quantiles and the proportions
-of respondents in each quantile are displayed with respect to their answers. In case that \code{matching}
-is discrete (\code{match.discrete = TRUE}), \code{matching} is splitted based on its unique levels. Other
-cut points can be specified via \code{cut.points} argument.
+This function is graphical representation of
+\code{\link{DistractorAnalysis}} function. In case, no \code{matching} is
+provided, the scores are calculated using the item data and key. The
+respondents are by default splitted into the \code{num.groups}-quantiles and
+the proportions of respondents in each quantile are displayed with respect to
+their answers. In case that \code{matching} is discrete (\code{match.discrete
+= TRUE}), \code{matching} is splitted based on its unique levels. Other cut
+points can be specified via \code{cut.points} argument.
 
-The \code{data} is a matrix or data frame whose rows represents unscored item response from a
-multiple-choice test and columns correspond to the items.
+The \code{data} is a matrix or data frame whose rows represents unscored item
+response from a multiple-choice test and columns correspond to the items.
 
-The \code{key} must be a vector of the same length as \code{ncol(data)}. In case it is not provided,
-\code{matching} need to be specified.
+The \code{key} must be a vector of the same length as \code{ncol(data)}. In
+case it is not provided, \code{matching} need to be specified.
 
-If \code{multiple.answers = TRUE} (default) all reported combinations of answers are plotted.
-If \code{multiple.answers = FALSE} all combinations are splitted into distractors and only these
-are then plotted with correct combination.
+If \code{multiple.answers = TRUE} (default) all reported combinations of
+answers are plotted. If \code{multiple.answers = FALSE} all combinations are
+splitted into distractors and only these are then plotted with correct
+combination.
 }
 \examples{
 
@@ -81,7 +96,10 @@ plotDistractorAnalysis(data, key, item = 57, matching = matching)
 plotDistractorAnalysis(data, item = 57, matching = matching)
 
 # distractor plot for item 57 using discrete matching
-plotDistractorAnalysis(data, key, item = 57, matching = matching, match.discrete = T)
+plotDistractorAnalysis(data, key,
+  item = 57, matching = matching,
+  match.discrete = TRUE
+)
 
 # distractor plot for item 57 using groups specified by cut.points
 plotDistractorAnalysis(data, key, item = 57, cut.points = seq(10, 100, 10))

@@ -3,33 +3,35 @@
 \docType{data}
 \name{HCIprepost}
 \alias{HCIprepost}
-\title{Homeostasis Concept Inventory Dataset}
+\title{Homeostasis concept inventory dataset}
 \format{
-\code{HCIprepost} is a \code{data.frame} consisting of 16 observations on the 2 variables.
-\describe{
-\item{id}{anonymized respondent ID}
-\item{score.pre}{pretest score}
-\item{score.post}{posttest score}
-}
+\code{HCIprepost} is a \code{data.frame} consisting of 16
+  observations on the 2 variables.
+  \describe{
+  \item{id}{Anonymized respondent ID. }
+  \item{score.pre}{Pre-test score. } \item{score.post}{Post-test score. }
+  }
 }
 \usage{
 data(HCIprepost)
 }
 \description{
-\code{HCIprepost} dataset consists of the responses of 16 students to
-Homeostasis Concept Inventory (HCI). It contains a pretest and posttest score.
-Between the pretest and posttest, students received instruction about homeostasis
-within a a physiology course.
+\code{HCIprepost} dataset consists of the responses of 16
+  students to Homeostasis Concept Inventory (HCI). It contains a pre-test and
+  post-test score. Between the pre-test and post-test, students received
+  instruction about homeostasis within a physiology course.
 }
 \references{
-McFarland, J. L., Price, R. M., Wenderoth, M. P., Martinkova, P., Cliff, W., Michael, J., ... & Wright, A. (2017).
-Development and validation of the homeostasis concept inventory. CBE-Life Sciences Education, 16(2), ar35.
+McFarland, J. L., Price, R. M., Wenderoth, M. P., Martinkova, P.,
+  Cliff, W., Michael, J., ... & Wright, A. (2017). Development and validation
+  of the homeostasis concept inventory. CBE-Life Sciences Education, 16(2),
+  ar35. \url{https://doi.org/10.1187/cbe.16-10-0305}
 }
 \seealso{
-\code{\link{HCIdata}}, \code{\link{HCIkey}}
+\code{\link{HCIdata}}, \code{\link{HCI}}, \code{\link{HCItest}},
+\code{\link{HCIkey}}, \code{\link{HCIgrads}}, \code{\link{HCItestretest}}
 }
 \author{
-Jenny L. McFarland \cr
-Biology Department, Edmonds Community College
+Jenny L. McFarland \cr Biology Department, Edmonds Community College
 }
 \keyword{datasets}
