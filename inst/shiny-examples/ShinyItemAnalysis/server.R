@@ -2,8 +2,6 @@
 # GLOBAL LIBRARY ######
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-require(corrplot)
-require(CTT)
 require(deltaPlotR)
 require(DT)
 require(data.table)
@@ -23,8 +21,7 @@ require(nnet)
 require(plotly)
 require(purrr)
 require(psych)
-require(psychometric)
-require(reshape2)
+require(psychometric) # rem. candidate
 require(rmarkdown)
 require(shiny)
 require(shinyBS)
@@ -33,7 +30,7 @@ require(shinyjs)
 require(stringr)
 require(tibble)
 require(VGAM)
-require(xtable)
+require(xtable) # could be substituted by knitr's default table engine "kable"
 
 
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -752,8 +749,8 @@ function(input, output, session) {
                         Mean = sapply(out, mean),
                         Median = sapply(out, median),
                         SD = sapply(out, sd),
-                        Skewness = sapply(out, skewness),
-                        Kurtosis = sapply(out, kurtosis))
+                        Skewness = sapply(out, ShinyItemAnalysis:::skewness),
+                        Kurtosis = sapply(out, ShinyItemAnalysis:::kurtosis))
       rownames(out) = c("Total Scores", "Z-Scores", "F-scores")
     }
     out
@@ -800,7 +797,7 @@ function(input, output, session) {
         histogram_totalscores = totalscores_histogram_Input(),
         cutScore = input$slider_totalscores_histogram,
         # standard scores
-        standardscores_table = scores_tables_Input(),
+        standardscores_table = standardscores_table_Input(),
         incProgress(0.05),
         # validity section
         corr_plot = {if (input$corr_report) {if(input$customizeCheck) {corr_plot_Input_report()} else {corr_plot_Input()}} else {""}},
@@ -890,11 +887,11 @@ function(input, output, session) {
         k = key(),
         itemNames = item_names(),
         # total scores
-        results = t(totalscores_table_Input()),
+        totalscores_table = t(totalscores_table_Input()),
         histogram_totalscores = totalscores_histogram_Input(),
         cutScore = input$slider_totalscores_histogram,
         # standard scores
-        standardscores_table = scores_tables_Input(),
+        standardscores_table = standardscores_table_Input(),
         # validity section
         corr_plot = {if (input$corr_report) {if(input$customizeCheck) {corr_plot_Input_report()} else {corr_plot_Input()}} else {""}},
         corr_plot_numclust = ifelse(input$customizeCheck, input$corr_plot_clust_report, input$corr_plot_clust),

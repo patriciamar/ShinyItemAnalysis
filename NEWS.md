@@ -2,9 +2,10 @@
 
 ----------
 
-### Changes in version 1.3.4-1 (2020-11-12)
+### Changes in version 1.3.4-1 (2020-11-18)
 #### BUG FIXING
-  * Calculation and display of item information curves was fixed (Reported by Hynek Cigler).
+  * In the IRT training section, the calculation and display of item information curves was 
+    fixed. (Thanks to Hynek Cigler for reporting this issue.)
   * Calculation of minimal scores in ItemAnalysis() function was fixed.
   
 #### MAJOR UPDATES
@@ -19,6 +20,8 @@
   * Selected R code was updated.
   * Unnecessary dependencies were removed.
   * Summary tab was updated within the app, interactive help with formulae is newly offered.
+  * Lines for interpretation of IIC for selected theta were added in IRT training section.
+  * styler package was applied on .R files, documentation was updated
   
   ----------
 

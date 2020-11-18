@@ -26,7 +26,7 @@ params:
   a: NA
   k: NA
   gr: NA
-  results: NA
+  totalscores_table: NA
   cutScore: NA
   histogram_totalscores: NA
   standardscores_table: NA
@@ -81,6 +81,10 @@ params:
   sessionInfo: NA
 ---
 
+---
+pagetitle: `r ifelse(params$dataset == "", "", params$dataset)`
+---
+
 <style>
 body {text-align: justify}
 </style>
@@ -111,11 +115,11 @@ This project was supported by Czech Science Foundation under grant number [GJ15-
 ## Total scores
 
 ### Summary table of total scores
-The table below summarizes basic characteristics of total scores including minimum and maximum, mean, median, standard deviation, skewness and kurtosis. The kurtosis here is estimated by a sample kurtosis $\frac{m_4}{m_2^2}$, where $m_4$ is the fourth central moment and $m_2$ is the second central moment. The skewness is estimated by a sample skewness $\frac{m_3}{m_2^{3/2}}$, where $m_3$ is the third central moment. The kurtosis for normally distributed scores is near the value of 3 and the skewness is near the value of 0. 
+The table below summarizes basic characteristics of total scores including number of respondents, minimum and maximum values, mean, median, standard deviation, skewness, and kurtosis. The skewness for normally distributed scores is near the value of 0 and the kurtosis is near the value of 3.
 
 ```{r total-scores-table, echo = FALSE}
 library(knitr)
-table = params$results
+table = params$totalscores_table
 colnames(table) = NULL
 
 kable(t(table), digits = c(0, 0, 2, 2, 2, 2, 2), align = 'c')
@@ -169,23 +173,10 @@ kable(table, align = 'c')
                           "median" = "median",
                           "centroid" = "centroid")`
                           
-`r if (any(params$corr_plot != "") & params$corr_plot_clustmethod != "none") {paste("A correlation heat map is reordered using hierarchical clustering with", names(clustmethod_names)[clustmethod_names == params$corr_plot_clustmethod], "linkage method. The number of highlighted clusters is", params$corr_plot_numclust, ". ")}`
+`r if (any(params$corr_plot != "") & params$corr_plot_clustmethod != "none") {paste0("A correlation heat map is reordered using hierarchical clustering with ", names(clustmethod_names)[clustmethod_names == params$corr_plot_clustmethod], " linkage method. The number of highlighted clusters is ", params$corr_plot_numclust, ". ")}`
 
-```{r corr-plot, echo = FALSE, fig.width = 11, fig.height = 4, fig.align = 'center', dpi = 300}
-if (any(params$corr_plot != "")) {
-  corP <- params$corr_plot
-  numclust <- params$corr_plot_numclust
-  clustmethod <- params$corr_plot_clustmethod
-  
-  tlcex <- ifelse(ncol(corP) > 30, 0.7, 1)
-  
-  if (clustmethod == "none"){
-    corrplot(corP, tl.cex = tlcex)
-  } else {
-    corrplot(corP, tl.cex = tlcex, order = "hclust", 
-             hclust.method = clustmethod, addrect = numclust)
-  }
-}
+```{r corr-plot, echo = FALSE, include = any(nzchar(params$corr_plot)), fig.height = 4, fig.align = 'center', dpi = 300}
+params$corr_plot
 ```
 
 `r if (any(params$corr_plot != "")) {"### Scree plot"}` 

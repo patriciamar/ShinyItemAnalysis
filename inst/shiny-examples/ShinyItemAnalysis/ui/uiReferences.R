@@ -1,11 +1,12 @@
 uiReferences <-
-  tabPanel("", value = "references",
-           icon = icon("fas fa-book"),
-           #------------------------------------------------------------------------------------#
-           # Packages ####
-           #------------------------------------------------------------------------------------#
-           h3("R packages"),
-           HTML('<ul class = "biblio">
+  tabPanel("",
+    value = "references",
+    icon = icon("fas fa-book"),
+    #------------------------------------------------------------------------------------#
+    # Packages ####
+    #------------------------------------------------------------------------------------#
+    h3("R packages"),
+    HTML('<ul class = "biblio">
                 <li><code>corrplot</code>
                 Wei, T. & Simko, V. (2017).
                 R package "corrplot": Visualization of a Correlation Matrix.
@@ -219,11 +220,11 @@ uiReferences <-
                 <a href = "https://CRAN.R-project.org/package=VGAM", target = "_blank">See online.</a>
                 </li>
                 </ul>'),
-           #------------------------------------------------------------------------------------#
-           # References ####
-           #------------------------------------------------------------------------------------#
-           h3('References'),
-           HTML('<ul class = "biblio">
+    #------------------------------------------------------------------------------------#
+    # References ####
+    #------------------------------------------------------------------------------------#
+    h3("References"),
+    HTML('<ul class = "biblio">
                 <li>Akaike, H. (1974). A New Look at the Statistical Model Identification.
                 <i>IEEE Transactions on Automatic Control, 19</i>(6), 716-723.
                 <a href = "http://ieeexplore.ieee.org/abstract/document/1100705/",
@@ -448,5 +449,5 @@ uiReferences <-
                 <li>Wright, B. D., & Stone, M. H. (1979). Best Test Design. Chicago: Mesa Press.
                 </li>
                 </ul>'),
-           br()
+    br()
   )

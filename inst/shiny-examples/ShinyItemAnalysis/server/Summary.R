@@ -25,18 +25,7 @@ output$totalscores_tooltip_sd <- renderUI({
     "sample standard deviation",
     span(
       class = "ttooltiptext",
-      withMathJax("$$s = \\sqrt{\\frac{1}{n - 1}\\sum_{p = 1} (X_p - \\bar{X})^2}$$")
-    )
-  )
-})
-output$totalscores_tooltip_kurtosis <- renderUI({
-  span(
-    class = "ttooltip",
-    style = "color: #2286bf",
-    "sample kurtosis,",
-    span(
-      class = "ttooltiptext",
-      withMathJax("$$\\frac{\\frac{1}{n} \\sum_{p = 1}^n (X_p - \\bar{X})^4}{\\left[\\frac{1}{n} \\sum_{p = 1}^n (X_p - \\bar{X})^2\\right]^2}$$")
+      withMathJax("$$\\sqrt{\\frac{1}{n - 1}\\sum_{p = 1} (X_p - \\bar{X})^2}$$")
     )
   )
 })
@@ -44,27 +33,30 @@ output$totalscores_tooltip_skewness <- renderUI({
   span(
     class = "ttooltip",
     style = "color: #2286bf",
-    "sample skewness.",
+    "sample skewness,",
     span(
       class = "ttooltiptext",
       withMathJax("$$\\frac{\\frac{1}{n} \\sum_{p = 1}^n (X_p - \\bar{X})^3}{\\left[\\frac{1}{n - 1} \\sum_{p = 1}^n (X_p - \\bar{X})^2\\right]^{3/2}}$$")
     )
   )
 })
+output$totalscores_tooltip_kurtosis <- renderUI({
+  span(
+    class = "ttooltip",
+    style = "color: #2286bf",
+    "sample kurtosis.",
+    span(
+      class = "ttooltiptext",
+      withMathJax("$$\\frac{\\frac{1}{n} \\sum_{p = 1}^n (X_p - \\bar{X})^4}{\\left[\\frac{1}{n} \\sum_{p = 1}^n (X_p - \\bar{X})^2\\right]^2}$$")
+    )
+  )
+})
+
 
 # ** Total scores summary table ######
 totalscores_table_Input <- reactive({
   sc <- total_score()
   n <- length(sc)
-
-  skewness <- function(x) {
-    n <- length(x)
-    (sum((x - mean(x, na.rm = TRUE))^3, na.rm = TRUE) / n) / (sum((x - mean(x, na.rm = TRUE))^2, na.rm = TRUE)/n)^(3/2)
-  }
-  kurtosis <- function(x) {
-    n <- length(x)
-    n * sum((x - mean(x, na.rm = TRUE))^4, na.rm = TRUE)/(sum((x - mean(x, na.rm = TRUE))^2, na.rm = TRUE)^2)
-  }
 
   tab <- data.table(rbind(c(
     n,
@@ -73,8 +65,8 @@ totalscores_table_Input <- reactive({
     mean(sc, na.rm = TRUE),
     median(sc, na.rm = TRUE),
     sd(sc, na.rm = TRUE),
-    skewness(sc),
-    kurtosis(sc)
+    ShinyItemAnalysis:::skewness(sc),
+    ShinyItemAnalysis:::kurtosis(sc)
   )))
   colnames(tab) <- c("n", "Min", "Max", "Mean", "Median", "SD", "Skewness", "Kurtosis")
   tab$n <- as.integer(tab$n)

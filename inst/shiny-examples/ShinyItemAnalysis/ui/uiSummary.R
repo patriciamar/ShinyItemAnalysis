@@ -13,9 +13,9 @@ uiSummary <-
         "Table below summarizes basic descriptive statistics for the total scores including number of respondents \\(n\\),
                         minimum and maximum,", htmlOutput("totalscores_tooltip_mean", inline = TRUE), "median,",
         htmlOutput("totalscores_tooltip_sd", inline = TRUE), "\\(SD \\), ",
-        htmlOutput("totalscores_tooltip_kurtosis", inline = TRUE), "and",
-        htmlOutput("totalscores_tooltip_skewness", inline = TRUE),
-        "The kurtosis for normally distributed scores is near the value of 3 and the skewness is near the value of 0. "
+        htmlOutput("totalscores_tooltip_skewness", inline = TRUE), "and",
+        htmlOutput("totalscores_tooltip_kurtosis", inline = TRUE),
+        "The skewness for normally distributed scores is near the value of 0 and the kurtosis is near the value of 3. "
       ),
       tableOutput("totalscores_table"),
       h4("Histogram of total score"),
