@@ -1,13 +1,13 @@
-#' Function for plotting category probabilities of adjacent logistic regression model
+#' Plot category probabilities of adjacent logistic regression model
 #'
 #' @aliases plotAdjacent
 #'
-#' @description Function for plotting category probabilities function estimated by \code{vglm()} from \code{VGAM} package
+#' @description Function for plotting category probabilities function estimated
+#'   by \code{vglm()} from \code{VGAM} package.
 #'
 #' @param x object of class \code{vglm}
-#' @param matching.name character: name of matching criterion used for estimation in \code{x}.
-#'
-#' @usage plotAdjacent(x, matching.name = "matching")
+#' @param matching.name character: name of matching criterion used for
+#'   estimation in \code{x}.
 #'
 #' @author
 #' Tomas Jurica \cr
@@ -48,7 +48,7 @@ plotAdjacent <- function(x, matching.name = "matching") {
   num.cat <- length(cat) # number of all categories
   y <- factor(y, levels = cat) # releveling
   matching <- x@x[, 2] # matching
-  match <- seq(min(matching, na.rm = T), max(matching, na.rm = T), 0.01)
+  match <- seq(min(matching, na.rm = TRUE), max(matching, na.rm = TRUE), 0.01)
 
   coefs <- coef(x) # extracting coefficients
   cat.obs <- names(which(table(y) > 0)[-1]) # observed categories = categories with at least one observation
@@ -67,10 +67,12 @@ plotAdjacent <- function(x, matching.name = "matching") {
   # norming
   df.probs.cat <- df.probs.cat / apply(df.probs.cat, 1, sum)
 
-  # melting data
+  # reshaping data
   df.probs.cat <- data.frame(match, df.probs.cat)
   colnames(df.probs.cat) <- c("matching", paste0("P(Y=", cat, ")"))
-  df.probs.cat <- melt(df.probs.cat, id.vars = "matching", variable.name = "category", value.name = "probability")
+  # df.probs.cat <- melt(df.probs.cat, id.vars = "matching", variable.name = "category", value.name = "probability")
+  df.probs.cat <- tidyr::pivot_longer(df.probs.cat, -matching, names_to = "category", values_to = "probability")
+  df.probs.cat$category <- as.factor(df.probs.cat$category)
 
   # empirical category values
   df.emp.cat <- data.frame(table(y, matching),

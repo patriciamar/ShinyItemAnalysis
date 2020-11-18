@@ -1,42 +1,44 @@
-#' Function for graphical representation of item distractor analysis
+#' Plot item distractor analysis
 #'
 #' @aliases plotDistractorAnalysis
 #'
-#' @description Plots graphical representation of item distractor analysis with proportions and
-#' optional number of groups.
+#' @description Plots graphical representation of item distractor analysis with
+#'   proportions and optional number of groups.
 #'
 #' @param data character: data matrix or data frame. See \strong{Details}.
 #' @param key character: answer key for the items.
-#' @param num.groups numeric: number of groups to that should be respondents splitted.
+#' @param num.groups numeric: number of groups to that should be respondents
+#'   splitted.
 #' @param item numeric: the number of item to be plotted.
 #' @param item.name character: the name of item.
-#' @param multiple.answers logical: should be all combinations plotted (default) or should be
-#' answers splitted into distractors. See \strong{Details}.
-#' @param matching numeric: numeric vector. If not provided, total score is calculated and
-#' distractor analysis is performed based on it.
-#' @param match.discrete logical: is \code{matching} discrete? Default value is \code{FALSE}. See details.
-#' @param cut.points numeric: numeric vector specifying cut points of \code{matching}. See details.
+#' @param multiple.answers logical: should be all combinations plotted (default)
+#'   or should be answers splitted into distractors. See \strong{Details}.
+#' @param matching numeric: numeric vector. If not provided, total score is
+#'   calculated and distractor analysis is performed based on it.
+#' @param match.discrete logical: is \code{matching} discrete? Default value is
+#'   \code{FALSE}. See details.
+#' @param cut.points numeric: numeric vector specifying cut points of
+#'   \code{matching}. See details.
 #'
-#' @usage plotDistractorAnalysis(data, key, num.groups = 3, item = 1, item.name,
-#' multiple.answers = TRUE, matching = NULL, match.discrete = FALSE, cut.points)
+#' @details This function is graphical representation of
+#' \code{\link{DistractorAnalysis}} function. In case, no \code{matching} is
+#' provided, the scores are calculated using the item data and key. The
+#' respondents are by default splitted into the \code{num.groups}-quantiles and
+#' the proportions of respondents in each quantile are displayed with respect to
+#' their answers. In case that \code{matching} is discrete (\code{match.discrete
+#' = TRUE}), \code{matching} is splitted based on its unique levels. Other cut
+#' points can be specified via \code{cut.points} argument.
 #'
-#' @details
-#' This function is graphical representation of \code{\link{DistractorAnalysis}} function.
-#' In case, no \code{matching} is provided, the scores are calculated using the item data and key.
-#' The respondents are by default splitted into the \code{num.groups}-quantiles and the proportions
-#' of respondents in each quantile are displayed with respect to their answers. In case that \code{matching}
-#' is discrete (\code{match.discrete = TRUE}), \code{matching} is splitted based on its unique levels. Other
-#' cut points can be specified via \code{cut.points} argument.
+#' The \code{data} is a matrix or data frame whose rows represents unscored item
+#' response from a multiple-choice test and columns correspond to the items.
 #'
-#' The \code{data} is a matrix or data frame whose rows represents unscored item response from a
-#' multiple-choice test and columns correspond to the items.
+#' The \code{key} must be a vector of the same length as \code{ncol(data)}. In
+#' case it is not provided, \code{matching} need to be specified.
 #'
-#' The \code{key} must be a vector of the same length as \code{ncol(data)}. In case it is not provided,
-#' \code{matching} need to be specified.
-#'
-#' If \code{multiple.answers = TRUE} (default) all reported combinations of answers are plotted.
-#' If \code{multiple.answers = FALSE} all combinations are splitted into distractors and only these
-#' are then plotted with correct combination.
+#' If \code{multiple.answers = TRUE} (default) all reported combinations of
+#' answers are plotted. If \code{multiple.answers = FALSE} all combinations are
+#' splitted into distractors and only these are then plotted with correct
+#' combination.
 #'
 #' @author
 #' Adela Hladka \cr
@@ -81,7 +83,10 @@
 #' plotDistractorAnalysis(data, item = 57, matching = matching)
 #'
 #' # distractor plot for item 57 using discrete matching
-#' plotDistractorAnalysis(data, key, item = 57, matching = matching, match.discrete = T)
+#' plotDistractorAnalysis(data, key,
+#'   item = 57, matching = matching,
+#'   match.discrete = TRUE
+#' )
 #'
 #' # distractor plot for item 57 using groups specified by cut.points
 #' plotDistractorAnalysis(data, key, item = 57, cut.points = seq(10, 100, 10))
@@ -121,7 +126,9 @@ plotDistractorAnalysis <- function(data, key, num.groups = 3, item = 1, item.nam
     x <- x[!(apply(x, 1, function(y) all(y == 0))), ]
   }
 
-  x <- melt(x, id = "response")
+  x <- as.data.frame(x) # table coerces nicely into data.frame, no neet for reshape
+  colnames(x)[colnames(x) == "Freq"] <- "value"
+
   x <- x[complete.cases(x), ]
   x$response <- as.factor(x$response)
   levels(x$response)[which(levels(x$response) == "")] <- "NaN"

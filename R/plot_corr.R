@@ -6,25 +6,27 @@
 #'   \code{\link{ggplot2}} package, providing a high customisability using "the
 #'   grammar of graphics" (see the examples below).
 #'
-#' @param .data matrix, data.frame or tibble: either a dataframe with scored
-#'   items (as columns, one observation per row), or a correlation matrix.
+#' @param .data \code{matrix}, \code{data.frame} or \code{tibble}: either a
+#'   \code{data.frame} with scored items (as columns, one observation per row),
+#'   or a correlation matrix.
 #'
 #' @param cor character: correlation "type" used to correlation matrix
-#'   computation; available options are "poly", "tetra", "pearson", "spearman"
-#'   or "none" (in case you provide the correlation matrix directly instead).
+#'   computation; available options are \code{"poly"}, \code{"tetra"},
+#'   \code{"pearson"}, \code{"spearman"}, or \code{"none"} (in case you provide
+#'   the correlation matrix directly instead).
 #'
 #' @param clust_method character: optional clustering method, available options
 #'   are: \code{"ward.D"}, \code{"ward.D2"}, \code{"single"}, \code{"complete"},
 #'   \code{"average"} (= UPGMA), \code{"mcquitty"} (= WPGMA), \code{"median"} (=
-#'   WPGMC), \code{"centroid"} (= UPGMC) or "none" (clustering disabled). See
-#'   \code{\link{hclust}} for a detailed description of available options.
+#'   WPGMC), \code{"centroid"} (= UPGMC) or \code{"none"} (clustering disabled).
+#'   See \code{\link{hclust}} for a detailed description of available options.
 #'
 #' @param n_clust integer: the number of clusters you want to be outlined. When
 #'   set to zero, clustering is disabled, ignoring the \code{clust_method}
 #'   argument.
 #'
-#' @param labels logical: when TRUE, the correlation coefficients are plotted
-#'   onto tiles
+#' @param labels logical: when \code{TRUE}, the correlation coefficients are
+#'   plotted onto tiles
 #'
 #' @param labels_size numeric: label size in points (pts)
 #'
@@ -46,14 +48,14 @@
 #'
 #' @details Correlation heatmap displays selected type of correlations between
 #'   items.The color of tiles indicates how much and in which way the items are
-#'   correlated - red color means possitive correlation and blue color means
+#'   correlated - red color means positive correlation and blue color means
 #'   negative correlation. Correlation heatmap can be reordered using
 #'   hierarchical clustering method specified with \code{clust_method} argument.
 #'   When the desired number of clusters (argument \code{n_clust}) is not zero
 #'   and any clustering is demanded, the rectangles outlining the found clusters
 #'   are drawn.
 #'
-#' @return A ggplot object.
+#' @return A \code{ggplot} object.
 #'
 #' @author Jan Netik \cr Department of Psychology, Faculty of Arts, Charles
 #'   University \cr \email{netikja@@gmail.com}
@@ -85,8 +87,10 @@
 #'
 #' # outline 3 Ward's clusters with bold yellow line and add labels
 #' HCI[, 1:20] %>%
-#'   plot_corr(n_clust = 3, clust_method = "ward.D", line_col = "yellow",
-#'   line_size = 1.5, label = TRUE)
+#'   plot_corr(
+#'     n_clust = 3, clust_method = "ward.D", line_col = "yellow",
+#'     line_size = 1.5, label = TRUE
+#'   )
 #'
 #' # add title and position the legend below the plot
 #' library(ggplot2)
@@ -125,12 +129,14 @@ plot_corr <- function(.data, cor = "poly", clust_method = "none", n_clust = 0,
 
   if (cor == "none" & n != m) {
     stop("The provided correlation matrix is not square.",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
 
   if (n_clust > n) {
     stop("There are only ", n, " items available, cannot display ", n_clust, " clusters.",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
 
   if (clust_method != "none") {

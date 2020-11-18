@@ -2,8 +2,8 @@
 #'
 #' @aliases theme_app
 #'
-#' @description This complete theme is based on \code{theme_bw} and it was modified for purposes
-#' of \code{ShinyItemAnalysis}.
+#' @description This complete theme is based on \code{theme_bw} and it was
+#'   modified for purposes of \code{ShinyItemAnalysis}.
 #'
 #' @param base_size base font size
 #' @param base_family base font family
@@ -25,7 +25,6 @@
 #' g
 #' g + theme_app()
 #' @export
-
 theme_app <- function(base_size = 15, base_family = "") {
   theme_bw(base_size = base_size, base_family = base_family) +
     theme(

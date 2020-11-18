@@ -2,16 +2,14 @@
 #'
 #' @aliases startShinyItemAnalysis
 #'
-#' @description
-#' An interactive shiny application to run test and item analysis.
-#' By default, the function runs the application as a background process
-#' (Jobs tab in the 'RStudio'). User is then free to use the Console for other
-#' work and to try the sample R code examples. You can still run the app
-#' the usual way in the console by specifying \code{background = FALSE}.
+#' @description An interactive shiny application to run test and item analysis.
+#' By default, the function runs the application as a background process (Jobs
+#' tab in the 'RStudio'). User is then free to use the Console for other work
+#' and to try the sample R code examples. You can still run the app the usual
+#' way in the console by specifying \code{background = FALSE}.
 #'
-#' @usage startShinyItemAnalysis(background = TRUE)
-#'
-#' @param background logical: should the application be run as a background process (in the 'RStudio')?
+#' @param background logical: should the application be run as a background
+#'   process (in the 'RStudio')?
 #'
 #' @return No return value. Called for side effects.
 #'
@@ -43,7 +41,7 @@ startShinyItemAnalysis <- function(background = TRUE) {
       stop("Could not find example directory. Try re-installing `ShinyItemAnalysis`.",
            call. = FALSE)
     }
-    shiny::runApp(appDir, display.mode = "normal", launch.browser = T)
+    shiny::runApp(appDir, display.mode = "normal", launch.browser = TRUE)
   '
 
   if (!rstudioapi::isAvailable()) {

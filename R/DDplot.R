@@ -1,64 +1,76 @@
-#' Graphical representation of difficulty and discrimination/item validity in item analysis
+#' Plot difficulties and discriminations/item validity
 #'
 #' @aliases DDplot
 #'
-#' @description Plots difficulty and (generalized) discrimination or criterion validity for items of the multi-item
-#' measurement test using \pkg{ggplot2}. Difficulty and discrimination/validity indices are plotted for each item,
-#' items are ordered by their difficulty.
+#' @description Plots difficulty and (generalized) discrimination or criterion
+#'   validity for items of the multi-item measurement test using the
+#'   \pkg{ggplot2} package. Difficulty and discrimination/validity indices are
+#'   plotted for each item, items are ordered by their difficulty.
 #'
-#' @param data numeric: binary or ordinal data \code{matrix} or \code{data.frame} which rows represent examinee answers
-#' (\code{1} correct, \code{0} incorrect, or ordinal item scores) and columns correspond to the items.
-#' @param item.names character: the names of items. If not specified, the names of \code{data} columns are used.
-#' @param discrim character: type of discrimination index to be calculated. Possible values are \code{"ULI"} (default),
-#' \code{"RIT"}, \code{"RIR"}, and \code{"none"}. See \strong{Details}.
-#' @param k numeric: number of groups to which data may be divided by the total score to estimate discrimination
-#' using \code{discrim = "ULI"}. Default value is 3.  See \strong{Details}.
+#' @param data numeric: binary or ordinal data \code{matrix} or
+#'   \code{data.frame} which rows represent examinee answers (\code{1} correct,
+#'   \code{0} incorrect, or ordinal item scores) and columns correspond to the
+#'   items.
+#' @param item.names character: the names of items. If not specified, the names
+#'   of \code{data} columns are used.
+#' @param discrim character: type of discrimination index to be calculated.
+#'   Possible values are \code{"ULI"} (default), \code{"RIT"}, \code{"RIR"}, and
+#'   \code{"none"}. See \strong{Details}.
+#' @param k numeric: number of groups to which data may be divided by the total
+#'   score to estimate discrimination using \code{discrim = "ULI"}. Default
+#'   value is 3.  See \strong{Details}.
 #' @param l numeric: lower group. Default value is 1. See \strong{Details}.
 #' @param u numeric: upper group. Default value is 3. See \strong{Details}.
-#' @param maxscore numeric: maximal scores of items. If single number is provided, the same maximal score is used for
-#' all items. If missing, vector of achieved maximal scores is calculated and used in calculations.
-#' @param minscore numeric: minimal scores of items. If single number is provided, the same maximal score is used for
-#' all items. If missing, vector of achieved maximal scores is calculated and used in calculations.
-#' @param bin logical: should the ordinal data be binarized? Deafult value is \code{FALSE}. In case that \code{bin = TRUE},
-#' all values of \code{data} equal or greater than \code{cutscore} are marked as \code{1} and all values lower than
-#' \code{cutscore} are marked as \code{0}.
-#' @param cutscore numeric: cut-score used to binarize \code{data}.
-#' If numeric, the same cutscore is used for all items. If missing, vector of maximal scores is used in calculations.
-#' @param average.score logical: should average score of the item be disaplyed instead of difficulty? Default
-#' value is \code{FALSE}. See \strong{Details}.
-#' @param thr numeric: value of discrimination threshold. Default value is 0.2. With \code{thr = NULL}, no horizontal
-#' line is displayed in the plot.
-#' @param criterion numeric or logical vector: values of criterion. If supplied, \code{disrim} argument is ignored
-#' and item-criterion correlation (validity) is displayed instead. Default value is \code{"none"}.
-#' @param val_type character: criterion validity measure. Possible values are \code{"simple"} (correlation between
-#' item score and validity criterion; default) and \code{"index"} (item validity index calculated as
-#' \code{cor(item, criterion) * sqrt(((N - 1) / N) * var(item))}, where N is number of respondents, see Allen & Yen, 1979,
-#' Ch. 6.4, for details). The argument is ignored if user does not supply any \code{criterion}.
+#' @param maxscore numeric: maximal scores of items. If single number is
+#'   provided, the same maximal score is used for all items. If missing, vector
+#'   of achieved maximal scores is calculated and used in calculations.
+#' @param minscore numeric: minimal scores of items. If single number is
+#'   provided, the same maximal score is used for all items. If missing, vector
+#'   of achieved maximal scores is calculated and used in calculations.
+#' @param bin logical: should the ordinal data be binarized? Deafult value is
+#'   \code{FALSE}. In case that \code{bin = TRUE}, all values of \code{data}
+#'   equal or greater than \code{cutscore} are marked as \code{1} and all values
+#'   lower than \code{cutscore} are marked as \code{0}.
+#' @param cutscore numeric: cut-score used to binarize \code{data}. If numeric,
+#'   the same cutscore is used for all items. If missing, vector of maximal
+#'   scores is used in calculations.
+#' @param average.score logical: should average score of the item be disaplyed
+#'   instead of difficulty? Default value is \code{FALSE}. See \strong{Details}.
+#' @param thr numeric: value of discrimination threshold. Default value is 0.2.
+#'   With \code{thr = NULL}, no horizontal line is displayed in the plot.
+#' @param criterion numeric or logical vector: values of criterion. If supplied,
+#'   \code{disrim} argument is ignored and item-criterion correlation (validity)
+#'   is displayed instead. Default value is \code{"none"}.
+#' @param val_type character: criterion validity measure. Possible values are
+#'   \code{"simple"} (correlation between item score and validity criterion;
+#'   default) and \code{"index"} (item validity index calculated as
+#'   \code{cor(item, criterion) * sqrt(((N - 1) / N) * var(item))}, where N is
+#'   number of respondents, see Allen & Yen, 1979, Ch. 6.4, for details). The
+#'   argument is ignored if user does not supply any \code{criterion}.
 #'
-#' @usage
-#' DDplot(data, item.names, discrim = "ULI", k = 3, l = 1, u = 3,
-#'        maxscore, minscore, bin = FALSE, cutscore, average.score = FALSE,
-#'        thr = 0.2, criterion = "none", val_type = "simple")
+#' @details Discrimination is calculated using method specified in
+#' \code{discrim}. Default option \code{"ULI"} calculates difference in ratio of
+#' correct answers in upper and lower third of students. \code{"RIT"} index
+#' calculates correlation between item score and test total score. \code{"RIR"}
+#' index calculates correlation between item score and total score for the rest
+#' of the items. With option \code{"none"}, only difficulty is displayed.
 #'
-#' @details
-#' Discrimination is calculated using method specified in \code{discrim}. Default option \code{"ULI"}
-#' calculates difference in ratio of correct answers in upper and lower third of students.
-#' \code{"RIT"} index caluclates correlation between item score and test total score.
-#' \code{"RIR"} index caclulates correlation between item score and total score for the rest of the items.
-#' With option \code{"none"}, only difficulty is displayed.
+#' \code{"ULI"} index can be generalized using arguments \code{k}, \code{l} and
+#' \code{u}. Generalized ULI discrimination is then computed as follows: The
+#' function takes data on individuals, computes their total test score and then
+#' divides individuals into \code{k} groups. The lower and upper group are
+#' determined by \code{l} and \code{u} parameters, i.e.  l-th and u-th group
+#' where the ordering is defined by increasing total score.
 #'
-#' \code{"ULI"} index can be generalized using arguments \code{k}, \code{l} and \code{u}. Generalized ULI
-#' discrimination is then computed as follows: The function takes data on individuals,
-#' computes their total test score and then divides individuals into \code{k} groups. The lower and
-#' upper group are determined by \code{l} and \code{u} parameters, i.e.  l-th and u-th group where
-#' the ordering is defined by increasing total score.
+#' For ordinal data, difficulty is defined as relative score (achieved -
+#' minimal)/(maximal - minimal). Minimal score can be specified by
+#' \code{minscore}, maximal score can be specified by \code{maxscore}. Average
+#' score of items can be displayed with argument \code{average.score = TRUE}.
+#' Note that for binary data difficulty estimate is the same as average score of
+#' the item.
 #'
-#' For ordinal data, difficulty is defined as relative score (achieved - minimal)/(maximal - minimal).
-#' Minimal score can be specified by \code{minscore}, maximal score can be specified by \code{maxscore}.
-#' Average score of items can be displayed with argument \code{average.score = TRUE}. Note that for binary
-#' data difficulty estimate is the same as average score of the item.
-#'
-#' Note that all correlations are estimated using Pearson correlation coefficient.
+#' Note that all correlations are estimated using Pearson correlation
+#' coefficient.
 #'
 #' @author
 #' Adela Hladka \cr
@@ -76,12 +88,13 @@
 #' Institute of Computer Science of the Czech Academy of Sciences \cr
 #' \email{martinkova@@cs.cas.cz} \cr
 #'
-#' @references
-#' Allen, M. J., & Yen, W. M. (1979). Introduction to measurement theory. Monterey, CA: Brooks/Cole.
+#' @references Allen, M. J., & Yen, W. M. (1979). Introduction to measurement
+#' theory. Monterey, CA: Brooks/Cole.
 #'
-#' Martinkova, P., Stepanek, L., Drabinova, A., Houdek, J., Vejrazka, M., & Stuka, C. (2017).
-#' Semi-real-time analyses of item characteristics for medical school admission tests.
-#' In: Proceedings of the 2017 Federated Conference on Computer Science and Information Systems.
+#' Martinkova, P., Stepanek, L., Drabinova, A., Houdek, J., Vejrazka, M., &
+#' Stuka, C. (2017). Semi-real-time analyses of item characteristics for medical
+#' school admission tests. In: Proceedings of the 2017 Federated Conference on
+#' Computer Science and Information Systems.
 #'
 #' @seealso
 #' \code{\link[psychometric]{discrim}} for calculation of discrimination \cr

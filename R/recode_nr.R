@@ -11,8 +11,6 @@
 #' @param nr_code single character, integer or numeric: specifying how should
 #' be recognized not-reached responses coded (default is \code{99})
 #'
-#' @usage recode_nr(df, nr_code = 99)
-#'
 #' @return The same class as input object, see \code{df}.
 #'
 #' @author
@@ -33,11 +31,11 @@
 #' # simulate skipped (missed) and not-reached items in HCI dataset
 #' set.seed(4211)
 #' for (i in 1:150) {
-#' # not-reached (minimum at 10th item, maximum at 20th)
-#' HCImissed[sample(1:nrow(HCImissed), 1), seq(sample(10:20, 1), 20)] <- NA
+#'   # not-reached (minimum at 10th item, maximum at 20th)
+#'   HCImissed[sample(1:nrow(HCImissed), 1), seq(sample(10:20, 1), 20)] <- NA
 #'
-#' # missed with random location
-#' HCImissed[sample(1:nrow(HCImissed), 1), sample(1:20, 1)] <- NA
+#'   # missed with random location
+#'   HCImissed[sample(1:nrow(HCImissed), 1), sample(1:20, 1)] <- NA
 #' }
 #'
 #' summary(HCImissed)
@@ -45,7 +43,6 @@
 #' HCImissedNR <- recode_nr(HCImissed, nr_code = 99)
 #' head(HCImissedNR)
 #' summary(HCImissedNR)
-#'
 #' @export
 recode_nr <- function(df, nr_code = 99) {
   if (any(sapply(df, is.factor))) {
@@ -59,21 +56,22 @@ recode_nr <- function(df, nr_code = 99) {
   nr_count <- apply(df, 1, function(x) {
     with(rle(is.na(unlist(x))), {
       ifelse(values[length(values)],
-             lengths[values][length(lengths[values])],
-             NA)
+        lengths[values][length(lengths[values])],
+        NA
+      )
     })
   })
 
   indx <- which(!is.na(nr_count))
   rows <- rep(indx, nr_count[indx])
   cols <-
-    unlist(lapply(nr_count[indx], function(x)
-      seq(ncol(df) - x + 1, ncol(df))))
+    unlist(lapply(nr_count[indx], function(x) {
+      seq(ncol(df) - x + 1, ncol(df))
+    }))
 
   arr_indx <- cbind(rows, cols)
 
   df[arr_indx] <- nr_code
 
   return(df)
-
 }

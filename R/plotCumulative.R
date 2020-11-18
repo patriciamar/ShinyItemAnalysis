@@ -1,15 +1,17 @@
-#' Function for plotting cumulative and category probabilities of cumulative logistic regression model
+#' Plot cumulative and category probabilities of cumulative logistic regression
+#' model
 #'
 #' @aliases plotCumulative
 #'
-#' @description Function for plotting cumulative and category probabilities function estimated by \code{vglm()} from \code{VGAM} package
+#' @description Function for plotting cumulative and category probabilities
+#'   function estimated by \code{vglm()} from \code{VGAM} package
 #'
 #' @param x object of class \code{vglm}
-#' @param type character: type of plot to be displayed. Options are \code{"cumulative"} (default) for cumulative probabilities
-#' and \code{"category"} for category probabilities.
-#' @param matching.name character: name of matching criterion used for estimation in \code{x}.
-#'
-#' @usage plotCumulative(x, type = "cumulative", matching.name = "matching")
+#' @param type character: type of plot to be displayed. Options are
+#'   \code{"cumulative"} (default) for cumulative probabilities and
+#'   \code{"category"} for category probabilities.
+#' @param matching.name character: name of matching criterion used for
+#'   estimation in \code{x}.
 #'
 #' @author
 #' Tomas Jurica \cr
@@ -53,7 +55,7 @@ plotCumulative <- function(x, type = "cumulative", matching.name = "matching") {
   num.cat <- length(cat) # number of all categories
   y <- factor(y, levels = cat) # releveling
   matching <- x@x[, 2] # matching
-  match <- seq(min(matching, na.rm = T), max(matching, na.rm = T), 0.01)
+  match <- seq(min(matching, na.rm = TRUE), max(matching, na.rm = TRUE), 0.01)
 
   coefs <- coef(x) # extracting coefficients
   cat.obs <- names(which(table(y) > 0)[-1]) # observed categories = categories with at least one observation
@@ -79,11 +81,13 @@ plotCumulative <- function(x, type = "cumulative", matching.name = "matching") {
   # melting data
   df.probs.cum <- data.frame(match, df.probs.cum)
   colnames(df.probs.cum) <- c("matching", paste0("P(Y>=", cat, ")"))
-  df.probs.cum <- melt(df.probs.cum, id.vars = "matching", variable.name = "category", value.name = "probability")
+  # df.probs.cum <- melt(df.probs.cum, id.vars = "matching", variable.name = "category", value.name = "probability")
+  df.probs.cum <- tidyr::pivot_longer(df.probs.cum, -matching, names_to = "category", values_to = "probability")
 
   df.probs.cat <- data.frame(match, df.probs.cat)
   colnames(df.probs.cat) <- c("matching", paste0("P(Y=", cat, ")"))
-  df.probs.cat <- melt(df.probs.cat, id.vars = "matching", variable.name = "category", value.name = "probability")
+  # df.probs.cat <- melt(df.probs.cat, id.vars = "matching", variable.name = "category", value.name = "probability")
+  df.probs.cat <- tidyr::pivot_longer(df.probs.cat, -matching, names_to = "category", values_to = "probability")
 
 
   # empirical category values
@@ -104,7 +108,8 @@ plotCumulative <- function(x, type = "cumulative", matching.name = "matching") {
     df.emp.cum.count
   )
   colnames(df.emp.cum.count) <- c("matching", paste0("P(Y>=", cat, ")"))
-  df.emp.cum.count <- melt(df.emp.cum.count, id.vars = "matching", variable.name = "category", value.name = "size")
+  # df.emp.cum.count <- melt(df.emp.cum.count, id.vars = "matching", variable.name = "category", value.name = "size")
+  df.emp.cum.count <- tidyr::pivot_longer(df.emp.cum.count, -matching, names_to = "category", values_to = "size")
 
   df.emp.cum.prob <- as.data.frame.matrix(prop.table(table(matching, y), 1))
   df.emp.cum.prob <- t(apply(df.emp.cum.prob, 1, function(x) sum(x) - cumsum(x) + x))
@@ -113,7 +118,8 @@ plotCumulative <- function(x, type = "cumulative", matching.name = "matching") {
     df.emp.cum.prob
   )
   colnames(df.emp.cum.prob) <- c("matching", paste0("P(Y>=", cat, ")"))
-  df.emp.cum.prob <- melt(df.emp.cum.prob, id.vars = "matching", variable.name = "category", value.name = "probability")
+  # df.emp.cum.prob <- melt(df.emp.cum.prob, id.vars = "matching", variable.name = "category", value.name = "probability")
+  df.emp.cum.prob <- tidyr::pivot_longer(df.emp.cum.prob, -matching, names_to = "category", values_to = "probability")
 
   df.emp.cum <- merge(df.emp.cum.count, df.emp.cum.prob, by = c("matching", "category"))
 

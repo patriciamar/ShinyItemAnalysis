@@ -1,4 +1,4 @@
-#' Function for characteristic curve of DIF IRT model
+#' Plot item characteristic curve of DIF IRT model
 #'
 #' @aliases plotDIFirt
 #'
@@ -7,23 +7,21 @@
 #' @param parameters numeric: data matrix or data frame. See \strong{Details}.
 #' @param test character: type of statistic to be shown. See \strong{Details}.
 #' @param item either character ("all"), or numeric vector, or single number
-#' corresponding to column indicators. See \strong{Details}.
+#'   corresponding to column indicators. See \strong{Details}.
 #' @param item.name character: the name of item.
 #' @param same.scale logical: are the item \code{parameters} on the same scale?
-#' (default is "FALSE"). See \strong{Details}.
+#'   (default is "FALSE"). See \strong{Details}.
 #'
-#' @usage plotDIFirt(parameters, test = "Lord", item = "all", item.name, same.scale = F)
-#'
-#' @details
-#' This function plots characteristic curve of DIF IRT model.
+#' @details This function plots characteristic curve of DIF IRT model.
 #'
 #' The \code{parameters} matrix has a number of rows equal to twice the number
-#' of items in the data set. The first J rows refer to the item parameter estimates
-#' in the reference group, while the last J ones correspond to the same items in the
-#' focal group. The number of columns depends on the selected IRT model: 2 for the 1PL
-#' model, 5 for the 2PL model, 6 for the constrained 3PL model and 9 for the
-#' unconstrained 3PL model. The columns of irtParam have to follow the same structure
-#' as the output of \code{itemParEst}, \code{difLord} or \code{difRaju} command from
+#' of items in the data set. The first J rows refer to the item parameter
+#' estimates in the reference group, while the last J ones correspond to the
+#' same items in the focal group. The number of columns depends on the selected
+#' IRT model: 2 for the 1PL model, 5 for the 2PL model, 6 for the constrained
+#' 3PL model and 9 for the unconstrained 3PL model. The columns of
+#' \code{irtParam()} have to follow the same structure as the output of
+#' \code{itemParEst()}, \code{difLord()} or \code{difRaju()} command from the
 #' \code{difR} package.
 #'
 #' Two possible type of \code{test} statistics can be visualized - \code{"Lord"}
@@ -42,7 +40,8 @@
 #' Institute of Computer Science of the Czech Academy of Sciences \cr
 #' \email{martinkova@@cs.cas.cz} \cr
 #'
-#' @seealso \code{\link[difR]{itemParEst}}, \code{\link[difR]{difLord}}, \code{\link[difR]{difRaju}}
+#' @seealso \code{\link[difR]{itemParEst}}, \code{\link[difR]{difLord}},
+#'   \code{\link[difR]{difRaju}}
 #'
 #' @examples
 #' # loading libraries
@@ -64,7 +63,7 @@
 #' # plot of item 1 and Lord's statistic
 #' plotDIFirt(fitRaju$itemParInit, test = "Raju", item = 1)
 #' @export
-plotDIFirt <- function(parameters, test = "Lord", item = "all", item.name, same.scale = F) {
+plotDIFirt <- function(parameters, test = "Lord", item = "all", item.name, same.scale = FALSE) {
   if (!(test %in% c("Lord", "Raju"))) {
     stop("'test' must be either 'Lord' or 'Raju'",
       call. = FALSE
@@ -123,8 +122,8 @@ plotDIFirt <- function(parameters, test = "Lord", item = "all", item.name, same.
   mR <- parameters[1:m, ]
   mF <- parameters[(m + 1):(2 * m), ]
 
-  if (same.scale) {
-    mF <- itemRescale(mR, mF)
+  if (!same.scale) {
+    mF <- difR::itemRescale(mR, mF)
   }
 
   if (is.null(dim(mR))) {
@@ -148,7 +147,6 @@ plotDIFirt <- function(parameters, test = "Lord", item = "all", item.name, same.
     "6" = mF[, c(1, 2, 6)],
     "9" = mF[, 1:3]
   )
-
 
   col <- c("dodgerblue2", "goldenrod2")
   alpha <- .5

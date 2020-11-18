@@ -1,42 +1,46 @@
-#' Item Analysis
+#' Compute traditional item analysis indices
 #'
 #' @aliases ItemAnalysis
 #'
-#' @description \code{ItemAnalysis} function computes various traditional item analysis indices
-#' including difficulty, discrimination and item validity. For ordinal items the difficulty and
-#' discrimination indices take into account minimal item score as well as range.
+#' @description \code{ItemAnalysis} function computes various traditional item
+#'   analysis indices including difficulty, discrimination and item validity.
+#'   For ordinal items the difficulty and discrimination indices take into
+#'   account minimal item score as well as range.
 #'
-#' @param data matrix or data.frame of items to be examined. Rows represent respondents, columns
-#' reperesent items.
+#' @param data matrix or data.frame of items to be examined. Rows represent
+#'   respondents, columns reperesent items.
 #' @param y vector of criterion values.
-#' @param k numeric: number of groups to which may be data.frame x divided by the total score.
-#' Default value is 3.  See \strong{Details}.
+#' @param k numeric: number of groups to which may be data.frame x divided by
+#'   the total score. Default value is 3.  See \strong{Details}.
 #' @param l numeric: lower group. Default value is 1. See \strong{Details}.
 #' @param u numeric: upper group. Default value is 3. See \strong{Details}.
-#' @param maxscore numeric or vector: maximal score in ordinal items. If missing, vector of obtained maximal scores is imputed. See \strong{Details}.
-#' @param minscore numeric or vector: minimal score in ordinal items. If missing, vector of obtained minimal scores is imputed. See \strong{Details}.
-#' @param cutscore numeric or vector: cut score used for binarization of ordinal data.
-#' If missing, vector of maximal scores is imputed. See \strong{Details}.
-#' @param add.bin logical: If TRUE, indices are printed also for binarized data. See \strong{Details}.
+#' @param maxscore numeric or vector: maximal score in ordinal items. If
+#'   missing, vector of obtained maximal scores is imputed. See
+#'   \strong{Details}.
+#' @param minscore numeric or vector: minimal score in ordinal items. If
+#'   missing, vector of obtained minimal scores is imputed. See
+#'   \strong{Details}.
+#' @param cutscore numeric or vector: cut score used for binarization of ordinal
+#'   data. If missing, vector of maximal scores is imputed. See
+#'   \strong{Details}.
+#' @param add.bin logical: If TRUE, indices are printed also for binarized data.
+#'   See \strong{Details}.
 #'
-#' @usage ItemAnalysis(data, y = NULL, k = 3, l = 1, u = 3,
-#' maxscore, minscore, cutscore, add.bin = FALSE)
+#' @details For ordinal items the difficulty and discrimination indices take
+#' into account minimal item score as well as range.
 #'
-#' @details
-#' For ordinal items the difficulty and discrimination indices take into account
-#' minimal item score as well as range.
+#' For calculation of discimination ULI index, it is possible to specify the
+#' number of groups \code{k}, and which two groups \code{l} and \code{u} are to
+#' be compared.
 #'
-#' For calculation of discimination ULI index, it is possible to
-#' specify the number of groups \code{k}, and which two groups \code{l} and \code{u}
-#' are to be compared.
-#'
-#' In ordinal items, difficulty is calculated as difference of average score divided by range
-#' (maximal possible score \code{maxscore} minus minimal possible score \code{minscore}).
+#' In ordinal items, difficulty is calculated as difference of average score
+#' divided by range (maximal possible score \code{maxscore} minus minimal
+#' possible score \code{minscore}).
 #'
 #' If \code{add.bin} is set to \code{TRUE}, item analysis of binarized data is
-#' included in the output table. In such a case, \code{cutscore} is used for binarization.
-#' When binarizing the data, values greater or equal to cut-score are set to \code{1},
-#' other values are set to \code{0}.
+#' included in the output table. In such a case, \code{cutscore} is used for
+#' binarization. When binarizing the data, values greater or equal to cut-score
+#' are set to \code{1}, other values are set to \code{0}.
 #'
 #' @return
 #' \code{ItemAnalysis} function computes various traditional item analysis indices. Output
@@ -61,9 +65,9 @@
 #'   \item{\code{RIRbin}}{item-rest correlation for binarized data}
 #'   \item{\code{itemCritCor}}{correlation between item score and criterion \code{y}}
 #'   \item{\code{itemCritCorBin}}{correlation between item score and criterion \code{y} for binarized data}
-#'   \item{\code{valInd}}{item validity index calculated as \code{cor(item, y)*sqrt(((N-1)/N)*var(item))}, see Allen & Yen (1979), Ch.6.4}
+#'   \item{\code{valInd}}{item validity index calculated as \code{cor(item, y) * sqrt(((N - 1) / N) * var(item))}, see Allen & Yen (1979), Ch.6.4}
 #'   \item{\code{valIndBin}}{item validity index for binarized data}
-#'   \item{\code{rel}}{item reliability index calculated as \code{cor(item, test)*sqrt(((N-1)/N)*var(item))}, see Allen & Yen (1979), Ch.6.4}
+#'   \item{\code{rel}}{item reliability index calculated as \code{cor(item, test) * sqrt(((N - 1) / N) * var(item))}, see Allen & Yen (1979), Ch.6.4}
 #'   \item{\code{relBin}}{item reliability index for binarized data}
 #'
 #'   \item{\code{relDrop}}{item reliability index 'drop' (scored without item)}
@@ -89,15 +93,15 @@
 #' Institute of Computer Science of the Czech Academy of Sciences \cr
 #' Faculty of Mathematics and Physics, Charles University \cr
 #' \email{hladka@@cs.cas.cz} \cr
-
 #'
-#' @references
-#' Martinkova, P., Stepanek, L., Drabinova, A., Houdek, J., Vejrazka, M., & Stuka, C. (2017).
-#' Semi-real-time analyses of item characteristics for medical school admission tests.
-#' In: Proceedings of the 2017 Federated Conference on Computer Science and Information Systems.
-#' https://doi.org/10.15439/2017F380
+#' @references Martinkova, P., Stepanek, L., Drabinova, A., Houdek, J.,
+#'   Vejrazka, M., & Stuka, C. (2017). Semi-real-time analyses of item
+#'   characteristics for medical school admission tests. In: Proceedings of the
+#'   2017 Federated Conference on Computer Science and Information Systems.
+#'   https://doi.org/10.15439/2017F380
 #'
-#' Allen, M. J. & Yen, W. M. (1979). Introduction to measurement theory. Monterey, CA: Brooks/Cole.
+#'   Allen, M. J. & Yen, W. M. (1979). Introduction to measurement theory.
+#'   Monterey, CA: Brooks/Cole.
 #'
 #' @seealso
 #' \code{\link{DDplot}}, \code{\link{gDiscrim}}, \code{\link{recode_nr}}
@@ -137,13 +141,13 @@ ItemAnalysis <- function(data, y = NULL, k = 3, l = 1, u = 3, maxscore, minscore
     )
   }
   if (missing(maxscore)) {
-    maxscore <- apply(data, 2, max, na.rm = T)
+    maxscore <- apply(data, 2, max, na.rm = TRUE)
   }
   if (missing(minscore)) {
-    minscore <- apply(data, 2, min, na.rm = T)
+    minscore <- apply(data, 2, min, na.rm = TRUE)
   }
   if (missing(cutscore)) {
-    cutscore <- apply(data, 2, max, na.rm = T)
+    cutscore <- apply(data, 2, max, na.rm = TRUE)
   } else {
     if (length(cutscore) == 1) {
       cutscore <- rep(cutscore, ncol(data))
@@ -156,8 +160,8 @@ ItemAnalysis <- function(data, y = NULL, k = 3, l = 1, u = 3, maxscore, minscore
       dataBin[data[, i] < cutscore[i], i] <- 0
     }
     head(dataBin)
-    minscoreB <- apply(dataBin, 2, min, na.rm = T)
-    maxscoreB <- apply(dataBin, 2, max, na.rm = T)
+    minscoreB <- apply(dataBin, 2, min, na.rm = TRUE)
+    maxscoreB <- apply(dataBin, 2, max, na.rm = TRUE)
   }
   if (u > k) {
     stop("'u' need to be lower or equal to 'k'", call. = FALSE)
@@ -179,8 +183,8 @@ ItemAnalysis <- function(data, y = NULL, k = 3, l = 1, u = 3, maxscore, minscore
   TOT <- apply(data, 1, sum)
   TOT.woi <- TOT - (data)
   mean <- apply(data, 2, mean)
-  obtainedmin <- apply(data, 2, min, na.rm = T)
-  obtainedmax <- apply(data, 2, max, na.rm = T)
+  obtainedmin <- apply(data, 2, min, na.rm = TRUE)
+  obtainedmax <- apply(data, 2, max, na.rm = TRUE)
 
   # ratio of full scores
   dataTOT <- rbind(data, maxscore)
@@ -189,7 +193,7 @@ ItemAnalysis <- function(data, y = NULL, k = 3, l = 1, u = 3, maxscore, minscore
   # ULI ordinal
   ni <- as.integer(N / k)
   Max <- c(maxscore)
-  MaxSum <- sum(apply(data, 2, max, na.rm = T))
+  MaxSum <- sum(apply(data, 2, max, na.rm = TRUE))
   TOT <- apply(data, 1, sum) / MaxSum
   tmpx <- data[order(TOT), ]
   tmpxU <- tmpx[as.integer((u - 1) * N / k + 1):as.integer(u * N / k), ]
@@ -297,12 +301,20 @@ ItemAnalysis <- function(data, y = NULL, k = 3, l = 1, u = 3, maxscore, minscore
 
 
   # missed items (NAs)
-  missed <- apply(data_with_nas, 2,
-         function(x){sum(is.na(x)) / length(x) * 100})
+  missed <- apply(
+    data_with_nas, 2,
+    function(x) {
+      sum(is.na(x)) / length(x) * 100
+    }
+  )
 
   # not-reached items (coded as 99)
-  prop_nr <- apply(recode_nr(data_with_nas), 2,
-         function(x){sum(x == 99, na.rm = TRUE) / length(x) * 100})
+  prop_nr <- apply(
+    recode_nr(data_with_nas), 2,
+    function(x) {
+      sum(x == 99, na.rm = TRUE) / length(x) * 100
+    }
+  )
 
   if (add.bin == TRUE) {
     alphaDrop.bin <- apply(dataBin, 2, function(x) {

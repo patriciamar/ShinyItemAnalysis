@@ -1,14 +1,15 @@
-#' Function for plotting category probabilities of multinomial log-linear regression model
+#' Plot category probabilities of multinomial log-linear regression model
 #'
 #' @aliases plotMultinomial
 #'
-#' @description Plots category probabilities functions estimated by \code{multinom()} from \code{nnet} package.
+#' @description Plots category probabilities functions estimated by
+#'   \code{multinom()} from the \code{nnet} package.
 #'
 #' @param x object of class \code{multinom}
-#' @param matching numeric: vector of matching criterion used for estimation in \code{x}.
-#' @param matching.name character: name of matching criterion used for estimation in \code{x}.
-#'
-#' @usage plotMultinomial(x, matching, matching.name = "matching")
+#' @param matching numeric: vector of matching criterion used for estimation in
+#'   \code{x}.
+#' @param matching.name character: name of matching criterion used for
+#'   estimation in \code{x}.
 #'
 #' @author
 #' Adela Hladka \cr
@@ -67,7 +68,9 @@ plotMultinomial <- function(x, matching, matching.name = "matching") {
   df.probs <- df.probs / apply(df.probs, 1, sum)
   df.probs <- data.frame(match, df.probs)
   colnames(df.probs) <- c("matching", paste0("P(Y=", cat, ")"))
-  df.probs <- melt(df.probs, id.vars = "matching", variable.name = "category", value.name = "probability")
+  # df.probs <- melt(df.probs, id.vars = "matching", variable.name = "category", value.name = "probability")
+  df.probs <- tidyr::pivot_longer(df.probs, -matching, names_to = "category", values_to = "probability")
+  df.probs$category <- as.factor(df.probs$category)
 
   # calculation of empirical values
   df.emp <- data.frame(table(y, matching),
