@@ -6,9 +6,10 @@
 \usage{
 plot_corr(
   .data,
-  cor = "poly",
+  cor = "polychoric",
   clust_method = "none",
   n_clust = 0,
+  shape = "circle",
   labels = FALSE,
   labels_size = 3,
   line_size = 0.5,
@@ -27,7 +28,8 @@ or a correlation matrix.}
 \item{cor}{character: correlation "type" used to correlation matrix
 computation; available options are \code{"poly"}, \code{"tetra"},
 \code{"pearson"}, \code{"spearman"}, or \code{"none"} (in case you provide
-the correlation matrix directly instead).}
+the correlation matrix directly instead). You can use an unambiguous
+abbreviation of correlation type.}
 
 \item{clust_method}{character: optional clustering method, available options
 are: \code{"ward.D"}, \code{"ward.D2"}, \code{"single"}, \code{"complete"},
@@ -39,10 +41,15 @@ See \code{\link{hclust}} for a detailed description of available options.}
 set to zero, clustering is disabled, ignoring the \code{clust_method}
 argument.}
 
-\item{labels}{logical: when \code{TRUE}, the correlation coefficients are
-plotted onto tiles}
+\item{shape}{character: tile appearance; either \code{circle} (default) to
+map the correlation coefficient to circle size and color, or \code{square}
+to draw square-shaped tiles with only shade denoting the coefficient
+magnitude. You can use an unambiguous abbreviation of the two.}
 
-\item{labels_size}{numeric: label size in points (pts)}
+\item{labels}{logical: when \code{TRUE}, the correlation coefficients are
+plotted onto tiles.}
+
+\item{labels_size}{numeric: label size in points (pts).}
 
 \item{line_size}{numeric: cluster outline width.}
 
@@ -57,17 +64,21 @@ plotted onto tiles}
 \item{fill_alpha}{numeric 0-1: the opacity of the fill color.}
 
 \item{...}{
-  Arguments passed on to \code{\link[psych:tetrachoric]{psych::tetrachoric}}
+  Arguments passed on to \code{\link[psych:polychoric]{psych::polychoric}}
   \describe{
     \item{\code{correct}}{Correction value to use to correct for continuity in the case of zero entry cell for tetrachoric, polychoric, polybi, and mixed.cor.  See the examples for the effect of correcting versus not correcting for continuity.}
     \item{\code{smooth}}{if TRUE and if the tetrachoric/polychoric matrix is not positive definite, then apply a simple smoothing algorithm using cor.smooth}
     \item{\code{global}}{When finding pairwise correlations, should we use the global values of the tau parameter (which is somewhat faster), or the local values (global=FALSE)?  The local option is equivalent to the polycor solution, or to doing one correlation at a time. global=TRUE borrows information for one item pair from the other pairs using those item's frequencies.   This will make a difference in the presence of lots of missing data. With very small sample sizes with global=FALSE and correct=TRUE, the function will fail (for as yet underdetermined reasons. }
+    \item{\code{polycor}}{A no longer used option, kept to stop other packages from breaking.}
     \item{\code{weight}}{A vector of length of the number of observations that specifies the weights to apply to each case.  The NULL case is equivalent of weights of 1 for all cases.  }
+    \item{\code{std.err}}{std.err=FALSE does not report the standard errors (faster)  deprecated}
+    \item{\code{progress}}{Show the progress bar (if  not doing multicores)}
+    \item{\code{ML}}{ ML=FALSE  do a quick two step procedure, ML=TRUE, do longer maximum likelihood --- very slow! Deprecated}
     \item{\code{delete}}{Cases with no variance are deleted with a warning before proceeding.}
   }}
 }
 \value{
-A \code{ggplot} object.
+An object of class \code{ggplot} and/or \code{gg}.
 }
 \description{
 Computes and visualizes an item correlation matrix (also known
@@ -87,11 +98,10 @@ Correlation heatmap displays selected type of correlations between
   are drawn.
 }
 \examples{
-\dontrun{
 # use first 20 columns from HCI dataset (the remainder are not items)
-# and pipe it into the function
-HCI[, 1:20] \%>\% plot_corr()
-
+# use Pearson product-moment correlation coefficient for matrix computation
+plot_corr(HCI[, 1:20], cor = "pearson")
+\dontrun{
 # use tetrachoric correlation and reorder the resulting heatmap
 # using Ward's method
 HCI[, 1:20] \%>\% plot_corr(cor = "tetra", clust_method = "ward")
@@ -100,7 +110,7 @@ HCI[, 1:20] \%>\% plot_corr(cor = "tetra", clust_method = "ward")
 HCI[, 1:20] \%>\%
   plot_corr(
     n_clust = 3, clust_method = "ward.D", line_col = "yellow",
-    line_size = 1.5, label = TRUE
+    line_size = 1.5, labels = TRUE
   )
 
 # add title and position the legend below the plot

@@ -2,11 +2,12 @@
 
 ----------
 
-### Changes in version 1.3.4-1 (2020-11-18)
+### Changes in version 1.3.4-1 (2020-11-23)
 #### BUG FIXING
   * In the IRT training section, the calculation and display of item information curves was 
     fixed. (Thanks to Hynek Cigler for reporting this issue.)
   * Calculation of minimal scores in ItemAnalysis() function was fixed.
+  * Display of ICC in IRT models is being updated to correspond with updates in mirt package.
   
 #### MAJOR UPDATES
   * New function `plot_corr()` to compute and visualize an item correlation matrix was added
@@ -15,6 +16,7 @@
   * `startShinyItemAnalysis()` function was fixed to finish job persisting in the backgroud 
     after the app is closed
   * Figures can now be downloaded at once in DDF section of the app.
+  * Equations were unified in Regression and IRT sections of the app.
   
 #### MINOR UPDATES
   * Selected R code was updated.
@@ -22,6 +24,7 @@
   * Summary tab was updated within the app, interactive help with formulae is newly offered.
   * Lines for interpretation of IIC for selected theta were added in IRT training section.
   * styler package was applied on .R files, documentation was updated
+  * ggWright() plot was updated to more general description
   
   ----------
 

@@ -13,7 +13,8 @@
 #' @param cor character: correlation "type" used to correlation matrix
 #'   computation; available options are \code{"poly"}, \code{"tetra"},
 #'   \code{"pearson"}, \code{"spearman"}, or \code{"none"} (in case you provide
-#'   the correlation matrix directly instead).
+#'   the correlation matrix directly instead). You can use an unambiguous
+#'   abbreviation of correlation type.
 #'
 #' @param clust_method character: optional clustering method, available options
 #'   are: \code{"ward.D"}, \code{"ward.D2"}, \code{"single"}, \code{"complete"},
@@ -25,10 +26,15 @@
 #'   set to zero, clustering is disabled, ignoring the \code{clust_method}
 #'   argument.
 #'
-#' @param labels logical: when \code{TRUE}, the correlation coefficients are
-#'   plotted onto tiles
+#' @param shape character: tile appearance; either \code{circle} (default) to
+#'   map the correlation coefficient to circle size and color, or \code{square}
+#'   to draw square-shaped tiles with only shade denoting the coefficient
+#'   magnitude. You can use an unambiguous abbreviation of the two.
 #'
-#' @param labels_size numeric: label size in points (pts)
+#' @param labels logical: when \code{TRUE}, the correlation coefficients are
+#'   plotted onto tiles.
+#'
+#' @param labels_size numeric: label size in points (pts).
 #'
 #' @param line_size numeric: cluster outline width.
 #'
@@ -44,7 +50,7 @@
 #'
 #' @param fill_alpha numeric 0-1: the opacity of the fill color.
 #'
-#' @inheritDotParams psych::tetrachoric -x -y -na.rm
+#' @inheritDotParams psych::polychoric -x -y -na.rm
 #'
 #' @details Correlation heatmap displays selected type of correlations between
 #'   items.The color of tiles indicates how much and in which way the items are
@@ -55,7 +61,7 @@
 #'   and any clustering is demanded, the rectangles outlining the found clusters
 #'   are drawn.
 #'
-#' @return A \code{ggplot} object.
+#' @return An object of class \code{ggplot} and/or \code{gg}.
 #'
 #' @author Jan Netik \cr Department of Psychology, Faculty of Arts, Charles
 #'   University \cr \email{netikja@@gmail.com}
@@ -76,11 +82,10 @@
 #' @importFrom rlang .data
 #'
 #' @examples
-#' \dontrun{
 #' # use first 20 columns from HCI dataset (the remainder are not items)
-#' # and pipe it into the function
-#' HCI[, 1:20] %>% plot_corr()
-#'
+#' # use Pearson product-moment correlation coefficient for matrix computation
+#' plot_corr(HCI[, 1:20], cor = "pearson")
+#' \dontrun{
 #' # use tetrachoric correlation and reorder the resulting heatmap
 #' # using Ward's method
 #' HCI[, 1:20] %>% plot_corr(cor = "tetra", clust_method = "ward")
@@ -89,7 +94,7 @@
 #' HCI[, 1:20] %>%
 #'   plot_corr(
 #'     n_clust = 3, clust_method = "ward.D", line_col = "yellow",
-#'     line_size = 1.5, label = TRUE
+#'     line_size = 1.5, labels = TRUE
 #'   )
 #'
 #' # add title and position the legend below the plot
@@ -100,12 +105,27 @@
 #' }
 #'
 #' @export
-plot_corr <- function(.data, cor = "poly", clust_method = "none", n_clust = 0,
+plot_corr <- function(.data, cor = "polychoric", clust_method = "none", n_clust = 0,
+                      shape = "circle",
                       labels = FALSE, labels_size = 3,
                       line_size = .5, line_col = "black", line_alpha = 1,
                       fill = NA, fill_alpha = NA, ...) {
+  cor <- tryCatch(match.arg(cor, c("polychoric", "tetrachoric", "pearson", "spearman", "none")),
+    error = function(e) {
+      stop("'cor' should be one of “polychoric”, “tetrachoric”, “pearson”, “spearman” or “none”.",
+        call. = FALSE
+      )
+    }
+  )
+  shape <- tryCatch(match.arg(shape, c("circle", "square")),
+    error = function(e) {
+      stop("'shape' should be one of “circle” or “square”.",
+        call. = FALSE
+      )
+    }
+  )
   cormat <- switch(cor,
-    "poly" = tryCatch(psych::polychoric(.data, na.rm = TRUE, ...)$rho,
+    "polychoric" = tryCatch(psych::polychoric(.data, na.rm = TRUE, ...)$rho,
       error = function(e) {
         message(
           "Your items have more than 8 response categories, polychoric corr. is discouraged.\n",
@@ -114,14 +134,10 @@ plot_corr <- function(.data, cor = "poly", clust_method = "none", n_clust = 0,
         )
       }
     ),
-    "tetra" = psych::tetrachoric(.data, na.rm = TRUE, ...)$rho,
+    "tetrachoric" = psych::tetrachoric(.data, na.rm = TRUE, ...)$rho,
     "pearson" = cor(.data, method = "pearson", use = "pairwise.complete.obs"),
     "spearman" = cor(.data, method = "spearman", use = "pairwise.complete.obs"),
-    "none" = .data,
-    stop(
-      "`", cor, "` is not a recognized correlation method!\n",
-      "Use either `poly`, `tetra`, `pearson`, `spearman` or `none`."
-    )
+    "none" = .data
   )
 
   n <- nrow(cormat)
@@ -161,21 +177,30 @@ plot_corr <- function(.data, cor = "poly", clust_method = "none", n_clust = 0,
     tidyr::pivot_longer(cols = -.data$x, names_to = "y", values_to = "r") %>%
     dplyr::mutate(corr. = gsub("0\\.", "\\.", scales::number(.data$r, .01))) %>%
     ggplot2::ggplot(ggplot2::aes(.data$x, .data$y, label = .data$corr.)) +
-    ggplot2::geom_point(aes(size = .data$r, col = .data$r)) +
     ggplot2::scale_x_discrete(limits = new_ord, position = "top") +
     ggplot2::scale_y_discrete(limits = rev(new_ord)) + # make diagonal as usual
-    ggplot2::scale_color_gradient2(
-      midpoint = 0,
-      limit = c(-1, 1)
-    ) +
     ggplot2::scale_size_area(guide = "none") +
-    ggplot2::labs(col = "corr.") +
+    ggplot2::labs(col = "corr.", fill = "corr.") +
     ggplot2::coord_fixed() +
     ggplot2::theme_minimal() +
     ggplot2::theme(
       axis.text.x.top = ggplot2::element_text(angle = 90, vjust = .5, hjust = 0),
       axis.title = ggplot2::element_blank()
     )
+
+  if (shape == "circle") {
+    plt <- plt + ggplot2::geom_point(aes(size = .data$r, col = .data$r)) +
+      ggplot2::scale_color_gradient2(
+        midpoint = 0,
+        limit = c(-1, 1)
+      )
+  } else {
+    plt <- plt + ggplot2::geom_tile(aes(fill = .data$r)) +
+      ggplot2::scale_fill_gradient2(
+        midpoint = 0,
+        limit = c(-1, 1)
+      )
+  }
 
   if (clust_method != "none" & n_clust != 0) {
     plt <- plt +

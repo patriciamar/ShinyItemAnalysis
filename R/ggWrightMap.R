@@ -107,7 +107,7 @@ ggWrightMap <- function(theta, b, binwidth = 0.5, color = "blue", size = 15, ite
     xlim(lim.x.min, lim.x.max) +
     coord_flip() +
     scale_y_reverse() +
-    xlab("Student ability") +
+    xlab("Respondent ability") +
     theme_app(base_size = size) +
     theme(
       axis.title.x = element_blank(),
