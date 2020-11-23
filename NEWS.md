@@ -7,7 +7,7 @@
   * In the IRT training section, the calculation and display of item information curves was 
     fixed. (Thanks to Hynek Cigler for reporting this issue.)
   * Calculation of minimal scores in ItemAnalysis() function was fixed.
-  * Display of ICC in IRT models is being updated to correspond with updates in mirt package.
+  * Display of ICC in IRT models is being updated to respond to updates in mirt package.
   
 #### MAJOR UPDATES
   * New function `plot_corr()` to compute and visualize an item correlation matrix was added
@@ -16,7 +16,8 @@
   * `startShinyItemAnalysis()` function was fixed to finish job persisting in the backgroud 
     after the app is closed
   * Figures can now be downloaded at once in DDF section of the app.
-  * Equations were unified in Regression and IRT sections of the app.
+  * Equations were unified in Regression and IRT sections of the app, with p being the index 
+    for person and i being the index for an item. 
   
 #### MINOR UPDATES
   * Selected R code was updated.

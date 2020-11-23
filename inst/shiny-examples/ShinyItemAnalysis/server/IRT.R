@@ -10,7 +10,7 @@
 rasch_model_mirt <- reactive({
   fitRasch <- mirt(binary(),
     model = 1, itemtype = "Rasch",
-    SE = T, verbose = F
+    SE = TRUE, verbose = FALSE
   )
 })
 
@@ -30,27 +30,25 @@ output$rasch_mirt_model_converged <- renderUI({
 # ** Tab model ######
 # *** CC ######
 raschInput_mirt <- reactive({
-  plt <- plot(rasch_model_mirt(), type = "trace", facet_items = F)
-  vals <- plt$panel.args
-  x <- vals[[1]]$x
-  y <- vals[[1]]$y
-  n <- length(vals[[1]]$subscripts)
-  m <- length(item_names())
-  k <- n / m
+  mod <- rasch_model_mirt()
 
-  names <- list()
-  for (j in 1:m) {
-    names[[j]] <- rep(item_names()[j], k)
-  }
-  names <- unlist(names)
+  # thetas from model
+  thetas <- mod@Model$Theta
 
-  df <- data.frame(cbind(x, y))
-  df$x <- as.numeric(df$x)
-  df$y <- as.numeric(df$y)
-  df$names <- factor(names, levels = unique(names))
-  colnames(df) <- c("Ability", "Probability", "Item")
+  # names from model
+  mod_item_names <- mod@Data$data %>% colnames()
 
-  g <- ggplot(data = df, aes(x = Ability, y = Probability, color = Item)) +
+  d <- map2_dfr(
+    mod_item_names,
+    item_names(), # names from user
+    ~ tibble(
+      Ability = thetas[, 1], # vector only
+      Probability = probtrace(extract.item(mod, .x), thetas)[, 2], # ascending probs
+      Item = .y,
+    )
+  )
+
+  g <- d %>% ggplot(aes(x = Ability, y = Probability, color = Item)) +
     geom_line() +
     ylab("Probability of correct answer") +
     theme_app()
@@ -67,7 +65,7 @@ output$rasch_mirt <- renderPlotly({
   }
 
   p$elementId <- NULL
-  p %>% plotly::config(displayModeBar = F)
+  p %>% plotly::config(displayModeBar = FALSE)
 })
 
 output$DP_rasch_mirt <- downloadHandler(
@@ -90,7 +88,7 @@ output$DP_rasch_mirt <- downloadHandler(
 
 # *** IIC ######
 raschiicInput_mirt <- reactive({
-  plt <- plot(rasch_model_mirt(), type = "infotrace", facet_items = F)
+  plt <- plot(rasch_model_mirt(), type = "infotrace", facet_items = FALSE)
   vals <- plt$panel.args
   x <- vals[[1]]$x
   y <- vals[[1]]$y
@@ -115,7 +113,6 @@ raschiicInput_mirt <- reactive({
     theme_app()
 })
 
-
 output$raschiic_mirt <- renderPlotly({
   g <- raschiicInput_mirt()
   p <- ggplotly(g)
@@ -127,7 +124,7 @@ output$raschiic_mirt <- renderPlotly({
   }
 
   p$elementId <- NULL
-  p %>% plotly::config(displayModeBar = F)
+  p %>% plotly::config(displayModeBar = FALSE)
 })
 
 output$DP_raschiic_mirt <- downloadHandler(
@@ -179,7 +176,7 @@ output$raschtif_mirt <- renderPlotly({
   p$x$data[[2]]$text <- gsub("<br />colour: se", "", p$x$data[[2]]$text)
 
   p$elementId <- NULL
-  p %>% plotly::config(displayModeBar = F)
+  p %>% plotly::config(displayModeBar = FALSE)
 })
 
 output$DP_raschtif_mirt <- downloadHandler(
@@ -204,8 +201,8 @@ output$DP_raschtif_mirt <- downloadHandler(
 raschcoefInput_mirt <- reactive({
   fit <- rasch_model_mirt()
 
-  par_tab <- coef(fit, IRTpars = T, simplify = T)$items[, "b"]
-  se_list <- coef(fit, printSE = T)
+  par_tab <- coef(fit, IRTpars = TRUE, simplify = TRUE)$items[, "b"]
+  se_list <- coef(fit, printSE = TRUE)
   se_tab <- sapply(1:length(par_tab), function(i) se_list[[i]]["SE", "d"])
 
   tab <- cbind(par_tab, se_tab)
@@ -246,8 +243,8 @@ output$coef_rasch_mirt <- renderTable(
   {
     raschcoefInput_mirt()
   },
-  include.rownames = T,
-  include.colnames = T
+  include.rownames = TRUE,
+  include.colnames = TRUE
 )
 
 # ** Download table ######
@@ -398,7 +395,7 @@ raschInput_mirt_tab <- reactive({
   item <- input$rachSliderChar
   fit <- rasch_model_mirt()
 
-  plt <- plot(fit, type = "trace", which.item = item, facet_items = F)
+  plt <- plot(fit, type = "trace", which.item = item, facet_items = FALSE)
   vals <- plt$panel.args
   x <- vals[[1]]$x
   y <- vals[[1]]$y
@@ -433,7 +430,7 @@ output$rasch_mirt_tab <- renderPlotly({
   }
 
   p$elementId <- NULL
-  p %>% plotly::config(displayModeBar = F)
+  p %>% plotly::config(displayModeBar = FALSE)
 })
 
 output$DP_rasch_mirt_tab <- downloadHandler(
@@ -456,7 +453,7 @@ raschiicInput_mirt_tab <- reactive({
   item <- input$rachSliderChar
   fit <- rasch_model_mirt()
 
-  plt <- plot(fit, type = "infotrace", which.item = item, facet_items = F)
+  plt <- plot(fit, type = "infotrace", which.item = item, facet_items = FALSE)
   vals <- plt$panel.args
   x <- vals[[1]]$x
   y <- vals[[1]]$y
@@ -491,7 +488,7 @@ output$raschiic_mirt_tab <- renderPlotly({
   }
 
   p$elementId <- NULL
-  p %>% plotly::config(displayModeBar = F)
+  p %>% plotly::config(displayModeBar = FALSE)
 })
 
 output$DP_raschiic_mirt_tab <- downloadHandler(
@@ -524,8 +521,8 @@ output$tab_coef_rasch_mirt <- renderTable(
   {
     raschcoefInput_mirt_tab()
   },
-  include.rownames = T,
-  include.colnames = T
+  include.rownames = TRUE,
+  include.colnames = TRUE
 )
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -541,7 +538,7 @@ one_param_irt_mirt <- reactive({
   )
   model <- mirt.model(s)
   fit1PL <- mirt(data,
-    model = model, itemtype = "2PL", SE = T, verbose = F,
+    model = model, itemtype = "2PL", SE = TRUE, verbose = FALSE,
     technical = list(NCYCLES = input$ncycles)
   )
 })
@@ -564,7 +561,7 @@ output$irt_1PL_model_converged <- renderUI({
 oneparamirtInput_mirt <- reactive({
   fit <- one_param_irt_mirt()
 
-  plt <- plot(fit, type = "trace", facet_items = F)
+  plt <- plot(fit, type = "trace", facet_items = FALSE)
   vals <- plt$panel.args
   x <- vals[[1]]$x
   y <- vals[[1]]$y
@@ -599,7 +596,7 @@ output$oneparamirt_mirt <- renderPlotly({
   }
 
   p$elementId <- NULL
-  p %>% plotly::config(displayModeBar = F)
+  p %>% plotly::config(displayModeBar = FALSE)
 })
 
 output$DP_oneparamirt_mirt <- downloadHandler(
@@ -624,7 +621,7 @@ output$DP_oneparamirt_mirt <- downloadHandler(
 oneparamirtiicInput_mirt <- reactive({
   fit <- one_param_irt_mirt()
 
-  plt <- plot(fit, type = "infotrace", facet_items = F)
+  plt <- plot(fit, type = "infotrace", facet_items = FALSE)
   vals <- plt$panel.args
   x <- vals[[1]]$x
   y <- vals[[1]]$y
@@ -659,7 +656,7 @@ output$oneparamirtiic_mirt <- renderPlotly({
   }
 
   p$elementId <- NULL
-  p %>% plotly::config(displayModeBar = F)
+  p %>% plotly::config(displayModeBar = FALSE)
 })
 
 output$DP_oneparamirtiic_mirt <- downloadHandler(
@@ -710,7 +707,7 @@ output$oneparamirttif_mirt <- renderPlotly({
   p$x$data[[2]]$text <- gsub("<br />colour: se", "", p$x$data[[2]]$text)
 
   p$elementId <- NULL
-  p %>% plotly::config(displayModeBar = F)
+  p %>% plotly::config(displayModeBar = FALSE)
 })
 
 output$DP_oneparamirttif_mirt <- downloadHandler(
@@ -791,8 +788,8 @@ output$coef_oneparamirt_mirt <- renderTable(
   {
     oneparamirtcoefInput_mirt()
   },
-  include.rownames = T,
-  include.colnames = T
+  include.rownames = TRUE,
+  include.colnames = TRUE
 )
 
 # *** Download table ######
@@ -938,7 +935,7 @@ oneparamirtInput_mirt_tab <- reactive({
   item <- input$onePLSliderChar
   fit <- one_param_irt_mirt()
 
-  plt <- plot(fit, type = "trace", which.item = item, facet_items = F)
+  plt <- plot(fit, type = "trace", which.item = item, facet_items = FALSE)
   vals <- plt$panel.args
   x <- vals[[1]]$x
   y <- vals[[1]]$y
@@ -971,7 +968,7 @@ output$oneparamirt_mirt_tab <- renderPlotly({
   }
 
   p$elementId <- NULL
-  p %>% plotly::config(displayModeBar = F)
+  p %>% plotly::config(displayModeBar = FALSE)
 })
 
 output$DP_oneparamirt_mirt_tab <- downloadHandler(
@@ -997,7 +994,7 @@ oneparamirtiicInput_mirt_tab <- reactive({
   item <- input$onePLSliderChar
   fit <- one_param_irt_mirt()
 
-  plt <- plot(fit, type = "infotrace", which.item = item, facet_items = F)
+  plt <- plot(fit, type = "infotrace", which.item = item, facet_items = FALSE)
   vals <- plt$panel.args
   x <- vals[[1]]$x
   y <- vals[[1]]$y
@@ -1030,7 +1027,7 @@ output$oneparamirtiic_mirt_tab <- renderPlotly({
   }
 
   p$elementId <- NULL
-  p %>% plotly::config(displayModeBar = F)
+  p %>% plotly::config(displayModeBar = FALSE)
 })
 
 output$DP_oneparamirtiic_mirt_tab <- downloadHandler(
@@ -1063,7 +1060,7 @@ output$tab_coef_oneparamirt_mirt <- renderTable(
   {
     oneparamirtcoefInput_mirt_tab()
   },
-  include.rownames = T
+  include.rownames = TRUE
 )
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1076,7 +1073,7 @@ two_param_irt_mirt <- reactive({
   fit2PL <- mirt(data,
     model = 1, itemtype = "2PL",
     constrain = NULL,
-    SE = T, verbose = F,
+    SE = TRUE, verbose = FALSE,
     technical = list(NCYCLES = input$ncycles)
   )
 })
@@ -1099,7 +1096,7 @@ output$irt_2PL_model_converged <- renderUI({
 twoparamirtInput_mirt <- reactive({
   fit <- two_param_irt_mirt()
 
-  plt <- plot(fit, type = "trace", facet_items = F)
+  plt <- plot(fit, type = "trace", facet_items = FALSE)
   vals <- plt$panel.args
   x <- vals[[1]]$x
   y <- vals[[1]]$y
@@ -1134,7 +1131,7 @@ output$twoparamirt_mirt <- renderPlotly({
   }
 
   p$elementId <- NULL
-  p %>% plotly::config(displayModeBar = F)
+  p %>% plotly::config(displayModeBar = FALSE)
 })
 
 output$DP_twoparamirt_mirt <- downloadHandler(
@@ -1159,7 +1156,7 @@ output$DP_twoparamirt_mirt <- downloadHandler(
 twoparamirtiicInput_mirt <- reactive({
   fit <- two_param_irt_mirt()
 
-  plt <- plot(fit, type = "infotrace", facet_items = F)
+  plt <- plot(fit, type = "infotrace", facet_items = FALSE)
   vals <- plt$panel.args
   x <- vals[[1]]$x
   y <- vals[[1]]$y
@@ -1194,7 +1191,7 @@ output$twoparamirtiic_mirt <- renderPlotly({
   }
 
   p$elementId <- NULL
-  p %>% plotly::config(displayModeBar = F)
+  p %>% plotly::config(displayModeBar = FALSE)
 })
 
 output$DP_twoparamirtiic_mirt <- downloadHandler(
@@ -1245,7 +1242,7 @@ output$twoparamirttif_mirt <- renderPlotly({
   p$x$data[[2]]$text <- gsub("<br />colour: se", "", p$x$data[[2]]$text)
 
   p$elementId <- NULL
-  p %>% plotly::config(displayModeBar = F)
+  p %>% plotly::config(displayModeBar = FALSE)
 })
 
 output$DP_twoparamirttif_mirt <- downloadHandler(
@@ -1322,8 +1319,8 @@ output$coef_twoparamirt_mirt <- renderTable(
   {
     twoparamirtcoefInput_mirt()
   },
-  include.rownames = T,
-  include.colnames = T
+  include.rownames = TRUE,
+  include.colnames = TRUE
 )
 
 # *** Download table ######
@@ -1441,7 +1438,7 @@ twoparamirtInput_mirt_tab <- reactive({
   item <- input$twoPLSliderChar
   fit <- two_param_irt_mirt()
 
-  plt <- plot(fit, type = "trace", which.item = item, facet_items = F)
+  plt <- plot(fit, type = "trace", which.item = item, facet_items = FALSE)
   vals <- plt$panel.args
   x <- vals[[1]]$x
   y <- vals[[1]]$y
@@ -1474,7 +1471,7 @@ output$twoparamirt_mirt_tab <- renderPlotly({
   }
 
   p$elementId <- NULL
-  p %>% plotly::config(displayModeBar = F)
+  p %>% plotly::config(displayModeBar = FALSE)
 })
 
 output$DP_twoparamirt_mirt_tab <- downloadHandler(
@@ -1500,7 +1497,7 @@ twoparamirtiicInput_mirt_tab <- reactive({
   item <- input$twoPLSliderChar
   fit <- two_param_irt_mirt()
 
-  plt <- plot(fit, type = "infotrace", which.item = item, facet_items = F)
+  plt <- plot(fit, type = "infotrace", which.item = item, facet_items = FALSE)
   vals <- plt$panel.args
   x <- vals[[1]]$x
   y <- vals[[1]]$y
@@ -1533,7 +1530,7 @@ output$twoparamirtiic_mirt_tab <- renderPlotly({
   }
 
   p$elementId <- NULL
-  p %>% plotly::config(displayModeBar = F)
+  p %>% plotly::config(displayModeBar = FALSE)
 })
 
 output$DP_twoparamirtiic_mirt_tab <- downloadHandler(
@@ -1566,8 +1563,8 @@ output$tab_coef_twoparamirt_mirt <- renderTable(
   {
     twoparamirtcoefInput_mirt_tab()
   },
-  include.rownames = T,
-  include.colnames = T
+  include.rownames = TRUE,
+  include.colnames = TRUE
 )
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1580,8 +1577,8 @@ three_param_irt_mirt <- reactive({
   fit3PL <- mirt(data,
     model = 1, itemtype = "3PL",
     constrain = NULL,
-    SE = T, technical = list(NCYCLES = input$ncycles),
-    verbose = F
+    SE = TRUE, technical = list(NCYCLES = input$ncycles),
+    verbose = FALSE
   )
 })
 
@@ -1601,7 +1598,7 @@ output$irt_3PL_model_converged <- renderUI({
 # ** Tab model ######
 # *** CC ######
 threeparamirtInput_mirt <- reactive({
-  plt <- plot(three_param_irt_mirt(), type = "trace", facet_items = F)
+  plt <- plot(three_param_irt_mirt(), type = "trace", facet_items = FALSE)
   vals <- plt$panel.args
   x <- vals[[1]]$x
   y <- vals[[1]]$y
@@ -1636,8 +1633,7 @@ output$threeparamirt_mirt <- renderPlotly({
   }
 
   p$elementId <- NULL
-
-  p %>% plotly::config(displayModeBar = F)
+  p %>% plotly::config(displayModeBar = FALSE)
 })
 
 output$DP_threeparamirt_mirt <- downloadHandler(
@@ -1660,7 +1656,7 @@ output$DP_threeparamirt_mirt <- downloadHandler(
 
 # *** IIC ######
 threeparamirtiicInput_mirt <- reactive({
-  plt <- plot(three_param_irt_mirt(), type = "infotrace", facet_items = F)
+  plt <- plot(three_param_irt_mirt(), type = "infotrace", facet_items = FALSE)
   vals <- plt$panel.args
   x <- vals[[1]]$x
   y <- vals[[1]]$y
@@ -1695,7 +1691,7 @@ output$threeparamirtiic_mirt <- renderPlotly({
   }
 
   p$elementId <- NULL
-  p %>% plotly::config(displayModeBar = F)
+  p %>% plotly::config(displayModeBar = FALSE)
 })
 
 output$DP_threeparamirtiic_mirt <- downloadHandler(
@@ -1746,7 +1742,7 @@ output$threeparamirttif_mirt <- renderPlotly({
   p$x$data[[2]]$text <- gsub("<br />colour: se", "", p$x$data[[2]]$text)
 
   p$elementId <- NULL
-  p %>% plotly::config(displayModeBar = F)
+  p %>% plotly::config(displayModeBar = FALSE)
 })
 
 output$DP_threeparamirttif_mirt <- downloadHandler(
@@ -1829,8 +1825,8 @@ output$coef_threeparamirt_mirt <- renderTable(
   {
     threeparamirtcoefInput_mirt()
   },
-  include.rownames = T,
-  include.colnames = T
+  include.rownames = TRUE,
+  include.colnames = TRUE
 )
 
 # *** Download table ######
@@ -1948,7 +1944,7 @@ threeparamirtInput_mirt_tab <- reactive({
   fit <- three_param_irt_mirt()
   item <- input$threePLSliderChar
 
-  plt <- plot(fit, type = "trace", which.item = item, facet_items = F)
+  plt <- plot(fit, type = "trace", which.item = item, facet_items = FALSE)
   vals <- plt$panel.args
   x <- vals[[1]]$x
   y <- vals[[1]]$y
@@ -1981,7 +1977,7 @@ output$threeparamirt_mirt_tab <- renderPlotly({
   }
 
   p$elementId <- NULL
-  p %>% plotly::config(displayModeBar = F)
+  p %>% plotly::config(displayModeBar = FALSE)
 })
 
 output$DP_threeparamirt_mirt_tab <- downloadHandler(
@@ -2007,7 +2003,7 @@ threeparamirtiicInput_mirt_tab <- reactive({
   fit <- three_param_irt_mirt()
   item <- input$threePLSliderChar
 
-  plt <- plot(fit, type = "infotrace", which.item = item, facet_items = F)
+  plt <- plot(fit, type = "infotrace", which.item = item, facet_items = FALSE)
   vals <- plt$panel.args
   x <- vals[[1]]$x
   y <- vals[[1]]$y
@@ -2040,8 +2036,7 @@ output$threeparamirtiic_mirt_tab <- renderPlotly({
   }
 
   p$elementId <- NULL
-
-  p %>% plotly::config(displayModeBar = F)
+  p %>% plotly::config(displayModeBar = FALSE)
 })
 
 output$DP_threeparamirtiic_mirt_tab <- downloadHandler(
@@ -2074,7 +2069,7 @@ output$tab_coef_threeparamirt_mirt <- renderTable(
   {
     threeparamirtcoefInput_mirt_tab()
   },
-  include.rownames = T
+  include.rownames = TRUE
 )
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -2087,8 +2082,8 @@ irt_4PL_model <- reactive({
   fit <- tryCatch(mirt(data,
     model = 1, itemtype = "4PL",
     constrain = NULL,
-    SE = T, technical = list(NCYCLES = input$ncycles),
-    verbose = F
+    SE = TRUE, technical = list(NCYCLES = input$ncycles),
+    verbose = FALSE
   ),
   error = function(e) e
   )
@@ -2119,7 +2114,7 @@ output$irt_4PL_model_converged <- renderUI({
 irt_4PL_icc_Input <- reactive({
   fit <- irt_4PL_model()
 
-  plt <- plot(fit, type = "trace", facet_items = F)
+  plt <- plot(fit, type = "trace", facet_items = FALSE)
   vals <- plt$panel.args
   x <- vals[[1]]$x
   y <- vals[[1]]$y
@@ -2154,7 +2149,7 @@ output$irt_4PL_icc <- renderPlotly({
   }
 
   p$elementId <- NULL
-  p %>% plotly::config(displayModeBar = F)
+  p %>% plotly::config(displayModeBar = FALSE)
 })
 
 output$DB_irt_4PL_icc <- downloadHandler(
@@ -2177,7 +2172,7 @@ output$DB_irt_4PL_icc <- downloadHandler(
 
 # *** IIC ######
 irt_4PL_iic_Input <- reactive({
-  plt <- plot(irt_4PL_model(), type = "infotrace", facet_items = F)
+  plt <- plot(irt_4PL_model(), type = "infotrace", facet_items = FALSE)
   vals <- plt$panel.args
   x <- vals[[1]]$x
   y <- vals[[1]]$y
@@ -2213,8 +2208,7 @@ output$irt_4PL_iic <- renderPlotly({
   }
 
   p$elementId <- NULL
-
-  p %>% plotly::config(displayModeBar = F)
+  p %>% plotly::config(displayModeBar = FALSE)
 })
 
 output$DB_irt_4PL_iic <- downloadHandler(
@@ -2268,7 +2262,7 @@ output$irt_4PL_tif <- renderPlotly({
   p$x$data[[2]]$text <- gsub("<br />colour: se", "", p$x$data[[2]]$text)
 
   p$elementId <- NULL
-  p %>% plotly::config(displayModeBar = F)
+  p %>% plotly::config(displayModeBar = FALSE)
 })
 
 output$DB_irt_4PL_tif <- downloadHandler(
@@ -2350,8 +2344,8 @@ output$coef_irt_4PL <- renderTable(
   {
     irt_4PL_coef_Input()
   },
-  include.rownames = T,
-  include.colnames = T
+  include.rownames = TRUE,
+  include.colnames = TRUE
 )
 
 # *** Download table ######
@@ -2475,7 +2469,7 @@ irt_4PL_icc_Input_tab <- reactive({
   fit <- irt_4PL_model()
   item <- input$fourPLSliderChar
 
-  plt <- plot(fit, type = "trace", which.item = item, facet_items = F)
+  plt <- plot(fit, type = "trace", which.item = item, facet_items = FALSE)
   vals <- plt$panel.args
   x <- vals[[1]]$x
   y <- vals[[1]]$y
@@ -2508,7 +2502,7 @@ output$irt_4PL_icc_item_tab <- renderPlotly({
   }
 
   p$elementId <- NULL
-  p %>% plotly::config(displayModeBar = F)
+  p %>% plotly::config(displayModeBar = FALSE)
 })
 
 output$DB_irt_4PL_icc_tab <- downloadHandler(
@@ -2533,7 +2527,7 @@ irt_4PL_iic_Input_tab <- reactive({
   fit <- irt_4PL_model()
   item <- input$fourPLSliderChar
 
-  plt <- plot(fit, type = "infotrace", which.item = item, facet_items = F)
+  plt <- plot(fit, type = "infotrace", which.item = item, facet_items = FALSE)
   vals <- plt$panel.args
   x <- vals[[1]]$x
   y <- vals[[1]]$y
@@ -2566,7 +2560,7 @@ output$irt_4PL_iic_item_tab <- renderPlotly({
   }
 
   p$elementId <- NULL
-  p %>% plotly::config(displayModeBar = F)
+  p %>% plotly::config(displayModeBar = FALSE)
 })
 
 output$DB_irt_4PL_iic_tab <- downloadHandler(
@@ -2600,8 +2594,8 @@ output$tab_coef_irt_4PL <- renderTable(
   {
     irt_4PL_coef_Input_tab()
   },
-  include.rownames = T,
-  include.colnames = T
+  include.rownames = TRUE,
+  include.colnames = TRUE
 )
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -2622,9 +2616,9 @@ irtcomparisonInput <- reactive({
   )
 
   df <- rbind(
-    anova(models[[1]], models[[2]], verbose = F),
-    anova(models[[2]], models[[3]], verbose = F),
-    anova(models[[3]], models[[4]], verbose = F)
+    anova(models[[1]], models[[2]], verbose = FALSE),
+    anova(models[[2]], models[[3]], verbose = FALSE),
+    anova(models[[3]], models[[4]], verbose = FALSE)
   )
 
   df <- round(df[c(1, 2, 4, 6), ], 3)
@@ -2657,7 +2651,7 @@ output$irtcomparison <- renderTable(
   {
     irtcomparisonInput()
   },
-  include.rownames = T
+  include.rownames = TRUE
 )
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -2712,7 +2706,7 @@ bock_irt_mirt <- reactive({
   data <- adj_data_bock()$data
   key <- adj_data_bock()$key
 
-  sv <- mirt(data, 1, "nominal", pars = "values", verbose = F, SE = T)
+  sv <- mirt(data, 1, "nominal", pars = "values", verbose = FALSE, SE = TRUE)
 
   # set all values to 0 and estimated
   sv$value[grepl("ak", sv$name)] <- 0
@@ -2737,7 +2731,7 @@ bock_irt_mirt <- reactive({
     sv[index2, "est"] <- FALSE
   }
 
-  fit <- mirt(data, 1, "nominal", pars = sv, SE = T, verbose = F)
+  fit <- mirt(data, 1, "nominal", pars = sv, SE = TRUE, verbose = FALSE)
   fit
 })
 
@@ -2747,13 +2741,13 @@ bock_irt_mirt <- reactive({
 bock_CC_Input <- reactive({
   fit <- bock_irt_mirt()
 
-  data <- nominal()
+  data <- as.data.frame(nominal())
   vars <- colnames(data)
-  data <- data.frame(sapply(data, as.factor))
-  colnames(data) <- vars
+  data[] <- lapply(data, factor)
+  data[vars] <- lapply(data[vars], factor)
 
-  # plotting with mirt pckg
-  plt <- plot(fit, type = "trace", facet_items = F)
+  # plotting with mirt pkg
+  plt <- plot(fit, type = "trace", facet_items = FALSE)
   # extract data from plot
   vals <- plt$panel.args
   x <- vals[[1]]$x
@@ -2782,7 +2776,6 @@ bock_CC_Input <- reactive({
 
   # 200 is length of sequence from -6 to 6
   df$line <- paste0("line", (rep(1:(n / 200), 200)))
-
   df$Option <- factor(df$line, levels = paste0("line", 1:(n / 200)))
   levels(df$Option) <- unlist(as.vector(sapply(data, levels)))
 
@@ -2810,7 +2803,7 @@ output$bock_CC <- renderPlotly({
   }
 
   p$elementId <- NULL
-  p %>% plotly::config(displayModeBar = F)
+  p %>% plotly::config(displayModeBar = FALSE)
 })
 
 output$DP_bock_CC <- downloadHandler(
@@ -2837,7 +2830,7 @@ bock_IIC_Input <- reactive({
   fit <- bock_irt_mirt()
 
   # plotting with mirt pckg
-  plt <- plot(bock_irt_mirt(), type = "infotrace", facet_items = F)
+  plt <- plot(bock_irt_mirt(), type = "infotrace", facet_items = FALSE)
   # extracting data from plot
   vals <- plt$panel.args
   x <- vals[[1]]$x
@@ -2877,7 +2870,7 @@ output$bock_IIC <- renderPlotly({
   }
 
   p$elementId <- NULL
-  p %>% plotly::config(displayModeBar = F)
+  p %>% plotly::config(displayModeBar = FALSE)
 })
 
 output$DP_bock_IIC <- downloadHandler(
@@ -2928,7 +2921,7 @@ output$bock_TIF <- renderPlotly({
   p$x$data[[2]]$text <- gsub("<br />colour: se", "", p$x$data[[2]]$text)
 
   p$elementId <- NULL
-  p %>% plotly::config(displayModeBar = F)
+  p %>% plotly::config(displayModeBar = FALSE)
 })
 
 output$DP_bock_TIF <- downloadHandler(
@@ -2993,8 +2986,8 @@ output$coef_bock <- renderTable(
   {
     bock_coef_Input()
   },
-  include.rownames = T,
-  include.colnames = T
+  include.rownames = TRUE,
+  include.colnames = TRUE
 )
 
 # *** Ability estimates ######
@@ -3101,10 +3094,11 @@ observe({
 # *** CC items ######
 bock_CC_Input_tab <- reactive({
   fit <- bock_irt_mirt()
-  data <- nominal()
+  data <- as.data.frame(nominal())
   vars <- colnames(data)
-  data <- data.frame(sapply(data, as.factor))
-  colnames(data) <- vars
+  data[] <- lapply(data, factor)
+  data[vars] <- lapply(data[vars], factor)
+
   item <- input$bockSlider
 
   # plotting with mirt pckg
@@ -3155,7 +3149,7 @@ output$bock_CC_tab <- renderPlotly({
   }
 
   p$elementId <- NULL
-  p %>% plotly::config(displayModeBar = F)
+  p %>% plotly::config(displayModeBar = FALSE)
 })
 
 output$DP_bock_CC_tab <- downloadHandler(
@@ -3183,7 +3177,7 @@ bock_IIC_Input_tab <- reactive({
   data <- nominal()
 
   # plotting with mirt pckg
-  plt <- plot(fit, type = "infotrace", which.item = item, facet_items = F)
+  plt <- plot(fit, type = "infotrace", which.item = item, facet_items = FALSE)
   # extracting data from plot
   vals <- plt$panel.args
   x <- vals[[1]]$x
@@ -3219,7 +3213,7 @@ output$bock_IIC_tab <- renderPlotly({
   }
 
   p$elementId <- NULL
-  p %>% plotly::config(displayModeBar = F)
+  p %>% plotly::config(displayModeBar = FALSE)
 })
 
 output$DP_bock_IIC_tab <- downloadHandler(
@@ -3265,8 +3259,8 @@ output$tab_coef_bock <- renderTable(
   {
     bock_coef_Input_tab()
   },
-  include.rownames = T,
-  include.colnames = T
+  include.rownames = TRUE,
+  include.colnames = TRUE
 )
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -3462,8 +3456,7 @@ output$ccIRT_plot <- renderPlotly({
   p$x$data[[5]]$text <- text
 
   p$elementId <- NULL
-
-  p %>% plotly::config(displayModeBar = F)
+  p %>% plotly::config(displayModeBar = FALSE)
 })
 
 output$DB_ccIRT <- downloadHandler(
@@ -3610,12 +3603,7 @@ output$iicIRT_plot <- renderPlotly({
   p$x$data[[5]]$text <- text
 
   p$elementId <- NULL
-
-  p %>% plotly::config(displayModeBar = F)
-
-  p$elementId <- NULL
-
-  p %>% plotly::config(displayModeBar = F)
+  p %>% plotly::config(displayModeBar = FALSE)
 })
 
 output$DB_iicIRT <- downloadHandler(
@@ -4164,8 +4152,7 @@ output$irt_training_grm_plot_cummulative <- renderPlotly({
   }
 
   p$elementId <- NULL
-
-  p %>% plotly::config(displayModeBar = F)
+  p %>% plotly::config(displayModeBar = FALSE)
 })
 
 output$DB_irt_training_grm_plot_cummulative <- downloadHandler(
@@ -4255,8 +4242,7 @@ output$irt_training_grm_plot_category <- renderPlotly({
   }
 
   p$elementId <- NULL
-
-  p %>% plotly::config(displayModeBar = F)
+  p %>% plotly::config(displayModeBar = FALSE)
 })
 
 output$DB_irt_training_grm_plot_category <- downloadHandler(
@@ -4339,8 +4325,7 @@ output$irt_training_grm_plot_expected <- renderPlotly({
   }
 
   p$elementId <- NULL
-
-  p %>% plotly::config(displayModeBar = F)
+  p %>% plotly::config(displayModeBar = FALSE)
 })
 
 output$DB_irt_training_grm_plot_expected <- downloadHandler(
@@ -4839,8 +4824,7 @@ output$irt_training_gpcm_plot <- renderPlotly({
   }
 
   p$elementId <- NULL
-
-  p %>% plotly::config(displayModeBar = F)
+  p %>% plotly::config(displayModeBar = FALSE)
 })
 
 output$DB_irt_training_gpcm_plot <- downloadHandler(
@@ -4929,8 +4913,7 @@ output$irt_training_gpcm_plot_expected <- renderPlotly({
   }
 
   p$elementId <- NULL
-
-  p %>% plotly::config(displayModeBar = F)
+  p %>% plotly::config(displayModeBar = FALSE)
 })
 
 output$DB_irt_training_gpcm_plot_expected <- downloadHandler(
@@ -4986,7 +4969,6 @@ irt_gpcm_answer <- reactive({
   df1 <- tidyr::pivot_longer(data.frame(df, theta), -theta, names_to = "variable") %>%
     mutate(variable = as.factor(variable))
 
-
   df2 <- data.frame(exp = as.matrix(df) %*% 0:2, theta)
 
   ans4 <- c(df2$exp[which(theta %in% c(-1.50, 0, 1.50))])
@@ -5004,8 +4986,6 @@ irt_gpcm_answer <- reactive({
 irt_gpcm_check <- eventReactive(input$irt_training_gpcm_1_submit, {
   answers <- irt_gpcm_answer()
 
-
-
   # answ 1_1
   idx <- as.integer(input$irt_training_gpcm_1)
   theta_input <- rep("No", 9)
@@ -5021,9 +5001,6 @@ irt_gpcm_check <- eventReactive(input$irt_training_gpcm_1_submit, {
   exp_theta_input_2 <- c(input$irt_training_gpcm_4_1, input$irt_training_gpcm_4_2, input$irt_training_gpcm_4_3)
 
   ans4 <- c(abs(answers[[4]] - exp_theta_input_2) <= 0.05)
-
-
-
 
   ans <- list(
     ans1 = ans1,
@@ -5089,9 +5066,6 @@ output$irt_training_gpcm_answer <- renderUI({
     )
   ))
 })
-
-
-
 
 # *** NOMINAL RESPONSE MODEL ######
 
@@ -5212,7 +5186,6 @@ output$irt_training_nrm_sliders <- renderUI({
   )
 
   sliders <- sliders[1:(4 * num)]
-
   sliders
 })
 
@@ -5296,8 +5269,7 @@ output$irt_training_nrm_plot <- renderPlotly({
   }
 
   p$elementId <- NULL
-
-  p %>% plotly::config(displayModeBar = F)
+  p %>% plotly::config(displayModeBar = FALSE)
 })
 
 output$DB_irt_training_nrm_plot <- downloadHandler(
@@ -5330,7 +5302,6 @@ observeEvent(!is.na(input$irt_training_grm_numresp) | is.na(input$irt_training_g
     updateNumericInput(session, "irt_training_grm_numresp", value = 4)
   }
 })
-
 
 observeEvent(!is.na(input$irt_training_gpcm_numresp) | is.na(input$irt_training_gpcm_numresp), {
   if (!is.na(input$irt_training_gpcm_numresp)) {

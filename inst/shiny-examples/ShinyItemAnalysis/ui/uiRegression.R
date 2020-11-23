@@ -10,13 +10,14 @@ uiRegression <-
       p(
         "Various regression models may be fitted to describe
                         item properties in more detail.",
-        strong("Logistic regression"), "can model dependency of probability of correct answer on total score by
-                        S-shaped logistic curve. Parameter", strong("\\(b_{0}\\)"), " describes horizontal position of the fitted curve,
-                        parameter ", strong("\\(b_{1}\\)"), " describes its slope."
+        strong("Logistic regression"), "can model dependency of probability of correctly answering item \\(i\\) by
+                        respondent \\(p\\) on their total score \\(X_p\\) by S-shaped logistic curve. Parameter",
+        strong("\\(b_{i0}\\)"), " describes horizontal position of the fitted curve and parameter ",
+        strong("\\(b_{i1}\\)"), " describes its slope."
       ),
       br(),
       h4("Plot with estimated logistic curve"),
-      p("Points represent proportion of correct answer with respect to total score.
+      p("Points represent proportion of correct answers with respect to total score.
                         Their size is determined by count of respondents who achieved given level of
                         total score."),
       sliderInput("logregSlider", "Item",
@@ -28,7 +29,7 @@ uiRegression <-
       downloadButton("DB_logreg_plot", label = "Download figure"),
       h4("Equation"),
       withMathJax(),
-      ("$$\\mathrm{P}(Y = 1|X, b_0, b_1) = \\mathrm{E}(Y|X, b_0, b_1) = \\frac{e^{\\left( b_{0} + b_1 X\\right)}}{1+e^{\\left( b_{0} + b_1 X\\right) }} $$"),
+      ("$$\\mathrm{P}(Y_{pi} = 1|X_p) = \\mathrm{E}(Y_{pi}|X_p) = \\frac{e^{\\left(b_{i0} + b_{i1} X_p\\right)}}{1 + e^{\\left(b_{i0} + b_{i1} X_p\\right)}}$$"),
       h4("Table of parameters"),
       fluidRow(column(12, align = "center", tableOutput("coef_logreg_table"))),
       htmlOutput("logreg_interpretation"),
@@ -44,14 +45,14 @@ uiRegression <-
       p(
         "Various regression models may be fitted to describe
                         item properties in more detail.",
-        strong("Logistic regression"), "can model dependency of probability of correct answer on
-                        standardized total score (Z-score) by S-shaped logistic curve. Parameter ", strong("\\(b_{0}\\)"), " describes
-                        horizontal position of the fitted curve (difficulty), parameter ", strong("\\(b_{1}\\)"), " describes its slope at
-                        inflection point (discrimination). "
+        strong("Logistic regression"), "can model dependency of probability of correctly answering item \\(i\\) by
+                        respondent \\(p\\) on their standardized total score \\(Z_p\\) (Z-score) by S-shaped logistic
+                        curve. Parameter", strong("\\(b_{i0}\\)"), " describes horizontal position of the fitted curve
+                        and parameter ", strong("\\(b_{i1}\\)"), " describes its slope."
       ),
       br(),
       h4("Plot with estimated logistic curve"),
-      p("Points represent proportion of correct answer with respect to standardized
+      p("Points represent proportion of correct answers with respect to standardized
                         total score. Their size is determined by count of respondents who achieved given
                         level of standardized total score."),
       sliderInput("zlogregSlider", "Item",
@@ -62,7 +63,7 @@ uiRegression <-
       plotOutput("z_logreg_plot"),
       downloadButton("DB_z_logreg_plot", label = "Download figure"),
       h4("Equation"),
-      ("$$\\mathrm{P}(Y = 1|Z, b_0, b_1) = \\mathrm{E}(Y|Z, b_0, b_1) = \\frac{e^{\\left( b_{0} + b_1 Z\\right) }}{1+e^{\\left( b_{0} + b_1 Z\\right) }} $$"),
+      ("$$\\mathrm{P}(Y_{pi} = 1|Z_p) = \\mathrm{E}(Y_{pi}|Z_p) = \\frac{e^{\\left(b_{i0} + b_{i1} Z_p\\right)}}{1 + e^{\\left( b_{i0} + b_{i1} Z_p\\right)}}$$"),
       h4("Table of parameters"),
       fluidRow(column(12, align = "center", tableOutput("coef_z_logreg"))),
       htmlOutput("z_logreg_interpretation"),
@@ -78,15 +79,16 @@ uiRegression <-
       p(
         "Various regression models may be fitted to describe
                         item properties in more detail.",
-        strong("Logistic regression"), "can model dependency of probability of correct answer on
-                        standardized total score (Z-score) by s-shaped logistic curve. Note change in parametrization - the IRT parametrization
-                        used here corresponds to the parametrization used in IRT models.
-                        Parameter", strong("\\(b\\)"), "describes horizontal position of the fitted curve (difficulty),
-                        parameter", strong("\\(a\\)"), " describes its slope at inflection point (discrimination). "
+        strong("Logistic regression"), "can model dependency of probability of correctly answering item \\(i\\) by
+                        respondent \\(p\\) on their standardized total score \\(Z_p\\) (Z-score) by S-shaped logistic
+                        curve. Note change in parametrization - the IRT parametrization used here corresponds to the
+                        parametrization used in IRT models. Parameter", strong("\\(b_{i}\\)"), " describes horizontal
+                        position of the fitted curve (difficulty) and parameter ", strong("\\(a_{i}\\)"), " describes
+                        its slope at inflection point (discrimination). "
       ),
       br(),
       h4("Plot with estimated logistic curve"),
-      p("Points represent proportion of correct answer with respect to standardized
+      p("Points represent proportion of correct answers with respect to standardized
                         total score. Their size is determined by count of respondents who achieved given
                         level of standardized total score."),
       sliderInput("zlogreg_irtSlider", "Item",
@@ -97,7 +99,7 @@ uiRegression <-
       plotOutput("z_logreg_irt_plot"),
       downloadButton("DB_z_logreg_irt_plot", label = "Download figure"),
       h4("Equation"),
-      ("$$\\mathrm{P}(Y = 1|Z, a, b) = \\mathrm{E}(Y|Z, a, b) = \\frac{e^{ a\\left(Z - b\\right) }}{1+e^{a\\left(Z - b\\right)}} $$"),
+      ("$$\\mathrm{P}(Y_{pi} = 1|Z_p) = \\mathrm{E}(Y_{pi}|Z_p) = \\frac{e^{a_i\\left(Z_p - b_i\\right)}}{1 + e^{a_i\\left(Z_p - b_i\\right)}}$$"),
       h4("Table of parameters"),
       fluidRow(column(12, align = "center", tableOutput("coef_z_logreg_irt"))),
       htmlOutput("z_logreg_irt_interpretation"),
@@ -114,15 +116,17 @@ uiRegression <-
       p(
         "Various regression models may be fitted to describe
                         item properties in more detail.",
-        strong("Nonlinear regression"), "can model dependency of probability of correct answer on
-                        standardized total score (Z-score) by s-shaped logistic curve. The IRT parametrization used here corresponds
-                        to the parametrization used in IRT models. Parameter ", strong("\\(b\\)"), " describes horizontal position of the fitted curve (difficulty),
-                        parameter ", strong("\\(a\\)"), " describes its slope at inflection point (discrimination). This model allows for nonzero lower left
-                        asymptote ", strong("\\(c\\)"), " (pseudo-guessing parameter). "
+        strong("Nonlinear regression"), "can model dependency of probability of correctly answering item \\(i\\) by
+                        respondent \\(p\\) on their standardized total score \\(Z_p\\) (Z-score) by S-shaped logistic
+                        curve. The IRT parametrization used here corresponds to the parametrization used in IRT models.
+                        Parameter", strong("\\(b_{i}\\)"), " describes horizontal position of the fitted curve
+                        (difficulty) and parameter ", strong("\\(a_{i}\\)"), " describes its slope at inflection
+                        point (discrimination). This model allows for nonzero lower left asymptote ", strong("\\(c_i\\)"),
+        " (pseudo-guessing parameter). "
       ),
       br(),
       h4("Plot with estimated nonlinear curve"),
-      p("Points represent proportion of correct answer with respect to standardized
+      p("Points represent proportion of correct answers with respect to standardized
                         total score. Their size is determined by count of respondents who achieved given
                         level of standardized total score."),
       sliderInput(
@@ -133,7 +137,7 @@ uiRegression <-
       plotOutput("nlr_3P_plot"),
       downloadButton("DB_nlr_3P_plot", label = "Download figure"),
       h4("Equation"),
-      ("$$\\mathrm{P}(Y = 1|Z, a, b, c) = \\mathrm{E}(Y|Z, a, b, c) = c + \\left( 1-c \\right) \\cdot \\frac{e^{a\\left(Z-b\\right) }}{1+e^{a\\left(Z-b\\right) }} $$"),
+      ("$$\\mathrm{P}(Y_{pi} = 1|Z_p) = \\mathrm{E}(Y_{pi}|Z_p) = c_i + \\left(1 - c_i\\right) \\cdot \\frac{e^{a_i\\left(Z_p - b_i\\right)}}{1 + e^{a_i\\left(Z_p - b_i\\right)}}$$"),
       h4("Table of parameters"),
       fluidRow(column(12, align = "center", tableOutput("coef_nlr_3P"))),
       htmlOutput("nlr_3P_interpretation"),
@@ -149,15 +153,17 @@ uiRegression <-
       p(
         "Various regression models may be fitted to describe
                         item properties in more detail.",
-        strong("Nonlinear four parameter regression"), "can model dependency of probability of correct answer on
-                        standardized total score (Z-score) by s-shaped logistic curve. The IRT parametrization used here corresponds
-                        to the parametrization used in IRT models. Parameter ", strong("\\(b\\)"), " describes horizontal position of the fitted curve (difficulty),
-                        parameter ", strong("\\(a\\)"), " describes its slope at inflection point (discrimination), pseudo-guessing parameter ", strong("\\(c\\)"), "
-                        is describes lower asymptote and inattention parameter ", strong("\\(d\\)"), "describes upper asymptote."
+        strong("Nonlinear regression"), "can model dependency of probability of correctly answering item \\(i\\) by
+                        respondent \\(p\\) on their standardized total score \\(Z_p\\) (Z-score) by S-shaped logistic
+                        curve. The IRT parametrization used here corresponds to the parametrization used in IRT models.
+                        Parameter", strong("\\(b_{i}\\)"), " describes horizontal position of the fitted curve
+                        (difficulty), parameter ", strong("\\(a_{i}\\)"), " describes its slope at inflection point
+                        (discrimination), pseudo-guessing parameter ", strong("\\(c_i\\)"), "describes its lower
+                        asymptote and inattention parameter ", strong("\\(d_i\\)"), "describes its upper asymptote."
       ),
       br(),
       h4("Plot with estimated nonlinear curve"),
-      p("Points represent proportion of correct answer with respect to standardized
+      p("Points represent proportion of correct answers with respect to standardized
                         total score. Their size is determined by count of respondents who achieved given
                         level of standardized total score."),
       sliderInput(
@@ -168,7 +174,7 @@ uiRegression <-
       plotOutput("nlr_4P_plot"),
       downloadButton("DB_nlr_4P_plot", label = "Download figure"),
       h4("Equation"),
-      ("$$\\mathrm{P}(Y = 1|Z, a, b, c,d) = \\mathrm{E}(Y|Z, a, b, c, d) = c + \\left( d-c \\right) \\cdot \\frac{e^{a\\left(Z-b\\right) }}{1+e^{a\\left(Z-b\\right) }} $$"),
+      ("$$\\mathrm{P}(Y_{pi} = 1|Z_p) = \\mathrm{E}(Y_{pi}|Z_p) = c_i + \\left(d_i - c_i\\right) \\cdot \\frac{e^{a_i\\left(Z_p - b_i\\right)}}{1 + e^{a_i\\left(Z_p - b_i\\right)}}$$"),
       h4("Table of parameters"),
       fluidRow(column(12, align = "center", tableOutput("coef_nlr_4P"))),
       htmlOutput("nlr_4P_interpretation"),
@@ -255,14 +261,14 @@ uiRegression <-
       ),
       uiOutput("cumreg_na_alert"),
       h4("Plot of cumulative probabilities"),
-      p("Lines determine the cumulative probabilities \\(P(Y \\geq k)\\). Circles represent proportion of answers with
+      p("Lines determine the cumulative probabilities \\(P(Y_{pi} \\geq k)\\). Circles represent proportion of answers with
                         at least \\(k\\) points with respect to the matching criterion, i.e., the empirical cumulative probabilities.
                         The size of the points is determined by the count of respondents who achieved given level of the matching
                         criterion."),
       plotOutput("cumreg_plot_cum"),
       downloadButton("DB_cumreg_plot_cum", label = "Download figure"),
       h4("Plot of category probabilities"),
-      p("Lines determine the category probabilities \\(P(Y = k)\\). Circles represent proportion of answers with \\(k\\)
+      p("Lines determine the category probabilities \\(P(Y_{pi} = k)\\). Circles represent proportion of answers with \\(k\\)
                         points with respect to the matching criterion, i.e., the empirical category probabilities. The size of the points
                         is determined by the count of respondents who achieved given level of the matching criterion."),
       plotOutput("cumreg_plot_cat"),
@@ -330,7 +336,7 @@ uiRegression <-
       ),
       uiOutput("adjreg_na_alert"),
       h4("Plot with category probabilities"),
-      p("Lines determine the category probabilities \\(P(Y = k)\\). Circles represent the proportion of answers with k
+      p("Lines determine the category probabilities \\(P(Y_{pi} = k)\\). Circles represent the proportion of answers with k
                         points with respect to the total score, i. e., the empirical category probabilities. The size of the circles is determined by
                         the count of respondents who achieved given level of the total score."),
       plotOutput("adjreg_plot_cat"),
@@ -353,13 +359,14 @@ uiRegression <-
         "Various regression models may be fitted to describe
                         item properties in more detail.",
         strong("Multinomial regression"), "allows for simultaneous modelling of probability of choosing
-                        given distractors on standardized total score (Z-score)."
+                        given distractors on selected ", strong("matching criterion"), "- total scores or
+                        standardized scores."
       ),
       br(),
       h4("Plot with estimated curves of multinomial regression"),
-      p("Points represent proportion of selected option with respect to standardized
-                        total score. Their size is determined by count of respondents who achieved given
-                        level of standardized total score and who selected given option."),
+      p("Points represent proportion of selected option with respect to the matching criterion. Their size
+                        is determined by count of respondents who achieved given level of the matching criterion
+                        and who selected given option."),
       fluidRow(
         column(
           3,
