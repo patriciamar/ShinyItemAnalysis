@@ -25,7 +25,7 @@ output$totalscores_tooltip_sd <- renderUI({
     "sample standard deviation",
     span(
       class = "ttooltiptext",
-      withMathJax("$$\\sqrt{\\frac{1}{n - 1}\\sum_{p = 1} (X_p - \\bar{X})^2}$$")
+      withMathJax("$$\\textrm{SD}(X) = \\sqrt{\\frac{1}{n - 1}\\sum_{p = 1} (X_p - \\bar{X})^2}$$")
     )
   )
 })
@@ -201,6 +201,45 @@ output$DB_totalscores_histogram <- downloadHandler(
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # * STANDARD SCORES #####
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+# ** Tooltips for total scores ######
+output$standardscores_tooltip_total <- renderUI({
+  span(
+    class = "ttooltip",
+    style = "color: #2286bf",
+    "sum of item scores.",
+    span(
+      class = "ttooltiptext",
+      withMathJax("$$X_p = \\sum_{i = 1}^m Y_{pi}$$")
+    )
+  )
+})
+
+# ** Tooltips for Z-score ######
+output$standardscores_tooltip_zscore <- renderUI({
+  span(
+    class = "ttooltip",
+    style = "color: #2286bf",
+    "a linear transformation of total score",
+    span(
+      class = "ttooltiptext",
+      withMathJax("$$Z_p = \\frac{X_p - \\bar{X}}{\\textrm{SD}(X)}$$")
+    )
+  )
+})
+
+# ** Tooltips for T-score ######
+output$standardscores_tooltip_tscore <- renderUI({
+  span(
+    class = "ttooltip",
+    style = "color: #2286bf",
+    "a linear transformation of Z-score",
+    span(
+      class = "ttooltiptext",
+      withMathJax("$$T_p = 10 Z_p + 50$$")
+    )
+  )
+})
 
 # ** Table for scores ######
 standardscores_table_Input <- reactive({

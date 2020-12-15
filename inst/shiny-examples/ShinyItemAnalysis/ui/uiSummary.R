@@ -12,7 +12,7 @@ uiSummary <-
       p(
         "Table below summarizes basic descriptive statistics for the total scores including number of respondents \\(n\\),
                         minimum and maximum,", htmlOutput("totalscores_tooltip_mean", inline = TRUE), "median,",
-        htmlOutput("totalscores_tooltip_sd", inline = TRUE), "\\(SD \\), ",
+        htmlOutput("totalscores_tooltip_sd", inline = TRUE), "\\(\\textrm{SD}\\), ",
         htmlOutput("totalscores_tooltip_skewness", inline = TRUE), "and",
         htmlOutput("totalscores_tooltip_kurtosis", inline = TRUE),
         "The skewness for normally distributed scores is near the value of 0 and the kurtosis is near the value of 3. "
@@ -46,22 +46,18 @@ uiSummary <-
       value = "stan_scores",
       h3("Standard scores"),
       withMathJax(p(
-        strong("Total score"), "is calculated as the sum of item scores.", br(),
-        strong("Percentile"), "indicates the value below which a percentage of observations
-                        falls, e.g. a individual score at the 80th percentile means that the individual score
-                        is the same or higher than the scores of 80% of all respondents. ", br(),
-        strong("Success rate"), "is the percentage of scores obtained, e.g. if the maximum points of test
-                        is equal to 20, minimum is 0, and individual score is 12 then success rate is \\(12 / 20 = 0.6\\), i.e. 60%.", br(),
-        strong("Z-score"), "or also standardized score is a linear transformation of total
-                        score, defined as \\(Z = \\frac{X - \\bar{X}}{s}\\), where \\(X\\) is total score,
-                        \\(\\bar{X}\\) is the sample mean of total scores and \\(s\\) is the
-                        standard deviation. The Z-score has a mean of 0 and and sample variance of 1. ", br(),
-        strong("T-score"), "is transformed Z-score with a mean of 50 and standard deviation
-                        of 10. The T-score is calculated as \\(T = (Z \\cdot 10) + 50\\). "
-      )), br(),
-      # Formulae for help:
-      # (p(strong('Total score'), 'of person \\(p\\) is calculated as the sum of item scores \\(X_p = \\sum_{i=1}^{I}X_{pi}\\)'
-      # \\(\\bar{X} = \\frac{1}{n}\\sum_{p=1}^{n}X_p\\) is the sample mean of total scores
+        strong("Total score"), "is calculated as the ", uiOutput("standardscores_tooltip_total", inline = TRUE), br(),
+        strong("Percentile"), "indicates the value below which a percentage of observations falls, e.g., an individual
+                        score at the 80th percentile means that the individual score is the same or higher than the
+                        scores of 80% of all respondents. ", br(),
+        strong("Success rate"), "is the percentage of scores obtained, e.g., if the maximum points of test is equal to
+                        20, minimum is 0, and individual score is 12 then success rate is \\(12 / 20 = 0.6\\), i.e., 60%.", br(),
+        strong("Z-score"), "or also standardized score is", uiOutput("standardscores_tooltip_zscore", inline = TRUE),
+        "with mean of 0 and and standard deviation of 1. ", br(),
+        strong("T-score"), "is ", uiOutput("standardscores_tooltip_tscore", inline = TRUE), " with a mean of 50 and standard
+                        deviation of 10. "
+      )),
+      br(),
       h4("Table by score"),
       tableOutput("standardscores_table"),
       br(),

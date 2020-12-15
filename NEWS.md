@@ -26,7 +26,7 @@
 #### MINOR UPDATES
   * Selected R code was updated.
   * Unnecessary dependencies were removed.
-  * Summary tab was updated within the app, interactive help with formulae is newly offered.
+  * Summary tab was updated within the app, interactive help with formulae is newly offered. 
   * Lines for interpretation of IIC for selected theta were added in IRT training section.
   * styler package was applied on .R files, documentation was updated
   * ggWright() plot was updated to more general description
