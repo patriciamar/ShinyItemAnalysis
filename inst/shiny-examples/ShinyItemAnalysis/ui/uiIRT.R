@@ -7,109 +7,179 @@ uiIRT <- navbarMenu(
   tabPanel(
     "Rasch",
     tabsetPanel(
+      # ** RASCH - MODEL ####
       tabPanel("Model",
         value = "rasch_mod",
         h3("Rasch model"),
         p("Item Response Theory (IRT) models are mixed-effect regression models in which
                                         respondent ability \\(\\theta_p\\) is assumed to be latent and is estimated together with item
                                         paramters. "),
-        p("In", strong("Rasch model"), "(Rasch, 1960), all items are assumed to have the same slope in inflection point, i.e., the
-                                        same discrimination parameter \\(a\\) which is fixed to value of 1. Items may differ in
-                                        location of their inflection point, i.e., they may differ in difficulty parameter \\(b_i\\).
-                                        Model parameters are estimated using marginal maximum likelihood method. Ability \\(\\theta_p\\)
-                                        of respondent \\(p\\) is assumed to follow normal distribution with freely estimated variance. "),
-        h4("Equation"),
-        ("$$\\mathrm{P}\\left(Y_{pi} = 1\\vert \\theta_{p}\\right) =  \\pi_{pi} = \\frac{e^{\\left(\\theta_{p} - b_{i}\\right)}}{1 + e^{\\left(\\theta_{p} - b_{i}\\right)}}$$"),
-        ("$$\\mathrm{I}(\\theta_p) =  \\pi_{pi} (1 - \\pi_{pi})$$"),
-        ("$$\\mathrm{T}(\\theta_p) =  \\sum_{i = 1}^m \\pi_{pi} (1 - \\pi_{pi})$$"),
-        uiOutput("rasch_mirt_model_converged"),
+        p("In", strong("Rasch model"), "(Rasch, 1960), all items are assumed to have the same slope in inflection point while they may
+                                        differ in location of the item characteristic curves and their inflection points. Model parameters
+                                        are estimated using marginal maximum likelihood method. Ability \\(\\theta_p\\) of respondent \\(p\\)
+                                        is assumed to follow normal distribution with freely estimated variance. "),
+        # *** Equations ####
+        h4("Equations"),
+        p("Item characteristic function \\(\\pi_{pi} = \\mathrm{P}\\left(Y_{pi} = 1\\vert \\theta_{p}\\right)\\) describes probability of correct
+                                        answer for given item \\(i\\). Item information  function \\(\\mathrm{I}_i(\\theta_p)\\) describes how well item
+                                        discriminates from two nearby ability levels, i.e., how much information it provides for the given ability.
+                                        Test information  function \\(\\mathrm{T}(\\theta_p)\\) sums up all item informations and thus describes the information
+                                        of the whole test. The inverse of the test information is standard error (SE) of measurement. "),
+        p("Equation and estimated item parameters can be displayed using the IRT or classical - intercept/slope ", strong("parametrization.")),
+        fluidRow(
+          column(
+            2,
+            selectInput(
+              inputId = "irt_rasch_parametrization",
+              label = "Parametrization",
+              choices = c(
+                "IRT" = "irt",
+                "Intercept/slope" = "classical"
+              )
+            )
+          )
+        ),
+        uiOutput("irt_rasch_icc_equation", inline = T),
+      "$$\\mathrm{I}_i(\\theta_p) =  \\pi_{pi} (1 - \\pi_{pi})$$",
+      "$$\\mathrm{T}(\\theta_p) =  \\sum_{i = 1}^m \\mathrm{I}_i(\\theta_p) = \\sum_{i = 1}^m \\pi_{pi} (1 - \\pi_{pi})$$",
+        uiOutput("irt_rasch_equation_interpretation"),
+        uiOutput("irt_rasch_model_converged"),
+        # *** Plots ####
         h4("Item characteristic curves"),
-        plotlyOutput("rasch_mirt"),
-        downloadButton("DP_rasch_mirt", label = "Download figure"),
+        plotlyOutput("irt_rasch_icc"),
+        downloadButton(
+          outputId = "irt_rasch_icc_download",
+          label = "Download figure"
+        ),
         br(),
         br(),
         h4("Item information curves"),
-        plotlyOutput("raschiic_mirt"),
-        downloadButton("DP_raschiic_mirt", label = "Download figure"),
-        br(),
-        br(),
-        h4("Test information function"),
-        plotlyOutput("raschtif_mirt"),
-        downloadButton("DP_raschtif_mirt", label = "Download figure"),
-        br(),
-        br(),
-        h4("Table of estimated parameters"),
-        p("Estimates of parameters are completed by SX2 item fit statistics (Orlando and Thissen, 2000). SX2 statistics are computed only when no missing data are present."),
-        tableOutput("coef_rasch_mirt"),
-        # br(),
+        plotlyOutput("irt_rasch_iic"),
         downloadButton(
-          outputId = "download_Rasch_table",
+          outputId = "irt_rasch_iic_download",
+          label = "Download figure"
+        ),
+        br(),
+        br(),
+        h4("Test information curve and SE"),
+        plotlyOutput("irt_rasch_tic"),
+        downloadButton(
+          outputId = "irt_rasch_tic_download",
+          label = "Download figure"
+        ),
+        br(),
+        br(),
+        # *** Estimated parameters ####
+        h4("Table of estimated parameters"),
+
+        p("Estimates of item parameters can be displayed using the IRT or classical - intercept/slope ", strong("parametrization,"), "which can be
+                                        selected at the top of this tab. Parameter estimates are completed by SX2 item fit statistics (Orlando &
+                                        Thissen, 2000). SX2 statistics are computed
+                                        only when no missing data are present."),
+        tableOutput("irt_rasch_coef"),
+        downloadButton(
+          outputId = "irt_rasch_coef_download",
           label = "Download table"
         ),
         br(),
         br(),
+        # *** Ability estimates ####
         h4("Ability estimates"),
-        p("This table shows the response score of only six respondents. If you want to see scores for
+        p("This table shows the response and factor scores of only six respondents. If you want to see scores for
                                         all respondents, click on", strong("Download abilities"), "button."),
-        tableOutput("raschcoef_abilities"),
-        # br(),
+        tableOutput("irt_rasch_factors"),
         downloadButton(
-          outputId = "download_Rasch_abilities",
+          outputId = "irt_rasch_factors_download",
           label = "Download abilities"
         ),
         br(),
         br(),
         h4("Scatter plot of factor scores and standardized total scores"),
-        textOutput("raschFactorCor_mirt"),
-        plotOutput("raschFactor_mirt"),
-        downloadButton("DP_raschFactor_mirt", label = "Download figure"),
+        textOutput("irt_rasch_factors_correlation"),
+        plotlyOutput("irt_rasch_factors_plot"),
+        downloadButton(
+          outputId = "irt_rasch_factors_plot_download",
+          label = "Download figure"
+        ),
         br(),
         br(),
+        # *** Wright map ####
         h4("Wright map"),
         p("Wright map (Wilson, 2005; Wright & Stone, 1979), also called item-person map, is a graphical tool
                                         to display person ability estimates and item parameters. The person side
                                         (left) represents histogram of estimated abilities of respondents.
                                         The item side (right) displays estimates of difficulty parameters of individual items. "),
-        plotOutput("raschWrightMap_mirt"),
-        downloadButton("DP_raschWM_mirt", label = "Download figure"),
+        plotOutput("irt_rasch_wrightmap"),
+        downloadButton(
+          outputId = "irt_rasch_wrightmap_download",
+          label = "Download figure"
+        ),
         br(),
         br(),
+        # *** Selected R code ####
         h4("Selected R code"),
-        div(code(HTML("library(difNLR)<br>library(mirt)&nbsp;<br>library(ShinyItemAnalysis)<br><br>#&nbsp;loading&nbsp;data<br>data(GMAT)&nbsp;<br>data&nbsp;<-&nbsp;GMAT[,&nbsp;1:20]&nbsp;<br><br>#&nbsp;fitting&nbsp;Rasch&nbsp;model<br>fit&nbsp;<-&nbsp;mirt(data,&nbsp;model&nbsp;=&nbsp;1,&nbsp;itemtype&nbsp;=&nbsp;'Rasch',&nbsp;SE&nbsp;=&nbsp;T)&nbsp;<br><br>#&nbsp;Item&nbsp;Characteristic&nbsp;Curves&nbsp;<br>plot(fit,&nbsp;type&nbsp;=&nbsp;'trace',&nbsp;facet_items&nbsp;=&nbsp;F)&nbsp;<br>#&nbsp;Item&nbsp;Information&nbsp;Curves&nbsp;<br>plot(fit,&nbsp;type&nbsp;=&nbsp;'infotrace',&nbsp;facet_items&nbsp;=&nbsp;F)&nbsp;<br>#&nbsp;Test&nbsp;Information&nbsp;Function&nbsp;<br>plot(fit,&nbsp;type&nbsp;=&nbsp;'infoSE')&nbsp;<br><br>#&nbsp;Coefficients&nbsp;<br>coef(fit,&nbsp;simplify&nbsp;=&nbsp;TRUE)&nbsp;<br>coef(fit,&nbsp;IRTpars&nbsp;=&nbsp;TRUE,&nbsp;simplify&nbsp;=&nbsp;TRUE)&nbsp;<br><br>#&nbsp;Item&nbsp;fit&nbsp;statistics&nbsp;<br>itemfit(fit)&nbsp;<br><br>#&nbsp;Factor&nbsp;scores&nbsp;vs&nbsp;Standardized&nbsp;total&nbsp;scores&nbsp;<br>fs&nbsp;<-&nbsp;as.vector(fscores(fit))&nbsp;<br>sts&nbsp;<-&nbsp;as.vector(scale(apply(data,&nbsp;1,&nbsp;sum)))&nbsp;<br>plot(fs&nbsp;~&nbsp;sts)&nbsp;<br><br>#&nbsp;Wright&nbsp;Map&nbsp;<br>b&nbsp;<-&nbsp;sapply(1:ncol(data),&nbsp;function(i)&nbsp;coef(fit)[[i]][,&nbsp;'d'])&nbsp;<br>ggWrightMap(fs,&nbsp;b)"))),
+        div(code(HTML("library(mirt)<br>library(ShinyItemAnalysis)<br><br>#&nbsp;loading&nbsp;data<br>data(GMAT,&nbsp;package&nbsp;=&nbsp;\"difNLR\")<br><br>#&nbsp;fitting&nbsp;Rasch&nbsp;model<br>fit&nbsp;<-&nbsp;mirt(GMAT[,&nbsp;1:20],&nbsp;model&nbsp;=&nbsp;1,&nbsp;itemtype&nbsp;=&nbsp;\"Rasch\",&nbsp;SE&nbsp;=&nbsp;TRUE)<br><br>#&nbsp;item&nbsp;characteristic&nbsp;curves<br>plot(fit,&nbsp;type&nbsp;=&nbsp;\"trace\",&nbsp;facet_items&nbsp;=&nbsp;FALSE)<br>#&nbsp;item&nbsp;information&nbsp;curves<br>plot(fit,&nbsp;type&nbsp;=&nbsp;\"infotrace\",&nbsp;facet_items&nbsp;=&nbsp;FALSE)<br>#&nbsp;test&nbsp;information&nbsp;curve<br>plot(fit,&nbsp;type&nbsp;=&nbsp;\"infoSE\")<br><br>#&nbsp;estimated&nbsp;parameters<br>coef(fit,&nbsp;simplify&nbsp;=&nbsp;TRUE)&nbsp;#&nbsp;classical&nbsp;intercept-slope&nbsp;parametrization<br>coef(fit,&nbsp;IRTpars&nbsp;=&nbsp;TRUE,&nbsp;simplify&nbsp;=&nbsp;TRUE)&nbsp;#&nbsp;IRT&nbsp;parametrization<br><br>#&nbsp;item&nbsp;fit&nbsp;statistics<br>itemfit(fit)<br><br>#&nbsp;factor&nbsp;scores&nbsp;vs&nbsp;standardized&nbsp;total&nbsp;scores<br>fs&nbsp;<-&nbsp;as.vector(fscores(fit))<br>sts&nbsp;<-&nbsp;as.vector(scale(rowSums(GMAT[,&nbsp;1:20])))<br>plot(fs&nbsp;~&nbsp;sts,&nbsp;xlab&nbsp;=&nbsp;\"Standardized&nbsp;total&nbsp;score\",&nbsp;ylab&nbsp;=&nbsp;\"Factor&nbsp;score\")<br>cor(fs,&nbsp;sts)<br><br>#&nbsp;Wright&nbsp;map<br>b&nbsp;<-&nbsp;coef(fit,&nbsp;IRTpars&nbsp;=&nbsp;TRUE,&nbsp;simplify&nbsp;=&nbsp;TRUE)$items[,&nbsp;\"b\"]<br>ggWrightMap(fs,&nbsp;b)"))),
         br()
       ),
+      # ** RASCH - ITEMS ####
       tabPanel("Items",
         value = "rasch_it",
         h3("Rasch model"),
         p("Item Response Theory (IRT) models are mixed-effect regression models in which respondent ability \\(\\theta_p\\) is assumed
                                         to be latent and is estimated together with item paramters. "),
-        p("In", strong("Rasch model"), "(Rasch, 1960), all items are assumed to have the same slope in inflection point, i.e., the
-                                        same discrimination parameter \\(a\\) which is fixed to value of 1. Items may differ in
-                                        location of their inflection point, i.e., they may differ in difficulty parameter \\(b_i\\).
-                                        Model parameters are estimated using marginal maximum likelihood method. Ability \\(\\theta_p\\)
-                                        of respondent \\(p\\) is assumed to follow normal distribution with freely estimated variance. "),
-        h4("Equation"),
-        ("$$\\mathrm{P}\\left(Y_{pi} = 1\\vert \\theta_{p}\\right) =  \\pi_{pi} = \\frac{e^{\\left(\\theta_{p} - b_{i}\\right)}}{1 + e^{\\left(\\theta_{p} - b_{i}\\right)}}$$"),
-        ("$$\\mathrm{I}(\\theta_p) =  \\pi_{pi} (1 - \\pi_{pi})$$"),
-        ("$$\\mathrm{T}(\\theta_p) =  \\sum_{i = 1}^m \\pi_{pi} (1 - \\pi_{pi})$$"),
+        p("In", strong("Rasch model"), "(Rasch, 1960), all items are assumed to have the same slope in inflection point while they may
+                                        differ in location of the item characteristic curves and their inflection points. Model parameters
+                                        are estimated using marginal maximum likelihood method. Ability \\(\\theta_p\\) of respondent \\(p\\)
+                                        is assumed to follow normal distribution with freely estimated variance. "),
+        # *** Equations ####
+        h4("Equations"),
+        p("Item characteristic function \\(\\pi_{pi} = \\mathrm{P}\\left(Y_{pi} = 1\\vert \\theta_{p}\\right)\\) describes probability of correct
+                                        answer for given item \\(i\\). Item information  function \\(\\mathrm{I}_i(\\theta_p)\\) describes how well item
+                                        discriminates from two nearby ability levels, i.e., how much information it provides for the given ability. "),
+        p("Equation and estimated item parameters can be displayed using the IRT or classical - intercept/slope ", strong("parametrization.")),
+        fluidRow(
+          column(
+            2,
+            selectInput(
+              inputId = "irt_rasch_item_parametrization",
+              label = "Parametrization",
+              choices = c(
+                "IRT" = "irt",
+                "Intercept/slope" = "classical"
+              )
+            )
+          )
+        ),
+        fluidRow(column(12, align = "center", uiOutput("irt_rasch_item_icc_equation"))),
+        ("$$\\mathrm{I}_i(\\theta_p) =  \\pi_{pi} (1 - \\pi_{pi})$$"),
+        uiOutput("irt_rasch_item_equation_interpretation"),
+        # *** Plots ####
         h4("Item characteristic curves"),
-        sliderInput("rachSliderChar", "Item",
+        sliderInput(
+          inputId = "irt_rasch_item_slider", label = "Item",
           min = 1, value = 1, max = 20,
           step = 1, animate = TRUE
         ),
-        plotlyOutput("rasch_mirt_tab"),
-        downloadButton("DP_rasch_mirt_tab", label = "Download figure"),
+        plotlyOutput("irt_rasch_item_icc"),
+        downloadButton(
+          outputId = "irt_rasch_item_icc_download",
+          label = "Download figure"
+        ),
         br(),
         br(),
         h4("Item information curves"),
-        plotlyOutput("raschiic_mirt_tab"),
-        downloadButton("DP_raschiic_mirt_tab", label = "Download figure"),
+        plotlyOutput("irt_rasch_item_iic"),
+        downloadButton(
+          outputId = "irt_rasch_item_iic_download",
+          label = "Download figure"
+        ),
         br(),
         br(),
+        # *** Estimated parameters ####
         h4("Table of estimated parameters"),
         p("Estimates of parameters are completed by SX2 item fit statistics (Orlando & Thissen, 2000).
                                         SX2 is computed only when no missing data are present. In such a case consider using imputed dataset!"),
-        tableOutput("tab_coef_rasch_mirt")
+        tableOutput("irt_rasch_item_coef")
       )
     )
   ),
@@ -119,17 +189,17 @@ uiIRT <- navbarMenu(
     tabsetPanel(
       tabPanel("Model",
         value = "1pl_mod",
-        h3("One parameter Item Response Theory model"),
+        h3("1PL IRT model"),
         p("Item Response Theory (IRT) models are mixed-effect regression models in which respondent ability \\(\\theta_p\\) is assumed to be latent
                                         and is estimated together with item paramters. "),
-        p("In", strong("1PL IRT model,"), "all items are assumed to have the same slope in inflection point, i.e., the same discrimination \\(a\\).
+        p("In", strong("One Parameter Logistic (1PL) IRT model,"), "all items are assumed to have the same slope in inflection point, i.e., the same discrimination \\(a\\).
                                         Its value corresponds to standard deviation of ability estimates in Rasch model. Items can differ in location
                                         of their inflection point, i.e., in item difficulty parameters \\(b_i\\). Model parameters are estimated using
                                         marginal maximum likelihood method. Ability \\(\\theta_p\\) is assumed to follow standard normal distribution. "),
-        h4("Equation"),
+        h4("Equations"),
         ("$$\\mathrm{P}\\left(Y_{pi} = 1\\vert \\theta_{p}\\right) =  \\pi_{pi} = \\frac{e^{a\\left(\\theta_{p} - b_{i}\\right)}}{1 + e^{a\\left(\\theta_{p} - b_{i}\\right)}}$$"),
-        ("$$\\mathrm{I}(\\theta_p) =  a^2 \\pi_{pi} (1 - \\pi_{pi})$$"),
-        ("$$\\mathrm{T}(\\theta_p) =  \\sum_{i = 1}^m a^2 \\pi_{pi} (1 - \\pi_{pi})$$"),
+        ("$$\\mathrm{I}_i(\\theta_p) =  a^2 \\pi_{pi} (1 - \\pi_{pi})$$"),
+        ("$$\\mathrm{T}(\\theta_p) =  \\sum_{i = 1}^m \\mathrm{I}_i(\\theta_p) = \\sum_{i = 1}^m a^2 \\pi_{pi} (1 - \\pi_{pi})$$"),
         uiOutput("irt_1PL_model_converged"),
         h4("Item characteristic curves"),
         plotlyOutput("oneparamirt_mirt"),
@@ -147,10 +217,9 @@ uiIRT <- navbarMenu(
         br(),
         br(),
         h4("Table of estimated parameters"),
-        p("Estimates of parameters are completed by SX2 item fit statistics (Orlando and Thissen, 2000).
+        p("Estimates of parameters are completed by SX2 item fit statistics (Orlando & Thissen, 2000).
                                         SX2 statistics are computed only when no missing data are present."),
         tableOutput("coef_oneparamirt_mirt"),
-        # br(),
         downloadButton(
           outputId = "download_1pl_table",
           label = "Download table"
@@ -160,7 +229,6 @@ uiIRT <- navbarMenu(
         h4("Ability estimates"),
         p("This table shows the response score of only six respondents. If you want to see scores for all respondents, click on ", strong("Download abilities"), " button."),
         tableOutput("one_PL_abilities"),
-        # br(),
         downloadButton(
           outputId = "download_onePL_abilities",
           label = "Download abilities"
@@ -183,22 +251,22 @@ uiIRT <- navbarMenu(
         br(),
         br(),
         h4("Selected R code"),
-        div(code(HTML("library(difNLR)<br>library(mirt)&nbsp;<br>library(ShinyItemAnalysis)<br><br>#&nbsp;loading&nbsp;data<br>data(GMAT)&nbsp;<br>data&nbsp;<-&nbsp;GMAT[,&nbsp;1:20]&nbsp;<br><br>#&nbsp;fitting&nbsp;1PL&nbsp;model<br>fit&nbsp;<-&nbsp;mirt(data,&nbsp;model&nbsp;=&nbsp;1,&nbsp;itemtype&nbsp;=&nbsp;'2PL',&nbsp;constrain&nbsp;=&nbsp;list((1:ncol(data))&nbsp;+&nbsp;seq(0,&nbsp;(ncol(data)&nbsp;-&nbsp;1)*3,&nbsp;3)),&nbsp;SE&nbsp;=&nbsp;T)&nbsp;<br><br>#&nbsp;Item&nbsp;Characteristic&nbsp;Curves&nbsp;<br>plot(fit,&nbsp;type&nbsp;=&nbsp;'trace',&nbsp;facet_items&nbsp;=&nbsp;F)&nbsp;<br>#&nbsp;Item&nbsp;Information&nbsp;Curves&nbsp;<br>plot(fit,&nbsp;type&nbsp;=&nbsp;'infotrace',&nbsp;facet_items&nbsp;=&nbsp;F)&nbsp;<br>#&nbsp;Test&nbsp;Information&nbsp;Function&nbsp;<br>plot(fit,&nbsp;type&nbsp;=&nbsp;'infoSE')&nbsp;<br><br>#&nbsp;Coefficients&nbsp;<br>coef(fit,&nbsp;simplify&nbsp;=&nbsp;TRUE)&nbsp;<br>coef(fit,&nbsp;IRTpars&nbsp;=&nbsp;TRUE,&nbsp;simplify&nbsp;=&nbsp;TRUE)&nbsp;<br><br>#&nbsp;Item&nbsp;fit&nbsp;statistics&nbsp;<br>itemfit(fit)&nbsp;<br><br>#&nbsp;Factor&nbsp;scores&nbsp;vs&nbsp;Standardized&nbsp;total&nbsp;scores&nbsp;<br>fs&nbsp;<-&nbsp;as.vector(fscores(fit))&nbsp;<br>sts&nbsp;<-&nbsp;as.vector(scale(apply(data,&nbsp;1,&nbsp;sum)))&nbsp;<br>plot(fs&nbsp;~&nbsp;sts)&nbsp;<br><br>#&nbsp;Wright&nbsp;Map&nbsp;<br>b&nbsp;<-&nbsp;sapply(1:ncol(data),&nbsp;function(i)&nbsp;coef(fit)[[i]][,&nbsp;'d'])&nbsp;<br>ggWrightMap(fs,&nbsp;b)<br><br><br><br>#&nbsp;You&nbsp;can&nbsp;also&nbsp;use&nbsp;ltm&nbsp;library&nbsp;for&nbsp;IRT&nbsp;models&nbsp;<br>#&nbsp;&nbsp;fitting&nbsp;1PL&nbsp;model<br>fit&nbsp;<-&nbsp;rasch(data)&nbsp;<br>#&nbsp;for&nbsp;Rasch&nbsp;model&nbsp;use&nbsp;<br>#&nbsp;fit&nbsp;<-&nbsp;rasch(data,&nbsp;constraint&nbsp;=&nbsp;cbind(ncol(data)&nbsp;+&nbsp;1,&nbsp;1))&nbsp;<br><br>#&nbsp;Item&nbsp;Characteristic&nbsp;Curves&nbsp;<br>plot(fit)&nbsp;<br>#&nbsp;Item&nbsp;Information&nbsp;Curves&nbsp;<br>plot(fit,&nbsp;type&nbsp;=&nbsp;'IIC')&nbsp;<br>#&nbsp;Test&nbsp;Information&nbsp;Function&nbsp;<br>plot(fit,&nbsp;items&nbsp;=&nbsp;0,&nbsp;type&nbsp;=&nbsp;'IIC')&nbsp;<br><br>#&nbsp;Coefficients&nbsp;<br>coef(fit)&nbsp;<br><br>#&nbsp;Factor&nbsp;scores&nbsp;vs&nbsp;Standardized&nbsp;total&nbsp;scores&nbsp;<br>df1&nbsp;<-&nbsp;ltm::factor.scores(fit,&nbsp;return.MIvalues&nbsp;=&nbsp;T)$score.dat&nbsp;<br>FS&nbsp;<-&nbsp;as.vector(df1[,&nbsp;'z1'])&nbsp;<br>df2&nbsp;<-&nbsp;df1&nbsp;<br>df2$Obs&nbsp;<-&nbsp;df2$Exp&nbsp;<-&nbsp;df2$z1&nbsp;<-&nbsp;df2$se.z1&nbsp;<-&nbsp;NULL&nbsp;<br>STS&nbsp;<-&nbsp;as.vector(scale(apply(df2,&nbsp;1,&nbsp;sum)))&nbsp;<br>df&nbsp;<-&nbsp;data.frame(FS,&nbsp;STS)&nbsp;<br>plot(FS&nbsp;~&nbsp;STS,&nbsp;data&nbsp;=&nbsp;df,&nbsp;xlab&nbsp;=&nbsp;'Standardized&nbsp;total&nbsp;score',&nbsp;ylab&nbsp;=&nbsp;'Factor&nbsp;score')"))),
+        div(code(HTML("library(ltm)<br>library(mirt)<br>library(ShinyItemAnalysis)<br><br>#&nbsp;loading&nbsp;data<br>data(GMAT,&nbsp;package&nbsp;=&nbsp;\"difNLR\")<br><br>#&nbsp;fitting&nbsp;1PL&nbsp;model<br>fit&nbsp;<-&nbsp;mirt(GMAT[,&nbsp;1:20],<br>&nbsp;&nbsp;model&nbsp;=&nbsp;1,&nbsp;itemtype&nbsp;=&nbsp;\"2PL\",<br>&nbsp;&nbsp;constrain&nbsp;=&nbsp;list((1:20)&nbsp;+&nbsp;seq(0,&nbsp;(20&nbsp;-&nbsp;1)&nbsp;*&nbsp;3,&nbsp;3)),&nbsp;SE&nbsp;=&nbsp;TRUE<br>)<br><br>#&nbsp;item&nbsp;characteristic&nbsp;curves<br>plot(fit,&nbsp;type&nbsp;=&nbsp;\"trace\",&nbsp;facet_items&nbsp;=&nbsp;FALSE)<br>#&nbsp;item&nbsp;information&nbsp;curves<br>plot(fit,&nbsp;type&nbsp;=&nbsp;\"infotrace\",&nbsp;facet_items&nbsp;=&nbsp;FALSE)<br>#&nbsp;test&nbsp;information&nbsp;curve<br>plot(fit,&nbsp;type&nbsp;=&nbsp;\"infoSE\")<br><br>#&nbsp;estimated&nbsp;parameters<br>coef(fit,&nbsp;simplify&nbsp;=&nbsp;TRUE)&nbsp;#&nbsp;classical&nbsp;intercept-slope&nbsp;parametrization<br>coef(fit,&nbsp;IRTpars&nbsp;=&nbsp;TRUE,&nbsp;simplify&nbsp;=&nbsp;TRUE)&nbsp;#&nbsp;IRT&nbsp;parametrization<br><br>#&nbsp;item&nbsp;fit&nbsp;statistics<br>itemfit(fit)<br><br>#&nbsp;factor&nbsp;scores&nbsp;vs&nbsp;standardized&nbsp;total&nbsp;scores<br>fs&nbsp;<-&nbsp;as.vector(fscores(fit))<br>sts&nbsp;<-&nbsp;as.vector(scale(rowSums(GMAT[,&nbsp;1:20])))<br>plot(fs&nbsp;~&nbsp;sts,&nbsp;xlab&nbsp;=&nbsp;\"Standardized&nbsp;total&nbsp;score\",&nbsp;ylab&nbsp;=&nbsp;\"Factor&nbsp;score\")<br>cor(fs,&nbsp;sts)<br><br>#&nbsp;Wright&nbsp;map<br>b&nbsp;<-&nbsp;coef(fit,&nbsp;IRTpars&nbsp;=&nbsp;TRUE,&nbsp;simplify&nbsp;=&nbsp;TRUE)$items[,&nbsp;\"b\"]<br>ggWrightMap(fs,&nbsp;b)<br><br>#&nbsp;you&nbsp;can&nbsp;also&nbsp;use&nbsp;the&nbsp;ltm&nbsp;package<br>#&nbsp;fitting&nbsp;1PL&nbsp;model<br>fit&nbsp;<-&nbsp;rasch(GMAT[,&nbsp;1:20])<br>#&nbsp;for&nbsp;Rasch&nbsp;model&nbsp;use<br>#&nbsp;fit&nbsp;<-&nbsp;rasch(GMAT[, 1:20],&nbsp;constraint&nbsp;=&nbsp;cbind(ncol(GMAT[, 1:20])&nbsp;+&nbsp;1,&nbsp;1))<br><br>#&nbsp;item&nbsp;characteristic&nbsp;curves<br>plot(fit)<br>#&nbsp;item&nbsp;information&nbsp;curves<br>plot(fit,&nbsp;type&nbsp;=&nbsp;\"IIC\")<br>#&nbsp;test&nbsp;information&nbsp;curve<br>plot(fit,&nbsp;items&nbsp;=&nbsp;0,&nbsp;type&nbsp;=&nbsp;\"IIC\")<br><br>#&nbsp;estimated&nbsp;parameters<br>coef(fit)<br><br>#&nbsp;factor&nbsp;scores&nbsp;vs&nbsp;standardized&nbsp;total&nbsp;scores<br>df1&nbsp;<-&nbsp;ltm::factor.scores(fit,&nbsp;return.MIvalues&nbsp;=&nbsp;TRUE)$score.dat<br>FS&nbsp;<-&nbsp;as.vector(df1[,&nbsp;\"z1\"])<br>df2&nbsp;<-&nbsp;df1<br>df2$Obs&nbsp;<-&nbsp;df2$Exp&nbsp;<-&nbsp;df2$z1&nbsp;<-&nbsp;df2$se.z1&nbsp;<-&nbsp;NULL<br>STS&nbsp;<-&nbsp;as.vector(scale(rowSums(df2[,&nbsp;1:20])))<br>df&nbsp;<-&nbsp;data.frame(FS,&nbsp;STS)<br>plot(FS&nbsp;~&nbsp;STS,&nbsp;data&nbsp;=&nbsp;df,&nbsp;xlab&nbsp;=&nbsp;\"Standardized&nbsp;total&nbsp;score\",&nbsp;ylab&nbsp;=&nbsp;\"Factor&nbsp;score\")<br>cor(FS,&nbsp;STS)"))),
         br()
       ),
       tabPanel("Items",
         value = "1pl_it",
-        h3("1PL model"),
+        h3("1PL IRT model"),
         p("Item Response Theory (IRT) models are mixed-effect regression models in which respondent ability \\(\\theta_p\\) is assumed to be latent
                                         and is estimated together with item paramters. "),
-        p("In", strong("1PL IRT model,"), "all items are assumed to have the same slope in inflection point, i.e., the same discrimination \\(a\\).
+        p("In", strong("One Parameter Logistic (1PL) IRT model,"), "all items are assumed to have the same slope in inflection point, i.e., the same discrimination \\(a\\).
                                         Its value corresponds to standard deviation of ability estimates in Rasch model. Items can differ in location
                                         of their inflection point, i.e., in item difficulty parameters \\(b_i\\). Model parameters are estimated using
                                         marginal maximum likelihood method. Ability \\(\\theta_p\\) is assumed to follow standard normal distribution. "),
-        h4("Equation"),
+        h4("Equations"),
         ("$$\\mathrm{P}\\left(Y_{pi} = 1\\vert \\theta_{p}\\right) =  \\pi_{pi} = \\frac{e^{a\\left(\\theta_{p} - b_{i}\\right)}}{1 + e^{a\\left(\\theta_{p} - b_{i}\\right)}}$$"),
-        ("$$\\mathrm{I}(\\theta_p) =  a^2 \\pi_{pi} (1 - \\pi_{pi})$$"),
-        ("$$\\mathrm{T}(\\theta_p) =  \\sum_{i = 1}^m a^2 \\pi_{pi} (1 - \\pi_{pi})$$"),
+        ("$$\\mathrm{I}_i(\\theta_p) =  a^2 \\pi_{pi} (1 - \\pi_{pi})$$"),
+        # ("$$\\mathrm{T}(\\theta_p) =  \\sum_{i = 1}^m \\mathrm{I}_i(\\theta_p) = \\sum_{i = 1}^m a^2 \\pi_{pi} (1 - \\pi_{pi})$$"),
         h4("Item characteristic curves"),
         sliderInput("onePLSliderChar", "Item",
           min = 1, value = 1, max = 20,
@@ -214,7 +282,7 @@ uiIRT <- navbarMenu(
         br(),
         br(),
         h4("Table of estimated parameters"),
-        p("Estimates of parameters are completed by SX2 item fit statistics (Orlando and Thissen, 2000).
+        p("Estimates of parameters are completed by SX2 item fit statistics (Orlando & Thissen, 2000).
                                         SX2 statistics are computed only when no missing data are present."),
         tableOutput("tab_coef_oneparamirt_mirt")
       )
@@ -226,17 +294,17 @@ uiIRT <- navbarMenu(
     tabsetPanel(
       tabPanel("Model",
         value = "2pl_mod",
-        h3("Two parameter Item Response Theory model"),
+        h3("2PL IRT model"),
         p("Item Response Theory (IRT) models are mixed-effect regression models in which respondent ability \\(\\theta_p\\) is assumed
                                         to be latent and is estimated together with item paramters."),
-        p(strong("2PL IRT model"), " allows for different slopes in inflection point, i.e., different discrimination parameters \\(a_i\\).
+        p(strong("Two Parameter Logistic (2PL) IRT model"), " allows for different slopes in inflection point, i.e., different discrimination parameters \\(a_i\\).
                                         Items can also differ in location of their inflection point, i.e., in item difficulty parameters
                                         \\(b_i\\). Model parameters are estimated using marginal maximum likelihood method. Ability
                                         \\(\\theta_p\\) is assumed to follow standard normal distribution. "),
-        h4("Equation"),
+        h4("Equations"),
         ("$$\\mathrm{P}\\left(Y_{pi} = 1\\vert \\theta_{p}\\right) =  \\pi_{pi} = \\frac{e^{a_i\\left(\\theta_{p} - b_{i}\\right)}}{1 + e^{a_i\\left(\\theta_{p} - b_{i}\\right)}}$$"),
-        ("$$\\mathrm{I}(\\theta_p) =  a_i^2 \\pi_{pi} (1 - \\pi_{pi})$$"),
-        ("$$\\mathrm{T}(\\theta_p) =  \\sum_{i = 1}^m a_i^2 \\pi_{pi} (1 - \\pi_{pi})$$"),
+        ("$$\\mathrm{I}_i(\\theta_p) =  a_i^2 \\pi_{pi} (1 - \\pi_{pi})$$"),
+        ("$$\\mathrm{T}(\\theta_p) =  \\sum_{i = 1}^m \\mathrm{I}_i(\\theta_p) = \\sum_{i = 1}^m a_i^2 \\pi_{pi} (1 - \\pi_{pi})$$"),
         uiOutput("irt_2PL_model_converged"),
         h4("Item characteristic curves"),
         plotlyOutput("twoparamirt_mirt"),
@@ -254,10 +322,9 @@ uiIRT <- navbarMenu(
         br(),
         br(),
         h4("Table of estimated parameters"),
-        p("Estimates of parameters are completed by SX2 item fit statistics (Orlando and Thissen, 2000).
+        p("Estimates of parameters are completed by SX2 item fit statistics (Orlando & Thissen, 2000).
                                         SX2 statistics are computed only when no missing data are present."),
         tableOutput("coef_twoparamirt_mirt"),
-        # br(),
         downloadButton(
           outputId = "download_2pl_table",
           label = "Download table"
@@ -281,116 +348,22 @@ uiIRT <- navbarMenu(
         br(),
         br(),
         h4("Selected R code"),
-        div(
-          code("library(difNLR)"),
-          br(),
-          code("library(mirt)"),
-          br(),
-          code("data(GMAT)"),
-          br(),
-          code("data <- GMAT[, 1:20]"),
-          br(),
-          br(),
-          code("# Model"),
-          br(),
-          code('fit <- mirt(data, model = 1, itemtype = "2PL", SE = T)'),
-          br(),
-          code("# Item Characteristic Curves"),
-          br(),
-          code('plot(fit, type = "trace", facet_items = F)'),
-          br(),
-          code("# Item Information Curves"),
-          br(),
-          code('plot(fit, type = "infotrace", facet_items = F)'),
-          br(),
-          code("# Test Information Function"),
-          br(),
-          code('plot(fit, type = "infoSE")'),
-          br(),
-          code("# Coefficients"),
-          br(),
-          code("coef(fit, simplify = TRUE)"),
-          br(),
-          code("coef(fit, IRTpars = TRUE, simplify = TRUE)"),
-          br(),
-          code("# Item fit statistics"),
-          br(),
-          code("itemfit(fit)"),
-          br(),
-          code("# Factor scores vs Standardized total scores"),
-          br(),
-          code("fs <- as.vector(fscores(fit))"),
-          br(),
-          code("sts <- as.vector(scale(apply(data, 1, sum)))"),
-          br(),
-          code("plot(fs ~ sts)"),
-          br(),
-          br(),
-          br(),
-          code("# You can also use ltm library for IRT models"),
-          br(),
-          code("library(difNLR)"),
-          br(),
-          code("library(ltm)"),
-          br(),
-          code("data(GMAT)"),
-          br(),
-          code("data <- GMAT[, 1:20]"),
-          br(),
-          br(),
-          code("# Model"),
-          br(),
-          code("fit <- ltm(data ~ z1, IRT.param = TRUE)"),
-          br(),
-          code("# Item Characteristic Curves"),
-          br(),
-          code("plot(fit)"),
-          br(),
-          code("# Item Information Curves"),
-          br(),
-          code('plot(fit, type = "IIC")'),
-          br(),
-          code("# Test Information Function"),
-          br(),
-          code('plot(fit, items = 0, type = "IIC")'),
-          br(),
-          code("# Coefficients"),
-          br(),
-          code("coef(fit)"),
-          br(),
-          code("# Factor scores vs Standardized total scores"),
-          br(),
-          code("df1  <- ltm::factor.scores(fit, return.MIvalues = T)$score.dat"),
-          br(),
-          code('FS   <- as.vector(df1[, "z1"])'),
-          br(),
-          code("df2  <- df1"),
-          br(),
-          code("df2$Obs <- df2$Exp <- df2$z1 <- df2$se.z1 <- NULL"),
-          br(),
-          code("STS <- as.vector(scale(apply(df2, 1, sum)))"),
-          br(),
-          code("df  <- data.frame(FS, STS)"),
-          br(),
-          code('plot(FS ~ STS, data = df,
-                                               xlab = "Standardized total score",
-                                               ylab = "Factor score")')
-        ),
+        div(code(HTML("library(ltm)<br>library(mirt)<br>library(ShinyItemAnalysis)<br><br>#&nbsp;loading&nbsp;data<br>data(GMAT,&nbsp;package&nbsp;=&nbsp;\"difNLR\")<br><br>#&nbsp;fitting&nbsp;2PL&nbsp;model<br>fit&nbsp;<-&nbsp;mirt(GMAT[,&nbsp;1:20],&nbsp;model&nbsp;=&nbsp;1,&nbsp;itemtype&nbsp;=&nbsp;\"2PL\",&nbsp;SE&nbsp;=&nbsp;TRUE)<br><br>#&nbsp;item&nbsp;characteristic&nbsp;curves<br>plot(fit,&nbsp;type&nbsp;=&nbsp;\"trace\",&nbsp;facet_items&nbsp;=&nbsp;FALSE)<br>#&nbsp;item&nbsp;information&nbsp;curves<br>plot(fit,&nbsp;type&nbsp;=&nbsp;\"infotrace\",&nbsp;facet_items&nbsp;=&nbsp;FALSE)<br>#&nbsp;test&nbsp;information&nbsp;curve<br>plot(fit,&nbsp;type&nbsp;=&nbsp;\"infoSE\")<br><br>#&nbsp;estimated&nbsp;parameters<br>coef(fit,&nbsp;simplify&nbsp;=&nbsp;TRUE)&nbsp;#&nbsp;classical&nbsp;intercept-slope&nbsp;parametrization<br>coef(fit,&nbsp;IRTpars&nbsp;=&nbsp;TRUE,&nbsp;simplify&nbsp;=&nbsp;TRUE)&nbsp;#&nbsp;IRT&nbsp;parametrization<br><br>#&nbsp;item&nbsp;fit&nbsp;statistics<br>itemfit(fit)<br><br>#&nbsp;factor&nbsp;scores&nbsp;vs&nbsp;standardized&nbsp;total&nbsp;scores<br>fs&nbsp;<-&nbsp;as.vector(fscores(fit))<br>sts&nbsp;<-&nbsp;as.vector(scale(rowSums(GMAT[,&nbsp;1:20])))<br>plot(fs&nbsp;~&nbsp;sts,&nbsp;xlab&nbsp;=&nbsp;\"Standardized&nbsp;total&nbsp;score\",&nbsp;ylab&nbsp;=&nbsp;\"Factor&nbsp;score\")<br>cor(fs,&nbsp;sts)<br><br>#&nbsp;you&nbsp;can&nbsp;also&nbsp;use&nbsp;the&nbsp;ltm&nbsp;package<br>#&nbsp;fitting&nbsp;2PL&nbsp;model<br>fit&nbsp;<-&nbsp;ltm(GMAT[,&nbsp;1:20]&nbsp;~&nbsp;z1,&nbsp;IRT.param&nbsp;=&nbsp;TRUE)<br><br>#&nbsp;item&nbsp;characteristic&nbsp;curves<br>plot(fit)<br>#&nbsp;item&nbsp;information&nbsp;curves<br>plot(fit,&nbsp;type&nbsp;=&nbsp;\"IIC\")<br>#&nbsp;test&nbsp;information&nbsp;curve<br>plot(fit,&nbsp;items&nbsp;=&nbsp;0,&nbsp;type&nbsp;=&nbsp;\"IIC\")<br><br>#&nbsp;estimated&nbsp;parameters<br>coef(fit)<br><br>#&nbsp;factor&nbsp;scores&nbsp;vs&nbsp;standardized&nbsp;total&nbsp;scores<br>df1&nbsp;<-&nbsp;ltm::factor.scores(fit,&nbsp;return.MIvalues&nbsp;=&nbsp;TRUE)$score.dat<br>FS&nbsp;<-&nbsp;as.vector(df1[,&nbsp;\"z1\"])<br>df2&nbsp;<-&nbsp;df1<br>df2$Obs&nbsp;<-&nbsp;df2$Exp&nbsp;<-&nbsp;df2$z1&nbsp;<-&nbsp;df2$se.z1&nbsp;<-&nbsp;NULL<br>STS&nbsp;<-&nbsp;as.vector(scale(rowSums(df2[,&nbsp;1:20])))<br>df&nbsp;<-&nbsp;data.frame(FS,&nbsp;STS)<br>plot(FS&nbsp;~&nbsp;STS,&nbsp;data&nbsp;=&nbsp;df,&nbsp;xlab&nbsp;=&nbsp;\"Standardized&nbsp;total&nbsp;score\",&nbsp;ylab&nbsp;=&nbsp;\"Factor&nbsp;score\")<br>cor(FS,&nbsp;STS)"))),
         br()
       ),
       tabPanel("Items",
         value = "2pl_it",
-        h3("Two parameter Item Response Theory model"),
+        h3("2PL IRT model"),
         p("Item Response Theory (IRT) models are mixed-effect regression models in which respondent ability \\(\\theta_p\\) is assumed
                                         to be latent and is estimated together with item paramters."),
-        p(strong("2PL IRT model"), " allows for different slopes in inflection point, i.e., different discrimination parameters \\(a_i\\).
+        p(strong("Two Parameter Logistic (2PL) IRT model"), " allows for different slopes in inflection point, i.e., different discrimination parameters \\(a_i\\).
                                         Items can also differ in location of their inflection point, i.e., in item difficulty parameters
                                         \\(b_i\\). Model parameters are estimated using marginal maximum likelihood method. Ability
                                         \\(\\theta_p\\) is assumed to follow standard normal distribution. "),
-        h4("Equation"),
+        h4("Equations"),
         ("$$\\mathrm{P}\\left(Y_{pi} = 1\\vert \\theta_{p}\\right) =  \\pi_{pi} = \\frac{e^{a_i\\left(\\theta_{p} - b_{i}\\right)}}{1 + e^{a_i\\left(\\theta_{p} - b_{i}\\right)}}$$"),
-        ("$$\\mathrm{I}(\\theta_p) =  a_i^2 \\pi_{pi} (1 - \\pi_{pi})$$"),
-        ("$$\\mathrm{T}(\\theta_p) =  \\sum_{i = 1}^m a_i^2 \\pi_{pi} (1 - \\pi_{pi})$$"),
+        ("$$\\mathrm{I}_i(\\theta_p) =  a_i^2 \\pi_{pi} (1 - \\pi_{pi})$$"),
+        # ("$$\\mathrm{T}(\\theta_p) =  \\sum_{i = 1}^m \\mathrm{I}_i(\\theta_p) = \\sum_{i = 1}^m a_i^2 \\pi_{pi} (1 - \\pi_{pi})$$"),
         h4("Item characteristic curves"),
         sliderInput("twoPLSliderChar", "Item",
           min = 1, value = 1, max = 20,
@@ -406,7 +379,7 @@ uiIRT <- navbarMenu(
         br(),
         br(),
         h4("Table of estimated parameters"),
-        p("Estimates of parameters are completed by SX2 item fit statistics (Orlando and Thissen, 2000).
+        p("Estimates of parameters are completed by SX2 item fit statistics (Orlando & Thissen, 2000).
                                         SX2 statistics are computed only when no missing data are present."),
         tableOutput("tab_coef_twoparamirt_mirt")
       )
@@ -418,17 +391,17 @@ uiIRT <- navbarMenu(
     tabsetPanel(
       tabPanel("Model",
         value = "3pl_mod",
-        h3("Three parameter Item Response Theory model"),
+        h3("3PL IRT model"),
         p("Item Response Theory (IRT) models are mixed-effect regression models in which respondent ability \\(\\theta_p\\) is assumed
                                         to be latent and is estimated together with item paramters. "),
-        p(strong("3PL IRT model"), " allows for different discriminations of items \\(a_i\\), different item difficulties \\(b_i\\)
+        p(strong("Three Parameter Logistic (3PL) IRT model"), " allows for different discriminations of items \\(a_i\\), different item difficulties \\(b_i\\)
                                         and allows also for nonzero left asymptote, pseudo-guessing \\(c_i\\). Model parameters are
                                         estimated using marginal maximum likelihood method. Ability \\(\\theta_p\\) is assumed to
                                         follow standard normal distribution. "),
-        h4("Equation"),
+        h4("Equations"),
         ("$$\\mathrm{P}\\left(Y_{pi} = 1\\vert \\theta_{p}\\right) =  \\pi_{pi} = c_i + (1 - c_i) \\cdot \\frac{e^{a_i\\left(\\theta_{p} - b_{i}\\right)}}{1 + e^{a_i\\left(\\theta_{p} - b_{i}\\right)}}$$"),
-        ("$$\\mathrm{I}(\\theta_p) =  \\frac{a_i^2 (\\pi_{pi} - c_i)^2 (1 - \\pi_{pi})}{(1 - c_i^2) \\pi_{pi}}$$"),
-        ("$$\\mathrm{T}(\\theta_p) =  \\sum_{i = 1}^m \\frac{a_i^2 (\\pi_{pi} - c_i)^2 (1 - \\pi_{pi})}{(1 - c_i^2) \\pi_{pi}}$$"),
+        ("$$\\mathrm{I}_i(\\theta_p) =  \\frac{a_i^2 (\\pi_{pi} - c_i)^2 (1 - \\pi_{pi})}{(1 - c_i^2) \\pi_{pi}}$$"),
+        ("$$\\mathrm{T}(\\theta_p) =  \\sum_{i = 1}^m \\mathrm{I}_i(\\theta_p) = \\sum_{i = 1}^m \\frac{a_i^2 (\\pi_{pi} - c_i)^2 (1 - \\pi_{pi})}{(1 - c_i^2) \\pi_{pi}}$$"),
         uiOutput("irt_3PL_model_converged"),
         h4("Item characteristic curves"),
         plotlyOutput("threeparamirt_mirt"),
@@ -446,10 +419,9 @@ uiIRT <- navbarMenu(
         br(),
         br(),
         h4("Table of estimated parameters"),
-        p("Estimates of parameters are completed by SX2 item fit statistics (Orlando and Thissen, 2000).
+        p("Estimates of parameters are completed by SX2 item fit statistics (Orlando & Thissen, 2000).
                                         SX2 statistics are computed only when no missing data are present."),
         tableOutput("coef_threeparamirt_mirt"),
-        # br(),
         downloadButton(
           outputId = "download_3pl_table",
           label = "Download table"
@@ -459,7 +431,6 @@ uiIRT <- navbarMenu(
         h4("Ability estimates"),
         p("This table shows the response score of only six respondents. If you want to see scores for all respondents, click on ", strong("Download abilities"), " button."),
         tableOutput("three_PL_abilities"),
-        # br(),
         downloadButton(
           outputId = "download_threePL_abilities",
           label = "Download abilities"
@@ -473,116 +444,22 @@ uiIRT <- navbarMenu(
         br(),
         br(),
         h4("Selected R code"),
-        div(
-          code("library(difNLR)"),
-          br(),
-          code("library(mirt)"),
-          br(),
-          code("data(GMAT)"),
-          br(),
-          code("data <- GMAT[, 1:20]"),
-          br(),
-          br(),
-          code("# Model"),
-          br(),
-          code('fit <- mirt(data, model = 1, itemtype = "3PL", SE = T)'),
-          br(),
-          code("# Item Characteristic Curves"),
-          br(),
-          code('plot(fit, type = "trace", facet_items = F)'),
-          br(),
-          code("# Item Information Curves"),
-          br(),
-          code('plot(fit, type = "infotrace", facet_items = F)'),
-          br(),
-          code("# Test Information Function"),
-          br(),
-          code('plot(fit, type = "infoSE")'),
-          br(),
-          code("# Coefficients"),
-          br(),
-          code("coef(fit, simplify = TRUE)"),
-          br(),
-          code("coef(fit, IRTpars = TRUE, simplify = TRUE)"),
-          br(),
-          code("# Item fit statistics"),
-          br(),
-          code("itemfit(fit)"),
-          br(),
-          code("# Factor scores vs Standardized total scores"),
-          br(),
-          code("fs <- as.vector(fscores(fit))"),
-          br(),
-          code("sts <- as.vector(scale(apply(data, 1, sum)))"),
-          br(),
-          code("plot(fs ~ sts)"),
-          br(),
-          code("# You can also use ltm library for IRT models"),
-          br(),
-          br(),
-          br(),
-          code("library(difNLR)"),
-          br(),
-          code("library(ltm)"),
-          br(),
-          code("data(GMAT)"),
-          br(),
-          code("data <- GMAT[, 1:20]"),
-          br(),
-          br(),
-          code("# Model"),
-          br(),
-          code("fit <- tpm(data, IRT.param = TRUE)"),
-          br(),
-          code("# Item Characteristic Curves"),
-          br(),
-          code("plot(fit)"),
-          br(),
-          code("# Item Information Curves"),
-          br(),
-          code('plot(fit, type = "IIC")'),
-          br(),
-          code("# Test Information Function"),
-          br(),
-          code('plot(fit, items = 0, type = "IIC")'),
-          br(),
-          code("# Coefficients"),
-          br(),
-          code("coef(fit)"),
-          br(),
-          code("# Factor scores vs Standardized total scores"),
-          br(),
-          code("df1  <- ltm::factor.scores(fit, return.MIvalues = T)$score.dat"),
-          br(),
-          code('FS   <- as.vector(df1[, "z1"])'),
-          br(),
-          code("df2  <- df1"),
-          br(),
-          code("df2$Obs <- df2$Exp <- df2$z1 <- df2$se.z1 <- NULL"),
-          br(),
-          code("STS <- as.vector(scale(apply(df2, 1, sum)))"),
-          br(),
-          code("df  <- data.frame(FS, STS)"),
-          br(),
-          code('plot(FS ~ STS, data = df,
-                                               xlab = "Standardized total score",
-                                               ylab = "Factor score")')
-        ),
+        div(code(HTML("library(ltm)<br>library(mirt)<br>library(ShinyItemAnalysis)<br><br>#&nbsp;loading&nbsp;data<br>data(GMAT,&nbsp;package&nbsp;=&nbsp;\"difNLR\")<br><br>#&nbsp;fitting&nbsp;3PL&nbsp;model<br>fit&nbsp;<-&nbsp;mirt(GMAT[,&nbsp;1:20],&nbsp;model&nbsp;=&nbsp;1,&nbsp;itemtype&nbsp;=&nbsp;\"3PL\",&nbsp;SE&nbsp;=&nbsp;TRUE)<br><br>#&nbsp;item&nbsp;characteristic&nbsp;curves<br>plot(fit,&nbsp;type&nbsp;=&nbsp;\"trace\",&nbsp;facet_items&nbsp;=&nbsp;FALSE)<br>#&nbsp;item&nbsp;information&nbsp;curves<br>plot(fit,&nbsp;type&nbsp;=&nbsp;\"infotrace\",&nbsp;facet_items&nbsp;=&nbsp;FALSE)<br>#&nbsp;test&nbsp;information&nbsp;curve<br>plot(fit,&nbsp;type&nbsp;=&nbsp;\"infoSE\")<br><br>#&nbsp;estimated&nbsp;parameters<br>coef(fit,&nbsp;simplify&nbsp;=&nbsp;TRUE)&nbsp;#&nbsp;classical&nbsp;intercept-slope&nbsp;parametrization<br>coef(fit,&nbsp;IRTpars&nbsp;=&nbsp;TRUE,&nbsp;simplify&nbsp;=&nbsp;TRUE)&nbsp;#&nbsp;IRT&nbsp;parametrization<br><br>#&nbsp;item&nbsp;fit&nbsp;statistics<br>itemfit(fit)<br><br>#&nbsp;factor&nbsp;scores&nbsp;vs&nbsp;standardized&nbsp;total&nbsp;scores<br>fs&nbsp;<-&nbsp;as.vector(fscores(fit))<br>sts&nbsp;<-&nbsp;as.vector(scale(rowSums(GMAT[,&nbsp;1:20])))<br>plot(fs&nbsp;~&nbsp;sts,&nbsp;xlab&nbsp;=&nbsp;\"Standardized&nbsp;total&nbsp;score\",&nbsp;ylab&nbsp;=&nbsp;\"Factor&nbsp;score\")<br>cor(fs,&nbsp;sts)<br><br>#&nbsp;you&nbsp;can&nbsp;also&nbsp;use&nbsp;the&nbsp;ltm&nbsp;package<br>#&nbsp;fitting&nbsp;3PL&nbsp;model<br>fit&nbsp;<-&nbsp;tpm(GMAT[,&nbsp;1:20],&nbsp;IRT.param&nbsp;=&nbsp;TRUE)<br><br>#&nbsp;item&nbsp;characteristic&nbsp;curves<br>plot(fit)<br>#&nbsp;item&nbsp;information&nbsp;curves<br>plot(fit,&nbsp;type&nbsp;=&nbsp;\"IIC\")<br>#&nbsp;test&nbsp;information&nbsp;curve<br>plot(fit,&nbsp;items&nbsp;=&nbsp;0,&nbsp;type&nbsp;=&nbsp;\"IIC\")<br><br>#&nbsp;estimated&nbsp;parameters<br>coef(fit)<br><br>#&nbsp;factor&nbsp;scores&nbsp;vs&nbsp;standardized&nbsp;total&nbsp;scores<br>df1&nbsp;<-&nbsp;ltm::factor.scores(fit,&nbsp;return.MIvalues&nbsp;=&nbsp;TRUE)$score.dat<br>FS&nbsp;<-&nbsp;as.vector(df1[,&nbsp;\"z1\"])<br>df2&nbsp;<-&nbsp;df1<br>df2$Obs&nbsp;<-&nbsp;df2$Exp&nbsp;<-&nbsp;df2$z1&nbsp;<-&nbsp;df2$se.z1&nbsp;<-&nbsp;NULL<br>STS&nbsp;<-&nbsp;as.vector(scale(rowSums(df2[,&nbsp;1:20])))<br>df&nbsp;<-&nbsp;data.frame(FS,&nbsp;STS)<br>plot(FS&nbsp;~&nbsp;STS,&nbsp;data&nbsp;=&nbsp;df,&nbsp;xlab&nbsp;=&nbsp;\"Standardized&nbsp;total&nbsp;score\",&nbsp;ylab&nbsp;=&nbsp;\"Factor&nbsp;score\")<br>cor(FS,&nbsp;STS)"))),
         br()
       ),
       tabPanel("Items",
         value = "3pl_it",
-        h3("Three parameter Item Response Theory model"),
+        h3("3PL IRT model"),
         p("Item Response Theory (IRT) models are mixed-effect regression models in which respondent ability \\(\\theta_p\\) is assumed
                                         to be latent and is estimated together with item paramters. "),
-        p(strong("3PL IRT model"), " allows for different discriminations of items \\(a_i\\), different item difficulties \\(b_i\\)
+        p(strong("Three Parameter Logistic (3PL) IRT model"), " allows for different discriminations of items \\(a_i\\), different item difficulties \\(b_i\\)
                                         and allows also for nonzero left asymptote, pseudo-guessing \\(c_i\\). Model parameters are
                                         estimated using marginal maximum likelihood method. Ability \\(\\theta_p\\) is assumed to
                                         follow standard normal distribution. "),
-        h4("Equation"),
+        h4("Equations"),
         ("$$\\mathrm{P}\\left(Y_{pi} = 1\\vert \\theta_{p}\\right) =  \\pi_{pi} = c_i + (1 - c_i) \\cdot \\frac{e^{a_i\\left(\\theta_{p} - b_{i}\\right)}}{1 + e^{a_i\\left(\\theta_{p} - b_{i}\\right)}}$$"),
-        ("$$\\mathrm{I}(\\theta_p) =  \\frac{a_i^2 (\\pi_{pi} - c_i)^2 (1 - \\pi_{pi})}{(1 - c_i^2) \\pi_{pi}}$$"),
-        ("$$\\mathrm{T}(\\theta_p) =  \\sum_{i = 1}^m \\frac{a_i^2 (\\pi_{pi} - c_i)^2 (1 - \\pi_{pi})}{(1 - c_i^2) \\pi_{pi}}$$"),
+        ("$$\\mathrm{I}_i(\\theta_p) =  \\frac{a_i^2 (\\pi_{pi} - c_i)^2 (1 - \\pi_{pi})}{(1 - c_i^2) \\pi_{pi}}$$"),
+        # ("$$\\mathrm{T}(\\theta_p) =  \\sum_{i = 1}^m \\mathrm{I}_i(\\theta_p) = \\sum_{i = 1}^m \\frac{a_i^2 (\\pi_{pi} - c_i)^2 (1 - \\pi_{pi})}{(1 - c_i^2) \\pi_{pi}}$$"),
         uiOutput("irt_3PL_model_converged_tab"),
         h4("Item characteristic curves"),
         sliderInput("threePLSliderChar", "Item",
@@ -599,7 +476,7 @@ uiIRT <- navbarMenu(
         br(),
         br(),
         h4("Table of estimated parameters"),
-        p("Estimates of parameters are completed by SX2 item fit statistics (Orlando and Thissen, 2000).
+        p("Estimates of parameters are completed by SX2 item fit statistics (Orlando & Thissen, 2000).
                                         SX2 statistics are computed only when no missing data are present."),
         tableOutput("tab_coef_threeparamirt_mirt")
       )
@@ -611,17 +488,17 @@ uiIRT <- navbarMenu(
     tabsetPanel(
       tabPanel("Model",
         value = "4pl_mod",
-        h3("Four parameter Item Response Theory model"),
+        h3("4PL IRT model"),
         p("Item Response Theory (IRT) models are mixed-effect regression models in which respondent ability \\(\\theta_p\\) is assumed
                                         to be latent and is estimated together with item paramters.  "),
-        p(strong("4PL IRT model"), " allows for different discriminations of items \\(a_i\\), different item difficulties \\(b_i\\),
+        p(strong("Four Parameter Logistic (4PL) IRT model"), " allows for different discriminations of items \\(a_i\\), different item difficulties \\(b_i\\),
                                         nonzero left asymptotes, pseudo-guessing \\(c_i\\) and also for upper asymptote lower than one,
                                         i.e, inattention parameter \\(d_i\\). Model parameters are estimated using marginal maximum
                                         likelihood method. Ability \\(\\theta_p\\) is assumed to follow standard normal distribution. "),
-        h4("Equation"),
+        h4("Equations"),
         ("$$\\mathrm{P}\\left(Y_{pi} = 1\\vert \\theta_{p}\\right) =  \\pi_{pi} = c_i + (d_i - c_i) \\cdot \\frac{e^{a_i\\left(\\theta_{p} - b_{i}\\right)}}{1 + e^{a_i\\left(\\theta_{p} - b_{i}\\right)}}$$"),
-        ("$$\\mathrm{I}(\\theta_p) =  \\frac{a_i^2 (\\pi_{pi} - c_i)^2 (d_i - \\pi_{pi})^2}{(d_i - c_i^2) \\pi_{pi} (1 - \\pi_{pi})}$$"),
-        ("$$\\mathrm{T}(\\theta_p) =  \\sum_{i = 1}^m \\frac{a_i^2 (\\pi_{pi} - c_i)^2 (d_i - \\pi_{pi})^2}{(d_i - c_i^2) \\pi_{pi} (1 - \\pi_{pi})}$$"),
+        ("$$\\mathrm{I}_i(\\theta_p) =  \\frac{a_i^2 (\\pi_{pi} - c_i)^2 (d_i - \\pi_{pi})^2}{(d_i - c_i^2) \\pi_{pi} (1 - \\pi_{pi})}$$"),
+        ("$$\\mathrm{T}(\\theta_p) =  \\sum_{i = 1}^m \\mathrm{I}_i(\\theta_p) = \\sum_{i = 1}^m \\frac{a_i^2 (\\pi_{pi} - c_i)^2 (d_i - \\pi_{pi})^2}{(d_i - c_i^2) \\pi_{pi} (1 - \\pi_{pi})}$$"),
         uiOutput("irt_4PL_model_converged"),
         h4("Item characteristic curves"),
         plotlyOutput("irt_4PL_icc"),
@@ -639,10 +516,9 @@ uiIRT <- navbarMenu(
         br(),
         br(),
         h4("Table of estimated parameters"),
-        p("Estimates of parameters are completed by SX2 item fit statistics (Orlando and Thissen, 2000).
+        p("Estimates of parameters are completed by SX2 item fit statistics (Orlando & Thissen, 2000).
                                         SX2 statistics are computed only when no missing data are present."),
         tableOutput("coef_irt_4PL"),
-        # br(),
         downloadButton(
           outputId = "download_4pl_table",
           label = "Download table"
@@ -652,7 +528,6 @@ uiIRT <- navbarMenu(
         h4("Ability estimates"),
         p("This table shows the response score of only six respondents. If you want to see scores for all respondents, click on ", strong("Download abilities"), " button."),
         tableOutput("four_PL_abilities"),
-        # br(),
         downloadButton(
           outputId = "download_fourPL_abilities",
           label = "Download abilities"
@@ -666,65 +541,22 @@ uiIRT <- navbarMenu(
         br(),
         br(),
         h4("Selected R code"),
-        div(
-          code("library(difNLR)"),
-          br(),
-          code("library(mirt)"),
-          br(),
-          code("data(GMAT)"),
-          br(),
-          code("data <- GMAT[, 1:20]"),
-          br(),
-          br(),
-          code("# Model"),
-          br(),
-          code('fit <- mirt(data, model = 1, itemtype = "4PL", SE = T)'),
-          br(),
-          code("# Item Characteristic Curves"),
-          br(),
-          code('plot(fit, type = "trace", facet_items = F)'),
-          br(),
-          code("# Item Information Curves"),
-          br(),
-          code('plot(fit, type = "infotrace", facet_items = F)'),
-          br(),
-          code("# Test Information Function"),
-          br(),
-          code('plot(fit, type = "infoSE")'),
-          br(),
-          code("# Coefficients"),
-          br(),
-          code("coef(fit, simplify = TRUE)"),
-          br(),
-          code("coef(fit, IRTpars = TRUE, simplify = TRUE)"),
-          br(),
-          code("# Item fit statistics"),
-          br(),
-          code("itemfit(fit)"),
-          br(),
-          code("# Factor scores vs Standardized total scores"),
-          br(),
-          code("fs <- as.vector(fscores(fit))"),
-          br(),
-          code("sts <- as.vector(scale(apply(data, 1, sum)))"),
-          br(),
-          code("plot(fs ~ sts)")
-        ),
+        div(code(HTML("library(mirt)<br>library(ShinyItemAnalysis)<br><br>#&nbsp;loading&nbsp;data<br>data(GMAT,&nbsp;package&nbsp;=&nbsp;\"difNLR\")<br><br>#&nbsp;fitting&nbsp;4PL&nbsp;model<br>fit&nbsp;<-&nbsp;mirt(GMAT[,&nbsp;1:20],&nbsp;model&nbsp;=&nbsp;1,&nbsp;itemtype&nbsp;=&nbsp;\"4PL\",&nbsp;SE&nbsp;=&nbsp;TRUE)<br><br>#&nbsp;item&nbsp;characteristic&nbsp;curves<br>plot(fit,&nbsp;type&nbsp;=&nbsp;\"trace\",&nbsp;facet_items&nbsp;=&nbsp;FALSE)<br>#&nbsp;item&nbsp;information&nbsp;curves<br>plot(fit,&nbsp;type&nbsp;=&nbsp;\"infotrace\",&nbsp;facet_items&nbsp;=&nbsp;FALSE)<br>#&nbsp;test&nbsp;information&nbsp;curve<br>plot(fit,&nbsp;type&nbsp;=&nbsp;\"infoSE\")<br><br>#&nbsp;estimated&nbsp;parameters<br>coef(fit,&nbsp;simplify&nbsp;=&nbsp;TRUE)&nbsp;#&nbsp;classical&nbsp;intercept-slope&nbsp;parametrization<br>coef(fit,&nbsp;IRTpars&nbsp;=&nbsp;TRUE,&nbsp;simplify&nbsp;=&nbsp;TRUE)&nbsp;#&nbsp;IRT&nbsp;parametrization<br><br>#&nbsp;item&nbsp;fit&nbsp;statistics<br>itemfit(fit)<br><br>#&nbsp;factor&nbsp;scores&nbsp;vs&nbsp;standardized&nbsp;total&nbsp;scores<br>fs&nbsp;<-&nbsp;as.vector(fscores(fit))<br>sts&nbsp;<-&nbsp;as.vector(scale(rowSums(GMAT[,&nbsp;1:20])))<br>plot(fs&nbsp;~&nbsp;sts,&nbsp;xlab&nbsp;=&nbsp;\"Standardized&nbsp;total&nbsp;score\",&nbsp;ylab&nbsp;=&nbsp;\"Factor&nbsp;score\")<br>cor(fs,&nbsp;sts)"))),
         br()
       ),
       tabPanel("Items",
         value = "4pl_it",
-        h3("Four parameter Item Response Theory model"),
+        h3("4PL IRT model"),
         p("Item Response Theory (IRT) models are mixed-effect regression models in which respondent ability \\(\\theta_p\\) is assumed
                                         to be latent and is estimated together with item paramters.  "),
-        p(strong("4PL IRT model"), " allows for different discriminations of items \\(a_i\\), different item difficulties \\(b_i\\),
+        p(strong("Four Parameter Logistic (4PL) IRT model"), " allows for different discriminations of items \\(a_i\\), different item difficulties \\(b_i\\),
                                         nonzero left asymptotes, pseudo-guessing \\(c_i\\) and also for upper asymptote lower than one,
                                         i.e, inattention parameter \\(d_i\\). Model parameters are estimated using marginal maximum
                                         likelihood method. Ability \\(\\theta_p\\) is assumed to follow standard normal distribution. "),
-        h4("Equation"),
+        h4("Equations"),
         ("$$\\mathrm{P}\\left(Y_{pi} = 1\\vert \\theta_{p}\\right) =  \\pi_{pi} = c_i + (d_i - c_i) \\cdot \\frac{e^{a_i\\left(\\theta_{p} - b_{i}\\right)}}{1 + e^{a_i\\left(\\theta_{p} - b_{i}\\right)}}$$"),
-        ("$$\\mathrm{I}(\\theta_p) =  \\frac{a_i^2 (\\pi_{pi} - c_i)^2 (d_i - \\pi_{pi})^2}{(d_i - c_i^2) \\pi_{pi} (1 - \\pi_{pi})}$$"),
-        ("$$\\mathrm{T}(\\theta_p) =  \\sum_{i = 1}^m \\frac{a_i^2 (\\pi_{pi} - c_i)^2 (d_i - \\pi_{pi})^2}{(d_i - c_i^2) \\pi_{pi} (1 - \\pi_{pi})}$$"),
+        ("$$\\mathrm{I}_i(\\theta_p) =  \\frac{a_i^2 (\\pi_{pi} - c_i)^2 (d_i - \\pi_{pi})^2}{(d_i - c_i^2) \\pi_{pi} (1 - \\pi_{pi})}$$"),
+        # ("$$\\mathrm{T}(\\theta_p) =  \\sum_{i = 1}^m \\mathrm{I}_i(\\theta_p) = \\sum_{i = 1}^m \\frac{a_i^2 (\\pi_{pi} - c_i)^2 (d_i - \\pi_{pi})^2}{(d_i - c_i^2) \\pi_{pi} (1 - \\pi_{pi})}$$"),
         uiOutput("irt_4PL_model_converged_item"),
         h4("Item characteristic curves"),
         sliderInput("fourPLSliderChar", "Item",
@@ -741,7 +573,7 @@ uiIRT <- navbarMenu(
         br(),
         br(),
         h4("Table of estimated parameters"),
-        p("Estimates of parameters are completed by SX2 item fit statistics (Orlando and Thissen, 2000).
+        p("Estimates of parameters are completed by SX2 item fit statistics (Orlando & Thissen, 2000).
                                         SX2 statistics are computed only when no missing data are present."),
         tableOutput("tab_coef_irt_4PL")
       )
@@ -750,7 +582,7 @@ uiIRT <- navbarMenu(
   # * MODEL COMPARISON ####
   tabPanel("Model comparison",
     value = "irt_mod_comp",
-    h3("Item Response Theory model selection"),
+    h3("IRT model selection"),
     withMathJax(),
     p("Item Response Theory (IRT) models are mixed-effect regression models in which
                              respondent ability \\(\\theta\\) is assumed to be latent and is estimated together with item
@@ -773,7 +605,7 @@ uiIRT <- navbarMenu(
     tags$style(type = "text/css", "#irtcomparison tr:last-child {font-weight:bold;}"),
     br(),
     h4("Selected R code"),
-    div(code(HTML("library(difNLR)&nbsp;<br>library(mirt)<br><br>#&nbsp;loading&nbsp;data<br>data(GMAT)&nbsp;<br>data&nbsp;<-&nbsp;GMAT[,&nbsp;1:20]&nbsp;<br><br>#&nbsp;1PL&nbsp;IRT&nbsp;model&nbsp;<br>s&nbsp;<-&nbsp;paste(\"F&nbsp;=&nbsp;1-\",&nbsp;ncol(data),&nbsp;\"\\n\",<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\"CONSTRAIN&nbsp;=&nbsp;(1-\",&nbsp;ncol(data),&nbsp;\",&nbsp;a1)\")<br>model&nbsp;<-&nbsp;mirt.model(s)<br>fit1PL&nbsp;<-&nbsp;mirt(data,&nbsp;model&nbsp;=&nbsp;model,&nbsp;itemtype&nbsp;=&nbsp;\"2PL\")<br>#&nbsp;2PL&nbsp;IRT&nbsp;model&nbsp;<br>fit2PL&nbsp;<-&nbsp;mirt(data,&nbsp;model&nbsp;=&nbsp;1,&nbsp;itemtype&nbsp;=&nbsp;\"2PL\")&nbsp;<br>#&nbsp;3PL&nbsp;IRT&nbsp;model&nbsp;<br>fit3PL&nbsp;<-&nbsp;mirt(data,&nbsp;model&nbsp;=&nbsp;1,&nbsp;itemtype&nbsp;=&nbsp;\"3PL\")&nbsp;<br>#&nbsp;4PL&nbsp;IRT&nbsp;model&nbsp;<br>fit4PL&nbsp;<-&nbsp;mirt(data,&nbsp;model&nbsp;=&nbsp;1,&nbsp;itemtype&nbsp;=&nbsp;\"4PL\")&nbsp;<br><br>#&nbsp;comparison&nbsp;<br>anova(fit1PL,&nbsp;fit2PL)&nbsp;<br>anova(fit2PL,&nbsp;fit3PL)&nbsp;<br>anova(fit3PL,&nbsp;fit4PL)"))),
+    div(code(HTML("library(mirt)<br><br>#&nbsp;loading&nbsp;data<br>data(GMAT,&nbsp;package&nbsp;=&nbsp;\"difNLR\")<br><br>#&nbsp;1PL&nbsp;IRT&nbsp;model<br>fit1PL&nbsp;<-&nbsp;mirt(GMAT[,&nbsp;1:20],&nbsp;model&nbsp;=&nbsp;1,&nbsp;constrain&nbsp;=&nbsp;list((1:20)&nbsp;+&nbsp;seq(0,&nbsp;(20&nbsp;-&nbsp;1)&nbsp;*&nbsp;3,&nbsp;3)),&nbsp;itemtype&nbsp;=&nbsp;\"2PL\")<br>#&nbsp;2PL&nbsp;IRT&nbsp;model<br>fit2PL&nbsp;<-&nbsp;mirt(GMAT[,&nbsp;1:20],&nbsp;model&nbsp;=&nbsp;1,&nbsp;itemtype&nbsp;=&nbsp;\"2PL\")<br>#&nbsp;3PL&nbsp;IRT&nbsp;model<br>fit3PL&nbsp;<-&nbsp;mirt(GMAT[,&nbsp;1:20],&nbsp;model&nbsp;=&nbsp;1,&nbsp;itemtype&nbsp;=&nbsp;\"3PL\")<br>#&nbsp;4PL&nbsp;IRT&nbsp;model<br>fit4PL&nbsp;<-&nbsp;mirt(GMAT[,&nbsp;1:20],&nbsp;model&nbsp;=&nbsp;1,&nbsp;itemtype&nbsp;=&nbsp;\"4PL\")<br><br>#&nbsp;comparison<br>anova(fit1PL,&nbsp;fit2PL)<br>anova(fit2PL,&nbsp;fit3PL)<br>anova(fit3PL,&nbsp;fit4PL)"))),
     br()
   ),
   "----",
@@ -784,15 +616,15 @@ uiIRT <- navbarMenu(
     tabsetPanel(
       tabPanel("Model",
         value = "bock_mod",
-        h3("Bock's nominal Item Response Theory model"),
-        p("The nominal response model (NRM) was introduced by Bock (1972) as a way to model responses to items with two or more nominal
+        h3("Bock's nominal IRT model"),
+        p("The Nominal Response Model (NRM) was introduced by Bock (1972) as a way to model responses to items with two or more nominal
                                         categories. This model is suitable for multiple-choice items with no particular ordering of
-                                        distractors. It is also generalization of some models for ordinal data, e.g. generalized partial
-                                        credit model (GPCM) or its restricted versions partial credit model (PCM) and rating scale model
+                                        distractors. It is also generalization of some models for ordinal data, e.g., Generalized Partial
+                                        Credit Model (GPCM) or its restricted versions Partial Credit Model (PCM) and Rating Scale Model
                                         (RSM)."),
-        h4("Equation"),
+        h4("Equations"),
         withMathJax(
-          "For ", strong("\\(K\\)"), " possible test choices the probability of the choice ", strong("\\(k\\)"), " for person ",
+          "For ", strong("\\(K_i\\)"), " possible test choices the probability of the choice ", strong("\\(k\\)"), " for person ",
           strong("\\(p\\)"), " with latent trait", strong("\\(\\theta_p\\)"), " in item ", strong("\\(i\\)"),
           "is given by the following equation: "
         ),
@@ -829,21 +661,21 @@ uiIRT <- navbarMenu(
         br(),
         br(),
         h4("Selected R code"),
-        div(code(HTML("library(difNLR)&nbsp;<br>library(mirt)<br>library(ShinyItemAnalysis)<br><br>#&nbsp;loading&nbsp;data<br>data(\"dataMedicalgraded\")&nbsp;<br>data&nbsp;<-&nbsp;dataMedicalgraded[,&nbsp;1:100]&nbsp;<br><br>#&nbsp;model&nbsp;<br>fit&nbsp;<-&nbsp;mirt(data,&nbsp;model&nbsp;=&nbsp;1,&nbsp;itemtype&nbsp;=&nbsp;\"nominal\")&nbsp;<br><br>#&nbsp;item&nbsp;characteristic&nbsp;curves&nbsp;<br>plot(fit,&nbsp;type&nbsp;=&nbsp;\"trace\",&nbsp;facet_items&nbsp;=&nbsp;F)&nbsp;<br>#&nbsp;item&nbsp;information&nbsp;curves&nbsp;<br>plot(fit,&nbsp;type&nbsp;=&nbsp;\"infotrace\",&nbsp;facet_items&nbsp;=&nbsp;F)&nbsp;<br>#&nbsp;test&nbsp;information&nbsp;function&nbsp;<br>plot(fit,&nbsp;type&nbsp;=&nbsp;\"infoSE\")&nbsp;<br><br>#&nbsp;coefficients&nbsp;<br>coef(fit,&nbsp;simplify&nbsp;=&nbsp;TRUE)&nbsp;<br>coef(fit,&nbsp;IRTpars&nbsp;=&nbsp;TRUE,&nbsp;simplify&nbsp;=&nbsp;TRUE)&nbsp;<br><br>#&nbsp;factor&nbsp;scores&nbsp;vs&nbsp;standardized&nbsp;total&nbsp;scores&nbsp;<br>fs&nbsp;<-&nbsp;as.vector(fscores(fit))&nbsp;<br>sts&nbsp;<-&nbsp;as.vector(scale(apply(data,&nbsp;1,&nbsp;sum)))&nbsp;<br>plot(fs&nbsp;~&nbsp;sts)"))),
+        div(code(HTML("library(mirt)<br><br>#&nbsp;loading&nbsp;data<br>data(HCItest,&nbsp;HCI,&nbsp;package&nbsp;=&nbsp;\"ShinyItemAnalysis\")<br>HCInumeric&nbsp;<-&nbsp;HCItest[,&nbsp;1:20]<br>HCInumeric[]&nbsp;<-&nbsp;sapply(HCInumeric,&nbsp;as.numeric)<br><br>#&nbsp;model<br>fit&nbsp;<-&nbsp;mirt(HCInumeric,&nbsp;model&nbsp;=&nbsp;1,&nbsp;itemtype&nbsp;=&nbsp;\"nominal\")<br><br>#&nbsp;item&nbsp;response&nbsp;curves<br>plot(fit,&nbsp;type&nbsp;=&nbsp;\"trace\")<br>#&nbsp;item&nbsp;information&nbsp;curves<br>plot(fit,&nbsp;type&nbsp;=&nbsp;\"infotrace\",&nbsp;facet_items&nbsp;=&nbsp;FALSE)<br>#&nbsp;test&nbsp;information&nbsp;curve<br>plot(fit,&nbsp;type&nbsp;=&nbsp;\"infoSE\")<br><br>#&nbsp;estimated&nbsp;parameters<br>coef(fit,&nbsp;simplify&nbsp;=&nbsp;TRUE)&nbsp;#&nbsp;classical&nbsp;intercept-slope&nbsp;parametrization<br>coef(fit,&nbsp;IRTpars&nbsp;=&nbsp;TRUE,&nbsp;simplify&nbsp;=&nbsp;TRUE)&nbsp;#&nbsp;IRT&nbsp;parametrization<br><br>#&nbsp;factor&nbsp;scores&nbsp;vs&nbsp;standardized&nbsp;total&nbsp;scores<br>fs&nbsp;<-&nbsp;as.vector(fscores(fit))<br>sts&nbsp;<-&nbsp;as.vector(scale(rowSums(HCI[,&nbsp;1:20])))<br>plot(fs&nbsp;~&nbsp;sts,&nbsp;xlab&nbsp;=&nbsp;\"Standardized&nbsp;total&nbsp;score\",&nbsp;ylab&nbsp;=&nbsp;\"Factor&nbsp;score\")<br>cor(fs,&nbsp;sts)"))),
         br(),
         br()
       ),
-      tabPanel("Item",
+      tabPanel("Items",
         value = "bock_it",
-        h3("Bock's nominal Item Response Theory model"),
-        p("The nominal response model (NRM) was introduced by Bock (1972) as a way to model responses to items with two or more nominal
+        h3("Bock's nominal IRT model"),
+        p("The Nominal Response Model (NRM) was introduced by Bock (1972) as a way to model responses to items with two or more nominal
                                         categories. This model is suitable for multiple-choice items with no particular ordering of
-                                        distractors. It is also generalization of some models for ordinal data, e.g. generalized partial
-                                        credit model (GPCM) or its restricted versions partial credit model (PCM) and rating scale model
+                                        distractors. It is also generalization of some models for ordinal data, e.g., Generalized Partial
+                                        Credit Model (GPCM) or its restricted versions Partial Credit Model (PCM) and Rating Scale Model
                                         (RSM)."),
-        h4("Equation"),
+        h4("Equations"),
         withMathJax(
-          "For ", strong("\\(K\\)"), " possible test choices the probability of the choice ", strong("\\(k\\)"), " for person ",
+          "For ", strong("\\(K_i\\)"), " possible test choices the probability of the choice ", strong("\\(k\\)"), " for person ",
           strong("\\(p\\)"), " with latent trait", strong("\\(\\theta_p\\)"), " in item ", strong("\\(i\\)"),
           "is given by the following equation: "
         ),

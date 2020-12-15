@@ -6,31 +6,90 @@
 # * RASCH ######
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-# ** Model ######
-rasch_model_mirt <- reactive({
+# %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+# ** UPDATING INPUTS ######
+
+irt_rasch <- reactiveValues(
+  parametrization = NULL
+)
+
+# ** Updating parametrization ######
+observeEvent(input$irt_rasch_parametrization, {
+  irt_rasch$parametrization <- input$irt_rasch_parametrization
+})
+observeEvent(input$irt_rasch_item_parametrization, {
+  irt_rasch$parametrization <- input$irt_rasch_item_parametrization
+})
+observeEvent(irt_rasch$parametrization, {
+  if (irt_rasch$parametrization != input$irt_rasch_parametrization) {
+    updateCheckboxGroupInput(
+      session = session,
+      inputId = "irt_rasch_parametrization",
+      selected = irt_rasch$parametrization
+    )
+  }
+  if (irt_rasch$parametrization != input$irt_rasch_item_parametrization) {
+    updateCheckboxGroupInput(
+      session = session,
+      inputId = "irt_rasch_item_parametrization",
+      selected = irt_rasch$parametrization
+    )
+  }
+})
+
+# %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+# ** COMMON SETTING ######
+
+# *** Model ######
+irt_rasch_model <- reactive({
   fitRasch <- mirt(binary(),
     model = 1, itemtype = "Rasch",
     SE = TRUE, verbose = FALSE
   )
 })
 
-# ** Check whether fit converged ######
-output$rasch_mirt_model_converged <- renderUI({
-  fit <- rasch_model_mirt()
+# *** Check whether fit converged ######
+output$irt_rasch_model_converged <- renderUI({
+  fit <- irt_rasch_model()
   txt <- ifelse(fit@OptimInfo$converged,
     "",
     "<font color = 'orange'> Estimation process terminated without convergence.
-                Estimates are not reliable. Try to increase number of iterations of EM algorithm in Settings.
+                Estimates are not reliable. Try to increase a number of iterations of the EM algorithm in Settings.
                 </font>"
   )
   HTML(txt)
 })
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-# ** Tab model ######
-# *** CC ######
-raschInput_mirt <- reactive({
-  mod <- rasch_model_mirt()
+# ** MODEL ######
+
+# *** ICC equation ######
+output$irt_rasch_icc_equation <- renderUI({
+  if (input$irt_rasch_parametrization == "irt") {
+    txt1 <- "{(\\theta_p - b_i)}"
+  } else {
+    txt1 <- "{(\\beta_{i0} + \\theta_p)}"
+  }
+  txt <- paste0("$$\\mathrm{P}(Y_{pi} = 1|\\theta_p) = \\pi_{pi} = \\frac{e^", txt1, "}{1 + e^", txt1, "}$$")
+
+  withMathJax(txt)
+})
+
+# *** Parameters interpretation ######
+output$irt_rasch_equation_interpretation <- renderUI({
+  if (input$irt_rasch_parametrization == "irt") {
+    txt <- "Parameter \\(b_i\\) is a location of the inflection points of the characteristic function of item \\(i\\).
+    It also gives the level of ability \\(\\theta_p\\) for which the probability of the correct answer is exactly 0.5. "
+  } else {
+    txt <- "Parameter \\(\\beta_{i0}\\) is an intercept and it describes a location of the inflection points of the
+    characteristic function of item \\(i\\). "
+  }
+  withMathJax(txt)
+})
+
+# *** ICC ######
+irt_rasch_icc <- reactive({
+  mod <- irt_rasch_model()
 
   # thetas from model
   thetas <- mod@Model$Theta
@@ -54,8 +113,8 @@ raschInput_mirt <- reactive({
     theme_app()
 })
 
-output$rasch_mirt <- renderPlotly({
-  g <- raschInput_mirt()
+output$irt_rasch_icc <- renderPlotly({
+  g <- irt_rasch_icc()
   p <- ggplotly(g)
 
   # changing plotly description
@@ -68,13 +127,14 @@ output$rasch_mirt <- renderPlotly({
   p %>% plotly::config(displayModeBar = FALSE)
 })
 
-output$DP_rasch_mirt <- downloadHandler(
+# *** Download ICC ######
+output$irt_rasch_icc_download <- downloadHandler(
   filename = function() {
-    paste("fig_RaschItemCharacteristicCurves.png", sep = "")
+    "fig_Rasch_ICC.png"
   },
   content = function(file) {
     ggsave(file,
-      plot = raschInput_mirt() +
+      plot = irt_rasch_icc() +
         theme(
           text = element_text(size = setting_figures$text_size),
           legend.position = "right", legend.key.size = unit(0.8, "lines")
@@ -87,8 +147,8 @@ output$DP_rasch_mirt <- downloadHandler(
 )
 
 # *** IIC ######
-raschiicInput_mirt <- reactive({
-  plt <- plot(rasch_model_mirt(), type = "infotrace", facet_items = FALSE)
+irt_rasch_iic <- reactive({
+  plt <- plot(irt_rasch_model(), type = "infotrace", facet_items = FALSE)
   vals <- plt$panel.args
   x <- vals[[1]]$x
   y <- vals[[1]]$y
@@ -113,8 +173,8 @@ raschiicInput_mirt <- reactive({
     theme_app()
 })
 
-output$raschiic_mirt <- renderPlotly({
-  g <- raschiicInput_mirt()
+output$irt_rasch_iic <- renderPlotly({
+  g <- irt_rasch_iic()
   p <- ggplotly(g)
 
   # changing plotly description
@@ -127,13 +187,14 @@ output$raschiic_mirt <- renderPlotly({
   p %>% plotly::config(displayModeBar = FALSE)
 })
 
-output$DP_raschiic_mirt <- downloadHandler(
+# *** Download IIC ######
+output$irt_rasch_iic_download <- downloadHandler(
   filename = function() {
-    paste("fig_RaschItemInformationCurves.png", sep = "")
+    "fig_Rasch_IIC.png"
   },
   content = function(file) {
     ggsave(file,
-      plot = raschiicInput_mirt() +
+      plot = irt_rasch_iic() +
         theme(
           text = element_text(size = setting_figures$text_size),
           legend.position = "right", legend.key.size = unit(0.8, "lines")
@@ -145,9 +206,9 @@ output$DP_raschiic_mirt <- downloadHandler(
   }
 )
 
-# *** TIF ######
-raschtifInput_mirt <- reactive({
-  plt <- plot(rasch_model_mirt(), type = "infoSE")
+# *** TIC ######
+irt_rasch_tic <- reactive({
+  plt <- plot(irt_rasch_model(), type = "infoSE")
 
   vals <- plt$panel.args
   x <- vals[[1]]$x
@@ -167,8 +228,8 @@ raschtifInput_mirt <- reactive({
     theme_app()
 })
 
-output$raschtif_mirt <- renderPlotly({
-  g <- raschtifInput_mirt()
+output$irt_rasch_tic <- renderPlotly({
+  g <- irt_rasch_tic()
 
   p <- ggplotly(g)
 
@@ -179,13 +240,14 @@ output$raschtif_mirt <- renderPlotly({
   p %>% plotly::config(displayModeBar = FALSE)
 })
 
-output$DP_raschtif_mirt <- downloadHandler(
+# *** Download TIC ######
+output$irt_rasch_tic_download <- downloadHandler(
   filename = function() {
-    paste("fig_RaschTestInformationFunction.png", sep = "")
+    "fig_Rasch_TIC.png"
   },
   content = function(file) {
     ggsave(file,
-      plot = raschtifInput_mirt() +
+      plot = irt_rasch_tic() +
         theme(
           text = element_text(size = setting_figures$text_size),
           legend.position = "right", legend.key.size = unit(0.8, "lines")
@@ -198,69 +260,82 @@ output$DP_raschtif_mirt <- downloadHandler(
 )
 
 # *** Table of parameters in summary page ######
-raschcoefInput_mirt <- reactive({
-  fit <- rasch_model_mirt()
+irt_rasch_coef <- reactive({
+  fit <- irt_rasch_model()
+  n <- length(item_names())
 
-  par_tab <- coef(fit, IRTpars = TRUE, simplify = TRUE)$items[, "b"]
-  se_list <- coef(fit, printSE = TRUE)
-  se_tab <- sapply(1:length(par_tab), function(i) se_list[[i]]["SE", "d"])
+  IRTpars <- input$irt_rasch_parametrization == "irt"
+  par_names <- ifelse(IRTpars, "b", "d")
+  par_labls <- ifelse(IRTpars, "b", "\\beta_0")
+  if (IRTpars) {
+    par_labls_all <- c("a", "b", "c", "d")
+    tab.comp <- data.frame(rep(1, n), "-", 0, "-", 0, "-", 1, "-", "-", "-", "-")
+  } else {
+    par_labls_all <- c("\\beta_0", "\\beta_1", "c", "d")
+    tab.comp <- data.frame(0, "-", rep(1, n), "-", 0, "-", 1, "-", "-", "-", "-")
+  }
+  colnames(tab.comp) <- c(
+    paste0(
+      c("", "SE("),
+      rep(par_labls_all, each = 2),
+      c("", ")")
+    ),
+    "SX2-value", "df", "p-value"
+  )
+  rownames(tab.comp) <- item_names()
+
+  par_tab <- coef(fit, IRTpars = IRTpars, simplify = TRUE)$items[, par_names]
+  se_list <- coef(fit, IRTpars = IRTpars, printSE = TRUE)
+  se_tab <- sapply(1:length(par_tab), function(i) se_list[[i]]["SE", par_names])
 
   tab <- cbind(par_tab, se_tab)
-
   tab <- round(tab, 3)
 
   if (!is.null(tryCatch(round(itemfit(fit)[, 2:4], 3), error = function(e) {
     cat("ERROR : ", conditionMessage(e), "\n")
   }))) {
     tab <- data.frame(tab, round(itemfit(fit)[, 2:4], 3))
-    colnames(tab) <- c("b", "SE(b)", "SX2-value", "df", "p-value")
+    colnames(tab) <- c(par_labls, paste0("SE(", par_labls, ")"), "SX2-value", "df", "p-value")
   } else {
-    colnames(tab) <- c("b", "SE(b)")
+    colnames(tab) <- c(par_labls, paste0("SE(", par_labls, ")"))
   }
   rownames(tab) <- item_names()
-
-  n <- length(item_names())
-  tab.comp <- data.frame(rep(1, n), "-", 0, "-", 0, "-", 1, "-", "-", "-", "-")
-
-  colnames(tab.comp) <- c(
-    "a", "SE(a)", "b", "SE(b)", "c", "SE(c)", "d", "SE(d)",
-    "SX2-value", "df", "p-value"
-  )
-  rownames(tab.comp) <- item_names()
-
   tab <- round(tab, 3)
+
   tab.comp[, colnames(tab.comp) %in% colnames(tab)] <- tab
 
   colnames(tab.comp) <- c(
-    "%%mathit{a}%%", "SE(%%mathit{a}%%)", "%%mathit{b}%%", "SE(%%mathit{b}%%)", "%%mathit{c}%%",
-    "SE(%%mathit{c}%%)", "%%mathit{d}%%", "SE(%%mathit{d}%%)",
+    paste0(
+      c("", "SE("),
+      rep(paste0("%%mathit{", par_labls_all, "}%%"), each = 2),
+      c("", ")")
+    ),
     "SX2-value", "df", "p-value"
   )
   tab.comp
 })
 
-output$coef_rasch_mirt <- renderTable(
+output$irt_rasch_coef <- renderTable(
   {
-    raschcoefInput_mirt()
+    irt_rasch_coef()
   },
   include.rownames = TRUE,
   include.colnames = TRUE
 )
 
 # ** Download table ######
-output$download_Rasch_table <- downloadHandler(
+output$irt_rasch_coef_download <- downloadHandler(
   filename = function() {
-    paste("Rasch_table", ".csv", sep = "")
+    "tab_Rasch_parameters.csv"
   },
   content = function(file) {
-    data <- raschcoefInput_mirt()
-    write.csv(data, file)
+    write.csv(irt_rasch_coef(), file)
   }
 )
 
-# * Abilities estimates parameters * #
-raschAbilities <- reactive({
-  fit <- rasch_model_mirt()
+# ** Factor scores ######
+irt_rasch_factors <- reactive({
+  fit <- irt_rasch_model()
 
   ts <- as.vector(total_score())
   sts <- as.vector(z_score())
@@ -270,35 +345,30 @@ raschAbilities <- reactive({
   tab <- data.frame(cbind(ts, sts, fs, fs.Err))
   colnames(tab) <- c("Total scores", "Z-score", "F-scores", "SE of F-score")
   n <- nrow(tab)
-  nam <- vector("character", length = n)
-  for (i in 1:n) {
-    nam[i] <- paste("Respondent", i)
-  }
-  rownames(tab) <- c(nam)
+  rownames(tab) <- paste("Respondent", 1:n)
   tab
 })
 
-output$raschcoef_abilities <- renderTable(
+output$irt_rasch_factors <- renderTable(
   {
-    head(raschAbilities(), 6)
+    head(irt_rasch_factors(), 6)
   },
   include.rownames = TRUE
 )
 
-# ** Download abilities ######
-output$download_Rasch_abilities <- downloadHandler(
+# ** Download factor scores ######
+output$irt_rasch_factors_download <- downloadHandler(
   filename = function() {
-    paste("Rasch_abilities", ".csv", sep = "")
+    "tab_Rasch_abilities.csv"
   },
   content = function(file) {
-    data <- raschAbilities()
-    write.csv(data, file, col.names = TRUE)
+    write.csv(irt_rasch_factors(), file, col.names = TRUE)
   }
 )
 
 # *** Factor scores correlation ######
-raschFactorCorInput_mirt <- reactive({
-  fs <- as.vector(fscores(rasch_model_mirt()))
+irt_rasch_factors_correlation <- reactive({
+  fs <- as.vector(fscores(irt_rasch_model()))
   sts <- z_score()
 
   whok <- !(is.na(fs) | is.na(sts))
@@ -307,14 +377,14 @@ raschFactorCorInput_mirt <- reactive({
   cor
 })
 
-output$raschFactorCor_mirt <- renderText({
-  paste("The Pearson correlation coefficient between standardized total score (Z-score)
-        and factor score estimated by IRT model is", round(raschFactorCorInput_mirt(), 3))
+output$irt_rasch_factors_correlation <- renderText({
+  paste0("The Pearson correlation coefficient between standardized total score (Z-score)
+        and factor score estimated by IRT model is ", sprintf("%.3f", irt_rasch_factors_correlation()), ". ")
 })
 
 # *** Factor scores plot ######
-raschFactorInput_mirt <- reactive({
-  fs <- as.vector(fscores(rasch_model_mirt()))
+irt_rasch_factors_plot <- reactive({
+  fs <- as.vector(fscores(irt_rasch_model()))
   sts <- z_score()
 
   df <- data.frame(fs, sts)
@@ -334,17 +404,26 @@ raschFactorInput_mirt <- reactive({
     )
 })
 
-output$raschFactor_mirt <- renderPlot({
-  raschFactorInput_mirt()
+output$irt_rasch_factors_plot <- renderPlotly({
+  g <- irt_rasch_factors_plot()
+
+  p <- ggplotly(g)
+
+  p$x$data[[1]]$text <- gsub("sts", "Z-score", p$x$data[[1]]$text)
+  p$x$data[[1]]$text <- gsub("fs", "F-score", p$x$data[[1]]$text)
+
+  p$elementId <- NULL
+  p %>% plotly::config(displayModeBar = FALSE)
 })
 
-output$DP_raschFactor_mirt <- downloadHandler(
+# *** Download factor scores plot ######
+output$irt_rasch_factors_plot_download <- downloadHandler(
   filename = function() {
-    paste("fig_RaschFactorVsStandardized.png", sep = "")
+    "fig_Rasch_FactorScores.png"
   },
   content = function(file) {
     ggsave(file,
-      plot = raschFactorInput_mirt() +
+      plot = irt_rasch_factors_plot() +
         theme(text = element_text(size = setting_figures$text_size)),
       device = "png",
       height = setting_figures$height, width = setting_figures$width,
@@ -353,28 +432,29 @@ output$DP_raschFactor_mirt <- downloadHandler(
   }
 )
 
-# *** Wright Map ######
-raschWrightMapInput_mirt <- reactive({
-  fit <- rasch_model_mirt()
+# *** Wright map ######
+irt_rasch_wrightmap <- reactive({
+  fit <- irt_rasch_model()
   fs <- as.vector(fscores(fit))
 
-  b <- coef(fit, IRTpars = T, simplify = T)$items[, "b"]
+  b <- coef(fit, IRTpars = TRUE, simplify = TRUE)$items[, "b"]
   names(b) <- item_names()
 
   ggWrightMap(fs, b, item.names = item_names())
 })
 
-output$raschWrightMap_mirt <- renderPlot({
-  raschWrightMapInput_mirt()
+output$irt_rasch_wrightmap <- renderPlot({
+  irt_rasch_wrightmap()
 })
 
-output$DP_raschWM_mirt <- downloadHandler(
+# *** Download Wright map ######
+output$irt_rasch_wrightmap_download <- downloadHandler(
   filename = function() {
-    paste("fig_RaschWrightMap.png", sep = "")
+    "fig_Rasch_WrightMap.png"
   },
   content = function(file) {
     ggsave(file,
-      plot = raschWrightMapInput_mirt() +
+      plot = irt_rasch_wrightmap() +
         theme(text = element_text(size = setting_figures$text_size)),
       device = "png",
       height = setting_figures$height, width = setting_figures$width,
@@ -384,16 +464,41 @@ output$DP_raschWM_mirt <- downloadHandler(
 )
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-# ** Tab item ######
+# ** ITEM ######
+
 # *** Update item slider ######
 observe({
-  updateSliderInput(session, "rachSliderChar", max = length(item_names()))
+  updateSliderInput(session, "irt_rasch_item_slider", max = length(item_names()))
 })
 
-# *** CC items ######
-raschInput_mirt_tab <- reactive({
-  item <- input$rachSliderChar
-  fit <- rasch_model_mirt()
+# *** ICC items equation ######
+output$irt_rasch_item_icc_equation <- renderUI({
+  if (input$irt_rasch_parametrization == "irt") {
+    txt1 <- "{(\\theta_p - b_i)}"
+  } else {
+    txt1 <- "{(\\beta_{i0} + \\theta_p)}"
+  }
+  txt <- paste0("$$\\mathrm{P}(Y_{pi} = 1|\\theta_p) = \\pi_{pi} = \\frac{e^", txt1, "}{1 + e^", txt1, "}$$")
+
+  withMathJax(HTML(txt))
+})
+
+# *** Parameters interpretation ######
+output$irt_rasch_item_equation_interpretation <- renderUI({
+  if (input$irt_rasch_item_parametrization == "irt") {
+    txt <- "Parameter \\(b_i\\) is a location of the inflection points of the characteristic function of item \\(i\\).
+    It also gives the level of ability \\(\\theta_p\\) for which the probability of the correct answer is exactly 0.5. "
+  } else {
+    txt <- "Parameter \\(\\beta_{i0}\\) is an intercept and it describes a location of the inflection points of the
+    characteristic function of item \\(i\\). "
+  }
+  withMathJax(txt)
+})
+
+# *** ICC items ######
+irt_rasch_item_icc <- reactive({
+  item <- input$irt_rasch_item_slider
+  fit <- irt_rasch_model()
 
   plt <- plot(fit, type = "trace", which.item = item, facet_items = FALSE)
   vals <- plt$panel.args
@@ -419,8 +524,8 @@ raschInput_mirt_tab <- reactive({
     theme_app()
 })
 
-output$rasch_mirt_tab <- renderPlotly({
-  g <- raschInput_mirt_tab()
+output$irt_rasch_item_icc <- renderPlotly({
+  g <- irt_rasch_item_icc()
   p <- ggplotly(g)
 
   # changing plotly description
@@ -433,13 +538,15 @@ output$rasch_mirt_tab <- renderPlotly({
   p %>% plotly::config(displayModeBar = FALSE)
 })
 
-output$DP_rasch_mirt_tab <- downloadHandler(
+# *** Download ICC items ######
+output$irt_rasch_item_icc_download <- downloadHandler(
   filename = function() {
-    paste("fig_RaschItemCharacteristicCurve.png", sep = "")
+    item <- input$irt_rasch_item_slider
+    paste0("fig_Rasch_ICC", item.names()[item], ".png")
   },
   content = function(file) {
     ggsave(file,
-      plot = raschInput_mirt_tab() +
+      plot = irt_rasch_item_icc() +
         theme(text = element_text(size = setting_figures$text_size)),
       device = "png",
       height = setting_figures$height, width = setting_figures$width,
@@ -448,10 +555,10 @@ output$DP_rasch_mirt_tab <- downloadHandler(
   }
 )
 
-# *** ICC items ######
-raschiicInput_mirt_tab <- reactive({
-  item <- input$rachSliderChar
-  fit <- rasch_model_mirt()
+# *** IIC items ######
+irt_rasch_item_iic <- reactive({
+  item <- input$irt_rasch_item_slider
+  fit <- irt_rasch_model()
 
   plt <- plot(fit, type = "infotrace", which.item = item, facet_items = FALSE)
   vals <- plt$panel.args
@@ -477,8 +584,8 @@ raschiicInput_mirt_tab <- reactive({
     theme_app()
 })
 
-output$raschiic_mirt_tab <- renderPlotly({
-  g <- raschiicInput_mirt_tab()
+output$irt_rasch_item_iic <- renderPlotly({
+  g <- irt_rasch_item_iic()
   p <- ggplotly(g)
 
   # changing plotly description
@@ -491,13 +598,15 @@ output$raschiic_mirt_tab <- renderPlotly({
   p %>% plotly::config(displayModeBar = FALSE)
 })
 
-output$DP_raschiic_mirt_tab <- downloadHandler(
+# *** Download IIC items ######
+output$irt_rasch_item_iic_download <- downloadHandler(
   filename = function() {
-    paste("fig_RaschItemInformationCurve.png", sep = "")
+    item <- input$irt_rasch_item_slider
+    paste0("fig_Rasch_IIC", item.names()[item], ".png")
   },
   content = function(file) {
     ggsave(file,
-      plot = raschiicInput_mirt_tab() +
+      plot = irt_rasch_item_iic() +
         theme(
           text = element_text(size = setting_figures$text_size),
           legend.position = "right", legend.key.size = unit(0.8, "lines")
@@ -510,16 +619,16 @@ output$DP_raschiic_mirt_tab <- downloadHandler(
 )
 
 # *** Table of parameters in item page ######
-raschcoefInput_mirt_tab <- reactive({
-  item <- input$rachSliderChar
-  tab <- raschcoefInput_mirt()[item, ]
+irt_rasch_item_coef <- reactive({
+  item <- input$irt_rasch_item_slider
+  tab <- irt_rasch_coef()[item, ]
 
   tab
 })
 
-output$tab_coef_rasch_mirt <- renderTable(
+output$irt_rasch_item_coef <- renderTable(
   {
-    raschcoefInput_mirt_tab()
+    irt_rasch_item_coef()
   },
   include.rownames = TRUE,
   include.colnames = TRUE
@@ -559,29 +668,26 @@ output$irt_1PL_model_converged <- renderUI({
 # ** Tab model ######
 # *** CC ######
 oneparamirtInput_mirt <- reactive({
-  fit <- one_param_irt_mirt()
 
-  plt <- plot(fit, type = "trace", facet_items = FALSE)
-  vals <- plt$panel.args
-  x <- vals[[1]]$x
-  y <- vals[[1]]$y
-  n <- length(vals[[1]]$subscripts)
-  m <- length(item_names())
-  k <- n / m
+  mod <- one_param_irt_mirt()
 
-  names <- list()
-  for (j in 1:m) {
-    names[[j]] <- rep(item_names()[j], k)
-  }
-  names <- unlist(names)
+  # thetas from model
+  thetas <- mod@Model$Theta
 
-  df <- data.frame(cbind(x, y))
-  df$x <- as.numeric(df$x)
-  df$y <- as.numeric(df$y)
-  df$names <- factor(names, levels = unique(names))
-  colnames(df) <- c("Ability", "Probability", "Item")
+  # names from model
+  mod_item_names <- mod@Data$data %>% colnames()
 
-  g <- ggplot(data = df, aes(x = Ability, y = Probability, color = Item)) +
+  d <- map2_dfr(
+    mod_item_names,
+    item_names(), # names from user
+    ~ tibble(
+      Ability = thetas[, 1], # vector only
+      Probability = probtrace(extract.item(mod, .x), thetas)[, 2], # ascending probs
+      Item = .y,
+    )
+  )
+
+  g <- d %>% ggplot(aes(x = Ability, y = Probability, color = Item)) +
     geom_line() +
     ylab("Probability of correct answer") +
     theme_app()
@@ -1094,29 +1200,25 @@ output$irt_2PL_model_converged <- renderUI({
 # ** Tab model ######
 # *** CC ######
 twoparamirtInput_mirt <- reactive({
-  fit <- two_param_irt_mirt()
+  mod <- two_param_irt_mirt()
 
-  plt <- plot(fit, type = "trace", facet_items = FALSE)
-  vals <- plt$panel.args
-  x <- vals[[1]]$x
-  y <- vals[[1]]$y
-  n <- length(vals[[1]]$subscripts)
-  m <- length(item_names())
-  k <- n / m
+  # thetas from model
+  thetas <- mod@Model$Theta
 
-  names <- list()
-  for (j in 1:m) {
-    names[[j]] <- rep(item_names()[j], k)
-  }
-  names <- unlist(names)
+  # names from model
+  mod_item_names <- mod@Data$data %>% colnames()
 
-  df <- data.frame(cbind(x, y))
-  df$x <- as.numeric(df$x)
-  df$y <- as.numeric(df$y)
-  df$names <- factor(names, levels = unique(names))
-  colnames(df) <- c("Ability", "Probability", "Item")
+  d <- map2_dfr(
+    mod_item_names,
+    item_names(), # names from user
+    ~ tibble(
+      Ability = thetas[, 1], # vector only
+      Probability = probtrace(extract.item(mod, .x), thetas)[, 2], # ascending probs
+      Item = .y,
+    )
+  )
 
-  g <- ggplot(data = df, aes(x = Ability, y = Probability, color = Item)) +
+  g <- d %>% ggplot(aes(x = Ability, y = Probability, color = Item)) +
     geom_line() +
     ylab("Probability of correct answer") +
     theme_app()
@@ -1598,31 +1700,28 @@ output$irt_3PL_model_converged <- renderUI({
 # ** Tab model ######
 # *** CC ######
 threeparamirtInput_mirt <- reactive({
-  plt <- plot(three_param_irt_mirt(), type = "trace", facet_items = FALSE)
-  vals <- plt$panel.args
-  x <- vals[[1]]$x
-  y <- vals[[1]]$y
-  n <- length(vals[[1]]$subscripts)
-  m <- length(item_names())
-  k <- n / m
+  mod <- three_param_irt_mirt()
 
-  names <- list()
-  for (j in 1:m) {
-    names[[j]] <- rep(item_names()[j], k)
-  }
-  names <- unlist(names)
+  # thetas from model
+  thetas <- mod@Model$Theta
 
-  df <- data.frame(cbind(x, y))
-  df$x <- as.numeric(df$x)
-  df$y <- as.numeric(df$y)
-  df$names <- factor(names, levels = unique(names))
-  colnames(df) <- c("Ability", "Probability", "Item")
+  # names from model
+  mod_item_names <- mod@Data$data %>% colnames()
 
-  g <- ggplot(data = df, aes(x = Ability, y = Probability, color = Item)) +
+  d <- map2_dfr(
+    mod_item_names,
+    item_names(), # names from user
+    ~ tibble(
+      Ability = thetas[, 1], # vector only
+      Probability = probtrace(extract.item(mod, .x), thetas)[, 2], # ascending probs
+      Item = .y,
+    )
+  )
+
+  g <- d %>% ggplot(aes(x = Ability, y = Probability, color = Item)) +
     geom_line() +
     ylab("Probability of correct answer") +
-    theme_app()
-})
+    theme_app()})
 
 output$threeparamirt_mirt <- renderPlotly({
   p <- ggplotly(threeparamirtInput_mirt())
@@ -2112,29 +2211,25 @@ output$irt_4PL_model_converged <- renderUI({
 # ** Tab model ######
 # *** ICC ######
 irt_4PL_icc_Input <- reactive({
-  fit <- irt_4PL_model()
+  mod <- irt_4PL_model()
 
-  plt <- plot(fit, type = "trace", facet_items = FALSE)
-  vals <- plt$panel.args
-  x <- vals[[1]]$x
-  y <- vals[[1]]$y
-  n <- length(vals[[1]]$subscripts)
-  m <- length(item_names())
-  k <- n / m
+  # thetas from model
+  thetas <- mod@Model$Theta
 
-  names <- list()
-  for (j in 1:m) {
-    names[[j]] <- rep(item_names()[j], k)
-  }
-  names <- unlist(names)
+  # names from model
+  mod_item_names <- mod@Data$data %>% colnames()
 
-  df <- data.frame(cbind(x, y))
-  df$x <- as.numeric(df$x)
-  df$y <- as.numeric(df$y)
-  df$names <- factor(names, levels = unique(names))
-  colnames(df) <- c("Ability", "Probability", "Item")
+  d <- map2_dfr(
+    mod_item_names,
+    item_names(), # names from user
+    ~ tibble(
+      Ability = thetas[, 1], # vector only
+      Probability = probtrace(extract.item(mod, .x), thetas)[, 2], # ascending probs
+      Item = .y,
+    )
+  )
 
-  g <- ggplot(data = df, aes(x = Ability, y = Probability, color = Item)) +
+  g <- d %>% ggplot(aes(x = Ability, y = Probability, color = Item)) +
     geom_line() +
     ylab("Probability of correct answer") +
     theme_app()

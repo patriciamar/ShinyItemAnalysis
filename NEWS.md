@@ -21,12 +21,16 @@
     for person and i being the index for an item. 
   * Training section was added to DIF section
   * Figures in Regression section are now displayed in plotly mode in the shiny app.
+  * In IRT/Rasch section, the scaterplots for standardized total score vs. factor score now 
+    displayed in plotly mode in the shiny app. (Needs to be applied to other IRT subsections.)
+  * IRT/Rasch section was restructured, and it now offers both the intercept/slope as well as
+    the IRT parametrization. (Needs to be applied to other IRT subsections.)
   * Regression/Multinomial newly offers also the IRT parametrization. 
   
 #### MINOR UPDATES
   * Selected R code was updated.
   * Unnecessary dependencies were removed.
-  * Summary tab was updated within the app, interactive help with formulae is newly offered. 
+  * Summary tab was updated within the app, interactive help with formulae is newly offered.
   * Lines for interpretation of IIC for selected theta were added in IRT training section.
   * styler package was applied on .R files, documentation was updated
   * ggWright() plot was updated to more general description

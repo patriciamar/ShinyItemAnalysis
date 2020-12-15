@@ -188,7 +188,7 @@ uiData <- tabPanel(
                   options = list(container = "body")
                 )
               ),
-              value = FALSE
+              value = TRUE
             )
           ),
           column(
