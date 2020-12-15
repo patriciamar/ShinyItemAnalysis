@@ -2,7 +2,7 @@
 
 ----------
 
-### Changes in version 1.3.4-1 (2020-11-23)
+### Changes in version 1.3.4-1 (2020-12-15)
 #### BUG FIXING
   * In the IRT training section, the calculation and display of item information curves was 
     fixed. (Thanks to Hynek Cigler for reporting this issue.)
@@ -16,8 +16,9 @@
   * `startShinyItemAnalysis()` function was fixed to finish job persisting in the backgroud 
     after the app is closed
   * Figures can now be downloaded at once in DDF section of the app.
-  * Equations were unified in Regression and IRT sections of the app, with p being the index 
+  * Equations were unified in Regression, IRT and DIF sections of the app, with p being the index 
     for person and i being the index for an item. 
+  * Training section was added to DIF section
   
 #### MINOR UPDATES
   * Selected R code was updated.

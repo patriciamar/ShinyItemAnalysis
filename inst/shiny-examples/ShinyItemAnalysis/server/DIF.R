@@ -1827,33 +1827,33 @@ output$DIF_NLR_equation_print <- renderUI({
     txta <- ""
   } else {
     if (model == "1PL") {
-      txta <- "a_j"
+      txta <- "a_i"
     } else {
-      txta <- "a_{jG_i}"
+      txta <- "a_{iG_p}"
     }
   }
 
-  txtb <- "b_{jG_i}"
+  txtb <- "b_{iG_p}"
 
-  txt2 <- paste0(txta, "\\left(Z_i - ", txtb, "\\right)")
+  txt2 <- paste0(txta, "\\left(Z_p - ", txtb, "\\right)")
   txt2 <- paste0("e^{", txt2, "}")
   txt2 <- paste0("\\frac{", txt2, "}{1 + ", txt2, "}")
 
   if (model %in% c("3PLcg", "4PLcgdg", "4PLcg")) {
-    txtc <- "c_j"
+    txtc <- "c_i"
   } else {
     if (model %in% c("3PLc", "4PLdg", "4PL")) {
-      txtc <- "c_{jG_i}"
+      txtc <- "c_{iG_p}"
     } else {
       txtc <- ""
     }
   }
 
   if (model %in% c("3PLdg", "4PLcgdg", "4PLdg")) {
-    txtd <- "d_j"
+    txtd <- "d_i"
   } else {
     if (model %in% c("3PLd", "4PLcg", "4PL")) {
-      txtd <- "d_{jG_i}"
+      txtd <- "d_{iG_p}"
     } else {
       txtd <- ""
     }
@@ -1873,13 +1873,8 @@ output$DIF_NLR_equation_print <- renderUI({
     }
   }
 
-  txtp <- c(txta, txtb, txtc, txtd)
-  txtp <- txtp[txtp != ""]
-
   txt1 <- paste0(
-    "\\mathrm{P}\\left(Y_{ij} = 1 | Z_i, G_i, ",
-    paste(txtp, collapse = ", "),
-    "\\right) = "
+    "\\mathrm{P}\\left(Y_{pi} = 1 | Z_p, G_p\\right) = "
   )
 
   txt <- withMathJax(paste0("$$", txt1, txt3, txt2, "$$"))
@@ -2231,33 +2226,33 @@ output$DIF_NLR_equation_plot <- renderUI({
     txta <- ""
   } else {
     if (model == "1PL") {
-      txta <- "a_j"
+      txta <- "a_i"
     } else {
-      txta <- "a_{jG_i}"
+      txta <- "a_{iG_p}"
     }
   }
 
-  txtb <- "b_{jG_i}"
+  txtb <- "b_{iG_p}"
 
-  txt2 <- paste0(txta, "\\left(Z_i - ", txtb, "\\right)")
+  txt2 <- paste0(txta, "\\left(Z_p - ", txtb, "\\right)")
   txt2 <- paste0("e^{", txt2, "}")
   txt2 <- paste0("\\frac{", txt2, "}{1 + ", txt2, "}")
 
   if (model %in% c("3PLcg", "4PLcgdg", "4PLcg")) {
-    txtc <- "c_j"
+    txtc <- "c_i"
   } else {
     if (model %in% c("3PLc", "4PLdg", "4PL")) {
-      txtc <- "c_{jG_i}"
+      txtc <- "c_{iG_p}"
     } else {
       txtc <- ""
     }
   }
 
   if (model %in% c("3PLdg", "4PLcgdg", "4PLdg")) {
-    txtd <- "d_j"
+    txtd <- "d_i"
   } else {
     if (model %in% c("3PLd", "4PLcg", "4PL")) {
-      txtd <- "d_{jG_i}"
+      txtd <- "d_{iG_p}"
     } else {
       txtd <- ""
     }
@@ -2277,13 +2272,8 @@ output$DIF_NLR_equation_plot <- renderUI({
     }
   }
 
-  txtp <- c(txta, txtb, txtc, txtd)
-  txtp <- txtp[txtp != ""]
-
   txt1 <- paste0(
-    "\\mathrm{P}\\left(Y_{ij} = 1 | Z_i, G_i, ",
-    paste(txtp, collapse = ", "),
-    "\\right) = "
+    "\\mathrm{P}\\left(Y_{pi} = 1 | Z_p, G_p\\right) = "
   )
 
   txt <- withMathJax(paste0("$$", txt1, txt3, txt2, "$$"))
@@ -2446,17 +2436,17 @@ output$DIF_Lord_interpretation_summary <- renderUI({
   withMathJax()
   txt <- switch(type,
     "1PL" = paste("As the parameters are estimated separately for two groups, there is one
-                             equation for each group. Parameters \\(b_{R}\\) and \\(b_{F}\\)
-                             are difficulties for the reference and the focal group. "),
+                             equation for each group. Parameters \\(b_{iR}\\) and \\(b_{iF}\\)
+                             are difficulties for the reference and the focal group for item \\(i\\). "),
     "2PL" = paste("As the parameters are estimated separately for two groups, there is one
-                             equation for each group. Parameters \\(a_{R}\\) and \\(b_{R}\\) are discrimination
-                             and difficulty for the reference group. Parameters \\(a_{F}\\) and \\(b_{F}\\)
-                             are discrimination and difficulty for the focal group. "),
+                             equation for each group. Parameters \\(a_{iR}\\) and \\(b_{iR}\\) are discrimination
+                             and difficulty for the reference group for item \\(i\\). Parameters \\(a_{iF}\\) and \\(b_{iF}\\)
+                             are discrimination and difficulty for the focal group for item \\(i\\). "),
     "3PL" = paste("As the parameters are estimated separately for two groups, there is one
-                             equation for each group. Parameters \\(a_{R}\\) and \\(b_{R}\\) are discrimination
-                             and difficulty for the reference group. Parameters  \\(a_{F}\\) and \\(b_{F}\\)
-                             are discrimination and difficulty for the focal group.
-                             Parameter \\(c\\) is a common guessing parameter. ")
+                             equation for each group. Parameters \\(a_{iR}\\) and \\(b_{iR}\\) are discrimination
+                             and difficulty for the reference group for item \\(i\\). Parameters  \\(a_{iF}\\) and \\(b_{iF}\\)
+                             are discrimination and difficulty for the focal group for item \\(i\\).
+                             Parameter \\(c_i\\) is a common guessing parameter for item \\(i\\). ")
   )
   withMathJax(HTML(txt))
 })
@@ -2465,29 +2455,29 @@ output$DIF_Lord_interpretation_summary <- renderUI({
 output$DIF_Lord_equation_summary <- renderUI({
   type <- input$type_plot_DIF_IRT_lord
   eqR <- switch(type,
-    "1PL" = paste("$$\\mathrm{P}\\left(Y_{ij} = 1 | \\theta_i, G_i = 0, b_{Rj}\\right) =
-                              \\frac{e^{\\theta_i - b_{Rj}}}
-                              {1+e^{\\theta_i - b_{Rj} }} $$"),
-    "2PL" = paste("$$\\mathrm{P}\\left(Y_{ij} = 1 | \\theta_i, G_i = 0, a_{Rj}, b_{Rj}\\right) =
-                              \\frac{e^{a_{Rj} \\left(\\theta_i - b_{Rj} \\right)}}
-                              {1+e^{a_{Rj} \\left(\\theta_i - b_{Rj} \\right)}} $$"),
-    "3PL" = paste("$$\\mathrm{P}\\left(Y_{ij} = 1 | \\theta_i, G_i = 0, a_{Rj}, b_{Rj}, c_j\\right) =
-                              c_j + \\left(1 - c_j\\right) \\cdot \\frac{e^{a_{Rj}
-                              \\left(\\theta_i - b_{Rj} \\right)}}
-                              {1+e^{a_{Rj} \\left(\\theta_i - b_{Rj} \\right)}} $$")
+    "1PL" = paste("$$\\mathrm{P}\\left(Y_{pi} = 1 | \\theta_p, G_p = 0\\right) =
+                              \\frac{e^{\\theta_p - b_{iR}}}
+                              {1 + e^{\\theta_p - b_{iR} }}$$"),
+    "2PL" = paste("$$\\mathrm{P}\\left(Y_{pi} = 1 | \\theta_p, G_p = 0\\right) =
+                              \\frac{e^{a_{iR} \\left(\\theta_p - b_{iR} \\right)}}
+                              {1 + e^{a_{iR} \\left(\\theta_p - b_{iR} \\right)}}$$"),
+    "3PL" = paste("$$\\mathrm{P}\\left(Y_{pi} = 1 | \\theta_p, G_p = 0\\right) =
+                              c_i + \\left(1 - c_i\\right) \\cdot \\frac{e^{a_{iR}
+                              \\left(\\theta_p - b_{iR} \\right)}}
+                              {1 + e^{a_{iR} \\left(\\theta_p - b_{iR} \\right)}}$$")
   )
 
   eqF <- switch(type,
-    "1PL" = paste("$$\\mathrm{P}\\left(Y_{ij} = 1 | \\theta_i, G_i = 1, b_{Fj}\\right) =
-                              \\frac{e^{\\theta_i - b_{Fj}}}
-                              {1+e^{\\theta_i - b_{Fj}}} $$"),
-    "2PL" = paste("$$\\mathrm{P}\\left(Y_{ij} = 1 | \\theta_i, G_i = 1, a_{Fj}, b_{Fj}\\right) =
-                              \\frac{e^{a_{Fj} \\left(\\theta_i - b_{Fj} \\right)}}
-                              {1+e^{a_{Fj} \\left(\\theta_i - b_{Fj} \\right)}} $$"),
-    "3PL" = paste("$$\\mathrm{P}\\left(Y_{ij} = 1 | \\theta_i, G_i = 1, a_{Fj}, b_{Fj}, c_j\\right) =
-                              c_j + \\left(1 - c_j\\right) \\cdot \\frac{e^{a_{Fj}
-                              \\left(\\theta_i - b_{Fj} \\right)}}
-                              {1+e^{a_{Fj} \\left(\\theta_i - b_{Fj} \\right)}} $$")
+    "1PL" = paste("$$\\mathrm{P}\\left(Y_{pi} = 1 | \\theta_p, G_p = 1\\right) =
+                              \\frac{e^{\\theta_p - b_{iF}}}
+                              {1 + e^{\\theta_p - b_{iF}}}$$"),
+    "2PL" = paste("$$\\mathrm{P}\\left(Y_{pi} = 1 | \\theta_p, G_p = 1\\right) =
+                              \\frac{e^{a_{iF} \\left(\\theta_p - b_{iF} \\right)}}
+                              {1 + e^{a_{iF} \\left(\\theta_p - b_{iF} \\right)}}$$"),
+    "3PL" = paste("$$\\mathrm{P}\\left(Y_{pi} = 1 | \\theta_p, G_p = 1\\right) =
+                              c_i + \\left(1 - c_i\\right) \\cdot \\frac{e^{a_{iF}
+                              \\left(\\theta_p - b_{iF} \\right)}}
+                              {1 + e^{a_{iF} \\left(\\theta_p - b_{iF} \\right)}}$$")
   )
   withMathJax(paste(eqR, eqF))
 })
@@ -2926,17 +2916,17 @@ output$irtint_lord <- renderUI({
   withMathJax()
   txt <- switch(type,
     "1PL" = paste("As the parameters are estimated separately for two groups, there is one
-                             equation for each group. Parameters \\(b_{R}\\) and \\(b_{F}\\)
-                             are difficulties for the reference and the focal group. "),
+                             equation for each group. Parameters \\(b_{iR}\\) and \\(b_{iF}\\)
+                             are difficulties for the reference and the focal group for item \\(i\\). "),
     "2PL" = paste("As the parameters are estimated separately for two groups, there is one
-                             equation for each group. Parameters \\(a_{R}\\) and \\(b_{R}\\) are discrimination
-                             and difficulty for the reference group. Parameters \\(a_{F}\\) and \\(b_{F}\\)
-                             are discrimination and difficulty for the focal group. "),
+                             equation for each group. Parameters \\(a_{iR}\\) and \\(b_{iR}\\) are discrimination
+                             and difficulty for the reference group for item \\(i\\). Parameters \\(a_{iF}\\) and \\(b_{iF}\\)
+                             are discrimination and difficulty for the focal group for item \\(i\\). "),
     "3PL" = paste("As the parameters are estimated separately for two groups, there is one
-                             equation for each group. Parameters \\(a_{R}\\) and \\(b_{R}\\) are discrimination
-                             and difficulty for the reference group. Parameters  \\(a_{F}\\) and \\(b_{F}\\)
-                             are discrimination and difficulty for the focal group.
-                             Parameter \\(c\\) is a common guessing parameter. ")
+                             equation for each group. Parameters \\(a_{iR}\\) and \\(b_{iR}\\) are discrimination
+                             and difficulty for the reference group for item \\(i\\). Parameters  \\(a_{iF}\\) and \\(b_{iF}\\)
+                             are discrimination and difficulty for the focal group for item \\(i\\).
+                             Parameter \\(c_i\\) is a common guessing parameter for item \\(i\\). ")
   )
   withMathJax(HTML(txt))
 })
@@ -2945,29 +2935,29 @@ output$irtint_lord <- renderUI({
 output$irteq_lord <- renderUI({
   type <- input$type_plot_DIF_IRT_lord
   eqR <- switch(type,
-    "1PL" = paste("$$\\mathrm{P}\\left(Y_{ij} = 1 | \\theta_i, G_i = 0, b_{Rj}\\right) =
-                              \\frac{e^{\\theta_i - b_{Rj}}}
-                              {1+e^{\\theta_i - b_{Rj} }} $$"),
-    "2PL" = paste("$$\\mathrm{P}\\left(Y_{ij} = 1 | \\theta_i, G_i = 0, a_{Rj}, b_{Rj}\\right) =
-                              \\frac{e^{a_{Rj} \\left(\\theta_i - b_{Rj} \\right)}}
-                              {1+e^{a_{Rj} \\left(\\theta_i - b_{Rj} \\right)}} $$"),
-    "3PL" = paste("$$\\mathrm{P}\\left(Y_{ij} = 1 | \\theta_i, G_i = 0, a_{Rj}, b_{Rj}, c_j\\right) =
-                              c_j + \\left(1 - c_j\\right) \\cdot \\frac{e^{a_{Rj}
-                              \\left(\\theta_i - b_{Rj} \\right)}}
-                              {1+e^{a_{Rj} \\left(\\theta_i - b_{Rj} \\right)}} $$")
+    "1PL" = paste("$$\\mathrm{P}\\left(Y_{pi} = 1 | \\theta_p, G_p = 0\\right) =
+                              \\frac{e^{\\theta_p - b_{iR}}}
+                              {1 + e^{\\theta_p - b_{iR} }}$$"),
+    "2PL" = paste("$$\\mathrm{P}\\left(Y_{pi} = 1 | \\theta_p, G_p = 0\\right) =
+                              \\frac{e^{a_{iR} \\left(\\theta_p - b_{iR} \\right)}}
+                              {1 + e^{a_{iR} \\left(\\theta_p - b_{iR} \\right)}}$$"),
+    "3PL" = paste("$$\\mathrm{P}\\left(Y_{pi} = 1 | \\theta_p, G_p = 0\\right) =
+                              c_i + \\left(1 - c_i\\right) \\cdot \\frac{e^{a_{iR}
+                              \\left(\\theta_p - b_{iR} \\right)}}
+                              {1 + e^{a_{iR} \\left(\\theta_p - b_{iR} \\right)}}$$")
   )
 
   eqF <- switch(type,
-    "1PL" = paste("$$\\mathrm{P}\\left(Y_{ij} = 1 | \\theta_i, G_i = 1, b_{Fj}\\right) =
-                              \\frac{e^{\\theta_i - b_{Fj}}}
-                              {1+e^{\\theta_i - b_{Fj}}} $$"),
-    "2PL" = paste("$$\\mathrm{P}\\left(Y_{ij} = 1 | \\theta_i, G_i = 1, a_{Fj}, b_{Fj}\\right) =
-                              \\frac{e^{a_{Fj} \\left(\\theta_i - b_{Fj} \\right)}}
-                              {1+e^{a_{Fj} \\left(\\theta_i - b_{Fj} \\right)}} $$"),
-    "3PL" = paste("$$\\mathrm{P}\\left(Y_{ij} = 1 | \\theta_i, G_i = 1, a_{Fj}, b_{Fj}, c_j\\right) =
-                              c_j + \\left(1 - c_j\\right) \\cdot \\frac{e^{a_{Fj}
-                              \\left(\\theta_i - b_{Fj} \\right)}}
-                              {1+e^{a_{Fj} \\left(\\theta_i - b_{Fj} \\right)}} $$")
+    "1PL" = paste("$$\\mathrm{P}\\left(Y_{pi} = 1 | \\theta_p, G_p = 1\\right) =
+                              \\frac{e^{\\theta_p - b_{iF}}}
+                              {1 + e^{\\theta_p - b_{iF}}}$$"),
+    "2PL" = paste("$$\\mathrm{P}\\left(Y_{pi} = 1 | \\theta_p, G_p = 1\\right) =
+                              \\frac{e^{a_{iF} \\left(\\theta_p - b_{iF} \\right)}}
+                              {1 + e^{a_{iF} \\left(\\theta_p - b_{iF} \\right)}}$$"),
+    "3PL" = paste("$$\\mathrm{P}\\left(Y_{pi} = 1 | \\theta_p, G_p = 1\\right) =
+                              c_i + \\left(1 - c_i\\right) \\cdot \\frac{e^{a_{iF}
+                              \\left(\\theta_p - b_{iF} \\right)}}
+                              {1 + e^{a_{iF} \\left(\\theta_p - b_{iF} \\right)}}$$")
   )
   withMathJax(paste(eqR, eqF))
 })
@@ -3117,17 +3107,17 @@ output$DIF_Raju_interpretation_summary <- renderUI({
   withMathJax()
   txt <- switch(type,
     "1PL" = paste("As the parameters are estimated separately for two groups, there is one
-                             equation for each group. Parameters \\(b_{R}\\) and \\(b_{F}\\)
-                             are difficulties for the reference and the focal group. "),
+                             equation for each group. Parameters \\(b_{iR}\\) and \\(b_{iF}\\)
+                             are difficulties for the reference and the focal group for item \\(i\\). "),
     "2PL" = paste("As the parameters are estimated separately for two groups, there is one
-                             equation for each group. Parameters \\(a_{R}\\) and \\(b_{R}\\) are discrimination
-                             and difficulty for the reference group. Parameters \\(a_{F}\\) and \\(b_{F}\\)
-                             are discrimination and difficulty for the focal group. "),
+                             equation for each group. Parameters \\(a_{iR}\\) and \\(b_{iR}\\) are discrimination
+                             and difficulty for the reference group for item \\(i\\). Parameters \\(a_{iF}\\) and \\(b_{iF}\\)
+                             are discrimination and difficulty for the focal group for item \\(i\\). "),
     "3PL" = paste("As the parameters are estimated separately for two groups, there is one
-                             equation for each group. Parameters \\(a_{R}\\) and \\(b_{R}\\) are discrimination
-                             and difficulty for the reference group. Parameters  \\(a_{F}\\) and \\(b_{F}\\)
-                             are discrimination and difficulty for the focal group.
-                             Parameter \\(c\\) is a common guessing parameter. ")
+                             equation for each group. Parameters \\(a_{iR}\\) and \\(b_{iR}\\) are discrimination
+                             and difficulty for the reference group for item \\(i\\). Parameters  \\(a_{iF}\\) and \\(b_{iF}\\)
+                             are discrimination and difficulty for the focal group for item \\(i\\).
+                             Parameter \\(c_i\\) is a common guessing parameter for item \\(i\\). ")
   )
   withMathJax(HTML(txt))
 })
@@ -3136,28 +3126,28 @@ output$DIF_Raju_interpretation_summary <- renderUI({
 output$DIF_Raju_equation_summary <- renderUI({
   type <- input$type_plot_DIF_IRT_raju
   eqR <- switch(type,
-    "1PL" = paste("$$\\mathrm{P}\\left(Y_{ij} = 1 | \\theta_i, G_i = 0, b_{Rj}\\right) =
-                              \\frac{e^{\\theta_i - b_{Rj}}}
-                              {1+e^{\\theta_i - b_{Rj} }} $$"),
-    "2PL" = paste("$$\\mathrm{P}\\left(Y_{ij} = 1 | \\theta_i, G_i = 0, a_{Rj}, b_{Rj}\\right) =
-                              \\frac{e^{a_{Rj} \\left(\\theta_i - b_{Rj} \\right)}}
-                              {1+e^{a_{Rj} \\left(\\theta_i - b_{Rj} \\right)}} $$"),
-    "3PL" = paste("$$\\mathrm{P}\\left(Y_{ij} = 1 | \\theta_i, G_i = 0, a_{Rj}, b_{Rj}, c_j\\right) =
-                              c_j + \\left(1 - c_j\\right) \\cdot \\frac{e^{a_{Rj}
-                              \\left(\\theta_i - b_{Rj} \\right)}}
-                              {1+e^{a_{Rj} \\left(\\theta_i - b_{Rj} \\right)}} $$")
+    "1PL" = paste("$$\\mathrm{P}\\left(Y_{pi} = 1 | \\theta_p, G_p = 0\\right) =
+                              \\frac{e^{\\theta_p - b_{iR}}}
+                              {1 + e^{\\theta_p - b_{iR} }}$$"),
+    "2PL" = paste("$$\\mathrm{P}\\left(Y_{pi} = 1 | \\theta_p, G_p = 0\\right) =
+                              \\frac{e^{a_{iR} \\left(\\theta_p - b_{iR} \\right)}}
+                              {1 + e^{a_{iR} \\left(\\theta_p - b_{iR} \\right)}}$$"),
+    "3PL" = paste("$$\\mathrm{P}\\left(Y_{pi} = 1 | \\theta_p, G_p = 0\\right) =
+                              c_i + \\left(1 - c_i\\right) \\cdot \\frac{e^{a_{iR}
+                              \\left(\\theta_p - b_{iR} \\right)}}
+                              {1 + e^{a_{iR} \\left(\\theta_p - b_{iR} \\right)}}$$")
   )
   eqF <- switch(type,
-    "1PL" = paste("$$\\mathrm{P}\\left(Y_{ij} = 1 | \\theta_i, G_i = 1, b_{Fj}\\right) =
-                              \\frac{e^{\\theta_i - b_{Fj}}}
-                              {1+e^{\\theta_i - b_{Fj}}} $$"),
-    "2PL" = paste("$$\\mathrm{P}\\left(Y_{ij} = 1 | \\theta_i, G_i = 1, a_{Fj}, b_{Fj}\\right) =
-                              \\frac{e^{a_{Fj} \\left(\\theta_i - b_{Fj} \\right)}}
-                              {1+e^{a_{Fj} \\left(\\theta_i - b_{Fj} \\right)}} $$"),
-    "3PL" = paste("$$\\mathrm{P}\\left(Y_{ij} = 1 | \\theta_i, G_i = 1, a_{Fj}, b_{Fj}, c_j\\right) =
-                              c_j + \\left(1 - c_j\\right) \\cdot \\frac{e^{a_{Fj}
-                              \\left(\\theta_i - b_{Fj} \\right)}}
-                              {1+e^{a_{Fj} \\left(\\theta_i - b_{Fj} \\right)}} $$")
+    "1PL" = paste("$$\\mathrm{P}\\left(Y_{pi} = 1 | \\theta_p, G_p = 1\\right) =
+                              \\frac{e^{\\theta_p - b_{iF}}}
+                              {1 + e^{\\theta_p - b_{iF}}}$$"),
+    "2PL" = paste("$$\\mathrm{P}\\left(Y_{pi} = 1 | \\theta_p, G_p = 1\\right) =
+                              \\frac{e^{a_{iF} \\left(\\theta_p - b_{iF} \\right)}}
+                              {1 + e^{a_{iF} \\left(\\theta_p - b_{iF} \\right)}}$$"),
+    "3PL" = paste("$$\\mathrm{P}\\left(Y_{pi} = 1 | \\theta_p, G_p = 1\\right) =
+                              c_i + \\left(1 - c_i\\right) \\cdot \\frac{e^{a_{iF}
+                              \\left(\\theta_p - b_{iF} \\right)}}
+                              {1 + e^{a_{iF} \\left(\\theta_p - b_{iF} \\right)}}$$")
   )
   withMathJax(paste(eqR, eqF))
 })
@@ -3547,17 +3537,17 @@ output$irtint_raju <- renderUI({
   withMathJax()
   txt <- switch(type,
     "1PL" = paste("As the parameters are estimated separately for two groups, there is one
-                             equation for each group. Parameters \\(b_{R}\\) and \\(b_{F}\\)
-                             are difficulties for the reference and the focal group. "),
+                             equation for each group. Parameters \\(b_{iR}\\) and \\(b_{iF}\\)
+                             are difficulties for the reference and the focal group for item \\(i\\). "),
     "2PL" = paste("As the parameters are estimated separately for two groups, there is one
-                             equation for each group. Parameters \\(a_{R}\\) and \\(b_{R}\\) are discrimination
-                             and difficulty for the reference group. Parameters \\(a_{F}\\) and \\(b_{F}\\)
-                             are discrimination and difficulty for the focal group. "),
+                             equation for each group. Parameters \\(a_{iR}\\) and \\(b_{iR}\\) are discrimination
+                             and difficulty for the reference group for item \\(i\\). Parameters \\(a_{iF}\\) and \\(b_{iF}\\)
+                             are discrimination and difficulty for the focal group for item \\(i\\). "),
     "3PL" = paste("As the parameters are estimated separately for two groups, there is one
-                             equation for each group. Parameters \\(a_{R}\\) and \\(b_{R}\\) are discrimination
-                             and difficulty for the reference group. Parameters  \\(a_{F}\\) and \\(b_{F}\\)
-                             are discrimination and difficulty for the focal group.
-                             Parameter \\(c\\) is a common guessing parameter. ")
+                             equation for each group. Parameters \\(a_{iR}\\) and \\(b_{iR}\\) are discrimination
+                             and difficulty for the reference group for item \\(i\\). Parameters  \\(a_{iF}\\) and \\(b_{iF}\\)
+                             are discrimination and difficulty for the focal group for item \\(i\\).
+                             Parameter \\(c_i\\) is a common guessing parameter for item \\(i\\). ")
   )
   withMathJax(HTML(txt))
 })
@@ -3566,28 +3556,28 @@ output$irtint_raju <- renderUI({
 output$irteq_raju <- renderUI({
   type <- input$type_plot_DIF_IRT_raju
   eqR <- switch(type,
-    "1PL" = paste("$$\\mathrm{P}\\left(Y_{ij} = 1 | \\theta_i, G_i = 0, b_{Rj}\\right) =
-                              \\frac{e^{\\theta_i - b_{Rj}}}
-                              {1+e^{\\theta_i - b_{Rj} }} $$"),
-    "2PL" = paste("$$\\mathrm{P}\\left(Y_{ij} = 1 | \\theta_i, G_i = 0, a_{Rj}, b_{Rj}\\right) =
-                              \\frac{e^{a_{Rj} \\left(\\theta_i - b_{Rj} \\right)}}
-                              {1+e^{a_{Rj} \\left(\\theta_i - b_{Rj} \\right)}} $$"),
-    "3PL" = paste("$$\\mathrm{P}\\left(Y_{ij} = 1 | \\theta_i, G_i = 0, a_{Rj}, b_{Rj}, c_j\\right) =
-                              c_j + \\left(1 - c_j\\right) \\cdot \\frac{e^{a_{Rj}
-                              \\left(\\theta_i - b_{Rj} \\right)}}
-                              {1+e^{a_{Rj} \\left(\\theta_i - b_{Rj} \\right)}} $$")
+    "1PL" = paste("$$\\mathrm{P}\\left(Y_{pi} = 1 | \\theta_p, G_p = 0\\right) =
+                              \\frac{e^{\\theta_p - b_{iR}}}
+                              {1 + e^{\\theta_p - b_{iR} }}$$"),
+    "2PL" = paste("$$\\mathrm{P}\\left(Y_{pi} = 1 | \\theta_p, G_p = 0\\right) =
+                              \\frac{e^{a_{iR} \\left(\\theta_p - b_{iR} \\right)}}
+                              {1 + e^{a_{iR} \\left(\\theta_p - b_{iR} \\right)}}$$"),
+    "3PL" = paste("$$\\mathrm{P}\\left(Y_{pi} = 1 | \\theta_p, G_p = 0\\right) =
+                              c_i + \\left(1 - c_i\\right) \\cdot \\frac{e^{a_{iR}
+                              \\left(\\theta_p - b_{iR} \\right)}}
+                              {1 + e^{a_{iR} \\left(\\theta_p - b_{iR} \\right)}}$$")
   )
   eqF <- switch(type,
-    "1PL" = paste("$$\\mathrm{P}\\left(Y_{ij} = 1 | \\theta_i, G_i = 1, b_{Fj}\\right) =
-                              \\frac{e^{\\theta_i - b_{Fj}}}
-                              {1+e^{\\theta_i - b_{Fj}}} $$"),
-    "2PL" = paste("$$\\mathrm{P}\\left(Y_{ij} = 1 | \\theta_i, G_i = 1, a_{Fj}, b_{Fj}\\right) =
-                              \\frac{e^{a_{Fj} \\left(\\theta_i - b_{Fj} \\right)}}
-                              {1+e^{a_{Fj} \\left(\\theta_i - b_{Fj} \\right)}} $$"),
-    "3PL" = paste("$$\\mathrm{P}\\left(Y_{ij} = 1 | \\theta_i, G_i = 1, a_{Fj}, b_{Fj}, c_j\\right) =
-                              c_j + \\left(1 - c_j\\right) \\cdot \\frac{e^{a_{Fj}
-                              \\left(\\theta_i - b_{Fj} \\right)}}
-                              {1+e^{a_{Fj} \\left(\\theta_i - b_{Fj} \\right)}} $$")
+    "1PL" = paste("$$\\mathrm{P}\\left(Y_{pi} = 1 | \\theta_p, G_p = 1\\right) =
+                              \\frac{e^{\\theta_p - b_{iF}}}
+                              {1 + e^{\\theta_p - b_{iF}}}$$"),
+    "2PL" = paste("$$\\mathrm{P}\\left(Y_{pi} = 1 | \\theta_p, G_p = 1\\right) =
+                              \\frac{e^{a_{iF} \\left(\\theta_p - b_{iF} \\right)}}
+                              {1 + e^{a_{iF} \\left(\\theta_p - b_{iF} \\right)}}$$"),
+    "3PL" = paste("$$\\mathrm{P}\\left(Y_{pi} = 1 | \\theta_p, G_p = 1\\right) =
+                              c_i + \\left(1 - c_i\\right) \\cdot \\frac{e^{a_{iF}
+                              \\left(\\theta_p - b_{iF} \\right)}}
+                              {1 + e^{a_{iF} \\left(\\theta_p - b_{iF} \\right)}}$$")
   )
   withMathJax(paste(eqR, eqF))
 })
@@ -4352,10 +4342,10 @@ output$DIF_cum_print <- renderPrint({
 DIF_cum_equation1_summary_Input <- reactive({
   # txt1 <- ifelse(input$DIF_cum_matching_summary == "score", "X_p", "Z_p")
   txt1 <- "Z_p"
-  txt2 <- paste0("b_{0ik} + b_{i1} ", txt1, " + b_{i2} G_p + b_{i3} ", txt1, " G_p")
-  txt3 <- paste0(txt1, ", b_{i0k}, b_{i1}, b_{i2}, b_{i3}")
+  txt2 <- paste0("b_{i0k} + b_{i1} ", txt1, " + b_{i2} G_p + b_{i3} ", txt1, " G_p")
+  txt3 <- "Z_p, G_p"
 
-  txt <- paste0("$$P(Y_{ip} \\geq k|", txt3, ") = \\frac{e^{", txt2, "}}{1 + e^{", txt2, "}}$$")
+  txt <- paste0("$$\\mathrm{P}(Y_{pi} \\geq k|", txt3, ") = \\frac{e^{", txt2, "}}{1 + e^{", txt2, "}}$$")
 
   txt
 })
@@ -4368,10 +4358,10 @@ output$DIF_cum_equation1_summary <- renderUI({
 DIF_cum_equation2_summary_Input <- reactive({
   # txt1 <- ifelse(input$DIF_cum_matching_summary == "score", "X_p", "Z_p")
   txt1 <- "Z_p"
-  txt3 <- paste0(txt1, ", b_{i0k}, b_{i1}, b_{i2}, b_{i3}")
+  txt3 <- "Z_p, G_p"
   txt4 <- paste0(txt1, ", b_{i0k+1}, b_{i1}, b_{i2}, b_{i3}")
 
-  txt <- paste0("$$P(Y_{ip} = k|", txt3, ") = P(Y_{ip} \\geq k|", txt3, ") - P(Y_{ip} \\geq k + 1|", txt4, ")$$")
+  txt <- paste0("$$\\mathrm{P}(Y_{pi} = k|", txt3, ") = \\mathrm{P}(Y_{pi} \\geq k|", txt3, ") - \\mathrm{P}(Y_{pi} \\geq k + 1|", txt3, ")$$")
 
   txt
 })
@@ -4712,7 +4702,7 @@ DIF_cum_coef_tab_Input <- reactive({
   cat <- sort(unique(data.frame(ordinal())[, item]))[-1]
 
   tab <- matrix(0, nrow = length(cat) + 3, ncol = 2)
-  rownames(tab) <- c(paste0("(Intercept):", 1:length(cat)), "x", "group", "x:group")
+  rownames(tab) <- c(paste0("(Intercept):", cat), "x", "group", "x:group")
   colnames(tab) <- c("estimate", "SE")
 
   tmp <- t(coef(fit, SE = T)[[item]])
@@ -4740,10 +4730,10 @@ output$DIF_cum_coef_tab <- renderTable(
 DIF_cum_equation1_items_Input <- reactive({
   # txt1 <- ifelse(input$DIF_cum_matching_summary == "score", "X_p", "Z_p")
   txt1 <- "Z_p"
-  txt2 <- paste0("b_{0k} + b_{1} ", txt1, " + b_{2} G_p + b_{3} ", txt1, " G_p")
-  txt3 <- paste0(txt1, ", b_{0k}, b_{1}, b_{2}, b_{3}")
+  txt2 <- paste0("b_{i0k} + b_{i1} ", txt1, " + b_{i2} G_p + b_{i3} ", txt1, " G_p")
+  txt3 <- "Z_p, G_p"
 
-  txt <- paste0("$$P(Y_{p} \\geq k|", txt3, ") = \\frac{e^{", txt2, "}}{1 + e^{", txt2, "}}$$")
+  txt <- paste0("$$\\mathrm{P}(Y_{pi} \\geq k|", txt3, ") = \\frac{e^{", txt2, "}}{1 + e^{", txt2, "}}$$")
 
   txt
 })
@@ -4756,10 +4746,9 @@ output$DIF_cum_equation1_items <- renderUI({
 DIF_cum_equation2_items_Input <- reactive({
   # txt1 <- ifelse(input$DIF_cum_matching_summary == "score", "X_p", "Z_p")
   txt1 <- "Z_p"
-  txt3 <- paste0(txt1, ", b_{0k}, b_{1}, b_{2}, b_{3}")
-  txt4 <- paste0(txt1, ", b_{0k+1}, b_{1}, b_{2}, b_{3}")
+  txt3 <- "Z_p, G_p"
 
-  txt <- paste0("$$P(Y_{p} = k|", txt3, ") = P(Y_{p} \\geq k|", txt3, ") - P(Y_{p} \\geq k + 1|", txt4, ")$$")
+  txt <- paste0("$$\\mathrm{P}(Y_{pi} = k|", txt3, ") = \\mathrm{P}(Y_{pi} \\geq k|", txt3, ") - \\mathrm{P}(Y_{pi} \\geq k + 1|", txt3, ")$$")
 
   txt
 })
@@ -4972,9 +4961,9 @@ DIF_adj_equation_summary_Input <- reactive({
   # txt1 <- ifelse(input$DIF_adj_matching_summary == "score", "X_p", "Z_p")
   txt1 <- "Z_p"
   txt2 <- paste0("b_{0it} + b_{i1} ", txt1, " + b_{i2} G_p + b_{i3} ", txt1, " G_p")
-  txt3 <- paste0(txt1, ", b_{0i1}, ..., b_{0iK}, b_{i1}, b_{i2}, b_{i3}")
+  txt3 <- "Z_p, G_p"
 
-  txt <- paste0("$$P(Y_{ip} = k|", txt3, ") = \\frac{e^{\\sum_{t = 0}^{k}", txt2, "}}{\\sum_{r = 0}^{K}e^{\\sum_{t = 0}^{r}", txt2, "}}$$")
+  txt <- paste0("$$\\mathrm{P}(Y_{pi} = k|", txt3, ") = \\frac{e^{\\sum_{t = 0}^{k}", txt2, "}}{\\sum_{r = 0}^{K_i}e^{\\sum_{t = 0}^{r}", txt2, "}}$$")
 
   txt
 })
@@ -5275,7 +5264,7 @@ DIF_adj_coef_tab_Input <- reactive({
   cat <- sort(unique(data.frame(ordinal())[, item]))[-1]
 
   tab <- matrix(0, nrow = length(cat) + 3, ncol = 2)
-  rownames(tab) <- c(paste0("(Intercept):", 1:length(cat)), "x", "group", "x:group")
+  rownames(tab) <- c(paste0("(Intercept):", cat), "x", "group", "x:group")
   colnames(tab) <- c("estimate", "SE")
 
   tmp <- t(coef(fit, SE = T)[[item]])
@@ -5301,10 +5290,10 @@ output$DIF_adj_coef_tab <- renderTable(
 DIF_adj_equation_items_Input <- reactive({
   # txt1 <- ifelse(input$DIF_adj_matching_summary == "score", "X_p", "Z_p")
   txt1 <- "Z_p"
-  txt2 <- paste0("b_{0t} + b_{1} ", txt1, " + b_{2} G_p + b_{3} ", txt1, " G_p")
-  txt3 <- paste0(txt1, ", b_{01}, ..., b_{0K}, b_{1}, b_{2}, b_{3}")
+  txt2 <- paste0("b_{i0t} + b_{i1} ", txt1, " + b_{i2} G_p + b_{i3} ", txt1, " G_p")
+  txt3 <- "Z_p, G_p"
 
-  txt <- paste0("$$P(Y_{p} = k|", txt3, ") = \\frac{e^{\\sum_{t = 0}^{k}", txt2, "}}{\\sum_{r = 0}^{K}e^{\\sum_{t = 0}^{r}", txt2, "}}$$")
+  txt <- paste0("$$\\mathrm{P}(Y_{pi} = k|", txt3, ") = \\frac{e^{\\sum_{t = 0}^{k}", txt2, "}}{\\sum_{r = 0}^{K_i}e^{\\sum_{t = 0}^{r}", txt2, "}}$$")
 
   txt
 })
@@ -5952,11 +5941,11 @@ output$DDF_multi_equation_items <- renderUI({
   withMathJax(
     sprintf(
       "$$\\text{For item } %s \\text{ are corresponding equations of multinomial model given by: } \\\\
-      \\mathrm{P}(Y_{p} = %s|Z_p, G_p, b_{l0}, b_{l1}, b_{l2}, b_{l3}, l = 1, \\dots, K-1) =
-      \\frac{1}{1 + \\sum_l e^{\\left( b_{l0} + b_{l1} Z_p + b_{l2} G_p + b_{l3} Z_p:G_p\\right)}}, \\\\
-      \\mathrm{P}(Y_{p} = k|Z_p, G_p, b_{l0}, b_{l1}, b_{l2}, b_{l3}, l = 1, \\dots, K-1) =
-      \\frac{e^{\\left( b_{k0} + b_{k1} Z_p + b_{k2} G_p + b_{k3} Z_p:G_p\\right)}}
-      {1 + \\sum_l e^{\\left( b_{l0} + b_{l1} Z_p + b_{l2} G_p + b_{l3} Z_p:G_p\\right)}}, \\\\
+      \\mathrm{P}(Y_{pi} = %s|Z_p, G_p) =
+      \\frac{1}{1 + \\sum_l e^{\\left( b_{i0l} + b_{i1l} Z_p + b_{i2l} G_p + b_{i3l} Z_p:G_p\\right)}}, \\\\
+      \\mathrm{P}(Y_{pi} = k|Z_p, G_p) =
+      \\frac{e^{\\left( b_{i0k} + b_{i1k} Z_p + b_{i2k} G_p + b_{i3k} Z_p:G_p\\right)}}
+      {1 + \\sum_l e^{\\left(b_{i0l} + b_{i1l} Z_p + b_{i2l} G_p + b_{i3l} Z_p:G_p\\right)}}, \\\\
       \\text{where } %s \\text{ is the correct answer and } k \\text{ is one of the wrong options. }$$",
       item, cor_option, cor_option, cor_option, cor_option
     )
@@ -6065,9 +6054,8 @@ DIF_training_plot_Input <- reactive({
     Ability = seq(-4, 4, 0.01)
   )
 
-  # replaced with tidyr pivot_longer - NOT TESTED!!
-  # df <- melt(df, id.vars = "Ability", variable.name = "Group", value.name = "Probability")
   df <- tidyr::pivot_longer(df, -Ability, names_to = "Group", values_to = "Probability")
+  df$Group <- factor(df$Group, levels = c("Reference", "Focal"))
 
   g <- ggplot(data = df, aes(x = Ability, y = Probability, col = Group, linetype = Group)) +
     geom_line(size = 0.8) +
@@ -6124,28 +6112,7 @@ DIF_training_plot_Input <- reactive({
 # ** Plotly for training ######
 output$DIF_training_plot <- renderPlotly({
   g <- DIF_training_plot_Input()
-
   p <- ggplotly(g)
-  theta0 <- input$DIF_training_parameter_theta
-
-  aR <- input$DIF_training_parameter_aR
-  bR <- input$DIF_training_parameter_bR
-  cR <- 0
-  dR <- 1
-
-  aF <- input$DIF_training_parameter_aF
-  bF <- input$DIF_training_parameter_bF
-  cF <- 0
-  dF <- 1
-
-  theta0 <- input$DIF_training_parameter_theta
-
-  ccirt <- function(theta, a, b, c, d) {
-    return(c + (d - c) / (1 + exp(-a * (theta - b))))
-  }
-
-  probR <- ccirt(theta0, a = aR, b = bR, c = cR, d = dR)
-  probF <- ccirt(theta0, a = aF, b = bF, c = cF, d = dF)
 
   # Reference group, probabilities
   text <- gsub("Group: Reference<br />Group: Reference", "Group: Reference", p$x$data[[1]]$text)
@@ -6156,34 +6123,23 @@ output$DIF_training_plot <- renderPlotly({
   p$x$data[[2]]$text <- text
 
   # Reference group, selected theta
-  text <- paste(
-    "Ability:     ", theta0, "<br />",
-    "Probability: ", probR, "<br />",
-    "Group:       ", "Reference"
-  )
+  text <- paste(strsplit(p$x$data[[3]]$text, "<br />")[[1]][-c(1:4)], collapse = "<br />")
+  text <- gsub("Group: gray<br />Group: dotdash", "Group: Reference", text)
   p$x$data[[3]]$text <- text
 
   # Focal group, selected theta
-  text <- paste(
-    "Ability:     ", theta0, "<br />",
-    "Probability: ", probF, "<br />",
-    "Group:       ", "Focal"
-  )
+  text <- paste(strsplit(p$x$data[[4]]$text, "<br />")[[1]][-c(1:4)], collapse = "<br />")
+  text <- gsub("Group: gray<br />Group: dotdash", "Group: Focal", text)
   p$x$data[[4]]$text <- text
 
   # Selected theta
-  text <- paste(
-    "Ability:     ", theta0, "<br />",
-    "Probability: ", probR, "<br />",
-    "Group:       ", "Reference", "<br />",
-    "Probability: ", probF, "<br />",
-    "Group:       ", "Focal"
-  )
+  text <- paste(strsplit(p$x$data[[5]]$text, "<br />")[[1]][5], collapse = "<br />")
+  text <- paste(text, "<br />Group: Reference<br />Group: Focal")
   p$x$data[[5]]$text <- text
 
   p$elementId <- NULL
 
-  p %>% plotly::config(displayModeBar = F)
+  p %>% plotly::config(displayModeBar = FALSE)
 })
 
 # ** DB for plot ######

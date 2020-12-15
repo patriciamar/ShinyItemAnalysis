@@ -1,4 +1,4 @@
-# source("ui/uiDIF/uiTDIF.R")
+source("ui/uiDIF/uiTDIF.R")
 
 uiDIF <-
   navbarMenu(
@@ -108,7 +108,7 @@ uiDIF <-
       )),
       br(),
       h4("Selected R code"),
-      div(code(HTML('library(ggplot2)<br>library(moments)<br>library(ShinyItemAnalysis)<br><br>#&nbsp;Loading&nbsp;data<br>data(GMAT,&nbsp;package&nbsp;=&nbsp;\"difNLR\")<br>Data&nbsp;<-&nbsp;GMAT[,&nbsp;1:20]<br>group&nbsp;<-&nbsp;GMAT[,&nbsp;\"group\"]<br><br>#&nbsp;Total&nbsp;score&nbsp;calculation&nbsp;wrt&nbsp;group<br>score&nbsp;<-&nbsp;rowSums(Data)<br>score0&nbsp;<-&nbsp;score[group&nbsp;==&nbsp;0]&nbsp;#&nbsp;reference&nbsp;group<br>score1&nbsp;<-&nbsp;score[group&nbsp;==&nbsp;1]&nbsp;#&nbsp;focal&nbsp;group<br><br>#&nbsp;Summary&nbsp;of&nbsp;total&nbsp;score<br>rbind(<br>&nbsp;&nbsp;c(length(score0),&nbsp;min(score0),&nbsp;max(score0),&nbsp;mean(score0),&nbsp;median(score0),&nbsp;sd(score0),&nbsp;skewness(score0),&nbsp;kurtosis(score0)),<br>&nbsp;&nbsp;c(length(score1),&nbsp;min(score1),&nbsp;max(score1),&nbsp;mean(score1),&nbsp;median(score1),&nbsp;sd(score1),&nbsp;skewness(score1),&nbsp;kurtosis(score1))<br>)<br><br>df&nbsp;<-&nbsp;data.frame(score,&nbsp;group&nbsp;=&nbsp;as.factor(group))<br><br>#&nbsp;Histogram&nbsp;of&nbsp;total&nbsp;scores&nbsp;wrt&nbsp;group<br>ggplot(data&nbsp;=&nbsp;df,&nbsp;aes(x&nbsp;=&nbsp;score,&nbsp;fill&nbsp;=&nbsp;group,&nbsp;col&nbsp;=&nbsp;group))&nbsp;+<br>&nbsp;&nbsp;geom_histogram(binwidth&nbsp;=&nbsp;1,&nbsp;position&nbsp;=&nbsp;\"dodge2\",&nbsp;alpha&nbsp;=&nbsp;0.75)&nbsp;+<br>&nbsp;&nbsp;xlab(\"Total&nbsp;score\")&nbsp;+<br>&nbsp;&nbsp;ylab(\"Number&nbsp;of&nbsp;respondents\")&nbsp;+<br>&nbsp;&nbsp;scale_fill_manual(values&nbsp;=&nbsp;c(\"dodgerblue2\",&nbsp;\"goldenrod2\"),&nbsp;labels&nbsp;=&nbsp;c(\"Reference\",&nbsp;\"Focal\"))&nbsp;+<br>&nbsp;&nbsp;scale_colour_manual(values&nbsp;=&nbsp;c(\"dodgerblue2\",&nbsp;\"goldenrod2\"),&nbsp;labels&nbsp;=&nbsp;c(\"Reference\",&nbsp;\"Focal\"))&nbsp;+<br>&nbsp;&nbsp;theme_app()&nbsp;+<br>&nbsp;&nbsp;theme(legend.position&nbsp;=&nbsp;\"left\"))<br><br>#&nbsp;t-test&nbsp;to&nbsp;compare&nbsp;total&nbsp;scores<br>t.test(score0,&nbsp;score1)'))),
+      div(code(HTML('library(ggplot2)<br>library(moments)<br>library(ShinyItemAnalysis)<br><br>#&nbsp;Loading&nbsp;data<br>data(GMAT,&nbsp;package&nbsp;=&nbsp;\"difNLR\")<br>Data&nbsp;<-&nbsp;GMAT[,&nbsp;1:20]<br>group&nbsp;<-&nbsp;GMAT[,&nbsp;\"group\"]<br><br>#&nbsp;Total&nbsp;score&nbsp;calculation&nbsp;wrt&nbsp;group<br>score&nbsp;<-&nbsp;rowSums(Data)<br>score0&nbsp;<-&nbsp;score[group&nbsp;==&nbsp;0]&nbsp;#&nbsp;reference&nbsp;group<br>score1&nbsp;<-&nbsp;score[group&nbsp;==&nbsp;1]&nbsp;#&nbsp;focal&nbsp;group<br><br>#&nbsp;Summary&nbsp;of&nbsp;total&nbsp;score<br>rbind(<br>&nbsp;&nbsp;c(length(score0),&nbsp;min(score0),&nbsp;max(score0),&nbsp;mean(score0),&nbsp;median(score0),&nbsp;sd(score0),&nbsp;skewness(score0),&nbsp;kurtosis(score0)),<br>&nbsp;&nbsp;c(length(score1),&nbsp;min(score1),&nbsp;max(score1),&nbsp;mean(score1),&nbsp;median(score1),&nbsp;sd(score1),&nbsp;skewness(score1),&nbsp;kurtosis(score1))<br>)<br><br>df&nbsp;<-&nbsp;data.frame(score,&nbsp;group&nbsp;=&nbsp;as.factor(group))<br><br>#&nbsp;Histogram&nbsp;of&nbsp;total&nbsp;scores&nbsp;wrt&nbsp;group<br>ggplot(data&nbsp;=&nbsp;df,&nbsp;aes(x&nbsp;=&nbsp;score,&nbsp;fill&nbsp;=&nbsp;group,&nbsp;col&nbsp;=&nbsp;group))&nbsp;+<br>&nbsp;&nbsp;geom_histogram(binwidth&nbsp;=&nbsp;1,&nbsp;position&nbsp;=&nbsp;\"dodge2\",&nbsp;alpha&nbsp;=&nbsp;0.75)&nbsp;+<br>&nbsp;&nbsp;xlab(\"Total&nbsp;score\")&nbsp;+<br>&nbsp;&nbsp;ylab(\"Number&nbsp;of&nbsp;respondents\")&nbsp;+<br>&nbsp;&nbsp;scale_fill_manual(values&nbsp;=&nbsp;c(\"dodgerblue2\",&nbsp;\"goldenrod2\"),&nbsp;labels&nbsp;=&nbsp;c(\"Reference\",&nbsp;\"Focal\"))&nbsp;+<br>&nbsp;&nbsp;scale_colour_manual(values&nbsp;=&nbsp;c(\"dodgerblue2\",&nbsp;\"goldenrod2\"),&nbsp;labels&nbsp;=&nbsp;c(\"Reference\",&nbsp;\"Focal\"))&nbsp;+<br>&nbsp;&nbsp;theme_app()&nbsp;+<br>&nbsp;&nbsp;theme(legend.position&nbsp;=&nbsp;\"left\")<br><br>#&nbsp;t-test&nbsp;to&nbsp;compare&nbsp;total&nbsp;scores<br>t.test(score0,&nbsp;score1)'))),
       br()
     ),
     # DICHOTOMOUS METHODS ####
@@ -315,7 +315,7 @@ uiDIF <-
           "Summary",
           h3("Logistic regression"),
           p("Logistic regression method allows for detection of uniform and non-uniform DIF (Swaminathan & Rogers, 1990) by including a group
-                                   specific intercept", strong("\\(b_{2}\\)"), "(uniform DIF) and group specific interaction", strong("\\(b_{3}\\)"), "(non-uniform DIF) into model and
+                                   specific intercept", strong("\\(b_{i2}\\)"), "(uniform DIF) and group specific interaction", strong("\\(b_{i3}\\)"), "(non-uniform DIF) into model for item \\(i\\) and
                                    by testing for their significance."),
           h4("Method specification"),
           p(
@@ -378,7 +378,7 @@ uiDIF <-
             )
           ),
           h4("Equation"),
-          ("$$\\mathrm{P}\\left(Y_{ij} = 1 | X_i, G_i, b_0, b_1, b_2, b_3\\right) = \\frac{e^{b_0 + b_1 X_i + b_2 G_i + b_3 X_i G_i}}{1+e^{b_0 + b_1 X_i + b_2 G_i + b_3 X_i G_i}} $$"),
+          ("$$\\mathrm{P}\\left(Y_{pi} = 1 | X_p, G_p\\right) = \\frac{e^{b_{i0} + b_{i1} X_p + b_{i2} G_p + b_{i3} X_p:G_p}}{1 + e^{b_{i0} + b_{i1} X_p + b_{i2} G_p + b_{i3} X_p:G_p}}$$"),
           h4("Summary table"),
           p("Summary table contains information about DIF test statistics \\(LR(\\chi^2)\\), corresponding \\(p\\)-values
                                  considering selected adjustement, and significance codes. Moreover, it offers values of Nagelkerke's
@@ -407,7 +407,7 @@ uiDIF <-
           value = "log_it",
           h3("Logistic regression"),
           p("Logistic regression method allows for detection of uniform and non-uniform DIF (Swaminathan & Rogers, 1990) by including a group
-                                   specific intercept", strong("\\(b_{2}\\)"), "(uniform DIF) and group specific interaction", strong("\\(b_{3}\\)"), "(non-uniform DIF) into model and
+                                   specific intercept", strong("\\(b_{i2}\\)"), "(uniform DIF) and group specific interaction", strong("\\(b_{i3}\\)"), "(non-uniform DIF) into model for item \\(i\\) and
                                    by testing for their significance."),
           h4("Method specification"),
           p(
@@ -488,7 +488,7 @@ uiDIF <-
           plotOutput("DIF_logistic_items_plot"),
           downloadButton("DB_DIF_logistic_items_plot", label = "Download figure"),
           h4("Equation"),
-          ("$$\\mathrm{P}\\left(Y_{ij} = 1 | X_i, G_i, b_0, b_1, b_2, b_3\\right) = \\frac{e^{b_0 + b_1 X_i + b_2 G_i + b_3 X_i G_i}}{1+e^{b_0 + b_1 X_i + b_2 G_i + b_3 X_i G_i}} $$"),
+          ("$$\\mathrm{P}\\left(Y_{pi} = 1 | X_p, G_p\\right) = \\frac{e^{b_{i0} + b_{i1} X_p + b_{i2} G_p + b_{i3} X_p:G_p}}{1 + e^{b_{i0} + b_{i1} X_p + b_{i2} G_p + b_{i3} X_p:G_p}}$$"),
           h4("Table of parameters"),
           p("Table summarizes estimated item parameters together with standard errors. "),
           fluidRow(column(12, align = "center", tableOutput("DIF_logistic_items_coef_tab"))),
@@ -509,14 +509,14 @@ uiDIF <-
           h3("Generalized logistic regression"),
           p(
             "Generalized logistic regression models are extensions of logistic regression method which
-                                   account for possibility of guessing by allowing for nonzero lower asymptote - pseudo-guessing \\(c\\)",
+                                   account for possibility of guessing by allowing for nonzero lower asymptote - pseudo-guessing \\(c_i\\)",
             a("(Drabinova & Martinkova, 2017) ",
               href = "https://doi.org/10.1111/jedm.12158",
               target = "_blank"
             ),
-            "or upper asymptote lower than one - inattention \\(d\\). Similarly to logistic
+            "or upper asymptote lower than one - inattention \\(d_i\\). Similarly to logistic
                                    regression, its extensions also provide detection of uniform and non-uniform DIF by
-                                   letting the difficulty parameter \\(b\\) (uniform) and the discrimination parameter \\(a\\)
+                                   letting the difficulty parameter \\(b_i\\) (uniform) and the discrimination parameter \\(a_i\\)
                                    (non-uniform) differ for groups and by testing for difference in their
                                    values. Moreover, these extensions allow for testing differences in pseudo-guessing and
                                    inattention parameters and they can be seen as proxies of 3PL and 4PL IRT models for
@@ -525,7 +525,7 @@ uiDIF <-
           h4("Method specification"),
           p(
             "Here you can specify the assumed ", strong("model."), "In 3PL and 4PL models, the abbreviations \\(c_{g}\\) or \\(d_{g}\\)
-                                    mean that parameters \\(c\\) or \\(d\\) are assumed to be the same for both groups, otherwise they are allowed to differ.
+                                    mean that parameters \\(c_i\\) or \\(d_i\\) are assumed to be the same for both groups, otherwise they are allowed to differ.
                                     With ", strong("type"), "you can specify the type of DIF to be tested by choosing the parameters in which difference between
                                     groups should be tested. You can also select", strong("correction method"), " for multiple comparison or",
             strong("item purification. ")
@@ -613,9 +613,9 @@ uiDIF <-
           h4("Summary table"),
           p("Summary table contains information about DIF test statistic \\(LR(\\chi^2)\\), corresponding \\(p\\)-values
                                    considering selected adjustement, and significance codes. Table also provides estimated parameters for
-                                   the best fitted model for each item. Note that \\(a_{jG_i}\\) (and also other parameters) from the equation
+                                   the best fitted model for each item. Note that \\(a_{iG_p}\\) (and also other parameters) from the equation
                                    above consists of parameter for the reference group and parameter for the difference between focal and reference
-                                   groups, i.e., \\(a_{jG_i} = a_{j} + a_{jDif}G_{i}\\), where \\(G_{i} = 0\\) for the reference group and \\(G_{i} = 1\\)
+                                   groups, i.e., \\(a_{iG_p} = a_{i} + a_{iDif}G_{p}\\), where \\(G_{p} = 0\\) for the reference group and \\(G_{p} = 1\\)
                                    for the focal group, as stated in the table below. "),
           uiOutput("DIF_NLR_na_alert"),
           strong(textOutput("nlr_dif_items")),
@@ -646,14 +646,14 @@ uiDIF <-
           h3("Generalized logistic regression"),
           p(
             "Generalized logistic regression models are extensions of logistic regression method which
-                                   account for possibility of guessing by allowing for nonzero lower asymptote - pseudo-guessing \\(c\\)",
+                                   account for possibility of guessing by allowing for nonzero lower asymptote - pseudo-guessing \\(c_i\\)",
             a("(Drabinova & Martinkova, 2017) ",
               href = "https://doi.org/10.1111/jedm.12158",
               target = "_blank"
             ),
-            "or upper asymptote lower than one - inattention \\(d\\). Similarly to logistic
+            "or upper asymptote lower than one - inattention \\(d_i\\). Similarly to logistic
                                    regression, its extensions also provide detection of uniform and non-uniform DIF by
-                                   letting the difficulty parameter \\(b\\) (uniform) and the discrimination parameter \\(a\\)
+                                   letting the difficulty parameter \\(b_i\\) (uniform) and the discrimination parameter \\(a_i\\)
                                    (non-uniform) differ for groups and by testing for difference in their
                                    values. Moreover, these extensions allow for testing differences in pseudo-guessing and
                                    inattention parameters and they can be seen as proxies of 3PL and 4PL IRT models for
@@ -767,10 +767,10 @@ uiDIF <-
           h4("Equation"),
           fluidRow(column(12, align = "center", uiOutput("DIF_NLR_equation_plot"))),
           h4("Table of parameters"),
-          p("Table summarizes estimated item parameters together with standard errors. Note that \\(a_{jG_i}\\) (and also other
+          p("Table summarizes estimated item parameters together with standard errors. Note that \\(a_{iG_p}\\) (and also other
                                    parameters) from the equation above consists of parameter for the reference group and parameter for the difference between
-                                   focal and reference groups, i.e., \\(a_{jG_i} = a_{j} + a_{jDif}G_{i}\\), where \\(G_{i} = 0\\) for the reference group and
-                                   \\(G_{i} = 1\\) for the focal group, as stated in the table below. "),
+                                   focal and reference groups, i.e., \\(a_{iG_p} = a_{i} + a_{iDif}G_{p}\\), where \\(G_{p} = 0\\) for the reference group and
+                                   \\(G_{p} = 1\\) for the focal group, as stated in the table below. "),
           fluidRow(column(12, align = "center", tableOutput("tab_coef_DIF_NLR"))),
           br(),
           h4("Selected R code"),
@@ -1284,9 +1284,8 @@ uiDIF <-
           h3("Cumulative logit regression model for DIF detection"),
           p(
             "Cumulative logit regression allows for detection of uniform and non-uniform DIF among ordinal data by
-                                    adding a group specific intercept ", strong("\\(b_2\\)"), " (uniform DIF) and interaction ", strong("\\(b_3\\)"),
-            " between group and DIF matching variable (non-uniform DIF) into model and by testing
-                                   for their significance."
+                                    adding a group specific intercept ", strong("\\(b_{i2}\\)"), " (uniform DIF) and interaction ", strong("\\(b_{i3}\\)"),
+            " between group and DIF matching variable (non-uniform DIF) into model for item \\(i\\) and by testing for their significance."
           ),
           h4("Method specification"),
           p(
@@ -1385,9 +1384,8 @@ uiDIF <-
           h3("Cumulative logit regression model for DIF detection"),
           p(
             "Cumulative logit regression allows for detection of uniform and non-uniform DIF among ordinal data by
-                                    adding a group specific intercept ", strong("\\(b_2\\)"), " (uniform DIF) and interaction ", strong("\\(b_3\\)"),
-            " between group and DIF matching variable (non-uniform DIF) into model and by testing
-                                   for their significance."
+                                    adding a group specific intercept ", strong("\\(b_{i2}\\)"), " (uniform DIF) and interaction ", strong("\\(b_{i3}\\)"),
+            " between group and DIF matching variable (non-uniform DIF) into model for item \\(i\\) and by testing for their significance."
           ),
           h4("Method specification"),
           p(
@@ -1493,9 +1491,8 @@ uiDIF <-
           h3("Adjacent category logit regression model for DIF detection"),
           p(
             "Adjacent category logit regression model allows for detection of uniform and non-uniform DIF among
-                                   ordinal data by adding a group specific intercept", strong("\\(b_2\\)"), "(uniform DIF) and interaction",
-            strong("\\(b_3\\)"), "between group and DIF matching variable (non-uniform DIF)
-                                   into model and by testing for their significance. "
+                                   ordinal data by adding a group specific intercept", strong("\\(b_{i2}\\)"), "(uniform DIF) and interaction",
+            strong("\\(b_{i3}\\)"), "between group and DIF matching variable (non-uniform DIF) into model for item \\(i\\) and by testing for their significance. "
           ),
           h4("Method specification"),
           p(
@@ -1588,9 +1585,9 @@ uiDIF <-
           h3("Adjacent category logit regression model for DIF detection"),
           p(
             "Adjacent category logit regression model allows for detection of uniform and non-uniform DIF among
-                                   ordinal data by adding a group specific intercept", strong("\\(b_2\\)"), "(uniform DIF) and interaction",
-            strong("\\(b_3\\)"), "between group and DIF matching variable (non-uniform DIF)
-                                   into model and by testing for their significance. "
+                                   ordinal data by adding a group specific intercept", strong("\\(b_{i2}\\)"), "(uniform DIF) and interaction",
+            strong("\\(b_{i3}\\)"), "between group and DIF matching variable (non-uniform DIF)
+                                   into model for item \\(i\\) and by testing for their significance. "
           ),
           h4("Method specification"),
           p(
@@ -1742,15 +1739,15 @@ uiDIF <-
           ),
           h4("Equation"),
           p(
-            "For ", strong("\\(K\\)"), " possible test choices is the probability of the correct answer ",
-            strong("\\(K\\)"), " for person ", strong("\\(p\\)"), " with DIF matching variable
+            "For ", strong("\\(K_i\\)"), " possible test choices is the probability of the correct answer ",
+            strong("\\(K_i\\)"), " for person ", strong("\\(p\\)"), " with DIF matching variable
                                    (e.g., standardized total score) ", strong("\\(Z_p\\)"), " and group
                                    membership ", strong("\\(G_p\\)"), " in item ", strong("\\(i\\)"), "given by the following equation: "
           ),
-          ("$$\\mathrm{P}(Y_{ip} = K|Z_p, G_p, b_{il0}, b_{il1}, b_{il2}, b_{il3}, l = 1, \\dots, K-1) =
+          ("$$\\mathrm{P}(Y_{ip} = K_i|Z_p, G_p) =
                                   \\frac{1}{1 + \\sum_l e^{\\left( b_{il0} + b_{il1} Z_p + b_{il2} G_p + b_{il3} Z_p:G_p\\right)}}$$"),
           p("The probability of choosing distractor ", strong("\\(k\\)"), " is then given by: "),
-          ("$$\\mathrm{P}(Y_{ip} = k|Z_p, G_p, b_{il0}, b_{il1}, b_{il2}, b_{il3}, l = 1, \\dots, K-1) =
+          ("$$\\mathrm{P}(Y_{ip} = k|Z_p, G_p) =
                                   \\frac{e^{\\left( b_{ik0} + b_{ik1} Z_p + b_{ik2} G_p + b_{ik3} Z_p:G_p\\right)}}
                                   {1 + \\sum_l e^{\\left( b_{il0} + b_{il1} Z_p + b_{il2} G_p + b_{il3} Z_p:G_p\\right)}}$$"),
           h4("Summary table"),
@@ -1879,10 +1876,10 @@ uiDIF <-
           br()
         )
       )
-    )
-    #             ),
-    #             "----",
-    #             "Training",
-    #             # * TRAINING  ####
-    #             uiTDIF
+      #    )
+    ),
+    "----",
+    "Training",
+    # * TRAINING  ####
+    uiTDIF
   )
