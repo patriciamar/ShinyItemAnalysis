@@ -15,8 +15,13 @@
 #'
 #' @keywords datasets
 #'
-#' @seealso \code{\link{HCItest}}, \code{\link{HCIkey}}, \code{\link{HCIdata}},
-#' \code{\link{HCIgrads}}, \code{\link{HCIprepost}}, \code{\link{HCItestretest}}
+#' @seealso
+#' \code{\link{HCItest}} for HCI multiple-choice dataset\cr
+#' \code{\link{HCIkey}} for key of correct answers for HCI\cr
+#' \code{\link{HCIdata}} for HCI full dataset\cr
+#' \code{\link{HCIgrads}}  for HCI dataset of graduate students\cr
+#' \code{\link{HCIprepost}} for HCI pretest and posttest scores\cr
+#' \code{\link{HCItestretest}} for HCI test-retest dataset
 #'
 #' @format \code{HCI} is a \code{data.frame} consisting of 651 observations on
 #'   the 22 variables.

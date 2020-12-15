@@ -64,7 +64,7 @@ plotted onto tiles.}
 \item{fill_alpha}{numeric 0-1: the opacity of the fill color.}
 
 \item{...}{
-  Arguments passed on to \code{\link[psych:polychoric]{psych::polychoric}}
+  Arguments passed on to \code{\link[psych:tetrachor]{psych::polychoric}}
   \describe{
     \item{\code{correct}}{Correction value to use to correct for continuity in the case of zero entry cell for tetrachoric, polychoric, polybi, and mixed.cor.  See the examples for the effect of correcting versus not correcting for continuity.}
     \item{\code{smooth}}{if TRUE and if the tetrachoric/polychoric matrix is not positive definite, then apply a simple smoothing algorithm using cor.smooth}
@@ -94,7 +94,7 @@ Correlation heatmap displays selected type of correlations between
   negative correlation. Correlation heatmap can be reordered using
   hierarchical clustering method specified with \code{clust_method} argument.
   When the desired number of clusters (argument \code{n_clust}) is not zero
-  and any clustering is demanded, the rectangles outlining the found clusters
+  and some clustering is demanded, the rectangles outlining the found clusters
   are drawn.
 }
 \examples{
@@ -118,6 +118,19 @@ library(ggplot2)
 HCI[, 1:20] \%>\% plot_corr(n_clust = 3) +
   ggtitle("HCI heatmap") +
   theme(legend.position = "bottom")
+
+# mimic corrplot
+plot_corr(HCIdata[, varsQR], cor = "poly", clust_method = "complete", shape = "sq") +
+  scale_fill_gradient2(
+    limits = c(-.1, 1),
+    breaks = seq(-.1, 1, length.out = 12),
+    guide = guide_colorbar(
+      barheight = .8, barwidth = .0275,
+      default.unit = "npc",
+      title = NULL, frame.colour = "black", ticks.colour = "black"
+    )
+  ) +
+  theme(axis.text = element_text(colour = "red", size = 12))
 }
 
 }

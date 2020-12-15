@@ -14,6 +14,11 @@
 #' @param color character: color of histogram.
 #' @param size text size in pts.
 #' @param item.names names of items to be displayed.
+#' @param ylab.theta character: description of y-axis for the histogram.
+#' @param ylab.b character: description of y-axis for the plot of difficulty
+#'   estimates.
+#'
+#' @inheritDotParams cowplot::plot_grid rel_widths
 #'
 #' @author
 #' Adela Hladka \cr
@@ -26,31 +31,37 @@
 #' \email{martinkova@@cs.cas.cz} \cr
 #'
 #' @references
-#' Wright, B. D., & Stone, M. H. (1979). Best test design.
+#' Wright, B. & Stone, M. (1979). Best test design. MESA Press: Chicago, IL
 #'
 #' @examples
 #' library(mirt)
 #'
-#' # loading 100-item medical admission test data sets
-#' data(dataMedical)
-#' # binary data set
-#' dataBin <- dataMedical[, 1:100]
+#' data(HCI)
 #'
-#' # fit Rasch model with mirt package
-#' fit <- mirt(dataBin, model = 1, itemtype = "Rasch")
+#' # fit Rasch model with the mirt package
+#' fit <- mirt(HCI[, 1:20], model = 1, itemtype = "Rasch")
 #' # factor scores
 #' theta <- as.vector(fscores(fit))
-#' # difficulty estimates
-#' b <- coef(fit, simplify = TRUE)$items[, "d"]
+#' # difficulty estimates using IRT parametrization
+#' b <- coef(fit, simplify = TRUE, IRTpars = TRUE)$items[, "b"]
 #'
+#' # Wright map
 #' ggWrightMap(theta, b)
 #'
+#' # Wright map with modified item names
 #' item.names <- paste("Item", 1:20)
 #' ggWrightMap(theta, b, item.names = item.names)
+#'
+#' # Wright map with modified descriptions of y-axis and relative widths of plots
+#' ggWrightMap(theta, b,
+#'   ylab.theta = "Latent trait", ylab.b = "Difficulty estimates",
+#'   rel_widths = c(2, 1)
+#' )
 #' @export
 
-
-ggWrightMap <- function(theta, b, binwidth = 0.5, color = "blue", size = 15, item.names) {
+ggWrightMap <- function(theta, b, binwidth = 0.5, color = "blue", size = 15, item.names,
+                        ylab.theta = "Respondent latent trait", ylab.b = "Item difficulty",
+                        ...) {
   if (missing(theta)) {
     stop("'theta' needs to be specified", call. = FALSE)
   }
@@ -65,8 +76,11 @@ ggWrightMap <- function(theta, b, binwidth = 0.5, color = "blue", size = 15, ite
 
   df.theta <- data.frame(theta = theta)
 
-  theta.cut.points <- seq(min(c(theta, b)) - binwidth / 2, max(c(theta, b)) + binwidth / 2, binwidth / 2)
-  b.cut.points <- cut(b, theta.cut.points, include.lowest = T)
+  theta.cut.points <- seq(
+    min(c(theta, b), na.rm = TRUE) - binwidth / 2,
+    max(c(theta, b), na.rm = TRUE) + binwidth / 2, binwidth / 2
+  )
+  b.cut.points <- cut(b, theta.cut.points, include.lowest = TRUE)
   levels(b.cut.points) <- theta.cut.points[-length(theta.cut.points)] + diff(theta.cut.points) / 2
   b.cut.points <- as.numeric(paste(b.cut.points))
 
@@ -87,27 +101,21 @@ ggWrightMap <- function(theta, b, binwidth = 0.5, color = "blue", size = 15, ite
   } else {
     df.b$item <- as.character(df.b$item)
     while (any(nchar(df.b$item) < maxn)) {
-      df.b$item <- ifelse(nchar(df.b$item) < maxn, paste0(" ", df.b$item), df.b$item)
+      df.b$item <- ifelse(nchar(df.b$item) < maxn, paste0(df.b$item, " "), df.b$item)
     }
   }
 
-  if (any(df.b$x > 1)) {
-    for (k in which(df.b$x > 1)) {
-      df.b[nrow(df.b) + 1, ] <- df.b[k, ]
-      df.b[nrow(df.b), "item"] <- "|"
-      df.b[nrow(df.b), "x"] <- df.b[nrow(df.b), "x"] - 0.5
-    }
-  }
+  df.b$item[df.b$x > 1] <- paste("|", df.b$item[df.b$x > 1])
 
-  lim.x.min <- min(c(theta, b)) - binwidth
-  lim.x.max <- max(c(theta, b)) + binwidth
+  lim.x.min <- min(c(theta, b), na.rm = TRUE) - binwidth
+  lim.x.max <- max(c(theta, b), na.rm = TRUE) + binwidth
 
   g1 <- ggplot(df.theta, aes_string(x = "theta")) +
     geom_histogram(binwidth = binwidth, fill = color, col = "black", na.rm = TRUE) +
     xlim(lim.x.min, lim.x.max) +
     coord_flip() +
     scale_y_reverse() +
-    xlab("Respondent ability") +
+    xlab(ylab.theta) +
     theme_app(base_size = size) +
     theme(
       axis.title.x = element_blank(),
@@ -116,10 +124,10 @@ ggWrightMap <- function(theta, b, binwidth = 0.5, color = "blue", size = 15, ite
     )
 
   g2 <- ggplot(df.b, aes_string(x = "x", y = "y", label = "item")) +
-    geom_text(hjust = 0.5, vjust = 0.5, na.rm = TRUE) +
+    geom_text(hjust = 0, vjust = 0.5, na.rm = TRUE) +
     scale_y_continuous(position = "right", limits = c(lim.x.min, lim.x.max)) +
-    scale_x_continuous(limits = c(min(df.b$x) - 0.5, max(df.b$x) + 0.5)) +
-    ylab("Item difficulty") +
+    scale_x_continuous(limits = c(min(df.b$x), max(df.b$x) + 0.75)) +
+    ylab(ylab.b) +
     theme_app(base_size = size) +
     theme(
       axis.title.x = element_blank(),
@@ -127,5 +135,5 @@ ggWrightMap <- function(theta, b, binwidth = 0.5, color = "blue", size = 15, ite
       axis.ticks.x = element_blank()
     )
 
-  plot_grid(g1, g2)
+  plot_grid(g1, g2, ...)
 }

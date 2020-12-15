@@ -1,4 +1,4 @@
-#' Homeostasis concept inventory dataset
+#' Homeostasis concept inventory full dataset
 #'
 #' @description \code{HCIdata} dataset consists of the responses of 669 students
 #'   (405 males, 246 females, 18 without gender specification) to Homeostasis
@@ -19,8 +19,13 @@
 #'
 #' @keywords datasets
 #'
-#' @seealso \code{\link{HCI}}, \code{\link{HCItest}}, \code{\link{HCIkey}},
-#' \code{\link{HCIgrads}}, \code{\link{HCIprepost}}, \code{\link{HCItestretest}}
+#' @seealso
+#' \code{\link{HCI}} for HCI dichotomous dataset\cr
+#' \code{\link{HCItest}} for HCI multiple-choice dataset\cr
+#' \code{\link{HCIkey}} for key of correct answers for HCI\cr
+#' \code{\link{HCIgrads}}  for HCI dataset of graduate students\cr
+#' \code{\link{HCIprepost}} for HCI pretest and posttest scores\cr
+#' \code{\link{HCItestretest}} for HCI test-retest dataset
 #'
 #' @format \code{HCIdata} is a \code{data.frame} consisting of 669 observations
 #'   on the 47 variables.

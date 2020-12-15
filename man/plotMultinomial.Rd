@@ -2,7 +2,7 @@
 % Please edit documentation in R/plotMultinomial.R
 \name{plotMultinomial}
 \alias{plotMultinomial}
-\title{Plot category probabilities of multinomial log-linear regression model}
+\title{Plot category probabilities of multinomial model}
 \usage{
 plotMultinomial(x, matching, matching.name = "matching")
 }
@@ -15,20 +15,22 @@ plotMultinomial(x, matching, matching.name = "matching")
 \item{matching.name}{character: name of matching criterion used for
 estimation in \code{x}.}
 }
+\value{
+An object of class \code{ggplot} and/or \code{gg}.
+}
 \description{
 Plots category probabilities functions estimated by
-  \code{multinom()} from the \code{nnet} package.
+  \code{multinom()} from the \code{nnet} package using the \pkg{ggplot2}
+  package.
 }
 \examples{
 # loading data
 data(GMAT, GMATtest, GMATkey, package = "difNLR")
 
-matching <- scale(apply(GMAT[, 1:20], 1, sum)) # Z-score
-data <- GMATtest[, 1:20]
-key <- GMATkey
+matching <- scale(rowSums(GMAT[, 1:20])) # Z-score
 
 # multinomial model for item 1
-fit <- nnet::multinom(relevel(data[, 1], ref = paste(key[1])) ~ matching)
+fit <- nnet::multinom(relevel(GMATtest[, 1], ref = paste(GMATkey[1])) ~ matching)
 
 # plotting category probabilities
 plotMultinomial(fit, matching, matching.name = "Z-score")

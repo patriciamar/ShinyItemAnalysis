@@ -14,8 +14,13 @@
 #'
 #' @keywords datasets
 #'
-#' @seealso \code{\link{HCItest}}, \code{\link{HCI}}, \code{\link{HCIdata}},
-#' \code{\link{HCIgrads}}, \code{\link{HCIprepost}}, \code{\link{HCItestretest}}
+#' @seealso
+#' \code{\link{HCItest}} for HCI multiple-choice dataset\cr
+#' \code{\link{HCI}} for HCI dichotomous dataset\cr
+#' \code{\link{HCIdata}} for HCI full dataset\cr
+#' \code{\link{HCIgrads}}  for HCI dataset of graduate students\cr
+#' \code{\link{HCIprepost}} for HCI pretest and posttest scores\cr
+#' \code{\link{HCItestretest}} for HCI test-retest dataset
 #'
 #' @format A nominal vector with 20 values representing correct answers to items
 #'   of \code{HCItest} dataset. For more details see \code{\link{HCItest}}.

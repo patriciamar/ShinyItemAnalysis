@@ -30,8 +30,12 @@ of the homeostasis concept inventory. CBE-Life Sciences Education, 16(2),
 ar35. \url{https://doi.org/10.1187/cbe.16-10-0305}
 }
 \seealso{
-\code{\link{HCIdata}}, \code{\link{HCI}}, \code{\link{HCItest}},
-\code{\link{HCIkey}}, \code{\link{HCIprepost}}, \code{\link{HCItestretest}}
+\code{\link{HCIdata}} for HCI full dataset\cr
+\code{\link{HCI}} for HCI dichotomous dataset\cr
+\code{\link{HCItest}} for HCI multiple-choice dataset\cr
+\code{\link{HCIkey}} for key of correct answers for HCI\cr
+\code{\link{HCIprepost}} for HCI pretest and posttest scores\cr
+\code{\link{HCItestretest}} for HCI test-retest dataset
 }
 \author{
 Jenny L. McFarland \cr Biology Department, Edmonds Community College

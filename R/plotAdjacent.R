@@ -1,13 +1,16 @@
-#' Plot category probabilities of adjacent logistic regression model
+#' Plot category probabilities of adjacent category logit model
 #'
 #' @aliases plotAdjacent
 #'
 #' @description Function for plotting category probabilities function estimated
-#'   by \code{vglm()} from \code{VGAM} package.
+#'   by \code{vglm()} function from the \code{VGAM} package using the
+#'   \pkg{ggplot2} package.
 #'
 #' @param x object of class \code{vglm}
 #' @param matching.name character: name of matching criterion used for
 #'   estimation in \code{x}.
+#'
+#' @return An object of class \code{ggplot} and/or \code{gg}.
 #'
 #' @author
 #' Tomas Jurica \cr
@@ -29,16 +32,16 @@
 #' library(VGAM)
 #'
 #' # loading data
-#' data <- dataMedicalgraded[, 1:100]
+#' data(Science, package = "mirt")
 #'
 #' # total score calculation
-#' score <- apply(data, 1, sum)
-#' data[, 1] <- ordered(factor(data[, 1], levels = 0:max(data[, 1])))
+#' score <- rowSums(Science)
+#' Science[, 1] <- factor(Science[, 1], levels = sort(unique(Science[, 1])), ordered = TRUE)
 #'
-#' # cummulative logistic model for item 1
-#' fit <- vglm(data[, 1] ~ score, family = acat(reverse = FALSE, parallel = TRUE))
+#' # adjacent category logit model for item 1
+#' fit <- vglm(Science[, 1] ~ score, family = acat(reverse = FALSE, parallel = TRUE))
 #' # coefficients for item 1
-#' coefs <- coef(fit)
+#' coef(fit)
 #'
 #' plotAdjacent(fit, matching.name = "Total score")
 #' @export
@@ -48,7 +51,7 @@ plotAdjacent <- function(x, matching.name = "matching") {
   num.cat <- length(cat) # number of all categories
   y <- factor(y, levels = cat) # releveling
   matching <- x@x[, 2] # matching
-  match <- seq(min(matching, na.rm = TRUE), max(matching, na.rm = TRUE), 0.01)
+  match <- seq(min(matching, na.rm = TRUE), max(matching, na.rm = TRUE), length.out = 1000)
 
   coefs <- coef(x) # extracting coefficients
   cat.obs <- names(which(table(y) > 0)[-1]) # observed categories = categories with at least one observation
@@ -70,18 +73,18 @@ plotAdjacent <- function(x, matching.name = "matching") {
   # reshaping data
   df.probs.cat <- data.frame(match, df.probs.cat)
   colnames(df.probs.cat) <- c("matching", paste0("P(Y=", cat, ")"))
-  # df.probs.cat <- melt(df.probs.cat, id.vars = "matching", variable.name = "category", value.name = "probability")
-  df.probs.cat <- tidyr::pivot_longer(df.probs.cat, -matching, names_to = "category", values_to = "probability")
-  df.probs.cat$category <- as.factor(df.probs.cat$category)
+  df.probs.cat <- tidyr::pivot_longer(df.probs.cat, -matching, names_to = "Category", values_to = "Probability")
+  df.probs.cat$Category <- as.factor(df.probs.cat$Category)
+  colnames(df.probs.cat)[1] <- "Matching"
 
   # empirical category values
   df.emp.cat <- data.frame(table(y, matching),
     y = prop.table(table(y, matching), 2)
   )[, c(1, 2, 3, 6)]
   df.emp.cat$matching <- as.numeric(paste(df.emp.cat$matching))
-  colnames(df.emp.cat) <- c("category", "matching", "size", "probability")
-  df.emp.cat$category <- as.factor(df.emp.cat$category)
-  levels(df.emp.cat$category) <- paste0("P(Y=", levels(df.emp.cat$category), ")")
+  colnames(df.emp.cat) <- c("Category", "Matching", "Count", "Probability")
+  df.emp.cat$Category <- as.factor(df.emp.cat$Category)
+  levels(df.emp.cat$Category) <- paste0("P(Y=", levels(df.emp.cat$Category), ")")
 
   # colours
   gg_color_hue <- function(n) {
@@ -90,30 +93,30 @@ plotAdjacent <- function(x, matching.name = "matching") {
   }
   cols <- c("black", gg_color_hue(num.cat - 1))
 
-  df.emp.cat <- df.emp.cat[df.emp.cat$category %in% paste0("P(Y=", cat, ")"), ]
-  df.probs.cat <- df.probs.cat[df.probs.cat$category %in% paste0("P(Y=", cat, ")"), ]
+  df.emp.cat <- df.emp.cat[df.emp.cat$Category %in% paste0("P(Y=", cat, ")"), ]
+  df.probs.cat <- df.probs.cat[df.probs.cat$Category %in% paste0("P(Y=", cat, ")"), ]
 
   rangex <- c(
-    min(c(df.emp.cat$matching, df.probs.cat$matching)),
-    max(c(df.emp.cat$matching, df.probs.cat$matching))
+    min(c(df.emp.cat$Matching, df.probs.cat$Matching)),
+    max(c(df.emp.cat$Matching, df.probs.cat$Matching))
   )
 
   g <- ggplot() +
     geom_point(
       data = df.emp.cat,
       aes_string(
-        x = "matching", y = "probability", group = "category",
-        size = "size", col = "category", fill = "category"
+        x = "Matching", y = "Probability",
+        size = "Count", col = "Category", fill = "Category"
       ),
       shape = 21, alpha = 0.5
     ) +
     geom_line(
       data = df.probs.cat,
       aes_string(
-        x = "matching", y = "probability",
-        col = "category", linetype = "category"
+        x = "Matching", y = "Probability",
+        col = "Category", linetype = "Category"
       ),
-      size = 1
+      size = 0.8
     ) +
     scale_fill_manual(values = cols) +
     scale_colour_manual(values = cols) +

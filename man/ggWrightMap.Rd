@@ -4,7 +4,17 @@
 \alias{ggWrightMap}
 \title{Plot Wright map using ggplot}
 \usage{
-ggWrightMap(theta, b, binwidth = 0.5, color = "blue", size = 15, item.names)
+ggWrightMap(
+  theta,
+  b,
+  binwidth = 0.5,
+  color = "blue",
+  size = 15,
+  item.names,
+  ylab.theta = "Respondent latent trait",
+  ylab.b = "Item difficulty",
+  ...
+)
 }
 \arguments{
 \item{theta}{numeric: vector of ability estimates.}
@@ -18,6 +28,19 @@ ggWrightMap(theta, b, binwidth = 0.5, color = "blue", size = 15, item.names)
 \item{size}{text size in pts.}
 
 \item{item.names}{names of items to be displayed.}
+
+\item{ylab.theta}{character: description of y-axis for the histogram.}
+
+\item{ylab.b}{character: description of y-axis for the plot of difficulty
+estimates.}
+
+\item{...}{
+  Arguments passed on to \code{\link[cowplot:plot_grid]{cowplot::plot_grid}}
+  \describe{
+    \item{\code{rel_widths}}{(optional) Numerical vector of relative columns widths. For example, in a two-column
+grid, \code{rel_widths = c(2, 1)} would make the first column twice as wide as the
+second column.}
+  }}
 }
 \description{
 This function allows to generate Wright map (also called
@@ -29,25 +52,30 @@ This function allows to generate Wright map (also called
 \examples{
 library(mirt)
 
-# loading 100-item medical admission test data sets
-data(dataMedical)
-# binary data set
-dataBin <- dataMedical[, 1:100]
+data(HCI)
 
-# fit Rasch model with mirt package
-fit <- mirt(dataBin, model = 1, itemtype = "Rasch")
+# fit Rasch model with the mirt package
+fit <- mirt(HCI[, 1:20], model = 1, itemtype = "Rasch")
 # factor scores
 theta <- as.vector(fscores(fit))
-# difficulty estimates
-b <- coef(fit, simplify = TRUE)$items[, "d"]
+# difficulty estimates using IRT parametrization
+b <- coef(fit, simplify = TRUE, IRTpars = TRUE)$items[, "b"]
 
+# Wright map
 ggWrightMap(theta, b)
 
+# Wright map with modified item names
 item.names <- paste("Item", 1:20)
 ggWrightMap(theta, b, item.names = item.names)
+
+# Wright map with modified descriptions of y-axis and relative widths of plots
+ggWrightMap(theta, b,
+  ylab.theta = "Latent trait", ylab.b = "Difficulty estimates",
+  rel_widths = c(2, 1)
+)
 }
 \references{
-Wright, B. D., & Stone, M. H. (1979). Best test design.
+Wright, B. & Stone, M. (1979). Best test design. MESA Press: Chicago, IL
 }
 \author{
 Adela Hladka \cr

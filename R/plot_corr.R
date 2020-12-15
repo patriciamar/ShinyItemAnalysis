@@ -58,7 +58,7 @@
 #'   negative correlation. Correlation heatmap can be reordered using
 #'   hierarchical clustering method specified with \code{clust_method} argument.
 #'   When the desired number of clusters (argument \code{n_clust}) is not zero
-#'   and any clustering is demanded, the rectangles outlining the found clusters
+#'   and some clustering is demanded, the rectangles outlining the found clusters
 #'   are drawn.
 #'
 #' @return An object of class \code{ggplot} and/or \code{gg}.
@@ -102,6 +102,19 @@
 #' HCI[, 1:20] %>% plot_corr(n_clust = 3) +
 #'   ggtitle("HCI heatmap") +
 #'   theme(legend.position = "bottom")
+#'
+#' # mimic corrplot
+#' plot_corr(HCIdata[, varsQR], cor = "poly", clust_method = "complete", shape = "sq") +
+#'   scale_fill_gradient2(
+#'     limits = c(-.1, 1),
+#'     breaks = seq(-.1, 1, length.out = 12),
+#'     guide = guide_colorbar(
+#'       barheight = .8, barwidth = .0275,
+#'       default.unit = "npc",
+#'       title = NULL, frame.colour = "black", ticks.colour = "black"
+#'     )
+#'   ) +
+#'   theme(axis.text = element_text(colour = "red", size = 12))
 #' }
 #'
 #' @export
@@ -112,14 +125,14 @@ plot_corr <- function(.data, cor = "polychoric", clust_method = "none", n_clust 
                       fill = NA, fill_alpha = NA, ...) {
   cor <- tryCatch(match.arg(cor, c("polychoric", "tetrachoric", "pearson", "spearman", "none")),
     error = function(e) {
-      stop("'cor' should be one of “polychoric”, “tetrachoric”, “pearson”, “spearman” or “none”.",
+      stop("'cor' should be one of 'polychoric', 'tetrachoric', 'pearson', 'spearman' or 'none'.",
         call. = FALSE
       )
     }
   )
   shape <- tryCatch(match.arg(shape, c("circle", "square")),
     error = function(e) {
-      stop("'shape' should be one of “circle” or “square”.",
+      stop("'shape' should be one of 'circle' or 'square'.",
         call. = FALSE
       )
     }
@@ -167,7 +180,7 @@ plot_corr <- function(.data, cor = "polychoric", clust_method = "none", n_clust 
     }
   } else {
     if (n_clust != 0) {
-      warning("Showing a plain heatmap, because you have not stated any clustering method.")
+      warning("Showing a plain heatmap, because no clustering method was selected.")
     }
     new_ord <- colnames(cormat)
   }

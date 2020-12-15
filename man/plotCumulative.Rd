@@ -2,8 +2,7 @@
 % Please edit documentation in R/plotCumulative.R
 \name{plotCumulative}
 \alias{plotCumulative}
-\title{Plot cumulative and category probabilities of cumulative logistic regression
-model}
+\title{Plot cumulative and category probabilities of cumulative logit model}
 \usage{
 plotCumulative(x, type = "cumulative", matching.name = "matching")
 }
@@ -17,25 +16,29 @@ plotCumulative(x, type = "cumulative", matching.name = "matching")
 \item{matching.name}{character: name of matching criterion used for
 estimation in \code{x}.}
 }
+\value{
+An object of class \code{ggplot} and/or \code{gg}.
+}
 \description{
 Function for plotting cumulative and category probabilities
-  function estimated by \code{vglm()} from \code{VGAM} package
+  function estimated by \code{vglm()} function from the \code{VGAM} package
+  using the \pkg{ggplot2} package.
 }
 \examples{
 # loading packages
 library(VGAM)
 
 # loading data
-data <- dataMedicalgraded[, 1:100]
+data(Science, package = "mirt")
 
 # total score calculation
-score <- apply(data, 1, sum)
-data[, 1] <- ordered(factor(data[, 1], levels = 0:max(data[, 1])))
+score <- rowSums(Science)
+Science[, 1] <- factor(Science[, 1], levels = sort(unique(Science[, 1])), ordered = TRUE)
 
-# cummulative logistic model for item 1
-fit <- vglm(data[, 1] ~ score, family = cumulative(reverse = TRUE, parallel = TRUE))
+# cumulative logit model for item 1
+fit <- vglm(Science[, 1] ~ score, family = cumulative(reverse = TRUE, parallel = TRUE))
 # coefficients for item 1
-coefs <- coef(fit)
+coef(fit)
 
 plotCumulative(fit, type = "cumulative", matching.name = "Total score")
 plotCumulative(fit, type = "category", matching.name = "Total score")
