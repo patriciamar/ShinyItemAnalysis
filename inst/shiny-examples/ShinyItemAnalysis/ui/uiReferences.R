@@ -7,25 +7,11 @@ uiReferences <-
     #------------------------------------------------------------------------------------#
     h3("R packages"),
     HTML('<ul class = "biblio">
-                <li><code>corrplot</code>
-                Wei, T. & Simko, V. (2017).
-                R package "corrplot": Visualization of a Correlation Matrix.
-                R package version 0.84.
-                <a href = "https://github.com/taiyun/corrplot", target = "_blank">See online.</a>
-                </li>
-
                 <li><code>cowplot</code>
                 Claus O. Wilke (2018).
                 cowplot: Streamlined Plot Theme and Plot Annotations for "ggplot2".
                 R package version 0.9.3.
                 <a href = " https://CRAN.R-project.org/package=cowplot", target = "_blank">See online.</a>
-                </li>
-
-                <li><code>CTT</code>
-                Willse, J. & Willse, T. (2018).
-                CTT: Classical Test Theory Functions.
-                R package version 2.3.3.
-                <a href = "https://CRAN.R-project.org/package=CTT", target = "_blank">See online.</a>
                 </li>
 
                 <li><code>data.table</code>
@@ -35,7 +21,6 @@ uiReferences <-
                 <a href = "https://CRAN.R-project.org/package=data.table", target = "_blank">See online.</a>
                 </li>
 
-
                 <li><code>deltaPlotR</code>
                 Magis, D. & Facon, B. (2014).
                 deltaPlotR: An R Package for Differential Item Functioning Analysis with Angoff`s Delta Plot.
@@ -44,10 +29,10 @@ uiReferences <-
                 </li>
 
                 <li><code>difNLR</code>
-                Drabinova, A., Martinkova, P. (2020).
-                difNLR: DIF and DDF Detection by Non-Linear Regression Models.
-                R package version 1.3.2.
-                <a href = "https://CRAN.R-project.org/package=difNLR", target = "_blank">See online.</a>
+                Hladka, A., Martinkova, P. (2020).
+                difNLR: Generalized Logistic Regression Models for DIF and DDF Detection.
+                <i>The R Journal, 12</i>(1), 300-323.
+                <a href = "https://doi.org/10.32614/RJ-2020-014", target = "_blank">See online.</a>
                 </li>
 
                 <li><code>difR</code>
@@ -189,7 +174,7 @@ uiReferences <-
                 Martinkova, P., & Drabinova, A. (2018).
                 ShinyItemAnalysis for teaching psychometrics and to enforce routine analysis of educational tests.
                 The R Journal, 10(2), 503-515.
-                <a href = "https://journal.r-project.org/archive/2018/RJ-2018-074/", target = "_blank">See online.</a>
+                <a href = "https://doi.org/10.32614/RJ-2018-074", target = "_blank">See online.</a>
                 </li>
 
                 <li><code>shinyjs</code>
@@ -284,7 +269,7 @@ uiReferences <-
                 <li>Drabinova, A., & Martinkova, P. (2017). Detection of Differential Item Functioning
                 with Non-Linear Regression: Non-IRT Approach Accounting for Guessing.
                 <i>Journal of Educational Measurement, 54</i>(4), 498-517
-                <a href = "http://onlinelibrary.wiley.com/doi/10.1111/jedm.12158/full",
+                <a href = "https://doi.org/10.1111/jedm.12158",
                 target = "_blank">See online.</a>
                 </li>
 
@@ -330,7 +315,7 @@ uiReferences <-
                 Jinych Znalostnich ci Psychologickych Testu. [ShinyItemAnalysis: Analyzing Admission and Other
                 Educational and Psychological Tests]
                 <i>TESTFORUM, 6</i>(9), 16-35.
-                <a href = "http://testforum.cz/domains/testforum.cz/index.php/testforum/article/view/TF2017-9-129",
+                <a href = "https://doi.org/10.5817/TF2017-9-129",
                 target = "_blank">See online.</a>
                 </li>
 
@@ -369,7 +354,7 @@ uiReferences <-
                 <li>McFarland, J. L., Price, R. M., Wenderoth, M. P., Martinkova, P., Cliff, W., Michael, J., ... & Wright, A. (2017).
                 Development and Validation of the Homeostasis Concept Inventory.
                 <i>CBE-Life Sciences Education, 16</i>(2), ar35.
-                <a href = "https://www.lifescied.org/doi/abs/10.1187/cbe.16-10-0305",
+                <a href = "http://dx.doi.org/10.1187/cbe.16-10-0305",
                 target = "_blank">See online.</a>
                 </li>
 
