@@ -8,6 +8,7 @@
     fixed. (Thanks to Hynek Cigler for reporting this issue.)
   * Calculation of minimal scores in ItemAnalysis() function was fixed.
   * Display of ICC in IRT models is being updated to respond to updates in mirt package.
+  * In the Regression section of the app, missplaced SE for intercepts and slopes were fixed.
   
 #### MAJOR UPDATES
   * New function `plot_corr()` to compute and visualize an item correlation matrix was added
@@ -19,6 +20,8 @@
   * Equations were unified in Regression, IRT and DIF sections of the app, with p being the index 
     for person and i being the index for an item. 
   * Training section was added to DIF section
+  * Figures in Regression section are now displayed in plotly mode in the shiny app.
+  * Regression/Multinomial newly offers also the IRT parametrization. 
   
 #### MINOR UPDATES
   * Selected R code was updated.
