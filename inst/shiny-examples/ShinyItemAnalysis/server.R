@@ -587,7 +587,6 @@ function(input, output, session) {
       "corr_plot_clust",
       "corr_plot_clust_report",
       "validitydistractorSlider",
-      "distractorSlider",
       "DIF_NLR_item_plot",
       "difirt_lord_itemSlider",
       "difirt_raju_itemSlider",
@@ -602,7 +601,6 @@ function(input, output, session) {
     updateNumericInput(session = session, inputId = "corr_plot_clust", value = 0, max = itemCount)
     updateNumericInput(session = session, inputId = "corr_plot_clust_report", value = 1, max = itemCount)
     updateSliderInput(session = session, inputId = "validitydistractorSlider", max = itemCount)
-    updateSliderInput(session = session, inputId = "distractorSlider", max = itemCount, step = 1)
     updateSliderInput(session = session, inputId = "DIF_NLR_item_plot", max = itemCount)
     updateSliderInput(session = session, inputId = "difirt_lord_itemSlider", max = itemCount)
     updateSliderInput(session = session, inputId = "difirt_raju_itemSlider", max = itemCount)
@@ -613,7 +611,7 @@ function(input, output, session) {
   # DATA PAGE ######
   # %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-  source("server/Data.R", local = T)
+  source("server/Data.R", local = TRUE)
 
   # %%%%%%%%%%%%%%%%%%%%%%%%%%%%
   # SUMMARY ######
@@ -856,17 +854,6 @@ function(input, output, session) {
     out
   })
 
-  # * Double slider inicialization for DD plot report ######
-  observe({
-    val <- input$DDplotNumGroupsSlider_report
-    updateSliderInput(session, "DDplotRangeSlider_report",
-      min = 1,
-      max = val,
-      step = 1,
-      value = c(1, val)
-    )
-  })
-
   # * Group present ####
   groupPresent <- reactive({
     (any(dataset$group != "missing") | is.null(dataset$group))
@@ -944,17 +931,17 @@ function(input, output, session) {
         },
         incProgress(0.05),
         # item analysis
-        DDplot = DDplot_Input_report(),
-        DDplotRange1 = ifelse(input$customizeCheck, input$DDplotRangeSlider_report[[1]], input$DDplotRangeSlider[[1]]),
-        DDplotRange2 = ifelse(input$customizeCheck, input$DDplotRangeSlider_report[[2]], input$DDplotRangeSlider[[2]]),
-        DDplotNumGroups = ifelse(input$customizeCheck, input$DDplotNumGroupsSlider_report, input$DDplotNumGroupsSlider),
-        DDplotDiscType = ifelse(input$customizeCheck, input$DDplotDiscriminationSelect_report, input$DDplotDiscriminationSelect),
-        itemexam = itemanalysis_table_report_Input(),
+        DDplot = report_itemanalysis_DDplot(),
+        DDplotRange1 = ifelse(input$customizeCheck, input$report_itemanalysis_DDplot_range_slider[[1]], input$itemanalysis_DDplot_range_slider[[1]]),
+        DDplotRange2 = ifelse(input$customizeCheck, input$report_itemanalysis_DDplot_range_slider[[2]], input$itemanalysis_DDplot_range_slider[[2]]),
+        DDplotNumGroups = ifelse(input$customizeCheck, input$report_itemanalysis_DDplot_groups_slider, input$itemanalysis_DDplot_groups_slider),
+        DDplotDiscType = ifelse(input$customizeCheck, input$report_itemanalysis_DDplot_discrimination, input$itemanalysis_DDplot_discrimination),
+        itemexam = report_itemanalysis_table(),
         cronbachs_alpha_table = reliability_cronbachalpha_table_Input(),
         incProgress(0.05),
         # distractors
         distractor_plot = report_distractor_plot(),
-        type_distractor_plot = input$type_combinations_distractor_report,
+        type_distractor_plot = input$report_distractor_type,
         distractor_plot_legend_length = report_distractor_plot_legend_length(),
         incProgress(0.25),
         # regression
@@ -1134,16 +1121,16 @@ function(input, output, session) {
           }
         },
         # item analysis
-        DDplot = DDplot_Input_report(),
-        DDplotRange1 = ifelse(input$customizeCheck, input$DDplotRangeSlider_report[[1]], input$DDplotRangeSlider[[1]]),
-        DDplotRange2 = ifelse(input$customizeCheck, input$DDplotRangeSlider_report[[2]], input$DDplotRangeSlider[[2]]),
-        DDplotNumGroups = ifelse(input$customizeCheck, input$DDplotNumGroupsSlider_report, input$DDplotNumGroupsSlider),
-        DDplotDiscType = ifelse(input$customizeCheck, input$DDplotDiscriminationSelect_report, input$DDplotDiscriminationSelect),
-        itemexam = itemanalysis_table_report_Input(),
+        DDplot = report_itemanalysis_DDplot(),
+        DDplotRange1 = ifelse(input$customizeCheck, input$report_itemanalysis_DDplot_range_slider[[1]], input$itemanalysis_DDplot_range_slider[[1]]),
+        DDplotRange2 = ifelse(input$customizeCheck, input$report_itemanalysis_DDplot_range_slider[[2]], input$itemanalysis_DDplot_range_slider[[2]]),
+        DDplotNumGroups = ifelse(input$customizeCheck, input$report_itemanalysis_DDplot_groups_slider, input$itemanalysis_DDplot_groups_slider),
+        DDplotDiscType = ifelse(input$customizeCheck, input$report_itemanalysis_DDplot_discrimination, input$itemanalysis_DDplot_discrimination),
+        itemexam = report_itemanalysis_table(),
         cronbachs_alpha_table = reliability_cronbachalpha_table_Input(),
         # distractors
         distractor_plot = report_distractor_plot(),
-        type_distractor_plot = input$type_combinations_distractor_report,
+        type_distractor_plot = input$report_distractor_type,
         distractor_plot_legend_length = report_distractor_plot_legend_length(),
         # regression
         multiplot = report_regression_multinomial_plot(),

@@ -2,6 +2,18 @@
 # IRT MODELS WITH MIRT ######
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+# thetas vector for plotting
+# length.out effectively specifies the "resolution" of plotted lines
+thetas_plt <- reactive({
+  seq(-6, 6, length.out = 3000)
+})
+
+# helper function for consistent colors
+gg_color_hue <- function(n) {
+  hues <- seq(15, 375, length = n + 1)
+  hcl(h = hues, l = 65, c = 100)[1:n]
+}
+
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # * RASCH ######
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -89,20 +101,17 @@ output$irt_rasch_equation_interpretation <- renderUI({
 
 # *** ICC ######
 irt_rasch_icc <- reactive({
-  mod <- irt_rasch_model()
+  fit <- irt_rasch_model()
 
-  # thetas from model
-  thetas <- mod@Model$Theta
-
-  # names from model
-  mod_item_names <- mod@Data$data %>% colnames()
+  # names from the model
+  mod_item_names <- fit@Data$data %>% colnames()
 
   d <- map2_dfr(
     mod_item_names,
     item_names(), # names from user
     ~ tibble(
-      Ability = thetas[, 1], # vector only
-      Probability = probtrace(extract.item(mod, .x), thetas)[, 2], # ascending probs
+      Ability = thetas_plt(), # vector only
+      Probability = probtrace(extract.item(fit, .x), thetas_plt())[, 2], # ascending probs
       Item = .y,
     )
   )
@@ -148,27 +157,22 @@ output$irt_rasch_icc_download <- downloadHandler(
 
 # *** IIC ######
 irt_rasch_iic <- reactive({
-  plt <- plot(irt_rasch_model(), type = "infotrace", facet_items = FALSE)
-  vals <- plt$panel.args
-  x <- vals[[1]]$x
-  y <- vals[[1]]$y
-  n <- length(vals[[1]]$subscripts)
-  m <- length(item_names())
-  k <- n / m
+  fit <- irt_rasch_model()
 
-  names <- list()
-  for (j in 1:m) {
-    names[[j]] <- rep(item_names()[j], k)
-  }
-  names <- unlist(names)
+  # names from model
+  mod_item_names <- fit@Data$data %>% colnames()
 
-  df <- data.frame(cbind(x, y))
-  df$x <- as.numeric(df$x)
-  df$y <- as.numeric(df$y)
-  df$names <- factor(names, levels = unique(names))
-  colnames(df) <- c("Ability", "Information", "Item")
+  d <- map2_dfr(
+    mod_item_names,
+    item_names(), # names from user
+    ~ tibble(
+      Ability = thetas_plt(), # vector only
+      Information = iteminfo(extract.item(fit, .x), thetas_plt()),
+      Item = .y,
+    )
+  )
 
-  g <- ggplot(data = df, aes(x = Ability, y = Information, color = Item)) +
+  g <- d %>% ggplot(aes(x = Ability, y = Information, color = Item)) +
     geom_line() +
     theme_app()
 })
@@ -499,26 +503,16 @@ output$irt_rasch_item_equation_interpretation <- renderUI({
 irt_rasch_item_icc <- reactive({
   item <- input$irt_rasch_item_slider
   fit <- irt_rasch_model()
+  n_items <- fit@Data$nitems
+  curve_col <- gg_color_hue(n_items)[item]
 
-  plt <- plot(fit, type = "trace", which.item = item, facet_items = FALSE)
-  vals <- plt$panel.args
-  x <- vals[[1]]$x
-  y <- vals[[1]]$y
-  n <- ncol(binary())
+  d <- tibble(
+    Ability = thetas_plt(), # vector only
+    Probability = probtrace(extract.item(fit, item), thetas_plt())[, 2] # ascending probs
+  )
 
-  gg_color_hue <- function(n) {
-    hues <- seq(15, 375, length = n + 1)
-    hcl(h = hues, l = 65, c = 100)[1:n]
-  }
-  cols <- gg_color_hue(n)
-
-  df <- data.frame(cbind(x, y))
-  df$x <- as.numeric(df$x)
-  df$y <- as.numeric(df$y)
-  colnames(df) <- c("Ability", "Probability")
-
-  g <- ggplot(data = df, aes(x = Ability, y = Probability)) +
-    geom_line(color = cols[item]) +
+  g <- d %>% ggplot(aes(x = Ability, y = Probability)) +
+    geom_line(color = curve_col) +
     ylab("Probability of correct answer") +
     ggtitle(item_names()[item]) +
     theme_app()
@@ -560,26 +554,16 @@ irt_rasch_item_iic <- reactive({
   item <- input$irt_rasch_item_slider
   fit <- irt_rasch_model()
 
-  plt <- plot(fit, type = "infotrace", which.item = item, facet_items = FALSE)
-  vals <- plt$panel.args
-  x <- vals[[1]]$x
-  y <- vals[[1]]$y
+  n_items <- fit@Data$nitems
+  curve_col <- gg_color_hue(n_items)[item]
 
-  n <- ncol(binary())
+  d <- tibble(
+    Ability = thetas_plt(), # vector only
+    Information = iteminfo(extract.item(fit, item), thetas_plt()) # ascending probs
+  )
 
-  gg_color_hue <- function(n) {
-    hues <- seq(15, 375, length = n + 1)
-    hcl(h = hues, l = 65, c = 100)[1:n]
-  }
-  cols <- gg_color_hue(n)
-
-  df <- data.frame(cbind(x, y))
-  df$x <- as.numeric(df$x)
-  df$y <- as.numeric(df$y)
-  colnames(df) <- c("Ability", "Information")
-
-  g <- ggplot(data = df, aes(x = Ability, y = Information)) +
-    geom_line(color = cols[item]) +
+  g <- d %>% ggplot(aes(x = Ability, y = Information)) +
+    geom_line(color = curve_col) +
     ggtitle(item_names()[item]) +
     theme_app()
 })
@@ -666,23 +650,19 @@ output$irt_1PL_model_converged <- renderUI({
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # ** Tab model ######
-# *** CC ######
+# *** ICC ######
 oneparamirtInput_mirt <- reactive({
-
-  mod <- one_param_irt_mirt()
-
-  # thetas from model
-  thetas <- mod@Model$Theta
+  fit <- one_param_irt_mirt()
 
   # names from model
-  mod_item_names <- mod@Data$data %>% colnames()
+  mod_item_names <- fit@Data$data %>% colnames()
 
   d <- map2_dfr(
     mod_item_names,
     item_names(), # names from user
     ~ tibble(
-      Ability = thetas[, 1], # vector only
-      Probability = probtrace(extract.item(mod, .x), thetas)[, 2], # ascending probs
+      Ability = thetas_plt(), # vector only
+      Probability = probtrace(extract.item(fit, .x), thetas_plt())[, 2], # ascending probs
       Item = .y,
     )
   )
@@ -727,29 +707,21 @@ output$DP_oneparamirt_mirt <- downloadHandler(
 oneparamirtiicInput_mirt <- reactive({
   fit <- one_param_irt_mirt()
 
-  plt <- plot(fit, type = "infotrace", facet_items = FALSE)
-  vals <- plt$panel.args
-  x <- vals[[1]]$x
-  y <- vals[[1]]$y
-  n <- length(vals[[1]]$subscripts)
-  m <- length(item_names())
-  k <- n / m
+  # names from model
+  mod_item_names <- fit@Data$data %>% colnames()
 
-  names <- list()
-  for (j in 1:m) {
-    names[[j]] <- rep(item_names()[j], k)
-  }
-  names <- unlist(names)
+  d <- map2_dfr(
+    mod_item_names,
+    item_names(), # names from user
+    ~ tibble(
+      Ability = thetas_plt(), # vector only
+      Information = iteminfo(extract.item(fit, .x), thetas_plt()),
+      Item = .y,
+    )
+  )
 
-  df <- data.frame(cbind(x, y))
-  df$x <- as.numeric(df$x)
-  df$y <- as.numeric(df$y)
-  df$names <- factor(names, levels = unique(names))
-  colnames(df) <- c("Ability", "Information", "Item")
-
-  g <- ggplot(data = df, aes(x = Ability, y = Information, color = Item)) +
+  g <- d %>% ggplot(aes(x = Ability, y = Information, color = Item)) +
     geom_line() +
-    ylab("Information") +
     theme_app()
 })
 
@@ -1036,30 +1008,20 @@ observe({
   updateSliderInput(session, "onePLSliderChar", max = length(item_names()))
 })
 
-# *** CC items ######
+# *** ICC items ######
 oneparamirtInput_mirt_tab <- reactive({
   item <- input$onePLSliderChar
   fit <- one_param_irt_mirt()
+  n_items <- fit@Data$nitems
+  curve_col <- gg_color_hue(n_items)[item]
 
-  plt <- plot(fit, type = "trace", which.item = item, facet_items = FALSE)
-  vals <- plt$panel.args
-  x <- vals[[1]]$x
-  y <- vals[[1]]$y
-  n <- ncol(binary())
+  d <- tibble(
+    Ability = thetas_plt(), # vector only
+    Probability = probtrace(extract.item(fit, item), thetas_plt())[, 2] # ascending probs
+  )
 
-  gg_color_hue <- function(n) {
-    hues <- seq(15, 375, length = n + 1)
-    hcl(h = hues, l = 65, c = 100)[1:n]
-  }
-  cols <- gg_color_hue(n)
-
-  df <- data.frame(cbind(x, y))
-  df$x <- as.numeric(df$x)
-  df$y <- as.numeric(df$y)
-  colnames(df) <- c("Ability", "Probability")
-
-  g <- ggplot(data = df, aes(x = Ability, y = Probability)) +
-    geom_line(color = cols[item]) +
+  g <- d %>% ggplot(aes(x = Ability, y = Probability)) +
+    geom_line(color = curve_col) +
     ylab("Probability of correct answer") +
     ggtitle(item_names()[item]) +
     theme_app()
@@ -1100,26 +1062,16 @@ oneparamirtiicInput_mirt_tab <- reactive({
   item <- input$onePLSliderChar
   fit <- one_param_irt_mirt()
 
-  plt <- plot(fit, type = "infotrace", which.item = item, facet_items = FALSE)
-  vals <- plt$panel.args
-  x <- vals[[1]]$x
-  y <- vals[[1]]$y
-  n <- ncol(binary())
+  n_items <- fit@Data$nitems
+  curve_col <- gg_color_hue(n_items)[item]
 
-  gg_color_hue <- function(n) {
-    hues <- seq(15, 375, length = n + 1)
-    hcl(h = hues, l = 65, c = 100)[1:n]
-  }
-  cols <- gg_color_hue(n)
+  d <- tibble(
+    Ability = thetas_plt(), # vector only
+    Information = iteminfo(extract.item(fit, item), thetas_plt()) # ascending probs
+  )
 
-  df <- data.frame(cbind(x, y))
-  df$x <- as.numeric(df$x)
-  df$y <- as.numeric(df$y)
-  colnames(df) <- c("Ability", "Information")
-
-  g <- ggplot(data = df, aes(x = Ability, y = Information)) +
-    geom_line(color = cols[item]) +
-    ylab("Information") +
+  g <- d %>% ggplot(aes(x = Ability, y = Information)) +
+    geom_line(color = curve_col) +
     ggtitle(item_names()[item]) +
     theme_app()
 })
@@ -1198,22 +1150,19 @@ output$irt_2PL_model_converged <- renderUI({
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # ** Tab model ######
-# *** CC ######
+# *** ICC ######
 twoparamirtInput_mirt <- reactive({
-  mod <- two_param_irt_mirt()
-
-  # thetas from model
-  thetas <- mod@Model$Theta
+  fit <- two_param_irt_mirt()
 
   # names from model
-  mod_item_names <- mod@Data$data %>% colnames()
+  mod_item_names <- fit@Data$data %>% colnames()
 
   d <- map2_dfr(
     mod_item_names,
     item_names(), # names from user
     ~ tibble(
-      Ability = thetas[, 1], # vector only
-      Probability = probtrace(extract.item(mod, .x), thetas)[, 2], # ascending probs
+      Ability = thetas_plt(), # vector only
+      Probability = probtrace(extract.item(fit, .x), thetas_plt())[, 2], # ascending probs
       Item = .y,
     )
   )
@@ -1258,29 +1207,21 @@ output$DP_twoparamirt_mirt <- downloadHandler(
 twoparamirtiicInput_mirt <- reactive({
   fit <- two_param_irt_mirt()
 
-  plt <- plot(fit, type = "infotrace", facet_items = FALSE)
-  vals <- plt$panel.args
-  x <- vals[[1]]$x
-  y <- vals[[1]]$y
-  n <- length(vals[[1]]$subscripts)
-  m <- length(item_names())
-  k <- n / m
+  # names from model
+  mod_item_names <- fit@Data$data %>% colnames()
 
-  names <- list()
-  for (j in 1:m) {
-    names[[j]] <- rep(item_names()[j], k)
-  }
-  names <- unlist(names)
+  d <- map2_dfr(
+    mod_item_names,
+    item_names(), # names from user
+    ~ tibble(
+      Ability = thetas_plt(), # vector only
+      Information = iteminfo(extract.item(fit, .x), thetas_plt()),
+      Item = .y,
+    )
+  )
 
-  df <- data.frame(cbind(x, y))
-  df$x <- as.numeric(df$x)
-  df$y <- as.numeric(df$y)
-  df$names <- factor(names, levels = unique(names))
-  colnames(df) <- c("Ability", "Information", "Item")
-
-  g <- ggplot(data = df, aes(x = Ability, y = Information, color = Item)) +
+  g <- d %>% ggplot(aes(x = Ability, y = Information, color = Item)) +
     geom_line() +
-    ylab("Information") +
     theme_app()
 })
 
@@ -1535,30 +1476,20 @@ observe({
   updateSliderInput(session, "twoPLSliderChar", max = length(item_names()))
 })
 
-# *** CC items ######
+# *** ICC items ######
 twoparamirtInput_mirt_tab <- reactive({
   item <- input$twoPLSliderChar
   fit <- two_param_irt_mirt()
+  n_items <- fit@Data$nitems
+  curve_col <- gg_color_hue(n_items)[item]
 
-  plt <- plot(fit, type = "trace", which.item = item, facet_items = FALSE)
-  vals <- plt$panel.args
-  x <- vals[[1]]$x
-  y <- vals[[1]]$y
-  n <- ncol(binary())
+  d <- tibble(
+    Ability = thetas_plt(), # vector only
+    Probability = probtrace(extract.item(fit, item), thetas_plt())[, 2] # ascending probs
+  )
 
-  gg_color_hue <- function(n) {
-    hues <- seq(15, 375, length = n + 1)
-    hcl(h = hues, l = 65, c = 100)[1:n]
-  }
-  cols <- gg_color_hue(n)
-
-  df <- data.frame(cbind(x, y))
-  df$x <- as.numeric(df$x)
-  df$y <- as.numeric(df$y)
-  colnames(df) <- c("Ability", "Probability")
-
-  g <- ggplot(data = df, aes(x = Ability, y = Probability)) +
-    geom_line(color = cols[item]) +
+  g <- d %>% ggplot(aes(x = Ability, y = Probability)) +
+    geom_line(color = curve_col) +
     ylab("Probability of correct answer") +
     ggtitle(item_names()[item]) +
     theme_app()
@@ -1599,26 +1530,16 @@ twoparamirtiicInput_mirt_tab <- reactive({
   item <- input$twoPLSliderChar
   fit <- two_param_irt_mirt()
 
-  plt <- plot(fit, type = "infotrace", which.item = item, facet_items = FALSE)
-  vals <- plt$panel.args
-  x <- vals[[1]]$x
-  y <- vals[[1]]$y
-  n <- ncol(binary())
+  n_items <- fit@Data$nitems
+  curve_col <- gg_color_hue(n_items)[item]
 
-  gg_color_hue <- function(n) {
-    hues <- seq(15, 375, length = n + 1)
-    hcl(h = hues, l = 65, c = 100)[1:n]
-  }
-  cols <- gg_color_hue(n)
+  d <- tibble(
+    Ability = thetas_plt(), # vector only
+    Information = iteminfo(extract.item(fit, item), thetas_plt()) # ascending probs
+  )
 
-  df <- data.frame(cbind(x, y))
-  df$x <- as.numeric(df$x)
-  df$y <- as.numeric(df$y)
-  colnames(df) <- c("Ability", "Information")
-
-  g <- ggplot(data = df, aes(x = Ability, y = Information)) +
-    geom_line(color = cols[item]) +
-    ylab("Information") +
+  g <- d %>% ggplot(aes(x = Ability, y = Information)) +
+    geom_line(color = curve_col) +
     ggtitle(item_names()[item]) +
     theme_app()
 })
@@ -1698,22 +1619,19 @@ output$irt_3PL_model_converged <- renderUI({
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # ** Tab model ######
-# *** CC ######
+# *** ICC ######
 threeparamirtInput_mirt <- reactive({
-  mod <- three_param_irt_mirt()
-
-  # thetas from model
-  thetas <- mod@Model$Theta
+  fit <- three_param_irt_mirt()
 
   # names from model
-  mod_item_names <- mod@Data$data %>% colnames()
+  mod_item_names <- fit@Data$data %>% colnames()
 
   d <- map2_dfr(
     mod_item_names,
     item_names(), # names from user
     ~ tibble(
-      Ability = thetas[, 1], # vector only
-      Probability = probtrace(extract.item(mod, .x), thetas)[, 2], # ascending probs
+      Ability = thetas_plt(), # vector only
+      Probability = probtrace(extract.item(fit, .x), thetas_plt())[, 2], # ascending probs
       Item = .y,
     )
   )
@@ -1721,7 +1639,9 @@ threeparamirtInput_mirt <- reactive({
   g <- d %>% ggplot(aes(x = Ability, y = Probability, color = Item)) +
     geom_line() +
     ylab("Probability of correct answer") +
-    theme_app()})
+    coord_cartesian(ylim = c(0, 1)) +
+    theme_app()
+})
 
 output$threeparamirt_mirt <- renderPlotly({
   p <- ggplotly(threeparamirtInput_mirt())
@@ -1755,29 +1675,23 @@ output$DP_threeparamirt_mirt <- downloadHandler(
 
 # *** IIC ######
 threeparamirtiicInput_mirt <- reactive({
-  plt <- plot(three_param_irt_mirt(), type = "infotrace", facet_items = FALSE)
-  vals <- plt$panel.args
-  x <- vals[[1]]$x
-  y <- vals[[1]]$y
-  n <- length(vals[[1]]$subscripts)
-  m <- length(item_names())
-  k <- n / m
+  fit <- three_param_irt_mirt()
 
-  names <- list()
-  for (j in 1:m) {
-    names[[j]] <- rep(item_names()[j], k)
-  }
-  names <- unlist(names)
+  # names from model
+  mod_item_names <- fit@Data$data %>% colnames()
 
-  df <- data.frame(cbind(x, y))
-  df$x <- as.numeric(df$x)
-  df$y <- as.numeric(df$y)
-  df$names <- factor(names, levels = unique(names))
-  colnames(df) <- c("Ability", "Information", "Item")
+  d <- map2_dfr(
+    mod_item_names,
+    item_names(), # names from user
+    ~ tibble(
+      Ability = thetas_plt(), # vector only
+      Information = iteminfo(extract.item(fit, .x), thetas_plt()),
+      Item = .y,
+    )
+  )
 
-  g <- ggplot(data = df, aes(x = Ability, y = Information, color = Item)) +
+  g <- d %>% ggplot(aes(x = Ability, y = Information, color = Item)) +
     geom_line() +
-    ylab("Information") +
     theme_app()
 })
 
@@ -2038,32 +1952,23 @@ observe({
   updateSliderInput(session, "threePLSliderChar", max = length(item_names()))
 })
 
-# *** CC items ######
+# *** ICC items ######
 threeparamirtInput_mirt_tab <- reactive({
-  fit <- three_param_irt_mirt()
   item <- input$threePLSliderChar
+  fit <- three_param_irt_mirt()
+  n_items <- fit@Data$nitems
+  curve_col <- gg_color_hue(n_items)[item]
 
-  plt <- plot(fit, type = "trace", which.item = item, facet_items = FALSE)
-  vals <- plt$panel.args
-  x <- vals[[1]]$x
-  y <- vals[[1]]$y
-  n <- ncol(binary())
+  d <- tibble(
+    Ability = thetas_plt(), # vector only
+    Probability = probtrace(extract.item(fit, item), thetas_plt())[, 2] # ascending probs
+  )
 
-  gg_color_hue <- function(n) {
-    hues <- seq(15, 375, length = n + 1)
-    hcl(h = hues, l = 65, c = 100)[1:n]
-  }
-  cols <- gg_color_hue(n)
-
-  df <- data.frame(cbind(x, y))
-  df$x <- as.numeric(df$x)
-  df$y <- as.numeric(df$y)
-  colnames(df) <- c("Ability", "Probability")
-
-  g <- ggplot(data = df, aes(x = Ability, y = Probability)) +
-    geom_line(color = cols[item]) +
+  g <- d %>% ggplot(aes(x = Ability, y = Probability)) +
+    geom_line(color = curve_col) +
     ylab("Probability of correct answer") +
     ggtitle(item_names()[item]) +
+    coord_cartesian(ylim = c(0, 1)) +
     theme_app()
 })
 
@@ -2099,29 +2004,19 @@ output$DP_threeparamirt_mirt_tab <- downloadHandler(
 
 # *** IIC items ######
 threeparamirtiicInput_mirt_tab <- reactive({
-  fit <- three_param_irt_mirt()
   item <- input$threePLSliderChar
+  fit <- three_param_irt_mirt()
 
-  plt <- plot(fit, type = "infotrace", which.item = item, facet_items = FALSE)
-  vals <- plt$panel.args
-  x <- vals[[1]]$x
-  y <- vals[[1]]$y
-  n <- ncol(binary())
+  n_items <- fit@Data$nitems
+  curve_col <- gg_color_hue(n_items)[item]
 
-  gg_color_hue <- function(n) {
-    hues <- seq(15, 375, length = n + 1)
-    hcl(h = hues, l = 65, c = 100)[1:n]
-  }
-  cols <- gg_color_hue(n)
+  d <- tibble(
+    Ability = thetas_plt(), # vector only
+    Information = iteminfo(extract.item(fit, item), thetas_plt()) # ascending probs
+  )
 
-  df <- data.frame(cbind(x, y))
-  df$x <- as.numeric(df$x)
-  df$y <- as.numeric(df$y)
-  colnames(df) <- c("Ability", "Information")
-
-  g <- ggplot(data = df, aes(x = Ability, y = Information)) +
-    geom_line(color = cols[item]) +
-    ylab("Information") +
+  g <- d %>% ggplot(aes(x = Ability, y = Information)) +
+    geom_line(color = curve_col) +
     ggtitle(item_names()[item]) +
     theme_app()
 })
@@ -2211,20 +2106,17 @@ output$irt_4PL_model_converged <- renderUI({
 # ** Tab model ######
 # *** ICC ######
 irt_4PL_icc_Input <- reactive({
-  mod <- irt_4PL_model()
-
-  # thetas from model
-  thetas <- mod@Model$Theta
+  fit <- irt_4PL_model()
 
   # names from model
-  mod_item_names <- mod@Data$data %>% colnames()
+  mod_item_names <- fit@Data$data %>% colnames()
 
   d <- map2_dfr(
     mod_item_names,
     item_names(), # names from user
     ~ tibble(
-      Ability = thetas[, 1], # vector only
-      Probability = probtrace(extract.item(mod, .x), thetas)[, 2], # ascending probs
+      Ability = thetas_plt(), # vector only
+      Probability = probtrace(extract.item(fit, .x), thetas_plt())[, 2], # ascending probs
       Item = .y,
     )
   )
@@ -2232,6 +2124,7 @@ irt_4PL_icc_Input <- reactive({
   g <- d %>% ggplot(aes(x = Ability, y = Probability, color = Item)) +
     geom_line() +
     ylab("Probability of correct answer") +
+    coord_cartesian(ylim = c(0, 1)) +
     theme_app()
 })
 
@@ -2267,30 +2160,23 @@ output$DB_irt_4PL_icc <- downloadHandler(
 
 # *** IIC ######
 irt_4PL_iic_Input <- reactive({
-  plt <- plot(irt_4PL_model(), type = "infotrace", facet_items = FALSE)
-  vals <- plt$panel.args
-  x <- vals[[1]]$x
-  y <- vals[[1]]$y
-  n <- length(vals[[1]]$subscripts)
-  m <- length(item_names())
-  k <- n / m
+  fit <- irt_4PL_model()
 
-  names <- list()
-  for (j in 1:m) {
-    names[[j]] <- rep(item_names()[j], k)
-  }
-  names <- unlist(names)
+  # names from model
+  mod_item_names <- fit@Data$data %>% colnames()
 
-  df <- data.frame(cbind(x, y))
-  df$x <- as.numeric(df$x)
-  df$y <- as.numeric(df$y)
-  df$names <- factor(names, levels = unique(names))
+  d <- map2_dfr(
+    mod_item_names,
+    item_names(), # names from user
+    ~ tibble(
+      Ability = thetas_plt(), # vector only
+      Information = iteminfo(extract.item(fit, .x), thetas_plt()),
+      Item = .y,
+    )
+  )
 
-  colnames(df) <- c("Ability", "Information", "Item")
-
-  g <- ggplot(data = df, aes(x = Ability, y = Information, color = Item)) +
+  g <- d %>% ggplot(aes(x = Ability, y = Information, color = Item)) +
     geom_line() +
-    ylab("Information") +
     theme_app()
 })
 
@@ -2559,32 +2445,23 @@ observe({
   updateSliderInput(session, "fourPLSliderChar", max = length(item_names()))
 })
 
-# *** CC items ######
+# *** ICC items ######
 irt_4PL_icc_Input_tab <- reactive({
-  fit <- irt_4PL_model()
   item <- input$fourPLSliderChar
+  fit <- irt_4PL_model()
+  n_items <- fit@Data$nitems
+  curve_col <- gg_color_hue(n_items)[item]
 
-  plt <- plot(fit, type = "trace", which.item = item, facet_items = FALSE)
-  vals <- plt$panel.args
-  x <- vals[[1]]$x
-  y <- vals[[1]]$y
-  n <- ncol(binary())
+  d <- tibble(
+    Ability = thetas_plt(), # vector only
+    Probability = probtrace(extract.item(fit, item), thetas_plt())[, 2] # ascending probs
+  )
 
-  gg_color_hue <- function(n) {
-    hues <- seq(15, 375, length = n + 1)
-    hcl(h = hues, l = 65, c = 100)[1:n]
-  }
-  cols <- gg_color_hue(n)
-
-  df <- data.frame(cbind(x, y))
-  df$x <- as.numeric(df$x)
-  df$y <- as.numeric(df$y)
-  colnames(df) <- c("Ability", "Probability")
-
-  g <- ggplot(data = df, aes(x = Ability, y = Probability)) +
-    geom_line(color = cols[item]) +
+  g <- d %>% ggplot(aes(x = Ability, y = Probability)) +
+    geom_line(color = curve_col) +
     ylab("Probability of correct answer") +
     ggtitle(item_names()[item]) +
+    coord_cartesian(ylim = c(0, 1)) +
     theme_app()
 })
 
@@ -2619,29 +2496,19 @@ output$DB_irt_4PL_icc_tab <- downloadHandler(
 )
 # *** IIC items ######
 irt_4PL_iic_Input_tab <- reactive({
-  fit <- irt_4PL_model()
   item <- input$fourPLSliderChar
+  fit <- irt_4PL_model()
 
-  plt <- plot(fit, type = "infotrace", which.item = item, facet_items = FALSE)
-  vals <- plt$panel.args
-  x <- vals[[1]]$x
-  y <- vals[[1]]$y
-  n <- ncol(binary())
+  n_items <- fit@Data$nitems
+  curve_col <- gg_color_hue(n_items)[item]
 
-  gg_color_hue <- function(n) {
-    hues <- seq(15, 375, length = n + 1)
-    hcl(h = hues, l = 65, c = 100)[1:n]
-  }
-  cols <- gg_color_hue(n)
+  d <- tibble(
+    Ability = thetas_plt(), # vector only
+    Information = iteminfo(extract.item(fit, item), thetas_plt()) # ascending probs
+  )
 
-  df <- data.frame(cbind(x, y))
-  df$x <- as.numeric(df$x)
-  df$y <- as.numeric(df$y)
-  colnames(df) <- c("Ability", "Information")
-
-  g <- ggplot(data = df, aes(x = Ability, y = Information)) +
-    geom_line(color = cols[item]) +
-    ylab("Information") +
+  g <- d %>% ggplot(aes(x = Ability, y = Information)) +
+    geom_line(color = curve_col) +
     ggtitle(item_names()[item]) +
     theme_app()
 })
@@ -2832,7 +2699,7 @@ bock_irt_mirt <- reactive({
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # ** Tab model ######
-# *** CC ######
+# *** ICC ######
 bock_CC_Input <- reactive({
   fit <- bock_irt_mirt()
 
@@ -3205,10 +3072,6 @@ bock_CC_Input_tab <- reactive({
   n <- length(vals[[1]]$subscripts)
   k <- ncol(data)
 
-  gg_color_hue <- function(n) {
-    hues <- seq(15, 375, length = n + 1)
-    hcl(h = hues, l = 65, c = 100)[1:n]
-  }
   cols <- gg_color_hue(k)
 
   df <- data.frame(cbind(x, y))
@@ -3279,10 +3142,6 @@ bock_IIC_Input_tab <- reactive({
   y <- vals[[1]]$y
   k <- ncol(data)
 
-  gg_color_hue <- function(n) {
-    hues <- seq(15, 375, length = n + 1)
-    hcl(h = hues, l = 65, c = 100)[1:n]
-  }
   cols <- gg_color_hue(k)
 
   df <- data.frame(cbind(x, y))

@@ -188,22 +188,22 @@ plotDistractorAnalysis <- function(data, key, num.groups = 3, item = 1, item.nam
 
   df$score.level <- as.factor(df$score.level)
   num.groups <- length(unique(df$score.level))
+  colnames(df) <- c("Response", "Group", "Proportion")
+  levels(df$Group) <- 1:length(levels(df$Group))
 
   # plot
   g <- ggplot(df, aes_string(
-    x = "score.level",
-    y = "value",
-    group = "response",
-    colour = "response",
-    linetype = "response",
-    shape = "response"
-  ),
-  size = 1
-  ) +
-    geom_line() +
+    x = "Group",
+    y = "Proportion",
+    group = "Response",
+    colour = "Response",
+    linetype = "Response",
+    shape = "Response"
+  )) +
+    geom_line(size = 0.8) +
     geom_point(size = 3) +
     xlab(xlab) +
-    ylab("Option selection percentage") +
+    ylab("Option selection proportion") +
     scale_y_continuous(limits = c(0, 1)) +
     scale_x_discrete(labels = 1:num.groups, expand = c(0, 0.15)) +
     scale_linetype_manual(values = linetype) +

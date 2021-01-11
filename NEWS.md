@@ -2,8 +2,10 @@
 
 ----------
 
-### Changes in version 1.3.4-1 (2020-12-15)
+### Changes in version 1.3.4-1 (2021-01-11)
 #### BUG FIXING
+  * Display of ULI of discrimination was fixed for ordinal items 
+  * Bug in display of Multinomial regression parameters in case of IRT parametrization was fixed
   * In the IRT training section, the calculation and display of item information curves was 
     fixed. (Thanks to Hynek Cigler for reporting this issue.)
   * Calculation of minimal scores in ItemAnalysis() function was fixed.
@@ -11,6 +13,7 @@
   * In the Regression section of the app, missplaced SE for intercepts and slopes were fixed.
 
 #### MAJOR UPDATES
+  * Functions gDiscrim(), DDplot() and ItemAnalysis were updated
   * New function `plot_corr()` to compute and visualize an item correlation matrix was added.
     and implemented within the ShinyItemAnalysis interactive app.
   * New datasets `HCIgrads`, `HCItestretest`, `HCIprepost` and `HCIdata` were added.
@@ -20,7 +23,7 @@
   * Equations were unified in Regression, IRT and DIF sections of the app, with p being the index 
     for person and i being the index for an item. 
   * Training section was added to DIF section.
-  * Figures in Regression section are now displayed in plotly mode in the shiny app.
+  * Figures in Validity and Regression section are now displayed in plotly mode in the shiny app.
   * In IRT/Rasch section, the scaterplots for standardized total score vs. factor score now 
     displayed in plotly mode in the shiny app. (Needs to be applied to other IRT subsections.)
   * IRT/Rasch section was restructured, and it now offers both the intercept/slope as well as

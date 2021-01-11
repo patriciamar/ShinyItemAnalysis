@@ -1408,9 +1408,12 @@ regression_multinomial_model <- reactive({
   dfhw <- data.table(data[, item, with = FALSE], matching)
   dfhw <- dfhw[complete.cases(dfhw), ]
 
-  fit <- tryCatch(multinom(relevel(as.factor(unlist(dfhw[, 1])),
+  item_cats <- unlist(dfhw[, 1])
+  item_values <- unlist(dfhw[, 2])
+
+  fit <- tryCatch(multinom(relevel(as.factor(item_cats),
     ref = paste(key[item])
-  ) ~ unlist(dfhw[, 2]),
+  ) ~ item_values,
   trace = FALSE
   ),
   error = function(e) e

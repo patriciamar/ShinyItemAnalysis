@@ -2,6 +2,7 @@ uiReports <-
   tabPanel(
     "Reports",
     h3("Download report"),
+    # * GENERAL SETTINGS ####
     h4("Settings of report"),
     p(
       code("ShinyItemAnalysis"), " offers an option to download a report in HTML or PDF format. PDF report
@@ -42,6 +43,7 @@ uiReports <-
              distractor plots for each item and multinomial regression plots for each item. Other analyses
              can be selected below. "),
     tags$hr(),
+    # * VALIDITY ####
     fluidRow(
       column(
         9,
@@ -108,6 +110,7 @@ uiReports <-
       )
     ),
     tags$hr(),
+    # * ITEM ANALYSIS ####
     conditionalPanel(
       condition = "input.customizeCheck",
       fluidRow(column(
@@ -116,7 +119,7 @@ uiReports <-
         column(
           3,
           selectInput(
-            inputId = "DDplotDiscriminationDifficulty_report",
+            inputId = "report_itemanalysis_DDplot_difficulty",
             label = "Difficulty type:",
             choices = c(
               "Average scaled score" = "AVGSS",
@@ -128,7 +131,7 @@ uiReports <-
         column(
           3,
           selectInput(
-            inputId = "DDplotDiscriminationSelect_report",
+            inputId = "report_itemanalysis_DDplot_discrimination",
             label = "Discrimination type:",
             choices = c(
               "ULI" = "ULI",
@@ -140,11 +143,11 @@ uiReports <-
           )
         ),
         conditionalPanel(
-          condition = "input.DDplotDiscriminationSelect_report == 'ULI'",
+          condition = "input.report_itemanalysis_DDplot_discrimination == 'ULI'",
           column(
             3,
             sliderInput(
-              inputId = "DDplotNumGroupsSlider_report",
+              inputId = "report_itemanalysis_DDplot_groups_slider",
               label = "Number of groups:",
               min = 2,
               max = 5,
@@ -154,7 +157,7 @@ uiReports <-
           column(
             3,
             sliderInput(
-              inputId = "DDplotRangeSlider_report",
+              inputId = "report_itemanalysis_DDplot_range_slider",
               label = "Which two groups to compare:",
               min = 1,
               max = 3,
@@ -174,7 +177,7 @@ uiReports <-
         column(
           3,
           radioButtons(
-            inputId = "type_combinations_distractor_report",
+            inputId = "report_distractor_type",
             label = "Type",
             choices = list("Combinations", "Distractors")
           )
@@ -182,7 +185,7 @@ uiReports <-
         column(
           3,
           sliderInput(
-            inputId = "distractor_group_report",
+            inputId = "report_distractor_group_slider",
             label = "Number of groups:",
             min = 1,
             max = 5,
@@ -191,13 +194,13 @@ uiReports <-
         ),
         column(
           3,
-          uiOutput("distractor_report_groups_alert")
+          uiOutput("report_distractor_groups_alert")
         )
       )),
-      uiOutput("distractor_groups_alert_report"),
+      # uiOutput("report_distractor_groups_alert"),
       tags$hr()
     ),
-
+    # * IRT ####
     fluidRow(
       column(
         2,
@@ -217,6 +220,7 @@ uiReports <-
       )
     ),
     tags$hr(),
+    # * DIF ####
     fluidRow(
       column(
         2,
@@ -404,6 +408,7 @@ uiReports <-
       )
     ),
     tags$hr(),
+    # * SESSION INFO ####
     radioButtons(
       inputId = "include_session",
       label = "Include session info",
@@ -412,6 +417,7 @@ uiReports <-
       inline = TRUE
     ),
     tags$hr(),
+    # * DOWNLOAD ####
     p(
       strong("Recommendation: "), "Report generation can be faster and more reliable when you first check
              sections of intended contents. For example, if you wish to include a ", strong("3PL IRT"),

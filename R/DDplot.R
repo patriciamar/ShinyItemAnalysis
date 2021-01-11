@@ -143,9 +143,8 @@
 #' DDplot(dataOrd, average.score = TRUE)
 #'
 #' # item difficulty / criterion validity plot for data with criterion
-#' data <- difNLR::GMAT[, 1:20]
-#' criterion <- difNLR::GMAT[, "criterion"]
-#' DDplot(data, criterion = criterion, val_type = "simple")
+#' data(GMAT, package = "difNLR")
+#' DDplot(GMAT[, 1:20], criterion = GMAT$criterion, val_type = "simple")
 #' }
 #' @export
 
@@ -163,13 +162,13 @@ DDplot <- function(data, item.names, discrim = "ULI", k = 3, l = 1, u = 3,
     }
   }
   if (missing(maxscore)) {
-    maxscore <- apply(data, 2, max, na.rm = T)
+    maxscore <- sapply(data, max, na.rm = TRUE)
   }
   if (missing(minscore)) {
-    minscore <- apply(data, 2, min, na.rm = T)
+    minscore <- sapply(data, min, na.rm = TRUE)
   }
   if (missing(cutscore)) {
-    cutscore <- apply(data, 2, max, na.rm = T)
+    cutscore <- sapply(data, max, na.rm = TRUE)
   } else {
     if (length(cutscore) == 1) {
       cutscore <- rep(cutscore, ncol(data))
@@ -183,8 +182,8 @@ DDplot <- function(data, item.names, discrim = "ULI", k = 3, l = 1, u = 3,
       data[data2[, i] < cutscore[i], i] <- 0
     }
     head(data)
-    minscore <- apply(data, 2, min, na.rm = T)
-    maxscore <- apply(data, 2, max, na.rm = T)
+    minscore <- sapply(data, min, na.rm = TRUE)
+    maxscore <- sapply(data, max, na.rm = TRUE)
   }
   if (missing(item.names)) {
     item.names <- colnames(data)
@@ -218,7 +217,7 @@ DDplot <- function(data, item.names, discrim = "ULI", k = 3, l = 1, u = 3,
     "Item (ordered by difficulty)",
     "Item (ordered by average item score)"
   )
-  average <- colMeans(data)
+  average <- colMeans(data, na.rm = TRUE)
   if (discrim == "ULI") {
     disc <- as.numeric(gDiscrim(data,
       minscore = minscore, maxscore = maxscore,
@@ -228,7 +227,7 @@ DDplot <- function(data, item.names, discrim = "ULI", k = 3, l = 1, u = 3,
   }
   if (discrim == "RIR") {
     TOT <- rowSums(data)
-    TOT.woi <- TOT - (data)
+    TOT.woi <- TOT - data
     disc <- diag(cor(data, TOT.woi, use = "complete"))
     i <- 2
   }

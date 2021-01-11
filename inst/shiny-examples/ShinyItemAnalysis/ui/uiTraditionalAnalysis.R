@@ -9,8 +9,7 @@ uiTraditionalAnalysis <- navbarMenu(
     p("Traditional item analysis uses proportions of correct answers or correlations to estimate item properties."),
     h4("Item difficulty/discrimination plot"),
     p(
-      "Displayed is difficulty (red) and discrimination (blue)
-                                               for all items. Items are ordered by difficulty. ", br(),
+      "Displayed is difficulty (red) and discrimination (blue) for all items. Items are ordered by difficulty. ", br(),
       strong("Difficulty"), " of the item is by default estimated as its average scaled score, i.e. average item score
                                                divided by its range. Below you can change the estimate of difficulty to average score of the item. For binary
                                                items both estimates are equivalent and can be interpreted as percent of respondents who answered the item correctly. ",
@@ -27,7 +26,7 @@ uiTraditionalAnalysis <- navbarMenu(
     br(),
     fluidRow(
       column(2, selectInput(
-        inputId = "DDplotDiscriminationDifficulty",
+        inputId = "itemanalysis_DDplot_difficulty",
         label = "Difficulty type:",
         choices = c(
           "Average scaled score" = "AVGSS",
@@ -36,7 +35,7 @@ uiTraditionalAnalysis <- navbarMenu(
         selected = "AVGSS"
       )),
       column(2, selectInput(
-        inputId = "DDplotDiscriminationSelect",
+        inputId = "itemanalysis_DDplot_discrimination",
         label = "Discrimination type:",
         choices = c(
           "ULI" = "ULI",
@@ -47,16 +46,16 @@ uiTraditionalAnalysis <- navbarMenu(
         selected = "ULI"
       )),
       conditionalPanel(
-        condition = "input.DDplotDiscriminationSelect=='ULI'",
+        condition = "input.itemanalysis_DDplot_discrimination=='ULI'",
         column(2, sliderInput(
-          inputId = "DDplotNumGroupsSlider",
+          inputId = "itemanalysis_DDplot_groups_slider",
           label = "Number of groups:",
           min = 2,
           max = 5,
           value = 3
         )),
         column(2, sliderInput(
-          inputId = "DDplotRangeSlider",
+          inputId = "itemanalysis_DDplot_range_slider",
           label = "Groups to compare:",
           min = 1,
           max = 3,
@@ -69,19 +68,19 @@ uiTraditionalAnalysis <- navbarMenu(
         div(
           style = "horizontal-align:left",
           checkboxInput(
-            inputId = "DDplotThr_cb",
+            inputId = "itemanalysis_DDplot_threshold",
             label = "Show threshold",
             value = TRUE
           )
         ),
         conditionalPanel(
-          condition = "input.DDplotThr_cb",
+          condition = "input.itemanalysis_DDplot_threshold",
           fluidRow(
             div(style = "display: inline-block; vertical-align:center; padding-left:10pt", HTML("<b>Threshold:</b>")),
             div(
               style = "display: inline-block; vertical-align:center; width: 45%;",
               numericInput(
-                inputId = "DDplotThr",
+                inputId = "itemanalysis_DDplot_threshold_value",
                 label = NULL,
                 value = .2,
                 min = 0,
@@ -93,20 +92,20 @@ uiTraditionalAnalysis <- navbarMenu(
         )
       )
     ),
-    htmlOutput("DDplot_text"),
-    plotlyOutput("DDplot"),
-    downloadButton("DB_DDplot", label = "Download figure"),
+    htmlOutput("itemanalysis_DDplot_text"),
+    plotlyOutput("itemanalysis_DDplot"),
+    downloadButton("itemanalysis_DDplot_download", label = "Download figure"),
     br(), br(), HTML("<div class='pb' style='page-break-after:always'></div>"),
     h4("Traditional item analysis table"),
     withMathJax(),
     uiOutput("itemanalysis_table_text"),
     br(),
-    tags$head(tags$style("#coef_itemanalysis_table {white-space: nowrap;}")),
-    tableOutput("coef_itemanalysis_table"),
-    uiOutput("cronbach_note"), br(),
+    tags$head(tags$style("#itemanalysis_table_coef {white-space: nowrap;}")),
+    tableOutput("itemanalysis_table_coef"),
+    uiOutput("itemanalysis_cronbach_note"), br(),
     # download item analysis table button
     downloadButton(
-      outputId = "download_itemanal_table",
+      outputId = "itemanalysis_table_download",
       label = "Download table"
     ),
     br(), br(),
@@ -119,18 +118,17 @@ uiTraditionalAnalysis <- navbarMenu(
   tabPanel(
     "Distractors",
     h3("Distractor analysis"),
-    p("In distractor analysis, we are interested in how test takers select
-                                               the correct answer and how the distractors (wrong answers) were able
-                                               to function effectively by drawing the test takers away from the correct answer."),
+    p("In distractor analysis, we are interested in how test takers select the correct answer and how the distractors
+                      (wrong answers) were able to function effectively by drawing the test takers away from the correct answer."),
     h4("Distractors plot"),
     htmlOutput("distractor_text"),
-    p("With option ", strong("Combinations"), "all item selection patterns are plotted (e.g. AB, ACD, BC). With
-                                               option", strong("Distractors"), "answers are splitted into distractors (e.g. A, B, C, D)."),
+    p("With option ", strong("Combinations"), "all item selection patterns are plotted (e.g., AB, ACD, BC). With option",
+                      strong("Distractors"), "answers are splitted into distractors (e.g., A, B, C, D)."),
     fluidPage(
       div(
         class = "input-slider",
         sliderInput(
-          inputId = "distractor_group",
+          inputId = "distractor_group_slider",
           label = "Number of groups:",
           min = 1,
           max = 5,
@@ -141,7 +139,7 @@ uiTraditionalAnalysis <- navbarMenu(
       div(
         class = "input-radio",
         radioButtons(
-          inputId = "type_combinations_distractor",
+          inputId = "distractor_type",
           label = "Type",
           choices = list("Combinations", "Distractors")
         )
@@ -150,7 +148,7 @@ uiTraditionalAnalysis <- navbarMenu(
       div(
         class = "input-slider",
         sliderInput(
-          inputId = "distractorSlider",
+          inputId = "distractor_item_slider",
           label = "Item",
           min = 1,
           max = 10,
@@ -162,8 +160,8 @@ uiTraditionalAnalysis <- navbarMenu(
     ),
     uiOutput("distractor_groups_alert"),
     br(),
-    plotOutput("distractor_plot"),
-    downloadButton("DB_distractor_plot", label = "Download figure"),
+    plotlyOutput("distractor_plot"),
+    downloadButton("distractor_plot_download", label = "Download figure"),
     br(),
     h4("Table with counts"),
     fluidRow(column(12, align = "center", tableOutput("distractor_table_counts"))),
@@ -171,11 +169,11 @@ uiTraditionalAnalysis <- navbarMenu(
     fluidRow(column(12, align = "center", tableOutput("distractor_table_proportions"))),
     br(),
     h4("Barplot of item response patterns"),
-    plotOutput("distractor_barplot_item_response_patterns"),
-    downloadButton("DB_distractor_barplot_item_response_patterns", label = "Download figure"),
+    plotlyOutput("distractor_barplot_item_response_patterns"),
+    downloadButton("distractor_barplot_item_response_patterns_download", label = "Download figure"),
     h4("Histogram of total scores"),
-    plotOutput("distractor_histogram"),
-    downloadButton("DB_distractor_histogram", label = "Download figure"),
+    plotlyOutput("distractor_histogram"),
+    downloadButton("distractor_histogram_download", label = "Download figure"),
     br(),
     h4("Table of total scores by groups"),
     fluidRow(column(12, align = "center", tableOutput("distractor_table_total_score_by_group"))),

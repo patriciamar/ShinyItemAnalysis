@@ -133,7 +133,7 @@ uiDIRT <- tabPanel(
   splitLayout(
     cellWidths = c("50%", "50%"),
     plotlyOutput("ccIRT_plot"),
-    plotlyOutput("iic_IRT_plot")
+    plotlyOutput("iicIRT_plot")
   ),
   splitLayout(
     cellWidths = c("50%", "50%"),

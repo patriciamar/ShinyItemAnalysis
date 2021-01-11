@@ -96,25 +96,25 @@ gDiscrim <- function(x, k = 3, l = 1, u = 3, maxscore, minscore) {
     stop("'l' should be lower than 'u'", call. = FALSE)
   }
   if (missing(maxscore)) {
-    maxscore <- apply(x, 2, max, na.rm = TRUE)
+    maxscore <- sapply(x, max, na.rm = TRUE)
   } else {
     if (length(maxscore) == 1) {
       maxscore <- rep(maxscore, ncol(x))
     }
   }
-  obtainedmax <- apply(x, 2, max, na.rm = TRUE)
+  obtainedmax <- sapply(x, max, na.rm = TRUE)
   if (!all(maxscore >= obtainedmax)) {
     warning("'maxscore' is lower than maximum score in the data set for some item")
   }
 
   if (missing(minscore)) {
-    minscore <- apply(x, 2, min, na.rm = TRUE)
+    minscore <- sapply(x, min, na.rm = TRUE)
   } else {
     if (length(minscore) == 1) {
       minscore <- rep(minscore, ncol(x))
     }
   }
-  obtainedmin <- apply(x, 2, min, na.rm = TRUE)
+  obtainedmin <- sapply(x, min, na.rm = TRUE)
   if (!all(minscore <= obtainedmin)) {
     warning("'minscore' is higher than minimum score in the data set for some item")
   }
@@ -122,21 +122,20 @@ gDiscrim <- function(x, k = 3, l = 1, u = 3, maxscore, minscore) {
     warning("'minscore' is higher than 'maxscore' for some item")
   }
 
-  x <- na.exclude(as.matrix(x))
+  x <- na.exclude(x)
   n <- ncol(x)
   N <- nrow(x)
+
   ni <- as.integer(N / k)
   MaxMin <- maxscore - minscore
-  MaxSum <- sum(apply(x, 2, max, na.rm = TRUE))
-  MinSum <- sum(apply(x, 2, min, na.rm = TRUE))
-  TOT <- apply(x, 1, sum) / (MaxSum - MinSum)
+  MaxSum <- sum(sapply(x, max, na.rm = TRUE))
+  MinSum <- sum(sapply(x, min, na.rm = TRUE))
+  TOT <- rowSums(x, na.rm = TRUE) / (MaxSum - MinSum)
   tmpx <- x[order(TOT), ]
-  tmpxU <- tmpx[as.integer((u - 1) * N / k + 1):as.integer(u *
-    N / k), ]
-  tmpxL <- tmpx[as.integer((l - 1) * N / k + 1):as.integer(l *
-    N / k), ]
-  Ui <- apply(tmpxU, 2, sum) / MaxMin
-  Li <- apply(tmpxL, 2, sum) / MaxMin
+  tmpxU <- tmpx[as.integer((u - 1) * N / k + 1):as.integer(u * N / k), ]
+  tmpxL <- tmpx[as.integer((l - 1) * N / k + 1):as.integer(l * N / k), ]
+  Ui <- colSums(tmpxU, na.rm = TRUE) / MaxMin
+  Li <- colSums(tmpxL, na.rm = TRUE) / MaxMin
   discrim <- (Ui - Li) / ni
   return(discrim[1:n])
 }

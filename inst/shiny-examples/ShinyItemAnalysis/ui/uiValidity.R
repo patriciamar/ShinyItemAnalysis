@@ -126,13 +126,13 @@ uiValidity <-
       conditionalPanel(
         condition = "input.corr_plot_clustmethod != 'none' & input.corr_plot_clust != 0",
         h4("Dendrogram"),
-        plotOutput("dendrogram_plot"),
+        plotlyOutput("dendrogram_plot"),
         downloadButton(outputId = "DB_dendrogram", label = "Download figure")
       ),
       h4("Scree plot"),
       p("A scree plot displays the eigenvalues associated with an component or a factor in descending order
                         versus the number of the component or factor. Location of a bend (an elbow) suggests a suitable number of factors."),
-      plotOutput("scree_plot"),
+      plotlyOutput("scree_plot"),
       downloadButton(outputId = "DB_scree_plot", label = "Download figure"),
       h4("Selected R code"),
       div(code(HTML("library(ggdendro)<br>library(difNLR)<br>library(psych)<br><br>#&nbsp;loading&nbsp;data<br>data(GMAT)<br>data&nbsp;&lt;-&nbsp;GMAT[,&nbsp;1:20]<br><br>#&nbsp;correlation&nbsp;heat&nbsp;map with&nbsp;3&nbsp;clusters&nbsp;using&nbsp;Ward&nbsp;method<br>plot_corr(data,&nbsp;cor&nbsp;=&nbsp;\"poly\",&nbsp;clust_method&nbsp;=&nbsp;\"ward.D\",&nbsp;n_clust&nbsp;=&nbsp;3)<br><br>#&nbsp;dendrogram<br>hc&nbsp;&lt;-&nbsp;hclust(as.dist(1&nbsp;-&nbsp;corP$rho),&nbsp;method&nbsp;=&nbsp;\"ward.D\")&nbsp;#&nbsp;hierarchical&nbsp;clustering<br>ggdendrogram(hc)&nbsp;#&nbsp;dendrogram<br><br>library(difNLR)<br>library(psych)<br><br>#&nbsp;loading&nbsp;data<br>data(GMAT)&nbsp;<br>data&nbsp;&lt;-&nbsp;GMAT[,&nbsp;1:20]&nbsp;<br><br>#&nbsp;scree&nbsp;plot&nbsp;<br>ev&nbsp;&lt;-&nbsp;eigen(corP$rho)$values&nbsp;#&nbsp;eigen&nbsp;values<br>df&nbsp;&lt;-&nbsp;data.frame(comp&nbsp;=&nbsp;1:length(ev),&nbsp;ev)<br><br>ggplot(df,&nbsp;aes(x&nbsp;=&nbsp;comp,&nbsp;y&nbsp;=&nbsp;ev))&nbsp;+<br>&nbsp;&nbsp;geom_point()&nbsp;+<br>&nbsp;&nbsp;geom_line()&nbsp;+<br>&nbsp;&nbsp;ylab(\"Eigen&nbsp;value\")&nbsp;+<br>&nbsp;&nbsp;xlab(\"Component&nbsp;number\")&nbsp;+<br>&nbsp;&nbsp;theme_app()"))),
@@ -166,7 +166,7 @@ uiValidity <-
           p("Total scores are plotted according to criterion variable. Boxplot or scatterplot is displayed
                                    depending on the type of criterion variable - whether it is discrete or continuous. Scatterplot is
                                    provided with red linear regression line. "),
-          plotOutput("validity_plot"),
+          plotlyOutput("validity_plot"),
           downloadButton(outputId = "DB_validity_plot", label = "Download figure"),
           h4("Correlation of criterion variable and total score"),
           p("Test for association between total score and criterion variable is based on Spearman`s \\(\\rho\\).
@@ -301,7 +301,7 @@ uiValidity <-
             )
           ),
           uiOutput("validity_groups_alert"),
-          plotOutput("validity_distractor_plot"),
+          plotlyOutput("validity_distractor_plot"),
           downloadButton(outputId = "DB_validity_distractor_plot", label = "Download figure"),
           h4("Correlation of criterion variable and scored item"),
           p("Test for association between total score and criterion variable is based on Spearman`s \\(\\rho\\).

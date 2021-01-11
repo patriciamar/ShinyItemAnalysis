@@ -67,7 +67,7 @@ output$corr_plot <- renderPlotly({
         scaleratio = 1
       )
     ) %>%
-    plotly::config(displayModeBar = F)
+    plotly::config(displayModeBar = FALSE)
 
   # editing legend appearance
   colorbar_ind <- which(sapply(plt$x$data, function(x) any(grepl("marker", names(x)))))
@@ -173,8 +173,12 @@ dendrogram_plot_Input <- reactive({
 })
 
 # ** Output dendrogram ######
-output$dendrogram_plot <- renderPlot({
-  dendrogram_plot_Input()
+output$dendrogram_plot <- renderPlotly({
+  g <- dendrogram_plot_Input()
+  p <- ggplotly(g)
+
+  p$elementId <- NULL
+  p %>% plotly::config(displayModeBar = FALSE)
 })
 
 # ** DB dendrogram ######
@@ -206,7 +210,7 @@ scree_plot_Input <- reactive({
   df <- data.table(pos = 1:length(ev), ev)
 
   ggplot(data = df, aes(x = pos, y = ev)) +
-    geom_point() +
+    geom_point(size = 3) +
     geom_line() +
     xlab("Component number") +
     ylab("Eigen value") +
@@ -215,8 +219,17 @@ scree_plot_Input <- reactive({
 })
 
 # ** Output scree plot ######
-output$scree_plot <- renderPlot({
-  scree_plot_Input()
+output$scree_plot <- renderPlotly({
+  g <- scree_plot_Input()
+  p <- ggplotly(g)
+
+  text <- p$x$data[[1]]$text
+  text <- gsub("pos", "Component", text)
+  text <- gsub("ev", "Eigen value", text)
+  p$x$data[[1]]$text <- text
+
+  p$elementId <- NULL
+  p %>% plotly::config(displayModeBar = FALSE)
 })
 
 # ** DB scree plot ######
@@ -300,12 +313,12 @@ validity_plot_boxplot_Input <- reactive({
   ts <- total_score()
   cv <- unlist(criterion())
 
-  df <- data.table(ts, cv)
+  df <- data.table(ts, cv = as.factor(cv))
   df <- df[complete.cases(df), ]
 
   set.seed(1)
 
-  g <- ggplot(df, aes(y = ts, x = as.factor(cv), fill = as.factor(cv))) +
+  g <- ggplot(df, aes(y = ts, x = cv, fill = cv)) +
     geom_boxplot() +
     geom_jitter(shape = 16, position = position_jitter(0.2)) +
     scale_fill_brewer(palette = "Blues") +
@@ -328,10 +341,10 @@ validity_plot_scatter_Input <- reactive({
   df <- data.table(ts, cv, size)
   df <- df[complete.cases(df), ]
 
-  g <- ggplot(df, aes(y = cv, x = ts, size = size)) +
-    geom_point(color = "black") +
+  g <- ggplot(df, aes(y = cv, x = ts)) +
+    geom_point(color = "black", aes(size = size)) +
     geom_smooth(
-      method = lm,
+      method = lm, formula = "y ~ x",
       se = FALSE,
       color = "red",
       show.legend = FALSE
@@ -361,8 +374,22 @@ validity_plot_Input <- reactive({
 })
 
 # ** Output validity descriptive plot ######
-output$validity_plot <- renderPlot({
-  validity_plot_Input()
+output$validity_plot <- renderPlotly({
+  g <- validity_plot_Input()
+  p <- ggplotly(g)
+
+  for (i in 1:length(p$x$data)) {
+    text <- p$x$data[[i]]$text
+    text <- gsub("ts", "Total score", text)
+    text <- gsub("cv", "Criterion variable", text)
+    text <- gsub("size", "Count", text)
+    text <- lapply(strsplit(text, split = "<br />"), unique)
+    text <- unlist(lapply(text, paste, collapse = "<br />"))
+    p$x$data[[i]]$text <- text
+  }
+
+  p$elementId <- NULL
+  p %>% plotly::config(displayModeBar = FALSE)
 })
 
 # ** DB validity descriptive plot ######
@@ -527,8 +554,19 @@ validity_distractor_plot_Input <- reactive({
 })
 
 # ** Output validity distractors plot ######
-output$validity_distractor_plot <- renderPlot({
-  validity_distractor_plot_Input()
+output$validity_distractor_plot <- renderPlotly({
+  g <- validity_distractor_plot_Input()
+  p <- ggplotly(g)
+
+  for (i in 1:length(p$x$data)) {
+    text <- p$x$data[[i]]$text
+    text <- lapply(strsplit(text, split = "<br />"), unique)
+    text <- unlist(lapply(text, paste, collapse = "<br />"))
+    p$x$data[[i]]$text <- text
+  }
+
+  p$elementId <- NULL
+  p %>% plotly::config(displayModeBar = FALSE)
 })
 
 # ** DB validity distractors plot ######
