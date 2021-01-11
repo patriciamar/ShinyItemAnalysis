@@ -45,7 +45,7 @@
 #' @importFrom rmarkdown render
 #' @importFrom shinyjs show hide useShinyjs
 #' @importFrom stats aggregate coef coefficients complete.cases cor deriv deriv3
-#'   deviance fitted glm median na.exclude nls p.adjust pnorm pchisq qnorm
+#'   deviance fitted glm median na.exclude na.omit nls p.adjust pnorm pchisq qnorm
 #'   qchisq quantile relevel sd symnum vcov xtabs
 #' @importFrom stringr str_sub
 #' @importFrom utils capture.output data head packageVersion read.csv

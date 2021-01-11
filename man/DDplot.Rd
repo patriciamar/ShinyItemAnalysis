@@ -149,9 +149,8 @@ DDplot(dataOrd)
 DDplot(dataOrd, average.score = TRUE)
 
 # item difficulty / criterion validity plot for data with criterion
-data <- difNLR::GMAT[, 1:20]
-criterion <- difNLR::GMAT[, "criterion"]
-DDplot(data, criterion = criterion, val_type = "simple")
+data(GMAT, package = "difNLR")
+DDplot(GMAT[, 1:20], criterion = GMAT$criterion, val_type = "simple")
 }
 }
 \references{

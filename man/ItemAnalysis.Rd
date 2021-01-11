@@ -18,7 +18,7 @@ ItemAnalysis(
 }
 \arguments{
 \item{data}{matrix or data.frame of items to be examined. Rows represent
-respondents, columns reperesent items.}
+respondents, columns represent items.}
 
 \item{y}{vector of criterion values.}
 
@@ -47,38 +47,37 @@ See \strong{Details}.}
 \value{
 \code{ItemAnalysis} function computes various traditional item analysis indices. Output
 is a \code{data.frame} with following columns:
-  \item{\code{diff}}{average score of the item divided by its range}
-  \item{\code{avgSCore}}{average score of the item}
-  \item{\code{SD}}{standard deviation of the item score}
-  \item{\code{SDbin}}{standard deviation of the item score for binarized data}
-  \item{\code{correct}}{proportion of correct answers}
-  \item{\code{min}}{minimal score specified in \code{minscore}; if not provided, observed minimal score}
-  \item{\code{max}}{maximal score specified in \code{maxscore}; if not provided, observed maximal score}
-  \item{\code{obtMin}}{observed minimal score}
-  \item{\code{obtMax}}{observed maximal score}
-  \item{\code{cutScore}}{cut-score specified in \code{cutscore}}
-  \item{\code{gULI}}{generalized ULI}
-  \item{\code{gULIbin}}{generalized ULI for binarized data}
-  \item{\code{ULI}}{discrimination with ULI using the usual parameters (3 groups, comparing 1st and 3rd)}
-  \item{\code{ULIbin}}{discrimination with ULI using the usual parameters for binarized data}
-  \item{\code{RIT}}{item-total correlation (correlation between item score and overall test score)}
-  \item{\code{RITbin}}{item-total correlation for binarized data}
-  \item{\code{RIR}}{item-rest correlation (correlation between item score and overall test score without the given item)}
-  \item{\code{RIRbin}}{item-rest correlation for binarized data}
-  \item{\code{itemCritCor}}{correlation between item score and criterion \code{y}}
-  \item{\code{itemCritCorBin}}{correlation between item score and criterion \code{y} for binarized data}
-  \item{\code{valInd}}{item validity index calculated as \code{cor(item, y) * sqrt(((N - 1) / N) * var(item))}, see Allen & Yen (1979), Ch.6.4}
-  \item{\code{valIndBin}}{item validity index for binarized data}
-  \item{\code{rel}}{item reliability index calculated as \code{cor(item, test) * sqrt(((N - 1) / N) * var(item))}, see Allen & Yen (1979), Ch.6.4}
-  \item{\code{relBin}}{item reliability index for binarized data}
-
-  \item{\code{relDrop}}{item reliability index 'drop' (scored without item)}
-  \item{\code{relDropBin}}{item reliability index 'drop' (scored without item) for binarized data}
-  \item{\code{alphaDrop}}{Cronbach's alpha without given item}
-  \item{\code{alphaDropBin}}{Cronbach's alpha without given item, for binarized data}
-  \item{\code{missedPerc}}{proportion of missed responses on the particular item}
-  \item{\code{notReachPerc}}{proportion of respondents that did not reached the item nor the subsequent ones, see \code{\link{recode_nr}} function for further details}
-With \code{add.bin == TRUE}, indices based on binarized data set are also provided
+  \item{\code{Difficulty}}{average score of the item divided by its range. }
+  \item{\code{Mean}}{average item score. }
+  \item{\code{SD}}{standard deviation of the item score. }
+  \item{\code{SD.bin}}{standard deviation of the item score for binarized data. }
+  \item{\code{Prop.max.score}}{proportion of maximal scores. }
+  \item{\code{Min.score}}{minimal score specified in \code{minscore}; if not provided, observed minimal score. }
+  \item{\code{Max.score}}{maximal score specified in \code{maxscore}; if not provided, observed maximal score. }
+  \item{\code{obs.min}}{observed minimal score. }
+  \item{\code{obs.max}}{observed maximal score. }
+  \item{\code{Cut.Score}}{cut-score specified in \code{cutscore}. }
+  \item{\code{gULI}}{generalized ULI. }
+  \item{\code{gULI.bin}}{generalized ULI for binarized data. }
+  \item{\code{ULI}}{discrimination with ULI using the usual parameters (3 groups, comparing 1st and 3rd). }
+  \item{\code{ULI.bin}}{discrimination with ULI using the usual parameters for binarized data (3 groups, comparing 1st and 3rd). }
+  \item{\code{RIT}}{item-total correlation (correlation between item score and overall test score). }
+  \item{\code{RIT.bin}}{item-total correlation for binarized data. }
+  \item{\code{RIR}}{item-rest correlation (correlation between item score and overall test score without the given item). }
+  \item{\code{RIR.bin}}{item-rest correlation for binarized data. }
+  \item{\code{Corr.criterion}}{correlation between item score and criterion \code{y}. }
+  \item{\code{Corr.criterion.bin}}{correlation between item score and criterion \code{y} for binarized data. }
+  \item{\code{Index.val}}{item validity index calculated as \code{cor(item, y) * sqrt(((N - 1) / N) * var(item))}, see Allen and Yen (1979, Ch.6.4). }
+  \item{\code{Index.val.bin}}{item validity index for binarized data}
+  \item{\code{Index.rel}}{item reliability index calculated as \code{cor(item, test) * sqrt(((N - 1) / N) * var(item))}, see Allen and Yen (1979, Ch.6.4). }
+  \item{\code{Index.rel.bin}}{item reliability index for binarized data}
+  \item{\code{Index.rel.drop}}{item reliability index 'drop' (scored without item). }
+  \item{\code{Index.rel.drop.bin}}{item reliability index 'drop' (scored without item) for binarized data. }
+  \item{\code{Alpha.drop}}{Cronbach's alpha without given item. }
+  \item{\code{Alpha.drop.bin}}{Cronbach's alpha without given item, for binarized data. }
+  \item{\code{Perc.miss}}{Percentage of missed responses on the particular item. }
+  \item{\code{Perc.nr}}{Percentage of respondents that did not reached the item nor the subsequent ones, see \code{\link{recode_nr}} function for further details. }
+With \code{add.bin = TRUE}, indices based on binarized data set are also provided
 and marked with \code{bin} suffix.
 }
 \description{
@@ -91,7 +90,7 @@ and marked with \code{bin} suffix.
 For ordinal items the difficulty and discrimination indices take
 into account minimal item score as well as range.
 
-For calculation of discimination ULI index, it is possible to specify the
+For calculation of discrimination ULI index, it is possible to specify the
 number of groups \code{k}, and which two groups \code{l} and \code{u} are to
 be compared.
 
@@ -106,7 +105,7 @@ are set to \code{1}, other values are set to \code{0}.
 }
 \examples{
 \dontrun{
-# loading 100-item medical admission test data sets
+# loading 100-item medical admission test datasets
 data(dataMedical, dataMedicalgraded)
 # binary data set
 dataBin <- dataMedical[, 1:100]
