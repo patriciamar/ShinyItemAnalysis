@@ -4,6 +4,7 @@
 
 ### Changes in version 1.3.4-1 (2021-01-22)
 #### BUG FIXING
+  * Plots in DIF/About section were fixed (uniform vs. nonuniform DDF now correctly displayed).
   * Display of ULI of discrimination was fixed for ordinal items.
   * Bug in display of Multinomial regression parameters in case of IRT parametrization was fixed.
   * In the IRT training section, the calculation and display of item information curves was 
