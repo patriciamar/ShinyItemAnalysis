@@ -5,7 +5,7 @@
 \title{Plot item distractor analysis}
 \usage{
 plotDistractorAnalysis(
-  data,
+  Data,
   key,
   num.groups = 3,
   item = 1,
@@ -13,20 +13,20 @@ plotDistractorAnalysis(
   multiple.answers = TRUE,
   matching = NULL,
   match.discrete = FALSE,
-  cut.points
+  cut.points,
+  data
 )
 }
 \arguments{
-\item{data}{character: data matrix or data frame. See \strong{Details}.}
+\item{Data}{character: data matrix or data.frame. See \strong{Details}.}
 
 \item{key}{character: answer key for the items.}
 
-\item{num.groups}{numeric: number of groups to that should be respondents
-splitted.}
+\item{num.groups}{numeric: number of groups to which are the respondents split.}
 
-\item{item}{numeric: the number of item to be plotted.}
+\item{item}{numeric: the number of the item to be plotted.}
 
-\item{item.name}{character: the name of item.}
+\item{item.name}{character: the name of the item.}
 
 \item{multiple.answers}{logical: should be all combinations plotted (default)
 or should be answers splitted into distractors. See \strong{Details}.}
@@ -39,6 +39,8 @@ calculated and distractor analysis is performed based on it.}
 
 \item{cut.points}{numeric: numeric vector specifying cut points of
 \code{matching}. See details.}
+
+\item{data}{deprecated. Use argument \code{Data} instead.}
 }
 \description{
 Plots graphical representation of item distractor analysis with
@@ -46,18 +48,19 @@ Plots graphical representation of item distractor analysis with
 }
 \details{
 This function is graphical representation of
-\code{\link{DistractorAnalysis}} function. In case, no \code{matching} is
-provided, the scores are calculated using the item data and key. The
-respondents are by default splitted into the \code{num.groups}-quantiles and
-the proportions of respondents in each quantile are displayed with respect to
-their answers. In case that \code{matching} is discrete (\code{match.discrete
-= TRUE}), \code{matching} is splitted based on its unique levels. Other cut
-points can be specified via \code{cut.points} argument.
+  \code{\link{DistractorAnalysis}} function. In case, no \code{matching} is
+  provided, the scores are calculated using the item \code{Data} and
+  \code{key}. The respondents are by default splitted into the
+  \code{num.groups}-quantiles and the proportions of respondents in each
+  quantile are displayed with respect to their answers. In case that
+  \code{matching} is discrete (\code{match.discrete = TRUE}), \code{matching}
+  is splitted based on its unique levels. Other cut points can be specified
+  via \code{cut.points} argument.
 
-The \code{data} is a matrix or data frame whose rows represents unscored item
+The \code{Data} is a matrix or data.frame whose rows represents unscored item
 response from a multiple-choice test and columns correspond to the items.
 
-The \code{key} must be a vector of the same length as \code{ncol(data)}. In
+The \code{key} must be a vector of the same length as \code{ncol(Data)}. In
 case it is not provided, \code{matching} need to be specified.
 
 If \code{multiple.answers = TRUE} (default) all reported combinations of
@@ -67,7 +70,7 @@ combination.
 }
 \examples{
 
-# loading 100-item medical admission test data
+# loading 100-item medical admission test datasets
 data(dataMedical, dataMedicaltest, dataMedicalkey)
 data <- dataMedicaltest[, 1:100]
 dataBin <- dataMedical[, 1:100]

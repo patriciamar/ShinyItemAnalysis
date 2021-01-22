@@ -4,13 +4,13 @@
 \alias{gDiscrim}
 \title{Compute generalized item discrimination}
 \usage{
-gDiscrim(x, k = 3, l = 1, u = 3, maxscore, minscore)
+gDiscrim(Data, k = 3, l = 1, u = 3, maxscore, minscore, x)
 }
 \arguments{
-\item{x}{matrix or data.frame of items to be examined. Rows represent
-persons, columns represent items.}
+\item{Data}{matrix or data.frame of items to be examined. Rows represent
+respondents, columns represent items.}
 
-\item{k}{numeric: number of groups to which may be data.frame x divided by
+\item{k}{numeric: number of groups to which may be \code{Data} divided by
 the total score. Default value is 3.  See \strong{Details}.}
 
 \item{l}{numeric: lower group. Default value is 1. See \strong{Details}.}
@@ -22,6 +22,8 @@ of obtained maximal scores is imputed. See \strong{Details}.}
 
 \item{minscore}{numeric: minimal score in ordinal items. If missing, vector
 of obtained minimal scores is imputed. See \strong{Details}.}
+
+\item{x}{deprecated. Use argument \code{Data} instead.}
 }
 \description{
 gDiscrim function computes various generalizations of
@@ -29,7 +31,7 @@ gDiscrim function computes various generalizations of
   between individuals from upper (U) vs. lower (L) ability groups, i.e.
   between respondents with high vs. low overall score on the test. Number of
   groups, as well as upper and lower groups can be specified by user. Maximal
-  and minimal score in ordinal data sets can be specified by user.
+  and minimal score in ordinal datasets can be specified by user.
 }
 \details{
 The function computes total test scores for all respondents and then
@@ -48,22 +50,22 @@ The function computes total test scores for all respondents and then
 \code{gDiscrim} is used by \code{\link{DDplot}} function.
 }
 \examples{
-# loading 100-item medical admission test data sets
+# loading 100-item medical admission test datasets
 data(dataMedical, dataMedicalgraded)
-# binary data set
+# binary dataset
 dataBin <- dataMedical[, 1:100]
-# ordinal data set
+# ordinal dataset
 dataOrd <- dataMedicalgraded[, 1:100]
 
-# ULI for first 5 items for binary data set
-# compare to psychometric::discrim(x)
+# ULI for the first 5 items of binary dataset
+# compare to psychometric::discrim(dataBin)
 gDiscrim(dataBin)[1:5]
-# generalized ULI using 5 groups, compare 4th and 5th for binary data set
+# generalized ULI using 5 groups, compare 4th and 5th for binary dataset
 gDiscrim(dataBin, k = 5, l = 4, u = 5)[1:5]
 
-# ULI for first 5 items for ordinal data set
+# ULI for first 5 items for ordinal dataset
 gDiscrim(dataOrd)[1:5]
-# generalized ULI using 5 groups, compare 4th and 5th for binary data set
+# generalized ULI using 5 groups, compare 4th and 5th for binary dataset
 gDiscrim(dataOrd, k = 5, l = 4, u = 5)[1:5]
 # maximum (4) and minimum (0) score are same for all items
 gDiscrim(dataOrd, k = 5, l = 4, u = 5, maxscore = 4, minscore = 0)[1:5]

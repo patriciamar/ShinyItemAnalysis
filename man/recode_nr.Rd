@@ -4,21 +4,23 @@
 \alias{recode_nr}
 \title{Recognize and recode not-reached responses}
 \usage{
-recode_nr(df, nr_code = 99)
+recode_nr(Data, nr_code = 99, df)
 }
 \arguments{
-\item{df}{matrix or data.frame: object to be recoded, must include only items
-columns and no additional information}
+\item{Data}{matrix or data.frame: object to be recoded, must include only
+items columns and no additional information}
 
-\item{nr_code}{single character, integer or numeric: specifying how should
-be recognized not-reached responses coded (default is \code{99})}
+\item{nr_code}{single character, integer or numeric: specifying how should be
+recognized not-reached responses coded (default is \code{99})}
+
+\item{df}{deprecated. Use argument \code{Data} instead.}
 }
 \value{
-The same class as input object, see \code{df}.
+The same class as input object, see \code{Data}.
 }
 \description{
 \code{recode_nr()} function recognizes and recodes not-reached
-responses, i.e. missing responses to items such that all subsequent
+responses, i.e., missing responses to items such that all subsequent
 items are missed as well by the respondent.
 }
 \examples{

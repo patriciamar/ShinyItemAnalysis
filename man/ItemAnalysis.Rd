@@ -5,22 +5,25 @@
 \title{Compute traditional item analysis indices}
 \usage{
 ItemAnalysis(
-  data,
-  y = NULL,
+  Data,
+  criterion = "none",
   k = 3,
   l = 1,
   u = 3,
-  maxscore,
-  minscore,
-  cutscore,
-  add.bin = FALSE
+  maxscore = NULL,
+  minscore = NULL,
+  cutscore = NULL,
+  bin = FALSE,
+  data,
+  y,
+  add.bin
 )
 }
 \arguments{
-\item{data}{matrix or data.frame of items to be examined. Rows represent
+\item{Data}{matrix or data.frame of items to be examined. Rows represent
 respondents, columns represent items.}
 
-\item{y}{vector of criterion values.}
+\item{criterion}{vector of criterion values.}
 
 \item{k}{numeric: number of groups to which may be data.frame x divided by
 the total score. Default value is 3.  See \strong{Details}.}
@@ -37,12 +40,18 @@ missing, vector of obtained maximal scores is imputed. See
 missing, vector of obtained minimal scores is imputed. See
 \strong{Details}.}
 
-\item{cutscore}{numeric or vector: cut score used for binarization of ordinal
+\item{cutscore}{numeric or vector: cut-score used for binarization of ordinal
 data. If missing, vector of maximal scores is imputed. See
 \strong{Details}.}
 
-\item{add.bin}{logical: If TRUE, indices are printed also for binarized data.
+\item{bin}{logical: If TRUE, indices are printed also for binarized data.
 See \strong{Details}.}
+
+\item{data}{deprecated. Use argument \code{Data} instead.}
+
+\item{y}{deprecated. Use argument \code{criterion} instead.}
+
+\item{add.bin}{deprecated. Use argument \code{bin} instead.}
 }
 \value{
 \code{ItemAnalysis} function computes various traditional item analysis indices. Output
@@ -65,19 +74,19 @@ is a \code{data.frame} with following columns:
   \item{\code{RIT.bin}}{item-total correlation for binarized data. }
   \item{\code{RIR}}{item-rest correlation (correlation between item score and overall test score without the given item). }
   \item{\code{RIR.bin}}{item-rest correlation for binarized data. }
-  \item{\code{Corr.criterion}}{correlation between item score and criterion \code{y}. }
-  \item{\code{Corr.criterion.bin}}{correlation between item score and criterion \code{y} for binarized data. }
-  \item{\code{Index.val}}{item validity index calculated as \code{cor(item, y) * sqrt(((N - 1) / N) * var(item))}, see Allen and Yen (1979, Ch.6.4). }
-  \item{\code{Index.val.bin}}{item validity index for binarized data}
+  \item{\code{Corr.criterion}}{correlation between item score and criterion \code{criterion}. }
+  \item{\code{Corr.criterion.bin}}{correlation between item score and criterion \code{criterion} for binarized data. }
+  \item{\code{Index.val}}{item validity index calculated as \code{cor(item, criterion) * sqrt(((N - 1) / N) * var(item))}, see Allen and Yen (1979, Ch.6.4). }
+  \item{\code{Index.val.bin}}{item validity index for binarized data. }
   \item{\code{Index.rel}}{item reliability index calculated as \code{cor(item, test) * sqrt(((N - 1) / N) * var(item))}, see Allen and Yen (1979, Ch.6.4). }
-  \item{\code{Index.rel.bin}}{item reliability index for binarized data}
+  \item{\code{Index.rel.bin}}{item reliability index for binarized data. }
   \item{\code{Index.rel.drop}}{item reliability index 'drop' (scored without item). }
   \item{\code{Index.rel.drop.bin}}{item reliability index 'drop' (scored without item) for binarized data. }
   \item{\code{Alpha.drop}}{Cronbach's alpha without given item. }
   \item{\code{Alpha.drop.bin}}{Cronbach's alpha without given item, for binarized data. }
   \item{\code{Perc.miss}}{Percentage of missed responses on the particular item. }
   \item{\code{Perc.nr}}{Percentage of respondents that did not reached the item nor the subsequent ones, see \code{\link{recode_nr}} function for further details. }
-With \code{add.bin = TRUE}, indices based on binarized data set are also provided
+With \code{bin = TRUE}, indices based on binarized dataset are also provided
 and marked with \code{bin} suffix.
 }
 \description{
@@ -98,18 +107,18 @@ In ordinal items, difficulty is calculated as difference of average score
 divided by range (maximal possible score \code{maxscore} minus minimal
 possible score \code{minscore}).
 
-If \code{add.bin} is set to \code{TRUE}, item analysis of binarized data is
+If \code{bin} is set to \code{TRUE}, item analysis of binarized data is
 included in the output table. In such a case, \code{cutscore} is used for
-binarization. When binarizing the data, values greater or equal to cut-score
-are set to \code{1}, other values are set to \code{0}.
+binarization. When binarizing the \code{Data}, values greater or equal to
+cut-score are set to \code{1}, other values are set to \code{0}.
 }
 \examples{
 \dontrun{
 # loading 100-item medical admission test datasets
 data(dataMedical, dataMedicalgraded)
-# binary data set
+# binary dataset
 dataBin <- dataMedical[, 1:100]
-# ordinal data set
+# ordinal dataset
 dataOrd <- dataMedicalgraded[, 1:100]
 # study success is the same for both data sets
 StudySuccess <- dataMedical[, 102]
@@ -117,16 +126,16 @@ StudySuccess <- dataMedical[, 102]
 # item analysis for binary data
 head(ItemAnalysis(dataBin))
 # item analysis for binary data using also study success
-head(ItemAnalysis(dataBin, y = StudySuccess))
+head(ItemAnalysis(dataBin, criterion = StudySuccess))
 
 # item analysis for binary data
 head(ItemAnalysis(dataOrd))
 # item analysis for binary data using also study success
-head(ItemAnalysis(dataOrd, y = StudySuccess))
+head(ItemAnalysis(dataOrd, criterion = StudySuccess))
 # including also item analysis for binarized data
 head(ItemAnalysis(dataOrd,
-  y = StudySuccess, k = 5, l = 4, u = 5,
-  maxscore = 4, minscore = 0, cutscore = 4, add.bin = TRUE
+  criterion = StudySuccess, k = 5, l = 4, u = 5,
+  maxscore = 4, minscore = 0, cutscore = 4, bin = TRUE
 ))
 }
 }

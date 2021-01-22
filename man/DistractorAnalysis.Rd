@@ -5,17 +5,18 @@
 \title{Distractor analysis}
 \usage{
 DistractorAnalysis(
-  data,
+  Data,
   key,
   p.table = FALSE,
   num.groups = 3,
   matching = NULL,
   match.discrete = FALSE,
-  cut.points
+  cut.points,
+  data
 )
 }
 \arguments{
-\item{data}{character: data matrix or data frame. See \strong{Details}.}
+\item{Data}{character: data matrix or data.frame. See \strong{Details}.}
 
 \item{key}{character: answer key for the items.}
 
@@ -33,6 +34,8 @@ calculated and distractor analysis is performed based on it.}
 
 \item{cut.points}{numeric: numeric vector specifying cut points of
 \code{matching}. See details.}
+
+\item{data}{deprecated. Use argument \code{Data} instead.}
 }
 \description{
 Performs distractor analysis for each item and optional number
@@ -42,33 +45,34 @@ Performs distractor analysis for each item and optional number
 This function is adapted version of
 \code{\link[CTT]{distractor.analysis}} function from \code{CTT} package.
 
-The \code{data} is a matrix or data frame whose rows represents unscored item
-response from a multiple-choice test and columns correspond to the items.
+The \code{Data} is a matrix or data.frame with rows representing unscored
+item responses from a multiple-choice test and with columns corresponding to
+the items.
 
-The \code{key} must be a vector of the same length as \code{ncol(data)}.
+The \code{key} must be a vector of the same length as \code{ncol(Data)}.
 
 In case, no \code{matching} is provided, the scores are calculated using the
-item data and key. The respondents are by default splitted into the
-\code{num.groups}-quantiles and the number (or proportion) of respondents in
-each quantile is reported with respect to their answers. In case that
+item \code{Data} and \code{key}. The respondents are by default splitted into
+the \code{num.groups}-quantiles and the number (or proportion) of respondents
+in each quantile is reported with respect to their answers. In case that
 \code{matching} is discrete (\code{match.discrete = TRUE}), \code{matching}
 is splitted based on its unique levels. Other cut points can be specified via
 \code{cut.points} argument.
 }
 \examples{
-# loading 100-item medical admission test data
+# loading 100-item medical admission test dataset
 data(dataMedicaltest, dataMedicalkey)
 data <- dataMedicaltest[, 1:100]
 dataBin <- dataMedical[, 1:100]
 key <- unlist(dataMedicalkey)
 
-# distractor analysis for dataMedicaltest data set
+# distractor analysis for dataMedicaltest dataset
 DistractorAnalysis(data, key)
 \dontrun{
-# distractor analysis for dataMedicaltest data set with proportions
+# distractor analysis for dataMedicaltest dataset with proportions
 DistractorAnalysis(data, key, p.table = TRUE)
 
-# distractor analysis for dataMedicaltest data set for 6 groups
+# distractor analysis for dataMedicaltest dataset for 6 groups
 DistractorAnalysis(data, key, num.group = 6)
 
 # distractor analysis for dataMedicaltest using specified matching

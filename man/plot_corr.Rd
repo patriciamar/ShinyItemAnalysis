@@ -5,7 +5,7 @@
 \title{Compute and plot an item correlation matrix}
 \usage{
 plot_corr(
-  .data,
+  Data,
   cor = "polychoric",
   clust_method = "none",
   n_clust = 0,
@@ -17,11 +17,12 @@ plot_corr(
   line_alpha = 1,
   fill = NA,
   fill_alpha = NA,
+  .data = "deprecated",
   ...
 )
 }
 \arguments{
-\item{.data}{\code{matrix}, \code{data.frame} or \code{tibble}: either a
+\item{Data}{\code{matrix}, \code{data.frame} or \code{tibble}: either a
 \code{data.frame} with scored items (as columns, one observation per row),
 or a correlation matrix.}
 
@@ -29,7 +30,7 @@ or a correlation matrix.}
 computation; available options are \code{"poly"}, \code{"tetra"},
 \code{"pearson"}, \code{"spearman"}, or \code{"none"} (in case you provide
 the correlation matrix directly instead). You can use an unambiguous
-abbreviation of correlation type.}
+abbreviation.}
 
 \item{clust_method}{character: optional clustering method, available options
 are: \code{"ward.D"}, \code{"ward.D2"}, \code{"single"}, \code{"complete"},
@@ -63,6 +64,8 @@ plotted onto tiles.}
 
 \item{fill_alpha}{numeric 0-1: the opacity of the fill color.}
 
+\item{.data}{Deprecated in favor of \code{Data}.}
+
 \item{...}{
   Arguments passed on to \code{\link[psych:tetrachor]{psych::polychoric}}
   \describe{
@@ -75,6 +78,7 @@ plotted onto tiles.}
     \item{\code{progress}}{Show the progress bar (if  not doing multicores)}
     \item{\code{ML}}{ ML=FALSE  do a quick two step procedure, ML=TRUE, do longer maximum likelihood --- very slow! Deprecated}
     \item{\code{delete}}{Cases with no variance are deleted with a warning before proceeding.}
+    \item{\code{max.cat}}{The maximum number of categories to bother with for polychoric.  }
   }}
 }
 \value{
@@ -94,20 +98,22 @@ Correlation heatmap displays selected type of correlations between
   negative correlation. Correlation heatmap can be reordered using
   hierarchical clustering method specified with \code{clust_method} argument.
   When the desired number of clusters (argument \code{n_clust}) is not zero
-  and some clustering is demanded, the rectangles outlining the found clusters
-  are drawn.
+  and some clustering is demanded, the rectangles outlining the found
+  clusters are drawn.
 }
 \examples{
 # use first 20 columns from HCI dataset (the remainder are not items)
+HCI <- HCI[, 1:20]
+
 # use Pearson product-moment correlation coefficient for matrix computation
-plot_corr(HCI[, 1:20], cor = "pearson")
+plot_corr(HCI, cor = "pearson")
 \dontrun{
 # use tetrachoric correlation and reorder the resulting heatmap
 # using Ward's method
-HCI[, 1:20] \%>\% plot_corr(cor = "tetra", clust_method = "ward")
+HCI \%>\% plot_corr(cor = "tetra", clust_method = "ward.D")
 
 # outline 3 Ward's clusters with bold yellow line and add labels
-HCI[, 1:20] \%>\%
+HCI \%>\%
   plot_corr(
     n_clust = 3, clust_method = "ward.D", line_col = "yellow",
     line_size = 1.5, labels = TRUE
@@ -115,12 +121,12 @@ HCI[, 1:20] \%>\%
 
 # add title and position the legend below the plot
 library(ggplot2)
-HCI[, 1:20] \%>\% plot_corr(n_clust = 3) +
+HCI \%>\% plot_corr(n_clust = 3) +
   ggtitle("HCI heatmap") +
   theme(legend.position = "bottom")
 
-# mimic corrplot
-plot_corr(HCIdata[, varsQR], cor = "poly", clust_method = "complete", shape = "sq") +
+# mimic the look of corrplot package
+plot_corr(HCI, cor = "poly", clust_method = "complete", shape = "sq") +
   scale_fill_gradient2(
     limits = c(-.1, 1),
     breaks = seq(-.1, 1, length.out = 12),
@@ -129,8 +135,7 @@ plot_corr(HCIdata[, varsQR], cor = "poly", clust_method = "complete", shape = "s
       default.unit = "npc",
       title = NULL, frame.colour = "black", ticks.colour = "black"
     )
-  ) +
-  theme(axis.text = element_text(colour = "red", size = 12))
+  ) + theme(axis.text = element_text(colour = "red", size = 12))
 }
 
 }

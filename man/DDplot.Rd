@@ -5,7 +5,7 @@
 \title{Plot difficulties and discriminations/item validity}
 \usage{
 DDplot(
-  data,
+  Data,
   item.names,
   discrim = "ULI",
   k = 3,
@@ -18,17 +18,18 @@ DDplot(
   average.score = FALSE,
   thr = 0.2,
   criterion = "none",
-  val_type = "simple"
+  val_type = "simple",
+  data
 )
 }
 \arguments{
-\item{data}{numeric: binary or ordinal data \code{matrix} or
+\item{Data}{numeric: binary or ordinal data \code{matrix} or
 \code{data.frame} which rows represent examinee answers (\code{1} correct,
 \code{0} incorrect, or ordinal item scores) and columns correspond to the
 items.}
 
 \item{item.names}{character: the names of items. If not specified, the names
-of \code{data} columns are used.}
+of \code{Data} columns are used.}
 
 \item{discrim}{character: type of discrimination index to be calculated.
 Possible values are \code{"ULI"} (default), \code{"RIT"}, \code{"RIR"}, and
@@ -50,16 +51,16 @@ of achieved maximal scores is calculated and used in calculations.}
 provided, the same maximal score is used for all items. If missing, vector
 of achieved maximal scores is calculated and used in calculations.}
 
-\item{bin}{logical: should the ordinal data be binarized? Deafult value is
-\code{FALSE}. In case that \code{bin = TRUE}, all values of \code{data}
+\item{bin}{logical: should the ordinal data be binarized? Default value is
+\code{FALSE}. In case that \code{bin = TRUE}, all values of \code{Data}
 equal or greater than \code{cutscore} are marked as \code{1} and all values
 lower than \code{cutscore} are marked as \code{0}.}
 
-\item{cutscore}{numeric: cut-score used to binarize \code{data}. If numeric,
-the same cutscore is used for all items. If missing, vector of maximal
+\item{cutscore}{numeric: cut-score used to binarize \code{Data}. If numeric,
+the same cut-score is used for all items. If missing, vector of maximal
 scores is used in calculations.}
 
-\item{average.score}{logical: should average score of the item be disaplyed
+\item{average.score}{logical: should average score of the item be displayed
 instead of difficulty? Default value is \code{FALSE}. See \strong{Details}.}
 
 \item{thr}{numeric: value of discrimination threshold. Default value is 0.2.
@@ -75,6 +76,8 @@ default) and \code{"index"} (item validity index calculated as
 \code{cor(item, criterion) * sqrt(((N - 1) / N) * var(item))}, where N is
 number of respondents, see Allen & Yen, 1979, Ch. 6.4, for details). The
 argument is ignored if user does not supply any \code{criterion}.}
+
+\item{data}{deprecated. Use argument \code{Data} instead.}
 }
 \description{
 Plots difficulty and (generalized) discrimination or criterion
@@ -108,21 +111,21 @@ Note that all correlations are estimated using Pearson correlation
 coefficient.
 }
 \examples{
-# loading 100-item medical admission test data sets
+# loading 100-item medical admission test datasets
 data(dataMedical, dataMedicalgraded)
-# binary data set
+# binary dataset
 dataBin <- dataMedical[, 1:100]
-# ordinal data set
+# ordinal dataset
 dataOrd <- dataMedicalgraded[, 1:100]
 
-# DDplot of binary data set
+# DDplot of binary dataset
 DDplot(dataBin)
 \dontrun{
-# DDplot of binary data set without threshold
+# DDplot of binary dataset without threshold
 DDplot(dataBin, thr = NULL)
-# compared to DDplot using ordinal data set and 'bin = TRUE'
+# compared to DDplot using ordinal dataset and 'bin = TRUE'
 DDplot(dataOrd, bin = TRUE)
-# compared to binarized data set using bin = TRUE and cutscore equal to 3
+# compared to binarized dataset using bin = TRUE and cut-score equal to 3
 DDplot(dataOrd, bin = TRUE, cutscore = 3)
 
 # DDplot of binary data using generalized ULI
@@ -130,22 +133,22 @@ DDplot(dataOrd, bin = TRUE, cutscore = 3)
 # threshold lowered to 0.1
 DDplot(dataBin, k = 5, l = 4, u = 5, thr = 0.1)
 
-# DDplot of ordinal data set using ULI
+# DDplot of ordinal dataset using ULI
 DDplot(dataOrd)
-# DDplot of ordinal data set using generalized ULI
+# DDplot of ordinal dataset using generalized ULI
 # discrimination based on 5 groups, comparing 4th and 5th
 # threshold lowered to 0.1
 DDplot(dataOrd, k = 5, l = 4, u = 5, thr = 0.1)
-# DDplot of ordinal data set using RIT
+# DDplot of ordinal dataset using RIT
 DDplot(dataOrd, discrim = "RIT")
-# DDplot of ordinal data set using RIR
+# DDplot of ordinal dataset using RIR
 DDplot(dataOrd, discrim = "RIR")
-# DDplot of ordinal data set disaplaying only difficulty
+# DDplot of ordinal dataset displaying only difficulty
 DDplot(dataBin, discrim = "none")
 
-# DDplot of ordinal data set disaplaying difficulty estimates
+# DDplot of ordinal dataset displaying difficulty estimates
 DDplot(dataOrd)
-# DDplot of ordinal data set disaplaying average item scores
+# DDplot of ordinal dataset displaying average item scores
 DDplot(dataOrd, average.score = TRUE)
 
 # item difficulty / criterion validity plot for data with criterion
@@ -154,8 +157,8 @@ DDplot(GMAT[, 1:20], criterion = GMAT$criterion, val_type = "simple")
 }
 }
 \references{
-Allen, M. J., & Yen, W. M. (1979). Introduction to measurement
-theory. Monterey, CA: Brooks/Cole.
+Allen, M. J., & Yen, W. M. (1979). Introduction to measurement theory.
+Monterey, CA: Brooks/Cole.
 
 Martinkova, P., Stepanek, L., Drabinova, A., Houdek, J., Vejrazka, M., &
 Stuka, C. (2017). Semi-real-time analyses of item characteristics for medical
