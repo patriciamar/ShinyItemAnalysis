@@ -1,5 +1,5 @@
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-# GLOBAL LIBRARY ######
+# GLOBAL LIBRARY ####
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 require(deltaPlotR)
@@ -7,7 +7,6 @@ require(DT)
 require(data.table)
 require(difNLR)
 require(difR)
-require(dplyr)
 require(ggdendro)
 require(ggplot2)
 require(grid)
@@ -17,6 +16,7 @@ require(latticeExtra)
 require(ltm)
 require(mirt)
 require(msm)
+require(lme4)
 require(nnet)
 require(plotly)
 require(purrr)
@@ -28,20 +28,22 @@ require(shinyBS)
 require(ShinyItemAnalysis)
 require(shinyjs)
 require(stringr)
+require(tidyr)
+require(dplyr)
 require(tibble)
 require(VGAM)
 require(xtable) # could be substituted by knitr's default table engine "kable"
 
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-# DATA ######
+# DATA ####
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 # maximum upload size set to 30MB
 options(shiny.maxRequestSize = 30 * 1024^2)
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-# SERVER SCRIPT ######
+# SERVER SCRIPT ####
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function(input, output, session) {
@@ -51,7 +53,7 @@ function(input, output, session) {
   })
 
   # %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  ### REACTIVE VALUES ######
+  ### REACTIVE VALUES ####
   # %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
   # * Datasets ####
@@ -60,6 +62,7 @@ function(input, output, session) {
   dataset$binary <- NULL
   dataset$ordinal <- NULL
   dataset$nominal <- NULL
+  dataset$continuous <- NULL
   dataset$data_type <- NULL
 
   dataset$key <- NULL
@@ -69,11 +72,12 @@ function(input, output, session) {
   dataset$group <- NULL
   dataset$criterion <- NULL
   dataset$DIFmatching <- NULL
+  dataset$rank <- NULL
 
   dataset$data_status <- NULL
   dataset$key_upload_status <- "toy"
 
-  # * Setting ####
+  # * Setting for figures ####
   setting_figures <- reactiveValues()
 
   setting_figures$text_size <- 12
@@ -82,7 +86,7 @@ function(input, output, session) {
   setting_figures$dpi <- 600
 
   # %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  ### HITS COUNTER ######
+  ### HITS COUNTER ####
   # %%%%%%%%%%%%%%%%%%%%%%%%%%%%
   output$counter <- renderText({
     if (!file.exists("counter.Rdata")) {
@@ -97,11 +101,11 @@ function(input, output, session) {
   })
 
   # %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  # DATA UPLOAD ######
+  # DATA UPLOAD ####
   # %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-  # * Load toy data ######
-  observeEvent(c(input$dataSelect, removeCounter$Click == 1), {
+  # * Load toy data ####
+  observeEvent(c(input$dataSelect, removeCounter$Click == 1, input$round_data), {
     inputData <- input$dataSelect
     datasetName <- strsplit(inputData, split = "_")[[1]][1] # simplified dataset string division
     packageName <- strsplit(inputData, split = "_")[[1]][2]
@@ -111,18 +115,19 @@ function(input, output, session) {
 
     if (datasetName == "LearningToLearn" & datasetSubset == "6") {
       do.call(data, args = list(paste0(datasetName), package = packageName))
-      dataBinary <- get(paste0(datasetName))
-      dataBinary <- dataBinary[19:59] # for 6th grade, items only
+      dataBinary <- get(paste0(datasetName))[19:59] # for 6th grade, items only
+
+      dataOrdinal <- dataBinary
+      dataContinuous <- dataOrdinal
+      dataNominal <- dataOrdinal
 
       group <- get(paste0(datasetName))[, "track_01"]
       criterion <- "missing"
-      # DIFmatching <- get(paste0(datasetName))[, "score_9"]
       DIFmatching <- "missing"
 
-      dataOrdinal <- dataBinary
-      dataNominal <- dataBinary
-
       dataType <- "binary"
+      minValue <- NULL
+      maxValue <- NULL
 
       key <- rep(1, ncol(dataBinary)) # key with 1 as "correct" for *n* items
     } else if (datasetName == "LearningToLearn" & datasetSubset == "9") {
@@ -130,14 +135,17 @@ function(input, output, session) {
       dataBinary <- get(paste0(datasetName))
       dataBinary <- dataBinary[60:100] # for 9th grade, items only
 
+      dataOrdinal <- dataBinary
+      dataContinuous <- dataOrdinal
+      dataNominal <- dataOrdinal
+
       group <- get(paste0(datasetName))[, "track_01"]
       criterion <- "missing"
       DIFmatching <- get(paste0(datasetName))[, "score_6"]
 
-      dataOrdinal <- dataBinary
-      dataNominal <- dataBinary
-
       dataType <- "binary"
+      minValue <- NULL
+      maxValue <- NULL
 
       key <- rep(1, ncol(dataBinary)) # key with 1 as "correct" for *n* items
     } else if (datasetName == "dataMedicalgraded") {
@@ -148,20 +156,23 @@ function(input, output, session) {
       criterion <- dataOrdinal[, "StudySuccess"]
       DIFmatching <- "missing"
 
-      dataOrdinal <- dataOrdinal[, 1:(dim(dataOrdinal)[2] - 2)] # can be simplified with *ncol()*
+      dataOrdinal <- dataOrdinal[, 1:(ncol(dataOrdinal) - 2)]
+      dataContinuous <- dataOrdinal
       dataNominal <- dataOrdinal
 
       dataType <- "ordinal"
+      minValue <- sapply(dataOrdinal, min, na.rm = TRUE)
+      maxValue <- sapply(dataOrdinal, max, na.rm = TRUE)
 
       key <- sapply(dataOrdinal, max)
-      df.key <- sapply(key, rep, each = nrow(dataOrdinal))
-      dataBinary <- matrix(as.numeric(dataOrdinal >= df.key),
-        ncol = ncol(dataOrdinal), nrow = nrow(dataOrdinal)
-      )
+      # key2binary is much more faster than the old approach, but it is
+      # only usable when maximum score is considered as the key
+      dataBinary <- mirt::key2binary(dataOrdinal, key)
     } else if (datasetName == "Science") {
       do.call(data, args = list(paste0(datasetName), package = packageName))
-      dataOrdinal <- get(paste0(datasetName))
 
+      dataOrdinal <- get(paste0(datasetName))
+      dataContinuous <- dataOrdinal
       dataNominal <- dataOrdinal
 
       group <- "missing"
@@ -169,17 +180,39 @@ function(input, output, session) {
       DIFmatching <- "missing"
 
       dataType <- "ordinal"
+      minValue <- sapply(dataOrdinal, min, na.rm = TRUE)
+      maxValue <- sapply(dataOrdinal, max, na.rm = TRUE)
 
       key <- sapply(dataOrdinal, max)
-      df.key <- sapply(key, rep, each = nrow(dataOrdinal))
-      dataBinary <- matrix(as.numeric(dataOrdinal >= df.key),
-        ncol = ncol(dataOrdinal), nrow = nrow(dataOrdinal)
-      )
+      # key2binary is much more faster than the old approach, but it is
+      # only usable when maximum score is considered as the key
+      dataBinary <- mirt::key2binary(dataOrdinal, key)
+    } else if (datasetName == "AIBS") {
+      do.call(data, args = list(paste0(datasetName), package = packageName))
+      dataContinuous <- get(paste0(datasetName))
+
+      dataNominal <- "missing"
+      dataOrdinal <- "missing"
+      dataBinary <- "missing"
+
+      group <- "missing"
+      criterion <- "missing"
+      DIFmatching <- "missing"
+
+      dataType <- "continuous"
+      # minValue <- rep(1, ncol(dataContinuous)) %>% set_names(names(dataContinuous))
+      # maxValue <- rep(5, ncol(dataContinuous)) %>% set_names(names(dataContinuous))
+      minValue <- maxValue <- "missing"
+
+      # key <- rep(3, ncol(dataContinuous)) %>% set_names(names(dataContinuous))
+      key <- "missing"
     } else {
       do.call(data, args = list(paste0(datasetName, "test"), package = packageName))
       dataNominal <- get(paste0(datasetName, "test"))
 
       dataType <- "nominal"
+      minValue <- NULL
+      maxValue <- NULL
 
       do.call(data, args = list(paste0(datasetName, "key"), package = packageName))
       key <- as.character(unlist(get(paste0(datasetName, "key"))))
@@ -191,24 +224,22 @@ function(input, output, session) {
       } else {
         criterion <- dataNominal[, length(key) + 2]
       }
+
       dataNominal <- dataNominal[, 1:length(key)]
       dataOrdinal <- mirt::key2binary(dataNominal, key)
-      dataBinary <- mirt::key2binary(dataNominal, key)
+      dataContinuous <- dataOrdinal
+      dataBinary <- dataOrdinal
     }
 
     dataset$nominal <- as.data.table(dataNominal)
     dataset$ordinal <- as.data.table(dataOrdinal)
     dataset$binary <- as.data.table(dataBinary)
+    dataset$continuous <- as.data.table(dataContinuous)
 
     dataset$data_type <- dataType
 
-    if (input$data_type == "ordinal") {
-      dataset$minimal <- sapply(dataset$ordinal, min)
-      dataset$maximal <- sapply(dataset$ordinal, max)
-    } else {
-      dataset$minimal <- NULL
-      dataset$maximal <- NULL
-    }
+    dataset$minimal <- minValue
+    dataset$maximal <- maxValue
 
     dataset$key <- key
     dataset$group <- group
@@ -398,28 +429,71 @@ function(input, output, session) {
   })
 
   # * Creating reactive() for data and checking ####
+  # ** Nominal data ####
   nominal <- reactive({
-    dataset$nominal
+    data <- dataset$nominal
+
+    validate(
+      need(
+        data != "missing",
+        "There is no item data present in this dataset. This analysis is not available. "
+      )
+    )
+    data
   })
 
+  # ** Continuous data ####
+  continuous <- reactive({
+    data <- dataset$continuous
+
+    if (!input$missval) {
+      data[is.na(data)] <- 0
+    }
+    data
+  })
+
+  # ** Ordinal data ####
   ordinal <- reactive({
     data <- dataset$ordinal
+    # if (data[1, 1] == "missing") {
+    #   data <- "missing"
+    # }
+    validate(
+      need(
+        data != "missing",
+        "There is no item data present in this dataset. This analysis is not available. "
+      )
+    )
+
     if (!input$missval) {
       data[is.na(data)] <- 0
     }
-
     data
   })
 
+  # ** Binary data ####
   binary <- reactive({
     data <- dataset$binary
+
+    validate(
+      need(
+        data != "missing",
+        "There is no item data present in this dataset. This analysis is not available. "
+      )
+    )
+
     if (!input$missval) {
       data[is.na(data)] <- 0
     }
-
     data
   })
 
+  # ** Data type ####
+  data_type <- reactive({
+    dataset$data_type
+  })
+
+  # ** Key ####
   key <- reactive({
     if (length(dataset$key) == 1) {
       validate(need(dataset$key != "missing", "Key is missing!"),
@@ -428,7 +502,7 @@ function(input, output, session) {
     } else {
       validate(need(
         ncol(nominal()) == length(dataset$key),
-        "The length of key need to be the same as number of columns in the main dataset!"
+        "The length of key needs to be the same as a number of items in the main dataset!"
       ),
       errorClass = "error_dimension"
       )
@@ -436,40 +510,48 @@ function(input, output, session) {
     dataset$key
   })
 
+  # ** Minimal values ####
   minimal <- reactive({
-    ### bad minimal values dimension
-    validate(need(
-      ncol(nominal()) == length(dataset$minimal),
-      "The length of minimal values need to be the same as number of items in the main dataset!"
-    ),
-    errorClass = "error_dimension"
-    )
+    if (!is.null(dataset$minimal)) {
+      ### bad minimal values dimension
+      validate(need(
+        ncol(nominal()) == length(dataset$minimal),
+        "The length of minimal values needs to be the same as a number of items in the main dataset!"
+      ),
+      errorClass = "error_dimension"
+      )
+    }
     dataset$minimal
   })
+
+  # ** Maximal values ####
   maximal <- reactive({
-    ### bad maximal values dimension
-    validate(need(
-      ncol(nominal()) == length(dataset$maximal),
-      "The length of maximal values need to be the same as number of items in the main dataset!"
-    ),
-    errorClass = "error_dimension"
-    )
+    if (!is.null(dataset$minimal)) {
+      ### bad maximal values dimension
+      validate(need(
+        ncol(nominal()) == length(dataset$maximal),
+        "The length of maximal values needs to be the same as a number of items in the main dataset!"
+      ),
+      errorClass = "error_dimension"
+      )
+    }
     dataset$maximal
   })
 
+  # ** Group ####
   group <- reactive({
     ### bad group dimension and warning for missing group
     if (length(dataset$group) == 1 & any(dataset$group == "missing")) {
       validate(need(
         dataset$group != "missing",
-        "Group is missing! DIF and DDF analyses are not available!"
+        "Group is not provided! DIF and DDF analyses are not available!"
       ),
       errorClass = "warning_group_missing"
       )
     } else {
       validate(need(
         nrow(nominal()) == length(dataset$group),
-        "The length of group vector needs to be the same as the number of observations in the main dataset!"
+        "The length of group vector needs to be the same as a number of observations in the main dataset!"
       ),
       errorClass = "error_dimension"
       )
@@ -477,20 +559,20 @@ function(input, output, session) {
     dataset$group
   })
 
+  # ** Criterion ####
   criterion <- reactive({
     ### bad criterion dimension and warning for missing criterion
     if (length(dataset$criterion) == 1 & any(dataset$criterion == "missing")) {
       validate(need(
         dataset$criterion != "missing",
-        "Criterion variable is missing! Predictive validity analysis is not available!"
+        "Criterion variable is not provided! Predictive validity analysis is not available!"
       ),
       errorClass = "warning_criterion_variable_missing"
       )
     } else {
       validate(need(
         nrow(nominal()) == length(dataset$criterion),
-        "The length of criterion variable needs to be the same as the number
-                    of observations in the main dataset!"
+        "The length of criterion variable needs to be the same as a number of observations in the main dataset!"
       ),
       errorClass = "error_dimension"
       )
@@ -498,23 +580,25 @@ function(input, output, session) {
     dataset$criterion
   })
 
+  # criterion variable without validation (used by ItemAnalysis())
   crit_wo_val <- reactive({
     dataset$criterion
   })
 
+  # ** DIF matching ####
   DIFmatching <- reactive({
     ### bad DIF matching dimension and warning for missing DIF matching variable
     if (length(dataset$DIFmatching) == 1 & any(dataset$DIFmatching == "missing")) {
       validate(need(
         dataset$DIFmatching != "missing",
-        "The DIF matching variable is not provided! DIF analyses will use total scores!"
+        "The DIF matching variable is not provided! DIF and DDF analyses will use total scores!"
       ),
       errorClass = "warning_DIFmatching_variable_missing"
       )
     } else {
       validate(need(
         nrow(nominal()) == length(dataset$DIFmatching), # changed to binary from nominal
-        "The length of DIF matching variable need to be the same as number of observations in the main dataset!"
+        "The length of DIF matching variable needs to be the same as a number of observations in the main dataset!"
       ),
       errorClass = "error_dimension"
       )
@@ -522,15 +606,22 @@ function(input, output, session) {
     dataset$DIFmatching
   })
 
+  # ** Total score ####
   total_score <- reactive({
-    rowSums(ordinal())
+    data <- continuous()
+    if (input$dataSelect == "AIBS_ShinyItemAnalysis") {
+      data$Score
+    } else {
+      rowSums(data)
+    }
   })
 
+  # ** Standardized total score ####
   z_score <- reactive({
     scale(total_score())
   })
 
-  # warning, if total_score or zscore will have NA's
+  # ** Warning, if total_score() or z_score() have NAs
   na_score <- reactive({
     if (any(is.na(total_score())) | any(is.na(z_score()))) {
       txt <- "<font color = 'orange'>
@@ -542,7 +633,7 @@ function(input, output, session) {
     txt
   })
 
-  # warning, if total_score or zscore will have NA's - error in report
+  # ** Warning in report, if total_score() or z_score() have NAs
   na_score_reports <- reactive({
     if (any(is.na(total_score())) | any(is.na(z_score()))) {
       txt <- "<font color = 'orange'>
@@ -558,7 +649,7 @@ function(input, output, session) {
     HTML(na_score_reports())
   })
 
-  # * Item numbers and item names ######
+  # * Item numbers and item names ####
   item_numbers <- reactive({
     if (!input$itemnam) {
       nam <- 1:ncol(dataset$nominal)
@@ -578,12 +669,11 @@ function(input, output, session) {
   })
 
   # %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  # ITEM SLIDERS ######
+  # ITEM SLIDERS ####
   # %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
   observe({
     sliderList <- c(
-      "slider_totalscores_histogram",
       "corr_plot_clust",
       "corr_plot_clust_report",
       "validitydistractorSlider",
@@ -597,7 +687,6 @@ function(input, output, session) {
     itemCount <- ncol(ordinal())
     minItemScore <- min(total_score(), na.rm = TRUE)
     maxItemScore <- max(c(max(total_score(), na.rm = TRUE), ncol(binary())))
-    updateSliderInput(session = session, inputId = "slider_totalscores_histogram", min = minItemScore, max = maxItemScore, value = round(median(total_score(), na.rm = T)))
     updateNumericInput(session = session, inputId = "corr_plot_clust", value = 0, max = itemCount)
     updateNumericInput(session = session, inputId = "corr_plot_clust_report", value = 1, max = itemCount)
     updateSliderInput(session = session, inputId = "validitydistractorSlider", max = itemCount)
@@ -608,55 +697,55 @@ function(input, output, session) {
   })
 
   # %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  # DATA PAGE ######
+  # DATA PAGE ####
   # %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
   source("server/Data.R", local = TRUE)
 
   # %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  # SUMMARY ######
+  # SUMMARY ####
   # %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
   source("server/Summary.R", local = T)
 
   # %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  # RELIABILITY ######
+  # RELIABILITY ####
   # %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
   source("server/Reliability.R", local = T)
 
   # %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  # VALIDITY ######
+  # VALIDITY ####
   # %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
   source("server/Validity.R", local = T)
 
   # %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  # TRADITIONAL ANALYSIS ######
+  # TRADITIONAL ANALYSIS ####
   # %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
   source("server/TraditionalAnalysis.R", local = T)
 
   # %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  # REGRESSION ######
+  # REGRESSION ####
   # %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
   source("server/Regression.R", local = T)
 
   # %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  # IRT MODELS WITH MIRT ######
+  # IRT MODELS WITH MIRT ####
   # %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
   source("server/IRT.R", local = T)
 
   # %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  # DIF/FAIRNESS ######
+  # DIF/FAIRNESS ####
   # %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
   source("server/DIF.R", local = T)
 
   # %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  # REPORTS ######
+  # REPORTS ####
   # %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
   # * Update dataset name in Reports page ####
@@ -1241,7 +1330,7 @@ function(input, output, session) {
   # exportTestValues(report = report_react())
 
   # %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  # SETTING ######
+  # SETTING ####
   # %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
   source("server/Setting.R", local = T)
