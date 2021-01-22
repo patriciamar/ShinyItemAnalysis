@@ -6,7 +6,7 @@
 #'   \code{\link{ggplot2}} package, providing a high customisability using "the
 #'   grammar of graphics" (see the examples below).
 #'
-#' @param .data \code{matrix}, \code{data.frame} or \code{tibble}: either a
+#' @param Data \code{matrix}, \code{data.frame} or \code{tibble}: either a
 #'   \code{data.frame} with scored items (as columns, one observation per row),
 #'   or a correlation matrix.
 #'
@@ -14,7 +14,7 @@
 #'   computation; available options are \code{"poly"}, \code{"tetra"},
 #'   \code{"pearson"}, \code{"spearman"}, or \code{"none"} (in case you provide
 #'   the correlation matrix directly instead). You can use an unambiguous
-#'   abbreviation of correlation type.
+#'   abbreviation.
 #'
 #' @param clust_method character: optional clustering method, available options
 #'   are: \code{"ward.D"}, \code{"ward.D2"}, \code{"single"}, \code{"complete"},
@@ -52,14 +52,16 @@
 #'
 #' @inheritDotParams psych::polychoric -x -y -na.rm
 #'
+#' @param .data Deprecated in favor of \code{Data}.
+#'
 #' @details Correlation heatmap displays selected type of correlations between
 #'   items.The color of tiles indicates how much and in which way the items are
 #'   correlated - red color means positive correlation and blue color means
 #'   negative correlation. Correlation heatmap can be reordered using
 #'   hierarchical clustering method specified with \code{clust_method} argument.
 #'   When the desired number of clusters (argument \code{n_clust}) is not zero
-#'   and some clustering is demanded, the rectangles outlining the found clusters
-#'   are drawn.
+#'   and some clustering is demanded, the rectangles outlining the found
+#'   clusters are drawn.
 #'
 #' @return An object of class \code{ggplot} and/or \code{gg}.
 #'
@@ -83,15 +85,17 @@
 #'
 #' @examples
 #' # use first 20 columns from HCI dataset (the remainder are not items)
+#' HCI <- HCI[, 1:20]
+#'
 #' # use Pearson product-moment correlation coefficient for matrix computation
-#' plot_corr(HCI[, 1:20], cor = "pearson")
+#' plot_corr(HCI, cor = "pearson")
 #' \dontrun{
 #' # use tetrachoric correlation and reorder the resulting heatmap
 #' # using Ward's method
-#' HCI[, 1:20] %>% plot_corr(cor = "tetra", clust_method = "ward")
+#' HCI %>% plot_corr(cor = "tetra", clust_method = "ward.D")
 #'
 #' # outline 3 Ward's clusters with bold yellow line and add labels
-#' HCI[, 1:20] %>%
+#' HCI %>%
 #'   plot_corr(
 #'     n_clust = 3, clust_method = "ward.D", line_col = "yellow",
 #'     line_size = 1.5, labels = TRUE
@@ -99,12 +103,12 @@
 #'
 #' # add title and position the legend below the plot
 #' library(ggplot2)
-#' HCI[, 1:20] %>% plot_corr(n_clust = 3) +
+#' HCI %>% plot_corr(n_clust = 3) +
 #'   ggtitle("HCI heatmap") +
 #'   theme(legend.position = "bottom")
 #'
-#' # mimic corrplot
-#' plot_corr(HCIdata[, varsQR], cor = "poly", clust_method = "complete", shape = "sq") +
+#' # mimic the look of corrplot package
+#' plot_corr(HCI, cor = "poly", clust_method = "complete", shape = "sq") +
 #'   scale_fill_gradient2(
 #'     limits = c(-.1, 1),
 #'     breaks = seq(-.1, 1, length.out = 12),
@@ -113,22 +117,29 @@
 #'       default.unit = "npc",
 #'       title = NULL, frame.colour = "black", ticks.colour = "black"
 #'     )
-#'   ) +
-#'   theme(axis.text = element_text(colour = "red", size = 12))
+#'   ) + theme(axis.text = element_text(colour = "red", size = 12))
 #' }
 #'
 #' @export
-plot_corr <- function(.data, cor = "polychoric", clust_method = "none", n_clust = 0,
+plot_corr <- function(Data, cor = "polychoric", clust_method = "none", n_clust = 0,
                       shape = "circle",
                       labels = FALSE, labels_size = 3,
                       line_size = .5, line_col = "black", line_alpha = 1,
-                      fill = NA, fill_alpha = NA, ...) {
-  cor <- tryCatch(match.arg(cor, c("polychoric", "tetrachoric", "pearson", "spearman", "none")),
-    error = function(e) {
-      stop("'cor' should be one of 'polychoric', 'tetrachoric', 'pearson', 'spearman' or 'none'.",
-        call. = FALSE
-      )
-    }
+                      fill = NA, fill_alpha = NA, .data = "deprecated", ...) {
+  if (!missing(".data")) {
+    warning("Argument '.data' deprecated. Please use argument 'Data' instead.",
+            call. = FALSE)
+    Data <- .data
+  }
+
+  cor <- tryCatch(match.arg(cor, c(
+    "polychoric", "tetrachoric", "pearson", "spearman", "none"
+  )),
+  error = function(e) {
+    stop("'cor' should be one of 'polychoric', 'tetrachoric', 'pearson', 'spearman' or 'none'.",
+      call. = FALSE
+    )
+  }
   )
   shape <- tryCatch(match.arg(shape, c("circle", "square")),
     error = function(e) {
@@ -138,19 +149,19 @@ plot_corr <- function(.data, cor = "polychoric", clust_method = "none", n_clust 
     }
   )
   cormat <- switch(cor,
-    "polychoric" = tryCatch(psych::polychoric(.data, na.rm = TRUE, ...)$rho,
+    "polychoric" = tryCatch(polychoric(Data, na.rm = TRUE, ...)$rho,
       error = function(e) {
         message(
-          "Your items have more than 8 response categories, polychoric corr. is discouraged.\n",
+          "Your items have more than 8 response categories, use of polychoric corr. is discouraged.\n",
           "Choose different correlation or stick with polychoric by specifying `max.cat = n`,\n",
           "where `n` is greater than the number of response categories of your items."
         )
       }
     ),
-    "tetrachoric" = psych::tetrachoric(.data, na.rm = TRUE, ...)$rho,
-    "pearson" = cor(.data, method = "pearson", use = "pairwise.complete.obs"),
-    "spearman" = cor(.data, method = "spearman", use = "pairwise.complete.obs"),
-    "none" = .data
+    "tetrachoric" = tetrachoric(Data, na.rm = TRUE, ...)$rho,
+    "pearson" = cor(Data, method = "pearson", use = "pairwise.complete.obs"),
+    "spearman" = cor(Data, method = "spearman", use = "pairwise.complete.obs"),
+    "none" = Data
   )
 
   n <- nrow(cormat)
@@ -180,36 +191,39 @@ plot_corr <- function(.data, cor = "polychoric", clust_method = "none", n_clust 
     }
   } else {
     if (n_clust != 0) {
-      warning("Showing a plain heatmap, because no clustering method was selected.")
+      warning("Showing a plain heatmap, because no clustering method was selected.",
+        call. = FALSE
+      )
     }
     new_ord <- colnames(cormat)
   }
 
+  # .data is a pronoun for cormat in non-standard evaluation
   plt <- cormat %>%
-    tibble::as_tibble(rownames = "x") %>%
+    as_tibble(rownames = "x") %>%
     tidyr::pivot_longer(cols = -.data$x, names_to = "y", values_to = "r") %>%
-    dplyr::mutate(corr. = gsub("0\\.", "\\.", scales::number(.data$r, .01))) %>%
-    ggplot2::ggplot(ggplot2::aes(.data$x, .data$y, label = .data$corr.)) +
-    ggplot2::scale_x_discrete(limits = new_ord, position = "top") +
-    ggplot2::scale_y_discrete(limits = rev(new_ord)) + # make diagonal as usual
-    ggplot2::scale_size_area(guide = "none") +
-    ggplot2::labs(col = "corr.", fill = "corr.") +
-    ggplot2::coord_fixed() +
-    ggplot2::theme_minimal() +
-    ggplot2::theme(
-      axis.text.x.top = ggplot2::element_text(angle = 90, vjust = .5, hjust = 0),
-      axis.title = ggplot2::element_blank()
+    mutate(corr. = gsub("0\\.", "\\.", scales::number(.data$r, .01))) %>%
+    ggplot(aes(.data$x, .data$y, label = .data$corr.)) +
+    scale_x_discrete(limits = new_ord, position = "top") +
+    scale_y_discrete(limits = rev(new_ord)) + # make diagonal as usual
+    scale_size_area(guide = "none") +
+    labs(col = "corr.", fill = "corr.") +
+    coord_fixed() +
+    theme_minimal() +
+    theme(
+      axis.text.x.top = element_text(angle = 90, vjust = .5, hjust = 0),
+      axis.title = element_blank()
     )
 
   if (shape == "circle") {
-    plt <- plt + ggplot2::geom_point(aes(size = .data$r, col = .data$r)) +
-      ggplot2::scale_color_gradient2(
+    plt <- plt + geom_point(aes(size = .data$r, col = .data$r)) +
+      scale_color_gradient2(
         midpoint = 0,
         limit = c(-1, 1)
       )
   } else {
-    plt <- plt + ggplot2::geom_tile(aes(fill = .data$r)) +
-      ggplot2::scale_fill_gradient2(
+    plt <- plt + geom_tile(aes(fill = .data$r)) +
+      scale_fill_gradient2(
         midpoint = 0,
         limit = c(-1, 1)
       )
@@ -217,7 +231,7 @@ plot_corr <- function(.data, cor = "polychoric", clust_method = "none", n_clust 
 
   if (clust_method != "none" & n_clust != 0) {
     plt <- plt +
-      ggplot2::annotate("rect",
+      annotate("rect",
         fill = scales::alpha(fill, fill_alpha),
         col = scales::alpha(line_col, line_alpha),
         size = line_size,
@@ -229,9 +243,10 @@ plot_corr <- function(.data, cor = "polychoric", clust_method = "none", n_clust 
   }
   if (labels) {
     plt <- plt +
-      ggplot2::geom_text(
+      geom_text(
         size = labels_size
       )
   }
-  return(plt)
+
+  plt
 }

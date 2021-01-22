@@ -143,10 +143,11 @@ plotDIFLogistic <- function(x, item = 1, item.name, group.names = c("Reference",
       cbind(empirical_F, Group = "gr2")
     ))
     empirical$size <- c(table(score_R), table(score_F))
+    colnames(empirical) <- c("Match", "Probability", "Group", "Count")
   }
 
-  max_score <- max(MATCHCRIT, na.rm = T) + 0.1
-  min_score <- min(MATCHCRIT, na.rm = T) - 0.1
+  max_score <- max(MATCHCRIT, na.rm = TRUE) + 0.1
+  min_score <- min(MATCHCRIT, na.rm = TRUE) - 0.1
 
   col <- c("dodgerblue2", "goldenrod2")
   alpha <- .5
@@ -211,7 +212,7 @@ plotDIFLogistic <- function(x, item = 1, item.name, group.names = c("Reference",
       ### points
       geom_point(
         data = empirical,
-        aes_string(x = "score", y = "probability", colour = "Group", fill = "Group", size = "size"),
+        aes_string(x = "Match", y = "Probability", colour = "Group", fill = "Group", size = "Count"),
         alpha = alpha, shape = shape
       ) +
       guides(size = guide_legend(title = "Count", order = 1)) +

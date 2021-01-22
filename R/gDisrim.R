@@ -7,11 +7,11 @@
 #'   between individuals from upper (U) vs. lower (L) ability groups, i.e.
 #'   between respondents with high vs. low overall score on the test. Number of
 #'   groups, as well as upper and lower groups can be specified by user. Maximal
-#'   and minimal score in ordinal data sets can be specified by user.
+#'   and minimal score in ordinal datasets can be specified by user.
 #'
-#' @param x matrix or data.frame of items to be examined. Rows represent
-#'   persons, columns represent items.
-#' @param k numeric: number of groups to which may be data.frame x divided by
+#' @param Data matrix or data.frame of items to be examined. Rows represent
+#'   respondents, columns represent items.
+#' @param k numeric: number of groups to which may be \code{Data} divided by
 #'   the total score. Default value is 3.  See \strong{Details}.
 #' @param l numeric: lower group. Default value is 1. See \strong{Details}.
 #' @param u numeric: upper group. Default value is 3. See \strong{Details}.
@@ -19,6 +19,7 @@
 #'   of obtained maximal scores is imputed. See \strong{Details}.
 #' @param minscore numeric: minimal score in ordinal items. If missing, vector
 #'   of obtained minimal scores is imputed. See \strong{Details}.
+#' @param x deprecated. Use argument \code{Data} instead.
 #'
 #' @details The function computes total test scores for all respondents and then
 #'   divides the respondents into \code{k} groups. The lower and upper groups
@@ -61,28 +62,32 @@
 #' \code{\link{DDplot}}
 #'
 #' @examples
-#' # loading 100-item medical admission test data sets
+#' # loading 100-item medical admission test datasets
 #' data(dataMedical, dataMedicalgraded)
-#' # binary data set
+#' # binary dataset
 #' dataBin <- dataMedical[, 1:100]
-#' # ordinal data set
+#' # ordinal dataset
 #' dataOrd <- dataMedicalgraded[, 1:100]
 #'
-#' # ULI for first 5 items for binary data set
-#' # compare to psychometric::discrim(x)
+#' # ULI for the first 5 items of binary dataset
+#' # compare to psychometric::discrim(dataBin)
 #' gDiscrim(dataBin)[1:5]
-#' # generalized ULI using 5 groups, compare 4th and 5th for binary data set
+#' # generalized ULI using 5 groups, compare 4th and 5th for binary dataset
 #' gDiscrim(dataBin, k = 5, l = 4, u = 5)[1:5]
 #'
-#' # ULI for first 5 items for ordinal data set
+#' # ULI for first 5 items for ordinal dataset
 #' gDiscrim(dataOrd)[1:5]
-#' # generalized ULI using 5 groups, compare 4th and 5th for binary data set
+#' # generalized ULI using 5 groups, compare 4th and 5th for binary dataset
 #' gDiscrim(dataOrd, k = 5, l = 4, u = 5)[1:5]
 #' # maximum (4) and minimum (0) score are same for all items
 #' gDiscrim(dataOrd, k = 5, l = 4, u = 5, maxscore = 4, minscore = 0)[1:5]
 #' @export
 
-gDiscrim <- function(x, k = 3, l = 1, u = 3, maxscore, minscore) {
+gDiscrim <- function(Data, k = 3, l = 1, u = 3, maxscore, minscore, x) {
+  if (!missing(x)) {
+    stop("Argument 'x' deprecated. Please use argument 'Data' instead. ", call. = FALSE)
+  }
+
   if (u > k) {
     stop("'u' need to be lower or equal to 'k'", call. = FALSE)
   }
@@ -96,42 +101,42 @@ gDiscrim <- function(x, k = 3, l = 1, u = 3, maxscore, minscore) {
     stop("'l' should be lower than 'u'", call. = FALSE)
   }
   if (missing(maxscore)) {
-    maxscore <- sapply(x, max, na.rm = TRUE)
+    maxscore <- sapply(Data, max, na.rm = TRUE)
   } else {
     if (length(maxscore) == 1) {
-      maxscore <- rep(maxscore, ncol(x))
+      maxscore <- rep(maxscore, ncol(Data))
     }
   }
-  obtainedmax <- sapply(x, max, na.rm = TRUE)
+  obtainedmax <- sapply(Data, max, na.rm = TRUE)
   if (!all(maxscore >= obtainedmax)) {
-    warning("'maxscore' is lower than maximum score in the data set for some item")
+    warning("'maxscore' is lower than maximum score in the dataset for some item")
   }
 
   if (missing(minscore)) {
-    minscore <- sapply(x, min, na.rm = TRUE)
+    minscore <- sapply(Data, min, na.rm = TRUE)
   } else {
     if (length(minscore) == 1) {
-      minscore <- rep(minscore, ncol(x))
+      minscore <- rep(minscore, ncol(Data))
     }
   }
-  obtainedmin <- sapply(x, min, na.rm = TRUE)
+  obtainedmin <- sapply(Data, min, na.rm = TRUE)
   if (!all(minscore <= obtainedmin)) {
-    warning("'minscore' is higher than minimum score in the data set for some item")
+    warning("'minscore' is higher than minimum score in the dataset for some item")
   }
   if (!all(minscore <= maxscore)) {
     warning("'minscore' is higher than 'maxscore' for some item")
   }
 
-  x <- na.exclude(x)
-  n <- ncol(x)
-  N <- nrow(x)
+  Data <- na.exclude(Data)
+  n <- ncol(Data)
+  N <- nrow(Data)
 
   ni <- as.integer(N / k)
   MaxMin <- maxscore - minscore
-  MaxSum <- sum(sapply(x, max, na.rm = TRUE))
-  MinSum <- sum(sapply(x, min, na.rm = TRUE))
-  TOT <- rowSums(x, na.rm = TRUE) / (MaxSum - MinSum)
-  tmpx <- x[order(TOT), ]
+  MaxSum <- sum(sapply(Data, max, na.rm = TRUE))
+  MinSum <- sum(sapply(Data, min, na.rm = TRUE))
+  TOT <- rowSums(Data, na.rm = TRUE) / (MaxSum - MinSum)
+  tmpx <- Data[order(TOT), ]
   tmpxU <- tmpx[as.integer((u - 1) * N / k + 1):as.integer(u * N / k), ]
   tmpxL <- tmpx[as.integer((l - 1) * N / k + 1):as.integer(l * N / k), ]
   Ui <- colSums(tmpxU, na.rm = TRUE) / MaxMin

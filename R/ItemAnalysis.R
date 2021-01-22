@@ -7,9 +7,9 @@
 #'   For ordinal items the difficulty and discrimination indices take into
 #'   account minimal item score as well as range.
 #'
-#' @param data matrix or data.frame of items to be examined. Rows represent
+#' @param Data matrix or data.frame of items to be examined. Rows represent
 #'   respondents, columns represent items.
-#' @param y vector of criterion values.
+#' @param criterion vector of criterion values.
 #' @param k numeric: number of groups to which may be data.frame x divided by
 #'   the total score. Default value is 3.  See \strong{Details}.
 #' @param l numeric: lower group. Default value is 1. See \strong{Details}.
@@ -20,11 +20,14 @@
 #' @param minscore numeric or vector: minimal score in ordinal items. If
 #'   missing, vector of obtained minimal scores is imputed. See
 #'   \strong{Details}.
-#' @param cutscore numeric or vector: cut score used for binarization of ordinal
+#' @param cutscore numeric or vector: cut-score used for binarization of ordinal
 #'   data. If missing, vector of maximal scores is imputed. See
 #'   \strong{Details}.
-#' @param add.bin logical: If TRUE, indices are printed also for binarized data.
+#' @param bin logical: If TRUE, indices are printed also for binarized data.
 #'   See \strong{Details}.
+#' @param data deprecated. Use argument \code{Data} instead.
+#' @param y deprecated. Use argument \code{criterion} instead.
+#' @param add.bin deprecated. Use argument \code{bin} instead.
 #'
 #' @details For ordinal items the difficulty and discrimination indices take
 #' into account minimal item score as well as range.
@@ -37,10 +40,10 @@
 #' divided by range (maximal possible score \code{maxscore} minus minimal
 #' possible score \code{minscore}).
 #'
-#' If \code{add.bin} is set to \code{TRUE}, item analysis of binarized data is
+#' If \code{bin} is set to \code{TRUE}, item analysis of binarized data is
 #' included in the output table. In such a case, \code{cutscore} is used for
-#' binarization. When binarizing the data, values greater or equal to cut-score
-#' are set to \code{1}, other values are set to \code{0}.
+#' binarization. When binarizing the \code{Data}, values greater or equal to
+#' cut-score are set to \code{1}, other values are set to \code{0}.
 #'
 #' @return
 #' \code{ItemAnalysis} function computes various traditional item analysis indices. Output
@@ -63,19 +66,19 @@
 #'   \item{\code{RIT.bin}}{item-total correlation for binarized data. }
 #'   \item{\code{RIR}}{item-rest correlation (correlation between item score and overall test score without the given item). }
 #'   \item{\code{RIR.bin}}{item-rest correlation for binarized data. }
-#'   \item{\code{Corr.criterion}}{correlation between item score and criterion \code{y}. }
-#'   \item{\code{Corr.criterion.bin}}{correlation between item score and criterion \code{y} for binarized data. }
-#'   \item{\code{Index.val}}{item validity index calculated as \code{cor(item, y) * sqrt(((N - 1) / N) * var(item))}, see Allen and Yen (1979, Ch.6.4). }
-#'   \item{\code{Index.val.bin}}{item validity index for binarized data}
+#'   \item{\code{Corr.criterion}}{correlation between item score and criterion \code{criterion}. }
+#'   \item{\code{Corr.criterion.bin}}{correlation between item score and criterion \code{criterion} for binarized data. }
+#'   \item{\code{Index.val}}{item validity index calculated as \code{cor(item, criterion) * sqrt(((N - 1) / N) * var(item))}, see Allen and Yen (1979, Ch.6.4). }
+#'   \item{\code{Index.val.bin}}{item validity index for binarized data. }
 #'   \item{\code{Index.rel}}{item reliability index calculated as \code{cor(item, test) * sqrt(((N - 1) / N) * var(item))}, see Allen and Yen (1979, Ch.6.4). }
-#'   \item{\code{Index.rel.bin}}{item reliability index for binarized data}
+#'   \item{\code{Index.rel.bin}}{item reliability index for binarized data. }
 #'   \item{\code{Index.rel.drop}}{item reliability index 'drop' (scored without item). }
 #'   \item{\code{Index.rel.drop.bin}}{item reliability index 'drop' (scored without item) for binarized data. }
 #'   \item{\code{Alpha.drop}}{Cronbach's alpha without given item. }
 #'   \item{\code{Alpha.drop.bin}}{Cronbach's alpha without given item, for binarized data. }
 #'   \item{\code{Perc.miss}}{Percentage of missed responses on the particular item. }
 #'   \item{\code{Perc.nr}}{Percentage of respondents that did not reached the item nor the subsequent ones, see \code{\link{recode_nr}} function for further details. }
-#' With \code{add.bin = TRUE}, indices based on binarized data set are also provided
+#' With \code{bin = TRUE}, indices based on binarized dataset are also provided
 #' and marked with \code{bin} suffix.
 #'
 #' @author
@@ -109,9 +112,9 @@
 #' \dontrun{
 #' # loading 100-item medical admission test datasets
 #' data(dataMedical, dataMedicalgraded)
-#' # binary data set
+#' # binary dataset
 #' dataBin <- dataMedical[, 1:100]
-#' # ordinal data set
+#' # ordinal dataset
 #' dataOrd <- dataMedicalgraded[, 1:100]
 #' # study success is the same for both data sets
 #' StudySuccess <- dataMedical[, 102]
@@ -119,54 +122,65 @@
 #' # item analysis for binary data
 #' head(ItemAnalysis(dataBin))
 #' # item analysis for binary data using also study success
-#' head(ItemAnalysis(dataBin, y = StudySuccess))
+#' head(ItemAnalysis(dataBin, criterion = StudySuccess))
 #'
 #' # item analysis for binary data
 #' head(ItemAnalysis(dataOrd))
 #' # item analysis for binary data using also study success
-#' head(ItemAnalysis(dataOrd, y = StudySuccess))
+#' head(ItemAnalysis(dataOrd, criterion = StudySuccess))
 #' # including also item analysis for binarized data
 #' head(ItemAnalysis(dataOrd,
-#'   y = StudySuccess, k = 5, l = 4, u = 5,
-#'   maxscore = 4, minscore = 0, cutscore = 4, add.bin = TRUE
+#'   criterion = StudySuccess, k = 5, l = 4, u = 5,
+#'   maxscore = 4, minscore = 0, cutscore = 4, bin = TRUE
 #' ))
 #' }
 #' @export
 
-ItemAnalysis <- function(data, y = NULL, k = 3, l = 1, u = 3, maxscore, minscore, cutscore, add.bin = FALSE) {
-  if (!is.matrix(data) & !is.data.frame(data)) {
-    stop("'data' must be data frame or matrix ",
+ItemAnalysis <- function(Data, criterion = "none", k = 3, l = 1, u = 3,
+                         maxscore = NULL, minscore = NULL, cutscore = NULL, bin = FALSE,
+                         data, y, add.bin) {
+  if (!missing(data)) {
+    stop("Argument 'data' deprecated. Please use argument 'Data' instead. ", call. = FALSE)
+  }
+  if (!missing(y)) {
+    stop("Argument 'y' deprecated. Please use argument 'criterion' instead. ", call. = FALSE)
+  }
+  if (!missing(add.bin)) {
+    stop("Argument 'add.bin' deprecated. Please use argument 'bin' instead. ", call. = FALSE)
+  }
+
+  if (!is.matrix(Data) & !is.data.frame(Data)) {
+    stop("'Data' must be data.frame or matrix. ",
       call. = FALSE
     )
   }
 
-  data_with_nas <- data
-  data <- as.data.frame(na.omit(data))
+  data_with_nas <- Data
+  Data <- as.data.frame(na.omit(Data))
 
-  N <- nrow(data)
-  n <- ncol(data)
+  N <- nrow(Data)
+  n <- ncol(Data)
 
-  if (missing(maxscore)) {
-    maxscore <- sapply(data, max, na.rm = TRUE)
+  if (is.null(maxscore)) {
+    maxscore <- sapply(Data, max, na.rm = TRUE)
   }
-  if (missing(minscore)) {
-    minscore <- sapply(data, min, na.rm = TRUE)
+  if (is.null(minscore)) {
+    minscore <- sapply(Data, min, na.rm = TRUE)
   }
-  if (missing(cutscore)) {
-    cutscore <- sapply(data, max, na.rm = TRUE)
+  if (is.null(cutscore)) {
+    cutscore <- sapply(Data, max, na.rm = TRUE)
   } else {
     if (length(cutscore) == 1) {
       cutscore <- rep(cutscore, n)
     }
   }
 
-  if (add.bin) {
-    dataBin <- data
-    dataBin[] <- dataBin == matrix(rep(cutscore, each = n), ncol = N, nrow = n)
+  if (bin) {
+    dataBin <- Data
+    dataBin[] <- dataBin == matrix(rep(cutscore, each = N), ncol = n, nrow = N)
     dataBin[] <- as.data.frame(sapply(dataBin, as.numeric))
-
-    minscoreB <- sapply(dataBin, min, na.rm = TRUE)
-    maxscoreB <- sapply(dataBin, max, na.rm = TRUE)
+    # minscoreB <- sapply(dataBin, min, na.rm = TRUE)
+    # maxscoreB <- sapply(dataBin, max, na.rm = TRUE)
   }
 
   if (u > k) {
@@ -183,40 +197,40 @@ ItemAnalysis <- function(data, y = NULL, k = 3, l = 1, u = 3, maxscore, minscore
   }
 
   # total score
-  total_score_ord <- rowSums(data, na.rm = TRUE)
+  total_score_ord <- rowSums(Data, na.rm = TRUE)
   # total score without item
-  total_score_ord_without_item <- total_score_ord - data
+  total_score_ord_without_item <- total_score_ord - Data
 
-  if (add.bin) {
+  if (bin) {
     total_score_bin <- rowSums(dataBin, na.rm = TRUE)
     total_score_bin_without_item <- total_score_bin - dataBin
   }
 
   # average item score
-  average_item_score <- colMeans(data, na.rm = TRUE)
+  average_item_score <- colMeans(Data, na.rm = TRUE)
   # observed min/max
-  observed_min <- sapply(data, min, na.rm = TRUE)
-  observed_max <- sapply(data, max, na.rm = TRUE)
+  observed_min <- sapply(Data, min, na.rm = TRUE)
+  observed_max <- sapply(Data, max, na.rm = TRUE)
 
   # proportion of maximum possible scores
-  prop_max_score <- sapply(1:n, function(i) sum(data[, i] == maxscore[i], na.rm = TRUE)) / N
+  prop_max_score <- sapply(1:n, function(i) sum(Data[, i] == maxscore[i], na.rm = TRUE)) / N
 
   # gULI ordinal
   gULI_ord <- as.numeric(
-    gDiscrim(data,
+    gDiscrim(Data,
       minscore = minscore, maxscore = maxscore,
       k = k, l = l, u = u
     )
   )
   # ULI ordinal
   ULI_ord <- as.numeric(
-    gDiscrim(data,
+    gDiscrim(Data,
       minscore = minscore, maxscore = maxscore,
       k = 3, l = 1, u = 3
     )
   )
 
-  if (add.bin) {
+  if (bin) {
     # gULI binary
     gULI_bin <- as.numeric(
       gDiscrim(dataBin,
@@ -235,12 +249,12 @@ ItemAnalysis <- function(data, y = NULL, k = 3, l = 1, u = 3, maxscore, minscore
   }
 
   # RIR ordinal
-  RIR_ord <- diag(cor(data, total_score_ord_without_item, use = "complete"))
+  RIR_ord <- diag(cor(Data, total_score_ord_without_item, use = "complete"))
   # RIT ordinal
-  RIT_ord <- as.vector(cor(data, total_score_ord, use = "complete"))
+  RIT_ord <- as.vector(cor(Data, total_score_ord, use = "complete"))
 
   # RIR and RIT binary
-  if (add.bin) {
+  if (bin) {
     RIR_bin <- diag(cor(dataBin, total_score_bin_without_item, use = "complete"))
     RIT_bin <- as.vector(cor(dataBin, total_score_bin, use = "complete"))
     # RIR_bin[(maxscoreB - minscoreB) < 1] <- 0
@@ -253,31 +267,31 @@ ItemAnalysis <- function(data, y = NULL, k = 3, l = 1, u = 3, maxscore, minscore
   difficulty <- (average_item_score - minscore) / (maxscore - minscore)
 
   # SD and norming term
-  SD_ord <- apply(data, 2, sd)
+  SD_ord <- sapply(Data, sd)
   vx_ord <- ((N - 1) / N) * SD_ord^2
 
   # Item-criterion correlation
-  if (is.null(y)) {
+  if (any(criterion == "none", na.rm = TRUE)) {
     corr_criterion_ord <- NA
     index_validity_ord <- NA
   } else {
-    y <- as.numeric(y)
-    corr_criterion_ord <- cor(data_with_nas, y, use = "complete")
+    criterion <- as.numeric(criterion)
+    corr_criterion_ord <- cor(data_with_nas, criterion, use = "complete")
     index_validity_ord <- corr_criterion_ord * sqrt(vx_ord)
   }
   index_RIT_ord <- RIT_ord * sqrt(vx_ord)
   index_RIR_ord <- RIR_ord * sqrt(vx_ord)
 
   # Item analysis of binarized data
-  if (add.bin) {
+  if (bin) {
     SD_bin <- apply(dataBin, 2, sd)
     vx_bin <- ((N - 1) / N) * SD_bin^2
-    if (is.null(y)) {
+    if (any(criterion == "none", na.rm = TRUE)) {
       corr_criterion_bin <- NA
       index_validity_bin <- NA
     } else {
-      y <- as.numeric(y)
-      corr_criterion_bin <- cor(dataBin, y, use = "complete")
+      criterion <- as.numeric(criterion)
+      corr_criterion_bin <- cor(dataBin, criterion, use = "complete")
       index_validity_bin <- corr_criterion_bin * sqrt(vx_bin)
     }
     index_RIT_bin <- RIT_bin * sqrt(vx_bin)
@@ -292,14 +306,14 @@ ItemAnalysis <- function(data, y = NULL, k = 3, l = 1, u = 3, maxscore, minscore
 
   # Alpha without item
   alpha_drop_ord <- sapply(1:n, function(i) {
-    withoutItem <- data[, -i]
+    withoutItem <- Data[, -i]
     var <- var(withoutItem)
     N <- ncol(withoutItem)
     TOT <- rowSums(withoutItem, na.rm = TRUE)
     alpha <- N / (N - 1) * (1 - (sum(diag(var)) / var(TOT)))
   })
 
-  if (add.bin) {
+  if (bin) {
     alpha_drop_bin <- sapply(1:n, function(i) {
       withoutItem <- dataBin[, -i]
       var <- var(withoutItem)
@@ -342,30 +356,22 @@ ItemAnalysis <- function(data, y = NULL, k = 3, l = 1, u = 3, maxscore, minscore
     Perc.nr = prop_nr
   )
 
-  var.ord <- c("Difficulty", "Mean", "SD", "Prop.max.score",
-               "Min.score", "Max.score", "Obs.min", "Obs.max",
-               "gULI", "ULI", "RIT", "RIR",
-               "Corr.criterion", "Index.val", "Index.rel", "Index.rel.drop",
-               "Alpha.drop", "Perc.miss", "Perc.nr")
+  var.ord <- c(
+    "Difficulty", "Mean", "SD", "Prop.max.score",
+    "Min.score", "Max.score", "Obs.min", "Obs.max",
+    "gULI", "ULI", "RIT", "RIR",
+    "Corr.criterion", "Index.val", "Index.rel", "Index.rel.drop",
+    "Alpha.drop", "Perc.miss", "Perc.nr"
+  )
 
-  var.y <- c("Corr.criterion", "Corr.criterion.bin", "Index.val", "Index.val.bin")
+  var.criterion <- c("Corr.criterion", "Corr.criterion.bin", "Index.val", "Index.val.bin")
 
-  # names(mat) <- c(
-  #   "diff", "avgScore", "SD", "SDbin", "correct",
-  #   "min", "max", "obtMin", "obtMax", "cutScore", "gULI", "gULIbin",
-  #   "ULI", "ULIbin", "RIT", "RITbin", "RIR", "RIRbin",
-  #   "itemCritCor", "itemCritCorBin", "valInd", "valIndBbin",
-  #   "rel", "relBin", "relDrop",
-  #   "relDropBin", "alphaDrop", "alphaDropBin",
-  #   "missedPerc", "notReachPerc"
-  # )
-
-  if (!add.bin) {
+  if (!bin) {
     mat <- mat[, var.ord]
   }
 
-  if (is.null(y)) {
-    mat <- mat[, !(colnames(mat) %in% var.y)]
+  if (any(criterion == "none", na.rm = TRUE)) {
+    mat <- mat[, !(colnames(mat) %in% var.criterion)]
   }
 
   return(mat)

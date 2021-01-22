@@ -14,7 +14,7 @@
 
 #### MAJOR UPDATES
   * New AIBS dataset was added to the package
-  * Functions gDiscrim(), DDplot() and ItemAnalysis were updated
+  * Functions gDiscrim(), DDplot() and ItemAnalysis were updated, variable names were unified
   * New function `plot_corr()` to compute and visualize an item correlation matrix was added.
     and implemented within the ShinyItemAnalysis interactive app.
   * New datasets `HCIgrads`, `HCItestretest`, `HCIprepost` and `HCIdata` were added.

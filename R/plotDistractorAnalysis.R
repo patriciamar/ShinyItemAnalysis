@@ -5,12 +5,11 @@
 #' @description Plots graphical representation of item distractor analysis with
 #'   proportions and optional number of groups.
 #'
-#' @param data character: data matrix or data frame. See \strong{Details}.
+#' @param Data character: data matrix or data.frame. See \strong{Details}.
 #' @param key character: answer key for the items.
-#' @param num.groups numeric: number of groups to that should be respondents
-#'   splitted.
-#' @param item numeric: the number of item to be plotted.
-#' @param item.name character: the name of item.
+#' @param num.groups numeric: number of groups to which are the respondents split.
+#' @param item numeric: the number of the item to be plotted.
+#' @param item.name character: the name of the item.
 #' @param multiple.answers logical: should be all combinations plotted (default)
 #'   or should be answers splitted into distractors. See \strong{Details}.
 #' @param matching numeric: numeric vector. If not provided, total score is
@@ -19,20 +18,22 @@
 #'   \code{FALSE}. See details.
 #' @param cut.points numeric: numeric vector specifying cut points of
 #'   \code{matching}. See details.
+#' @param data deprecated. Use argument \code{Data} instead.
 #'
 #' @details This function is graphical representation of
-#' \code{\link{DistractorAnalysis}} function. In case, no \code{matching} is
-#' provided, the scores are calculated using the item data and key. The
-#' respondents are by default splitted into the \code{num.groups}-quantiles and
-#' the proportions of respondents in each quantile are displayed with respect to
-#' their answers. In case that \code{matching} is discrete (\code{match.discrete
-#' = TRUE}), \code{matching} is splitted based on its unique levels. Other cut
-#' points can be specified via \code{cut.points} argument.
+#'   \code{\link{DistractorAnalysis}} function. In case, no \code{matching} is
+#'   provided, the scores are calculated using the item \code{Data} and
+#'   \code{key}. The respondents are by default splitted into the
+#'   \code{num.groups}-quantiles and the proportions of respondents in each
+#'   quantile are displayed with respect to their answers. In case that
+#'   \code{matching} is discrete (\code{match.discrete = TRUE}), \code{matching}
+#'   is splitted based on its unique levels. Other cut points can be specified
+#'   via \code{cut.points} argument.
 #'
-#' The \code{data} is a matrix or data frame whose rows represents unscored item
+#' The \code{Data} is a matrix or data.frame whose rows represents unscored item
 #' response from a multiple-choice test and columns correspond to the items.
 #'
-#' The \code{key} must be a vector of the same length as \code{ncol(data)}. In
+#' The \code{key} must be a vector of the same length as \code{ncol(Data)}. In
 #' case it is not provided, \code{matching} need to be specified.
 #'
 #' If \code{multiple.answers = TRUE} (default) all reported combinations of
@@ -54,7 +55,7 @@
 #'
 #' @examples
 #'
-#' # loading 100-item medical admission test data
+#' # loading 100-item medical admission test datasets
 #' data(dataMedical, dataMedicaltest, dataMedicalkey)
 #' data <- dataMedicaltest[, 1:100]
 #' dataBin <- dataMedical[, 1:100]
@@ -93,12 +94,16 @@
 #' }
 #' @export
 
-plotDistractorAnalysis <- function(data, key, num.groups = 3, item = 1, item.name, multiple.answers = TRUE,
-                                   matching = NULL, match.discrete = FALSE, cut.points) {
+plotDistractorAnalysis <- function(Data, key, num.groups = 3, item = 1, item.name, multiple.answers = TRUE,
+                                   matching = NULL, match.discrete = FALSE, cut.points, data) {
+  if (!missing(data)) {
+    stop("Argument 'data' deprecated. Please use argument 'Data' instead. ", call. = FALSE)
+  }
+
   if (missing(key)) {
-    if (all(sapply(data, is.numeric))) {
+    if (all(sapply(Data, is.numeric))) {
       warning("Answer key is not provided. Maximum value is used as key.", call. = FALSE)
-      key <- sapply(data, max, na.rm = T)
+      key <- sapply(Data, max, na.rm = TRUE)
     } else if (missing(matching)) {
       stop("Answer key is not provided. Please, specify key to be able to calculate total score or provide matching. ",
         call. = FALSE
@@ -107,7 +112,7 @@ plotDistractorAnalysis <- function(data, key, num.groups = 3, item = 1, item.nam
       key <- NULL
     }
   } else {
-    if (!length(key) == ncol(data)) {
+    if (!length(key) == ncol(Data)) {
       stop("Answer key is not provided or some item keys are missing.", call. = FALSE)
     }
     key <- unlist(key)
@@ -115,7 +120,7 @@ plotDistractorAnalysis <- function(data, key, num.groups = 3, item = 1, item.nam
 
   # distractor analysis
   tabDA <- DistractorAnalysis(
-    data = data, key = key, p.table = TRUE, num.groups = num.groups, matching = matching,
+    Data = Data, key = key, p.table = TRUE, num.groups = num.groups, matching = matching,
     match.discrete = match.discrete, cut.points = cut.points
   )
 
@@ -126,7 +131,7 @@ plotDistractorAnalysis <- function(data, key, num.groups = 3, item = 1, item.nam
     x <- x[!(apply(x, 1, function(y) all(y == 0))), ]
   }
 
-  x <- as.data.frame(x) # table coerces nicely into data.frame, no neet for reshape
+  x <- as.data.frame(x) # table coerces nicely into data.frame, no need for reshape
   colnames(x)[colnames(x) == "Freq"] <- "value"
 
   x <- x[complete.cases(x), ]

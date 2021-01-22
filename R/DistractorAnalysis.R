@@ -5,7 +5,7 @@
 #' @description Performs distractor analysis for each item and optional number
 #'   of groups.
 #'
-#' @param data character: data matrix or data frame. See \strong{Details}.
+#' @param Data character: data matrix or data.frame. See \strong{Details}.
 #' @param key character: answer key for the items.
 #' @param p.table logical: should the function return the proportions. If
 #'   \code{FALSE} (default) the counts are returned.
@@ -17,19 +17,21 @@
 #'   \code{FALSE}. See details.
 #' @param cut.points numeric: numeric vector specifying cut points of
 #'   \code{matching}. See details.
+#' @param data deprecated. Use argument \code{Data} instead.
 #'
 #' @details This function is adapted version of
 #' \code{\link[CTT]{distractor.analysis}} function from \code{CTT} package.
 #'
-#' The \code{data} is a matrix or data frame whose rows represents unscored item
-#' response from a multiple-choice test and columns correspond to the items.
+#' The \code{Data} is a matrix or data.frame with rows representing unscored
+#' item responses from a multiple-choice test and with columns corresponding to
+#' the items.
 #'
-#' The \code{key} must be a vector of the same length as \code{ncol(data)}.
+#' The \code{key} must be a vector of the same length as \code{ncol(Data)}.
 #'
 #' In case, no \code{matching} is provided, the scores are calculated using the
-#' item data and key. The respondents are by default splitted into the
-#' \code{num.groups}-quantiles and the number (or proportion) of respondents in
-#' each quantile is reported with respect to their answers. In case that
+#' item \code{Data} and \code{key}. The respondents are by default splitted into
+#' the \code{num.groups}-quantiles and the number (or proportion) of respondents
+#' in each quantile is reported with respect to their answers. In case that
 #' \code{matching} is discrete (\code{match.discrete = TRUE}), \code{matching}
 #' is splitted based on its unique levels. Other cut points can be specified via
 #' \code{cut.points} argument.
@@ -45,19 +47,19 @@
 #' \email{martinkova@@cs.cas.cz} \cr
 #'
 #' @examples
-#' # loading 100-item medical admission test data
+#' # loading 100-item medical admission test dataset
 #' data(dataMedicaltest, dataMedicalkey)
 #' data <- dataMedicaltest[, 1:100]
 #' dataBin <- dataMedical[, 1:100]
 #' key <- unlist(dataMedicalkey)
 #'
-#' # distractor analysis for dataMedicaltest data set
+#' # distractor analysis for dataMedicaltest dataset
 #' DistractorAnalysis(data, key)
 #' \dontrun{
-#' # distractor analysis for dataMedicaltest data set with proportions
+#' # distractor analysis for dataMedicaltest dataset with proportions
 #' DistractorAnalysis(data, key, p.table = TRUE)
 #'
-#' # distractor analysis for dataMedicaltest data set for 6 groups
+#' # distractor analysis for dataMedicaltest dataset for 6 groups
 #' DistractorAnalysis(data, key, num.group = 6)
 #'
 #' # distractor analysis for dataMedicaltest using specified matching
@@ -72,35 +74,37 @@
 #' }
 #'
 #' @importFrom mirt key2binary
-#'
 #' @export
+DistractorAnalysis <- function(Data, key, p.table = FALSE, num.groups = 3, matching = NULL,
+                               match.discrete = FALSE, cut.points, data) {
+  if (!missing(data)) {
+    stop("Argument 'data' deprecated. Please use argument 'Data' instead. ", call. = FALSE)
+  }
 
-DistractorAnalysis <- function(data, key, p.table = FALSE, num.groups = 3, matching = NULL,
-                               match.discrete = FALSE, cut.points) {
   if (!(is.logical(p.table))) warning("p.table must be logical. ")
 
-  data <- as.data.frame(data)
+  Data <- as.data.frame(Data)
 
   if (missing(key) | is.null(key)) {
-    if (all(sapply(data, is.numeric))) {
+    if (all(sapply(Data, is.numeric))) {
       warning("Answer key is not provided. Maximum value is used as key.", call. = FALSE)
-      key <- sapply(data, max, na.rm = T)
+      key <- sapply(Data, max, na.rm = TRUE)
     } else if (missing(matching)) {
       stop("Answer key is not provided. Please, specify key to be able to calculate total score or provide matching. ",
         call. = FALSE
       )
     }
   } else {
-    if (!length(key) == ncol(data)) {
+    if (!length(key) == ncol(Data)) {
       warning("Answer key is not provided or some item keys are missing.", call. = FALSE)
     }
     key <- unlist(key)
   }
 
-  if (length(key) == 1) key <- c(rep(key, ncol(data)))
+  if (length(key) == 1) key <- c(rep(key, ncol(Data)))
 
   if (is.null(matching)) {
-    scored.data <- mirt::key2binary(data, as.matrix(key))
+    scored.data <- mirt::key2binary(Data, as.matrix(key))
     scored.data[is.na(scored.data)] <- 0
     scores <- rowSums(scored.data)
   } else {
@@ -157,14 +161,14 @@ DistractorAnalysis <- function(data, key, p.table = FALSE, num.groups = 3, match
   }
   out <- list()
   if (!p.table) {
-    for (i in 1:ncol(data)) {
-      out[[i]] <- itemtab(data[, i])
+    for (i in 1:ncol(Data)) {
+      out[[i]] <- itemtab(Data[, i])
     }
   } else {
-    for (i in 1:ncol(data)) {
-      out[[i]] <- itemtabp(data[, i])
+    for (i in 1:ncol(Data)) {
+      out[[i]] <- itemtabp(Data[, i])
     }
   }
-  names(out) <- colnames(data)
+  names(out) <- colnames(Data)
   out
 }

@@ -7,12 +7,12 @@
 #'   \pkg{ggplot2} package. Difficulty and discrimination/validity indices are
 #'   plotted for each item, items are ordered by their difficulty.
 #'
-#' @param data numeric: binary or ordinal data \code{matrix} or
+#' @param Data numeric: binary or ordinal data \code{matrix} or
 #'   \code{data.frame} which rows represent examinee answers (\code{1} correct,
 #'   \code{0} incorrect, or ordinal item scores) and columns correspond to the
 #'   items.
 #' @param item.names character: the names of items. If not specified, the names
-#'   of \code{data} columns are used.
+#'   of \code{Data} columns are used.
 #' @param discrim character: type of discrimination index to be calculated.
 #'   Possible values are \code{"ULI"} (default), \code{"RIT"}, \code{"RIR"}, and
 #'   \code{"none"}. See \strong{Details}.
@@ -27,14 +27,14 @@
 #' @param minscore numeric: minimal scores of items. If single number is
 #'   provided, the same maximal score is used for all items. If missing, vector
 #'   of achieved maximal scores is calculated and used in calculations.
-#' @param bin logical: should the ordinal data be binarized? Deafult value is
-#'   \code{FALSE}. In case that \code{bin = TRUE}, all values of \code{data}
+#' @param bin logical: should the ordinal data be binarized? Default value is
+#'   \code{FALSE}. In case that \code{bin = TRUE}, all values of \code{Data}
 #'   equal or greater than \code{cutscore} are marked as \code{1} and all values
 #'   lower than \code{cutscore} are marked as \code{0}.
-#' @param cutscore numeric: cut-score used to binarize \code{data}. If numeric,
-#'   the same cutscore is used for all items. If missing, vector of maximal
+#' @param cutscore numeric: cut-score used to binarize \code{Data}. If numeric,
+#'   the same cut-score is used for all items. If missing, vector of maximal
 #'   scores is used in calculations.
-#' @param average.score logical: should average score of the item be disaplyed
+#' @param average.score logical: should average score of the item be displayed
 #'   instead of difficulty? Default value is \code{FALSE}. See \strong{Details}.
 #' @param thr numeric: value of discrimination threshold. Default value is 0.2.
 #'   With \code{thr = NULL}, no horizontal line is displayed in the plot.
@@ -47,6 +47,7 @@
 #'   \code{cor(item, criterion) * sqrt(((N - 1) / N) * var(item))}, where N is
 #'   number of respondents, see Allen & Yen, 1979, Ch. 6.4, for details). The
 #'   argument is ignored if user does not supply any \code{criterion}.
+#' @param data deprecated. Use argument \code{Data} instead.
 #'
 #' @details Discrimination is calculated using method specified in
 #' \code{discrim}. Default option \code{"ULI"} calculates difference in ratio of
@@ -88,8 +89,9 @@
 #' Institute of Computer Science of the Czech Academy of Sciences \cr
 #' \email{martinkova@@cs.cas.cz} \cr
 #'
-#' @references Allen, M. J., & Yen, W. M. (1979). Introduction to measurement
-#' theory. Monterey, CA: Brooks/Cole.
+#' @references
+#' Allen, M. J., & Yen, W. M. (1979). Introduction to measurement theory.
+#' Monterey, CA: Brooks/Cole.
 #'
 #' Martinkova, P., Stepanek, L., Drabinova, A., Houdek, J., Vejrazka, M., &
 #' Stuka, C. (2017). Semi-real-time analyses of item characteristics for medical
@@ -102,21 +104,21 @@
 #' \code{\link[ggplot2]{ggplot}} for general function to plot a \code{"ggplot"} object
 #'
 #' @examples
-#' # loading 100-item medical admission test data sets
+#' # loading 100-item medical admission test datasets
 #' data(dataMedical, dataMedicalgraded)
-#' # binary data set
+#' # binary dataset
 #' dataBin <- dataMedical[, 1:100]
-#' # ordinal data set
+#' # ordinal dataset
 #' dataOrd <- dataMedicalgraded[, 1:100]
 #'
-#' # DDplot of binary data set
+#' # DDplot of binary dataset
 #' DDplot(dataBin)
 #' \dontrun{
-#' # DDplot of binary data set without threshold
+#' # DDplot of binary dataset without threshold
 #' DDplot(dataBin, thr = NULL)
-#' # compared to DDplot using ordinal data set and 'bin = TRUE'
+#' # compared to DDplot using ordinal dataset and 'bin = TRUE'
 #' DDplot(dataOrd, bin = TRUE)
-#' # compared to binarized data set using bin = TRUE and cutscore equal to 3
+#' # compared to binarized dataset using bin = TRUE and cut-score equal to 3
 #' DDplot(dataOrd, bin = TRUE, cutscore = 3)
 #'
 #' # DDplot of binary data using generalized ULI
@@ -124,22 +126,22 @@
 #' # threshold lowered to 0.1
 #' DDplot(dataBin, k = 5, l = 4, u = 5, thr = 0.1)
 #'
-#' # DDplot of ordinal data set using ULI
+#' # DDplot of ordinal dataset using ULI
 #' DDplot(dataOrd)
-#' # DDplot of ordinal data set using generalized ULI
+#' # DDplot of ordinal dataset using generalized ULI
 #' # discrimination based on 5 groups, comparing 4th and 5th
 #' # threshold lowered to 0.1
 #' DDplot(dataOrd, k = 5, l = 4, u = 5, thr = 0.1)
-#' # DDplot of ordinal data set using RIT
+#' # DDplot of ordinal dataset using RIT
 #' DDplot(dataOrd, discrim = "RIT")
-#' # DDplot of ordinal data set using RIR
+#' # DDplot of ordinal dataset using RIR
 #' DDplot(dataOrd, discrim = "RIR")
-#' # DDplot of ordinal data set disaplaying only difficulty
+#' # DDplot of ordinal dataset displaying only difficulty
 #' DDplot(dataBin, discrim = "none")
 #'
-#' # DDplot of ordinal data set disaplaying difficulty estimates
+#' # DDplot of ordinal dataset displaying difficulty estimates
 #' DDplot(dataOrd)
-#' # DDplot of ordinal data set disaplaying average item scores
+#' # DDplot of ordinal dataset displaying average item scores
 #' DDplot(dataOrd, average.score = TRUE)
 #'
 #' # item difficulty / criterion validity plot for data with criterion
@@ -148,45 +150,49 @@
 #' }
 #' @export
 
-DDplot <- function(data, item.names, discrim = "ULI", k = 3, l = 1, u = 3,
+DDplot <- function(Data, item.names, discrim = "ULI", k = 3, l = 1, u = 3,
                    maxscore, minscore, bin = FALSE, cutscore, average.score = FALSE,
-                   thr = 0.2, criterion = "none", val_type = "simple") {
-  if (!is.matrix(data) & !is.data.frame(data)) {
-    stop("'data' must be data frame or matrix. ", call. = FALSE)
+                   thr = 0.2, criterion = "none", val_type = "simple", data) {
+  if (!missing(data)) {
+    stop("Argument 'data' deprecated. Please use argument 'Data' instead. ", call. = FALSE)
+  }
+
+  if (!is.matrix(Data) & !is.data.frame(Data)) {
+    stop("'Data' must be data.frame or matrix. ", call. = FALSE)
   }
   if (any(criterion != "none", na.rm = TRUE)) {
     if (!is.null(dim(criterion))) {
       stop("'criterion' must be numeric or logical vector. ", call. = FALSE)
-    } else if (length(criterion) != nrow(data)) {
+    } else if (length(criterion) != nrow(Data)) {
       stop("'criterion' must be numeric or logical vector of the same length as a number of observations in 'data'. ", call. = FALSE)
     }
   }
   if (missing(maxscore)) {
-    maxscore <- sapply(data, max, na.rm = TRUE)
+    maxscore <- sapply(Data, max, na.rm = TRUE)
   }
   if (missing(minscore)) {
-    minscore <- sapply(data, min, na.rm = TRUE)
+    minscore <- sapply(Data, min, na.rm = TRUE)
   }
   if (missing(cutscore)) {
-    cutscore <- sapply(data, max, na.rm = TRUE)
+    cutscore <- sapply(Data, max, na.rm = TRUE)
   } else {
     if (length(cutscore) == 1) {
-      cutscore <- rep(cutscore, ncol(data))
+      cutscore <- rep(cutscore, ncol(Data))
     }
   }
-  data <- data[complete.cases(data), ]
+  Data <- Data[complete.cases(Data), ]
   if (bin) {
-    data2 <- data
-    for (i in 1:dim(data)[2]) {
-      data[data2[, i] >= cutscore[i], i] <- 1
-      data[data2[, i] < cutscore[i], i] <- 0
+    data2 <- Data
+    for (i in 1:dim(Data)[2]) {
+      Data[data2[, i] >= cutscore[i], i] <- 1
+      Data[data2[, i] < cutscore[i], i] <- 0
     }
-    head(data)
-    minscore <- sapply(data, min, na.rm = TRUE)
-    maxscore <- sapply(data, max, na.rm = TRUE)
+    head(Data)
+    minscore <- sapply(Data, min, na.rm = TRUE)
+    maxscore <- sapply(Data, max, na.rm = TRUE)
   }
   if (missing(item.names)) {
-    item.names <- colnames(data)
+    item.names <- colnames(Data)
   }
   if (u > k) {
     stop("'u' needs to be lower or equal to 'k'. ", call. = FALSE)
@@ -217,36 +223,36 @@ DDplot <- function(data, item.names, discrim = "ULI", k = 3, l = 1, u = 3,
     "Item (ordered by difficulty)",
     "Item (ordered by average item score)"
   )
-  average <- colMeans(data, na.rm = TRUE)
+  average <- colMeans(Data, na.rm = TRUE)
   if (discrim == "ULI") {
-    disc <- as.numeric(gDiscrim(data,
+    disc <- as.numeric(gDiscrim(Data,
       minscore = minscore, maxscore = maxscore,
       k = k, l = l, u = u
     ))
     i <- 1
   }
   if (discrim == "RIR") {
-    TOT <- rowSums(data)
-    TOT.woi <- TOT - data
-    disc <- diag(cor(data, TOT.woi, use = "complete"))
+    TOT <- rowSums(Data)
+    TOT.woi <- TOT - Data
+    disc <- diag(cor(Data, TOT.woi, use = "complete"))
     i <- 2
   }
   if (discrim == "RIT") {
-    TOT <- rowSums(data)
-    disc <- t(cor(data, TOT, use = "complete"))
+    TOT <- rowSums(Data)
+    disc <- t(cor(Data, TOT, use = "complete"))
     i <- 3
   }
 
   # when criterion is not 'none', 'disc' var is used to store item-crit cor
   if (any(criterion != "none", na.rm = TRUE)) {
-    item_crit_cor <- t(cor(data, criterion, use = "complete"))
+    item_crit_cor <- t(cor(Data, criterion, use = "complete"))
 
     if (val_type == "simple") {
       disc <- item_crit_cor
       i <- 4
     } else if (val_type == "index") {
-      N <- nrow(data)
-      sx <- apply(data, 2, sd)
+      N <- nrow(Data)
+      sx <- sapply(Data, sd)
       vx <- ((N - 1) / N) * sx^2
       disc <- item_crit_cor * sqrt(vx)
       i <- 5
@@ -285,7 +291,7 @@ DDplot <- function(data, item.names, discrim = "ULI", k = 3, l = 1, u = 3,
     }
 
     value <- c(rbind(difc, disc)[, order(difc)])
-    parameter <- rep(c(diffName[j], discName[i]), ncol(data))
+    parameter <- rep(c(diffName[j], discName[i]), ncol(Data))
     parameter <- factor(parameter, levels = parameter[1:2])
     item <- factor(rep(item.names[order(difc)], each = 2), levels = item.names[order(difc)])
     df <- data.frame(item, parameter, value)
@@ -326,7 +332,7 @@ DDplot <- function(data, item.names, discrim = "ULI", k = 3, l = 1, u = 3,
     }
   } else {
     value <- difc[order(difc)]
-    parameter <- rep(c(diffName[j]), ncol(data))
+    parameter <- rep(c(diffName[j]), ncol(Data))
     item <- factor(item.names[order(difc)], levels = item.names[order(difc)])
     df <- data.frame(item, parameter, value)
     col <- c("red", "darkblue")

@@ -3,15 +3,16 @@
 #' @aliases recode_nr
 #'
 #' @description \code{recode_nr()} function recognizes and recodes not-reached
-#' responses, i.e. missing responses to items such that all subsequent
+#' responses, i.e., missing responses to items such that all subsequent
 #' items are missed as well by the respondent.
 #'
-#' @param df matrix or data.frame: object to be recoded, must include only items
-#' columns and no additional information
-#' @param nr_code single character, integer or numeric: specifying how should
-#' be recognized not-reached responses coded (default is \code{99})
+#' @param Data matrix or data.frame: object to be recoded, must include only
+#'   items columns and no additional information
+#' @param nr_code single character, integer or numeric: specifying how should be
+#'   recognized not-reached responses coded (default is \code{99})
+#' @param df deprecated. Use argument \code{Data} instead.
 #'
-#' @return The same class as input object, see \code{df}.
+#' @return The same class as input object, see \code{Data}.
 #'
 #' @author
 #' Jan Netik \cr
@@ -44,16 +45,20 @@
 #' head(HCImissedNR)
 #' summary(HCImissedNR)
 #' @export
-recode_nr <- function(df, nr_code = 99) {
-  if (any(sapply(df, is.factor))) {
-    for (i in 1:ncol(df)) {
-      if (!is.null(levels(df[, i]))) {
-        levels(df[, i]) <- c(levels(df[, i]), nr_code)
+recode_nr <- function(Data, nr_code = 99, df) {
+  if (!missing(df)) {
+    stop("Argument 'df' deprecated. Please use argument 'Data' instead. ", call. = FALSE)
+  }
+
+  if (any(sapply(Data, is.factor))) {
+    for (i in 1:ncol(Data)) {
+      if (!is.null(levels(Data[, i]))) {
+        levels(Data[, i]) <- c(levels(Data[, i]), nr_code)
       }
     }
   }
 
-  nr_count <- apply(df, 1, function(x) {
+  nr_count <- apply(Data, 1, function(x) {
     with(rle(is.na(unlist(x))), {
       ifelse(values[length(values)],
         lengths[values][length(lengths[values])],
@@ -66,12 +71,12 @@ recode_nr <- function(df, nr_code = 99) {
   rows <- rep(indx, nr_count[indx])
   cols <-
     unlist(lapply(nr_count[indx], function(x) {
-      seq(ncol(df) - x + 1, ncol(df))
+      seq(ncol(Data) - x + 1, ncol(Data))
     }))
 
   arr_indx <- cbind(rows, cols)
 
-  df[arr_indx] <- nr_code
+  Data[arr_indx] <- nr_code
 
-  return(df)
+  return(Data)
 }
