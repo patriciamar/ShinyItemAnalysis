@@ -62,33 +62,24 @@ DIF_total_table_Input <- reactive({
   sc_one <- DIF_total_matching()[group() == 1]
   sc_zero <- DIF_total_matching()[group() == 0]
 
-  skewness <- function(x) {
-    n <- length(x)
-    (sum((x - mean(x, na.rm = TRUE))^3, na.rm = TRUE) / n) / (sum((x - mean(x, na.rm = TRUE))^2, na.rm = TRUE) / n)^(3 / 2)
-  }
-  kurtosis <- function(x) {
-    n <- length(x)
-    n * sum((x - mean(x, na.rm = TRUE))^4, na.rm = TRUE) / (sum((x - mean(x, na.rm = TRUE))^2, na.rm = TRUE)^2)
-  }
-
   tab <- data.frame(rbind(
     round(c(
       length(sc_zero),
-      min(sc_zero, na.rm = T),
-      max(sc_zero, na.rm = T),
-      mean(sc_zero, na.rm = T),
-      median(sc_zero, na.rm = T),
-      sd(sc_zero, na.rm = T),
+      min(sc_zero, na.rm = TRUE),
+      max(sc_zero, na.rm = TRUE),
+      mean(sc_zero, na.rm = TRUE),
+      median(sc_zero, na.rm = TRUE),
+      sd(sc_zero, na.rm = TRUE),
       ShinyItemAnalysis:::skewness(sc_zero),
       ShinyItemAnalysis:::kurtosis(sc_zero)
     ), 2),
     round(c(
       length(sc_one),
-      min(sc_one, na.rm = T),
-      max(sc_one, na.rm = T),
-      mean(sc_one, na.rm = T),
-      median(sc_one, na.rm = T),
-      sd(sc_one, na.rm = T),
+      min(sc_one, na.rm = TRUE),
+      max(sc_one, na.rm = TRUE),
+      mean(sc_one, na.rm = TRUE),
+      median(sc_one, na.rm = TRUE),
+      sd(sc_one, na.rm = TRUE),
       ShinyItemAnalysis:::skewness(sc_one),
       ShinyItemAnalysis:::kurtosis(sc_one)
     ), 2)
@@ -179,7 +170,7 @@ output$DIF_total_hist <- renderPlotly({
   p$x$data[[2]]$text <- txt2
 
 
-  p %>% plotly::config(displayModeBar = F)
+  p %>% plotly::config(displayModeBar = FALSE)
 })
 
 output$DB_DIF_total_hist <- downloadHandler(
@@ -209,7 +200,7 @@ DIF_total_ttest_Input <- reactive({
 
   tab <- c(
     paste0(
-      sprintf("%.2f", mean(sc0, na.rm = T) - mean(sc1, na.rm = T)), " (",
+      sprintf("%.2f", mean(sc0, na.rm = TRUE) - mean(sc1, na.rm = TRUE)), " (",
       sprintf("%.2f", ttest$conf.int[1]), ", ",
       sprintf("%.2f", ttest$conf.int[2]), ")"
     ),
@@ -326,8 +317,8 @@ deltaplotInput <- reactive({
       x = "Reference group",
       y = "Focal group"
     ) +
-    xlim(min(dp$Deltas, na.rm = T) - 0.5, max(dp$Deltas, na.rm = T) + 0.5) +
-    ylim(min(dp$Deltas, na.rm = T) - 0.5, max(dp$Deltas, na.rm = T) + 0.5) +
+    xlim(min(dp$Deltas, na.rm = TRUE) - 0.5, max(dp$Deltas, na.rm = TRUE) + 0.5) +
+    ylim(min(dp$Deltas, na.rm = TRUE) - 0.5, max(dp$Deltas, na.rm = TRUE) + 0.5) +
     theme_app()
   if (is.numeric(dp$DIFitems)) {
     df2 <- df[dp$DIFitems, ]
@@ -385,8 +376,8 @@ deltaplotInput_report <- reactive({
       x = "Reference group",
       y = "Focal group"
     ) +
-    xlim(min(dp$Deltas, na.rm = T) - 0.5, max(dp$Deltas, na.rm = T) + 0.5) +
-    ylim(min(dp$Deltas, na.rm = T) - 0.5, max(dp$Deltas, na.rm = T) + 0.5) +
+    xlim(min(dp$Deltas, na.rm = TRUE) - 0.5, max(dp$Deltas, na.rm = TRUE) + 0.5) +
+    ylim(min(dp$Deltas, na.rm = TRUE) - 0.5, max(dp$Deltas, na.rm = TRUE) + 0.5) +
     theme_app()
 
   if (is.numeric(dp$DIFitems)) {
@@ -401,8 +392,25 @@ deltaplotInput_report <- reactive({
   p
 })
 
-output$deltaplot <- renderPlot({
-  deltaplotInput()
+output$deltaplot <- renderPlotly({
+  g <- deltaplotInput() %>%
+    style(textposition = "right")
+  p <- ggplotly(g)
+
+  p$x$data[[1]]$text <- gsub("X1", "Delta - reference", p$x$data[[1]]$text)
+  p$x$data[[1]]$text <- gsub("X2", "Delta - focal", p$x$data[[1]]$text)
+  p$x$data[[1]]$text <- gsub("nam:", "Item:", p$x$data[[1]]$text)
+  p$x$data[[2]]$hovertext <- gsub("X1", "Delta - reference", p$x$data[[2]]$hovertext)
+  p$x$data[[2]]$hovertext <- gsub("X2", "Delta - focal", p$x$data[[2]]$hovertext)
+  p$x$data[[2]]$hovertext <- gsub("nam:", "Item:", p$x$data[[2]]$hovertext)
+
+  for (i in 3:5) {
+    p$x$data[[i]]$text <- gsub("intercept", "Intercept", p$x$data[[i]]$text)
+    p$x$data[[i]]$text <- gsub("slope", "Slope", p$x$data[[i]]$text)
+  }
+
+  p$elementId <- NULL
+  p %>% plotly::config(displayModeBar = FALSE)
 })
 
 output$DP_deltaplot <- downloadHandler(
@@ -634,7 +642,7 @@ observe({
     session = session,
     inputId = "DIF_MH_items_score",
     max = item_count,
-    value = median(total_score(), na.rm = T)
+    value = median(total_score(), na.rm = TRUE)
   )
 })
 
@@ -1457,8 +1465,45 @@ DIF_logistic_items_plot <- reactive({
   )
   g
 })
-output$DIF_logistic_items_plot <- renderPlot({
-  DIF_logistic_items_plot()
+
+output$DIF_logistic_items_plot <- renderPlotly({
+  g <- DIF_logistic_items_plot()
+  p <- ggplotly(g)
+
+  p$x$data[[1]]$text <- paste0(
+    "Group: Reference", "<br />",
+    "Match: ", p$x$data[[1]]$x, "<br />",
+    "Probability: ", p$x$data[[1]]$y
+  )
+  p$x$data[[2]]$text <- paste0(
+    "Group: Focal", "<br />",
+    "Match: ", p$x$data[[2]]$x, "<br />",
+    "Probability: ", p$x$data[[2]]$y
+  )
+  p$x$data[[3]]$text <- gsub("gr1", "Reference", p$x$data[[3]]$text)
+  p$x$data[[3]]$text <- gsub("Probability", "Empirical probability", p$x$data[[3]]$text)
+  p$x$data[[4]]$text <- gsub("gr2", "Focal", p$x$data[[4]]$text)
+  p$x$data[[4]]$text <- gsub("Probability", "Empirical probability", p$x$data[[4]]$text)
+
+  if (input$DIF_logistic_items_matching == "uploaded") {
+    match <- "Uploaded match"
+  } else if (input$DIF_logistic_items_matching == "zuploaded") {
+    match <- "Uploaded standardized match"
+  } else if (input$DIF_logistic_items_matching == "zscore") {
+    match <- "Z-score"
+  } else if (input$DIF_logistic_items_matching == "score") {
+    match <- "Score"
+  }
+
+  for (i in 1:length(p$x$data)) {
+    text <- gsub("Match", match, p$x$data[[i]]$text)
+    text <- lapply(strsplit(text, split = "<br />"), unique)
+    text <- unlist(lapply(text, paste, collapse = "<br />"))
+    p$x$data[[i]]$text <- text
+  }
+
+  p$elementId <- NULL
+  hide_legend(p) %>% plotly::config(displayModeBar = FALSE)
 })
 
 # ** DB for plot ######
@@ -2198,8 +2243,30 @@ plot_DIF_NLRInput <- reactive({
 })
 
 # ** Output plot ######
-output$plot_DIF_NLR <- renderPlot({
-  plot_DIF_NLRInput()
+output$plot_DIF_NLR <- renderPlotly({
+  g <- plot_DIF_NLRInput()
+  p <- ggplotly(g)
+
+  p$x$data[[1]]$text <- paste0(
+    "Group: Reference", "<br />",
+    "Match: ", p$x$data[[1]]$x, "<br />",
+    "Probability: ", p$x$data[[1]]$y
+  )
+  p$x$data[[2]]$text <- paste0(
+    "Group: Focal", "<br />",
+    "Match: ", p$x$data[[2]]$x, "<br />",
+    "Probability: ", p$x$data[[2]]$y
+  )
+
+  p$x$data[[3]]$text <- gsub("size", "Group: Reference<br />Count", p$x$data[[3]]$text)
+  p$x$data[[3]]$text <- gsub("match", "Z-score", p$x$data[[3]]$text)
+  p$x$data[[3]]$text <- gsub("prob", "Empirical probability", p$x$data[[3]]$text)
+  p$x$data[[4]]$text <- gsub("size", "Group: Focal<br />Count", p$x$data[[4]]$text)
+  p$x$data[[4]]$text <- gsub("match", "Z-score", p$x$data[[4]]$text)
+  p$x$data[[4]]$text <- gsub("prob", "Empirical probability", p$x$data[[4]]$text)
+
+  p$elementId <- NULL
+  hide_legend(p) %>% plotly::config(displayModeBar = FALSE)
 })
 
 # ** DB for plot ######
@@ -2838,8 +2905,23 @@ plot_DIF_IRT_LordInput <- reactive({
   g
 })
 
-output$plot_DIF_IRT_Lord <- renderPlot({
-  plot_DIF_IRT_LordInput()
+output$plot_DIF_IRT_Lord <- renderPlotly({
+  g <- plot_DIF_IRT_LordInput()
+  p <- ggplotly(g)
+
+  p$x$data[[1]]$text <- paste0(
+    "Group: Reference", "<br />",
+    "Ability: ", p$x$data[[1]]$x, "<br />",
+    "Probability: ", p$x$data[[1]]$y
+  )
+  p$x$data[[2]]$text <- paste0(
+    "Group: Focal", "<br />",
+    "Ability: ", p$x$data[[2]]$x, "<br />",
+    "Probability: ", p$x$data[[2]]$y
+  )
+
+  p$elementId <- NULL
+  hide_legend(p) %>% plotly::config(displayModeBar = FALSE)
 })
 
 # ** DB for plot ######
@@ -3512,8 +3594,32 @@ plot_DIF_IRT_RajuInput <- reactive({
   g
 })
 
-output$plot_DIF_IRT_Raju <- renderPlot({
-  plot_DIF_IRT_RajuInput()
+output$plot_DIF_IRT_Raju <- renderPlotly({
+  g <- plot_DIF_IRT_RajuInput()
+  tmp1 <- g$layers[[1]]
+  tmp2 <- g$layers[[2]]
+  tmp3 <- g$layers[[3]]
+
+  g$layers[[1]] <- tmp3
+  g$layers[[2]] <- tmp1
+  g$layers[[3]] <- tmp2
+
+  p <- ggplotly(g)
+
+  p$x$data[[2]]$text <- paste0(
+    "Group: Reference", "<br />",
+    "Ability: ", p$x$data[[2]]$x, "<br />",
+    "Probability: ", p$x$data[[2]]$y
+  )
+  p$x$data[[3]]$text <- paste0(
+    "Group: Focal", "<br />",
+    "Ability: ", p$x$data[[3]]$x, "<br />",
+    "Probability: ", p$x$data[[3]]$y
+  )
+  p$x$data[[1]]$text <- NULL
+
+  p$elementId <- NULL
+  hide_legend(p) %>% plotly::config(displayModeBar = FALSE)
 })
 
 output$DP_plot_DIF_IRT_Raju <- downloadHandler(
@@ -4129,8 +4235,8 @@ output$method_comparison_table <- renderTable(
     n <- nrow(tab)
     k <- ncol(tab)
 
-    rDIF <- rowSums(tab, na.rm = T)
-    cDIF <- colSums(tab, na.rm = T)
+    rDIF <- rowSums(tab, na.rm = TRUE)
+    cDIF <- colSums(tab, na.rm = TRUE)
     cDIF[k + 1] <- 0
 
     tab <- cbind(tab, as.integer(rDIF))
@@ -4376,8 +4482,6 @@ output$DIF_cum_NA_warning_summary <- renderUI({
   HTML(txt)
 })
 
-
-
 # ** DIF statistic and parameter tables ####
 coef_cum_dif <- reactive({
   res <- DIF_cum_model()
@@ -4398,6 +4502,10 @@ coef_cum_dif <- reactive({
 
   # estimated coefficients for all items with standard errors
   coefs <- coef(res, SE = TRUE, simplify = TRUE)
+
+  # adding missing colums, if necessary
+  new_cols <- c(group = 0, "x:group" = 0)
+  coefs <- coefs %>% add_column(!!!new_cols[setdiff(names(new_cols), names(coefs))])
 
   estims <- coefs[c(TRUE, FALSE), ]
 
@@ -4635,8 +4743,28 @@ DIF_cum_plot_cumulative_Input <- reactive({
   g
 })
 
-output$DIF_cum_plot_cumulative <- renderPlot({
-  DIF_cum_plot_cumulative_Input()
+output$DIF_cum_plot_cumulative <- renderPlotly({
+  g <- DIF_cum_plot_cumulative_Input()
+  p <- ggplotly(g)
+
+  for (i in 1:length(p$x$data)) {
+    text <- p$x$data[[i]]$text
+    text <- gsub("size", "Count", text)
+    text <- gsub("category", "Category", text)
+    text <- gsub("probability", "Probability", text)
+    text <- gsub("matching", "Z-score", text)
+    p$x$data[[i]]$text <- text
+  }
+
+  for (i in 1:length(p$x$data)) {
+    text <- p$x$data[[i]]$text
+    text <- lapply(strsplit(text, split = "<br />"), unique)
+    text <- unlist(lapply(text, paste, collapse = "<br />"))
+    p$x$data[[i]]$text <- text
+  }
+
+  p$elementId <- NULL
+  hide_legend(p) %>% plotly::config(displayModeBar = FALSE)
 })
 
 # ** DB for plot - cumulative ######
@@ -4674,8 +4802,28 @@ DIF_cum_plot_category_Input <- reactive({
   g
 })
 
-output$DIF_cum_plot_category <- renderPlot({
-  DIF_cum_plot_category_Input()
+output$DIF_cum_plot_category <- renderPlotly({
+  g <- DIF_cum_plot_category_Input()
+  p <- ggplotly(g)
+
+  for (i in 1:length(p$x$data)) {
+    text <- p$x$data[[i]]$text
+    text <- gsub("size", "Count", text)
+    text <- gsub("category", "Category", text)
+    text <- gsub("probability", "Probability", text)
+    text <- gsub("matching", "Z-score", text)
+    p$x$data[[i]]$text <- text
+  }
+
+  for (i in 1:length(p$x$data)) {
+    text <- p$x$data[[i]]$text
+    text <- lapply(strsplit(text, split = "<br />"), unique)
+    text <- unlist(lapply(text, paste, collapse = "<br />"))
+    p$x$data[[i]]$text <- text
+  }
+
+  p$elementId <- NULL
+  hide_legend(p) %>% plotly::config(displayModeBar = FALSE)
 })
 
 # ** DB for plot - cumulative ######
@@ -5000,6 +5148,10 @@ coef_adj_dif <- reactive({
   # estimated coefficients for all items with standard errors
   coefs <- coef(res, SE = TRUE, simplify = TRUE)
 
+  # adding missing colums, if necessary
+  new_cols <- c(group = 0, "x:group" = 0)
+  coefs <- coefs %>% add_column(!!!new_cols[setdiff(names(new_cols), names(coefs))])
+
   estims <- coefs[c(TRUE, FALSE), ]
 
   ses <- coefs[c(FALSE, TRUE), ]
@@ -5236,8 +5388,28 @@ DIF_adj_plot_Input <- reactive({
   g
 })
 
-output$DIF_adj_plot <- renderPlot({
-  DIF_adj_plot_Input()
+output$DIF_adj_plot <- renderPlotly({
+  g <- DIF_adj_plot_Input()
+  p <- ggplotly(g)
+
+  for (i in 1:length(p$x$data)) {
+    text <- p$x$data[[i]]$text
+    text <- gsub("size", "Count", text)
+    text <- gsub("category", "Category", text)
+    text <- gsub("probability", "Probability", text)
+    text <- gsub("matching", "Z-score", text)
+    p$x$data[[i]]$text <- text
+  }
+
+  for (i in 1:length(p$x$data)) {
+    text <- p$x$data[[i]]$text
+    text <- lapply(strsplit(text, split = "<br />"), unique)
+    text <- unlist(lapply(text, paste, collapse = "<br />"))
+    p$x$data[[i]]$text <- text
+  }
+
+  p$elementId <- NULL
+  hide_legend(p) %>% plotly::config(displayModeBar = FALSE)
 })
 
 # ** DB for plot ######
@@ -5831,8 +6003,30 @@ DDF_multi_plot_Input <- reactive({
 })
 
 # ** Output plot ######
-output$DDF_multi_plot <- renderPlot({
-  DDF_multi_plot_Input()
+output$DDF_multi_plot <- renderPlotly({
+  g <- DDF_multi_plot_Input()
+  p <- ggplotly(g)
+
+  for (i in 1:length(p$x$data)) {
+    text <- p$x$data[[i]]$text
+    text <- gsub("answ", "Category", text)
+    text <- gsub("variable", "Category", text)
+    text <- gsub("Freq.1", "Count", text)
+    text <- gsub("Freq", "Empirical probability", text)
+    text <- gsub("value", "Probability", text)
+    text <- gsub("score", "Z-score", text)
+    p$x$data[[i]]$text <- text
+  }
+
+  for (i in 1:length(p$x$data)) {
+    text <- p$x$data[[i]]$text
+    text <- lapply(strsplit(text, split = "<br />"), unique)
+    text <- unlist(lapply(text, paste, collapse = "<br />"))
+    p$x$data[[i]]$text <- text
+  }
+
+  p$elementId <- NULL
+  hide_legend(p) %>% plotly::config(displayModeBar = FALSE)
 })
 
 # ** DB for plot ######
@@ -6027,6 +6221,55 @@ DDF_multi_plot_report <- reactive({
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # * TRAINING ######
+
+# *** Interpretation ######
+output$DIF_training_interpretation <- renderUI({
+  aR <- input$DIF_training_parameter_aR
+  bR <- input$DIF_training_parameter_bR
+  cR <- 0
+  dR <- 1
+
+  aF <- input$DIF_training_parameter_aF
+  bF <- input$DIF_training_parameter_bF
+  cF <- 0
+  dF <- 1
+
+  theta0 <- input$DIF_training_parameter_theta
+
+  ccirt <- function(theta, a, b, c, d) {
+    return(c + (d - c) / (1 + exp(-a * (theta - b))))
+  }
+
+  probR <- ccirt(theta0, a = aR, b = bR, c = cR, d = dR)
+  probF <- ccirt(theta0, a = aF, b = bF, c = cF, d = dF)
+
+  txt1 <- paste0(
+    "In the <font color='blue'><b>reference</b></font> group, a respondent with
+    the ability ",
+    withMathJax(paste0("\\(\\theta= ", theta0, "\\)")),
+    " has the probability of the correct answer to an item with parameters ",
+    withMathJax(paste0("\\(a = ", aR, "\\),")), " ",
+    withMathJax(paste0("\\(b = ", bR, "\\),")), " ",
+    withMathJax(paste0("\\(c = ", cR, "\\),")), " and ",
+    withMathJax(paste0("\\(d = ", dR, "\\)")),
+    " equal to <b>", sprintf("%.2f", probR), "</b>. "
+  )
+  txt2 <- paste0(
+    "In the <font color='#e6b800'><b>focal</b></font> group, a respondent with
+    the ability ",
+    withMathJax(paste0("\\(\\theta= ", theta0, "\\)")),
+    "has the probability of the correct answer  to an item with parameters ",
+    withMathJax(paste0("\\(a = ", aF, "\\),")), " ",
+    withMathJax(paste0("\\(b = ", bF, "\\),")), " ",
+    withMathJax(paste0("\\(c = ", cF, "\\),")), " and ",
+    withMathJax(paste0("\\(d = ", dF, "\\)")),
+    " equal to <b>", sprintf("%.2f", probF), "</b>. "
+  )
+
+  txt <- paste0("<b>Interpretation: </b>", txt1, txt2)
+  HTML(txt)
+})
+
 # ** Plot for training ######
 DIF_training_plot_Input <- reactive({
   aR <- input$DIF_training_parameter_aR

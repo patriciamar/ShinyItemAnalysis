@@ -168,7 +168,7 @@ uiDIF <-
         )
       ),
       h4("Delta plot"),
-      plotOutput("deltaplot"),
+      plotlyOutput("deltaplot"),
       downloadButton("DP_deltaplot", label = "Download figure"),
       br(), br(),
       h4("Summary table"),
@@ -485,7 +485,7 @@ uiDIF <-
           p("Points represent proportion of correct answer (empirical probabilities) with respect to the DIF matching variable.
                                    Their size is determined by count of respondents who achieved given level of DIF matching variable with respect
                                    to the group membership."),
-          plotOutput("DIF_logistic_items_plot"),
+          plotlyOutput("DIF_logistic_items_plot"),
           downloadButton("DB_DIF_logistic_items_plot", label = "Download figure"),
           h4("Equation"),
           ("$$\\mathrm{P}\\left(Y_{pi} = 1 | X_p, G_p\\right) = \\frac{e^{b_{i0} + b_{i1} X_p + b_{i2} G_p + b_{i3} X_p:G_p}}{1 + e^{b_{i0} + b_{i1} X_p + b_{i2} G_p + b_{i3} X_p:G_p}}$$"),
@@ -762,7 +762,7 @@ uiDIF <-
           p("Points represent proportion of correct answer (empirical probabilities) with respect to the DIF matching variable.
                                    Their size is determined by count of respondents who achieved given level of DIF matching variable with respect
                                    to the group membership."),
-          plotOutput("plot_DIF_NLR"),
+          plotlyOutput("plot_DIF_NLR"),
           downloadButton("DP_plot_DIF_NLR", label = "Download figure"),
           h4("Equation"),
           fluidRow(column(12, align = "center", uiOutput("DIF_NLR_equation_plot"))),
@@ -923,7 +923,7 @@ uiDIF <-
           h4("Plot with estimated DIF characteristic curve"),
           p("Note that plots might slightly differ even for non-DIF items as two seperate models are fitted, however this difference
                                    is non-significant. "),
-          plotOutput("plot_DIF_IRT_Lord"),
+          plotlyOutput("plot_DIF_IRT_Lord"),
           downloadButton("DP_plot_DIF_IRT_Lord", label = "Download figure"),
           h4("Equation"),
           uiOutput("irtint_lord"),
@@ -1089,7 +1089,7 @@ uiDIF <-
           h4("Plot with estimated DIF characteristic curve"),
           p("Note that plots might slightly differ even for non-DIF items as two seperate models are fitted, however this difference
                                    is non-significant. "),
-          plotOutput("plot_DIF_IRT_Raju"),
+          plotlyOutput("plot_DIF_IRT_Raju"),
           downloadButton("DP_plot_DIF_IRT_Raju", label = "Download figure"),
           h4("Equation"),
           uiOutput("irtint_raju"),
@@ -1459,8 +1459,8 @@ uiDIF <-
                                    respect to the group membership."),
           splitLayout(
             cellWidths = c("50%", "50%"),
-            plotOutput("DIF_cum_plot_cumulative"),
-            plotOutput("DIF_cum_plot_category")
+            plotlyOutput("DIF_cum_plot_cumulative"),
+            plotlyOutput("DIF_cum_plot_category")
           ),
           splitLayout(
             cellWidths = c("50%", "50%"),
@@ -1659,7 +1659,7 @@ uiDIF <-
                                    Their size is determined by count of respondents who achieved
                                    given level of DIF matching variable and who selected given option with
                                    respect to the group membership."),
-          plotOutput("DIF_adj_plot"),
+          plotlyOutput("DIF_adj_plot"),
           downloadButton("DB_DIF_adj_plot", label = "Download figure"),
           h4("Equation"),
           fluidRow(column(12, align = "center", uiOutput("DIF_adj_equation_items"))),
@@ -1861,7 +1861,7 @@ uiDIF <-
                                    Their size is determined by count of respondents who achieved
                                    given level of DIF matching variable and who selected given option with
                                    respect to the group membership."),
-          plotOutput("DDF_multi_plot"),
+          plotlyOutput("DDF_multi_plot"),
           downloadButton("DB_DDF_multi_plot", label = "Download figure"),
           downloadButton("DB_DDF_multi_plot_all", label = "Download all figures"),
           h4("Equation"),

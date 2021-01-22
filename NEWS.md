@@ -22,13 +22,14 @@
   * New function `plot_corr()` to compute and visualize an item correlation matrix was added.
     and implemented within the ShinyItemAnalysis interactive app.
   * New datasets `HCIgrads`, `HCItestretest`, `HCIprepost` and `HCIdata` were added.
-  * `startShinyItemAnalysis()` function was fixed to finish job persisting in the backgroud .
+  * `startShinyItemAnalysis()` function was fixed to finish job persisting in the backgroud.
     after the app is closed.
   * Figures can now be downloaded at once in DDF section of the app.
   * Equations were unified in Regression, IRT and DIF sections of the app, with p being the index 
     for person and i being the index for an item. 
-  * Training section was added to DIF section.
-  * Figures in Validity and Regression section are now displayed in plotly mode in the shiny app.
+  * Training section was added to DIF section displayig group-specific models.
+  * Figures in Validity, Regression and DIF section are now displayed in plotly 
+    mode in the shiny app.
   * In IRT/Rasch section, the scaterplots for standardized total score vs. factor score now 
     displayed in plotly mode in the shiny app. (Needs to be applied to other IRT subsections.)
   * IRT/Rasch section was restructured, and it now offers both the intercept/slope as well as

@@ -3,12 +3,12 @@
 #------------------------------------------------------------------------------------#
 uiTDIF <- tabPanel(
   "Exercises",
-  tabsetPanel(
-    tabPanel(
-      "Basics",
+#  tabsetPanel(
+#    tabPanel(
+#      "Basics", #General concepts? Group-specific model?
 
       h3("DIF training"),
-      p("In this section, you can explore differential item functioning for two groups -
+      p("In this section, you can explore the group-specific model for testing differential item functioning among two groups -
                                 reference and focal."),
       #------------------------------------------------------------------------------------#
       # Parameters ####
@@ -18,8 +18,8 @@ uiTDIF <- tabPanel(
         "Select parameters ", strong("\\(a\\)"), "(discrimination) and ", strong("\\(b\\)"),
         "(difficulty) for an item given by 2PL IRT model for ",
         HTML('<font color="blue"><strong>reference</strong></font>'), " and ",
-        HTML('<font color="#e6b800"><strong>focal</strong></font>'), " group. When parameters for
-                                reference and focal group differ, we can observe phenomenon of differential item functioning. "
+        HTML('<font color="#e6b800"><strong>focal</strong></font>'), " group. When the item parameters for
+                                the reference and the focal group differ, this phenomenon is termed differential item functioning. "
       ),
       fluidRow(
         splitLayout(
@@ -54,8 +54,8 @@ uiTDIF <- tabPanel(
           ""
         )
       ),
-      p("Select also the value of latent ability \\(\\theta\\) to see the interpretation of the item
-                                characteristic curves. "),
+      p("You may also select the value of latent ability \\(\\theta\\) to obtain the interpretation of the item
+                                characteristic curves for this ability. "),
       fluidRow(
         splitLayout(
           cellWidths = c("20%", "5%", "75"),
@@ -71,9 +71,8 @@ uiTDIF <- tabPanel(
       #------------------------------------------------------------------------------------#
       # Interpretation ####
       #------------------------------------------------------------------------------------#
-      # uiOutput("ccIRT_interpretation"),
+      uiOutput("DIF_training_interpretation"),
       br(),
-
       #------------------------------------------------------------------------------------#
       # Plots ####
       #------------------------------------------------------------------------------------#
@@ -377,19 +376,19 @@ uiTDIF <- tabPanel(
       # h4("Selected R code"),
       # div(code(HTML(""))),
       br()
-    ),
-    tabPanel(
-      "Score-based methods",
-      h3("Score-based methods")
-    ),
-    tabPanel(
-      "IRT-based methods",
-      h3("IRT-based methods")
-    ),
-    tabPanel(
-      "Other topics",
-      h3("Item purification"),
-      h3("Corrections for multiple comparisons")
-    )
-  )
+    # ),
+    # tabPanel(
+    #   "Score-based methods",
+    #   h3("Score-based methods")
+    # ),
+    # tabPanel(
+    #   "IRT-based methods",
+    #   h3("IRT-based methods")
+    # ),
+    # tabPanel(
+    #   "Other topics",
+    #   h3("Item purification"),
+    #   h3("Corrections for multiple comparisons")
+#    )
+#  )
 )
