@@ -4,8 +4,8 @@
 
 ### Changes in version 1.3.4-1 (2021-01-22)
 #### BUG FIXING
-  * Display of ULI of discrimination was fixed for ordinal items 
-  * Bug in display of Multinomial regression parameters in case of IRT parametrization was fixed
+  * Display of ULI of discrimination was fixed for ordinal items.
+  * Bug in display of Multinomial regression parameters in case of IRT parametrization was fixed.
   * In the IRT training section, the calculation and display of item information curves was 
     fixed. (Thanks to Hynek Cigler for reporting this issue.)
   * Calculation of minimal scores in ItemAnalysis() function was fixed.
@@ -14,9 +14,9 @@
 
 #### MAJOR UPDATES
   * Continuous items are newly allowed, rater variable is added, data upload and warning
-    messages were updated
+    messages were updated.
   * New function ICCrestr() for computing ICC in restricted samples was added.
-  * New AIBS dataset was added to the package
+  * New AIBS dataset was added to the package.
   * Functions gDiscrim(), DDplot() and ItemAnalysis were updated, variable names were unified
   * New function `plot_corr()` to compute and visualize an item correlation matrix was added.
     and implemented within the ShinyItemAnalysis interactive app.
@@ -35,6 +35,7 @@
   * Regression/Multinomial newly offers also the IRT parametrization.  
   
 #### MINOR UPDATES
+  * Toy data selection was updated.
   * Selected R code was updated.
   * Unnecessary dependencies were removed.
   * Summary tab was updated within the app, interactive help with formulae is newly offered.

@@ -11,10 +11,9 @@ uiData <- tabPanel(
       # * Data ####
       #------------------------------------------------------------------------------------#
       p(
-        "For demonstration purposes, 20-item dataset", code("GMAT"), "from", code("difNLR"), "
-                              R package is used. On this page, you may select one of several toy datasets, mostly offered by",
-        code("ShinyItemAnalysis"), "and", code("difNLR"), "packages or you may upload your own
-                              dataset (see below). To return to demonstration dataset, click on", strong("Unload data"), " button."
+        "For demonstration purposes, the 20-item dataset", code("GMAT"),
+        " is used. On this page, you may select one of several other toy datasets or you may upload your own
+        dataset (see below). To return to demonstration dataset, click on", strong("Unload data"), " button."
       ),
       tags$hr(),
       #------------------------------------------------------------------------------------#
@@ -30,17 +29,23 @@ uiData <- tabPanel(
             label = "Select dataset",
             choices = c(
               "GMAT" = "GMAT_difNLR",
-              "GMAT2" = "GMAT2_difNLR",
+              #"GMAT2" = "GMAT2_difNLR",
+              "HCI" = "HCI_ShinyItemAnalysis",
+              "AIBS Grant Peer Review Scoring" = "AIBS_ShinyItemAnalysis",
+              "Learning To Learn 9" = "LearningToLearn_ShinyItemAnalysis_9",
+              "Learning To Learn 6" = "LearningToLearn_ShinyItemAnalysis_6",
               "MSAT-B" = "MSATB_difNLR",
               "Medical 100" = "dataMedical_ShinyItemAnalysis",
               "Medical 100 Graded" = "dataMedicalgraded_ShinyItemAnalysis",
-              "HCI" = "HCI_ShinyItemAnalysis",
-              "Science" = "Science_mirt",
-              "Learning To Learn 6" = "LearningToLearn_ShinyItemAnalysis_6",
-              "Learning To Learn 9" = "LearningToLearn_ShinyItemAnalysis_9"
+              "Science" = "Science_mirt"
             ),
             selected = "GMAT_difNLR"
-          )
+          ),
+          # conditionalPanel(
+          #   "input.dataSelect == 'AIBS_ShinyItemAnalysis'",
+          #   checkboxInput("round_data", "Round to integer?", TRUE)
+          #   # AIBS are considered as continuous, which is a whole new concept to SIA
+          # )
         ),
         column(
           9,
@@ -589,7 +594,7 @@ uiData <- tabPanel(
       #------------------------------------------------------------------------------------#
       # * Key ####
       #------------------------------------------------------------------------------------#
-      h4("Key (correct answers)"),
+      h4("Key (correct answers) / Cut-score"),
       DT::dataTableOutput("key"),
       br(),
       #------------------------------------------------------------------------------------#
