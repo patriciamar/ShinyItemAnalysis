@@ -62,10 +62,12 @@
 #' \item \code{\link{plotDIFirt}}, \code{\link{plotDIFLogistic}}
 #' \item \code{\link{plot_corr}}
 #' \item \code{\link{recode_nr}}
+#' \item \code{\link{ICCrestricted}}
 #' }
 #'
 #' @section Datasets:
 #' \itemize{
+#' \item \code{\link{AIBS}}
 #' \item \code{\link{dataMedical}}
 #' \item \code{\link{dataMedicalgraded}}
 #' \item \code{\link{dataMedicalkey}}
