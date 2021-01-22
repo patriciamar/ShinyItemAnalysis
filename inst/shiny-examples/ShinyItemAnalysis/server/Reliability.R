@@ -558,7 +558,7 @@ output$icc_text <- renderText({
   } else {
     paste0(
       "For the complete dataset, the estimated reliability is ",
-      round(full$ICC1, 2), ", 95% CI [", round(full$ICC1_LCI, 2), ", ", round(full$ICC1_UCI, 2), "]."
+      round(full$ICC1, 2), ", with 95% CI of [", round(full$ICC1_LCI, 2), ", ", round(full$ICC1_UCI, 2), "]."
     )
   }
   curr_part <- if (identical(curr, full) | is.null(curr)) {
@@ -568,7 +568,7 @@ output$icc_text <- renderText({
       "For the ", round(curr$prop_sel * 100), "%",
       " (that is ", curr$n_sel, ") of ", curr$dir, " ratees (proposals in the case of AIBS dataset),",
       " the estimated reliability is ",
-      round(curr$ICC1, 2), ", 95% CI [", round(curr$ICC1_LCI, 2), ", ", round(curr$ICC1_UCI, 2), "]."
+      round(curr$ICC1, 2), ", with 95% CI of [", round(curr$ICC1_LCI, 2), ", ", round(curr$ICC1_UCI, 2), "]."
     )
   }
 
