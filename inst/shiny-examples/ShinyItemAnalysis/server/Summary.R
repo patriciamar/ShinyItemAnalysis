@@ -1,12 +1,12 @@
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-# SUMMARY  ###########
+# SUMMARY  ####
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-# * TOTAL SCORES #####
+# * TOTAL SCORES ####
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-# ** Tooltips for total scores ######
+# ** Tooltips for total scores ####
 output$totalscores_tooltip_mean <- renderUI({
   span(
     class = "ttooltip",
@@ -52,8 +52,19 @@ output$totalscores_tooltip_kurtosis <- renderUI({
   )
 })
 
+# ** Update slider input ####
+observe({
+  total_score <- total_score()
+  updateSliderInput(
+    session = session,
+    inputId = "slider_totalscores_histogram",
+    min = floor(min(total_score, na.rm = TRUE)),
+    max = ceiling(max(total_score, na.rm = TRUE)),
+    value = round(median(total_score, na.rm = TRUE))
+  )
+})
 
-# ** Total scores summary table ######
+# ** Total scores summary table ####
 totalscores_table_Input <- reactive({
   sc <- total_score()
   n <- length(sc)
@@ -73,7 +84,7 @@ totalscores_table_Input <- reactive({
   tab
 })
 
-# ** Output total scores summary table ######
+# ** Output total scores summary table ####
 output$totalscores_table <- renderTable(
   {
     totalscores_table_Input()
@@ -83,102 +94,64 @@ output$totalscores_table <- renderTable(
   include.colnames = TRUE
 )
 
-# ** Histogram of total scores ######
+# ** Histogram of total scores ####
 totalscores_histogram_Input <- reactive({
   sc <- total_score()
   bin <- as.numeric(input$slider_totalscores_histogram)
-  data <- binary()
 
-  if (length(unique(c(min(sc, na.rm = TRUE), bin - 1, bin, max(sc, na.rm = TRUE)))) == 3 & bin != min(sc, na.rm = TRUE) & bin %in% sc) {
-    breaks <- unique(c(min(sc, na.rm = TRUE), bin - 1, bin, bin + 1, max(sc, na.rm = TRUE)))
-  } else {
-    breaks <- unique(c(min(sc, na.rm = TRUE), bin - 1, bin, max(sc, na.rm = TRUE)))
-  }
-
-  df <- data.table(
-    score = sc,
-    gr = cut(sc,
-      breaks = breaks,
-      include.lowest = TRUE
-    ),
-    col = ifelse(sc == bin, "gray",
+  df <- data.frame(
+    Score = sc,
+    Group = ifelse(sc == bin, "gray",
       ifelse(sc < bin, "red", "blue")
     )
   )
 
-  cols <- c("red", "gray", "blue")[c("red", "gray", "blue") %in% unique(df$col)]
-  df$col <- factor(df$col, cols)
+  binwidth <- min(abs(diff(unique(sc))))
+  cols <- c("red", "gray", "blue")[c("red", "gray", "blue") %in% unique(df$Group)]
+  df$Group <- factor(df$Group, cols)
 
-  g <- ggplot(df, aes(x = score, fill = col)) +
-    geom_histogram(aes(fill = gr, y = ..count.. / sum(..count..)), binwidth = 1, color = "black") +
+  ggplot(df, aes(x = Score, fill = Group)) +
+    geom_histogram(aes(y = ..count.. / sum(..count..)), binwidth = binwidth, color = "black") +
     scale_fill_manual(values = cols) +
     labs(
       x = "Total score",
       y = "Proportion of respondents"
     ) +
-    scale_x_continuous(limits = c(min(sc, na.rm = TRUE) - 0.5, max(sc, na.rm = TRUE) + 0.5)) +
     theme_app()
-  g
 })
 
-# ** Output histogram of total scores ######
+# ** Output histogram of total scores ####
 output$totalscores_histogram <- renderPlotly({
   sc <- total_score()
   bin <- as.numeric(input$slider_totalscores_histogram)
-  data <- binary()
 
-  if (min(sc, na.rm = TRUE) <= bin & bin <= max(sc, na.rm = TRUE)) {
-    if (bin %in% unique(sc)) {
-      breaks <- unique(c(min(sc, na.rm = TRUE), bin - 1, bin, max(sc, na.rm = TRUE)))
-    } else {
-      breaks <- unique(c(min(sc, na.rm = TRUE), bin - 1, max(sc, na.rm = TRUE)))
-    }
-  } else {
-    breaks <- c(0, max(sc, na.rm = TRUE))
-  }
-
-  df <- data.table(
-    score = sc,
-    gr = cut(sc,
-      breaks = breaks,
-      include.lowest = TRUE
+  df <- data.frame(
+    Score = sc,
+    Group = ifelse(sc == bin, "gray",
+      ifelse(sc < bin, "red", "blue")
     )
   )
+  dfCount <- data.frame(table(df$Score))
+  colnames(dfCount) <- c("Score", "Count")
+  df <- merge(df, dfCount)
+
+  binwidth <- min(abs(diff(unique(sc))))
+  cols <- c("red", "gray", "blue")[c("red", "gray", "blue") %in% unique(df$Group)]
+  df$Group <- factor(df$Group, cols)
 
   g <- totalscores_histogram_Input()
   p <- ggplotly(g)
-  k <- length(levels(df$gr))
-  m <- length(p$x$data[[1]]$text)
-  ints <- breaks
-  l <- length(p$x$data)
 
-  for (i in 1:k) {
-    if (i <= l) {
-      t <- subset(df, df$gr == levels(df$gr)[i])
-      t <- t[order(t$score)]
-      t <- as.data.frame(table(t$score))
-      lbnd <- ifelse(i == 1, ints[i], ints[i] + 1)
-      hbnd <- ints[i + 1]
-      idx <- which(p$x$data[[i]]$x %in% lbnd:hbnd)
-      c <- 1
-      for (j in idx) {
-        text <- strsplit(p$x$data[[i]]$text[j], "<br />")[[1]][1]
-        text <- sub("/", "", text)
-        text <- sub("countsum\\(count\\)", "Proportion", text)
-        p$x$data[[i]]$text[j] <- paste(
-          text, "<br />",
-          "Number of respodents:",
-          ifelse(c <= nrow(t) &
-            t$Var1[c] %in% lbnd:hbnd &
-            t$Var1[c] == p$x$data[[i]]$x[j], t$Freq[c], 0),
-          "<br /> Score:", p$x$data[[i]]$x[j]
-        )
-        c <- ifelse(t$Var1[c] != p$x$data[[i]]$x[j], c, c + 1)
-      }
-    } else {
-      break
-    }
+  for (i in 1:length(p$x$data)) {
+    p$x$data[[i]]$x <- p$x$data[[i]]$x[p$x$data[[i]]$y > 0]
+    p$x$data[[i]]$y <- round(p$x$data[[i]]$y[p$x$data[[i]]$y > 0], 3)
+    p$x$data[[i]]$text <- paste0(
+      "Score: ", p$x$data[[i]]$x, "<br />",
+      "Proportion: ", p$x$data[[i]]$y, "<br />",
+      "Count: ", unique(df[df$Group == p$x$data[[i]]$name, ])$Count
+    )
   }
+
   p %>% plotly::config(displayModeBar = FALSE)
 })
 
@@ -199,10 +172,10 @@ output$DB_totalscores_histogram <- downloadHandler(
 )
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-# * STANDARD SCORES #####
+# * STANDARD SCORES ####
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-# ** Tooltips for total scores ######
+# ** Tooltips for total scores ####
 output$standardscores_tooltip_total <- renderUI({
   span(
     class = "ttooltip",
@@ -215,7 +188,7 @@ output$standardscores_tooltip_total <- renderUI({
   )
 })
 
-# ** Tooltips for Z-score ######
+# ** Tooltips for Z-score ####
 output$standardscores_tooltip_zscore <- renderUI({
   span(
     class = "ttooltip",
@@ -228,7 +201,7 @@ output$standardscores_tooltip_zscore <- renderUI({
   )
 })
 
-# ** Tooltips for T-score ######
+# ** Tooltips for T-score ####
 output$standardscores_tooltip_tscore <- renderUI({
   span(
     class = "ttooltip",
@@ -241,17 +214,18 @@ output$standardscores_tooltip_tscore <- renderUI({
   )
 })
 
-# ** Table for scores ######
+# ** Table for scores ####
 standardscores_table_Input <- reactive({
   sc <- total_score()
-  k <- ifelse(is.character(key()), length(key()), sum(key()))
+  # k <- ifelse(is.character(key()), length(key()), sum(key()))
+  sc_max <- max(sc, na.rm = TRUE)
 
   # total score
   tosc <- sort(unique(sc))
   # percentile
   perc <- ecdf(sc)(tosc)
   # success rate
-  sura <- (tosc / k) * 100
+  sura <- (tosc / sc_max) * 100
   # Z score
   zsco <- sort(unique(z_score()))
   # T score
@@ -263,7 +237,7 @@ standardscores_table_Input <- reactive({
   tab
 })
 
-# ** Output table for scores ######
+# ** Output table for scores ####
 output$standardscores_table <- renderTable(
   {
     standardscores_table_Input()
