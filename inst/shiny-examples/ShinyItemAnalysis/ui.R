@@ -60,6 +60,11 @@ ui <- tagList(
     tags$link(
       rel = "stylesheet",
       type = "text/css",
+      href = "navbar_right.css"
+    ),
+    tags$link(
+      rel = "stylesheet",
+      type = "text/css",
       href = "tooltip.css"
     ),
     # JS
@@ -78,10 +83,6 @@ ui <- tagList(
     tags$script(
       type = "text/javascript",
       src = "collapsible_menu_click.js"
-    ),
-    tags$script(
-      type = "text/javascript",
-      src = "tabs_icons_right.js"
     ),
     tags$script(
       src = "https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.js",
@@ -144,7 +145,7 @@ ui <- tagList(
                     Test and item analysis | Version 1.3.4-1
                     </div>
                     <span style = "float:right">
-                    <a href = "https://shiny.cs.cas.cz/ShinyItemAnalysis/" id = "tooltipweb" target="_blank">
+                    <a href = "http://shinyitemanalysis.org/" id = "tooltipweb" target="_blank">
                     <img src = "footer_web_icon.png", class = "footer-icons">
                     </a>
                     <a href = "https://github.com/patriciamar/ShinyItemAnalysis/" id = "tooltipgithub" target="_blank">
@@ -175,6 +176,11 @@ ui <- tagList(
     # %%%%%%%%%%%%%%%%%%%%%
     # MAIN PANEL #########
     # %%%%%%%%%%%%%%%%%%%%%
+
+    # %%%%%%%%%%%%%%%%%%%%%
+    # ABOUT ##############
+    # %%%%%%%%%%%%%%%%%%%%%
+    uiAbout,
 
     # %%%%%%%%%%%%%%%%%%%%%
     # DATA ###############
@@ -222,18 +228,13 @@ ui <- tagList(
     uiReports,
 
     # %%%%%%%%%%%%%%%%%%%%%
-    # ABOUT ##############
+    # SETTING #########
     # %%%%%%%%%%%%%%%%%%%%%
-    uiAbout,
+    uiSetting,
 
     # %%%%%%%%%%%%%%%%%%%%%
     # REFERENCES #########
     # %%%%%%%%%%%%%%%%%%%%%
-    uiReferences,
-
-    # %%%%%%%%%%%%%%%%%%%%%
-    # SETTING #########
-    # %%%%%%%%%%%%%%%%%%%%%
-    uiSetting
+    uiReferences
   )
 )
