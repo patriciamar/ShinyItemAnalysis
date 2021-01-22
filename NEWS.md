@@ -28,10 +28,8 @@
   * Equations were unified in Regression, IRT and DIF sections of the app, with p being the index 
     for person and i being the index for an item. 
   * Training section was added to DIF section displayig group-specific models.
-  * Figures in Validity, Regression and DIF section are now displayed in plotly 
+  * Figures in Validity, Regression, IRT, and DIF section are now displayed in plotly 
     mode in the shiny app.
-  * In IRT/Rasch section, the scaterplots for standardized total score vs. factor score now 
-    displayed in plotly mode in the shiny app. (Needs to be applied to other IRT subsections.)
   * IRT/Rasch section was restructured, and it now offers both the intercept/slope as well as
     the IRT parametrization. (Needs to be applied to other IRT subsections.)
   * Regression/Multinomial newly offers also the IRT parametrization.  

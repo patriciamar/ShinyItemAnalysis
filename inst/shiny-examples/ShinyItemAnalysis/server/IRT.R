@@ -212,7 +212,8 @@ output$irt_rasch_iic_download <- downloadHandler(
 
 # *** TIC ######
 irt_rasch_tic <- reactive({
-  plt <- plot(irt_rasch_model(), type = "infoSE")
+  g <- irt_rasch_model()
+  plt <- plot(g, type = "infoSE")
 
   vals <- plt$panel.args
   x <- vals[[1]]$x
@@ -355,7 +356,8 @@ irt_rasch_factors <- reactive({
 
 output$irt_rasch_factors <- renderTable(
   {
-    head(irt_rasch_factors(), 6)
+    factors <- irt_rasch_factors()
+    head(factors, 6)
   },
   include.rownames = TRUE
 )
@@ -372,7 +374,8 @@ output$irt_rasch_factors_download <- downloadHandler(
 
 # *** Factor scores correlation ######
 irt_rasch_factors_correlation <- reactive({
-  fs <- as.vector(fscores(irt_rasch_model()))
+  fit <- irt_rasch_model()
+  fs <- as.vector(fscores(fit))
   sts <- z_score()
 
   whok <- !(is.na(fs) | is.na(sts))
@@ -388,7 +391,8 @@ output$irt_rasch_factors_correlation <- renderText({
 
 # *** Factor scores plot ######
 irt_rasch_factors_plot <- reactive({
-  fs <- as.vector(fscores(irt_rasch_model()))
+  fit <- irt_rasch_model()
+  fs <- as.vector(fscores(fit))
   sts <- z_score()
 
   df <- data.frame(fs, sts)
@@ -410,7 +414,6 @@ irt_rasch_factors_plot <- reactive({
 
 output$irt_rasch_factors_plot <- renderPlotly({
   g <- irt_rasch_factors_plot()
-
   p <- ggplotly(g)
 
   p$x$data[[1]]$text <- gsub("sts", "Z-score", p$x$data[[1]]$text)
@@ -757,7 +760,8 @@ output$DP_oneparamirtiic_mirt <- downloadHandler(
 
 # *** TIF ######
 oneparamirttifInput_mirt <- reactive({
-  plt <- plot(one_param_irt_mirt(), type = "infoSE")
+  g <- one_param_irt_mirt()
+  plt <- plot(g, type = "infoSE")
 
   vals <- plt$panel.args
   x <- vals[[1]]$x
@@ -898,7 +902,8 @@ onePlAbilities <- reactive({
 
 output$one_PL_abilities <- renderTable(
   {
-    head(onePlAbilities(), 6)
+    factors <- onePlAbilities()
+    head(factors, 6)
   },
   include.rownames = TRUE
 )
@@ -952,8 +957,15 @@ oneparamirtFactorInput_mirt <- reactive({
     )
 })
 
-output$oneparamirtFactor_mirt <- renderPlot({
-  oneparamirtFactorInput_mirt()
+output$oneparamirtFactor_mirt <- renderPlotly({
+  g <- oneparamirtFactorInput_mirt()
+  p <- ggplotly(g)
+
+  p$x$data[[1]]$text <- gsub("sts", "Z-score", p$x$data[[1]]$text)
+  p$x$data[[1]]$text <- gsub("fs", "F-score", p$x$data[[1]]$text)
+
+  p$elementId <- NULL
+  p %>% plotly::config(displayModeBar = FALSE)
 })
 
 output$DP_oneparamirtFactor_mirt <- downloadHandler(
@@ -976,7 +988,7 @@ oneparamirtWrightMapInput_mirt <- reactive({
   fit <- one_param_irt_mirt()
   fs <- as.vector(fscores(fit))
 
-  b <- coef(fit, IRTpars = T, simplify = T)$items[, "b"]
+  b <- coef(fit, IRTpars = TRUE, simplify = TRUE)$items[, "b"]
   names(b) <- item_names()
 
   ggWrightMap(fs, b, item.names = item_names())
@@ -1257,7 +1269,8 @@ output$DP_twoparamirtiic_mirt <- downloadHandler(
 
 # *** TIF ######
 twoparamirttifInput_mirt <- reactive({
-  plt <- plot(two_param_irt_mirt(), type = "infoSE")
+  g <- two_param_irt_mirt()
+  plt <- plot(g, type = "infoSE")
 
   vals <- plt$panel.args
   x <- vals[[1]]$x
@@ -1396,7 +1409,8 @@ twoPlAbilities <- reactive({
 
 output$two_PL_abilities <- renderTable(
   {
-    head(twoPlAbilities(), 6)
+    factors <- twoPlAbilities()
+    head(fit, 6)
   },
   include.rownames = TRUE
 )
@@ -1430,7 +1444,8 @@ output$twoparamirtFactorCor_mirt <- renderText({
 
 # *** Factor scores plot ######
 twoparamirtFactorInput_mirt <- reactive({
-  fs <- as.vector(fscores(two_param_irt_mirt()))
+  fit <- two_param_irt_mirt()
+  fs <- as.vector(fscores(fit))
   sts <- z_score()
 
   df <- data.frame(fs, sts)
@@ -1727,7 +1742,8 @@ output$DP_threeparamirtiic_mirt <- downloadHandler(
 
 # *** TIF ######
 threeparamirttifInput_mirt <- reactive({
-  plt <- plot(three_param_irt_mirt(), type = "infoSE")
+  g <- three_param_irt_mirt()
+  plt <- plot(g, type = "infoSE")
 
   vals <- plt$panel.args
   x <- vals[[1]]$x
@@ -1872,7 +1888,8 @@ threePlAbilities <- reactive({
 
 output$three_PL_abilities <- renderTable(
   {
-    head(threePlAbilities(), 6)
+    factors <- threePlAbilities()
+    head(factors, 6)
   },
   include.rownames = TRUE
 )
@@ -1906,7 +1923,8 @@ output$threeparamirtFactorCor_mirt <- renderText({
 
 # *** Factor scores plot ######
 threeparamirtFactorInput_mirt <- reactive({
-  fs <- as.vector(fscores(three_param_irt_mirt()))
+  fit <- three_param_irt_mirt()
+  fs <- as.vector(fscores(fit))
   sts <- z_score()
 
   df <- data.frame(fs, sts)
@@ -2359,7 +2377,8 @@ fourPlAbilities <- reactive({
 
 output$four_PL_abilities <- renderTable(
   {
-    head(fourPlAbilities(), 6)
+    factors <- fourPlAbilities()
+    head(factors, 6)
   },
   include.rownames = TRUE
 )
@@ -2377,7 +2396,8 @@ output$download_fourPL_abilities <- downloadHandler(
 
 # *** Factor scores correlation ######
 irt_4PL_factorscores_correlation_Input <- reactive({
-  fs <- as.vector(fscores(irt_4PL_model()))
+  fit <- irt_4PL_model()
+  fs <- as.vector(fscores(fit))
   sts <- z_score()
 
   whok <- !(is.na(fs) | is.na(sts))
@@ -2396,7 +2416,8 @@ output$irt_4PL_factorscores_correlation <- renderText({
 
 # *** Factor scores plot ####
 irt_4PL_factorscores_plot_Input <- reactive({
-  fs <- as.vector(fscores(irt_4PL_model()))
+  fit <- irt_4PL_model()
+  fs <- as.vector(fscores(fit))
   sts <- z_score()
 
   df <- data.frame(fs, sts)
@@ -2855,7 +2876,8 @@ output$DP_bock_IIC <- downloadHandler(
 
 # *** TIF ######
 bock_TIF_Input <- reactive({
-  plt <- plot(bock_irt_mirt(), type = "infoSE")
+  g <- bock_irt_mirt()
+  plt <- plot(g, type = "infoSE")
 
   vals <- plt$panel.args
   x <- vals[[1]]$x
@@ -2971,7 +2993,8 @@ bockAbilities <- reactive({
 
 output$bock_abilities <- renderTable(
   {
-    head(bockAbilities(), 6)
+    factors <- bockAbilities()
+    head(factors, 6)
   },
   include.rownames = TRUE
 )
@@ -3222,7 +3245,7 @@ output$tab_coef_bock <- renderTable(
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 # ** DICHOTOMOUS MODELS ######
-# *** ICC ######
+# *** Interpretation ######
 output$ccIRT_interpretation <- renderUI({
   a1 <- input$ccIRTSlider_a1
   b1 <- input$ccIRTSlider_b1
@@ -3285,6 +3308,7 @@ output$ccIRT_interpretation <- renderUI({
   HTML(txt)
 })
 
+# *** ICC ######
 ccIRT_plot_Input <- reactive({
   a1 <- input$ccIRTSlider_a1
   b1 <- input$ccIRTSlider_b1

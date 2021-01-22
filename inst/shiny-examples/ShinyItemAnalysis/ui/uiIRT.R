@@ -237,7 +237,7 @@ uiIRT <- navbarMenu(
         br(),
         h4("Scatter plot of factor scores and standardized total scores"),
         textOutput("oneparamirtFactorCor_mirt"),
-        plotOutput("oneparamirtFactor_mirt"),
+        plotlyOutput("oneparamirtFactor_mirt"),
         downloadButton("DP_oneparamirtFactor_mirt", label = "Download figure"),
         br(),
         br(),
