@@ -18,7 +18,7 @@
     example of issues with reliability estimates in restricted-range samples.
   * Continuous items are newly allowed, rater variable is added, data upload and warning
     messages were updated.
-  * New function ICCrestr() for computing ICC in restricted samples was added.
+  * New function ICCrestricted() for computing ICC in restricted samples was added.
   * New AIBS dataset was added to the package.
   * Functions gDiscrim(), DDplot() and ItemAnalysis were updated, variable names were unified
   * New function `plot_corr()` to compute and visualize an item correlation matrix was added.
