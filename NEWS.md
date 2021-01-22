@@ -13,6 +13,7 @@
   * In the Regression section of the app, missplaced SE for intercepts and slopes were fixed.
 
 #### MAJOR UPDATES
+  * New function ICCrestr() for computing ICC in restricted samples was added.
   * New AIBS dataset was added to the package
   * Functions gDiscrim(), DDplot() and ItemAnalysis were updated, variable names were unified
   * New function `plot_corr()` to compute and visualize an item correlation matrix was added.
