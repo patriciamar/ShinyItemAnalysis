@@ -37,6 +37,7 @@
   * Regression/Multinomial newly offers also the IRT parametrization.  
   
 #### MINOR UPDATES
+  * Home page was updated, new News section was added.
   * Toy data selection was updated.
   * Selected R code was updated.
   * Unnecessary dependencies were removed.

@@ -8,14 +8,14 @@ uiAbout <- tabPanel("",
   h3("Welcome"),
   p("Welcome to ShinyItemAnalysis!"),
   p(
-    "ShinyItemAnalysis is an interactive online application for psychometric analysis of educational
-                     and other psychological tests and their items, built
+    "ShinyItemAnalysis is an interactive online application for psychometric analysis of educational tests,
+    psychological assessments, health-related and other types of measurements, and their items, built
                     on ",
     a("R", href = "https://cran.r-project.org/", target = "_blank"),
     "and",
     a("shiny. ", href = "http://www.rstudio.com/shiny/", target = "_blank"),
-    "You can simply start using the application by choosing toy dataset (or upload your own one)
-                    in section ", strong("Data"), " and run analysis including:"
+    "You can easily start using the application with the default toy dataset. You may also select from number of other
+    toy datasets or upload your own one in section ", strong("Data"), ". Offered methods include:"
   ),
   tags$ul(
     tags$li("Exploration of total and standard scores in ", strong("Summary"), "section"),
@@ -36,6 +36,35 @@ uiAbout <- tabPanel("",
     target = "_blank"
   ), "webpage to learn more about ShinyItemAnalysis!"),
   tags$hr(),
+
+  #------------------------------------------------------------------------------------#
+  # News ####
+  #------------------------------------------------------------------------------------#
+  h4("News"),
+  p(
+    "New paper on range-restricted inter-rater reliability accepted for publication in JRSS-A ",
+    a("(Erosheva, Martinkova, and Lee)",
+      href = "https://rss.onlinelibrary.wiley.com/loi/1467985x",
+      target = "_blank", .noWS = "outside"
+    ),
+    ". To try examples interactively, set the", code("AIBS"), "toy dataset in the ", strong("Data"), "section and go to the ",
+    strong("Reliability/Restricted range"), "section. ",
+    br(),
+    "New papers on differential item functioning published in Learning and Instruction ",
+    a("(Martinkova, Hladka, and Potuznikova, 2020)",
+      href = "https://doi.org/10.1016/j.learninstruc.2019.101286",
+      target = "_blank", .noWS = "outside"
+    ),
+    " and in The R Journal ",
+    a("(Hladka and Martinkova, 2020)",
+      href = "https://doi.org/10.32614/RJ-2020-014",
+      target = "_blank", .noWS = "outside"
+    ),
+    ". To try examples interactively, set the", code("Learning to Learn 9"), "toy dataset in the ", strong("Data"), " section and go to the ",
+    strong("DIF/Fairness/Generalized logistic"), "section. ",
+    .noWS = "before-end"),
+  tags$hr(),
+
   #------------------------------------------------------------------------------------#
   # Availability ####
   #------------------------------------------------------------------------------------#
@@ -125,9 +154,9 @@ uiAbout <- tabPanel("",
   p("To cite ShinyItemAnalysis in publications, please use:"),
   div(
     class = "cite-box",
-    "Martinkova P., & Drabinova A. (2018).", br(), "
-                    ShinyItemAnalysis for teaching psychometrics and to enforce routine analysis of educational tests.", br(), "
-                    The R Journal, 10(2), 503-515. doi:",
+    "Martinkova, P., & Drabinova, A. (2018).", br(), "
+                    ShinyItemAnalysis for teaching psychometrics and to enforce routine analysis of educational tests.", br(),
+                    em("The R Journal, 10", .noWS = "outside"), "(2), 503-515, doi:",
     a("10.32614/RJ-2018-074",
       href = "https://doi.org/10.32614/RJ-2018-074",
       target = "_blank"
@@ -141,16 +170,12 @@ uiAbout <- tabPanel("",
   #  a("10.5817/TF2017-9-129",
   #    href = "https://doi.org/10.5817/TF2017-9-129",
   #    target = "_blank")),
-
   tags$hr(),
 
   #------------------------------------------------------------------------------------#
-  # Acknowledgments ####
+  # Funding ####
   #------------------------------------------------------------------------------------#
-  h4("Acknowledgments"),
-  p("Project was supported by Czech Science Foundation grant GJ15-15856Y 'Estimation of psychometric
-                    measures as part of admission test development' and by Charles University under project PRIMUS/17/HUM/11
-                    'Center for Educational Measurement and Psychometrics (CEMP)'."),
-  br(),
+  h4("Funding"),
+  p("Czech Science Foundation (GJ15-15856Y, 21-03658S), Charles University (PRIMUS/17/HUM/11)."),
   br()
 )
