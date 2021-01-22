@@ -215,8 +215,10 @@ itemanalysis_table <- reactive({
 
   tab <-
     ItemAnalysis(ordinal(),
-      y = item_crit_cor,
-      k, l, u
+      criterion = item_crit_cor,
+      k, l, u,
+      minscore = minimal(),
+      maxscore = maximal()
     )
 
   tab <- tab[, !(colnames(tab) %in% c("Prop.max.score"))]
