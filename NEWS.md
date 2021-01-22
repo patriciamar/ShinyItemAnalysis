@@ -2,7 +2,7 @@
 
 ----------
 
-### Changes in version 1.3.4-1 (2021-01-11)
+### Changes in version 1.3.4-1 (2021-01-22)
 #### BUG FIXING
   * Display of ULI of discrimination was fixed for ordinal items 
   * Bug in display of Multinomial regression parameters in case of IRT parametrization was fixed
@@ -13,6 +13,7 @@
   * In the Regression section of the app, missplaced SE for intercepts and slopes were fixed.
 
 #### MAJOR UPDATES
+  * New AIBS dataset was added to the package
   * Functions gDiscrim(), DDplot() and ItemAnalysis were updated
   * New function `plot_corr()` to compute and visualize an item correlation matrix was added.
     and implemented within the ShinyItemAnalysis interactive app.

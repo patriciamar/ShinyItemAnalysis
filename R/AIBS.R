@@ -1,0 +1,63 @@
+#' AIBS Grant Peer Review Scoring Dataset
+#'
+#' @description The \code{AIBS} dataset comes from the scientific peer review of
+#'   biomedical applications from collaborative biomedical research program
+#'   facilitated by the American Institute of Biological Sciences (AIBS) for
+#'   2014--2017. For each proposal, three assigned individual reviewers were
+#'   asked to provide scores and commentary for the following application criteria:
+#'   Innovation, Approach/Feasibility, Investigator, and Significance (Impact added
+#'   as scored criterion in 2014). Each of these criteria is scored on a scale from
+#'   1.0 (best) to 5.0 (worst) with a 0.1 gradation, as well as an overall score
+#'   (1.0--5.0 with a 0.1 gradation). Asynchronous discussion was allowed, although
+#'   few scores changed post-discussion. The data includes reviewers' self-reported
+#'   expertise scores (1/2/3, 1 is high expertise) relative to each proposal reviewed,
+#'   and reviewer / principal investigator demographics. A total of 72
+#'   applications ("Standard" or "Pilot") were reviewed in 3 review cycles. The
+#'   success rate was 34--38\%. Application scores indicate where each application
+#'   falls among all practically possible applications in comparison with the
+#'   ideal standard of quality from a perfect application.
+#'
+#' @usage data(AIBS)
+#'
+#' @author Stephen Gallo \cr American Institute of Biological Sciences
+#'
+#' @references
+#' Gallo, S. (2021). Grant  peer  review  scoring  data  with  criteria  scores
+#' \doi{10.6084/m9.figshare.12728087} \cr
+#'
+#' Erosheva, E., Martinkova, P., & Lee, C. (2021). When zero may not be zero: A
+#' cautionary note on the use of inter-rater reliability in evaluating grant
+#' peer review. Journal of the Royal Statistical Society - Series A. Accepted.
+#'
+#' @keywords datasets
+#'
+#' @format \code{AIBS} is a \code{data.frame} consisting of 216 observations on
+#'   25 variables. Data describes 72 proposals with 3 ratings each.
+#'   \describe{
+#'   \item{ID}{Proposal ID. }
+#'   \item{Year}{Year of the review. }
+#'   \item{PropType}{Proposal type; \code{"Standard"} or \code{"Pilot"}. }
+#'   \item{PIID}{Anonymized ID of principal investigator (PI). }
+#'   \item{PIOrgType}{PI's organization type. }
+#'   \item{PIGender}{PI's gender membership; \code{"1"} females, \code{"2"} males. }
+#'   \item{PIRank}{PI's rank; \code{"3"} full professor, \code{"1"} assistant professor. }
+#'   \item{PIDegree}{PI's degree; \code{"1"} PhD, \code{"2"} MD, \code{"3"} PhD/MD. }
+#'   \item{Innovation}{Innovation score. }
+#'   \item{Approach}{Approach score. }
+#'   \item{Investig}{Investigator score. }
+#'   \item{Signif}{Significance score. }
+#'   \item{Impact}{Impact score. }
+#'   \item{Score}{Scientific merit (overall) score. }
+#'   \item{ScoreAvg}{Average of the three overall scores from three different reviewers. }
+#'   \item{ScoreAvgAdj}{Average of the three overall scores from three different reviewers, increased by multiple of 0.001 of the worst score. }
+#'   \item{ScoreRank}{Project rank calculated based on \code{ScoreAvg}. }
+#'   \item{ScoreRankAdj}{Project rank calculated based on \code{ScoreAvgAdj}. }
+#'   \item{RevID}{Reviewer's ID. }
+#'   \item{RevExp}{Reviewer's experience. }
+#'   \item{RevInst}{Reviewer's institution; \code{"1"} academia, \code{"2"} government. }
+#'   \item{RevGender}{Reviewer's gender; \code{"1"} females, \code{"2"} males. }
+#'   \item{RevRank}{Reviewer's rank; \code{"3"} full professor, \code{"1"} assistant professor. }
+#'   \item{RevDegree}{Reviewer's degree; \code{"1"} PhD, \code{"2"} MD, \code{"3"} PhD/MD. }
+#'   \item{RevCode}{Reviewer code (\code{"A"}, \code{"B"}, \code{"C"}) in the original wide dataset. }
+#' }
+"AIBS"
