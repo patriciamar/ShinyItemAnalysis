@@ -284,8 +284,21 @@ reliability_splithalf_histogram_Input <- reactive({
 })
 
 # ** Split-halves histogram output ######
-output$reliability_splithalf_histogram <- renderPlot({
-  reliability_splithalf_histogram_Input()
+output$reliability_splithalf_histogram <- renderPlotly({
+  g <- reliability_splithalf_histogram_Input()
+  p <- ggplotly(g)
+
+  for (i in 1:length(p$x$data)) {
+    text <- p$x$data[[i]]$text
+    text <- gsub("count", "Count", text)
+    text <- gsub("rel", "Reliability", text)
+    text <- gsub("col: FALSE", "", text)
+    text <- gsub("col: TRUE", "", text)
+    p$x$data[[i]]$text <- text
+  }
+
+  p$elementId <- NULL
+  p %>% plotly::config(displayModeBar = FALSE)
 })
 
 # ** DB for Split-halves histogram ######
@@ -336,3 +349,228 @@ output$reliability_cronbachalpha_table <- renderTable(
   include.rownames = F,
   include.colnames = T
 )
+
+# %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+# * INTRA-CLASS CORRELATION ######
+# %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+# ** Intra-class correlation table ######
+output$reliability_icc_table <- renderTable({
+  # TODO: add select raters (items) input
+  # ordinal()
+  aibs_long() %>% # TODO general
+    pivot_wider(ID, values_from = Score, names_from = RevCode) %>% # TODO general
+    select(-ID) %>% # TODO general
+    psych::ICC() %>%
+    pluck("results")
+})
+
+
+# %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+# * Restricted-range ICC ######
+# %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+# ** Usable data definition ######
+aibs_long <- reactive({ # TODO general
+  validate(need(
+    input$dataSelect == "AIBS_ShinyItemAnalysis",
+    "At this moment, the method is compatible with the 'AIBS Grant Peer Review Scoring' dataset only. "
+  ),
+  errorClass = "error-validation"
+  )
+  continuous()
+})
+
+k_max <- reactive({
+  aibs_long()$ScoreRankAdj %>% max(na.rm = TRUE) # TODO general
+})
+
+# ** Update slider input ######
+observe({
+  updateSliderInput(
+    session,
+    inputId = "reliability_restricted_proportion",
+    min = ceiling(200 / k_max())
+  )
+})
+
+
+# this chunk ensures slider is reset to 100% whenever direction or BS samples are changed
+# however, it is rather lenient and causes some issues, e.g. double estimation on BS num change
+# in addition, user request should be fulfilled without any unsolicited actions, such as slider change
+
+# observeEvent(c(
+#   input$dataSelect,
+#   input$reliability_restricted_clear,
+#   input$reliability_restricted_direction,
+#   input$reliability_restricted_bootsamples
+# ), {
+#   updateSliderInput(
+#     session,
+#     inputId = "reliability_restricted_proportion",
+#     value = 100
+#   )
+# })
+
+# ** Caterpillar plot ######
+output$reliability_restricted_caterpillarplot <- renderPlotly({
+  k <- round(input$reliability_restricted_proportion * k_max() / 100)
+
+  plt <- aibs_long() %>%
+    mutate(hl = case_when(
+      input$reliability_restricted_direction == "top" & ScoreRankAdj <= k ~ "sol",
+      input$reliability_restricted_direction == "bottom" & ScoreRankAdj > (k_max() - k) ~ "sol",
+      TRUE ~ "alp"
+    ) %>% factor(levels = c("alp", "sol"))) %>%
+    ggplot(aes(x = ScoreRankAdj, y = Score, group = ID, alpha = hl)) +
+    geom_line(col = "gray") +
+    geom_point(aes(text = paste0(
+      "ID: ", ID, "\n",
+      "Rank: ", ScoreRankAdj, "\n",
+      "Rating: ", Score, "\n" # add avg score? not in every dataset, computed only in ICCrestricted
+    )), shape = 1, size = 1.5) +
+    stat_summary(
+      fun = mean, fun.args = list(na.rm = TRUE), col = "red",
+      shape = 5, size = 1.5
+    ) +
+    scale_alpha_discrete(range = c(.2, 1), drop = FALSE) +
+    labs(x = "Ratee rank", y = "Rating (score)") +
+    coord_cartesian(ylim = c(1, 5)) +
+    theme_app()
+
+  plt %>%
+    ggplotly(tooltip = c("text")) %>%
+    plotly::config(displayModeBar = FALSE)
+})
+
+
+reliability_restricted_res <- reactiveValues(vals = NULL) # init ICCs bank
+
+observeEvent(
+  # do not depend on "reliability_restricted_res"
+  c(
+    input$dataSelect,
+    input$reliability_restricted_clear,
+    input$reliability_restricted_proportion,
+    input$reliability_restricted_direction,
+    input$reliability_restricted_bootsamples
+  ),
+  {
+    data <- aibs_long()
+
+    isolate({
+      entries <- reliability_restricted_res$vals %>%
+        names()
+
+      # propose a new entry
+      new_entry <- paste0(
+        "dir-", input$reliability_restricted_direction,
+        "_bs-", input$reliability_restricted_bootsamples,
+        "_sel-", input$reliability_restricted_proportion
+      )
+
+      # check if proposed not already available, else compute
+      if (new_entry %in% entries) {
+        message("rICC computation: using already computed value...")
+      } else {
+        reliability_restricted_res[["vals"]][[new_entry]] <- ICCrestricted(
+          data,
+          case = "ID", # TODO general
+          var = "Score", # TODO general
+          rank = "ScoreRankAdj", # TODO general
+          dir = input$reliability_restricted_direction,
+          sel = input$reliability_restricted_proportion / 100,
+          nsim = input$reliability_restricted_bootsamples
+        )
+      }
+    })
+  }
+)
+
+# ** Clearing ICC computed entries ######
+observeEvent(input$reliability_restricted_clear, {
+  cat("Clearing ICC bank...")
+  reliability_restricted_res$vals <- NULL
+})
+
+# ** ICC plot - current choice ######
+reliability_restricted_iccplot_curr <- reactive({
+  plt_data <- reliability_restricted_res$vals %>%
+    bind_rows(.id = "name") %>%
+    filter(str_detect(
+      .data$name,
+      paste0(
+        "dir-", input$reliability_restricted_direction,
+        "_bs-", input$reliability_restricted_bootsamples
+      )
+    ))
+
+  # translate empty tibble to NULL for further use in req()
+  if (nrow(plt_data) == 0) {
+    NULL
+  } else {
+    plt_data
+  }
+})
+
+# ** Reliability plot ######
+output$reliability_restricted_iccplot <- renderPlotly({
+  req(aibs_long()) # propagate validation to the plot
+  req(reliability_restricted_iccplot_curr())
+
+  plt <- reliability_restricted_iccplot_curr() %>%
+    ggplot(aes(prop_sel, ICC1, ymin = ICC1_LCI, ymax = ICC1_UCI)) + # TODO general
+    geom_pointrange(aes(text = paste0("Proportion of ", dir, " ratees: ", prop_sel, "\n",
+                                      "ICC1: ", ICC1, "\n",
+                                      "LCI: ", ICC1_LCI, "\n",
+                                      "UCI: ", ICC1_UCI))) +
+    scale_x_continuous(labels = scales::percent) +
+    labs(x = paste0("Proportion of ", input$reliability_restricted_direction, " ratees"),
+         y = "Reliability") +
+    coord_cartesian(ylim = c(0, 1), xlim = c(0, 1)) + # TODO general
+    theme_app()
+
+  plt %>%
+    ggplotly(tooltip = "text") %>%
+    plotly::config(displayModeBar = FALSE)
+})
+
+output$icc_text <- renderText({
+  req(aibs_long())
+
+  # isolate({
+  full <- reliability_restricted_res[["vals"]][[paste0(
+    "dir-", input$reliability_restricted_direction,
+    "_bs-", input$reliability_restricted_bootsamples,
+    "_sel-", 100
+  )]]
+  # })
+
+  curr <- reliability_restricted_res[["vals"]][[paste0(
+    "dir-", input$reliability_restricted_direction,
+    "_bs-", input$reliability_restricted_bootsamples,
+    "_sel-", input$reliability_restricted_proportion
+  )]]
+
+
+  full_part <- if (is.null(full)) {
+    "Please, set the slider to 100% in order to estimate and display reliability the complete dataset."
+  } else {
+    paste0(
+      "For the complete dataset, the estimated reliability is ",
+      round(full$ICC1, 2), ", 95% CI [", round(full$ICC1_LCI, 2), ", ", round(full$ICC1_UCI, 2), "]."
+    )
+  }
+  curr_part <- if (identical(curr, full) | is.null(curr)) {
+    "Set the slider to different value to see how the estimate changes for other subset of the data."
+  } else {
+    paste0(
+      "For the ", round(curr$prop_sel * 100), "%",
+      " (that is ", curr$n_sel, ") of ", curr$dir, " ratees (proposals in the case of AIBS dataset),",
+      " the estimated reliability is ",
+      round(curr$ICC1, 2), ", 95% CI [", round(curr$ICC1_LCI, 2), ", ", round(curr$ICC1_UCI, 2), "]."
+    )
+  }
+
+  paste(full_part, curr_part)
+})

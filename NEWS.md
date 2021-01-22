@@ -14,6 +14,8 @@
   * In the Regression section of the app, missplaced SE for intercepts and slopes were fixed.
 
 #### MAJOR UPDATES
+  * New section Reliability/Restricted range was added to the app including interactive
+    example of issues with reliability estimates in restricted-range samples.
   * Continuous items are newly allowed, rater variable is added, data upload and warning
     messages were updated.
   * New function ICCrestr() for computing ICC in restricted samples was added.
