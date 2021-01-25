@@ -412,11 +412,11 @@ observe({
 #   )
 # })
 
-# ** Caterpillar plot ######
-output$reliability_restricted_caterpillarplot <- renderPlotly({
+# ** Caterpillar plot input ######
+reliability_restricted_caterpillarplot_input <- reactive({
   k <- round(input$reliability_restricted_proportion * k_max() / 100)
 
-  plt <- aibs_long() %>%
+  aibs_long() %>%
     mutate(hl = case_when(
       input$reliability_restricted_direction == "top" & ScoreRankAdj <= k ~ "sol",
       input$reliability_restricted_direction == "bottom" & ScoreRankAdj > (k_max() - k) ~ "sol",
@@ -425,23 +425,42 @@ output$reliability_restricted_caterpillarplot <- renderPlotly({
     ggplot(aes(x = ScoreRankAdj, y = Score, group = ID, alpha = hl)) +
     geom_line(col = "gray") +
     geom_point(aes(text = paste0(
-      "ID: ", ID, "\n",
-      "Rank: ", ScoreRankAdj, "\n",
+      "ID: ", ID, "\n", # TODO generalize
+      "Rank: ", ScoreRankAdj, "\n", # TODO generalize
       "Rating: ", Score, "\n" # add avg score? not in every dataset, computed only in ICCrestricted
     )), shape = 1, size = 1.5) +
     stat_summary(
-      fun = mean, fun.args = list(na.rm = TRUE), col = "red",
-      shape = 5, size = 1.5
+      fun = mean, fun.args = list(na.rm = TRUE), geom = "point", col = "red",
+      shape = 5, size = 2.5, stroke = .35
     ) +
-    scale_alpha_discrete(range = c(.2, 1), drop = FALSE) +
-    labs(x = "Ratee rank", y = "Rating (score)") +
+    scale_alpha_discrete(range = c(.3, 1), drop = FALSE) +
+    labs(x = "Rated subject/object rank", y = "Rating (score)") +
     coord_cartesian(ylim = c(1, 5)) +
     theme_app()
+})
 
-  plt %>%
+# ** Plotly output for caterpillar plot ######
+output$reliability_restricted_caterpillarplot <- renderPlotly({
+  reliability_restricted_caterpillarplot_input() %>%
     ggplotly(tooltip = c("text")) %>%
     plotly::config(displayModeBar = FALSE)
 })
+
+# ** DB for caterpillar plot ######
+output$DB_reliability_restricted_caterpillarplot <- downloadHandler(
+  filename = function() {
+    "fig_reliability_caterpillar.png"
+  },
+  content = function(file) {
+    ggsave(file,
+      plot = reliability_restricted_caterpillarplot_input() +
+        theme(text = element_text(size = setting_figures$text_size)),
+      device = "png",
+      height = setting_figures$height, width = setting_figures$width,
+      dpi = setting_figures$dpi
+    )
+  }
+)
 
 
 reliability_restricted_res <- reactiveValues(vals = NULL) # init ICCs bank
@@ -513,27 +532,61 @@ reliability_restricted_iccplot_curr <- reactive({
   }
 })
 
-# ** Reliability plot ######
-output$reliability_restricted_iccplot <- renderPlotly({
+# ** Reliability plot input ######
+reliability_restricted_iccplot_input <- reactive({
   req(aibs_long()) # propagate validation to the plot
   req(reliability_restricted_iccplot_curr())
 
-  plt <- reliability_restricted_iccplot_curr() %>%
-    ggplot(aes(prop_sel, ICC1, ymin = ICC1_LCI, ymax = ICC1_UCI)) + # TODO general
-    geom_pointrange(aes(text = paste0("Proportion of ", dir, " ratees: ", prop_sel, "\n",
-                                      "ICC1: ", ICC1, "\n",
-                                      "LCI: ", ICC1_LCI, "\n",
-                                      "UCI: ", ICC1_UCI))) +
+  curr_plt_name <- paste0(
+    "dir-", input$reliability_restricted_direction,
+    "_bs-", input$reliability_restricted_bootsamples,
+    "_sel-", input$reliability_restricted_proportion
+  )
+
+  reliability_restricted_iccplot_curr() %>%
+    mutate(hl = if_else(name == curr_plt_name, "sol", "alp") %>%
+      factor(levels = c("alp", "sol"))) %>%
+    ggplot(aes(prop_sel, ICC1, ymin = ICC1_LCI, ymax = ICC1_UCI, alpha = hl)) + # TODO general
+    geom_linerange() + # separate as plotly messes up otherwise
+    geom_point(aes(text = paste0(
+      "Proportion of ", dir, " subjects/objects: ", scales::percent(prop_sel, .01), "\n",
+      "ICC1: ", round(ICC1, 2), "\n",
+      "LCI: ", round(ICC1_LCI, 2), "\n",
+      "UCI: ", round(ICC1_UCI, 2)
+    ))) +
     scale_x_continuous(labels = scales::percent) +
-    labs(x = paste0("Proportion of ", input$reliability_restricted_direction, " ratees"),
-         y = "Reliability") +
+    scale_alpha_discrete(range = c(.25, 1), drop = FALSE) +
+    labs(
+      x = paste0("Proportion of ", input$reliability_restricted_direction, " rated subjects/objects"),
+      y = "Reliability"
+    ) +
     coord_cartesian(ylim = c(0, 1), xlim = c(0, 1)) + # TODO general
     theme_app()
+})
 
-  plt %>%
+# ** Reliability plot render ######
+output$reliability_restricted_iccplot <- renderPlotly({
+  reliability_restricted_iccplot_input() %>%
     ggplotly(tooltip = "text") %>%
     plotly::config(displayModeBar = FALSE)
 })
+
+# ** DB for ICC reliability plot ######
+output$DB_reliability_restricted_iccplot <- downloadHandler(
+  filename = function() {
+    "fig_reliability_resctricted.png"
+  },
+  content = function(file) {
+    ggsave(file,
+      plot = reliability_restricted_iccplot_input() +
+        theme(text = element_text(size = setting_figures$text_size)),
+      device = "png",
+      height = setting_figures$height, width = setting_figures$width,
+      dpi = setting_figures$dpi
+    )
+  }
+)
+
 
 output$icc_text <- renderText({
   req(aibs_long())
@@ -566,7 +619,7 @@ output$icc_text <- renderText({
   } else {
     paste0(
       "For the ", round(curr$prop_sel * 100), "%",
-      " (that is ", curr$n_sel, ") of ", curr$dir, " ratees (proposals in the case of AIBS dataset),",
+      " (that is ", curr$n_sel, ") of ", curr$dir, " subjects/objects (proposals in the case of AIBS dataset),",
       " the estimated reliability is ",
       round(curr$ICC1, 2), ", with 95% CI of [", round(curr$ICC1_LCI, 2), ", ", round(curr$ICC1_UCI, 2), "]."
     )

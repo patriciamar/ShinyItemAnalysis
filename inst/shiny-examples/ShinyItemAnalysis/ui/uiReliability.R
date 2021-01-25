@@ -216,7 +216,7 @@ uiReliability <-
       value = "rr_irr",
       h3("Range-restricted reliability"),
       p(
-        "This section illustrates the issue of range-restricted reliability and the difficulties with the maximum
+        "This section illustrates the issue of range-restricted reliability and the difficulties with maximum
         likelihood estimation, described in more detail in the context of inter-rater reliability in grant proposal review in ",
         a("Erosheva, Martinkova & Lee (2021)",
           href = "https://rss.onlinelibrary.wiley.com/loi/1467985x",
@@ -225,10 +225,9 @@ uiReliability <-
         ". To replicate their examples, select the ", code("AIBS"), "toy dataset in the ", strong("Data"), "section."
       ),
       p(
-        "Below, you may select the ratio and type of range restriction given by the ", strong("proportion of ratees"),
-        ". A ratee is the object or subject that is being evaluated. It could be a proposal application in grant review
-        (as is the case in the ", code("AIBS"), "dataset), a student in educational assessment,
-        a job application in hiring, a patient in a medical study, etc.
+        "Below, you may select the ratio and type of range restriction given by the ", strong("proportion of rated subjects/objects."),
+        " It could be a grant proposal application in grant review (as is the case in the ", code("AIBS"), "dataset),
+        a student in educational assessment, a job application in hiring, a patient in a medical study, etc.
         Further, you may select the ", strong("direction"), "of restriction (top or bottom).
         The left plot illustrates the variability in ratings for the whole dataset outshading the data which would be lost
         due to range-restriction. The right plot provides the estimates of the calculated inter-rater reliability estimates,
@@ -241,7 +240,7 @@ uiReliability <-
           2,
           sliderInput(
             inputId = "reliability_restricted_proportion",
-            label = "Proportion of ratees",
+            label = "Proportion",
             min = 0,
             max = 100,
             step = 1,
@@ -261,7 +260,7 @@ uiReliability <-
           2,
           numericInput(
             inputId = "reliability_restricted_bootsamples",
-            label = "Num. of bootstrap samples",
+            label = "Bootstrap samples",
             value = 10,
             min = 3,
             max = 1000
@@ -279,12 +278,15 @@ uiReliability <-
       ),
       fluidRow(
         column(6, plotlyOutput("reliability_restricted_caterpillarplot")),
-        column(6, plotlyOutput("reliability_restricted_iccplot"))
+        column(6, plotlyOutput("reliability_restricted_iccplot")),
+        style = "
+    padding-bottom: 15px;"
       ),
-      # tableOutput("res_entries"),
+      fluidRow(
+        column(6, downloadButton("DB_reliability_restricted_caterpillarplot", label = "Download caterpillar plot")),
+        column(6, downloadButton("DB_reliability_restricted_iccplot", label = "Download range-restricted reliability plot"))
+      ),
       br(),
-
-      # plotlyOutput("irr3_plt"),
       textOutput("icc_text"),
       h4("Selected R code"),
       code(HTML("library(ShinyItemAnalysis)<br><br>#&nbsp;estimate&nbsp;inter-rater&nbsp;reliability&nbsp;(ICC)&nbsp;for&nbsp;complete&nbsp;AIBS&nbsp;dataset<br>ICCrestricted(Data&nbsp;=&nbsp;AIBS,&nbsp;case&nbsp;=&nbsp;\"ID\",&nbsp;var&nbsp;=&nbsp;\"Score\",&nbsp;rank&nbsp;=&nbsp;\"ScoreRankAdj\")<br><br>#&nbsp;estimate&nbsp;range-restricted&nbsp;ICC<br>ICCrestricted(<br>&nbsp;&nbsp;Data&nbsp;=&nbsp;AIBS,&nbsp;case&nbsp;=&nbsp;\"ID\",&nbsp;var&nbsp;=&nbsp;\"Score\",&nbsp;rank&nbsp;=&nbsp;\"ScoreRankAdj\",<br>&nbsp;&nbsp;sel&nbsp;=&nbsp;0.8,&nbsp;dir&nbsp;=&nbsp;\"bottom\"<br>)<br><br>#&nbsp;estimate&nbsp;all&nbsp;possible&nbsp;top-restricted&nbsp;subsets,&nbsp;save&nbsp;them&nbsp;to&nbsp;a&nbsp;tibble<br>all_top_restricted&nbsp;<-&nbsp;purrr::map_dfr(<br>&nbsp;&nbsp;2:72,<br>&nbsp;&nbsp;~&nbsp;ICCrestricted(<br>&nbsp;&nbsp;&nbsp;&nbsp;Data&nbsp;=&nbsp;AIBS,&nbsp;case&nbsp;=&nbsp;\"ID\",&nbsp;var&nbsp;=&nbsp;\"Score\",&nbsp;rank&nbsp;=&nbsp;\"ScoreRankAdj\",<br>&nbsp;&nbsp;&nbsp;&nbsp;sel&nbsp;=&nbsp;.x,&nbsp;nsim&nbsp;=&nbsp;10<br>&nbsp;&nbsp;)<br>)<br><br>#&nbsp;plot<br>all_top_restricted&nbsp;%>%<br>&nbsp;&nbsp;ggplot(aes(prop_sel,&nbsp;y&nbsp;=&nbsp;ICC1,&nbsp;ymin&nbsp;=&nbsp;ICC1_LCI,&nbsp;ymax&nbsp;=&nbsp;ICC1_UCI))&nbsp;+<br>&nbsp;&nbsp;geom_pointrange()&nbsp;+<br>&nbsp;&nbsp;scale_x_continuous(labels&nbsp;=&nbsp;scales::percent)&nbsp;+<br>&nbsp;&nbsp;coord_cartesian(ylim&nbsp;=&nbsp;c(0,&nbsp;1))")),
