@@ -8,30 +8,30 @@ uiAbout <- tabPanel("",
   h3("Welcome"),
   p("Welcome to ShinyItemAnalysis!"),
   p(
-    "ShinyItemAnalysis is an interactive online application for psychometric analysis of educational tests,
-    psychological assessments, health-related and other types of measurements, and their items, built
+    "ShinyItemAnalysis is an interactive online application for the psychometric analysis of educational tests,
+    psychological assessments, health-related and other types of multi-item measurements, or ratings from
+    multiple raters, built
                     on ",
     a("R", href = "https://cran.r-project.org/", target = "_blank"),
     "and",
     a("shiny. ", href = "http://www.rstudio.com/shiny/", target = "_blank"),
-    "You can easily start using the application with the default toy dataset. You may also select from number of other
-    toy datasets or upload your own one in section ", strong("Data"), ". Offered methods include:"
+    "You can easily start using the application with the default toy dataset. You may also select from a number of other
+    toy datasets or upload your own one in the ", strong("Data"), " section. Offered methods include:"
   ),
   tags$ul(
-    tags$li("Exploration of total and standard scores in ", strong("Summary"), "section"),
-    tags$li("Analysis of measurement error in ", strong("Reliability"), "section"),
-    tags$li("Correlation structure and criterion validity analysis in ", strong("Validity"), "section"),
-    tags$li("Item and distractor analysis in ", strong("Item analysis"), "section"),
-    tags$li("Item analysis with regression models in ", strong("Regression"), "section"),
-    tags$li("Item analysis by item response theory models in ", strong("IRT models"), "section"),
-    tags$li("Differential item functioning (DIF) and differential distractor functioning (DDF)
-                                  methods in ", strong("DIF/Fairness"), "section")
+    tags$li("Exploration of total and standard scores in the ", strong("Summary"), "section"),
+    tags$li("Analysis of measurement error in the ", strong("Reliability"), "section"),
+    tags$li("Correlation structure and criterion validity analysis in the ", strong("Validity"), "section"),
+    tags$li("Item and distractor analysis in the ", strong("Item analysis"), "section"),
+    tags$li("Item analysis with regression models in the ", strong("Regression"), "section"),
+    tags$li("Item analysis by item response theory models in the ", strong("IRT models"), "section"),
+    tags$li("Detection of differential item functioning in the ", strong("DIF/Fairness"), "section")
   ),
-  p("All graphical outputs and selected tables can be downloaded via download button. Moreover, you can automatically
-                    generate HTML or PDF report in", strong("Reports"), "section. All offered analyses
-                    are complemented by selected R code which is ready to be copy-pasted into your R console, hence
+  p("All graphical outputs and selected tables can be downloaded via the download button. Moreover, you can automatically
+                    generate HTML or PDF report in the ", strong("Reports"), "section. All offered analyses
+                    are complemented by selected R code which is ready to be copy and pasted into your R console, hence
                     a similar analysis can be run and modified in R."),
-  p("Visit ", a(strong("www.ShinyItemAnalysis.org"),
+  p("Visit the ", a(strong("www.ShinyItemAnalysis.org"),
     href = "http://www.shinyitemanalysis.org",
     target = "_blank"
   ), "webpage to learn more about ShinyItemAnalysis!"),
@@ -42,25 +42,23 @@ uiAbout <- tabPanel("",
   #------------------------------------------------------------------------------------#
   h4("News"),
   p(
-    "New paper on range-restricted inter-rater reliability accepted for publication in JRSS-A ",
-    a("(Erosheva, Martinkova, and Lee)",
-      href = "https://rss.onlinelibrary.wiley.com/loi/1467985x",
-      target = "_blank", .noWS = "outside"
-    ),
-    ". To try examples interactively, set the", code("AIBS"), "toy dataset in the ", strong("Data"), "section and go to the ",
+    "New paper on range-restricted inter-rater reliability accepted for publication in JRSS-A (Erosheva, Martinkova, & Lee).
+    To try examples interactively, set the", code("AIBS"), "toy dataset in the ", strong("Data"), "section  by clicking on
+    the menu in the upper left corner and go to the ",
     strong("Reliability/Restricted range"), "section. ",
     br(),
     "New papers on differential item functioning published in Learning and Instruction ",
-    a("(Martinkova, Hladka, and Potuznikova, 2020)",
+    a("(Martinkova, Hladka, & Potuznikova, 2020)",
       href = "https://doi.org/10.1016/j.learninstruc.2019.101286",
       target = "_blank", .noWS = "outside"
     ),
     " and in The R Journal ",
-    a("(Hladka and Martinkova, 2020)",
+    a("(Hladka & Martinkova, 2020)",
       href = "https://doi.org/10.32614/RJ-2020-014",
       target = "_blank", .noWS = "outside"
     ),
-    ". To try examples interactively, set the", code("Learning to Learn 9"), "toy dataset in the ", strong("Data"), " section and go to the ",
+    ". To try examples interactively, set the", code("Learning to Learn 9"), "toy dataset in the ", strong("Data"), " section
+    by clicking on the menu in the upper left corner and go to the ",
     strong("DIF/Fairness/Generalized logistic"), "section. ",
     .noWS = "before-end"),
   tags$hr(),
