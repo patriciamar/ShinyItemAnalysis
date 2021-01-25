@@ -13,7 +13,7 @@ uiData <- tabPanel(
       p(
         "For demonstration purposes, the 20-item dataset", code("GMAT"),
         " is used. On this page, you may select one of several other toy datasets or you may upload your own
-        dataset (see below). To return to demonstration dataset, click on", strong("Unload data"), " button."
+        dataset (see below). To return to the demonstration dataset, click on the ", strong("Unload data"), " button."
       ),
       tags$hr(),
       #------------------------------------------------------------------------------------#
@@ -60,7 +60,7 @@ uiData <- tabPanel(
       # * Upload your own datasets ####
       #------------------------------------------------------------------------------------#
       h4("Upload your own datasets"),
-      p("Here you can upload your own dataset. Select all necessary files and use ", strong("Upload data"), " button on bottom of this page."),
+      p("Here you can upload your own dataset. Select all necessary files and use the ", strong("Upload data"), " button on bottom of this page."),
       fluidRow(
         box(
           width = 3,

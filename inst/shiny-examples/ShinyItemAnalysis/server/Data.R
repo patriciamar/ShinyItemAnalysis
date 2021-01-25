@@ -411,13 +411,12 @@ data_description_Input <- reactive({
 				        was also used for demonstration purposes in The R Journal paper on the <code>difNLR</code> package
                 <a href='https://doi.org/10.32614/RJ-2020-014' target='_blank'>(Hladka & Martinkova, 2020)</a>. ",
     AIBS_ShinyItemAnalysis = "<code>AIBS Grant Peer Review Scoring</code> dataset <a href='https://doi.org/10.6084/m9.figshare.12728087'
-                target='_blank'> (Gallo, 2021)</a> comes from a scientific peer review of biomedical applications from a collaborative
-                biomedical research funding program (2014&ndash2017). The data presented in this app include anonymized proposal ID, reviewer ID,
+                target='_blank'> (Gallo, 2021)</a> comes from the scientific peer review of biomedical applications from an intramural collaborative
+                biomedical research funding program (2014-2017). The data presented in this app include anonymized proposal ID, reviewer ID,
                 and an overall score from three reviewers, scored on a scale from 1.0 (best) to 5.0 (worst) with a 0.1 gradation. The
-                dataset was used by <a href='https://rss.onlinelibrary.wiley.com/loi/1467985x' target='_blank'>Erosheva, Martinkova, and Lee</a>
-                to demonstrate issues with estimation of inter-rater reliability (IRR) in range-restricted samples. To try interactively
-                the range-restricted IRR analysis, select the <code>AIBS</code> dataset and go to the <code>Reliability/Restricted range</code>
-                section."
+                dataset was used by Erosheva, Martinkova, and Lee (accepted) to demonstrate issues with the estimation of inter-rater
+                reliability (IRR) in range-restricted samples. To try interactively the range-restricted IRR analysis, select the
+                <code>AIBS</code> dataset and go to the <code>Reliability/Restricted range</code> section."
   )
   txt
 })
