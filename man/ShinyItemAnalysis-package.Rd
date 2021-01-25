@@ -61,28 +61,27 @@ Encoding: UTF-8 \cr
 }
 }
 
-\section{Datasets}{
-
-\itemize{
-\item \code{\link{AIBS}}
-\item \code{\link{dataMedical}}
-\item \code{\link{dataMedicalgraded}}
-\item \code{\link{dataMedicalkey}}
-\item \code{\link{dataMedicaltest}}
-\item \code{\link{HCI}}
-\item \code{\link{HCIdata}}
-\item \code{\link{HCIgrads}}
-\item \code{\link{HCIkey}}
-\item \code{\link{HCIprepost}}
-\item \code{\link{HCItest}}
-\item \code{\link{HCItestretest}}
-\item \code{\link{LearningToLearn}} }
+\section{NA}{
+ \itemize{
+\item \code{\link{startShinyItemAnalysis}}
+\item \code{\link{DDplot}}
+\item \code{\link{DistractorAnalysis}}
+\item \code{\link{plotDistractorAnalysis}}
+\item \code{\link{gDiscrim}}
+\item \code{\link{ggWrightMap}}
+\item \code{\link{ItemAnalysis}}
+\item \code{\link{plotAdjacent}}, \code{\link{plotCumulative}}, \code{\link{plotMultinomial}}
+\item \code{\link{plotDIFirt}}, \code{\link{plotDIFLogistic}}
+\item \code{\link{plot_corr}}
+\item \code{\link{recode_nr}}
+\item \code{\link{ICCrestricted}}
+}
 }
 
 \references{
 Martinkova, P., & Drabinova, A. (2018). ShinyItemAnalysis for
-Teaching Psychometrics and to Enforce Routine Analysis of Educational Tests.
-The R Journal, 10(2), 503-515. \url{https://doi.org/10.32614/RJ-2018-074}
+teaching psychometrics and to enforce routine analysis of educational tests.
+The R Journal, 10(2), 503-515, \doi{10.32614/RJ-2018-074}
 }
 \seealso{
 Useful links:

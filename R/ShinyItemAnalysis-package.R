@@ -79,7 +79,7 @@
 #' \item \code{\link{HCIprepost}}
 #' \item \code{\link{HCItest}}
 #' \item \code{\link{HCItestretest}}
-#' \item \code{\link{LearningToLearn}} }
+#' \item \code{\link{LearningToLearn}}
 #'
 #' @details Package: ShinyItemAnalysis \cr
 #' Type: Package \cr
@@ -107,8 +107,8 @@
 #' \email{hladka@@cs.cas.cz} \cr
 #'
 #' @references Martinkova, P., & Drabinova, A. (2018). ShinyItemAnalysis for
-#' Teaching Psychometrics and to Enforce Routine Analysis of Educational Tests.
-#' The R Journal, 10(2), 503-515. \url{https://doi.org/10.32614/RJ-2018-074}
+#' teaching psychometrics and to enforce routine analysis of educational tests.
+#' The R Journal, 10(2), 503-515, \doi{10.32614/RJ-2018-074}
 #'
 #' @docType package
 "_PACKAGE"

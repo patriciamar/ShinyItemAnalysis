@@ -1,15 +1,48 @@
-Package: ShinyItemAnalysis
 Type: Package
+Package: ShinyItemAnalysis
 Title: Test and Item Analysis via Shiny
 Version: 1.3.4-1
 Date: 2020-01-22
-Author: Patricia Martinkova [aut, cre], Adela Hladka [aut], Ondrej Leder [ctb], Jakub Houdek [ctb], Lubomir Stepanek [ctb], Tomas Jurica [ctb], Jana Vorlickova [ctb], Jan Netik [ctb]
-Authors@R: c(person("Patricia", "Martinkova", role = c("aut", "cre"), email = "martinkova@cs.cas.cz"), person("Adela", "Hladka", role = c("aut")), person("Ondrej", "Leder", role = "ctb"), person("Jakub", "Houdek", role = "ctb"), person("Lubomir", "Stepanek", role = "ctb"), person("Tomas", "Jurica", role = "ctb"), person("Jana", "Vorlickova", role = "ctb"), person("Jan", "Netik", role = "ctb"))
+Authors@R: 
+    c(person(given = "Patricia",
+             family = "Martinkova",
+             role = c("aut", "cre"),
+             email = "martinkova@cs.cas.cz"),
+      person(given = "Adela",
+             family = "Hladka",
+             role = "aut"),
+      person(given = "Ondrej",
+             family = "Leder",
+             role = "ctb"),
+      person(given = "Jakub",
+             family = "Houdek",
+             role = "ctb"),
+      person(given = "Lubomir",
+             family = "Stepanek",
+             role = "ctb"),
+      person(given = "Tomas",
+             family = "Jurica",
+             role = "ctb"),
+      person(given = "Jana",
+             family = "Vorlickova",
+             role = "ctb"),
+      person(given = "Jan",
+             family = "Netik",
+             role = "ctb"))
+Author: Patricia Martinkova [aut, cre], Adela Hladka [aut],
+    Ondrej Leder [ctb], Jakub Houdek [ctb], Lubomir Stepanek [ctb], Tomas
+    Jurica [ctb], Jana Vorlickova [ctb], Jan Netik [ctb]
 Maintainer: Patricia Martinkova <martinkova@cs.cas.cz>
+Description: Interactive shiny application for analysis of
+    educational tests and their items.
+License: GPL-3
+URL: http://www.ShinyItemAnalysis.org,
+    https://CRAN.R-project.org/package=ShinyItemAnalysis
+BugReports: 
+    https://github.com/patriciamar/ShinyItemAnalysis/issues
 Depends:
     R (>= 3.5.0)
 Imports:
-    cowplot,
     data.table,
     deltaPlotR,
     difNLR (>= 1.3.2),
@@ -21,6 +54,7 @@ Imports:
     gridExtra,
     knitr,
     latticeExtra,
+    lme4,
     ltm,
     magrittr,
     mirt (>= 1.24),
@@ -28,8 +62,8 @@ Imports:
     nnet,
     plotly,
     psych,
-    purrr,
     psychometric,
+    purrr,
     rlang,
     rmarkdown,
     rstudioapi,
@@ -43,14 +77,7 @@ Imports:
     tidyr,
     VGAM,
     xtable,
-    lme4
-Description: Interactive shiny application for analysis of educational tests and
-    their items.
-License: GPL-3
+    cowplot
+Encoding: UTF-8
 LazyData: TRUE
 RoxygenNote: 7.1.1
-BugReports: https://github.com/patriciamar/ShinyItemAnalysis/issues
-URL: 
-  http://www.ShinyItemAnalysis.org,
-  https://CRAN.R-project.org/package=ShinyItemAnalysis
-Encoding: UTF-8
