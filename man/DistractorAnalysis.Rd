@@ -9,55 +9,58 @@ DistractorAnalysis(
   key,
   p.table = FALSE,
   num.groups = 3,
-  matching = NULL,
-  match.discrete = FALSE,
+  criterion = NULL,
+  crit.discrete = FALSE,
   cut.points,
-  data
+  data,
+  matching,
+  match.discrete
 )
 }
 \arguments{
-\item{Data}{character: data matrix or data.frame. See \strong{Details}.}
+\item{Data}{character: data matrix or data.frame with rows representing
+unscored item responses from a multiple-choice test and columns
+corresponding to the items.}
 
-\item{key}{character: answer key for the items.}
+\item{key}{character: answer key for the items. The \code{key} must be a
+vector of the same length as \code{ncol(Data)}. In case it is not provided,
+\code{criterion} needs to be specified.}
 
-\item{p.table}{logical: should the function return the proportions. If
-\code{FALSE} (default) the counts are returned.}
+\item{p.table}{logical: should the function return the proportions? If
+\code{FALSE} (default), the counts are returned.}
 
-\item{num.groups}{numeric: number of groups to that should be respondents
-splitted.}
+\item{num.groups}{numeric: number of groups to which are the respondents
+split.}
 
-\item{matching}{numeric: numeric vector. If not provided, total score is
+\item{criterion}{numeric: numeric vector. If not provided, total score is
 calculated and distractor analysis is performed based on it.}
 
-\item{match.discrete}{logical: is \code{matching} discrete? Default value is
+\item{crit.discrete}{logical: is \code{criterion} discrete? Default value is
 \code{FALSE}. See details.}
 
 \item{cut.points}{numeric: numeric vector specifying cut points of
-\code{matching}. See details.}
+\code{criterion}. See details.}
 
 \item{data}{deprecated. Use argument \code{Data} instead.}
+
+\item{matching}{deprecated. Use argument \code{criterion} instead.}
+
+\item{match.discrete}{deprecated. Use argument \code{crit.discrete} instead.}
 }
 \description{
 Performs distractor analysis for each item and optional number
   of groups.
 }
 \details{
-This function is adapted version of
-\code{\link[CTT]{distractor.analysis}} function from \code{CTT} package.
-
-The \code{Data} is a matrix or data.frame with rows representing unscored
-item responses from a multiple-choice test and with columns corresponding to
-the items.
-
-The \code{key} must be a vector of the same length as \code{ncol(Data)}.
-
-In case, no \code{matching} is provided, the scores are calculated using the
-item \code{Data} and \code{key}. The respondents are by default splitted into
-the \code{num.groups}-quantiles and the number (or proportion) of respondents
-in each quantile is reported with respect to their answers. In case that
-\code{matching} is discrete (\code{match.discrete = TRUE}), \code{matching}
-is splitted based on its unique levels. Other cut points can be specified via
-\code{cut.points} argument.
+This function is an adapted version of the
+  \code{\link[CTT]{distractor.analysis}} function from \pkg{CTT} package. In
+  case that no \code{criterion} is provided, the scores are calculated using the
+  item \code{Data} and \code{key}. The respondents are by default split
+  into the \code{num.groups}-quantiles and the number (or proportion) of
+  respondents in each quantile is reported with respect to their answers. In
+  case that \code{criterion} is discrete (\code{crit.discrete = TRUE}),
+  \code{criterion} is split based on its unique levels. Other cut points
+  can be specified via \code{cut.points} argument.
 }
 \examples{
 # loading 100-item medical admission test dataset
@@ -75,12 +78,12 @@ DistractorAnalysis(data, key, p.table = TRUE)
 # distractor analysis for dataMedicaltest dataset for 6 groups
 DistractorAnalysis(data, key, num.group = 6)
 
-# distractor analysis for dataMedicaltest using specified matching
-matching <- round(rowSums(databin), -1)
-DistractorAnalysis(data, key, matching = matching)
+# distractor analysis for dataMedicaltest using specified criterion
+criterion <- round(rowSums(databin), -1)
+DistractorAnalysis(data, key, criterion = criterion)
 
-# distractor analysis for dataMedicaltest using discrete matching
-DistractorAnalysis(data, key, matching = matching, match.discrete = TRUE)
+# distractor analysis for dataMedicaltest using discrete criterion
+DistractorAnalysis(data, key, criterion = criterion, crit.discrete = TRUE)
 
 # distractor analysis for dataMedicaltest using groups specified by cut.points
 DistractorAnalysis(data, key, cut.points = seq(10, 100, 10))
