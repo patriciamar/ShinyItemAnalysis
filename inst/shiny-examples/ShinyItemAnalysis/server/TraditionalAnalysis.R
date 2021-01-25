@@ -57,7 +57,7 @@ itemanalysis_DDplot <- reactive({
     ""
   ))
 
-  DDplot(correct,
+  DDplot(Data = correct,
     item.names = item_numbers(),
     k = input$itemanalysis_DDplot_groups_slider,
     l = input$itemanalysis_DDplot_range_slider[[1]],
@@ -78,7 +78,7 @@ report_itemanalysis_DDplot <- reactive({
   if (input$customizeCheck) {
     average.score <- (input$report_itemanalysis_DDplot_difficulty == "AVGS")
 
-    DDplot(correct,
+    DDplot(Data = correct,
       item.names = item_numbers(),
       k = input$report_itemanalysis_DDplot_groups_slider,
       l = input$report_itemanalysis_DDplot_range_slider[[1]],
@@ -214,7 +214,7 @@ itemanalysis_table <- reactive({
   }
 
   tab <-
-    ItemAnalysis(ordinal(),
+    ItemAnalysis(Data = ordinal(),
       criterion = item_crit_cor,
       k, l, u,
       minscore = minimal(),
@@ -271,12 +271,12 @@ report_itemanalysis_table <- reactive({
     input$itemanalysis_DDplot_groups_slider
   )
 
-  tab <- ItemAnalysis(correct)
+  tab <- ItemAnalysis(Data = correct)
   tab <- data.table(
     item_numbers(),
     tab[, c("Difficulty", "Mean", "SD", "ULI", "RIT", "RIR", "Alpha.drop")]
   )
-  tab <- cbind(tab, gDiscrim(correct, k = num.groups, l = range1, u = range2))
+  tab <- cbind(tab, gDiscrim(Data = correct, k = num.groups, l = range1, u = range2))
   colnames(tab) <- c(
     "Item", "Difficulty", "Average score", "SD", "Discrimination ULI",
     "Discrimination RIT", "Discrimination RIR", "Alpha Drop",
@@ -394,11 +394,11 @@ distractor_plot <- reactive({
   multiple.answers <- c(input$distractor_type == "Combinations")
 
   plotDistractorAnalysis(
-    data = a, key = k, num.group = num.group,
+    Data = a, key = k, num.group = num.group,
     item = i,
     item.name = item_names()[i],
     multiple.answers = multiple.answers,
-    matching = sc
+    criterion = sc
   ) +
     xlab("Group by total score")
 })
@@ -443,7 +443,7 @@ distractor_table_counts <- reactive({
   item <- input$distractor_item_slider
   sc <- total_score()
 
-  DA <- DistractorAnalysis(a, k, num.groups = num.group, matching = sc)[[item]]
+  DA <- DistractorAnalysis(Data = a, key = k, num.groups = num.group, criterion = sc)[[item]]
   # df <- dcast(as.data.frame(DA), response ~ score.level, sum, margins = T, value.var = "Freq")
   df <- DA %>%
     addmargins() %>%
@@ -471,7 +471,7 @@ distractor_table_proportions <- reactive({
   item <- input$distractor_item_slider
   sc <- total_score()
 
-  DA <- DistractorAnalysis(a, k, num.groups = num.group, p.table = TRUE, matching = sc)[[item]]
+  DA <- DistractorAnalysis(Data = a, key = k, num.groups = num.group, p.table = TRUE, criterion = sc)[[item]]
   # df <- dcast(as.data.frame(DA), response ~ score.level, sum, value.var = "Freq")
   df <- DA %>%
     as.data.frame.matrix() %>%
@@ -494,7 +494,7 @@ distractor_barplot_item_response_patterns <- reactive({
   item <- input$distractor_item_slider
   sc <- total_score()
 
-  DA <- DistractorAnalysis(a, k, num.groups = num.group, p.table = TRUE, matching = sc)[[item]]
+  DA <- DistractorAnalysis(Data = a, key = k, num.groups = num.group, p.table = TRUE, criterion = sc)[[item]]
   # df <- dcast(as.data.frame(DA), response ~ score.level, sum, value.var = "Freq")
   df <- DA %>%
     as.data.frame.matrix() %>%
@@ -685,11 +685,11 @@ report_distractor_plot <- reactive({
 
   for (i in 1:length(k)) {
     g <- plotDistractorAnalysis(
-      data = a, key = k, num.group = num.group,
+      Data = a, key = k, num.group = num.group,
       item = i,
       item.name = item_names()[i],
       multiple.answers = multiple.answers_report,
-      matching = sc
+      criterion = sc
     ) +
       xlab("Group by total score")
     g <- g +
