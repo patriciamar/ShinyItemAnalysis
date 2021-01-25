@@ -5,41 +5,42 @@
 #' @description Plots graphical representation of item distractor analysis with
 #'   proportions and optional number of groups.
 #'
-#' @param Data character: data matrix or data.frame. See \strong{Details}.
-#' @param key character: answer key for the items.
-#' @param num.groups numeric: number of groups to which are the respondents split.
+#' @param Data character: data matrix or data.frame with rows representing
+#'   unscored item response from a multiple-choice test and columns
+#'   corresponding to the items.
+#' @param key character: answer key for the items. The \code{key} must be a
+#'   vector of the same length as \code{ncol(Data)}. In case it is not provided,
+#'   \code{criterion} needs to be specified.
+#' @param num.groups numeric: number of groups to which are the respondents
+#'   splitted.
 #' @param item numeric: the number of the item to be plotted.
 #' @param item.name character: the name of the item.
 #' @param multiple.answers logical: should be all combinations plotted (default)
 #'   or should be answers splitted into distractors. See \strong{Details}.
-#' @param matching numeric: numeric vector. If not provided, total score is
+#' @param criterion numeric: numeric vector. If not provided, total score is
 #'   calculated and distractor analysis is performed based on it.
-#' @param match.discrete logical: is \code{matching} discrete? Default value is
-#'   \code{FALSE}. See details.
+#' @param crit.discrete logical: is \code{criterion} discrete? Default value is
+#'   \code{FALSE}.
 #' @param cut.points numeric: numeric vector specifying cut points of
-#'   \code{matching}. See details.
+#'   \code{criterion}.
 #' @param data deprecated. Use argument \code{Data} instead.
+#' @param matching deprecated. Use argument \code{criterion} instead.
+#' @param match.discrete deprecated. Use argument \code{crit.discrete} instead.
 #'
-#' @details This function is graphical representation of
-#'   \code{\link{DistractorAnalysis}} function. In case, no \code{matching} is
+#' @details This function is a graphical representation of the
+#'   \code{\link{DistractorAnalysis}} function. In case that no \code{criterion} is
 #'   provided, the scores are calculated using the item \code{Data} and
-#'   \code{key}. The respondents are by default splitted into the
+#'   \code{key}. The respondents are by default split into the
 #'   \code{num.groups}-quantiles and the proportions of respondents in each
 #'   quantile are displayed with respect to their answers. In case that
-#'   \code{matching} is discrete (\code{match.discrete = TRUE}), \code{matching}
-#'   is splitted based on its unique levels. Other cut points can be specified
-#'   via \code{cut.points} argument.
+#'   \code{criterion} is discrete (\code{crit.discrete = TRUE}),
+#'   \code{criterion} is split based on its unique levels. Other cut points
+#'   can be specified via \code{cut.points} argument.
 #'
-#' The \code{Data} is a matrix or data.frame whose rows represents unscored item
-#' response from a multiple-choice test and columns correspond to the items.
-#'
-#' The \code{key} must be a vector of the same length as \code{ncol(Data)}. In
-#' case it is not provided, \code{matching} need to be specified.
-#'
-#' If \code{multiple.answers = TRUE} (default) all reported combinations of
-#' answers are plotted. If \code{multiple.answers = FALSE} all combinations are
-#' splitted into distractors and only these are then plotted with correct
-#' combination.
+#'   If \code{multiple.answers = TRUE} (default) all reported combinations of
+#'   answers are plotted. If \code{multiple.answers = FALSE} all combinations
+#'   are split into distractors and only these are then plotted with correct
+#'   combination.
 #'
 #' @author
 #' Adela Hladka \cr
@@ -77,16 +78,16 @@
 #' # distractor plot for item 57 with all combinations and 6 groups
 #' plotDistractorAnalysis(data, key, item = 57, num.group = 6)
 #'
-#' # distractor plot for item 57 using specified matching and key option
-#' matching <- round(rowSums(dataBin), -1)
-#' plotDistractorAnalysis(data, key, item = 57, matching = matching)
-#' # distractor plot for item 57 using specified matching without key option
-#' plotDistractorAnalysis(data, item = 57, matching = matching)
+#' # distractor plot for item 57 using specified criterion and key option
+#' criterion <- round(rowSums(dataBin), -1)
+#' plotDistractorAnalysis(data, key, item = 57, criterion = criterion)
+#' # distractor plot for item 57 using specified criterion without key option
+#' plotDistractorAnalysis(data, item = 57, criterion = criterion)
 #'
-#' # distractor plot for item 57 using discrete matching
+#' # distractor plot for item 57 using discrete criterion
 #' plotDistractorAnalysis(data, key,
-#'   item = 57, matching = matching,
-#'   match.discrete = TRUE
+#'   item = 57, criterion = criterion,
+#'   crit.discrete = TRUE
 #' )
 #'
 #' # distractor plot for item 57 using groups specified by cut.points
@@ -95,7 +96,14 @@
 #' @export
 
 plotDistractorAnalysis <- function(Data, key, num.groups = 3, item = 1, item.name, multiple.answers = TRUE,
-                                   matching = NULL, match.discrete = FALSE, cut.points, data) {
+                                   criterion = NULL, crit.discrete = FALSE, cut.points, data, matching, match.discrete) {
+  if (!missing(matching)) {
+    stop("Argument 'matching' deprecated. Please use argument 'criterion' instead. ", call. = FALSE)
+  }
+  if (!missing(match.discrete)) {
+    stop("Argument 'x' deprecated. Please use argument 'crit.discrete' instead. ", call. = FALSE)
+  }
+
   if (!missing(data)) {
     stop("Argument 'data' deprecated. Please use argument 'Data' instead. ", call. = FALSE)
   }
@@ -104,8 +112,8 @@ plotDistractorAnalysis <- function(Data, key, num.groups = 3, item = 1, item.nam
     if (all(sapply(Data, is.numeric))) {
       warning("Answer key is not provided. Maximum value is used as key.", call. = FALSE)
       key <- sapply(Data, max, na.rm = TRUE)
-    } else if (missing(matching)) {
-      stop("Answer key is not provided. Please, specify key to be able to calculate total score or provide matching. ",
+    } else if (missing(criterion)) {
+      stop("Answer key is not provided. Please, specify key to be able to calculate total score or provide criterion. ",
         call. = FALSE
       )
     } else {
@@ -120,8 +128,8 @@ plotDistractorAnalysis <- function(Data, key, num.groups = 3, item = 1, item.nam
 
   # distractor analysis
   tabDA <- DistractorAnalysis(
-    Data = Data, key = key, p.table = TRUE, num.groups = num.groups, matching = matching,
-    match.discrete = match.discrete, cut.points = cut.points
+    Data = Data, key = key, p.table = TRUE, num.groups = num.groups, criterion = criterion,
+    crit.discrete = crit.discrete, cut.points = cut.points
   )
 
   x <- tabDA[[item]]
@@ -189,7 +197,7 @@ plotDistractorAnalysis <- function(Data, key, num.groups = 3, item = 1, item.nam
     shape[CAall] <- 19
   }
 
-  xlab <- ifelse(is.null(matching), "Group by total score", "Group by criterion variable")
+  xlab <- ifelse(is.null(criterion), "Group by total score", "Group by criterion variable")
 
   df$score.level <- as.factor(df$score.level)
   num.groups <- length(unique(df$score.level))
