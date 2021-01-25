@@ -3,7 +3,7 @@
 \docType{data}
 \name{AIBS}
 \alias{AIBS}
-\title{AIBS Grant Peer Review Scoring Dataset}
+\title{AIBS grant peer review scoring dataset}
 \format{
 \code{AIBS} is a \code{data.frame} consisting of 216 observations on
   25 variables. Data describes 72 proposals with 3 ratings each.

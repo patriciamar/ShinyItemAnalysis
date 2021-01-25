@@ -1,6 +1,6 @@
-#' Graded Dataset of Admission Test to Medical School
+#' Graded dataset of admission test to medical school
 #'
-#' @md # allow RMarkdown formating usage
+#' @md # allow RMarkdown formatting usage
 #'
 #' @description The \code{dataMedicalgraded} dataset consists of the responses
 #'   of 2,392 subjects (750 males, 1,633 females and 9 subjects without gender
@@ -11,7 +11,8 @@
 #'
 #' @usage data(dataMedicalgraded)
 #'
-#' @author Cestmir Stuka \cr
+#' @author
+#' Cestmir Stuka \cr
 #' First Faculty of Medicine, Charles University \cr
 #'
 #' Martin Vejrazka \cr
@@ -21,9 +22,10 @@
 #' Institute of Computer Science of the Czech Academy of Sciences \cr
 #' \email{martinkova@@cs.cas.cz} \cr
 #'
-#' @references Stuka, C. Vejrazka, M., Martinkova, P. Komenda, M. & Stepanek, L.
-#' (2016). The Use of  Test and Item Analisis for Improvement of Tests. Workshop
-#' held at conference MEFANET, 2016, Brno, Czech Republic.
+#' @references
+#' Stuka, C., Vejrazka, M., Martinkova, P., Komenda, M., & Stepanek, L. (2016).
+#' The use of test and item analysis for improvement of tests. Workshop held at
+#' conference MEFANET, 2016, Brno, Czech Republic.
 #'
 #' @keywords datasets
 #'

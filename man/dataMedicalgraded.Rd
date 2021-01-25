@@ -3,7 +3,7 @@
 \docType{data}
 \name{dataMedicalgraded}
 \alias{dataMedicalgraded}
-\title{Graded Dataset of Admission Test to Medical School}
+\title{Graded dataset of admission test to medical school}
 \format{
 A \code{dataMedicalgraded} is a \code{data.frame} consisting of 2,392
 observations on the following 102 variables.
@@ -27,9 +27,9 @@ points were set if all correct answers and none of incorrect answers were
 selected.
 }
 \references{
-Stuka, C. Vejrazka, M., Martinkova, P. Komenda, M. & Stepanek, L.
-(2016). The Use of  Test and Item Analisis for Improvement of Tests. Workshop
-held at conference MEFANET, 2016, Brno, Czech Republic.
+Stuka, C., Vejrazka, M., Martinkova, P., Komenda, M., & Stepanek, L. (2016).
+The use of test and item analysis for improvement of tests. Workshop held at
+conference MEFANET, 2016, Brno, Czech Republic.
 }
 \seealso{
 \code{\link{dataMedical}}, \code{\link{dataMedicaltest}},

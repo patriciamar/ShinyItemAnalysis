@@ -3,7 +3,7 @@
 \docType{data}
 \name{dataMedicalkey}
 \alias{dataMedicalkey}
-\title{Key of correct answers for \code{dataMedicaltest} dataset}
+\title{Key of correct answers for dataset of admission test to medical school}
 \format{
 A vector with 100 values representing correct answers to items of
   \code{dataMedicaltest} dataset. For more details see
@@ -17,9 +17,9 @@ The \code{dataMedicalkey} is a vector of factors representing
   correct answers of \code{dataMedicaltest} dataset.
 }
 \references{
-Stuka, C. Vejrazka, M., Martinkova, P. Komenda, M. & Stepanek, L.
-(2016). The Use of  Test and Item Analisis for Improvement of Tests. Workshop
-held at conference MEFANET, 2016, Brno, Czech Republic.
+Stuka, C., Vejrazka, M., Martinkova, P., Komenda, M., & Stepanek, L. (2016).
+The use of test and item analysis for improvement of tests. Workshop held at
+conference MEFANET, 2016, Brno, Czech Republic.
 }
 \seealso{
 \code{\link{dataMedical}}, \code{\link{dataMedicaltest}},

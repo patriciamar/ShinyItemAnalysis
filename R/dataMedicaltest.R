@@ -17,11 +17,12 @@
 #'
 #' Patricia Martinkova \cr
 #' Institute of Computer Science of the Czech Academy of Sciences \cr
-#' martinkova@cs.cas.cz \cr
+#' \email{martinkova@@cs.cas.cz} \cr
 #'
-#' @references Stuka, C. Vejrazka, M., Martinkova, P. Komenda, M. & Stepanek, L.
-#' (2016). The Use of  Test and Item Analisis for Improvement of Tests. Workshop
-#' held at conference MEFANET, 2016, Brno, Czech Republic.
+#' @references
+#' Stuka, C., Vejrazka, M., Martinkova, P., Komenda, M., & Stepanek, L. (2016).
+#' The use of test and item analysis for improvement of tests. Workshop held at
+#' conference MEFANET, 2016, Brno, Czech Republic.
 #'
 #' @keywords datasets
 #'

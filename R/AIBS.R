@@ -1,4 +1,4 @@
-#' AIBS Grant Peer Review Scoring Dataset
+#' AIBS grant peer review scoring dataset
 #'
 #' @description The \code{AIBS} dataset comes from the scientific peer review of
 #'   biomedical applications from collaborative biomedical research program
