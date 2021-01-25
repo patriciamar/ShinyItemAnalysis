@@ -22,7 +22,7 @@
 #'   Default value is 100.
 #' @param ci numeric: confidence interval. Default value is 0.95.
 #' @param seed seed for simulations. Default value is \code{NULL}, random seed.
-#'   See \code{\link{lme4::bootMer}} for more detail.
+#'   See \code{\link[lme4:bootMer]{lme4::bootMer}} for more detail.
 #'
 #' @returns A \code{data.frame} with the following columns: \item{n_sel}{number
 #'   of ratees selected/subsetted.} \item{prop_sel}{proportion of ratees
@@ -49,6 +49,7 @@
 #'   Data = AIBS, case = "ID", var = "Score", rank = "ScoreRankAdj", sel = 0.8
 #' )
 #' @importFrom lme4 lmer VarCorr bootMer
+#' @importFrom stats sigma
 #' @importFrom dplyr between arrange group_by ungroup mutate
 #' @importFrom tidyr nest unnest
 #' @importFrom tibble tibble rowid_to_column
@@ -63,8 +64,8 @@ ICCrestricted <- function(Data, case, var, rank = NULL,
   if (is.null(rank)) {
     Data <- Data %>%
       group_by(.data[[case]]) %>%
-      mutate(.mean_score = mean(.data[[var]], na.rm = TRUE)) %>%
-      arrange(.mean_score) %>%
+      mutate(.ms = mean(.data[[var]], na.rm = TRUE)) %>%
+      arrange(.data[[".ms"]]) %>%
       nest() %>%
       rowid_to_column(".rank") %>%
       unnest(cols = .data$data) %>%
@@ -113,7 +114,7 @@ ICCrestricted <- function(Data, case, var, rank = NULL,
   bICC3 <- bs[, 1] / (bs[, 1] + bs[, 2] / 3)
   ICC3_CI <- quantile(bICC3, probs)
 
-  data.frame(
+  out <- data.frame(
     n_sel = sel,
     prop_sel = sel / sel_max,
     dir,
@@ -127,4 +128,7 @@ ICCrestricted <- function(Data, case, var, rank = NULL,
     ICC3_LCI = ICC3_CI[1],
     ICC3_UCI = ICC3_CI[2]
   )
+  rownames(out) <- NULL
+
+  out
 }

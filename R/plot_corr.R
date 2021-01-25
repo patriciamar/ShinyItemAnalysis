@@ -73,7 +73,7 @@
 #'
 #' @importFrom ggplot2 ggplot aes geom_tile labs scale_x_discrete
 #'   scale_y_discrete scale_fill_gradient2 coord_fixed theme_minimal theme
-#'   element_text element_blank annotate
+#'   element_text element_blank annotate scale_size_area scale_color_gradient2
 #' @importFrom stats hclust as.dist cutree
 #' @importFrom scales number
 #' @importFrom psych polychoric tetrachoric alpha

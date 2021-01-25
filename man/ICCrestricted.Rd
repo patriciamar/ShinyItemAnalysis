@@ -44,7 +44,7 @@ Default value is 100.}
 \item{ci}{numeric: confidence interval. Default value is 0.95.}
 
 \item{seed}{seed for simulations. Default value is \code{NULL}, random seed.
-See \code{\link{lme4::bootMer}} for more detail.}
+See \code{\link[lme4:bootMer]{lme4::bootMer}} for more detail.}
 }
 \value{
 A \code{data.frame} with the following columns: \item{n_sel}{number
