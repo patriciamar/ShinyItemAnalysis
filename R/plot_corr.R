@@ -51,9 +51,7 @@
 #' @param fill_alpha numeric 0-1: the opacity of the fill color.
 #'
 #' @inheritDotParams psych::polychoric -x -y -na.rm
-#'
-#' @param .data Deprecated in favor of \code{Data}.
-#'
+#'#'
 #' @details Correlation heatmap displays selected type of correlations between
 #'   items.The color of tiles indicates how much and in which way the items are
 #'   correlated - red color means positive correlation and blue color means
@@ -65,11 +63,10 @@
 #'
 #' @return An object of class \code{ggplot} and/or \code{gg}.
 #'
-#' @author Jan Netik \cr Department of Psychology, Faculty of Arts, Charles
-#'   University \cr \email{netikja@@gmail.com}
+#' @author Jan Netik \cr Charles University
 #'
 #'   Patricia Martinkova \cr Institute of Computer Science of the Czech Academy
-#'   of Sciences \cr \email{martinkova@@cs.cas.cz} \cr
+#'   of Sciences \cr \email{martinkova@@cs.cas.cz}
 #'
 #' @importFrom ggplot2 ggplot aes geom_tile labs scale_x_discrete
 #'   scale_y_discrete scale_fill_gradient2 coord_fixed theme_minimal theme
@@ -125,13 +122,7 @@ plot_corr <- function(Data, cor = "polychoric", clust_method = "none", n_clust =
                       shape = "circle",
                       labels = FALSE, labels_size = 3,
                       line_size = .5, line_col = "black", line_alpha = 1,
-                      fill = NA, fill_alpha = NA, .data = "deprecated", ...) {
-  if (!missing(".data")) {
-    warning("Argument '.data' deprecated. Please use argument 'Data' instead.",
-            call. = FALSE)
-    Data <- .data
-  }
-
+                      fill = NA, fill_alpha = NA, ...) {
   cor <- tryCatch(match.arg(cor, c(
     "polychoric", "tetrachoric", "pearson", "spearman", "none"
   )),

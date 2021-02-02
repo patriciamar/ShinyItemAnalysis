@@ -90,6 +90,7 @@
 #' Department of Psychology, Faculty of Arts, Charles University \cr
 #'
 #' Jana Vorlickova \cr
+#' Institute of Computer Science of the Czech Academy of Sciences \cr
 #'
 #' Adela Hladka \cr
 #' Institute of Computer Science of the Czech Academy of Sciences \cr
