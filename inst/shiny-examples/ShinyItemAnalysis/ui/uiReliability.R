@@ -291,54 +291,7 @@ uiReliability <-
       br(),
       textOutput("icc_text"),
       h4("Selected R code"),
-      code(
-        ## code_reliability_restricted-range: start ##
-"library(ggplot2)
-library(purrr)
-library(ShinyItemAnalysis)
-
-# loading data
-data(AIBS, package = \"ShinyItemAnalysis\")
-
-# estimate reliability with ICC for complete AIBS dataset
-ICCrestricted(Data = AIBS, case = \"ID\", var = \"Score\", rank = \"ScoreRankAdj\")
-
-# estimate range-restricted ICC
-ICCrestricted(Data = AIBS, case = \"ID\", var = \"Score\", rank = \"ScoreRankAdj\",
-              sel = 0.90, dir = \"top\")
-
-# caterpillar plot
-AIBS %>%
-  ggplot(aes(x = ScoreRankAdj, y = Score, group = ID)) +
-  geom_line(col = \"gray\") +
-  geom_point(shape = 1, size = 1.5) +
-  stat_summary(fun = mean, fun.args = list(na.rm = TRUE), geom = \"point\",
-               col = \"red\", shape = 5, size = 2.5, stroke = .35) +
-  labs(x = \"Ratee rank\", y = \"Rating (score)\") +
-  coord_cartesian(ylim = c(1, 5)) +
-  theme_app()
-
-# estimate all possible top-restricted subsets
-all_top_restricted <- map_dfr(2:72,
-                              ~ ICCrestricted(Data = AIBS, case = \"ID\", var = \"Score\",
-                                              rank = \"ScoreRankAdj\", sel = .x, nsim = 10))
-all_top_restricted
-
-# or alternatively, in base R:
-base_way <- lapply(2:72, function(x) {
-  ICCrestricted(Data = AIBS, case = \"ID\", var = \"Score\", rank = \"ScoreRankAdj\",
-                sel = x, nsim = 10)})
-do.call(rbind.data.frame, base_way)
-
-# plot
-all_top_restricted %>%
-  ggplot(aes(prop_sel, ICC1, ymin = ICC1_LCI, ymax = ICC1_UCI)) +
-  geom_pointrange() + scale_x_continuous(labels = scales::percent) +
-  labs(x = (\"Proportion of top ratees\"), y = \"Reliability\") +
-  coord_cartesian(ylim = c(0, 1), xlim = c(0, 1)) +
-  theme_app()"
-        ## code_reliability_restricted-range: end ##
-      ),
+      code(HTML("library(ggplot2)<br>library(purrr)<br>library(ShinyItemAnalysis)<br><br>#&nbsp;loading&nbsp;data<br>data(AIBS,&nbsp;package&nbsp;=&nbsp;\"ShinyItemAnalysis\")<br><br>#&nbsp;estimate&nbsp;reliability&nbsp;with&nbsp;ICC&nbsp;for&nbsp;complete&nbsp;AIBS&nbsp;dataset<br>ICCrestricted(Data&nbsp;=&nbsp;AIBS,&nbsp;case&nbsp;=&nbsp;\"ID\",&nbsp;var&nbsp;=&nbsp;\"Score\",&nbsp;rank&nbsp;=&nbsp;\"ScoreRankAdj\")<br><br>#&nbsp;estimate&nbsp;range-restricted&nbsp;ICC<br>ICCrestricted(Data&nbsp;=&nbsp;AIBS,&nbsp;case&nbsp;=&nbsp;\"ID\",&nbsp;var&nbsp;=&nbsp;\"Score\",&nbsp;rank&nbsp;=&nbsp;\"ScoreRankAdj\",<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sel&nbsp;=&nbsp;0.90,&nbsp;dir&nbsp;=&nbsp;\"top\")<br><br>#&nbsp;caterpillar&nbsp;plot<br>AIBS&nbsp;%>%<br>&nbsp;&nbsp;ggplot(aes(x&nbsp;=&nbsp;ScoreRankAdj,&nbsp;y&nbsp;=&nbsp;Score,&nbsp;group&nbsp;=&nbsp;ID))&nbsp;+<br>&nbsp;&nbsp;geom_line(col&nbsp;=&nbsp;\"gray\")&nbsp;+<br>&nbsp;&nbsp;geom_point(shape&nbsp;=&nbsp;1,&nbsp;size&nbsp;=&nbsp;1.5)&nbsp;+<br>&nbsp;&nbsp;stat_summary(fun&nbsp;=&nbsp;mean,&nbsp;fun.args&nbsp;=&nbsp;list(na.rm&nbsp;=&nbsp;TRUE),&nbsp;geom&nbsp;=&nbsp;\"point\",<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;col&nbsp;=&nbsp;\"red\",&nbsp;shape&nbsp;=&nbsp;5,&nbsp;size&nbsp;=&nbsp;2.5,&nbsp;stroke&nbsp;=&nbsp;.35)&nbsp;+<br>&nbsp;&nbsp;labs(x&nbsp;=&nbsp;\"Ratee&nbsp;rank\",&nbsp;y&nbsp;=&nbsp;\"Rating&nbsp;(score)\")&nbsp;+<br>&nbsp;&nbsp;coord_cartesian(ylim&nbsp;=&nbsp;c(1,&nbsp;5))&nbsp;+<br>&nbsp;&nbsp;theme_app()<br><br>#&nbsp;estimate&nbsp;all&nbsp;possible&nbsp;top-restricted&nbsp;subsets<br>all_top_restricted&nbsp;<-&nbsp;map_dfr(2:72,<br>&nbsp;&nbsp;~&nbsp;ICCrestricted(Data&nbsp;=&nbsp;AIBS,&nbsp;case&nbsp;=&nbsp;\"ID\",&nbsp;var&nbsp;=&nbsp;\"Score\",<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rank&nbsp;=&nbsp;\"ScoreRankAdj\",&nbsp;sel&nbsp;=&nbsp;.x,&nbsp;nsim&nbsp;=&nbsp;10))<br>all_top_restricted<br><br>#&nbsp;or&nbsp;alternatively,&nbsp;in&nbsp;base&nbsp;R:<br>base_way&nbsp;<-&nbsp;lapply(2:72,&nbsp;function(x)&nbsp;{<br>&nbsp;&nbsp;ICCrestricted(Data&nbsp;=&nbsp;AIBS,&nbsp;case&nbsp;=&nbsp;\"ID\",&nbsp;var&nbsp;=&nbsp;\"Score\",&nbsp;rank&nbsp;=&nbsp;\"ScoreRankAdj\",<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sel&nbsp;=&nbsp;x,&nbsp;nsim&nbsp;=&nbsp;10)})<br>do.call(rbind.data.frame,&nbsp;base_way)<br><br>#&nbsp;plot<br>all_top_restricted&nbsp;%>%<br>&nbsp;&nbsp;ggplot(aes(prop_sel,&nbsp;ICC1,&nbsp;ymin&nbsp;=&nbsp;ICC1_LCI,&nbsp;ymax&nbsp;=&nbsp;ICC1_UCI))&nbsp;+<br>&nbsp;&nbsp;geom_pointrange()&nbsp;+&nbsp;scale_x_continuous(labels&nbsp;=&nbsp;scales::percent)&nbsp;+<br>&nbsp;&nbsp;labs(x&nbsp;=&nbsp;(\"Proportion&nbsp;of&nbsp;top&nbsp;ratees\"),&nbsp;y&nbsp;=&nbsp;\"Reliability\")&nbsp;+<br>&nbsp;&nbsp;coord_cartesian(ylim&nbsp;=&nbsp;c(0,&nbsp;1),&nbsp;xlim&nbsp;=&nbsp;c(0,&nbsp;1))&nbsp;+<br>&nbsp;&nbsp;theme_app()<br>")),
       br()
     )
   )
