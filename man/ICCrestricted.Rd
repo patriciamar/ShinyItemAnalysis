@@ -49,30 +49,48 @@ See \code{\link[lme4:bootMer]{lme4::bootMer}} for more detail.}
 \value{
 A \code{data.frame} with the following columns: \item{n_sel}{number
   of ratees selected/subsetted.} \item{prop_sel}{proportion of ratees
-  selected.} \item{dir}{direction of range-restriction.}
-  \item{var_ratee}{variance due to ratee, "true variance", between-group
-  variance.} \item{var_resid}{residual variance.} \item{var_total}{total
-  variance.} \item{ICC1}{single-rater inter-rater reliability.}
-  \item{ICC1_LCI}{lower bound of the confidence interval for \code{ICC1}.}
-  \item{ICC1_UCI}{upper bound of the confidence interval for \code{ICC1}.}
-  \item{ICC3}{multiple-rater inter-rater reliability.} \item{ICC3_LCI}{lower
-  bound of the confidence interval for \code{ICC3}.} \item{ICC3_UCI}{upper
-  bound of the confidence interval for \code{ICC3}.}
+  selected.} \item{dir}{direction of range-restriction. \code{NA} if range is
+  effectively not restricted (100% used).} \item{VarID}{variance due to
+  ratee, "true variance", between-group variance.} \item{VarResid}{residual
+  variance.} \item{VarTotal}{total variance.} \item{ICC1}{single-rater
+  inter-rater reliability.} \item{ICC1_LCI}{lower bound of the confidence
+  interval for \code{ICC1}.} \item{ICC1_UCI}{upper bound of the confidence
+  interval for \code{ICC1}.} \item{ICC3}{multiple-rater inter-rater
+  reliability.} \item{ICC3_LCI}{lower bound of the confidence interval for
+  \code{ICC3}.} \item{ICC3_UCI}{upper bound of the confidence interval for
+  \code{ICC3}.}
 }
 \description{
-Estimates reliability with intra-class correlation for whole or
-range-restricted samples using REML.
+Function estimating reliability with intra-class correlation for the complete
+or for the range-restricted sample.
 }
 \examples{
 # loading AIBS dataset
 data(AIBS, package = "ShinyItemAnalysis")
 
 # ICC for the whole sample
-ICCrestricted(
-  Data = AIBS, case = "ID", var = "Score", rank = "ScoreRankAdj"
-)
+ICCrestricted(Data = AIBS, case = "ID", var = "Score", rank = "ScoreRankAdj")
+
 # ICC for the range-restricted sample considering 80\% of top ratees
-ICCrestricted(
-  Data = AIBS, case = "ID", var = "Score", rank = "ScoreRankAdj", sel = 0.8
-)
+ICCrestricted(Data = AIBS, case = "ID", var = "Score", rank = "ScoreRankAdj",
+              sel = 0.8)
+
+}
+\references{
+Erosheva, E., Martinkova, P., & Lee, C. (2021a). When zero may not be zero: A
+cautionary note on the use of inter-rater reliability in evaluating grant
+peer review. Journal of the Royal Statistical Society - Series A. Accepted.
+
+Erosheva, E., Martinkova, P., & Lee, C. (2021b). Supplementary material for
+When zero may not be zero: A cautionary note on the use of inter-rater
+reliability in evaluating grant peer review.
+Retrieved from \url{osf.io/knph8}
+}
+\author{
+Patricia Martinkova \cr
+Institute of Computer Science of the Czech Academy of Sciences \cr
+\email{martinkova@cs.cas.cz} \cr
+
+Jan Netik \cr
+Institute of Computer Science of the Czech Academy of Sciences \cr
 }
