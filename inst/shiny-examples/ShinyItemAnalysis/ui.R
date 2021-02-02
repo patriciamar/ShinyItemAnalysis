@@ -142,7 +142,7 @@ ui <- tagList(
                     ShinyItemAnalysis
                     </div>
                     <div class = "footer-subtitle">
-                    Test and item analysis | Version 1.3.4-1
+                    Test and item analysis | Version 1.3.5
                     </div>
                     <span style = "float:right">
                     <a href = "http://shinyitemanalysis.org/" id = "tooltipweb" target="_blank">

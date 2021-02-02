@@ -2,50 +2,65 @@
 
 ----------
 
-### Changes in version 1.3.4-1 (2021-01-22)
+### Changes in version 1.3.5 (2021-02-02)
 #### BUG FIXING
-  * Plots in DIF/About section were fixed (uniform vs. nonuniform DDF now correctly displayed).
-  * Display of ULI of discrimination was fixed for ordinal items.
-  * Bug in display of Multinomial regression parameters in case of IRT parametrization was fixed.
-  * In the IRT training section, the calculation and display of item information curves was 
-    fixed. (Thanks to Hynek Cigler for reporting this issue.)
-  * Calculation of minimal scores in ItemAnalysis() function was fixed.
-  * Display of ICC in IRT models is being updated to respond to updates in mirt package.
-  * In the Regression section of the app, missplaced SE for intercepts and slopes were fixed.
+  * Plots in the `DIF/About` section of the app were fixed (uniform vs. 
+    nonuniform DDF is now correctly displayed).
+  * Display of the discrimination index ULI was fixed for ordinal items.
+  * Bug in display of Multinomial regression parameters in case of the IRT 
+    parametrization was fixed.
+  * In the IRT training section, the calculation and display of item information 
+    curves was fixed. (Thanks to Hynek Cigler for reporting this issue.)
+  * Calculation of minimal scores in the `ItemAnalysis()` function was fixed.
+  * Display of ICC in IRT models was updated to respond to updates in the mirt 
+    package.
+  * In the `Regression` section of the app, missplaced `SE` for intercepts and 
+    slopes were fixed.
 
 #### MAJOR UPDATES
-  * New section Reliability/Restricted range was added to the app including interactive
-    example of issues with reliability estimates in restricted-range samples.
-  * Continuous items are newly allowed, rater variable is added, data upload and warning
-    messages were updated.
-  * New function ICCrestricted() for computing ICC in restricted samples was added.
-  * New AIBS dataset was added to the package.
-  * Functions gDiscrim(), DDplot() and ItemAnalysis were updated, variable names were unified
-  * New function `plot_corr()` to compute and visualize an item correlation matrix was added.
-    and implemented within the ShinyItemAnalysis interactive app.
-  * New datasets `HCIgrads`, `HCItestretest`, `HCIprepost` and `HCIdata` were added.
-  * `startShinyItemAnalysis()` function was fixed to finish job persisting in the backgroud.
-    after the app is closed.
-  * Figures can now be downloaded at once in DDF section of the app.
-  * Equations were unified in Regression, IRT and DIF sections of the app, with p being the index 
-    for person and i being the index for an item. 
-  * Training section was added to DIF section displayig group-specific models.
-  * Figures in Validity, Regression, IRT, and DIF section are now displayed in plotly 
-    mode in the shiny app.
-  * IRT/Rasch section was restructured, and it now offers both the intercept/slope as well as
-    the IRT parametrization. (Needs to be applied to other IRT subsections.)
-  * Regression/Multinomial newly offers also the IRT parametrization.  
+  * A new section `Reliability/Restricted range` was added to the app offering 
+    interactive examples demonstrating issues with reliability estimates in 
+    restricted-range samples.
+  * Continuous items are newly allowed, rater variable was added, 
+    data upload and warning messages were updated.
+  * New function `ICCrestricted()` for computing ICC in restricted samples was 
+    added.
+  * Functions `gDiscrim()`, `DDplot()` and `ItemAnalysis()` were updated, 
+    variable names were unified.
+  * New function `plot_corr()` to compute and visualize an item correlation 
+    matrix was added and implemented within the ShinyItemAnalysis interactive 
+    app.
+  * New datasets `AIBS`, `NIH`, `HCIgrads`, `HCItestretest`, `HCIprepost` 
+    and `HCIdata` were added.
+  * `startShinyItemAnalysis()` function was fixed to finish job persisting in 
+    the backgroud after the app is closed.
+  * Figures can now be downloaded at once in `DDF` section of the app.
+  * Equations were unified in the `Regression`, `IRT` and `DIF/Fairness` 
+    sections of the app, with `p` being the index for person and `i` being the 
+    index for an item.
+  * Interactive training section was added to the `DIF/Fairness` section, 
+    offering interpretation of group-specific models.
+  * Figures in the `Validity`, `Regression`, `IRT`, and `DIF/Fairness` section 
+    are now displayed in plotly mode in the shiny app.
+  * The `IRT/Rasch` section was restructured and it now offers both the 
+    intercept/slope as well as the IRT parametrization. (This is planned for 
+    other `IRT` subsections in future versions.)
+  * The `Regression/Multinomial` section newly offers also the IRT 
+    parametrization.  
   
 #### MINOR UPDATES
-  * Home page was updated, new News section was added.
+  * The intropage was updated, new News section was added.
+  * Method ordering was updated in the `DIF/Fairness` section.
   * Toy data selection was updated.
   * Selected R code was updated.
   * Unnecessary dependencies were removed.
-  * Summary tab was updated within the app, interactive help with formulae is newly offered.
-  * Lines for interpretation of IIC for selected theta were added in IRT training section.
+  * Summary tab was updated within the app, interactive help with formulae is 
+    newly offered.
+  * Interpretation of IIC for selected theta were added in the `IRT/training` 
+    section.
   * styler package was applied on .R files, documentation was updated.
-  * ggWright() plot was updated to more general description.
-  * References were updated.
+  * `ggWright()` plot was updated to more general description.
+  * References were updated wintin the app.
   
   ----------
 
@@ -53,27 +68,32 @@
 #### BUG FIXING
   * Display of Cronbach's alpha in PDF/HTML reports was corrected.
   * Item slider bug in ordinal regression models in the app was fixed.
-  * DIF matching criterion was synchronized for Summary and Item subtabs in the
-    Generalized logistic regression method, DIF/Fairness section of the app. 
-  * Bug in display of table for Regression / Model comparison was fixed.
+  * DIF matching criterion was synchronized for the `Summary` and `Item` subtabs 
+    for the Generalized logistic regression method in the `DIF/Fairness` section 
+    of the app. 
+  * Bug in display of table in the `Regression/Model comparison` section was 
+    fixed.
   
 #### MAJOR UPDATES
-  * `startShinyItemAnalysis()` function was updated to allow starting the application 
-    as a background job in Rstudio (default setting). This permits the user to work 
-    and try sample R code examples in the console.
-  * Downloadable tables are newly provided in shiny app in DIF sections for ordinal DIF.
+  * `startShinyItemAnalysis()` function was updated to allow starting the 
+    application as a background job in Rstudio (default setting). 
+    This permits the user to work and try sample R code examples in the console.
+  * Downloadable tables are newly provided in shiny app in the `DIF/Fairness` 
+    sections for ordinal DIF.
   * DDplot is now displayed in plotly mode in the shiny app.
-  * New function `recode_nr()` for recognizing and recoding not-reached responses 
-    was introduced.
-  * `ItemAnalysis()` function was updated with new columns for ratio of missed and 
-    unreached items, shortened column names and ordering.
-  * Traditional item analysis table in Item analysis section of the app has been 
-    expanded to include item reliability, item validity, and percentage of missing and
-    unreached for each item.
-  * `DDplot()` function now offers argument `criterion`. Without `criterion` specification,
-    difficulty-discrimination plot is provided. When `criterion` is specified, 
-    difficulty-validity plot is provided instead, depicting item criterion validity.
-  * Difficulty-validity plot is newly offered in section Validity/Criterion_Validity/Items
+  * New function `recode_nr()` for recognizing and recoding not-reached 
+    items was introduced.
+  * `ItemAnalysis()` function was updated with new columns for ratio of missed 
+    and unreached items, shortened column names and ordering.
+  * Traditional item analysis table in the `Item analysis` section of the app 
+    has been expanded to include item reliability, item validity, and percentage 
+    of missing and unreached for each item.
+  * `DDplot()` function now offers argument `criterion`. Without `criterion` 
+    specification, the difficulty-discrimination plot is provided. When 
+    `criterion` is specified, the difficulty-validity plot is provided instead, 
+    depicting item criterion validity.
+  * Difficulty-validity plot is newly offered in the the 
+    `Validity/Criterion_Validity/Items` section.
 
 #### MINOR UPDATES
   * Documentation of `DDplot()` was updated.
@@ -83,23 +103,26 @@
 ### Changes in version 1.3.3 (2020-05-04)
 
 #### BUG FIXING
-  * `plotDIFLogistic()` now correctly plots matching criterion when item purification 
-    is applied.
+  * `plotDIFLogistic()` now correctly plots matching criterion when item 
+     purification is applied.
   
 #### MAJOR UPDATES
-  * Use of DIF matching criterion other than Total score is now enabled in shiny app
-    in DIF sections.
-  * Downloadable tables are newly provided in shiny app in DIF sections.
+  * Use of DIF matching criterion other than Total score is now enabled in shiny 
+    app in the `DIF/Fairness` sections.
+  * Downloadable tables are newly provided in shiny app in the `DIF/Fairness` 
+    sections.
   * Iterations of purification process are now displayed in downloadable tables
-    in the DIF sections of shiny app.
-  * DIF method comparison table is provided in DIF section of the shiny app.
+    in the `DIF/Fairness` sections of shiny app.
+  * DIF method comparison table is provided in the `DIF/Fairness` section of the 
+    shiny app.
 
 #### MINOR UPDATES
   * Help page for the `ShinyItemAnalysis` package was added.
   * NEWS file is now formatted using `markdown`.
   * On attach message was updated.
-  * Wording, Figures and page structure were updated in shiny app in DIF sections,
-    histogram of total scores now better compares the groups.   
+  * Wording, Figures and page structure were updated in shiny app in the 
+    `DIF/Fairness` sections, histogram of total scores now better compares the 
+    groups.   
 ----------
 
 ### Changes in version 1.3.2. (2020-01-27)
@@ -109,18 +132,21 @@
 *It includes versions 1.3.1-1 - 1.3.1-8 and following changes:*
 
 #### BUG FIXING
-  * Mismatch in specification of H0 and H1 was corrected in `DIF/Fairness` section
-    and in `Report` section.
+  * Mismatch in specification of H0 and H1 was corrected in `DIF/Fairness` 
+    section and in the `Report` section.
   * `plotDIFLogistic()` now correctly plots matching criterion.
-  * Logistic method in `DIF/Fairness` section now correctly plots best fitting
-    model when p.adjust.method is applied.
-  * Logistic method in `DIF/Fairness` section now excludes missing values.
+  * Logistic method in the `DIF/Fairness` section now correctly plots best 
+    fitting model when p.adjust.method is applied.
+  * Logistic method in the `DIF/Fairness` section now excludes missing values.
 
 #### MAJOR UPDATES
   * New dataset `LearningToLearn` was added to the package.
-  * New toy datasets `LearningToLearn6` and `LearningToLearn9` were added to the app.
-  * Upload of the DIF matching criterion is now available in Data section of the app.
-  * D-DIF index calculation was added into DIF/MH/Item to evaluate DIF effect size
+  * New toy datasets `LearningToLearn6` and `LearningToLearn9` were added to the 
+    app.
+  * Upload of the DIF matching criterion is now available in Data section of the 
+    app.
+  * D-DIF index calculation was added into DIF/MH/Item to evaluate DIF effect 
+    size
   * OR calculation in DIF/MH was edited.
   * `plotDIFLogistic()` function was updated to accept class of `Logistik`
     as input.
@@ -133,12 +159,13 @@
   * Authors' details were updated.
   * Due to changes in `difNLR`, function `ddfORD()`was renamed to `difORD()`.
   * About page was updated.
-  * Error messages for `DistractorAnalysis()` and `plotDistractorAnalysis()` were unified.
+  * Error messages for `DistractorAnalysis()` and `plotDistractorAnalysis()` 
+    were unified.
   * Copyright year in footer is now responsive.
   * Description of toy datasets was updated.
   * styler package was used for all functions. Documentation was updated.
-  * For `plotDIFLogistic()` it is now possible to turn off plotting empirical probabilities.
-    This can be done using`draw.empirical = FALSE`.
+  * For `plotDIFLogistic()` it is now possible to turn off plotting empirical 
+    probabilities. This can be done using `draw.empirical = FALSE`.
   * Selected R code was updated in DIF/MH
   * Threshold for discrimination can be now specified in DDplot()
     function via argument `thr`. Default value is 0.2.
@@ -155,7 +182,8 @@
 ### Changes in version 1.3.1-8. (2019-11-02)
 
 #### BUG FIXING
-  * Typos in `plotAdjacent()`, `plotCumulative()` and `plotMultinomial()` were fixed.
+  * Typos in `plotAdjacent()`, `plotCumulative()` and `plotMultinomial()` were 
+    fixed.
 
 ----------
 

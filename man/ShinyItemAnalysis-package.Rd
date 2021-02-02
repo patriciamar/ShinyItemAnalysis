@@ -7,7 +7,9 @@
 \title{ShinyItemAnalysis: Test and Item Analysis via shiny}
 \description{
 The ShinyItemAnalysis package contains an interactive shiny
-  application for analysis of educational tests and their items which can be
+  application for the psychometric analysis of educational tests,
+  psychological assessments, health-related and other types of
+  multi-item measurements, or ratings from multiple raters, which can be
   accessed using function \code{startShinyItemAnalysis()}. The shiny
   application covers a broad range of psychometric methods and offers data
   examples, model equations, parameter estimates, interpretation of results,
@@ -31,12 +33,12 @@ The ShinyItemAnalysis package contains an interactive shiny
 \details{
 Package: ShinyItemAnalysis \cr
 Type: Package \cr
-Version: 1.3.4-1 \cr
-Date: 2020-12-15 \cr
+Version: 1.3.5 \cr
+Date: 2021-02-02 \cr
 Depends: R (>= 3.5.0) \cr
 Imports: cowplot, data.table, deltaPlotR, difNLR (>= 1.3.2), difR (>= 5.0),
-dplyr, DT, ggdendro, ggplot2, gridExtra, knitr, latticeExtra, ltm, magrittr,
-mirt (>= 1.24), msm, nnet, plotly, psych, purrr, psychometric, rlang,
+dplyr, DT, ggdendro, ggplot2, gridExtra, knitr, latticeExtra, lme4, ltm, magrittr,
+mirt (>= 1.24), msm, nnet, plotly, psych, psychometric, purrr, rlang,
 rmarkdown, rstudioapi, scales, shiny (>= 1.0.3), shinyBS, shinydashboard,
 shinyjs (>= 0.9), stringr, tibble, tidyr, VGAM, xtable
 License: GPL-3 \cr
@@ -61,27 +63,29 @@ Encoding: UTF-8 \cr
 }
 }
 
-\section{NA}{
- \itemize{
-\item \code{\link{startShinyItemAnalysis}}
-\item \code{\link{DDplot}}
-\item \code{\link{DistractorAnalysis}}
-\item \code{\link{plotDistractorAnalysis}}
-\item \code{\link{gDiscrim}}
-\item \code{\link{ggWrightMap}}
-\item \code{\link{ItemAnalysis}}
-\item \code{\link{plotAdjacent}}, \code{\link{plotCumulative}}, \code{\link{plotMultinomial}}
-\item \code{\link{plotDIFirt}}, \code{\link{plotDIFLogistic}}
-\item \code{\link{plot_corr}}
-\item \code{\link{recode_nr}}
-\item \code{\link{ICCrestricted}}
-}
+\section{Datasets}{
+
+\itemize{
+\item \code{\link{AIBS}}
+\item \code{\link{dataMedical}}
+\item \code{\link{dataMedicalgraded}}
+\item \code{\link{dataMedicalkey}}
+\item \code{\link{dataMedicaltest}}
+\item \code{\link{HCI}}
+\item \code{\link{HCIdata}}
+\item \code{\link{HCIgrads}}
+\item \code{\link{HCIkey}}
+\item \code{\link{HCIprepost}}
+\item \code{\link{HCItest}}
+\item \code{\link{HCItestretest}}
+\item \code{\link{LearningToLearn}}
+\item \code{\link{NIH}}}
 }
 
 \references{
 Martinkova, P., & Drabinova, A. (2018). ShinyItemAnalysis for
 teaching psychometrics and to enforce routine analysis of educational tests.
-The R Journal, 10(2), 503-515, \doi{10.32614/RJ-2018-074}
+The R Journal, 10(2), 503--515, \doi{10.32614/RJ-2018-074}
 }
 \seealso{
 Useful links:
