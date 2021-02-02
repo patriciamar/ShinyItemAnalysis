@@ -306,6 +306,83 @@ uiDIF <-
         )
       )
     ),
+    # * SIBTEST ####
+    tabPanel(
+      "SIBTEST",
+      h3("SIBTEST"),
+      p("The SIBTEST method (Shealy & Stout, 1993) allows for detection of uniform DIF without requiring
+                        an item response model. Its modified version, the Crossing-SIBTEST (Chalmers, 2018; Li & Stout, 1996),
+                        focuses on detection of non-uniform DIF."),
+      h4("Method specification"),
+      p("Here you can choose ", strong("type"), " of DIF to test. With uniform DIF, SIBTEST is applied, while with non-uniform DIF,
+                        the Crossing-SIBTEST method is used instead. You can also select ", strong("correction method"), " for multiple comparison
+                        or", strong("item purification.")),
+      fluidRow(
+        column(
+          2,
+          radioButtons(
+            inputId = "DIF_SIBTEST_type",
+            label = "Type",
+            choices = c(
+              "Uniform" = "udif",
+              "Non-uniform" = "nudif"
+            ),
+            selected = "udif"
+          )
+        ),
+        column(
+          2,
+          selectInput(
+            inputId = "DIF_SIBTEST_correction",
+            label = "Correction method",
+            choices = c(
+              "Benjamini-Hochberg" = "BH",
+              "Benjamini-Yekutieli" = "BY",
+              "Bonferroni" = "bonferroni",
+              "Holm" = "holm",
+              "Hochberg" = "hochberg",
+              "Hommel" = "hommel",
+              "None" = "none"
+            ),
+            selected = "none"
+          )
+        ),
+        column(
+          2, br(),
+          checkboxInput(
+            inputId = "DIF_SIBTEST_purification",
+            label = "Item purification",
+            value = FALSE
+          )
+        )
+      ),
+      h4("Summary table"),
+      p("Summary table contains estimates of \\(\\beta\\) together with standard errors
+                      (only available when testing uniform DIF), corresponding \\(\\chi^2\\)-statistics
+                        with \\(p\\)-values considering selected adjustement, and significance codes. "),
+      uiOutput("DIF_SIBTEST_NA_alert"),
+      # verbatimTextOutput("DIF_SIBTEST_print"),
+      strong(textOutput("sibtest_dif_items")),
+      br(),
+      tags$head(tags$style("#coef_sibtest_dif  {white-space: nowrap;}")),
+      fluidRow(column(12, align = "left", tableOutput("coef_sibtest_dif"))),
+      fluidRow(column(12, align = "left", uiOutput("note_sibtest"))),
+      br(),
+      fluidRow(column(2, downloadButton(outputId = "download_sibtest_dif", label = "Download table"))),
+      br(),
+      h4("Purification process"),
+      textOutput("dif_sibtest_puri_info"),
+      br(),
+      tags$head(tags$style("#dif_sibtest_puri_table  {white-space: nowrap;}")),
+      fluidRow(column(12, align = "center", tableOutput("dif_sibtest_puri_table"))),
+      conditionalPanel(
+        "input.DIF_SIBTEST_purification == 1",
+        downloadButton(outputId = "download_sibtest_dif_puri", label = "Download table"), br(), br()
+      ),
+      h4("Selected code"),
+      div(code(HTML('library(difR)<br><br>#&nbsp;Loading&nbsp;data<br>data(GMAT,&nbsp;package&nbsp;=&nbsp;\"difNLR\")<br>Data&nbsp;<-&nbsp;GMAT[,&nbsp;1:20]<br>group&nbsp;<-&nbsp;GMAT[,&nbsp;\"group\"]<br><br>#&nbsp;SIBTEST&nbsp;(uniform&nbsp;DIF)<br>(fit_udif&nbsp;<-&nbsp;difSIBTEST(Data&nbsp;=&nbsp;Data,&nbsp;group&nbsp;=&nbsp;group,&nbsp;focal.name&nbsp;=&nbsp;1,&nbsp;type&nbsp;=&nbsp;\"udif\",&nbsp;p.adjust.method&nbsp;=&nbsp;\"none\",&nbsp;purify&nbsp;=&nbsp;FALSE))<br><br>#&nbsp;Crossing-SIBTEST&nbsp;(non-uniform&nbsp;DIF)<br>(fit_nudif&nbsp;<-&nbsp;difSIBTEST(Data&nbsp;=&nbsp;Data,&nbsp;group&nbsp;=&nbsp;group,&nbsp;focal.name&nbsp;=&nbsp;1,&nbsp;type&nbsp;=&nbsp;\"nudif\",&nbsp;p.adjust.method&nbsp;=&nbsp;\"none\",&nbsp;purify&nbsp;=&nbsp;FALSE))'))),
+      br()
+    ),
     # * LOGISTIC ####
     tabPanel(
       "Logistic regression",
@@ -1106,83 +1183,6 @@ uiDIF <-
           br()
         )
       )
-    ),
-    # * SIBTEST ####
-    tabPanel(
-      "SIBTEST",
-      h3("SIBTEST"),
-      p("The SIBTEST method (Shealy & Stout, 1993) allows for detection of uniform DIF without requiring
-                        an item response model. Its modified version, the Crossing-SIBTEST (Chalmers, 2018; Li & Stout, 1996),
-                        focuses on detection of non-uniform DIF."),
-      h4("Method specification"),
-      p("Here you can choose ", strong("type"), " of DIF to test. With uniform DIF, SIBTEST is applied, while with non-uniform DIF,
-                        the Crossing-SIBTEST method is used instead. You can also select ", strong("correction method"), " for multiple comparison
-                        or", strong("item purification.")),
-      fluidRow(
-        column(
-          2,
-          radioButtons(
-            inputId = "DIF_SIBTEST_type",
-            label = "Type",
-            choices = c(
-              "Uniform" = "udif",
-              "Non-uniform" = "nudif"
-            ),
-            selected = "udif"
-          )
-        ),
-        column(
-          2,
-          selectInput(
-            inputId = "DIF_SIBTEST_correction",
-            label = "Correction method",
-            choices = c(
-              "Benjamini-Hochberg" = "BH",
-              "Benjamini-Yekutieli" = "BY",
-              "Bonferroni" = "bonferroni",
-              "Holm" = "holm",
-              "Hochberg" = "hochberg",
-              "Hommel" = "hommel",
-              "None" = "none"
-            ),
-            selected = "none"
-          )
-        ),
-        column(
-          2, br(),
-          checkboxInput(
-            inputId = "DIF_SIBTEST_purification",
-            label = "Item purification",
-            value = FALSE
-          )
-        )
-      ),
-      h4("Summary table"),
-      p("Summary table contains estimates of \\(\\beta\\) together with standard errors
-                      (only available when testing uniform DIF), corresponding \\(\\chi^2\\)-statistics
-                        with \\(p\\)-values considering selected adjustement, and significance codes. "),
-      uiOutput("DIF_SIBTEST_NA_alert"),
-      # verbatimTextOutput("DIF_SIBTEST_print"),
-      strong(textOutput("sibtest_dif_items")),
-      br(),
-      tags$head(tags$style("#coef_sibtest_dif  {white-space: nowrap;}")),
-      fluidRow(column(12, align = "left", tableOutput("coef_sibtest_dif"))),
-      fluidRow(column(12, align = "left", uiOutput("note_sibtest"))),
-      br(),
-      fluidRow(column(2, downloadButton(outputId = "download_sibtest_dif", label = "Download table"))),
-      br(),
-      h4("Purification process"),
-      textOutput("dif_sibtest_puri_info"),
-      br(),
-      tags$head(tags$style("#dif_sibtest_puri_table  {white-space: nowrap;}")),
-      fluidRow(column(12, align = "center", tableOutput("dif_sibtest_puri_table"))),
-      conditionalPanel(
-        "input.DIF_SIBTEST_purification == 1",
-        downloadButton(outputId = "download_sibtest_dif_puri", label = "Download table"), br(), br()
-      ),
-      h4("Selected code"),
-      div(code(HTML('library(difR)<br><br>#&nbsp;Loading&nbsp;data<br>data(GMAT,&nbsp;package&nbsp;=&nbsp;\"difNLR\")<br>Data&nbsp;<-&nbsp;GMAT[,&nbsp;1:20]<br>group&nbsp;<-&nbsp;GMAT[,&nbsp;\"group\"]<br><br>#&nbsp;SIBTEST&nbsp;(uniform&nbsp;DIF)<br>(fit_udif&nbsp;<-&nbsp;difSIBTEST(Data&nbsp;=&nbsp;Data,&nbsp;group&nbsp;=&nbsp;group,&nbsp;focal.name&nbsp;=&nbsp;1,&nbsp;type&nbsp;=&nbsp;\"udif\",&nbsp;p.adjust.method&nbsp;=&nbsp;\"none\",&nbsp;purify&nbsp;=&nbsp;FALSE))<br><br>#&nbsp;Crossing-SIBTEST&nbsp;(non-uniform&nbsp;DIF)<br>(fit_nudif&nbsp;<-&nbsp;difSIBTEST(Data&nbsp;=&nbsp;Data,&nbsp;group&nbsp;=&nbsp;group,&nbsp;focal.name&nbsp;=&nbsp;1,&nbsp;type&nbsp;=&nbsp;\"nudif\",&nbsp;p.adjust.method&nbsp;=&nbsp;\"none\",&nbsp;purify&nbsp;=&nbsp;FALSE))'))),
-      br()
     ),
     # * METHOD COMPARISON ####
     tabPanel(

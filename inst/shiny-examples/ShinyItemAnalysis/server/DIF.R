@@ -984,6 +984,240 @@ report_DIF_MH_model <- reactive({
 })
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+# * SIBTEST ######
+# %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+# ** Model for print ####
+DIF_SIBTEST_model <- reactive({
+  # data
+  group <- unlist(group())
+  data <- data.frame(binary())
+
+  # inputs
+  type <- input$DIF_SIBTEST_type
+  purify <- input$DIF_SIBTEST_purification
+  adj.method <- input$DIF_SIBTEST_correction
+
+  # model
+  fit <- .difSIBTEST_edited(
+    Data = data, group = group, focal.name = 1,
+    type = type,
+    purify = purify, p.adjust.method = adj.method
+  )
+  fit
+})
+
+# ** Output print ######
+output$DIF_SIBTEST_print <- renderPrint({
+  print(DIF_SIBTEST_model())
+})
+
+# ** Warning for missing values ####
+output$DIF_SIBTEST_NA_alert <- renderUI({
+  txt <- na_score()
+  HTML(txt)
+})
+
+
+####### ** DIF statistic and parameter tables ####
+coef_sibtest_dif <- reactive({
+  res <- DIF_SIBTEST_model()
+
+  # deal with only one pval base od model specs
+  pval <- if (res$p.adjust.method == "none") {
+    res$p.value
+  } else {
+    res$adjusted.p
+  }
+
+  pval_symb <- symnum(pval,
+                      c(0, 0.001, 0.01, 0.05, 0.1, 1),
+                      symbols = c("***", "**", "*", ".", "")
+  )
+
+  tab <- data.frame(
+    res$Beta,
+    res$SE,
+    res$X2,
+    pval,
+    pval_symb
+  )
+
+  colnames(tab) <-
+    c(
+      "%%mathit{\\beta}%%",
+      "SE(%%mathit{\\beta}%%)",
+      "%%mathit{\\chi^2}%%",
+      ifelse(
+        res$p.adjust.method == "none",
+        "%%mathit{p}%%-value",
+        "adj. %%mathit{p}%%-value"
+      ),
+      ""
+    )
+
+  rownames(tab) <- item_names()
+
+  tab
+})
+
+output$coef_sibtest_dif <- renderTable(
+  {
+    coef_sibtest_dif()
+  },
+  rownames = T,
+  colnames = T
+)
+
+# ** Items detected text ######
+output$sibtest_dif_items <- renderPrint({
+  DIFitems <- DIF_SIBTEST_model()$DIFitems
+  if (DIFitems[1] == "No DIF item detected") {
+    txt <- "No item was detected as DIF."
+  } else {
+    txt <- paste0("Items detected as DIF items: ", paste(item_names()[DIFitems], collapse = ", "))
+  }
+  HTML(txt)
+})
+
+# ** Purification table ######
+dif_sibtest_puri_table <- reactive({
+  tab <- DIF_SIBTEST_model()$difPur
+
+  if (!is.null(tab)) {
+    colnames(tab) <- item_names()
+    rownames(tab) <- paste0("Step ", seq(0, nrow(tab) - 1))
+    tab
+  }
+})
+output$dif_sibtest_puri_table <- renderTable(
+  {
+    dif_sibtest_puri_table()
+  },
+  rownames = T,
+  colnames = T,
+  digits = 0
+)
+
+# ** Purification info - number of iter ######
+output$dif_sibtest_puri_info <- renderPrint({
+  model <- DIF_SIBTEST_model()
+  if (input$DIF_SIBTEST_purification & !is.null(model$difPur)) {
+    cat("Table below describes purification process, where rows correspond to purification iteration and columns to items.
+        Value of '1' in the i-th row means that an item was detected as DIF in (i-1)-th step, while value of '0' means that
+        item was not detected as DIF. The first row corresponds to the initial classification of the items when all items
+        were used for calculation of DIF matching criterion. ")
+    nrIter <- model$nrPur
+    cat(
+      "In this case, the convergence was", ifelse(model$convergence, "reached", "NOT reached even"), "after", nrIter,
+      ifelse(nrIter == 1, "iteration.", "iterations.")
+    )
+  } else if (input$DIF_SIBTEST_purification & is.null(model$difPur)) {
+    cat("No DIF items detected whatsoever, nothing to show.")
+  } else {
+    cat("Item purification not requested! Nothing to show.")
+  }
+})
+
+# Note setup
+note_sibtest <- reactive({
+  res <- NULL
+
+  model <- DIF_SIBTEST_model()
+
+  res$type <- paste0("Tested DIF type: ", switch(model$type,
+                                                 "udif" = "uniform",
+                                                 "nudif" = "non-uniform"
+  ))
+
+  res$p_adj <-
+    paste("P-value correction method:", switch(
+      model$p.adjust.method,
+      bonferroni = "Bonferroni",
+      holm = "Holm",
+      hochberg = "Hochberg",
+      hommel = "Hommel",
+      BH = "Benjamini-Hochberg",
+      BY = "Benjamini-Yekutieli",
+      none = "none"
+    ))
+
+  res$puri <- paste("Item purification:", ifelse(model$purification == T, "used", "unutilized"))
+
+  thr <- qchisq(1 - model$alpha, model$df[1])
+  res$thr <-
+    paste0(
+      "Detection threshold: ",
+      round(thr, 4),
+      " (significance level: ",
+      model$alpha,
+      ")"
+    )
+
+  res
+})
+
+output$note_sibtest <- renderUI({
+  HTML(
+    paste(
+      "Notes:",
+      note_sibtest()$type,
+      note_sibtest()$p_adj,
+      note_sibtest()$puri,
+      note_sibtest()$thr,
+      "Signif. codes: 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1",
+      sep = "</br>"
+    )
+  )
+})
+
+# ** Download tables ######
+output$download_sibtest_dif <- downloadHandler(
+  filename = function() {
+    paste("DIF_SIBTEST_statistics", ".csv", sep = "")
+  },
+  content = function(file) {
+    data <- coef_sibtest_dif()
+
+    colnames(data) <-
+      c(
+        "Beta",
+        "SE(Beta)",
+        "X^2",
+        ifelse(
+          "%%mathit{p}%%-value" %in% colnames(data),
+          "p-value",
+          "adj. p-value"
+        ),
+        ""
+      )
+
+    rownames(data) <- item_names()
+
+    write.csv(data, file)
+    write(paste(
+      "Notes:",
+      note_sibtest()$type,
+      note_sibtest()$p_adj,
+      note_sibtest()$puri,
+      note_sibtest()$thr,
+      "Signif. codes: 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1",
+      sep = "\n"
+    ), file, append = T)
+  }
+)
+output$download_sibtest_dif_puri <- downloadHandler(
+  filename = function() {
+    paste0("DIF_SIBTEST_purification", ".csv")
+  },
+  content = function(file) {
+    data <- dif_sibtest_puri_table()
+    write.csv(data, file)
+  }
+)
+
+
+# %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # * LOGISTIC ######
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -3752,240 +3986,6 @@ output$DIF_Raju_item_na_alert <- renderUI({
   txt <- na_score()
   HTML(txt)
 })
-
-# %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-# * SIBTEST ######
-# %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-# ** Model for print ####
-DIF_SIBTEST_model <- reactive({
-  # data
-  group <- unlist(group())
-  data <- data.frame(binary())
-
-  # inputs
-  type <- input$DIF_SIBTEST_type
-  purify <- input$DIF_SIBTEST_purification
-  adj.method <- input$DIF_SIBTEST_correction
-
-  # model
-  fit <- .difSIBTEST_edited(
-    Data = data, group = group, focal.name = 1,
-    type = type,
-    purify = purify, p.adjust.method = adj.method
-  )
-  fit
-})
-
-# ** Output print ######
-output$DIF_SIBTEST_print <- renderPrint({
-  print(DIF_SIBTEST_model())
-})
-
-# ** Warning for missing values ####
-output$DIF_SIBTEST_NA_alert <- renderUI({
-  txt <- na_score()
-  HTML(txt)
-})
-
-
-####### ** DIF statistic and parameter tables ####
-coef_sibtest_dif <- reactive({
-  res <- DIF_SIBTEST_model()
-
-  # deal with only one pval base od model specs
-  pval <- if (res$p.adjust.method == "none") {
-    res$p.value
-  } else {
-    res$adjusted.p
-  }
-
-  pval_symb <- symnum(pval,
-    c(0, 0.001, 0.01, 0.05, 0.1, 1),
-    symbols = c("***", "**", "*", ".", "")
-  )
-
-  tab <- data.frame(
-    res$Beta,
-    res$SE,
-    res$X2,
-    pval,
-    pval_symb
-  )
-
-  colnames(tab) <-
-    c(
-      "%%mathit{\\beta}%%",
-      "SE(%%mathit{\\beta}%%)",
-      "%%mathit{\\chi^2}%%",
-      ifelse(
-        res$p.adjust.method == "none",
-        "%%mathit{p}%%-value",
-        "adj. %%mathit{p}%%-value"
-      ),
-      ""
-    )
-
-  rownames(tab) <- item_names()
-
-  tab
-})
-
-output$coef_sibtest_dif <- renderTable(
-  {
-    coef_sibtest_dif()
-  },
-  rownames = T,
-  colnames = T
-)
-
-# ** Items detected text ######
-output$sibtest_dif_items <- renderPrint({
-  DIFitems <- DIF_SIBTEST_model()$DIFitems
-  if (DIFitems[1] == "No DIF item detected") {
-    txt <- "No item was detected as DIF."
-  } else {
-    txt <- paste0("Items detected as DIF items: ", paste(item_names()[DIFitems], collapse = ", "))
-  }
-  HTML(txt)
-})
-
-# ** Purification table ######
-dif_sibtest_puri_table <- reactive({
-  tab <- DIF_SIBTEST_model()$difPur
-
-  if (!is.null(tab)) {
-    colnames(tab) <- item_names()
-    rownames(tab) <- paste0("Step ", seq(0, nrow(tab) - 1))
-    tab
-  }
-})
-output$dif_sibtest_puri_table <- renderTable(
-  {
-    dif_sibtest_puri_table()
-  },
-  rownames = T,
-  colnames = T,
-  digits = 0
-)
-
-# ** Purification info - number of iter ######
-output$dif_sibtest_puri_info <- renderPrint({
-  model <- DIF_SIBTEST_model()
-  if (input$DIF_SIBTEST_purification & !is.null(model$difPur)) {
-    cat("Table below describes purification process, where rows correspond to purification iteration and columns to items.
-        Value of '1' in the i-th row means that an item was detected as DIF in (i-1)-th step, while value of '0' means that
-        item was not detected as DIF. The first row corresponds to the initial classification of the items when all items
-        were used for calculation of DIF matching criterion. ")
-    nrIter <- model$nrPur
-    cat(
-      "In this case, the convergence was", ifelse(model$convergence, "reached", "NOT reached even"), "after", nrIter,
-      ifelse(nrIter == 1, "iteration.", "iterations.")
-    )
-  } else if (input$DIF_SIBTEST_purification & is.null(model$difPur)) {
-    cat("No DIF items detected whatsoever, nothing to show.")
-  } else {
-    cat("Item purification not requested! Nothing to show.")
-  }
-})
-
-# Note setup
-note_sibtest <- reactive({
-  res <- NULL
-
-  model <- DIF_SIBTEST_model()
-
-  res$type <- paste0("Tested DIF type: ", switch(model$type,
-    "udif" = "uniform",
-    "nudif" = "non-uniform"
-  ))
-
-  res$p_adj <-
-    paste("P-value correction method:", switch(
-      model$p.adjust.method,
-      bonferroni = "Bonferroni",
-      holm = "Holm",
-      hochberg = "Hochberg",
-      hommel = "Hommel",
-      BH = "Benjamini-Hochberg",
-      BY = "Benjamini-Yekutieli",
-      none = "none"
-    ))
-
-  res$puri <- paste("Item purification:", ifelse(model$purification == T, "used", "unutilized"))
-
-  thr <- qchisq(1 - model$alpha, model$df[1])
-  res$thr <-
-    paste0(
-      "Detection threshold: ",
-      round(thr, 4),
-      " (significance level: ",
-      model$alpha,
-      ")"
-    )
-
-  res
-})
-
-output$note_sibtest <- renderUI({
-  HTML(
-    paste(
-      "Notes:",
-      note_sibtest()$type,
-      note_sibtest()$p_adj,
-      note_sibtest()$puri,
-      note_sibtest()$thr,
-      "Signif. codes: 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1",
-      sep = "</br>"
-    )
-  )
-})
-
-# ** Download tables ######
-output$download_sibtest_dif <- downloadHandler(
-  filename = function() {
-    paste("DIF_SIBTEST_statistics", ".csv", sep = "")
-  },
-  content = function(file) {
-    data <- coef_sibtest_dif()
-
-    colnames(data) <-
-      c(
-        "Beta",
-        "SE(Beta)",
-        "X^2",
-        ifelse(
-          "%%mathit{p}%%-value" %in% colnames(data),
-          "p-value",
-          "adj. p-value"
-        ),
-        ""
-      )
-
-    rownames(data) <- item_names()
-
-    write.csv(data, file)
-    write(paste(
-      "Notes:",
-      note_sibtest()$type,
-      note_sibtest()$p_adj,
-      note_sibtest()$puri,
-      note_sibtest()$thr,
-      "Signif. codes: 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1",
-      sep = "\n"
-    ), file, append = T)
-  }
-)
-output$download_sibtest_dif_puri <- downloadHandler(
-  filename = function() {
-    paste0("DIF_SIBTEST_purification", ".csv")
-  },
-  content = function(file) {
-    data <- dif_sibtest_puri_table()
-    write.csv(data, file)
-  }
-)
-
 
 
 
