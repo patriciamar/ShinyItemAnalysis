@@ -39,7 +39,7 @@
 #' tracking related to gains in learning competence? Using propensity score
 #' matching and differential item change functioning analysis for better
 #' understanding of tracking implications. \emph{Learning and Instruction},
-#' \emph{66}, 101286. \url{https://doi.org/10.1016/j.learninstruc.2019.101286}
+#' \emph{66}, 101286. \doi{10.1016/j.learninstruc.2019.101286}
 #'
 #' @keywords datasets
 #'

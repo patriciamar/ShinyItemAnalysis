@@ -68,7 +68,7 @@ peer review. Journal of the Royal Statistical Society - Series A. Accepted.
 
 Erosheva, E., Martinkova, P., & Lee, C. (2021b). Supplementary material: When
 zero may not be zero: A cautionary note on the use of inter-rater reliability
-in evaluating grant peer review. Retrieved from \url{osf.io/knph8}
+in evaluating grant peer review.
 }
 \seealso{
 \code{\link{ICCrestricted}}

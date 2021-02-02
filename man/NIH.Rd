@@ -83,7 +83,7 @@ Science Advances 6(23), eaaz4868, \doi{10.17605/OSF.IO/4D6RX}
 
 Erosheva, E., Martinkova, P., & Lee, C. J. (2021a). Supplementary material:
 When zero may not be zero: A cautionary note on the use of inter-rater
-reliability in evaluating grant peer review. Retrieved from \url{osf.io/knph8}
+reliability in evaluating grant peer review.
 
 Erosheva, E., Martinkova, P., & Lee, C. J. (2021b). When zero may not be zero: A
 cautionary note on the use of inter-rater reliability in evaluating grant
