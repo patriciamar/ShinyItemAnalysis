@@ -48,6 +48,7 @@ plotCumulative(fit, type = "category", matching.name = "Total score")
 }
 \author{
 Tomas Jurica \cr
+Institute of Computer Science of the Czech Academy of Sciences \cr
 
 Adela Hladka \cr
 Institute of Computer Science of the Czech Academy of Sciences \cr

@@ -17,7 +17,6 @@ plot_corr(
   line_alpha = 1,
   fill = NA,
   fill_alpha = NA,
-  .data = "deprecated",
   ...
 )
 }
@@ -63,8 +62,6 @@ plotted onto tiles.}
 \item{fill}{character: the color used to fill the outlined clusters.}
 
 \item{fill_alpha}{numeric 0-1: the opacity of the fill color.}
-
-\item{.data}{Deprecated in favor of \code{Data}.}
 
 \item{...}{
   Arguments passed on to \code{\link[psych:tetrachor]{psych::polychoric}}
@@ -140,9 +137,8 @@ plot_corr(HCI, cor = "poly", clust_method = "complete", shape = "sq") +
 
 }
 \author{
-Jan Netik \cr Department of Psychology, Faculty of Arts, Charles
-  University \cr \email{netikja@gmail.com}
+Jan Netik \cr Charles University
 
   Patricia Martinkova \cr Institute of Computer Science of the Czech Academy
-  of Sciences \cr \email{martinkova@cs.cas.cz} \cr
+  of Sciences \cr \email{martinkova@cs.cas.cz}
 }

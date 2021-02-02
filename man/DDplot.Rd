@@ -177,7 +177,7 @@ Faculty of Mathematics and Physics, Charles University \cr
 \email{hladka@cs.cas.cz} \cr
 
 Lubomir Stepanek \cr
-First Faculty of Medicine, Charles University \cr
+Charles University \cr
 
 Jana Vorlickova \cr
 Institute of Computer Science of the Czech Academy of Sciences \cr

@@ -45,6 +45,7 @@ Faculty of Mathematics and Physics, Charles University \cr
 \email{hladka@cs.cas.cz} \cr
 
 Tomas Jurica \cr
+Institute of Computer Science of the Czech Academy of Sciences \cr
 
 Patricia Martinkova \cr
 Institute of Computer Science of the Czech Academy of Sciences \cr
