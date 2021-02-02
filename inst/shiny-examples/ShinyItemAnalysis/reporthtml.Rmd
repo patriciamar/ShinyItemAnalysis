@@ -15,7 +15,7 @@ author: |
   
   This report was created on `r format(Sys.Date(), "%d.%m.%Y")`
 
-  &copy; 2020 ShinyItemAnalysis: Test and item analysis, version `r packageVersion("ShinyItemAnalysis")`
+  &copy; 2021 ShinyItemAnalysis: Test and item analysis, version `r packageVersion("ShinyItemAnalysis")`
     
   **************
   
@@ -104,9 +104,7 @@ To cite ShinyItemAnalysis application in publications, please, use:
   [doi: 10.32614/RJ-2018-074](https://doi.org/10.32614/RJ-2018-074)
   
   
-This program is free software and you can redistribute it and or modify it under the terms of the GNU GPL 3 as published by the Free Software Foundation. This program is distributed in the hope that it will be useful, but without any warranty; without even the implied warranty of merchantability of fitness for a particular purpose. Visit [www.ShinyItemAnalysis.org](www.ShinyItemAnalysis.org) to learn more!
-
-This project was supported by Czech Science Foundation under grant number [GJ15-15856Y](http://www.cs.cas.cz/martinkova/psychometrics.html).
+This program is free software and you can redistribute it and or modify it under the terms of the GNU GPL 3 as published by the Free Software Foundation. This program is distributed in the hope that it will be useful, but without any warranty; without even the implied warranty of merchantability of fitness for a particular purpose. Visit [www.ShinyItemAnalysis.org](http://www.shinyitemanalysis.org/) to learn more!
 
 **************
 

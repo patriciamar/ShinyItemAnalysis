@@ -127,8 +127,6 @@ To cite ShinyItemAnalysis application in publications, please, use:
 
 ShinyItemAnalysis application is free software and you can redistribute it and or modify it under the terms of the GNU GPL 3 as published by the Free Software Foundation. This program is distributed in the hope that it will be useful, but without any warranty; without even the implied warranty of merchantability of fitness for a particular purpose. Visit [www.ShinyItemAnalysis.org](www.ShinyItemAnalysis.org) to learn more!
 
-This project was supported by Czech Science Foundation under grant number [GJ15-15856Y](http://www.cs.cas.cz/martinkova/psychometrics.html).
-
 \pagebreak
 
 # Summary
