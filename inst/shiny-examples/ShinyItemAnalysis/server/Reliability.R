@@ -385,6 +385,11 @@ k_max <- reactive({
   aibs_long()$ScoreRankAdj %>% max(na.rm = TRUE) # TODO general
 })
 
+# transform percentage to Ks (check against Ks, not percents)
+n_sel <- reactive({
+  round(input$reliability_restricted_proportion * .01 * k_max())
+})
+
 # ** Update slider input ######
 observe({
   updateSliderInput(
@@ -414,12 +419,10 @@ observe({
 
 # ** Caterpillar plot input ######
 reliability_restricted_caterpillarplot_input <- reactive({
-  k <- round(input$reliability_restricted_proportion * k_max() / 100)
-
   aibs_long() %>%
     mutate(hl = case_when(
-      input$reliability_restricted_direction == "top" & ScoreRankAdj <= k ~ "sol",
-      input$reliability_restricted_direction == "bottom" & ScoreRankAdj > (k_max() - k) ~ "sol",
+      input$reliability_restricted_direction == "top" & ScoreRankAdj <= n_sel() ~ "sol",
+      input$reliability_restricted_direction == "bottom" & ScoreRankAdj > (k_max() - n_sel()) ~ "sol",
       TRUE ~ "alp"
     ) %>% factor(levels = c("alp", "sol"))) %>%
     ggplot(aes(x = ScoreRankAdj, y = Score, group = ID, alpha = hl)) +
@@ -485,7 +488,7 @@ observeEvent(
       new_entry <- paste0(
         "dir-", input$reliability_restricted_direction,
         "_bs-", input$reliability_restricted_bootsamples,
-        "_sel-", input$reliability_restricted_proportion
+        "_sel-", n_sel()
       )
 
       # check if proposed not already available, else compute
@@ -498,7 +501,7 @@ observeEvent(
           var = "Score", # TODO general
           rank = "ScoreRankAdj", # TODO general
           dir = input$reliability_restricted_direction,
-          sel = input$reliability_restricted_proportion / 100,
+          sel = n_sel(),
           nsim = input$reliability_restricted_bootsamples
         )
       }
@@ -540,7 +543,7 @@ reliability_restricted_iccplot_input <- reactive({
   curr_plt_name <- paste0(
     "dir-", input$reliability_restricted_direction,
     "_bs-", input$reliability_restricted_bootsamples,
-    "_sel-", input$reliability_restricted_proportion
+    "_sel-", n_sel()
   )
 
   reliability_restricted_iccplot_curr() %>%
@@ -587,6 +590,16 @@ output$DB_reliability_restricted_iccplot <- downloadHandler(
   }
 )
 
+# ** DB for ICC reliability table ######
+output$DB_reliability_restricted_iccdata <- downloadHandler(
+  filename = function() {
+    "range_restricted_reliability_data.csv"
+  },
+  content = function(file) {
+    data <- reliability_restricted_iccplot_curr() %>% select(-name)
+    write.csv(data, file, row.names = FALSE)
+  }
+)
 
 output$icc_text <- renderText({
   req(aibs_long())
@@ -595,14 +608,14 @@ output$icc_text <- renderText({
   full <- reliability_restricted_res[["vals"]][[paste0(
     "dir-", input$reliability_restricted_direction,
     "_bs-", input$reliability_restricted_bootsamples,
-    "_sel-", 100
+    "_sel-", k_max()
   )]]
   # })
 
   curr <- reliability_restricted_res[["vals"]][[paste0(
     "dir-", input$reliability_restricted_direction,
     "_bs-", input$reliability_restricted_bootsamples,
-    "_sel-", input$reliability_restricted_proportion
+    "_sel-", n_sel()
   )]]
 
 
