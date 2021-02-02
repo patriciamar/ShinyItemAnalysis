@@ -212,8 +212,8 @@ uiRegression <-
         "Various regression models may be fitted to describe item properties in more detail.", strong("Cumulative logit regression"),
         " can model cumulative probabilities, i.e., probabilities to obtain item score higher than or equal to 1, 2, 3, etc. "
       ),
-      p("Cumulative logit model can be fitted on selected ", strong("matching criterion"), "- total scores or standardized
-                        scores, using classical (intercept/slope) or IRT ", strong("parametrization. ")),
+      p("Cumulative logit model can be fitted on selected ", strong("matching criterion"), "- standardized total scores or total
+                        scores, using IRT or classical (intercept/slope) ", strong("parametrization. ")),
       br(),
       fluidRow(
         column(2, selectInput(
@@ -223,7 +223,7 @@ uiRegression <-
             "Total score" = "total",
             "Standardized score" = "zscore"
           ),
-          selected = "total"
+          selected = "zscore"
         )),
         column(2, selectInput(
           inputId = "regression_cumulative_parametrization",
@@ -232,7 +232,7 @@ uiRegression <-
             "Intercept/slope" = "classic",
             "IRT" = "irt"
           ),
-          selected = "classic"
+          selected = "irt"
         )),
         column(2, sliderInput(
           inputId = "regression_cumulative_item_slider",
@@ -264,7 +264,7 @@ uiRegression <-
       h4("Table of parameters"),
       fluidRow(column(12, align = "center", tableOutput("regression_cumulative_coef"))),
       h4("Selected R code"),
-      div(code(HTML("library(msm)<br>library(ShinyItemAnalysis)<br>library(VGAM)<br><br>#&nbsp;loading&nbsp;data<br>data(Science,&nbsp;package&nbsp;=&nbsp;\"mirt\")<br><br>#&nbsp;total&nbsp;score&nbsp;calculation<br>zscore&nbsp;<-&nbsp;scale(rowSums(Science))<br>Science[,&nbsp;1]&nbsp;<-&nbsp;factor(<br>&nbsp;&nbsp;Science[,&nbsp;1],&nbsp;levels&nbsp;=&nbsp;sort(unique(Science[,&nbsp;1])),&nbsp;ordered&nbsp;=&nbsp;TRUE<br>)<br><br>#&nbsp;cumulative&nbsp;logit&nbsp;model&nbsp;for&nbsp;item&nbsp;1<br>fit&nbsp;<-&nbsp;vglm(Science[,&nbsp;1]&nbsp;~&nbsp;zscore,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;family&nbsp;=&nbsp;cumulative(reverse&nbsp;=&nbsp;TRUE,&nbsp;parallel&nbsp;=&nbsp;TRUE))<br><br>#&nbsp;coefficients<br>coef(fit)&nbsp;#&nbsp;estimates<br>sqrt(diag(vcov(fit)))&nbsp;#&nbsp;SE<br>#&nbsp;delta&nbsp;method<br>num_par&nbsp;<-&nbsp;length(coef(fit))<br>formula&nbsp;<-&nbsp;append(<br>&nbsp;&nbsp;paste0(\"~&nbsp;x\",&nbsp;num_par),<br>&nbsp;&nbsp;as.list(paste0(\"~&nbsp;-x\",&nbsp;1:(num_par&nbsp;-&nbsp;1),&nbsp;\"/\",&nbsp;\"x\",&nbsp;num_par))<br>)<br>formula&nbsp;<-&nbsp;lapply(formula,&nbsp;as.formula)<br>se&nbsp;<-&nbsp;deltamethod(<br>&nbsp;&nbsp;formula,<br>&nbsp;&nbsp;mean&nbsp;=&nbsp;coef(fit),<br>&nbsp;&nbsp;cov&nbsp;=&nbsp;vcov(fit),<br>&nbsp;&nbsp;ses&nbsp;=&nbsp;TRUE<br>)<br>#&nbsp;estimates&nbsp;and&nbsp;SE&nbsp;in&nbsp;IRT&nbsp;parametrization<br>cbind(c(coef(fit)[num_par],&nbsp;-coef(fit)[-num_par]&nbsp;/&nbsp;coef(fit)[num_par]),&nbsp;se)<br><br>#&nbsp;plot&nbsp;of&nbsp;estimated&nbsp;cumulative&nbsp;probabilities<br>plotCumulative(fit,&nbsp;type&nbsp;=&nbsp;\"cumulative\",&nbsp;matching.name&nbsp;=&nbsp;\"Total&nbsp;score\")<br>#&nbsp;plot&nbsp;of&nbsp;estimated&nbsp;category&nbsp;probabilities<br>plotCumulative(fit,&nbsp;type&nbsp;=&nbsp;\"category\",&nbsp;matching.name&nbsp;=&nbsp;\"Total&nbsp;score\")<br>"))),
+      div(code(HTML("library(msm)<br>library(ShinyItemAnalysis)<br>library(VGAM)<br><br>#&nbsp;loading&nbsp;data<br>data(Science,&nbsp;package&nbsp;=&nbsp;\"mirt\")<br><br>#&nbsp;standardized&nbsp;total&nbsp;score&nbsp;calculation<br>zscore&nbsp;<-&nbsp;scale(rowSums(Science))<br>Science[,&nbsp;1]&nbsp;<-&nbsp;factor(<br>&nbsp;&nbsp;Science[,&nbsp;1],&nbsp;levels&nbsp;=&nbsp;sort(unique(Science[,&nbsp;1])),&nbsp;ordered&nbsp;=&nbsp;TRUE<br>)<br><br>#&nbsp;cumulative&nbsp;logit&nbsp;model&nbsp;for&nbsp;item&nbsp;1<br>fit&nbsp;<-&nbsp;vglm(Science[,&nbsp;1]&nbsp;~&nbsp;zscore,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;family&nbsp;=&nbsp;cumulative(reverse&nbsp;=&nbsp;TRUE,&nbsp;parallel&nbsp;=&nbsp;TRUE))<br><br>#&nbsp;coefficients&nbsp;under&nbsp;intercept/slope&nbsp;parametrization<br>coef(fit)&nbsp;#&nbsp;estimates<br>sqrt(diag(vcov(fit)))&nbsp;#&nbsp;SE<br><br>#&nbsp;IRT&nbsp;parametrization<br>#&nbsp;delta&nbsp;method<br>num_par&nbsp;<-&nbsp;length(coef(fit))<br>formula&nbsp;<-&nbsp;append(<br>&nbsp;&nbsp;paste0(\"~&nbsp;x\",&nbsp;num_par),<br>&nbsp;&nbsp;as.list(paste0(\"~&nbsp;-x\",&nbsp;1:(num_par&nbsp;-&nbsp;1),&nbsp;\"/\",&nbsp;\"x\",&nbsp;num_par))<br>)<br>formula&nbsp;<-&nbsp;lapply(formula,&nbsp;as.formula)<br>se&nbsp;<-&nbsp;deltamethod(<br>&nbsp;&nbsp;formula,<br>&nbsp;&nbsp;mean&nbsp;=&nbsp;coef(fit),<br>&nbsp;&nbsp;cov&nbsp;=&nbsp;vcov(fit),<br>&nbsp;&nbsp;ses&nbsp;=&nbsp;TRUE<br>)<br>#&nbsp;estimates&nbsp;and&nbsp;SE&nbsp;in&nbsp;IRT&nbsp;parametrization<br>cbind(c(coef(fit)[num_par],&nbsp;-coef(fit)[-num_par]&nbsp;/&nbsp;coef(fit)[num_par]),&nbsp;se)<br><br>#&nbsp;plot&nbsp;of&nbsp;estimated&nbsp;cumulative&nbsp;probabilities<br>plotCumulative(fit,&nbsp;type&nbsp;=&nbsp;\"cumulative\",&nbsp;matching.name&nbsp;=&nbsp;\"Standardized&nbsp;total&nbsp;&nbsp;score\")<br>#&nbsp;plot&nbsp;of&nbsp;estimated&nbsp;category&nbsp;probabilities<br>plotCumulative(fit,&nbsp;type&nbsp;=&nbsp;\"category\",&nbsp;matching.name&nbsp;=&nbsp;\"Standardized&nbsp;total&nbsp;score\")<br>"))),
       br()
     ),
     # * ADJACENT CATEGORY LOGIT ####
@@ -274,8 +274,8 @@ uiRegression <-
       p("Models for ordinal responses need not use cumulative probabilities.", strong("Adjacent categories model"), "assumes linear form
                         of logarithm of ratio of probabilities of two successive scores (e.g., 1 vs. 2, 2 vs. 3, etc.), i.e., of the
                         adjacent category logits."),
-      p("Adjacent category logit model can be fitted on selected ", strong("matching criterion"), "- total scores or standardized
-                        scores, using classical (intercept/slope) or IRT ", strong("parametrization. ")),
+      p("Adjacent category logit model can be fitted on selected ", strong("matching criterion"), "- standardized total scores or total
+                        scores, using IRT or classical (intercept/slope) ", strong("parametrization. ")),
       br(),
       fluidRow(
         column(
@@ -286,7 +286,7 @@ uiRegression <-
               "Total score" = "total",
               "Standardized score" = "zscore"
             ),
-            selected = "total",
+            selected = "zscore",
             label = "Matching criterion"
           )
         ),
@@ -298,7 +298,7 @@ uiRegression <-
               "Intercept/slope" = "classic",
               "IRT" = "irt"
             ),
-            selected = "classic",
+            selected = "irt",
             label = "Parametrization"
           )
         ),
@@ -328,7 +328,7 @@ uiRegression <-
       h4("Table of parameters"),
       fluidRow(column(12, align = "center", tableOutput("regression_adjacent_coef"))),
       h4("Selected R code"),
-      div(code(HTML("library(msm)<br>library(ShinyItemAnalysis)<br>library(VGAM)<br><br>#&nbsp;loading&nbsp;data<br>data(Science,&nbsp;package&nbsp;=&nbsp;\"mirt\")<br><br>#&nbsp;total&nbsp;score&nbsp;calculation<br>zscore&nbsp;<-&nbsp;scale(rowSums(Science))<br>Science[,&nbsp;1]&nbsp;<-&nbsp;factor(<br>&nbsp;&nbsp;Science[,&nbsp;1],&nbsp;levels&nbsp;=&nbsp;sort(unique(Science[,&nbsp;1])),&nbsp;ordered&nbsp;=&nbsp;TRUE<br>)<br><br>#&nbsp;adjacent&nbsp;category&nbsp;logit&nbsp;model&nbsp;for&nbsp;item&nbsp;1<br>fit&nbsp;<-&nbsp;vglm(Science[,&nbsp;1]&nbsp;~&nbsp;zscore,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;family&nbsp;=&nbsp;acat(reverse&nbsp;=&nbsp;FALSE,&nbsp;parallel&nbsp;=&nbsp;TRUE))<br><br>#&nbsp;coefficients<br>coef(fit)&nbsp;#&nbsp;estimates<br>sqrt(diag(vcov(fit)))&nbsp;#&nbsp;SE<br>#&nbsp;delta&nbsp;method<br>num_par&nbsp;<-&nbsp;length(coef(fit))<br>formula&nbsp;<-&nbsp;append(<br>&nbsp;&nbsp;paste0(\"~&nbsp;x\",&nbsp;num_par),<br>&nbsp;&nbsp;as.list(paste0(\"~&nbsp;-x\",&nbsp;1:(num_par&nbsp;-&nbsp;1),&nbsp;\"/\",&nbsp;\"x\",&nbsp;num_par))<br>)<br>formula&nbsp;<-&nbsp;lapply(formula,&nbsp;as.formula)<br>se&nbsp;<-&nbsp;deltamethod(<br>&nbsp;&nbsp;formula,<br>&nbsp;&nbsp;mean&nbsp;=&nbsp;coef(fit),<br>&nbsp;&nbsp;cov&nbsp;=&nbsp;vcov(fit),<br>&nbsp;&nbsp;ses&nbsp;=&nbsp;TRUE<br>)<br>#&nbsp;estimates&nbsp;and&nbsp;SE&nbsp;in&nbsp;IRT&nbsp;parametrization<br>cbind(c(coef(fit)[num_par],&nbsp;-coef(fit)[-num_par]&nbsp;/&nbsp;coef(fit)[num_par]),&nbsp;se)<br><br>#&nbsp;plot&nbsp;of&nbsp;estimated&nbsp;category&nbsp;probabilities<br>plotAdjacent(fit,&nbsp;matching.name&nbsp;=&nbsp;\"Total&nbsp;score\")<br>"))),
+      div(code(HTML("library(msm)<br>library(ShinyItemAnalysis)<br>library(VGAM)<br><br>#&nbsp;loading&nbsp;data<br>data(Science,&nbsp;package&nbsp;=&nbsp;\"mirt\")<br><br>#&nbsp;standardized&nbsp;total&nbsp;score&nbsp;calculation<br>zscore&nbsp;<-&nbsp;scale(rowSums(Science))<br>Science[,&nbsp;1]&nbsp;<-&nbsp;factor(<br>&nbsp;&nbsp;Science[,&nbsp;1],&nbsp;levels&nbsp;=&nbsp;sort(unique(Science[,&nbsp;1])),&nbsp;ordered&nbsp;=&nbsp;TRUE<br>)<br><br>#&nbsp;adjacent&nbsp;category&nbsp;logit&nbsp;model&nbsp;for&nbsp;item&nbsp;1<br>fit&nbsp;<-&nbsp;vglm(Science[,&nbsp;1]&nbsp;~&nbsp;zscore,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;family&nbsp;=&nbsp;acat(reverse&nbsp;=&nbsp;FALSE,&nbsp;parallel&nbsp;=&nbsp;TRUE))<br><br>#&nbsp;coefficients&nbsp;under&nbsp;intercept/slope&nbsp;parametrization<br>coef(fit)&nbsp;#&nbsp;estimates<br>sqrt(diag(vcov(fit)))&nbsp;#&nbsp;SE<br><br>#&nbsp;IRT&nbsp;parametrization<br>#&nbsp;delta&nbsp;method<br>num_par&nbsp;<-&nbsp;length(coef(fit))<br>formula&nbsp;<-&nbsp;append(<br>&nbsp;&nbsp;paste0(\"~&nbsp;x\",&nbsp;num_par),<br>&nbsp;&nbsp;as.list(paste0(\"~&nbsp;-x\",&nbsp;1:(num_par&nbsp;-&nbsp;1),&nbsp;\"/\",&nbsp;\"x\",&nbsp;num_par))<br>)<br>formula&nbsp;<-&nbsp;lapply(formula,&nbsp;as.formula)<br>se&nbsp;<-&nbsp;deltamethod(<br>&nbsp;&nbsp;formula,<br>&nbsp;&nbsp;mean&nbsp;=&nbsp;coef(fit),<br>&nbsp;&nbsp;cov&nbsp;=&nbsp;vcov(fit),<br>&nbsp;&nbsp;ses&nbsp;=&nbsp;TRUE<br>)<br>#&nbsp;estimates&nbsp;and&nbsp;SE&nbsp;in&nbsp;IRT&nbsp;parametrization<br>cbind(c(coef(fit)[num_par],&nbsp;-coef(fit)[-num_par]&nbsp;/&nbsp;coef(fit)[num_par]),&nbsp;se)<br><br>#&nbsp;plot&nbsp;of&nbsp;estimated&nbsp;category&nbsp;probabilities<br>plotAdjacent(fit,&nbsp;matching.name&nbsp;=&nbsp;\"Standardized&nbsp;total&nbsp;score\")<br>"))),
       br()
     ),
     # * MULTINOMIAL ####
@@ -338,7 +338,7 @@ uiRegression <-
       p(
         "Various regression models may be fitted to describe item properties in more detail.", strong("Multinomial regression"), "allows
                         for simultaneous modelling of probability of choosing given distractors on selected ", strong("matching criterion"),
-        "- total scores or standardized scores, using classical (intercept/slope) or IRT ", strong("parametrization. ")
+                        "- standardized total scores or total scores, using IRT or classical (intercept/slope) ", strong("parametrization. ")
       ),
       br(),
       h4("Plot with estimated curves of multinomial regression"),
@@ -353,7 +353,7 @@ uiRegression <-
               "Total score" = "total",
               "Standardized score" = "zscore"
             ),
-            selected = "total",
+            selected = "zscore",
             label = "Matching criterion"
           )
         ),
@@ -365,7 +365,7 @@ uiRegression <-
               "Intercept/slope" = "classic",
               "IRT" = "irt"
             ),
-            selected = "classic",
+            selected = "irt",
             label = "Parametrization"
           )
         ),
@@ -391,7 +391,7 @@ uiRegression <-
       fluidRow(column(12, align = "center", tableOutput("regression_multinomial_coef"))),
       htmlOutput("regression_multinomial_interpretation"),
       h4("Selected R code"),
-      div(code(HTML("library(msm)<br>library(nnet)<br>library(ShinyItemAnalysis)<br><br>#&nbsp;loading&nbsp;data<br>data(GMAT,&nbsp;GMATtest,&nbsp;GMATkey,&nbsp;package&nbsp;=&nbsp;\"difNLR\")<br>zscore&nbsp;<-&nbsp;scale(rowSums(GMAT[,&nbsp;1:20]))&nbsp;#&nbsp;standardized&nbsp;total&nbsp;score<br><br>#&nbsp;multinomial&nbsp;model&nbsp;for&nbsp;item&nbsp;1<br>fit&nbsp;<-&nbsp;multinom(relevel(GMATtest[,&nbsp;1],&nbsp;ref&nbsp;=&nbsp;paste(GMATkey[1]))&nbsp;~&nbsp;zscore)<br><br>#&nbsp;coefficients<br>coef(fit)&nbsp;#&nbsp;estimates<br>sqrt(diag(vcov(fit)))&nbsp;#&nbsp;SE<br>#&nbsp;delta&nbsp;method<br>subst_vcov&nbsp;<-&nbsp;function(vcov,&nbsp;cat)&nbsp;{<br>&nbsp;&nbsp;ind&nbsp;<-&nbsp;grep(cat,&nbsp;colnames(vcov))<br>&nbsp;&nbsp;vcov[ind,&nbsp;ind]<br>}<br>se&nbsp;<-&nbsp;t(sapply(<br>&nbsp;&nbsp;rownames(coef(fit)),<br>&nbsp;&nbsp;function(.x)&nbsp;{<br>&nbsp;&nbsp;&nbsp;&nbsp;vcov_subset&nbsp;<-&nbsp;subst_vcov(vcov(fit),&nbsp;.x)<br>&nbsp;&nbsp;&nbsp;&nbsp;msm::deltamethod(<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;list(~&nbsp;-x1&nbsp;/&nbsp;x2,&nbsp;~x2),<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mean&nbsp;=&nbsp;coef(fit)[.x,&nbsp;],<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cov&nbsp;=&nbsp;vcov_subset,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ses&nbsp;=&nbsp;TRUE<br>&nbsp;&nbsp;&nbsp;&nbsp;)<br>&nbsp;&nbsp;}<br>))<br>#&nbsp;estimates&nbsp;and&nbsp;SE&nbsp;in&nbsp;IRT&nbsp;parametrization<br>cbind(-coef(fit)[,&nbsp;1]&nbsp;/&nbsp;coef(fit)[,&nbsp;2],&nbsp;se[,&nbsp;1],&nbsp;coef(fit)[,&nbsp;2],&nbsp;se[,&nbsp;2])<br><br>#&nbsp;plot&nbsp;of&nbsp;estimated&nbsp;category&nbsp;probabilities<br>plotMultinomial(fit,&nbsp;zscore,&nbsp;matching.name&nbsp;=&nbsp;\"Z-score\")<br>"))),
+      div(code(HTML("library(msm)<br>library(nnet)<br>library(ShinyItemAnalysis)<br><br>#&nbsp;loading&nbsp;data<br>data(GMAT,&nbsp;GMATtest,&nbsp;GMATkey,&nbsp;package&nbsp;=&nbsp;\"difNLR\")<br><br>#&nbsp;standardized&nbsp;total&nbsp;score&nbsp;calculation<br>zscore&nbsp;<-&nbsp;scale(rowSums(GMAT[,&nbsp;1:20]))<br><br>#&nbsp;multinomial&nbsp;model&nbsp;for&nbsp;item&nbsp;1<br>fit&nbsp;<-&nbsp;multinom(relevel(GMATtest[,&nbsp;1],&nbsp;ref&nbsp;=&nbsp;paste(GMATkey[1]))&nbsp;~&nbsp;zscore)<br><br>#&nbsp;coefficients&nbsp;under&nbsp;intercept/slope&nbsp;parametrization<br>coef(fit)&nbsp;#&nbsp;estimates<br>sqrt(diag(vcov(fit)))&nbsp;#&nbsp;SE<br><br>#&nbsp;IRT&nbsp;parametrization<br>#&nbsp;delta&nbsp;method<br>subst_vcov&nbsp;<-&nbsp;function(vcov,&nbsp;cat)&nbsp;{<br>&nbsp;&nbsp;ind&nbsp;<-&nbsp;grep(cat,&nbsp;colnames(vcov))<br>&nbsp;&nbsp;vcov[ind,&nbsp;ind]<br>}<br>se&nbsp;<-&nbsp;t(sapply(<br>&nbsp;&nbsp;rownames(coef(fit)),<br>&nbsp;&nbsp;function(.x)&nbsp;{<br>&nbsp;&nbsp;&nbsp;&nbsp;vcov_subset&nbsp;<-&nbsp;subst_vcov(vcov(fit),&nbsp;.x)<br>&nbsp;&nbsp;&nbsp;&nbsp;msm::deltamethod(<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;list(~&nbsp;-x1&nbsp;/&nbsp;x2,&nbsp;~x2),<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mean&nbsp;=&nbsp;coef(fit)[.x,&nbsp;],<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cov&nbsp;=&nbsp;vcov_subset,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ses&nbsp;=&nbsp;TRUE<br>&nbsp;&nbsp;&nbsp;&nbsp;)<br>&nbsp;&nbsp;}<br>))<br><br>#&nbsp;estimates&nbsp;and&nbsp;SE&nbsp;in&nbsp;IRT&nbsp;parametrization<br>cbind(-coef(fit)[,&nbsp;1]&nbsp;/&nbsp;coef(fit)[,&nbsp;2],&nbsp;se[,&nbsp;1],&nbsp;coef(fit)[,&nbsp;2],&nbsp;se[,&nbsp;2])<br><br>#&nbsp;plot&nbsp;of&nbsp;estimated&nbsp;category&nbsp;probabilities<br>plotMultinomial(fit,&nbsp;zscore,&nbsp;matching.name&nbsp;=&nbsp;\"Standardized&nbsp;total&nbsp;score\")<br>"))),
       br()
     )
   )
