@@ -8,164 +8,193 @@ uiReferences <-
     h3("R packages"),
     HTML('<ul class = "biblio">
                 <li><code>cowplot</code>
-                Claus O. Wilke (2018).
-                cowplot: Streamlined Plot Theme and Plot Annotations for "ggplot2".
-                R package version 0.9.3.
+                Wilke, C.O. (2020).
+                cowplot: Streamlined plot theme and plot annotations for "ggplot2".
+                R package version 1.1.1.
                 <a href = " https://CRAN.R-project.org/package=cowplot", target = "_blank">See online.</a>
                 </li>
 
                 <li><code>data.table</code>
-                Dowle, M. & Srinivasan, A. (2019).
+                Dowle, M., & Srinivasan, A. (2020).
                 data.table: Extension of "data.frame".
-                R package version 1.12.8.
+                R package version 1.13.6.
                 <a href = "https://CRAN.R-project.org/package=data.table", target = "_blank">See online.</a>
                 </li>
 
                 <li><code>deltaPlotR</code>
-                Magis, D. & Facon, B. (2014).
-                deltaPlotR: An R Package for Differential Item Functioning Analysis with Angoff`s Delta Plot.
+                Magis, D., & Facon, B. (2014).
+                deltaPlotR: An R package for differential item functioning analysis with Angoff`s delta plot.
                 <i>Journal of Statistical Software, Code Snippets, 59</i>(1), 1-19.
                 <a href = "http://www.jstatsoft.org/v59/c01/", target = "_blank">See online.</a>
                 </li>
 
                 <li><code>difNLR</code>
                 Hladka, A., Martinkova, P. (2020).
-                difNLR: Generalized Logistic Regression Models for DIF and DDF Detection.
+                difNLR: Generalized logistic regression models for DIF and DDF detection.
                 <i>The R Journal, 12</i>(1), 300-323.
                 <a href = "https://doi.org/10.32614/RJ-2020-014", target = "_blank">See online.</a>
                 </li>
 
                 <li><code>difR</code>
-                Magis, D., Beland, S., Tuerlinckx, F. & De Boeck, P. (2010).
+                Magis, D., Beland, S., Tuerlinckx, F., & De Boeck, P. (2010).
                 A general framework and an R package for the detection of dichotomous differential item functioning.
                 <i>Behavior Research Methods, 42</i>847-862.
                 </li>
 
                 <li><code>DT</code>
-                Xie, Y., Cheng, J. & Tan, X. (2019).
-                DT: A Wrapper of the JavaScript Library "DataTables".
-                R package version 0.10.
+                Xie, Y., Cheng, J., & Tan, X. (2021).
+                DT: A wrapper of the JavaScript library "DataTables".
+                R package version 0.17.
                 <a href = "https://CRAN.R-project.org/package=DT", target = "_blank">See online.</a>
                 </li>
 
                 <li><code>ggdendro</code>
-                de Vries, A. & Ripley, B.D. (2016).
-                ggdendro: Create Dendrograms and Tree Diagrams Using "ggplot2".
-                R package version 0.1-20.
+                de Vries, A., & Ripley, B.D. (2020).
+                ggdendro: Create dendrograms and tree diagrams using "ggplot2".
+                R package version 0.1-22.
                 <a href = "https://CRAN.R-project.org/package=ggdendro", target = "_blank">See online.</a>
                 </li>
 
                 <li><code>ggplot2</code>
                 Wickham, H. (2016).
-                ggplot2: Elegant Graphics for Data Analysis.
+                ggplot2: Elegant graphics for data analysis.
                 <a href = "http://ggplot2.org", target = "_blank">See online.</a>
                 </li>
 
                 <li><code>gridExtra</code>
                 Auguie, B. (2017).
-                gridExtra: Miscellaneous Functions for "Grid" Graphics.
+                gridExtra: Miscellaneous functions for "grid" graphics.
                 R package version 2.3.
                 <a href = "https://CRAN.R-project.org/package=gridExtra", target = "_blank">See online.</a>
                 </li>
 
                 <li><code>knitr</code>
-                Xie, Y. (2019).
-                knitr: A General-Purpose Package for Dynamic Report Generation in R.
-                R package version 1.26.
+                Xie, Y. (2020).
+                knitr: A general-purpose package for dynamic report generation in R.
+                R package version 1.30.
                 <a href = "https://yihui.name/knitr/", target = "_blank">See online.</a>
                 </li>
 
                 <li><code>latticeExtra</code>
-                Sarkar, D. & Andrews, F. (2016).
-                latticeExtra: Extra Graphical Utilities Based on Lattice.
-                R package version 0.6-28.
+                Sarkar, D., & Andrews, F. (2019).
+                latticeExtra: Extra graphical utilities based on lattice.
+                R package version 0.6-29.
                 <a href = "https://CRAN.R-project.org/package=latticeExtra", target = "_blank">See online.</a>
+                </li>
+
+                <li><code>lme4</code>
+                Bates, D., Maechler, M., Bolker, B., & Walker, S. (2015).
+                Mixed-effects models using lme4.
+                Journal of Statistical Software, 67(1), 1-48.
+                <a href = "https://doi.org/10.18637/jss.v067.i01", target = "_blank">See online.</a>
                 </li>
 
                 <li><code>ltm</code>
                 Rizopoulos, D. (2006).
-                ltm: An R package for Latent Variable Modelling and Item Response Theory Analyses.
+                ltm: An R package for latent variable modelling and item response theory analyses.
                 <i>Journal of Statistical Software, 17</i>(5), 1-25.
                 <a href = "http://www.jstatsoft.org/v17/i05/", target = "_blank">See online.</a>
                 </li>
 
+                <li><code>magrittr</code>
+                Bache, S. M., & Wickham, H. (2020).
+                magrittr: A forward-pipe operator for R.
+                R package version 2.0.1.
+                <a href = " https://CRAN.R-project.org/package=magrittr", target = "_blank">See online.</a>
+                </li>
+
                 <li><code>mirt</code>
-                Chalmers, R. & Chalmers, P. (2012).
-                mirt: A Multidimensional Item Response Theory Package for the R Environment.
+                Chalmers, R., & Chalmers, P. (2012).
+                mirt: A multidimensional item response theory package for the R environment.
                 <i>Journal of Statistical Software, 48</i>(6), 1-29.
                 </li>
 
-                <li><code>moments</code>
-                Komsta, L. & Novomestky, F. (2015).
-                moments: Moments, cumulants, skewness, kurtosis and related tests.
-                R package version 0.14.
-                <a href = "https://CRAN.R-project.org/package=moments", target = "_blank">See online.</a>
-                </li>
-
                 <li><code>msm</code>
-                Jackson, C. & Jackson, H. (2011).
-                Multi-State Models for Panel Data: The msm Package for R.
+                Jackson, C., & Jackson, H. (2011).
+                Multi-state models for panel data: The msm package for R.
                 <i>Journal of Statistical Software, 38</i>(8), 1-29.
                 <a href = "http://www.jstatsoft.org/v38/i08/", target = "_blank">See online.</a>
                 </li>
 
                 <li><code>nnet</code>
-                Venables, C. & Ripley, C. (2002).
-                Modern Applied Statistics with S.
+                Venables, C., & Ripley, C. (2002).
+                Modern applied statistics with S.
                 <a href = "http://www.stats.ox.ac.uk/pub/MASS4", target = "_blank">See online.</a>
                 </li>
 
                 <li><code>plotly</code>
-                Sievert, C., Parmer, C., Hocking, T., Chamberlain, S., Ram, K., Corvellec, M. & Despouy, P. (2017).
-                plotly: Create Interactive Web Graphics via "plotly.js".
-                R package version 4.9.1.
-                <a href = "https://CRAN.R-project.org/package=plotly", target = "_blank">See online.</a>
+                Sievert, C. (2020).
+                Interactive web-based data visualization with R, plotly, and shiny.
+                Chapman and Hall/CRC Florida, 2020.
+                <a href = "https://plotly-r.com", target = "_blank">See online.</a>
                 </li>
 
                 <li><code>psych</code>
-                Revelle, W. (2018).
-                psych: Procedures for Psychological, Psychometric, and Personality Research.
-                R package version 1.8.12.
+                Revelle, W. (2020).
+                psych: Procedures for psychological, psychometric, and personality research.
+                R package version 2.0.12.
                 <a href = "https://CRAN.R-project.org/package=psych", target = "_blank">See online.</a>
                 </li>
 
                 <li><code>psychometric</code>
-                Fletcher, T. & Fletcher, D. (2010).
-                psychometric: Applied Psychometric Theory.
+                Fletcher, T., & Fletcher, D. (2010).
+                psychometric: Applied psychometric theory.
                 R package version 2.2.
                 <a href = "https://CRAN.R-project.org/package=psychometric", target = "_blank">See online.</a>
                 </li>
 
-                <li><code>reshape2</code>
-                Wickham, H. (2007).
-                Reshaping Data with the reshape Package.
-                <i>Journal of Statistical Software, 21</i>(12), 1-20.
-                <a href = "http://www.jstatsoft.org/v21/i12/", target = "_blank">See online.</a>
+                <li><code>purrr</code>
+                Henry, L., & Wickham, H. (2020).
+                purrr: Functional programming tools.
+                R package version 0.3.4.
+                <a href = "https://CRAN.R-project.org/package=purrr", target = "_blank">See online.</a>
+                </li>
+
+                <li><code>rlang</code>
+                Henry, L., & Wickham, H. (2020).
+                rlang: Functions for base types and core R and "tidyverse" features.
+                R package version 0.4.10.
+                <a href = " https://CRAN.R-project.org/package=rlang", target = "_blank">See online.</a>
                 </li>
 
                 <li><code>rmarkdown</code>
-                Xie, Y., Allaire, J.J. & Grolemund G. (2018). R Markdown: The Definitive Guide.
+                Xie, Y., Allaire, J.J., & Grolemund G. (2018).
+                R Markdown: The definitive guide.
                 Chapman and Hall/CRC. ISBN 9781138359338.
                 <a href = "https://bookdown.org/yihui/rmarkdown", target = "_blank">See online.</a>
                 </li>
 
+                <li><code>rstudioapi</code>
+                Ushey, K., Allaire J.J., Wickham, H., & Ritchie G. (2018).
+                rstudioapi: Safely access the RStudio API.
+                R package version 0.13.
+                <a href = " https://CRAN.R-project.org/package=rstudioapi", target = "_blank">See online.</a>
+                </li>
+
+                <li><code>scales</code>
+                Wickham, H., & Seidel D. (2020).
+                scales: Scale functions for visualization.
+                R package version 1.1.1.
+                <a href = " https://CRAN.R-project.org/package=scales", target = "_blank">See online.</a>
+                </li>
+
                 <li><code>shiny</code>
-                Chang, W., Cheng, J., Allaire, J., Xie, Y. & McPherson, J. (2019).
-                shiny: Web Application Framework for R.
-                R package version 1.4.0.
+                Chang, W., Cheng, J., Allaire, J., Xie, Y., & McPherson, J. (2020).
+                shiny: Web application framework for R.
+                R package version 1.5.0.
                 <a href = "https://CRAN.R-project.org/package=shiny", target = "_blank">See online.</a>
                 </li>
 
                 <li><code>shinyBS</code>
                 Bailey, E. (2015).
-                shinyBS: Twitter Bootstrap Components for Shiny.
+                shinyBS: Twitter bootstrap components for shiny.
                 R package version 0.61.
                 <a href = "https://CRAN.R-project.org/package=shinyBS", target = "_blank">See online.</a>
                 </li>
 
                 <li><code>shinydashboard</code>
-                Chang, W. & Borges Ribeiro, B. (2018).
-                shinydashboard: Create Dashboards with "Shiny".
+                Chang, W., & Borges Ribeiro, B. (2018).
+                shinydashboard: Create dashboards with "shiny".
                 R package version 0.7.1
                 <a href = "https://CRAN.R-project.org/package=shinydashboard", target = "_blank">See online.</a>
                 </li>
@@ -178,31 +207,45 @@ uiReferences <-
                 </li>
 
                 <li><code>shinyjs</code>
-                Attali, D. (2018).
-                shinyjs: Easily Improve the User Experience of Your Shiny Apps in Seconds.
-                R package version 1.0.
+                Attali, D. (2020).
+                shinyjs: Easily improve the user experience of your shiny apps in seconds.
+                R package version 2.0.0.
                 <a href = "https://CRAN.R-project.org/package=shinyjs", target = "_blank">See online.</a>
                 </li>
 
                 <li><code>stringr</code>
                 Wickham, H. (2019).
-                stringr: Simple, Consistent Wrappers for Common String Operations.
+                stringr: Simple, consistent wrappers for common string operations.
                 R package version 1.4.0.
                 <a href = "https://CRAN.R-project.org/package=stringr", target = "_blank">See online.</a>
                 </li>
 
-                <li><code>xtable</code>
-                Dahl, D., Scott, D., Roosen, C., Magnusson, A.& Swinton, J. (2019).
-                xtable: Export Tables to LaTeX or HTML.
-                R package version 1.8-4.
-                <a href = "https://CRAN.R-project.org/package=xtable", target = "_blank">See online.</a>
+                <li><code>tibble</code>
+                M&uuml;ller, K., & Wickham, H. (2020).
+                tibble: Simple data frames.
+                R package version 3.0.4.
+                <a href = " https://CRAN.R-project.org/package=tibble", target = "_blank">See online.</a>
+                </li>
+
+                <li><code>tidyr</code>
+                Wickham, H. (2020).
+                tidyr: Tidy messy data.
+                R package version 1.1.2.
+                <a href = " https://CRAN.R-project.org/package=tidyr", target = "_blank">See online.</a>
                 </li>
 
                 <li><code>VGAM</code>
-                Yee, T. W. (2019).
-                VGAM: Vector Generalized Linear and Additive Models.
-                R package version 1.1-2.
+                Yee, T. W. (2015).
+                Vector Generalized linear and additive models: With an implementation in R.
+                New York, USA: Springer.
                 <a href = "https://CRAN.R-project.org/package=VGAM", target = "_blank">See online.</a>
+                </li>
+
+                <li><code>xtable</code>
+                Dahl, D., Scott, D., Roosen, C., Magnusson, A., & Swinton, J. (2019).
+                xtable: Export tables to LaTeX or HTML.
+                R package version 1.8-4.
+                <a href = "https://CRAN.R-project.org/package=xtable", target = "_blank">See online.</a>
                 </li>
                 </ul>'),
     #------------------------------------------------------------------------------------#
@@ -210,38 +253,44 @@ uiReferences <-
     #------------------------------------------------------------------------------------#
     h3("References"),
     HTML('<ul class = "biblio">
-                <li>Akaike, H. (1974). A New Look at the Statistical Model Identification.
+                <li>Akaike, H. (1974).
+                A new look at the statistical model identification.
                 <i>IEEE Transactions on Automatic Control, 19</i>(6), 716-723.
                 <a href = "http://ieeexplore.ieee.org/abstract/document/1100705/",
                 target = "_blank">See online.</a>
                 </li>
 
-                <li>Ames, A. J., & Penfield, R. D. (2015). An NCME Instructional Module on Item-Fit
-                Statistics for Item Response Theory Models.
+                <li>Ames, A. J., & Penfield, R. D. (2015).
+                An NCME instructional module on item-fit statistics for item
+                response theory models.
                 <i>Educational Measurement: Issues and Practice, 34</i>(3), 39-48.
                 <a href = "http://onlinelibrary.wiley.com/doi/10.1111/emip.12067/full",
                 target = "_blank">See online.</a>
                 </li>
 
-                <li>Andrich, D. (1978). A Rating Formulation for Ordered Response Categories.
+                <li>Andrich, D. (1978).
+                A rating formulation for ordered response categories.
                 <i>Psychometrika, 43</i>(4), 561-573.
                 <a href = "https://link.springer.com/article/10.1007/BF02293814",
                 target = "_blank">See online.</a>
                 </li>
 
-                <li>Angoff, W. H., & Ford, S. F. (1973). Item-Race Interaction on a Test of
-                Scholastic Aptitude.
+                <li>Angoff, W. H., & Ford, S. F. (1973).
+                Item-race interaction on a test of scholastic aptitude.
                 <i>Journal of Educational Measurement, 10</i>(2), 95-105.
                 <a href = "https://www.jstor.org/stable/1433905?seq=1#page_scan_tab_contents",
                 target = "_blank">See online.</a>
                 </li>
 
-				        <li>Bartholomew, D., Steel, F., Moustaki, I. and Galbraith, J. (2002). The Analysis and Interpretation of Multivariate
-				        Data for Social Scientists. London: Chapman and Hall.
+				        <li>Bartholomew, D., Steel, F., Moustaki, I., & Galbraith, J. (2002).
+				        The analysis and interpretation of multivariate data for social
+				        scientists.
+				        London: Chapman and Hall.
                 </li>
 
-                <li>Bock, R. D. (1972). Estimating Item Parameters and Latent Ability when
-                Responses Are Scored in Two or More Nominal Categories.
+                <li>Bock, R. D. (1972).
+                Estimating item parameters and latent ability when responses are
+                scored in two or more nominal categories.
                 <i>Psychometrika, 37</i>(1), 29-51.
                 <a href = "http://link.springer.com/article/10.1007/BF02291411",
                 target = "_blank">See online.</a>
@@ -254,23 +303,31 @@ uiReferences <-
                 target = "_blank">See online.</a>
                 </li>
 
-                <li>Chalmers, R. P. (2018). Improving the Crossing-SIBTEST Statistic for Detecting Non-uniform DIF.
+                <li>Chalmers, R. P. (2018).
+                Improving the crossing-SIBTEST statistic for detecting non-uniform DIF.
                 <i>Psychometrika, 83</i>(2), 376-386.
                 <a href = "https://link.springer.com/article/10.1007/s11336-017-9583-8",
                 target = "_blank">See online.</a>
                 </li>
 
-                <li>Cronbach, L. J. (1951). Coefficient Alpha and the Internal Structure of Tests.
+                <li>Cronbach, L. J. (1951).
+                Coefficient alpha and the internal structure of tests.
                 <i>Psychometrika, 16</i>(3), 297-334.
                 <a href = "https://link.springer.com/article/10.1007/BF02310555",
                 target = "_blank">See online.</a>
                 </li>
 
-                <li>Drabinova, A., & Martinkova, P. (2017). Detection of Differential Item Functioning
-                with Non-Linear Regression: Non-IRT Approach Accounting for Guessing.
+                <li>Drabinova, A., & Martinkova, P. (2017).
+                Detection of differential item functioning with non-linear
+                regression: Non-IRT approach accounting for guessing.
                 <i>Journal of Educational Measurement, 54</i>(4), 498-517
                 <a href = "https://doi.org/10.1111/jedm.12158",
                 target = "_blank">See online.</a>
+                </li>
+
+                <li> Erosheva, E. A, Martinkova, P., & Lee, C. J. (Accepted).
+                When zero may not be zero: A cautionary note on the useof inter-rater reliability in evaluating grant peer review.
+                <i>Journal of the Royal Statistical Society: Series A</i>.
                 </li>
 
                 <li> Feldt, L. S., Woodruff, D. J., & Salih, F. A. (1987).
@@ -280,64 +337,67 @@ uiReferences <-
                 target = "_blank">See online.</a>
                 </li>
 
-                <li>Li, H.-H., and Stout, W. (1996). A New Procedure for Detection of Crossing DIF.
+                <li>Li, H.-H., & Stout, W. (1996).
+                A new procedure for detection of crossing DIF.
                 <i>Psychometrika, 61</i>(4), 647-677.
                 <a href = "https://link.springer.com/article/10.1007/BF02294041",
                 target = "_blank">See online.</a>
                 </li>
 
-                <li>Lord, F. M. (1980). Applications of Item Response Theory to Practical Testing Problems.
+                <li>Lord, F. M. (1980).
+                Applications of item response theory to practical testing problems.
                 Routledge.
                 </li>
 
-                <li>Magis, D., & Facon, B. (2012). Angoffs Delta Method Revisited: Improving DIF Detection under
-                Small Samples.
+                <li>Magis, D., & Facon, B. (2012).
+                Angoffs delta method revisited: Improving DIF detection under
+                small samples.
                 <i>British Journal of Mathematical and Statistical Psychology, 65</i>(2), 302-321.
                 <a href = "https://www.ncbi.nlm.nih.gov/pubmed/22500570",
                 target = "_blank">See online.</a>
                 </li>
 
-                <li>Magis, D., & Facon, B. (2013). Item purification does not always improve DIF detection: a counter-example with Angoffs Delta plot.
+                <li>Magis, D., & Facon, B. (2013).
+                Item purification does not always improve DIF detection: A counter-example with Angoffs Delta plot.
                 <i>Educational and Psychological Measurement, 73</i>(2), 293-311.
                 <a href = "https://doi.org/10.1177%2F0013164412451903",
                 target = "_blank">See online.</a>
                 </li>
 
-                <li>Mantel, N., & Haenszel, W. (1959). Statistical Aspects of the Analysis of Data from
-                Retrospective Studies.
+                <li>Mantel, N., & Haenszel, W. (1959).
+                Statistical aspects of the analysis of data from retrospective studies.
                 <i>Journal of the National Cancer Institute, 22</i>(4), 719-748.
                 <a href = "http://www.medicine.mcgill.ca/epidemiology/hanley/c634/stratified/Mantel_Haenszel_1.pdf",
                 target = "_blank">See online.</a>
 
                 </li>
 
-                <li>Martinkova, P., Drabinova, A., & Houdek, J. (2017). ShinyItemAnalysis: Analyza Prijimacich a
-                Jinych Znalostnich ci Psychologickych Testu. [ShinyItemAnalysis: Analyzing Admission and Other
-                Educational and Psychological Tests]
+                <li>Martinkova, P., Drabinova, A., & Houdek, J. (2017).
+                ShinyItemAnalysis: Analyza prijimacich a jinych znalostnich ci psychologickych testu.
+                [ShinyItemAnalysis: Analyzing admission and other educational and psychological tests]
                 <i>TESTFORUM, 6</i>(9), 16-35.
                 <a href = "https://doi.org/10.5817/TF2017-9-129",
                 target = "_blank">See online.</a>
                 </li>
 
-                <li>Martinkova, P., Drabinova, A., Liaw, Y. L., Sanders, E. A., McFarland, J. L., & Price, R. M.
-                (2017). Checking Equity: Why Differential Item Functioning Analysis Should Be a Routine Part
-                of Developing Conceptual Assessments.
+                <li>Martinkova, P., Drabinova, A., Liaw, Y. L., Sanders, E. A., McFarland, J. L., & Price, R. M. (2017).
+                Checking equity: Why differential item functioning analysis should be a routine part
+                of developing conceptual Assessments.
                 <i>CBE-Life Sciences Education, 16</i>(2), rm2.
                 <a href = "https://doi.org/10.1187/cbe.16-10-0307",
                 target = "_blank">See online</a>
                 </li>
 
                 <li>Martinkova, P., Stepanek, L., Drabinova, A., Houdek, J., Vejrazka, M., & Stuka, C. (2017).
-                Semi-real-time Analyses of Item Characteristics for Medical School Admission Tests.
-                In
-                <i>Proceedings of the 2017 Federated Conference on Computer Science and Information Systems</i>,
+                Semi-real-time analyses of item characteristics for medical school admission tests.
+                <i>In Proceedings of the 2017 Federated Conference on Computer Science and Information Systems</i>,
                 189-194.
                 <a href="https://doi.org/10.15439/2017F380",
                 target="_blank">See online.</a>
                 </li>
 
-                <li>Martinkova, P., Drabinova, A., & Potuznikova, E.
-                (2020). Is academic tracking related to gains in learning competence?
+                <li>Martinkova, P., Drabinova, A., & Potuznikova, E. (2020).
+                Is academic tracking related to gains in learning competence?
                 Using propensity score matching and differential item change functioning analysis for better understanding
                 of tracking implications.
                 <i>Learning and Instruction 66</i>(April).
@@ -345,52 +405,58 @@ uiReferences <-
                 target = "_blank">See online</a>
                 </li>
 
-                <li>Masters, G. N. (1982). A Rasch model for partial credit scoring.
+                <li>Masters, G. N. (1982).
+                A Rasch model for partial credit scoring.
                 <i>Psychometrika, 47</i>(2), 149-174.
                 <a href = "https://link.springer.com/article/10.1007/BF02296272",
                 target = "_blank">See online.</a>
                 </li>
 
-                <li>McFarland, J. L., Price, R. M., Wenderoth, M. P., Martinkova, P., Cliff, W., Michael, J., ... & Wright, A. (2017).
-                Development and Validation of the Homeostasis Concept Inventory.
+                <li>McFarland, J. L., Price, R. M., Wenderoth, M. P., Martinkova, P., Cliff, W., Michael, J., ..., & Wright, A. (2017).
+                Development and validation of the homeostasis concept inventory.
                 <i>CBE-Life Sciences Education, 16</i>(2), ar35.
                 <a href = "http://dx.doi.org/10.1187/cbe.16-10-0305",
                 target = "_blank">See online.</a>
                 </li>
 
-                <li>Muraki, E. (1992). A Generalized Partial Credit Model: Application of an EM Algorithm.
+                <li>Muraki, E. (1992).
+                A generalized partial credit model: Application of an EM algorithm.
                 <i>ETS Research Report Series, 1992</i>(1)
                 <a href = "https://onlinelibrary.wiley.com/doi/abs/10.1002/j.2333-8504.1992.tb01436.x",
                 target = "_blank">See online.</a>
                 </li>
 
-                <li>Orlando, M., & Thissen, D. (2000). Likelihood-based item-fit indices for dichotomous item response theory models.
+                <li>Orlando, M., & Thissen, D. (2000).
+                Likelihood-based item-fit indices for dichotomous item response theory models.
                 <i>Applied Psychological Measurement, 24</i>(1), 50-64.
                 <a href = "https://doi.org/10.1177%2F01466216000241003",
                 target = "_blank">See online.</a>
                 </li>
 
-                <li>Swaminathan, H., & Rogers, H. J. (1990). Detecting Differential Item
-                Functioning Using Logistic Regression Procedures.
+                <li>Swaminathan, H., & Rogers, H. J. (1990).
+                Detecting differential item functioning using logistic regression procedures.
                 <i>Journal of Educational Measurement, 27</i>(4), 361-370.
                 <a href = "https://www.jstor.org/stable/1434855?seq=1#page_scan_tab_contents",
                 target = "_blank">See online.</a>
                 </li>
 
-                <li>Raju, N. S. (1988). The Area between Two Item Characteristic Curves.
+                <li>Raju, N. S. (1988).
+                The area between two item characteristic curves.
                 <i>Psychometrika, 53</i>(4), 495-502.
                 <a href = "https://link.springer.com/article/10.1007/BF02294403",
                 target = "_blank">See online.</a>
                 </li>
 
-                <li>Raju, N. S. (1990). Determining the Significance of Estimated Signed and Unsigned Areas
-                between Two Item Response Functions.
+                <li>Raju, N. S. (1990).
+                Determining the significance of estimated signed and unsigned areas
+                between two item response functions.
                 <i>Applied Psychological Measurement, 14</i>(2), 197-207.
                 <a href = "http://journals.sagepub.com/doi/abs/10.1177/014662169001400208",
                 target = "_blank">See online.</a>
                 </li>
 
-                <li>Rasch, G. (1960) Probabilistic Models for Some Intelligence and Attainment Tests.
+                <li>Rasch, G. (1960)
+                Probabilistic models for some intelligence and attainment tests.
                 Copenhagen: Paedagogiske Institute.
                 </li>
 
@@ -401,20 +467,23 @@ uiReferences <-
                 target = "_blank">See online.</a>
                 </li>
 
-                <li>Samejima, F. (1969). Estimation of Latent Ability Using a Response Pattern of Graded Scores.
+                <li>Samejima, F. (1969).
+                Estimation of latent ability using a response pattern of graded scores.
                 <i>Psychometrika, 34</i>(1), 1-97
                 <a href = "https://link.springer.com/article/10.1007%2FBF03372160",
                 target = "_blank">See online.</a>
                 </li>
 
-                <li>Schwarz, G. (1978). Estimating the Dimension of a Model.
+                <li>Schwarz, G. (1978).
+                Estimating the dimension of a model.
                 <i>The Annals of Statistics, 6</i>(2), 461-464.
                 <a href = "https://projecteuclid.org/euclid.aos/1176344136",
                 target = "_blank">See online.</a>
                 </li>
 
-                <li>Shealy, R. and Stout, W. (1993). A Model-Based Standardization Approach that
-                Separates True Bias/DIF from Group Ability Differences and Detect Test Bias/DTF
+                <li>Shealy, R., & Stout, W. (1993).
+                A model-based standardization approach that separates true bias/DIF from group ability
+                differences and detect test bias/DTF
                 as well as Item Bias/DIF.
                 <i>Psychometrika, 58</i>(2), 159-194.
                 <a href = "https://link.springer.com/article/10.1007/BF02294572",
@@ -428,10 +497,13 @@ uiReferences <-
                 target = "_blank">See online.</a>
                 </li>
 
-                <li>Wilson, M. (2005). Constructing Measures: An Item Response Modeling Approach.
+                <li>Wilson, M. (2005).
+                Constructing measures: An item response modeling approach.
                 </li>
 
-                <li>Wright, B. D., & Stone, M. H. (1979). Best Test Design. Chicago: Mesa Press.
+                <li>Wright, B. D., & Stone, M. H. (1979).
+                Best test design.
+                Chicago: Mesa Press.
                 </li>
                 </ul>'),
     br()
