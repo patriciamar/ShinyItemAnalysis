@@ -61,8 +61,7 @@
   * styler package was applied on .R files, documentation was updated.
   * `ggWright()` plot was updated to more general description.
   * References were updated wintin the app.
-  
-  ----------
+----------
 
 ### Changes in version 1.3.4 (2020-08-24)
 #### BUG FIXING
