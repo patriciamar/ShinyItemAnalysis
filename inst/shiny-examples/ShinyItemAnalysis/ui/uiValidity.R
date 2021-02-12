@@ -192,7 +192,7 @@ uiValidity <-
 
           h4("Item difficulty / criterion validity plot"),
           p('The following plot intelligibly depicts the criterion validity of every individual item (blue) together with its difficulty (red).
-                                   Items are ordered by difficulty. You can choose from two indices of criterion validity – item-criterion correlation and so-called "item validity index".
+                                   Items are ordered by difficulty. You can choose from two indices of criterion validity - item-criterion correlation and so-called "item validity index".
                                    The former refers to simple Pearson product-moment correlation (or, in the case of binary dataset, point-biserial correlation),
                                    the later also takes into account the item varinace (see Allen & Yen, 1979, for details).
                                    Further item analysis can be performed in Item Analysis tab.'),
