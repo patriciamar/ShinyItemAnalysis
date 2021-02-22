@@ -140,17 +140,31 @@
 ItemAnalysis <- function(Data, criterion = "none", k = 3, l = 1, u = 3,
                          maxscore = NULL, minscore = NULL, cutscore = NULL, bin = FALSE,
                          data, y, add.bin) {
+
+  # deprecated args handling
   if (!missing(data)) {
-    stop("Argument 'data' deprecated. Please use argument 'Data' instead. ", call. = FALSE)
-  }
-  if (!missing(y)) {
-    stop("Argument 'y' deprecated. Please use argument 'criterion' instead. ", call. = FALSE)
-  }
-  if (!missing(add.bin)) {
-    stop("Argument 'add.bin' deprecated. Please use argument 'bin' instead. ", call. = FALSE)
+    warning("Argument 'data' is deprecated; please use 'Data' instead.",
+      call. = FALSE
+    )
+    Data <- data
   }
 
-  if (!is.matrix(Data) & !is.data.frame(Data)) {
+  if (!missing(y)) {
+    warning("Argument 'y' is deprecated; please use 'criterion' instead.",
+      call. = FALSE
+    )
+    criterion <- y
+  }
+
+  if (!missing(add.bin)) {
+    warning("Argument 'add.bin' is deprecated; please use 'bin' instead.",
+      call. = FALSE
+    )
+    bin <- add.bin
+  }
+
+
+  if (!inherits(Data, c("matrix", "data.frame"))) {
     stop("'Data' must be data.frame or matrix. ",
       call. = FALSE
     )

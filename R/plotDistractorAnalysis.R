@@ -97,16 +97,28 @@
 
 plotDistractorAnalysis <- function(Data, key, num.groups = 3, item = 1, item.name, multiple.answers = TRUE,
                                    criterion = NULL, crit.discrete = FALSE, cut.points, data, matching, match.discrete) {
-  if (!missing(matching)) {
-    stop("Argument 'matching' deprecated. Please use argument 'criterion' instead. ", call. = FALSE)
-  }
-  if (!missing(match.discrete)) {
-    stop("Argument 'x' deprecated. Please use argument 'crit.discrete' instead. ", call. = FALSE)
+  # deprecated args handling
+  if (!missing(data)) {
+    warning("Argument 'data' is deprecated; please use 'Data' instead.",
+      call. = FALSE
+    )
+    Data <- data
   }
 
-  if (!missing(data)) {
-    stop("Argument 'data' deprecated. Please use argument 'Data' instead. ", call. = FALSE)
+  if (!missing(matching)) {
+    warning("Argument 'matching' is deprecated; please use 'criterion' instead.",
+      call. = FALSE
+    )
+    criterion <- matching
   }
+
+  if (!missing(match.discrete)) {
+    warning("Argument 'match.discrete' is deprecated; please use 'crit.discrete' instead.",
+      call. = FALSE
+    )
+    crit.discrete <- match.discrete
+  }
+
 
   if (missing(key)) {
     if (all(sapply(Data, is.numeric))) {

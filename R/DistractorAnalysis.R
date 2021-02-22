@@ -76,18 +76,31 @@
 #' @export
 DistractorAnalysis <- function(Data, key, p.table = FALSE, num.groups = 3, criterion = NULL,
                                crit.discrete = FALSE, cut.points, data, matching, match.discrete) {
-  if (!missing(matching)) {
-    stop("Argument 'matching' deprecated. Please use argument 'criterion' instead. ", call. = FALSE)
-  }
-  if (!missing(match.discrete)) {
-    stop("Argument 'x' deprecated. Please use argument 'crit.discrete' instead. ", call. = FALSE)
-  }
 
+  # deprecated args handling
   if (!missing(data)) {
-    stop("Argument 'data' deprecated. Please use argument 'Data' instead. ", call. = FALSE)
+    warning("Argument 'data' is deprecated; please use 'Data' instead.",
+      call. = FALSE
+    )
+    Data <- data
   }
 
-  if (!(is.logical(p.table))) warning("p.table must be logical. ")
+  if (!missing(matching)) {
+    warning("Argument 'matching' is deprecated; please use 'criterion' instead.",
+      call. = FALSE
+    )
+    criterion <- matching
+  }
+
+  if (!missing(match.discrete)) {
+    warning("Argument 'match.discrete' is deprecated; please use 'crit.discrete' instead.",
+      call. = FALSE
+    )
+    crit.discrete <- match.discrete
+  }
+
+
+  if (!(is.logical(p.table))) warning("'p.table' must be logical.")
 
   Data <- as.data.frame(Data)
 

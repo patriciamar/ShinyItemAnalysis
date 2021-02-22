@@ -46,8 +46,13 @@
 #' summary(HCImissedNR)
 #' @export
 recode_nr <- function(Data, nr_code = 99, df) {
+
+  # deprecated args handling
   if (!missing(df)) {
-    stop("Argument 'df' deprecated. Please use argument 'Data' instead. ", call. = FALSE)
+    warning("Argument 'df' is deprecated; please use 'Data' instead.",
+            call. = FALSE
+    )
+    Data <- df
   }
 
   if (any(sapply(Data, is.factor))) {

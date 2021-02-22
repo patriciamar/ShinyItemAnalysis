@@ -84,8 +84,13 @@
 #' @export
 
 gDiscrim <- function(Data, k = 3, l = 1, u = 3, maxscore, minscore, x) {
+
+  # deprecated args handling
   if (!missing(x)) {
-    stop("Argument 'x' deprecated. Please use argument 'Data' instead. ", call. = FALSE)
+    warning("Argument 'x' is deprecated; please use 'Data' instead.",
+      call. = FALSE
+    )
+    Data <- x
   }
 
   if (u > k) {
