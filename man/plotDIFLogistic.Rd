@@ -20,7 +20,7 @@ Data, group, match, draw.empirical = TRUE)
 
 \item{group}{numeric: the vector of group membership. See \strong{Details}.}
 
-\item{match}{character or numeric: specifies matching criterion. Can be either \code{"score"},
+\item{match}{character or numeric: specifies observed score used for matching. Can be either \code{"score"},
 or numeric vector of the same length as number of observations in \code{Data}. See \strong{Details}.}
 
 \item{draw.empirical}{logical: whether empirical probabilities should be calculated and plotted.
@@ -34,9 +34,10 @@ This function plots characteristic curves of 2PL logistic DIF model fitted
 by \code{difLogistic()} function from difR package using ggplot2.
 
 \code{Data} and \code{group} are used to calculate empirical probabilities for reference
-and focal group. \code{match} should be the same as in \code{x$match}. In case that matching
-variable is used instead of total score or standardized score, \code{match} needs to be
-a numeric vector of the same the same length as number of observations in \code{Data}.
+and focal group. \code{match} should be the same as in \code{x$match}. In case that an
+observed score is used as a matching variable instead of the total score or the standardized score,
+\code{match} needs to be a numeric vector of the same the same length as the number of observations
+in \code{Data}.
 }
 \examples{
 # loading libraries
