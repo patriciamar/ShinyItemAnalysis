@@ -1,23 +1,23 @@
 #' AIBS grant peer review scoring dataset
 #'
 #' @description The \code{AIBS} dataset (Gallo, 2020) comes from the scientific
-#' peer review facilitated by the American Institute of Biological Sciences (AIBS)
-#' of biomedical applications from and intramural collaborative biomedical research
-#' program for 2014--2017. For each proposal, three assigned individual reviewers were
-#' asked to provide scores and commentary for the following application criteria:
-#' Innovation, Approach/Feasibility, Investigator, and Significance (Impact added
-#' as scored criterion in 2014). Each of these criteria is scored on a scale from
-#' 1.0 (best) to 5.0 (worst) with a 0.1 gradation, as well as an overall score
-#' (1.0--5.0 with a 0.1 gradation). Asynchronous discussion was allowed, although
-#' few scores changed post-discussion. The data includes reviewers' self-reported
-#' expertise scores (1/2/3, 1 is high expertise) relative to each proposal reviewed,
-#' and reviewer / principal investigator demographics. A total of 72
-#' applications ("Standard" or "Pilot") were reviewed in 3 review cycles. The
-#' success rate was 34--38\%. Application scores indicate where each application
-#' falls among all practically possible applications in comparison with the
-#' ideal standard of quality from a perfect application. The dataset was used by
-#' Erosheva et al. (2021a) to demonstrate issues of inter-rater reliability in
-#' case of restricted samples. For details, see Erosheva et al. (2021b).
+#'   peer review facilitated by the American Institute of Biological Sciences (AIBS)
+#'   of biomedical applications from and intramural collaborative biomedical research
+#'   program for 2014--2017. For each proposal, three assigned individual reviewers were
+#'   asked to provide scores and commentary for the following application criteria:
+#'   Innovation, Approach/Feasibility, Investigator, and Significance (Impact added
+#'   as scored criterion in 2014). Each of these criteria is scored on a scale from
+#'   1.0 (best) to 5.0 (worst) with a 0.1 gradation, as well as an overall score
+#'   (1.0--5.0 with a 0.1 gradation). Asynchronous discussion was allowed, although
+#'   few scores changed post-discussion. The data includes reviewers' self-reported
+#'   expertise scores (1/2/3, 1 is high expertise) relative to each proposal reviewed,
+#'   and reviewer / principal investigator demographics. A total of 72
+#'   applications ("Standard" or "Pilot") were reviewed in 3 review cycles. The
+#'   success rate was 34--38\%. Application scores indicate where each application
+#'   falls among all practically possible applications in comparison with the
+#'   ideal standard of quality from a perfect application. The dataset was used by
+#'   Erosheva et al. (2021a) to demonstrate issues of inter-rater reliability in
+#'   case of restricted samples. For details, see Erosheva et al. (2021b).
 #'
 #' @usage data(AIBS)
 #'
