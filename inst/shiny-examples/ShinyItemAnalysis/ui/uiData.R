@@ -12,7 +12,7 @@ uiData <- tabPanel(
       #------------------------------------------------------------------------------------#
       p(
         "For demonstration purposes, the 20-item dataset", code("GMAT"),
-        " is used. On this page, you may select one of several other toy datasets or you may upload your own
+        " is used. While on this page, you may select one of several other toy datasets or you may upload your own
         dataset (see below). To return to the demonstration dataset, click on the ", strong("Unload data"), " button."
       ),
       tags$hr(),
@@ -25,7 +25,7 @@ uiData <- tabPanel(
         column(
           3,
           selectInput(
-            inputId = "dataSelect",
+            inputId = "data_toydata",
             label = "Select dataset",
             choices = c(
               "GMAT" = "GMAT_difNLR",
@@ -41,11 +41,6 @@ uiData <- tabPanel(
             ),
             selected = "GMAT_difNLR"
           ),
-          # conditionalPanel(
-          #   "input.dataSelect == 'AIBS_ShinyItemAnalysis'",
-          #   checkboxInput("round_data", "Round to integer?", TRUE)
-          #   # AIBS are considered as continuous, which is a whole new concept to SIA
-          # )
         ),
         column(
           9,
@@ -54,18 +49,17 @@ uiData <- tabPanel(
       ),
       tags$hr(),
 
-      HTML("<div class='pb' style='page-break-after:always'></div>"),
-
       #------------------------------------------------------------------------------------#
       # * Upload your own datasets ####
       #------------------------------------------------------------------------------------#
       h4("Upload your own datasets"),
-      p("Here you can upload your own dataset. Select all necessary files and use the ", strong("Upload data"), " button on bottom of this page."),
+      p("Here you can upload your own dataset. Select all necessary files and use the ", strong("Upload data"),
+        " button on bottom of this page."),
       fluidRow(
         box(
           width = 3,
           fileInput(
-            inputId = "data",
+            inputId = "data_csvdata_main",
             label = "Choose data (CSV file)",
             accept = c(
               "text/csv",
@@ -80,12 +74,13 @@ uiData <- tabPanel(
         column(
           9,
           p(
-            "Main ", strong("data"), " file should contain responses of individual respondents (rows)
-                              to given items (columns). Data need to be either binary, nominal (e.g. in ABCD format), or ordinal (e.g. in Likert scale).
-                              Header may contain item names, no row names should be included. In all data sets", strong("header"), "should
-                              be either included or excluded. Columns of dataset are by default renamed to Item and number of particular column.
-                              If you want to keep your own names, check box ", strong("Keep item names"), "below. Missing values in scored
-                              dataset are by default evaluated as 0. If you want to keep them as missing, check box", strong("Keep missing values"),
+            "The main ", strong("data"), " file should contain the responses of individual respondents (rows)
+            to given items (columns). Data need to be either binary, nominal (e.g. in ABCD format), or ordinal
+            (e.g. in Likert scale). The header may contain item names, however, no row names should be included.
+            In all data sets, the ", strong("header"), "should be either included or excluded. Columns of dataset
+            are by default renamed to the Item and number of a particular column. If you want to keep your own
+            names, check the box ", strong("Keep item names"), "below. Missing values in scored dataset are by
+            default evaluated as 0. If you want to keep them as missing, check the box", strong("Keep missing values"),
             "below."
           )
         )
@@ -96,20 +91,21 @@ uiData <- tabPanel(
           column(
             2,
             radioButtons(
-              inputId = "data_type",
+              inputId = "data_csvdata_data_type",
               label = list(
                 "Type of data",
                 bsButton(
-                  inputId = "data_type_info",
+                  inputId = "data_csvdata_data_type_info",
                   label = "",
                   icon = icon("info"),
                   style = "info",
                   size = "extra-small"
                 ),
                 bsPopover(
-                  id = "data_type_info",
+                  id = "data_csvdata_data_type_info",
                   title = "Info",
-                  content = "Binary data are of 0-1 form, where 0 is incorrect answer and 1 is correct one. Nominal data may take e.g. ABCD form. Ordinal data are e.g. those on the Likert scale 1-2-3-4-5.",
+                  content = "Binary data are of 0-1 form, where 0 is incorrect answer and 1 is correct one. Nominal data
+                            may take, e.g., ABCD form. Ordinal data are, e.g., those on the Likert scale 1-2-3-4-5. ",
                   placement = "right",
                   trigger = "hover",
                   options = list(container = "body")
@@ -126,7 +122,7 @@ uiData <- tabPanel(
           column(
             2,
             radioButtons(
-              inputId = "sep",
+              inputId = "data_csvdata_sep",
               label = "Separator",
               choices = c(
                 Comma = ",",
@@ -138,7 +134,7 @@ uiData <- tabPanel(
           ),
           column(2,
             radioButtons(
-              inputId = "quote",
+              inputId = "data_csvdata_quote",
               label = "Quote",
               choices = c(
                 "None" = "",
@@ -152,18 +148,18 @@ uiData <- tabPanel(
             3,
             strong("Data specification"),
             checkboxInput(
-              inputId = "header",
+              inputId = "data_csvdata_header",
               label = list(
                 "Header",
                 bsButton(
-                  inputId = "header_info",
+                  inputId = "data_csvdata_header_info",
                   label = "",
                   icon = icon("info"),
                   style = "info",
                   size = "extra-small"
                 ),
                 bsPopover(
-                  id = "header_info",
+                  id = "data_csvdata_header_info",
                   title = "Info",
                   content = "Header including item names should be included/excluded in all datasets.",
                   placement = "right",
@@ -174,18 +170,18 @@ uiData <- tabPanel(
               value = TRUE
             ),
             checkboxInput(
-              inputId = "itemnam",
+              inputId = "data_csvdata_keep_itemnames",
               label = list(
                 "Keep item names",
                 bsButton(
-                  inputId = "itemnam_info",
+                  inputId = "data_csvdata_keep_itemnames_info",
                   label = "",
                   icon = icon("info"),
                   style = "info",
                   size = "extra-small"
                 ),
                 bsPopover(
-                  id = "itemnam_info",
+                  id = "data_csvdata_keep_itemnames_info",
                   title = "Info",
                   content = "Should item names be preserved?",
                   placement = "right",
@@ -200,18 +196,18 @@ uiData <- tabPanel(
             3,
             strong("Missing values"),
             checkboxInput(
-              inputId = "missval",
+              inputId = "data_csvdata_keep_missing",
               label = list(
                 "Keep missing values",
                 bsButton(
-                  inputId = "missval_info",
+                  inputId = "data_csvdata_keep_missing_info",
                   label = "",
                   icon = icon("info"),
                   style = "info",
                   size = "extra-small"
                 ),
                 bsPopover(
-                  id = "missval_info",
+                  id = "data_csvdata_keep_missing_info",
                   title = "Info",
                   content = "Should missing values be preserved?",
                   placement = "right",
@@ -222,23 +218,23 @@ uiData <- tabPanel(
               value = FALSE
             ),
             conditionalPanel(
-              condition = "input.missval",
+              condition = "input.data_csvdata_keep_missing",
               div(
                 id = "inline-left",
                 textInput(
-                  inputId = "data_missingcoding",
+                  inputId = "data_csvdata_missing_coding",
                   label = list(
                     bsButton(
-                      inputId = "data_missingcoding_info",
+                      inputId = "data_csvdata_missing_coding_info",
                       label = "",
                       icon = icon("info"),
                       style = "info",
                       size = "extra-small"
                     ),
                     bsPopover(
-                      id = "data_missingcoding_info",
+                      id = "data_csvdata_missing_coding_info",
                       title = "Info",
-                      content = "Enter encoding of missing values. Values should be seperated with comma, e.g. 9, 99, XXX. ",
+                      content = "Enter encoding of missing values. Values should be seperated with comma, e.g., 9, 99, XXX. ",
                       placement = "right",
                       trigger = "hover",
                       options = list(container = "body")
@@ -250,19 +246,19 @@ uiData <- tabPanel(
               div(
                 id = "inline-left",
                 disabled(textInput(
-                  inputId = "data_NAcoding",
+                  inputId = "data_csvdata_notadministred_coding",
                   label = list(
                     bsButton(
-                      inputId = "data_NAcoding_info",
+                      inputId = "data_csvdata_notadministred_coding_info",
                       label = "",
                       icon = icon("info"),
                       style = "info",
                       size = "extra-small"
                     ),
                     bsPopover(
-                      id = "data_NAcoding_info",
+                      id = "data_csvdata_notadministred_coding_info",
                       title = "Info",
-                      content = "Enter encoding of not administred values. Values should be seperated with comma, e.g. 9, 99, NA.",
+                      content = "Enter encoding of not administred values. Values should be seperated with comma, e.g., 9, 99, NA.",
                       placement = "right",
                       trigger = "hover",
                       options = list(container = "body")
@@ -276,20 +272,12 @@ uiData <- tabPanel(
         )
       ),
       conditionalPanel(
-        condition = "input.data_type == 'ordinal'",
+        condition = "input.data_csvdata_data_type == 'ordinal'",
         fluidRow(
           box(
             width = 3,
-            # uiOutput("data_key_file_input"),
-            # conditional panel is needed for changing labels
-            # which depends on data type of data's which user
-            # want to load.
-            # conditionalPanel(
-            #  condition = "input.data_type == 'ordinal'",
-            #  textInput(inputId = "globalCut",
-            #            label = "Dataset cut-score"))
             fileInput(
-              inputId = "key_ordinal",
+              inputId = "data_csvdata_cutscore_ordinal",
               label = "Choose cut-score (CSV file)",
               accept = c(
                 "text/csv",
@@ -301,41 +289,33 @@ uiData <- tabPanel(
               )
             ),
             textInput(
-              inputId = "globalCut",
+              inputId = "data_csvdata_cutscore_ordinal_global",
               label = "Dataset cut-score"
             )
           ),
           column(
             9,
-            conditionalPanel(
-              condition = "input.data_type == 'nominal'",
-              p("For nominal data, it is necessary to upload ", strong("key"), "of correct answers.")
-            ),
-            conditionalPanel(
-              condition = "input.data_type == 'ordinal'",
-              p("For ordinal data, you are advised to include vector containing", strong("cut-score"), "which is used for binarization of uploaded data, i.e.,
-                                           values greater or equal to provided cut-score are set to 1, otherwise to 0. You can either upload dataset of item-specific values, or you can
-                                           provide one value for whole dataset."),
+            # conditionalPanel(
+            #   condition = "input.data_csvdata_data_type == 'nominal'",
+            #   p("For nominal data, it is necessary to upload ", strong("key"), "of correct answers.")
+            # ),
+            # conditionalPanel(
+              # condition = "input.data_csvdata_data_type == 'ordinal'",
+              p("For ordinal data, you are advised to include vector containing", strong("cut-score"), "which is used for
+                binarization of uploaded data, i.e., values greater or equal to provided cut-score are set to 1, otherwise
+                to 0. You can either upload dataset of item-specific values, or you can provide one value for whole dataset."),
               p(strong("Note: "), "In case that cut-score is not provided, vector of maximal values is used. ")
-            )
+            # )
           )
         )
       ),
       conditionalPanel(
-        condition = "input.data_type == 'nominal'",
+        condition = "input.data_csvdata_data_type == 'nominal'",
         fluidRow(
           box(
             width = 3,
-            # uiOutput("data_key_file_input"),
-            # conditional panel is needed for changing labels
-            # which depends on data type of data's which user
-            # want to load.
-            # conditionalPanel(
-            #  condition = "input.data_type == 'ordinal'",
-            #  textInput(inputId = "globalCut",
-            #            label = "Dataset cut-score"))
             fileInput(
-              inputId = "key_nominal",
+              inputId = "data_csvdata_key_nominal",
               label = "Choose key (CSV file)",
               accept = c(
                 "text/csv",
@@ -349,22 +329,22 @@ uiData <- tabPanel(
           ),
           column(
             9,
-            conditionalPanel(
-              condition = "input.data_type == 'nominal'",
+            # conditionalPanel(
+              # condition = "input.data_csvdata_data_type == 'nominal'",
               p("For nominal data, it is necessary to upload ", strong("key"), "of correct answers.")
-            ),
-            conditionalPanel(
-              condition = "input.data_type == 'ordinal'",
-              p("For ordinal data, you are advised to include vector containing", strong("cut-score"), "which is used for binarization of uploaded data, i.e.,
-                                           values greater or equal to provided cut-score are set to 1, otherwise to 0. You can either upload dataset of item-specific values, or you can
-                                           provide one value for whole dataset."),
-              p(strong("Note: "), "In case that cut-score is not provided, vector of maximal values is used. ")
-            )
+            # ),
+            # conditionalPanel(
+            #   condition = "input.data_csvdata_data_type == 'ordinal'",
+            #   p("For ordinal data, you are advised to include vector containing", strong("cut-score"), "which is used for binarization of uploaded data, i.e.,
+            #                                values greater or equal to provided cut-score are set to 1, otherwise to 0. You can either upload dataset of item-specific values, or you can
+            #                                provide one value for whole dataset."),
+            #   p(strong("Note: "), "In case that cut-score is not provided, vector of maximal values is used. ")
+            # )
           )
         )
       ),
       conditionalPanel(
-        condition = "input.data_type == 'ordinal'",
+        condition = "input.data_csvdata_data_type == 'ordinal'",
         fluidRow(
           box(
             width = 6,
@@ -372,7 +352,7 @@ uiData <- tabPanel(
               column(
                 6,
                 fileInput(
-                  inputId = "minOrdinal",
+                  inputId = "data_csvdata_minimal",
                   label = "Choose minimal values",
                   accept = c(
                     "text/csv",
@@ -384,14 +364,14 @@ uiData <- tabPanel(
                   )
                 ),
                 textInput(
-                  inputId = "globalMin",
+                  inputId = "data_csvdata_minimal_global",
                   label = "Dataset minimal value"
                 )
               ),
               column(
                 6,
                 fileInput(
-                  inputId = "maxOrdinal",
+                  inputId = "data_csvdata_maximal",
                   label = "Choose maximal values",
                   accept = c(
                     "text/csv",
@@ -403,7 +383,7 @@ uiData <- tabPanel(
                   )
                 ),
                 textInput(
-                  inputId = "globalMax",
+                  inputId = "data_csvdata_maximal_global",
                   label = "Dataset maximal value"
                 )
               )
@@ -411,10 +391,10 @@ uiData <- tabPanel(
           ),
           column(
             6,
-            p("For ordinal data, it is optional to upload ", strong("minimal and maximal"), "values of answers.
-                                         You can either upload datasets of item-specific values, or you can provide one value for whole dataset."),
-            p(strong("Note: "), "If no minimal or maximal values are provided, these
-                                        values are set automatically based on observed values.")
+            p("For ordinal data, it is optional to upload ", strong("minimal and maximal"), "values of answers. You can
+              either upload datasets of item-specific values, or you can provide one value for whole dataset."),
+            p(strong("Note: "), "If no minimal or maximal values are provided, these values are set automatically based
+              on observed values.")
           )
         )
       ),
@@ -422,7 +402,7 @@ uiData <- tabPanel(
         box(
           width = 3,
           fileInput(
-            inputId = "groups",
+            inputId = "data_csvdata_group",
             label = "Choose group (optional)",
             accept = c(
               "text/csv",
@@ -436,19 +416,20 @@ uiData <- tabPanel(
         ),
         column(
           9,
-          p(strong("Group"), " is binary vector, where 0 represents reference group
-                              and 1 represents focal group. Its length needs to be the same as number of individual
-                              respondents in the main dataset. If the group is not provided then it won't be possible to run
-                              DIF and DDF detection procedures in ", strong("DIF/Fairness"), " section. Missing values
-                              are not supported for group membership vector and such cases/rows of the data should be removed.")
+          p(strong("Group"), " is a variable for DIF and DDF analyses. It should be a binary vector, where 0 represents the
+          reference group and 1 represents the focal group. Its length needs to be the same as the number of individual
+          respondents in the main dataset. Missing values are not supported for the group variable and such cases/rows of
+          the data should be removed."),
+          p(strong("Note: "), "If no group variable is provided, the DIF and DDF analyses in the ", strong("DIF/Fairness"), "
+          section are not available. ")
         )
       ),
       fluidRow(
         box(
           width = 3,
           fileInput(
-            inputId = "criterion_variable",
-            label = "Choose criterion variable (optional)",
+            inputId = "data_csvdata_criterion",
+            label = "Choose criterion (optional)",
             accept = c(
               "text/csv",
               "text/comma-separated-values",
@@ -462,11 +443,12 @@ uiData <- tabPanel(
         column(
           9,
           p(
-            strong("Criterion variable"), " is either discrete or continuous vector (e.g. future study
-                              success or future GPA in case of admission tests) which should be predicted by the measurement.
-                              Its length needs to be the same as number of individual respondents in the main dataset.
-                              If the criterion variable is not provided then it wont be possible to run validity analysis in ",
-            strong("Predictive validity"), " section on ", strong("Validity"), " page."
+            strong("Criterion"), " is either a discrete or continuous variable (e.g., future study success or future
+            GPA in the case of admission tests) which should be predicted by the measurement. Its length needs to be the
+            same as the number of individual respondents in the main dataset. "
+          ),
+          p(strong("Note: "), "If no criterion variable is provided, it won't be possible to run a validity analysis in
+            the ", strong("Predictive validity"), " section on ", strong("Validity"), " page."
           )
         )
       ),
@@ -474,8 +456,8 @@ uiData <- tabPanel(
         box(
           width = 3,
           fileInput(
-            inputId = "dif_matching",
-            label = "Choose DIF matching variable (optional)",
+            inputId = "data_csvdata_DIFmatching",
+            label = "Choose observed score (optional)",
             accept = c(
               "text/csv",
               "text/comma-separated-values",
@@ -488,8 +470,15 @@ uiData <- tabPanel(
         ),
         column(
           9,
-          p(strong("DIF matching variable"), " is a vector of the same length as number
-                                         of observations in your data. If not supplied, total score is automatically computed and utilized by default.")
+          p(
+            strong("Observed score"), " is a variable describing observed ability or trait of respondents. If supplied,
+            it is offered in the ", strong("Regression"), " and in the ", strong("DIF/Fairness"), " sections for analyses
+            with respect to this external variable. Its length needs to be the same as the number of individual respondents
+            in the main dataset. "
+          ),
+          p(strong("Note: "), "If no observed score is provided, the total scores or standardized total scores are used
+            instead. "
+          )
         )
       ),
       fluidRow(
@@ -497,7 +486,7 @@ uiData <- tabPanel(
           10,
           div(
             style = "vertical-align: top; float: right;",
-            uiOutput("removeBut_output")
+            uiOutput("data_unload_button")
           )
         ),
         column(
@@ -505,7 +494,7 @@ uiData <- tabPanel(
           div(
             style = "vertical-align: top; float: right;",
             actionButton(
-              inputId = "submitButton",
+              inputId = "data_upload",
               label = "Upload data",
               class = "btn btn-large btn-primary",
               icon = icon("upload"),
@@ -516,37 +505,35 @@ uiData <- tabPanel(
       ),
       div(
         style = "vertical-align: top; float: left;",
-        htmlOutput("checkDataText")
+        htmlOutput("data_check_text")
       ),
-      br(),
-      br(),
-      br(),
-      br(),
       div(
         style = "vertical-align: top; float: left;",
-        htmlOutput("checkDataColumns01Text")
+        htmlOutput("data_check_binary_all01_text")
       ),
       div(
         style = "vertical-align: top; float: right;",
-        uiOutput("renderdeleteButtonColumns01")
+        uiOutput("data_remove_binary_all01_button")
       ),
       div(
         style = "vertical-align: top; float: right;",
-        htmlOutput("removedItemsText")
+        htmlOutput("data_check_binary_all01_confirmation")
       ),
       br(),
       div(
         style = "vertical-align: top; float: left;",
-        htmlOutput("checkGroupText")
+        htmlOutput("data_check_group_withNA_text")
       ),
       div(
         style = "vertical-align: top; float: right;",
-        uiOutput("renderdeleteButtonGroup")
+        uiOutput("data_remove_group_withNA_button")
       ),
       div(
         style = "vertical-align: top; float: right;",
-        htmlOutput("removedGroupText")
+        htmlOutput("data_check_group_withNA_confirmation")
       ),
+      br(),
+      br(),
       br(),
       br()
     ),
@@ -568,7 +555,7 @@ uiData <- tabPanel(
       verbatimTextOutput("data_group_summary"),
       h4("Criterion variable"),
       verbatimTextOutput("data_criterion_summary"),
-      h4("DIF matching variable"),
+      h4("Observed score"),
       verbatimTextOutput("data_DIFmatching_summary"),
       br(),
       br()
@@ -583,7 +570,7 @@ uiData <- tabPanel(
       # * Data exploration ####
       #------------------------------------------------------------------------------------#
       h3("Data exploration"),
-      p("Here you can explore uploaded dataset. Rendering of tables can take some time."),
+      p("Here you can explore uploaded dataset. The rendering of tables can take some time."),
       br(),
       #------------------------------------------------------------------------------------#
       # * Main dataset ####
@@ -616,9 +603,9 @@ uiData <- tabPanel(
       DT::dataTableOutput("critvar"),
       br(),
       #------------------------------------------------------------------------------------#
-      # * DIF matching variable vector ####
+      # * Observed score vector ####
       #------------------------------------------------------------------------------------#
-      h4("DIF matching variable vector"),
+      h4("Observed score vector"),
       DT::dataTableOutput("difvar"),
 
       br(),

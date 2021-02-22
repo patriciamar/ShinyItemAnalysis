@@ -25,7 +25,7 @@ output$totalscores_tooltip_sd <- renderUI({
     "sample standard deviation",
     span(
       class = "ttooltiptext",
-      withMathJax("$$\\textrm{SD}(X) = \\sqrt{\\frac{1}{n - 1}\\sum_{p = 1} (X_p - \\bar{X})^2}$$")
+      withMathJax("$$\\textrm{SD}(X) = \\sqrt{\\frac{1}{n - 1}\\sum_{p = 1}^n (X_p - \\bar{X})^2}$$")
     )
   )
 })
@@ -193,7 +193,7 @@ output$standardscores_tooltip_zscore <- renderUI({
   span(
     class = "ttooltip",
     style = "color: #2286bf",
-    "a linear transformation of total score",
+    "a linear transformation of the total score",
     span(
       class = "ttooltiptext",
       withMathJax("$$Z_p = \\frac{X_p - \\bar{X}}{\\textrm{SD}(X)}$$")
@@ -206,7 +206,7 @@ output$standardscores_tooltip_tscore <- renderUI({
   span(
     class = "ttooltip",
     style = "color: #2286bf",
-    "a linear transformation of Z-score",
+    "a linear transformation of the Z-score",
     span(
       class = "ttooltiptext",
       withMathJax("$$T_p = 10 Z_p + 50$$")

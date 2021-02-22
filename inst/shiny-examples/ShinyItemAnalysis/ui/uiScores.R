@@ -1,16 +1,16 @@
 uiSummary <-
   navbarMenu(
-    "Summary",
+    "Scores",
     # * TOTAL SCORES ####
     tabPanel("Total scores",
       value = "tot_scores",
-      h3("Analysis of total scores"),
-      p("Total score, also known as raw score or sum score, is the easiest measure of latent trait being measured.
-                      The total score is calculated as the sum of their item scores.
-                      In binary items, the total score corresponds to the total number of correct answers."),
+      h3("Total scores"),
+      p("Total score, also known as raw score or sum score, is the easiest measure of latent traits being measured.
+                      The total score is calculated as the sum of the item scores.
+                      In binary correct/false items, the total score corresponds to the total number of correct answers."),
       h4("Summary table"),
       p(
-        "Table below summarizes basic descriptive statistics for the total scores including number of respondents \\(n\\),
+        "The table below summarizes basic descriptive statistics for the total scores including the number of respondents \\(n\\),
                         minimum and maximum,", htmlOutput("totalscores_tooltip_mean", inline = TRUE), "median,",
         htmlOutput("totalscores_tooltip_sd", inline = TRUE), "\\(\\textrm{SD}\\), ",
         htmlOutput("totalscores_tooltip_skewness", inline = TRUE), "and",
@@ -30,9 +30,9 @@ uiSummary <-
           step = 1
         )
       )),
-      p("For selected cut-score, blue part of histogram shows respondents with total score
-                        above the cut-score, grey column shows respondents with total score equal
-                        to the cut-score and red part of histogram shows respondents below the cut-score."),
+      p("For a selected cut-score, the blue part of the histogram shows respondents with a total score
+                        above the cut-score, the grey column shows respondents with a total score equal
+                        to the cut-score and the red part of the histogram shows respondents below the cut-score."),
       plotlyOutput("totalscores_histogram"),
       downloadButton(outputId = "DB_totalscores_histogram", label = "Download figure"),
       br(),
@@ -52,9 +52,9 @@ uiSummary <-
                         scores of 80% of all respondents. ", br(),
         strong("Success rate"), "is the percentage of scores obtained, e.g., if the maximum points of test is equal to
                         20, minimum is 0, and individual score is 12 then success rate is \\(12 / 20 = 0.6\\), i.e., 60%.", br(),
-        strong("Z-score"), "or also standardized score is", uiOutput("standardscores_tooltip_zscore", inline = TRUE),
-        "with mean of 0 and and standard deviation of 1. ", br(),
-        strong("T-score"), "is ", uiOutput("standardscores_tooltip_tscore", inline = TRUE), " with a mean of 50 and standard
+        "The ", strong("Z-score"), ", also known as the standardized score is", uiOutput("standardscores_tooltip_zscore", inline = TRUE),
+        "with a mean of 0 and and a standard deviation of 1. ", br(),
+        "The ", strong("T-score"), "is ", uiOutput("standardscores_tooltip_tscore", inline = TRUE), " with a mean of 50 and standard
                         deviation of 10. "
       )),
       br(),

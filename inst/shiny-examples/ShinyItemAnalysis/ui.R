@@ -14,7 +14,7 @@ require(shinyjs)
 
 source("ui/uiAbout.R", local = T)
 source("ui/uiData.R", local = T)
-source("ui/uiSummary.R", local = T)
+source("ui/uiScores.R", local = T)
 source("ui/uiReliability.R", local = T)
 source("ui/uiValidity.R", local = T, encoding = "UTF-8")
 source("ui/uiTraditionalAnalysis.R", local = T)
@@ -142,7 +142,7 @@ ui <- tagList(
                     ShinyItemAnalysis
                     </div>
                     <div class = "footer-subtitle">
-                    Test and item analysis | Version 1.3.5
+                    Test and item analysis via Shiny | Version 1.3.5-1
                     </div>
                     <span style = "float:right">
                     <a href = "http://shinyitemanalysis.org/" id = "tooltipweb" target="_blank">
@@ -193,14 +193,14 @@ ui <- tagList(
     uiSummary,
 
     # %%%%%%%%%%%%%%%%%%%%%
-    # RELIABILITY ########
-    # %%%%%%%%%%%%%%%%%%%%%
-    uiReliability,
-
-    # %%%%%%%%%%%%%%%%%%%%%
     # VALIDITY ###########
     # %%%%%%%%%%%%%%%%%%%%%
     uiValidity,
+
+    # %%%%%%%%%%%%%%%%%%%%%
+    # RELIABILITY ########
+    # %%%%%%%%%%%%%%%%%%%%%
+    uiReliability,
 
     # %%%%%%%%%%%%%%%%%%%%%
     # ITEM ANALYSIS ######
