@@ -6,17 +6,17 @@ uiReports <-
     h4("Settings of report"),
     p(
       code("ShinyItemAnalysis"), " offers an option to download a report in HTML or PDF format. PDF report
-             creation requires latest version of", a("MiKTeX",
+             creation requires the latest version of", a("MiKTeX",
         href = "https://miktex.org/howto/install-miktex",
         target = "_blank"
       ),
       "(or other TeX distribution). If you don't have the latest installation, please, use the HTML report."
     ),
     p(
-      "There is an option to use customized settings. When checking the", strong("Customize settings"),
+      "There is also an option to use customized settings. When checking the", strong("Customize settings,"),
       "local settings will be offered and used for each selected section of the report. Otherwise, the settings
-             will be taken from sections of the application. You may also include your name into the report, as well as the name
-             of analyzed dataset. "
+             will be taken from sections made in the individual sections of the application.
+             You may also include your name into the report, and change the name of the analyzed dataset. "
     ),
     fluidRow(
       column(2, radioButtons(
@@ -39,7 +39,7 @@ uiReports <-
       ))
     ),
     h4("Content of report"),
-    p("Reports by default contain summary of total scores, table of standard scores, item analysis,
+    p("Reports by default contain a summary of total scores, table of standard scores, item analysis,
              distractor plots for each item and multinomial regression plots for each item. Other analyses
              can be selected below. "),
     tags$hr(),
@@ -205,17 +205,17 @@ uiReports <-
       column(
         2,
         radioButtons(
-          inputId = "irt_type_report",
+          inputId = "report_IRT_binary_model",
           label = "IRT model selection",
           choices = c(
             "None" = "none",
-            "Rasch" = "rasch",
-            "1PL" = "1pl",
-            "2PL" = "2pl",
-            "3PL" = "3pl",
-            "4PL" = "4pl"
+            "Rasch" = "Rasch",
+            "1PL" = "1PL",
+            "2PL" = "2PL",
+            "3PL" = "3PL",
+            "4PL" = "4PL"
           ),
-          selected = "1pl"
+          selected = "1PL"
         )
       )
     ),
@@ -421,7 +421,8 @@ uiReports <-
     p(
       strong("Recommendation: "), "Report generation can be faster and more reliable when you first check
              sections of intended contents. For example, if you wish to include a ", strong("3PL IRT"),
-      " model, you can first visit ", strong("IRT models"), "section and ", strong("3PL"), " subsection."
+      " model, you can first visit the ", strong("Dichotomous models"), " subsection of the ",
+      strong("IRT models"), "section and fit the ", strong("3PL IRT"), " model."
     ),
     uiOutput("report_na_alert"),
     br(),
