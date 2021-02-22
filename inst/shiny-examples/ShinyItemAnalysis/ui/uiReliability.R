@@ -1,43 +1,46 @@
 uiReliability <-
   navbarMenu(
     "Reliability",
-    #"Description",
+    # "Description",
     ## * RELIABILITY ####
-    #tabPanel("Reliability",
+    # tabPanel("Reliability",
     #  value = "reliability_description",
     #  h3("Reliability"),
-    #  p("We are typically interested in unobserved true score \\(T\\), but have available only the
-    #                    observed score \\(X\\) which is contaminated by some measurement error \\(e\\), such that
-    #                    \\(X = T + e\\) and error term is uncorrelated with the true score."),
+    #  p("We are typically interested in the unobserved true score \\(T\\), but normally have available only the
+    #                    observed score \\(X\\) which is contaminated by some measurement error \\(e\\), so that
+    #                    \\(X = T + e\\) and the error term is uncorrelated with the true score."),
     #  h4("Equation"),
-    #  p("Reliability is defined as squared correlation of the true and observed score"),
+    #  p("Reliability is defined as the squared correlation of the true and observed score"),
     #  withMathJax(),
     #  ("$$\\text{rel}(X) = \\text{cor}(T, X)^2$$"),
     #  p("Equivalently, reliability can be re-expressed as the ratio of the true score variance
-    #                    to total observed variance"),
+    #                    to the total observed variance"),
     #  withMathJax(),
     #  ("$$\\text{rel}(X) = \\frac{\\sigma^2_T}{\\sigma^2_X}$$"),
     #  br()
-    #),
-    #"----",
-    #"Used methods",
+    # ),
+    # "----",
+    # "Used methods",
     # * SPEARMAN-BROWN FORMULA ####
     tabPanel(
       "Spearman-Brown formula",
       h3("Spearman-Brown formula"),
       h4("Equation"),
-      p("For test with \\(I\\) items total score is calculated as \\(X = X_1 + ... + X_I\\).
-                        Let \\(\\text{rel}(X)\\) be the reliability of the test. For a test consisting of
-                        \\(I^*\\) items (equally precise, measuring the same construct),  that is for test which is
+      p("Let \\(\\text{rel}(X)\\) be the reliability of the test composed of \\(I\\) equally precise
+                        items measuring the same construct, \\(X = X_1 + ... + X_I\\).
+                        Then for a test consisting of
+                        \\(I^*\\) such items,  that is for a test which is
                         \\(m = \\frac{I^*}{I}\\) times longer/shorter, the reliability would be"),
       withMathJax(),
       ("$$\\text{rel}(X^*) = \\frac{m\\cdot \\text{rel}(X)}{1 + (m - 1)\\cdot\\text{rel}(X)}.$$"),
-      p("Spearman-Brown formula can be used to determine reliability of a test with similar items but of
-                        different number of items. It can also be used to determine necessary number of items to achieve
+      p("The Spearman-Brown formula can be used to determine reliability of a test with with a
+                        different number of equally precise items measuring the same construct.
+                        It can also be used to determine the necessary number of items to achieve
                         desired reliability."),
-      p("In calculations below", strong("reliability of original data"), "is by
-                        default set to value of Cronbach's \\(\\alpha\\) of the dataset currentli in use. ", strong("Number of items in original data"), "is
-                        by default set to number of items of dataset currently in use. "),
+      p("In the calculations below, ", strong("reliability of original data"), "is by
+                        default set to the value of Cronbach's \\(\\alpha\\) for the dataset currently in use. The ",
+                        strong("number of items in the original data"), "is
+                        by default set to the number of items in the dataset currently in use. "),
       fluidRow(
         column(
           3,
@@ -62,8 +65,8 @@ uiReliability <-
       ),
       # br(),
       h4("Estimate of reliability with different number of items"),
-      p("Here you can calculate estimate of reliability of a test consisting of different number of
-                        items (equally precise, measuring the same construct). "),
+      p("Here you can calculate an estimate of reliability for a test consisting of a different number of
+                        items. "),
       fluidRow(column(
         3,
         numericInput(
@@ -77,8 +80,8 @@ uiReliability <-
       uiOutput("reliability_SBformula_reliability_text"),
       # br(),
       h4("Necessary number of items for required level of reliability"),
-      p("Here you can calculate necessary number of items (equally precise, measuring the same construct)
-                        to gain required level of reliability. "),
+      p("Here you can calculate the necessary number of items
+                        to gain the required level of reliability. "),
       fluidRow(column(
         3,
         numericInput(
@@ -100,28 +103,26 @@ uiReliability <-
     tabPanel(
       "Split-half method",
       h3("Split-half method"),
-      p("Split-half method uses correlation between two subscores for estimation of reliability.
+      p("The split-half method uses the correlation between two subscores for an estimation of reliability.
                         The underlying assumption is that the two halves of the test (or even all items on the test) are
-                        equally precise and measure the same underlying construct. Spearman-Brown formula is then used to
+                        equally precise and measure the same underlying construct. The Spearman-Brown formula is then used to
                         correct the estimate for the number of items."),
       h4("Equation"),
-      p("For test with \\(I\\) items total score is calculated as \\(X = X_1 + ... + X_I\\).
-                        Let \\(X^*_1\\) and \\(X^*_2\\) be total scores calculated from items only in the first
-                        and second subsets. Then estimate of reliability is given by Spearman-Brown formula (Spearman, 1910; Brown, 1910)
+      p("For a test with \\(I\\) items total score is calculated as \\(X = X_1 + ... + X_I\\).
+                        Let \\(X^*_1\\) and \\(X^*_2\\) be total scores calculated from items found only in the first
+                        and second subsets. The estimate of reliability is then given by the Spearman-Brown formula (Spearman, 1910; Brown, 1910)
                         with \\(m = 2\\)."),
       withMathJax(),
       ("$$\\text{rel}(X) = \\frac{m\\cdot \\text{cor}(X^*_1, X^*_2)}{1 + (m - 1)\\cdot\\text{cor}(X^*_1, X^*_2)} =
                        \\frac{2\\cdot \\text{cor}(X^*_1, X^*_2)}{1 + \\text{cor}(X^*_1, X^*_2)}$$"),
       p(
-        "Below you can choose from different split-half approaches. ",
-        strong("First-last"), "method uses correlation between the first half of items and the second
-                        half of items.", strong("Even-odd"), "includes even items into the first subset and odd items
-                        into the second one. ", strong("Random"), "method performs random split of items, thus the
-                        resulting estimate may be different for each call. ", strong("Revelle's \\(\\beta\\)"), "is
-                        actually the worst split-half (Revelle, 1979). Estimate is here calculated as the lowest split-half
-                        reliability of by default 10,000 random splits. Finally, ", strong("Average"), "considers by default
-                        10,000 split halves and averages the resulting estimates. Number of split halves can be changed below.
-                        In case of odd number of items, first subset contains one more item than second one."
+        "You can choose below from different split-half approaches. The ",
+        strong("First-last"), "method uses a correlation between the first half of items and the second
+                        half of items. The ", strong("Even-odd"), "method places even numbered items into the first subset and odd numbered items
+                        into the second one. The ", strong("Random"), "method performs a random split of items, thus the
+                        resulting estimate may be different for each call. Out of a specified number of random splits (10,000 by default),
+                        the ", strong("Worst"), " method selects the lowest estimate and the ", strong("Average"), "method calculates the
+                        average. In the case of an odd number of items, the first subset contains one more item than the second one."
       ),
       uiOutput("reliability_splithalf_allpossible_text"),
       br(),
@@ -136,7 +137,7 @@ uiReliability <-
               "First-last" = "firstlast",
               "Even-odd" = "evenodd",
               "Random" = "random",
-              "Revelle's beta" = "worst",
+              "Worst" = "worst",
               "Average" = "average"
             ),
             selected = "First_last"
@@ -160,16 +161,16 @@ uiReliability <-
       ),
       h4("Reliability estimate with confidence interval"),
       p(
-        "Estimate of reliability for ", strong("First-last"), ", ", strong("Even-odd"), ", ", strong("Random"), "and",
-        strong("Revelle's \\(\\beta\\)"), "is calculated using Spearman-Brown formula. Confidence interval is based on
-                        confidence interval of correlation using delta method. Estimate of reliability for ", strong("Average"),
-        "method is mean value of sampled reliabilities and confidence interval is confidence interval of this mean. "
+        "The estimate of reliability for ", strong("First-last"), ", ", strong("Even-odd"), ", ", strong("Random"), "and",
+        strong("Worst"), "is calculated using the Spearman-Brown formula. The confidence interval is based on a
+        confidence interval of correlation using the delta method. The estimate of reliability for the ", strong("Average"),
+        "method is a mean value of sampled reliabilities and the confidence interval is the confidence interval of this mean. "
       ),
       uiOutput("reliability_splithalf_table"),
       br(),
       h4("Histogram of reliability estimates"),
-      p("Histogram is based on selected number of split halves estimates (10,000 by default).
-                        The current estimate is highlighted by red colour."),
+      p("A histogram is based on a selected number of split halves estimates (10,000 by default).
+                        The current estimate is highlighted by a red colour."),
       plotlyOutput("reliability_splithalf_histogram"),
       downloadButton("DB_reliability_splithalf_histogram"),
       br(),
@@ -181,17 +182,17 @@ uiReliability <-
     tabPanel("Cronbach's \\(\\alpha\\)",
       value = "cronbach",
       h3("Cronbach's \\(\\alpha\\)"),
-      p("Cronbach's \\(\\alpha\\) is an estimate of internal consistency of a psychometric test.
+      p("Cronbach's \\(\\alpha\\) is an estimate of the internal consistency of a psychometric test.
                         It is a function of the number of items in a test, the average covariance
                         between item-pairs, and the variance of the total score (Cronbach, 1951)."),
       h4("Equation"),
-      p("For test with \\(I\\) items where \\(X = X_1 + ... + X_I\\) is a total score,
+      p("For a test with \\(I\\) items where \\(X = X_1 + ... + X_I\\) is a total score,
                         \\(\\sigma^2_X\\) its variance and \\(\\sigma^2_{X_i}\\) variances of items,
                         Cronbach's \\(\\alpha\\) is given by following equation"),
       withMathJax(),
       ("$$\\alpha = \\frac{I}{I-1}\\left(1 - \\frac{\\sum_{i = 1}^I \\sigma^2_{X_i}}{\\sigma^2_X}\\right)$$"),
       h4("Estimate with confidence interval"),
-      p("Confidence interval is based on F distribution as proposed by Feldt et al. (1987)."),
+      p("A confidence interval is based on F distribution as proposed by Feldt et al. (1987)."),
       tableOutput("reliability_cronbachalpha_table"),
       # h3("McDonald's \\(\\omega\\)"),
       # p(),
@@ -229,8 +230,8 @@ uiReliability <-
         The left plot illustrates the variability in ratings for the whole dataset outshading the data which would be lost
         due to range-restriction. The right plot provides the estimates of the calculated inter-rater reliability estimates,
         defined by intraclass corelation in the simplest model including the ratee effect only.
-        The ", strong("number of bootstrap samples"), "is used to calculate the 95% confidence interval of the
-        restricted-range reliability estimate plotted in the right figure."
+        The estimates are accompanied by a bootstrapped 95% confidence interval; see the settings section for further details
+        on used number of bootstrapped samples."
       ),
       fluidRow(
         column(
@@ -255,16 +256,6 @@ uiReliability <-
         ),
         column(
           2,
-          numericInput(
-            inputId = "reliability_restricted_bootsamples",
-            label = "Bootstrap samples",
-            value = 10,
-            min = 3,
-            max = 1000
-          )
-        ),
-        column(
-          2,
           actionButton(
             inputId = "reliability_restricted_clear",
             label = "Clear everything",
@@ -280,8 +271,10 @@ uiReliability <-
     padding-bottom: 15px;"
       ),
       fluidRow(
-        column(6,
-               downloadButton("DB_reliability_restricted_caterpillarplot", label = "Download figure")),
+        column(
+          6,
+          downloadButton("DB_reliability_restricted_caterpillarplot", label = "Download figure")
+        ),
         column(
           6,
           downloadButton("DB_reliability_restricted_iccplot", label = "Download figure"),
@@ -291,7 +284,7 @@ uiReliability <-
       br(),
       textOutput("icc_text"),
       h4("Selected R code"),
-      code(HTML("library(ggplot2)<br>library(purrr)<br>library(ShinyItemAnalysis)<br><br>#&nbsp;loading&nbsp;data<br>data(AIBS,&nbsp;package&nbsp;=&nbsp;\"ShinyItemAnalysis\")<br><br>#&nbsp;estimate&nbsp;reliability&nbsp;with&nbsp;ICC&nbsp;for&nbsp;complete&nbsp;AIBS&nbsp;dataset<br>ICCrestricted(Data&nbsp;=&nbsp;AIBS,&nbsp;case&nbsp;=&nbsp;\"ID\",&nbsp;var&nbsp;=&nbsp;\"Score\",&nbsp;rank&nbsp;=&nbsp;\"ScoreRankAdj\")<br><br>#&nbsp;estimate&nbsp;range-restricted&nbsp;ICC<br>ICCrestricted(Data&nbsp;=&nbsp;AIBS,&nbsp;case&nbsp;=&nbsp;\"ID\",&nbsp;var&nbsp;=&nbsp;\"Score\",&nbsp;rank&nbsp;=&nbsp;\"ScoreRankAdj\",<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sel&nbsp;=&nbsp;0.90,&nbsp;dir&nbsp;=&nbsp;\"top\")<br><br>#&nbsp;caterpillar&nbsp;plot<br>AIBS&nbsp;%>%<br>&nbsp;&nbsp;ggplot(aes(x&nbsp;=&nbsp;ScoreRankAdj,&nbsp;y&nbsp;=&nbsp;Score,&nbsp;group&nbsp;=&nbsp;ID))&nbsp;+<br>&nbsp;&nbsp;geom_line(col&nbsp;=&nbsp;\"gray\")&nbsp;+<br>&nbsp;&nbsp;geom_point(shape&nbsp;=&nbsp;1,&nbsp;size&nbsp;=&nbsp;1.5)&nbsp;+<br>&nbsp;&nbsp;stat_summary(fun&nbsp;=&nbsp;mean,&nbsp;fun.args&nbsp;=&nbsp;list(na.rm&nbsp;=&nbsp;TRUE),&nbsp;geom&nbsp;=&nbsp;\"point\",<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;col&nbsp;=&nbsp;\"red\",&nbsp;shape&nbsp;=&nbsp;5,&nbsp;size&nbsp;=&nbsp;2.5,&nbsp;stroke&nbsp;=&nbsp;.35)&nbsp;+<br>&nbsp;&nbsp;labs(x&nbsp;=&nbsp;\"Ratee&nbsp;rank\",&nbsp;y&nbsp;=&nbsp;\"Rating&nbsp;(score)\")&nbsp;+<br>&nbsp;&nbsp;coord_cartesian(ylim&nbsp;=&nbsp;c(1,&nbsp;5))&nbsp;+<br>&nbsp;&nbsp;theme_app()<br><br>#&nbsp;estimate&nbsp;all&nbsp;possible&nbsp;top-restricted&nbsp;subsets<br>all_top_restricted&nbsp;<-&nbsp;map_dfr(2:72,<br>&nbsp;&nbsp;~&nbsp;ICCrestricted(Data&nbsp;=&nbsp;AIBS,&nbsp;case&nbsp;=&nbsp;\"ID\",&nbsp;var&nbsp;=&nbsp;\"Score\",<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rank&nbsp;=&nbsp;\"ScoreRankAdj\",&nbsp;sel&nbsp;=&nbsp;.x,&nbsp;nsim&nbsp;=&nbsp;10))<br>all_top_restricted<br><br>#&nbsp;or&nbsp;alternatively,&nbsp;in&nbsp;base&nbsp;R:<br>base_way&nbsp;<-&nbsp;lapply(2:72,&nbsp;function(x)&nbsp;{<br>&nbsp;&nbsp;ICCrestricted(Data&nbsp;=&nbsp;AIBS,&nbsp;case&nbsp;=&nbsp;\"ID\",&nbsp;var&nbsp;=&nbsp;\"Score\",&nbsp;rank&nbsp;=&nbsp;\"ScoreRankAdj\",<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sel&nbsp;=&nbsp;x,&nbsp;nsim&nbsp;=&nbsp;10)})<br>do.call(rbind.data.frame,&nbsp;base_way)<br><br>#&nbsp;plot<br>all_top_restricted&nbsp;%>%<br>&nbsp;&nbsp;ggplot(aes(prop_sel,&nbsp;ICC1,&nbsp;ymin&nbsp;=&nbsp;ICC1_LCI,&nbsp;ymax&nbsp;=&nbsp;ICC1_UCI))&nbsp;+<br>&nbsp;&nbsp;geom_pointrange()&nbsp;+&nbsp;scale_x_continuous(labels&nbsp;=&nbsp;scales::percent)&nbsp;+<br>&nbsp;&nbsp;labs(x&nbsp;=&nbsp;(\"Proportion&nbsp;of&nbsp;top&nbsp;ratees\"),&nbsp;y&nbsp;=&nbsp;\"Reliability\")&nbsp;+<br>&nbsp;&nbsp;coord_cartesian(ylim&nbsp;=&nbsp;c(0,&nbsp;1),&nbsp;xlim&nbsp;=&nbsp;c(0,&nbsp;1))&nbsp;+<br>&nbsp;&nbsp;theme_app()<br>")),
+      code(includeText("sc/reliability/restr_range.R")),
       br()
     )
   )

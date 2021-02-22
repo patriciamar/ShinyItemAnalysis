@@ -49,7 +49,7 @@ output$reliability_SBformula_reliability_text <- renderUI({
   rel_new <- psychometric::SBrel(Nlength = m, rxx = rel_ori)
 
   txt <- paste(
-    "Reliability of test with", ite_new,
+    "Reliability of a test with", ite_new,
     ifelse(ite_new == 1, "item", "items"),
     "would be <b>",
     round(rel_new, 3), "</b>"
@@ -145,9 +145,9 @@ output$reliability_splithalf_text <- renderUI({
     txt <- NULL
   } else {
     txt <- paste(
-      "First subset contains items: <b>",
+      "The first subset contains: <b>",
       paste(item_names()[items1], collapse = ", "), "</b> <br>",
-      "Second subset contains items: <b>",
+      "The second subset contains: <b>",
       paste(item_names()[items2], collapse = ", "), "</b> <br>"
     )
   }
@@ -178,7 +178,7 @@ output$reliability_splithalf_allpossible_text <- renderUI({
   k <- ceiling(n / 2)
   num <- ifelse(k == n / 2, choose(n, k) / 2, choose(n, k))
 
-  txt <- paste("<b>Note:</b> For dataset with <b>", n, "items</b>,
+  txt <- paste("<b>Note:</b> For a dataset with <b>", n, "items</b>,
                there are <b>", num, "</b> possible split-halves")
 
   HTML(txt)
@@ -373,10 +373,10 @@ output$reliability_icc_table <- renderTable({
 # ** Usable data definition ######
 aibs_long <- reactive({ # TODO general
   validate(need(
-    input$dataSelect == "AIBS_ShinyItemAnalysis",
+    input$data_toydata == "AIBS_ShinyItemAnalysis",
     "At this moment, the method is compatible with the 'AIBS Grant Peer Review Scoring' dataset only. "
   ),
-  errorClass = "error-validation"
+  errorClass = "validation-error"
   )
   continuous()
 })
@@ -405,7 +405,7 @@ observe({
 # in addition, user request should be fulfilled without any unsolicited actions, such as slider change
 
 # observeEvent(c(
-#   input$dataSelect,
+#   input$data_toydata,
 #   input$reliability_restricted_clear,
 #   input$reliability_restricted_direction,
 #   input$reliability_restricted_bootsamples
@@ -437,8 +437,8 @@ reliability_restricted_caterpillarplot_input <- reactive({
       shape = 5, size = 2.5, stroke = .35
     ) +
     scale_alpha_discrete(range = c(.3, 1), drop = FALSE) +
-    labs(x = "Rated subject/object rank", y = "Rating (score)") +
     coord_cartesian(ylim = c(1, 5)) +
+    labs(x = "Rated subject/object rank", y = "Rating (score)") + 
     theme_app()
 })
 
@@ -471,7 +471,7 @@ reliability_restricted_res <- reactiveValues(vals = NULL) # init ICCs bank
 observeEvent(
   # do not depend on "reliability_restricted_res"
   c(
-    input$dataSelect,
+    input$data_toydata,
     input$reliability_restricted_clear,
     input$reliability_restricted_proportion,
     input$reliability_restricted_direction,
@@ -552,7 +552,11 @@ reliability_restricted_iccplot_input <- reactive({
     ggplot(aes(prop_sel, ICC1, ymin = ICC1_LCI, ymax = ICC1_UCI, alpha = hl)) + # TODO general
     geom_linerange() + # separate as plotly messes up otherwise
     geom_point(aes(text = paste0(
-      "Proportion of ", dir, " subjects/objects: ", scales::percent(prop_sel, .01), "\n",
+      ifelse(prop_sel == 1, "Complete range",
+        paste0(
+          "Proportion of ", dir, " subjects/objects: ", scales::percent(prop_sel, .01)
+        )
+      ), "\n",
       "ICC1: ", round(ICC1, 2), "\n",
       "LCI: ", round(ICC1_LCI, 2), "\n",
       "UCI: ", round(ICC1_UCI, 2)
