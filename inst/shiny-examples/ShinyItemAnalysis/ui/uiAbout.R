@@ -16,7 +16,7 @@ uiAbout <- tabPanel("",
     "and",
     a("shiny. ", href = "http://www.rstudio.com/shiny/", target = "_blank"),
     "You can easily start using the application with the default toy dataset. You may also select from a number of other
-    toy datasets or upload your own one in the ", strong("Data"), " section. Offered methods include:"
+    toy datasets or upload your own in the ", strong("Data"), " section. Offered methods include:"
   ),
   tags$ul(
     tags$li("Exploration of total and standard scores in the ", strong("Summary"), "section"),
@@ -28,8 +28,8 @@ uiAbout <- tabPanel("",
     tags$li("Detection of differential item functioning in the ", strong("DIF/Fairness"), "section")
   ),
   p("All graphical outputs and selected tables can be downloaded via the download button. Moreover, you can automatically
-                    generate HTML or PDF report in the ", strong("Reports"), "section. All offered analyses
-                    are complemented by selected R code which is ready to be copy and pasted into your R console, hence
+                    generate a HTML or PDF report in the ", strong("Reports"), "section. All offered analyses
+                    are complemented by selected R codes which are ready to be copied and pasted into your R console, therefore
                     a similar analysis can be run and modified in R."),
   p("Visit the ", a(strong("www.ShinyItemAnalysis.org"),
     href = "http://www.shinyitemanalysis.org",
@@ -42,12 +42,12 @@ uiAbout <- tabPanel("",
   #------------------------------------------------------------------------------------#
   h4("News"),
   p(
-    "New paper on range-restricted inter-rater reliability accepted for publication in JRSS-A (Erosheva, Martinkova, & Lee).
+    "A new paper on range-restricted inter-rater reliability has been accepted for publication in JRSS-A (Erosheva, Martinkova, & Lee).
     To try examples interactively, set the", code("AIBS"), "toy dataset in the ", strong("Data"), "section  by clicking on
     the menu in the upper left corner and go to the ",
     strong("Reliability/Restricted range"), "section. ",
     br(),
-    "New papers on differential item functioning published in Learning and Instruction ",
+    "New papers on differential item functioning have been published in Learning and Instruction ",
     a("(Martinkova, Hladka, & Potuznikova, 2020)",
       href = "https://doi.org/10.1016/j.learninstruc.2019.101286",
       target = "_blank", .noWS = "outside"
@@ -57,7 +57,7 @@ uiAbout <- tabPanel("",
       href = "https://doi.org/10.32614/RJ-2020-014",
       target = "_blank", .noWS = "outside"
     ),
-    ". To try examples interactively, set the", code("Learning to Learn 9"), "toy dataset in the ", strong("Data"), " section
+    ". To try these examples interactively, set the", code("Learning to Learn 9"), "toy dataset in the ", strong("Data"), " section
     by clicking on the menu in the upper left corner and go to the ",
     strong("DIF/Fairness/Generalized logistic"), "section. ",
     .noWS = "before-end"),
@@ -71,10 +71,10 @@ uiAbout <- tabPanel("",
       6,
       h4("Availability"),
       p(
-        "Application can be downloaded as an R package from ",
+        "An application can be downloaded as an R package from ",
         a("CRAN.", href = "https://CRAN.R-project.org/package=ShinyItemAnalysis", target = "_blank"),
         br(),
-        "It is also available online at ",
+        "It is also available online at the ",
         a("Czech Academy of Sciences ",
           href = "https://shiny.cs.cas.cz/ShinyItemAnalysis/",
           target = "_blank"
@@ -97,15 +97,15 @@ uiAbout <- tabPanel("",
     column(
       6, h4("Versions"),
       p(
-        "Current",
+        "The current",
         a("CRAN", href = "https://CRAN.R-project.org/package=ShinyItemAnalysis", target = "_blank"),
         "version is 1.3.5.",
         br(),
-        "Version available",
-        a("online", href = "https://shiny.cs.cas.cz/ShinyItemAnalysis/", target = "_blank"), "is 1.3.5.",
+        "The version available",
+        a("online", href = "https://shiny.cs.cas.cz/ShinyItemAnalysis/", target = "_blank"), "is 1.3.5-1.",
         br(),
         "The newest development version available on ",
-        a("GitHub", href = "https://github.com/patriciamar/ShinyItemAnalysis", target = "_blank"), "is 1.3.5.",
+        a("GitHub", href = "https://github.com/patriciamar/ShinyItemAnalysis", target = "_blank"), "is 1.3.5-1.",
       )
     )
   ),
