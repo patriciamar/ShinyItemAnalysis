@@ -6904,23 +6904,11 @@ button.close {
 .panel-info .panel-title {
   color: #fff;
 }
-.shiny-output-error-warning_data_missing {
+.shiny-output-error-validation-warning {
     color: orange;
 }
-.shiny-output-error-error_key_missing {
+.shiny-output-error-validation-error {
     color: red;
-}
-.shiny-output-error-warning_group_missing {
-    color: orange;
-}
-.shiny-output-error-error_dimension {
-    color: red;
-}
-.shiny-output-error-warning_criterion_variable_missing {
-    color: orange;
-}
-.shiny-output-error-validation {
-	color: red;
 }
 .js-irs-blue .irs-single, .js-irs-blue .irs-bar-edge, .js-irs-blue .irs-bar {
   background: blue;
