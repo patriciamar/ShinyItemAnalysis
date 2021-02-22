@@ -1,12 +1,11 @@
-#' Plot Wright map using ggplot
+#' Plot Wright map using \code{ggplot2}
 #'
 #' @aliases ggWrightMap
 #'
 #' @description This function allows to generate Wright map (also called
 #'   item-person map) using \code{ggplot()} function from the \pkg{ggplot2}
-#'   package and \code{plot_grid()} function from the \pkg{cowplot} package.
-#'   Wright map is used to display histogram of factor scores and the item
-#'   difficulty parameters estimated by the Rasch IRT model.
+#'   package. Wright map is used to display histogram of factor scores and the
+#'   item difficulty parameters estimated by the Rasch IRT model.
 #'
 #' @param theta numeric: vector of ability estimates.
 #' @param b numeric: vector of difficulty estimates.
@@ -17,21 +16,24 @@
 #' @param ylab.theta character: description of y-axis for the histogram.
 #' @param ylab.b character: description of y-axis for the plot of difficulty
 #'   estimates.
+#' @param rel_widths numeric: vector of length 2 specifying ratio of "facet's"
+#'   widths.
 #'
-#' @inheritDotParams cowplot::plot_grid rel_widths
+#' @importFrom ggplot2 ggplotGrob
+#' @importFrom grid grid.newpage gTree grid.draw
 #'
-#' @author
-#' Adela Hladka \cr
-#' Institute of Computer Science of the Czech Academy of Sciences \cr
-#' Faculty of Mathematics and Physics, Charles University \cr
-#' \email{hladka@@cs.cas.cz} \cr
+#' @author Adela Hladka \cr Institute of Computer Science of the Czech Academy
+#'   of Sciences \cr Faculty of Mathematics and Physics, Charles University \cr
+#'   \email{hladka@@cs.cas.cz} \cr
 #'
-#' Patricia Martinkova \cr
-#' Institute of Computer Science of the Czech Academy of Sciences \cr
-#' \email{martinkova@@cs.cas.cz} \cr
+#'   Jan Netik \cr Institute of Computer Science of the Czech Academy
+#'   of Sciences \cr
 #'
-#' @references
-#' Wright, B. & Stone, M. (1979). Best test design. MESA Press: Chicago, IL
+#'   Patricia Martinkova \cr Institute of Computer Science of the Czech Academy
+#'   of Sciences \cr \email{martinkova@@cs.cas.cz} \cr
+#'
+#' @references Wright, B. & Stone, M. (1979). Best test design. MESA Press:
+#'   Chicago, IL
 #'
 #' @examples
 #' library(mirt)
@@ -59,14 +61,58 @@
 #' )
 #' @export
 
-ggWrightMap <- function(theta, b, binwidth = 0.5, color = "blue", size = 15, item.names,
-                        ylab.theta = "Respondent latent trait", ylab.b = "Item difficulty",
-                        ...) {
+ggWrightMap <- function(theta, b, binwidth = 0.5, color = "blue", size = 15,
+                        item.names, ylab.theta = "Respondent latent trait",
+                        ylab.b = "Item difficulty", rel_widths = c(1, 1)) {
+  plts <- gg_wright_internal(
+    theta, b, binwidth, color, size, item.names, ylab.theta, ylab.b, rel_widths
+  )
+
+  # arrange plots using bare grid
+  grid.newpage()
+
+  grobs <- lapply(plts, ggplotGrob)
+
+  new_layout <- data.frame(list(
+    t = c(1, 1),
+    l = c(1, 2),
+    b = c(1, 1),
+    r = c(1, 2),
+    z = c(1, 2),
+    clip = rep("off", 2),
+    name = rep("arrange", 2)
+  ))
+
+  # make gtable
+  g <- gTree(
+    grobs = grobs, layout = new_layout, widths = unit(rel_widths, "null"),
+    heights = unit(1, "null"), respect = FALSE, name = "arrange", rownames = NULL,
+    colnames = NULL, vp = NULL, cl = "gtable"
+  )
+
+  grid.draw(g)
+  invisible(g)
+}
+
+
+
+#' ggWrightMap internals
+#'
+#' @keywords internal
+#' @noRd
+gg_wright_internal <- function(theta, b, binwidth = 0.5, color = "blue",
+                               size = 15, item.names,
+                               ylab.theta = "Respondent latent trait",
+                               ylab.b = "Item difficulty",
+                               rel_widths = c(1, 1)) {
   if (missing(theta)) {
     stop("'theta' needs to be specified", call. = FALSE)
   }
   if (missing(b)) {
     stop("'theta' needs to be specified", call. = FALSE)
+  }
+  if (length(rel_widths) != 2) {
+    stop("'rel_widths' needs to be a numeric vector of length 2, e.g., 'c(1, 2)'.", call. = FALSE)
   }
   if (missing(item.names)) {
     ITEM.NAMES <- 1:length(b)
@@ -135,5 +181,5 @@ ggWrightMap <- function(theta, b, binwidth = 0.5, color = "blue", size = 15, ite
       axis.ticks.x = element_blank()
     )
 
-  plot_grid(g1, g2, ...)
+  list(g1, g2)
 }

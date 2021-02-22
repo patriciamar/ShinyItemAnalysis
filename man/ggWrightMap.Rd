@@ -2,7 +2,7 @@
 % Please edit documentation in R/ggWrightMap.R
 \name{ggWrightMap}
 \alias{ggWrightMap}
-\title{Plot Wright map using ggplot}
+\title{Plot Wright map using \code{ggplot2}}
 \usage{
 ggWrightMap(
   theta,
@@ -13,7 +13,7 @@ ggWrightMap(
   item.names,
   ylab.theta = "Respondent latent trait",
   ylab.b = "Item difficulty",
-  ...
+  rel_widths = c(1, 1)
 )
 }
 \arguments{
@@ -34,20 +34,14 @@ ggWrightMap(
 \item{ylab.b}{character: description of y-axis for the plot of difficulty
 estimates.}
 
-\item{...}{
-  Arguments passed on to \code{\link[cowplot:plot_grid]{cowplot::plot_grid}}
-  \describe{
-    \item{\code{rel_widths}}{(optional) Numerical vector of relative columns widths. For example, in a two-column
-grid, \code{rel_widths = c(2, 1)} would make the first column twice as wide as the
-second column.}
-  }}
+\item{rel_widths}{numeric: vector of length 2 specifying ratio of "facet's"
+widths.}
 }
 \description{
 This function allows to generate Wright map (also called
   item-person map) using \code{ggplot()} function from the \pkg{ggplot2}
-  package and \code{plot_grid()} function from the \pkg{cowplot} package.
-  Wright map is used to display histogram of factor scores and the item
-  difficulty parameters estimated by the Rasch IRT model.
+  package. Wright map is used to display histogram of factor scores and the
+  item difficulty parameters estimated by the Rasch IRT model.
 }
 \examples{
 library(mirt)
@@ -75,15 +69,17 @@ ggWrightMap(theta, b,
 )
 }
 \references{
-Wright, B. & Stone, M. (1979). Best test design. MESA Press: Chicago, IL
+Wright, B. & Stone, M. (1979). Best test design. MESA Press:
+  Chicago, IL
 }
 \author{
-Adela Hladka \cr
-Institute of Computer Science of the Czech Academy of Sciences \cr
-Faculty of Mathematics and Physics, Charles University \cr
-\email{hladka@cs.cas.cz} \cr
+Adela Hladka \cr Institute of Computer Science of the Czech Academy
+  of Sciences \cr Faculty of Mathematics and Physics, Charles University \cr
+  \email{hladka@cs.cas.cz} \cr
 
-Patricia Martinkova \cr
-Institute of Computer Science of the Czech Academy of Sciences \cr
-\email{martinkova@cs.cas.cz} \cr
+  Jan Netik \cr Institute of Computer Science of the Czech Academy
+  of Sciences \cr
+
+  Patricia Martinkova \cr Institute of Computer Science of the Czech Academy
+  of Sciences \cr \email{martinkova@cs.cas.cz} \cr
 }
