@@ -163,7 +163,7 @@ output$itemanalysis_table_text <- renderUI({
   num.groups <- input$itemanalysis_DDplot_groups_slider
   withMathJax(HTML(paste0(
     "<b>Explanation:<br>Diff.</b>&nbsp;",
-    "&ndash; item difficulty estimated as average item score divided by its range, ",
+    "&ndash; item difficulty estimated as an average item score divided by its range, ",
     "<b>Avg. score</b>&nbsp;",
     "&ndash; average item score, ",
     "<b>SD</b>&nbsp;",
@@ -183,21 +183,21 @@ output$itemanalysis_table_text <- renderUI({
     "<b>RIT</b>&nbsp;",
     "&ndash; Pearson correlation between item and total score, ",
     "<b>RIR</b>&nbsp;",
-    "&ndash; Pearson correlation between item and rest of items, ",
+    "&ndash; Pearson correlation between item and rest of the items, ",
     "<b>Rel.</b>&nbsp;",
-    "&ndash; item reliability index, see Allen and Yen (1979; Ch. 6.4), ",
+    "&ndash; item reliability index, ",
     "<b>Rel. drop</b>&nbsp;",
     "&ndash; as previous, but scored without the respective item, ",
     "<b>I-C cor.</b>&nbsp;",
     "&ndash; item-criterion correlation, ",
     "<b>Val. index</b>&nbsp;",
-    "&ndash; item validity index, see Allen and Yen (1979; Ch. 6.4), ",
+    "&ndash; item validity index, ",
     "<b>$\\alpha$ drop </b>&nbsp;",
     "&ndash; Cronbach\'s $\\alpha$ of test without given item (the value for the test as a whole is presented in the note below), ",
     "<b>Missed</b>&nbsp;",
     "&ndash; percentage of missed responses on the particular item, ",
     "<b>Not-reached</b>&nbsp;",
-    "&ndash; percentage of respondents that did not reached the item nor the subsequent ones"
+    "&ndash; percentage of respondents that did not reach the item nor the subsequent ones"
   )))
 })
 
@@ -208,7 +208,7 @@ itemanalysis_table <- reactive({
   u <- input$itemanalysis_DDplot_range_slider[[2]]
 
   item_crit_cor <- if (any(crit_wo_val() == "missing", na.rm = TRUE)) {
-    NULL
+    "none"
   } else {
     unlist(crit_wo_val())
   }
@@ -223,7 +223,7 @@ itemanalysis_table <- reactive({
 
   tab <- tab[, !(colnames(tab) %in% c("Prop.max.score"))]
 
-  if (is.null(item_crit_cor)) {
+  if (item_crit_cor[1] == "none") {
     colnames(tab) <- c(
       "Diff.", "Avg. score", "SD", "Min", "Max", "obsMin", "obsMax",
       "gULI", "ULI", "RIT", "RIR",
@@ -240,15 +240,14 @@ itemanalysis_table <- reactive({
       "Alpha drop",
       "Missed [%]", "Not-reached [%]"
     )
-
   }
+
   remove_gULI <- (k == 3 & l == 1 & u == 3)
   if (remove_gULI) {
     tab <- tab[, !(colnames(tab) %in% "gULI")]
   }
 
   row.names(tab) <- item_names()
-
   tab
 })
 
@@ -374,33 +373,29 @@ output$distractor_groups_alert <- renderUI({
 output$distractor_text <- renderUI({
   txt1 <- paste("Respondents are divided into ")
   txt2 <- paste("<b>", input$distractor_group_slider, "</b>")
-  txt3 <- paste("groups by their total score. Subsequently, we display proportion
-                 of respondents in each group who selected given answer (correct answer or distractor).
-                 The correct answer should be more often selected by respondents with higher total score
-                 than by those with lower total score, i.e.,")
+  txt3 <- paste("groups by their total score. For each group, we subsequently display a proportion
+                 of respondents who have selected a given response.
+                 In case of multiple-choice items, the correct answer should be selected more often by respondents with a higher total score
+                 than by those with lower total scores, i.e.,")
   txt4 <- paste("<b>", "solid line should be increasing.", "</b>")
-  txt5 <- paste("The distractor should work in opposite direction, i.e.,")
+  txt5 <- paste("The distractor should work in the opposite direction, i.e.,")
   txt6 <- paste("<b>", "dotted lines should be decreasing.", "<b>")
   HTML(paste(txt1, txt2, txt3, txt4, txt5, txt6))
 })
 
 # ** Distractor plot ######
 distractor_plot <- reactive({
-  num.group <- input$distractor_group_slider
-  a <- nominal()
-  k <- key()
   i <- input$distractor_item_slider
-  sc <- total_score()
-  multiple.answers <- c(input$distractor_type == "Combinations")
 
   plotDistractorAnalysis(
-    Data = a, key = k, num.group = num.group,
+    Data = nominal(),
+    key = key(),
+    num.group = input$distractor_group_slider,
     item = i,
     item.name = item_names()[i],
-    multiple.answers = multiple.answers,
-    criterion = sc
-  ) +
-    xlab("Group by total score")
+    multiple.answers = input$distractor_type == "Combinations",
+    criterion = total_score()
+  ) + xlab("Group by total score")
 })
 
 # ** Output distractors plot ######

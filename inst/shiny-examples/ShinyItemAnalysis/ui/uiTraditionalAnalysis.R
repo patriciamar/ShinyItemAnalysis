@@ -6,22 +6,22 @@ uiTraditionalAnalysis <- navbarMenu(
   tabPanel(
     "Traditional item analysis",
     h3("Traditional item analysis"),
-    p("Traditional item analysis uses proportions of correct answers or correlations to estimate item properties."),
+    p("Traditional item analysis uses proportions and correlations to estimate item properties."),
     h4("Item difficulty/discrimination plot"),
     p(
       "Displayed is difficulty (red) and discrimination (blue) for all items. Items are ordered by difficulty. ", br(),
       strong("Difficulty"), " of the item is by default estimated as its average scaled score, i.e. average item score
-                                               divided by its range. Below you can change the estimate of difficulty to average score of the item. For binary
-                                               items both estimates are equivalent and can be interpreted as percent of respondents who answered the item correctly. ",
+                                               divided by its range. Below you can change the estimate of difficulty to the average score of the item. For binary
+                                               items both estimates are equivalent and can be interpreted as the percentage of respondents who answered the item correctly. ",
       br(),
-      strong("Discrimination"), " is by default estimated as difference in (scaled) item score
-                                               in upper and lower third of respondents (Upper-Lower Index, ULI). ULI can be customized by changing number of
+      strong("Discrimination"), " is by default estimated as the difference in (scaled) item score
+                                               in the upper and lower third of the respondents (Upper-Lower Index, ULI). ULI can be customized by changing the number of
                                                groups and by changing which groups should be compared (see also Martinkova, Stepanek et al., 2017). Other
-                                               options for discrimination index include coRrelation between Item and Total score (RIT index) and coRrelation
-                                               between Item and total score based on Rest of the items (RIR index). By rule of thumb, all items with discrimination
+                                               options for the discrimination index include coRrelation between Item and Total score (RIT index) and coRrelation
+                                               between Item and total score based on Rest of the items (RIR index). By a rule of thumb, all items with a discrimination
                                                lower than 0.2 (threshold in the plot), should be checked for content. Lower discrimination is excpectable
-                                               in case of very easy or very difficult items, or in ULI based on more homogeneous groups
-                                               (such as 4th and last fifth). Threshold may be adjusted for these cases or may be set to 0."
+                                               in the case of very easy or very difficult items, or in ULI based on more homogeneous groups
+                                               (such as 4th and last fifth). A threshold may be adjusted for these cases or may be set to 0."
     ),
     br(),
     fluidRow(
@@ -95,7 +95,7 @@ uiTraditionalAnalysis <- navbarMenu(
     htmlOutput("itemanalysis_DDplot_text"),
     plotlyOutput("itemanalysis_DDplot"),
     downloadButton("itemanalysis_DDplot_download", label = "Download figure"),
-    br(), br(), HTML("<div class='pb' style='page-break-after:always'></div>"),
+    br(), br(),
     h4("Traditional item analysis table"),
     withMathJax(),
     uiOutput("itemanalysis_table_text"),
@@ -116,14 +116,14 @@ uiTraditionalAnalysis <- navbarMenu(
 
   # * DISTRACTORS ####
   tabPanel(
-    "Distractors",
-    h3("Distractor analysis"),
-    p("In distractor analysis, we are interested in how test takers select the correct answer and how the distractors
-                      (wrong answers) were able to function effectively by drawing the test takers away from the correct answer."),
-    h4("Distractors plot"),
+    "Item response curves",
+    h3("Empirical item response curves"),
+    p("Empirical item response curves describe how test takers from different ability groups select available responses. In case of multiple-choice items
+       these curves can show how the distractors (wrong answers) were able to function effectively by drawing the test takers away from the correct answer."),
+    h4("Empirical item response curves / Distractors plot"),
     htmlOutput("distractor_text"),
-    p("With option ", strong("Combinations"), "all item selection patterns are plotted (e.g., AB, ACD, BC). With option",
-                      strong("Distractors"), "answers are splitted into distractors (e.g., A, B, C, D)."),
+    p("With the option ", strong("Combinations"), "all item selection patterns are plotted (e.g., AB, ACD, BC). With the option",
+                      strong("Distractors"), "answers are split among the remaining incorect answers (e.g., A, B, C, D)."),
     fluidPage(
       div(
         class = "input-slider",
