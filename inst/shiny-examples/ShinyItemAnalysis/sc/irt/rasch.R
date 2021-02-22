@@ -1,0 +1,66 @@
+library(mirt)
+library(ShinyItemAnalysis)
+
+# loading data
+data(GMAT, package = "difNLR")
+
+# fitting Rasch model
+fit <- mirt(GMAT[, 1:20], model = 1, itemtype = "Rasch", SE = TRUE)
+
+# item characteristic curves
+plot(fit, type = "trace", facet_items = FALSE)
+# test score curve
+plot(fit)
+# item information curves
+plot(fit, type = "infotrace", facet_items = FALSE)
+# test information curve
+plot(fit, type = "infoSE")
+
+# estimated parameters
+coef(fit, simplify = TRUE) # classical intercept-slope parametrization
+coef(fit) # including confidence intervals
+coef(fit, IRTpars = TRUE, simplify = TRUE) # IRT parametrization
+coef(fit, IRTpars = TRUE) # including confidence intervals
+
+# item fit statistics
+itemfit(fit)
+
+# factor scores vs standardized total scores
+fs <- as.vector(fscores(fit))
+head(fs)
+fs.se <- fscores(fit, full.scores.SE = TRUE) # with SE
+head(fs.se)
+
+sts <- as.vector(scale(rowSums(GMAT[, 1:20])))
+plot(fs ~ sts, xlab = "Standardized total score", ylab = "Factor score")
+cor(fs, sts)
+
+# Wright map
+b <- coef(fit, IRTpars = TRUE, simplify = TRUE)$items[, "b"]
+ggWrightMap(fs, b)
+
+# you can also use the ltm package
+library(ltm)
+
+# fitting Rasch model
+fit <- rasch(GMAT[, 1:20], constraint = cbind(ncol(GMAT[, 1:20]) + 1, 1))
+
+# item characteristic curves
+plot(fit)
+# item information curves
+plot(fit, type = "IIC")
+# test information curve
+plot(fit, items = 0, type = "IIC")
+
+# estimated parameters
+coef(fit)
+
+# factor scores vs standardized total scores
+df1 <- ltm::factor.scores(fit, return.MIvalues = TRUE)$score.dat
+FS <- as.vector(df1[, "z1"])
+df2 <- df1
+df2$Obs <- df2$Exp <- df2$z1 <- df2$se.z1 <- NULL
+STS <- as.vector(scale(rowSums(df2[, 1:20])))
+df <- data.frame(FS, STS)
+plot(FS ~ STS, data = df, xlab = "Standardized total score", ylab = "Factor score")
+cor(FS, STS)
