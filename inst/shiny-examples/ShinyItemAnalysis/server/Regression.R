@@ -1,12 +1,12 @@
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-# REGRESSION ######
+# REGRESSION ####
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-# * LOGISTIC ######
+# * LOGISTIC ####
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-# ** Updating item slider ######
+# ** Updating item slider ####
 observe({
   item_count <- ncol(binary())
 
@@ -17,7 +17,7 @@ observe({
   )
 })
 
-# ** Model of logistic regression ######
+# ** Model of logistic regression ####
 regression_logistic_model <- reactive({
   item <- input$regression_logistic_item_slider
   data <- binary()
@@ -26,7 +26,7 @@ regression_logistic_model <- reactive({
   model <- glm(unlist(data[, item, with = FALSE]) ~ total_score, family = binomial)
 })
 
-# ** Plot with estimated logistic curve ######
+# ** Plot with estimated logistic curve ####
 regression_logistic_plot <- reactive({
   total_score <- total_score()
   data <- binary()
@@ -69,7 +69,7 @@ regression_logistic_plot <- reactive({
     ggtitle(item_names()[item])
 })
 
-# ** Output estimated logistic curve ######
+# ** Output estimated logistic curve ####
 output$regression_logistic_plot <- renderPlotly({
   g <- regression_logistic_plot()
   p <- ggplotly(g)
@@ -78,7 +78,7 @@ output$regression_logistic_plot <- renderPlotly({
   p %>% plotly::config(displayModeBar = FALSE)
 })
 
-# ** DB estimated logistic curve ######
+# ** Download estimated logistic curve ####
 output$regression_logistic_plot_download <- downloadHandler(
   filename = function() {
     paste0("fig_LogisticRegressionCurve_", item_names()[input$regression_logistic_item_slider], ".png")
@@ -94,7 +94,7 @@ output$regression_logistic_plot_download <- downloadHandler(
   }
 )
 
-# ** Table of estimated parameters of logistic curve ######
+# ** Table of estimated parameters of logistic curve ####
 output$regression_logistic_coef <- renderTable(
   {
     item <- input$regression_logistic_item_slider
@@ -110,7 +110,7 @@ output$regression_logistic_coef <- renderTable(
   include.colnames = TRUE
 )
 
-# ** Interpretation of estimated parameters of logistic curve ######
+# ** Interpretation of estimated parameters of logistic curve ####
 output$regression_logistic_interpretation <- renderUI({
   b1 <- coef(regression_logistic_model())[2]
 
@@ -134,10 +134,10 @@ output$regression_logistic_na_alert <- renderUI({
 })
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-# * LOGISTIC Z ######
+# * LOGISTIC Z ####
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-# ** Updating item slider ######
+# ** Updating item slider ####
 observe({
   item_count <- ncol(binary())
 
@@ -148,7 +148,7 @@ observe({
   )
 })
 
-# ** Model of logistic regression on Z-scores ######
+# ** Model of logistic regression on Z-scores ####
 regression_logistic_Z_model <- reactive({
   zscore <- z_score()
   item <- input$regression_logistic_Z_item_slider
@@ -156,7 +156,7 @@ regression_logistic_Z_model <- reactive({
   model <- glm(unlist(data[, item, with = FALSE]) ~ zscore, family = "binomial")
 })
 
-# ** Plot of logistic regression on Z-scores ######
+# ** Plot of logistic regression on Z-scores ####
 regression_logistic_Z_plot <- reactive({
   zscore <- z_score()
   item <- input$regression_logistic_Z_item_slider
@@ -198,7 +198,7 @@ regression_logistic_Z_plot <- reactive({
     ggtitle(item_names()[item])
 })
 
-# ** Output plot of logistic regression on Z-scores ######
+# ** Output plot of logistic regression on Z-scores ####
 output$regression_logistic_Z_plot <- renderPlotly({
   g <- regression_logistic_Z_plot()
   p <- ggplotly(g)
@@ -207,7 +207,7 @@ output$regression_logistic_Z_plot <- renderPlotly({
   p %>% plotly::config(displayModeBar = FALSE)
 })
 
-# ** DB for plot of logistic regression on Z-scores ######
+# ** Download for plot of logistic regression on Z-scores ####
 output$regression_logistic_Z_plot_download <- downloadHandler(
   filename = function() {
     paste0("fig_LogisticRegressionCurve_Zscores_", item_names()[input$regression_logistic_Z_item_slider], ".png")
@@ -223,7 +223,7 @@ output$regression_logistic_Z_plot_download <- downloadHandler(
   }
 )
 
-# ** Table of estimated parameters of logistic regression on Z-scores ######
+# ** Table of estimated parameters of logistic regression on Z-scores ####
 output$regression_logistic_Z_coef <- renderTable(
   {
     item <- input$regression_logistic_Z_item_slider
@@ -239,7 +239,7 @@ output$regression_logistic_Z_coef <- renderTable(
   include.colnames = TRUE
 )
 
-# ** Interpretation of estimated parameters of logistic regression on Z-scores ######
+# ** Interpretation of estimated parameters of logistic regression on Z-scores ####
 output$regression_logistic_Z_interpretation <- renderUI({
   b1 <- summary(regression_logistic_Z_model())$coef[2, 1]
 
@@ -264,10 +264,10 @@ output$regression_logistic_Z_na_alert <- renderUI({
 })
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-# * LOGISTIC IRT Z ######
+# * LOGISTIC IRT Z ####
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-# ** Updating item slider ######
+# ** Updating item slider ####
 observe({
   item_count <- ncol(binary())
 
@@ -278,7 +278,7 @@ observe({
   )
 })
 
-# ** Model for logistic regression on Z scores with IRT param. ######
+# ** Model for logistic regression on Z scores with IRT param. ####
 regression_logistic_IRT_model <- reactive({
   zscore <- z_score()
   item <- input$regression_logistic_IRT_item_slider
@@ -287,7 +287,7 @@ regression_logistic_IRT_model <- reactive({
   model <- glm(unlist(data[, item, with = FALSE]) ~ zscore, family = "binomial")
 })
 
-# ** Plot with estimated logistic curve on Z scores with IRT param. ######
+# ** Plot with estimated logistic curve on Z scores with IRT param. ####
 regression_logistic_IRT_plot <- reactive({
   zscore <- z_score()
   item <- input$regression_logistic_IRT_item_slider
@@ -329,7 +329,7 @@ regression_logistic_IRT_plot <- reactive({
     ggtitle(item_names()[item])
 })
 
-# ** Output plot with estimated logistic curve on Z scores with IRT param. ######
+# ** Output plot with estimated logistic curve on Z scores with IRT param. ####
 output$regression_logistic_IRT_plot <- renderPlotly({
   g <- regression_logistic_IRT_plot()
   p <- ggplotly(g)
@@ -338,7 +338,7 @@ output$regression_logistic_IRT_plot <- renderPlotly({
   p %>% plotly::config(displayModeBar = FALSE)
 })
 
-# ** DB plot with estimated logistic curve on Z scores with IRT param. ######
+# ** Download plot with estimated logistic curve on Z scores with IRT param. ####
 output$regression_logistic_IRT_plot_download <- downloadHandler(
   filename = function() {
     paste0("fig_LogisticRegressionCurve_Zscores_IRT_", item_names()[input$regression_logistic_IRT_item_slider], ".png")
@@ -354,7 +354,7 @@ output$regression_logistic_IRT_plot_download <- downloadHandler(
   }
 )
 
-# ** Table of estimated parameters of logistic curve on Z scores with IRT param. ######
+# ** Table of estimated parameters of logistic curve on Z scores with IRT param. ####
 output$regression_logistic_IRT_coef <- renderTable(
   {
     fit <- regression_logistic_IRT_model()
@@ -381,7 +381,7 @@ output$regression_logistic_IRT_coef <- renderTable(
   include.rownames = TRUE
 )
 
-# ** Interpretation of estimated parameters of logistic curve on Z scores with IRT param. ######
+# ** Interpretation of estimated parameters of logistic curve on Z scores with IRT param. ####
 output$regression_logistic_IRT_interpretation <- renderUI({
   b1 <- summary(regression_logistic_IRT_model())$coef[2, 1]
 
@@ -405,10 +405,10 @@ output$regression_logistic_IRT_na_alert <- renderUI({
 })
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-# * NONLINEAR 3P IRT Z ######
+# * NONLINEAR 3P IRT Z ####
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-# ** Updating item slider ######
+# ** Updating item slider ####
 observe({
   item_count <- ncol(binary())
 
@@ -419,7 +419,7 @@ observe({
   )
 })
 
-# ** Model of nonlinear curve ######
+# ** Model of nonlinear curve ####
 regression_3pl_model <- reactive({
   data <- binary()
   zscore <- z_score()
@@ -450,12 +450,13 @@ regression_3pl_model <- reactive({
   validate(need(
     class(fit) == "nls",
     HTML(paste0("Error: Method cannot be fitted for item ", item, ". The error message returned: ", fit$message))
-  ))
+  ),
+  errorClass = "validation-error")
 
   fit
 })
 
-# ** Plot of estimated nonlinear curve ######
+# ** Plot of estimated nonlinear curve ####
 regression_3pl_plot <- reactive({
   zscore <- z_score()
   item <- input$regression_3pl_item_slider
@@ -499,7 +500,7 @@ regression_3pl_plot <- reactive({
     ggtitle(item_names()[item])
 })
 
-# ** Output plot of estimated nonlinear curve ######
+# ** Output plot of estimated nonlinear curve ####
 output$regression_3pl_plot <- renderPlotly({
   g <- regression_3pl_plot()
   p <- ggplotly(g)
@@ -508,7 +509,7 @@ output$regression_3pl_plot <- renderPlotly({
   p %>% plotly::config(displayModeBar = FALSE)
 })
 
-# ** DB plot of estimated nonlinear curve ######
+# ** Download plot of estimated nonlinear curve ####
 output$regression_3pl_plot_download <- downloadHandler(
   filename = function() {
     paste0("fig_NLR_3P_", item_names()[input$regression_3pl_item_slider], ".png")
@@ -524,7 +525,7 @@ output$regression_3pl_plot_download <- downloadHandler(
   }
 )
 
-# Table of estimated parameters of nonlinear curve ######
+# Table of estimated parameters of nonlinear curve ####
 output$regression_3pl_coef <- renderTable(
   {
     fit <- regression_3pl_model()
@@ -543,7 +544,7 @@ output$regression_3pl_coef <- renderTable(
   include.colnames = TRUE
 )
 
-# ** Interpretation of estimated parameters of nonlinear curve ######
+# ** Interpretation of estimated parameters of nonlinear curve ####
 output$regression_3pl_interpretation <- renderUI({
   fit <- regression_3pl_model()
 
@@ -568,11 +569,10 @@ output$regression_3pl_na_alert <- renderUI({
 })
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-# * NONLINEAR 4P IRT Z ######
+# * NONLINEAR 4P IRT Z ####
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-
-# ** Updating item slider ######
+# ** Updating item slider ####
 observe({
   item_count <- ncol(binary())
 
@@ -583,7 +583,7 @@ observe({
   )
 })
 
-# ** Model of nonlinear curve ######
+# ** Model of nonlinear curve ####
 regression_4pl_model <- reactive({
   data <- binary()
   zscore <- z_score()
@@ -614,12 +614,13 @@ regression_4pl_model <- reactive({
   validate(need(
     class(fit) == "nls",
     HTML(paste0("Error: Method cannot be fitted for item ", item, ". The error message returned: ", fit$message))
-  ))
+  ),
+  errorClass = "validation-error")
 
   fit
 })
 
-# ** Plot of estimated nonlinear curve ######
+# ** Plot of estimated nonlinear curve ####
 regression_4pl_plot <- reactive({
   zscore <- z_score()
   item <- input$regression_4pl_item_slider
@@ -663,7 +664,7 @@ regression_4pl_plot <- reactive({
     ggtitle(item_names()[item])
 })
 
-# ** Output plot of estimated nonlinear curve ######
+# ** Output plot of estimated nonlinear curve ####
 output$regression_4pl_plot <- renderPlotly({
   g <- regression_4pl_plot()
   p <- ggplotly(g)
@@ -672,7 +673,7 @@ output$regression_4pl_plot <- renderPlotly({
   p %>% plotly::config(displayModeBar = FALSE)
 })
 
-# ** DB plot of estimated nonlinear curve ######
+# ** Download plot of estimated nonlinear curve ####
 output$regression_4pl_plot_download <- downloadHandler(
   filename = function() {
     paste0("fig_NLR_4P", item_names()[input$regression_4pl_item_slider], ".png")
@@ -688,7 +689,7 @@ output$regression_4pl_plot_download <- downloadHandler(
   }
 )
 
-# Table of estimated parameters of nonlinear curve ######
+# Table of estimated parameters of nonlinear curve ####
 output$regression_4pl_coef <- renderTable(
   {
     fit <- regression_4pl_model()
@@ -708,7 +709,7 @@ output$regression_4pl_coef <- renderTable(
   include.colnames = TRUE
 )
 
-# ** Interpretation of estimated parameters of nonlinear curve ######
+# ** Interpretation of estimated parameters of nonlinear curve ####
 output$regression_4pl_interpretation <- renderUI({
   fit <- regression_4pl_model()
 
@@ -735,10 +736,10 @@ output$regression_4pl_na_alert <- renderUI({
 })
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-# * MODEL COMPARISON ######
+# * MODEL COMPARISON ####
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-# ** Table of information criteria ######
+# ** Table of information criteria ####
 output$regression_comparison_table <- DT::renderDataTable({
   data <- binary()
   zscore <- z_score()
@@ -894,10 +895,10 @@ output$regression_comparison_table <- DT::renderDataTable({
 })
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-# * CUMULATIVE LOGIT ######
+# * CUMULATIVE LOGIT ####
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-# ** Matching criterion for cumulative model ######
+# ** Matching criterion for cumulative model ####
 regression_cumulative_matching <- reactive({
   if (input$regression_cumulative_matching == "total") {
     matching <- total_score()
@@ -907,7 +908,7 @@ regression_cumulative_matching <- reactive({
   matching
 })
 
-# ** Updating select input for different parametrization ######
+# ** Updating select input for different parametrization ####
 observe({
   if (input$regression_cumulative_parametrization == "irt") {
     updateSelectInput(
@@ -918,7 +919,7 @@ observe({
   }
 })
 
-# ** Updating item slider ######
+# ** Updating item slider ####
 observe({
   item_count <- ncol(binary())
 
@@ -929,7 +930,7 @@ observe({
   )
 })
 
-# ** Model for cumulative logit regression ######
+# ** Model for cumulative logit regression ####
 regression_cumulative_model <- reactive({
   matching <- regression_cumulative_matching()
   data <- as.data.frame(ordinal())
@@ -951,7 +952,7 @@ regression_cumulative_model <- reactive({
   fit
 })
 
-# ** Plot with cumulative curves ######
+# ** Plot with cumulative curves ####
 regression_cumulative_plot_cumulative <- reactive({
   item <- input$regression_cumulative_item_slider
   fit <- regression_cumulative_model()
@@ -967,7 +968,7 @@ regression_cumulative_plot_cumulative <- reactive({
   g
 })
 
-# ** Output plot with estimated curves of cumulative regression ######
+# ** Output plot with estimated curves of cumulative regression ####
 output$regression_cumulative_plot_cumulative <- renderPlotly({
   g <- regression_cumulative_plot_cumulative()
   p <- ggplotly(g)
@@ -983,7 +984,7 @@ output$regression_cumulative_plot_cumulative <- renderPlotly({
   hide_legend(p %>% plotly::config(displayModeBar = FALSE))
 })
 
-# ** DB plot with estimated curves of cumulative regression ######
+# ** Download plot with estimated curves of cumulative regression ####
 output$regression_cumulative_plot_cumulative_download <- downloadHandler(
   filename = function() {
     paste0("fig_CumulativeRegressionCurve_cumulative_", item_names()[input$regression_cumulative_item_slider], ".png")
@@ -999,7 +1000,7 @@ output$regression_cumulative_plot_cumulative_download <- downloadHandler(
   }
 )
 
-# ** Plot with category curves ######
+# ** Plot with category curves ####
 regression_cumulative_plot_category <- reactive({
   item <- input$regression_cumulative_item_slider
   fit.cum <- regression_cumulative_model()
@@ -1014,7 +1015,7 @@ regression_cumulative_plot_category <- reactive({
   g
 })
 
-# ** Output plot with category curves ######
+# ** Output plot with category curves ####
 output$regression_cumulative_plot_category <- renderPlotly({
   g <- regression_cumulative_plot_category()
   p <- ggplotly(g)
@@ -1030,7 +1031,7 @@ output$regression_cumulative_plot_category <- renderPlotly({
   hide_legend(p %>% plotly::config(displayModeBar = FALSE))
 })
 
-# ** DB plot with estimated curves of cumulative regression ######
+# ** Download plot with estimated curves of cumulative regression ####
 output$regression_cumulative_plot_category_download <- downloadHandler(
   filename = function() {
     paste0("fig_CumulativeRegressionCurve_category_", item_names()[input$regression_cumulative_item_slider], ".png")
@@ -1046,7 +1047,7 @@ output$regression_cumulative_plot_category_download <- downloadHandler(
   }
 )
 
-# ** Equation ######
+# ** Equation ####
 output$regression_cumulative_equation <- renderUI({
   txt1 <- ifelse(input$regression_cumulative_matching == "total", "X_p", "Z_p")
 
@@ -1061,7 +1062,7 @@ output$regression_cumulative_equation <- renderUI({
   withMathJax(HTML(paste(txt3, txt4)))
 })
 
-# ** Interpretation ######
+# ** Interpretation ####
 output$regression_cumulative_interpretation <- renderUI({
   if (input$regression_cumulative_parametrization == "classic") {
     par <- c("\\(\\beta_{i0k}\\)", "\\(\\beta_{i1}\\)")
@@ -1085,16 +1086,16 @@ output$regression_cumulative_interpretation <- renderUI({
     )
 
   txt <- sprintf(
-    "Parameters %s describe horizontal position of the fitted cumulative curves for item \\(i\\),
-               where %s is a number of obtained scores, parameter %s
+    "Parameters %s describe the horizontal position of the fitted cumulative curves for item \\(i\\),
+               where %s is the number of obtained scores, parameter %s
                describes their common slope. Category probabilities are then calculated as
-               differences of the two subsequent cumulative probabilities. ",
+               differences between the two subsequent cumulative probabilities. ",
     par[1], categories, par[2]
   )
   withMathJax(HTML(txt))
 })
 
-# ** Table of estimated parameters ######
+# ** Table of estimated parameters ####
 regression_cumulative_coef <- reactive({
   fit <- regression_cumulative_model()
   item <- input$regression_cumulative_item_slider
@@ -1152,10 +1153,10 @@ output$regression_cumulative_na_alert <- renderUI({
 })
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-# * ADJACENT CATEGORY LOGIT ######
+# * ADJACENT CATEGORY LOGIT ####
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-# ** Matching criterion adjacent category logit regression ######
+# ** Matching criterion adjacent category logit regression ####
 regression_adjacent_matching <- reactive({
   if (input$regression_adjacent_matching == "total") {
     matching <- total_score()
@@ -1165,7 +1166,7 @@ regression_adjacent_matching <- reactive({
   matching
 })
 
-# ** Updating select input for different parametrization ######
+# ** Updating select input for different parametrization ####
 observe({
   if (input$regression_adjacent_parametrization == "irt") {
     updateSelectInput(
@@ -1176,7 +1177,7 @@ observe({
   }
 })
 
-# ** Updating item slider ######
+# ** Updating item slider ####
 observe({
   item_count <- ncol(binary())
 
@@ -1187,7 +1188,7 @@ observe({
   )
 })
 
-# ** Model for adjacent regression ######
+# ** Model for adjacent regression ####
 regression_adjacent_model <- reactive({
   matching <- regression_adjacent_matching()
   data <- as.data.frame(ordinal())
@@ -1203,7 +1204,7 @@ regression_adjacent_model <- reactive({
   fit
 })
 
-# ** Plot with category curves ######
+# ** Plot with category curves ####
 regression_adjacent_plot <- reactive({
   item <- input$regression_adjacent_item_slider
   fit <- regression_adjacent_model()
@@ -1219,7 +1220,7 @@ regression_adjacent_plot <- reactive({
   g
 })
 
-# ** Output plot with estimated curves of adjacent regression ######
+# ** Output plot with estimated curves of adjacent regression ####
 output$regression_adjacent_plot <- renderPlotly({
   g <- regression_adjacent_plot()
   p <- ggplotly(g)
@@ -1236,7 +1237,7 @@ output$regression_adjacent_plot <- renderPlotly({
 })
 
 
-# ** DB plot with estimated curves of adjacent regression ######
+# ** Download plot with estimated curves of adjacent regression ####
 output$regression_adjacent_plot_download <- downloadHandler(
   filename = function() {
     paste0("fig_AdjacentRegressionCurve_category_", item_names()[input$regression_adjacent_item_slider], ".png")
@@ -1252,7 +1253,7 @@ output$regression_adjacent_plot_download <- downloadHandler(
   }
 )
 
-# ** Equation ######
+# ** Equation ####
 output$regression_adjacent_equation <- renderUI({
   txt1 <- ifelse(input$regression_adjacent_matching == "total", "X_p", "Z_p")
 
@@ -1267,7 +1268,7 @@ output$regression_adjacent_equation <- renderUI({
   withMathJax(HTML(txt))
 })
 
-# ** Interpretation ######
+# ** Interpretation ####
 output$regression_adjacent_interpretation <- renderUI({
   item <- input$regression_adjacent_item_slider
   if (input$regression_adjacent_parametrization == "classic") {
@@ -1292,14 +1293,14 @@ output$regression_adjacent_interpretation <- renderUI({
 
   if (input$regression_adjacent_parametrization == "classic") {
     txt <- sprintf(
-      "Threshold parameters %s describe horizontal position of the fitted curves for item \\(i\\),
-               where %s is a number of obtained scores, parameter %s describes their common slope. ",
+      "Threshold parameters %s describe the horizontal position of the fitted curves for item \\(i\\),
+               where %s is the number of obtained scores, parameter %s describes their common slope. ",
       par[1], categories, par[2]
     )
   } else {
     txt <- sprintf(
-      "Threshold parameters %s describe horizontal position of the fitted curves for item \\(i\\)
-              where %s is a number of obtained scores and they indicate intersections of the probability
+      "Threshold parameters %s describe the horizontal position of the fitted curves for item \\(i\\)
+              where %s is the number of obtained scores and they indicate intersections of the probability
               curves for two adjacent categories, parameter %s describes their common slope. ",
       par[1], categories, par[2]
     )
@@ -1308,7 +1309,7 @@ output$regression_adjacent_interpretation <- renderUI({
   withMathJax(HTML(txt))
 })
 
-# ** Table of estimated parameters ######
+# ** Table of estimated parameters ####
 output$regression_adjacent_coef <- renderTable(
   {
     item <- input$regression_adjacent_item_slider
@@ -1363,10 +1364,10 @@ output$regression_adjacent_na_alert <- renderUI({
 })
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-# * MULTINOMIAL ######
+# * MULTINOMIAL ####
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-# ** Matching criterion for multinomial regression ######
+# ** Matching criterion for multinomial regression ####
 regression_multinomial_matching <- reactive({
   if (input$regression_multinomial_matching == "total") {
     matching <- total_score()
@@ -1376,7 +1377,7 @@ regression_multinomial_matching <- reactive({
   matching
 })
 
-# ** Updating select input for different parametrization ######
+# ** Updating select input for different parametrization ####
 observe({
   if (input$regression_multinomial_parametrization == "irt") {
     updateSelectInput(
@@ -1387,7 +1388,7 @@ observe({
   }
 })
 
-# ** Updating item slider ######
+# ** Updating item slider ####
 observe({
   item_count <- ncol(binary())
 
@@ -1398,7 +1399,7 @@ observe({
   )
 })
 
-# ** Model for multinomial regression ######
+# ** Model for multinomial regression ####
 regression_multinomial_model <- reactive({
   matching <- regression_multinomial_matching()
   key <- t(as.data.table(key()))
@@ -1422,12 +1423,13 @@ regression_multinomial_model <- reactive({
   validate(need(
     class(fit) == "nnet",
     HTML(paste0("Error: Method cannot be fitted for item ", item, ". The error message returned: ", fit$message))
-  ))
+  ),
+  errorClass = "validation-error")
 
   fit
 })
 
-# ** Plot with category curves ######
+# ** Plot with category curves ####
 regression_multinomial_plot <- reactive({
   fit <- regression_multinomial_model()
 
@@ -1449,7 +1451,7 @@ regression_multinomial_plot <- reactive({
   g
 })
 
-# ** Output plot with category curves ######
+# ** Output plot with category curves ####
 output$regression_multinomial_plot <- renderPlotly({
   g <- regression_multinomial_plot()
   p <- ggplotly(g)
@@ -1465,7 +1467,7 @@ output$regression_multinomial_plot <- renderPlotly({
   hide_legend(p %>% plotly::config(displayModeBar = FALSE))
 })
 
-# ** DB plot with estimated curves of multinomial regression ######
+# ** Download plot with estimated curves of multinomial regression ####
 output$regression_multinomial_plot_download <- downloadHandler(
   filename = function() {
     paste0("fig_MultinomialRegressionCurve_", item_names()[input$regression_multinomial_item_slider], ".png")
@@ -1481,7 +1483,7 @@ output$regression_multinomial_plot_download <- downloadHandler(
   }
 )
 
-# ** Reports: Plot with estimated curves of multinomial regression ######
+# ** Reports: Plot with estimated curves of multinomial regression ####
 report_regression_multinomial_plot <- reactive({
   graflist <- list()
   key <- unlist(key())
@@ -1527,7 +1529,7 @@ report_regression_multinomial_plot <- reactive({
   graflist
 })
 
-# ** Reports: Length of legend in multinomial plot ######
+# ** Reports: Length of legend in multinomial plot ####
 report_distractor_plot_legend_length <- reactive({
   data <- nominal()
 
@@ -1536,7 +1538,7 @@ report_distractor_plot_legend_length <- reactive({
 })
 
 # AH: momentalne zakomentovavam, protoze stranka Reports hrozne dlouho nabiha
-# # ** Warning for report ######
+# # ** Warning for report ####
 # output$report_multinomial_report <- renderUI({
 #   items <- report_regression_multinomial_plot()[[2]]
 #   messages <- unique(report_regression_multinomial_plot()[[3]])
@@ -1547,7 +1549,7 @@ report_distractor_plot_legend_length <- reactive({
 #   HTML(txt)
 # })
 
-# ** Equation of multinomial regression ######
+# ** Equation of multinomial regression ####
 output$regression_multinomial_equation <- renderUI({
   req(regression_multinomial_model()[[2]])
 
@@ -1565,8 +1567,8 @@ output$regression_multinomial_equation <- renderUI({
       correct_option, match, match
     )
     txt <- sprintf(
-      "where \\(k\\) is one of the wrong options (distractors) and \\(%s\\) is the correct one. Parameters \\(\\beta_{%s0k}\\) are
-                    intercepts of response probability curves for item %s and \\(\\beta_{%s1k}\\) are their slopes. ",
+      "where \\(k\\) is one of the wrong options (distractors) and \\(%s\\) is the correct one. Parameters \\(\\beta_{%s0k}\\) represent
+                    locations of response probability curves for item %s and \\(\\beta_{%s1k}\\) are slopes of these curves. ",
       correct_option, item, item, item
     )
   } else {
@@ -1580,15 +1582,15 @@ output$regression_multinomial_equation <- renderUI({
     )
     txt <- sprintf(
       "where \\(k\\) is one of the wrong options (distractors) and \\(%s\\) is the correct one. Parameters \\(b_{%sk}\\) are
-                    locations of response probability curves intersections with the curve of correct answer for item %s and \\(a_{%sk}\\)
-                    are their slopes. ",
+                    locations of response probability curve intersections with the curve of the correct answer for item %s, while \\(a_{%sk}\\)
+                    are slopes of these curves. ",
       correct_option, item, item, item
     )
   }
   withMathJax(HTML(paste(eq1, eq2, txt)))
 })
 
-# ** Table of estimated parameters of curves of multinomial regression ######
+# ** Table of estimated parameters of curves of multinomial regression ####
 output$regression_multinomial_coef <- renderTable(
   {
     withMathJax()
@@ -1627,18 +1629,18 @@ output$regression_multinomial_coef <- renderTable(
       varcov <- vcov(fit)
 
       if (is.null(dim(coef_si))) {
-        coef_tab <- c(-coef_si[1] / coef_si[2], coef_si[2])
+        coef_tab <- matrix(c(-coef_si[1] / coef_si[2], coef_si[2]), nrow = 1)
       } else {
         coef_tab <- cbind(-coef_si[, 1] / coef_si[, 2], coef_si[, 2])
       }
 
       se_tab <- if (is.null(dim(coef_si))) {
-        msm::deltamethod(
+        matrix(msm::deltamethod(
           list(~ -x1 / x2, ~x2),
-          mean = coef_si,
+          mean = unlist(coef_si),
           cov = varcov,
           ses = TRUE
-        )
+        ), nrow = 1)
       } else {
         t(sapply(
           rownames(coef_si),
@@ -1671,7 +1673,7 @@ output$regression_multinomial_coef <- renderTable(
   rownames = TRUE
 )
 
-# ** Interpretation of parameters of curves of multinomial regression ######
+# ** Interpretation of parameters of curves of multinomial regression ####
 output$regression_multinomial_interpretation <- renderUI({
   if (input$regression_multinomial_parametrization == "classic") {
     koef <- summary(regression_multinomial_model())$coefficients
