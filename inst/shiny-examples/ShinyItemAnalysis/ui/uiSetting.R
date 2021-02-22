@@ -4,7 +4,7 @@ uiSetting <-
     icon = icon("fas fa-cog"),
     h3("Settings"),
     h4("IRT models setting"),
-    p("Set the number of cycles for IRT 1PL, 2PL, 3PL and 4PL models."),
+    p("Set the number of cycles for IRT models in the ", strong("IRT models"), "section."),
     fluidPage(column(2, numericInput(
       inputId = "ncycles",
       label = "Number of cycles",
@@ -12,6 +12,20 @@ uiSetting <-
       min = 1,
       max = 999999
     ))),
+
+    h4("Range-restricted reliability settings"),
+    p("Set the number of bootstrap samples for the confidence interval calculation in the ", strong("Reliability / Restricted range"), "section."),
+    fluidPage(column(
+      2,
+      numericInput(
+        inputId = "reliability_restricted_bootsamples",
+        label = "Bootstrap samples",
+        value = 10,
+        min = 3,
+        max = 1000
+      )
+    )),
+
     h4("Figure downloads"),
     p("Here you can change setting for download of figures. "),
     fluidPage(
