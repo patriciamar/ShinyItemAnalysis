@@ -9,16 +9,14 @@ uiDIRT <- tabPanel(
   #------------------------------------------------------------------------------------#
   h3("Dichotomous models"),
   p("Dichotomous models are used for modelling items producing a simple binary response
-                   (i.e., true/false). Most complex unidimensional dichotomous IRT model described here
+                   (i.e., true/false). The most complex unidimensional dichotomous IRT model described here
                    is the 4PL IRT model. The Rasch model (Rasch, 1960) assumes discrimination fixed to \\(a = 1\\),
-                   guessing fixed to \\(c = 0\\), and innatention to \\(d = 1\\). Similarly, other restricted
+                   guessing fixed to \\(c = 0\\), and innatention to \\(d = 1\\). Additionally, other restricted
                    models (1PL, 2PL, and 3PL models)  can be obtained by fixing appropriate parameters in
                    the 4PL model."),
-  p("In this section, you can explore behavior of two item characteristic curves
+  p("In this section, you can explore the behavior of two item characteristic curves
                    \\(\\mathrm{P}\\left(Y = 1|\\theta\\right)\\) and their item information functions
                    \\(\\mathrm{I}\\left(\\theta\\right)\\) in the 4PL IRT model. "),
-
-  # HTML("<div class='pb' style='page-break-after:always'></div>"),
 
   #------------------------------------------------------------------------------------#
   # Parameters ####
@@ -150,13 +148,13 @@ uiDIRT <- tabPanel(
     "Consider the following 2PL items with parameters", br(),
     strong("Item 1:"), "\\(a = 2.5, b = -0.5\\)", br(),
     strong("Item 2:"), "\\(a = 1.5, b = 0\\)", br(),
-    "For these items fill the following exercises with an accuracy of up to 0.05.
-                   Then click on ", strong("Submit answers"), "button.
-                   If you need a hint, click on blue button with question mark."
+    "For these items fill in the following exercises with an accuracy of up to 0.05,
+                   then click on the ", strong("Submit answers"), "button.
+                   If you need a hint, click on the blue button with a question mark."
   ),
   tags$ul(
     tags$li(
-      "Sketch item characteristic and information curves.",
+      "Sketch the item characteristic and information curves.",
       bsButton(
         inputId = "irt_training_dich1_1_help",
         label = "", icon = icon("question"),
@@ -164,7 +162,7 @@ uiDIRT <- tabPanel(
       ),
       bsPopover(
         id = "irt_training_dich1_1_help", title = "Help",
-        content = "Set item parameters by red and blue sliders above.",
+        content = "Set item parameters using the red and the blue slider above.",
         placement = "right",
         trigger = "hover",
         options = list(container = "body")
@@ -172,7 +170,7 @@ uiDIRT <- tabPanel(
       htmlOutput("irt_training_dich1_1_answer", inline = T)
     ),
     tags$li(
-      "Calculate probability of correct answer for latent abilities
+      "Calculate the probability of a correct answer for latent abilities
                            \\(\\theta  = -2, -1, 0, 1, 2\\).",
       bsButton(
         inputId = "irt_training_dich1_2_help",
@@ -182,7 +180,7 @@ uiDIRT <- tabPanel(
       bsPopover(
         id = "irt_training_dich1_2_help",
         title = "Help",
-        content = "Set &theta; to desired value by gray slider above.",
+        content = "Set &theta; to the desired value using the gray slider above.",
         placement = "right",
         trigger = "hover",
         options = list(container = "body")
@@ -256,7 +254,7 @@ uiDIRT <- tabPanel(
       bsPopover(
         id = "irt_training_dich1_3_help",
         title = "Help",
-        content = "You can find this value at the left figure. Alternatively, you need to find &theta; satisfying P<sub>1</sub>(&theta;) = P<sub>2</sub>(&theta;), that is a<sub>1</sub>(&theta; - b<sub>1</sub>) = a<sub>2</sub>(&theta; - b<sub>2</sub>).",
+        content = "You can find this value in the left figure. Alternatively, you need to find &theta; satisfying P<sub>1</sub>(&theta;) = P<sub>2</sub>(&theta;), that is a<sub>1</sub>(&theta; - b<sub>1</sub>) = a<sub>2</sub>(&theta; - b<sub>2</sub>).",
         placement = "right",
         trigger = "hover",
         options = list(container = "body")
@@ -281,7 +279,7 @@ uiDIRT <- tabPanel(
       bsPopover(
         id = "irt_training_dich1_4_help",
         title = "Help",
-        content = "Look at the figure on the right side. Which curve does have larger value for desired level of ability &theta;?",
+        content = "Look at the figure on the right side. Which curve does have a larger value for the desired level of ability &theta;?",
         placement = "right",
         trigger = "hover",
         options = list(container = "body")
@@ -336,11 +334,11 @@ uiDIRT <- tabPanel(
   #------------------------------------------------------------------------------------#
   h4("Exercise 2"),
   p(
-    "Consider now 2 items with following parameters", br(),
+    "Now consider 2 items with the following parameters", br(),
     strong("Item 1:"), "\\(a = 1.5, b = 0, c = 0, d = 1\\)", br(),
     strong("Item 2:"), "\\(a = 1.5, b = 0, c = 0.2, d = 1\\)", br(),
-    "For these items fill the following exercises with an accuracy of up to 0.05.
-                   Then click on ", strong("Submit answers"), "button."
+    "For these items fill in the following exercises with an accuracy of up to 0.05,
+                   then click on the ", strong("Submit answers"), "button."
   ),
   tags$ul(
     tags$li(
@@ -371,7 +369,7 @@ uiDIRT <- tabPanel(
       )
     ),
     tags$li(
-      "What is the probability of correct answer for latent ability \\(\\theta = b\\)?",
+      "What is the probability of a correct answer for latent ability \\(\\theta = b\\)?",
       bsButton(
         inputId = "irt_training_dich2_2_help",
         label = "", icon = icon("question"),
@@ -379,7 +377,7 @@ uiDIRT <- tabPanel(
       ),
       bsPopover(
         id = "irt_training_dich2_2_help", title = "Help",
-        content = "You can find this value at the left figure. Alternatively, you can calculate the value by formula for P(&theta;), where you can use the fact that exp(0) = 1.",
+        content = "You can find this value at the left figure. Alternatively, you can calculate the value using the formula for P(&theta;), using the fact that exp(0) = 1.",
         placement = "right",
         trigger = "hover",
         options = list(container = "body")
@@ -416,7 +414,7 @@ uiDIRT <- tabPanel(
         radioButtons("irt_training_dich2_3",
           label = NULL,
           choices = list(
-            "Depends on level of \\(\\theta\\)" = 12,
+            "Depends on the level the of \\(\\theta\\)" = 12,
             "Item 1 for all levels of \\(\\theta\\)" = 1,
             "Item 2 for all levels of \\(\\theta\\)" = 2
           )
@@ -440,10 +438,10 @@ uiDIRT <- tabPanel(
   #------------------------------------------------------------------------------------#
   h4("Exercise 3"),
   p(
-    "Consider now 2 items with following parameters", br(),
+    "Now consider 2 items with the following parameters", br(),
     strong("Item 1:"), "\\(a = 1.5, b = 0, c = 0, d = 0.9\\)", br(),
     strong("Item 2:"), "\\(a = 1.5, b = 0, c = 0, d = 1\\)", br(),
-    "For these items fill the following exercises with an accuracy of up to 0.05. Then click on ", strong("Submit answers"), "button."
+    "For these items fill in the following exercises with an accuracy of up to 0.05, then click on the ", strong("Submit answers"), "button."
   ),
   tags$ul(
     tags$li(
@@ -455,7 +453,7 @@ uiDIRT <- tabPanel(
       ),
       bsPopover(
         id = "irt_training_dich3_1_help", title = "Help",
-        content = "Upper asymptote is determined by parameter d.",
+        content = "The upper asymptote is determined by parameter d.",
         placement = "right",
         trigger = "hover",
         options = list(container = "body")
@@ -474,7 +472,7 @@ uiDIRT <- tabPanel(
       )
     ),
     tags$li(
-      "What is the probability of correct answer for latent ability \\(\\theta = b\\)?",
+      "What is the probability of a correct answer for latent ability \\(\\theta = b\\)?",
       bsButton(
         inputId = "irt_training_dich3_2_help",
         label = "", icon = icon("question"),
@@ -519,7 +517,7 @@ uiDIRT <- tabPanel(
         radioButtons("irt_training_dich3_3",
           label = NULL,
           choices = list(
-            "Depends on level of \\(\\theta\\)" = 12,
+            "Depends on the level of \\(\\theta\\)" = 12,
             "Item 1 for all levels of \\(\\theta\\)" = 1,
             "Item 2 for all levels of \\(\\theta\\)" = 2
           )
