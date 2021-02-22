@@ -54,14 +54,16 @@ params:
   zlogreg_irt: NA
   nlsplot: NA
   multiplot: NA
-  wrightMap: NA
-  irt_type: NA
-  irt: NA
-  irtiic: NA
-  irttif: NA
-  irtcoef: NA
-  irtfactor: NA
-  irtability: NA
+  irt_wrightmap: NA
+  irt_equation: NA
+  irt_model: NA
+  irt_parametrization: NA
+  irt_icc: NA
+  irt_iic: NA
+  irt_tic: NA
+  irt_coef: NA
+  irt_ability_plot: NA
+  irt_ability_table: NA
   isGroupPresent: NA
   histCheck: NA
   DIF_total_table: NA
@@ -76,8 +78,8 @@ params:
   DIF_logistic_print: NA
   DIF_logistic_plot: NA
   multiCheck: NA
-  DDF_multinomial_print: NA
-  DDF_multinomial_plot: NA
+  DIF_multinomial_print: NA
+  DIF_multinomial_plot: NA
   sessionInfo: NA
 ---
 
@@ -146,7 +148,7 @@ table = params$standardscores_table
 kable(table, align = 'c')
 ```
 
-`r if (params$irt_type != "none") {"More complex estimates of ability are provided in the IRT section."}`
+`r if (params$irt_model != "none") {"More complex estimates of ability are provided in the IRT section."}`
 
 `r if (any(params$corr_plot != "") | params$validity_check) {"**************"}`
 
@@ -195,7 +197,7 @@ if (any(params$corr_plot != "")) {
 `r if(!(params$isCriterionPresent) & params$validity_check){"No criterion variable vector is present. The predictive validity analysis could not have been generated."}`
 
 ```{r validity-plot, echo = FALSE, fig.width = 11, fig.height = 4, fig.align = 'center', dpi = 300, message = FALSE}
-if(params$isCriterionPresent & params$validity_check){
+if (params$isCriterionPresent & params$validity_check) {
   params$validity_plot + 
     theme(text = element_text(size = 11),
           legend.box.just = "top",
@@ -208,7 +210,7 @@ if(params$isCriterionPresent & params$validity_check){
 
 
 ```{r validity-table, echo = FALSE, results = 'hide'}
-if(params$isCriterionPresent & params$validity_check){
+if (params$isCriterionPresent & params$validity_check) {
   tab <- params$validity_table
   p.val <- tab["p-value"]
   rho <- tab[1]
@@ -294,7 +296,7 @@ numgroups <- params$DDplotNumGroups
 
 txt1 <- "Diff. - difficulty of the item is estimated as its average score divided by its range, Avg. score - average score of the item, SD - standard deviation, ULI - Upper-Lower Index calculated as the difference in the percent correct between the upper and lower third of respondents, RIT - Pearson correlation between an item and the total score, RIR - Pearson correlation between an item and the rest of the items, Alpha Drop - Cronbach's alpha of a test without a given item"
 
-if (params$DDplotNumGroups == 3 & params$DDplotRange1 == 1 & params$DDplotRange2 == 3){
+if (params$DDplotNumGroups == 3 & params$DDplotRange1 == 1 & params$DDplotRange2 == 3) {
   txt2 <- ". "
 } else {
   txt2 <- paste0(", gULI - generalized ULI calculated as the difference between the difficulty recorded in the ", 
@@ -312,7 +314,7 @@ HTML(paste0(txt1, txt2))
 
 ```{r item-table, echo = FALSE}
 
-if (params$DDplotNumGroups == 3 & params$DDplotRange1 == 1 & params$DDplotRange2 == 3){
+if (params$DDplotNumGroups == 3 & params$DDplotRange1 == 1 & params$DDplotRange2 == 3) {
   table = params$itemexam
   tab = format(round(table[, -1], 2), nsmall = 2)
   table = data.frame(table[, 1], tab[, -8])
@@ -342,9 +344,9 @@ Respondents are divided into a selected number of groups by their total score. S
 In the multinomial plot, points represent proportion of selected option with respect to total score. Their size is determined by count of respondents who achieved given level of total score and who selected given option.
 
 ```{r distractor-multi-plot-short, echo = FALSE, fig.height = 4.5, fig.width = 11}
-if (params$distractor_plot_legend_length <= 6){
-  if (params$type_distractor_plot == "Combinations"){
-    for (i in 1:length(params$distractor_plot)){
+if (params$distractor_plot_legend_length <= 6) {
+  if (params$type_distractor_plot == "Combinations") {
+    for (i in 1:length(params$distractor_plot)) {
       g1 <- params$distractor_plot[[i]]
       g2 <- params$multiplot[[i]]
       if (is.null(g2)) {
@@ -359,7 +361,7 @@ if (params$distractor_plot_legend_length <= 6){
       grid.arrange(g1, g2, ncol = 2)
     }
   } else {
-    for (i in 1:length(params$distractor_plot)){
+    for (i in 1:length(params$distractor_plot)) {
       g1 <- params$distractor_plot[[i]] + theme(legend.position = c(0.14, 0.8),
                                                 legend.margin = margin(0, 0, 0, 0, "cm"))
       g2 <- params$multiplot[[i]] + theme(legend.position = c(0.04, 0.97),
@@ -373,9 +375,9 @@ if (params$distractor_plot_legend_length <= 6){
 ```
 
 ```{r distractor-multi-plot-long, echo = FALSE, fig.height = 4.5, fig.width = 11}
-if (params$distractor_plot_legend_length > 6){
-  if (params$type_distractor_plot == "Combinations"){
-    for (i in 1:length(params$distractor_plot)){
+if (params$distractor_plot_legend_length > 6) {
+  if (params$type_distractor_plot == "Combinations") {
+    for (i in 1:length(params$distractor_plot)) {
       g1 <- params$distractor_plot[[i]]
       g2 <- params$multiplot[[i]] 
       if (is.null(g2)) {
@@ -396,7 +398,7 @@ if (params$distractor_plot_legend_length > 6){
       grid.arrange(g1, g2, legend, ncol = 3, widths = c(0.45, 0.45, 0.1))
     }
   } else {
-    for (i in 1:length(params$distractor_plot)){
+    for (i in 1:length(params$distractor_plot)) {
       g1 <- params$distractor_plot[[i]] + theme(legend.position = c(0.18, 0.75), 
                                                 legend.margin = margin(0, 0, 0, 0, "cm"))
       g2 <- params$multiplot[[i]] 
@@ -422,7 +424,7 @@ if (params$distractor_plot_legend_length > 6){
 <!-- IRT SECTION -->
 
 ```{r IRT-section-settings, echo = FALSE}
-show_IRT <- (params$irt_type != "none")
+show_IRT <- (params$irt_model != "none")
 ```
 
 ```{r IRT-section, eval = show_IRT, echo = FALSE, results = "asis"}
@@ -442,27 +444,20 @@ A Wright map, also called an item-person map, is a graphical tool to display per
 ```
 
 ```{r IRT-wright-map-plot, echo = FALSE, eval = show_IRT, fig.height = 4, fig.width = 11, fig.align = 'center', dpi = 300}
-params$wrightMap + theme(text = element_text(size = 11))
+grid::grid.draw(params$irt_wrightmap)
 ```
 
-```{r IRT-equation, echo = FALSE, results = "hide", eval = show_IRT}
-IRT_selected_model <- switch(params$irt_type,
-                             "rasch" = "Rasch IRT model",
-                             "1pl"   = "1PL IRT model",
-                             "2pl"   = "2PL IRT model",
-                             "3pl"   = "3PL IRT model",
-                             "4pl"   = "4PL IRT model")
-
-IRT_equation <- switch(params$irt_type,
-                             "rasch" = "$${P}(Y_{ij} = 1|\\theta_{i}, a, b_j) = \\frac{e^{(\\theta_i - b_j)}}{1 + e^{(\\theta_i - b_j)}}$$",
-                             "1pl"   = "$${P}(Y_{ij} = 1|\\theta_{i}, a, b_j) = \\frac{e^{a(\\theta_i - b_j)}}{1 + e^{a(\\theta_i - b_j)}}$$",
-                             "2pl"   = "$${P}(Y_{ij} = 1|\\theta_{i}, a_j, b_j) = \\frac{e^{a_j(\\theta_i - b_j)}}{1 + e^{a_j(\\theta_i - b_j)}}$$",
-                             "3pl"   = "$${P}(Y_{ij} = 1|\\theta_{i}, a_j, b_j, c_j) = c_j + (1 + c_j) \\frac{e^{a_j(\\theta_i - b_j)}}{1 + e^{a_j(\\theta_i - b_j)}}$$",
-                             "4pl"   = "$${P}(Y_{ij} = 1|\\theta_{i}, a_j, b_j, c_j, d_j) = c_j + (d_j + c_j) \\frac{e^{a_j(\\theta_i - b_j)}}{1 + e^{a_j(\\theta_i - b_j)}}$$")
+```{r IRT-selected-model, echo = FALSE, results = "hide", eval = show_IRT}
+IRT_selected_model <- switch(params$irt_model,
+                             "Rasch" = "Rasch IRT model",
+                             "1PL"   = "1PL IRT model",
+                             "2PL"   = "2PL IRT model",
+                             "3PL"   = "3PL IRT model",
+                             "4PL"   = "4PL IRT model")
 ```
 
 ```{r IRT-equation-text, echo = FALSE, results = "asis", eval = show_IRT}
-txt <- ifelse(params$irt_type == "rasch", 
+txt <- ifelse(params$irt_model == "Rasch", 
               "Model parameters are estimated using a marginal maximum likelihood method. Ability $\\theta$ is assumed to follow normal distribution with a freely estimated variance.",
               "Model parameters are estimated using a  marginal maximum likelihood method. Ability $\\theta$ is assumed to follow standard normal distribution." )
 
@@ -471,7 +466,7 @@ cat("
 ## Equation \n\n",
 
 paste0("All subsequent analyses are based on the selected ", IRT_selected_model, ":"),
-IRT_equation,
+params$irt_equation,
 txt
 )
 ```
@@ -485,7 +480,7 @@ paste0("Ability is estimated using an EAP algorithm and a ", IRT_selected_model,
 ```
 
 ```{r IRT-ability-estimates-table, echo = FALSE, results = "asis", eval = show_IRT}
-table = round(params$irtability, 2)
+table = round(params$irt_ability_table, 2)
 table = cbind(c("Total Scores", "Z-Scores", "F-Scores"), table)
 colnames(table)[1] = "Score type"
   
@@ -493,7 +488,7 @@ kable(table, align = c('l', rep('c', 7)))
 ```
 
 ```{r IRT-ability-scatterplot, echo = FALSE, fig.width = 11, fig.height = 4, fig.align = "center", dpi = 300, eval = show_IRT}
-params$irtfactor + 
+params$irt_ability_plot + 
   ggtitle('') +
   theme(text = element_text(size = 11))
 ```
@@ -505,22 +500,22 @@ cat("
 ```
 
 ```{r IRT-curves-plots-short, echo = FALSE, results = "hide", fig.height = 14.5, fig.width = 11, eval = show_IRT}
-if (ncol(params$a) < 50){
-  g1 <- params$irt + 
+if (ncol(params$a) < 50) {
+  g1 <- params$irt_icc + 
     ggtitle("Item characteristic curves") + 
     xlab(expression(theta)) + 
     ylab(expression("P("*theta*")")) + 
     guides(colour = guide_legend(ncol = max(ncol(params$a) %/% 30, 1))) + 
     theme(legend.position = "right", 
           legend.text = element_text(size = 10))
-  g2 <- params$irtiic + 
+  g2 <- params$irt_iic + 
       ggtitle("Item information curves") + 
       xlab(expression(theta)) + 
       ylab(expression("I("*theta*")")) + 
       guides(colour = guide_legend(ncol = max(ncol(params$a) %/% 30, 1))) + 
       theme(legend.position = "right", 
             legend.text = element_text(size = 10))
-  g3 <- params$irttif + 
+  g3 <- params$irt_tic + 
       ggtitle("Test information function") + 
       xlab(expression(theta)) + 
       ylab(expression("I("*theta*")")) + 
@@ -539,8 +534,8 @@ if (ncol(params$a) < 50){
 ```
 
 ```{r IRT-curves-plots-long, echo = FALSE, results = "hide", fig.height = 16, fig.width = 11, eval = show_IRT}
-if (ncol(params$a) >= 50){
-    g1 <- params$irt + 
+if (ncol(params$a) >= 50) {
+    g1 <- params$irt_icc + 
       ggtitle("Item characteristic curves") + 
       xlab(expression(theta)) + 
       ylab(expression("P("*theta*")")) + 
@@ -550,14 +545,14 @@ if (ncol(params$a) >= 50){
             legend.margin = margin(t = -5, unit = 'cm'),
             legend.text = element_text(size = 10),
             legend.key.size = unit(0.8, 'lines'))
-    g2 <- params$irtiic + 
+    g2 <- params$irt_iic + 
       ggtitle("Item information curves") + 
       xlab(expression(theta)) + 
       ylab(expression("I("*theta*")")) + 
       guides(colour = guide_legend(nrow = max(ncol(params$a) %/% 12, 1))) + 
       theme(legend.position = "none", 
             plot.margin = unit(c(0, 0, 0, 0), "cm"))
-    g3 <- params$irttif + 
+    g3 <- params$irt_tic + 
       ggtitle("Test information function") + 
       xlab(expression(theta)) + 
       ylab(expression("I("*theta*")")) + 
@@ -586,8 +581,12 @@ Estimates of parameters are completed by their standard errors (SE) and by signe
 ```
 
 ```{r IRT-parameter-estimates-table, echo = FALSE, eval = show_IRT}
-table = params$irtcoef
-colnames(table) = c("a", "SE(a)", "b", "SE(b)", "c", "SE(c)", "d", "SE(d)", "S-X2", "df", "p-value")
+table = round(params$irt_coef, 2)
+if (params$irt_parametrization == "irt") {
+  colnames(table) = c("a", "SE(a)", "b", "SE(b)", "c", "SE(c)", "d", "SE(d)", "S-X2", "df", "p-value")
+} else {
+  colnames(table) = c("beta0", "SE(beta0)", "beta1", "SE(beta1)", "c", "SE(c)", "d", "SE(d)", "S-X2", "df", "p-value")
+}
   
 kable(table, align = c('l', rep('c', 11)))
 ```
@@ -742,7 +741,7 @@ txt3))
 ```
 
 ```{r DIF-section-MH-table, echo = FALSE, eval = eval_MH}
-if (res_MH$p.adjust.method == "none"){
+if (res_MH$p.adjust.method == "none") {
   star <- symnum(round(res_MH$p.value, 4), 
                c(0, 0.001, 0.01, 0.05, 0.1, 1), 
                symbols = c("***", "**", "*", ".", ""))
@@ -766,7 +765,7 @@ tab <- cbind(sprintf("%.3f", res_MH$MH), pval,
              sprintf("%.3f", res_MH$alphaMH), deltaMH)
 rownames(tab) <- params$itemNames
 
-if (dim(tab)[2] == 5){
+if (dim(tab)[2] == 5) {
   colnames(tab) <- c("Stat.", "P-value", "Adj. p-value", "alpha_MH", "delta_MH")
   kable(tab, digits = c(0, 3, 3, 0, 0, 0), 
         align = 'c')
@@ -838,7 +837,7 @@ txt4, "\\vspace{1em}"))
 ```
 
 ```{r DIF-section-logistic-table, echo = FALSE, eval = eval_logistic}
-if (res_logistic$p.adjust.method == "none"){
+if (res_logistic$p.adjust.method == "none") {
   star <- symnum(round(res_logistic$p.value, 4), 
                c(0, 0.001, 0.01, 0.05, 0.1, 1), 
                symbols = c("***", "**", "*", ".", ""))
@@ -863,7 +862,7 @@ tab <- cbind(sprintf("%.3f", res_logistic$Logistik), pval,
              sprintf("%.3f", res_logistic$deltaR2), ZT, JG)
 rownames(tab) <- params$itemNames
 
-if (dim(tab)[2] == 6){
+if (dim(tab)[2] == 6) {
   colnames(tab) <- c("Stat.", "P-value", "Adj. p-value", "R^2", "ZT", "JG")
 
   kable(tab, 
@@ -903,7 +902,7 @@ Points represent a proportion of a correct answer with respect to standardized t
 ```
 
 ```{r DIF-section-logistic-plot, echo = FALSE, fig.width = 11, fig.height = 4, fig.align = 'center', dpi = 300, eval = eval_logistic_plot}
-for (i in 1:length(params$DIF_logistic_print$DIFitems)){
+for (i in 1:length(params$DIF_logistic_print$DIFitems)) {
   print(params$DIF_logistic_plot[[i]] + 
           theme(text = element_text(size = 16), 
                 plot.title = element_text(size = 16, face = "bold")) + 
@@ -919,9 +918,9 @@ for (i in 1:length(params$DIF_logistic_print$DIFitems)){
 
 ```{r DIF-section-DDF-settings, echo = FALSE, results = 'asis'}
 eval_DDF <- (params$multiCheck & params$isGroupPresent)
-eval_DDF_plot <- eval_DDF & !is.null(params$DDF_multinomial_plot[[1]])
+eval_DIF_plot <- eval_DDF & !is.null(params$DIF_multinomial_plot[[1]])
 
-if (eval_DDF) res_DDF <- params$DDF_multinomial_print
+if (eval_DDF) res_DDF <- params$DIF_multinomial_print
 ```
 
 ```{r DIF-section-DDF-part1, eval = eval_DDF, echo = FALSE, results = 'asis'}
@@ -960,7 +959,7 @@ txt4))
 ```
 
 ```{r DIF-section-DDF-table, echo = FALSE, eval = eval_DDF}
-if (res_DDF$p.adjust.method == "none"){
+if (res_DDF$p.adjust.method == "none") {
       pval <- res_DDF$pval
       star <- ifelse(pval < 0.001, "***", 
                  ifelse(pval < 0.01, "**",
@@ -978,7 +977,7 @@ if (res_DDF$p.adjust.method == "none"){
     
 tab <- cbind(sprintf("%.3f", res_DDF$Sval), pval)
 
-if (ncol(tab) == 2){
+if (ncol(tab) == 2) {
       colnames(tab) <- c("Stat.", "P-value")
       rownames(tab) <- params$itemNames
       kable(tab, align = 'c')
@@ -995,7 +994,7 @@ Signif. codes: 0 '&#42;&#42;&#42;' 0.001 '&#42;&#42;' 0.01 '&#42;' 0.05 '.' 0.1 
 ")
 ```
 
-```{r DIF-section-DDF-part3, eval = eval_DDF_plot, echo = FALSE, results = 'asis'}
+```{r DIF-section-DDF-part3, eval = eval_DIF_plot, echo = FALSE, results = 'asis'}
 cat(
 "
 ### Characteristic curves of DDF items
@@ -1004,9 +1003,9 @@ Points represent a proportion of a selected answer with respect to standardized 
 ")
 ```
 
-```{r DIF-section-DDF-plot, echo = FALSE, fig.width = 11, fig.height = 4, fig.align = 'center', dpi = 300, eval = eval_DDF_plot}
-for (i in 1:length(params$DDF_multinomial_print$DDFitems)){
-  print(params$DDF_multinomial_plot[[i]] + 
+```{r DIF-section-DDF-plot, echo = FALSE, fig.width = 11, fig.height = 4, fig.align = 'center', dpi = 300, eval = eval_DIF_plot}
+for (i in 1:length(params$DIF_multinomial_print$DDFitems)) {
+  print(params$DIF_multinomial_plot[[i]] + 
           theme(text = element_text(size = 16),
                 plot.title = element_text(size = 16, face = "bold")))
 }
