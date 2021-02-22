@@ -10,7 +10,7 @@
 #' @param group.names character: names of reference and focal group.
 #' @param Data numeric: the data matrix. See \strong{Details}.
 #' @param group numeric: the vector of group membership. See \strong{Details}.
-#' @param match character or numeric: specifies matching criterion. Can be either \code{"score"},
+#' @param match character or numeric: specifies observed score used for matching. Can be either \code{"score"},
 #' or numeric vector of the same length as number of observations in \code{Data}. See \strong{Details}.
 #' @param draw.empirical logical: whether empirical probabilities should be calculated and plotted.
 #' Default value is \code{TRUE}.
@@ -23,9 +23,10 @@
 #' by \code{difLogistic()} function from difR package using ggplot2.
 #'
 #' \code{Data} and \code{group} are used to calculate empirical probabilities for reference
-#' and focal group. \code{match} should be the same as in \code{x$match}. In case that matching
-#' variable is used instead of total score or standardized score, \code{match} needs to be
-#' a numeric vector of the same the same length as number of observations in \code{Data}.
+#' and focal group. \code{match} should be the same as in \code{x$match}. In case that an
+#' observed score is used as a matching variable instead of the total score or the standardized score,
+#' \code{match} needs to be a numeric vector of the same the same length as the number of observations
+#' in \code{Data}.
 #'
 #' @author
 #' Adela Hladka \cr
@@ -119,7 +120,7 @@ plotDIFLogistic <- function(x, item = 1, item.name, group.names = c("Reference",
     stop("'match' needs to be either 'score', 'zscore' or numeric vector of the same length as number of observations in 'Data'. ", .call = FALSE)
   } else {
     MATCHCRIT <- match
-    xlab <- "Matching criterion"
+    xlab <- "Observed score"
   }
 
   LR_plot <- function(x, group, b0, b1, b2, b3) {
@@ -143,7 +144,7 @@ plotDIFLogistic <- function(x, item = 1, item.name, group.names = c("Reference",
       cbind(empirical_F, Group = "gr2")
     ))
     empirical$size <- c(table(score_R), table(score_F))
-    colnames(empirical) <- c("Match", "Probability", "Group", "Count")
+    colnames(empirical) <- c("Score", "Probability", "Group", "Count")
   }
 
   max_score <- max(MATCHCRIT, na.rm = TRUE) + 0.1
@@ -212,7 +213,7 @@ plotDIFLogistic <- function(x, item = 1, item.name, group.names = c("Reference",
       ### points
       geom_point(
         data = empirical,
-        aes_string(x = "Match", y = "Probability", colour = "Group", fill = "Group", size = "Count"),
+        aes_string(x = "Score", y = "Probability", colour = "Group", fill = "Group", size = "Count"),
         alpha = alpha, shape = shape
       ) +
       guides(size = guide_legend(title = "Count", order = 1)) +

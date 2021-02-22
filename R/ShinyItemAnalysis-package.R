@@ -27,7 +27,6 @@
 #' @aliases ShinyItemAnalysis-package
 #'
 #' @import difNLR difR shiny
-#' @importFrom cowplot plot_grid
 #' @importFrom deltaPlotR deltaPlot
 #' @importFrom ggplot2 aes aes_string coord_flip element_blank element_line
 #'   element_rect element_text geom_abline ggplot_build position_dodge
@@ -86,8 +85,8 @@
 #'
 #' @details Package: ShinyItemAnalysis \cr
 #' Type: Package \cr
-#' Version: 1.3.5 \cr
-#' Date: 2021-02-02 \cr
+#' Version: 1.3.5-1 \cr
+#' Date: 2021-02-22 \cr
 #' Depends: R (>= 3.5.0) \cr
 #' Imports: cowplot, data.table, deltaPlotR, difNLR (>= 1.3.2), difR (>= 5.0),
 #' dplyr, DT, ggdendro, ggplot2, gridExtra, knitr, latticeExtra, lme4, ltm, magrittr,

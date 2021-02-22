@@ -2,6 +2,46 @@
 
 ----------
 
+### Changes in version 1.3.5-1 (2021-02-22)
+#### BUG FIXING
+  * Data upload was fixed, warning messages related to data upload were fixed.
+  * In the `Reports` section of the app the default name of the dataset was set
+    to the name of the csv file. This fixed some of the bugs with the HTML
+    report download.
+
+#### MAJOR UPDATES
+  * New datasets `CZmatura` and `CZmaturaS` were added.
+  * Some ui code of the shiny app was reorganized into separte sections.
+  * In the `Validity` section of the app, a new tab `Factor analysis` was 
+    created.
+  * In the `IRT models` section of the app, the binary IRT models were
+    collapsed into a single `Dichotomous models` tab. 
+  * In the `IRT models` section of the app, the Bock IRT model section was
+    edited. 
+  * In the `DIF/Fairness` section of the app, the logistic and the polytomous 
+    regression models now offer both the IRT and the intercept-slope 
+    parametrization; the total score is newly offered as the matching criterion 
+    besides the standardized total score.
+  * In all sections of the shiny app, the wording was edited. 
+  * The ggWrightMap() function was rewritten to exclude dependencies other than 
+    ggplot. 
+  
+  
+#### MINOR UPDATES
+  * Softer deprecation with warning only was applied to functions.
+  * In the shiny app, term `Observed ability` is now consistently used instead of 
+    `(DIF/DDF) Matching variable`. The changes done were especially in the `Data`,
+    `Regression models` and the `DIF/Fairness` sections of the app, and in the
+    `plotDIFLogistic()` function.
+  * Section `Summary` of the app was renamed to `Scores` to beter reflect focus 
+    of this section. 
+  * In the `Validity` section of the shiny app, the dendrogram is newly enabled 
+    even if numclust == 0.
+  * In the `Item Analysis` section of the app, the tab `Distractors plot` was
+    renamed to `Item response curves` to better reflect that empirical response
+    curves are also available for binary and ordinal items.
+----------
+
 ### Changes in version 1.3.5 (2021-02-02)
 #### BUG FIXING
   * Plots in the `DIF/About` section of the app were fixed (uniform vs. 
