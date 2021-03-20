@@ -433,8 +433,5 @@ uiReports <-
       icon = icon("bar-chart-o")
     )),
     tags$style(HTML("#download_report_button { margin-left: 25px }")),
-    div(style = "display:inline-block", uiOutput("download_report_button")),
-    br(),
-    br(),
-    br()
+    div(style = "display:inline-block", uiOutput("download_report_button"))
   )

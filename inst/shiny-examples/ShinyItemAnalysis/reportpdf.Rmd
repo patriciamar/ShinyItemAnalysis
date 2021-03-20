@@ -213,47 +213,38 @@ params$corr_plot
 
 `r if (any(params$corr_plot != "")) {"\\pagebreak"}` 
 
-`r if (any(params$corr_plot != "")) {"### Scree plot"}` 
-
-`r if (any(params$corr_plot != "")) {"A scree plot displays the eigenvalues associated with a component or a factor in descending order."}`
-
-```{r scree-plot, echo = FALSE, fig.height = 4.5, fig.width = 11}
-if (any(params$corr_plot != "")) {
-  params$scree_plot + 
-    ggtitle("") + 
-    theme(text = element_text(size = 16))
-}
-```
-
 `r if (params$validity_check) {"## Predictive validity"}`
 
 `r if(!(params$isCriterionPresent) & params$validity_check){"No criterion variable vector is present. The predictive validity analysis could not have been generated!"}`
 
 ```{r validity-table, echo = FALSE, results = 'hide'}
 if (params$isCriterionPresent & params$validity_check) {
-  tab <- params$validity_table
-  p.val <- tab["p-value"]
-  rho <- tab[1]
+  validity_table_intro <- "An association between the total score and the criterion variable can be estimated using Pearson product-moment correlation coefficient \\textit{r}. The null hypothesis being tested states that correlation is exactly 0."
 
-  txt1 <- ifelse(p.val < 0.05, "less than", "larger than")
-  txt2 <- ifelse(p.val < 0.05, "reject", "do not reject")
-  txt3 <- ifelse(p.val < 0.05, 
-                 paste("total score and the criterion variable are", 
-                       ifelse(rho > 0, "positively", "negatively"), "correlated."),
-                 paste("we cannot conclude that a significant correlation between total score
-                        and criterion variable exists."))
-  txt4 <- paste("A test for association between the total score and the criterion variable is based on Spearman`s ",
-                expression(rho), 
-                ". The null hypothesis is that the correlation is 0. ", sep = "") 
-  txt5 <- paste("Results: ", expression(rho), " = ", rho, " (p-value ", p.val ,").", sep = "") 
-  txt6 <- paste("Interpretation: The p-value is", txt1, "0.05, thus we", txt2, "the null hypothesis;", txt3)
-  
-  txt <- paste(txt4, txt5, txt6, collapse = "/n")
+  inp <- params$validity_table
+
+  validity_table_results <- inp$txt %>% as.character %>% str_replace_all("<br>", "\\\\textbf{") %>% 
+    str_replace_all("</br>", "}") %>% str_replace_all("<em>", "\\\\textit{") %>% str_replace_all("</em>", "}")
+
+  pval <- inp$pval
+  est <- inp$est
+
+  validity_table_interpretation <- paste(
+    "\\textbf{Interpretation:}\\linebreak",
+    ifelse(pval < .05,
+      paste("The \\textit{p}-value is less than .05, thus we reject the null hypotheses. The total score and criterion variable are", ifelse(est > 0, "positively", "negatively"), "correlated."),
+      "The <em>p</em>-value is larger than .05, thus we don't reject the null hypotheses. We cannot conclude that a significant correlation between the total score and criterion variable exists."
+    )
+  )
 }
 
 ```
 
-`r if(params$isCriterionPresent & params$validity_check){txt}`
+`r if(params$isCriterionPresent & params$validity_check){validity_table_intro}`
+
+`r if(params$isCriterionPresent & params$validity_check){validity_table_results}`
+
+`r if(params$isCriterionPresent & params$validity_check){validity_table_interpretation}`
 
 ```{r validity-plot, echo = FALSE, results = "hide", fig.height = 4.5, fig.width = 11, message = FALSE}
 if (params$isCriterionPresent & params$validity_check) {

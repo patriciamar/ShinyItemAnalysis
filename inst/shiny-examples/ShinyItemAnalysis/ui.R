@@ -22,7 +22,7 @@ source("ui/uiRegression.R", local = T)
 source("ui/uiIRT.R", local = T)
 source("ui/uiDIF.R", local = T)
 source("ui/uiReports.R", local = T)
-source("ui/uiReferences.R", local = T)
+source("ui/uiReferences.R", local = T, encoding = "UTF-8")
 source("ui/uiSetting.R", local = T)
 
 # %%%%%%%%%%%%%%%%%%%%%
@@ -121,55 +121,39 @@ ui <- tagList(
   tags$head(includeScript("google-analytics.js")),
 
   navbarPage(
-    title = HTML('<div style = "margin-top: -10px;">
-                          <div class = "header-title">
-                          <img src = "header_hexbin.png">
-                          ShinyItemAnalysis
-                          </div>
-                          <div class = "header-subtitle">
-                          Test and item analysis
-                          </div>
-                          </div>'),
+    title = HTML('<div style="margin-top: -10px;">
+                    <div class="header-title"><img src="header_hexbin.png"> ShinyItemAnalysis</div>
+                    <div class="header-subtitle"> Test and item analysis</div>
+                 </div>'),
     windowTitle = "ShinyItemAnalysis",
     position = "fixed-top",
     selected = "About",
     collapsible = TRUE,
     footer = list(
-      HTML('<div class = "panel-footer", style = "opacity: 1.00; z-index: 1000;">
-                    <p style = "margin:8px 0 0 0;">
-                    <div class = "footer-title">
-                    <img src = "hexbin.png">
-                    ShinyItemAnalysis
-                    </div>
-                    <div class = "footer-subtitle">
-                    Test and item analysis via Shiny | Version 1.3.5-1
-                    </div>
-                    <span style = "float:right">
-                    <a href = "http://shinyitemanalysis.org/" id = "tooltipweb" target="_blank">
-                    <img src = "footer_web_icon.png", class = "footer-icons">
-                    </a>
-                    <a href = "https://github.com/patriciamar/ShinyItemAnalysis/" id = "tooltipgithub" target="_blank">
-                    <img src = "footer_github_icon.png", class = "footer-icons">
-                    </a>
-                    <a href = "https://CRAN.R-project.org/package=ShinyItemAnalysis/" id = "tooltipcran" target="_blank">
-                    <img src = "footer_cran_icon.png", class = "footer-icons">
-                    </a>
-                    </span>
-                    </p>
-                    <script>
-                    $("#tooltipweb").attr("title", "Web");
-                    $("#tooltipgithub").attr("title", "GitHub");
-                    $("#tooltipcran").attr("title", "CRAN");
-                    </script>
-                    <br>
-                    <div class = "footer-copyright">
-                    &copy; <script>document.write(new Date().getFullYear())</script> ShinyItemAnalysis
-                    </div>'),
+      HTML('<div style = "clear: both; height: 50px;"></div>
+           <div class = "panel-footer", style = "opacity: 1.00; z-index: 1000;">
+              <p style = "margin:8px 0 0 0;">
+                <div class = "footer-title"> <img src = "hexbin.png"> ShinyItemAnalysis </div>
+                <div class = "footer-subtitle"> Test and item analysis via Shiny | Version 1.3.6 </div>
+                <span style = "float:right">
+                  <a href = "http://shinyitemanalysis.org/" id = "tooltipweb" target="_blank"> <img src = "footer_web_icon.png", class = "footer-icons"> </a>
+                  <a href = "https://github.com/patriciamar/ShinyItemAnalysis/" id = "tooltipgithub" target="_blank"> <img src = "footer_github_icon.png", class = "footer-icons"> </a>
+                  <a href = "https://CRAN.R-project.org/package=ShinyItemAnalysis/" id = "tooltipcran" target="_blank"> <img src = "footer_cran_icon.png", class = "footer-icons"> </a>
+                </span>
+              </p>
+              <script>
+                $("#tooltipweb").attr("title", "Web")
+                $("#tooltipgithub").attr("title", "GitHub")
+                $("#tooltipcran").attr("title", "CRAN")
+              </script>
+              <br>
+              <div class = "footer-copyright">
+                &copy; <script>document.write(new Date().getFullYear())</script> ShinyItemAnalysis
+              </div>'),
       HTML('<div class = "footer-counter">'),
       textOutput("counter", inline = T),
       HTML("</div></div>")
     ),
-
 
     theme = "bootstrap.css",
 

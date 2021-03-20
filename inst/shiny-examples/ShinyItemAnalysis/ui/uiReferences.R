@@ -303,6 +303,12 @@ uiReferences <-
                 target = "_blank">See online.</a>
                 </li>
 
+                <li>Cattell, R. B. (1966). The scree test for the number of factors.
+                <i>Multivariate Behavioral Research, 1,</i> 245–276.
+                <a href = "http://dx.doi.org/10.1207/s15327906mbr0102_10",
+                target = "_blank">See online.</a>
+                </li>
+
                 <li>Chalmers, R. P. (2018).
                 Improving the crossing-SIBTEST statistic for detecting non-uniform DIF.
                 <i>Psychometrika, 83</i>(2), 376-386.
@@ -320,14 +326,16 @@ uiReferences <-
                 <li>Drabinova, A., & Martinkova, P. (2017).
                 Detection of differential item functioning with non-linear
                 regression: Non-IRT approach accounting for guessing.
-                <i>Journal of Educational Measurement, 54</i>(4), 498-517
+                <i>Journal of Educational Measurement, 54</i>(4), 498-517.
                 <a href = "https://doi.org/10.1111/jedm.12158",
                 target = "_blank">See online.</a>
                 </li>
 
-                <li> Erosheva, E. A, Martinkova, P., & Lee, C. J. (Accepted).
+                <li> Erosheva, E. A, Martinkova, P., & Lee, C. J. (2021).
                 When zero may not be zero: A cautionary note on the useof inter-rater reliability in evaluating grant peer review.
                 <i>Journal of the Royal Statistical Society: Series A</i>.
+                <a href = "http://doi.org/10.1111/rssa.12681",
+                target = "_blank">See online.</a>
                 </li>
 
                 <li> Feldt, L. S., Woodruff, D. J., & Salih, F. A. (1987).
@@ -335,6 +343,14 @@ uiReferences <-
                 <i>Applied Psychological Measurement 11</i>(1), 93-103.
                 <a href = "http://journals.sagepub.com/doi/abs/10.1177/014662168701100107",
                 target = "_blank">See online.</a>
+                </li>
+
+                <li>
+                Horn, J. L. (1965). A rationale and test for the number of factors in factor analysis. <i>Psychometrika, 30,</i> 179–185. <a href="http://dx.doi.org/10.1007/BF02289447", target="_blank">See online.</a>
+                </li>
+
+                <li>
+                Kaiser,  H.  F.  (1960).  The  application  of  electronic  computers  to  factor analysis. <i>Educational and Psychological Measurement, 20</i>, 141–151. <a href="http://dx.doi.org/10.1177/001316446002000116", target="_blank">See online.</a>
                 </li>
 
                 <li>Li, H.-H., & Stout, W. (1996).
@@ -505,6 +521,5 @@ uiReferences <-
                 Best test design.
                 Chicago: Mesa Press.
                 </li>
-                </ul>'),
-    br()
+                </ul>')
   )

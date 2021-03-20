@@ -347,13 +347,13 @@ observeEvent(input$generate, {
       corr_plot_numclust = ifelse(input$customizeCheck, input$corr_plot_clust_report, input$corr_plot_clust),
       corr_plot_clustmethod = ifelse(input$customizeCheck, input$corr_plot_clustmethod_report, input$corr_plot_clustmethod),
       corr_type = ifelse(input$customizeCheck, input$corr_plot_type_of_corr_report, input$type_of_corr),
-      scree_plot = {
-        if (input$corr_report) {
-          scree_plot_Input()
-        } else {
-          ""
-        }
-      },
+      # scree_plot = {
+      #   if (input$corr_report) {
+      #     scree_plot_Input()
+      #   } else {
+      #     ""
+      #   }
+      # },
       isCriterionPresent = criterionPresent(),
       validity_check = input$predict_report,
       validity_plot = {
@@ -544,13 +544,13 @@ output$report <- downloadHandler(
       corr_plot_numclust = ifelse(input$customizeCheck, input$corr_plot_clust_report, input$corr_plot_clust),
       corr_plot_clustmethod = ifelse(input$customizeCheck, input$corr_plot_clustmethod_report, input$corr_plot_clustmethod),
       corr_type = ifelse(input$customizeCheck, input$corr_plot_type_of_corr_report, input$type_of_corr),
-      scree_plot = {
-        if (input$corr_report) {
-          scree_plot_Input()
-        } else {
-          ""
-        }
-      },
+      # scree_plot = {
+      #   if (input$corr_report) {
+      #     scree_plot_Input()
+      #   } else {
+      #     ""
+      #   }
+      # },
       isCriterionPresent = criterionPresent(),
       validity_check = input$predict_report,
       validity_plot = {
