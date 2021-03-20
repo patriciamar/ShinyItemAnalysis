@@ -42,8 +42,12 @@ uiAbout <- tabPanel("",
   #------------------------------------------------------------------------------------#
   h4("News"),
   p(
-    "A new paper on range-restricted inter-rater reliability has been accepted for publication in JRSS-A (Erosheva, Martinkova, & Lee).
-    To try examples interactively, set the", code("AIBS"), "toy dataset in the ", strong("Data"), "section  by clicking on
+    "A new paper on range-restricted inter-rater reliability has been published in JRSS-A ",
+    a("(Erosheva, Martinkova, & Lee, 2021)",
+      href = "http://doi.org/10.1111/rssa.12681",
+      target = "_blank", .noWS = "outside"
+    ),
+    ".  To try examples interactively, set the", code("AIBS"), "toy dataset in the ", strong("Data"), "section  by clicking on
     the menu in the upper left corner and go to the ",
     strong("Reliability/Restricted range"), "section. ",
     br(),
@@ -99,13 +103,13 @@ uiAbout <- tabPanel("",
       p(
         "The current",
         a("CRAN", href = "https://CRAN.R-project.org/package=ShinyItemAnalysis", target = "_blank"),
-        "version is 1.3.5.",
+        "version is 1.3.6.",
         br(),
         "The version available",
-        a("online", href = "https://shiny.cs.cas.cz/ShinyItemAnalysis/", target = "_blank"), "is 1.3.5-1.",
+        a("online", href = "https://shiny.cs.cas.cz/ShinyItemAnalysis/", target = "_blank"), "is 1.3.6.",
         br(),
         "The newest development version available on ",
-        a("GitHub", href = "https://github.com/patriciamar/ShinyItemAnalysis", target = "_blank"), "is 1.3.5-1.",
+        a("GitHub", href = "https://github.com/patriciamar/ShinyItemAnalysis", target = "_blank"), "is 1.3.6.",
       )
     )
   ),
@@ -174,6 +178,5 @@ uiAbout <- tabPanel("",
   # Funding ####
   #------------------------------------------------------------------------------------#
   h4("Funding"),
-  p("Czech Science Foundation (GJ15-15856Y, 21-03658S), Charles University (PRIMUS/17/HUM/11)."),
-  br()
+  p("Czech Science Foundation (GJ15-15856Y, 21-03658S), Charles University (PRIMUS/17/HUM/11).")
 )
