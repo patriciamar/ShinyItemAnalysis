@@ -1152,7 +1152,8 @@ data_description_Input <- reactive({
                 target='_blank'> (Gallo, 2021)</a> comes from the scientific peer review of biomedical applications from an intramural collaborative
                 biomedical research funding program (2014-2017). The data presented in this app include anonymized proposal ID, reviewer ID,
                 and an overall score from three reviewers, scored on a scale from 1.0 (best) to 5.0 (worst) with a 0.1 gradation. The
-                dataset was used by Erosheva, Martinkova, and Lee (accepted) to demonstrate issues with the estimation of inter-rater
+                dataset was used by <a href='http://doi.org/10.1111/rssa.12681' target='_blank'> Erosheva, Martinkova, and Lee (2021)</a> to
+                demonstrate issues with the estimation of inter-rater
                 reliability (IRR) in range-restricted samples. To try interactively the range-restricted IRR analysis, select the
                 <code>AIBS</code> dataset and go to the <code>Reliability/Restricted range</code> section."
   )
@@ -1341,55 +1342,22 @@ output$sc01 <- DT::renderDataTable(
   )
 )
 
-# * Group ####
-output$group <- DT::renderDataTable(
+# all vector variables into one DT
+output$vector_vars <- DT::renderDataTable(
   {
-    group_table <- group()
-    group_table <- t(group_table)
-    colnames(group_table) <- 1:ncol(group_table)
-    group_table
+    tibble(
+      Group = ifelse(dataset$group != "missing", group(), "NA"),
+      Criterion = ifelse(dataset$criterion != "missing", criterion(), "NA"),
+      "Observed score vector" = ifelse(dataset$DIFmatching != "missing", DIFmatching(), "NA")
+    )
   },
-  rownames = FALSE,
+  rownames = TRUE,
   style = "bootstrap",
   options = list(
+    columnDefs = list(list(className = "dt-right", targets = "_all")),
     scrollX = TRUE,
     server = TRUE,
-    scrollCollapse = TRUE,
-    dom = "tipr"
-  )
-)
-
-# * Criterion variable ####
-output$critvar <- DT::renderDataTable(
-  {
-    critvar_table <- criterion()
-    critvar_table <- t(critvar_table)
-    colnames(critvar_table) <- 1:ncol(critvar_table)
-    critvar_table
-  },
-  rownames = FALSE,
-  style = "bootstrap",
-  options = list(
-    scrollX = TRUE,
-    server = TRUE,
-    scrollCollapse = TRUE,
-    dom = "tipr"
-  )
-)
-
-# * DIF matching variable ####
-output$difvar <- DT::renderDataTable(
-  {
-    difvar_table <- DIFmatching()
-    difvar_table <- t(difvar_table)
-    colnames(difvar_table) <- 1:ncol(difvar_table)
-    difvar_table
-  },
-  rownames = FALSE,
-  style = "bootstrap",
-  options = list(
-    scrollX = TRUE,
-    server = TRUE,
+    pageLength = 6,
     scrollCollapse = TRUE,
     dom = "tipr"
   )

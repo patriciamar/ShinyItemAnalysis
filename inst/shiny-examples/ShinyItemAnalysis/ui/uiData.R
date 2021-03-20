@@ -29,7 +29,7 @@ uiData <- tabPanel(
             label = "Select dataset",
             choices = c(
               "GMAT" = "GMAT_difNLR",
-              #"GMAT2" = "GMAT2_difNLR",
+              # "GMAT2" = "GMAT2_difNLR",
               "HCI" = "HCI_ShinyItemAnalysis",
               "AIBS Grant Peer Review Scoring" = "AIBS_ShinyItemAnalysis",
               "Learning To Learn 9" = "LearningToLearn_ShinyItemAnalysis_9",
@@ -53,8 +53,10 @@ uiData <- tabPanel(
       # * Upload your own datasets ####
       #------------------------------------------------------------------------------------#
       h4("Upload your own datasets"),
-      p("Here you can upload your own dataset. Select all necessary files and use the ", strong("Upload data"),
-        " button on bottom of this page."),
+      p(
+        "Here you can upload your own dataset. Select all necessary files and use the ", strong("Upload data"),
+        " button on bottom of this page."
+      ),
       fluidRow(
         box(
           width = 3,
@@ -300,11 +302,11 @@ uiData <- tabPanel(
             #   p("For nominal data, it is necessary to upload ", strong("key"), "of correct answers.")
             # ),
             # conditionalPanel(
-              # condition = "input.data_csvdata_data_type == 'ordinal'",
-              p("For ordinal data, you are advised to include vector containing", strong("cut-score"), "which is used for
+            # condition = "input.data_csvdata_data_type == 'ordinal'",
+            p("For ordinal data, you are advised to include vector containing", strong("cut-score"), "which is used for
                 binarization of uploaded data, i.e., values greater or equal to provided cut-score are set to 1, otherwise
                 to 0. You can either upload dataset of item-specific values, or you can provide one value for whole dataset."),
-              p(strong("Note: "), "In case that cut-score is not provided, vector of maximal values is used. ")
+            p(strong("Note: "), "In case that cut-score is not provided, vector of maximal values is used. ")
             # )
           )
         )
@@ -330,8 +332,8 @@ uiData <- tabPanel(
           column(
             9,
             # conditionalPanel(
-              # condition = "input.data_csvdata_data_type == 'nominal'",
-              p("For nominal data, it is necessary to upload ", strong("key"), "of correct answers.")
+            # condition = "input.data_csvdata_data_type == 'nominal'",
+            p("For nominal data, it is necessary to upload ", strong("key"), "of correct answers.")
             # ),
             # conditionalPanel(
             #   condition = "input.data_csvdata_data_type == 'ordinal'",
@@ -448,8 +450,7 @@ uiData <- tabPanel(
             same as the number of individual respondents in the main dataset. "
           ),
           p(strong("Note: "), "If no criterion variable is provided, it won't be possible to run a validity analysis in
-            the ", strong("Predictive validity"), " section on ", strong("Validity"), " page."
-          )
+            the ", strong("Predictive validity"), " section on ", strong("Validity"), " page.")
         )
       ),
       fluidRow(
@@ -477,8 +478,7 @@ uiData <- tabPanel(
             in the main dataset. "
           ),
           p(strong("Note: "), "If no observed score is provided, the total scores or standardized total scores are used
-            instead. "
-          )
+            instead. ")
         )
       ),
       fluidRow(
@@ -531,11 +531,7 @@ uiData <- tabPanel(
       div(
         style = "vertical-align: top; float: right;",
         htmlOutput("data_check_group_withNA_confirmation")
-      ),
-      br(),
-      br(),
-      br(),
-      br()
+      )
     ),
     #------------------------------------------------------------------------------------#
     # BASIC SUMMARY ####
@@ -556,9 +552,7 @@ uiData <- tabPanel(
       h4("Criterion variable"),
       verbatimTextOutput("data_criterion_summary"),
       h4("Observed score"),
-      verbatimTextOutput("data_DIFmatching_summary"),
-      br(),
-      br()
+      verbatimTextOutput("data_DIFmatching_summary")
     ),
     #------------------------------------------------------------------------------------#
     # DATA EXPLORATION ####
@@ -590,26 +584,9 @@ uiData <- tabPanel(
       h4("Scored test"),
       DT::dataTableOutput("sc01"),
       br(),
-      #------------------------------------------------------------------------------------#
-      # * Group vector ####
-      #------------------------------------------------------------------------------------#
-      h4("Group vector"),
-      DT::dataTableOutput("group"),
-      br(),
-      #------------------------------------------------------------------------------------#
-      # * Criterion variable vector ####
-      #------------------------------------------------------------------------------------#
-      h4("Criterion variable vector"),
-      DT::dataTableOutput("critvar"),
-      br(),
-      #------------------------------------------------------------------------------------#
-      # * Observed score vector ####
-      #------------------------------------------------------------------------------------#
-      h4("Observed score vector"),
-      DT::dataTableOutput("difvar"),
 
-      br(),
-      br()
+      # all vector-like vars presented in one DT.
+      DT::dataTableOutput("vector_vars")
     )
   )
 )
