@@ -115,8 +115,7 @@ ui_DIF_multinomial <- tabPanel(
         br()
       ),
       h4("Selected R code"),
-      div(code(HTML('library(difNLR)<br><br>#&nbsp;Loading&nbsp;data<br>data(GMATtest,&nbsp;GMATkey,&nbsp;package&nbsp;=&nbsp;\"difNLR\")<br>Data&nbsp;<-&nbsp;GMATtest[,&nbsp;1:20]<br>group&nbsp;<-&nbsp;GMATtest[,&nbsp;\"group\"]<br>key&nbsp;<-&nbsp;GMATkey<br><br>#&nbsp;DDF&nbsp;with&nbsp;multinomial&nbsp;&nbsp;regression&nbsp;model<br>(fit&nbsp;<-&nbsp;ddfMLR(Data,&nbsp;group,&nbsp;focal.name&nbsp;=&nbsp;1,&nbsp;key,&nbsp;type&nbsp;=&nbsp;\"both\",&nbsp;match&nbsp;=&nbsp;\"zscore\",&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;p.adjust.method&nbsp;=&nbsp;\"none\",&nbsp;purify&nbsp;=&nbsp;FALSE,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;parametrization&nbsp;=&nbsp;\"classic\"))'))),
-      br()
+      code(includeText("sc/dif/mult.R"))
     ),
     # ** Items ####
     tabPanel("Items",
@@ -216,8 +215,7 @@ ui_DIF_multinomial <- tabPanel(
       fluidRow(column(12, align = "center", tableOutput("DIF_multinomial_items_coef"))),
       br(),
       h4("Selected R code"),
-      div(code(HTML('library(difNLR)<br><br>#&nbsp;Loading&nbsp;data<br>data(GMATtest,&nbsp;GMATkey,&nbsp;package&nbsp;=&nbsp;\"difNLR\")<br>Data&nbsp;<-&nbsp;GMATtest[,&nbsp;1:20]<br>group&nbsp;<-&nbsp;GMATtest[,&nbsp;\"group\"]<br>key&nbsp;<-&nbsp;GMATkey<br><br>#&nbsp;DDF&nbsp;with&nbsp;multinomial&nbsp;&nbsp;regression&nbsp;model<br>(fit&nbsp;<-&nbsp;ddfMLR(Data,&nbsp;group,&nbsp;focal.name&nbsp;=&nbsp;1,&nbsp;key,&nbsp;type&nbsp;=&nbsp;\"both\",&nbsp;match&nbsp;=&nbsp;\"zscore\",&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;p.adjust.method&nbsp;=&nbsp;\"none\",&nbsp;purify&nbsp;=&nbsp;FALSE,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;parametrization&nbsp;=&nbsp;\"classic\"))<br><br>#&nbsp;Plot&nbsp;of&nbsp;characteristic&nbsp;curves&nbsp;for&nbsp;item&nbsp;1<br>plot(fit,&nbsp;item&nbsp;=&nbsp;1)<br><br>#&nbsp;Estimated&nbsp;coefficients&nbsp;for&nbsp;all&nbsp;items&nbsp;with&nbsp;standard&nbsp;errors<br>coef(fit,&nbsp;SE&nbsp;=&nbsp;TRUE)'))),
-      br()
+      code(includeText("sc/dif/mult_it.R"))
     )
   )
 )

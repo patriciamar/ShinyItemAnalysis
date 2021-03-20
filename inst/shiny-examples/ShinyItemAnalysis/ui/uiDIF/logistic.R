@@ -111,8 +111,7 @@ ui_DIF_logistic <- tabPanel(
         br()
       ),
       h4("Selected R code"),
-      div(code(HTML('library(difR)<br><br>#&nbsp;Loading&nbsp;data<br>data(GMAT,&nbsp;package&nbsp;=&nbsp;\"difNLR\")<br>Data&nbsp;<-&nbsp;GMAT[,&nbsp;1:20]<br>group&nbsp;<-&nbsp;GMAT[,&nbsp;\"group\"]<br><br>#&nbsp;Logistic&nbsp;regression&nbsp;DIF&nbsp;detection&nbsp;method<br>(fit&nbsp;<-&nbsp;difLogistic(Data&nbsp;=&nbsp;Data,&nbsp;group&nbsp;=&nbsp;group,&nbsp;focal.name&nbsp;=&nbsp;1,&nbsp;match&nbsp;=&nbsp;\"score\",&nbsp;type&nbsp;=&nbsp;\"both\",&nbsp;p.adjust.method&nbsp;=&nbsp;\"none\",&nbsp;purify&nbsp;=&nbsp;FALSE))<br><br>#&nbsp;Loading&nbsp;data<br>data(LearningToLearn,&nbsp;package&nbsp;=&nbsp;\"ShinyItemAnalysis\")<br>Data&nbsp;<-&nbsp;LearningToLearn[,&nbsp;87:94]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;item&nbsp;responses&nbsp;from&nbsp;Grade&nbsp;9&nbsp;from&nbsp;subscale&nbsp;6<br>group&nbsp;<-&nbsp;LearningToLearn$track&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;school&nbsp;track&nbsp;-&nbsp;group&nbsp;membership&nbsp;variable<br>match&nbsp;<-&nbsp;scale(LearningToLearn$score_6)&nbsp;#&nbsp;standardized&nbsp;test&nbsp;score&nbsp;from&nbsp;Grade&nbsp;6<br><br>#&nbsp;Detecting&nbsp;differential&nbsp;item&nbsp;functioning&nbsp;in&nbsp;change&nbsp;(DIF-C)&nbsp;using<br>#&nbsp;logistic&nbsp;regression&nbsp;DIF&nbsp;detection&nbsp;method<br>#&nbsp;and&nbsp;standardized&nbsp;total&nbsp;score&nbsp;from&nbsp;Grade&nbsp;6&nbsp;as&nbsp;matching&nbsp;criterion<br>(fit&nbsp;<-&nbsp;difLogistic(Data&nbsp;=&nbsp;Data,&nbsp;group&nbsp;=&nbsp;group,&nbsp;focal.name&nbsp;=&nbsp;\"AS\",&nbsp;match&nbsp;=&nbsp;match,&nbsp;type&nbsp;=&nbsp;\"both\",&nbsp;p.adjust.method&nbsp;=&nbsp;\"none\",&nbsp;purify&nbsp;=&nbsp;FALSE))'))),
-      br()
+      code(includeText("sc/dif/log.R"))
     ),
     # ** Items ####
     tabPanel("Items",
@@ -223,8 +222,7 @@ ui_DIF_logistic <- tabPanel(
       fluidRow(column(12, align = "center", tableOutput("DIF_logistic_items_coef"))),
       br(),
       h4("Selected R code"),
-      div(code(HTML('library(difR)<br>library(ShinyItemAnalysis)<br><br>#&nbsp;Loading&nbsp;data<br>data(GMAT,&nbsp;package&nbsp;=&nbsp;\"difNLR\")<br>Data&nbsp;<-&nbsp;GMAT[,&nbsp;1:20]<br>group&nbsp;<-&nbsp;GMAT[,&nbsp;\"group\"]<br><br>#&nbsp;Logistic&nbsp;regression&nbsp;DIF&nbsp;detection&nbsp;method<br>(fit&nbsp;<-&nbsp;difLogistic(Data&nbsp;=&nbsp;Data,&nbsp;group&nbsp;=&nbsp;group,&nbsp;focal.name&nbsp;=&nbsp;1,&nbsp;match&nbsp;=&nbsp;\"score\",&nbsp;type&nbsp;=&nbsp;\"both\",&nbsp;p.adjust.method&nbsp;=&nbsp;\"none\",&nbsp;purify&nbsp;=&nbsp;FALSE))<br><br>#&nbsp;Plot&nbsp;of&nbsp;characteristic&nbsp;curve&nbsp;for&nbsp;item&nbsp;1<br>plotDIFLogistic(fit,&nbsp;item&nbsp;=&nbsp;1,&nbsp;Data&nbsp;=&nbsp;Data,&nbsp;group&nbsp;=&nbsp;group)<br><br>#&nbsp;Estimated&nbsp;coefficients&nbsp;for&nbsp;item&nbsp;1<br>fit$logitPar[1,&nbsp;]'))),
-      br()
+      code(includeText("sc/dif/log_it.R"))
     )
   )
 )

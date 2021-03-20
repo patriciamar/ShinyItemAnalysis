@@ -49,8 +49,7 @@ uiDIF <-
       img(
         src = "fig_DIF_nonuniform.png",
         style = "float: left; width: 32%; margin-right: 16%; margin-left: 2%; margin-bottom: 0.5em;"
-      ),
-      br()
+      )
     ),
     # * TOTAL SCORES ####
     tabPanel(
@@ -114,8 +113,7 @@ uiDIF <-
       )),
       br(),
       h4("Selected R code"),
-      div(code(HTML('library(ggplot2)<br>library(moments)<br>library(ShinyItemAnalysis)<br><br>#&nbsp;Loading&nbsp;data<br>data(GMAT,&nbsp;package&nbsp;=&nbsp;\"difNLR\")<br>Data&nbsp;<-&nbsp;GMAT[,&nbsp;1:20]<br>group&nbsp;<-&nbsp;GMAT[,&nbsp;\"group\"]<br><br>#&nbsp;Total&nbsp;score&nbsp;calculation&nbsp;wrt&nbsp;group<br>score&nbsp;<-&nbsp;rowSums(Data)<br>score0&nbsp;<-&nbsp;score[group&nbsp;==&nbsp;0]&nbsp;#&nbsp;reference&nbsp;group<br>score1&nbsp;<-&nbsp;score[group&nbsp;==&nbsp;1]&nbsp;#&nbsp;focal&nbsp;group<br><br>#&nbsp;Summary&nbsp;of&nbsp;total&nbsp;score<br>rbind(<br>&nbsp;&nbsp;c(length(score0),&nbsp;min(score0),&nbsp;max(score0),&nbsp;mean(score0),&nbsp;median(score0),&nbsp;sd(score0),&nbsp;skewness(score0),&nbsp;kurtosis(score0)),<br>&nbsp;&nbsp;c(length(score1),&nbsp;min(score1),&nbsp;max(score1),&nbsp;mean(score1),&nbsp;median(score1),&nbsp;sd(score1),&nbsp;skewness(score1),&nbsp;kurtosis(score1))<br>)<br><br>df&nbsp;<-&nbsp;data.frame(score,&nbsp;group&nbsp;=&nbsp;as.factor(group))<br><br>#&nbsp;Histogram&nbsp;of&nbsp;total&nbsp;scores&nbsp;wrt&nbsp;group<br>ggplot(data&nbsp;=&nbsp;df,&nbsp;aes(x&nbsp;=&nbsp;score,&nbsp;fill&nbsp;=&nbsp;group,&nbsp;col&nbsp;=&nbsp;group))&nbsp;+<br>&nbsp;&nbsp;geom_histogram(binwidth&nbsp;=&nbsp;1,&nbsp;position&nbsp;=&nbsp;\"dodge2\",&nbsp;alpha&nbsp;=&nbsp;0.75)&nbsp;+<br>&nbsp;&nbsp;xlab(\"Total&nbsp;score\")&nbsp;+<br>&nbsp;&nbsp;ylab(\"Number&nbsp;of&nbsp;respondents\")&nbsp;+<br>&nbsp;&nbsp;scale_fill_manual(values&nbsp;=&nbsp;c(\"dodgerblue2\",&nbsp;\"goldenrod2\"),&nbsp;labels&nbsp;=&nbsp;c(\"Reference\",&nbsp;\"Focal\"))&nbsp;+<br>&nbsp;&nbsp;scale_colour_manual(values&nbsp;=&nbsp;c(\"dodgerblue2\",&nbsp;\"goldenrod2\"),&nbsp;labels&nbsp;=&nbsp;c(\"Reference\",&nbsp;\"Focal\"))&nbsp;+<br>&nbsp;&nbsp;theme_app()&nbsp;+<br>&nbsp;&nbsp;theme(legend.position&nbsp;=&nbsp;\"left\")<br><br>#&nbsp;t-test&nbsp;to&nbsp;compare&nbsp;total&nbsp;scores<br>t.test(score0,&nbsp;score1)'))),
-      br()
+      code(includeText("sc/dif/tot_scores.R"))
     ),
     # DICHOTOMOUS METHODS ####
     "----",
@@ -198,8 +196,7 @@ uiDIF <-
       fluidRow(column(12, align = "center", tableOutput("dp_puri_table"))),
       conditionalPanel("input.puri_DP == 1", downloadButton(outputId = "download_dp_puri", label = "Download table"), br(), br()),
       h4("Selected R code"),
-      div(code(HTML('library(deltaPlotR)<br><br>#&nbsp;Loading&nbsp;data<br>data(GMAT,&nbsp;package&nbsp;=&nbsp;\"difNLR\")<br>Data&nbsp;<-&nbsp;GMAT[,&nbsp;1:20]<br>group&nbsp;<-&nbsp;GMAT[,&nbsp;\"group\"]<br><br>#&nbsp;Delta&nbsp;scores&nbsp;with&nbsp;fixed&nbsp;threshold<br>(DS_fixed&nbsp;<-&nbsp;deltaPlot(data&nbsp;=&nbsp;data.frame(Data,&nbsp;group),&nbsp;group&nbsp;=&nbsp;\"group\",&nbsp;focal.name&nbsp;=&nbsp;1,&nbsp;thr&nbsp;=&nbsp;1.5,&nbsp;purify&nbsp;=&nbsp;FALSE))<br>#&nbsp;Delta&nbsp;plot<br>diagPlot(DS_fixed,&nbsp;thr.draw&nbsp;=&nbsp;TRUE)<br><br>#&nbsp;Delta&nbsp;scores&nbsp;with&nbsp;normal&nbsp;threshold<br>(DS_normal&nbsp;<-&nbsp;deltaPlot(data&nbsp;=&nbsp;data.frame(Data,&nbsp;group),&nbsp;group&nbsp;=&nbsp;\"group\",&nbsp;focal.name&nbsp;=&nbsp;1,&nbsp;thr&nbsp;=&nbsp;\"norm\",&nbsp;purify&nbsp;=&nbsp;FALSE))<br>#&nbsp;Delta&nbsp;plot<br>diagPlot(DS_normal,&nbsp;thr.draw&nbsp;=&nbsp;TRUE)'))),
-      br()
+      code(includeText("sc/dif/delta_plt.R"))
     ),
     # * MANTEL-HAENSZEL ####
     tabPanel(
@@ -264,8 +261,7 @@ uiDIF <-
           conditionalPanel("input.DIF_MH_summary_purification == 1", downloadButton(outputId = "download_mh_puri", label = "Download table"), br(), br()),
           br(),
           h4("Selected R code"),
-          div(code(HTML('library(difR)<br><br>#&nbsp;Loading&nbsp;data<br>data(GMAT,&nbsp;package&nbsp;=&nbsp;\"difNLR\")<br>Data&nbsp;<-&nbsp;GMAT[,&nbsp;1:20]<br>group&nbsp;<-&nbsp;GMAT[,&nbsp;\"group\"]<br><br>#&nbsp;Mantel-Haenszel&nbsp;test<br>(fit&nbsp;<-&nbsp;difMH(Data&nbsp;=&nbsp;Data,&nbsp;group&nbsp;=&nbsp;group,&nbsp;focal.name&nbsp;=&nbsp;1,&nbsp;match&nbsp;=&nbsp;\"score\",&nbsp;p.adjust.method&nbsp;=&nbsp;\"none\",&nbsp;purify&nbsp;=&nbsp;FALSE))'))),
-          br()
+          code(includeText("sc/dif/mh.R"))
         ),
         tabPanel("Items",
           value = "mh_it",
@@ -307,8 +303,7 @@ uiDIF <-
           uiOutput("DIF_MH_items_interpretation"),
           br(),
           h4("Selected R code"),
-          div(code(HTML('library(difR)<br>library(reshape2)<br><br>#&nbsp;Loading&nbsp;data<br>data(GMAT,&nbsp;package&nbsp;=&nbsp;\"difNLR\")<br>Data&nbsp;<-&nbsp;GMAT[,&nbsp;1:20]<br>group&nbsp;<-&nbsp;GMAT[,&nbsp;\"group\"]<br><br>#&nbsp;contingency&nbsp;table&nbsp;for&nbsp;item&nbsp;1&nbsp;and&nbsp;score&nbsp;12<br>item&nbsp;<-&nbsp;1<br>cut&nbsp;<-&nbsp;12<br><br>df&nbsp;<-&nbsp;data.frame(Data[,&nbsp;item],&nbsp;group)<br>colnames(df)&nbsp;<-&nbsp;c(\"Answer\",&nbsp;\"Group\")<br>df$Answer&nbsp;<-&nbsp;relevel(factor(df$Answer,&nbsp;labels&nbsp;=&nbsp;c(\"Incorrect\",&nbsp;\"Correct\")),&nbsp;\"Correct\")<br>df$Group&nbsp;<-&nbsp;factor(df$Group,&nbsp;labels&nbsp;=&nbsp;c(\"Reference&nbsp;Group\",&nbsp;\"Focal&nbsp;Group\"))<br>score&nbsp;<-&nbsp;rowSums(Data)&nbsp;#&nbsp;total&nbsp;score&nbsp;calculation<br>df&nbsp;<-&nbsp;df[score&nbsp;==&nbsp;12,&nbsp;]&nbsp;#&nbsp;responses&nbsp;of&nbsp;those&nbsp;with&nbsp;total&nbsp;score&nbsp;of&nbsp;12<br>dcast(data.frame(xtabs(~&nbsp;Group&nbsp;+&nbsp;Answer,&nbsp;data&nbsp;=&nbsp;df)),<br>&nbsp;&nbsp;Group&nbsp;~&nbsp;Answer,<br>&nbsp;&nbsp;value.var&nbsp;=&nbsp;\"Freq\",&nbsp;margins&nbsp;=&nbsp;TRUE,&nbsp;fun&nbsp;=&nbsp;sum<br>)<br><br>#&nbsp;Mantel-Haenszel&nbsp;estimate&nbsp;of&nbsp;OR<br>(fit&nbsp;<-&nbsp;difMH(Data&nbsp;=&nbsp;Data,&nbsp;group&nbsp;=&nbsp;group,&nbsp;focal.name&nbsp;=&nbsp;1,&nbsp;match&nbsp;=&nbsp;\"score\",&nbsp;p.adjust.method&nbsp;=&nbsp;\"none\",&nbsp;purify&nbsp;=&nbsp;FALSE))<br>fit$alphaMH<br><br>#&nbsp;D-DIF&nbsp;index&nbsp;calculation<br>-2.35&nbsp;*&nbsp;log(fit$alphaMH)'))),
-          br()
+          code(includeText("sc/dif/mh_it.R"))
         )
       )
     ),
@@ -386,8 +381,7 @@ uiDIF <-
         downloadButton(outputId = "download_sibtest_dif_puri", label = "Download table"), br(), br()
       ),
       h4("Selected code"),
-      div(code(HTML('library(difR)<br><br>#&nbsp;Loading&nbsp;data<br>data(GMAT,&nbsp;package&nbsp;=&nbsp;\"difNLR\")<br>Data&nbsp;<-&nbsp;GMAT[,&nbsp;1:20]<br>group&nbsp;<-&nbsp;GMAT[,&nbsp;\"group\"]<br><br>#&nbsp;SIBTEST&nbsp;(uniform&nbsp;DIF)<br>(fit_udif&nbsp;<-&nbsp;difSIBTEST(Data&nbsp;=&nbsp;Data,&nbsp;group&nbsp;=&nbsp;group,&nbsp;focal.name&nbsp;=&nbsp;1,&nbsp;type&nbsp;=&nbsp;\"udif\",&nbsp;p.adjust.method&nbsp;=&nbsp;\"none\",&nbsp;purify&nbsp;=&nbsp;FALSE))<br><br>#&nbsp;Crossing-SIBTEST&nbsp;(non-uniform&nbsp;DIF)<br>(fit_nudif&nbsp;<-&nbsp;difSIBTEST(Data&nbsp;=&nbsp;Data,&nbsp;group&nbsp;=&nbsp;group,&nbsp;focal.name&nbsp;=&nbsp;1,&nbsp;type&nbsp;=&nbsp;\"nudif\",&nbsp;p.adjust.method&nbsp;=&nbsp;\"none\",&nbsp;purify&nbsp;=&nbsp;FALSE))'))),
-      br()
+      code(includeText("sc/dif/sibtest.R"))
     ),
     # * LOGISTIC ####
     ui_DIF_logistic,
@@ -529,8 +523,7 @@ uiDIF <-
           ),
           br(),
           h4("Selected R code"),
-          div(code(HTML('library(difNLR)<br><br>#&nbsp;Loading&nbsp;data<br>data(GMAT,&nbsp;package&nbsp;=&nbsp;\"difNLR\")<br>Data&nbsp;<-&nbsp;GMAT[,&nbsp;1:20]<br>group&nbsp;<-&nbsp;GMAT[,&nbsp;\"group\"]<br><br>#&nbsp;Generalized&nbsp;logistic&nbsp;regression&nbsp;DIF&nbsp;method<br>#&nbsp;using&nbsp;3PL&nbsp;model&nbsp;with&nbsp;the&nbsp;same&nbsp;guessing&nbsp;parameter&nbsp;for&nbsp;both&nbsp;groups<br>(fit&nbsp;<-&nbsp;difNLR(Data&nbsp;=&nbsp;Data,&nbsp;group&nbsp;=&nbsp;group,&nbsp;focal.name&nbsp;=&nbsp;1,&nbsp;model&nbsp;=&nbsp;\"3PLcg\",&nbsp;match&nbsp;=&nbsp;\"zscore\",&nbsp;type&nbsp;=&nbsp;\"all\",&nbsp;p.adjust.method&nbsp;=&nbsp;\"none\",&nbsp;purify&nbsp;=&nbsp;FALSE))<br><br>#&nbsp;Loading&nbsp;data<br>data(LearningToLearn,&nbsp;package&nbsp;=&nbsp;\"ShinyItemAnalysis\")<br>Data&nbsp;<-&nbsp;LearningToLearn[,&nbsp;87:94]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;item&nbsp;responses&nbsp;from&nbsp;Grade&nbsp;9&nbsp;from&nbsp;subscale&nbsp;6<br>group&nbsp;<-&nbsp;LearningToLearn$track&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;school&nbsp;track&nbsp;-&nbsp;group&nbsp;membership&nbsp;variable<br>match&nbsp;<-&nbsp;scale(LearningToLearn$score_6)&nbsp;#&nbsp;standardized&nbsp;test&nbsp;score&nbsp;from&nbsp;Grade&nbsp;6<br><br>#&nbsp;Detecting&nbsp;differential&nbsp;item&nbsp;functioning&nbsp;in&nbsp;change&nbsp;(DIF-C)&nbsp;using<br>#&nbsp;generalized&nbsp;logistic&nbsp;regression&nbsp;DIF&nbsp;method&nbsp;with&nbsp;3PL&nbsp;model<br>#&nbsp;with&nbsp;the&nbsp;same&nbsp;guessing&nbsp;parameter&nbsp;for&nbsp;both&nbsp;groups<br>#&nbsp;and&nbsp;standardized&nbsp;total&nbsp;score&nbsp;from&nbsp;Grade&nbsp;6&nbsp;as&nbsp;matching&nbsp;criterion<br>(fit&nbsp;<-&nbsp;difNLR(Data&nbsp;=&nbsp;Data,&nbsp;group&nbsp;=&nbsp;group,&nbsp;focal.name&nbsp;=&nbsp;\"AS\",&nbsp;model&nbsp;=&nbsp;\"3PLc\",&nbsp;match&nbsp;=&nbsp;match,&nbsp;type&nbsp;=&nbsp;\"all\",&nbsp;p.adjust.method&nbsp;=&nbsp;\"none\",&nbsp;purify&nbsp;=&nbsp;FALSE))'))),
-          br()
+          code(includeText("sc/dif/nlr.R"))
         ),
         # ** Items ####
         tabPanel("Items",
@@ -666,8 +659,7 @@ uiDIF <-
           fluidRow(column(12, align = "center", tableOutput("tab_coef_DIF_NLR"))),
           br(),
           h4("Selected R code"),
-          div(code(HTML('library(difNLR)<br><br>#&nbsp;Loading&nbsp;data<br>data(GMAT,&nbsp;package&nbsp;=&nbsp;\"difNLR\")<br>Data&nbsp;<-&nbsp;GMAT[,&nbsp;1:20]<br>group&nbsp;<-&nbsp;GMAT[,&nbsp;\"group\"]<br><br>#&nbsp;Generalized&nbsp;logistic&nbsp;regression&nbsp;DIF&nbsp;method<br>#&nbsp;using&nbsp;3PL&nbsp;model&nbsp;with&nbsp;the&nbsp;same&nbsp;guessing&nbsp;parameter&nbsp;for&nbsp;both&nbsp;groups<br>(fit&nbsp;<-&nbsp;difNLR(Data&nbsp;=&nbsp;Data,&nbsp;group&nbsp;=&nbsp;group,&nbsp;focal.name&nbsp;=&nbsp;1,&nbsp;model&nbsp;=&nbsp;\"3PLcg\",&nbsp;match&nbsp;=&nbsp;\"zscore\",&nbsp;type&nbsp;=&nbsp;\"all\",&nbsp;p.adjust.method&nbsp;=&nbsp;\"none\",&nbsp;purify&nbsp;=&nbsp;FALSE))<br><br>#&nbsp;Plot&nbsp;of&nbsp;characteristic&nbsp;curve&nbsp;of&nbsp;item&nbsp;1<br>plot(fit,&nbsp;item&nbsp;=&nbsp;1)<br><br>#&nbsp;Estimated&nbsp;coefficients&nbsp;for&nbsp;item&nbsp;1&nbsp;with&nbsp;standard&nbsp;errors<br>coef(fit,&nbsp;SE&nbsp;=&nbsp;TRUE)'))),
-          br()
+          code(includeText("sc/dif/nlr_it.R"))
         )
       )
     ),
@@ -752,8 +744,7 @@ uiDIF <-
             downloadButton(outputId = "download_lord_dif_puri", label = "Download table"), br(), br()
           ),
           h4("Selected R code"),
-          div(code(HTML('library(difR)<br>library(ltm)<br><br>#&nbsp;Loading&nbsp;data<br>data(GMAT,&nbsp;package&nbsp;=&nbsp;\"difNLR\")<br>Data&nbsp;<-&nbsp;GMAT[,&nbsp;1:20]<br>group&nbsp;<-&nbsp;GMAT[,&nbsp;\"group\"]<br><br>#&nbsp;1PL&nbsp;IRT&nbsp;MODEL<br>(fit1PL&nbsp;<-&nbsp;difLord(Data&nbsp;=&nbsp;Data,&nbsp;group&nbsp;=&nbsp;group,&nbsp;focal.name&nbsp;=&nbsp;1,&nbsp;model&nbsp;=&nbsp;\"1PL\",&nbsp;p.adjust.method&nbsp;=&nbsp;\"none\",&nbsp;purify&nbsp;=&nbsp;FALSE))<br><br>#&nbsp;2PL&nbsp;IRT&nbsp;MODEL<br>(fit2PL&nbsp;<-&nbsp;difLord(Data&nbsp;=&nbsp;Data,&nbsp;group&nbsp;=&nbsp;group,&nbsp;focal.name&nbsp;=&nbsp;1,&nbsp;model&nbsp;=&nbsp;\"2PL\",&nbsp;p.adjust.method&nbsp;=&nbsp;\"none\",&nbsp;purify&nbsp;=&nbsp;FALSE))<br><br>#&nbsp;3PL&nbsp;IRT&nbsp;MODEL&nbsp;with&nbsp;the&nbsp;same&nbsp;guessing&nbsp;for&nbsp;groups<br>guess&nbsp;<-&nbsp;itemParEst(Data,&nbsp;model&nbsp;=&nbsp;\"3PL\")[,&nbsp;3]<br>(fit3PL&nbsp;<-&nbsp;difLord(Data&nbsp;=&nbsp;Data,&nbsp;group&nbsp;=&nbsp;group,&nbsp;focal.name&nbsp;=&nbsp;1,&nbsp;model&nbsp;=&nbsp;\"3PL\",&nbsp;c&nbsp;=&nbsp;guess,&nbsp;p.adjust.method&nbsp;=&nbsp;\"none\",&nbsp;purify&nbsp;=&nbsp;FALSE))'))),
-          br()
+          code(includeText("sc/dif/lord.R"))
         ),
         # ** Items ####
         tabPanel("Items",
@@ -828,8 +819,7 @@ uiDIF <-
           fluidRow(column(12, align = "center", tableOutput("tab_coef_DIF_IRT_Lord"))),
           br(),
           h4("Selected R code"),
-          div(code(HTML('library(difR)<br>library(ltm)<br>library(ShinyItemAnalysis)<br><br>#&nbsp;Loading&nbsp;data<br>data(GMAT,&nbsp;package&nbsp;=&nbsp;\"difNLR\")<br>Data&nbsp;<-&nbsp;GMAT[,&nbsp;1:20]<br>group&nbsp;<-&nbsp;GMAT[,&nbsp;\"group\"]<br><br>#&nbsp;1PL&nbsp;IRT&nbsp;MODEL<br>(fit1PL&nbsp;<-&nbsp;difLord(Data&nbsp;=&nbsp;Data,&nbsp;group&nbsp;=&nbsp;group,&nbsp;focal.name&nbsp;=&nbsp;1,&nbsp;model&nbsp;=&nbsp;\"1PL\",&nbsp;p.adjust.method&nbsp;=&nbsp;\"none\",&nbsp;purify&nbsp;=&nbsp;FALSE))<br>#&nbsp;Estimated&nbsp;coefficients&nbsp;for&nbsp;all&nbsp;items<br>(coef1PL&nbsp;<-&nbsp;fit1PL$itemParInit)<br>#&nbsp;Plot&nbsp;of&nbsp;characteristic&nbsp;curve&nbsp;of&nbsp;item&nbsp;1<br>plotDIFirt(parameters&nbsp;=&nbsp;coef1PL,&nbsp;item&nbsp;=&nbsp;1,&nbsp;test&nbsp;=&nbsp;\"Lord\")<br><br>#&nbsp;2PL&nbsp;IRT&nbsp;MODEL<br>(fit2PL&nbsp;<-&nbsp;difLord(Data&nbsp;=&nbsp;Data,&nbsp;group&nbsp;=&nbsp;group,&nbsp;focal.name&nbsp;=&nbsp;1,&nbsp;model&nbsp;=&nbsp;\"2PL\",&nbsp;p.adjust.method&nbsp;=&nbsp;\"none\",&nbsp;purify&nbsp;=&nbsp;FALSE))<br>#&nbsp;Estimated&nbsp;coefficients&nbsp;for&nbsp;all&nbsp;items<br>(coef2PL&nbsp;<-&nbsp;fit2PL$itemParInit)<br>#&nbsp;Plot&nbsp;of&nbsp;characteristic&nbsp;curve&nbsp;of&nbsp;item&nbsp;1<br>plotDIFirt(parameters&nbsp;=&nbsp;coef2PL,&nbsp;item&nbsp;=&nbsp;1,&nbsp;test&nbsp;=&nbsp;\"Lord\")<br><br>#&nbsp;3PL&nbsp;IRT&nbsp;MODEL&nbsp;with&nbsp;the&nbsp;same&nbsp;guessing&nbsp;for&nbsp;groups<br>guess&nbsp;<-&nbsp;itemParEst(Data,&nbsp;model&nbsp;=&nbsp;\"3PL\")[,&nbsp;3]<br>(fit3PL&nbsp;<-&nbsp;difLord(Data&nbsp;=&nbsp;Data,&nbsp;group&nbsp;=&nbsp;group,&nbsp;focal.name&nbsp;=&nbsp;1,&nbsp;model&nbsp;=&nbsp;\"3PL\",&nbsp;c&nbsp;=&nbsp;guess,&nbsp;p.adjust.method&nbsp;=&nbsp;\"none\",&nbsp;purify&nbsp;=&nbsp;FALSE))<br>#&nbsp;Estimated&nbsp;coefficients&nbsp;for&nbsp;all&nbsp;items<br>(coef3PL&nbsp;<-&nbsp;fit3PL$itemParInit)<br>#&nbsp;Plot&nbsp;of&nbsp;characteristic&nbsp;curve&nbsp;of&nbsp;item&nbsp;1<br>plotDIFirt(parameters&nbsp;=&nbsp;coef3PL,&nbsp;item&nbsp;=&nbsp;1,&nbsp;test&nbsp;=&nbsp;\"Lord\")'))),
-          br()
+          code(includeText("sc/dif/lord_it.R"))
         )
       )
     ),
@@ -914,8 +904,7 @@ uiDIF <-
             downloadButton(outputId = "download_raju_dif_puri", label = "Download table"), br(), br()
           ),
           h4("Selected R code"),
-          div(code(HTML('library(difR)<br>library(ltm)<br><br>#&nbsp;Loading&nbsp;data<br>data(GMAT,&nbsp;package&nbsp;=&nbsp;\"difNLR\")<br>Data&nbsp;<-&nbsp;GMAT[,&nbsp;1:20]<br>group&nbsp;<-&nbsp;GMAT[,&nbsp;\"group\"]<br><br>#&nbsp;1PL&nbsp;IRT&nbsp;MODEL<br>(fit1PL&nbsp;<-&nbsp;difRaju(Data&nbsp;=&nbsp;Data,&nbsp;group&nbsp;=&nbsp;group,&nbsp;focal.name&nbsp;=&nbsp;1,&nbsp;model&nbsp;=&nbsp;\"1PL\",&nbsp;p.adjust.method&nbsp;=&nbsp;\"none\",&nbsp;purify&nbsp;=&nbsp;FALSE))<br><br>#&nbsp;2PL&nbsp;IRT&nbsp;MODEL<br>(fit2PL&nbsp;<-&nbsp;difRaju(Data&nbsp;=&nbsp;Data,&nbsp;group&nbsp;=&nbsp;group,&nbsp;focal.name&nbsp;=&nbsp;1,&nbsp;model&nbsp;=&nbsp;\"2PL\",&nbsp;p.adjust.method&nbsp;=&nbsp;\"none\",&nbsp;purify&nbsp;=&nbsp;FALSE))<br><br>#&nbsp;3PL&nbsp;IRT&nbsp;MODEL&nbsp;with&nbsp;the&nbsp;same&nbsp;guessing&nbsp;for&nbsp;groups<br>guess&nbsp;<-&nbsp;itemParEst(Data,&nbsp;model&nbsp;=&nbsp;\"3PL\")[,&nbsp;3]<br>(fit3PL&nbsp;<-&nbsp;difRaju(Data&nbsp;=&nbsp;Data,&nbsp;group&nbsp;=&nbsp;group,&nbsp;focal.name&nbsp;=&nbsp;1,&nbsp;model&nbsp;=&nbsp;\"3PL\",&nbsp;c&nbsp;=&nbsp;guess,&nbsp;p.adjust.method&nbsp;=&nbsp;\"none\",&nbsp;purify&nbsp;=&nbsp;FALSE))'))),
-          br()
+          code(includeText("sc/dif/raju.R"))
         ),
         # ** Items ####
         tabPanel("Items",
@@ -994,8 +983,7 @@ uiDIF <-
           fluidRow(column(12, align = "center", tableOutput("tab_coef_DIF_IRT_Raju"))),
           br(),
           h4("Selected R code"),
-          div(code(HTML('library(difR)<br>library(ltm)<br>library(ShinyItemAnalysis)<br><br>#&nbsp;Loading&nbsp;data<br>data(GMAT,&nbsp;package&nbsp;=&nbsp;\"difNLR\")<br>Data&nbsp;<-&nbsp;GMAT[,&nbsp;1:20]<br>group&nbsp;<-&nbsp;GMAT[,&nbsp;\"group\"]<br><br>#&nbsp;1PL&nbsp;IRT&nbsp;MODEL<br>(fit1PL&nbsp;<-&nbsp;difRaju(Data&nbsp;=&nbsp;Data,&nbsp;group&nbsp;=&nbsp;group,&nbsp;focal.name&nbsp;=&nbsp;1,&nbsp;model&nbsp;=&nbsp;\"1PL\",&nbsp;p.adjust.method&nbsp;=&nbsp;\"none\",&nbsp;purify&nbsp;=&nbsp;FALSE))<br>#&nbsp;Estimated&nbsp;coefficients&nbsp;for&nbsp;all&nbsp;items<br>(coef1PL&nbsp;<-&nbsp;fit1PL$itemParInit)<br>#&nbsp;Plot&nbsp;of&nbsp;characteristic&nbsp;curve&nbsp;of&nbsp;item&nbsp;1<br>plotDIFirt(parameters&nbsp;=&nbsp;coef1PL,&nbsp;item&nbsp;=&nbsp;1,&nbsp;test&nbsp;=&nbsp;\"Raju\")<br><br>#&nbsp;2PL&nbsp;IRT&nbsp;MODEL<br>(fit2PL&nbsp;<-&nbsp;difRaju(Data&nbsp;=&nbsp;Data,&nbsp;group&nbsp;=&nbsp;group,&nbsp;focal.name&nbsp;=&nbsp;1,&nbsp;model&nbsp;=&nbsp;\"2PL\",&nbsp;p.adjust.method&nbsp;=&nbsp;\"none\",&nbsp;purify&nbsp;=&nbsp;FALSE))<br>#&nbsp;Estimated&nbsp;coefficients&nbsp;for&nbsp;all&nbsp;items<br>(coef2PL&nbsp;<-&nbsp;fit2PL$itemParInit)<br>#&nbsp;Plot&nbsp;of&nbsp;characteristic&nbsp;curve&nbsp;of&nbsp;item&nbsp;1<br>plotDIFirt(parameters&nbsp;=&nbsp;coef2PL,&nbsp;item&nbsp;=&nbsp;1,&nbsp;test&nbsp;=&nbsp;\"Raju\")<br><br>#&nbsp;3PL&nbsp;IRT&nbsp;MODEL&nbsp;with&nbsp;the&nbsp;same&nbsp;guessing&nbsp;for&nbsp;groups<br>guess&nbsp;<-&nbsp;itemParEst(Data,&nbsp;model&nbsp;=&nbsp;\"3PL\")[,&nbsp;3]<br>(fit3PL&nbsp;<-&nbsp;difRaju(Data&nbsp;=&nbsp;Data,&nbsp;group&nbsp;=&nbsp;group,&nbsp;focal.name&nbsp;=&nbsp;1,&nbsp;model&nbsp;=&nbsp;\"3PL\",&nbsp;c&nbsp;=&nbsp;guess,&nbsp;p.adjust.method&nbsp;=&nbsp;\"none\",&nbsp;purify&nbsp;=&nbsp;FALSE))<br>#&nbsp;Estimated&nbsp;coefficients&nbsp;for&nbsp;all&nbsp;items<br>(coef3PL&nbsp;<-&nbsp;fit3PL$itemParInit)<br>#&nbsp;Plot&nbsp;of&nbsp;characteristic&nbsp;curve&nbsp;of&nbsp;item&nbsp;1<br>plotDIFirt(parameters&nbsp;=&nbsp;coef3PL,&nbsp;item&nbsp;=&nbsp;1,&nbsp;test&nbsp;=&nbsp;\"Raju\")'))),
-          br()
+          code(includeText("sc/dif/raju_it.R"))
         )
       )
     ),
@@ -1082,9 +1070,7 @@ uiDIF <-
       ),
       # br(),
       fluidRow(column(12, align = "left", tableOutput("method_comparison_table"))),
-      fluidRow((column(12, align = "left", uiOutput("mc_settings")))),
-      br(),
-      br()
+      fluidRow((column(12, align = "left", uiOutput("mc_settings"))))
     ),
     # POLYTOMOUS METHODS ####
     "----",

@@ -23,49 +23,46 @@ uiTDIF <- tabPanel(
       ),
       fluidRow(
         splitLayout(
-          cellWidths = c("20%", "5%", "20%", "5%", "20%", "5%", "20%", "5%"),
+          cellWidths = "25%",
+          cellArgs = list(style = "padding: 15px;"),
           tags$div(
             class = "js-irs-blue",
             sliderInput("DIF_training_parameter_aR", "\\(a_R\\) - discrimination",
               min = 0, max = 4, value = 1, step = 0.1
             )
           ),
-          "",
           tags$div(
             class = "js-irs-blue",
             sliderInput("DIF_training_parameter_bR", "\\(b_R\\) - difficulty",
               min = -4, max = 4, value = 0, step = 0.1
             )
           ),
-          "",
           tags$div(
             class = "js-irs-yellow",
             sliderInput("DIF_training_parameter_aF", "\\(a_F\\) - discrimination",
               min = 0, max = 4, value = 1, step = 0.1
             )
           ),
-          "",
           tags$div(
             class = "js-irs-yellow",
             sliderInput("DIF_training_parameter_bF", "\\(b_F\\) - difficulty",
               min = -4, max = 4, value = 0, step = 0.1
             )
-          ),
-          ""
+          )
         )
       ),
       p("You may also select the value of latent ability \\(\\theta\\) to obtain the interpretation of the item
                                 characteristic curves for this ability. "),
       fluidRow(
         splitLayout(
-          cellWidths = c("20%", "5%", "75"),
+          cellWidths = "25%",
+          cellArgs = list(style = "padding: 15px;"),
           tags$div(
             class = "js-irs-gray",
             sliderInput("DIF_training_parameter_theta", "\\(\\theta\\) - latent ability",
               min = -4, max = 4, value = 0, step = 0.1
             )
-          ),
-          ""
+          )
         )
       ),
       #------------------------------------------------------------------------------------#
@@ -366,16 +363,13 @@ uiTDIF <- tabPanel(
           class = "btn btn-large btn-primary",
           label = "Submit answers", width = "70%"
         )
-      ),
-      br(),
-      br(),
-      br(),
+      )
+
       #------------------------------------------------------------------------------------#
       # Selected R code ####
       #------------------------------------------------------------------------------------#
       # h4("Selected R code"),
       # div(code(HTML(""))),
-      br()
     # ),
     # tabPanel(
     #   "Score-based methods",

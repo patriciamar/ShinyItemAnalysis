@@ -108,8 +108,7 @@ ui_DIF_cumulative <- tabPanel(
         br()
       ),
       h4("Selected R code"),
-      div(code(HTML('library(difNLR)<br><br>#&nbsp;Loading&nbsp;data<br>data(dataMedicalgraded,&nbsp;package&nbsp;=&nbsp;\"ShinyItemAnalysis\")<br>Data&nbsp;<-&nbsp;dataMedicalgraded[,&nbsp;1:100]<br>group&nbsp;<-&nbsp;dataMedicalgraded[,&nbsp;101]<br><br>#&nbsp;DIF&nbsp;with&nbsp;cumulative&nbsp;logit&nbsp;regression&nbsp;model<br>(fit&nbsp;<-&nbsp;difORD(Data&nbsp;=&nbsp;Data,&nbsp;group&nbsp;=&nbsp;group,&nbsp;focal.name&nbsp;=&nbsp;1,&nbsp;model&nbsp;=&nbsp;\"cumulative\",<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type&nbsp;=&nbsp;\"both\",&nbsp;match&nbsp;=&nbsp;\"zscore\",&nbsp;p.adjust.method&nbsp;=&nbsp;\"none\",&nbsp;purify&nbsp;=&nbsp;FALSE,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;parametrization&nbsp;=&nbsp;\"classic\"))'))),
-      br()
+      code(includeText("sc/dif/cum.R"))
     ),
     # ** Items ####
     tabPanel("Items",
@@ -218,8 +217,7 @@ ui_DIF_cumulative <- tabPanel(
       fluidRow(column(12, align = "center", tableOutput("DIF_cumulative_items_coef"))),
       br(),
       h4("Selected R code"),
-      div(code(HTML('library(difNLR)<br><br>#&nbsp;Loading&nbsp;data<br>data(dataMedicalgraded,&nbsp;package&nbsp;=&nbsp;\"ShinyItemAnalysis\")<br>Data&nbsp;<-&nbsp;dataMedicalgraded[,&nbsp;1:100]<br>group&nbsp;<-&nbsp;dataMedicalgraded[,&nbsp;101]<br><br>#&nbsp;DIF&nbsp;with&nbsp;cumulative&nbsp;logit&nbsp;regression&nbsp;model<br>(fit&nbsp;<-&nbsp;difORD(Data&nbsp;=&nbsp;Data,&nbsp;group&nbsp;=&nbsp;group,&nbsp;focal.name&nbsp;=&nbsp;1,&nbsp;model&nbsp;=&nbsp;\"cumulative\",<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type&nbsp;=&nbsp;\"both\",&nbsp;match&nbsp;=&nbsp;\"zscore\",&nbsp;p.adjust.method&nbsp;=&nbsp;\"none\",&nbsp;purify&nbsp;=&nbsp;FALSE,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;parametrization&nbsp;=&nbsp;\"classic\"))<br><br>#&nbsp;Plot&nbsp;of&nbsp;characteristic&nbsp;curves&nbsp;for&nbsp;item&nbsp;X2003,&nbsp;cumulative&nbsp;probabilities<br>plot(fit,&nbsp;item&nbsp;=&nbsp;\"X2003\",&nbsp;plot.type&nbsp;=&nbsp;\"cumulative\")<br><br>#&nbsp;Plot&nbsp;of&nbsp;characteristic&nbsp;curves&nbsp;for&nbsp;item&nbsp;X2003,&nbsp;category&nbsp;probabilities<br>plot(fit,&nbsp;item&nbsp;=&nbsp;\"X2003\",&nbsp;plot.type&nbsp;=&nbsp;\"category\")<br><br>#&nbsp;Estimated&nbsp;coefficients&nbsp;for&nbsp;all&nbsp;items&nbsp;with&nbsp;standard&nbsp;errors<br>coef(fit,&nbsp;SE&nbsp;=&nbsp;TRUE)'))),
-      br()
+      code(includeText("sc/dif/cum_it.R"))
     )
   )
 )
