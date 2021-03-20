@@ -2,18 +2,24 @@
 
 ----------
 
-### Changes in version 1.3.5-1 (2021-02-22)
+### Changes in version 1.3.6 (2021-03-20)
 #### BUG FIXING
-  * Data upload was fixed, warning messages related to data upload were fixed.
+  * Function ItemAnalysis() updated to avoid error messages in case of datasets
+    including 2 items only. (Thanks to Frederic Hilkenmeier for reporting this 
+    issue.)
+  * Data upload in the app was fixed, as well as the warning messages related 
+    to data upload.
   * In the `Reports` section of the app the default name of the dataset was set
     to the name of the csv file. This fixed some of the bugs with the HTML
     report download.
 
 #### MAJOR UPDATES
+  * New function `fa_parallel()` was added offering fast paralel analysis for 
+    deciding on number of factors in exploratory factor analysis.
   * New datasets `CZmatura` and `CZmaturaS` were added.
   * Some ui code of the shiny app was reorganized into separte sections.
   * In the `Validity` section of the app, a new tab `Factor analysis` was 
-    created.
+    added offering exploratory factor analysis.
   * In the `IRT models` section of the app, the binary IRT models were
     collapsed into a single `Dichotomous models` tab. 
   * In the `IRT models` section of the app, the Bock IRT model section was
@@ -24,15 +30,22 @@
     besides the standardized total score.
   * In all sections of the shiny app, the wording was edited. 
   * The ggWrightMap() function was rewritten to exclude dependencies other than 
-    ggplot. 
+    ggplot2. 
   
   
 #### MINOR UPDATES
+  * The sample R code snippets were moved to a separate directory.
+  * In the `Criterion validity` and `Item criterion validity`, the Pearson 
+    correlation is newly used as the default option.
+  * In the shiny app, the item criterion validity analysis was moved to the 
+    `Item analysis` section.  
+  * In the `Item analysis` section of the app, default discrimination was 
+    changed to RIT.  
   * Softer deprecation with warning only was applied to functions.
-  * In the shiny app, term `Observed ability` is now consistently used instead of 
-    `(DIF/DDF) Matching variable`. The changes done were especially in the `Data`,
-    `Regression models` and the `DIF/Fairness` sections of the app, and in the
-    `plotDIFLogistic()` function.
+  * In the shiny app, term `Observed ability` is now consistently used instead 
+    of `(DIF/DDF) Matching variable`. The changes done were especially in the 
+    `Data`, `Regression models` and the `DIF/Fairness` sections of the app, and 
+    in the `plotDIFLogistic()` function.
   * Section `Summary` of the app was renamed to `Scores` to beter reflect focus 
     of this section. 
   * In the `Validity` section of the shiny app, the dendrogram is newly enabled 
