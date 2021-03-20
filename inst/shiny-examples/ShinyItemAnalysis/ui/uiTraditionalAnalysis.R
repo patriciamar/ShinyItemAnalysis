@@ -14,11 +14,11 @@ uiTraditionalAnalysis <- navbarMenu(
                                                divided by its range. Below you can change the estimate of difficulty to the average score of the item. For binary
                                                items both estimates are equivalent and can be interpreted as the percentage of respondents who answered the item correctly. ",
       br(),
-      strong("Discrimination"), " is by default estimated as the difference in (scaled) item score
-                                               in the upper and lower third of the respondents (Upper-Lower Index, ULI). ULI can be customized by changing the number of
-                                               groups and by changing which groups should be compared (see also Martinkova, Stepanek et al., 2017). Other
-                                               options for the discrimination index include coRrelation between Item and Total score (RIT index) and coRrelation
-                                               between Item and total score based on Rest of the items (RIR index). By a rule of thumb, all items with a discrimination
+      strong("Discrimination"), " is by default estimated as the coRrelation between Item and Total score (RIT index). Other
+                                               options for the discrimination index include coRrelation between Item and total score based on Rest of the items (RIR index).
+                                               Discrimination can also be estimated as the difference in (scaled) item score
+                                               in the upper and lower third of the respondents (Upper-Lower Index, ULI). ULI can be further customized by changing the number of
+                                               groups and by changing which groups should be compared (see also Martinkova, Stepanek et al., 2017). By a rule of thumb, all items with a discrimination
                                                lower than 0.2 (threshold in the plot), should be checked for content. Lower discrimination is excpectable
                                                in the case of very easy or very difficult items, or in ULI based on more homogeneous groups
                                                (such as 4th and last fifth). A threshold may be adjusted for these cases or may be set to 0."
@@ -43,7 +43,7 @@ uiTraditionalAnalysis <- navbarMenu(
           "RIR" = "RIR",
           "none" = "none"
         ),
-        selected = "ULI"
+        selected = "RIT"
       )),
       conditionalPanel(
         condition = "input.itemanalysis_DDplot_discrimination=='ULI'",
@@ -110,8 +110,7 @@ uiTraditionalAnalysis <- navbarMenu(
     ),
     br(), br(),
     h4("Selected R code"),
-    div(code(HTML("library(psych)<br>library(ShinyItemAnalysis)<br><br>#&nbsp;loading&nbsp;data<br>data(GMAT,&nbsp;package&nbsp;=&nbsp;\"difNLR\")<br>Data&nbsp;<-&nbsp;GMAT[,&nbsp;1:20]<br><br>#&nbsp;difficulty&nbsp;and&nbsp;discrimination&nbsp;plot<br>DDplot(Data,&nbsp;discrim&nbsp;=&nbsp;'ULI',&nbsp;k&nbsp;=&nbsp;3,&nbsp;l&nbsp;=&nbsp;1,&nbsp;u&nbsp;=&nbsp;3)<br><br>#&nbsp;Cronbach&nbsp;alpha<br>psych::alpha(Data)<br><br>#&nbsp;traditional&nbsp;item&nbsp;analysis&nbsp;table<br>ItemAnalysis(Data)"))),
-    br()
+    code(includeText("sc/tia/tia.R"))
   ),
 
   # * DISTRACTORS ####
@@ -122,8 +121,10 @@ uiTraditionalAnalysis <- navbarMenu(
        these curves can show how the distractors (wrong answers) were able to function effectively by drawing the test takers away from the correct answer."),
     h4("Empirical item response curves / Distractors plot"),
     htmlOutput("distractor_text"),
-    p("With the option ", strong("Combinations"), "all item selection patterns are plotted (e.g., AB, ACD, BC). With the option",
-                      strong("Distractors"), "answers are split among the remaining incorect answers (e.g., A, B, C, D)."),
+    p(
+      "With the option ", strong("Combinations"), "all item selection patterns are plotted (e.g., AB, ACD, BC). With the option",
+      strong("Distractors"), "answers are split among the remaining incorect answers (e.g., A, B, C, D)."
+    ),
     fluidPage(
       div(
         class = "input-slider",
@@ -180,7 +181,132 @@ uiTraditionalAnalysis <- navbarMenu(
     br(),
     br(),
     h4("Selected R code"),
-    div(code(HTML("library(data.table)<br>library(ShinyItemAnalysis)<br><br>#&nbsp;loading&nbsp;data<br>data(GMATtest,&nbsp;GMATkey,&nbsp;package&nbsp;=&nbsp;\"difNLR\")<br>Data&nbsp;<-&nbsp;GMATtest[,&nbsp;1:20]<br>key&nbsp;<-&nbsp;unlist(GMATkey)<br><br>#&nbsp;combinations&nbsp;-&nbsp;plot&nbsp;for&nbsp;item&nbsp;1&nbsp;and&nbsp;3&nbsp;groups<br>plotDistractorAnalysis(Data,&nbsp;key,&nbsp;num.group&nbsp;=&nbsp;3,&nbsp;item&nbsp;=&nbsp;1,&nbsp;multiple.answers&nbsp;=&nbsp;TRUE)<br><br>#&nbsp;distractors&nbsp;-&nbsp;plot&nbsp;for&nbsp;item&nbsp;1&nbsp;and&nbsp;3&nbsp;groups<br>plotDistractorAnalysis(Data,&nbsp;key,&nbsp;num.group&nbsp;=&nbsp;3,&nbsp;item&nbsp;=&nbsp;1,&nbsp;multiple.answers&nbsp;=&nbsp;FALSE)<br><br>#&nbsp;table&nbsp;with&nbsp;counts&nbsp;and&nbsp;margins&nbsp;-&nbsp;item&nbsp;1&nbsp;and&nbsp;3&nbsp;groups<br>DA&nbsp;<-&nbsp;DistractorAnalysis(Data,&nbsp;key,&nbsp;num.groups&nbsp;=&nbsp;3)[[1]]<br>dcast(as.data.frame(DA),&nbsp;response&nbsp;~&nbsp;score.level,&nbsp;sum,&nbsp;margins&nbsp;=&nbsp;TRUE,&nbsp;value.var&nbsp;=&nbsp;\"Freq\")<br><br>#&nbsp;table&nbsp;with&nbsp;proportions&nbsp;-&nbsp;item&nbsp;1&nbsp;and&nbsp;3&nbsp;groups<br>DistractorAnalysis(Data,&nbsp;key,&nbsp;num.groups&nbsp;=&nbsp;3,&nbsp;p.table&nbsp;=&nbsp;TRUE)[[1]]<br>"))),
-    br()
+    code(includeText("sc/tia/distr.R"))
+  ),
+
+  # ** Items ####
+  tabPanel("Item criterion validity",
+    value = "crit_val_items",
+    h3("Item criterion validity"),
+    p("This section requires a criterion variable (e.g. future study success or future GPA in case
+                                   of admission tests) which should correlate with the measurement. A criterion variable
+                                   can be uploaded in the ", strong("Data"), "section. Here you can explore how the the criterion correlates with individual items. "), br(),
+
+    h4("Item difficulty / criterion validity plot"),
+    p('The following plot intelligibly depicts the criterion validity of every individual item (blue) together with its difficulty (red).
+                                   Items are ordered by difficulty. You can choose from two indices of criterion validity - item-criterion correlation and the so-called "item validity index".
+                                   The former refers to a simple Pearson product-moment correlation (or, in the case of a binary dataset, point-biserial correlation),
+                                   the later also takes into account the item varinace (see Allen & Yen, 1979, for details).
+                                   Further item analysis can be performed in an Item Analysis tab.'),
+    fluidRow(
+      column(
+        2,
+        selectInput(
+          inputId = "DCplot_difficulty",
+          label = "Difficulty type:",
+          choices = c(
+            "Average scaled score" = "AVGSS",
+            "Average item score" = "AVGS"
+          ),
+          selected = "AVGSS"
+        )
+      ),
+      column(
+        2,
+        selectInput(
+          inputId = "DCplot_validity",
+          label = "Validity type:",
+          choices = c(
+            "item-criterion corr." = "simple",
+            "item validity index" = "index"
+          ),
+          selected = "simple"
+        )
+      ),
+      column(
+        2, br(),
+        div(
+          style = "horizontal-align:left",
+          checkboxInput(
+            inputId = "DCplotThr_cb",
+            label = "Show threshold",
+            value = FALSE
+          )
+        ),
+        conditionalPanel(
+          condition = "input.DCplotThr_cb",
+          fluidRow(
+            div(style = "display: inline-block; vertical-align:center; padding-left:10pt", HTML("<b>Threshold:</b>")),
+            div(
+              style = "display: inline-block; vertical-align:center; width: 45%;",
+              numericInput(
+                inputId = "DCplotThr",
+                label = NULL,
+                value = .2,
+                min = 0,
+                max = 1,
+                step = .1
+              )
+            )
+          )
+        )
+      )
+    ),
+    plotlyOutput("DCplot"),
+
+    # download item analysis table button
+    downloadButton("DB_DCplot", label = "Download figure"),
+    br(), br(),
+
+    h4("Distractor plot"),
+    p("In a distractor analysis based on a criterion variable, we are interested in how test takers
+                                   select the correct answer and the distractors (wrong answers) with respect to a group based
+                                   on criterion variable."),
+    htmlOutput("validity_distractor_text"),
+    p("With option ", strong("Combinations"), "all item selection patterns are plotted (e.g. AB, ACD, BC). With
+                                   option", strong("Distractors"), "answers are split into the various distractors (e.g. A, B, C, D)."),
+    fluidPage(
+      div(
+        class = "input-slider",
+        sliderInput(
+          inputId = "validity_group",
+          label = "Number of groups:",
+          min = 1,
+          max = 5,
+          value = 3
+        )
+      ),
+      div(style = "display: inline-block; vertical-align: top; width: 5%; "),
+      div(
+        class = "input-radio",
+        radioButtons(
+          inputId = "type_validity_combinations_distractor",
+          label = "Type",
+          choices = list("Combinations", "Distractors")
+        )
+      ),
+      div(style = "display: inline-block; vertical-align: top; width: 5%; "),
+      div(
+        class = "input-slider",
+        sliderInput(
+          inputId = "validitydistractorSlider",
+          label = "Item",
+          min = 1,
+          value = 1,
+          max = 10,
+          step = 1,
+          animate = animationOptions(interval = 1200)
+        )
+      )
+    ),
+    uiOutput("validity_groups_alert"),
+    plotlyOutput("validity_distractor_plot"),
+    downloadButton(outputId = "DB_validity_distractor_plot", label = "Download figure"),
+    h4("Correlation of criterion variable and scored item"),
+    p("A test for association between the total score and criterion variable is based on Pearson product-moment correlation coefficient", em("r."), "The null hypothesis is that correlation is 0. "),
+    uiOutput("validity_table_item"), br(),
+    htmlOutput("validity_table_item_interpretation"), br(),
+    h4("Selected R code"),
+    code(includeText("sc/tia/crit_val_it.R"))
   )
 )
