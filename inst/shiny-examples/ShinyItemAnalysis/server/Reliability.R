@@ -438,7 +438,7 @@ reliability_restricted_caterpillarplot_input <- reactive({
     ) +
     scale_alpha_discrete(range = c(.3, 1), drop = FALSE) +
     coord_cartesian(ylim = c(1, 5)) +
-    labs(x = "Rated subject/object rank", y = "Rating (score)") + 
+    labs(x = "Rated subject/object rank", y = "Rating (score)") +
     theme_app()
 })
 
@@ -537,7 +537,7 @@ reliability_restricted_iccplot_curr <- reactive({
 
 # ** Reliability plot input ######
 reliability_restricted_iccplot_input <- reactive({
-  req(aibs_long()) # propagate validation to the plot
+  req(aibs_long()) # propagate validation msg to the plot
   req(reliability_restricted_iccplot_curr())
 
   curr_plt_name <- paste0(

@@ -95,9 +95,8 @@ uiReliability <-
       uiOutput("reliability_SBformula_items_text"),
       br(),
       h4("Selected R code"),
-      div(code(HTML("library(psychometric)<br><br>#&nbsp;loading&nbsp;data<br>data(HCI,&nbsp;package&nbsp;=&nbsp;\"ShinyItemAnalysis\")<br>data&nbsp;<-&nbsp;HCI[,&nbsp;1:20]<br><br>#&nbsp;reliability&nbsp;of&nbsp;original&nbsp;data<br>rel.original&nbsp;<-&nbsp;psychometric::alpha(data)<br>#&nbsp;number&nbsp;of&nbsp;items&nbsp;in&nbsp;original&nbsp;data<br>items.original&nbsp;<-&nbsp;ncol(data)<br><br>#&nbsp;number&nbsp;of&nbsp;items&nbsp;in&nbsp;new&nbsp;data<br>items.new&nbsp;<-&nbsp;30<br>#&nbsp;ratio&nbsp;of&nbsp;tests&nbsp;lengths<br>m&nbsp;<-&nbsp;items.new&nbsp;/&nbsp;items.original<br>#&nbsp;determining&nbsp;reliability<br>SBrel(Nlength&nbsp;=&nbsp;m,&nbsp;rxx&nbsp;=&nbsp;rel.original)<br><br>#&nbsp;desired&nbsp;reliability<br>rel.new&nbsp;<-&nbsp;0.8<br>#&nbsp;determining&nbsp;test&nbsp;length<br>(m.new&nbsp;<-&nbsp;SBlength(rxxp&nbsp;=&nbsp;rel.new,&nbsp;rxx&nbsp;=&nbsp;rel.original))<br>#&nbsp;number&nbsp;of&nbsp;required&nbsp;items<br>m.new&nbsp;*&nbsp;items.original<br>"))),
-      br(),
-      br()
+      code(includeText("sc/reliability/sb.R"))
+
     ),
     # * SPLIT-HALF METHOD ####
     tabPanel(
@@ -175,8 +174,8 @@ uiReliability <-
       downloadButton("DB_reliability_splithalf_histogram"),
       br(),
       h4("Selected R code"),
-      div(code(HTML("library(psych)<br><br>#&nbsp;loading&nbsp;data<br>data(HCI,&nbsp;package&nbsp;=&nbsp;\"ShinyItemAnalysis\")<br><br>#&nbsp;first-last&nbsp;splitting<br>df1&nbsp;<-&nbsp;HCI[,&nbsp;1:10]<br>df2&nbsp;<-&nbsp;HCI[,&nbsp;11:20]<br>#&nbsp;total&nbsp;score&nbsp;calculation<br>ts1&nbsp;<-&nbsp;rowSums(df1)<br>ts2&nbsp;<-&nbsp;rowSums(df2)<br>#&nbsp;correlation<br>cor.x&nbsp;<-&nbsp;cor(ts1,&nbsp;ts2)<br>#&nbsp;apply&nbsp;Spearman-Brown&nbsp;formula&nbsp;to&nbsp;estimate&nbsp;reliability<br>(rel.x&nbsp;<-&nbsp;2&nbsp;*&nbsp;cor.x&nbsp;/&nbsp;(1&nbsp;+&nbsp;cor.x))<br><br>#&nbsp;even-odd&nbsp;splitting<br>df1&nbsp;<-&nbsp;HCI[,&nbsp;seq(1,&nbsp;20,&nbsp;2)]<br>df2&nbsp;<-&nbsp;HCI[,&nbsp;seq(2,&nbsp;20,&nbsp;2)]<br>#&nbsp;total&nbsp;score&nbsp;calculation<br>ts1&nbsp;<-&nbsp;rowSums(df1)<br>ts2&nbsp;<-&nbsp;rowSums(df2)<br>#&nbsp;correlation<br>cor.x&nbsp;<-&nbsp;cor(ts1,&nbsp;ts2)<br>#&nbsp;apply&nbsp;Spearman-Brown&nbsp;formula&nbsp;to&nbsp;estimate&nbsp;reliability<br>(rel.x&nbsp;<-&nbsp;2&nbsp;*&nbsp;cor.x&nbsp;/&nbsp;(1&nbsp;+&nbsp;cor.x))<br><br>#&nbsp;random&nbsp;splitting<br>samp&nbsp;<-&nbsp;sample(1:20,&nbsp;10)<br>df1&nbsp;<-&nbsp;HCI[,&nbsp;samp]<br>df2&nbsp;<-&nbsp;HCI[,&nbsp;setdiff(1:20,&nbsp;samp)]<br>#&nbsp;total&nbsp;score&nbsp;calculation<br>ts1&nbsp;<-&nbsp;rowSums(df1)<br>ts2&nbsp;<-&nbsp;rowSums(df2)<br>#&nbsp;correlation<br>cor.x&nbsp;<-&nbsp;cor(ts1,&nbsp;ts2)<br>#&nbsp;apply&nbsp;Spearman-Brown&nbsp;formula&nbsp;to&nbsp;estimate&nbsp;reliability<br>(rel.x&nbsp;<-&nbsp;2&nbsp;*&nbsp;cor.x&nbsp;/&nbsp;(1&nbsp;+&nbsp;cor.x))<br><br>#&nbsp;minimum&nbsp;of&nbsp;10,000&nbsp;split-halves&nbsp;(Revelle's&nbsp;beta)<br>split&nbsp;<-&nbsp;psych::splitHalf(HCI[,&nbsp;1:20],&nbsp;raw&nbsp;=&nbsp;TRUE)<br>items1&nbsp;<-&nbsp;which(split$minAB[,&nbsp;\"A\"]&nbsp;==&nbsp;1)<br>items2&nbsp;<-&nbsp;which(split$minAB[,&nbsp;\"B\"]&nbsp;==&nbsp;1)<br>df1&nbsp;<-&nbsp;HCI[,&nbsp;items1]<br>df2&nbsp;<-&nbsp;HCI[,&nbsp;items2]<br>#&nbsp;total&nbsp;score&nbsp;calculation<br>ts1&nbsp;<-&nbsp;rowSums(df1)<br>ts2&nbsp;<-&nbsp;rowSums(df2)<br>#&nbsp;correlation<br>cor.x&nbsp;<-&nbsp;cor(ts1,&nbsp;ts2)<br>#&nbsp;apply&nbsp;Spearman-Brown&nbsp;formula&nbsp;to&nbsp;estimate&nbsp;reliability<br>(rel.x&nbsp;<-&nbsp;2&nbsp;*&nbsp;cor.x&nbsp;/&nbsp;(1&nbsp;+&nbsp;cor.x))<br><br>#&nbsp;calculation&nbsp;of&nbsp;CI<br>z.r&nbsp;<-&nbsp;0.5&nbsp;*&nbsp;log((1&nbsp;+&nbsp;cor.x)&nbsp;/&nbsp;(1&nbsp;-&nbsp;cor.x))<br>n&nbsp;<-&nbsp;length(ts1)<br>z.low&nbsp;<-&nbsp;z.r&nbsp;-&nbsp;1.96&nbsp;*&nbsp;sqrt(1&nbsp;/&nbsp;(n&nbsp;-&nbsp;3))<br>z.upp&nbsp;<-&nbsp;z.r&nbsp;+&nbsp;1.96&nbsp;*&nbsp;sqrt(1&nbsp;/&nbsp;(n&nbsp;-&nbsp;3))<br><br>cor.low&nbsp;<-&nbsp;(exp(2&nbsp;*&nbsp;z.low)&nbsp;-&nbsp;1)&nbsp;/&nbsp;(exp(2&nbsp;*&nbsp;z.low)&nbsp;+&nbsp;1)<br>cor.upp&nbsp;<-&nbsp;(exp(2&nbsp;*&nbsp;z.upp)&nbsp;-&nbsp;1)&nbsp;/&nbsp;(exp(2&nbsp;*&nbsp;z.upp)&nbsp;+&nbsp;1)<br><br>rel.x&nbsp;<-&nbsp;2&nbsp;*&nbsp;cor.x&nbsp;/&nbsp;(1&nbsp;+&nbsp;cor.x)<br>rel.low&nbsp;<-&nbsp;2&nbsp;*&nbsp;cor.low&nbsp;/&nbsp;(1&nbsp;+&nbsp;cor.low)<br>rel.upp&nbsp;<-&nbsp;2&nbsp;*&nbsp;cor.upp&nbsp;/&nbsp;(1&nbsp;+&nbsp;cor.upp)<br><br>#&nbsp;average&nbsp;10,000&nbsp;split-halves<br>split&nbsp;<-&nbsp;psych::splitHalf(HCI[,&nbsp;1:20],&nbsp;raw&nbsp;=&nbsp;TRUE)<br>(rel.x&nbsp;<-&nbsp;mean(split$raw))<br><br>#&nbsp;average&nbsp;all&nbsp;split-halves<br>split&nbsp;<-&nbsp;psych::splitHalf(HCI[,&nbsp;1:20],&nbsp;raw&nbsp;=&nbsp;TRUE,&nbsp;brute&nbsp;=&nbsp;TRUE)<br>(rel.x&nbsp;<-&nbsp;mean(split$raw))<br><br>#&nbsp;calculation&nbsp;of&nbsp;CI<br>n&nbsp;<-&nbsp;length(split$raw)<br>rel.low&nbsp;<-&nbsp;rel.x&nbsp;-&nbsp;1.96&nbsp;*&nbsp;sd(split$raw)&nbsp;/&nbsp;sqrt(n)<br>rel.upp&nbsp;<-&nbsp;rel.x&nbsp;+&nbsp;1.96&nbsp;*&nbsp;sd(split$raw)&nbsp;/&nbsp;sqrt(n)<br>"))),
-      br()
+      code(includeText("sc/reliability/sh.R"))
+
     ),
     # * CRONBACH'S ALPHA ####
     tabPanel("Cronbach's \\(\\alpha\\)",
@@ -198,8 +197,7 @@ uiReliability <-
       # p(),
       # br(),
       h4("Selected R code"),
-      div(code(HTML("library(psychometric)<br><br>#&nbsp;loading&nbsp;data<br>data(HCI,&nbsp;package&nbsp;=&nbsp;\"ShinyItemAnalysis\")<br>data&nbsp;<-&nbsp;HCI[,&nbsp;1:20]<br><br>#&nbsp;Cronbach's&nbsp;alpha&nbsp;with&nbsp;confidence&nbsp;interval<br>a&nbsp;<-&nbsp;psychometric::alpha(data)<br>psychometric::alpha.CI(a,&nbsp;N&nbsp;=&nbsp;nrow(data),&nbsp;k&nbsp;=&nbsp;ncol(data),&nbsp;level&nbsp;=&nbsp;0.95)<br>"))),
-      br()
+      code(includeText("sc/reliability/cronbach.R"))
     ),
     # * INTRA-CLASS CORRELATION ####
     # tabPanel("Intra-class correlation",
@@ -219,8 +217,12 @@ uiReliability <-
       p(
         "This section illustrates the issue of range-restricted reliability and the difficulties with maximum
         likelihood estimation, described in more detail in the context of inter-rater reliability in grant proposal review in
-        Erosheva, Martinkova & Lee (accepted).
-        To replicate their examples, select the ", code("AIBS"), "toy dataset in the ", strong("Data"), "section."
+        ",
+        a("(Erosheva, Martinkova, & Lee, 2021)",
+          href = "http://doi.org/10.1111/rssa.12681",
+          target = "_blank", .noWS = "outside"
+        ),
+        ". To replicate their examples, select the ", code("AIBS"), "toy dataset in the ", strong("Data"), "section."
       ),
       p(
         "Below, you may select the ratio and type of range restriction given by the ", strong("proportion of rated subjects/objects."),
@@ -284,7 +286,6 @@ uiReliability <-
       br(),
       textOutput("icc_text"),
       h4("Selected R code"),
-      code(includeText("sc/reliability/restr_range.R")),
-      br()
+      code(includeText("sc/reliability/restr_range.R"))
     )
   )
