@@ -16,7 +16,7 @@ recognized not-reached responses coded (default is \code{99})}
 \item{df}{deprecated. Use argument \code{Data} instead.}
 }
 \value{
-The same class as input object, see \code{Data}.
+A \code{data.frame} object.
 }
 \description{
 \code{recode_nr()} function recognizes and recodes not-reached

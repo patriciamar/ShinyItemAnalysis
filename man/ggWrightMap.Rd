@@ -74,7 +74,7 @@ Wright, B. & Stone, M. (1979). Best test design. MESA Press:
 }
 \author{
 Adela Hladka \cr Institute of Computer Science of the Czech Academy
-  of Sciences \cr Faculty of Mathematics and Physics, Charles University \cr
+  of Sciences \cr
   \email{hladka@cs.cas.cz} \cr
 
   Jan Netik \cr Institute of Computer Science of the Czech Academy

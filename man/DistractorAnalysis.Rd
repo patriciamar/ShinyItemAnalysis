@@ -93,7 +93,6 @@ DistractorAnalysis(data, key, cut.points = seq(10, 100, 10))
 \author{
 Adela Hladka \cr
 Institute of Computer Science of the Czech Academy of Sciences \cr
-Faculty of Mathematics and Physics, Charles University \cr
 \email{hladka@cs.cas.cz} \cr
 
 Patricia Martinkova \cr

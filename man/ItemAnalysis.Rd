@@ -44,8 +44,8 @@ missing, vector of obtained minimal scores is imputed. See
 data. If missing, vector of maximal scores is imputed. See
 \strong{Details}.}
 
-\item{bin}{logical: If TRUE, indices are printed also for binarized data.
-See \strong{Details}.}
+\item{bin}{logical: If TRUE, indices are printed also for binarized data. See
+\strong{Details}.}
 
 \item{data}{deprecated. Use argument \code{Data} instead.}
 
@@ -54,40 +54,50 @@ See \strong{Details}.}
 \item{add.bin}{deprecated. Use argument \code{bin} instead.}
 }
 \value{
-\code{ItemAnalysis} function computes various traditional item analysis indices. Output
-is a \code{data.frame} with following columns:
+\code{ItemAnalysis} function computes various traditional item
+  analysis indices. Output is a \code{data.frame} with following columns:
   \item{\code{Difficulty}}{average score of the item divided by its range. }
-  \item{\code{Mean}}{average item score. }
-  \item{\code{SD}}{standard deviation of the item score. }
-  \item{\code{SD.bin}}{standard deviation of the item score for binarized data. }
+  \item{\code{Mean}}{average item score. } \item{\code{SD}}{standard
+  deviation of the item score. } \item{\code{SD.bin}}{standard deviation of
+  the item score for binarized data. }
   \item{\code{Prop.max.score}}{proportion of maximal scores. }
-  \item{\code{Min.score}}{minimal score specified in \code{minscore}; if not provided, observed minimal score. }
-  \item{\code{Max.score}}{maximal score specified in \code{maxscore}; if not provided, observed maximal score. }
+  \item{\code{Min.score}}{minimal score specified in \code{minscore}; if not
+  provided, observed minimal score. } \item{\code{Max.score}}{maximal score
+  specified in \code{maxscore}; if not provided, observed maximal score. }
   \item{\code{obs.min}}{observed minimal score. }
   \item{\code{obs.max}}{observed maximal score. }
   \item{\code{Cut.Score}}{cut-score specified in \code{cutscore}. }
-  \item{\code{gULI}}{generalized ULI. }
-  \item{\code{gULI.bin}}{generalized ULI for binarized data. }
-  \item{\code{ULI}}{discrimination with ULI using the usual parameters (3 groups, comparing 1st and 3rd). }
-  \item{\code{ULI.bin}}{discrimination with ULI using the usual parameters for binarized data (3 groups, comparing 1st and 3rd). }
-  \item{\code{RIT}}{item-total correlation (correlation between item score and overall test score). }
-  \item{\code{RIT.bin}}{item-total correlation for binarized data. }
-  \item{\code{RIR}}{item-rest correlation (correlation between item score and overall test score without the given item). }
+  \item{\code{gULI}}{generalized ULI. } \item{\code{gULI.bin}}{generalized
+  ULI for binarized data. } \item{\code{ULI}}{discrimination with ULI using
+  the usual parameters (3 groups, comparing 1st and 3rd). }
+  \item{\code{ULI.bin}}{discrimination with ULI using the usual parameters
+  for binarized data (3 groups, comparing 1st and 3rd). }
+  \item{\code{RIT}}{item-total correlation (correlation between item score
+  and overall test score). } \item{\code{RIT.bin}}{item-total correlation for
+  binarized data. } \item{\code{RIR}}{item-rest correlation (correlation
+  between item score and overall test score without the given item). }
   \item{\code{RIR.bin}}{item-rest correlation for binarized data. }
-  \item{\code{Corr.criterion}}{correlation between item score and criterion \code{criterion}. }
-  \item{\code{Corr.criterion.bin}}{correlation between item score and criterion \code{criterion} for binarized data. }
-  \item{\code{Index.val}}{item validity index calculated as \code{cor(item, criterion) * sqrt(((N - 1) / N) * var(item))}, see Allen and Yen (1979, Ch.6.4). }
-  \item{\code{Index.val.bin}}{item validity index for binarized data. }
-  \item{\code{Index.rel}}{item reliability index calculated as \code{cor(item, test) * sqrt(((N - 1) / N) * var(item))}, see Allen and Yen (1979, Ch.6.4). }
-  \item{\code{Index.rel.bin}}{item reliability index for binarized data. }
-  \item{\code{Index.rel.drop}}{item reliability index 'drop' (scored without item). }
-  \item{\code{Index.rel.drop.bin}}{item reliability index 'drop' (scored without item) for binarized data. }
-  \item{\code{Alpha.drop}}{Cronbach's alpha without given item. }
-  \item{\code{Alpha.drop.bin}}{Cronbach's alpha without given item, for binarized data. }
-  \item{\code{Perc.miss}}{Percentage of missed responses on the particular item. }
-  \item{\code{Perc.nr}}{Percentage of respondents that did not reached the item nor the subsequent ones, see \code{\link{recode_nr}} function for further details. }
-With \code{bin = TRUE}, indices based on binarized dataset are also provided
-and marked with \code{bin} suffix.
+  \item{\code{Corr.criterion}}{correlation between item score and criterion
+  \code{criterion}. } \item{\code{Corr.criterion.bin}}{correlation between
+  item score and criterion \code{criterion} for binarized data. }
+  \item{\code{Index.val}}{item validity index calculated as \code{cor(item,
+  criterion) * sqrt(((N - 1) / N) * var(item))}, see Allen and Yen (1979,
+  Ch.6.4). } \item{\code{Index.val.bin}}{item validity index for binarized
+  data. } \item{\code{Index.rel}}{item reliability index calculated as
+  \code{cor(item, test) * sqrt(((N - 1) / N) * var(item))}, see Allen and Yen
+  (1979, Ch.6.4). } \item{\code{Index.rel.bin}}{item reliability index for
+  binarized data. } \item{\code{Index.rel.drop}}{item reliability index
+  'drop' (scored without item). } \item{\code{Index.rel.drop.bin}}{item
+  reliability index 'drop' (scored without item) for binarized data. }
+  \item{\code{Alpha.drop}}{Cronbach's alpha without given item. In case of
+  two-item dataset, \code{NA}s are returned.}
+  \item{\code{Alpha.drop.bin}}{Cronbach's alpha without given item, for
+  binarized data. In case of two-item dataset, \code{NA}s are returned.}
+  \item{\code{Perc.miss}}{Percentage of missed responses on the particular
+  item. } \item{\code{Perc.nr}}{Percentage of respondents that did not
+  reached the item nor the subsequent ones, see \code{\link{recode_nr}}
+  function for further details. } With \code{bin = TRUE}, indices based on
+  binarized dataset are also provided and marked with \code{bin} suffix.
 }
 \description{
 \code{ItemAnalysis} function computes various traditional item
@@ -97,20 +107,20 @@ and marked with \code{bin} suffix.
 }
 \details{
 For ordinal items the difficulty and discrimination indices take
-into account minimal item score as well as range.
+  into account minimal item score as well as range.
 
-For calculation of discrimination ULI index, it is possible to specify the
-number of groups \code{k}, and which two groups \code{l} and \code{u} are to
-be compared.
+  For calculation of discrimination ULI index, it is possible to specify the
+  number of groups \code{k}, and which two groups \code{l} and \code{u} are
+  to be compared.
 
-In ordinal items, difficulty is calculated as difference of average score
-divided by range (maximal possible score \code{maxscore} minus minimal
-possible score \code{minscore}).
+  In ordinal items, difficulty is calculated as difference of average score
+  divided by range (maximal possible score \code{maxscore} minus minimal
+  possible score \code{minscore}).
 
-If \code{bin} is set to \code{TRUE}, item analysis of binarized data is
-included in the output table. In such a case, \code{cutscore} is used for
-binarization. When binarizing the \code{Data}, values greater or equal to
-cut-score are set to \code{1}, other values are set to \code{0}.
+  If \code{bin} is set to \code{TRUE}, item analysis of binarized data is
+  included in the output table. In such a case, \code{cutscore} is used for
+  binarization. When binarizing the \code{Data}, values greater or equal to
+  cut-score are set to \code{1}, other values are set to \code{0}.
 }
 \examples{
 \dontrun{
@@ -150,21 +160,21 @@ Martinkova, P., Stepanek, L., Drabinova, A., Houdek, J.,
   Monterey, CA: Brooks/Cole.
 }
 \seealso{
-\code{\link{DDplot}}, \code{\link{gDiscrim}}, \code{\link{recode_nr}}
+\code{\link{DDplot}}, \code{\link{gDiscrim}},
+  \code{\link{recode_nr}}
 }
 \author{
-Patricia Martinkova \cr
-Institute of Computer Science of the Czech Academy of Sciences \cr
-\email{martinkova@cs.cas.cz} \cr
+Patricia Martinkova \cr Institute of Computer Science of the Czech
+  Academy of Sciences \cr \email{martinkova@cs.cas.cz} \cr
 
-Jan Netik \cr
-Department of Psychology, Faculty of Arts, Charles University \cr
+  Jan Netik \cr Institute of Computer Science of the Czech Academy of
+  Sciences \cr Charles University
+  \cr
 
-Jana Vorlickova \cr
-Institute of Computer Science of the Czech Academy of Sciences \cr
+  Jana Vorlickova \cr Institute of Computer Science of the Czech Academy of
+  Sciences \cr
 
-Adela Hladka \cr
-Institute of Computer Science of the Czech Academy of Sciences \cr
-Faculty of Mathematics and Physics, Charles University \cr
-\email{hladka@cs.cas.cz} \cr
+  Adela Hladka \cr Institute of Computer Science of the Czech Academy of
+  Sciences \cr
+  \email{hladka@cs.cas.cz} \cr
 }
