@@ -12,7 +12,7 @@
 #'   recognized not-reached responses coded (default is \code{99})
 #' @param df deprecated. Use argument \code{Data} instead.
 #'
-#' @return The same class as input object, see \code{Data}.
+#' @return A \code{data.frame} object.
 #'
 #' @author
 #' Jan Netik \cr
@@ -54,6 +54,9 @@ recode_nr <- function(Data, nr_code = 99, df) {
     )
     Data <- df
   }
+
+  # coerce to data.frame (tibble cannot be subset by a matrix)
+  if (inherits(Data, "tbl_df")) Data <- as.data.frame(Data)
 
   if (any(sapply(Data, is.factor))) {
     for (i in 1:ncol(Data)) {

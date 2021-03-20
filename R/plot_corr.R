@@ -51,7 +51,7 @@
 #' @param fill_alpha numeric 0-1: the opacity of the fill color.
 #'
 #' @inheritDotParams psych::polychoric -x -y -na.rm
-#'#'
+#'
 #' @details Correlation heatmap displays selected type of correlations between
 #'   items.The color of tiles indicates how much and in which way the items are
 #'   correlated - red color means positive correlation and blue color means
