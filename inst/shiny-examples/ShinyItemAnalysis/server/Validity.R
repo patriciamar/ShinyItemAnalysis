@@ -28,7 +28,7 @@ corr_structure <- reactive({
   } else if (input$type_of_corr == "pearson") {
     corP <- cor(data, method = "pearson", use = "pairwise.complete.obs")
   } else if (input$type_of_corr == "polychoric") {
-    corP <- polychoric(data, na.rm = T)
+    corP <- polychoric(data, na.rm = TRUE)
     corP <- corP$rho
   }
   corP
@@ -147,7 +147,10 @@ dendrogram_plot_Input <- reactive({
   corP <- corr_structure()
   dist <- as.dist(1 - corP)
   clustmethod <- input$corr_plot_clustmethod
-  if (clustmethod == "none") return(ggplot() + geom_blank())
+  if (clustmethod == "none") {
+    return(ggplot() +
+      geom_blank())
+  }
 
   numclust <- input$corr_plot_clust
 
@@ -182,7 +185,7 @@ dendrogram_plot_Input <- reactive({
   ggplot() +
     geom_segment(aes(y, x, xend = yend, yend = xend), data = segment(dendr)) +
     geom_text(aes(y, x, label = label, color = cluster), hjust = 0, data = dfd) +
-    scale_x_reverse(expand = expansion(add = c(.05, .15))) +
+    scale_x_reverse(expand = c(0, .05, 0, .15)) +
     ylab("Height") +
     theme_app() +
     theme(
@@ -199,7 +202,8 @@ output$dendrogram_plot <- renderPlotly({
   p <- ggplotly(g, tooltip = c("label", "cluster"))
 
   p$elementId <- NULL
-  p %>% plotly::config(displayModeBar = FALSE) %>%
+  p %>%
+    plotly::config(displayModeBar = FALSE) %>%
     style(textposition = "right") %>%
     layout(showlegend = TRUE)
 })
@@ -224,35 +228,31 @@ output$DB_dendrogram <- downloadHandler(
 # * FACTOR ANALYSIS ####
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-# ** Scree plot ####
-scree_plot_Input <- reactive({
-  corP <- corr_structure()
-
-  ev <- eigen(corP)$values
-
-  df <- data.table(pos = 1:length(ev), ev)
-
-  ggplot(data = df, aes(x = pos, y = ev)) +
-    geom_point(size = 3) +
-    geom_line() +
-    xlab("Component number") +
-    ylab("Eigen value") +
-    scale_x_continuous(breaks = 1:length(ev), expand = c(0.01, 0.01)) +
-    theme_app()
+# ** Parallel analysis ####
+validity_factor_parallel_analysis <- reactive({
+  fa_parallel(ordinal(), cor = input$validity_factor_cor_pa, n_iter = 50)
 })
 
 # ** Output scree plot ####
-output$scree_plot <- renderPlotly({
-  g <- scree_plot_Input()
-  p <- ggplotly(g)
+output$validity_factor_screeplot <- renderPlotly({
+  sia_parallel_out <- validity_factor_parallel_analysis()
+  plt <- sia_parallel_out %>%
+    plot() %>%
+    ggplotly() %>%
+    style(textposition = "left") %>%
+    layout(legend = list(x = .95, y = .95, xanchor = "right")) %>%
+    config(displayModeBar = FALSE)
 
-  text <- p$x$data[[1]]$text
-  text <- gsub("pos", "Component", text)
-  text <- gsub("ev", "Eigen value", text)
-  p$x$data[[1]]$text <- text
+  plt$x$data[[1]]$text <- plt$x$data[[1]]$text %>%
+    str_replace("-?\\d{1}\\.\\d{5,}", function(x) round(as.numeric(x), 3))
+  plt$x$data[[2]]$text <- plt$x$data[[2]]$text %>%
+    str_replace("-?\\d{1}\\.\\d{5,}", function(x) round(as.numeric(x), 3))
 
-  p$elementId <- NULL
-  p %>% plotly::config(displayModeBar = FALSE)
+  plt$x$data[[3]][["hoverinfo"]] <- "none"
+  plt$x$data[[4]][["text"]] <- "<br><br>Kaiser boundary" # offset by 2 lines
+  plt$x$data[[4]][["hoverinfo"]] <- "none"
+
+  plt
 })
 
 # ** DB scree plot ####
@@ -262,7 +262,7 @@ output$DB_scree_plot <- downloadHandler(
   },
   content = function(file) {
     ggsave(file,
-      plot = scree_plot_Input() +
+      plot = validity_factor_parallel_analysis() %>% plot() +
         theme(text = element_text(size = setting_figures$text_size)),
       device = "png",
       height = setting_figures$height, width = setting_figures$width,
@@ -270,6 +270,159 @@ output$DB_scree_plot <- downloadHandler(
     )
   }
 )
+
+# number of factors - parallel analysis
+validity_factor_number_pa <- reactive({
+  x <- validity_factor_parallel_analysis()
+  real_idx <- which(x$data == "real")
+  simulated_idx <- which(x$data == "simulated")
+
+  real_eigenvalues <- x$eigenvalue[real_idx]
+  simulated_eigenvalues <- x$eigenvalue[simulated_idx]
+
+  factors_below_thr <- which(!(real_eigenvalues > simulated_eigenvalues))
+
+  max(factors_below_thr[1] - 1, 1)
+})
+
+
+# number of factors - Kaiser rule
+validity_factor_number_kr <- reactive({
+  x <- validity_factor_parallel_analysis()
+  sum(x$eigenvalue[which(x$data == "real")] >= 1)
+})
+
+output$validity_factor_number <- renderText({
+  paste0(
+    "Parallel analysis suggests a solution with ",
+    validity_factor_number_pa(),
+    ifelse(validity_factor_number_pa() == 1, " factor", " factors"),
+    ". According to Kaiser criterion, optimal number of factors is ",
+    validity_factor_number_kr(), "."
+  )
+})
+
+# update EFA corr. method - mimic the PA input
+observeEvent(input$validity_factor_cor_pa, {
+  sel <- switch(input$validity_factor_cor_pa,
+    "pearson" = "cor",
+    "polychoric" = "poly"
+  )
+  updateSelectInput(session, "validity_factor_cor_efa",
+    selected = sel
+  )
+})
+
+# update selected number of factors to extract from PA + max
+observe({
+  updateNumericInput(session, "validity_factor_nfactors",
+    value = validity_factor_number_pa(),
+    max = ncol(ordinal())
+  )
+})
+
+# run FA
+validity_factor_fa <- reactive({
+  fa(ordinal(),
+    input$validity_factor_nfactors,
+    rotate = input$validity_factor_rotation,
+    cor = input$validity_factor_cor_efa
+  )
+})
+
+# unclassed loadings
+validity_factor_loadings_unclassed <- reactive({
+  loadings <- validity_factor_fa()$loadings
+  loadings %>%
+    unclass() %>%
+    data.frame() %>%
+    setNames(paste0("F", seq_len(ncol(loadings))))
+})
+
+# loadings with uniquenesess and cutoff
+output$validity_factor_loadings <- renderTable(
+  {
+    loadings_num <- validity_factor_loadings_unclassed()
+    n_factors <- ncol(loadings_num)
+    n_items <- nrow(loadings_num)
+
+    if (input$validity_factor_sort) {
+      mx <- max.col(abs(loadings_num))
+      idx <- cbind(1:n_items, mx)
+      mx[abs(loadings_num[idx]) < 0.5] <- n_factors + 1
+      items_order <- order(mx, 1:n_items)
+    }
+
+    loadings <- format(round(loadings_num, 2), trim = TRUE)
+
+    loadings[abs(loadings_num) < input$validity_factor_hide] <- ""
+
+    uniqueness <- format(round(validity_factor_fa()$uniquenesses, 2), trim = TRUE)
+
+    res <- data.frame(loadings, uniqueness)
+
+    if (input$validity_factor_sort) {
+      res <- res[items_order, ]
+    }
+
+    res
+  },
+  rownames = TRUE
+)
+
+# ** DB loadings data ####
+output$DB_validity_factor_loadings <- downloadHandler(
+  filename = function() {
+    "efa_loadings.csv"
+  },
+  content = function(file) {
+    data <- validity_factor_loadings_unclassed()
+    write.csv(data, file)
+  }
+)
+
+
+
+# variance explained table, factor summary
+output$validity_factor_varex <- renderTable(
+  {
+    loadings <- validity_factor_loadings_unclassed()
+
+    n_items <- nrow(loadings)
+
+    ss_loadings <- colSums(loadings^2)
+
+    res <- data.frame(
+      `SS loadings` = ss_loadings,
+      `% variance` = (ss_loadings / n_items) * 100,
+      `% variance cumul.` = (cumsum(ss_loadings / n_items)) * 100,
+      check.names = FALSE
+    )
+
+    if (ncol(loadings) == 1) {
+      res["% variance cumul."] <- NULL
+    }
+
+    rownames(res) <- colnames(loadings)
+
+    res
+  },
+  rownames = TRUE
+)
+
+output$validity_factor_efa_fit <- renderUI({
+  r <- validity_factor_fa()
+  withMathJax(
+    HTML(paste0(
+      "$\\chi^2$(", r$dof, ") = ", round(r$chi, 2), "; <em>p</em> = ", round(r$PVAL, 3), "<br><br>",
+      "RMSEA = ", round(r$RMSEA[1], 3),
+      ", 90% CI [", round(r$RMSEA[2], 3), ", ", round(r$RMSEA[3], 3), "]<br><br>",
+      "TLI = ", round(r$TLI, 3), "; BIC = ", round(r$BIC, 3)
+    ))
+  )
+})
+
+
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # * PREDICTIVE VALIDITY ####
@@ -449,39 +602,39 @@ validity_table_Input <- reactive({
   ts <- total_score()
   cv <- criterion()
 
-  ct <- cor.test(ts, cv, method = "spearman", exact = F)
-  tab <- c(round(ct$estimate, 2), round(ct$statistic, 2), round(ct$p.value, 3))
-  names(tab) <- c(HTML("&rho;"), "S-value", "p-value")
+  ct <- cor.test(ts, cv, method = "pearson")
 
-  if (tab[3] == 0.00) {
-    tab[3] <- "<0.01"
-  }
+  txt <- HTML(paste0(
+    "<em>r</em>(",
+    ct$parameter,
+    ") = ",
+    sub("^(-?)0.", "\\1.", sprintf("%.2f", ct$estimate)), ", <em>p</em> = ",
+    ifelse(ct$p.value < .001, "<.001", sub("^(-?)0.", "\\1.", sprintf("%.3f", ct$p.value))), ", 95% CI [",
+    sub("^(-?)0.", "\\1.", sprintf("%.2f", ct$conf.int[1])),
+    ", ", sub("^(-?)0.", "\\1.", sprintf("%.2f", ct$conf.int[2])),
+    "]"
+  ))
 
-  tab
+  list(txt = txt, pval = ct$p.value, est = ct$estimate)
 })
 
 # * Output validity correlation table ####
-output$validity_table <- renderTable(
-  {
-    validity_table_Input()
-  },
-  include.rownames = TRUE,
-  include.colnames = FALSE,
-  sanitize.text.function = function(x) x
-)
+output$validity_table <- renderUI({
+  validity_table_Input()$txt
+})
 
 # ** Interpretation ####
 output$validity_table_interpretation <- renderUI({
   tab <- validity_table_Input()
-  p.val <- tab["p-value"]
-  rho <- tab[1]
+  pval <- tab$pval
+  est <- tab$est
 
   txt1 <- paste("<b>", "Interpretation:", "</b>")
-  txt2 <- ifelse(rho > 0, "positively", "negatively")
-  txt3 <- ifelse(p.val < 0.05,
-    paste("The p-value is less than 0.05, thus we reject the null hypotheses.
+  txt2 <- ifelse(est > 0, "positively", "negatively")
+  txt3 <- ifelse(pval < .05,
+    paste("The <em>p</em>-value is less than .05, thus we reject the null hypotheses.
                        The total score and criterion variable are", txt2, "correlated."),
-    "The p-value is larger than 0.05, thus we don't reject the null hypotheses.
+    "The <em>p</em>-value is larger than .05, thus we don't reject the null hypotheses.
                  We cannot conclude that a significant correlation between the total score
                  and criterion variable exists."
   )
@@ -620,40 +773,41 @@ validity_table_item_Input <- reactive({
   cv <- criterion()
   i <- input$validitydistractorSlider
 
-  ct <- cor.test(unlist(correct[, i, with = F]), cv, method = "spearman", exact = F)
-  tab <- c(round(ct$estimate, 2), round(ct$statistic, 2), round(ct$p.value, 3))
-  names(tab) <- c(HTML("&rho;"), "S-value", "p-value")
-  if (tab[3] == 0.00) {
-    tab[3] <- "<0.01"
-  }
+  ct <- cor.test(unlist(correct[, i, with = F]), cv, method = "pearson")
 
-  tab
+  txt <- HTML(paste0(
+    "<em>r</em>(",
+    ct$parameter,
+    ") = ",
+    sub("^(-?)0.", "\\1.", sprintf("%.2f", ct$estimate)), ", <em>p</em> = ",
+    ifelse(ct$p.value < .001, "<.001", sub("^(-?)0.", "\\1.", sprintf("%.3f", ct$p.value))), ", 95% CI [",
+    sub("^(-?)0.", "\\1.", sprintf("%.2f", ct$conf.int[1])),
+    ", ", sub("^(-?)0.", "\\1.", sprintf("%.2f", ct$conf.int[2])),
+    "]"
+  ))
+
+  list(txt = txt, pval = ct$p.value, est = ct$estimate)
 })
 
 # ** Output validity correlation table for items ####
-output$validity_table_item <- renderTable(
-  {
-    validity_table_item_Input()
-  },
-  include.rownames = TRUE,
-  include.colnames = FALSE,
-  sanitize.text.function = function(x) x
-)
+output$validity_table_item <- renderUI({
+  validity_table_item_Input()$txt
+})
 
 # ** Interpretation ####
 output$validity_table_item_interpretation <- renderUI({
   tab <- validity_table_item_Input()
-  p.val <- tab["p-value"]
-  rho <- tab[1]
+  pval <- tab$pval
+  est <- tab$est
   i <- input$validitydistractorSlider
 
   txt1 <- paste("<b>", "Interpretation:", "</b>")
-  txt2 <- ifelse(rho > 0, "positively", "negatively")
-  txt3 <- ifelse(p.val < 0.05,
-    paste("The p-value is less than 0.05, thus we reject the null hypotheses.
+  txt2 <- ifelse(est > 0, "positively", "negatively")
+  txt3 <- ifelse(pval < .05,
+    paste("The <em>p</em>-value is less than .05, thus we reject the null hypotheses.
                          Scored item", i, "and criterion variable are", txt2, "correlated."),
     paste(
-      "The p-value is larger than 0.05, thus we don't reject the null hypotheses.
+      "The <em>p</em>-value is larger than .05, thus we don't reject the null hypotheses.
                    We cannot conclude that a significant correlation between scored item", i,
       "and criterion variable exists."
     )
