@@ -1106,13 +1106,14 @@ IRT_bock_model <- reactive({
 
   # we don't want to estimate ak parameter for the correct answer
   for (i in 1:m) {
-    tmp <- sv[sv$item == item_names()[i], ]
+    item_name <- gsub(" ", "\\.", item_names()[i])
+    tmp <- sv[sv$item == item_name, ]
     tmp$est <- TRUE
     tmp[tmp$name == paste0("ak", key[i]), "value"] <- 0
     tmp[tmp$name == paste0("ak", key[i]), "est"] <- FALSE
     tmp[tmp$name == paste0("d", key[i]), "value"] <- 0
     tmp[tmp$name == paste0("d", key[i]), "est"] <- FALSE
-    sv[sv$item == item_names()[i], ] <- tmp
+    sv[sv$item == item_name, ] <- tmp
   }
 
   # we don't want to estimate a1 parameter for any item as it multiplies all

@@ -6,6 +6,7 @@ uiIRT <- navbarMenu(
   # * DICHOTOMOUS MODELS ####
   tabPanel(
     "Dichotomous models",
+    value = "irt_dichotomous",
     tabsetPanel(
       #  ** SUMMARY ####
       tabPanel("Summary",
@@ -154,12 +155,11 @@ uiIRT <- navbarMenu(
         conditionalPanel(
           "input.IRT_binary_summary_model == '4PL'",
           code(includeText("sc/irt/4pl.R"))
-        ),
-        br()
+        )
       ),
       # ** ITEMS ####
       tabPanel("Items",
-        value = "rasch_it",
+        value = "irt_dichotomous_it",
         h3("Dichotomous model"),
         p("Item Response Theory (IRT) models are mixed-effect regression models in which
                  respondent ability \\(\\theta_p\\) is assumed to be latent and is estimated together
@@ -266,8 +266,7 @@ uiIRT <- navbarMenu(
     uiOutput("IRT_binary_comparison_model_converged"),
     br(),
     h4("Selected R code"),
-    div(code(HTML("library(mirt)<br><br>#&nbsp;loading&nbsp;data<br>data(GMAT,&nbsp;package&nbsp;=&nbsp;\"difNLR\")<br><br>#&nbsp;1PL&nbsp;IRT&nbsp;model<br>fit1PL&nbsp;<-&nbsp;mirt(GMAT[,&nbsp;1:20],&nbsp;model&nbsp;=&nbsp;1,&nbsp;constrain&nbsp;=&nbsp;list((1:20)&nbsp;+&nbsp;seq(0,&nbsp;(20&nbsp;-&nbsp;1)&nbsp;*&nbsp;3,&nbsp;3)),&nbsp;itemtype&nbsp;=&nbsp;\"2PL\")<br>#&nbsp;2PL&nbsp;IRT&nbsp;model<br>fit2PL&nbsp;<-&nbsp;mirt(GMAT[,&nbsp;1:20],&nbsp;model&nbsp;=&nbsp;1,&nbsp;itemtype&nbsp;=&nbsp;\"2PL\")<br>#&nbsp;3PL&nbsp;IRT&nbsp;model<br>fit3PL&nbsp;<-&nbsp;mirt(GMAT[,&nbsp;1:20],&nbsp;model&nbsp;=&nbsp;1,&nbsp;itemtype&nbsp;=&nbsp;\"3PL\")<br>#&nbsp;4PL&nbsp;IRT&nbsp;model<br>fit4PL&nbsp;<-&nbsp;mirt(GMAT[,&nbsp;1:20],&nbsp;model&nbsp;=&nbsp;1,&nbsp;itemtype&nbsp;=&nbsp;\"4PL\")<br><br>#&nbsp;comparison<br>anova(fit1PL,&nbsp;fit2PL)<br>anova(fit2PL,&nbsp;fit3PL)<br>anova(fit3PL,&nbsp;fit4PL)"))),
-    br()
+    code(includeText("sc/irt/comp.R"))
   ),
   "----",
   "Polytomous models",
@@ -355,9 +354,7 @@ uiIRT <- navbarMenu(
         br(),
         br(),
         h4("Selected R code"),
-        div(code(HTML("library(mirt)<br><br>#&nbsp;loading&nbsp;data<br>data(HCItest,&nbsp;HCI,&nbsp;package&nbsp;=&nbsp;\"ShinyItemAnalysis\")<br>HCInumeric&nbsp;<-&nbsp;HCItest[,&nbsp;1:20]<br>HCInumeric[]&nbsp;<-&nbsp;sapply(HCInumeric,&nbsp;as.numeric)<br><br>#&nbsp;model<br>fit&nbsp;<-&nbsp;mirt(HCInumeric,&nbsp;model&nbsp;=&nbsp;1,&nbsp;itemtype&nbsp;=&nbsp;\"nominal\")<br><br>#&nbsp;item&nbsp;response&nbsp;curves<br>plot(fit,&nbsp;type&nbsp;=&nbsp;\"trace\")<br>#&nbsp;item&nbsp;information&nbsp;curves<br>plot(fit,&nbsp;type&nbsp;=&nbsp;\"infotrace\",&nbsp;facet_items&nbsp;=&nbsp;FALSE)<br>#&nbsp;test&nbsp;information&nbsp;curve<br>plot(fit,&nbsp;type&nbsp;=&nbsp;\"infoSE\")<br><br>#&nbsp;estimated&nbsp;parameters<br>coef(fit,&nbsp;simplify&nbsp;=&nbsp;TRUE)&nbsp;#&nbsp;classical&nbsp;intercept-slope&nbsp;parametrization<br>coef(fit,&nbsp;IRTpars&nbsp;=&nbsp;TRUE,&nbsp;simplify&nbsp;=&nbsp;TRUE)&nbsp;#&nbsp;IRT&nbsp;parametrization<br><br>#&nbsp;factor&nbsp;scores&nbsp;vs&nbsp;standardized&nbsp;total&nbsp;scores<br>fs&nbsp;<-&nbsp;as.vector(fscores(fit))<br>sts&nbsp;<-&nbsp;as.vector(scale(rowSums(HCI[,&nbsp;1:20])))<br>plot(fs&nbsp;~&nbsp;sts,&nbsp;xlab&nbsp;=&nbsp;\"Standardized&nbsp;total&nbsp;score\",&nbsp;ylab&nbsp;=&nbsp;\"Factor&nbsp;score\")<br>cor(fs,&nbsp;sts)"))),
-        br(),
-        br()
+        code(includeText("sc/irt/bock.R"))
       ),
       # ** ITEMS ####
       tabPanel("Items",
@@ -416,9 +413,7 @@ uiIRT <- navbarMenu(
         br(),
         # ** Estimated parameters ####
         h4("Table of parameters"),
-        fluidRow(column(12, align = "center", tableOutput("IRT_bock_items_coef"))),
-        br(),
-        br()
+        fluidRow(column(12, align = "center", tableOutput("IRT_bock_items_coef")))
       )
     )
   ),
@@ -864,9 +859,7 @@ uiIRT <- navbarMenu(
         ),
         br(),
         h4("Selected R code"),
-        div(code(HTML("library(ggplot2)&nbsp;<br>library(data.table)&nbsp;<br><br>#&nbsp;setting&nbsp;parameters&nbsp;<br>a&nbsp;<-&nbsp;1&nbsp;<br>b&nbsp;<-&nbsp;c(-1.5,&nbsp;-1,&nbsp;-0.5,&nbsp;0)&nbsp;<br>theta&nbsp;<-&nbsp;seq(-4,&nbsp;4,&nbsp;0.01)&nbsp;<br><br>#&nbsp;calculating&nbsp;cumulative&nbsp;probabilities&nbsp;<br>ccirt&nbsp;<-&nbsp;function(theta,&nbsp;a,&nbsp;b){&nbsp;return(1/(1&nbsp;+&nbsp;exp(-a*(theta&nbsp;-&nbsp;b))))&nbsp;}&nbsp;<br>df1&nbsp;<-&nbsp;data.frame(sapply(1:length(b),&nbsp;function(i)&nbsp;ccirt(theta,&nbsp;a,&nbsp;b[i]))&nbsp;,&nbsp;theta)<br>df1&nbsp;<-&nbsp;melt(df1,&nbsp;id.vars&nbsp;=&nbsp;\"theta\")&nbsp;<br><br>#&nbsp;plotting&nbsp;cumulative&nbsp;probabilities&nbsp;<br>ggplot(data&nbsp;=&nbsp;df1,&nbsp;aes(x&nbsp;=&nbsp;theta,&nbsp;y&nbsp;=&nbsp;value,&nbsp;col&nbsp;=&nbsp;variable))&nbsp;+&nbsp;<br>&nbsp;&nbsp;geom_line()&nbsp;+&nbsp;<br>&nbsp;&nbsp;xlab(\"Ability\")&nbsp;+&nbsp;<br>&nbsp;&nbsp;ylab(\"Cumulative&nbsp;probability\")&nbsp;+&nbsp;<br>&nbsp;&nbsp;xlim(-4,&nbsp;4)&nbsp;+&nbsp;<br>&nbsp;&nbsp;ylim(0,&nbsp;1)&nbsp;+&nbsp;<br>&nbsp;&nbsp;theme_bw()&nbsp;+&nbsp;<br>&nbsp;&nbsp;theme(text&nbsp;=&nbsp;element_text(size&nbsp;=&nbsp;14),&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;panel.grid.major&nbsp;=&nbsp;element_blank(),&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;panel.grid.minor&nbsp;=&nbsp;element_blank())&nbsp;+&nbsp;<br>&nbsp;&nbsp;ggtitle(\"Cumulative&nbsp;probabilities\")&nbsp;+&nbsp;<br>&nbsp;&nbsp;scale_color_manual(\"\",&nbsp;values&nbsp;=&nbsp;c(\"red\",&nbsp;\"yellow\",&nbsp;\"green\",&nbsp;\"blue\"),&nbsp;labels&nbsp;=&nbsp;paste0(\"P(Y&nbsp;>=&nbsp;\",&nbsp;1:4,&nbsp;\")\"))&nbsp;<br><br>#&nbsp;calculating&nbsp;category&nbsp;probabilities&nbsp;<br>df2&nbsp;<-&nbsp;data.frame(1,&nbsp;sapply(1:length(b),&nbsp;function(i)&nbsp;ccirt(theta,&nbsp;a,&nbsp;b[i])))&nbsp;<br>df2&nbsp;<-&nbsp;data.frame(sapply(1:length(b),&nbsp;function(i)&nbsp;df2[,&nbsp;i]&nbsp;-&nbsp;df2[,&nbsp;i+1]),&nbsp;df2[,&nbsp;ncol(df2)],&nbsp;theta)&nbsp;<br>df2&nbsp;<-&nbsp;melt(df2,&nbsp;id.vars&nbsp;=&nbsp;\"theta\")&nbsp;<br><br>#&nbsp;plotting&nbsp;category&nbsp;probabilities&nbsp;<br>ggplot(data&nbsp;=&nbsp;df2,&nbsp;aes(x&nbsp;=&nbsp;theta,&nbsp;y&nbsp;=&nbsp;value,&nbsp;col&nbsp;=&nbsp;variable))&nbsp;+&nbsp;<br>&nbsp;&nbsp;geom_line()&nbsp;+&nbsp;<br>&nbsp;&nbsp;xlab(\"Ability\")&nbsp;+&nbsp;<br>&nbsp;&nbsp;ylab(\"Category&nbsp;probability\")&nbsp;+&nbsp;<br>&nbsp;&nbsp;xlim(-4,&nbsp;4)&nbsp;+&nbsp;<br>&nbsp;&nbsp;ylim(0,&nbsp;1)&nbsp;+&nbsp;<br>&nbsp;&nbsp;theme_bw()&nbsp;+&nbsp;<br>&nbsp;&nbsp;theme(text&nbsp;=&nbsp;element_text(size&nbsp;=&nbsp;14),&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;panel.grid.major&nbsp;=&nbsp;element_blank(),&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;panel.grid.minor&nbsp;=&nbsp;element_blank())&nbsp;+&nbsp;<br>&nbsp;&nbsp;ggtitle(\"Category&nbsp;probabilities\")&nbsp;+&nbsp;<br>&nbsp;&nbsp;scale_color_manual(\"\",&nbsp;values&nbsp;=&nbsp;c(\"black\",&nbsp;\"red\",&nbsp;\"yellow\",&nbsp;\"green\",&nbsp;\"blue\"),&nbsp;labels&nbsp;=&nbsp;paste0(\"P(Y&nbsp;>=&nbsp;\",&nbsp;0:4,&nbsp;\")\"))<br><br>#&nbsp;calculating&nbsp;expected&nbsp;item&nbsp;score<br>df3&nbsp;<-&nbsp;data.frame(1,&nbsp;sapply(1:length(b),&nbsp;function(i)&nbsp;ccirt(theta,&nbsp;a,&nbsp;b[i])))&nbsp;<br>df3&nbsp;<-&nbsp;data.frame(sapply(1:length(b),&nbsp;function(i)&nbsp;df3[,&nbsp;i]&nbsp;-&nbsp;df3[,&nbsp;i+1]),&nbsp;df3[,&nbsp;ncol(df3)])<br>df3&nbsp;<-&nbsp;data.frame(exp&nbsp;=&nbsp;as.matrix(df3)&nbsp;%*%&nbsp;0:4,&nbsp;theta)<br><br>#&nbsp;plotting&nbsp;category&nbsp;probabilities&nbsp;<br>ggplot(data&nbsp;=&nbsp;df3,&nbsp;aes(x&nbsp;=&nbsp;theta,&nbsp;y&nbsp;=&nbsp;exp))&nbsp;+&nbsp;<br>&nbsp;&nbsp;geom_line()&nbsp;+&nbsp;<br>&nbsp;&nbsp;xlab(\"Ability\")&nbsp;+&nbsp;<br>&nbsp;&nbsp;ylab(\"Expected&nbsp;item&nbsp;score\")&nbsp;+&nbsp;<br>&nbsp;&nbsp;xlim(-4,&nbsp;4)&nbsp;+&nbsp;<br>&nbsp;&nbsp;ylim(0,&nbsp;4)&nbsp;+&nbsp;<br>&nbsp;&nbsp;theme_bw()&nbsp;+&nbsp;<br>&nbsp;&nbsp;theme(text&nbsp;=&nbsp;element_text(size&nbsp;=&nbsp;14),&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;panel.grid.major&nbsp;=&nbsp;element_blank(),&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;panel.grid.minor&nbsp;=&nbsp;element_blank())&nbsp;+&nbsp;<br>&nbsp;&nbsp;ggtitle(\"Expected&nbsp;item&nbsp;score\")"))),
-        br(),
-        br()
+        code(includeText("sc/irt/train_poly_grm.R"))
       ),
       # *** Generalized partial credit model ####
       tabPanel("Generalized partial credit model",
@@ -1046,9 +1039,7 @@ uiIRT <- navbarMenu(
           )
         ),
         h4("Selected R code"),
-        div(code(HTML("library(ggplot2)&nbsp;<br>library(data.table)&nbsp;<br><br>#&nbsp;setting&nbsp;parameters&nbsp;<br>a&nbsp;<-&nbsp;1&nbsp;<br>d&nbsp;<-&nbsp;c(-1.5,&nbsp;-1,&nbsp;-0.5,&nbsp;0)&nbsp;<br>theta&nbsp;<-&nbsp;seq(-4,&nbsp;4,&nbsp;0.01)&nbsp;<br><br>#&nbsp;calculating&nbsp;category&nbsp;probabilities&nbsp;<br>ccgpcm&nbsp;<-&nbsp;function(theta,&nbsp;a,&nbsp;d){&nbsp;a*(theta&nbsp;-&nbsp;d)&nbsp;}&nbsp;<br>df&nbsp;<-&nbsp;sapply(1:length(d),&nbsp;function(i)&nbsp;ccgpcm(theta,&nbsp;a,&nbsp;d[i]))&nbsp;<br>pk&nbsp;<-&nbsp;sapply(1:ncol(df),&nbsp;function(k)&nbsp;apply(as.data.frame(df[,&nbsp;1:k]),&nbsp;1,&nbsp;sum))&nbsp;<br>pk&nbsp;<-&nbsp;cbind(0,&nbsp;pk)&nbsp;<br>pk&nbsp;<-&nbsp;exp(pk)&nbsp;<br>denom&nbsp;<-&nbsp;apply(pk,&nbsp;1,&nbsp;sum)&nbsp;<br>df&nbsp;<-&nbsp;&nbsp;apply(pk,&nbsp;2,&nbsp;function(x)&nbsp;x/denom)<br>df1&nbsp;<-&nbsp;melt(data.frame(df,&nbsp;theta),&nbsp;id.vars&nbsp;=&nbsp;\"theta\")&nbsp;<br><br>#&nbsp;plotting&nbsp;category&nbsp;probabilities&nbsp;<br>ggplot(data&nbsp;=&nbsp;df1,&nbsp;aes(x&nbsp;=&nbsp;theta,&nbsp;y&nbsp;=&nbsp;value,&nbsp;col&nbsp;=&nbsp;variable))&nbsp;+&nbsp;<br>&nbsp;&nbsp;geom_line()&nbsp;+&nbsp;<br>&nbsp;&nbsp;xlab(\"Ability\")&nbsp;+&nbsp;<br>&nbsp;&nbsp;ylab(\"Category&nbsp;probability\")&nbsp;+&nbsp;<br>&nbsp;&nbsp;xlim(-4,&nbsp;4)&nbsp;+&nbsp;<br>&nbsp;&nbsp;ylim(0,&nbsp;1)&nbsp;+&nbsp;<br>&nbsp;&nbsp;theme_bw()&nbsp;+&nbsp;<br>&nbsp;&nbsp;theme(text&nbsp;=&nbsp;element_text(size&nbsp;=&nbsp;14),&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;panel.grid.major&nbsp;=&nbsp;element_blank(),&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;panel.grid.minor&nbsp;=&nbsp;element_blank())&nbsp;+&nbsp;<br>&nbsp;&nbsp;ggtitle(\"Category&nbsp;probabilities\")&nbsp;+&nbsp;<br>&nbsp;&nbsp;scale_color_manual(\"\",&nbsp;values&nbsp;=&nbsp;c(\"black\",&nbsp;\"red\",&nbsp;\"yellow\",&nbsp;\"green\",&nbsp;\"blue\"),&nbsp;labels&nbsp;=&nbsp;paste0(\"P(Y&nbsp;=&nbsp;\",&nbsp;0:4,&nbsp;\")\"))<br><br>#&nbsp;calculating&nbsp;expected&nbsp;item&nbsp;score<br>df2&nbsp;<-&nbsp;data.frame(exp&nbsp;=&nbsp;as.matrix(df)&nbsp;%*%&nbsp;0:4,&nbsp;theta)<br>#&nbsp;plotting&nbsp;expected&nbsp;item&nbsp;score&nbsp;<br>ggplot(data&nbsp;=&nbsp;df2,&nbsp;aes(x&nbsp;=&nbsp;theta,&nbsp;y&nbsp;=&nbsp;exp))&nbsp;+&nbsp;<br>&nbsp;&nbsp;geom_line()&nbsp;+&nbsp;<br>&nbsp;&nbsp;xlab(\"Ability\")&nbsp;+&nbsp;<br>&nbsp;&nbsp;ylab(\"Expected&nbsp;item&nbsp;score\")&nbsp;+&nbsp;<br>&nbsp;&nbsp;xlim(-4,&nbsp;4)&nbsp;+&nbsp;<br>&nbsp;&nbsp;ylim(0,&nbsp;4)&nbsp;+&nbsp;<br>&nbsp;&nbsp;theme_bw()&nbsp;+&nbsp;<br>&nbsp;&nbsp;theme(text&nbsp;=&nbsp;element_text(size&nbsp;=&nbsp;14),&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;panel.grid.major&nbsp;=&nbsp;element_blank(),&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;panel.grid.minor&nbsp;=&nbsp;element_blank())&nbsp;+&nbsp;<br>&nbsp;&nbsp;ggtitle(\"Expected&nbsp;item&nbsp;score\")"))),
-        br(),
-        br()
+        code(includeText("sc/irt/train_poly_gpcm.R"))
       ),
       # *** Nominal response model ####
       tabPanel("Nominal response model",
@@ -1083,9 +1074,7 @@ uiIRT <- navbarMenu(
         plotlyOutput("irt_training_nrm_plot"),
         downloadButton("DB_irt_training_nrm_plot", label = "Download figure"),
         h4("Selected R code"),
-        div(code(HTML("library(ggplot2)&nbsp;<br>library(data.table)&nbsp;<br><br>#&nbsp;setting&nbsp;parameters&nbsp;<br>a&nbsp;<-&nbsp;c(2.5,&nbsp;2,&nbsp;1,&nbsp;1.5)&nbsp;<br>d&nbsp;<-&nbsp;c(-1.5,&nbsp;-1,&nbsp;-0.5,&nbsp;0)&nbsp;<br>theta&nbsp;<-&nbsp;seq(-4,&nbsp;4,&nbsp;0.01)&nbsp;<br><br>#&nbsp;calculating&nbsp;category&nbsp;probabilities&nbsp;<br>ccnrm&nbsp;<-&nbsp;function(theta,&nbsp;a,&nbsp;d){&nbsp;exp(d&nbsp;+&nbsp;a*theta)&nbsp;}&nbsp;<br>df&nbsp;<-&nbsp;sapply(1:length(d),&nbsp;function(i)&nbsp;ccnrm(theta,&nbsp;a[i],&nbsp;d[i]))&nbsp;<br>df&nbsp;<-&nbsp;data.frame(1,&nbsp;df)&nbsp;<br>denom&nbsp;<-&nbsp;apply(df,&nbsp;1,&nbsp;sum)&nbsp;<br>df&nbsp;<-&nbsp;apply(df,&nbsp;2,&nbsp;function(x)&nbsp;x/denom)&nbsp;<br>df1&nbsp;<-&nbsp;melt(data.frame(df,&nbsp;theta),&nbsp;id.vars&nbsp;=&nbsp;\"theta\")&nbsp;<br><br>#&nbsp;plotting&nbsp;category&nbsp;probabilities&nbsp;<br>ggplot(data&nbsp;=&nbsp;df1,&nbsp;aes(x&nbsp;=&nbsp;theta,&nbsp;y&nbsp;=&nbsp;value,&nbsp;col&nbsp;=&nbsp;variable))&nbsp;+&nbsp;<br>&nbsp;&nbsp;geom_line()&nbsp;+&nbsp;<br>&nbsp;&nbsp;xlab(\"Ability\")&nbsp;+&nbsp;<br>&nbsp;&nbsp;ylab(\"Category&nbsp;probability\")&nbsp;+&nbsp;<br>&nbsp;&nbsp;xlim(-4,&nbsp;4)&nbsp;+&nbsp;<br>&nbsp;&nbsp;ylim(0,&nbsp;1)&nbsp;+&nbsp;<br>&nbsp;&nbsp;theme_bw()&nbsp;+&nbsp;<br>&nbsp;&nbsp;theme(text&nbsp;=&nbsp;element_text(size&nbsp;=&nbsp;14),&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;panel.grid.major&nbsp;=&nbsp;element_blank(),&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;panel.grid.minor&nbsp;=&nbsp;element_blank())&nbsp;+&nbsp;<br>&nbsp;&nbsp;ggtitle(\"Category&nbsp;probabilities\")&nbsp;+&nbsp;<br>&nbsp;&nbsp;scale_color_manual(\"\",&nbsp;values&nbsp;=&nbsp;c(\"black\",&nbsp;\"red\",&nbsp;\"yellow\",&nbsp;\"green\",&nbsp;\"blue\"),&nbsp;labels&nbsp;=&nbsp;paste0(\"P(Y&nbsp;=&nbsp;\",&nbsp;0:4,&nbsp;\")\"))<br><br>#&nbsp;calculating&nbsp;expected&nbsp;item&nbsp;score<br>df2&nbsp;<-&nbsp;data.frame(exp&nbsp;=&nbsp;as.matrix(df)&nbsp;%*%&nbsp;0:4,&nbsp;theta)<br><br>#&nbsp;plotting&nbsp;expected&nbsp;item&nbsp;score<br>ggplot(data&nbsp;=&nbsp;df2,&nbsp;aes(x&nbsp;=&nbsp;theta,&nbsp;y&nbsp;=&nbsp;exp))&nbsp;+&nbsp;<br>&nbsp;&nbsp;geom_line()&nbsp;+&nbsp;<br>&nbsp;&nbsp;xlab(\"Ability\")&nbsp;+&nbsp;<br>&nbsp;&nbsp;ylab(\"Expected&nbsp;item&nbsp;score\")&nbsp;+&nbsp;<br>&nbsp;&nbsp;xlim(-4,&nbsp;4)&nbsp;+&nbsp;<br>&nbsp;&nbsp;ylim(0,&nbsp;4)&nbsp;+&nbsp;<br>&nbsp;&nbsp;theme_bw()&nbsp;+&nbsp;<br>&nbsp;&nbsp;theme(text&nbsp;=&nbsp;element_text(size&nbsp;=&nbsp;14),&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;panel.grid.major&nbsp;=&nbsp;element_blank(),&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;panel.grid.minor&nbsp;=&nbsp;element_blank())&nbsp;+&nbsp;<br>&nbsp;&nbsp;ggtitle(\"Expected&nbsp;item&nbsp;score\")"))),
-        br(),
-        br()
+        code(includeText("sc/irt/train_poly_nrm.R"))
       )
     )
   )
