@@ -462,7 +462,7 @@ observeEvent(input$data_upload, {
     dataset$binary <- as.data.table(dataset$binary)
     dataset$nominal <- as.data.table(dataset$nominal)
     dataset$ordinal <- as.data.table(dataset$ordinal)
-    dataset$continuous <- as.data.table(dataset$binary)
+    dataset$continuous <- as.data.table(dataset$continuous)
 
     dataset$name <- csvdata_data_name
     dataset$data_type <- csvdata_data_type
