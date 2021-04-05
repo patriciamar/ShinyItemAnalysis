@@ -570,23 +570,25 @@ uiData <- tabPanel(
       # * Main dataset ####
       #------------------------------------------------------------------------------------#
       h4("Main dataset"),
-      DT::dataTableOutput("headdata"),
+      DT::dataTableOutput("data_exploration_main"),
       br(),
       #------------------------------------------------------------------------------------#
       # * Key ####
       #------------------------------------------------------------------------------------#
-      h4("Key (correct answers) / Cut-score"),
-      DT::dataTableOutput("key"),
+      h4("Key (correct answers) / cut-score"),
+      DT::dataTableOutput("data_exploration_key"),
       br(),
       #------------------------------------------------------------------------------------#
-      # * Scored test ####
+      # * Scored / binarized data ####
       #------------------------------------------------------------------------------------#
-      h4("Scored test"),
-      DT::dataTableOutput("sc01"),
+      h4("Scored / binarized data"),
+      DT::dataTableOutput("data_exploration_binary"),
       br(),
-
-      # all vector-like vars presented in one DT.
-      DT::dataTableOutput("vector_vars")
+      #------------------------------------------------------------------------------------#
+      # * Other variables ####
+      #------------------------------------------------------------------------------------#
+      h4("Other variables"),
+      DT::dataTableOutput("data_exploration_variables")
     )
   )
 )
