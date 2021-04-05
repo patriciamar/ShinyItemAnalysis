@@ -43,11 +43,11 @@ uiDIF <-
         strong("uniform"), " (left figure below) and ", strong("non-uniform"), " DDF (right figure below)."
       ),
       img(
-        src = "fig_DIF_uniform.png",
+        src = "fig_DDF_uniform.png",
         style = "float: left; width: 32%; margin-right: 2%; margin-left: 16%; margin-bottom: 0.5em;"
       ),
       img(
-        src = "fig_DIF_nonuniform.png",
+        src = "fig_DDF_nonuniform.png",
         style = "float: left; width: 32%; margin-right: 16%; margin-left: 2%; margin-bottom: 0.5em;"
       )
     ),
