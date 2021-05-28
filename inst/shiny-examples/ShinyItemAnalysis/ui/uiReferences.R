@@ -288,6 +288,11 @@ uiReferences <-
 				        London: Chapman and Hall.
                 </li>
 
+                <li>Bartholomew, D. J, Steele, F., Moustaki, I. (Eds.) (2008).
+                <i>Analysis of Multivariate Social Science Data</i> (2nd ed.)
+                CRC Press.
+                </li>
+
                 <li>Bock, R. D. (1972).
                 Estimating item parameters and latent ability when responses are
                 scored in two or more nominal categories.

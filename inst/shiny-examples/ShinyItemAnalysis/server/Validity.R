@@ -228,29 +228,87 @@ output$DB_dendrogram <- downloadHandler(
 # * FACTOR ANALYSIS ####
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+# validation in case any var(item) == 0
+validity_factor_nonzero_vars_check <- reactive({
+  validate(
+    need(ordinal(), "No data in this dataset."),
+    need(
+      !nzchar(data_check_binary_all01_text()),
+      {
+        zero_var_items <- names(which(sapply(ordinal(), var) == 0))
+        single <- length(zero_var_items) == 1
+
+        paste(
+          ifelse(single, "Item", "Items"),
+          paste(zero_var_items, collapse = ", "),
+          ifelse(single, "has", "have"),
+          "zero variance.",
+          "\nParallel and factor analyses both require that all items have nonzero variances.",
+          "\nYou can remove the problematic",
+          ifelse(single, "item", "items"), "in the Data tab."
+        )
+      }
+    ),
+    errorClass = "validation-error"
+  )
+})
+
 # ** Parallel analysis ####
 validity_factor_parallel_analysis <- reactive({
-  fa_parallel(ordinal(), cor = input$validity_factor_cor_pa, n_iter = 50)
+  validity_factor_nonzero_vars_check()
+  text_out <- capture.output(data_out <- fa_parallel(ordinal(),
+    cor = input$validity_factor_pa_cor,
+    method = input$validity_factor_pa_method,
+    n_iter = 20, plot = FALSE
+  ))
+
+  list(data = data_out, text = text_out)
 })
 
 # ** Output scree plot ####
 output$validity_factor_screeplot <- renderPlotly({
-  sia_parallel_out <- validity_factor_parallel_analysis()
+  sia_parallel_out <- validity_factor_parallel_analysis()[["data"]]
+  method <- if (nlevels(sia_parallel_out[["method"]]) == 2) {
+    "both"
+  } else {
+    levels(sia_parallel_out[["method"]])
+  }
+
   plt <- sia_parallel_out %>%
     plot() %>%
     ggplotly() %>%
     style(textposition = "left") %>%
-    layout(legend = list(x = .95, y = .95, xanchor = "right")) %>%
+    layout(legend = list(x = .95, y = .95, xanchor = "right", orientation = "h")) %>%
     config(displayModeBar = FALSE)
 
-  plt$x$data[[1]]$text <- plt$x$data[[1]]$text %>%
+  plt$x$data[[3]]$text <- plt$x$data[[3]]$text %>%
     str_replace("-?\\d{1}\\.\\d{5,}", function(x) round(as.numeric(x), 3))
-  plt$x$data[[2]]$text <- plt$x$data[[2]]$text %>%
-    str_replace("-?\\d{1}\\.\\d{5,}", function(x) round(as.numeric(x), 3))
+  plt$x$data[[3]]$name <- str_replace(plt$x$data[[3]]$name, ",", ", ")
 
-  plt$x$data[[3]][["hoverinfo"]] <- "none"
-  plt$x$data[[4]][["text"]] <- "<br><br>Kaiser boundary" # offset by 2 lines
-  plt$x$data[[4]][["hoverinfo"]] <- "none"
+  plt$x$data[[4]]$text <- plt$x$data[[4]]$text %>%
+    str_replace("-?\\d{1}\\.\\d{5,}", function(x) round(as.numeric(x), 3))
+  plt$x$data[[4]]$name <- str_replace(plt$x$data[[4]]$name, ",", ", ")
+
+  if (method == "both") {
+    plt$x$data[[5]]$text <- plt$x$data[[5]]$text %>%
+      str_replace("-?\\d{1}\\.\\d{5,}", function(x) round(as.numeric(x), 3))
+    plt$x$data[[5]]$name <- str_replace(plt$x$data[[5]]$name, ",", ", ")
+
+    plt$x$data[[6]]$text <- plt$x$data[[6]]$text %>%
+      str_replace("-?\\d{1}\\.\\d{5,}", function(x) round(as.numeric(x), 3))
+    plt$x$data[[6]]$name <- str_replace(plt$x$data[[6]]$name, ",", ", ")
+  }
+
+  plt$x$data[[1]][["hoverinfo"]] <- "none"
+  plt$x$data[[2]][["text"]] <- switch(method,
+    "fa" = "Kaiser boundary<br><br>",
+    "pca" = "Kaiser boundary<br><br>",
+    "both" = c(
+      "Kaiser boundary for FA<br><br>",
+      "Kaiser boundary for PCA<br><br>"
+    )
+  )
+  plt$x$data[[2]][["hoverinfo"]] <- "none"
 
   plt
 })
@@ -262,7 +320,7 @@ output$DB_scree_plot <- downloadHandler(
   },
   content = function(file) {
     ggsave(file,
-      plot = validity_factor_parallel_analysis() %>% plot() +
+      plot = validity_factor_parallel_analysis()[["data"]] %>% plot() +
         theme(text = element_text(size = setting_figures$text_size)),
       device = "png",
       height = setting_figures$height, width = setting_figures$width,
@@ -273,9 +331,11 @@ output$DB_scree_plot <- downloadHandler(
 
 # number of factors - parallel analysis
 validity_factor_number_pa <- reactive({
-  x <- validity_factor_parallel_analysis()
-  real_idx <- which(x$data == "real")
-  simulated_idx <- which(x$data == "simulated")
+  x <- validity_factor_parallel_analysis()[["data"]]
+  method <- ifelse(input$validity_factor_pa_method %in% c("fa", "both"), "fa", "pca")
+
+  real_idx <- which(x$data_type == "real" & x$method == method)
+  simulated_idx <- which(x$data_type == "simulated" & x$method == method)
 
   real_eigenvalues <- x$eigenvalue[real_idx]
   simulated_eigenvalues <- x$eigenvalue[simulated_idx]
@@ -286,25 +346,13 @@ validity_factor_number_pa <- reactive({
 })
 
 
-# number of factors - Kaiser rule
-validity_factor_number_kr <- reactive({
-  x <- validity_factor_parallel_analysis()
-  sum(x$eigenvalue[which(x$data == "real")] >= 1)
-})
-
 output$validity_factor_number <- renderText({
-  paste0(
-    "Parallel analysis suggests a solution with ",
-    validity_factor_number_pa(),
-    ifelse(validity_factor_number_pa() == 1, " factor", " factors"),
-    ". According to Kaiser criterion, optimal number of factors is ",
-    validity_factor_number_kr(), "."
-  )
+  validity_factor_parallel_analysis()[["text"]] # captured fa_parallel() output
 })
 
 # update EFA corr. method - mimic the PA input
-observeEvent(input$validity_factor_cor_pa, {
-  sel <- switch(input$validity_factor_cor_pa,
+observeEvent(input$validity_factor_pa_cor, {
+  sel <- switch(input$validity_factor_pa_cor,
     "pearson" = "cor",
     "polychoric" = "poly"
   )
@@ -323,6 +371,7 @@ observe({
 
 # run FA
 validity_factor_fa <- reactive({
+  validity_factor_nonzero_vars_check()
   fa(ordinal(),
     input$validity_factor_nfactors,
     rotate = input$validity_factor_rotation,
@@ -346,6 +395,7 @@ output$validity_factor_loadings <- renderTable(
     n_factors <- ncol(loadings_num)
     n_items <- nrow(loadings_num)
 
+    # sorting mimick those used by loadings() base R function
     if (input$validity_factor_sort) {
       mx <- max.col(abs(loadings_num))
       idx <- cbind(1:n_items, mx)
@@ -422,6 +472,41 @@ output$validity_factor_efa_fit <- renderUI({
   )
 })
 
+validity_factor_fscores <- reactive({
+  r <- validity_factor_fa()
+  fscores <- psych::factor.scores(ordinal(), r, method = "Thurstone")$scores
+  fscores %>%
+    data.frame() %>%
+    setNames(paste0("F", seq_len(ncol(fscores))))
+})
+
+output$validity_factor_fscores <- renderDT({
+  fscores <- validity_factor_fscores()
+  fscores %>%
+    datatable(options = list(
+      scrollX = TRUE,
+      autoWidth = TRUE,
+      columnDefs = list(list(width = "50px", targets = "_all")),
+      pageLength = 10,
+      server = TRUE,
+      scrollCollapse = TRUE,
+      dom = "tipr"
+    ), style = "bootstrap") %>%
+    formatRound(columns = seq_len(ncol(fscores)), digits = 3)
+})
+
+# ** DB factor scores data ####
+output$DB_validity_factor_fscores <- downloadHandler(
+  filename = function() {
+    "efa_factor-scores.csv"
+  },
+  content = function(file) {
+    data <- validity_factor_fscores()
+    write.csv(data, file)
+  }
+)
+
+
 
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -448,7 +533,10 @@ DCplot <- reactive({
   DDplot(correct,
     item.names = item_numbers(),
     average.score = average.score, criterion = unlist(criterion()),
-    thr = switch(input$DCplotThr_cb, "TRUE" = input$DCplotThr, "FALSE" = NULL),
+    thr = switch(input$DCplotThr_cb,
+      "TRUE" = input$DCplotThr,
+      "FALSE" = NULL
+    ),
     val_type = input$DCplot_validity
   )
 })

@@ -1,6 +1,32 @@
 uiValidity <-
   navbarMenu(
     "Validity",
+    # * PREDICTIVE VALIDITY ####
+    # ** Summary ####
+    tabPanel(
+      "Criterion validity",
+      value = "val_summary",
+      h3("Criterion validity"),
+      p(
+        "Depending on the criterion variable, different types of criterion validity may be examined. As an example, a correlation between the test score and the future study success or future GPA may be  used as a proof of predictive validity in the case of admission tests. A criterion variable may be uploaded in the ", strong("Data"), "section."
+      ),
+      h4("Descriptive plots of criterion variable on total score"),
+      p(
+        "Total scores are plotted according to a criterion variable. Boxplot or scatterplot is displayed depending on the type of criterion variable - whether it is discrete or continuous. Scatterplot is provided with a red linear regression line. "
+      ),
+      plotlyOutput("validity_plot"),
+      downloadButton(outputId = "DB_validity_plot", label = "Download figure"),
+      h4("Correlation of criterion variable and total score"),
+      p(
+        "An association between the total score and the criterion variable can be estimated using Pearson product-moment correlation coefficient ", em("r"), ". The null hypothesis being tested states that correlation is exactly 0. "
+      ),
+      uiOutput("validity_table"),
+      br(),
+      htmlOutput("validity_table_interpretation"),
+      br(),
+      h4("Selected R code"),
+      code(includeText("sc/validity/crit_val.R"))
+    ),
     # * CORRELATION STRUCTURE ####
     tabPanel(
       "Correlation structure",
@@ -154,16 +180,30 @@ uiValidity <-
     # * FACTOR ANALYSIS ####
     tabPanel(
       "Factor analysis",
+      value = "factanal",
       h3("Factor analysis"),
-      h4("Finding the optimal number of factors"),
+      h4("Finding the optimal number of factors/components"),
       p(
-        "A scree plot below displays two sets of the eigenvalues associated with the factors in descending order. Location of a bend (an elbow) of", span("the \"real\" part", style = "font-weight: bold; color: red;"), "can be considered indicative to the suitable number of factors (Catell, 1966). Another rule, as proposed by Kaiser (1960), discards all factors below the eigenvalue of 1 (the information of a single average item)."
+        "A scree plot below displays two sets of the eigenvalues associated with the factors/components in descending order. Location of a bend (an elbow) of", span("the \"real\" part", style = "font-weight: bold; color: red;"), "can be considered indicative to the suitable number of factors (Catell, 1966). Another rule, as proposed by Kaiser (1960), discards all factors or components with the eigenvalue less than or equal to 0 or 1, respectively (the information of a single average item)."
       ),
       p(
-        "A much better, modern approach called a parallel analysis (Horn, 1965) compares the eigenvalues of the real data correlation matrix with the eigenvalues (or more precisely, 95th percentiles of their sampling distributions) obtained from simulated zero-factor random matrices. The number of factors with the eigenvalue bigger than the eigenvalue at the first (leftmost) curves crossing is then the optimal number to extract in factor analysis."
+        "A more complex approach called a parallel analysis (Horn, 1965) compares the eigenvalues of the real data correlation matrix with the eigenvalues (or more precisely, 95th percentiles of their sampling distributions) obtained from simulated zero-factor random matrices. The number of factors/components with the eigenvalue bigger than the eigenvalue at the first (leftmost) curves crossing is then the optimal number to extract in factor or principal component analysis. According to Bartholomew et al. (2011), the number of components is a good guide to the number of factors given the relationship between the PCA and FA."
       ),
       fluidRow(
-        column(2, selectInput("validity_factor_cor_pa",
+        column(
+          2,
+          selectInput(
+            "validity_factor_pa_method",
+            "Eigenvalues from",
+            c(
+              "FA" = "fa",
+              "PCA" = "pca",
+              "Both" = "both"
+            ),
+            selected = "pca"
+          )
+        ),
+        column(2, selectInput("validity_factor_pa_cor",
           "Correlation method",
           choices = c(
             "Pearson" = "pearson",
@@ -172,7 +212,7 @@ uiValidity <-
           )
         )),
         column(
-          10, br(),
+          7, br(),
           helpText("Method used to compute the correlation matrix. For ordinal datasets with only a few categories, polychoric option is recommended. The choice is automatically forwarded to the EFA below.")
         )
       ),
@@ -180,15 +220,11 @@ uiValidity <-
       downloadButton(outputId = "DB_scree_plot", label = "Download figure"),
       br(),
       br(),
-
       h4("Interpretation"),
       textOutput("validity_factor_number"),
       br(),
-
       h4("Exploratory factor analysis"),
-      p("Once the optimal number of factors is found, the exploratory factor analysis (EFA) itself may be conducted. The number of factor found by the parallel analysis is offered as the default value. You can select the preffered factor rotation of the solution or hide the loadings outside interest. There is also an option to sort items by their importance on each factor. Below the loadings table, there is factor summary with proportion of variance each of the factor explains, as well as the list of common model fit indices."),
-
-
+      p("Once the optimal number of factors is found, the exploratory factor analysis (EFA) itself may be conducted. The number of factors found by the parallel analysis is offered as the default value. You can select the preffered factor rotation of the solution or hide the loadings outside interest. There is also an option to sort items by their importance on each factor. Below the loadings table, there is factor summary with proportion of variance each of the factor explains, as well as the list of common model fit indices."),
       fluidRow(
         column(
           2,
@@ -242,41 +278,17 @@ uiValidity <-
       tableOutput("validity_factor_loadings"),
       downloadButton("DB_validity_factor_loadings", label = "Download table"),
       br(), br(),
-
       h4("Factor summary"),
       tableOutput("validity_factor_varex"), br(),
-
       h4("Model fit"),
-      uiOutput("validity_factor_efa_fit"), br(), br(),
+      uiOutput("validity_factor_efa_fit"), br(),
 
+      h4("Factor scores"),
+      DTOutput("validity_factor_fscores"),
+
+      downloadButton("DB_validity_factor_fscores", label = "Download table"),
+      br(), br(),
       h4("Selected R code"),
       code(includeText("sc/validity/fact_anal.R"))
-    ),
-    # * PREDICTIVE VALIDITY ####
-    # ** Summary ####
-    tabPanel(
-      "Criterion validity",
-      value = "val_summary",
-      h3("Criterion validity"),
-      p(
-        "Depending on the criterion variable, different types of criterion validity may be examined. As an example, a correlation between the test score and the future study success or future GPA may be  used as a proof of predictive validity in the case of admission tests. A criterion variable may be uploaded in the ", strong("Data"), "section."
-      ),
-
-      h4("Descriptive plots of criterion variable on total score"),
-      p(
-        "Total scores are plotted according to a criterion variable. Boxplot or scatterplot is displayed depending on the type of criterion variable - whether it is discrete or continuous. Scatterplot is provided with a red linear regression line. "
-      ),
-      plotlyOutput("validity_plot"),
-      downloadButton(outputId = "DB_validity_plot", label = "Download figure"),
-      h4("Correlation of criterion variable and total score"),
-      p(
-        "An association between the total score and the criterion variable can be estimated using Pearson product-moment correlation coefficient ", em("r"), ". The null hypothesis being tested states that correlation is exactly 0. "
-      ),
-      uiOutput("validity_table"),
-      br(),
-      htmlOutput("validity_table_interpretation"),
-      br(),
-      h4("Selected R code"),
-      code(includeText("sc/validity/crit_val.R"))
     )
   )
