@@ -3,13 +3,11 @@
 \docType{data}
 \name{CZmatura}
 \alias{CZmatura}
-\title{Czech matura dataset}
+\title{CZmatura dataset}
 \format{
 \code{CZmatura} is a \code{data.frame} consisting of 15,702 observations on
   75 variables.
   \describe{
-  \item{Project}{Project ID, \code{"MZ2019"} for all.  }
-  \item{Exam}{Exam ID, \code{"MA"} for all. }
   \item{SchType}{School type code. }
   \item{FirstAtt}{First attempt; \code{"1"} yes, \code{"0"} no. }
   \item{SchTypeGY}{School type gymnasium; \code{"1"} yes, \code{"0"} no. }
@@ -24,8 +22,8 @@
 data(CZmatura)
 }
 \description{
-The \code{CZmatura} dataset comes from the Czech matura exam in
-  mathematics. The exam is assigned in spring to students from Grade 13, at
+The \code{CZmatura} dataset comes from a matura exam in
+  mathematics. The exam was assigned to students from Grade 13, at
   the end of their secondary education.
 }
 \seealso{

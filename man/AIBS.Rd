@@ -59,16 +59,17 @@ The \code{AIBS} dataset (Gallo, 2020) comes from the scientific
   case of restricted samples. For details, see Erosheva et al. (2021b).
 }
 \references{
-Gallo, S. (2021). Grant  peer  review  scoring  data  with  criteria  scores
+Gallo, S. (2021). Grant  peer  review  scoring  data  with  criteria  scores.
 \doi{10.6084/m9.figshare.12728087}
 
 Erosheva, E., Martinkova, P., & Lee, C. (2021a). When zero may not be zero: A
 cautionary note on the use of inter-rater reliability in evaluating grant
-peer review. Journal of the Royal Statistical Society - Series A. Accepted.
+peer review. Journal of the Royal Statistical Society - Series A.
+\doi{10.1111/rssa.12681}
 
 Erosheva, E., Martinkova, P., & Lee, C. (2021b). Supplementary material: When
 zero may not be zero: A cautionary note on the use of inter-rater reliability
-in evaluating grant peer review.
+in evaluating grant peer review. \doi{10.17605/OSF.IO/KNPH8}
 }
 \seealso{
 \code{\link{ICCrestricted}}
