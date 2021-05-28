@@ -1,8 +1,8 @@
 Type: Package
 Package: ShinyItemAnalysis
 Title: Test and Item Analysis via Shiny
-Version: 1.3.6
-Date: 2021-03-20
+Version: 1.3.7
+Date: 2021-05-28
 Authors@R: 
     c(person(given = "Patricia",
              family = "Martinkova",

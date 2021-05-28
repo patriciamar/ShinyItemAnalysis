@@ -2,6 +2,26 @@
 
 ----------
 
+### Changes in version 1.3.7 (2021-05-28)
+#### BUG FIXING
+  * Bug with reading ordinal data in the app was fixed. (Thanks to pukelevicius
+    for reporting on GitHub)
+  * Bug with uploading data with all correct/wrong answers in some items was 
+    fixed (Thanks to Koen Derks for reporthing the issue on GitHub)
+    
+#### MAJOR UPDATES
+  * New datasets `MSclinical`, `BFI2`, and `TestAnxietyCor` were added, some 
+    datasets and manuals were updated.
+  * Functions `fa_parallel()` was updated, smaller changes were made in some 
+    other functions
+  * In the `Validity` section of the app, tab `Factor analysis` was updated.  
+  * In the `IRT` section of the app, tab for the Bock model was updated to offer
+    parametrization closer to regression models.
+  
+#### MINOR UPDATES
+  * Sample R code was updated for the `IRT` section.
+----------
+
 ### Changes in version 1.3.6 (2021-03-20)
 #### BUG FIXING
   * Function ItemAnalysis() updated to avoid error messages in case of datasets

@@ -33,7 +33,7 @@ The ShinyItemAnalysis package contains an interactive shiny
 \details{
 Package: ShinyItemAnalysis \cr
 Type: Package \cr
-Version: 1.3.6 \cr
+Version: 1.3.7 \cr
 Date: 2021-03-20 \cr
 Depends: R (>= 3.5.0) \cr
 Imports: cowplot, data.table, deltaPlotR, difNLR (>= 1.3.2), difR (>= 5.0),
