@@ -19,7 +19,7 @@ plot(fit, type = "infoSE")
 coef(fit, simplify = TRUE) # mirt default parametrization
 coef(fit, printSE = TRUE) # SE printed only w/ simplify = FALSE
 coef(fit, IRTpars = TRUE, simplify = TRUE) # Bock's original parametrization
-#  i.e. intercept-slope a*theta + d, sums of a and of d restricted to 0)
+#  i.e. intercept-slope a*theta + d, sums of a and of d restricted to 0
 coef(fit, IRTpars = TRUE, printSE = TRUE) # SE not printed
 
 # factor scores vs standardized total scores
@@ -102,4 +102,3 @@ coef(fit, simplify = TRUE)
 # Item.3   1  0.000 -2.090 -1.363     NA  0.000 -3.716 -2.805     NA     NA     NA
 # ...
 
-# IRT PARAMETRIZATION of the above model (to be added)

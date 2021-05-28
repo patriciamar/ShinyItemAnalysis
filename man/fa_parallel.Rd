@@ -52,6 +52,9 @@ zero-factor multivariate normal distributions to sample. Defaults to
 with the function results. To create the plot from the resulting object
 afterwards, call \code{plot()}.}
 
+\item{show_kaiser}{\emph{logical}, whether to show Kaiser boundary in the
+plot (the default) or not.}
+
 \item{fm}{\emph{character}, factoring method. See \code{\link[psych]{fa}}
 from the package \code{\link[psych]{psych}}.}
 

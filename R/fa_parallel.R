@@ -48,6 +48,8 @@
 #'   \code{20}.
 #' @param fm \emph{character}, factoring method. See \code{\link[psych]{fa}}
 #'   from the package \code{\link[psych]{psych}}.
+#' @param show_kaiser \emph{logical}, whether to show Kaiser boundary in the
+#'   plot (the default) or not.
 #' @inheritParams stats::cor
 #' @inheritDotParams psych::polychoric -x -y -na.rm -polycor -std.err
 #'
