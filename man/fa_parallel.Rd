@@ -8,32 +8,49 @@
 fa_parallel(
   Data,
   cor = "pearson",
-  method = "quantile",
+  n_obs = NULL,
+  method = "pca",
+  threshold = "quantile",
   p = 0.95,
   n_iter = 20,
+  plot = TRUE,
+  show_kaiser = TRUE,
   fm = "minres",
   use = "pairwise",
   ...
 )
 }
 \arguments{
-\item{Data}{\emph{data.frame} or \emph{matrix}, dataset where rows are
-observations and columns items.}
+\item{Data}{\emph{data.frame} or \emph{matrix}, dataset (where rows are
+observations and columns items) or correlation matrix (recognized
+automatically).}
 
 \item{cor}{\emph{character}, how to calculate the correlation matrix of the
-real data. Can be either "pearson" (default), "tetrachoric" or
-"polychoric". Unambiguous abbreviations accepted.}
+real data. Can be either \code{pearson} (default), \code{tetrachoric} or
+\code{polychoric}. Unambiguous abbreviations accepted.}
 
-\item{method}{\emph{character}, whether to use traditionall Horn's method or
-more recent and well-performing quantile one. Either \code{mean} or
+\item{n_obs}{\emph{integer}, in case you provided the correlation matrix
+directly as the input, you have to provide the number of observations in
+the original dataset.}
+
+\item{method}{\emph{character}, either \code{fa}, \code{pca}, or \code{both}
+(the default). Which method to use for the eigenvalues simulation and
+computation.}
+
+\item{threshold}{\emph{character}, whether to use traditionall Horn's method
+or more recent and well-performing quantile one. Either \code{mean} or
 \code{quantile} (default). Can be abbreviated.}
 
 \item{p}{\emph{numeric} (0--1), probability for which the sample quantile is
-produced. Defaults to \code{.95}. Ignored if \code{method = "mean"}.}
+produced. Defaults to \code{.95}. Ignored if \code{threshold = "mean"}.}
 
 \item{n_iter}{\emph{integer}, number of iterations, i.e. the number of
 zero-factor multivariate normal distributions to sample. Defaults to
 \code{20}.}
+
+\item{plot}{\emph{logical}, if \code{TRUE} (the default), show the plot along
+with the function results. To create the plot from the resulting object
+afterwards, call \code{plot()}.}
 
 \item{fm}{\emph{character}, factoring method. See \code{\link[psych]{fa}}
 from the package \code{\link[psych]{psych}}.}
@@ -58,15 +75,16 @@ from the package \code{\link[psych]{psych}}.}
   }}
 }
 \value{
-An object of class \code{sia_parallel}. Can be coerced to
-  \code{data.frame} or plotted with \code{plot()}.
+An object of class \code{data.frame} and \code{sia_parallel}. Can be
+  plotted using \code{plot()}.
 }
 \description{
 Computes the eigenvalues of the sample correlation matrix and the eigenvalues
-obtained from a random correlation matrix for which no factors are assumed.
-By default, the function utilizes a modified Horn's (1965) method, which --
-instead of mean -- uses 95th percentile of each item eigenvalues sampling
-distribution as a threshold to find the optimal number of factors.
+obtained from a random correlation matrix for which no factors/components are
+assumed. By default, the function utilizes a modified Horn's (1965) method,
+which -- instead of mean -- uses 95th percentile of each item eigenvalues
+sampling distribution as a threshold to find the optimal number of
+factors/components.
 }
 \details{
 Horn proposed a solution to the problem of optimal factor number
@@ -86,26 +104,25 @@ distribution was suggested as a more accurate threshold. This, more recent
 method is used by default in the function.
 }
 \examples{
+data("TestAnxietyCor", package = "ShinyItemAnalysis")
+fa_parallel(TestAnxietyCor, n_obs = 335, method = "pca")
+
+\dontrun{
 data("bfi", package = "psych")
 items <- bfi[, 1:25]
 
 fa_parallel(items)
-\dontrun{
-fa_parallel(items, method = "mean") # traditional Horn's method, emulates psych
-
-fa_parallel(items) \%>\% plot()
-fa_parallel(items) \%>\% as.data.frame()
+fa_parallel(items, threshold = "mean") # traditional Horn's method
 }
 
 }
 \references{
 Horn, J. L. (1965). A rationale and test for the number of
   factors in factor analysis. Psychometrika, 30, 179--185.
-  http://dx.doi.org/10.1007/BF02289447
+  \doi{10.1007/BF02289447}
 
   Buja, A., & Eyuboglu, N. (1992). Remarks on parallel analysis. Multivariate
-  Behavioral Research, 27, 509--540. http://dx.doi.org/10.1207/
-  s15327906mbr2704_2
+  Behavioral Research, 27, 509--540. \doi{10.1207/s15327906mbr2704_2}
 }
 \author{
 Jan Netik \cr Institute of Computer Science of the Czech Academy of

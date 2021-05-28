@@ -3,6 +3,7 @@
 #' @description Internal function substituting the \code{moments} package. Only
 #'   third (skewness) and fourth (kurtosis) moments are included.
 #'
+#' @keywords internal
 #' @noRd
 skewness <- function(x) {
   n <- length(x)

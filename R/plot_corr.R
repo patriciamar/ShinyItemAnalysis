@@ -118,11 +118,16 @@
 #' }
 #'
 #' @export
-plot_corr <- function(Data, cor = "polychoric", clust_method = "none", n_clust = 0,
+plot_corr <- function(Data, cor = "pearson", clust_method = "none", n_clust = 0,
                       shape = "circle",
                       labels = FALSE, labels_size = 3,
                       line_size = .5, line_col = "black", line_alpha = 1,
                       fill = NA, fill_alpha = NA, ...) {
+  if (is_corr(Data)) {
+    message("The input was recognized as a correlation matrix. Assuming 'cor = none'.")
+    cor <- "none"
+  }
+
   cor <- tryCatch(match.arg(cor, c(
     "polychoric", "tetrachoric", "pearson", "spearman", "none"
   )),
@@ -132,6 +137,7 @@ plot_corr <- function(Data, cor = "polychoric", clust_method = "none", n_clust =
     )
   }
   )
+
   shape <- tryCatch(match.arg(shape, c("circle", "square")),
     error = function(e) {
       stop("'shape' should be one of 'circle' or 'square'.",
@@ -149,7 +155,17 @@ plot_corr <- function(Data, cor = "polychoric", clust_method = "none", n_clust =
         )
       }
     ),
-    "tetrachoric" = tetrachoric(Data, na.rm = TRUE, ...)$rho,
+    "tetrachoric" = tryCatch(tetrachoric(Data, na.rm = TRUE, ...)$rho,
+      error = function(e) {
+        if (max(Data, na.rm = TRUE) > 1) {
+          stop("Tetrachoric correlation requires dichotomous data.",
+            call. = FALSE
+          )
+        } else {
+          stop(e)
+        }
+      }
+    ),
     "pearson" = cor(Data, method = "pearson", use = "pairwise.complete.obs"),
     "spearman" = cor(Data, method = "spearman", use = "pairwise.complete.obs"),
     "none" = Data
@@ -158,10 +174,12 @@ plot_corr <- function(Data, cor = "polychoric", clust_method = "none", n_clust =
   n <- nrow(cormat)
   m <- ncol(cormat)
 
-  if (cor == "none" & n != m) {
-    stop("The provided correlation matrix is not square.",
+  if (is.null(dimnames(cormat))) {
+    warning("Estimated correlation matrix has no names, using integers.",
       call. = FALSE
     )
+    nms <- seq_len(ncol(cormat))
+    dimnames(cormat) <- list(nms, nms)
   }
 
   if (n_clust > n) {
@@ -192,7 +210,7 @@ plot_corr <- function(Data, cor = "polychoric", clust_method = "none", n_clust =
   # .data is a pronoun for cormat in non-standard evaluation
   plt <- cormat %>%
     as_tibble(rownames = "x") %>%
-    tidyr::pivot_longer(cols = -.data$x, names_to = "y", values_to = "r") %>%
+    pivot_longer(cols = -.data$x, names_to = "y", values_to = "r") %>%
     mutate(corr. = gsub("0\\.", "\\.", scales::number(.data$r, .01))) %>%
     ggplot(aes(.data$x, .data$y, label = .data$corr.)) +
     scale_x_discrete(limits = new_ord, position = "top") +

@@ -6,7 +6,7 @@
 \usage{
 plot_corr(
   Data,
-  cor = "polychoric",
+  cor = "pearson",
   clust_method = "none",
   n_clust = 0,
   shape = "circle",

@@ -31,7 +31,6 @@ theme_app <- function(base_size = 15, base_family = "") {
       legend.key = element_rect(fill = "white", colour = NA),
       legend.title = element_blank(),
       legend.position = "none",
-      axis.line = element_line(colour = "black"),
       panel.grid.major = element_blank(),
       panel.grid.minor = element_blank(),
       panel.background = element_blank(),
