@@ -16,12 +16,16 @@ plot(fit)
 plot(fit, type = "infotrace", facet_items = FALSE)
 # test information curve
 plot(fit, type = "infoSE")
+plot(fit, type = "info")
 
 # estimated parameters
 coef(fit, simplify = TRUE) # classical intercept-slope parametrization
 coef(fit) # including confidence intervals
+coef(fit, printSE = TRUE) # including SE
+
 coef(fit, IRTpars = TRUE, simplify = TRUE) # IRT parametrization
 coef(fit, IRTpars = TRUE) # including confidence intervals
+coef(fit, IRTpars = TRUE, printSE = TRUE) # including SE
 
 # item fit statistics
 itemfit(fit)

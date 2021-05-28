@@ -1,5 +1,6 @@
 library(ltm)
 library(mirt)
+library(msm)
 library(ShinyItemAnalysis)
 
 # loading data
@@ -19,12 +20,33 @@ plot(fit)
 plot(fit, type = "infotrace", facet_items = FALSE)
 # test information curve
 plot(fit, type = "infoSE")
+plot(fit, type = "info")
 
 # estimated parameters
 coef(fit, simplify = TRUE) # classical intercept-slope parametrization
 coef(fit) # including confidence intervals
+coef(fit, printSE = TRUE) # including SE
+
 coef(fit, IRTpars = TRUE, simplify = TRUE) # IRT parametrization
 coef(fit, IRTpars = TRUE) # including confidence intervals
+coef(fit, IRTpars = TRUE, printSE = TRUE) # including SE
+
+# for item 1
+coef(fit, IRTpars = TRUE, printSE = TRUE)$Item1 # including SE
+
+# delta method by hand for item 1
+coef_is <- coef(fit)[[1]][1, 1:2]
+vcov_is <- matrix(vcov(fit)[1:2, 1:2], ncol = 2, nrow = 2,
+                  dimnames = list(c("a1", "d"), c("a1", "d")))
+# estimates
+c(coef_is[1], -coef_is[2] / coef_is[1])
+# standard errors
+deltamethod(
+  list( ~ x1, ~ -x2/x1),
+  mean = coef_is,
+  cov = vcov_is,
+  ses = TRUE
+)
 
 # item fit statistics
 itemfit(fit)

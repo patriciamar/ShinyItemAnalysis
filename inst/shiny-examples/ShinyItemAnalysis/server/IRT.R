@@ -1047,7 +1047,8 @@ IRT_bock_data <- reactive({
     data = data.table(data_num),
     key = key_num,
     levels_data_numeric = levels_data_num,
-    levels_data_original = levels_data_original
+    levels_data_original = levels_data_original,
+    levels_original = lev
   )
 })
 
@@ -1104,7 +1105,13 @@ IRT_bock_model <- reactive({
   # starting values
   sv <- mirt(data, 1, "nominal", pars = "values", verbose = FALSE, SE = TRUE)
 
+  # starting values of discrimination for distractors need to be lower than
+  # for the correct answer (fixed at 0, see below)
+  sv$value[grepl("ak", sv$name)] <- -0.5
+  sv$est[grepl("ak", sv$name)] <- TRUE
+
   # we don't want to estimate ak parameter for the correct answer
+  # they are fixed at 0, the same for parameters d
   for (i in 1:m) {
     item_name <- gsub(" ", "\\.", item_names()[i])
     tmp <- sv[sv$item == item_name, ]
@@ -1147,6 +1154,7 @@ IRT_bock_model <- reactive({
   #   index2 <- sv$item == nms[i] & pick2 == sv$name
   #   sv[index2, "est"] <- FALSE
   # }
+
   fit <- mirt(data, model = 1, itemtype = "nominal", pars = sv, SE = TRUE, verbose = FALSE)
   fit
 })
@@ -1366,55 +1374,62 @@ output$IRT_bock_summary_tic_download <- downloadHandler(
 # ** Table of parameters ####
 IRT_bock_summary_coef <- reactive({
   fit <- IRT_bock_model()
-  key <- as.factor(key())
+  levels_original <- IRT_bock_data()$levels_original
+  m <- ncol(nominal())
 
   IRTpars <- input$IRT_bock_summary_parametrization == "irt"
 
-  par_tab <- coef(fit, IRTpars = IRTpars, simplify = TRUE)$items
+  # estimated parameters with SE
+  par_list <- coef(fit, IRTpars = IRTpars, printSE = TRUE)[1:20]
+  max_par <- max((sapply(par_list, ncol) - 1) / 2) # max number of parameters
 
-  validate(need(
-    !is.list(par_tab),
-    "Sorry, for this dataset, the summary table is not available because of different response
-     patterns in items. Try to explore tab Items for parameters of selected items. "
-  ),
-  errorClass = "validation-warning")
-
-  if (dim(fit@vcov)[1] > 1 & !IRTpars) {
-    se_list <- coef(fit, IRTpars = IRTpars, printSE = TRUE)
-    se_tab <- do.call(rbind, lapply(1:nrow(par_tab), function(i) se_list[[i]]["SE", ]))
+  # extracting estimated parameters
+  par_tab <- as.data.frame(rbindlist(
+    lapply(par_list, function(x) data.table(t(x[1, ]))), fill = TRUE
+  ))
+  # extracting SE
+  if (dim(fit@vcov)[1] > 1) {
+    se_tab <- as.data.frame(rbindlist(
+      lapply(par_list, function(x) data.table(t(x[2, ]))), fill = TRUE
+    ))
   } else {
     se_tab <- matrix(NA, nrow = nrow(par_tab), ncol = ncol(par_tab))
   }
 
-  tab <- cbind(par_tab, se_tab)[, order(c(seq(ncol(par_tab)), seq(ncol(se_tab))))]
+  # ordering of parameters
+  par_tab <- cbind(par_tab[, paste0("ak", 0:(max_par - 1))],
+                   par_tab[, paste0("d", 0:(max_par - 1))])
+  se_tab <- cbind(se_tab[, paste0("ak", 0:(max_par - 1))],
+                  se_tab[, paste0("d", 0:(max_par - 1))])
+  # merging tables
+  tab <- data.frame(par_tab, se_tab)
+  tab <- cbind(par_tab, se_tab)[, order(c(1:ncol(par_tab), 1:ncol(se_tab)))]
 
+  # fit statistics
   tab_fit <- itemfit(fit)[, c(2, 3, 5)]
-  if (!is.null(tryCatch(round(itemfit(fit)[, c(2, 3, 5)], 3), error = function(e) {
+  if (!is.null(tryCatch(round(tab_fit, 3), error = function(e) {
     cat("ERROR : ", conditionMessage(e), "\n")
   }))) {
-    tab <- data.frame(tab, itemfit(fit)[, c(2, 3, 5)])
+    tab <- data.frame(tab, tab_fit)
     colnames(tab)[(ncol(tab) - 2):ncol(tab)] <- c("SX2-value", "df", "p-value")
   } else {
     tab <- data.frame(tab, cbind("-", "-", "-"))
     colnames(tab)[(ncol(tab) - 2):ncol(tab)] <- c("SX2-value", "df", "p-value")
   }
 
+  # renaming columns
   if (IRTpars) {
-    num <- (ncol(tab) - 3) / 4
-    colnames(tab)[1:(num * 4)] <- paste0(
+    colnames(tab)[1:(max_par * 4)] <- paste0(
       c("", "SE("),
-      paste0("%%mathit{", rep(paste0(rep(c("a", "c"), each = num), "_", 1:num), each = 2), "}%%"),
+      paste0("%%mathit{", rep(paste0(rep(c("a", "c"), each = max_par), "_", 1:max_par), each = 2), "}%%"),
       c("", ")")
     )
   } else {
     # removing not-estimated parameter a1
-    tab <- tab[, -c(1:2)]
-    num <- (ncol(tab) - 3) / 4
-    tab <- tab[, c((num * 2 + 1):(num * 4), 1:(2 * num), (num * 4 + 1):ncol(tab))]
-    colnames(tab)[1:(num * 4)] <- paste0(
+    colnames(tab)[1:(max_par * 4)] <- paste0(
       c("", "SE("),
-      paste0("%%mathit{", rep(paste0(rep(c("\\beta_{0", "\\beta_{1"), each = num),
-                                     levels(key), "}"), each = 2), "}%%"),
+      paste0("%%mathit{", rep(paste0(rep(c("\\beta_{0", "\\beta_{1"), each = max_par),
+                                     levels_original, "}"), each = 2), "}%%"),
       c("", ")")
     )
   }

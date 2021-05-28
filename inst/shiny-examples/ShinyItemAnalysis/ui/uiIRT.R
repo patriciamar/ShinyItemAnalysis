@@ -238,7 +238,31 @@ uiIRT <- navbarMenu(
                  are completed by SX2 item fit statistics (Orlando & Thissen, 2000). SX2 statistics are computed
                  only when no missing data are present."
         ),
-        fluidRow(column(12, align = "center", tableOutput("IRT_binary_items_coef")))
+        fluidRow(column(12, align = "center", tableOutput("IRT_binary_items_coef"))),
+
+        # ** Selected R code ####
+        h4("Selected R code"),
+        conditionalPanel(
+          "input.IRT_binary_items_model == 'Rasch'",
+          code(includeText("sc/irt/rasch_item.R"))
+        ),
+        conditionalPanel(
+          "input.IRT_binary_items_model == '1PL'",
+          code(includeText("sc/irt/1pl_item.R"))
+        ),
+        conditionalPanel(
+          "input.IRT_binary_items_model == '2PL'",
+          code(includeText("sc/irt/2pl_item.R"))
+        ),
+        conditionalPanel(
+          "input.IRT_binary_items_model == '3PL'",
+          code(includeText("sc/irt/3pl_item.R"))
+        ),
+        conditionalPanel(
+          "input.IRT_binary_items_model == '4PL'",
+          code(includeText("sc/irt/4pl_item.R"))
+        )
+
       )
     )
   ),
@@ -292,7 +316,7 @@ uiIRT <- navbarMenu(
               inputId = "IRT_bock_summary_parametrization",
               label = "Parametrization",
               choices = c(
-                "IRT" = "irt",
+                # "IRT" = "irt",
                 "Intercept/slope" = "classical"
               )
             )
@@ -374,7 +398,7 @@ uiIRT <- navbarMenu(
               inputId = "IRT_bock_items_parametrization",
               label = "Parametrization",
               choices = c(
-                "IRT" = "irt",
+                # "IRT" = "irt",
                 "Intercept/slope" = "classical"
               )
             )
