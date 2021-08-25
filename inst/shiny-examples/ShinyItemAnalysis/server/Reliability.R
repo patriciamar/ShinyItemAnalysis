@@ -325,15 +325,13 @@ output$DB_reliability_splithalf_histogram <- downloadHandler(
 reliability_cronbachalpha_table_Input <- reactive({
   data <- ordinal()
 
-  a <- psychometric::alpha(data)
-  a.low <- psychometric::alpha.CI(a, k = ncol(data), N = nrow(data), level = 0.95)[1]
-  a.upp <- psychometric::alpha.CI(a, k = ncol(data), N = nrow(data), level = 0.95)[3]
+  a <- ShinyItemAnalysis:::cronbach_alpha(data)
 
   tab <- data.table(
-    "Estimate" = sprintf("%.3f", a),
+    "Estimate" = sprintf("%.3f", a$estimate),
     "Confidence interval" = paste0(
-      "(", sprintf("%.3f", a.low, 3), ", ",
-      sprintf("%.3f", a.upp), ")"
+      "(", sprintf("%.3f", a$ci[1]), ", ",
+      sprintf("%.3f", a$ci[2]), ")"
     )
   )
 
@@ -350,297 +348,297 @@ output$reliability_cronbachalpha_table <- renderTable(
   include.colnames = T
 )
 
-# %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-# * INTRA-CLASS CORRELATION ######
-# %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-# ** Intra-class correlation table ######
-output$reliability_icc_table <- renderTable({
-  # TODO: add select raters (items) input
-  # ordinal()
-  aibs_long() %>% # TODO general
-    pivot_wider(ID, values_from = Score, names_from = RevCode) %>% # TODO general
-    select(-ID) %>% # TODO general
-    psych::ICC() %>%
-    pluck("results")
-})
-
-
-# %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-# * Restricted-range ICC ######
-# %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-# ** Usable data definition ######
-aibs_long <- reactive({ # TODO general
-  validate(need(
-    input$data_toydata == "AIBS_ShinyItemAnalysis",
-    "At this moment, the method is compatible with the 'AIBS Grant Peer Review Scoring' dataset only. "
-  ),
-  errorClass = "validation-error"
-  )
-  continuous()
-})
-
-k_max <- reactive({
-  aibs_long()$ScoreRankAdj %>% max(na.rm = TRUE) # TODO general
-})
-
-# transform percentage to Ks (check against Ks, not percents)
-n_sel <- reactive({
-  round(input$reliability_restricted_proportion * .01 * k_max())
-})
-
-# ** Update slider input ######
-observe({
-  updateSliderInput(
-    session,
-    inputId = "reliability_restricted_proportion",
-    min = ceiling(200 / k_max())
-  )
-})
-
-
-# this chunk ensures slider is reset to 100% whenever direction or BS samples are changed
-# however, it is rather lenient and causes some issues, e.g. double estimation on BS num change
-# in addition, user request should be fulfilled without any unsolicited actions, such as slider change
-
-# observeEvent(c(
-#   input$data_toydata,
-#   input$reliability_restricted_clear,
-#   input$reliability_restricted_direction,
-#   input$reliability_restricted_bootsamples
-# ), {
+# # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+# # * INTRA-CLASS CORRELATION ######
+# # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+#
+# # ** Intra-class correlation table ######
+# output$reliability_icc_table <- renderTable({
+#   # TODO: add select raters (items) input
+#   # ordinal()
+#   aibs_long() %>% # TODO general
+#     pivot_wider(ID, values_from = Score, names_from = RevCode) %>% # TODO general
+#     select(-ID) %>% # TODO general
+#     psych::ICC() %>%
+#     pluck("results")
+# })
+#
+#
+# # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+# # * Restricted-range ICC ######
+# # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+#
+# # ** Usable data definition ######
+# aibs_long <- reactive({ # TODO general
+#   validate(need(
+#     input$data_toydata == "AIBS_ShinyItemAnalysis",
+#     "At this moment, the method is compatible with the 'AIBS Grant Peer Review Scoring' dataset only. "
+#   ),
+#   errorClass = "validation-error"
+#   )
+#   continuous()
+# })
+#
+# k_max <- reactive({
+#   aibs_long()$ScoreRankAdj %>% max(na.rm = TRUE) # TODO general
+# })
+#
+# # transform percentage to Ks (check against Ks, not percents)
+# n_sel <- reactive({
+#   round(input$reliability_restricted_proportion * .01 * k_max())
+# })
+#
+# # ** Update slider input ######
+# observe({
 #   updateSliderInput(
 #     session,
 #     inputId = "reliability_restricted_proportion",
-#     value = 100
+#     min = ceiling(200 / k_max())
 #   )
 # })
-
-# ** Caterpillar plot input ######
-reliability_restricted_caterpillarplot_input <- reactive({
-  aibs_long() %>%
-    mutate(hl = case_when(
-      input$reliability_restricted_direction == "top" & ScoreRankAdj <= n_sel() ~ "sol",
-      input$reliability_restricted_direction == "bottom" & ScoreRankAdj > (k_max() - n_sel()) ~ "sol",
-      TRUE ~ "alp"
-    ) %>% factor(levels = c("alp", "sol"))) %>%
-    ggplot(aes(x = ScoreRankAdj, y = Score, group = ID, alpha = hl)) +
-    geom_line(col = "gray") +
-    geom_point(aes(text = paste0(
-      "ID: ", ID, "\n", # TODO generalize
-      "Rank: ", ScoreRankAdj, "\n", # TODO generalize
-      "Rating: ", Score, "\n" # add avg score? not in every dataset, computed only in ICCrestricted
-    )), shape = 1, size = 1.5) +
-    stat_summary(
-      fun = mean, fun.args = list(na.rm = TRUE), geom = "point", col = "red",
-      shape = 5, size = 2.5, stroke = .35
-    ) +
-    scale_alpha_discrete(range = c(.3, 1), drop = FALSE) +
-    coord_cartesian(ylim = c(1, 5)) +
-    labs(x = "Rated subject/object rank", y = "Rating (score)") +
-    theme_app()
-})
-
-# ** Plotly output for caterpillar plot ######
-output$reliability_restricted_caterpillarplot <- renderPlotly({
-  reliability_restricted_caterpillarplot_input() %>%
-    ggplotly(tooltip = c("text")) %>%
-    plotly::config(displayModeBar = FALSE)
-})
-
-# ** DB for caterpillar plot ######
-output$DB_reliability_restricted_caterpillarplot <- downloadHandler(
-  filename = function() {
-    "fig_reliability_caterpillar.png"
-  },
-  content = function(file) {
-    ggsave(file,
-      plot = reliability_restricted_caterpillarplot_input() +
-        theme(text = element_text(size = setting_figures$text_size)),
-      device = "png",
-      height = setting_figures$height, width = setting_figures$width,
-      dpi = setting_figures$dpi
-    )
-  }
-)
-
-
-reliability_restricted_res <- reactiveValues(vals = NULL) # init ICCs bank
-
-observeEvent(
-  # do not depend on "reliability_restricted_res"
-  c(
-    input$data_toydata,
-    input$reliability_restricted_clear,
-    input$reliability_restricted_proportion,
-    input$reliability_restricted_direction,
-    input$reliability_restricted_bootsamples
-  ),
-  {
-    data <- aibs_long()
-
-    isolate({
-      entries <- reliability_restricted_res$vals %>%
-        names()
-
-      # propose a new entry
-      new_entry <- paste0(
-        "dir-", input$reliability_restricted_direction,
-        "_bs-", input$reliability_restricted_bootsamples,
-        "_sel-", n_sel()
-      )
-
-      # check if proposed not already available, else compute
-      if (new_entry %in% entries) {
-        message("rICC computation: using already computed value...")
-      } else {
-        reliability_restricted_res[["vals"]][[new_entry]] <- ICCrestricted(
-          data,
-          case = "ID", # TODO general
-          var = "Score", # TODO general
-          rank = "ScoreRankAdj", # TODO general
-          dir = input$reliability_restricted_direction,
-          sel = n_sel(),
-          nsim = input$reliability_restricted_bootsamples
-        )
-      }
-    })
-  }
-)
-
-# ** Clearing ICC computed entries ######
-observeEvent(input$reliability_restricted_clear, {
-  cat("Clearing ICC bank...")
-  reliability_restricted_res$vals <- NULL
-})
-
-# ** ICC plot - current choice ######
-reliability_restricted_iccplot_curr <- reactive({
-  plt_data <- reliability_restricted_res$vals %>%
-    bind_rows(.id = "name") %>%
-    filter(str_detect(
-      .data$name,
-      paste0(
-        "dir-", input$reliability_restricted_direction,
-        "_bs-", input$reliability_restricted_bootsamples
-      )
-    ))
-
-  # translate empty tibble to NULL for further use in req()
-  if (nrow(plt_data) == 0) {
-    NULL
-  } else {
-    plt_data
-  }
-})
-
-# ** Reliability plot input ######
-reliability_restricted_iccplot_input <- reactive({
-  req(aibs_long()) # propagate validation msg to the plot
-  req(reliability_restricted_iccplot_curr())
-
-  curr_plt_name <- paste0(
-    "dir-", input$reliability_restricted_direction,
-    "_bs-", input$reliability_restricted_bootsamples,
-    "_sel-", n_sel()
-  )
-
-  reliability_restricted_iccplot_curr() %>%
-    mutate(hl = if_else(name == curr_plt_name, "sol", "alp") %>%
-      factor(levels = c("alp", "sol"))) %>%
-    ggplot(aes(prop_sel, ICC1, ymin = ICC1_LCI, ymax = ICC1_UCI, alpha = hl)) + # TODO general
-    geom_linerange() + # separate as plotly messes up otherwise
-    geom_point(aes(text = paste0(
-      ifelse(prop_sel == 1, "Complete range",
-        paste0(
-          "Proportion of ", dir, " subjects/objects: ", scales::percent(prop_sel, .01)
-        )
-      ), "\n",
-      "ICC1: ", round(ICC1, 2), "\n",
-      "LCI: ", round(ICC1_LCI, 2), "\n",
-      "UCI: ", round(ICC1_UCI, 2)
-    ))) +
-    scale_x_continuous(labels = scales::percent) +
-    scale_alpha_discrete(range = c(.25, 1), drop = FALSE) +
-    labs(
-      x = paste0("Proportion of ", input$reliability_restricted_direction, " rated subjects/objects"),
-      y = "Reliability"
-    ) +
-    coord_cartesian(ylim = c(0, 1), xlim = c(0, 1)) + # TODO general
-    theme_app()
-})
-
-# ** Reliability plot render ######
-output$reliability_restricted_iccplot <- renderPlotly({
-  reliability_restricted_iccplot_input() %>%
-    ggplotly(tooltip = "text") %>%
-    plotly::config(displayModeBar = FALSE)
-})
-
-# ** DB for ICC reliability plot ######
-output$DB_reliability_restricted_iccplot <- downloadHandler(
-  filename = function() {
-    "fig_reliability_resctricted.png"
-  },
-  content = function(file) {
-    ggsave(file,
-      plot = reliability_restricted_iccplot_input() +
-        theme(text = element_text(size = setting_figures$text_size)),
-      device = "png",
-      height = setting_figures$height, width = setting_figures$width,
-      dpi = setting_figures$dpi
-    )
-  }
-)
-
-# ** DB for ICC reliability table ######
-output$DB_reliability_restricted_iccdata <- downloadHandler(
-  filename = function() {
-    "range_restricted_reliability_data.csv"
-  },
-  content = function(file) {
-    data <- reliability_restricted_iccplot_curr() %>% select(-name)
-    write.csv(data, file, row.names = FALSE)
-  }
-)
-
-output$icc_text <- renderText({
-  req(aibs_long())
-
-  # isolate({
-  full <- reliability_restricted_res[["vals"]][[paste0(
-    "dir-", input$reliability_restricted_direction,
-    "_bs-", input$reliability_restricted_bootsamples,
-    "_sel-", k_max()
-  )]]
-  # })
-
-  curr <- reliability_restricted_res[["vals"]][[paste0(
-    "dir-", input$reliability_restricted_direction,
-    "_bs-", input$reliability_restricted_bootsamples,
-    "_sel-", n_sel()
-  )]]
-
-
-  full_part <- if (is.null(full)) {
-    "Please, set the slider to 100% in order to estimate and display reliability the complete dataset."
-  } else {
-    paste0(
-      "For the complete dataset, the estimated reliability is ",
-      round(full$ICC1, 2), ", with 95% CI of [", round(full$ICC1_LCI, 2), ", ", round(full$ICC1_UCI, 2), "]."
-    )
-  }
-  curr_part <- if (identical(curr, full) | is.null(curr)) {
-    "Set the slider to different value to see how the estimate changes for other subset of the data."
-  } else {
-    paste0(
-      "For the ", round(curr$prop_sel * 100), "%",
-      " (that is ", curr$n_sel, ") of ", curr$dir, " subjects/objects (proposals in the case of AIBS dataset),",
-      " the estimated reliability is ",
-      round(curr$ICC1, 2), ", with 95% CI of [", round(curr$ICC1_LCI, 2), ", ", round(curr$ICC1_UCI, 2), "]."
-    )
-  }
-
-  paste(full_part, curr_part)
-})
+#
+#
+# # this chunk ensures slider is reset to 100% whenever direction or BS samples are changed
+# # however, it is rather lenient and causes some issues, e.g. double estimation on BS num change
+# # in addition, user request should be fulfilled without any unsolicited actions, such as slider change
+#
+# # observeEvent(c(
+# #   input$data_toydata,
+# #   input$reliability_restricted_clear,
+# #   input$reliability_restricted_direction,
+# #   input$reliability_restricted_bootsamples
+# # ), {
+# #   updateSliderInput(
+# #     session,
+# #     inputId = "reliability_restricted_proportion",
+# #     value = 100
+# #   )
+# # })
+#
+# # ** Caterpillar plot input ######
+# reliability_restricted_caterpillarplot_input <- reactive({
+#   aibs_long() %>%
+#     mutate(hl = case_when(
+#       input$reliability_restricted_direction == "top" & ScoreRankAdj <= n_sel() ~ "sol",
+#       input$reliability_restricted_direction == "bottom" & ScoreRankAdj > (k_max() - n_sel()) ~ "sol",
+#       TRUE ~ "alp"
+#     ) %>% factor(levels = c("alp", "sol"))) %>%
+#     ggplot(aes(x = ScoreRankAdj, y = Score, group = ID, alpha = hl)) +
+#     geom_line(col = "gray") +
+#     geom_point(aes(text = paste0(
+#       "ID: ", ID, "\n", # TODO generalize
+#       "Rank: ", ScoreRankAdj, "\n", # TODO generalize
+#       "Rating: ", Score, "\n" # add avg score? not in every dataset, computed only in ICCrestricted
+#     )), shape = 1, size = 1.5) +
+#     stat_summary(
+#       fun = mean, fun.args = list(na.rm = TRUE), geom = "point", col = "red",
+#       shape = 5, size = 2.5, stroke = .35
+#     ) +
+#     scale_alpha_discrete(range = c(.3, 1), drop = FALSE) +
+#     coord_cartesian(ylim = c(1, 5)) +
+#     labs(x = "Rated subject/object rank", y = "Rating (score)") +
+#     theme_app()
+# })
+#
+# # ** Plotly output for caterpillar plot ######
+# output$reliability_restricted_caterpillarplot <- renderPlotly({
+#   reliability_restricted_caterpillarplot_input() %>%
+#     ggplotly(tooltip = c("text")) %>%
+#     plotly::config(displayModeBar = FALSE)
+# })
+#
+# # ** DB for caterpillar plot ######
+# output$DB_reliability_restricted_caterpillarplot <- downloadHandler(
+#   filename = function() {
+#     "fig_reliability_caterpillar.png"
+#   },
+#   content = function(file) {
+#     ggsave(file,
+#       plot = reliability_restricted_caterpillarplot_input() +
+#         theme(text = element_text(size = setting_figures$text_size)),
+#       device = "png",
+#       height = setting_figures$height, width = setting_figures$width,
+#       dpi = setting_figures$dpi
+#     )
+#   }
+# )
+#
+#
+# reliability_restricted_res <- reactiveValues(vals = NULL) # init ICCs bank
+#
+# observeEvent(
+#   # do not depend on "reliability_restricted_res"
+#   c(
+#     input$data_toydata,
+#     input$reliability_restricted_clear,
+#     input$reliability_restricted_proportion,
+#     input$reliability_restricted_direction,
+#     input$reliability_restricted_bootsamples
+#   ),
+#   {
+#     data <- aibs_long()
+#
+#     isolate({
+#       entries <- reliability_restricted_res$vals %>%
+#         names()
+#
+#       # propose a new entry
+#       new_entry <- paste0(
+#         "dir-", input$reliability_restricted_direction,
+#         "_bs-", input$reliability_restricted_bootsamples,
+#         "_sel-", n_sel()
+#       )
+#
+#       # check if proposed not already available, else compute
+#       if (new_entry %in% entries) {
+#         message("rICC computation: using already computed value...")
+#       } else {
+#         reliability_restricted_res[["vals"]][[new_entry]] <- ICCrestricted(
+#           data,
+#           case = "ID", # TODO general
+#           var = "Score", # TODO general
+#           rank = "ScoreRankAdj", # TODO general
+#           dir = input$reliability_restricted_direction,
+#           sel = n_sel(),
+#           nsim = input$reliability_restricted_bootsamples
+#         )
+#       }
+#     })
+#   }
+# )
+#
+# # ** Clearing ICC computed entries ######
+# observeEvent(input$reliability_restricted_clear, {
+#   cat("Clearing ICC bank...")
+#   reliability_restricted_res$vals <- NULL
+# })
+#
+# # ** ICC plot - current choice ######
+# reliability_restricted_iccplot_curr <- reactive({
+#   plt_data <- reliability_restricted_res$vals %>%
+#     bind_rows(.id = "name") %>%
+#     filter(str_detect(
+#       .data$name,
+#       paste0(
+#         "dir-", input$reliability_restricted_direction,
+#         "_bs-", input$reliability_restricted_bootsamples
+#       )
+#     ))
+#
+#   # translate empty tibble to NULL for further use in req()
+#   if (nrow(plt_data) == 0) {
+#     NULL
+#   } else {
+#     plt_data
+#   }
+# })
+#
+# # ** Reliability plot input ######
+# reliability_restricted_iccplot_input <- reactive({
+#   req(aibs_long()) # propagate validation msg to the plot
+#   req(reliability_restricted_iccplot_curr())
+#
+#   curr_plt_name <- paste0(
+#     "dir-", input$reliability_restricted_direction,
+#     "_bs-", input$reliability_restricted_bootsamples,
+#     "_sel-", n_sel()
+#   )
+#
+#   reliability_restricted_iccplot_curr() %>%
+#     mutate(hl = if_else(name == curr_plt_name, "sol", "alp") %>%
+#       factor(levels = c("alp", "sol"))) %>%
+#     ggplot(aes(prop_sel, ICC1, ymin = ICC1_LCI, ymax = ICC1_UCI, alpha = hl)) + # TODO general
+#     geom_linerange() + # separate as plotly messes up otherwise
+#     geom_point(aes(text = paste0(
+#       ifelse(prop_sel == 1, "Complete range",
+#         paste0(
+#           "Proportion of ", dir, " subjects/objects: ", scales::percent(prop_sel, .01)
+#         )
+#       ), "\n",
+#       "ICC1: ", round(ICC1, 2), "\n",
+#       "LCI: ", round(ICC1_LCI, 2), "\n",
+#       "UCI: ", round(ICC1_UCI, 2)
+#     ))) +
+#     scale_x_continuous(labels = scales::percent) +
+#     scale_alpha_discrete(range = c(.25, 1), drop = FALSE) +
+#     labs(
+#       x = paste0("Proportion of ", input$reliability_restricted_direction, " rated subjects/objects"),
+#       y = "Reliability"
+#     ) +
+#     coord_cartesian(ylim = c(0, 1), xlim = c(0, 1)) + # TODO general
+#     theme_app()
+# })
+#
+# # ** Reliability plot render ######
+# output$reliability_restricted_iccplot <- renderPlotly({
+#   reliability_restricted_iccplot_input() %>%
+#     ggplotly(tooltip = "text") %>%
+#     plotly::config(displayModeBar = FALSE)
+# })
+#
+# # ** DB for ICC reliability plot ######
+# output$DB_reliability_restricted_iccplot <- downloadHandler(
+#   filename = function() {
+#     "fig_reliability_resctricted.png"
+#   },
+#   content = function(file) {
+#     ggsave(file,
+#       plot = reliability_restricted_iccplot_input() +
+#         theme(text = element_text(size = setting_figures$text_size)),
+#       device = "png",
+#       height = setting_figures$height, width = setting_figures$width,
+#       dpi = setting_figures$dpi
+#     )
+#   }
+# )
+#
+# # ** DB for ICC reliability table ######
+# output$DB_reliability_restricted_iccdata <- downloadHandler(
+#   filename = function() {
+#     "range_restricted_reliability_data.csv"
+#   },
+#   content = function(file) {
+#     data <- reliability_restricted_iccplot_curr() %>% select(-name)
+#     write.csv(data, file, row.names = FALSE)
+#   }
+# )
+#
+# output$icc_text <- renderText({
+#   req(aibs_long())
+#
+#   # isolate({
+#   full <- reliability_restricted_res[["vals"]][[paste0(
+#     "dir-", input$reliability_restricted_direction,
+#     "_bs-", input$reliability_restricted_bootsamples,
+#     "_sel-", k_max()
+#   )]]
+#   # })
+#
+#   curr <- reliability_restricted_res[["vals"]][[paste0(
+#     "dir-", input$reliability_restricted_direction,
+#     "_bs-", input$reliability_restricted_bootsamples,
+#     "_sel-", n_sel()
+#   )]]
+#
+#
+#   full_part <- if (is.null(full)) {
+#     "Please, set the slider to 100% in order to estimate and display reliability the complete dataset."
+#   } else {
+#     paste0(
+#       "For the complete dataset, the estimated reliability is ",
+#       round(full$ICC1, 2), ", with 95% CI of [", round(full$ICC1_LCI, 2), ", ", round(full$ICC1_UCI, 2), "]."
+#     )
+#   }
+#   curr_part <- if (identical(curr, full) | is.null(curr)) {
+#     "Set the slider to different value to see how the estimate changes for other subset of the data."
+#   } else {
+#     paste0(
+#       "For the ", round(curr$prop_sel * 100), "%",
+#       " (that is ", curr$n_sel, ") of ", curr$dir, " subjects/objects (proposals in the case of AIBS dataset),",
+#       " the estimated reliability is ",
+#       round(curr$ICC1, 2), ", with 95% CI of [", round(curr$ICC1_LCI, 2), ", ", round(curr$ICC1_UCI, 2), "]."
+#     )
+#   }
+#
+#   paste(full_part, curr_part)
+# })

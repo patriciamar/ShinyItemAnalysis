@@ -37,10 +37,12 @@ uiReliability <-
                         different number of equally precise items measuring the same construct.
                         It can also be used to determine the necessary number of items to achieve
                         desired reliability."),
-      p("In the calculations below, ", strong("reliability of original data"), "is by
+      p(
+        "In the calculations below, ", strong("reliability of original data"), "is by
                         default set to the value of Cronbach's \\(\\alpha\\) for the dataset currently in use. The ",
-                        strong("number of items in the original data"), "is
-                        by default set to the number of items in the dataset currently in use. "),
+        strong("number of items in the original data"), "is
+                        by default set to the number of items in the dataset currently in use. "
+      ),
       fluidRow(
         column(
           3,
@@ -96,7 +98,6 @@ uiReliability <-
       br(),
       h4("Selected R code"),
       code(includeText("sc/reliability/sb.R"))
-
     ),
     # * SPLIT-HALF METHOD ####
     tabPanel(
@@ -175,7 +176,6 @@ uiReliability <-
       br(),
       h4("Selected R code"),
       code(includeText("sc/reliability/sh.R"))
-
     ),
     # * CRONBACH'S ALPHA ####
     tabPanel("Cronbach's \\(\\alpha\\)",
@@ -211,81 +211,89 @@ uiReliability <-
     # ),
 
     # * RANGE-RESTRICTED RELIABILITY ####
-    tabPanel("Restricted range",
-      value = "rr_irr",
-      h3("Range-restricted reliability"),
-      p(
-        "This section illustrates the issue of range-restricted reliability and the difficulties with maximum
-        likelihood estimation, described in more detail in the context of inter-rater reliability in grant proposal review in
-        ",
-        a("(Erosheva, Martinkova, & Lee, 2021)",
-          href = "http://doi.org/10.1111/rssa.12681",
-          target = "_blank", .noWS = "outside"
-        ),
-        ". To replicate their examples, select the ", code("AIBS"), "toy dataset in the ", strong("Data"), "section."
-      ),
-      p(
-        "Below, you may select the ratio and type of range restriction given by the ", strong("proportion of rated subjects/objects."),
-        " It could be a grant proposal application in grant review (as is the case in the ", code("AIBS"), "dataset),
-        a student in educational assessment, a job application in hiring, a patient in a medical study, etc.
-        Further, you may select the ", strong("direction"), "of restriction (top or bottom).
-        The left plot illustrates the variability in ratings for the whole dataset outshading the data which would be lost
-        due to range-restriction. The right plot provides the estimates of the calculated inter-rater reliability estimates,
-        defined by intraclass corelation in the simplest model including the ratee effect only.
-        The estimates are accompanied by a bootstrapped 95% confidence interval; see the settings section for further details
-        on used number of bootstrapped samples."
-      ),
-      fluidRow(
-        column(
-          2,
-          sliderInput(
-            inputId = "reliability_restricted_proportion",
-            label = "Proportion",
-            min = 0,
-            max = 100,
-            step = 1,
-            value = 100, animate = animationOptions(2000), post = "%"
-          )
-        ),
-        column(
-          2,
-          selectInput(
-            inputId = "reliability_restricted_direction",
-            label = "Direction",
-            choices = c("top", "bottom"),
-            selected = "top"
-          )
-        ),
-        column(
-          2,
-          actionButton(
-            inputId = "reliability_restricted_clear",
-            label = "Clear everything",
-            icon = icon("eraser"),
-            style = "margin-top:25px"
-          )
-        )
-      ),
-      fluidRow(
-        column(6, plotlyOutput("reliability_restricted_caterpillarplot")),
-        column(6, plotlyOutput("reliability_restricted_iccplot")),
-        style = "
-    padding-bottom: 15px;"
-      ),
-      fluidRow(
-        column(
-          6,
-          downloadButton("DB_reliability_restricted_caterpillarplot", label = "Download figure")
-        ),
-        column(
-          6,
-          downloadButton("DB_reliability_restricted_iccplot", label = "Download figure"),
-          downloadButton("DB_reliability_restricted_iccdata", label = "Download data")
-        )
-      ),
-      br(),
-      textOutput("icc_text"),
-      h4("Selected R code"),
-      code(includeText("sc/reliability/restr_range.R"))
-    )
+    #tabPanel("Restricted range",
+    #  value = "rr_irr",
+    #  h3("Range-restricted reliability"),
+    #  p(
+    #    "This section illustrates the issue of range-restricted reliability and the difficulties with maximum
+    #    likelihood estimation, described in more detail in the context of inter-rater reliability in grant proposal review in
+    #    ",
+    #    a("(Erosheva, Martinkova, & Lee, 2021)",
+    #      href = "http://doi.org/10.1111/rssa.12681",
+    #      target = "_blank", .noWS = "outside"
+    #    ),
+    #    ". To replicate their examples, select the ", code("AIBS"), "toy dataset in the ", strong("Data"), "section."
+    #  ),
+    #  p(
+    #    "Below, you may select the ratio and type of range restriction given by the ", strong("proportion of rated subjects/objects."),
+    #    " It could be a grant proposal application in grant review (as is the case in the ", code("AIBS"), "dataset),
+    #    a student in educational assessment, a job application in hiring, a patient in a medical study, etc.
+    #    Further, you may select the ", strong("direction"), "of restriction (top or bottom).
+    #    The left plot illustrates the variability in ratings for the whole dataset outshading the data which would be lost
+    #    due to range-restriction. The right plot provides the estimates of the calculated inter-rater reliability estimates,
+    #    defined by intraclass corelation in the simplest model including the ratee effect only.
+    #    The estimates are accompanied by a bootstrapped 95% confidence interval; see the settings section for further details
+    #    on used number of bootstrapped samples."
+    #  ),
+    #  fluidRow(
+    #    column(
+    #      2,
+    #      sliderInput(
+    #        inputId = "reliability_restricted_proportion",
+    #        label = "Proportion",
+    #        min = 0,
+    #        max = 100,
+    #        step = 1,
+    #        value = 100, animate = animationOptions(2000), post = "%"
+    #      )
+    #    ),
+    #    column(
+    #      2,
+    #      selectInput(
+    #        inputId = "reliability_restricted_direction",
+    #        label = "Direction",
+    #        choices = c("top", "bottom"),
+    #        selected = "top"
+    #      )
+    #    ),
+    #    column(
+    #      2,
+    #      actionButton(
+    #        inputId = "reliability_restricted_clear",
+    #        label = "Clear everything",
+    #        icon = icon("eraser"),
+    #        style = "margin-top:25px"
+    #      )
+    #    )
+    #  ),
+    #  fluidRow(
+    #    column(6, plotlyOutput("reliability_restricted_caterpillarplot")),
+    #    column(6, plotlyOutput("reliability_restricted_iccplot")),
+    #    style = "
+    #padding-bottom: 15px;"
+    #  ),
+    #  fluidRow(
+    #    column(
+    #      6,
+    #      downloadButton("DB_reliability_restricted_caterpillarplot", label = "Download figure")
+    #    ),
+    #    column(
+    #      6,
+    #      downloadButton("DB_reliability_restricted_iccplot", label = "Download figure"),
+    #      downloadButton("DB_reliability_restricted_iccdata", label = "Download data")
+    #    )
+    #  ),
+    #  br(),
+    #  textOutput("icc_text"),
+    #  h4("Selected R code"),
+    #  code(includeText("sc/reliability/restr_range.R"))
+    #),
+
+    # IRR module
+    "---",
+    "Modules",
+    tabPanel(tags$a("Restricted-range Reliability",
+      href = "https://shiny.cs.cas.cz/ShinyItemAnalysis-module-IRRrestricted/",
+      target = "_blank", .noWS = "outside"
+    ))
   )
