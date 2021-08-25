@@ -136,13 +136,6 @@ uiReferences <-
                 <a href = "https://CRAN.R-project.org/package=psych", target = "_blank">See online.</a>
                 </li>
 
-                <li><code>psychometric</code>
-                Fletcher, T., & Fletcher, D. (2010).
-                psychometric: Applied psychometric theory.
-                R package version 2.2.
-                <a href = "https://CRAN.R-project.org/package=psychometric", target = "_blank">See online.</a>
-                </li>
-
                 <li><code>purrr</code>
                 Henry, L., & Wickham, H. (2020).
                 purrr: Functional programming tools.
@@ -202,7 +195,7 @@ uiReferences <-
                 <li><code>ShinyItemAnalysis</code>
                 Martinkova, P., & Drabinova, A. (2018).
                 ShinyItemAnalysis for teaching psychometrics and to enforce routine analysis of educational tests.
-                The R Journal, 10(2), 503-515.
+                <i>The R Journal, 10</i>(2), 503-515.
                 <a href = "https://doi.org/10.32614/RJ-2018-074", target = "_blank">See online.</a>
                 </li>
 
@@ -338,7 +331,7 @@ uiReferences <-
 
                 <li> Erosheva, E. A, Martinkova, P., & Lee, C. J. (2021).
                 When zero may not be zero: A cautionary note on the useof inter-rater reliability in evaluating grant peer review.
-                <i>Journal of the Royal Statistical Society: Series A</i>.
+                <i>Journal of the Royal Statistical Society: Series A, 184</i>(3), 904-919.
                 <a href = "http://doi.org/10.1111/rssa.12681",
                 target = "_blank">See online.</a>
                 </li>

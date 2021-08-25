@@ -47,9 +47,28 @@ uiAbout <- tabPanel("",
       href = "http://doi.org/10.1111/rssa.12681",
       target = "_blank", .noWS = "outside"
     ),
-    ".  To try examples interactively, set the", code("AIBS"), "toy dataset in the ", strong("Data"), "section  by clicking on
-    the menu in the upper left corner and go to the ",
-    strong("Reliability/Restricted range"), "section. ",
+    ".  To try examples interactively with the", code("AIBS"), "dataset,
+    go to the ",
+    a("Restricted-range Reliability Module",
+      href = "https://shiny.cs.cas.cz/ShinyItemAnalysis-module-IRRrestricted/",
+      target = "_blank", .noWS = "outside"
+    ),
+    " available from the ",
+    strong("Reliability"), "section. ",
+    br(),
+    "A new paper using DIF-C analysis has been published in Journal of Computer Assisted Learning ",
+    a("(Kolek, Sisler, Martinkova, & Brom, 2021)",
+      href = "https://doi.org/10.1111/jcal.12575",
+      target = "_blank", .noWS = "outside"
+    ),
+    ".  To try examples interactively with the", code("AttitudesExpulsion"), "dataset,
+    go to the ",
+    a("DIF-C Module",
+      href = "https://shiny.cs.cas.cz/ShinyItemAnalysis-module-DIF-C-ordinal/",
+      target = "_blank", .noWS = "outside"
+    ),
+    " available from the ",
+    strong("DIF"), "section. ",
     br(),
     "New papers on differential item functioning have been published in Learning and Instruction ",
     a("(Martinkova, Hladka, & Potuznikova, 2020)",
@@ -103,13 +122,13 @@ uiAbout <- tabPanel("",
       p(
         "The current",
         a("CRAN", href = "https://CRAN.R-project.org/package=ShinyItemAnalysis", target = "_blank"),
-        "version is 1.3.7.",
+        "version is 1.3.8.",
         br(),
         "The version available",
-        a("online", href = "https://shiny.cs.cas.cz/ShinyItemAnalysis/", target = "_blank"), "is 1.3.7.",
+        a("online", href = "https://shiny.cs.cas.cz/ShinyItemAnalysis/", target = "_blank"), "is 1.3.8.",
         br(),
         "The newest development version available on ",
-        a("GitHub", href = "https://github.com/patriciamar/ShinyItemAnalysis", target = "_blank"), "is 1.3.7.",
+        a("GitHub", href = "https://github.com/patriciamar/ShinyItemAnalysis", target = "_blank"), "is 1.3.8.",
       )
     )
   ),
@@ -178,5 +197,5 @@ uiAbout <- tabPanel("",
   # Funding ####
   #------------------------------------------------------------------------------------#
   h4("Funding"),
-  p("Czech Science Foundation (GJ15-15856Y, 21-03658S), Charles University (PRIMUS/17/HUM/11).")
+  p("Czech Science Foundation (21-03658S, GJ15-15856Y), Charles University (PRIMUS/17/HUM/11).")
 )

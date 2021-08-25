@@ -2,35 +2,34 @@
 # GLOBAL LIBRARY ####
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-require(deltaPlotR)
+require(deltaPlotR) # one-use, may be implemented from sratch
 require(DT)
 require(data.table)
 require(difNLR)
 require(difR)
-require(ggdendro)
+require(ggdendro) # it is not so difficult to carry on our own
 require(ggplot2)
-require(grid)
+require(grid) # not needed to load explicitly, already loaded with R
 require(gridExtra)
 require(knitr)
 require(latticeExtra)
 require(ltm)
 require(mirt)
-require(msm)
+require(msm) # used for deltamethod, which is easily done without msm
 require(lme4)
 require(nnet)
 require(plotly)
 require(purrr)
 require(psych)
-require(psychometric) # rem. candidate
 require(rmarkdown)
 require(shiny)
 require(shinyBS)
 require(ShinyItemAnalysis)
 require(shinyjs)
-require(stringr)
+require(stringr) # could be replaced by base regex
 require(tidyr)
 require(dplyr)
-require(tibble)
+require(tibble) # may be removed
 require(VGAM)
 require(xtable) # could be substituted by knitr's default table engine "kable"
 
