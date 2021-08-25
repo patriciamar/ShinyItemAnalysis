@@ -1,19 +1,18 @@
 #' CZmatura dataset - sample
 #'
-#' @description The \code{CZmaturaS}dataset comes from a matura exam in
-#'   mathematics. The exam was assigned to students from Grade 13, at
-#'   the end of their secondary education. This is a random sample of 2,000
-#'   students from a total of 15,702.
+#' @description The \code{CZmaturaS} dataset comes from a matura exam in
+#'   mathematics. The exam was assigned to students from Grade 13, at the end of
+#'   their secondary education. This is a random sample of 2,000 students from a
+#'   total of 15,702.
 #'
 #' @usage data(CZmaturaS)
 #'
 #' @keywords datasets
 #'
-#' @seealso
-#' \code{\link{CZmatura}}
+#' @seealso \code{\link{CZmatura}}
 #'
-#' @format \code{CZmatura} is a \code{data.frame} consisting of 2,000 observations on
-#'   75 variables.
+#' @format \code{CZmatura} is a \code{data.frame} consisting of 2,000
+#'   observations on 75 variables.
 #'   \describe{
 #'   \item{SchType}{School type code. }
 #'   \item{FirstAtt}{First attempt; \code{"1"} yes, \code{"0"} no. }
