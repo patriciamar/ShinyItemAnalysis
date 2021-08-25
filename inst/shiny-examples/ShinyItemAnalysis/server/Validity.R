@@ -256,11 +256,28 @@ validity_factor_nonzero_vars_check <- reactive({
 # ** Parallel analysis ####
 validity_factor_parallel_analysis <- reactive({
   validity_factor_nonzero_vars_check()
-  text_out <- capture.output(data_out <- fa_parallel(ordinal(),
-    cor = input$validity_factor_pa_cor,
-    method = input$validity_factor_pa_method,
-    n_iter = 20, plot = FALSE
+
+  text_out <- capture.output(data_out <- tryCatch(
+    {
+      fa_parallel(ordinal(),
+        cor = input$validity_factor_pa_cor,
+        method = input$validity_factor_pa_method,
+        n_iter = 20, plot = FALSE
+      )
+    },
+    error = function(e) e
   ))
+
+  # check for any exceptions and hand them to the user
+  validate(need(
+    !inherits(data_out, c("simpleError", "error", "condition")),
+    paste0(
+      "Error returned:\n",
+      data_out$message
+    )
+  ),
+  errorClass = "validation-error"
+  )
 
   list(data = data_out, text = text_out)
 })

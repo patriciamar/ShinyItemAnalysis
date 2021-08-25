@@ -176,6 +176,9 @@ uiValidity <-
         plotlyOutput("dendrogram_plot"),
         downloadButton(outputId = "DB_dendrogram", label = "Download figure")
       ),
+      br(), br(),
+      h4("Selected R code"),
+      code(includeText("sc/validity/cor_struct.R"))
     ),
     # * FACTOR ANALYSIS ####
     tabPanel(

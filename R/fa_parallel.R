@@ -128,11 +128,10 @@ fa_parallel <- function(Data, cor = "pearson", n_obs = NULL,
       "pearson" = cor(Data, use = use),
       "polychoric" = tryCatch(polychoric(Data, na.rm = TRUE, ...)$rho,
         error = function(e) {
-          stop(
-            "Your items have more than 8 response categories, use of polychoric corr. is discouraged.\n",
-            "Choose different correlation or stick with polychoric by specifying `max.cat = n`,\n",
-            "where `n` is greater than the number of response categories of your items.",
-            call. = FALSE
+          stop(paste(
+            "Calculation of polychoric correlations returned an error:\n", e
+          ),
+          call. = FALSE
           )
         }
       ),
