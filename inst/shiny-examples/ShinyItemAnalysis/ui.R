@@ -122,7 +122,7 @@ ui <- tagList(
 
   navbarPage(
     title = HTML('<div style="margin-top: -10px;">
-                    <div class="header-title"><img src="header_hexbin.png"> ShinyItemAnalysis</div>
+                    <div class="header-title"><img src="sia_logo_trans.svg"> ShinyItemAnalysis</div>
                     <div class="header-subtitle"> Test and item analysis</div>
                  </div>'),
     windowTitle = "ShinyItemAnalysis",
@@ -133,7 +133,7 @@ ui <- tagList(
       HTML('<div style = "clear: both; height: 50px;"></div>
            <div class = "panel-footer", style = "opacity: 1.00; z-index: 1000;">
               <p style = "margin:8px 0 0 0;">
-                <div class = "footer-title"> <img src = "hexbin.png"> ShinyItemAnalysis </div>
+                <div class = "footer-title"> <img src = "sia_logo.svg", style="width: 57px; margin-right: 10px;"> ShinyItemAnalysis </div>
                 <div class = "footer-subtitle"> Test and item analysis via Shiny | Version 1.3.8 </div>
                 <span style = "float:right">
                   <a href = "http://shinyitemanalysis.org/" id = "tooltipweb" target="_blank"> <img src = "footer_web_icon.png", class = "footer-icons"> </a>

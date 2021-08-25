@@ -2,12 +2,33 @@
 
 ----------
 
+### Changes in version 1.3.8 (2021-05-25)
+#### BUG FIXING
+  * Better treatment of missing values in fa_parallel and in the 
+  `Validity/Factor analysis` section of the app
+  
+#### MAJOR UPDATES
+  * New dataset `AttitudesExpulsion` was added.
+  * Introducing ShinyItemAnalysis modules:
+  * `DIF-C` module newly available from the `DIF/Fairness` section of the app
+  * `IRR-restricted` module replaced the `Reliability/IRR-restricted` section 
+     of the app
+
+#### MINOR UPDATES
+  * Sample R code was added for the `Validity/Correlation structure` section.
+  * R files for data manuals were renamed to `data_*`
+  * The app now uses trivial Cronbach alpha internal function, lowering the 
+    number of dependencies
+  * www folder was cleaned up, .png replaced by .svg files
+  * README.md assets moved to .readme_assets folder
+----------
+
 ### Changes in version 1.3.7 (2021-05-28)
 #### BUG FIXING
   * Bug with reading ordinal data in the app was fixed. (Thanks to pukelevicius
     for reporting on GitHub)
   * Bug with uploading data with all correct/wrong answers in some items was 
-    fixed (Thanks to Koen Derks for reporthing the issue on GitHub)
+    fixed (Thanks to Koen Derks for reporting the issue on GitHub)
     
 #### MAJOR UPDATES
   * New datasets `MSclinical`, `BFI2`, and `TestAnxietyCor` were added, some 
