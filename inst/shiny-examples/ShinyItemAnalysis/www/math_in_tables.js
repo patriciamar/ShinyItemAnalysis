@@ -1,7 +1,8 @@
 // function for math mode in tables
 $(document).on('shiny:value', function(event) {
 
-  if((/\b\w*coef_\w*\b/g).test(event.name)){
+  //if((/\b\w*coef_\w*\b/g).test(event.name)){
+  if(event.name.includes("coef")){
 
     if(event.value.match(/(%%+[^%]+%%)/g) !== null) {
 
