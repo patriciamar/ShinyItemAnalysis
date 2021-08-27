@@ -2,17 +2,17 @@
 
 ----------
 
-### Changes in version 1.3.8 (2021-05-25)
+### Changes in version 1.3.8 (2021-05-27)
 #### BUG FIXING
   * Better treatment of missing values in fa_parallel and in the 
   `Validity/Factor analysis` section of the app
   
 #### MAJOR UPDATES
   * New dataset `AttitudesExpulsion` was added.
-  * Introducing ShinyItemAnalysis modules:
-  * `DIF-C` module newly available from the `DIF/Fairness` section of the app
-  * `IRR-restricted` module replaced the `Reliability/IRR-restricted` section 
-     of the app
+  * `DIF-C` SIAmodule newly available from the `DIF/Fairness` section of the 
+     interactive app
+  * `IRR-restricted` SIAmodule replaced the `Reliability/IRR-restricted` section 
+     of the interactive app
 
 #### MINOR UPDATES
   * Sample R code was added for the `Validity/Correlation structure` section.
@@ -21,6 +21,8 @@
     number of dependencies
   * www folder was cleaned up, .png replaced by .svg files
   * README.md assets moved to .readme_assets folder
+  * `inst` folder structure was simplified
+  
 ----------
 
 ### Changes in version 1.3.7 (2021-05-28)
@@ -41,6 +43,7 @@
   
 #### MINOR UPDATES
   * Sample R code was updated for the `IRT` section.
+
 ----------
 
 ### Changes in version 1.3.6 (2021-03-20)
@@ -94,6 +97,7 @@
   * In the `Item Analysis` section of the app, the tab `Distractors plot` was
     renamed to `Item response curves` to better reflect that empirical response
     curves are also available for binary and ordinal items.
+
 ----------
 
 ### Changes in version 1.3.5 (2021-02-02)
@@ -155,6 +159,7 @@
   * styler package was applied on .R files, documentation was updated.
   * `ggWright()` plot was updated to more general description.
   * References were updated wintin the app.
+
 ----------
 
 ### Changes in version 1.3.4 (2020-08-24)
@@ -191,6 +196,7 @@
 #### MINOR UPDATES
   * Documentation of `DDplot()` was updated.
   * All datatable outputs now have proper bootstrap style/theme.
+
 ----------
 
 ### Changes in version 1.3.3 (2020-05-04)
@@ -216,6 +222,7 @@
   * Wording, Figures and page structure were updated in shiny app in the 
     `DIF/Fairness` sections, histogram of total scores now better compares the 
     groups.   
+
 ----------
 
 ### Changes in version 1.3.2. (2020-01-27)
