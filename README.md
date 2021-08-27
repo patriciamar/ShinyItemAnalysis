@@ -1,4 +1,4 @@
-# ShinyItemAnalysis <img src="inst/shiny-examples/ShinyItemAnalysis/hexbin_alpha.png" align="right" width=150/> 
+# ShinyItemAnalysis <img src="inst/ShinyItemAnalysis/www/sia_logo.svg" align="right" width=150/> 
 Test and item analysis via shiny
 
 ![GHversion](https://img.shields.io/github/release/patriciamar/ShinyItemAnalysis.svg)
