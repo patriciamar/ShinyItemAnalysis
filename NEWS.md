@@ -2,10 +2,11 @@
 
 ----------
 
-### Changes in version 1.3.8 (2021-05-27)
+### Changes in version 1.3.8 (2021-09-10)
 #### BUG FIXING
   * Better treatment of missing values in fa_parallel and in the 
-  `Validity/Factor analysis` section of the app
+  `Validity/Factor analysis` section of the app, preventing crashes of the app
+  (Thanks to @koenderks for reporting this as issue #460)
   
 #### MAJOR UPDATES
   * New dataset `AttitudesExpulsion` was added.
@@ -16,10 +17,11 @@
 
 #### MINOR UPDATES
   * Sample R code was added for the `Validity/Correlation structure` section.
-  * R files for data manuals were renamed to `data_*`
+  * Manuals of R functions and data were updated
   * The app now uses trivial Cronbach alpha internal function, lowering the 
     number of dependencies
-  * www folder was cleaned up, .png replaced by .svg files
+  * `www` folder was cleaned up, .png replaced by .svg files improving the 
+    resolution of plots
   * README.md assets moved to .readme_assets folder
   * `inst` folder structure was simplified
   
