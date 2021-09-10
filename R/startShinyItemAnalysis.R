@@ -35,7 +35,7 @@
 startShinyItemAnalysis <- function(background = TRUE) {
   start_sia <- '
     appDir <-
-      system.file("shiny-examples", "ShinyItemAnalysis", package = "ShinyItemAnalysis")
+      system.file("ShinyItemAnalysis", package = "ShinyItemAnalysis")
     if (appDir == "") {
       stop("Could not find example directory. Try re-installing `ShinyItemAnalysis`.",
            call. = FALSE)
