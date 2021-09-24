@@ -1,8 +1,8 @@
 Type: Package
 Package: ShinyItemAnalysis
 Title: Test and Item Analysis via Shiny
-Version: 1.3.8
-Date: 2021-08-25
+Version: 1.4.0
+Date: 2021-09-24
 Authors@R: 
     c(person(given = "Patricia",
              family = "Martinkova",
@@ -10,6 +10,9 @@ Authors@R:
              email = "martinkova@cs.cas.cz"),
       person(given = "Adela",
              family = "Hladka",
+             role = "aut"),
+      person(given = "Jan",
+             family = "Netik",
              role = "aut"),
       person(given = "Ondrej",
              family = "Leder",
@@ -25,55 +28,51 @@ Authors@R:
              role = "ctb"),
       person(given = "Jana",
              family = "Vorlickova",
-             role = "ctb"),
-      person(given = "Jan",
-             family = "Netik",
              role = "ctb"))
-Description: Package including functions and interactive shiny
-    application for the psychometric analysis of educational tests,
-    psychological assessments, health-related and other types of
-    multi-item measurements, or ratings from multiple raters.
+Description: Package including functions and interactive shiny application
+    for the psychometric analysis of educational tests, psychological
+    assessments, health-related and other types of multi-item
+    measurements, or ratings from multiple raters.
 License: GPL-3
 URL: http://www.ShinyItemAnalysis.org,
     https://CRAN.R-project.org/package=ShinyItemAnalysis
-BugReports: 
-    https://github.com/patriciamar/ShinyItemAnalysis/issues
+BugReports: https://github.com/patriciamar/ShinyItemAnalysis/issues
 Depends:
     R (>= 3.5.0)
 Imports:
+    difR (>= 5.0),
+    dplyr,
+    ggplot2,
+    lme4,
+    magrittr,
+    mirt (>= 1.24),
+    nnet,
+    psych,
+    rlang,
+    rstudioapi,
+    tibble,
+    tidyr
+Suggests: 
     data.table,
     deltaPlotR,
     difNLR (>= 1.3.2),
-    difR (>= 5.0),
-    dplyr,
     DT,
     ggdendro,
-    ggplot2,
     gridExtra,
     knitr,
     latticeExtra,
-    lme4,
     ltm,
-    magrittr,
-    mirt (>= 1.24),
     msm,
-    nnet,
     plotly,
-    psych,
     purrr,
-    rlang,
     rmarkdown,
-    rstudioapi,
-    scales,
     shiny (>= 1.0.3),
     shinyBS,
     shinydashboard,
-    shinyjs (>= 0.9),
+    shinyjs,
     stringr,
-    tibble,
-    tidyr,
     VGAM,
     xtable
 Encoding: UTF-8
 LazyData: TRUE
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2

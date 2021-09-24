@@ -4,6 +4,7 @@
 \name{ShinyItemAnalysis-package}
 \alias{ShinyItemAnalysis-package}
 \alias{_PACKAGE}
+\alias{ShinyItemAnalysis}
 \title{ShinyItemAnalysis: Test and Item Analysis via shiny}
 \description{
 The ShinyItemAnalysis package contains an interactive shiny
@@ -33,8 +34,8 @@ The ShinyItemAnalysis package contains an interactive shiny
 \details{
 Package: ShinyItemAnalysis \cr
 Type: Package \cr
-Version: 1.3.8 \cr
-Date: 2021-08-25 \cr
+Version: 1.4.0 \cr
+Date: 2021-09-24 \cr
 Depends: R (>= 3.5.0) \cr
 Imports: cowplot, data.table, deltaPlotR, difNLR (>= 1.3.2), difR (>= 5.0),
 dplyr, DT, ggdendro, ggplot2, gridExtra, knitr, latticeExtra, lme4, ltm, magrittr,
@@ -64,25 +65,22 @@ Encoding: UTF-8 \cr
 }
 }
 
-\section{Datasets}{
-
-\itemize{
-\item \code{\link{AIBS}}
-\item \code{\link{CZmatura}}
-\item \code{\link{CZmaturaS}}
-\item \code{\link{dataMedical}}
-\item \code{\link{dataMedicalgraded}}
-\item \code{\link{dataMedicalkey}}
-\item \code{\link{dataMedicaltest}}
-\item \code{\link{HCI}}
-\item \code{\link{HCIdata}}
-\item \code{\link{HCIgrads}}
-\item \code{\link{HCIkey}}
-\item \code{\link{HCIprepost}}
-\item \code{\link{HCItest}}
-\item \code{\link{HCItestretest}}
-\item \code{\link{LearningToLearn}}
-\item \code{\link{NIH}}}
+\section{NA}{
+ \itemize{
+\item \code{\link{startShinyItemAnalysis}}
+\item \code{\link{DDplot}}
+\item \code{\link{DistractorAnalysis}}
+\item \code{\link{plotDistractorAnalysis}}
+\item \code{\link{gDiscrim}}
+\item \code{\link{ggWrightMap}}
+\item \code{\link{ItemAnalysis}}
+\item \code{\link{plotAdjacent}}, \code{\link{plotCumulative}}, \code{\link{plotMultinomial}}
+\item \code{\link{plotDIFirt}}, \code{\link{plotDIFLogistic}}
+\item \code{\link{plot_corr}}
+\item \code{\link{recode_nr}}
+\item \code{\link{ICCrestricted}}
+\item \code{\link{fa_parallel}}
+}
 }
 
 \references{
@@ -103,9 +101,11 @@ Useful links:
 Patricia Martinkova  \cr
 Institute of Computer Science of the Czech Academy of Sciences  \cr
 Faculty of Education, Charles University \cr
-\email{martinkova@cs.cas.cz} \cr
+\email{martinkova@cs.cas.cz}
 
 Adela Hladka (nee Drabinova) \cr
+Institute of Computer Science of the Czech Academy of Sciences
+
+Jan Netik \cr
 Institute of Computer Science of the Czech Academy of Sciences \cr
-\email{hladka@cs.cas.cz} \cr
 }

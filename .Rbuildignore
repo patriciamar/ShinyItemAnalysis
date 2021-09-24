@@ -4,3 +4,5 @@
 ^\.Rproj\.user$
 ^sampleRcode$
 ^\.readme_assets$
+^\.github$
+^data-raw$
