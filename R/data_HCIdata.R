@@ -39,7 +39,7 @@
 #'   \item{major}{Identifier whether students plans to major in the life sciences. }
 #'   \item{yearc5}{Study year. }
 #'   \item{minority}{Minority membership, \code{"maj"} majority, \code{"min"}
-#'   minority, \code{"none"} undisclosed. }
+#'   Black/Hispanic minority, \code{"none"} undisclosed. }
 #'   \item{EnglishF}{Identifier whether English is the student's first language. }
 #'   \item{typeS}{Course type, \code{"allied"} allied health, \code{"majors"}
 #'   physiology courses for

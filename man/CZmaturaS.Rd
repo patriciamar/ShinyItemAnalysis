@@ -23,9 +23,10 @@ data(CZmaturaS)
 }
 \description{
 The \code{CZmaturaS} dataset comes from a matura exam in
-  mathematics. The exam was assigned to students from Grade 13, at the end of
+  mathematics. The exam was assigned in 2019 to students in Grade 13, at the end of
   their secondary education. This is a random sample of 2,000 students from a
-  total of 15,702.
+  total of 15,702. Original data available from
+  \href{https://cermat.cz/}{https://cermat.cz/}.
 }
 \seealso{
 \code{\link{CZmatura}}

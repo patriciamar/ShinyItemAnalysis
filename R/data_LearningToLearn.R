@@ -21,21 +21,7 @@
 #'
 #' @usage data(LearningToLearn)
 #'
-#' @author
-#' Patricia Martinkova \cr
-#' Faculty of Education, Charles University \cr
-#' Institute of Computer Science of the Czech Academy of Sciences \cr
-#' \email{martinkova@@cs.cas.cz} \cr
-#'
-#' Adela Hladka \cr
-#' Institute of Computer Science of the Czech Academy of Sciences \cr
-#' Faculty of Mathematics and Physics, Charles University \cr
-#' \email{hladka@@cs.cas.cz} \cr
-#'
-#' Eva Potuznikova \cr
-#' Faculty of Education, Charles University \cr
-#'
-#' @references Martinkova, P., Hladka, A., & Potuznikova, E. (2020). Is academic
+#' @source Martinkova, P., Hladka, A., & Potuznikova, E. (2020). Is academic
 #' tracking related to gains in learning competence? Using propensity score
 #' matching and differential item change functioning analysis for better
 #' understanding of tracking implications. \emph{Learning and Instruction},

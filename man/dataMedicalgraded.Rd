@@ -15,6 +15,11 @@ males and females.}
 studies standardly, \code{"0"} otherwise (e.g., leaving or interrupting studies).}
 }
 }
+\source{
+Stuka, C., Vejrazka, M., Martinkova, P., Komenda, M., & Stepanek, L. (2016).
+The use of test and item analysis for improvement of tests. Workshop held at
+conference MEFANET, 2016, Brno, Czech Republic.
+}
 \usage{
 data(dataMedicalgraded)
 }
@@ -27,23 +32,12 @@ points were set if all correct answers and none of incorrect answers were
 selected.
 }
 \references{
-Stuka, C., Vejrazka, M., Martinkova, P., Komenda, M., & Stepanek, L. (2016).
-The use of test and item analysis for improvement of tests. Workshop held at
-conference MEFANET, 2016, Brno, Czech Republic.
+Martinkova, P., & Drabinova, A. (2018). ShinyItemAnalysis for
+teaching psychometrics and to enforce routine analysis of educational tests.
+The R Journal, 10(2), 503--515, \doi{10.32614/RJ-2018-074}
 }
 \seealso{
 \code{\link{dataMedical}}, \code{\link{dataMedicaltest}},
 \code{\link{dataMedicalkey}}
-}
-\author{
-Cestmir Stuka \cr
-First Faculty of Medicine, Charles University \cr
-
-Martin Vejrazka \cr
-First Faculty of Medicine, Charles University \cr
-
-Patricia Martinkova \cr
-Institute of Computer Science of the Czech Academy of Sciences \cr
-\email{martinkova@cs.cas.cz} \cr
 }
 \keyword{datasets}

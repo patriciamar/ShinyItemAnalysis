@@ -17,10 +17,10 @@
 data(HCItest)
 }
 \description{
-(\code{HCItest}) dataset consists of the responses of 651
+\code{HCItest} dataset consists of the responses of 651
   students (405 males, 246 females) to Homeostasis Concept Inventory (HCI)
   multiple-choice test. It containts 20 items, vector of gender membership
-  and identificator whether students plan to major.
+  and identificator whether students plan to major in life sciences.
 }
 \references{
 McFarland, J. L., Price, R. M., Wenderoth, M. P., Martinkova, P.,

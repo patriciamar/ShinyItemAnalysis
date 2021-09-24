@@ -1,6 +1,6 @@
 #' Homeostasis concept inventory test-retest dataset
 #'
-#' @description \code{HCItestretest}) dataset consists of the responses of 45
+#' @description \code{HCItestretest} dataset consists of the responses of 45
 #'   students to Homeostasis Concept Inventory (HCI). It contains answers to 20
 #'   multiple-choice items, scored items, identifier of test/retest, total
 #'   score, gender membership and identifier whether students plan to major in
