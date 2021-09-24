@@ -69,17 +69,18 @@ ggWrightMap(theta, b,
 )
 }
 \references{
-Wright, B. & Stone, M. (1979). Best test design. MESA Press:
-  Chicago, IL
+Wright, B. & Stone, M. (1979). Best test design. MESA Press: Chicago, IL
 }
 \author{
-Adela Hladka \cr Institute of Computer Science of the Czech Academy
-  of Sciences \cr
-  \email{hladka@cs.cas.cz} \cr
+Adela Hladka \cr
+Institute of Computer Science of the Czech Academy of Sciences \cr
+\email{hladka@cs.cas.cz}
 
-  Jan Netik \cr Institute of Computer Science of the Czech Academy
-  of Sciences \cr
+Jan Netik \cr
+Institute of Computer Science of the Czech Academy of Sciences \cr
+\email{netik@cs.cas.cz}
 
-  Patricia Martinkova \cr Institute of Computer Science of the Czech Academy
-  of Sciences \cr \email{martinkova@cs.cas.cz} \cr
+Patricia Martinkova \cr
+Institute of Computer Science of the Czech Academy of Sciences \cr
+\email{martinkova@cs.cas.cz}
 }

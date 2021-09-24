@@ -137,8 +137,11 @@ plot_corr(HCI, cor = "poly", clust_method = "complete", shape = "sq") +
 
 }
 \author{
-Jan Netik \cr Charles University
+Jan Netik \cr
+Institute of Computer Science of the Czech Academy of Sciences \cr
+\email{netik@cs.cas.cz}
 
-  Patricia Martinkova \cr Institute of Computer Science of the Czech Academy
-  of Sciences \cr \email{martinkova@cs.cas.cz}
+Patricia Martinkova \cr
+Institute of Computer Science of the Czech Academy of Sciences \cr
+\email{martinkova@cs.cas.cz}
 }

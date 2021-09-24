@@ -59,14 +59,14 @@ Plots graphical representation of item distractor analysis with
 }
 \details{
 This function is a graphical representation of the
-  \code{\link{DistractorAnalysis}} function. In case that no \code{criterion} is
-  provided, the scores are calculated using the item \code{Data} and
+  \code{\link{DistractorAnalysis}} function. In case that no \code{criterion}
+  is provided, the scores are calculated using the item \code{Data} and
   \code{key}. The respondents are by default split into the
   \code{num.groups}-quantiles and the proportions of respondents in each
   quantile are displayed with respect to their answers. In case that
   \code{criterion} is discrete (\code{crit.discrete = TRUE}),
-  \code{criterion} is split based on its unique levels. Other cut points
-  can be specified via \code{cut.points} argument.
+  \code{criterion} is split based on its unique levels. Other cut points can
+  be specified via \code{cut.points} argument.
 
   If \code{multiple.answers = TRUE} (default) all reported combinations of
   answers are plotted. If \code{multiple.answers = FALSE} all combinations
@@ -112,16 +112,18 @@ plotDistractorAnalysis(data, key,
 # distractor plot for item 57 using groups specified by cut.points
 plotDistractorAnalysis(data, key, item = 57, cut.points = seq(10, 100, 10))
 }
+
 }
 \seealso{
-\code{\link{DistractorAnalysis}}, \code{\link[CTT]{distractor.analysis}}
+\code{\link{DistractorAnalysis}},
+  \code{\link[CTT]{distractor.analysis}}
 }
 \author{
 Adela Hladka \cr
 Institute of Computer Science of the Czech Academy of Sciences \cr
-\email{hladka@cs.cas.cz} \cr
+\email{hladka@cs.cas.cz}
 
 Patricia Martinkova \cr
 Institute of Computer Science of the Czech Academy of Sciences \cr
-\email{martinkova@cs.cas.cz} \cr
+\email{martinkova@cs.cas.cz}
 }

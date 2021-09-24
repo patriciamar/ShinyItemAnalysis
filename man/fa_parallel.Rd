@@ -120,17 +120,18 @@ fa_parallel(items, threshold = "mean") # traditional Horn's method
 
 }
 \references{
-Horn, J. L. (1965). A rationale and test for the number of
-  factors in factor analysis. Psychometrika, 30, 179--185.
-  \doi{10.1007/BF02289447}
+Horn, J. L. (1965). A rationale and test for the number of factors in factor
+analysis. Psychometrika, 30, 179--185. \doi{10.1007/BF02289447}
 
-  Buja, A., & Eyuboglu, N. (1992). Remarks on parallel analysis. Multivariate
-  Behavioral Research, 27, 509--540. \doi{10.1207/s15327906mbr2704_2}
+Buja, A., & Eyuboglu, N. (1992). Remarks on parallel analysis. Multivariate
+Behavioral Research, 27, 509--540. \doi{10.1207/s15327906mbr2704_2}
 }
 \author{
-Jan Netik \cr Institute of Computer Science of the Czech Academy of
-  Sciences
+Jan Netik \cr
+Institute of Computer Science of the Czech Academy of Sciences \cr
+\email{netik@cs.cas.cz}
 
-  Patricia Martinkova \cr Institute of Computer Science of the Czech Academy
-  of Sciences \cr \email{martinkova@cs.cas.cz}
+Patricia Martinkova \cr
+Institute of Computer Science of the Czech Academy of Sciences \cr
+\email{martinkova@cs.cas.cz}
 }

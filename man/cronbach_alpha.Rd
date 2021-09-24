@@ -23,5 +23,6 @@ So far internal function.
 }
 \examples{
 ShinyItemAnalysis:::cronbach_alpha(HCI[, 1:20])
+
 }
 \keyword{internal}

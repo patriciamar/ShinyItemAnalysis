@@ -71,11 +71,10 @@ gDiscrim(dataOrd, k = 5, l = 4, u = 5)[1:5]
 gDiscrim(dataOrd, k = 5, l = 4, u = 5, maxscore = 4, minscore = 0)[1:5]
 }
 \references{
-Martinkova, P., Stepanek, L., Drabinova, A., Houdek, J.,
-Vejrazka, M., & Stuka, C. (2017). Semi-real-time analyses of item
-characteristics for medical school admission tests. In: Proceedings of the
-2017 Federated Conference on Computer Science and Information Systems.
-https://doi.org/10.15439/2017F380
+Martinkova, P., Stepanek, L., Drabinova, A., Houdek, J., Vejrazka, M., &
+Stuka, C. (2017). Semi-real-time analyses of item characteristics for medical
+school admission tests. In: Proceedings of the 2017 Federated Conference on
+Computer Science and Information Systems. https://doi.org/10.15439/2017F380
 }
 \seealso{
 \code{\link{DDplot}}
@@ -83,15 +82,15 @@ https://doi.org/10.15439/2017F380
 \author{
 Adela Hladka \cr
 Institute of Computer Science of the Czech Academy of Sciences \cr
-\email{hladka@cs.cas.cz} \cr
+\email{hladka@cs.cas.cz}
 
 Lubomir Stepanek \cr
-Charles University \cr
+Institute of Computer Science of the Czech Academy of Sciences \cr
 
 Jana Vorlickova \cr
 Institute of Computer Science of the Czech Academy of Sciences \cr
 
 Patricia Martinkova \cr
 Institute of Computer Science of the Czech Academy of Sciences \cr
-\email{martinkova@cs.cas.cz} \cr
+\email{martinkova@cs.cas.cz}
 }

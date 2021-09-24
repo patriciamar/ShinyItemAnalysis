@@ -4,8 +4,8 @@
 \alias{plotDIFLogistic}
 \title{Function for characteristic curve of 2PL logistic DIF model}
 \usage{
-plotDIFLogistic(x, item = 1, item.name, group.names = c("Reference", "Focal"),
-Data, group, match, draw.empirical = TRUE)
+plotDIFLogistic(x, item = 1, item.name, group.names = c("Reference",
+  "Focal"), Data, group, match, draw.empirical = TRUE)
 }
 \arguments{
 \item{x}{an object of \code{"Logistic"} class. See \strong{Details}.}
@@ -20,23 +20,25 @@ Data, group, match, draw.empirical = TRUE)
 
 \item{group}{numeric: the vector of group membership. See \strong{Details}.}
 
-\item{match}{character or numeric: specifies observed score used for matching. Can be either \code{"score"},
-or numeric vector of the same length as number of observations in \code{Data}. See \strong{Details}.}
+\item{match}{character or numeric: specifies observed score used for
+matching. Can be either \code{"score"}, or numeric vector of the same
+length as number of observations in \code{Data}. See \strong{Details}.}
 
-\item{draw.empirical}{logical: whether empirical probabilities should be calculated and plotted.
-Default value is \code{TRUE}.}
+\item{draw.empirical}{logical: whether empirical probabilities should be
+calculated and plotted. Default value is \code{TRUE}.}
 }
 \description{
 Plots characteristic curve of 2PL logistic DIF model
 }
 \details{
-This function plots characteristic curves of 2PL logistic DIF model fitted
-by \code{difLogistic()} function from difR package using ggplot2.
+This function plots characteristic curves of 2PL logistic DIF model
+fitted by \code{difLogistic()} function from difR package using ggplot2.
 
-\code{Data} and \code{group} are used to calculate empirical probabilities for reference
-and focal group. \code{match} should be the same as in \code{x$match}. In case that an
-observed score is used as a matching variable instead of the total score or the standardized score,
-\code{match} needs to be a numeric vector of the same the same length as the number of observations
+\code{Data} and \code{group} are used to calculate empirical probabilities
+for reference and focal group. \code{match} should be the same as in
+\code{x$match}. In case that an observed score is used as a matching variable
+instead of the total score or the standardized score, \code{match} needs to
+be a numeric vector of the same the same length as the number of observations
 in \code{Data}.
 }
 \examples{
@@ -68,8 +70,7 @@ plotDIFLogistic(x, item = 1, draw.empirical = FALSE)
 \author{
 Adela Hladka \cr
 Institute of Computer Science of the Czech Academy of Sciences \cr
-Faculty of Mathematics and Physics, Charles University \cr
-\email{hladka@cs.cas.cz} \cr
+\email{hladka@cs.cas.cz}
 
 Patricia Martinkova \cr
 Institute of Computer Science of the Czech Academy of Sciences \cr

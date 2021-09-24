@@ -66,6 +66,7 @@ plotDIFirt(fitLord$itemParInit, item = 1)
 fitRaju <- difRaju(GMAT2, group = 21, focal.name = 1, model = "2PL")
 # plot of item 1 and Lord's statistic
 plotDIFirt(fitRaju$itemParInit, test = "Raju", item = 1)
+
 }
 \seealso{
 \code{\link[difR]{itemParEst}}, \code{\link[difR]{difLord}},
@@ -74,10 +75,8 @@ plotDIFirt(fitRaju$itemParInit, test = "Raju", item = 1)
 \author{
 Adela Hladka \cr
 Institute of Computer Science of the Czech Academy of Sciences \cr
-Faculty of Mathematics and Physics, Charles University \cr
 \email{hladka@cs.cas.cz} \cr
 
-Patricia Martinkova \cr
-Institute of Computer Science of the Czech Academy of Sciences \cr
-\email{martinkova@cs.cas.cz} \cr
+Patricia Martinkova \cr Institute of Computer Science of the Czech Academy of
+Sciences \cr \email{martinkova@cs.cas.cz} \cr
 }

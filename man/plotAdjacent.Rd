@@ -47,9 +47,9 @@ Institute of Computer Science of the Czech Academy of Sciences \cr
 
 Adela Hladka \cr
 Institute of Computer Science of the Czech Academy of Sciences \cr
-\email{hladka@cs.cas.cz} \cr
+\email{hladka@cs.cas.cz}
 
 Patricia Martinkova \cr
 Institute of Computer Science of the Czech Academy of Sciences \cr
-\email{martinkova@cs.cas.cz} \cr
+\email{martinkova@cs.cas.cz}
 }

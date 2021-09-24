@@ -88,8 +88,9 @@ reliability in evaluating grant peer review.
 \author{
 Patricia Martinkova \cr
 Institute of Computer Science of the Czech Academy of Sciences \cr
-\email{martinkova@cs.cas.cz} \cr
+\email{martinkova@cs.cas.cz}
 
 Jan Netik \cr
 Institute of Computer Science of the Czech Academy of Sciences \cr
+\email{netik@cs.cas.cz}
 }

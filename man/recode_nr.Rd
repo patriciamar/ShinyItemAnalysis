@@ -48,7 +48,8 @@ summary(HCImissedNR)
 }
 \author{
 Jan Netik \cr
-Charles University  \cr
+Institute of Computer Science of the Czech Academy of Sciences \cr
+\email{netik@cs.cas.cz}
 
 Patricia Martinkova \cr
 Institute of Computer Science of the Czech Academy of Sciences \cr

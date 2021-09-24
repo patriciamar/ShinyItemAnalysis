@@ -34,6 +34,7 @@ fit <- nnet::multinom(relevel(GMATtest[, 1], ref = paste(GMATkey[1])) ~ matching
 
 # plotting category probabilities
 plotMultinomial(fit, matching, matching.name = "Z-score")
+
 }
 \seealso{
 \code{\link[nnet]{multinom}}
@@ -41,12 +42,12 @@ plotMultinomial(fit, matching, matching.name = "Z-score")
 \author{
 Adela Hladka \cr
 Institute of Computer Science of the Czech Academy of Sciences \cr
-\email{hladka@cs.cas.cz} \cr
+\email{hladka@cs.cas.cz}
 
 Tomas Jurica \cr
-Institute of Computer Science of the Czech Academy of Sciences \cr
+Institute of Computer Science of the Czech Academy of Sciences
 
 Patricia Martinkova \cr
 Institute of Computer Science of the Czech Academy of Sciences \cr
-\email{martinkova@cs.cas.cz} \cr
+\email{martinkova@cs.cas.cz}
 }

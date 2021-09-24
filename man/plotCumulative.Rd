@@ -42,19 +42,18 @@ coef(fit)
 
 plotCumulative(fit, type = "cumulative", matching.name = "Total score")
 plotCumulative(fit, type = "category", matching.name = "Total score")
+
 }
 \seealso{
 \code{\link[VGAM]{vglm}}
 }
 \author{
-Tomas Jurica \cr
-Institute of Computer Science of the Czech Academy of Sciences \cr
+Tomas Jurica \cr Institute of Computer Science of the Czech Academy
+of Sciences \cr
 
-Adela Hladka \cr
-Institute of Computer Science of the Czech Academy of Sciences \cr
-\email{hladka@cs.cas.cz} \cr
+Adela Hladka \cr Institute of Computer Science of the Czech Academy of
+Sciences \cr \email{hladka@cs.cas.cz} \cr
 
-Patricia Martinkova \cr
-Institute of Computer Science of the Czech Academy of Sciences \cr
-\email{martinkova@cs.cas.cz} \cr
+Patricia Martinkova \cr Institute of Computer Science of the Czech Academy of
+Sciences \cr \email{martinkova@cs.cas.cz} \cr
 }
