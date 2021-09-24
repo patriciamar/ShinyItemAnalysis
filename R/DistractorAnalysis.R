@@ -122,7 +122,7 @@ DistractorAnalysis <- function(Data, key, p.table = FALSE, num.groups = 3, crite
   if (length(key) == 1) key <- c(rep(key, ncol(Data)))
 
   if (is.null(criterion)) {
-    scored.data <- mirt::key2binary(Data, as.matrix(key))
+    scored.data <- key2binary(Data, as.matrix(key))
     scored.data[is.na(scored.data)] <- 0
     scores <- rowSums(scored.data)
   } else {

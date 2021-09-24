@@ -56,7 +56,7 @@
           call. = FALSE
         )
       } else {
-        coeff <- as.numeric(coefficients(m0))
+        coeff <- as.numeric(coef(m0))
         covMat <- summary(m0)$cov.scaled
         if (type == "udif") {
           C <- rbind(c(0, 0, 1))

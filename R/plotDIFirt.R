@@ -33,12 +33,10 @@
 #' @author
 #' Adela Hladka \cr
 #' Institute of Computer Science of the Czech Academy of Sciences \cr
-#' Faculty of Mathematics and Physics, Charles University \cr
 #' \email{hladka@@cs.cas.cz} \cr
 #'
-#' Patricia Martinkova \cr
-#' Institute of Computer Science of the Czech Academy of Sciences \cr
-#' \email{martinkova@@cs.cas.cz} \cr
+#' Patricia Martinkova \cr Institute of Computer Science of the Czech Academy of
+#' Sciences \cr \email{martinkova@@cs.cas.cz} \cr
 #'
 #' @seealso \code{\link[difR]{itemParEst}}, \code{\link[difR]{difLord}},
 #'   \code{\link[difR]{difRaju}}
@@ -62,6 +60,11 @@
 #' fitRaju <- difRaju(GMAT2, group = 21, focal.name = 1, model = "2PL")
 #' # plot of item 1 and Lord's statistic
 #' plotDIFirt(fitRaju$itemParInit, test = "Raju", item = 1)
+#'
+#' @importFrom difR itemRescale
+#' @importFrom ggplot2 stat_function scale_colour_manual scale_linetype_manual
+#'   ggtitle ggplot_build geom_ribbon
+#'
 #' @export
 plotDIFirt <- function(parameters, test = "Lord", item = "all", item.name, same.scale = FALSE) {
   if (!(test %in% c("Lord", "Raju"))) {
@@ -123,7 +126,7 @@ plotDIFirt <- function(parameters, test = "Lord", item = "all", item.name, same.
   mF <- parameters[(m + 1):(2 * m), ]
 
   if (!same.scale) {
-    mF <- difR::itemRescale(mR, mF)
+    mF <- itemRescale(mR, mF)
   }
 
   if (is.null(dim(mR))) {

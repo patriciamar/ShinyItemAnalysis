@@ -17,14 +17,14 @@
 #' @author
 #' Adela Hladka \cr
 #' Institute of Computer Science of the Czech Academy of Sciences \cr
-#' \email{hladka@@cs.cas.cz} \cr
+#' \email{hladka@@cs.cas.cz}
 #'
 #' Tomas Jurica \cr
-#' Institute of Computer Science of the Czech Academy of Sciences \cr
+#' Institute of Computer Science of the Czech Academy of Sciences
 #'
 #' Patricia Martinkova \cr
 #' Institute of Computer Science of the Czech Academy of Sciences \cr
-#' \email{martinkova@@cs.cas.cz} \cr
+#' \email{martinkova@@cs.cas.cz}
 #'
 #' @seealso
 #' \code{\link[nnet]{multinom}}
@@ -40,6 +40,10 @@
 #'
 #' # plotting category probabilities
 #' plotMultinomial(fit, matching, matching.name = "Z-score")
+#'
+#' @importFrom nnet multinom
+#' @importFrom ggplot2 ylim scale_linetype_manual guides guide_legend
+#'
 #' @export
 
 plotMultinomial <- function(x, matching, matching.name = "matching") {

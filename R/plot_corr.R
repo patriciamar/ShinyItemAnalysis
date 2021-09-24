@@ -63,16 +63,19 @@
 #'
 #' @return An object of class \code{ggplot} and/or \code{gg}.
 #'
-#' @author Jan Netik \cr Charles University
+#' @author
+#' Jan Netik \cr
+#' Institute of Computer Science of the Czech Academy of Sciences \cr
+#' \email{netik@@cs.cas.cz}
 #'
-#'   Patricia Martinkova \cr Institute of Computer Science of the Czech Academy
-#'   of Sciences \cr \email{martinkova@@cs.cas.cz}
+#' Patricia Martinkova \cr
+#' Institute of Computer Science of the Czech Academy of Sciences \cr
+#' \email{martinkova@@cs.cas.cz}
 #'
 #' @importFrom ggplot2 ggplot aes geom_tile labs scale_x_discrete
 #'   scale_y_discrete scale_fill_gradient2 coord_fixed theme_minimal theme
 #'   element_text element_blank annotate scale_size_area scale_color_gradient2
 #' @importFrom stats hclust as.dist cutree
-#' @importFrom scales number
 #' @importFrom psych polychoric tetrachoric alpha
 #' @importFrom tibble as_tibble
 #' @importFrom tidyr pivot_longer
@@ -211,7 +214,7 @@ plot_corr <- function(Data, cor = "pearson", clust_method = "none", n_clust = 0,
   plt <- cormat %>%
     as_tibble(rownames = "x") %>%
     pivot_longer(cols = -.data$x, names_to = "y", values_to = "r") %>%
-    mutate(corr. = gsub("0\\.", "\\.", scales::number(.data$r, .01))) %>%
+    mutate(corr. = gsub("0\\.", "\\.", round(.data$r, digits = 2))) %>%
     ggplot(aes(.data$x, .data$y, label = .data$corr.)) +
     scale_x_discrete(limits = new_ord, position = "top") +
     scale_y_discrete(limits = rev(new_ord)) + # make diagonal as usual
@@ -241,8 +244,8 @@ plot_corr <- function(Data, cor = "pearson", clust_method = "none", n_clust = 0,
   if (clust_method != "none" & n_clust != 0) {
     plt <- plt +
       annotate("rect",
-        fill = scales::alpha(fill, fill_alpha),
-        col = scales::alpha(line_col, line_alpha),
+        fill = ggplot2::alpha(fill, fill_alpha), # cannot use alpha in NAMESPACE due to psych conflict
+        col = ggplot2::alpha(line_col, line_alpha),
         size = line_size,
         xmin = cu[-(n_clust + 1)] + 0.5,
         xmax = cu[-1] + 0.5,

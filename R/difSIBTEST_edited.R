@@ -1,3 +1,4 @@
+#' @importFrom difR sibTest
 #' @export
 .difSIBTEST_edited <- function(Data, group, focal.name, type = "udif", anchor = NULL,
                                alpha = 0.05, purify = FALSE, nrIter = 10, p.adjust.method = NULL,

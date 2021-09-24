@@ -36,23 +36,23 @@
 #' @author
 #' Adela Hladka \cr
 #' Institute of Computer Science of the Czech Academy of Sciences \cr
-#' \email{hladka@@cs.cas.cz} \cr
+#' \email{hladka@@cs.cas.cz}
 #'
 #' Lubomir Stepanek \cr
-#' Charles University \cr
+#' Institute of Computer Science of the Czech Academy of Sciences \cr
 #'
 #' Jana Vorlickova \cr
 #' Institute of Computer Science of the Czech Academy of Sciences \cr
 #'
 #' Patricia Martinkova \cr
 #' Institute of Computer Science of the Czech Academy of Sciences \cr
-#' \email{martinkova@@cs.cas.cz} \cr
+#' \email{martinkova@@cs.cas.cz}
 #'
-#' @references Martinkova, P., Stepanek, L., Drabinova, A., Houdek, J.,
-#' Vejrazka, M., & Stuka, C. (2017). Semi-real-time analyses of item
-#' characteristics for medical school admission tests. In: Proceedings of the
-#' 2017 Federated Conference on Computer Science and Information Systems.
-#' https://doi.org/10.15439/2017F380
+#' @references
+#' Martinkova, P., Stepanek, L., Drabinova, A., Houdek, J., Vejrazka, M., &
+#' Stuka, C. (2017). Semi-real-time analyses of item characteristics for medical
+#' school admission tests. In: Proceedings of the 2017 Federated Conference on
+#' Computer Science and Information Systems. https://doi.org/10.15439/2017F380
 #'
 #' @note
 #' \code{gDiscrim} is used by \code{\link{DDplot}} function.

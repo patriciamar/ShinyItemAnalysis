@@ -11,12 +11,12 @@
 #' @return A list with \eqn{\alpha} estimate and optionally CI.
 #'
 #' @md
-#'
 #' @importFrom stats qf var
-#'
 #' @keywords internal
+#'
 #' @examples
 #' ShinyItemAnalysis:::cronbach_alpha(HCI[, 1:20])
+#'
 cronbach_alpha <- function(Data, ci = TRUE, ci_lvl = .95) {
   x <- na.exclude(as.matrix(Data))
   k <- ncol(x)

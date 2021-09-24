@@ -1,3 +1,4 @@
+#' @importFrom difR RajuZ
 #' @export
 .difRaju_edited <- function(Data, group, focal.name, model, c = NULL, engine = "ltm",
                             discr = 1, irtParam = NULL, same.scale = TRUE, anchor = NULL,

@@ -19,21 +19,25 @@
 #' @param rel_widths numeric: vector of length 2 specifying ratio of "facet's"
 #'   widths.
 #'
-#' @importFrom ggplot2 ggplotGrob
+#' @importFrom ggplot2 ggplotGrob unit
 #' @importFrom grid grid.newpage gTree grid.draw
+#' @importFrom mirt fscores
 #'
-#' @author Adela Hladka \cr Institute of Computer Science of the Czech Academy
-#'   of Sciences \cr
-#'   \email{hladka@@cs.cas.cz} \cr
+#' @author
+#' Adela Hladka \cr
+#' Institute of Computer Science of the Czech Academy of Sciences \cr
+#' \email{hladka@@cs.cas.cz}
 #'
-#'   Jan Netik \cr Institute of Computer Science of the Czech Academy
-#'   of Sciences \cr
+#' Jan Netik \cr
+#' Institute of Computer Science of the Czech Academy of Sciences \cr
+#' \email{netik@@cs.cas.cz}
 #'
-#'   Patricia Martinkova \cr Institute of Computer Science of the Czech Academy
-#'   of Sciences \cr \email{martinkova@@cs.cas.cz} \cr
+#' Patricia Martinkova \cr
+#' Institute of Computer Science of the Czech Academy of Sciences \cr
+#' \email{martinkova@@cs.cas.cz}
 #'
-#' @references Wright, B. & Stone, M. (1979). Best test design. MESA Press:
-#'   Chicago, IL
+#' @references
+#' Wright, B. & Stone, M. (1979). Best test design. MESA Press: Chicago, IL
 #'
 #' @examples
 #' library(mirt)
@@ -99,6 +103,10 @@ ggWrightMap <- function(theta, b, binwidth = 0.5, color = "blue", size = 15,
 #' ggWrightMap internals
 #'
 #' @keywords internal
+#'
+#' @importFrom ggplot2 unit aes_string geom_histogram xlim ylab coord_flip
+#'   scale_y_reverse geom_text scale_y_continuous
+#'
 #' @noRd
 gg_wright_internal <- function(theta, b, binwidth = 0.5, color = "blue",
                                size = 15, item.names,

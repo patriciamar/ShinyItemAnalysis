@@ -18,11 +18,11 @@
 #'
 #' Adela Hladka \cr
 #' Institute of Computer Science of the Czech Academy of Sciences \cr
-#' \email{hladka@@cs.cas.cz} \cr
+#' \email{hladka@@cs.cas.cz}
 #'
 #' Patricia Martinkova \cr
 #' Institute of Computer Science of the Czech Academy of Sciences \cr
-#' \email{martinkova@@cs.cas.cz} \cr
+#' \email{martinkova@@cs.cas.cz}
 #'
 #' @seealso
 #' \code{\link[VGAM]{vglm}}
@@ -44,6 +44,8 @@
 #' coef(fit)
 #'
 #' plotAdjacent(fit, matching.name = "Total score")
+#' @importFrom grDevices hcl
+#' @importFrom ggplot2 scale_colour_manual ylim guides guide_legend
 #' @export
 plotAdjacent <- function(x, matching.name = "matching") {
   y <- x@y %*% as.numeric(colnames(x@y)) # responses

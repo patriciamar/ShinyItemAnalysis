@@ -1,3 +1,5 @@
+#' @importFrom difR itemParEst itemRescale LordChi2
+#'
 #' @export
 .difLord_edited <- function(Data, group, focal.name, model, c = NULL, engine = "ltm",
                             discr = 1, irtParam = NULL, same.scale = TRUE, anchor = NULL,
@@ -27,7 +29,7 @@
       if (same.scale) {
         m1p <- m1
       } else {
-        m1p <- difR::itemRescale(m0, m1, items = ANCHOR)
+        m1p <- itemRescale(m0, m1, items = ANCHOR)
       }
       mod <- as.character(ncol(irtParam))
       model <- switch(mod,
@@ -95,20 +97,20 @@
           `2PL` = 2, `3PL` = 3
         )
         m0 <- switch(model,
-          `1PL` = difR::itemParEst(d0, model = "1PL", engine = engine, discr = discr),
-          `2PL` = difR::itemParEst(d0, model = "2PL"),
-          `3PL` = difR::itemParEst(d0, model = "3PL")
+          `1PL` = itemParEst(d0, model = "1PL", engine = engine, discr = discr),
+          `2PL` = itemParEst(d0, model = "2PL"),
+          `3PL` = itemParEst(d0, model = "3PL")
         )
         m1 <- switch(model,
-          `1PL` = difR::itemParEst(d1, model = "1PL", engine = engine, discr = discr),
-          `2PL` = difR::itemParEst(d1, model = "2PL"),
-          `3PL` = difR::itemParEst(d1, model = "3PL")
+          `1PL` = itemParEst(d1, model = "1PL", engine = engine, discr = discr),
+          `2PL` = itemParEst(d1, model = "2PL"),
+          `3PL` = itemParEst(d1, model = "3PL")
         )
       } else {
         Q <- qchisq(1 - alpha, 2)
         DF <- 2
-        m0 <- difR::itemParEst(d0, model = "3PL", c = Guess)
-        m1 <- difR::itemParEst(d1, model = "3PL", c = Guess)
+        m0 <- itemParEst(d0, model = "3PL", c = Guess)
+        m1 <- itemParEst(d1, model = "3PL", c = Guess)
       }
       nrItems <- ncol(DATA)
       if (!is.null(anchor)) {
@@ -125,7 +127,7 @@
         ANCHOR <- 1:nrItems
         dif.anchor <- NULL
       }
-      m1p <- difR::itemRescale(m0, m1, items = ANCHOR)
+      m1p <- itemRescale(m0, m1, items = ANCHOR)
       irtParam <- rbind(m0, m1p)
       same.scale <- TRUE
       dataName <- colnames(DATA)
@@ -151,18 +153,18 @@
     }
 
     if (!purify | !is.null(anchor)) {
-      STATS <- difR::LordChi2(m0, m1p)
+      STATS <- LordChi2(m0, m1p)
       PVAL <- 1 - pchisq(STATS, DF)
       P.ADJUST <- p.adjust(PVAL, method = adj.method)
 
       if (is.null(Guess)) {
         m_null <- switch(model,
-          `1PL` = difR::itemParEst(DATA, model = "1PL", engine = engine, discr = discr),
-          `2PL` = difR::itemParEst(DATA, model = "2PL"),
-          `3PL` = difR::itemParEst(DATA, model = "3PL")
+          `1PL` = itemParEst(DATA, model = "1PL", engine = engine, discr = discr),
+          `2PL` = itemParEst(DATA, model = "2PL"),
+          `3PL` = itemParEst(DATA, model = "3PL")
         )
       } else {
-        m_null <- difR::itemParEst(DATA, model = "3PL", c = Guess)
+        m_null <- itemParEst(DATA, model = "3PL", c = Guess)
       }
 
       if (min(P.ADJUST, na.rm = TRUE) >= alpha) {
@@ -207,7 +209,7 @@
       nrPur <- 0
       difPur <- NULL
       noLoop <- FALSE
-      stats1 <- difR::LordChi2(m0, m1p)
+      stats1 <- LordChi2(m0, m1p)
       pval1 <- 1 - pchisq(stats1, DF)
       p.adjust1 <- p.adjust(pval1, method = puri.adj.method)
 
@@ -251,7 +253,7 @@
           if (nrPur >= nrIter) {
             itemParFinal <- rbind(
               m0,
-              difR::itemRescale(m0, m1, items = nodif)
+              itemRescale(m0, m1, items = nodif)
             )
             break
           } else {
@@ -262,9 +264,9 @@
             } else {
               nodif <- which(!1:nrItems %in% dif)
             }
-            stats2 <- difR::LordChi2(
+            stats2 <- LordChi2(
               m0,
-              difR::itemRescale(m0, m1, items = nodif)
+              itemRescale(m0, m1, items = nodif)
             )
             pval2 <- 1 - pchisq(stats2, DF)
             p.adjust2 <- p.adjust(pval2, method = puri.adj.method)
@@ -285,7 +287,7 @@
                 noLoop <- TRUE
                 itemParFinal <- rbind(
                   m0,
-                  difR::itemRescale(m0, m1, items = nodif)
+                  itemRescale(m0, m1, items = nodif)
                 )
                 break
               } else {

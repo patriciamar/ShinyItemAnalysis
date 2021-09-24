@@ -90,19 +90,21 @@
 #'   function for further details. } With \code{bin = TRUE}, indices based on
 #'   binarized dataset are also provided and marked with \code{bin} suffix.
 #'
-#' @author Patricia Martinkova \cr Institute of Computer Science of the Czech
-#'   Academy of Sciences \cr \email{martinkova@@cs.cas.cz} \cr
+#' @author
+#' Patricia Martinkova \cr
+#' Institute of Computer Science of the Czech Academy of Sciences \cr
+#' \email{martinkova@@cs.cas.cz}
 #'
-#'   Jan Netik \cr Institute of Computer Science of the Czech Academy of
-#'   Sciences \cr Charles University
-#'   \cr
+#' Jan Netik \cr
+#' Institute of Computer Science of the Czech Academy of Sciences \cr
+#' \email{netik@@cs.cas.cz}
 #'
-#'   Jana Vorlickova \cr Institute of Computer Science of the Czech Academy of
-#'   Sciences \cr
+#' Jana Vorlickova \cr
+#' Institute of Computer Science of the Czech Academy of Sciences
 #'
-#'   Adela Hladka \cr Institute of Computer Science of the Czech Academy of
-#'   Sciences \cr
-#'   \email{hladka@@cs.cas.cz} \cr
+#' Adela Hladka \cr
+#' Institute of Computer Science of the Czech Academy of Sciences \cr
+#' \email{hladka@@cs.cas.cz}
 #'
 #' @references Martinkova, P., Stepanek, L., Drabinova, A., Houdek, J.,
 #'   Vejrazka, M., & Stuka, C. (2017). Semi-real-time analyses of item

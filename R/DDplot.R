@@ -98,7 +98,6 @@
 #' Computer Science and Information Systems.
 #'
 #' @seealso
-#' \code{\link[psychometric]{discrim}} for calculation of discrimination \cr
 #' \code{\link[ShinyItemAnalysis]{gDiscrim}} for calculation of generalized ULI \cr
 #' \code{\link[ggplot2]{ggplot}} for general function to plot a \code{"ggplot"} object
 #'
@@ -147,6 +146,7 @@
 #' data(GMAT, package = "difNLR")
 #' DDplot(GMAT[, 1:20], criterion = GMAT$criterion, val_type = "simple")
 #' }
+#' @importFrom ggplot2 geom_col ylab scale_y_continuous scale_fill_manual unit aes_string stat_summary scale_colour_manual
 #' @export
 
 DDplot <- function(Data, item.names, discrim = "ULI", k = 3, l = 1, u = 3,

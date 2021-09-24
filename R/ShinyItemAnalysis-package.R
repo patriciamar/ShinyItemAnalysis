@@ -24,30 +24,11 @@
 #'   \code{HCI} dataset from the reference paper by Martinkova and Drabinova
 #'   (2018).\cr
 #'
-#' @aliases ShinyItemAnalysis-package
+#' @aliases ShinyItemAnalysis-package ShinyItemAnalysis
 #'
-#' @import difNLR difR shiny
-#' @importFrom deltaPlotR deltaPlot
-#' @importFrom ggplot2 aes aes_string coord_flip element_blank element_line
-#'   element_rect element_text geom_abline ggplot_build position_dodge
-#'   geom_histogram geom_hline geom_line geom_point geom_ribbon geom_text ggplot
-#'   ggsave ggtitle labs scale_color_manual scale_colour_manual
-#'   scale_fill_manual scale_linetype_manual scale_shape_manual
-#'   scale_size_continuous scale_x_continuous scale_x_discrete
-#'   scale_y_continuous scale_y_reverse geom_col stat_function stat_summary
-#'   theme theme_bw unit xlab xlim ylab ylim
-#' @importFrom graphics lines plot plot.new
-#' @importFrom grDevices dev.off hcl png rainbow recordPlot
-#' @importFrom ltm ltm rasch tpm
-#' @importFrom mirt fscores itemfit mirt
-#' @importFrom nnet multinom
-#' @importFrom psych alpha polychoric
-#' @importFrom rmarkdown render
-#' @importFrom shinyjs show hide useShinyjs
-#' @importFrom stats aggregate coef coefficients complete.cases cor deriv deriv3
-#'   deviance fitted glm median na.exclude na.omit nls p.adjust pnorm pchisq qnorm
-#'   qchisq quantile relevel sd symnum vcov xtabs
-#' @importFrom stringr str_sub
+#' @importFrom stats aggregate coef complete.cases cor deviance fitted glm
+#'   median na.exclude na.omit p.adjust pnorm pchisq qnorm qchisq quantile
+#'   relevel sd vcov xtabs
 #' @importFrom utils capture.output data head packageVersion read.csv
 #'
 #' @section Functions: \itemize{
@@ -69,6 +50,8 @@
 #' @section Datasets:
 #' \itemize{
 #' \item \code{\link{AIBS}}
+#' \item \code{\link{AttitudesExpulsion}}
+#' \item \code{\link{BFI2}}
 #' \item \code{\link{CZmatura}}
 #' \item \code{\link{CZmaturaS}}
 #' \item \code{\link{dataMedical}}
@@ -82,13 +65,16 @@
 #' \item \code{\link{HCIprepost}}
 #' \item \code{\link{HCItest}}
 #' \item \code{\link{HCItestretest}}
+#' \item \code{\link{HeightInventory}}
 #' \item \code{\link{LearningToLearn}}
+#' \item \code{\link{MSclinical}}}
 #' \item \code{\link{NIH}}}
+#' \item \code{\link{TestAnxiety}}}
 #'
 #' @details Package: ShinyItemAnalysis \cr
 #' Type: Package \cr
-#' Version: 1.3.8 \cr
-#' Date: 2021-08-25 \cr
+#' Version: 1.4.0 \cr
+#' Date: 2021-09-24 \cr
 #' Depends: R (>= 3.5.0) \cr
 #' Imports: cowplot, data.table, deltaPlotR, difNLR (>= 1.3.2), difR (>= 5.0),
 #' dplyr, DT, ggdendro, ggplot2, gridExtra, knitr, latticeExtra, lme4, ltm, magrittr,
@@ -100,14 +86,17 @@
 #' Website: \url{http://www.ShinyItemAnalysis.org/} \cr
 #' Encoding: UTF-8 \cr
 #'
-#' @author Patricia Martinkova  \cr
+#' @author
+#' Patricia Martinkova  \cr
 #' Institute of Computer Science of the Czech Academy of Sciences  \cr
 #' Faculty of Education, Charles University \cr
-#' \email{martinkova@@cs.cas.cz} \cr
+#' \email{martinkova@@cs.cas.cz}
 #'
 #' Adela Hladka (nee Drabinova) \cr
+#' Institute of Computer Science of the Czech Academy of Sciences
+#'
+#' Jan Netik \cr
 #' Institute of Computer Science of the Czech Academy of Sciences \cr
-#' \email{hladka@@cs.cas.cz} \cr
 #'
 #' @references Martinkova, P., & Drabinova, A. (2018). ShinyItemAnalysis for
 #' teaching psychometrics and to enforce routine analysis of educational tests.
@@ -115,4 +104,3 @@
 #'
 #' @docType package
 "_PACKAGE"
-# > [1] "_PACKAGE"

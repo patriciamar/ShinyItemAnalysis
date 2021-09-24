@@ -15,20 +15,16 @@
 #'
 #' @return An object of class \code{ggplot} and/or \code{gg}.
 #'
-#' @author
-#' Tomas Jurica \cr
-#' Institute of Computer Science of the Czech Academy of Sciences \cr
+#' @author Tomas Jurica \cr Institute of Computer Science of the Czech Academy
+#' of Sciences \cr
 #'
-#' Adela Hladka \cr
-#' Institute of Computer Science of the Czech Academy of Sciences \cr
-#' \email{hladka@@cs.cas.cz} \cr
+#' Adela Hladka \cr Institute of Computer Science of the Czech Academy of
+#' Sciences \cr \email{hladka@@cs.cas.cz} \cr
 #'
-#' Patricia Martinkova \cr
-#' Institute of Computer Science of the Czech Academy of Sciences \cr
-#' \email{martinkova@@cs.cas.cz} \cr
+#' Patricia Martinkova \cr Institute of Computer Science of the Czech Academy of
+#' Sciences \cr \email{martinkova@@cs.cas.cz} \cr
 #'
-#' @seealso
-#' \code{\link[VGAM]{vglm}}
+#' @seealso \code{\link[VGAM]{vglm}}
 #'
 #' @examples
 #' # loading packages
@@ -48,6 +44,11 @@
 #'
 #' plotCumulative(fit, type = "cumulative", matching.name = "Total score")
 #' plotCumulative(fit, type = "category", matching.name = "Total score")
+#'
+#' @importFrom grDevices hcl
+#' @importFrom ggplot2 scale_colour_manual scale_linetype_manual ylim guides
+#'   guide_legend
+#'
 #' @export
 plotCumulative <- function(x, type = "cumulative", matching.name = "matching") {
 

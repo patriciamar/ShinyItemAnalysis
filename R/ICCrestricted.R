@@ -38,12 +38,14 @@
 #'   \code{ICC3}.}
 #'
 #'
-#' @author Patricia Martinkova \cr
+#' @author
+#' Patricia Martinkova \cr
 #' Institute of Computer Science of the Czech Academy of Sciences \cr
-#' \email{martinkova@@cs.cas.cz} \cr
+#' \email{martinkova@@cs.cas.cz}
 #'
 #' Jan Netik \cr
 #' Institute of Computer Science of the Czech Academy of Sciences \cr
+#' \email{netik@@cs.cas.cz}
 #'
 #' @references
 #' Erosheva, E., Martinkova, P., & Lee, C. (2021a). When zero may not be zero: A

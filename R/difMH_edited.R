@@ -1,3 +1,4 @@
+#' @importFrom difR mantelHaenszel
 #' @export
 .difMH_edited <- function(Data, group, focal.name, anchor = NULL, match = "score",
                           MHstat = "MHChisq", correct = TRUE, exact = FALSE,
