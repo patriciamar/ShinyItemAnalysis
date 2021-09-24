@@ -6,7 +6,7 @@ uiRegression <-
     tabPanel(
       "Logistic",
       h3("Logistic regression on total scores"),
-      withMathJax(),
+      
       p(
         "Various regression models may be fitted to describe item properties in more detail.", strong("Logistic regression"),
         "can model dependency of pthe robability of correctly answering item \\(i\\) by respondent \\(p\\) on their
@@ -26,7 +26,7 @@ uiRegression <-
       plotlyOutput("regression_logistic_plot"),
       downloadButton("regression_logistic_plot_download", label = "Download figure"),
       h4("Equation"),
-      withMathJax(),
+      
       ("$$\\mathrm{P}(Y_{pi} = 1|X_p) = \\mathrm{E}(Y_{pi}|X_p) = \\frac{e^{\\left(\\beta_{i0} + \\beta_{i1} X_p\\right)}}{1 + e^{\\left(\\beta_{i0} + \\beta_{i1} X_p\\right)}}$$"),
       h4("Table of parameters"),
       fluidRow(column(12, align = "center", tableOutput("regression_logistic_coef"))),

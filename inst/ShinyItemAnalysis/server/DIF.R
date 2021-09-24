@@ -127,8 +127,7 @@ output$DIF_total_hist <- renderPlotly({
   g <- DIF_total_hist_Input()
   p <- ggplotly(g)
 
-  nam <- switch(
-    input$DIF_total_matching,
+  nam <- switch(input$DIF_total_matching,
     "score" = "Score",
     # "zscore" = "Standardized score",
     "uploaded" = "Uploaded matching"
@@ -445,8 +444,8 @@ dp_table <- reactive({
   tab$symb <- symb
 
   colnames(tab) <- c(
-    "Prop. correct %%mathit{_{ref}}%%", "Prop. correct %%mathit{_{foc}}%%",
-    "%%mathit{\\Delta_{ref}}%%", "%%mathit{\\Delta_{foc}}%%",
+    "Prop. correct \\(\\mathit{_{ref}}\\)", "Prop. correct \\(\\mathit{_{foc}}\\)",
+    "\\(\\mathit{\\Delta_{ref}}\\)", "\\(\\mathit{\\Delta_{foc}}\\)",
     "Distance", ""
   )
   rownames(tab) <- item_names()
@@ -546,7 +545,6 @@ note_dp <- reactive({
 })
 
 output$note_dp <- renderUI({
-  withMathJax()
   HTML(
     paste(
       "Notes:",
@@ -687,16 +685,16 @@ mh_table <- reactive({
 
   colnames(tab) <-
     c(
-      "MH (%%mathit{\\chi^2}%%)",
+      "MH (\\(\\mathit{\\chi^2}\\))",
       ifelse(
         res$p.adjust.method == "none",
-        "%%mathit{p}%%-value",
-        "adj. %%mathit{p}%%-value"
+        "\\(\\mathit{p}\\)-value",
+        "adj. \\(\\mathit{p}\\)-value"
       ),
       "",
       "",
-      "%%mathit{\\alpha}_{\\mathrm{MH}}%%",
-      "%%mathit{\\Delta}_{\\mathrm{MH}}%%",
+      "\\(\\mathit{\\alpha}_{\\mathrm{MH}}\\)",
+      "\\(\\mathit{\\Delta}_{\\mathrm{MH}}\\)",
       ""
     )
 
@@ -772,8 +770,7 @@ note_mh <- reactive({
   model <- DIF_MH_model()
   thr <- DIF_MH_model()$thr
 
-  res$p_adj <- paste("P-value correction method:", switch(
-    model$p.adjust.method,
+  res$p_adj <- paste("P-value correction method:", switch(model$p.adjust.method,
     "BH" = "Benjamini-Hochberg",
     "BY" = "Benjamini-Yekutieli",
     "bonferroni" = "Bonferroni",
@@ -791,8 +788,6 @@ note_mh <- reactive({
 })
 
 output$note_mh <- renderUI({
-  withMathJax()
-
   HTML(
     paste(
       "Notes:",
@@ -815,13 +810,15 @@ output$download_mh_table <- downloadHandler(
   },
   content = function(file) {
     data <- mh_table()
-    if ("adj. %%mathit{p}%%-value" %in% colnames(data)) {
-      colnames(data) <- c("MH (chi-square)", "adj. p-value", "Adj. p-value", "MH alpha", "MH delta", "Effect size", "")
+    data <- data[, -4]
+
+    if ("adj. \\(\\mathit{p}\\)-value" %in% colnames(data)) {
+      colnames(data) <- c("MH (X^2)", "adj. p-value", "sig. symb.", "MH alpha", "MH delta", "eff. size")
     } else {
-      colnames(data) <- c("MH (chi-square)", "p-value", "Adj. p-value", "MH alpha", "MH delta", "Effect size", "")
+      colnames(data) <- c("MH (X^2)", "p-value", "sig. symb.", "MH alpha", "MH delta", "eff. size")
     }
 
-    write.csv(data[, -4], file)
+    write.csv(data, file)
     write(paste(
       "Note:",
       note_mh()$p_adj,
@@ -931,7 +928,7 @@ output$DIF_MH_items_interpretation <- renderUI({
       "C" = "large"
     ), "."
   )
-  withMathJax(HTML(paste(
+  HTML(paste(
     sprintf(
       paste("$$\\mathrm{OR} = \\frac{%d \\cdot %d}{%d \\cdot %d} = %.2f$$", txt),
       a, d, b, c, OR
@@ -944,7 +941,7 @@ output$DIF_MH_items_interpretation <- renderUI({
       paste("$$\\Delta_{\\mathrm{MH}} = -2.35 \\cdot \\log(\\alpha_{\\mathrm{MH}}) = %.2f$$", txtDelta),
       deltaMH
     )
-  )))
+  ))
 })
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1032,13 +1029,13 @@ coef_sibtest_dif <- reactive({
 
   colnames(tab) <-
     c(
-      "%%mathit{\\beta}%%",
-      "SE(%%mathit{\\beta}%%)",
-      "%%mathit{\\chi^2}%%",
+      "\\(\\mathit{\\beta}\\)",
+      "SE(\\(\\mathit{\\beta}\\))",
+      "\\(\\mathit{\\chi^2}\\)",
       ifelse(
         res$p.adjust.method == "none",
-        "%%mathit{p}%%-value",
-        "adj. %%mathit{p}%%-value"
+        "\\(\\mathit{p}\\)-value",
+        "adj. \\(\\mathit{p}\\)-value"
       ),
       ""
     )
@@ -1118,8 +1115,7 @@ note_sibtest <- reactive({
   ))
 
   res$p_adj <-
-    paste("P-value correction method:", switch(
-      model$p.adjust.method,
+    paste("P-value correction method:", switch(model$p.adjust.method,
       bonferroni = "Bonferroni",
       holm = "Holm",
       hochberg = "Hochberg",
@@ -1168,15 +1164,15 @@ output$download_sibtest_dif <- downloadHandler(
 
     colnames(data) <-
       c(
-        "Beta",
-        "SE(Beta)",
+        "beta",
+        "SE(beta)",
         "X^2",
         ifelse(
-          "%%mathit{p}%%-value" %in% colnames(data),
+          "\\(\\mathit{p}\\)-value" %in% colnames(data),
           "p-value",
           "adj. p-value"
         ),
-        ""
+        "sig. symb."
       )
 
     rownames(data) <- item_names()
@@ -1427,7 +1423,8 @@ DIF_logistic_model <- reactive({
     class(fit) == "Logistic",
     paste0("This method cannot be used on this data. Error returned: ", fit$message)
   ),
-  errorClass = "validation-error")
+  errorClass = "validation-error"
+  )
 
   fit
 })
@@ -1450,7 +1447,7 @@ DIF_logistic_summary_matching_text <- reactive({
 })
 
 output$DIF_logistic_summary_matching_text <- renderUI({
-  withMathJax(HTML(paste0("<b>\\(", DIF_logistic_summary_matching_text(), "\\)</b>")))
+  HTML(paste0("<b>\\(", DIF_logistic_summary_matching_text(), "\\)</b>"))
 })
 
 # ** Equation ####
@@ -1472,7 +1469,7 @@ DIF_logistic_summary_equation <- reactive({
 })
 
 output$DIF_logistic_summary_equation <- renderUI({
-  withMathJax(HTML(DIF_logistic_summary_equation()))
+  HTML(DIF_logistic_summary_equation())
 })
 
 # ** Warning for missing values ####
@@ -1534,10 +1531,12 @@ DIF_logistic_summary_coef <- reactive({
     list_vcov_irt <- lapply(1:nrow(tab_coef), function(i) {
       nams <- names(which(tab_coef[i, ] != 0))
       vcov_tmp <- matrix(
-        0, nrow = 4, ncol = 4,
+        0,
+        nrow = 4, ncol = 4,
         dimnames = list(
           colnames = names(tab_coef[i, ]),
-          rownames = names(tab_coef[i, ]))
+          rownames = names(tab_coef[i, ])
+        )
       )
       vcov_tmp[nams, nams] <- list_vcov[[i]]
       msm::deltamethod(
@@ -1572,35 +1571,35 @@ DIF_logistic_summary_coef <- reactive({
 
   colnames(tab)[9:16] <- if (input$DIF_logistic_summary_parametrization == "irt") {
     c(
-      "%%mathit{a}%%",
-      "SE(%%mathit{a}%%)",
-      "%%mathit{a_{\\text{DIF}}}%%",
-      "SE(%%mathit{a_{\\text{DIF}}}%%)",
-      "%%mathit{b}%%",
-      "SE(%%mathit{b}%%)",
-      "%%mathit{b_{\\text{DIF}}}%%",
-      "SE(%%mathit{b_{\\text{DIF}}}%%)"
+      "\\(\\mathit{a}\\)",
+      "SE(\\(\\mathit{a}\\))",
+      "\\(\\mathit{a_{\\text{DIF}}}\\)",
+      "SE(\\(\\mathit{a_{\\text{DIF}}}\\))",
+      "\\(\\mathit{b}\\)",
+      "SE(\\(\\mathit{b}\\))",
+      "\\(\\mathit{b_{\\text{DIF}}}\\)",
+      "SE(\\(\\mathit{b_{\\text{DIF}}}\\))"
     )
   } else {
     c(
-      "%%mathit{\\beta_0}%%",
-      "SE(%%mathit{\\beta_0}%%)",
-      "%%mathit{\\beta_1}%%",
-      "SE(%%mathit{\\beta_1}%%)",
-      "%%mathit{\\beta_2}%%",
-      "SE(%%mathit{\\beta_2}%%)",
-      "%%mathit{\\beta_3}%%",
-      "SE(%%mathit{\\beta_3}%%)"
+      "\\(\\mathit{\\beta_0}\\)",
+      "SE(\\(\\mathit{\\beta_0}\\))",
+      "\\(\\mathit{\\beta_1}\\)",
+      "SE(\\(\\mathit{\\beta_1}\\))",
+      "\\(\\mathit{\\beta_2}\\)",
+      "SE(\\(\\mathit{\\beta_2}\\))",
+      "\\(\\mathit{\\beta_3}\\)",
+      "SE(\\(\\mathit{\\beta_3}\\))"
     )
   }
 
   colnames(tab)[1:8] <-
     c(
-      "LR (%%mathit{\\chi^2}%%)",
-      "%%mathit{p}%%-value",
+      "LR (\\(\\mathit{\\chi^2}\\))",
+      "\\(\\mathit{p}\\)-value",
       "",
       "",
-      "%%mathit{R^2}%%",
+      "\\(\\mathit{R^2}\\)",
       "ZT",
       "JG",
       ""
@@ -1609,8 +1608,8 @@ DIF_logistic_summary_coef <- reactive({
   if (fit$p.adjust.method != "none") {
     colnames(tab) <-
       gsub(
-        "%%mathit\\{p\\}%%-value",
-        "adj. %%mathit{p}%%-value",
+        "\\(\\mathit\\{p\\}\\)-value",
+        "adj. \\(\\mathit{p}\\)-value",
         colnames(tab)
       )
   }
@@ -1634,20 +1633,17 @@ DIF_logistic_summary_table_note <- reactive({
   fit <- DIF_logistic_model()
   thr <- DIF_logistic_model()$thr
 
-  res$matching <- paste("Observed score:", switch(
-    fit$match,
+  res$matching <- paste("Observed score:", switch(fit$match,
     "score" = "total score",
     "zscore" = "standardized total score",
     "matching variable" = "uploaded"
   ))
-  res$type <- paste("DIF type tested:", switch(
-    fit$type,
+  res$type <- paste("DIF type tested:", switch(fit$type,
     "both" = "any DIF ",
     "udif" = "uniform DIF ",
     "nudif" = "non-uniform DIF "
   ))
-  res$correction <- paste("P-value correction method:", switch(
-    fit$p.adjust.method,
+  res$correction <- paste("P-value correction method:", switch(fit$p.adjust.method,
     "BH" = "Benjamini-Hochberg",
     "BY" = "Benjamini-Yekutieli",
     "bonferroni" = "Bonferroni",
@@ -1663,7 +1659,6 @@ DIF_logistic_summary_table_note <- reactive({
 })
 
 output$DIF_logistic_summary_table_note <- renderUI({
-  withMathJax()
   note <- DIF_logistic_summary_table_note()
 
   HTML(
@@ -1690,17 +1685,23 @@ output$DIF_logistic_summary_table_download <- downloadHandler(
   },
   content = function(file) {
     table <- DIF_logistic_summary_coef()
+
+    # some dirty patch
+    colnames(table) <- colnames(table) %>%
+      str_remove_all("\\\\\\(\\\\mathit\\{") %>%
+      str_remove_all("\\}\\\\\\)") %>%
+      str_replace("\\{\\\\text\\{DIF\\}\\}", "DIF") %>%
+      str_replace("\\\\chi", "X") %>%
+      str_remove_all("[\\\\]")
+
+    names(table)[3] <- "sig. symb."
+
+    # remove blank cols
+    table[, c(4, 8)] <- NULL
+
     note <- DIF_logistic_summary_table_note()
 
-    colnames(table) <- sub("%%mathit\\{", "", colnames(table))
-    colnames(table) <- sub("\\}%%", "", colnames(table))
-    colnames(table) <- sub("\\\\text\\{", "", colnames(table))
-    colnames(table) <- sub("\\{", "", colnames(table))
-    colnames(table) <- sub("\\}", "", colnames(table))
-    colnames(table) <- sub("\\}", "", colnames(table))
-    colnames(table) <- sub("\\\\", "", colnames(table))
-
-    write.csv(table[, c(1:3, 5:7, 9:16)], file)
+    write.csv(table, file)
     write(paste(
       "Note:",
       note$matching,
@@ -1860,12 +1861,12 @@ output$DB_DIF_logistic_items_plot <- downloadHandler(
 
 # ** Matching variable in text ####
 output$DIF_logistic_items_matching_text <- renderUI({
-  withMathJax(HTML(paste0("<b>\\(", DIF_logistic_summary_matching_text(), "\\)</b>")))
+  HTML(paste0("<b>\\(", DIF_logistic_summary_matching_text(), "\\)</b>"))
 })
 
 # ** Equation ####
 output$DIF_logistic_items_equation <- renderUI({
-  withMathJax(HTML(DIF_logistic_summary_equation()))
+  HTML(DIF_logistic_summary_equation())
 })
 
 # ** Table with coefficients ####
@@ -1879,7 +1880,7 @@ output$DIF_logistic_items_coef <- renderTable(
     tab_se <- unlist(tab[, seq(2, ncol(tab), 2)])
 
     tab <- data.frame(tab_coef, tab_se)
-    # rownames(tab) <- c("%%mathit{b}_0%%", "%%mathit{b}_1%%", "%%mathit{b}_2%%", "%%mathit{b}_3%%")
+    # rownames(tab) <- c("\\(\\mathit{b}_0\\)", "\\(\\mathit{b}_1\\)", "\\(\\mathit{b}_2\\)", "\\(\\mathit{b}_3\\)")
     colnames(tab) <- c("Estimate", "SE")
 
     tab
@@ -2171,7 +2172,8 @@ model_DIF_NLR <- reactive({
     class(fit) == "difNLR",
     paste0("This method cannot be used on this data. Error returned: ", fit$message)
   ),
-  errorClass = "validation-error")
+  errorClass = "validation-error"
+  )
 
   fit
 })
@@ -2274,7 +2276,7 @@ output$DIF_NLR_equation_print <- renderUI({
     "\\mathrm{P}\\left(Y_{pi} = 1 | Z_p, G_p\\right) = "
   )
 
-  txt <- withMathJax(paste0("$$", txt1, txt3, txt2, "$$"))
+  txt <- paste0("$$", txt1, txt3, txt2, "$$")
   txt
 })
 
@@ -2344,8 +2346,8 @@ coef_nlr_dif <- reactive({
   coeffs <- coeffs_se_names()$coeffs
   se <- coeffs_se_names()$se
 
-  colnames(coeffs) <- paste0("%%mathit{", gsub("Dif", "_{Dif}", colnames(coeffs)), "}%%")
-  colnames(se) <- paste0("SE(%%mathit{", gsub("Dif", "_{Dif}", colnames(se)), "}%%)")
+  colnames(coeffs) <- paste0("\\(\\mathit{", gsub("Dif", "_{DIF}", colnames(coeffs)), "}\\)")
+  colnames(se) <- paste0("SE(\\(\\mathit{", gsub("Dif", "_{DIF}", colnames(se)), "}\\))")
 
   # zigzag
   coeffs_se <- cbind(coeffs, se)[, order(c(seq(ncol(coeffs)), seq(ncol(se))))]
@@ -2360,11 +2362,11 @@ coef_nlr_dif <- reactive({
 
   colnames(tab) <-
     c(
-      "LR (%%mathit{\\chi^2}%%)",
+      "LR (\\(\\mathit{\\chi^2}\\))",
       ifelse(
         model$p.adjust.method == "none",
-        "%%mathit{p}%%-value",
-        "adj. %%mathit{p}%%-value"
+        "\\(\\mathit{p}\\)-value",
+        "adj. \\(\\mathit{p}\\)-value"
       ),
       "",
       "",
@@ -2459,10 +2461,14 @@ note_nlr <- reactive({
   }
 
   res$mod <- paste("Model:", switch(unique(model$model),
-    "Rasch" = "Rasch model", "1PL" = "1PL model", "2PL" = "2PL model",
-    "3PL" = "3PL model", "3PLcg" = "3PL model with fixed guessing for groups",
+    "Rasch" = "Rasch model",
+    "1PL" = "1PL model",
+    "2PL" = "2PL model",
+    "3PL" = "3PL model",
+    "3PLcg" = "3PL model with fixed guessing for groups",
     "3PLdg" = "3PL model with fixed inattention parameter for groups",
-    "3PLc" = "3PL model", "3PLd" = "3PL model with inattention parameter",
+    "3PLc" = "3PL model",
+    "3PLd" = "3PL model with inattention parameter",
     "4PLcgdg" = "4PL model with fixed guessing and inattention parameter for groups",
     "4PLcgd" = "4PL model with fixed guessing for groups",
     "4PLd" = "4PL model with fixed guessing for groups",
@@ -2471,8 +2477,7 @@ note_nlr <- reactive({
     "4PL" = "4PL model"
   ))
 
-  res$dmv <- paste("Observed score:", switch(
-    as.character(model$match[1]), # ensures number is recognize as unnamed element
+  res$dmv <- paste("Observed score:", switch(as.character(model$match[1]), # ensures number is recognize as unnamed element
     "score" = "total score",
     "zscore" = "standardized total score",
     "uploaded"
@@ -2484,11 +2489,14 @@ note_nlr <- reactive({
       paste0(input$DIF_NLR_type_print, collapse = ", ")
     )
 
-  res$p_adj <- paste("P-value correction method:", switch(
-    model$p.adjust.method,
-    holm = "Holm", hochberg = "Hochberg", hommel = "Hommel",
-    bonferroni = "Bonferroni", BH = "Benjamini-Hochberg",
-    BY = "Benjamini-Yekutieli", fdr = "FDR",
+  res$p_adj <- paste("P-value correction method:", switch(model$p.adjust.method,
+    holm = "Holm",
+    hochberg = "Hochberg",
+    hommel = "Hommel",
+    bonferroni = "Bonferroni",
+    BH = "Benjamini-Hochberg",
+    BY = "Benjamini-Yekutieli",
+    fdr = "FDR",
     none = "none"
   ))
 
@@ -2499,8 +2507,6 @@ note_nlr <- reactive({
 })
 
 output$note_nlr <- renderUI({
-  withMathJax()
-
   HTML(
     paste(
       "Notes:",
@@ -2523,28 +2529,29 @@ output$download_nlr_dif <- downloadHandler(
   },
   content = function(file) {
     data <- coef_nlr_dif()
+    data <- data[, -4]
 
     coef_names <- colnames(coeffs_se_names()$coeffs)
     se_names <- paste0("SE(", colnames(coeffs_se_names()$se), ")")
 
-    par_names <- c(coef_names, se_names)[order(c(seq(coef_names), seq(se_names)))]
+    par_names <- c(coef_names, se_names)[order(c(seq(coef_names), seq(se_names)))] %>%
+      str_replace("Dif", "_DIF")
 
     colnames(data) <-
       c(
         "LR (X^2)",
         ifelse(
-          "%%mathit{p}%%-value" %in% colnames(data),
+          "\\(\\mathit{p}\\)-value" %in% colnames(data),
           "p-value",
           "adj. p-value"
         ),
-        "",
-        "",
+        "sig. symb.",
         par_names
       )
 
     rownames(data) <- item_names()
 
-    write.csv(data[, -4], file) # w/o blank col
+    write.csv(data, file) # w/o blank col
     write(paste(
       "Note:",
       note_nlr()$dmv,
@@ -2695,7 +2702,7 @@ output$DIF_NLR_equation_plot <- renderUI({
     "\\mathrm{P}\\left(Y_{pi} = 1 | Z_p, G_p\\right) = "
   )
 
-  txt <- withMathJax(paste0("$$", txt1, txt3, txt2, "$$"))
+  txt <- paste0("$$", txt1, txt3, txt2, "$$")
   txt
 })
 
@@ -2709,9 +2716,9 @@ output$tab_coef_DIF_NLR <- renderTable(
     tab_sd <- fit$nlrSE[[item]]
 
     tab <- t(rbind(tab_coef, tab_sd))
-    withMathJax()
 
-    rownames(tab) <- paste0("%%mathit{", gsub("Dif", "_{Dif}", rownames(tab)), "}%%")
+
+    rownames(tab) <- paste0("\\(\\mathit{", gsub("Dif", "_{Dif}", rownames(tab)), "}\\)")
     colnames(tab) <- c("Estimate", "SE")
 
     tab
@@ -2854,7 +2861,8 @@ model_DIF_IRT_Lord <- reactive({
     class(fit) == "Lord",
     paste0("This method cannot be used on this data. Error returned: ", fit$message)
   ),
-  errorClass = "validation-error")
+  errorClass = "validation-error"
+  )
   fit
 })
 
@@ -2863,7 +2871,7 @@ model_DIF_IRT_Lord <- reactive({
 # ** Interpretation for summary ####
 output$DIF_Lord_interpretation_summary <- renderUI({
   type <- input$type_plot_DIF_IRT_lord
-  withMathJax()
+
   txt <- switch(type,
     "1PL" = paste("As the parameters are estimated separately for the two groups, there is one
                              equation for each group. Parameters \\(b_{iR}\\) and \\(b_{iF}\\)
@@ -2878,7 +2886,7 @@ output$DIF_Lord_interpretation_summary <- renderUI({
                              are discrimination and difficulty for the focal group for item \\(i\\).
                              Parameter \\(c_i\\) is a common guessing parameter for item \\(i\\). ")
   )
-  withMathJax(HTML(txt))
+  HTML(txt)
 })
 
 # ** Equation for summary ####
@@ -2909,7 +2917,7 @@ output$DIF_Lord_equation_summary <- renderUI({
                               \\left(\\theta_p - b_{iF} \\right)}}
                               {1 + e^{a_{iF} \\left(\\theta_p - b_{iF} \\right)}}$$")
   )
-  withMathJax(paste(eqR, eqF))
+  paste(eqR, eqF)
 })
 
 # ** Warning for missing values ####
@@ -3005,36 +3013,33 @@ coef_lord_dif <- reactive({
   }
 
 
-  colnames(pars_zigzag) <- switch(
-    res$model,
+  colnames(pars_zigzag) <- switch(res$model,
     "1PL" = c(
-      "%%mathit{b}_{R}%%",
-      "SE(%%mathit{b}_{R}%%)",
-      "%%mathit{b}_{F}%%",
-      "SE(%%mathit{b}_{F}%%)"
+      "\\(\\mathit{b}_{R}\\)",
+      "SE(\\(\\mathit{b}_{R}\\))",
+      "\\(\\mathit{b}_{F}\\)",
+      "SE(\\(\\mathit{b}_{F}\\))"
     ),
-
     "2PL" = c(
-      "%%mathit{a}_{R}%%",
-      "SE(%%mathit{a}_{R}%%)",
-      "%%mathit{b}_{R}%%",
-      "SE(%%mathit{b}_{R}%%)",
-      "%%mathit{a}_{F}%%",
-      "SE(%%mathit{a}_{F}%%)",
-      "%%mathit{b}_{F}%%",
-      "SE(%%mathit{b}_{F}%%)"
+      "\\(\\mathit{a}_{R}\\)",
+      "SE(\\(\\mathit{a}_{R}\\))",
+      "\\(\\mathit{b}_{R}\\)",
+      "SE(\\(\\mathit{b}_{R}\\))",
+      "\\(\\mathit{a}_{F}\\)",
+      "SE(\\(\\mathit{a}_{F}\\))",
+      "\\(\\mathit{b}_{F}\\)",
+      "SE(\\(\\mathit{b}_{F}\\))"
     ),
-
     "3PL" = c(
-      "%%mathit{a}_{R}%%",
-      "SE(%%mathit{a}_{R}%%)",
-      "%%mathit{b}_{R}%%",
-      "SE(%%mathit{b}_{R}%%)",
-      "%%mathit{a}_{F}%%",
-      "SE(%%mathit{a}_{F}%%)",
-      "%%mathit{b}_{F}%%",
-      "SE(%%mathit{b}_{F}%%)",
-      "%%mathit{c}%%"
+      "\\(\\mathit{a}_{R}\\)",
+      "SE(\\(\\mathit{a}_{R}\\))",
+      "\\(\\mathit{b}_{R}\\)",
+      "SE(\\(\\mathit{b}_{R}\\))",
+      "\\(\\mathit{a}_{F}\\)",
+      "SE(\\(\\mathit{a}_{F}\\))",
+      "\\(\\mathit{b}_{F}\\)",
+      "SE(\\(\\mathit{b}_{F}\\))",
+      "\\(\\mathit{c}\\)"
     )
   )
 
@@ -3084,11 +3089,11 @@ coef_lord_dif <- reactive({
   }
   colnames(tab) <- if (res$model != "1PL") {
     c(
-      "Lord's %%mathit{\\chi^2}%%",
+      "Lord's \\(\\mathit{\\chi^2}\\)",
       ifelse(
         res$p.adjust.method == "none",
-        "%%mathit{p}%%-value",
-        "adj. %%mathit{p}%%-value"
+        "\\(\\mathit{p}\\)-value",
+        "adj. \\(\\mathit{p}\\)-value"
       ),
       "",
       "",
@@ -3096,11 +3101,11 @@ coef_lord_dif <- reactive({
     )
   } else {
     c(
-      "Lord's %%mathit{\\chi^2}%%",
+      "Lord's \\(\\mathit{\\chi^2}\\)",
       ifelse(
         res$p.adjust.method == "none",
-        "%%mathit{p}%%-value",
-        "adj. %%mathit{p}%%-value"
+        "\\(\\mathit{p}\\)-value",
+        "adj. \\(\\mathit{p}\\)-value"
       ),
       "",
       "",
@@ -3183,10 +3188,12 @@ note_lord <- reactive({
 
   res$mod <- paste0("Model: ", model$model)
 
-  res$p_adj <- paste("P-value correction method:", switch(
-    model$p.adjust.method,
-    holm = "Holm", hochberg = "Hochberg", hommel = "Hommel",
-    bonferroni = "Bonferroni", BH = "Benjamini-Hochberg",
+  res$p_adj <- paste("P-value correction method:", switch(model$p.adjust.method,
+    holm = "Holm",
+    hochberg = "Hochberg",
+    hommel = "Hommel",
+    bonferroni = "Bonferroni",
+    BH = "Benjamini-Hochberg",
     BY = "Benjamini-Yekutieli",
     none = "none"
   ))
@@ -3225,11 +3232,39 @@ output$download_lord_dif <- downloadHandler(
   },
   content = function(file) {
     data <- coef_lord_dif()
+    data <- if (input$type_print_DIF_IRT_lord == "1PL") {
+      data[, -c(4, 8)]
+    } else {
+      data[, -4]
+    }
 
-    colnames(data) <- c("Lord's X^2", gsub("[%{}]|(mathit)", "", colnames(data)[-1]))
+    # some dirty patch
+    colnames(data) <- colnames(data) %>%
+      str_remove_all("\\\\\\(\\\\mathit\\{") %>%
+      str_remove_all("\\}\\\\\\)") %>%
+      str_replace("\\}_\\{", "_") %>%
+      str_replace("\\\\chi", "X") %>%
+      str_remove_all("[\\\\]")
+
+    names(data)[3] <- "sig. symb."
+
+    if (input$type_print_DIF_IRT_lord == "1PL") {
+      names(data)[6] <- "eff. size"
+    }
+
     rownames(data) <- item_names()
 
-    write.csv(data[, -4], file) # w/o blank col
+    write.csv(data, file)
+
+
+    txt_effect <- ifelse(input$type_print_DIF_IRT_lord == "1PL",
+      c(
+        "Effect size codes: 'A': negligible effect; 'B': moderate effect; 'C': large effect",
+        "Effect size codes: 0 'A' 1.0 'B' 1.5 'C' (for absolute values of 'deltaLord')"
+      ),
+      ""
+    )
+
     write(paste(
       "Notes:",
       note_lord()$mod,
@@ -3237,8 +3272,7 @@ output$download_lord_dif <- downloadHandler(
       note_lord()$puri,
       note_lord()$thr,
       "Signif. codes: 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1",
-      "Effect size codes: 'A': negligible effect; 'B': moderate effect; 'C': large effect",
-      "Effect size codes: 0 'A' 1.0 'B' 1.5 'C' (for absolute values of 'deltaLord')",
+      txt_effect,
       sep = "\n"
     ), file, append = T)
   }
@@ -3346,9 +3380,9 @@ tab_coef_DIF_IRT_Lord <- reactive({
 
   tab <- data.frame(tab_coef, tab_sd)
   rownames(tab) <- switch(input$type_plot_DIF_IRT_lord,
-    "1PL" = c("%%mathit{b}_{R}%%", "%%mathit{b}_{F}%%"),
-    "2PL" = c("%%mathit{a}_{R}%%", "%%mathit{a}_{F}%%", "%%mathit{b}_{R}%%", "%%mathit{b}_{F}%%"),
-    "3PL" = c("%%mathit{a}_{R}%%", "%%mathit{a}_{F}%%", "%%mathit{b}_{R}%%", "%%mathit{b}_{F}%%", "%%mathit{c}%%")
+    "1PL" = c("\\(\\mathit{b}_{R}\\)", "\\(\\mathit{b}_{F}\\)"),
+    "2PL" = c("\\(\\mathit{a}_{R}\\)", "\\(\\mathit{a}_{F}\\)", "\\(\\mathit{b}_{R}\\)", "\\(\\mathit{b}_{F}\\)"),
+    "3PL" = c("\\(\\mathit{a}_{R}\\)", "\\(\\mathit{a}_{F}\\)", "\\(\\mathit{b}_{R}\\)", "\\(\\mathit{b}_{F}\\)", "\\(\\mathit{c}\\)")
   )
   colnames(tab) <- c("Estimate", "SE")
 
@@ -3358,7 +3392,7 @@ tab_coef_DIF_IRT_Lord <- reactive({
 # ** Interpretation ####
 output$irtint_lord <- renderUI({
   type <- input$type_plot_DIF_IRT_lord
-  withMathJax()
+
   txt <- switch(type,
     "1PL" = paste("As the parameters are estimated separately for the two groups, there is one
                              equation for each group. Parameters \\(b_{iR}\\) and \\(b_{iF}\\)
@@ -3373,7 +3407,7 @@ output$irtint_lord <- renderUI({
                              are discrimination and difficulty for the focal group for item \\(i\\).
                              Parameter \\(c_i\\) is a common guessing parameter for item \\(i\\). ")
   )
-  withMathJax(HTML(txt))
+  HTML(txt)
 })
 
 # ** Equation ####
@@ -3404,7 +3438,7 @@ output$irteq_lord <- renderUI({
                               \\left(\\theta_p - b_{iF} \\right)}}
                               {1 + e^{a_{iF} \\left(\\theta_p - b_{iF} \\right)}}$$")
   )
-  withMathJax(paste(eqR, eqF))
+  paste(eqR, eqF)
 })
 
 # ** Table with coefficients output ####
@@ -3551,7 +3585,8 @@ model_DIF_IRT_Raju <- reactive({
     class(fit) == "Raj",
     paste0("This method cannot be used on this data. Error returned: ", fit$message)
   ),
-  errorClass = "validation-error")
+  errorClass = "validation-error"
+  )
   fit
 })
 
@@ -3560,7 +3595,7 @@ model_DIF_IRT_Raju <- reactive({
 # ** Interpretation for summary ####
 output$DIF_Raju_interpretation_summary <- renderUI({
   type <- input$type_plot_DIF_IRT_raju
-  withMathJax()
+
   txt <- switch(type,
     "1PL" = paste("As the parameters are estimated separately for the two groups, there is one
                              equation for each group. Parameters \\(b_{iR}\\) and \\(b_{iF}\\)
@@ -3575,7 +3610,7 @@ output$DIF_Raju_interpretation_summary <- renderUI({
                              are discrimination and difficulty for the focal group for item \\(i\\).
                              Parameter \\(c_i\\) is a common guessing parameter for item \\(i\\). ")
   )
-  withMathJax(HTML(txt))
+  HTML(txt)
 })
 
 # ** Equation for summary ####
@@ -3605,7 +3640,7 @@ output$DIF_Raju_equation_summary <- renderUI({
                               \\left(\\theta_p - b_{iF} \\right)}}
                               {1 + e^{a_{iF} \\left(\\theta_p - b_{iF} \\right)}}$$")
   )
-  withMathJax(paste(eqR, eqF))
+  paste(eqR, eqF)
 })
 
 # ** Warning for missing values ####
@@ -3702,36 +3737,33 @@ coef_raju_dif <- reactive({
   }
 
 
-  colnames(pars_zigzag) <- switch(
-    model$model,
+  colnames(pars_zigzag) <- switch(model$model,
     "1PL" = c(
-      "%%mathit{b}_{R}%%",
-      "SE(%%mathit{b}_{R}%%)",
-      "%%mathit{b}_{F}%%",
-      "SE(%%mathit{b}_{F}%%)"
+      "\\(\\mathit{b}_{R}\\)",
+      "SE(\\(\\mathit{b}_{R}\\))",
+      "\\(\\mathit{b}_{F}\\)",
+      "SE(\\(\\mathit{b}_{F}\\))"
     ),
-
     "2PL" = c(
-      "%%mathit{a}_{R}%%",
-      "SE(%%mathit{a}_{R}%%)",
-      "%%mathit{b}_{R}%%",
-      "SE(%%mathit{b}_{R}%%)",
-      "%%mathit{a}_{F}%%",
-      "SE(%%mathit{a}_{F}%%)",
-      "%%mathit{b}_{F}%%",
-      "SE(%%mathit{b}_{F}%%)"
+      "\\(\\mathit{a}_{R}\\)",
+      "SE(\\(\\mathit{a}_{R}\\))",
+      "\\(\\mathit{b}_{R}\\)",
+      "SE(\\(\\mathit{b}_{R}\\))",
+      "\\(\\mathit{a}_{F}\\)",
+      "SE(\\(\\mathit{a}_{F}\\))",
+      "\\(\\mathit{b}_{F}\\)",
+      "SE(\\(\\mathit{b}_{F}\\))"
     ),
-
     "3PL" = c(
-      "%%mathit{a}_{R}%%",
-      "SE(%%mathit{a}_{R}%%)",
-      "%%mathit{b}_{R}%%",
-      "SE(%%mathit{b}_{R}%%)",
-      "%%mathit{a}_{F}%%",
-      "SE(%%mathit{a}_{F}%%)",
-      "%%mathit{b}_{F}%%",
-      "SE(%%mathit{b}_{F}%%)",
-      "%%mathit{c}%%"
+      "\\(\\mathit{a}_{R}\\)",
+      "SE(\\(\\mathit{a}_{R}\\))",
+      "\\(\\mathit{b}_{R}\\)",
+      "SE(\\(\\mathit{b}_{R}\\))",
+      "\\(\\mathit{a}_{F}\\)",
+      "SE(\\(\\mathit{a}_{F}\\))",
+      "\\(\\mathit{b}_{F}\\)",
+      "SE(\\(\\mathit{b}_{F}\\))",
+      "\\(\\mathit{c}\\)"
     )
   )
 
@@ -3782,8 +3814,8 @@ coef_raju_dif <- reactive({
       "Raju's Z",
       ifelse(
         model$p.adjust.method == "none",
-        "%%mathit{p}%%-value",
-        "adj. %%mathit{p}%%-value"
+        "\\(\\mathit{p}\\)-value",
+        "adj. \\(\\mathit{p}\\)-value"
       ),
       "",
       "",
@@ -3794,8 +3826,8 @@ coef_raju_dif <- reactive({
       "Raju's Z",
       ifelse(
         model$p.adjust.method == "none",
-        "%%mathit{p}%%-value",
-        "adj. %%mathit{p}%%-value"
+        "\\(\\mathit{p}\\)-value",
+        "adj. \\(\\mathit{p}\\)-value"
       ),
       "",
       "",
@@ -3877,10 +3909,12 @@ note_raju <- reactive({
   res <- NULL
 
   res$mod <- paste0("Model: ", model$model)
-  res$p_adj <- paste("P-value correction method:", switch(
-    model$p.adjust.method,
-    holm = "Holm", hochberg = "Hochberg", hommel = "Hommel",
-    bonferroni = "Bonferroni", BH = "Benjamini-Hochberg",
+  res$p_adj <- paste("P-value correction method:", switch(model$p.adjust.method,
+    holm = "Holm",
+    hochberg = "Hochberg",
+    hommel = "Hommel",
+    bonferroni = "Bonferroni",
+    BH = "Benjamini-Hochberg",
     BY = "Benjamini-Yekutieli",
     none = "none"
   ))
@@ -3925,11 +3959,38 @@ output$download_raju_dif <- downloadHandler(
   },
   content = function(file) {
     data <- coef_raju_dif()
+    data <- if (input$type_print_DIF_IRT_raju == "1PL") {
+      data[, -c(4, 8)]
+    } else {
+      data[, -4]
+    }
 
-    colnames(data) <- gsub("[%{}]|(mathit)", "", colnames(data))
+    # some dirty patch
+    colnames(data) <- colnames(data) %>%
+      str_remove_all("\\\\\\(\\\\mathit\\{") %>%
+      str_remove_all("\\}\\\\\\)") %>%
+      str_replace("\\}_\\{", "_") %>%
+      str_replace("\\\\chi", "X") %>%
+      str_remove_all("[\\\\]")
+
+    names(data)[3] <- "sig. symb."
+
+    if (input$type_print_DIF_IRT_raju == "1PL") {
+      names(data)[6] <- "eff. size"
+    }
+
     rownames(data) <- item_names()
 
-    write.csv(data[, -4], file) # w/o blank col
+    write.csv(data, file)
+
+    txt_effect <- ifelse(input$type_print_DIF_IRT_raju == "1PL",
+      c(
+        "Effect size codes: 'A': negligible effect; 'B': moderate effect; 'C': large effect",
+        "Effect size codes: 0 'A' 1.0 'B' 1.5 'C' (for absolute values of 'deltaRaju')"
+      ),
+      ""
+    )
+
     write(paste(
       "Notes:",
       note_raju()$mod,
@@ -3938,8 +3999,7 @@ output$download_raju_dif <- downloadHandler(
       note_raju()$thr,
       note_raju()$signed,
       "Signif. codes: 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1",
-      "Effect size codes: 'A': negligible effect; 'B': moderate effect; 'C': large effect",
-      "Effect size codes: 0 'A' 1.0 'B' 1.5 'C' (for absolute values of 'deltaRaju')",
+      txt_effect,
       sep = "\n"
     ), file, append = T)
   }
@@ -4014,7 +4074,7 @@ output$DP_plot_DIF_IRT_Raju <- downloadHandler(
 # ** Interpretation ####
 output$irtint_raju <- renderUI({
   type <- input$type_plot_DIF_IRT_raju
-  withMathJax()
+
   txt <- switch(type,
     "1PL" = paste("As the parameters are estimated separately for the two groups, there is one
                              equation for each group. Parameters \\(b_{iR}\\) and \\(b_{iF}\\)
@@ -4029,7 +4089,7 @@ output$irtint_raju <- renderUI({
                              are discrimination and difficulty for the focal group for item \\(i\\).
                              Parameter \\(c_i\\) is a common guessing parameter for item \\(i\\). ")
   )
-  withMathJax(HTML(txt))
+  HTML(txt)
 })
 
 # ** Equation ####
@@ -4059,7 +4119,7 @@ output$irteq_raju <- renderUI({
                               \\left(\\theta_p - b_{iF} \\right)}}
                               {1 + e^{a_{iF} \\left(\\theta_p - b_{iF} \\right)}}$$")
   )
-  withMathJax(paste(eqR, eqF))
+  paste(eqR, eqF)
 })
 
 # ** Table with coefficients ####
@@ -4103,9 +4163,9 @@ tab_coef_DIF_IRT_Raju <- reactive({
 
   tab <- data.frame(tab_coef, tab_sd)
   rownames(tab) <- switch(input$type_plot_DIF_IRT_raju,
-    "1PL" = c("%%mathit{b}_{R}%%", "%%mathit{b}_{F}%%"),
-    "2PL" = c("%%mathit{a}_{R}%%", "%%mathit{a}_{F}%%", "%%mathit{b}_{R}%%", "%%mathit{b}_{F}%%"),
-    "3PL" = c("%%mathit{a}_{R}%%", "%%mathit{a}_{F}%%", "%%mathit{b}_{R}%%", "%%mathit{b}_{F}%%", "%%mathit{c}%%")
+    "1PL" = c("\\(\\mathit{b}_{R}\\)", "\\(\\mathit{b}_{F}\\)"),
+    "2PL" = c("\\(\\mathit{a}_{R}\\)", "\\(\\mathit{a}_{F}\\)", "\\(\\mathit{b}_{R}\\)", "\\(\\mathit{b}_{F}\\)"),
+    "3PL" = c("\\(\\mathit{a}_{R}\\)", "\\(\\mathit{a}_{F}\\)", "\\(\\mathit{b}_{R}\\)", "\\(\\mathit{b}_{F}\\)", "\\(\\mathit{c}\\)")
   )
   colnames(tab) <- c("Estimate", "SE")
 
@@ -4636,7 +4696,7 @@ DIF_cumulative_summary_equation_cumulative <- reactive({
 })
 
 output$DIF_cumulative_summary_equation_cumulative <- renderUI({
-  withMathJax(HTML(DIF_cumulative_summary_equation_cumulative()))
+  HTML(DIF_cumulative_summary_equation_cumulative())
 })
 
 # ** Equation - category probability ####
@@ -4649,7 +4709,7 @@ DIF_cumulative_summary_equation_category <- reactive({
 })
 
 output$DIF_cumulative_summary_equation_category <- renderUI({
-  withMathJax(HTML(DIF_cumulative_summary_equation_category()))
+  HTML(DIF_cumulative_summary_equation_category())
 })
 
 # ** Warning for missing values ####
@@ -4669,12 +4729,75 @@ output$DIF_cumulative_summary_dif_items <- renderPrint({
   HTML(txt)
 })
 
+
+# faster coefs for cum and adj --------------------------------------------
+
+get_tidy_coefs <- function(fit) {
+  par <- vctrs::vec_rbind(!!!fit$ordPAR)
+  se <- vctrs::vec_rbind(!!!fit$ordSE) %>%
+    rename_with(~ paste0(.x, "_se"))
+  res <- cbind(par, se)[, order(c(seq(ncol(par)), seq(ncol(se))))]
+
+  res[is.na(res)] <- 0
+
+  attr(res, "parametrization") <- fit$parametrization
+  res
+}
+
+
+# coef tab names for cum & adj --------------------------------------------
+
+style_coef_names <- function(coef_tab, katex = TRUE) {
+  # names ending with ".1" are duplicates, meaning they are SE
+  nms <- names(coef_tab) %>% str_replace("\\.1$", "_se")
+  se <- str_detect(nms, "_se")
+  idx <- str_extract(nms, "\\d+") # get one or more digits
+
+  if (attr(coef_tab, "parametrization", exact = TRUE) == "irt") {
+    # parse names
+    par <- str_extract(nms, "^.") # first characters
+    dif <- str_detect(nms, "DIF")
+
+    nms <- if (katex) {
+      inner <- case_when(
+        !is.na(idx) & dif ~ paste0(par, "_{", idx, "_{\\mathrm{DIF}}", "}"),
+        is.na(idx) & dif ~ paste0(par, "_{\\mathrm{DIF}}"),
+        !is.na(idx) ~ paste0(par, "_{", idx, "}"),
+        TRUE ~ par
+      )
+      paste0("\\(\\mathit{", inner, "}\\)")
+    } else {
+      paste0(par, ifelse(!is.na(idx), paste0("_", idx), ""), ifelse(dif, "_DIF", ""))
+    }
+  } else {
+    nms <- if (katex) {
+      paste0(
+        "\\(\\mathit{",
+        c(
+          paste0("\\beta_{0", idx[!is.na(idx)], "}"),
+          rep(c("\\beta_1", "\\beta_2", "\\beta_3"), each = 2)
+        ),
+        "}\\)"
+      )
+    } else {
+      c(paste0("beta_0", idx[!is.na(idx)]), rep(c("beta_1", "beta_2", "beta_3"), each = 2))
+    }
+  }
+
+  nms[se] <- paste0("SE(", nms[se], ")")
+
+  names(coef_tab) <- nms
+
+  coef_tab
+}
+
+
 # ** DIF statistic and parameter table ####
-DIF_cumulative_summary_coef <- reactive({
+DIF_cumulative_summary_stats <- reactive({
   fit <- DIF_cumulative_model()
 
-  # only one p-value, based on model specifications
-  pval <- if (fit$p.adjust.method == "none") {
+
+  pval <- if (fit$p.adjust.method != "none") {
     fit$pval
   } else {
     fit$adj.pval
@@ -4685,71 +4808,44 @@ DIF_cumulative_summary_coef <- reactive({
     symbols = c("***", "**", "*", ".", "")
   )
 
-  blank <- character(ncol(fit$Data))
 
-  # estimated coefficients for all items with standard errors
-  coefs <- coef(fit, SE = TRUE, simplify = TRUE)
-
-  # adding missing columns if necessary / ordering columns
-  if (input$DIF_cumulative_summary_parametrization == "classic") {
-    new_cols <- c(group = 0, "x:group" = 0)
-    coefs <- coefs %>% add_column(!!!new_cols[setdiff(names(new_cols), names(coefs))])
-  } else {
-    coefs <- cbind(coefs[, grepl("a", colnames(coefs))],
-                   coefs[, !grepl("a", colnames(coefs))])
-  }
-  estims <- coefs[c(TRUE, FALSE), ]
-  ses <- coefs[c(FALSE, TRUE), ]
-
-  pars_zigzag <-
-    cbind(estims, ses)[, order(c(seq(ncol(estims)), seq(ncol(ses))))]
-
-  # renaming item parameters based on parametrization
-  pars_digits_only <- stringr::str_extract(colnames(estims), "\\d")
-  if (input$DIF_cumulative_summary_parametrization == "irt") {
-    txt <- stringr::str_replace(colnames(pars_zigzag), "\\.1", "")
-    txt[grepl("DIF", txt)] <- paste0(gsub("DIF", "", txt[grepl("DIF", txt)]), "\\text{DIF}")
-    txt <- stringr::str_replace(txt, "(?=\\d)", "}_{")
-    txt[txt == "a\\text{DIF}"] <- "a}_{\\text{DIF}"
-    txt <- stringr::str_replace(txt, ".*(?=b|a)", "%%mathit{")
-    colnames(pars_zigzag) <- paste0(c("", "SE("), txt, c("}%%", "}%%)"))
-  } else {
-    txt <- c(
-      paste0("%%mathit{\\beta}_{0", pars_digits_only[!is.na(pars_digits_only)], "}"),
-      "%%mathit{\\beta}_1", "%%mathit{\\beta}_2", "%%mathit{\\beta}_3"
-    )
-    colnames(pars_zigzag) <- paste0(c("", "SE("), rep(txt, each = 2), c("%%", ")%%"))
-  }
-
-  # table
-  tab <-
-    data.frame(
-      check.names = FALSE, # in R 4.x.x, this changes parentheses
-      fit$Sval, # to dots (to ensure "syntactical validity")
-      pval,
-      pval_symb,
-      blank,
-      pars_zigzag
-    )
-
-  colnames(tab)[1:4] <- c(
-    "LR (%%mathit{\\chi^2}%%)",
-    ifelse(
-      fit$p.adjust.method == "none",
-      "%%mathit{p}%%-value",
-      "adj. %%mathit{p}%%-value"
-    ),
-    "",
-    ""
+  out <- data.frame(
+    `LR(X^2)` = fit$Sval,
+    pval,
+    `sig. symb.` = pval_symb,
+    check.names = FALSE
   )
 
-  rownames(tab) <- item_names()
-  tab
+  names(out)[names(out) == "pval"] <- if (fit$p.adjust.method != "none") "adj. p-value" else "p-value"
+
+  out
+})
+
+DIF_cumulative_summary_params <- reactive({
+  get_tidy_coefs(DIF_cumulative_model())
 })
 
 output$DIF_cumulative_summary_coef <- renderTable(
   {
-    DIF_cumulative_summary_coef()
+    stats <- DIF_cumulative_summary_stats()
+    params <- DIF_cumulative_summary_params()
+
+
+    colnames(stats) <- c(
+      "LR (\\(\\mathit{\\chi^2}\\))",
+      ifelse(
+        "p-value" %in% names(stats),
+        "\\(\\mathit{p}\\)-value",
+        "adj. \\(\\mathit{p}\\)-value"
+      ), ""
+    )
+
+    params <- style_coef_names(params)
+
+    out <- data.frame(stats, "", params, check.names = FALSE, fix.empty.names = FALSE)
+
+    rownames(out) <- item_names()
+    out
   },
   rownames = TRUE,
   colnames = TRUE
@@ -4770,14 +4866,12 @@ DIF_cumulative_summary_table_note <- reactive({
       "standardized uploaded"
     }
   )
-  res$type <- paste("DIF type tested:", switch(
-    fit$type,
+  res$type <- paste("DIF type tested:", switch(fit$type,
     "both" = "any DIF ",
     "udif" = "uniform DIF ",
     "nudif" = "non-uniform DIF "
   ))
-  res$correction <- paste("P-value correction method:", switch(
-    fit$p.adjust.method,
+  res$correction <- paste("P-value correction method:", switch(fit$p.adjust.method,
     "BH" = "Benjamini-Hochberg",
     "BY" = "Benjamini-Yekutieli",
     "bonferroni" = "Bonferroni",
@@ -4786,13 +4880,11 @@ DIF_cumulative_summary_table_note <- reactive({
     "hommel" = "Hommel",
     "none" = "none"
   ))
-  res$purification <- paste("Item purification:", ifelse(fit$purification, "used", "unutilized"))
 
   res
 })
 
 output$DIF_cumulative_summary_table_note <- renderUI({
-  withMathJax()
   note <- DIF_cumulative_summary_table_note()
 
   HTML(
@@ -4814,13 +4906,16 @@ output$DIF_cumulative_summary_table_download <- downloadHandler(
     "DIF_cumulative_table.csv"
   },
   content = function(file) {
-    table <- DIF_cumulative_summary_coef()
+    stats <- DIF_cumulative_summary_stats()
+    params <- DIF_cumulative_summary_params()
+
+    params <- style_coef_names(params, katex = FALSE)
+
+    tab <- data.frame(item = item_names(), stats, params, check.names = FALSE, fix.empty.names = FALSE)
+
     note <- DIF_cumulative_summary_table_note()
 
-    # remove all math-format characters -->> plaintext
-    colnames(table) <- stringr::str_remove_all(colnames(table), "mathit|[%{}]|\\\\")
-
-    write.csv(table[, -4], file)
+    write.csv(tab, file)
     write(paste(
       "Note:",
       note$matching,
@@ -5013,12 +5108,12 @@ output$DIF_cumulative_items_plot_category_download <- downloadHandler(
 
 # ** Equation - cumulative probability ####
 output$DIF_cumulative_items_equation_cumulative <- renderUI({
-  withMathJax(HTML(DIF_cumulative_summary_equation_cumulative()))
+  HTML(DIF_cumulative_summary_equation_cumulative())
 })
 
 # ** Equation - category probability ####
 output$DIF_cumulative_items_equation_category <- renderUI({
-  withMathJax(HTML(DIF_cumulative_summary_equation_category()))
+  HTML(DIF_cumulative_summary_equation_category())
 })
 
 # ** Table of coefficients ####
@@ -5284,7 +5379,7 @@ DIF_adjacent_summary_equation <- reactive({
 })
 
 output$DIF_adjacent_summary_equation <- renderUI({
-  withMathJax(HTML(DIF_adjacent_summary_equation()))
+  HTML(DIF_adjacent_summary_equation())
 })
 
 # ** Warning for missing values ####
@@ -5304,12 +5399,13 @@ output$DIF_adjacent_summary_dif_items <- renderPrint({
   HTML(txt)
 })
 
+
 # ** DIF statistic and parameter table ####
-DIF_adjacent_summary_coef <- reactive({
+DIF_adjacent_summary_stats <- reactive({
   fit <- DIF_adjacent_model()
 
-  # only one p-value, based on model specifications
-  pval <- if (fit$p.adjust.method == "none") {
+
+  pval <- if (fit$p.adjust.method != "none") {
     fit$pval
   } else {
     fit$adj.pval
@@ -5320,71 +5416,56 @@ DIF_adjacent_summary_coef <- reactive({
     symbols = c("***", "**", "*", ".", "")
   )
 
-  blank <- character(ncol(fit$Data))
+
+  out <- data.frame(
+    `LR(X^2)` = fit$Sval,
+    pval,
+    `sig. symb.` = pval_symb,
+    check.names = FALSE
+  )
+
+  names(out)[names(out) == "pval"] <- if (fit$p.adjust.method != "none") "adj. p-value" else "p-value"
+
+  out
+})
+
+DIF_adjacent_summary_params <- reactive({
+  fit <- DIF_adjacent_model()
 
   # estimated coefficients for all items with standard errors
   coefs <- coef(fit, SE = TRUE, simplify = TRUE)
 
-  # adding missing columns if necessary / ordering columns
-  if (input$DIF_adjacent_summary_parametrization == "classic") {
-    new_cols <- c(group = 0, "x:group" = 0)
-    coefs <- coefs %>% add_column(!!!new_cols[setdiff(names(new_cols), names(coefs))])
-  } else {
-    coefs <- cbind(coefs[, grepl("a", colnames(coefs))],
-                   coefs[, !grepl("a", colnames(coefs))])
-  }
   estims <- coefs[c(TRUE, FALSE), ]
   ses <- coefs[c(FALSE, TRUE), ]
 
-  pars_zigzag <-
-    cbind(estims, ses)[, order(c(seq(ncol(estims)), seq(ncol(ses))))]
+  out <- cbind(estims, ses)[, order(c(seq(ncol(estims)), seq(ncol(ses))))]
 
-  # renaming item parameters based on parametrization
-  pars_digits_only <- stringr::str_extract(colnames(estims), "\\d")
-  if (input$DIF_adjacent_summary_parametrization == "irt") {
-    txt <- stringr::str_replace(colnames(pars_zigzag), "\\.1", "")
-    txt[grepl("DIF", txt)] <- paste0(gsub("DIF", "", txt[grepl("DIF", txt)]), "\\text{DIF}")
-    txt <- stringr::str_replace(txt, "(?=\\d)", "}_{")
-    txt[txt == "a\\text{DIF}"] <- "a}_{\\text{DIF}"
-    txt <- stringr::str_replace(txt, ".*(?=b|a)", "%%mathit{")
-    colnames(pars_zigzag) <- paste0(c("", "SE("), txt, c("}%%", "}%%)"))
-  } else {
-    txt <- c(
-      paste0("%%mathit{\\beta}_{0", pars_digits_only[!is.na(pars_digits_only)], "}"),
-      "%%mathit{\\beta}_1", "%%mathit{\\beta}_2", "%%mathit{\\beta}_3"
-    )
-    colnames(pars_zigzag) <- paste0(c("", "SE("), rep(txt, each = 2), c("%%", ")%%"))
-  }
+  attr(out, "parametrization") <- fit$parametrization
 
-  # table
-  tab <-
-    data.frame(
-      check.names = FALSE,
-      fit$Sval,
-      pval,
-      pval_symb,
-      blank,
-      pars_zigzag
-    )
-
-  colnames(tab)[1:4] <- c(
-    "LR (%%mathit{\\chi^2}%%)",
-    ifelse(
-      fit$p.adjust.method == "none",
-      "%%mathit{p}%%-value",
-      "adj. %%mathit{p}%%-value"
-    ),
-    "",
-    ""
-  )
-
-  rownames(tab) <- item_names()
-  tab
+  out
 })
 
 output$DIF_adjacent_summary_coef <- renderTable(
   {
-    DIF_adjacent_summary_coef()
+    stats <- DIF_adjacent_summary_stats()
+    params <- DIF_adjacent_summary_params()
+
+
+    colnames(stats) <- c(
+      "LR (\\(\\mathit{\\chi^2}\\))",
+      ifelse(
+        "p-value" %in% names(stats),
+        "\\(\\mathit{p}\\)-value",
+        "adj. \\(\\mathit{p}\\)-value"
+      ), ""
+    )
+
+    params <- style_coef_names(params)
+
+    out <- data.frame(stats, "", params, check.names = FALSE, fix.empty.names = FALSE)
+
+    rownames(out) <- item_names()
+    out
   },
   rownames = TRUE,
   colnames = TRUE
@@ -5405,14 +5486,12 @@ DIF_adjacent_summary_table_note <- reactive({
       "standardized uploaded"
     }
   )
-  res$type <- paste("DIF type tested:", switch(
-    fit$type,
+  res$type <- paste("DIF type tested:", switch(fit$type,
     "both" = "any DIF ",
     "udif" = "uniform DIF ",
     "nudif" = "non-uniform DIF "
   ))
-  res$correction <- paste("P-value correction method:", switch(
-    fit$p.adjust.method,
+  res$correction <- paste("P-value correction method:", switch(fit$p.adjust.method,
     "BH" = "Benjamini-Hochberg",
     "BY" = "Benjamini-Yekutieli",
     "bonferroni" = "Bonferroni",
@@ -5427,7 +5506,6 @@ DIF_adjacent_summary_table_note <- reactive({
 })
 
 output$DIF_adjacent_summary_table_note <- renderUI({
-  withMathJax()
   note <- DIF_adjacent_summary_table_note()
 
   HTML(
@@ -5449,13 +5527,17 @@ output$DIF_adjacent_summary_table_download <- downloadHandler(
     "DIF_adjacent_table.csv"
   },
   content = function(file) {
-    table <- DIF_adjacent_summary_coef()
+    stats <- DIF_adjacent_summary_stats()
+    params <- DIF_adjacent_summary_params()
+
+    params <- style_coef_names(params, katex = FALSE)
+
+    tab <- data.frame(item = item_names(), stats, params, check.names = FALSE, fix.empty.names = FALSE)
+
     note <- DIF_adjacent_summary_table_note()
 
-    # remove all math-format characters -->> plaintext
-    colnames(table) <- stringr::str_remove_all(colnames(table), "mathit|[%{}]|\\\\")
+    write.csv(tab, file)
 
-    write.csv(table[-4], file)
     write(paste(
       "Note:",
       note$matching,
@@ -5589,7 +5671,7 @@ output$DIF_adjacent_items_plot_download <- downloadHandler(
 
 # ** Equation ####
 output$DIF_adjacent_items_equation <- renderUI({
-  withMathJax(HTML(DIF_adjacent_summary_equation()))
+  HTML(DIF_adjacent_summary_equation())
 })
 
 # ** Table of coefficients ####
@@ -5840,7 +5922,8 @@ DIF_multinomial_model <- reactive({
     class(fit) == "ddfMLR",
     paste0("This method cannot be used on this data. Error returned: ", fit$message)
   ),
-  errorClass = "validation-error")
+  errorClass = "validation-error"
+  )
 
   fit
 })
@@ -5866,7 +5949,7 @@ DIF_multinomial_summary_equation_correct <- reactive({
 })
 
 output$DIF_multinomial_summary_equation_correct <- renderUI({
-  withMathJax(HTML(DIF_multinomial_summary_equation_correct()))
+  HTML(DIF_multinomial_summary_equation_correct())
 })
 
 
@@ -5896,7 +5979,7 @@ DIF_multinomial_summary_equation_distractor <- reactive({
 })
 
 output$DIF_multinomial_summary_equation_distractor <- renderUI({
-  withMathJax(HTML(DIF_multinomial_summary_equation_distractor()))
+  HTML(DIF_multinomial_summary_equation_distractor())
 })
 
 # ** Warning for missing values ####
@@ -5943,16 +6026,17 @@ DIF_multinomial_summary_coef <- reactive({
     )
 
   colnames(tab_stat) <- c(
-    "LR (%%mathit{\\chi^2}%%)",
+    "LR (\\(\\mathit{\\chi^2}\\))",
     ifelse(
       fit$p.adjust.method == "none",
-      "%%mathit{p}%%-value",
-      "adj. %%mathit{p}%%-value"
+      "\\(\\mathit{p}\\)-value",
+      "adj. \\(\\mathit{p}\\)-value"
     ),
     ""
   )
 
   rownames(tab_stat) <- item_names()
+  attr(tab_stat, "pval_adj") <- isTRUE(fit$p.adjust.method != "none")
   tab_stat
 })
 
@@ -5979,14 +6063,12 @@ DIF_multinomial_summary_table_note <- reactive({
       "standardized uploaded"
     }
   )
-  res$type <- paste("DDF type tested:", switch(
-    fit$type,
+  res$type <- paste("DDF type tested:", switch(fit$type,
     "both" = "any DDF ",
     "udif" = "uniform DDF ",
     "nudif" = "non-uniform DDF "
   ))
-  res$correction <- paste("P-value correction method:", switch(
-    fit$p.adjust.method,
+  res$correction <- paste("P-value correction method:", switch(fit$p.adjust.method,
     "BH" = "Benjamini-Hochberg",
     "BY" = "Benjamini-Yekutieli",
     "bonferroni" = "Bonferroni",
@@ -6001,7 +6083,6 @@ DIF_multinomial_summary_table_note <- reactive({
 })
 
 output$DIF_multinomial_summary_table_note <- renderUI({
-  withMathJax()
   note <- DIF_multinomial_summary_table_note()
 
   HTML(
@@ -6024,6 +6105,17 @@ output$DIF_multinomial_summary_table_download <- downloadHandler(
   },
   content = function(file) {
     table <- DIF_multinomial_summary_coef()
+
+    colnames(table) <- c(
+      "LR (X^2})",
+      ifelse(
+        attr(table, "pval_adj"),
+        "adj. p-value",
+        "p-value"
+      ),
+      "sig. symb."
+    )
+
     note <- DIF_multinomial_summary_table_note()
 
     write.csv(table, file)
@@ -6043,37 +6135,42 @@ output$DIF_multinomial_summary_table_download <- downloadHandler(
 DIF_multinomial_summary_coef_parameters <- reactive({
   fit <- DIF_multinomial_model()
 
+
   # estimated coefficients for all items with standard errors
   coefs <- coef(fit, SE = TRUE, simplify = TRUE)
 
   # adding missing columns if necessary / ordering columns
-  if (input$DIF_multinomial_summary_parametrization == "classic") {
+  if (fit$parametrization == "classic") {
     new_cols <- c(group = 0, "x:group" = 0)
     coefs <- coefs %>% add_column(!!!new_cols[setdiff(names(new_cols), names(coefs))])
   } else {
-    coefs <- cbind(coefs[, grepl("a", colnames(coefs))],
-                   coefs[, !grepl("a", colnames(coefs))])
+    coefs <- cbind(
+      coefs[, grepl("a", colnames(coefs))],
+      coefs[, !grepl("a", colnames(coefs))]
+    )
   }
   estims <- coefs[c(TRUE, FALSE), ]
   ses <- coefs[c(FALSE, TRUE), ]
 
-  pars_zigzag <-
+  pars <-
     cbind(estims, ses)[, order(c(seq(ncol(estims)), seq(ncol(ses))))]
 
-  # renaming item parameters based on parametrization
-  pars_digits_only <- stringr::str_extract(colnames(estims), "\\d")
-  if (input$DIF_multinomial_summary_parametrization == "irt") {
-    txt <- stringr::str_replace(colnames(pars_zigzag), "\\.1", "")
-    txt[grepl("DIF", txt)] <- paste0(gsub("DIF", "", txt[grepl("DIF", txt)]), "_\\text{DIF}")
-    txt <- stringr::str_replace(txt, ".*(?=b|a)", "%%mathit{")
-    colnames(pars_zigzag) <- paste0(c("", "SE("), txt, c("}%%", "}%%)"))
+  if (fit$parametrization == "irt") {
+    names(pars) <- paste0(
+      c("", "SE("),
+      paste0("\\(\\mathit{", rep(c("a", "a_{\\mathrm{DIF}}", "b", "b_{\\mathrm{DIF}}"), each = 2), "}\\)"),
+      c("", ")")
+    )
   } else {
-    txt <- c("%%mathit{\\beta}_0", "%%mathit{\\beta}_1", "%%mathit{\\beta}_2", "%%mathit{\\beta}_3")
-    colnames(pars_zigzag) <- paste0(c("", "SE("), rep(txt, each = 2), c("%%", ")%%"))
+    names(pars) <- paste0(
+      c("", "SE("),
+      paste0("\\(\\mathit{", rep(c("\\beta_0", "\\beta_1", "\\beta_2", "\\beta_3"), each = 2), "}\\)"),
+      c("", ")")
+    )
   }
 
-  rownames(pars_zigzag) <- gsub(" estimate", "", rownames(pars_zigzag))
-  pars_zigzag
+  rownames(pars) <- gsub(" estimate", "", rownames(pars))
+  pars
 })
 
 output$DIF_multinomial_summary_coef_parameters <- renderTable(
@@ -6091,6 +6188,14 @@ output$DIF_multinomial_summary_parameters_download <- downloadHandler(
   },
   content = function(file) {
     table <- DIF_multinomial_summary_coef_parameters()
+
+    # remove math
+    names(table) <- names(table) %>%
+      str_remove_all("\\\\\\(\\\\mathit\\{") %>%
+      str_remove_all("\\\\mathrm\\{") %>%
+      str_remove_all("\\\\\\)") %>%
+      str_remove_all("[\\\\{}}]")
+
     note <- DIF_multinomial_summary_table_note()
 
     write.csv(table, file)
@@ -6291,19 +6396,20 @@ output$DIF_multinomial_items_equation <- renderUI({
   }
   txt4 <- "Z_p, G_p"
 
-  withMathJax()
+
   cor_option <- key[item]
-  withMathJax(HTML(paste(sprintf(
+  HTML(paste(sprintf(
     paste("For item %s, corresponding equations for the multinomial model are given by:
       $$\\mathrm{P}(Y_{pi} = %s|", txt4, ") = \\frac{1}{\\sum_{l} e^{", txt3, "}}, $$,
       $$\\mathrm{P}(Y_{pi} = k|", txt4, ") = \\frac{e^{", txt2, "}}{\\sum_{l} e^{", txt3, "}}, $$
       where \\(%s\\) is the correct answer and \\(k\\) is one of the wrong options (distractors). "),
     item, cor_option, cor_option
-  ))))
+  )))
 })
 
 # ** Table of coefficients ####
-output$DIF_multinomial_items_coef <- renderTable({
+output$DIF_multinomial_items_coef <- renderTable(
+  {
     fit <- DIF_multinomial_model()
     item <- input$DIF_multinomial_items
 
@@ -6357,7 +6463,8 @@ DIF_multinomial_model_report <- reactive({
       class(fit) == "ddfMLR",
       paste0("This method cannot be used on this data. Error returned: ", fit$message)
     ),
-    errorClass = "validation-error")
+    errorClass = "validation-error"
+    )
   }
 
   fit
@@ -6411,23 +6518,23 @@ output$DIF_training_interpretation <- renderUI({
   txt1 <- paste0(
     "In the <font color='blue'><b>reference</b></font> group, a respondent with
     the ability ",
-    withMathJax(paste0("\\(\\theta= ", theta0, "\\)")),
+    paste0("\\(\\theta= ", theta0, "\\)"),
     " has the probability of the correct answer to an item with parameters ",
-    withMathJax(paste0("\\(a = ", aR, "\\),")), " ",
-    withMathJax(paste0("\\(b = ", bR, "\\),")), " ",
-    withMathJax(paste0("\\(c = ", cR, "\\),")), " and ",
-    withMathJax(paste0("\\(d = ", dR, "\\)")),
+    paste0("\\(a = ", aR, "\\),"), " ",
+    paste0("\\(b = ", bR, "\\),"), " ",
+    paste0("\\(c = ", cR, "\\),"), " and ",
+    paste0("\\(d = ", dR, "\\)"),
     " equal to <b>", sprintf("%.2f", probR), "</b>. "
   )
   txt2 <- paste0(
     "In the <font color='#e6b800'><b>focal</b></font> group, a respondent with
     the ability ",
-    withMathJax(paste0("\\(\\theta= ", theta0, "\\)")),
+    paste0("\\(\\theta= ", theta0, "\\)"),
     "has the probability of the correct answer  to an item with parameters ",
-    withMathJax(paste0("\\(a = ", aF, "\\),")), " ",
-    withMathJax(paste0("\\(b = ", bF, "\\),")), " ",
-    withMathJax(paste0("\\(c = ", cF, "\\),")), " and ",
-    withMathJax(paste0("\\(d = ", dF, "\\)")),
+    paste0("\\(a = ", aF, "\\),"), " ",
+    paste0("\\(b = ", bF, "\\),"), " ",
+    paste0("\\(c = ", cF, "\\),"), " and ",
+    paste0("\\(d = ", dF, "\\)"),
     " equal to <b>", sprintf("%.2f", probF), "</b>. "
   )
 

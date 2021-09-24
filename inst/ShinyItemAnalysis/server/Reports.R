@@ -223,13 +223,13 @@ report_IRT_binary_coef <- reactive({
     if (IRTpars) {
       colnames(tab)[1:8] <- paste0(
         c("", "SE("),
-        paste0("%%mathit{", rep(c("a", "b", "c", "d"), each = 2), "}%%"),
+        paste0("\\(\\mathit{", rep(c("a", "b", "c", "d"), each = 2), "}\\)"),
         c("", ")")
       )
     } else {
       colnames(tab)[1:8] <- paste0(
         c("", "SE("),
-        paste0("%%mathit{", rep(c("\\beta_{1}", "\\beta_{0}", "c", "d"), each = 2), "}%%"),
+        paste0("\\(\\mathit{", rep(c("\\beta_{1}", "\\beta_{0}", "c", "d"), each = 2), "}\\)"),
         c("", ")")
       )
       tab <- tab[, c(3:4, 1:2, 5:8, 9:11)]

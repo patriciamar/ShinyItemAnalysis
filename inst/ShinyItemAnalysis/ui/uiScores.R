@@ -44,7 +44,7 @@ uiSummary <-
     tabPanel("Standard scores",
       value = "stan_scores",
       h3("Standard scores"),
-      withMathJax(p(
+      p(
         strong("Total score"), "is calculated as the ", uiOutput("standardscores_tooltip_total", inline = TRUE), br(),
         strong("Percentile"), "indicates the value below which a percentage of observations falls, e.g., an individual
                         score at the 80th percentile means that the individual score is the same or higher than the
@@ -55,7 +55,7 @@ uiSummary <-
         "with a mean of 0 and and a standard deviation of 1. ", br(),
         "The ", strong("T-score"), "is ", uiOutput("standardscores_tooltip_tscore", inline = TRUE), " with a mean of 50 and standard
                         deviation of 10. "
-      )),
+      ),
       br(),
       h4("Table by score"),
       tableOutput("standardscores_table"),

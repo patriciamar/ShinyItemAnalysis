@@ -275,7 +275,7 @@ IRT_binary_summary_icc_equation <- reactive({
 })
 
 output$IRT_binary_summary_icc_equation <- renderUI({
-  withMathJax(IRT_binary_summary_icc_equation())
+  IRT_binary_summary_icc_equation()
 })
 
 # ** IIC equation ####
@@ -304,7 +304,7 @@ IRT_binary_summary_iic_equation <- reactive({
 })
 
 output$IRT_binary_summary_iic_equation <- renderUI({
-  withMathJax(IRT_binary_summary_iic_equation())
+  IRT_binary_summary_iic_equation()
 })
 
 # ** Equation interpretation ####
@@ -373,7 +373,7 @@ IRT_binary_summary_equation_interpretation <- reactive({
 })
 
 output$IRT_binary_summary_equation_interpretation <- renderUI({
-  withMathJax(IRT_binary_summary_equation_interpretation())
+  IRT_binary_summary_equation_interpretation()
 })
 
 # ** Check whether model converged ####
@@ -590,13 +590,13 @@ IRT_binary_summary_coef <- reactive({
   if (IRTpars) {
     colnames(tab)[1:8] <- paste0(
       c("", "SE("),
-      paste0("%%mathit{", rep(c("a", "b", "c", "d"), each = 2), "}%%"),
+      paste0("\\(\\mathit{", rep(c("a", "b", "c", "d"), each = 2), "}\\)"),
       c("", ")")
     )
   } else {
     colnames(tab)[1:8] <- paste0(
       c("", "SE("),
-      paste0("%%mathit{", rep(c("\\beta_{1}", "\\beta_{0}", "c", "d"), each = 2), "}%%"),
+      paste0("\\(\\mathit{", rep(c("\\beta_{1}", "\\beta_{0}", "c", "d"), each = 2), "}\\)"),
       c("", ")")
     )
     tab <- tab[, c(3:4, 1:2, 5:8, 9:11)]
@@ -620,7 +620,24 @@ output$IRT_binary_summary_coef_download <- downloadHandler(
     "tab_IRT_binary_parameters.csv"
   },
   content = function(file) {
-    write.csv(IRT_binary_summary_coef(), file)
+
+    tab <- IRT_binary_summary_coef()
+
+    if (input$IRT_binary_summary_parametrization == "irt") {
+      colnames(tab)[1:8] <- paste0(
+        c("", "SE("),
+        rep(c("a", "b", "c", "d"), each = 2),
+        c("", ")")
+      )
+    } else {
+      colnames(tab)[1:8] <- paste0(
+        c("", "SE("),
+        rep(c("beta_1", "beta_0", "c", "d"), each = 2),
+        c("", ")")
+      )
+    }
+
+    write.csv(tab, file)
   }
 )
 
@@ -784,17 +801,17 @@ output$IRT_binary_items_model_description <- renderText({
 
 # ** ICC equation ####
 output$IRT_binary_items_icc_equation <- renderUI({
-  withMathJax(IRT_binary_summary_icc_equation())
+  IRT_binary_summary_icc_equation()
 })
 
 # ** IIC equation ####
 output$IRT_binary_items_iic_equation <- renderUI({
-  withMathJax(IRT_binary_summary_iic_equation())
+  IRT_binary_summary_iic_equation()
 })
 
 # ** Equation interpretation ####
 output$IRT_binary_items_equation_interpretation <- renderUI({
-  withMathJax(IRT_binary_summary_equation_interpretation())
+  IRT_binary_summary_equation_interpretation()
 })
 
 # ** Check whether model converged ####
@@ -1173,7 +1190,7 @@ IRT_bock_summary_icc_equation <- reactive({
 })
 
 output$IRT_bock_summary_icc_equation <- renderUI({
-  withMathJax(IRT_bock_summary_icc_equation())
+  IRT_bock_summary_icc_equation()
 })
 
 # ** Plot of ICC ####
@@ -1421,15 +1438,15 @@ IRT_bock_summary_coef <- reactive({
   if (IRTpars) {
     colnames(tab)[1:(max_par * 4)] <- paste0(
       c("", "SE("),
-      paste0("%%mathit{", rep(paste0(rep(c("a", "c"), each = max_par), "_", 1:max_par), each = 2), "}%%"),
+      paste0("\\(\\mathit{", rep(paste0(rep(c("a", "c"), each = max_par), "_", 1:max_par), each = 2), "}\\)"),
       c("", ")")
     )
   } else {
     # removing not-estimated parameter a1
     colnames(tab)[1:(max_par * 4)] <- paste0(
       c("", "SE("),
-      paste0("%%mathit{", rep(paste0(rep(c("\\beta_{0", "\\beta_{1"), each = max_par),
-                                     levels_original, "}"), each = 2), "}%%"),
+      paste0("\\(\\mathit{", rep(paste0(rep(c("\\beta_{0", "\\beta_{1"), each = max_par),
+                                     levels_original, "}"), each = 2), "}\\)"),
       c("", ")")
     )
   }
@@ -1444,6 +1461,25 @@ output$IRT_bock_summary_coef <- renderTable(
   },
   include.rownames = TRUE,
   include.colnames = TRUE
+)
+
+
+# ** Download of coef tab ####
+output$IRT_bock_summary_coef_download <- downloadHandler(
+  filename = function() {
+    "IRT_bock_coefs.csv"
+  },
+  content = function(file) {
+    tab <- IRT_bock_summary_coef()
+
+    # remove math
+    names(tab) <- names(tab) %>%
+      str_remove_all("\\\\\\(\\\\mathit\\{\\\\") %>%
+      str_remove_all("\\\\\\)") %>%
+      str_remove_all("[{}}]")
+
+    write.csv(tab, file)
+  }
 )
 
 # ** Ability estimates ####
@@ -1543,7 +1579,7 @@ output$IRT_bock_summary_ability_plot_download <- downloadHandler(
 
 # ** ICC equation ####
 output$IRT_bock_items_icc_equation <- renderUI({
-  withMathJax(IRT_bock_summary_icc_equation())
+  IRT_bock_summary_icc_equation()
 })
 
 
@@ -1706,33 +1742,33 @@ output$ccIRT_interpretation <- renderUI({
 
   txt1 <- paste0(
     "The probability of the correct answer with the latent ability ",
-    withMathJax(paste0("\\(\\theta= ", theta0, "\\)")),
+    paste0("\\(\\theta= ", theta0, "\\)"),
     " in the <font color='red'>red</font> item with parameters ",
-    withMathJax(paste0("\\(a = ", a1, "\\)")), ", ",
-    withMathJax(paste0("\\(b = ", b1, "\\)")), ", ",
-    withMathJax(paste0("\\(c = ", c1, "\\)")), ", and ",
-    withMathJax(paste0("\\(d = ", d1, "\\)")),
+    paste0("\\(a = ", a1, "\\)"), ", ",
+    paste0("\\(b = ", b1, "\\)"), ", ",
+    paste0("\\(c = ", c1, "\\)"), ", and ",
+    paste0("\\(d = ", d1, "\\)"),
     " is equal to <b>", sprintf("%.2f", ICC1), "</b>. "
   )
   txt2 <- paste0(
     "The probability of the correct answer with the latent ability ",
-    withMathJax(paste0("\\(\\theta= ", theta0, "\\)")),
+    paste0("\\(\\theta= ", theta0, "\\)"),
     " in the <font color='blue'>blue</font> item with parameters ",
-    withMathJax(paste0("\\(a = ", a2, "\\)")), ", ",
-    withMathJax(paste0("\\(b = ", b2, "\\)")), ", ",
-    withMathJax(paste0("\\(c = ", c2, "\\)")), ", and ",
-    withMathJax(paste0("\\(d = ", d2, "\\)")),
+    paste0("\\(a = ", a2, "\\)"), ", ",
+    paste0("\\(b = ", b2, "\\)"), ", ",
+    paste0("\\(c = ", c2, "\\)"), ", and ",
+    paste0("\\(d = ", d2, "\\)"),
     " is equal to <b>", sprintf("%.2f", ICC2), "</b>. "
   )
   txt3 <- paste0(
     "The information for the latent ability ",
-    withMathJax(paste0("\\(\\theta= ", theta0, "\\)")),
+    paste0("\\(\\theta= ", theta0, "\\)"),
     " in the <font color='red'>red</font> item ",
     " is equal to <b>", sprintf("%.2f", IIC1), "</b>. "
   )
   txt4 <- paste0(
     "The information for the latent ability ",
-    withMathJax(paste0("\\(\\theta= ", theta0, "\\)")),
+    paste0("\\(\\theta= ", theta0, "\\)"),
     " in the <font color='blue'>blue</font> item ",
     " is equal to <b>", sprintf("%.2f", IIC2), "</b>. "
   )
@@ -2445,7 +2481,7 @@ output$irt_training_grm_sliders <- renderUI({
       class = "js-irs-red",
       style = "display: inline-block; vertical-align: middle; width: 18%;",
       sliderInput("irt_training_grm_b1",
-        label = withMathJax("$b_1$ - difficulty"),
+        label = "\\(b_1\\) - difficulty",
         value = -1.5, min = -4, max = 4, step = 0.1
       )
     ),
@@ -2454,7 +2490,7 @@ output$irt_training_grm_sliders <- renderUI({
       class = "js-irs-yellow",
       style = "display: inline-block; vertical-align: middle; width: 18%;",
       sliderInput("irt_training_grm_b2",
-        label = withMathJax("$b_2$ - difficulty"),
+        label = "\\(b_2\\) - difficulty",
         value = -1, min = -4, max = 4, step = 0.1
       )
     ),
@@ -2463,7 +2499,7 @@ output$irt_training_grm_sliders <- renderUI({
       class = "js-irs-green",
       style = "display: inline-block; vertical-align: middle; width: 18%;",
       sliderInput("irt_training_grm_b3",
-        label = withMathJax("$b_3$ - difficulty"),
+        label = "\\(b_3\\) - difficulty",
         value = -0.5, min = -4, max = 4, step = 0.1
       )
     ),
@@ -2472,7 +2508,7 @@ output$irt_training_grm_sliders <- renderUI({
       class = "js-irs-blue",
       style = "display: inline-block; vertical-align: middle; width: 18%;",
       sliderInput("irt_training_grm_b4",
-        label = withMathJax("$b_4$ - difficulty"),
+        label = "\\(b_4\\) - difficulty",
         value = 0, min = -4, max = 4, step = 0.1
       )
     ),
@@ -2481,7 +2517,7 @@ output$irt_training_grm_sliders <- renderUI({
       class = "js-irs-purple",
       style = "display: inline-block; vertical-align: middle; width: 18%;",
       sliderInput("irt_training_grm_b5",
-        label = withMathJax("$b_5$ - difficulty"),
+        label = "\\(b_5\\) - difficulty",
         value = 0.5, min = -4, max = 4, step = 0.1
       )
     ),
@@ -2490,7 +2526,7 @@ output$irt_training_grm_sliders <- renderUI({
       class = "js-irs-orange",
       style = "display: inline-block; vertical-align: middle; width: 18%;",
       sliderInput("irt_training_grm_b6",
-        label = withMathJax("$b_6$ - difficulty"),
+        label = "\\(b_6\\) - difficulty",
         value = 1, min = -4, max = 4, step = 0.1
       )
     ),
@@ -3109,7 +3145,7 @@ output$irt_training_gpcm_sliders <- renderUI({
       class = "js-irs-red",
       style = "display: inline-block; vertical-align: middle; width: 18%;",
       sliderInput("irt_training_gpcm_d1",
-        label = withMathJax("$b_1$ - threshold"),
+        label = "\\(b_1\\) - threshold",
         value = -1.5, min = -4, max = 4, step = 0.1
       )
     ),
@@ -3118,7 +3154,7 @@ output$irt_training_gpcm_sliders <- renderUI({
       class = "js-irs-yellow",
       style = "display: inline-block; vertical-align: middle; width: 18%;",
       sliderInput("irt_training_gpcm_d2",
-        label = withMathJax("$b_2$ - threshold"),
+        label = "\\(b_2\\) - threshold",
         value = -1, min = -4, max = 4, step = 0.1
       )
     ),
@@ -3127,7 +3163,7 @@ output$irt_training_gpcm_sliders <- renderUI({
       class = "js-irs-green",
       style = "display: inline-block; vertical-align: middle; width: 18%;",
       sliderInput("irt_training_gpcm_d3",
-        label = withMathJax("$b_3$ - threshold"),
+        label = "\\(b_3\\) - threshold",
         value = -0.5, min = -4, max = 4, step = 0.1
       )
     ),
@@ -3136,7 +3172,7 @@ output$irt_training_gpcm_sliders <- renderUI({
       class = "js-irs-blue",
       style = "display: inline-block; vertical-align: middle; width: 18%;",
       sliderInput("irt_training_gpcm_d4",
-        label = withMathJax("$b_4$ - threshold"),
+        label = "\\(b_4\\) - threshold",
         value = 0, min = -4, max = 4, step = 0.1
       )
     ),
@@ -3145,7 +3181,7 @@ output$irt_training_gpcm_sliders <- renderUI({
       class = "js-irs-purple",
       style = "display: inline-block; vertical-align: middle; width: 18%;",
       sliderInput("irt_training_gpcm_d5",
-        label = withMathJax("$b_5$ - threshold"),
+        label = "\\(b_5\\) - threshold",
         value = 0.5, min = -4, max = 4, step = 0.1
       )
     ),
@@ -3154,7 +3190,7 @@ output$irt_training_gpcm_sliders <- renderUI({
       class = "js-irs-orange",
       style = "display: inline-block; vertical-align: middle; width: 18%;",
       sliderInput("irt_training_gpcm_d6",
-        label = withMathJax("$b_6$ - threshold"),
+        label = "\\(b_6\\) - threshold",
         value = 1, min = -4, max = 4, step = 0.1
       )
     ),
@@ -3492,7 +3528,7 @@ output$irt_training_nrm_sliders <- renderUI({
       class = "js-irs-red",
       style = "display: inline-block; vertical-align: middle; width: 18%;",
       sliderInput("irt_training_nrm_a1",
-        label = withMathJax("$a_1$ - discrimination"),
+        label = "\\(a_1\\) - discrimination",
         value = 2.5, min = 0, max = 4, step = 0.1
       )
     ),
@@ -3501,7 +3537,7 @@ output$irt_training_nrm_sliders <- renderUI({
       class = "js-irs-red",
       style = "display: inline-block; vertical-align: middle; width: 18%;",
       sliderInput("irt_training_nrm_d1",
-        label = withMathJax("$b_1$ - threshold"),
+        label = "\\(b_1\\) - threshold",
         value = -1.5, min = -4, max = 4, step = 0.1
       )
     ),
@@ -3510,7 +3546,7 @@ output$irt_training_nrm_sliders <- renderUI({
       class = "js-irs-yellow",
       style = "display: inline-block; vertical-align: middle; width: 18%;",
       sliderInput("irt_training_nrm_a2",
-        label = withMathJax("$a_2$ - discrimination"),
+        label = "\\(a_2\\) - discrimination",
         value = 2, min = 0, max = 4, step = 0.1
       )
     ),
@@ -3519,7 +3555,7 @@ output$irt_training_nrm_sliders <- renderUI({
       class = "js-irs-yellow",
       style = "display: inline-block; vertical-align: middle; width: 18%;",
       sliderInput("irt_training_nrm_d2",
-        label = withMathJax("$b_2$ - threshold"),
+        label = "\\(b_2\\) - threshold",
         value = -1, min = -4, max = 4, step = 0.1
       )
     ),
@@ -3528,7 +3564,7 @@ output$irt_training_nrm_sliders <- renderUI({
       class = "js-irs-green",
       style = "display: inline-block; vertical-align: middle; width: 18%;",
       sliderInput("irt_training_nrm_a3",
-        label = withMathJax("$a_3$ - discrimination"),
+        label = "\\(a_3\\) - discrimination",
         value = 1, min = 0, max = 4, step = 0.1
       )
     ),
@@ -3537,7 +3573,7 @@ output$irt_training_nrm_sliders <- renderUI({
       class = "js-irs-green",
       style = "display: inline-block; vertical-align: middle; width: 18%;",
       sliderInput("irt_training_nrm_d3",
-        label = withMathJax("$b_3$ - threshold"),
+        label = "\\(b_3\\) - threshold",
         value = -0.5, min = -4, max = 4, step = 0.1
       )
     ),
@@ -3546,7 +3582,7 @@ output$irt_training_nrm_sliders <- renderUI({
       class = "js-irs-blue",
       style = "display: inline-block; vertical-align: middle; width: 18%;",
       sliderInput("irt_training_nrm_a4",
-        label = withMathJax("$a_4$ - discrimination"),
+        label = "\\(a_4\\) - discrimination",
         value = 1.5, min = 0, max = 4, step = 0.1
       )
     ),
@@ -3555,7 +3591,7 @@ output$irt_training_nrm_sliders <- renderUI({
       class = "js-irs-blue",
       style = "display: inline-block; vertical-align: middle; width: 18%;",
       sliderInput("irt_training_nrm_d4",
-        label = withMathJax("$b_4$ - threshold"),
+        label = "\\(b_4\\) - threshold",
         value = 0, min = -4, max = 4, step = 0.1
       )
     ),
@@ -3564,7 +3600,7 @@ output$irt_training_nrm_sliders <- renderUI({
       class = "js-irs-purple",
       style = "display: inline-block; vertical-align: middle; width: 18%;",
       sliderInput("irt_training_nrm_a5",
-        label = withMathJax("$a_5$ - discrimination"),
+        label = "\\(a_5\\) - discrimination",
         value = 0.5, min = 0, max = 4, step = 0.1
       )
     ),
@@ -3573,7 +3609,7 @@ output$irt_training_nrm_sliders <- renderUI({
       class = "js-irs-purple",
       style = "display: inline-block; vertical-align: middle; width: 18%;",
       sliderInput("irt_training_nrm_d5",
-        label = withMathJax("$b_5$ - threshold"),
+        label = "\\(b_5\\) - threshold",
         value = 0.5, min = -4, max = 4, step = 0.1
       )
     ),
@@ -3582,7 +3618,7 @@ output$irt_training_nrm_sliders <- renderUI({
       class = "js-irs-orange",
       style = "display: inline-block; vertical-align: middle; width: 18%;",
       sliderInput("irt_training_nrm_a6",
-        label = withMathJax("$a_6$ - discrimination"),
+        label = "\\(a_6\\) - discrimination",
         value = 1.3, min = 0, max = 4, step = 0.1
       )
     ),
@@ -3591,7 +3627,7 @@ output$irt_training_nrm_sliders <- renderUI({
       class = "js-irs-orange",
       style = "display: inline-block; vertical-align: middle; width: 18%;",
       sliderInput("irt_training_nrm_d6",
-        label = withMathJax("$b_6$ - threshold"),
+        label = "\\(b_6\\) - threshold",
         value = 1, min = -4, max = 4, step = 0.1
       )
     ),

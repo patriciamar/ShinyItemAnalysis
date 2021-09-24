@@ -479,14 +479,13 @@ output$validity_factor_varex <- renderTable(
 
 output$validity_factor_efa_fit <- renderUI({
   r <- validity_factor_fa()
-  withMathJax(
     HTML(paste0(
-      "$\\chi^2$(", r$dof, ") = ", round(r$chi, 2), "; <em>p</em> = ", round(r$PVAL, 3), "<br><br>",
+      "\\(\\chi^2\\)(", r$dof, ") = ", round(r$chi, 2), "; <em>p</em> = ", round(r$PVAL, 3), "<br><br>",
       "RMSEA = ", round(r$RMSEA[1], 3),
       ", 90% CI [", round(r$RMSEA[2], 3), ", ", round(r$RMSEA[3], 3), "]<br><br>",
       "TLI = ", round(r$TLI, 3), "; BIC = ", round(r$BIC, 3)
     ))
-  )
+
 })
 
 validity_factor_fscores <- reactive({

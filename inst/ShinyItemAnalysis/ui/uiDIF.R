@@ -586,7 +586,7 @@ uiDIF <-
             ),
             column(
               1,
-              withMathJax(),
+              
               checkboxGroupInput(
                 inputId = "DIF_NLR_type_plot",
                 label = "Type",

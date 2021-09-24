@@ -22,7 +22,7 @@ ui_DIF_logistic <- tabPanel(
       fluidRow(
         column(
           3,
-          withMathJax(),
+          
           radioButtons(
             inputId = "DIF_logistic_summary_type",
             label = "Type",

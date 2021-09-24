@@ -46,12 +46,30 @@ ui <- tagList(
       type = "text/css",
       href = "margins_and_paddings.css"
     ),
+
+    # math typesetting
     tags$link(
       rel = "stylesheet",
-      href = "https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.css",
-      integrity = "sha384-9tPv11A+glH/on/wEu99NVwDPwkMQESOocs/ZGXPoIiLE8MU/qkqUcZ3zzL+6DuH",
+      href = "https://cdn.jsdelivr.net/npm/katex@0.13.13/dist/katex.min.css",
+      integrity = "sha384-RZU/ijkSsFbcmivfdRBQDtwuwVqK7GMOw6IMvKyeWL2K5UAlyp6WonmB8m7Jd0Hn",
       crossorigin = "anonymous"
     ),
+    tags$script(
+      defer = "defer",
+      src = "https://cdn.jsdelivr.net/npm/katex@0.13.13/dist/katex.min.js",
+      integrity = "sha384-pK1WpvzWVBQiP0/GjnvRxV4mOb0oxFuyRxJlk6vVw146n3egcN5C925NCP7a7BY8",
+      crossorigin = "anonymous"
+    ),
+    tags$script(
+      defer = "defer",
+      src = "https://cdn.jsdelivr.net/npm/katex@0.13.13/dist/contrib/auto-render.min.js",
+      integrity = "sha384-vZTG03m+2yp6N6BNi5iM4rW4oIwk5DfcNdFfxkk9ZWpDriOkXX8voJBFrAO7MpVl",
+      crossorigin = "anonymous",
+      onload = "renderMathInElement(document.body);"
+    ),
+
+    # custom math typesetting for dynamic content
+    includeScript("www/katex_dynamic.js"),
     tags$link(
       rel = "stylesheet",
       type = "text/css",
@@ -85,15 +103,6 @@ ui <- tagList(
       src = "collapsible_menu_click.js"
     ),
     tags$script(
-      src = "https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.js",
-      integrity = "sha384-U8Vrjwb8fuHMt6ewaCy8uqeUXv4oitYACKdB0VziCerzt011iQ/0TqlSlv8MReCm",
-      crossorigin = "anonymous"
-    ),
-    tags$script(
-      type = "text/javascript",
-      src = "math_in_tables.js"
-    ),
-    tags$script(
       type = "text/javascript",
       src = "toppage.js"
     ),
@@ -113,13 +122,8 @@ ui <- tagList(
     img(src = "busy_indicator.gif", height = 100, width = 100)
   ),
 
-
-  withMathJax(),
-
   shinyjs::useShinyjs(),
-
   tags$head(includeScript("google-analytics.js")),
-
   navbarPage(
     title = HTML('<div style="margin-top: -10px;">
                     <div class="header-title"><img src="sia_logo_trans.svg"> ShinyItemAnalysis</div>
@@ -134,7 +138,7 @@ ui <- tagList(
            <div class = "panel-footer", style = "opacity: 1.00; z-index: 1000;">
               <p style = "margin:8px 0 0 0;">
                 <div class = "footer-title"> <img src = "sia_logo.svg" style="width: 57px; margin-right: 10px;"> ShinyItemAnalysis </div>
-                <div class = "footer-subtitle"> Test and item analysis via Shiny | Version 1.3.8 </div>
+                <div class = "footer-subtitle"> Test and item analysis via Shiny | Version 1.4.0 </div>
                 <span style = "float:right">
                   <a href = "http://shinyitemanalysis.org/" id = "tooltipweb" target="_blank"> <img src = "footer_web_icon.png", class = "footer-icons"> </a>
                   <a href = "https://github.com/patriciamar/ShinyItemAnalysis/" id = "tooltipgithub" target="_blank"> <img src = "footer_github_icon.png", class = "footer-icons"> </a>
@@ -154,7 +158,6 @@ ui <- tagList(
       textOutput("counter", inline = T),
       HTML("</div></div>")
     ),
-
     theme = "bootstrap.css",
 
     # %%%%%%%%%%%%%%%%%%%%%

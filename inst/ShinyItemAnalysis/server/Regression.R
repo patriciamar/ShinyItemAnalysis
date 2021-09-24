@@ -101,8 +101,8 @@ output$regression_logistic_coef <- renderTable(
     tab <- summary(regression_logistic_model())$coef[1:2, 1:2]
     colnames(tab) <- c("Estimate", "SE")
     rownames(tab) <- c(
-      paste0("%%mathit{\\beta}_{", item, "0}%%"),
-      paste0("%%mathit{\\beta}_{", item, "1}%%")
+      paste0("\\(\\mathit{\\beta}_{", item, "0}\\)"),
+      paste0("\\(\\mathit{\\beta}_{", item, "1}\\)")
     )
     tab
   },
@@ -230,8 +230,8 @@ output$regression_logistic_Z_coef <- renderTable(
     tab <- summary(regression_logistic_Z_model())$coef[1:2, 1:2]
     colnames(tab) <- c("Estimate", "SE")
     rownames(tab) <- c(
-      paste0("%%mathit{\\beta}_{", item, "0}%%"),
-      paste0("%%mathit{\\beta}_{", item, "1}%%")
+      paste0("\\(\\mathit{\\beta}_{", item, "0}\\)"),
+      paste0("\\(\\mathit{\\beta}_{", item, "1}\\)")
     )
     tab
   },
@@ -373,8 +373,8 @@ output$regression_logistic_IRT_coef <- renderTable(
     tab <- cbind(tab_coef, tab_se)
     colnames(tab) <- c("Estimate", "SE")
     rownames(tab) <- c(
-      paste0("%%mathit{a}_{", item, "}%%"),
-      paste0("%%mathit{b}_{", item, "}%%")
+      paste0("\\(\\mathit{a}_{", item, "}\\)"),
+      paste0("\\(\\mathit{b}_{", item, "}\\)")
     )
     tab
   },
@@ -534,9 +534,9 @@ output$regression_3pl_coef <- renderTable(
     tab <- summary(fit)$parameters[, 1:2]
     colnames(tab) <- c("Estimate", "SE")
     rownames(tab) <- c(
-      paste0("%%mathit{a}_{", item, "}%%"),
-      paste0("%%mathit{b}_{", item, "}%%"),
-      paste0("%%mathit{c}_{", item, "}%%")
+      paste0("\\(\\mathit{a}_{", item, "}\\)"),
+      paste0("\\(\\mathit{b}_{", item, "}\\)"),
+      paste0("\\(\\mathit{c}_{", item, "}\\)")
     )
     tab
   },
@@ -698,10 +698,10 @@ output$regression_4pl_coef <- renderTable(
     tab <- summary(fit)$parameters[, 1:2]
     colnames(tab) <- c("Estimate", "SE")
     rownames(tab) <- c(
-      paste0("%%mathit{a}_{", item, "}%%"),
-      paste0("%%mathit{b}_{", item, "}%%"),
-      paste0("%%mathit{c}_{", item, "}%%"),
-      paste0("%%mathit{d}_{", item, "}%%")
+      paste0("\\(\\mathit{a}_{", item, "}\\)"),
+      paste0("\\(\\mathit{b}_{", item, "}\\)"),
+      paste0("\\(\\mathit{c}_{", item, "}\\)"),
+      paste0("\\(\\mathit{d}_{", item, "}\\)")
     )
     tab
   },
@@ -1059,7 +1059,7 @@ output$regression_cumulative_equation <- renderUI({
   txt3 <- paste("$$\\mathrm{P}(Y_{pi} \\geq k|", txt1, ") = \\pi_{pik} = \\frac{e^{", txt2, "}}{1 + e^{", txt2, "}}$$")
   txt4 <- paste("$$\\mathrm{P}(Y_{pi} = k|", txt1, ") = \\pi_{pik} - \\pi_{pi(k + 1)}$$")
 
-  withMathJax(HTML(paste(txt3, txt4)))
+  HTML(paste(txt3, txt4))
 })
 
 # ** Interpretation ####
@@ -1092,7 +1092,7 @@ output$regression_cumulative_interpretation <- renderUI({
                differences between the two subsequent cumulative probabilities. ",
     par[1], categories, par[2]
   )
-  withMathJax(HTML(txt))
+  HTML(txt)
 })
 
 # ** Table of estimated parameters ####
@@ -1107,8 +1107,8 @@ regression_cumulative_coef <- reactive({
 
     tab <- data.frame(Estimate = tab_coef, SE = tab_se)
     rownames(tab) <- c(
-      paste0("%%mathit{\\beta}_{", item, "0", sort(unique(data[, item]))[-1], "}%%"),
-      paste0("%%mathit{\\beta}_{", item, "1}%%")
+      paste0("\\(\\mathit{\\beta}_{", item, "0", sort(unique(data[, item]))[-1], "}\\)"),
+      paste0("\\(\\mathit{\\beta}_{", item, "1}\\)")
     )
   } else {
     tab_coef_old <- coef(fit[[item]])
@@ -1131,8 +1131,8 @@ regression_cumulative_coef <- reactive({
 
     tab <- data.frame(Estimate = tab_coef, SE = tab_se)
     rownames(tab) <- c(
-      paste0("%%mathit{a}_{", item, "}%%"),
-      paste0("%%mathit{b}_{", item, sort(unique(data[, item]))[-1], "}%%")
+      paste0("\\(\\mathit{a}_{", item, "}\\)"),
+      paste0("\\(\\mathit{b}_{", item, sort(unique(data[, item]))[-1], "}\\)")
     )
   }
   tab
@@ -1265,7 +1265,7 @@ output$regression_adjacent_equation <- renderUI({
 
   txt <- paste0("$$\\mathrm{P}(Y_{pi} = k|", txt1, ") = \\frac{e^{\\sum_{l = 0}^{k}", txt2, "}}{\\sum_{r = 0}^{K_i}e^{\\sum_{l = 0}^{r}", txt2, "}}$$")
 
-  withMathJax(HTML(txt))
+  HTML(txt)
 })
 
 # ** Interpretation ####
@@ -1306,7 +1306,7 @@ output$regression_adjacent_interpretation <- renderUI({
     )
   }
 
-  withMathJax(HTML(txt))
+  HTML(txt)
 })
 
 # ** Table of estimated parameters ####
@@ -1322,8 +1322,8 @@ output$regression_adjacent_coef <- renderTable(
 
       tab <- data.frame(Estimate = tab_coef, SE = tab_se)
       rownames(tab) <- c(
-        paste0("%%mathit{\\beta}_{", item, "0", sort(unique(data[, item]))[-1], "}%%"),
-        paste0("%%mathit{\\beta}_{", item, "1}%%")
+        paste0("\\(\\mathit{\\beta}_{", item, "0", sort(unique(data[, item]))[-1], "}\\)"),
+        paste0("\\(\\mathit{\\beta}_{", item, "1}\\)")
       )
     } else {
       tab_coef_old <- coef(fit)
@@ -1346,8 +1346,8 @@ output$regression_adjacent_coef <- renderTable(
 
       tab <- data.frame(Estimate = tab_coef, SE = tab_se)
       rownames(tab) <- c(
-        paste0("%%mathit{a}_{", item, "}%%"),
-        paste0("%%mathit{b}_{", item, sort(unique(data[, item]))[-1], "}%%")
+        paste0("\\(\\mathit{a}_{", item, "}\\)"),
+        paste0("\\(\\mathit{b}_{", item, sort(unique(data[, item]))[-1], "}\\)")
       )
     }
 
@@ -1587,13 +1587,13 @@ output$regression_multinomial_equation <- renderUI({
       correct_option, item, item, item
     )
   }
-  withMathJax(HTML(paste(eq1, eq2, txt)))
+  HTML(paste(eq1, eq2, txt))
 })
 
 # ** Table of estimated parameters of curves of multinomial regression ####
 output$regression_multinomial_coef <- renderTable(
   {
-    withMathJax()
+    
     fit <- regression_multinomial_model()
 
     key <- t(as.data.table(key()))
@@ -1615,8 +1615,8 @@ output$regression_multinomial_coef <- renderTable(
       }
       colnames(tab) <- c("Estimate", "SE")
       rownames(tab) <- c(
-        paste0("%%mathit{\\beta}_{", item, "0", rnam, "}%%"),
-        paste0("%%mathit{\\beta}_{", item, "1", rnam, "}%%")
+        paste0("\\(\\mathit{\\beta}_{", item, "0", rnam, "}\\)"),
+        paste0("\\(\\mathit{\\beta}_{", item, "1", rnam, "}\\)")
       )
       tab
     } else {
@@ -1662,10 +1662,10 @@ output$regression_multinomial_coef <- renderTable(
         a = coef_tab[, 2],
         a_se = se_tab[, 2]
       )
-      withMathJax()
+      
       colnames(tab) <- c(
-        paste0(c("", "SE("), rep(paste0("%%mathit{b}_{", item, "}%%"), 2), c("", ")")),
-        paste0(c("", "SE("), rep(paste0("%%mathit{a}_{", item, "}%%"), 2), c("", ")"))
+        paste0(c("", "SE("), rep(paste0("\\(\\mathit{b}_{", item, "}\\)"), 2), c("", ")")),
+        paste0(c("", "SE("), rep(paste0("\\(\\mathit{a}_{", item, "}\\)"), 2), c("", ")"))
       )
       tab
     }

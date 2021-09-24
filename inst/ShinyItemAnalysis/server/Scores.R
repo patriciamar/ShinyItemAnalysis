@@ -14,7 +14,7 @@ output$totalscores_tooltip_mean <- renderUI({
     "mean,",
     span(
       class = "ttooltiptext",
-      withMathJax("$$\\bar{X} = \\frac{1}{n}\\sum_{p = 1}^n X_p$$")
+      "$$\\bar{X} = \\frac{1}{n}\\sum_{p = 1}^n X_p$$"
     )
   )
 })
@@ -25,7 +25,7 @@ output$totalscores_tooltip_sd <- renderUI({
     "sample standard deviation",
     span(
       class = "ttooltiptext",
-      withMathJax("$$\\textrm{SD}(X) = \\sqrt{\\frac{1}{n - 1}\\sum_{p = 1}^n (X_p - \\bar{X})^2}$$")
+      "$$\\textrm{SD}(X) = \\sqrt{\\frac{1}{n - 1}\\sum_{p = 1}^n (X_p - \\bar{X})^2}$$"
     )
   )
 })
@@ -36,7 +36,7 @@ output$totalscores_tooltip_skewness <- renderUI({
     "sample skewness,",
     span(
       class = "ttooltiptext",
-      withMathJax("$$\\frac{\\frac{1}{n} \\sum_{p = 1}^n (X_p - \\bar{X})^3}{\\left[\\frac{1}{n - 1} \\sum_{p = 1}^n (X_p - \\bar{X})^2\\right]^{3/2}}$$")
+      "$$\\frac{\\frac{1}{n} \\sum_{p = 1}^n (X_p - \\bar{X})^3}{\\left[\\frac{1}{n - 1} \\sum_{p = 1}^n (X_p - \\bar{X})^2\\right]^{3/2}}$$"
     )
   )
 })
@@ -47,7 +47,7 @@ output$totalscores_tooltip_kurtosis <- renderUI({
     "sample kurtosis.",
     span(
       class = "ttooltiptext",
-      withMathJax("$$\\frac{\\frac{1}{n} \\sum_{p = 1}^n (X_p - \\bar{X})^4}{\\left[\\frac{1}{n} \\sum_{p = 1}^n (X_p - \\bar{X})^2\\right]^2}$$")
+      "$$\\frac{\\frac{1}{n} \\sum_{p = 1}^n (X_p - \\bar{X})^4}{\\left[\\frac{1}{n} \\sum_{p = 1}^n (X_p - \\bar{X})^2\\right]^2}$$"
     )
   )
 })
@@ -183,7 +183,7 @@ output$standardscores_tooltip_total <- renderUI({
     "sum of item scores.",
     span(
       class = "ttooltiptext",
-      withMathJax("$$X_p = \\sum_{i = 1}^m Y_{pi}$$")
+      "$$X_p = \\sum_{i = 1}^m Y_{pi}$$"
     )
   )
 })
@@ -196,7 +196,7 @@ output$standardscores_tooltip_zscore <- renderUI({
     "a linear transformation of the total score",
     span(
       class = "ttooltiptext",
-      withMathJax("$$Z_p = \\frac{X_p - \\bar{X}}{\\textrm{SD}(X)}$$")
+      "$$Z_p = \\frac{X_p - \\bar{X}}{\\textrm{SD}(X)}$$"
     )
   )
 })
@@ -209,7 +209,7 @@ output$standardscores_tooltip_tscore <- renderUI({
     "a linear transformation of the Z-score",
     span(
       class = "ttooltiptext",
-      withMathJax("$$T_p = 10 Z_p + 50$$")
+      "$$T_p = 10 Z_p + 50$$"
     )
   )
 })

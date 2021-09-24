@@ -1117,7 +1117,7 @@ data_description_Input <- reactive({
                 target='_blank'> McFarland et al. (2017)</a>, the dataset was used to perform complex a validation of the HCI
                 assessment instrument. The dataset was also used for demonstrations of the <code>ShinyItemAnalysis</code> package
                 and an earlier version of this online app in The R Journal paper by <a href='https://doi.org/10.32614/RJ-2018-074'
-                target='_blank'> Martinkova and Hladka (2018)</a>. ",
+                target='_blank'> Martinkova and Drabinova (2018)</a>. ",
     Science_mirt = "<code>Science</code> dataset comes from the <code>mirt/ltm</code> packages. It represents the responses of 392 subjects
                 on a 4-item test describing attitude to science and technology. Selected items are <code>Comfort</code>, <code>Work</code>,
                 <code>Future</code>, and <code>Benefit</code>. All items are measured on the same scale with the response categories:

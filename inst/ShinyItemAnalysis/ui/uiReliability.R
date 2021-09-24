@@ -11,11 +11,11 @@ uiReliability <-
     #                    \\(X = T + e\\) and the error term is uncorrelated with the true score."),
     #  h4("Equation"),
     #  p("Reliability is defined as the squared correlation of the true and observed score"),
-    #  withMathJax(),
+    #  
     #  ("$$\\text{rel}(X) = \\text{cor}(T, X)^2$$"),
     #  p("Equivalently, reliability can be re-expressed as the ratio of the true score variance
     #                    to the total observed variance"),
-    #  withMathJax(),
+    #  
     #  ("$$\\text{rel}(X) = \\frac{\\sigma^2_T}{\\sigma^2_X}$$"),
     #  br()
     # ),
@@ -31,7 +31,7 @@ uiReliability <-
                         Then for a test consisting of
                         \\(I^*\\) such items,  that is for a test which is
                         \\(m = \\frac{I^*}{I}\\) times longer/shorter, the reliability would be"),
-      withMathJax(),
+      
       ("$$\\text{rel}(X^*) = \\frac{m\\cdot \\text{rel}(X)}{1 + (m - 1)\\cdot\\text{rel}(X)}.$$"),
       p("The Spearman-Brown formula can be used to determine reliability of a test with with a
                         different number of equally precise items measuring the same construct.
@@ -112,7 +112,7 @@ uiReliability <-
                         Let \\(X^*_1\\) and \\(X^*_2\\) be total scores calculated from items found only in the first
                         and second subsets. The estimate of reliability is then given by the Spearman-Brown formula (Spearman, 1910; Brown, 1910)
                         with \\(m = 2\\)."),
-      withMathJax(),
+      
       ("$$\\text{rel}(X) = \\frac{m\\cdot \\text{cor}(X^*_1, X^*_2)}{1 + (m - 1)\\cdot\\text{cor}(X^*_1, X^*_2)} =
                        \\frac{2\\cdot \\text{cor}(X^*_1, X^*_2)}{1 + \\text{cor}(X^*_1, X^*_2)}$$"),
       p(
@@ -129,7 +129,7 @@ uiReliability <-
       fluidRow(
         column(
           3,
-          withMathJax(),
+          
           selectInput(
             inputId = "reliability_splithalf_method",
             label = "Split half method",
@@ -188,7 +188,7 @@ uiReliability <-
       p("For a test with \\(I\\) items where \\(X = X_1 + ... + X_I\\) is a total score,
                         \\(\\sigma^2_X\\) its variance and \\(\\sigma^2_{X_i}\\) variances of items,
                         Cronbach's \\(\\alpha\\) is given by following equation"),
-      withMathJax(),
+      
       ("$$\\alpha = \\frac{I}{I-1}\\left(1 - \\frac{\\sum_{i = 1}^I \\sigma^2_{X_i}}{\\sigma^2_X}\\right)$$"),
       h4("Estimate with confidence interval"),
       p("A confidence interval is based on F distribution as proposed by Feldt et al. (1987)."),

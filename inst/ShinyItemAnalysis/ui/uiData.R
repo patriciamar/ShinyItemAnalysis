@@ -55,7 +55,9 @@ uiData <- tabPanel(
       h4("Upload your own datasets"),
       p(
         "Here you can upload your own dataset. Select all necessary files and use the ", strong("Upload data"),
-        " button on bottom of this page."
+        " button on bottom of this page.  For sample .csv data and details on input format, check the Supplementary material  of the ",
+          HTML("<a href='https://doi.org/10.32614/RJ-2018-074' target='_blank'> Martinkova and Drabinova (2018)</a>"),
+          " article."
       ),
       fluidRow(
         box(

@@ -145,15 +145,15 @@ itemanalysis_cronbach_note <- reactive({
 })
 
 output$itemanalysis_cronbach_note <- renderUI({
-  withMathJax(HTML(
+  HTML(
     paste0(
-      "<sup>1</sup>Estimate (SD) of Cronbach's $\\alpha$ for the test as a whole is: ",
+      "<sup>1</sup>Estimate (SD) of Cronbach's \\(\\alpha\\) for the test as a whole is: ",
       itemanalysis_cronbach_note()$est,
       " (",
       itemanalysis_cronbach_note()$sd,
       ")."
     )
-  ))
+  )
 })
 
 # ** Traditional item analysis table text ######
@@ -161,7 +161,7 @@ output$itemanalysis_table_text <- renderUI({
   range1 <- input$itemanalysis_DDplot_range_slider[[1]]
   range2 <- input$itemanalysis_DDplot_range_slider[[2]]
   num.groups <- input$itemanalysis_DDplot_groups_slider
-  withMathJax(HTML(paste0(
+  HTML(paste0(
     "<b>Explanation:<br>Diff.</b>&nbsp;",
     "&ndash; item difficulty estimated as an average item score divided by its range, ",
     "<b>Avg. score</b>&nbsp;",
@@ -192,13 +192,13 @@ output$itemanalysis_table_text <- renderUI({
     "&ndash; item-criterion correlation, ",
     "<b>Val. index</b>&nbsp;",
     "&ndash; item validity index, ",
-    "<b>$\\alpha$ drop </b>&nbsp;",
-    "&ndash; Cronbach\'s $\\alpha$ of test without given item (the value for the test as a whole is presented in the note below), ",
+    "<b>\\(\\alpha\\)&nbsp;drop </b>&nbsp;",
+    "&ndash; Cronbach\'s \\(\\alpha\\) of test without given item (the value for the test as a whole is presented in the note below), ",
     "<b>Missed</b>&nbsp;",
     "&ndash; percentage of missed responses on the particular item, ",
     "<b>Not-reached</b>&nbsp;",
     "&ndash; percentage of respondents that did not reach the item nor the subsequent ones"
-  )))
+  ))
 })
 
 # ** Traditional item analysis table ######
@@ -288,7 +288,7 @@ report_itemanalysis_table <- reactive({
 output$itemanalysis_table_coef <- renderTable(
   {
     tab <- itemanalysis_table()
-    colnames(tab)[which(colnames(tab) == "Alpha drop")] <- "%%mathit{\\alpha}%% drop%%mathit{\\mathrm{^1}}%%"
+    colnames(tab)[which(colnames(tab) == "Alpha drop")] <- "\\(\\mathit{\\alpha}\\) drop\\(\\mathrm{^1}\\)"
     tab
   },
   rownames = TRUE

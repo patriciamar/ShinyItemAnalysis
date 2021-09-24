@@ -270,7 +270,7 @@ uiIRT <- navbarMenu(
   tabPanel("Model comparison",
     value = "irt_mod_comp",
     h3("IRT model selection"),
-    withMathJax(),
+
     p("Item Response Theory (IRT) models are mixed-effect regression models in which
       respondent ability \\(\\theta_p\\) is assumed to be latent and is estimated together
       with item paramters. Model parameters  are estimated using a marginal maximum likelihood
@@ -322,7 +322,7 @@ uiIRT <- navbarMenu(
             )
           )
         ),
-        withMathJax(
+        p(
           "For ", strong("\\(K_i\\)"), " possible test choices, the probability of selecting distractor ", strong("\\(k\\)"),
           " by person ", strong("\\(p\\)"), " with latent trait", strong("\\(\\theta_p\\)"), " in item ", strong("\\(i\\)"),
           "is given by the following equation: "
@@ -359,6 +359,12 @@ uiIRT <- navbarMenu(
         # ** Estimated parameters ####
         h4("Table of parameters"),
         tableOutput("IRT_bock_summary_coef"),
+        downloadButton(
+          outputId = "IRT_bock_summary_coef_download",
+          label = "Download table"
+        ),
+        br(),
+        br(),
         # ** Ability estimates ####
         h4("Ability estimates"),
         p("This table shows the response score of only six respondents. If you want to see scores for all respondents, click on the", strong("Download abilities"), " button. "),
@@ -404,7 +410,7 @@ uiIRT <- navbarMenu(
             )
           )
         ),
-        withMathJax(
+        p(
           "For ", strong("\\(K_i\\)"), " possible test choices the probability of the distractor ", strong("\\(k\\)"), " for person ",
           strong("\\(p\\)"), " with latent trait", strong("\\(\\theta_p\\)"), " in item ", strong("\\(i\\)"),
           "is given by the following equation: "
@@ -552,7 +558,7 @@ uiIRT <- navbarMenu(
         #------------------------------------------------------------------------------------#
         h4("Exercise "),
         p("Consider an item following a graded response model rated \\(0-1-2-3\\), with discrimination \\(a = 1\\) and
-										 difficulties \\(b_{1} = \u2212 0.5\\), \\(b_{2} = 1\\) and \\(b_{3} = 1.5\\)."),
+										 difficulties \\(b_{1} = -0.5\\), \\(b_{2} = 1\\) and \\(b_{3} = 1.5\\)."),
         tags$ul(
           tags$li(
             "Calculate the probabilities of obtaining \\(k\\) and more points for a specific level of ability \\(\\theta\\)",

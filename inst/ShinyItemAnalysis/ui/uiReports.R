@@ -2,6 +2,16 @@ uiReports <-
   tabPanel(
     "Reports",
     h3("Download report"),
+    p(
+      strong("NOTE: "), "When using the ShinyItemAnalysis app online, the report
+      generation depends on current load of the shiny server, and it may fail
+      especially with larger datasets. We recommend to first check sections of
+      intended report contents. For example, if you wish to include a ",
+      strong("3PL IRT"), " model, you can first visit the ",
+      strong("Dichotomous models"), " subsection of the ", strong("IRT models"),
+      "section and try fitting the ", strong("3PL IRT"), " model."
+    ),
+
     # * GENERAL SETTINGS ####
     h4("Settings of report"),
     p(
@@ -321,7 +331,7 @@ uiReports <-
           condition = "input.logregCheck",
           column(
             3, p(strong("Logistic regression settings")),
-            withMathJax(),
+
             radioButtons(
               inputId = "type_print_DIF_logistic_report",
               label = "Type",
@@ -365,7 +375,7 @@ uiReports <-
           condition = "input.multiCheck",
           column(
             3, p(strong("Multinomial regression settings")),
-            withMathJax(),
+
             radioButtons(
               inputId = "type_DDF_report",
               label = "Type",
@@ -418,12 +428,6 @@ uiReports <-
     ),
     tags$hr(),
     # * DOWNLOAD ####
-    p(
-      strong("Recommendation: "), "Report generation can be faster and more reliable when you first check
-             sections of intended contents. For example, if you wish to include a ", strong("3PL IRT"),
-      " model, you can first visit the ", strong("Dichotomous models"), " subsection of the ",
-      strong("IRT models"), "section and fit the ", strong("3PL IRT"), " model."
-    ),
     uiOutput("report_na_alert"),
     br(),
     div(style = "display:inline-block", actionButton(

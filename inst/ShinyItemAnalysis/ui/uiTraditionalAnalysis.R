@@ -97,7 +97,7 @@ uiTraditionalAnalysis <- navbarMenu(
     downloadButton("itemanalysis_DDplot_download", label = "Download figure"),
     br(), br(),
     h4("Traditional item analysis table"),
-    withMathJax(),
+    
     uiOutput("itemanalysis_table_text"),
     br(),
     tags$head(tags$style("#itemanalysis_table_coef {white-space: nowrap;}")),
