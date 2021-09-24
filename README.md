@@ -2,7 +2,6 @@
 Test and item analysis via shiny
 
 <!-- badges: start -->
-[![R-CMD-check](https://github.com/ApplStat/ShinyItemAnalysis-Private/workflows/R-CMD-check/badge.svg)](https://github.com/ApplStat/ShinyItemAnalysis-Private/actions)
 ![GHversion](https://img.shields.io/github/release/patriciamar/ShinyItemAnalysis.svg)
 [![online](https://img.shields.io/badge/online-1.4.0-yellow.svg)](https://shiny.cs.cas.cz/ShinyItemAnalysis/)
 [![version](https://www.r-pkg.org/badges/version/ShinyItemAnalysis)](https://CRAN.R-project.org/package=ShinyItemAnalysis)
