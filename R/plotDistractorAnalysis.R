@@ -8,37 +8,37 @@
 #' @param Data character: data matrix or data.frame with rows representing
 #'   unscored item response from a multiple-choice test and columns
 #'   corresponding to the items.
-#' @param key character: answer key for the items. The \code{key} must be a
-#'   vector of the same length as \code{ncol(Data)}. In case it is not provided,
-#'   \code{criterion} needs to be specified.
+#' @param key character: answer key for the items. The `key` must be a
+#'   vector of the same length as `ncol(Data)`. In case it is not provided,
+#'   `criterion` needs to be specified.
 #' @param num.groups numeric: number of groups to which are the respondents
 #'   splitted.
 #' @param item numeric: the number of the item to be plotted.
 #' @param item.name character: the name of the item.
 #' @param multiple.answers logical: should be all combinations plotted (default)
-#'   or should be answers splitted into distractors. See \strong{Details}.
+#'   or should be answers splitted into distractors. See **Details**.
 #' @param criterion numeric: numeric vector. If not provided, total score is
 #'   calculated and distractor analysis is performed based on it.
-#' @param crit.discrete logical: is \code{criterion} discrete? Default value is
-#'   \code{FALSE}.
+#' @param crit.discrete logical: is `criterion` discrete? Default value is
+#'   `FALSE`.
 #' @param cut.points numeric: numeric vector specifying cut points of
-#'   \code{criterion}.
-#' @param data deprecated. Use argument \code{Data} instead.
-#' @param matching deprecated. Use argument \code{criterion} instead.
-#' @param match.discrete deprecated. Use argument \code{crit.discrete} instead.
+#'   `criterion`.
+#' @param data deprecated. Use argument `Data` instead.
+#' @param matching deprecated. Use argument `criterion` instead.
+#' @param match.discrete deprecated. Use argument `crit.discrete` instead.
 #'
 #' @details This function is a graphical representation of the
-#'   \code{\link{DistractorAnalysis}} function. In case that no \code{criterion}
-#'   is provided, the scores are calculated using the item \code{Data} and
-#'   \code{key}. The respondents are by default split into the
-#'   \code{num.groups}-quantiles and the proportions of respondents in each
+#'   [DistractorAnalysis()] function. In case that no `criterion`
+#'   is provided, the scores are calculated using the item `Data` and
+#'   `key`. The respondents are by default split into the
+#'   `num.groups`-quantiles and the proportions of respondents in each
 #'   quantile are displayed with respect to their answers. In case that
-#'   \code{criterion} is discrete (\code{crit.discrete = TRUE}),
-#'   \code{criterion} is split based on its unique levels. Other cut points can
-#'   be specified via \code{cut.points} argument.
+#'   `criterion` is discrete (`crit.discrete = TRUE`),
+#'   `criterion` is split based on its unique levels. Other cut points can
+#'   be specified via `cut.points` argument.
 #'
-#'   If \code{multiple.answers = TRUE} (default) all reported combinations of
-#'   answers are plotted. If \code{multiple.answers = FALSE} all combinations
+#'   If `multiple.answers = TRUE` (default) all reported combinations of
+#'   answers are plotted. If `multiple.answers = FALSE` all combinations
 #'   are split into distractors and only these are then plotted with correct
 #'   combination.
 #'
@@ -51,8 +51,8 @@
 #' Institute of Computer Science of the Czech Academy of Sciences \cr
 #' \email{martinkova@@cs.cas.cz}
 #'
-#' @seealso \code{\link{DistractorAnalysis}},
-#'   \code{\link[CTT]{distractor.analysis}}
+#' @seealso [DistractorAnalysis()],
+#'   [CTT::distractor.analysis()]
 #'
 #' @examples
 #'
@@ -63,12 +63,15 @@
 #' key <- unlist(dataMedicalkey)
 #'
 #' # distractor plot for items 48, 57 and 32 displaying distractors only
+#' # correct answer B does not function well:
 #' plotDistractorAnalysis(data, key, item = 48, multiple.answers = FALSE)
-#' # correct answer B does not function well
+#'
+#' # all options function well, thus the whole item discriminates well:
 #' plotDistractorAnalysis(data, key, item = 57, multiple.answers = FALSE)
-#' # all options function well, thus the whole item discriminates well
+#'
+#' # functions well, thus the whole item discriminates well:
 #' plotDistractorAnalysis(data, key, item = 32, multiple.answers = FALSE)
-#' # functions well, thus the whole item discriminates well
+#'
 #' \dontrun{
 #' # distractor plot for items 48, 57 and 32 displaying all combinations
 #' plotDistractorAnalysis(data, key, item = 48)
@@ -96,7 +99,7 @@
 #'
 #' @importFrom grDevices rainbow
 #' @importFrom ggplot2 scale_linetype_manual scale_shape_manual ggtitle guides
-#'   guide_legend
+#'   guide_legend margin
 #'
 #' @export
 
@@ -144,6 +147,7 @@ plotDistractorAnalysis <- function(Data, key, num.groups = 3, item = 1, item.nam
   }
 
   # distractor analysis
+
   tabDA <- DistractorAnalysis(
     Data = Data, key = key, p.table = TRUE, num.groups = num.groups, criterion = criterion,
     crit.discrete = crit.discrete, cut.points = cut.points
@@ -188,13 +192,13 @@ plotDistractorAnalysis <- function(Data, key, num.groups = 3, item = 1, item.nam
 
     levels(df$response)[which(levels(df$response) == "x")] <- "NaN"
 
-    # plot settings
-    col <- rainbow(n = (length(levels(df$response)) + 1))
-    names(col) <- levels(df$response)
-    col[CA] <- "black"
-
     df$response <- relevel(df$response, CA)
     CAall <- c(CA, unlist(strsplit(as.character(key[item]), "")))
+
+    # plot settings
+    col <- rainbow(n = length(levels(df$response)))
+    names(col) <- levels(df$response)
+    col[CA] <- "black"
   }
 
   if (missing(item.name)) {
@@ -222,13 +226,13 @@ plotDistractorAnalysis <- function(Data, key, num.groups = 3, item = 1, item.nam
   levels(df$Group) <- 1:length(levels(df$Group))
 
   # plot
-  g <- ggplot(df, aes_string(
-    x = "Group",
-    y = "Proportion",
-    group = "Response",
-    colour = "Response",
-    linetype = "Response",
-    shape = "Response"
+  g <- ggplot(df, aes(
+    x = .data$Group,
+    y = .data$Proportion,
+    group = .data$Response,
+    colour = .data$Response,
+    linetype = .data$Response,
+    shape = .data$Response
   )) +
     geom_line(size = 0.8) +
     geom_point(size = 3) +
@@ -241,9 +245,13 @@ plotDistractorAnalysis <- function(Data, key, num.groups = 3, item = 1, item.nam
     scale_color_manual(values = col) +
     theme_app() +
     theme(
-      legend.position = c(0.01, 0.98),
+      legend.spacing.y = unit(0, "pt"),
+      legend.position = c(.02, .98),
+      legend.margin = margin(),
       legend.justification = c(0, 1),
-      legend.key.width = unit(1, "cm")
+      legend.key.width = unit(1, "cm"),
+      legend.background = element_rect("#FFFFFFCC"), # alpha .8 opacity
+      legend.key = element_rect("#FFFFFF00") # transparent
     ) +
     ggtitle(item.name)
 

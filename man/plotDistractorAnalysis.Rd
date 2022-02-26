@@ -55,23 +55,23 @@ calculated and distractor analysis is performed based on it.}
 }
 \description{
 Plots graphical representation of item distractor analysis with
-  proportions and optional number of groups.
+proportions and optional number of groups.
 }
 \details{
 This function is a graphical representation of the
-  \code{\link{DistractorAnalysis}} function. In case that no \code{criterion}
-  is provided, the scores are calculated using the item \code{Data} and
-  \code{key}. The respondents are by default split into the
-  \code{num.groups}-quantiles and the proportions of respondents in each
-  quantile are displayed with respect to their answers. In case that
-  \code{criterion} is discrete (\code{crit.discrete = TRUE}),
-  \code{criterion} is split based on its unique levels. Other cut points can
-  be specified via \code{cut.points} argument.
+\code{\link[=DistractorAnalysis]{DistractorAnalysis()}} function. In case that no \code{criterion}
+is provided, the scores are calculated using the item \code{Data} and
+\code{key}. The respondents are by default split into the
+\code{num.groups}-quantiles and the proportions of respondents in each
+quantile are displayed with respect to their answers. In case that
+\code{criterion} is discrete (\code{crit.discrete = TRUE}),
+\code{criterion} is split based on its unique levels. Other cut points can
+be specified via \code{cut.points} argument.
 
-  If \code{multiple.answers = TRUE} (default) all reported combinations of
-  answers are plotted. If \code{multiple.answers = FALSE} all combinations
-  are split into distractors and only these are then plotted with correct
-  combination.
+If \code{multiple.answers = TRUE} (default) all reported combinations of
+answers are plotted. If \code{multiple.answers = FALSE} all combinations
+are split into distractors and only these are then plotted with correct
+combination.
 }
 \examples{
 
@@ -82,12 +82,15 @@ dataBin <- dataMedical[, 1:100]
 key <- unlist(dataMedicalkey)
 
 # distractor plot for items 48, 57 and 32 displaying distractors only
+# correct answer B does not function well:
 plotDistractorAnalysis(data, key, item = 48, multiple.answers = FALSE)
-# correct answer B does not function well
+
+# all options function well, thus the whole item discriminates well:
 plotDistractorAnalysis(data, key, item = 57, multiple.answers = FALSE)
-# all options function well, thus the whole item discriminates well
+
+# functions well, thus the whole item discriminates well:
 plotDistractorAnalysis(data, key, item = 32, multiple.answers = FALSE)
-# functions well, thus the whole item discriminates well
+
 \dontrun{
 # distractor plot for items 48, 57 and 32 displaying all combinations
 plotDistractorAnalysis(data, key, item = 48)
@@ -115,8 +118,8 @@ plotDistractorAnalysis(data, key, item = 57, cut.points = seq(10, 100, 10))
 
 }
 \seealso{
-\code{\link{DistractorAnalysis}},
-  \code{\link[CTT]{distractor.analysis}}
+\code{\link[=DistractorAnalysis]{DistractorAnalysis()}},
+\code{\link[CTT:distractor.analysis]{CTT::distractor.analysis()}}
 }
 \author{
 Adela Hladka \cr
