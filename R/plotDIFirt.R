@@ -4,31 +4,31 @@
 #'
 #' @description Plots characteristic curve of IRT model.
 #'
-#' @param parameters numeric: data matrix or data frame. See \strong{Details}.
-#' @param test character: type of statistic to be shown. See \strong{Details}.
+#' @param parameters numeric: data matrix or data frame. See **Details**.
+#' @param test character: type of statistic to be shown. See **Details**.
 #' @param item either character ("all"), or numeric vector, or single number
-#'   corresponding to column indicators. See \strong{Details}.
+#'   corresponding to column indicators. See **Details**.
 #' @param item.name character: the name of item.
-#' @param same.scale logical: are the item \code{parameters} on the same scale?
-#'   (default is "FALSE"). See \strong{Details}.
+#' @param same.scale logical: are the item `parameters` on the same scale?
+#'   (default is "FALSE"). See **Details**.
 #'
 #' @details This function plots characteristic curve of DIF IRT model.
 #'
-#' The \code{parameters} matrix has a number of rows equal to twice the number
+#' The `parameters` matrix has a number of rows equal to twice the number
 #' of items in the data set. The first J rows refer to the item parameter
 #' estimates in the reference group, while the last J ones correspond to the
 #' same items in the focal group. The number of columns depends on the selected
 #' IRT model: 2 for the 1PL model, 5 for the 2PL model, 6 for the constrained
 #' 3PL model and 9 for the unconstrained 3PL model. The columns of
-#' \code{irtParam()} have to follow the same structure as the output of
-#' \code{itemParEst()}, \code{difLord()} or \code{difRaju()} command from the
-#' \code{difR} package.
+#' `irtParam()` have to follow the same structure as the output of
+#' `itemParEst()`, `difLord()` or `difRaju()` command from the
+#' `difR` package.
 #'
-#' Two possible type of \code{test} statistics can be visualized - \code{"Lord"}
-#' gives only characteristic curves, \code{"Raju"} also highlights area between
+#' Two possible type of `test` statistics can be visualized - `"Lord"`
+#' gives only characteristic curves, `"Raju"` also highlights area between
 #' these curves.
 #'
-#' For default option \code{"all"}, all characteristic curves are plotted.
+#' For default option `"all"`, all characteristic curves are plotted.
 #'
 #' @author
 #' Adela Hladka \cr
@@ -38,8 +38,8 @@
 #' Patricia Martinkova \cr Institute of Computer Science of the Czech Academy of
 #' Sciences \cr \email{martinkova@@cs.cas.cz} \cr
 #'
-#' @seealso \code{\link[difR]{itemParEst}}, \code{\link[difR]{difLord}},
-#'   \code{\link[difR]{difRaju}}
+#' @seealso [difR::itemParEst()], [difR::difLord()],
+#'   [difR::difRaju()]
 #'
 #' @examples
 #' # loading libraries
@@ -84,39 +84,32 @@ plotDIFirt <- function(parameters, test = "Lord", item = "all", item.name, same.
   }
 
   m <- nrow(parameters) / 2
-
+  nams <- rownames(parameters)[1:m]
   if (class(item) == "character") {
-    if (item != "all") {
-      stop("'item' must be either numeric vector or character string 'all' ",
-        call. = FALSE
-      )
+    if (item != "all" & !item %in% nams) {
+      stop("Invalid value for 'item'. Item must be either character 'all', or numeric vector corresponding to column identifiers, or name of the item.",
+           call. = FALSE)
+    }
+    if (item[1] == "all") {
+      items <- 1:m
+    } else {
+      items <- which(nams %in% item)
     }
   } else {
     if (class(item) != "integer" & class(item) != "numeric") {
-      stop("'item' must be either numeric vector or character string 'all' ",
-        call. = FALSE
-      )
+      stop("Invalid value for 'item'. Item must be either character 'all', or numeric vector corresponding to column identifiers, or name of the item.",
+           call. = FALSE)
+    } else {
+      if (!all(item %in% 1:m)) {
+        stop("Invalid number for 'item'.", call. = FALSE)
+      } else {
+        items <- item
+      }
     }
-  }
-  if (class(item) == "numeric" & !all(item %in% 1:m)) {
-    stop("invalid number of 'item'",
-      call. = FALSE
-    )
-  }
-  if (class(item) == "integer" & !all(item %in% 1:m)) {
-    stop("'item' must be either numeric vector or character string 'all' ",
-      call. = FALSE
-    )
-  }
-
-  if (item == "all") {
-    items <- 1:m
-  } else {
-    items <- item
   }
 
   if (missing(item.name)) {
-    item.names <- paste("Item", 1:m)
+    item.names <- nams
   } else {
     item.names <- rep(NA, m)
     item.names[items] <- item.name

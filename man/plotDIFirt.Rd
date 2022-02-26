@@ -69,8 +69,8 @@ plotDIFirt(fitRaju$itemParInit, test = "Raju", item = 1)
 
 }
 \seealso{
-\code{\link[difR]{itemParEst}}, \code{\link[difR]{difLord}},
-  \code{\link[difR]{difRaju}}
+\code{\link[difR:itemParEst]{difR::itemParEst()}}, \code{\link[difR:difLord]{difR::difLord()}},
+\code{\link[difR:difRaju]{difR::difRaju()}}
 }
 \author{
 Adela Hladka \cr
