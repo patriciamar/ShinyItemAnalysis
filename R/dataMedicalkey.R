@@ -1,7 +1,7 @@
 #' Key of correct answers for dataset of admission test to medical school
 #'
-#' @description The \code{dataMedicalkey} is a vector of factors representing
-#'   correct answers of \code{dataMedicaltest} dataset.
+#' @description The `dataMedicalkey` is a vector of factors representing
+#'   correct answers of `dataMedicaltest` dataset.
 #'
 #' @usage data(dataMedicalkey)
 #'
@@ -15,10 +15,10 @@
 #'
 #' @keywords datasets
 #'
-#' @seealso \code{\link{dataMedical}}, \code{\link{dataMedicaltest}},
-#'   \code{\link{dataMedicalgraded}}
+#' @seealso [dataMedical()], [dataMedicaltest()],
+#'   [dataMedicalgraded()]
 #'
 #' @format A vector with 100 values representing correct answers to items of
-#'   \code{dataMedicaltest} dataset. For more details see
-#'   \code{\link{dataMedicaltest}}.
+#'   `dataMedicaltest` dataset. For more details see
+#'   [dataMedicaltest()].
 "dataMedicalkey"

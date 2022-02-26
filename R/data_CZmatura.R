@@ -1,23 +1,23 @@
 #' CZmatura dataset
 #'
-#' @description The \code{CZmatura} dataset comes from matura exam in
+#' @description The `CZmatura` dataset comes from matura exam in
 #'   mathematics. The exam was assigned in 2019 to students from Grade 13, at
 #'   the end of their secondary education. Original data available from
-#'   \href{https://cermat.cz/}{https://cermat.cz/}.
+#'   [https://cermat.cz/](https://cermat.cz/).
 #'
 #' @usage data(CZmatura)
 #'
 #' @keywords datasets
 #'
 #' @seealso
-#' \code{\link{CZmaturaS}}
+#' [CZmaturaS()]
 #'
-#' @format \code{CZmatura} is a \code{data.frame} consisting of 15,702 observations on
+#' @format `CZmatura` is a `data.frame` consisting of 15,702 observations on
 #'   75 variables.
 #'   \describe{
 #'   \item{SchType}{School type code. }
-#'   \item{FirstAtt}{First attempt; \code{"1"} yes, \code{"0"} no. }
-#'   \item{SchTypeGY}{School type gymnasium; \code{"1"} yes, \code{"0"} no. }
+#'   \item{FirstAtt}{First attempt; `"1"` yes, `"0"` no. }
+#'   \item{SchTypeGY}{School type gymnasium; `"1"` yes, `"0"` no. }
 #'   \item{o1 -- o26.2}{Item answers. }
 #'   \item{b1 -- b26}{Scored item answers. }
 #'   \item{Total}{Total score, calculated as sum of item scores (0 - 50). }

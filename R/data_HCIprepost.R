@@ -1,6 +1,6 @@
 #' Homeostasis concept inventory pretest and posttest scores
 #'
-#' @description \code{HCIprepost} dataset consists of the pretest and
+#' @description `HCIprepost` dataset consists of the pretest and
 #'   posttest score of 16 students to Homeostasis Concept Inventory (HCI).
 #'   Between the pre-test and post-test, the students received
 #'   instruction on homeostasis within a physiology course.
@@ -17,14 +17,14 @@
 #' @keywords datasets
 #'
 #' @seealso
-#' \code{\link{HCIdata}} for HCI full dataset\cr
-#' \code{\link{HCI}} for HCI dichotomous dataset\cr
-#' \code{\link{HCItest}} for HCI multiple-choice dataset\cr
-#' \code{\link{HCIkey}} for key of correct answers for HCI\cr
-#' \code{\link{HCIgrads}}  for HCI dataset of graduate students\cr
-#' \code{\link{HCItestretest}} for HCI test-retest dataset
+#' [HCIdata()] for HCI full dataset\cr
+#' [HCI()] for HCI dichotomous dataset\cr
+#' [HCItest()] for HCI multiple-choice dataset\cr
+#' [HCIkey()] for key of correct answers for HCI\cr
+#' [HCIgrads()]  for HCI dataset of graduate students\cr
+#' [HCItestretest()] for HCI test-retest dataset
 #'
-#' @format \code{HCIprepost} is a \code{data.frame} consisting of 16
+#' @format `HCIprepost` is a `data.frame` consisting of 16
 #'   observations on the 2 variables.
 #'   \describe{
 #'   \item{id}{Anonymized respondent ID. }

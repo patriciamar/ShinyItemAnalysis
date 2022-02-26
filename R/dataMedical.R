@@ -1,14 +1,10 @@
 #' Dichotomous dataset of admission test to medical school
 #'
-#' @md # allow RMarkdown formating usage
-#'
-#' @description The `dataMedical` dataset consists of the responses of 2,392
-#'   subjects (750 males, 1,633 females and 9 subjects without gender
-#'   specification) to admission test to a medical school. It contains 100
-#'   items. A correct answer is coded as `"1"` and incorrect answer as `"0"`.
-#'   Missing answers were evaluated as incorrect, i.e. `"0"`.
-#'
-#' @usage data(dataMedical)
+#' The `dataMedical` dataset consists of the responses of 2,392 subjects (750
+#' males, 1,633 females and 9 subjects without gender specification) to
+#' admission test to a medical school. It contains 100 items. A correct answer
+#' is coded as `"1"` and incorrect answer as `"0"`. Missing answers were
+#' evaluated as incorrect, i.e. `"0"`.
 #'
 #' @references Martinkova, P., & Drabinova, A. (2018). ShinyItemAnalysis for
 #' teaching psychometrics and to enforce routine analysis of educational tests.
@@ -20,8 +16,7 @@
 #'
 #' @keywords datasets
 #'
-#' @seealso \code{\link{dataMedicaltest}}, \code{\link{dataMedicalkey}},
-#'   \code{\link{dataMedicalgraded}}
+#' @seealso [dataMedicaltest()], [dataMedicalkey()], [dataMedicalgraded()]
 #'
 #' @format A `dataMedical` is a `data.frame` consisting of 2,392 observations on
 #' the following 102 variables.

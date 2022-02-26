@@ -31,28 +31,27 @@ the correct answer to the particular item. }
 Martinkova, P., Hladka, A., & Potuznikova, E. (2020). Is academic
 tracking related to gains in learning competence? Using propensity score
 matching and differential item change functioning analysis for better
-understanding of tracking implications. \emph{Learning and Instruction},
-\emph{66}, 101286. \doi{10.1016/j.learninstruc.2019.101286}
+understanding of tracking implications. \emph{Learning and Instruction}, \emph{66},
+101286. \doi{10.1016/j.learninstruc.2019.101286}
 }
 \usage{
-data(LearningToLearn)
+LearningToLearn
 }
 \description{
-\code{LearningToLearn} is a real longitudinal dataset used in
-Martinkova et al (2020) study, demonstrating differential item functioning
-in change (DIF-C) on Learning to Learn (LtL) test. Among other variables,
-it primarily contains binary-coded responses of 782 subjects to (mostly)
-multiple-choice test consisting of 41 items within 7 subscales (see
-\strong{Format} for details). Each respondent was tested twice in total -- the
-first time in Grade 6 and the second time in Grade 9. Most importantly,
-school track (variable \code{track_01} or \code{track}) is available, with 391
-students attending basic school (BS) and 391 pursuing selective academic
-school (AS). This dataset was created using propensity score matching
-algorithm to achieve similar characteristics in both tracks (see
-\strong{References} for details). To further simplify the work with \code{LtL}
-dataset, we provide computed total scores as well as 7 subscores, both for
-Grade 6 and Grade 9. The dataset also includes \emph{change} variables for each
-item (see \strong{Format} for details) for more detailed DIF-C analysis using
-multinomial regression model.
+\code{LearningToLearn} is a real longitudinal dataset used in Martinkova et al
+(2020) study, demonstrating differential item functioning in change (DIF-C)
+on Learning to Learn (LtL) test. Among other variables, it primarily contains
+binary-coded responses of 782 subjects to (mostly) multiple-choice test
+consisting of 41 items within 7 subscales (see \strong{Format} for details). Each
+respondent was tested twice in total -- the first time in Grade 6 and the
+second time in Grade 9. Most importantly, school track (variable \code{track_01}
+or \code{track}) is available, with 391 students attending basic school (BS) and
+391 pursuing selective academic school (AS). This dataset was created using
+propensity score matching algorithm to achieve similar characteristics in
+both tracks (see \strong{References} for details). To further simplify the work
+with \code{LtL} dataset, we provide computed total scores as well as 7 subscores,
+both for Grade 6 and Grade 9. The dataset also includes \emph{change} variables
+for each item (see \strong{Format} for details) for more detailed DIF-C analysis
+using multinomial regression model.
 }
 \keyword{datasets}

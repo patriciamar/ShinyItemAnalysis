@@ -1,6 +1,6 @@
 #' Homeostasis concept inventory full dataset
 #'
-#' @description \code{HCIdata} dataset consists of the responses of 669 students
+#' @description `HCIdata` dataset consists of the responses of 669 students
 #'   (405 males, 246 females, 18 without gender specification) to Homeostasis
 #'   Concept Inventory (HCI) multiple-choice test. It contains answers to 20
 #'   multiple-choice items, scored items, total score, gender membership,
@@ -20,31 +20,31 @@
 #' @keywords datasets
 #'
 #' @seealso
-#' \code{\link{HCI}} for HCI dichotomous dataset\cr
-#' \code{\link{HCItest}} for HCI multiple-choice dataset\cr
-#' \code{\link{HCIkey}} for key of correct answers for HCI\cr
-#' \code{\link{HCIgrads}}  for HCI dataset of graduate students\cr
-#' \code{\link{HCIprepost}} for HCI pretest and posttest scores\cr
-#' \code{\link{HCItestretest}} for HCI test-retest dataset
+#' [HCI()] for HCI dichotomous dataset\cr
+#' [HCItest()] for HCI multiple-choice dataset\cr
+#' [HCIkey()] for key of correct answers for HCI\cr
+#' [HCIgrads()]  for HCI dataset of graduate students\cr
+#' [HCIprepost()] for HCI pretest and posttest scores\cr
+#' [HCItestretest()] for HCI test-retest dataset
 #'
-#' @format \code{HCIdata} is a \code{data.frame} consisting of 669 observations
+#' @format `HCIdata` is a `data.frame` consisting of 669 observations
 #'   on the 47 variables.
 #'   \describe{
 #'   \item{A1-A20}{Multiple-choice items of the HCI test. }
-#'   \item{QR1-QR20}{Scored items of the HCI test, \code{"0"} incorrect,
-#'   \code{"1"} correct. }
+#'   \item{QR1-QR20}{Scored items of the HCI test, `"0"` incorrect,
+#'   `"1"` correct. }
 #'   \item{total}{Total test score. }
-#'   \item{gender}{Gender membership, \code{"M"} males, \code{"F"} females,
-#'   \code{"none"} undisclosed. }
+#'   \item{gender}{Gender membership, `"M"` males, `"F"` females,
+#'   `"none"` undisclosed. }
 #'   \item{major}{Identifier whether students plans to major in the life sciences. }
 #'   \item{yearc5}{Study year. }
-#'   \item{minority}{Minority membership, \code{"maj"} majority, \code{"min"}
-#'   Black/Hispanic minority, \code{"none"} undisclosed. }
+#'   \item{minority}{Minority membership, `"maj"` majority, `"min"`
+#'   Black/Hispanic minority, `"none"` undisclosed. }
 #'   \item{EnglishF}{Identifier whether English is the student's first language. }
-#'   \item{typeS}{Course type, \code{"allied"} allied health, \code{"majors"}
+#'   \item{typeS}{Course type, `"allied"` allied health, `"majors"`
 #'   physiology courses for
-#'   science majors, \code{"mixed majors"} courses for non-majors. }
-#'   \item{typeSCH}{Type of school, \code{"AC"} associate's college, \code{"BCAS"}
-#'   baccalaureate college: arts and sciences focus, \code{"R1"} research
-#'   university, \code{"MCU"} master's college and university. } }
+#'   science majors, `"mixed majors"` courses for non-majors. }
+#'   \item{typeSCH}{Type of school, `"AC"` associate's college, `"BCAS"`
+#'   baccalaureate college: arts and sciences focus, `"R1"` research
+#'   university, `"MCU"` master's college and university. } }
 "HCIdata"

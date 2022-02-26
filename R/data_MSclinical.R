@@ -1,6 +1,6 @@
 #' Clinical outcomes in multiple sclerosis patients dataset
 #'
-#' @description The \code{MSclinical} dataset contains clinical measures on multiple sclerosis patients.
+#' @description The `MSclinical` dataset contains clinical measures on multiple sclerosis patients.
 #'
 #' @usage data(MSclinical)
 #'
@@ -10,7 +10,7 @@
 #'
 #' @keywords datasets
 #'
-#' @format \code{MSclinical} is a \code{data.frame} consisting of 17 observations on
+#' @format `MSclinical` is a `data.frame` consisting of 17 observations on
 #'   13 variables.
 #'   \describe{
 #'   \item{LCLA}{Low-Contrast Letter Acuity test.  }

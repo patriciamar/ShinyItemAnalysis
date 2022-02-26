@@ -1,7 +1,7 @@
 #' Key of correct answers for homeostasis concept inventory dataset
 #'
-#' @description The \code{HCIkey} is a vector of factors representing correct
-#'   answers of \code{HCItest} dataset.
+#' @description The `HCIkey` is a vector of factors representing correct
+#'   answers of `HCItest` dataset.
 #'
 #' @usage data(HCIkey)
 #'
@@ -15,13 +15,13 @@
 #' @keywords datasets
 #'
 #' @seealso
-#' \code{\link{HCItest}} for HCI multiple-choice dataset\cr
-#' \code{\link{HCI}} for HCI dichotomous dataset\cr
-#' \code{\link{HCIdata}} for HCI full dataset\cr
-#' \code{\link{HCIgrads}}  for HCI dataset of graduate students\cr
-#' \code{\link{HCIprepost}} for HCI pretest and posttest scores\cr
-#' \code{\link{HCItestretest}} for HCI test-retest dataset
+#' [HCItest()] for HCI multiple-choice dataset\cr
+#' [HCI()] for HCI dichotomous dataset\cr
+#' [HCIdata()] for HCI full dataset\cr
+#' [HCIgrads()]  for HCI dataset of graduate students\cr
+#' [HCIprepost()] for HCI pretest and posttest scores\cr
+#' [HCItestretest()] for HCI test-retest dataset
 #'
 #' @format A nominal vector with 20 values representing correct answers to items
-#'   of \code{HCItest} dataset. For more details see \code{\link{HCItest}}.
+#'   of `HCItest` dataset. For more details see [HCItest()].
 "HCIkey"

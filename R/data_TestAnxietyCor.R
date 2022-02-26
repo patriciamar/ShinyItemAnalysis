@@ -1,7 +1,7 @@
 #' Correlation matrix for the test anxiety dataset
 #'
-#' @description The \code{TestAnxietyCor} dataset contains between-item correlations
-#'   for 20 items of the Test Anxiety dataset.
+#' The `TestAnxietyCor` dataset contains between-item correlations for 20 items
+#' of the Test Anxiety dataset.
 #'
 #' @usage data(TestAnxietyCor)
 #'
@@ -10,7 +10,7 @@
 #'
 #' @keywords datasets
 #'
-#' @format \code{TestAnxietyCor} is a \code{data.frame} consisting of between-item
+#' @format `TestAnxietyCor` is a `data.frame` consisting of between-item
 #'   correlations for 20 items.
 #'   \describe{
 #'   \item{i1}{Lack of confidence during tests. }

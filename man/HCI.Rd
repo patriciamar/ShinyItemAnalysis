@@ -3,19 +3,20 @@
 \docType{data}
 \name{HCI}
 \alias{HCI}
-\title{Homeostasis concept inventory dichotomous dataset}
+\title{Homeostasis Concept Inventory dichotomous dataset}
 \format{
 \code{HCI} is a \code{data.frame} consisting of 651 observations on
-  the 22 variables.
-  \describe{
-  \item{Item1-Item20}{Dichotomously scored items of the HCI test. }
-  \item{gender}{Gender membership, \code{"0"} males, \code{"1"} females. }
-  \item{major}{Identificator whether student plans to major in the life
-  sciences. }
+the 22 variables.
+\describe{
+\item{Item1-Item20}{Dichotomously scored items of the HCI test. }
+\item{gender}{Gender membership, \code{"0"} males, \code{"1"} females. }
+\item{major}{Identificator whether student plans to major in the life
+sciences. }
+\item{total}{Total score}
 }
 }
 \usage{
-data(HCI)
+HCI
 }
 \description{
 \code{HCI} dataset consists of the dichotomously scored responses of 651
@@ -25,17 +26,17 @@ identificator whether students plan to major in life sciences.
 }
 \references{
 McFarland, J. L., Price, R. M., Wenderoth, M. P., Martinkova, P.,
-  Cliff, W., Michael, J., ... & Wright, A. (2017). Development and validation
-  of the homeostasis concept inventory. CBE-Life Sciences Education, 16(2),
-  ar35. \doi{10.1187/cbe.16-10-0305}
+Cliff, W., Michael, J., ... & Wright, A. (2017). Development and validation
+of the homeostasis concept inventory. CBE-Life Sciences Education, 16(2),
+ar35. \doi{10.1187/cbe.16-10-0305}
 }
 \seealso{
-\code{\link{HCItest}} for HCI multiple-choice dataset\cr
-\code{\link{HCIkey}} for key of correct answers for HCI\cr
-\code{\link{HCIdata}} for HCI full dataset\cr
-\code{\link{HCIgrads}}  for HCI dataset of graduate students\cr
-\code{\link{HCIprepost}} for HCI pretest and posttest scores\cr
-\code{\link{HCItestretest}} for HCI test-retest dataset
+\code{\link[=HCItest]{HCItest()}} for HCI multiple-choice dataset\cr
+\code{\link[=HCIkey]{HCIkey()}} for key of correct answers for HCI\cr
+\code{\link[=HCIdata]{HCIdata()}} for HCI full dataset\cr
+\code{\link[=HCIgrads]{HCIgrads()}}  for HCI dataset of graduate students\cr
+\code{\link[=HCIprepost]{HCIprepost()}} for HCI pretest and posttest scores\cr
+\code{\link[=HCItestretest]{HCItestretest()}} for HCI test-retest dataset
 }
 \author{
 Jenny L. McFarland \cr Biology Department, Edmonds Community College

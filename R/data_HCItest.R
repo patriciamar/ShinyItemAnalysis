@@ -1,6 +1,6 @@
 #' Homeostasis concept inventory multiple-choice dataset
 #'
-#' @description \code{HCItest} dataset consists of the responses of 651
+#' @description `HCItest` dataset consists of the responses of 651
 #'   students (405 males, 246 females) to Homeostasis Concept Inventory (HCI)
 #'   multiple-choice test. It containts 20 items, vector of gender membership
 #'   and identificator whether students plan to major in life sciences.
@@ -17,18 +17,18 @@
 #' @keywords datasets
 #'
 #' @seealso
-#' \code{\link{HCIkey}} for key of correct answers for HCI\cr
-#' \code{\link{HCI}} for HCI dichotomous dataset\cr
-#' \code{\link{HCIdata}} for HCI full dataset\cr
-#' \code{\link{HCIgrads}}  for HCI dataset of graduate students\cr
-#' \code{\link{HCIprepost}} for HCI pretest and posttest scores\cr
-#' \code{\link{HCItestretest}} for HCI test-retest dataset
+#' [HCIkey()] for key of correct answers for HCI\cr
+#' [HCI()] for HCI dichotomous dataset\cr
+#' [HCIdata()] for HCI full dataset\cr
+#' [HCIgrads()]  for HCI dataset of graduate students\cr
+#' [HCIprepost()] for HCI pretest and posttest scores\cr
+#' [HCItestretest()] for HCI test-retest dataset
 #'
-#' @format \code{HCItest} is a \code{data.frame} consisting of 651 observations
+#' @format `HCItest` is a `data.frame` consisting of 651 observations
 #'   on the 22 variables.
 #'   \describe{
 #'   \item{Item1-Item20}{Multiple-choice items of the HCI test. }
-#'   \item{gender}{Gender membership, \code{"0"} males, \code{"1"} females. }
+#'   \item{gender}{Gender membership, `"0"` males, `"1"` females. }
 #'   \item{major}{Identificator whether student plans to major in the life
 #'   sciences. } }
 "HCItest"

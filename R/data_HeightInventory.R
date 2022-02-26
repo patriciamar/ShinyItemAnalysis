@@ -14,7 +14,6 @@
 #' @note Thanks to Karel Rečka and Hynek Cígler for sharing this dataset.
 #'
 #' @keywords datasets
-#' @md
 #' @encoding UTF-8
 #'
 #' @format `HeightInventory` is a `data.frame` consisting of 4,885 observations

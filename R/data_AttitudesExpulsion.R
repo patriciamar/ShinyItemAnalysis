@@ -10,7 +10,6 @@
 #'
 #' @keywords datasets
 #' @encoding utf-8
-#' @md
 #'
 #' @format A *data.frame* with `r nrow(AttitudesExpulsion)` rows and
 #' `r ncol(AttitudesExpulsion)` variables:

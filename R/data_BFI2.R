@@ -73,11 +73,10 @@
 #' @note Thanks to Martina Hřebíčková for sharing this dataset.
 #'
 #' @keywords datasets
-#' @md
 #' @encoding UTF-8
 #'
 #' @format
-#' \code{BFI2} is a \code{data.frame} consisting of
+#' `BFI2` is a `data.frame` consisting of
 #' `r format(nrow(BFI2), big.mark = ",")`
 #' observations on 64 variables.
 #' \describe{

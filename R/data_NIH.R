@@ -1,6 +1,6 @@
 #' NIH grant peer review scoring dataset
 #'
-#' @description The \code{NIH} dataset (Erosheva et al., 2020a) was sampled from
+#' @description The `NIH` dataset (Erosheva et al., 2020a) was sampled from
 #'   a full set of 54,740 R01 applications submitted by black and white
 #'   principal investigators (PIs) and reviewed by NIH's Center for Scientific
 #'   Review (CSR) during council years 2014--2016.
@@ -50,25 +50,25 @@
 #' @keywords datasets
 #'
 #' @seealso
-#' \code{\link{ICCrestricted}}
+#' [ICCrestricted()]
 #'
-#' @format \code{NIH} is a \code{data.frame} consisting of 5802 observations on
+#' @format `NIH` is a `data.frame` consisting of 5802 observations on
 #'   27 variables.
 #'   \describe{
 #'   \item{ID}{Proposal ID. }
 #'   \item{Score}{Preliminary Overall Impact score (1-9 integer scale, 1 best). }
 #'   \item{Significance, Investigator, Innovation, Approach, Environment }{
 #'   Preliminary Criterion Scores (1-9 integer scale, 1 best). }
-#'   \item{PIRace}{Principal investigator's self-identified race; \code{"White"}
-#'   or \code{"Black"}. }
+#'   \item{PIRace}{Principal investigator's self-identified race; `"White"`
+#'   or `"Black"`. }
 #'   \item{PIID}{Anonymized ID of principal investigator (PI). }
-#'   \item{PIGender}{PI's gender membership; \code{"Male"} or \code{"Female"}. }
-#'   \item{PIEthn}{PI's ethnicity; \code{"Hispanic/Latino"} or \code{"Non-Hispanic"}. }
-#'   \item{PICareerStage}{PI's career stage; \code{"ESI"} Early Stage Investigator,
-#'   \code{"Experienced"} Experienced Investigator, or \code{"Non-ES NI"}
+#'   \item{PIGender}{PI's gender membership; `"Male"` or `"Female"`. }
+#'   \item{PIEthn}{PI's ethnicity; `"Hispanic/Latino"` or `"Non-Hispanic"`. }
+#'   \item{PICareerStage}{PI's career stage; `"ESI"` Early Stage Investigator,
+#'   `"Experienced"` Experienced Investigator, or `"Non-ES NI"`
 #'   Non-Early Stage New Investigator. }
-#'   \item{PIDegree}{PI's degree; \code{"PhD"}, \code{"MD"}, \code{"MD/PhD"},
-#'   or \code{"Others"}. }
+#'   \item{PIDegree}{PI's degree; `"PhD"`, `"MD"`, `"MD/PhD"`,
+#'   or `"Others"`. }
 #'   \item{PIInst}{Lead PI's institution's FY 2014 total institution NIH funding;
 #'   5 bins with 1 being most-funded.}
 #'   \item{GroupID}{Group ID. }
@@ -76,13 +76,13 @@
 #'   \item{IRG}{IRG (Integrated Research Group) id. }
 #'   \item{AdminOrg}{Administering Organization id. }
 #'   \item{SRG}{SRG (Scientific Research Group) id. }
-#'   \item{PropType}{Application type, \code{"New"} or \code{"Renewal"}. }
+#'   \item{PropType}{Application type, `"New"` or `"Renewal"`. }
 #'   \item{Ammend}{Ammend. Logical. }
 #'   \item{ScoreAvg}{Average of the three overall scores from different reviewers. }
 #'   \item{ScoreAvgAdj}{Average of the three overall scores from different reviewers, increased by multiple of 0.001 of the worst score. }
-#'   \item{ScoreRank}{Project rank calculated based on \code{ScoreAvg}. }
-#'   \item{ScoreRankAdj}{Project rank calculated based on \code{ScoreAvgAdj}. }
-#'   \item{ScoreFinalChar}{Final Overall Impact score (1-9 integer scale, 1 best; \code{"ND"}
+#'   \item{ScoreRank}{Project rank calculated based on `ScoreAvg`. }
+#'   \item{ScoreRankAdj}{Project rank calculated based on `ScoreAvgAdj`. }
+#'   \item{ScoreFinalChar}{Final Overall Impact score (1-9 integer scale, 1 best; `"ND"`
 #'   refers to "not discussed")}
 #'   \item{ScoreFinal}{Final Overall Impact score (1-9 integer scale, 1 best). }
 #' }

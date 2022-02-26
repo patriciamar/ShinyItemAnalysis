@@ -1,15 +1,10 @@
 #' Graded dataset of admission test to medical school
 #'
-#' @md # allow RMarkdown formatting usage
-#'
-#' @description The \code{dataMedicalgraded} dataset consists of the responses
-#'   of 2,392 subjects (750 males, 1,633 females and 9 subjects without gender
-#'   specification) to multiple-choice admission test to a medical school. It
-#'   contains 100 items. Each item is graded with 0 to 4 points. Maximum of 4
-#'   points were set if all correct answers and none of incorrect answers were
-#'   selected.
-#'
-#' @usage data(dataMedicalgraded)
+#' The `dataMedicalgraded` dataset consists of the responses of 2,392 subjects
+#' (750 males, 1,633 females and 9 subjects without gender specification) to
+#' multiple-choice admission test to a medical school. It contains 100 items.
+#' Each item is graded with 0 to 4 points. Maximum of 4 points were set if all
+#' correct answers and none of incorrect answers were selected.
 #'
 #' @references Martinkova, P., & Drabinova, A. (2018). ShinyItemAnalysis for
 #' teaching psychometrics and to enforce routine analysis of educational tests.
@@ -21,8 +16,7 @@
 #'
 #' @keywords datasets
 #'
-#' @seealso \code{\link{dataMedical}}, \code{\link{dataMedicaltest}},
-#'   \code{\link{dataMedicalkey}}
+#' @seealso [dataMedical()], [dataMedicaltest()], [dataMedicalkey()]
 #'
 #' @format A `dataMedicalgraded` is a `data.frame` consisting of 2,392
 #'   observations on the following 102 variables.

@@ -21,15 +21,14 @@ The use of test and item analysis for improvement of tests. Workshop held at
 conference MEFANET, 2016, Brno, Czech Republic.
 }
 \usage{
-data(dataMedicalgraded)
+dataMedicalgraded
 }
 \description{
-The \code{dataMedicalgraded} dataset consists of the responses
-of 2,392 subjects (750 males, 1,633 females and 9 subjects without gender
-specification) to multiple-choice admission test to a medical school. It
-contains 100 items. Each item is graded with 0 to 4 points. Maximum of 4
-points were set if all correct answers and none of incorrect answers were
-selected.
+The \code{dataMedicalgraded} dataset consists of the responses of 2,392 subjects
+(750 males, 1,633 females and 9 subjects without gender specification) to
+multiple-choice admission test to a medical school. It contains 100 items.
+Each item is graded with 0 to 4 points. Maximum of 4 points were set if all
+correct answers and none of incorrect answers were selected.
 }
 \references{
 Martinkova, P., & Drabinova, A. (2018). ShinyItemAnalysis for
@@ -37,7 +36,6 @@ teaching psychometrics and to enforce routine analysis of educational tests.
 The R Journal, 10(2), 503--515, \doi{10.32614/RJ-2018-074}
 }
 \seealso{
-\code{\link{dataMedical}}, \code{\link{dataMedicaltest}},
-\code{\link{dataMedicalkey}}
+\code{\link[=dataMedical]{dataMedical()}}, \code{\link[=dataMedicaltest]{dataMedicaltest()}}, \code{\link[=dataMedicalkey]{dataMedicalkey()}}
 }
 \keyword{datasets}
