@@ -6,121 +6,82 @@
 \usage{
 ItemAnalysis(
   Data,
-  criterion = "none",
-  k = 3,
-  l = 1,
-  u = 3,
-  maxscore = NULL,
   minscore = NULL,
+  maxscore = NULL,
   cutscore = NULL,
-  bin = FALSE,
-  data,
-  y,
-  add.bin
+  criterion = NULL,
+  k = NULL,
+  l = NULL,
+  u = NULL,
+  bin = "deprecated"
 )
 }
 \arguments{
-\item{Data}{matrix or data.frame of items to be examined. Rows represent
+\item{Data}{\emph{matrix} or \emph{data.frame} of items to be examined. Rows represent
 respondents, columns represent items.}
+
+\item{minscore, maxscore}{\emph{integer}, theoretical minimal/maximal score. If not
+provided, these are computed on observed data. Automatically recycled to
+the number of columns of the data.}
+
+\item{cutscore}{\emph{integer} If provided, the input data are binarized
+accordingly. Automatically recycled to the number of columns of the data.}
 
 \item{criterion}{vector of criterion values.}
 
-\item{k}{numeric: number of groups to which may be data.frame x divided by
-the total score. Default value is 3.  See \strong{Details}.}
+\item{k, l, u}{Arguments passed on to \code{\link[=gDiscrim]{gDiscrim()}}. Provide these if you want to
+compute generalized upper-lower index along with a standard ULI (using \code{k}
+= 3, \code{l} = 1, \code{u} = 3), which is provided by default.}
 
-\item{l}{numeric: lower group. Default value is 1. See \strong{Details}.}
-
-\item{u}{numeric: upper group. Default value is 3. See \strong{Details}.}
-
-\item{maxscore}{numeric or vector: maximal score in ordinal items. If
-missing, vector of obtained maximal scores is imputed. See
-\strong{Details}.}
-
-\item{minscore}{numeric or vector: minimal score in ordinal items. If
-missing, vector of obtained minimal scores is imputed. See
-\strong{Details}.}
-
-\item{cutscore}{numeric or vector: cut-score used for binarization of ordinal
-data. If missing, vector of maximal scores is imputed. See
-\strong{Details}.}
-
-\item{bin}{logical: If TRUE, indices are printed also for binarized data. See
-\strong{Details}.}
-
-\item{data}{deprecated. Use argument \code{Data} instead.}
-
-\item{y}{deprecated. Use argument \code{criterion} instead.}
-
-\item{add.bin}{deprecated. Use argument \code{bin} instead.}
+\item{bin}{\emph{deprecated}, use \code{cutscore} instead. See the \strong{Details}.}
 }
 \value{
-\code{ItemAnalysis} function computes various traditional item
-  analysis indices. Output is a \code{data.frame} with following columns:
-  \item{\code{Difficulty}}{average score of the item divided by its range. }
-  \item{\code{Mean}}{average item score. } \item{\code{SD}}{standard
-  deviation of the item score. } \item{\code{SD.bin}}{standard deviation of
-  the item score for binarized data. }
-  \item{\code{Prop.max.score}}{proportion of maximal scores. }
-  \item{\code{Min.score}}{minimal score specified in \code{minscore}; if not
-  provided, observed minimal score. } \item{\code{Max.score}}{maximal score
-  specified in \code{maxscore}; if not provided, observed maximal score. }
-  \item{\code{obs.min}}{observed minimal score. }
-  \item{\code{obs.max}}{observed maximal score. }
-  \item{\code{Cut.Score}}{cut-score specified in \code{cutscore}. }
-  \item{\code{gULI}}{generalized ULI. } \item{\code{gULI.bin}}{generalized
-  ULI for binarized data. } \item{\code{ULI}}{discrimination with ULI using
-  the usual parameters (3 groups, comparing 1st and 3rd). }
-  \item{\code{ULI.bin}}{discrimination with ULI using the usual parameters
-  for binarized data (3 groups, comparing 1st and 3rd). }
-  \item{\code{RIT}}{item-total correlation (correlation between item score
-  and overall test score). } \item{\code{RIT.bin}}{item-total correlation for
-  binarized data. } \item{\code{RIR}}{item-rest correlation (correlation
-  between item score and overall test score without the given item). }
-  \item{\code{RIR.bin}}{item-rest correlation for binarized data. }
-  \item{\code{Corr.criterion}}{correlation between item score and criterion
-  \code{criterion}. } \item{\code{Corr.criterion.bin}}{correlation between
-  item score and criterion \code{criterion} for binarized data. }
-  \item{\code{Index.val}}{item validity index calculated as \code{cor(item,
-  criterion) * sqrt(((N - 1) / N) * var(item))}, see Allen and Yen (1979,
-  Ch.6.4). } \item{\code{Index.val.bin}}{item validity index for binarized
-  data. } \item{\code{Index.rel}}{item reliability index calculated as
-  \code{cor(item, test) * sqrt(((N - 1) / N) * var(item))}, see Allen and Yen
-  (1979, Ch.6.4). } \item{\code{Index.rel.bin}}{item reliability index for
-  binarized data. } \item{\code{Index.rel.drop}}{item reliability index
-  'drop' (scored without item). } \item{\code{Index.rel.drop.bin}}{item
-  reliability index 'drop' (scored without item) for binarized data. }
-  \item{\code{Alpha.drop}}{Cronbach's alpha without given item. In case of
-  two-item dataset, \code{NA}s are returned.}
-  \item{\code{Alpha.drop.bin}}{Cronbach's alpha without given item, for
-  binarized data. In case of two-item dataset, \code{NA}s are returned.}
-  \item{\code{Perc.miss}}{Percentage of missed responses on the particular
-  item. } \item{\code{Perc.nr}}{Percentage of respondents that did not
-  reached the item nor the subsequent ones, see \code{\link{recode_nr}}
-  function for further details. } With \code{bin = TRUE}, indices based on
-  binarized dataset are also provided and marked with \code{bin} suffix.
+A \code{data.frame} with following columns:
+\item{\code{Difficulty}}{average score of the item divided by its range.}
+\item{\code{Mean}}{average item score.}
+\item{\code{SD}}{standard deviation of the item score.}
+\item{\code{Cut.score}}{cut-score specified in \code{cutscore}.}
+\item{\code{obs.min}}{observed minimal score.}
+\item{\code{Min.score}}{minimal score specified in \code{minscore}; if not provided,
+observed minimal score.}
+\item{\code{obs.max}}{observed maximal score.}
+\item{\code{Max.score}}{maximal score specified in \code{maxscore}; if not provided,
+observed maximal score.}
+\item{\code{Prop.max.score}}{proportion of maximal scores.}
+\item{\code{RIT}}{item-total correlation (correlation between item score and
+overall test score).}
+\item{\code{RIR}}{item-rest correlation (correlation between item score and
+overall test score without the given item).}
+\item{\code{ULI}}{upper-lower index using the standard parameters (3 groups,
+comparing 1st and 3rd).}
+\item{\code{Corr.criterion}}{correlation between item score and criterion
+\code{criterion}.}
+\item{\code{gULI}}{generalized ULI. \code{NA} when the arguments \code{k}, \code{l}, and \code{u}
+were not provided.}
+\item{\code{Alpha.drop}}{Cronbach's alpha without given item.}
+\item{\code{Index.rel}}{Gulliksen's (1950) item reliability index.}
+\item{\code{Index.val}}{Gulliksen's (1950) item validity index.}
+\item{\code{Perc.miss}}{Percentage of missed responses on the particular item.}
+\item{\code{Perc.nr}}{Percentage of respondents that did not reached the item
+nor the subsequent ones, see \code{\link[=recode_nr]{recode_nr()}} for further details.}
 }
 \description{
-\code{ItemAnalysis} function computes various traditional item
-  analysis indices including difficulty, discrimination and item validity.
-  For ordinal items the difficulty and discrimination indices take into
-  account minimal item score as well as range.
+Computes various traditional item analysis indices including difficulty,
+discrimination and item validity. For ordinal items, the function returns
+scaled values for some of the indices. See the details below.
 }
 \details{
-For ordinal items the difficulty and discrimination indices take
-  into account minimal item score as well as range.
+For calculation of generalized ULI index, it is possible to specify a custom
+number of groups \code{k}, and which two groups \code{l} and \code{u} are to be compared.
 
-  For calculation of discrimination ULI index, it is possible to specify the
-  number of groups \code{k}, and which two groups \code{l} and \code{u} are
-  to be compared.
+In ordinal items, difficulty is calculated as difference of average score
+divided by range (maximal possible score \code{maxscore} minus minimal possible
+score \code{minscore}).
 
-  In ordinal items, difficulty is calculated as difference of average score
-  divided by range (maximal possible score \code{maxscore} minus minimal
-  possible score \code{minscore}).
-
-  If \code{bin} is set to \code{TRUE}, item analysis of binarized data is
-  included in the output table. In such a case, \code{cutscore} is used for
-  binarization. When binarizing the \code{Data}, values greater or equal to
-  cut-score are set to \code{1}, other values are set to \code{0}.
+If \code{cutscore} is provided, item analysis is conducted on binarized data;
+values greater or equal to cut-score are set to \code{1}, other values are set to
+\code{0}. Both the \code{minscore} and \code{maxscore} arguments are then ingored and set to
+0 and 1, respectively.
 }
 \examples{
 \dontrun{
@@ -145,37 +106,34 @@ head(ItemAnalysis(dataOrd, criterion = StudySuccess))
 # including also item analysis for binarized data
 head(ItemAnalysis(dataOrd,
   criterion = StudySuccess, k = 5, l = 4, u = 5,
-  maxscore = 4, minscore = 0, cutscore = 4, bin = TRUE
+  maxscore = 4, minscore = 0, cutscore = 4
 ))
 }
+
 }
 \references{
 Martinkova, P., Stepanek, L., Drabinova, A., Houdek, J.,
-  Vejrazka, M., & Stuka, C. (2017). Semi-real-time analyses of item
-  characteristics for medical school admission tests. In: Proceedings of the
-  2017 Federated Conference on Computer Science and Information Systems.
-  https://doi.org/10.15439/2017F380
+Vejrazka, M., & Stuka, C. (2017). Semi-real-time analyses of item
+characteristics for medical school admission tests. In: Proceedings of the
+2017 Federated Conference on Computer Science and Information Systems.
+https://doi.org/10.15439/2017F380
 
-  Allen, M. J. & Yen, W. M. (1979). Introduction to measurement theory.
-  Monterey, CA: Brooks/Cole.
+Gulliksen, H. (1950). \emph{Theory of mental tests.} John Wiley & Sons Inc.
+https://doi.org/10.1037/13240-000
 }
 \seealso{
-\code{\link{DDplot}}, \code{\link{gDiscrim}},
-  \code{\link{recode_nr}}
+\code{\link[=DDplot]{DDplot()}}, \code{\link[=gDiscrim]{gDiscrim()}}, \code{\link[=recode_nr]{recode_nr()}}
 }
 \author{
-Patricia Martinkova \cr
-Institute of Computer Science of the Czech Academy of Sciences \cr
-\email{martinkova@cs.cas.cz}
+Patricia Martinkova \cr Institute of Computer Science of the Czech
+Academy of Sciences \cr \email{martinkova@cs.cas.cz}
 
-Jan Netik \cr
-Institute of Computer Science of the Czech Academy of Sciences \cr
-\email{netik@cs.cas.cz}
+Jan Netik \cr Institute of Computer Science of the Czech Academy of
+Sciences \cr \email{netik@cs.cas.cz}
 
-Jana Vorlickova \cr
-Institute of Computer Science of the Czech Academy of Sciences
+Jana Vorlickova \cr Institute of Computer Science of the Czech Academy of
+Sciences
 
-Adela Hladka \cr
-Institute of Computer Science of the Czech Academy of Sciences \cr
-\email{hladka@cs.cas.cz}
+Adela Hladka \cr Institute of Computer Science of the Czech Academy of
+Sciences \cr \email{hladka@cs.cas.cz}
 }
