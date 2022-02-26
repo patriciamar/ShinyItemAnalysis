@@ -35,7 +35,7 @@ abbreviation.}
 are: \code{"ward.D"}, \code{"ward.D2"}, \code{"single"}, \code{"complete"},
 \code{"average"} (= UPGMA), \code{"mcquitty"} (= WPGMA), \code{"median"} (=
 WPGMC), \code{"centroid"} (= UPGMC) or \code{"none"} (clustering disabled).
-See \code{\link{hclust}} for a detailed description of available options.}
+See \code{\link[=hclust]{hclust()}} for a detailed description of available options.}
 
 \item{n_clust}{integer: the number of clusters you want to be outlined. When
 set to zero, clustering is disabled, ignoring the \code{clust_method}
@@ -55,7 +55,7 @@ plotted onto tiles.}
 
 \item{line_col}{character: color of the outline, either a HEX code (e.g.
 "#123456"), or one of \code{R}'s standard colors (see the
-\code{\link{colors}}).}
+\code{\link[=colors]{colors()}}).}
 
 \item{line_alpha}{numeric 0-1: the opacity of the outline.}
 
@@ -83,20 +83,20 @@ An object of class \code{ggplot} and/or \code{gg}.
 }
 \description{
 Computes and visualizes an item correlation matrix (also known
-  as a heatmap), offering several correlation "types" and optional clustering
-  (with possible cluster outlining). The function relies on
-  \code{\link{ggplot2}} package, providing a high customisability using "the
-  grammar of graphics" (see the examples below).
+as a heatmap), offering several correlation "types" and optional clustering
+(with possible cluster outlining). The function relies on
+\code{\link[=ggplot2]{ggplot2()}} package, providing a high customisability using "the
+grammar of graphics" (see the examples below).
 }
 \details{
 Correlation heatmap displays selected type of correlations between
-  items.The color of tiles indicates how much and in which way the items are
-  correlated - red color means positive correlation and blue color means
-  negative correlation. Correlation heatmap can be reordered using
-  hierarchical clustering method specified with \code{clust_method} argument.
-  When the desired number of clusters (argument \code{n_clust}) is not zero
-  and some clustering is demanded, the rectangles outlining the found
-  clusters are drawn.
+items.The color of tiles indicates how much and in which way the items are
+correlated - red color means positive correlation and blue color means
+negative correlation. Correlation heatmap can be reordered using
+hierarchical clustering method specified with \code{clust_method} argument.
+When the desired number of clusters (argument \code{n_clust}) is not zero
+and some clustering is demanded, the rectangles outlining the found
+clusters are drawn.
 }
 \examples{
 # use first 20 columns from HCI dataset (the remainder are not items)

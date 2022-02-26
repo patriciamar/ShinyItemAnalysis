@@ -3,35 +3,35 @@
 #' @description Computes and visualizes an item correlation matrix (also known
 #'   as a heatmap), offering several correlation "types" and optional clustering
 #'   (with possible cluster outlining). The function relies on
-#'   \code{\link{ggplot2}} package, providing a high customisability using "the
+#'   [ggplot2()] package, providing a high customisability using "the
 #'   grammar of graphics" (see the examples below).
 #'
-#' @param Data \code{matrix}, \code{data.frame} or \code{tibble}: either a
-#'   \code{data.frame} with scored items (as columns, one observation per row),
+#' @param Data `matrix`, `data.frame` or `tibble`: either a
+#'   `data.frame` with scored items (as columns, one observation per row),
 #'   or a correlation matrix.
 #'
 #' @param cor character: correlation "type" used to correlation matrix
-#'   computation; available options are \code{"poly"}, \code{"tetra"},
-#'   \code{"pearson"}, \code{"spearman"}, or \code{"none"} (in case you provide
+#'   computation; available options are `"poly"`, `"tetra"`,
+#'   `"pearson"`, `"spearman"`, or `"none"` (in case you provide
 #'   the correlation matrix directly instead). You can use an unambiguous
 #'   abbreviation.
 #'
 #' @param clust_method character: optional clustering method, available options
-#'   are: \code{"ward.D"}, \code{"ward.D2"}, \code{"single"}, \code{"complete"},
-#'   \code{"average"} (= UPGMA), \code{"mcquitty"} (= WPGMA), \code{"median"} (=
-#'   WPGMC), \code{"centroid"} (= UPGMC) or \code{"none"} (clustering disabled).
-#'   See \code{\link{hclust}} for a detailed description of available options.
+#'   are: `"ward.D"`, `"ward.D2"`, `"single"`, `"complete"`,
+#'   `"average"` (= UPGMA), `"mcquitty"` (= WPGMA), `"median"` (=
+#'   WPGMC), `"centroid"` (= UPGMC) or `"none"` (clustering disabled).
+#'   See [hclust()] for a detailed description of available options.
 #'
 #' @param n_clust integer: the number of clusters you want to be outlined. When
-#'   set to zero, clustering is disabled, ignoring the \code{clust_method}
+#'   set to zero, clustering is disabled, ignoring the `clust_method`
 #'   argument.
 #'
-#' @param shape character: tile appearance; either \code{circle} (default) to
-#'   map the correlation coefficient to circle size and color, or \code{square}
+#' @param shape character: tile appearance; either `circle` (default) to
+#'   map the correlation coefficient to circle size and color, or `square`
 #'   to draw square-shaped tiles with only shade denoting the coefficient
 #'   magnitude. You can use an unambiguous abbreviation of the two.
 #'
-#' @param labels logical: when \code{TRUE}, the correlation coefficients are
+#' @param labels logical: when `TRUE`, the correlation coefficients are
 #'   plotted onto tiles.
 #'
 #' @param labels_size numeric: label size in points (pts).
@@ -39,8 +39,8 @@
 #' @param line_size numeric: cluster outline width.
 #'
 #' @param line_col character: color of the outline, either a HEX code (e.g.
-#'   "#123456"), or one of \code{R}'s standard colors (see the
-#'   \code{\link{colors}}).
+#'   "#123456"), or one of `R`'s standard colors (see the
+#'   [colors()]).
 #'
 #' @param line_size numeric: cluster outline width.
 #'
@@ -56,12 +56,12 @@
 #'   items.The color of tiles indicates how much and in which way the items are
 #'   correlated - red color means positive correlation and blue color means
 #'   negative correlation. Correlation heatmap can be reordered using
-#'   hierarchical clustering method specified with \code{clust_method} argument.
-#'   When the desired number of clusters (argument \code{n_clust}) is not zero
+#'   hierarchical clustering method specified with `clust_method` argument.
+#'   When the desired number of clusters (argument `n_clust`) is not zero
 #'   and some clustering is demanded, the rectangles outlining the found
 #'   clusters are drawn.
 #'
-#' @return An object of class \code{ggplot} and/or \code{gg}.
+#' @return An object of class `ggplot` and/or `gg`.
 #'
 #' @author
 #' Jan Netik \cr

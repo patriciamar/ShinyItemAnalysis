@@ -3,16 +3,16 @@
 #' @aliases plotMultinomial
 #'
 #' @description Plots category probabilities functions estimated by
-#'   \code{multinom()} from the \code{nnet} package using the \pkg{ggplot2}
+#'   `multinom()` from the `nnet` package using the \pkg{ggplot2}
 #'   package.
 #'
-#' @param x object of class \code{multinom}
+#' @param x object of class `multinom`
 #' @param matching numeric: vector of matching criterion used for estimation in
-#'   \code{x}.
+#'   `x`.
 #' @param matching.name character: name of matching criterion used for
-#'   estimation in \code{x}.
+#'   estimation in `x`.
 #'
-#' @return An object of class \code{ggplot} and/or \code{gg}.
+#' @return An object of class `ggplot` and/or `gg`.
 #'
 #' @author
 #' Adela Hladka \cr
@@ -27,7 +27,7 @@
 #' \email{martinkova@@cs.cas.cz}
 #'
 #' @seealso
-#' \code{\link[nnet]{multinom}}
+#' [nnet::multinom()]
 #'
 #' @examples
 #' # loading data

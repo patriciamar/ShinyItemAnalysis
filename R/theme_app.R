@@ -1,14 +1,12 @@
-#' Complete theme for \code{ShinyItemAnalysis} graphics
+#' Complete theme for `ShinyItemAnalysis` graphics
 #'
-#' @aliases theme_app
-#'
-#' @description This complete theme is based on \code{theme_bw} and it was
-#'   modified for purposes of \code{ShinyItemAnalysis}.
+#' This complete theme is based on `theme_bw` and it was modified for purposes
+#' of `ShinyItemAnalysis`.
 #'
 #' @param base_size base font size
 #' @param base_family base font family
 #'
-#' @seealso \code{\link[ggplot2]{ggtheme}}
+#' @seealso [ggplot2::theme()]
 #'
 #' @examples
 #' library(ggplot2)

@@ -2,17 +2,17 @@
 #'
 #' @aliases recode_nr
 #'
-#' @description \code{recode_nr()} function recognizes and recodes not-reached
+#' @description `recode_nr()` function recognizes and recodes not-reached
 #' responses, i.e., missing responses to items such that all subsequent
 #' items are missed as well by the respondent.
 #'
 #' @param Data matrix or data.frame: object to be recoded, must include only
 #'   items columns and no additional information
 #' @param nr_code single character, integer or numeric: specifying how should be
-#'   recognized not-reached responses coded (default is \code{99})
-#' @param df deprecated. Use argument \code{Data} instead.
+#'   recognized not-reached responses coded (default is `99`)
+#' @param df deprecated. Use argument `Data` instead.
 #'
-#' @return A \code{data.frame} object.
+#' @return A `data.frame` object.
 #'
 #' @author
 #' Jan Netik \cr
@@ -24,7 +24,7 @@
 #' \email{martinkova@@cs.cas.cz} \cr
 #'
 #' @seealso
-#' \code{\link{ItemAnalysis}}
+#' [ItemAnalysis()]
 #'
 #' @examples
 #' data(HCI, package = "ShinyItemAnalysis")
@@ -67,25 +67,19 @@ recode_nr <- function(Data, nr_code = 99, df) {
     }
   }
 
-  nr_count <- apply(Data, 1, function(x) {
-    with(rle(is.na(unlist(x))), {
-      ifelse(values[length(values)],
-        lengths[values][length(lengths[values])],
-        NA
-      )
-    })
-  })
 
-  indx <- which(!is.na(nr_count))
-  rows <- rep(indx, nr_count[indx])
-  cols <-
-    unlist(lapply(nr_count[indx], function(x) {
-      seq(ncol(Data) - x + 1, ncol(Data))
-    }))
+  mask_nr <- function(vec, i) {
+    out <- logical(i)
+    while (i > 0 && vec[i]) { # don't let i == 0 (occurs when all values are NA)
+      out[i] <- TRUE
+      i <- i-1
+    }
+    out
+  }
 
-  arr_indx <- cbind(rows, cols)
+  mask <- t(apply(is.na(Data), 1, mask_nr, i = ncol(Data)))
 
-  Data[arr_indx] <- nr_code
+  Data[mask] <- nr_code
 
   return(Data)
 }

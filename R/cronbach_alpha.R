@@ -10,7 +10,6 @@
 #'
 #' @return A list with \eqn{\alpha} estimate and optionally CI.
 #'
-#' @md
 #' @importFrom stats qf var
 #' @keywords internal
 #'

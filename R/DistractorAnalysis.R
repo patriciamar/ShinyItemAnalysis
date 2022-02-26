@@ -8,32 +8,32 @@
 #' @param Data character: data matrix or data.frame with rows representing
 #'   unscored item responses from a multiple-choice test and columns
 #'   corresponding to the items.
-#' @param key character: answer key for the items. The \code{key} must be a
-#'   vector of the same length as \code{ncol(Data)}. In case it is not provided,
-#'   \code{criterion} needs to be specified.
+#' @param key character: answer key for the items. The `key` must be a
+#'   vector of the same length as `ncol(Data)`. In case it is not provided,
+#'   `criterion` needs to be specified.
 #' @param p.table logical: should the function return the proportions? If
-#'   \code{FALSE} (default), the counts are returned.
+#'   `FALSE` (default), the counts are returned.
 #' @param num.groups numeric: number of groups to which are the respondents
 #'   split.
 #' @param criterion numeric: numeric vector. If not provided, total score is
 #'   calculated and distractor analysis is performed based on it.
-#' @param crit.discrete logical: is \code{criterion} discrete? Default value is
-#'   \code{FALSE}. See details.
+#' @param crit.discrete logical: is `criterion` discrete? Default value is
+#'   `FALSE`. See details.
 #' @param cut.points numeric: numeric vector specifying cut points of
-#'   \code{criterion}. See details.
-#' @param data deprecated. Use argument \code{Data} instead.
-#' @param matching deprecated. Use argument \code{criterion} instead.
-#' @param match.discrete deprecated. Use argument \code{crit.discrete} instead.
+#'   `criterion`. See details.
+#' @param data deprecated. Use argument `Data` instead.
+#' @param matching deprecated. Use argument `criterion` instead.
+#' @param match.discrete deprecated. Use argument `crit.discrete` instead.
 #'
 #' @details This function is an adapted version of the
-#'   \code{\link[CTT]{distractor.analysis}} function from \pkg{CTT} package. In
-#'   case that no \code{criterion} is provided, the scores are calculated using the
-#'   item \code{Data} and \code{key}. The respondents are by default split
-#'   into the \code{num.groups}-quantiles and the number (or proportion) of
+#'   [CTT::distractor.analysis()] function from \pkg{CTT} package. In
+#'   case that no `criterion` is provided, the scores are calculated using the
+#'   item `Data` and `key`. The respondents are by default split
+#'   into the `num.groups`-quantiles and the number (or proportion) of
 #'   respondents in each quantile is reported with respect to their answers. In
-#'   case that \code{criterion} is discrete (\code{crit.discrete = TRUE}),
-#'   \code{criterion} is split based on its unique levels. Other cut points
-#'   can be specified via \code{cut.points} argument.
+#'   case that `criterion` is discrete (`crit.discrete = TRUE`),
+#'   `criterion` is split based on its unique levels. Other cut points
+#'   can be specified via `cut.points` argument.
 #'
 #' @author
 #' Adela Hladka \cr

@@ -12,8 +12,8 @@ theme_app(base_size = 15, base_family = "")
 \item{base_family}{base font family}
 }
 \description{
-This complete theme is based on \code{theme_bw} and it was
-  modified for purposes of \code{ShinyItemAnalysis}.
+This complete theme is based on \code{theme_bw} and it was modified for purposes
+of \code{ShinyItemAnalysis}.
 }
 \examples{
 library(ggplot2)
@@ -31,5 +31,5 @@ g
 g + theme_app()
 }
 \seealso{
-\code{\link[ggplot2]{ggtheme}}
+\code{\link[ggplot2:theme]{ggplot2::theme()}}
 }

@@ -49,18 +49,18 @@ calculated and distractor analysis is performed based on it.}
 }
 \description{
 Performs distractor analysis for each item and optional number
-  of groups.
+of groups.
 }
 \details{
 This function is an adapted version of the
-  \code{\link[CTT]{distractor.analysis}} function from \pkg{CTT} package. In
-  case that no \code{criterion} is provided, the scores are calculated using the
-  item \code{Data} and \code{key}. The respondents are by default split
-  into the \code{num.groups}-quantiles and the number (or proportion) of
-  respondents in each quantile is reported with respect to their answers. In
-  case that \code{criterion} is discrete (\code{crit.discrete = TRUE}),
-  \code{criterion} is split based on its unique levels. Other cut points
-  can be specified via \code{cut.points} argument.
+\code{\link[CTT:distractor.analysis]{CTT::distractor.analysis()}} function from \pkg{CTT} package. In
+case that no \code{criterion} is provided, the scores are calculated using the
+item \code{Data} and \code{key}. The respondents are by default split
+into the \code{num.groups}-quantiles and the number (or proportion) of
+respondents in each quantile is reported with respect to their answers. In
+case that \code{criterion} is discrete (\code{crit.discrete = TRUE}),
+\code{criterion} is split based on its unique levels. Other cut points
+can be specified via \code{cut.points} argument.
 }
 \examples{
 # loading 100-item medical admission test dataset

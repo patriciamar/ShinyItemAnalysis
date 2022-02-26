@@ -39,9 +39,9 @@ widths.}
 }
 \description{
 This function allows to generate Wright map (also called
-  item-person map) using \code{ggplot()} function from the \pkg{ggplot2}
-  package. Wright map is used to display histogram of factor scores and the
-  item difficulty parameters estimated by the Rasch IRT model.
+item-person map) using \code{ggplot()} function from the \pkg{ggplot2}
+package. Wright map is used to display histogram of factor scores and the
+item difficulty parameters estimated by the Rasch IRT model.
 }
 \examples{
 library(mirt)

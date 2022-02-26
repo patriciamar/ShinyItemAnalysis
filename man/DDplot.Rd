@@ -80,32 +80,33 @@ argument is ignored if user does not supply any \code{criterion}.}
 \item{data}{deprecated. Use argument \code{Data} instead.}
 }
 \description{
-Plots difficulty and (generalized) discrimination or criterion
-  validity for items of the multi-item measurement test using the
-  \pkg{ggplot2} package. Difficulty and discrimination/validity indices are
-  plotted for each item, items are ordered by their difficulty.
+Plots difficulty and (generalized) discrimination or criterion validity for
+items of the multi-item measurement test using the \pkg{ggplot2} package.
+Difficulty and discrimination/validity indices are plotted for each item,
+items are ordered by their difficulty.
 }
 \details{
-Discrimination is calculated using method specified in
-\code{discrim}. Default option \code{"ULI"} calculates difference in ratio of
-correct answers in upper and lower third of students. \code{"RIT"} index
-calculates correlation between item score and test total score. \code{"RIR"}
-index calculates correlation between item score and total score for the rest
-of the items. With option \code{"none"}, only difficulty is displayed.
+Discrimination is calculated using method specified in \code{discrim}. Default
+option \code{"ULI"} calculates difference in ratio of correct answers in upper and
+lower third of students. \code{"RIT"} index calculates correlation between item
+score and test total score. \code{"RIR"} index calculates correlation between item
+score and total score for the rest of the items. With option \code{"none"}, only
+difficulty is displayed.
 
-\code{"ULI"} index can be generalized using arguments \code{k}, \code{l} and
-\code{u}. Generalized ULI discrimination is then computed as follows: The
-function takes data on individuals, computes their total test score and then
-divides individuals into \code{k} groups. The lower and upper group are
-determined by \code{l} and \code{u} parameters, i.e.  l-th and u-th group
-where the ordering is defined by increasing total score.
+\code{"ULI"} index can be generalized using arguments \code{k}, \code{l} and \code{u}.
+Generalized ULI discrimination is then computed as follows: The function
+takes data on individuals, computes their total test score and then divides
+individuals into \code{k} groups. The lower and upper group are determined by \code{l}
+and \code{u} parameters, i.e.  l-th and u-th group where the ordering is defined
+by increasing total score.
 
-For ordinal data, difficulty is defined as relative score (achieved -
-minimal)/(maximal - minimal). Minimal score can be specified by
-\code{minscore}, maximal score can be specified by \code{maxscore}. Average
-score of items can be displayed with argument \code{average.score = TRUE}.
-Note that for binary data difficulty estimate is the same as average score of
-the item.
+For ordinal data, difficulty is defined as a relative score:\preformatted{(achieved - minimal)/(maximal - minimal)
+}
+
+Minimal score can be specified by
+\code{minscore}, maximal score can be specified by \code{maxscore}. Average score of
+items can be displayed with argument \code{average.score = TRUE}. Note that for
+binary data difficulty estimate is the same as average score of the item.
 
 Note that all correlations are estimated using Pearson correlation
 coefficient.
@@ -166,8 +167,8 @@ school admission tests. In: Proceedings of the 2017 Federated Conference on
 Computer Science and Information Systems.
 }
 \seealso{
-\code{\link[ShinyItemAnalysis]{gDiscrim}} for calculation of generalized ULI \cr
-\code{\link[ggplot2]{ggplot}} for general function to plot a \code{"ggplot"} object
+\code{\link[=gDiscrim]{gDiscrim()}} for calculation of generalized ULI \cr
+\code{\link[ggplot2:ggplot]{ggplot2::ggplot()}} for general function to plot a \code{"ggplot"} object
 }
 \author{
 Adela Hladka \cr

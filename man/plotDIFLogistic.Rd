@@ -65,7 +65,7 @@ plotDIFLogistic(x, item = 1, group.names = c("Group 1", "Group 2"), Data = Data,
 plotDIFLogistic(x, item = 1, draw.empirical = FALSE)
 }
 \seealso{
-\code{\link[difR]{difLogistic}}, \code{\link[ggplot2]{ggplot}}
+\code{\link[difR:difLogistic]{difR::difLogistic()}}, \code{\link[ggplot2:ggplot]{ggplot2::ggplot()}}
 }
 \author{
 Adela Hladka \cr

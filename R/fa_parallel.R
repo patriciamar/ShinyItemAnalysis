@@ -10,51 +10,54 @@
 #' Horn proposed a solution to the problem of optimal factor number
 #' identification using an approach based on a Monte Carlo simulation.
 #'
-#' First, several (20 by default) zero-factor \code{p}-variate normal
-#' distributions (where \code{p} is the number of columns) are obtained, and
-#' \code{p} × \code{p} correlation matrices are computed for them. Eigenvalues
+#' First, several (20 by default) zero-factor `p`-variate normal
+#' distributions (where `p` is the number of columns) are obtained, and
+#' `p` × `p` correlation matrices are computed for them. Eigenvalues
 #' of each matrix is then calculated in order to get an eigenvalues sampling
 #' distribution for each simulated variable.
 #'
 #' Traditionally, Horn obtains an average of each sampling distribution and
 #' these averages are used as a threshold which is compared with eigenvalues of
-#' the original, real data. However, \emph{usage of the mean was later disputed}
+#' the original, real data. However, *usage of the mean was later disputed*
 #' by Buja & Eyuboglu (1992), and 95th percentile of eigenvalues sampling
 #' distribution was suggested as a more accurate threshold. This, more recent
 #' method is used by default in the function.
 #'
-#' @param Data \emph{data.frame} or \emph{matrix}, dataset (where rows are
+#' @param Data *data.frame* or *matrix*, dataset (where rows are
 #'   observations and columns items) or correlation matrix (recognized
 #'   automatically).
-#' @param plot \emph{logical}, if \code{TRUE} (the default), show the plot along
+#' @param plot *logical*, if `TRUE` (the default), show the plot along
 #'   with the function results. To create the plot from the resulting object
-#'   afterwards, call \code{plot()}.
-#' @param method \emph{character}, either \code{fa}, \code{pca}, or \code{both}
+#'   afterwards, call `plot()`.
+#' @param method *character*, either `fa`, `pca`, or `both`
 #'   (the default). Which method to use for the eigenvalues simulation and
 #'   computation.
-#' @param cor \emph{character}, how to calculate the correlation matrix of the
-#'   real data. Can be either \code{pearson} (default), \code{tetrachoric} or
-#'   \code{polychoric}. Unambiguous abbreviations accepted.
-#' @param n_obs \emph{integer}, in case you provided the correlation matrix
+#' @param cor *character*, how to calculate the correlation matrix of the
+#'   real data. Can be either `pearson` (default), `tetrachoric` or
+#'   `polychoric`. Unambiguous abbreviations accepted.
+#' @param n_obs *integer*, in case you provided the correlation matrix
 #'   directly as the input, you have to provide the number of observations in
 #'   the original dataset.
-#' @param threshold \emph{character}, whether to use traditionall Horn's method
-#'   or more recent and well-performing quantile one. Either \code{mean} or
-#'   \code{quantile} (default). Can be abbreviated.
-#' @param p \emph{numeric} (0--1), probability for which the sample quantile is
-#'   produced. Defaults to \code{.95}. Ignored if \code{threshold = "mean"}.
-#' @param n_iter \emph{integer}, number of iterations, i.e. the number of
+#' @param threshold *character*, whether to use traditionall Horn's method
+#'   or more recent and well-performing quantile one. Either `mean` or
+#'   `quantile` (default). Can be abbreviated.
+#' @param p *numeric* (0--1), probability for which the sample quantile is
+#'   produced. Defaults to `.95`. Ignored if `threshold = "mean"`.
+#' @param n_iter *integer*, number of iterations, i.e. the number of
 #'   zero-factor multivariate normal distributions to sample. Defaults to
-#'   \code{20}.
-#' @param fm \emph{character}, factoring method. See \code{\link[psych]{fa}}
-#'   from the package \code{\link[psych]{psych}}.
-#' @param show_kaiser \emph{logical}, whether to show Kaiser boundary in the
+#'   `20`.
+#' @param fm *character*, factoring method. See [psych::fa()]
+#'   from the package [psych::psych()].
+#' @param show_kaiser *logical*, whether to show Kaiser boundary in the
 #'   plot (the default) or not.
-#' @inheritParams stats::cor
+#' @param use an optional character string giving a method for computing
+#'   covariances in the presence of missing values. This must be (an
+#'   abbreviation of) one of the strings "everything", "all.obs",
+#'   "complete.obs", "na.or.complete", or "pairwise.complete.obs".
 #' @inheritDotParams psych::polychoric -x -y -na.rm -polycor -std.err
 #'
-#' @return An object of class \code{data.frame} and \code{sia_parallel}. Can be
-#'   plotted using \code{plot()}.
+#' @return An object of class `data.frame` and `sia_parallel`. Can be
+#'   plotted using `plot()`.
 #'
 #' @examples
 #' data("TestAnxietyCor", package = "ShinyItemAnalysis")
@@ -108,7 +111,6 @@ fa_parallel <- function(Data, cor = "pearson", n_obs = NULL,
   if (p < 0 || p > 1) {
     stop("Probability must lie between 0 and 1!", call. = FALSE)
   }
-
 
   # circumvent the correlation estimation when Data is recognized as a corr. already
   if (is_corr(Data)) {
@@ -268,17 +270,17 @@ fa_parallel <- function(Data, cor = "pearson", n_obs = NULL,
 #' Plot Method for Parallel Analysis Output
 #'
 #' You can call this method to plot an existing object resulting from
-#' \code{fa_paralell()} function, which behaves as a standard \code{data.frame},
+#' `fa_paralell()` function, which behaves as a standard `data.frame`,
 #' but can be automatically recognized and processed with a dedicated plot
-#' method. Also, you can \emph{post-hoc} disable the Kaiser boundaries shown by
+#' method. Also, you can *post-hoc* disable the Kaiser boundaries shown by
 #' default.
 #'
-#' @param x object of class \code{sia_parallel} to plot.
-#' @param y \emph{ignored}
+#' @param x object of class `sia_parallel` to plot.
+#' @param y *ignored*
 #' @param ... additional argument:
-#'   \describe{\item{\code{show_kaiser}}{\emph{logical}, whether to show
+#'   \describe{\item{`show_kaiser`}{*logical*, whether to show
 #'   horizonal lines denoting Kaiser boundaries (eigenvalue 0 and/or 1 for FA
-#'   and/or PCA, respectively). Defaults to \code{TRUE}.}}
+#'   and/or PCA, respectively). Defaults to `TRUE`.}}
 #'
 #' @examples
 #' \dontrun{

@@ -44,21 +44,21 @@ Default value is 100.}
 \item{ci}{numeric: confidence interval. Default value is 0.95.}
 
 \item{seed}{seed for simulations. Default value is \code{NULL}, random seed.
-See \code{\link[lme4:bootMer]{lme4::bootMer}} for more detail.}
+See \code{\link[lme4:bootMer]{lme4::bootMer()}} for more detail.}
 }
 \value{
 A \code{data.frame} with the following columns: \item{n_sel}{number
-  of ratees selected/subsetted.} \item{prop_sel}{proportion of ratees
-  selected.} \item{dir}{direction of range-restriction. \code{NA} if range is
-  effectively not restricted (100% used).} \item{VarID}{variance due to
-  ratee, "true variance", between-group variance.} \item{VarResid}{residual
-  variance.} \item{VarTotal}{total variance.} \item{ICC1}{single-rater
-  inter-rater reliability.} \item{ICC1_LCI}{lower bound of the confidence
-  interval for \code{ICC1}.} \item{ICC1_UCI}{upper bound of the confidence
-  interval for \code{ICC1}.} \item{ICC3}{multiple-rater inter-rater
-  reliability.} \item{ICC3_LCI}{lower bound of the confidence interval for
-  \code{ICC3}.} \item{ICC3_UCI}{upper bound of the confidence interval for
-  \code{ICC3}.}
+of ratees selected/subsetted.} \item{prop_sel}{proportion of ratees
+selected.} \item{dir}{direction of range-restriction. \code{NA} if range is
+effectively not restricted (100\% used).} \item{VarID}{variance due to
+ratee, "true variance", between-group variance.} \item{VarResid}{residual
+variance.} \item{VarTotal}{total variance.} \item{ICC1}{single-rater
+inter-rater reliability.} \item{ICC1_LCI}{lower bound of the confidence
+interval for \code{ICC1}.} \item{ICC1_UCI}{upper bound of the confidence
+interval for \code{ICC1}.} \item{ICC3}{multiple-rater inter-rater
+reliability.} \item{ICC3_LCI}{lower bound of the confidence interval for
+\code{ICC3}.} \item{ICC3_UCI}{upper bound of the confidence interval for
+\code{ICC3}.}
 }
 \description{
 Function estimating reliability with intra-class correlation for the complete

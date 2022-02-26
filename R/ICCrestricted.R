@@ -3,39 +3,39 @@
 #' Function estimating reliability with intra-class correlation for the complete
 #' or for the range-restricted sample.
 #'
-#' @param Data \code{matrix} or \code{data.frame} which includes variables
-#'   describing ID of ratees (specified in \code{case}), ratings (specified in
-#'   \code{var}), and (optionally) rank of ratees (specified in \code{rank}).
-#' @param case character: name of the variable in \code{Data} with ID of the
+#' @param Data `matrix` or `data.frame` which includes variables
+#'   describing ID of ratees (specified in `case`), ratings (specified in
+#'   `var`), and (optionally) rank of ratees (specified in `rank`).
+#' @param case character: name of the variable in `Data` with ID of the
 #'   ratee (subject or object being evaluated, such as a respondent, proposal,
 #'   patient, applicant etc.)
-#' @param var character: name of the variable in \code{Data} with the
+#' @param var character: name of the variable in `Data` with the
 #'   ratings/scores.
 #' @param rank numeric: vector of ranks of ratees. If not provided, rank of
-#'   ratee is calculated based on average rating based on \code{var} variable.
+#'   ratee is calculated based on average rating based on `var` variable.
 #' @param dir character: direction of range-restriction, available options are
-#'   \code{"top"} (default) or \code{"bottom"}. Can be an unambiguous
-#'   abbreviation (i.e., \code{"t"} or \code{"b"}).
+#'   `"top"` (default) or `"bottom"`. Can be an unambiguous
+#'   abbreviation (i.e., `"t"` or `"b"`).
 #' @param sel numeric: selected number (given > 1) or percentage (given <= 1) of
 #'   ratees. Default value is 1 (complete dataset).
 #' @param nsim numeric: number of simulations for bootstrap confidence interval.
 #'   Default value is 100.
 #' @param ci numeric: confidence interval. Default value is 0.95.
-#' @param seed seed for simulations. Default value is \code{NULL}, random seed.
-#'   See \code{\link[lme4:bootMer]{lme4::bootMer}} for more detail.
+#' @param seed seed for simulations. Default value is `NULL`, random seed.
+#'   See [lme4::bootMer()] for more detail.
 #'
-#' @returns A \code{data.frame} with the following columns: \item{n_sel}{number
+#' @returns A `data.frame` with the following columns: \item{n_sel}{number
 #'   of ratees selected/subsetted.} \item{prop_sel}{proportion of ratees
-#'   selected.} \item{dir}{direction of range-restriction. \code{NA} if range is
+#'   selected.} \item{dir}{direction of range-restriction. `NA` if range is
 #'   effectively not restricted (100% used).} \item{VarID}{variance due to
 #'   ratee, "true variance", between-group variance.} \item{VarResid}{residual
 #'   variance.} \item{VarTotal}{total variance.} \item{ICC1}{single-rater
 #'   inter-rater reliability.} \item{ICC1_LCI}{lower bound of the confidence
-#'   interval for \code{ICC1}.} \item{ICC1_UCI}{upper bound of the confidence
-#'   interval for \code{ICC1}.} \item{ICC3}{multiple-rater inter-rater
+#'   interval for `ICC1`.} \item{ICC1_UCI}{upper bound of the confidence
+#'   interval for `ICC1`.} \item{ICC3}{multiple-rater inter-rater
 #'   reliability.} \item{ICC3_LCI}{lower bound of the confidence interval for
-#'   \code{ICC3}.} \item{ICC3_UCI}{upper bound of the confidence interval for
-#'   \code{ICC3}.}
+#'   `ICC3`.} \item{ICC3_UCI}{upper bound of the confidence interval for
+#'   `ICC3`.}
 #'
 #'
 #' @author

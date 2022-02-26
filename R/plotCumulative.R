@@ -3,17 +3,17 @@
 #' @aliases plotCumulative
 #'
 #' @description Function for plotting cumulative and category probabilities
-#'   function estimated by \code{vglm()} function from the \code{VGAM} package
+#'   function estimated by `vglm()` function from the `VGAM` package
 #'   using the \pkg{ggplot2} package.
 #'
-#' @param x object of class \code{vglm}
+#' @param x object of class `vglm`
 #' @param type character: type of plot to be displayed. Options are
-#'   \code{"cumulative"} (default) for cumulative probabilities and
-#'   \code{"category"} for category probabilities.
+#'   `"cumulative"` (default) for cumulative probabilities and
+#'   `"category"` for category probabilities.
 #' @param matching.name character: name of matching criterion used for
-#'   estimation in \code{x}.
+#'   estimation in `x`.
 #'
-#' @return An object of class \code{ggplot} and/or \code{gg}.
+#' @return An object of class `ggplot` and/or `gg`.
 #'
 #' @author Tomas Jurica \cr Institute of Computer Science of the Czech Academy
 #' of Sciences \cr
@@ -24,7 +24,7 @@
 #' Patricia Martinkova \cr Institute of Computer Science of the Czech Academy of
 #' Sciences \cr \email{martinkova@@cs.cas.cz} \cr
 #'
-#' @seealso \code{\link[VGAM]{vglm}}
+#' @seealso [VGAM::vglm()]
 #'
 #' @examples
 #' # loading packages

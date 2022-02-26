@@ -20,8 +20,8 @@ An object of class \code{ggplot} and/or \code{gg}.
 }
 \description{
 Plots category probabilities functions estimated by
-  \code{multinom()} from the \code{nnet} package using the \pkg{ggplot2}
-  package.
+\code{multinom()} from the \code{nnet} package using the \pkg{ggplot2}
+package.
 }
 \examples{
 # loading data
@@ -37,7 +37,7 @@ plotMultinomial(fit, matching, matching.name = "Z-score")
 
 }
 \seealso{
-\code{\link[nnet]{multinom}}
+\code{\link[nnet:multinom]{nnet::multinom()}}
 }
 \author{
 Adela Hladka \cr

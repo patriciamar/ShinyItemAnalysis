@@ -2,11 +2,11 @@
 #'
 #' An interactive shiny application to run test and item analysis. By default,
 #' the function runs the application as a background process ("Jobs" tab in the
-#' "RStudio" IDE). User is then free to use the \code{R} Console for other work
+#' "RStudio" IDE). User is then free to use the `R` Console for other work
 #' and to try the sample R code examples. You can still run the app the usual
-#' way in the console by specifying \code{background = FALSE}.
+#' way in the console by specifying `background = FALSE`.
 #'
-#' @param background \emph{logical}, should the application be run as a
+#' @param background *logical*, should the application be run as a
 #'   background process (in the 'RStudio')?
 #'
 #' @inheritDotParams utils::install.packages -pkgs -libs_only
@@ -87,7 +87,7 @@ startShinyItemAnalysis <- function(background = TRUE, ...) {
 
       message(
         "\n----------------------------------------------------------------\n",
-        "ShinyItemAnalysis will start shortly as a background process.\n",
+        "ShinyItemAnalysis has started as a background process.\n",
         "The process automatically stops as you close the browser window.\n",
         "----------------------------------------------------------------"
       )

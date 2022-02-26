@@ -3,14 +3,14 @@
 #' @aliases plotAdjacent
 #'
 #' @description Function for plotting category probabilities function estimated
-#'   by \code{vglm()} function from the \code{VGAM} package using the
+#'   by `vglm()` function from the `VGAM` package using the
 #'   \pkg{ggplot2} package.
 #'
-#' @param x object of class \code{vglm}
+#' @param x object of class `vglm`
 #' @param matching.name character: name of matching criterion used for
-#'   estimation in \code{x}.
+#'   estimation in `x`.
 #'
-#' @return An object of class \code{ggplot} and/or \code{gg}.
+#' @return An object of class `ggplot` and/or `gg`.
 #'
 #' @author
 #' Tomas Jurica \cr
@@ -25,7 +25,7 @@
 #' \email{martinkova@@cs.cas.cz}
 #'
 #' @seealso
-#' \code{\link[VGAM]{vglm}}
+#' [VGAM::vglm()]
 #'
 #' @examples
 #' # loading packages

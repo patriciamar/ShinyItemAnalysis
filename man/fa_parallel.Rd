@@ -55,14 +55,13 @@ afterwards, call \code{plot()}.}
 \item{show_kaiser}{\emph{logical}, whether to show Kaiser boundary in the
 plot (the default) or not.}
 
-\item{fm}{\emph{character}, factoring method. See \code{\link[psych]{fa}}
-from the package \code{\link[psych]{psych}}.}
+\item{fm}{\emph{character}, factoring method. See \code{\link[psych:fa]{psych::fa()}}
+from the package \code{\link[psych:00.psych-package]{psych::psych()}}.}
 
-\item{use}{an optional character string giving a
-    method for computing covariances in the presence
-    of missing values.  This must be (an abbreviation of) one of the strings
-    \code{"everything"}, \code{"all.obs"}, \code{"complete.obs"},
-    \code{"na.or.complete"}, or \code{"pairwise.complete.obs"}.}
+\item{use}{an optional character string giving a method for computing
+covariances in the presence of missing values. This must be (an
+abbreviation of) one of the strings "everything", "all.obs",
+"complete.obs", "na.or.complete", or "pairwise.complete.obs".}
 
 \item{...}{
   Arguments passed on to \code{\link[psych:tetrachor]{psych::polychoric}}
@@ -79,7 +78,7 @@ from the package \code{\link[psych]{psych}}.}
 }
 \value{
 An object of class \code{data.frame} and \code{sia_parallel}. Can be
-  plotted using \code{plot()}.
+plotted using \code{plot()}.
 }
 \description{
 Computes the eigenvalues of the sample correlation matrix and the eigenvalues

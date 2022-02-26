@@ -4,30 +4,30 @@
 #'
 #' @description Plots characteristic curve of 2PL logistic DIF model
 #'
-#' @param x an object of \code{"Logistic"} class. See \strong{Details}.
+#' @param x an object of `"Logistic"` class. See **Details**.
 #' @param item numeric: number of item to be plotted
 #' @param item.name character: the name of item to be used as title of plot.
 #' @param group.names character: names of reference and focal group.
-#' @param Data numeric: the data matrix. See \strong{Details}.
-#' @param group numeric: the vector of group membership. See \strong{Details}.
+#' @param Data numeric: the data matrix. See **Details**.
+#' @param group numeric: the vector of group membership. See **Details**.
 #' @param match character or numeric: specifies observed score used for
-#'   matching. Can be either \code{"score"}, or numeric vector of the same
-#'   length as number of observations in \code{Data}. See \strong{Details}.
+#'   matching. Can be either `"score"`, or numeric vector of the same
+#'   length as number of observations in `Data`. See **Details**.
 #' @param draw.empirical logical: whether empirical probabilities should be
-#'   calculated and plotted. Default value is \code{TRUE}.
+#'   calculated and plotted. Default value is `TRUE`.
 #'
 #' @usage plotDIFLogistic(x, item = 1, item.name, group.names = c("Reference",
 #'   "Focal"), Data, group, match, draw.empirical = TRUE)
 #'
 #' @details This function plots characteristic curves of 2PL logistic DIF model
-#' fitted by \code{difLogistic()} function from difR package using ggplot2.
+#' fitted by `difLogistic()` function from difR package using ggplot2.
 #'
-#' \code{Data} and \code{group} are used to calculate empirical probabilities
-#' for reference and focal group. \code{match} should be the same as in
-#' \code{x$match}. In case that an observed score is used as a matching variable
-#' instead of the total score or the standardized score, \code{match} needs to
+#' `Data` and `group` are used to calculate empirical probabilities
+#' for reference and focal group. `match` should be the same as in
+#' `x$match`. In case that an observed score is used as a matching variable
+#' instead of the total score or the standardized score, `match` needs to
 #' be a numeric vector of the same the same length as the number of observations
-#' in \code{Data}.
+#' in `Data`.
 #'
 #' @author
 #' Adela Hladka \cr
@@ -60,7 +60,7 @@
 #'
 #' # Not plotting empirical probabilities
 #' plotDIFLogistic(x, item = 1, draw.empirical = FALSE)
-#' @seealso \code{\link[difR]{difLogistic}}, \code{\link[ggplot2]{ggplot}}
+#' @seealso [difR::difLogistic()], [ggplot2::ggplot()]
 #'
 #' @importFrom ggplot2 stat_function scale_colour_manual scale_linetype_manual
 #'   guides guide_legend ggtitle

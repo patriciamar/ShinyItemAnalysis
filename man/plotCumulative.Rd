@@ -21,8 +21,8 @@ An object of class \code{ggplot} and/or \code{gg}.
 }
 \description{
 Function for plotting cumulative and category probabilities
-  function estimated by \code{vglm()} function from the \code{VGAM} package
-  using the \pkg{ggplot2} package.
+function estimated by \code{vglm()} function from the \code{VGAM} package
+using the \pkg{ggplot2} package.
 }
 \examples{
 # loading packages
@@ -45,7 +45,7 @@ plotCumulative(fit, type = "category", matching.name = "Total score")
 
 }
 \seealso{
-\code{\link[VGAM]{vglm}}
+\code{\link[VGAM:vglm]{VGAM::vglm()}}
 }
 \author{
 Tomas Jurica \cr Institute of Computer Science of the Czech Academy

@@ -44,7 +44,7 @@ head(HCImissedNR)
 summary(HCImissedNR)
 }
 \seealso{
-\code{\link{ItemAnalysis}}
+\code{\link[=ItemAnalysis]{ItemAnalysis()}}
 }
 \author{
 Jan Netik \cr
