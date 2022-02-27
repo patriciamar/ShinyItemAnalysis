@@ -16,11 +16,12 @@ uiReports <-
     h4("Settings of report"),
     p(
       code("ShinyItemAnalysis"), " offers an option to download a report in HTML or PDF format. PDF report
-             creation requires the latest version of", a("MiKTeX",
-        href = "https://miktex.org/howto/install-miktex",
-        target = "_blank"
-      ),
-      "(or other TeX distribution). If you don't have the latest installation, please, use the HTML report."
+             requires a TeX distribution, if you want to run the app locally on your computer. For", code("R"),
+      "users, we recommend a lightweight ",
+      a(href = "https://yihui.org/tinytex/", "TinyTeX distribution", target = "_blank", .noWS = "after"),
+      ", which is easy to install directly from", code("R"),
+      "console with", code("tinytex::install_tinytex()", .noWS = "after"),
+      ". You can use HTML report without any additional utilities, though."
     ),
     p(
       "There is also an option to use customized settings. When checking the", strong("Customize settings,"),
@@ -434,7 +435,7 @@ uiReports <-
       inputId = "generate",
       label = "Generate report",
       class = "btn btn-primary",
-      icon = icon("bar-chart-o")
+      icon = icon("chart-bar")
     )),
     tags$style(HTML("#download_report_button { margin-left: 25px }")),
     div(style = "display:inline-block", uiOutput("download_report_button"))

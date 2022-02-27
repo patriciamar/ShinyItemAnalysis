@@ -128,7 +128,7 @@ uiAbout <- tabPanel("",
         a("online", href = "https://shiny.cs.cas.cz/ShinyItemAnalysis/", target = "_blank"), "is 1.4.0.",
         br(),
         "The newest development version available on ",
-        a("GitHub", href = "https://github.com/patriciamar/ShinyItemAnalysis", target = "_blank"), "is 1.4.0.",
+        a("GitHub", href = "https://github.com/patriciamar/ShinyItemAnalysis", target = "_blank"), "is 1.4.1.",
       )
     )
   ),

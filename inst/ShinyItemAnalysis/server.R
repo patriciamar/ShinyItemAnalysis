@@ -4,7 +4,7 @@
 
 require(deltaPlotR) # one-use, may be implemented from sratch
 require(DT)
-require(data.table)
+require(data.table) # removal candidate
 require(difNLR)
 require(difR)
 require(ggdendro) # it is not so difficult to carry on our own
@@ -15,7 +15,6 @@ require(knitr)
 require(latticeExtra)
 require(ltm)
 require(mirt)
-require(msm) # used for deltamethod, which is easily done without msm
 require(lme4)
 require(nnet)
 require(plotly)
@@ -47,7 +46,7 @@ options(shiny.maxRequestSize = 30 * 1024^2)
 
 function(input, output, session) {
 
-  # kills the local server as the window closes
+  # kills the session as the window closes
   session$onSessionEnded(function(x) {
     stopApp()
   })

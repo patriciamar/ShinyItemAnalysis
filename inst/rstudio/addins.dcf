@@ -1,0 +1,4 @@
+Name: Run ShinyItemAnalysis
+Description: Runs the application as a background process ("Jobs" tab in your Console pane).
+Binding: run_app
+Interactive: false

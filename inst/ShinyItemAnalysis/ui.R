@@ -47,6 +47,14 @@ ui <- tagList(
       href = "margins_and_paddings.css"
     ),
 
+    # social media card
+    tags$meta(name = "twitter:card", content = "summary_large_image"),
+    tags$meta(name = "twitter:site", content = "@PMartinkova"),
+    tags$meta(name = "twitter:creator", content = "@PMartinkova"),
+    tags$meta(name = "twitter:title", content = "ShinyItemAnalysis"),
+    tags$meta(name = "twitter:description", content = "Test and Item Analysis with Shiny"),
+    tags$meta(name = "twitter:image", content = "card.png"),
+
     # math typesetting
     tags$link(
       rel = "stylesheet",
@@ -138,7 +146,7 @@ ui <- tagList(
            <div class = "panel-footer", style = "opacity: 1.00; z-index: 1000;">
               <p style = "margin:8px 0 0 0;">
                 <div class = "footer-title"> <img src = "sia_logo.svg" style="width: 57px; margin-right: 10px;"> ShinyItemAnalysis </div>
-                <div class = "footer-subtitle"> Test and item analysis via Shiny | Version 1.4.0 </div>
+                <div class = "footer-subtitle"> Test and item analysis via Shiny | Version 1.4.1 </div>
                 <span style = "float:right">
                   <a href = "http://shinyitemanalysis.org/" id = "tooltipweb" target="_blank"> <img src = "footer_web_icon.png", class = "footer-icons"> </a>
                   <a href = "https://github.com/patriciamar/ShinyItemAnalysis/" id = "tooltipgithub" target="_blank"> <img src = "footer_github_icon.png", class = "footer-icons"> </a>
