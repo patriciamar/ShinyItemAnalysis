@@ -96,8 +96,8 @@ output$itemanalysis_DDplot <- renderPlotly({
     ggplotly(tooltip = c("item", "fill", "value", "yintercept"))
 
   # renaming/removing unnecessary text
-  for (i in 1:2) {
-    for (j in 1:length(p$x$data[[i]][["text"]])) {
+  for (i in seq_along(p$x$data)) {
+    for (j in seq_along(p$x$data[[i]][["text"]])) {
       p$x$data[[i]][["text"]][j] <-
         str_remove(
           str_replace(
@@ -111,8 +111,10 @@ output$itemanalysis_DDplot <- renderPlotly({
   }
 
   if (input$itemanalysis_DDplot_threshold) {
-    p$x$data[[3]][["text"]] <-
-      str_replace(p$x$data[[3]][["text"]], "yintercept", "Threshold")
+    for (i in seq_along(p$x$data)) {
+      p$x$data[[i]][["text"]] <-
+        str_replace(p$x$data[[i]][["text"]], "yintercept", "Threshold")
+    }
   }
 
   p %>% plotly::config(displayModeBar = FALSE)
@@ -168,6 +170,22 @@ output$itemanalysis_table_text <- renderUI({
     "&ndash; average item score, ",
     "<b>SD</b>&nbsp;",
     "&ndash; standard deviation, ",
+    "<b>Min.</b>&nbsp;",
+    "&ndash; set minimal item score, ",
+    "<b>Obs. min.</b>&nbsp;",
+    "&ndash; observed minimal item score, ",
+    "<b>Max.</b>&nbsp;",
+    "&ndash; set maximal item score, ",
+    "<b>Obs. max.</b>&nbsp;",
+    "&ndash; observed maximal item score, ",
+    "<b>Prop. max.</b>&nbsp;",
+    "&ndash; proportion of maximal scores, ",
+    "<b>RIT</b>&nbsp;",
+    "&ndash; Pearson correlation between item and total score, ",
+    "<b>RIR</b>&nbsp;",
+    "&ndash; Pearson correlation between item and rest of the items, ",
+    "<b>I-C cor.</b>&nbsp;",
+    "&ndash; item-criterion correlation, ",
     "<b>ULI</b>&nbsp;",
     "&ndash; Upper-Lower Index, ",
     if (num.groups != 3 | range1 != 1 | range2 != 3) {
@@ -180,20 +198,14 @@ output$itemanalysis_table_text <- renderUI({
         " group out of total number of ", num.groups, " groups, "
       )
     },
-    "<b>RIT</b>&nbsp;",
-    "&ndash; Pearson correlation between item and total score, ",
-    "<b>RIR</b>&nbsp;",
-    "&ndash; Pearson correlation between item and rest of the items, ",
     "<b>Rel.</b>&nbsp;",
     "&ndash; item reliability index, ",
-    "<b>Rel. drop</b>&nbsp;",
-    "&ndash; as previous, but scored without the respective item, ",
-    "<b>I-C cor.</b>&nbsp;",
-    "&ndash; item-criterion correlation, ",
-    "<b>Val. index</b>&nbsp;",
+    "<b>Val.</b>&nbsp;",
     "&ndash; item validity index, ",
     "<b>\\(\\alpha\\)&nbsp;drop </b>&nbsp;",
-    "&ndash; Cronbach\'s \\(\\alpha\\) of test without given item (the value for the test as a whole is presented in the note below), ",
+    "&ndash; Cronbach\'s \\(\\alpha\\) of test without given item
+    (Cronbach\'s \\(\\alpha\\) for the test as a whole is provided in the note below
+    the table), ",
     "<b>Missed</b>&nbsp;",
     "&ndash; percentage of missed responses on the particular item, ",
     "<b>Not-reached</b>&nbsp;",
@@ -203,49 +215,51 @@ output$itemanalysis_table_text <- renderUI({
 
 # ** Traditional item analysis table ######
 itemanalysis_table <- reactive({
+  # get gULI params from UI, if they are NOT different from default, assign NULL
   k <- input$itemanalysis_DDplot_groups_slider
   l <- input$itemanalysis_DDplot_range_slider[[1]]
   u <- input$itemanalysis_DDplot_range_slider[[2]]
 
+  k <- if (k != 3) k
+  l <- if (l != 1) l
+  u <- if (u != 3) u
+
   item_crit_cor <- if (any(crit_wo_val() == "missing", na.rm = TRUE)) {
-    "none"
+    NULL
   } else {
     unlist(crit_wo_val())
   }
 
   tab <-
-    ItemAnalysis(Data = ordinal(),
+    ItemAnalysis(
+      Data = ordinal(),
       criterion = item_crit_cor,
-      k, l, u,
       minscore = minimal(),
-      maxscore = maximal()
+      maxscore = maximal(),
+      k = k, l = l, u = u # if standard ULI (see above), NAs are returned
     )
 
-  tab <- tab[, !(colnames(tab) %in% c("Prop.max.score"))]
-
-  if (item_crit_cor[1] == "none") {
-    colnames(tab) <- c(
-      "Diff.", "Avg. score", "SD", "Min", "Max", "obsMin", "obsMax",
-      "gULI", "ULI", "RIT", "RIR",
-      "Rel.", "Rel. drop",
-      "Alpha drop",
-      "Missed [%]", "Not-reached [%]"
-    )
-  } else {
-    colnames(tab) <- c(
-      "Diff.", "Avg. score", "SD", "Min", "Max", "obsMin", "obsMax",
-      "gULI", "ULI", "RIT", "RIR",
-      "I-C cor.", "Val. index",
-      "Rel.", "Rel. drop",
-      "Alpha drop",
-      "Missed [%]", "Not-reached [%]"
-    )
-  }
-
-  remove_gULI <- (k == 3 & l == 1 & u == 3)
-  if (remove_gULI) {
-    tab <- tab[, !(colnames(tab) %in% "gULI")]
-  }
+  tab <- tab %>%
+    select(
+      "Diff." = Difficulty,
+      "Avg. score" = Mean,
+      SD,
+      "Min." = Min.score,
+      "Obs. min." = obs.min,
+      "Max." = Max.score,
+      "Obs. max." = obs.max,
+      "Prop. max." = Prop.max.score,
+      RIT, RIR,
+      # "Cut score" = Cut.score,
+      "I-C cor." = Corr.criterion,
+      ULI, gULI,
+      "Rel." = Index.rel,
+      "Val." = Index.val,
+      "\\(\\alpha\\)-drop" = Alpha.drop,
+      "Missed [%]" = Perc.miss,
+      "Not-reached [%]" = Perc.nr
+    ) %>%
+    ShinyItemAnalysis:::remove_empty_cols()
 
   row.names(tab) <- item_names()
   tab
@@ -270,12 +284,13 @@ report_itemanalysis_table <- reactive({
     input$itemanalysis_DDplot_groups_slider
   )
 
-  tab <- ItemAnalysis(Data = correct)
+  tab <- ItemAnalysis(Data = correct, k = num.groups, l = range1, u = range2)
+
+  # note that in report .Rmd, gULI is removed if same as ULI
   tab <- data.table(
     item_numbers(),
-    tab[, c("Difficulty", "Mean", "SD", "ULI", "RIT", "RIR", "Alpha.drop")]
+    tab[, c("Difficulty", "Mean", "SD", "ULI", "RIT", "RIR", "Alpha.drop", "gULI")]
   )
-  tab <- cbind(tab, gDiscrim(Data = correct, k = num.groups, l = range1, u = range2))
   colnames(tab) <- c(
     "Item", "Difficulty", "Average score", "SD", "Discrimination ULI",
     "Discrimination RIT", "Discrimination RIR", "Alpha Drop",
@@ -286,11 +301,7 @@ report_itemanalysis_table <- reactive({
 
 # ** Output traditional item analysis table ######
 output$itemanalysis_table_coef <- renderTable(
-  {
-    tab <- itemanalysis_table()
-    colnames(tab)[which(colnames(tab) == "Alpha drop")] <- "\\(\\mathit{\\alpha}\\) drop\\(\\mathrm{^1}\\)"
-    tab
-  },
+  itemanalysis_table(),
   rownames = TRUE
 )
 
@@ -300,7 +311,7 @@ output$itemanalysis_table_download <- downloadHandler(
     "Item_Analysis.csv"
   },
   content = function(file) {
-    data <- itemanalysis_table()
+    data <- itemanalysis_table() #TODO strip KaTeX chars
     write.csv(data, file)
     write(
       paste0(
