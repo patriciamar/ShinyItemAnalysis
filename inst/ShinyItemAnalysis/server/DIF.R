@@ -1539,11 +1539,11 @@ DIF_logistic_summary_coef <- reactive({
         )
       )
       vcov_tmp[nams, nams] <- list_vcov[[i]]
-      msm::deltamethod(
+
+      ShinyItemAnalysis:::delta_ses(
         list(~x2, ~ -x1 / x2, ~x4, ~ (x1 * x4 - x2 * x3) / (x2 * (x2 + x4))),
         mean = tab_coef[i, ],
-        cov = vcov_tmp,
-        ses = TRUE
+        cov = vcov_tmp
       )
     })
     tab_se_irt <- do.call(rbind, list_vcov_irt)

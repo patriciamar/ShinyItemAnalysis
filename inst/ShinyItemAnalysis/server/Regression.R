@@ -362,11 +362,10 @@ output$regression_logistic_IRT_coef <- renderTable(
     item <- input$regression_logistic_IRT_item_slider
 
     # delta method
-    tab_se <- msm::deltamethod(
+    tab_se <- ShinyItemAnalysis:::delta_ses(
       list(~x2, ~ -x1 / x2),
       mean = tab_coef_old,
-      cov = vcov(fit),
-      ses = TRUE
+      cov = vcov(fit)
     )
 
     tab_coef <- c(tab_coef_old[2], -tab_coef_old[1] / tab_coef_old[2])
@@ -1121,11 +1120,10 @@ regression_cumulative_coef <- reactive({
     )
     formula <- lapply(formula, as.formula)
 
-    tab_se <- msm::deltamethod(
+    tab_se <- ShinyItemAnalysis:::delta_ses(
       formula,
       mean = tab_coef_old,
-      cov = vcov(fit[[item]]),
-      ses = TRUE
+      cov = vcov(fit[[item]])
     )
     tab_coef <- c(tab_coef_old[num_par], -tab_coef_old[-num_par] / tab_coef_old[num_par])
 
@@ -1336,11 +1334,10 @@ output$regression_adjacent_coef <- renderTable(
       )
       formula <- lapply(formula, as.formula)
 
-      tab_se <- msm::deltamethod(
+      tab_se <- ShinyItemAnalysis:::delta_ses(
         formula,
         mean = tab_coef_old,
-        cov = vcov(fit),
-        ses = TRUE
+        cov = vcov(fit)
       )
       tab_coef <- c(tab_coef_old[num_par], -tab_coef_old[-num_par] / tab_coef_old[num_par])
 
@@ -1593,7 +1590,7 @@ output$regression_multinomial_equation <- renderUI({
 # ** Table of estimated parameters of curves of multinomial regression ####
 output$regression_multinomial_coef <- renderTable(
   {
-    
+
     fit <- regression_multinomial_model()
 
     key <- t(as.data.table(key()))
@@ -1635,22 +1632,20 @@ output$regression_multinomial_coef <- renderTable(
       }
 
       se_tab <- if (is.null(dim(coef_si))) {
-        matrix(msm::deltamethod(
+        matrix(ShinyItemAnalysis:::delta_ses(
           list(~ -x1 / x2, ~x2),
           mean = unlist(coef_si),
-          cov = varcov,
-          ses = TRUE
+          cov = varcov
         ), nrow = 1)
       } else {
         t(sapply(
           rownames(coef_si),
           function(.x) {
             vcov_subset <- subst_vcov(varcov, .x)
-            msm::deltamethod(
+            ShinyItemAnalysis:::delta_ses(
               list(~ -x1 / x2, ~x2),
               mean = coef_si[.x, ],
-              cov = vcov_subset,
-              ses = TRUE
+              cov = vcov_subset
             )
           }
         ))
@@ -1662,7 +1657,7 @@ output$regression_multinomial_coef <- renderTable(
         a = coef_tab[, 2],
         a_se = se_tab[, 2]
       )
-      
+
       colnames(tab) <- c(
         paste0(c("", "SE("), rep(paste0("\\(\\mathit{b}_{", item, "}\\)"), 2), c("", ")")),
         paste0(c("", "SE("), rep(paste0("\\(\\mathit{a}_{", item, "}\\)"), 2), c("", ")"))
