@@ -2,6 +2,30 @@
 
 ----------
 
+### Changes in version 1.4.1 (2022-03-)
+#### BUG FIXING
+  * `gDiscrim()` function was fixed to assure indices are inside the defined bounds, also for small samples
+  * `plotDistractorAnalysis()` function was fixed not to display double legends. 
+    Thanks to Scarlett Escudero for reporting this issue.
+  * Item difficulty/discrimination plot in Tradition item analysis tab in the app 
+    was fixed to prevent error messages when Discrimination type is set to "none".
+
+#### MAJOR UPDATES
+  * The `ItemAnalysis()` has been refactored substantially; memory demands are lowered multiple times, as well as run times (most noticeable with large datasets). The changes include following:
+    - The function now returns `NA`s for "gULI" when `k`, `l`, and `u` arguments are not specified, as there are no sensible defaults. Previous defaults resulted in exactly the same values that ULI already provided on its own.
+    - The `Index.rel.drop` is not provided anymore, as it is not well defined (see Gulliksen, 1950, for more details on  reliability index (`Index.rel`)).
+    - The `bin` and `add.bin` arguments were removed, the analysis on binarized data can be conducted by simply providing the cutscore in the `cutscore` argument.
+    - The `criterion` argument now defaults to `NULL` instead of `"none"`, but behaves the same.
+    - Deprecated arguments `data`, `y` are now defunct.
+  * The `Anxiety` dataset was added.
+  
+#### MINOR UPDATES
+  * `gDiscrim()` newly issues a warning when item(s) range is zero and when there is no difficulty difference in either group
+  * In `gDiscrim()`, you can now change how the dataset is split by passing arguments to `findInterval()`.
+  * RStudio Addin was added to provide command-free app startup option, bindable to a keyboard shortcut.
+  * The `HCI` data now includes total score variable.  
+----------
+
 ### Changes in version 1.4.0 (2021-09-24)
 
 **_THIS IS A CRAN VERSION_**
