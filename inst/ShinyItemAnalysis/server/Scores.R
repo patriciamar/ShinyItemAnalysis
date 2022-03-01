@@ -36,7 +36,7 @@ output$totalscores_tooltip_skewness <- renderUI({
     "sample skewness,",
     span(
       class = "ttooltiptext",
-      "$$\\frac{\\frac{1}{n} \\sum_{p = 1}^n (X_p - \\bar{X})^3}{\\left[\\frac{1}{n - 1} \\sum_{p = 1}^n (X_p - \\bar{X})^2\\right]^{3/2}}$$"
+      "$$\\frac{\\frac{1}{n} \\sum_{p = 1}^n (X_p - \\bar{X})^3}{\\left[\\frac{1}{n} \\sum_{p = 1}^n (X_p - \\bar{X})^2\\right]^{3/2}}$$"
     )
   )
 })
