@@ -1,106 +1,87 @@
 #' ShinyItemAnalysis: Test and Item Analysis via shiny
 #'
-#' @description The ShinyItemAnalysis package contains an interactive shiny
-#'   application for the psychometric analysis of educational tests,
-#'   psychological assessments, health-related and other types of
-#'   multi-item measurements, or ratings from multiple raters, which can be
-#'   accessed using function \code{startShinyItemAnalysis()}. The shiny
-#'   application covers a broad range of psychometric methods and offers data
-#'   examples, model equations, parameter estimates, interpretation of results,
-#'   together with a selected R code, and is therefore suitable for teaching
-#'   psychometric concepts with R. It also allows the users to upload and
-#'   analyze their own data and to automatically generate analysis reports in
-#'   PDF or HTML.\cr
+#' @description The `ShinyItemAnalysis` package contains an interactive shiny
+#' application for the psychometric analysis of educational tests, psychological
+#' assessments, health-related and other types of multi-item measurements, or
+#' ratings from multiple raters, which can be accessed using function
+#' `startShinyItemAnalysis()`. The shiny application covers a broad range of
+#' psychometric methods and offers data examples, model equations, parameter
+#' estimates, interpretation of results, together with a selected R code, and is
+#' therefore suitable for teaching psychometric concepts with R. It also allows
+#' the users to upload and analyze their own data and to automatically generate
+#' analysis reports in PDF or HTML.
 #'
-#'   Besides, the package provides its own functions for test and item analysis
-#'   within classical test theory framework (e.g., functions \code{gDiscrim()},
-#'   \code{ItemAnalysis()}, \code{DistractorAnalysis()}, or \code{DDplot()}),
-#'   using various regression models (e.g., \code{plotCumulative()},
-#'   \code{plotAdjacent()}, \code{plotMultinomial()}, or
-#'   \code{plotDIFLogistic()}), and under IRT framework (e.g.,
-#'   \code{ggWrightMap()}, or \code{plotDIFirt()}).\cr
+#' Besides, the package provides its own functions for test and item analysis
+#' within classical test theory framework (e.g., functions `gDiscrim()`,
+#' `ItemAnalysis()`, `DistractorAnalysis()`, or `DDplot()`), using various
+#' regression models (e.g., `plotCumulative()`, `plotAdjacent()`,
+#' `plotMultinomial()`, or `plotDIFLogistic()`), and under IRT framework (e.g.,
+#' `ggWrightMap()`, or `plotDIFirt()`).
 #'
-#'   Package also contains several demonstration datasets including the
-#'   \code{HCI} dataset from the reference paper by Martinkova and Drabinova
-#'   (2018).\cr
+#' Package also contains several demonstration datasets including the `HCI`
+#' dataset from the reference paper by Martinkova and Drabinova (2018).
 #'
-#' @aliases ShinyItemAnalysis-package ShinyItemAnalysis
 #'
 #' @importFrom stats aggregate coef complete.cases cor deviance fitted glm
 #'   median na.exclude na.omit p.adjust pnorm pchisq qnorm qchisq quantile
 #'   relevel sd vcov xtabs
 #' @importFrom utils capture.output data head packageVersion read.csv
 #'
-#' @section Functions: \itemize{
-#' \item \code{\link{startShinyItemAnalysis}}
-#' \item \code{\link{DDplot}}
-#' \item \code{\link{DistractorAnalysis}}
-#' \item \code{\link{plotDistractorAnalysis}}
-#' \item \code{\link{gDiscrim}}
-#' \item \code{\link{ggWrightMap}}
-#' \item \code{\link{ItemAnalysis}}
-#' \item \code{\link{plotAdjacent}}, \code{\link{plotCumulative}}, \code{\link{plotMultinomial}}
-#' \item \code{\link{plotDIFirt}}, \code{\link{plotDIFLogistic}}
-#' \item \code{\link{plot_corr}}
-#' \item \code{\link{recode_nr}}
-#' \item \code{\link{ICCrestricted}}
-#' \item \code{\link{fa_parallel}}
+#' @section Functions:
+#' \itemize{
+#'   \item [startShinyItemAnalysis()]
+#'   \item [DDplot()]
+#'   \item [DistractorAnalysis()]
+#'   \item [plotDistractorAnalysis()]
+#'   \item [gDiscrim()]
+#'   \item [ggWrightMap()]
+#'   \item [ItemAnalysis()]
+#'   \item [plotAdjacent()], [plotCumulative()], [plotMultinomial()]
+#'   \item [plotDIFirt()], [plotDIFLogistic()]
+#'   \item [plot_corr()]
+#'   \item [recode_nr()]
+#'   \item [ICCrestricted()]
+#'   \item [fa_parallel()]
 #' }
 #'
 #' @section Datasets:
 #' \itemize{
-#' \item \code{\link{AIBS}}
-#' \item \code{\link{AttitudesExpulsion}}
-#' \item \code{\link{BFI2}}
-#' \item \code{\link{CZmatura}}
-#' \item \code{\link{CZmaturaS}}
-#' \item \code{\link{dataMedical}}
-#' \item \code{\link{dataMedicalgraded}}
-#' \item \code{\link{dataMedicalkey}}
-#' \item \code{\link{dataMedicaltest}}
-#' \item \code{\link{HCI}}
-#' \item \code{\link{HCIdata}}
-#' \item \code{\link{HCIgrads}}
-#' \item \code{\link{HCIkey}}
-#' \item \code{\link{HCIprepost}}
-#' \item \code{\link{HCItest}}
-#' \item \code{\link{HCItestretest}}
-#' \item \code{\link{HeightInventory}}
-#' \item \code{\link{LearningToLearn}}
-#' \item \code{\link{MSclinical}}}
-#' \item \code{\link{NIH}}}
-#' \item \code{\link{TestAnxiety}}}
+#'   \item [AIBS()]
+#'   \item [AttitudesExpulsion()]
+#'   \item [BFI2()]
+#'   \item [CZmatura()]
+#'   \item [CZmaturaS()]
+#'   \item [dataMedical()]
+#'   \item [dataMedicalgraded()]
+#'   \item [dataMedicalkey()]
+#'   \item [dataMedicaltest()]
+#'   \item [HCI()]
+#'   \item [HCIdata()]
+#'   \item [HCIgrads()]
+#'   \item [HCIkey()]
+#'   \item [HCIprepost()]
+#'   \item [HCItest()]
+#'   \item [HCItestretest()]
+#'   \item [HeightInventory()]
+#'   \item [LearningToLearn()]
+#'   \item [MSclinical()]
+#'   \item [NIH()]
+#'   \item [TestAnxietyCor()]
+#' }
 #'
-#' @details Package: ShinyItemAnalysis \cr
-#' Type: Package \cr
-#' Version: 1.4.0 \cr
-#' Date: 2021-09-24 \cr
-#' Depends: R (>= 3.5.0) \cr
-#' Imports: cowplot, data.table, deltaPlotR, difNLR (>= 1.3.2), difR (>= 5.0),
-#' dplyr, DT, ggdendro, ggplot2, gridExtra, knitr, latticeExtra, lme4, ltm, magrittr,
-#' mirt (>= 1.24), msm, nnet, plotly, psych, psychometric, purrr, rlang,
-#' rmarkdown, rstudioapi, scales, shiny (>= 1.0.3), shinyBS, shinydashboard,
-#' shinyjs (>= 0.9), stringr, tibble, tidyr, VGAM, xtable
-#' License: GPL-3 \cr
-#' BugReports: \url{https://github.com/patriciamar/ShinyItemAnalysis/issues} \cr
-#' Website: \url{http://www.ShinyItemAnalysis.org/} \cr
-#' Encoding: UTF-8 \cr
+#' @author Patricia Martinkova  \cr Institute of Computer Science of the Czech
+#'   Academy of Sciences  \cr Faculty of Education, Charles University \cr
+#'   \email{martinkova@@cs.cas.cz}
 #'
-#' @author
-#' Patricia Martinkova  \cr
-#' Institute of Computer Science of the Czech Academy of Sciences  \cr
-#' Faculty of Education, Charles University \cr
-#' \email{martinkova@@cs.cas.cz}
+#'   Adela Hladka (nee Drabinova) \cr Institute of Computer Science of the Czech
+#'   Academy of Sciences
 #'
-#' Adela Hladka (nee Drabinova) \cr
-#' Institute of Computer Science of the Czech Academy of Sciences
-#'
-#' Jan Netik \cr
-#' Institute of Computer Science of the Czech Academy of Sciences \cr
+#'   Jan Netik \cr Institute of Computer Science of the Czech Academy of
+#'   Sciences \cr
 #'
 #' @references Martinkova, P., & Drabinova, A. (2018). ShinyItemAnalysis for
-#' teaching psychometrics and to enforce routine analysis of educational tests.
-#' The R Journal, 10(2), 503--515, \doi{10.32614/RJ-2018-074}
+#'   teaching psychometrics and to enforce routine analysis of educational
+#'   tests. The R Journal, 10(2), 503--515, \doi{10.32614/RJ-2018-074}
 #'
 #' @docType package
 "_PACKAGE"

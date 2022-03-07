@@ -9,7 +9,9 @@
     Thanks to Scarlett Escudero for reporting this issue.
   * Item difficulty/discrimination plot in Tradition item analysis tab in the app 
     was fixed to prevent error messages when Discrimination type is set to "none".
-
+  * Displayed item parameters were fixed and subsequently extended in the app for the Bock model (see major updates).
+  * The training sections for GRM IRT model was fixed to display category plots also for case of k = 6.
+  
 #### MAJOR UPDATES
   * The `ItemAnalysis()` has been refactored substantially; memory demands are lowered multiple times, as well as run times (most noticeable with large datasets). The changes include following:
     - The function now returns `NA`s for "gULI" when `k`, `l`, and `u` arguments are not specified, as there are no sensible defaults. Previous defaults resulted in exactly the same values that ULI already provided on its own.
@@ -18,6 +20,9 @@
     - The `criterion` argument now defaults to `NULL` instead of `"none"`, but behaves the same.
     - Deprecated arguments `data`, `y` are now defunct.
   * The `Anxiety` dataset was added.
+  * Baseline Logit Slope-Intercept (BLIS) parametrization for Bock nominal response model is now available as a package function. Fitted model supports IRT reparametrization (to so-called BLIRT) using a standard `coef()` method as well.
+  * The app training sections for NRM IRT model now includes parameters in parametrizations and identification restrictions assumed by Bock (1972), Thissen et al. (2011), as well as BLIS and BLIRT parametrizations accounting for the correct option.
+    * The DIF section in the app was updated to work with the atest difNLR package version.
   
 #### MINOR UPDATES
   * `gDiscrim()` newly issues a warning when item(s) range is zero and when there is no difficulty difference in either group
