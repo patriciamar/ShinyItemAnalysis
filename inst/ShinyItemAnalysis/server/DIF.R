@@ -4565,7 +4565,7 @@ observeEvent(DIF_cumulative$matching, {
 observeEvent(input$DIF_cumulative_summary_parametrization, {
   DIF_cumulative$parametrization <- input$DIF_cumulative_summary_parametrization
 })
-observeEvent(input$DIF_cumulative_items_type, {
+observeEvent(input$DIF_cumulative_items_parametrization, {
   DIF_cumulative$parametrization <- input$DIF_cumulative_items_parametrization
 })
 observeEvent(DIF_cumulative$parametrization, {
@@ -4655,7 +4655,6 @@ DIF_cumulative_model <- reactive({
   type <- input$DIF_cumulative_summary_type
   puri <- input$DIF_cumulative_summary_purification
   corr <- input$DIF_cumulative_summary_correction
-  para <- input$DIF_cumulative_summary_parametrization
 
   if (input$DIF_cumulative_summary_matching == "uploaded") {
     match <- unlist(DIFmatching())
@@ -4667,10 +4666,9 @@ DIF_cumulative_model <- reactive({
     match <- "score"
   }
 
-  fit <- difORD(data, group,
+  fit <- difNLR::difORD(Data = data, group = group,
     focal.name = 1, model = "cumulative", match = match,
-    type = type, purify = puri, p.adjust.method = corr,
-    parametrization = para
+    type = type, purify = puri, p.adjust.method = corr
   )
   fit
 })
@@ -4729,9 +4727,7 @@ output$DIF_cumulative_summary_dif_items <- renderPrint({
   HTML(txt)
 })
 
-
 # faster coefs for cum and adj --------------------------------------------
-
 get_tidy_coefs <- function(fit) {
   par <- vctrs::vec_rbind(!!!fit$ordPAR)
   se <- vctrs::vec_rbind(!!!fit$ordSE) %>%
@@ -4746,12 +4742,14 @@ get_tidy_coefs <- function(fit) {
 
 
 # coef tab names for cum & adj --------------------------------------------
-
 style_coef_names <- function(coef_tab, katex = TRUE) {
   # names ending with ".1" are duplicates, meaning they are SE
   nms <- names(coef_tab) %>% str_replace("\\.1$", "_se")
   se <- str_detect(nms, "_se")
   idx <- str_extract(nms, "\\d+") # get one or more digits
+  if (all(is.na(idx))) {
+    idx <- c(1, 1)
+  }
 
   if (attr(coef_tab, "parametrization", exact = TRUE) == "irt") {
     # parse names
@@ -4783,19 +4781,15 @@ style_coef_names <- function(coef_tab, katex = TRUE) {
       c(paste0("beta_0", idx[!is.na(idx)]), rep(c("beta_1", "beta_2", "beta_3"), each = 2))
     }
   }
-
   nms[se] <- paste0("SE(", nms[se], ")")
-
   names(coef_tab) <- nms
 
   coef_tab
 }
 
-
 # ** DIF statistic and parameter table ####
 DIF_cumulative_summary_stats <- reactive({
   fit <- DIF_cumulative_model()
-
 
   pval <- if (fit$p.adjust.method != "none") {
     fit$pval
@@ -4808,47 +4802,50 @@ DIF_cumulative_summary_stats <- reactive({
     symbols = c("***", "**", "*", ".", "")
   )
 
-
   out <- data.frame(
     `LR(X^2)` = fit$Sval,
     pval,
     `sig. symb.` = pval_symb,
     check.names = FALSE
   )
-
   names(out)[names(out) == "pval"] <- if (fit$p.adjust.method != "none") "adj. p-value" else "p-value"
 
   out
 })
 
 DIF_cumulative_summary_params <- reactive({
-  get_tidy_coefs(DIF_cumulative_model())
+  fit <- DIF_cumulative_model()
+  coefs <- coef(fit, SE = TRUE, IRTpars = (input$DIF_cumulative_summary_parametrization == "irt"),
+                simplify = TRUE, CI = 0)
+
+  estims <- coefs[c(TRUE, FALSE), ]
+  ses <- coefs[c(FALSE, TRUE), ]
+
+  out <- cbind(estims, ses)[, order(c(seq(ncol(estims)), seq(ncol(ses))))]
+  attr(out, "parametrization") <- input$DIF_cumulative_summary_parametrization
+  out
 })
 
-output$DIF_cumulative_summary_coef <- renderTable(
-  {
-    stats <- DIF_cumulative_summary_stats()
-    params <- DIF_cumulative_summary_params()
+output$DIF_cumulative_summary_coef <- renderTable({
+  stats <- DIF_cumulative_summary_stats()
+  colnames(stats) <- c(
+    "LR (\\(\\mathit{\\chi^2}\\))",
+    ifelse(
+      "p-value" %in% names(stats),
+      "\\(\\mathit{p}\\)-value",
+      "adj. \\(\\mathit{p}\\)-value"
+    ), ""
+  )
 
+  params <- DIF_cumulative_summary_params()
+  params <- style_coef_names(params)
 
-    colnames(stats) <- c(
-      "LR (\\(\\mathit{\\chi^2}\\))",
-      ifelse(
-        "p-value" %in% names(stats),
-        "\\(\\mathit{p}\\)-value",
-        "adj. \\(\\mathit{p}\\)-value"
-      ), ""
-    )
-
-    params <- style_coef_names(params)
-
-    out <- data.frame(stats, "", params, check.names = FALSE, fix.empty.names = FALSE)
-
-    rownames(out) <- item_names()
-    out
-  },
-  rownames = TRUE,
-  colnames = TRUE
+  out <- data.frame(stats, "", params, check.names = FALSE, fix.empty.names = FALSE)
+  rownames(out) <- item_names()
+  out
+},
+rownames = TRUE,
+colnames = TRUE
 )
 
 # ** Note about setting below summary table ####
@@ -4908,11 +4905,10 @@ output$DIF_cumulative_summary_table_download <- downloadHandler(
   content = function(file) {
     stats <- DIF_cumulative_summary_stats()
     params <- DIF_cumulative_summary_params()
-
     params <- style_coef_names(params, katex = FALSE)
 
-    tab <- data.frame(item = item_names(), stats, params, check.names = FALSE, fix.empty.names = FALSE)
-
+    tab <-  data.frame(item = item_names(), stats, params,
+                       check.names = FALSE, fix.empty.names = FALSE)
     note <- DIF_cumulative_summary_table_note()
 
     write.csv(tab, file)
@@ -5118,10 +5114,12 @@ output$DIF_cumulative_items_equation_category <- renderUI({
 
 # ** Table of coefficients ####
 DIF_cumulative_items_coef <- reactive({
-  tab <- DIF_cumulative_summary_coef()
+  tab <- DIF_cumulative_summary_params()
+  tab <- style_coef_names(tab)
+
   item <- input$DIF_cumulative_items
 
-  tab <- t(tab[item, -c(1:4)])
+  tab <- t(tab[item, ])
   tab <- data.frame(tab[!grepl("SE", rownames(tab)), ], tab[grepl("SE", rownames(tab)), ])
   colnames(tab) <- c("Estimate", "SE")
 
@@ -5338,7 +5336,6 @@ DIF_adjacent_model <- reactive({
   type <- input$DIF_adjacent_summary_type
   puri <- input$DIF_adjacent_summary_purification
   corr <- input$DIF_adjacent_summary_correction
-  para <- input$DIF_adjacent_summary_parametrization
 
   if (input$DIF_adjacent_summary_matching == "uploaded") {
     match <- unlist(DIFmatching())
@@ -5350,10 +5347,9 @@ DIF_adjacent_model <- reactive({
     match <- "score"
   }
 
-  fit <- difORD(data, group,
+  fit <- difNLR::difORD(Data = data, group = group,
     focal.name = 1, model = "adjacent", match = match,
-    type = type, purify = puri, p.adjust.method = corr,
-    parametrization = para
+    type = type, purify = puri, p.adjust.method = corr
   )
   fit
 })
@@ -5404,7 +5400,6 @@ output$DIF_adjacent_summary_dif_items <- renderPrint({
 DIF_adjacent_summary_stats <- reactive({
   fit <- DIF_adjacent_model()
 
-
   pval <- if (fit$p.adjust.method != "none") {
     fit$pval
   } else {
@@ -5416,14 +5411,12 @@ DIF_adjacent_summary_stats <- reactive({
     symbols = c("***", "**", "*", ".", "")
   )
 
-
   out <- data.frame(
     `LR(X^2)` = fit$Sval,
     pval,
     `sig. symb.` = pval_symb,
     check.names = FALSE
   )
-
   names(out)[names(out) == "pval"] <- if (fit$p.adjust.method != "none") "adj. p-value" else "p-value"
 
   out
@@ -5431,26 +5424,19 @@ DIF_adjacent_summary_stats <- reactive({
 
 DIF_adjacent_summary_params <- reactive({
   fit <- DIF_adjacent_model()
-
-  # estimated coefficients for all items with standard errors
-  coefs <- coef(fit, SE = TRUE, simplify = TRUE)
+  coefs <- coef(fit, SE = TRUE, IRTpars = (input$DIF_adjacent_summary_parametrization == "irt"),
+                simplify = TRUE, CI = 0)
 
   estims <- coefs[c(TRUE, FALSE), ]
   ses <- coefs[c(FALSE, TRUE), ]
 
   out <- cbind(estims, ses)[, order(c(seq(ncol(estims)), seq(ncol(ses))))]
-
-  attr(out, "parametrization") <- fit$parametrization
-
+  attr(out, "parametrization") <- input$DIF_adjacent_summary_parametrization
   out
 })
 
-output$DIF_adjacent_summary_coef <- renderTable(
-  {
+output$DIF_adjacent_summary_coef <- renderTable({
     stats <- DIF_adjacent_summary_stats()
-    params <- DIF_adjacent_summary_params()
-
-
     colnames(stats) <- c(
       "LR (\\(\\mathit{\\chi^2}\\))",
       ifelse(
@@ -5460,10 +5446,10 @@ output$DIF_adjacent_summary_coef <- renderTable(
       ), ""
     )
 
+    params <- DIF_adjacent_summary_params()
     params <- style_coef_names(params)
 
     out <- data.frame(stats, "", params, check.names = FALSE, fix.empty.names = FALSE)
-
     rownames(out) <- item_names()
     out
   },
@@ -5529,11 +5515,9 @@ output$DIF_adjacent_summary_table_download <- downloadHandler(
   content = function(file) {
     stats <- DIF_adjacent_summary_stats()
     params <- DIF_adjacent_summary_params()
-
     params <- style_coef_names(params, katex = FALSE)
 
     tab <- data.frame(item = item_names(), stats, params, check.names = FALSE, fix.empty.names = FALSE)
-
     note <- DIF_adjacent_summary_table_note()
 
     write.csv(tab, file)
@@ -5676,10 +5660,12 @@ output$DIF_adjacent_items_equation <- renderUI({
 
 # ** Table of coefficients ####
 DIF_adjacent_items_coef <- reactive({
-  tab <- DIF_adjacent_summary_coef()
+  tab <- DIF_adjacent_summary_params()
+  tab <- style_coef_names(tab)
+
   item <- input$DIF_adjacent_items
 
-  tab <- t(tab[item, -c(1:4)])
+  tab <- t(tab[item, ])
   tab <- data.frame(tab[!grepl("SE", rownames(tab)), ], tab[grepl("SE", rownames(tab)), ])
   colnames(tab) <- c("Estimate", "SE")
 
@@ -5898,7 +5884,6 @@ DIF_multinomial_model <- reactive({
   type <- input$DIF_multinomial_summary_type
   puri <- input$DIF_multinomial_summary_purification
   corr <- input$DIF_multinomial_summary_correction
-  para <- input$DIF_multinomial_summary_parametrization
 
   if (input$DIF_multinomial_summary_matching == "uploaded") {
     match <- unlist(DIFmatching())
@@ -5913,7 +5898,7 @@ DIF_multinomial_model <- reactive({
   fit <- tryCatch(ddfMLR(
     Data = data, group = group, focal.name = 1, match = match,
     key = key, p.adjust.method = corr,
-    type = type, purify = puri, parametrization = para
+    type = type, purify = puri
   ),
   error = function(e) e
   )
@@ -6135,41 +6120,52 @@ output$DIF_multinomial_summary_table_download <- downloadHandler(
 DIF_multinomial_summary_coef_parameters <- reactive({
   fit <- DIF_multinomial_model()
 
-
   # estimated coefficients for all items with standard errors
-  coefs <- coef(fit, SE = TRUE, simplify = TRUE)
+  coefs <- coef(fit, SE = TRUE, IRTpars = (input$DIF_multinomial_summary_parametrization == "irt"), simplify = TRUE, CI = 0)
 
   # adding missing columns if necessary / ordering columns
-  if (fit$parametrization == "classic") {
+  if (input$DIF_multinomial_summary_parametrization == "classic") {
     new_cols <- c(group = 0, "x:group" = 0)
     coefs <- coefs %>% add_column(!!!new_cols[setdiff(names(new_cols), names(coefs))])
   } else {
-    coefs <- cbind(
-      coefs[, grepl("a", colnames(coefs))],
-      coefs[, !grepl("a", colnames(coefs))]
-    )
+    coefs <- coefs[, c(which(grepl("a", colnames(coefs))), which(!grepl("a", colnames(coefs))))]
   }
-  estims <- coefs[c(TRUE, FALSE), ]
-  ses <- coefs[c(FALSE, TRUE), ]
+  estims <- coefs[grepl("estimate", rownames(coefs)), ]
+  ses <- coefs[!grepl("estimate", rownames(coefs)), ]
 
-  pars <-
-    cbind(estims, ses)[, order(c(seq(ncol(estims)), seq(ncol(ses))))]
+  pars <- cbind(estims, ses)[, order(c(seq(ncol(estims)), seq(ncol(ses))))]
 
-  if (fit$parametrization == "irt") {
-    names(pars) <- paste0(
+  if (input$DIF_multinomial_summary_parametrization == "irt") {
+    est_pars <- c("a", "a_{\\mathrm{DIF}}", "b", "b_{\\mathrm{DIF}}")
+    n_est_pars <- ncol(pars) / 2
+    which_est_pars <- switch(paste(n_est_pars),
+                       "2" = c(1, 3),
+                       "3" = c(1, 3, 4),
+                       "4" = 1:4)
+    est_pars <- est_pars[which_est_pars]
+
+    colnames(pars) <- paste0(
       c("", "SE("),
-      paste0("\\(\\mathit{", rep(c("a", "a_{\\mathrm{DIF}}", "b", "b_{\\mathrm{DIF}}"), each = 2), "}\\)"),
+      paste0("\\(\\mathit{", rep(est_pars, each = 2), "}\\)"),
       c("", ")")
     )
   } else {
-    names(pars) <- paste0(
+    est_pars <- c("\\beta_0", "\\beta_1", "\\beta_2", "\\beta_3")
+    n_est_pars <- ncol(pars) / 2
+    which_est_pars <- switch(paste(n_est_pars),
+                             "2" = 1:2,
+                             "3" = 1:3,
+                             "4" = 1:4)
+    est_pars <- est_pars[which_est_pars]
+
+    colnames(pars) <- paste0(
       c("", "SE("),
-      paste0("\\(\\mathit{", rep(c("\\beta_0", "\\beta_1", "\\beta_2", "\\beta_3"), each = 2), "}\\)"),
+      paste0("\\(\\mathit{", rep(est_pars, each = 2), "}\\)"),
       c("", ")")
     )
   }
 
-  rownames(pars) <- gsub(" estimate", "", rownames(pars))
+  rownames(pars) <- gsub("estimate_", "", rownames(pars))
   pars
 })
 
@@ -6410,13 +6406,13 @@ output$DIF_multinomial_items_equation <- renderUI({
 # ** Table of coefficients ####
 output$DIF_multinomial_items_coef <- renderTable(
   {
-    fit <- DIF_multinomial_model()
     item <- input$DIF_multinomial_items
+    item_names <- gsub(" ", "\\.", item_names())
 
     tab <- DIF_multinomial_summary_coef_parameters()
-    tab <- tab[grepl(paste(item_names()[item], ""), rownames(tab)), ]
+    tab <- tab[grepl(paste(item_names[item], ""), rownames(tab)), ]
 
-    rownames(tab) <- gsub(item_names()[item], "", rownames(tab))
+    rownames(tab) <- gsub(item_names[item], "", rownames(tab))
     tab
   },
   rownames = TRUE
