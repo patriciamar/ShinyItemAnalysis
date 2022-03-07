@@ -1,54 +1,54 @@
 library(ggplot2)
-library(data.table)
+library(tidyr)
 
-# setting parameters
-a <- c(2.5, 2, 1, 1.5)
-d <- c(-1.5, -1, -0.5, 0)
-theta <- seq(-4, 4, 0.01)
+# setting parameters - the baseline-category parameter is constrained to 0
+a <- c(0, -1.5, -1, -.5, -.5)
+b <- c(0, -3, -2, -1.5, -.5)
 
-# calculating category probabilities
-ccnrm <- function(theta, a, d) {
-  exp(d + a * theta)
-}
-df <- sapply(1:length(d), function(i) ccnrm(theta, a[i], d[i]))
-df <- data.frame(1, df)
-denom <- apply(df, 1, sum)
-df <- apply(df, 2, function(x) x / denom)
-df1 <- melt(data.frame(df, theta), id.vars = "theta")
+# get `b`s except that of the baseline-category
+# (we will use them to indicate the intercepts of distractors with the baseline)
+vlines <- b[b != 0]
 
-# plotting category probabilities
-ggplot(data = df1, aes(x = theta, y = value, col = variable)) +
-  geom_line() +
-  xlab("Ability") +
-  ylab("Category probability") +
-  xlim(-4, 4) +
-  ylim(0, 1) +
-  theme_bw() +
-  theme(
-    text = element_text(size = 14),
-    panel.grid.major = element_blank(),
-    panel.grid.minor = element_blank()
-  ) +
-  ggtitle("Category probabilities") +
-  scale_color_manual("",
-                     values = c("black", "red", "yellow", "green", "blue"),
-                     labels = paste0("P(Y = ", 0:4, ")")
-  )
+# create ability sequence
+thetas <- seq(-4, 4, by = .01)
 
-# calculating expected item score
-df2 <- data.frame(exp = as.matrix(df) %*% 0:4, theta)
+# get linear predictor
+lin_pred <- sapply(seq_along(a), function(i) {
+  a[i] * (thetas - b[i])
+})
 
-# plotting expected item score
-ggplot(data = df2, aes(x = theta, y = exp)) +
+# exponentiate
+exponentiated <- exp(lin_pred)
+
+# get category probabilities
+cat_probs <- exponentiated / (rowSums(exponentiated))
+
+# set names
+colnames(cat_probs) <- c("Correct", paste0("Distractor_", 1:4))
+
+# make data.frame with thetas and categories probabilities
+probs <- data.frame(thetas, cat_probs)
+
+probs_long <- pivot_longer(probs, -thetas, names_to = "Response")
+
+# plot category probabilities
+ggplot(probs_long, aes(x = thetas, y = value, col = Response)) +
+  geom_line(size = 1) +
+  geom_vline(xintercept = vlines, col = "grey", linetype = "dashed") +
+  labs(x = "Ability", y = "Category probability") +
+  coord_cartesian(xlim = range(thetas), ylim = c(0, 1), expand = FALSE) +
+  theme_minimal() +
+  theme(legend.position = c(1, .5), legend.justification = c(1, .5))
+
+# calculate expected item score
+item_score <- data.frame(score = as.matrix(probs) %*% 0:5, thetas)
+
+# plot expected item score
+ggplot(item_score, aes(x = thetas, y = score)) +
   geom_line() +
   xlab("Ability") +
   ylab("Expected item score") +
   xlim(-4, 4) +
-  ylim(0, 4) +
-  theme_bw() +
-  theme(
-    text = element_text(size = 14),
-    panel.grid.major = element_blank(),
-    panel.grid.minor = element_blank()
-  ) +
+  ylim(1, 6) +
+  theme_minimal() +
   ggtitle("Expected item score")
