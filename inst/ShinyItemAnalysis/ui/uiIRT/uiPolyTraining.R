@@ -622,14 +622,6 @@ uiPolyTraining <- tabPanel(
     # *** Nominal response model ####
     tabPanel("Nominal response model",
       value = "polytom_nrm",
-      tags$head(tags$style(HTML("
-  .js-irs-grey .irs-single, .js-irs-grey .irs-bar-edge, .js-irs-grey .irs-bar {
-  background: #dadada;
-  border-top-color: #dadada;
-  border-bottom-color: #dadada;
-  border-left-color: #dadada;
-  border-right-color: #dadada;
-}"))),
       h3("Nominal response model"),
       p(
         "In the Nominal Response Model (NRM; Bock, 1972), the probability of",
@@ -637,36 +629,65 @@ uiPolyTraining <- tabPanel(
         "the 2PL IRT model. This model is sometimes called the",
         "baseline-category logit  model, because it sets linear form to the log",
         "odds of selecting a given category to the baseline category.  The",
-        "baseline can be chosen arbitrarily, although normally the correct",
-        "answer is the first answer chosen. The NRM model is a generalization",
-        "of the GPCM model by setting item-specific and category-specific",
-        "intercept and slope parameters."
-      ),
+        "baseline is often chosen arbitrarily (as in the case of ", code("mirt"),
+        "package), but we may benefit from  constraining the model in the way",
+        "that the correct response category is set as a baseline.",
+        "Here we present 6 parametrizations:",
+        tags$ol(
+          tags$li(
+            strong("BLIRT (Baseline-category Logit IRT)"),
+            "that utilizes IRT (slope/threshold) parametrization and fixes",
+            "the correct response's parameters to zero"
+          ),
+          tags$li(
+            strong("BLIS (Baseline-category Logit Intercept-Slope)"),
+            "which is a mere intercept/slope reparametrization of BLIRT"
+          ),
+          tags$li(
+            strong("Thissen et al."),
+            "that - rather arbitrarily - fixes slopes of the",
+            "first and last categories to zero and \\(K-1\\),",
+            "respectively (where \\(K\\) is the number of categories);",
+            "to generalize for multidimensional models, Thissen et al. \"factor out\" so-called overall slope \\(a^*\\)"
+          ),
+          tags$li(strong("Thissen et al. IRT"), "which is a mere IRT reparametrization of Thissen's model (first threshold parameter is here constrained to zero)"),
+          tags$li(strong("Bock's"), "original model constrained in the way that both slope and intercept parameters have a sum of zero"),
+          tags$li(strong("Bock IRT"), "which is IRT reparametrization of Bock's model")
+        )
+      ), br(),
       h4("Parameters"),
-      p("Select the number of distractors, their threshold parameters \\(b_k\\), and discrimination parameters
-          \\(a_k\\). Parameters of \\(\\pi_0 = P(Y = 0 \\vert \\theta)\\) are set to zeros and \\(\\pi_0\\) is displayed
-          with a black color."),
+      p(
+        "Select the number of distractors, their threshold parameters \\(b_k\\), and discrimination parameters
+          \\(a_k\\) (in BLIRT parametrization). The last parameter (for correct response, displayed in ",
+        span(style = "color: gray", "grey", .noWS = "after"),
+        ") is fixed to zero and all parameters for distractors are smaller that zero."
+      ),
       div(
         style = "display: inline-block; vertical-align: middle; width: 18%;",
         numericInput(
           inputId = "irt_training_nrm_numresp",
           label = "Number of distractors",
-          value = 4,
-          min = 2,
-          max = 8
+          value = 3,
+          min = 1,
+          max = 7
         )
       ),
       br(),
       uiOutput("irt_training_nrm_sliders"),
-
-fluidRow(column(12, tableOutput("irt_training_nrm_int_slope_parameters"))),
-fluidRow(column(12, tableOutput("irt_training_nrm_irt_parameters"))),
-br(),
-      # br(),
-      # h4("Equations"),
-      # ("$$\\pi_k =\\mathrm{P}\\left(Y = k \\vert \\theta\\right) = \\frac{\\exp\\left(a_k(\\theta - b_k)\\right)}{\\sum_{r = 0}^K\\exp\\left(a_r(\\theta - b_r)\\right)} $$"),
-
-
+      h4("Parametrizations"),
+      p(
+        "In the following tables, BLIRT parameters you have set above are",
+        "presented in all parametrizations described in the introductory paragraphs.",
+        "Note that \\(a^*\\) parameter is defined only for Thissen's parametrizations.",
+        "Note further that \\(b_k\\) parameters of BLIRT represent intercepts of correct, \"",
+        span(style = "color: gray", "grey", .noWS = c("before", "after")),
+        "\" category with the distractors (as denoted in the plot below by vertical dashed lines)."
+      ),
+      fluidRow(
+        style = "display: flex; flex-wrap: wrap;",
+        div(style = "margin-right: 20px", tableOutput("irt_training_nrm_irt_parameters")),
+        div(tableOutput("irt_training_nrm_int_slope_parameters"))
+      ),
       h4("Plot"),
       plotlyOutput("irt_training_nrm_cat_probs_plotly"),
       # downloadButton("DB_irt_training_nrm_plot", label = "Download figure"),

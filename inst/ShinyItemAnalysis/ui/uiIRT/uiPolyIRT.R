@@ -163,7 +163,7 @@ uiPolyIRT <- tabPanel(
       # item selector slider (to be updated in server part to suit the current data set)
       sliderInput(
         inputId = "IRT_bock_items",
-        label = "Item to draw the plots for",
+        label = "Item to draw the plot for",
         min = 1, value = 1, max = 20,
         step = 1, animate = TRUE
       ),

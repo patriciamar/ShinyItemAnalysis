@@ -998,19 +998,16 @@ IRT_binary_comparison <- reactive({
   fit3PL <- IRT_binary_model_3pl()
   fit4PL <- IRT_binary_model_4pl()
 
-  df <- rbind(
-    anova(fit1PL, fit2PL, verbose = FALSE),
-    anova(fit2PL, fit3PL, verbose = FALSE),
-    anova(fit3PL, fit4PL, verbose = FALSE)
-  )
+  df <- anova(fit1PL, fit2PL, fit3PL, fit4PL)
 
-  df <- round(df[c(1, 2, 4, 6), ], 3)
-  df <- df[, c("AIC", "AICc", "BIC", "SABIC", "logLik")]
+  df <- round(df, 3)
+
+  df <- df[, c("AIC", "BIC", "logLik")]
   nam <- c("1PL", "2PL", "3PL", "4PL")
 
   df <- rbind(
     df,
-    c(nam[sapply(1:4, function(i) which(df[, i] == min(df[, i], na.rm = TRUE)))], "")
+    c(nam[sapply(1:2, function(i) which(df[, i] == min(df[, i], na.rm = TRUE)))], "")
   )
 
   rownames(df) <- c(nam, "BEST")
@@ -1021,5 +1018,5 @@ output$IRT_binary_comparison <- renderTable(
   {
     IRT_binary_comparison()
   },
-  include.rownames = TRUE
+  rownames = TRUE
 )

@@ -233,6 +233,11 @@ observeEvent(input$data_upload, {
     dataset$data_status <- "OK"
     csvdata_data_name <- gsub(".csv", "", input$data_csvdata_main[[1]])
 
+    # assert data are truly numeric
+    if (input$data_csvdata_data_type == "binary") {
+      csvdata_data <- modify(csvdata_data, as.numeric)
+    }
+
     # ** Loading minimal/maximual values for ordinal data ####
     if (input$data_csvdata_data_type == "ordinal") {
       # changing factors to numeric

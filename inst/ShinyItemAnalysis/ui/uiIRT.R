@@ -290,9 +290,10 @@ uiIRT <- navbarMenu(
     p("IRT models can be compared by several information criteria: "),
     tags$ul(
       tags$li(strong("AIC"), "is the Akaike information criterion (Akaike, 1974), "),
-      tags$li(strong("AICc"), "is AIC with a correction for finite sample size, "),
-      tags$li(strong("BIC"), "is the Bayesian information criterion (Schwarz, 1978)."),
-      tags$li(strong("SABIC"), "is the sample-sized adjusted BIC criterion, ")
+      tags$li(strong("BIC"), "is the Bayesian information criterion (Schwarz, 1978),"),
+      tags$li(strong("logLik"), "is the logarithm of likelihood. Likelihood ratio test is suitable only for comparison of 1PL and 2PL models.")
+      # tags$li(strong("SABIC"), "is the sample-sized adjusted BIC criterion, "),
+      # tags$li(strong("HQ"), "is Hannan-Quinn criterion.")
     ),
     h4("Table of comparison statistics"),
     p("Row ", strong("BEST"), "indicates which model has the lowest value of given information criterion."),

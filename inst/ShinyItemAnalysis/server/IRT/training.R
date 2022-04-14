@@ -1809,10 +1809,25 @@ output$irt_training_gpcm_answer <- renderUI({
   ))
 })
 
+
+
 # *** NOMINAL RESPONSE MODEL ####
 
+irt_training_nrm_thetas <- seq(-6, 6, by = .1)
+
+irt_training_nrm_category_names <- c(
+  "red",
+  "yellow",
+  "green",
+  "blue",
+  "purple",
+  "orange",
+  "brown"
+)
+
+
 irt_training_nrm_slider_input_names <- reactive({
-  idx <- seq_len(input$irt_training_nrm_numresp)
+  idx <- seq_len(input$irt_training_nrm_numresp + 1)
   list(a = paste0("irt_training_a", idx), b = paste0("irt_training_b", idx))
 })
 
@@ -1826,8 +1841,8 @@ output$irt_training_nrm_sliders <- renderUI({
   )
 
   slider_names <- list(
-    a = paste0("\\(a_{", seq_len(n_cats), "}\\) - discrimination"),
-    b = paste0("\\(b_{", seq_len(n_cats), "}\\) - threshold")
+    a = paste0("\\(a_{", c(irt_training_nrm_category_names[seq_len(n_cats) - 1L], "grey"), "}\\) (discrimination)"),
+    b = paste0("\\(b_{", c(irt_training_nrm_category_names[seq_len(n_cats) - 1L], "grey"), "}\\) (threshold)")
   )
 
 
@@ -1841,21 +1856,26 @@ output$irt_training_nrm_sliders <- renderUI({
 
   a_sliders <- pmap(
     list(pars$a, slider_names$a, init_values$a),
-    ~ sliderInput(..1, ..2, min = -3, max = 3, value = ..3, step = .1)
+    ~ sliderInput(..1, ..2, min = -3, max = 0, value = ..3, step = .1, width = "100%")
   )
 
   b_sliders <- pmap(
     list(pars$b, slider_names$b, init_values$b),
-    ~ sliderInput(..1, ..2, min = -5, max = 5, value = ..3, step = .1)
+    ~ sliderInput(..1, ..2, min = -5, max = 5, value = ..3, step = .1, width = "100%")
   )
 
   # fix last category sliders to zero
-  a_sliders[[n_cats]]$children[[2]]$attribs$`data-from-min` <- 0
-  a_sliders[[n_cats]]$children[[2]]$attribs$`data-from-max` <- 0
-  b_sliders[[n_cats]]$children[[2]]$attribs$`data-from-min` <- 0
-  b_sliders[[n_cats]]$children[[2]]$attribs$`data-from-max` <- 0
+  a_sliders[[n_cats]]$children[[2L]]$attribs$`data-from-min` <- 0
+  a_sliders[[n_cats]]$children[[2L]]$attribs$`data-from-max` <- 0
+  b_sliders[[n_cats]]$children[[2L]]$attribs$`data-from-min` <- 0
+  b_sliders[[n_cats]]$children[[2L]]$attribs$`data-from-max` <- 0
 
-  slider_classes <- c(rep("noclass", n_cats - 1), "js-irs-grey")
+  slider_classes <- c(
+    c(
+      "js-irs-red", "js-irs-yellow", "js-irs-green", "js-irs-blue",
+      "js-irs-purple", "js-irs-orange", "js-irs-brown"
+    )[seq_len(n_cats - 1)], "js-irs-grey"
+  )
 
   fluidRow(
     pmap(
@@ -1901,22 +1921,19 @@ irt_training_nrm_parametrizations <- reactive({
   blirt <- list(a_star = NA, a = a, b = b)
 
   # thissen
-  a_star <- (a - a[1])[length(a)] / (length(a) - 1)
+  a_star <- (a[length(a)] - a[1L]) / (length(a) - 1L)
   thissen <- list(
     a_star = a_star,
-    a = (a - a[1]) / a_star,
-    b = blis$b - blis$b[1] # work with BLIS pars
+    a = (a - a[1L]) / a_star,
+    b = blis$b - blis$b[1L] # work with BLIS pars
   )
 
   irt_thissen <- list(
     a_star = thissen$a_star,
     a = thissen$a,
-    b = thissen$b / (-thissen$a * thissen$a_star)
+    b = c(0, thissen$b[-1] / (-thissen$a[-1] * thissen$a_star))
   )
-
-  # TODO: check on this!!!
-  irt_thissen$b[is.na(irt_thissen$b)] <- 0
-
+  # TODO we are avoiding dividing by zero here, but this does not seem legit to me at all...
 
   # bock - naturally from thissen
   a_bock <- thissen$a_star * thissen$a # get rid of a_star
@@ -1930,67 +1947,106 @@ irt_training_nrm_parametrizations <- reactive({
     a = bock$a,
     b = bock$b / -bock$a # really don't know what those bs means to curve intercepts
   )
-  # TODO: check on this!!!
-  # irt_bock$b[is.na(irt_bock$b) | is.infinite(irt_bock$b) | is.nan(irt_bock$b)] <- 0
+  # TODO when a is zero, what is the result??
 
 
   list(
-    blis = blis, blirt = blirt,
-    thissen = thissen, irt_thissen = irt_thissen,
-    bock = bock, irt_bock = irt_bock
+    BLIS = blis, BLIRT = blirt,
+    `Thissen et al.` = thissen, `Thissen et al. (IRT)` = irt_thissen,
+    Bock = bock, `Bock (IRT)` = irt_bock
   )
 })
 
 
 
 irt_training_nrm_pars_list <- reactive({
-  irt_training_nrm_parametrizations() %>%
-    map_dfr(unlist, .id = "parametrization")
+  params <- irt_training_nrm_parametrizations()
+  n_cats <- length(seq_along(params$BLIRT$a))
+
+  out <- params %>% map_dfr(unlist, .id = "Parametrization")
+
+  nms <- c(irt_training_nrm_category_names[seq_len(n_cats) - 1L], "grey")
+  names(out) <- c(names(out[1L]), "\\(a^*\\)",
+                  paste0("\\({apar}_{", nms, "}\\)"),
+                  paste0("\\({bpar}_{", nms, "}\\)"))
+
+  out
 })
 
-output$irt_training_nrm_int_slope_parameters <- renderTable({
-  irt_training_nrm_pars_list() %>%
-    filter(parametrization %in% c("blis", "thissen", "bock"))
-})
+
 output$irt_training_nrm_irt_parameters <- renderTable({
-  irt_training_nrm_pars_list() %>%
-    filter(!parametrization %in% c("blis", "thissen", "bock"))
+  out <- irt_training_nrm_pars_list() %>%
+    filter(Parametrization %in% c("BLIRT", "Thissen et al. (IRT)", "Bock (IRT)"))
+
+  names(out) <- names(out) %>%
+    str_replace("apar", "a") %>%
+    str_replace("bpar", "b")
+
+  out
+})
+output$irt_training_nrm_int_slope_parameters <- renderTable({
+  out <- irt_training_nrm_pars_list() %>%
+    filter(Parametrization %in% c("BLIS", "Thissen et al.", "Bock"))
+
+  names(out) <- names(out) %>%
+    str_replace("apar", "\\\\beta_1") %>%
+    str_replace("bpar", "\\\\beta_0")
+
+  out
 })
 
 
 irt_training_nrm_cat_probs <- reactive({
-
-  thetas <- seq(-6,6, by = .1)
   pars <- irt_training_nrm_parametrizations()
 
-  lin_pred <- sapply(seq_along(pars$blirt$a), function(i) {
-    pars$blirt$a[i] * (thetas - pars$blirt$b[i])
+  lin_pred <- sapply(seq_along(pars$BLIRT$a), function(i) {
+    pars$BLIRT$a[i] * (irt_training_nrm_thetas - pars$BLIRT$b[i])
   })
 
   exponentiated <- exp(lin_pred)
-  out <- exponentiated/ (rowSums(exponentiated))
+  out <- exponentiated / (rowSums(exponentiated))
 
-  out %>% as_tibble() %>% mutate(theta = thetas, .before = 1)
+  nms <- irt_training_nrm_category_names[seq_along(pars$BLIRT$a)]
+  nms[length(nms)] <- "grey"
+  colnames(out) <- nms
 
+  out %>%
+    as_tibble() %>%
+    mutate(theta = irt_training_nrm_thetas, .before = 1)
 })
 
 
 irt_training_nrm_cat_probs_plot <- reactive({
+  pars <- irt_training_nrm_slider_input_values()
+
+  vlines <- pars$b[seq_len(length(pars$b) - 1)]
+
   d <- irt_training_nrm_cat_probs()
 
   d_long <- d %>%
     pivot_longer(-theta, names_to = "cat")
 
+  d_long <- d_long %>% mutate(tooltip = paste0(
+    str_to_title(cat), " category\n",
+    "Category probability = ", round(value, 3), "\n",
+    "Ability = ", theta
+  ))
+
   d_long %>%
-    ggplot(aes(x = theta, y = value, col = cat)) +
-    geom_line(size = 1) +
+    ggplot(aes(x = theta, y = value, col = cat, group = cat, text = tooltip)) +
+    geom_vline(xintercept = vlines, col = "grey", linetype = "dashed") +
+    geom_line(size = .8) +
+    scale_color_identity() +
+    scale_x_continuous(expand = expansion()) +
     labs(x = "Ability", y = "Category probability") +
-    coord_cartesian(ylim = c(0, 1), expand = FALSE) +
-    theme_minimal() +
-    theme(legend.position = "top")
+    coord_cartesian(ylim = c(0, 1)) +
+    theme_app()
 })
 
 
 output$irt_training_nrm_cat_probs_plotly <- renderPlotly({
-  irt_training_nrm_cat_probs_plot() %>% ggplotly()
+  irt_training_nrm_cat_probs_plot() %>%
+    ggplotly(tooltip = "text") %>%
+    layout(showlegend = FALSE) %>%
+    plotly::config(displayModeBar = FALSE)
 })

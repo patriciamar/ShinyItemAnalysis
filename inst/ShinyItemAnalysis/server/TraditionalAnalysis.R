@@ -406,7 +406,7 @@ distractor_plot <- reactive({
     item.name = item_names()[i],
     multiple.answers = input$distractor_type == "Combinations",
     criterion = total_score()
-  ) + xlab("Group by total score")
+  )[[1]] + xlab("Group by total score")
 })
 
 # ** Output distractors plot ######
@@ -449,7 +449,7 @@ distractor_table_counts <- reactive({
   item <- input$distractor_item_slider
   sc <- total_score()
 
-  DA <- DistractorAnalysis(Data = a, key = k, num.groups = num.group, criterion = sc)[[item]]
+  DA <- DistractorAnalysis(Data = a, key = k, item = item, num.groups = num.group, criterion = sc)[[1]]
   # df <- dcast(as.data.frame(DA), response ~ score.level, sum, margins = T, value.var = "Freq")
   df <- DA %>%
     addmargins() %>%
@@ -477,7 +477,7 @@ distractor_table_proportions <- reactive({
   item <- input$distractor_item_slider
   sc <- total_score()
 
-  DA <- DistractorAnalysis(Data = a, key = k, num.groups = num.group, p.table = TRUE, criterion = sc)[[item]]
+  DA <- DistractorAnalysis(Data = a, key = k, item = item, num.groups = num.group, p.table = TRUE, criterion = sc)[[1]]
   # df <- dcast(as.data.frame(DA), response ~ score.level, sum, value.var = "Freq")
   df <- DA %>%
     as.data.frame.matrix() %>%
@@ -500,7 +500,7 @@ distractor_barplot_item_response_patterns <- reactive({
   item <- input$distractor_item_slider
   sc <- total_score()
 
-  DA <- DistractorAnalysis(Data = a, key = k, num.groups = num.group, p.table = TRUE, criterion = sc)[[item]]
+  DA <- DistractorAnalysis(Data = a, key = k, item = item, num.groups = num.group, p.table = TRUE, criterion = sc)[[1]]
   # df <- dcast(as.data.frame(DA), response ~ score.level, sum, value.var = "Freq")
   df <- DA %>%
     as.data.frame.matrix() %>%
@@ -696,7 +696,7 @@ report_distractor_plot <- reactive({
       item.name = item_names()[i],
       multiple.answers = multiple.answers_report,
       criterion = sc
-    ) +
+    )[[1]] +
       xlab("Group by total score")
     g <- g +
       ggtitle(paste("Distractor plot for item", item_numbers()[i])) +

@@ -438,7 +438,7 @@ IRT_bock_items_icc <- reactive({
     ggplot(aes(theta, probs, col = key, linetype = correct, group = key)) +
     geom_line(aes(text = label)) +
     labs(
-      x = "Ability", y = "Probability of correct answer",
+      x = "Ability", y = "Category probability",
       title = item_names()[item], col = "Resp.", linetype = "Corr. resp."
     ) +
     scale_linetype_manual(values = c(`FALSE` = "dashed", `TRUE` = "solid")) +

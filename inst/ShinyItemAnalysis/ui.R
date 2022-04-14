@@ -39,12 +39,17 @@ ui <- tagList(
     tags$link(
       rel = "stylesheet",
       type = "text/css",
-      href = "style.css"
+      href = "busy_indicator.css"
     ),
     tags$link(
       rel = "stylesheet",
       type = "text/css",
       href = "margins_and_paddings.css"
+    ),
+    tags$link(
+      rel = "stylesheet",
+      type = "text/css",
+      href = "sliders_colors.css"
     ),
 
     # social media card
