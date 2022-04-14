@@ -3,7 +3,7 @@
 \name{fit_blis}
 \alias{fit_blis}
 \alias{blis}
-\title{Fit Baseline Logit Intercept-Slope (BLIS) model on nominal data}
+\title{Fit Baseline-category Logit Intercept-Slope (BLIS) model on nominal data}
 \usage{
 fit_blis(Data, key, ...)
 

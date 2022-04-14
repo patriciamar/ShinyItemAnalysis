@@ -1,5 +1,5 @@
 
-#' Fit Baseline Logit Intercept-Slope (BLIS) model on nominal data
+#' Fit Baseline-category Logit Intercept-Slope (BLIS) model on nominal data
 #'
 #' `blis` fits the IRT Nominal Response Model to data from multiple-choice tests,
 #' while accounting for the correct answer and treating this option as a baseline
@@ -313,8 +313,15 @@ get_orig_levels <- function(object) {
 
 #' Get Coefficients from a fitted BLIS model
 #'
-#' @param object *object of class [BlisClass-class]*, model fitted via `fit_blis`() or
-#'   `blis()`.
+#' Extracts item parameters from fitted BLIS model. For BLIRT parametrization,
+#' use `IRTpars = TRUE` in your function call. Contrary to
+#' [coef,SingleGroupClass-method], response category labels can be displayed in
+#' the output using `labels = TRUE`. On top of that, as BLIS/BLIRT
+#' parametrizations utilize the information of correct response category, you
+#' can denote these in the output with `mark_correct = TRUE`.
+#'
+#' @param object *object of class [BlisClass-class]*, model fitted via
+#'   `fit_blis`() or `blis()`.
 #' @param ... Additional arguments. Not utilized at the moment.
 #' @param CI *numeric*, a width of the confidence intervals.
 #' @param printSE *logical*, print standard errors instead of CI? Defaults to
@@ -329,9 +336,27 @@ get_orig_levels <- function(object) {
 #'   symbol. Applicable only if `labels` is `TRUE` (in which case,
 #'   `mark_correct` defaults to `TRUE`).
 #'
-#' @return coefs
+#' @return List of item coefficients of S3 class `blis_coefs`, so the resulting
+#'   output of `coef()` call is formatted to display only first 3 digits (you
+#'   can opt for different rounding via the [print.blis_coefs] method, see the
+#'   examples). Note that the list-object returned invisibly has the raw
+#'   coefficients stored in it.
 #'
-#' @examples "todo"
+#' @examples
+#' fitted_blis <- fit_blis(HCItest[, 1:20], HCIkey)
+#'
+#' # BLIS coefs
+#' coef(fitted_blis)
+#'
+#' # BLIRT coefs
+#' coef(fitted_blis, IRTpars = TRUE)
+#'
+#' # store raw coefs
+#' blis_coefs <- coef(fitted_blis)
+#'
+#' # print coefs rounded to 2 digits
+#' print(blis_coefs, digits = 2)
+#'
 #' @importFrom methods setMethod
 #' @importFrom purrr map map2
 #'
@@ -341,8 +366,7 @@ get_orig_levels <- function(object) {
 setMethod(
   "coef", "BlisClass",
   function(object, ..., CI = .95, printSE = FALSE, IRTpars = FALSE,
-           simplify = FALSE, labels = FALSE,
-           mark_correct = labels) {
+           simplify = FALSE, labels = FALSE, mark_correct = labels) {
 
     # not-implemented args warnings
     if (!missing(simplify)) {

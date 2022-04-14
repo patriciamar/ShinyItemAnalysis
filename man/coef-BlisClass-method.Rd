@@ -16,8 +16,8 @@
 )
 }
 \arguments{
-\item{object}{\emph{object of class \linkS4class{BlisClass}}, model fitted via \code{fit_blis}() or
-\code{blis()}.}
+\item{object}{\emph{object of class \linkS4class{BlisClass}}, model fitted via
+\code{fit_blis}() or \code{blis()}.}
 
 \item{...}{Additional arguments. Not utilized at the moment.}
 
@@ -40,13 +40,35 @@ symbol. Applicable only if \code{labels} is \code{TRUE} (in which case,
 \code{mark_correct} defaults to \code{TRUE}).}
 }
 \value{
-coefs
+List of item coefficients of S3 class \code{blis_coefs}, so the resulting
+output of \code{coef()} call is formatted to display only first 3 digits (you
+can opt for different rounding via the \link{print.blis_coefs} method, see the
+examples). Note that the list-object returned invisibly has the raw
+coefficients stored in it.
 }
 \description{
-Get Coefficients from a fitted BLIS model
+Extracts item parameters from fitted BLIS model. For BLIRT parametrization,
+use \code{IRTpars = TRUE} in your function call. Contrary to
+\link{coef,SingleGroupClass-method}, response category labels can be displayed in
+the output using \code{labels = TRUE}. On top of that, as BLIS/BLIRT
+parametrizations utilize the information of correct response category, you
+can denote these in the output with \code{mark_correct = TRUE}.
 }
 \examples{
-"todo"
+fitted_blis <- fit_blis(HCItest[, 1:20], HCIkey)
+
+# BLIS coefs
+coef(fitted_blis)
+
+# BLIRT coefs
+coef(fitted_blis, IRTpars = TRUE)
+
+# store raw coefs
+blis_coefs <- coef(fitted_blis)
+
+# print coefs rounded to 2 digits
+print(blis_coefs, digits = 2)
+
 }
 \seealso{
 Other BLIS/BLIRT related: 

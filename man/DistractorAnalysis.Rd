@@ -7,6 +7,7 @@
 DistractorAnalysis(
   Data,
   key,
+  item = "all",
   p.table = FALSE,
   num.groups = 3,
   criterion = NULL,
@@ -18,25 +19,31 @@ DistractorAnalysis(
 )
 }
 \arguments{
-\item{Data}{character: data matrix or data.frame with rows representing
-unscored item responses from a multiple-choice test and columns
-corresponding to the items.}
+\item{Data}{character: data matrix or data.frame with rows
+representing unscored item responses from a multiple-choice test
+and columns corresponding to the items.}
 
 \item{key}{character: answer key for the items. The \code{key} must be a
-vector of the same length as \code{ncol(Data)}. In case it is not provided,
-\code{criterion} needs to be specified.}
+vector of the same length as \code{ncol(Data)}. In case it is not
+provided, \code{criterion} needs to be specified.}
 
-\item{p.table}{logical: should the function return the proportions? If
-\code{FALSE} (default), the counts are returned.}
+\item{item}{numeric or character: either character \code{"all"} to
+apply for all items (default), or a vector of item names (column
+names of \code{Data}), or item identifiers (integers specifying
+the column number).}
 
-\item{num.groups}{numeric: number of groups to which are the respondents
-split.}
+\item{p.table}{logical: should the function return the proportions?
+If \code{FALSE} (default), the counts are returned.}
 
-\item{criterion}{numeric: numeric vector. If not provided, total score is
-calculated and distractor analysis is performed based on it.}
+\item{num.groups}{numeric: number of groups to which are the
+respondents split.}
 
-\item{crit.discrete}{logical: is \code{criterion} discrete? Default value is
-\code{FALSE}. See details.}
+\item{criterion}{numeric: numeric vector. If not provided, total
+score is calculated and distractor analysis is performed based on
+it.}
+
+\item{crit.discrete}{logical: is \code{criterion} discrete? Default
+value is \code{FALSE}. See details.}
 
 \item{cut.points}{numeric: numeric vector specifying cut points of
 \code{criterion}. See details.}
@@ -45,48 +52,53 @@ calculated and distractor analysis is performed based on it.}
 
 \item{matching}{deprecated. Use argument \code{criterion} instead.}
 
-\item{match.discrete}{deprecated. Use argument \code{crit.discrete} instead.}
+\item{match.discrete}{deprecated. Use argument \code{crit.discrete}
+instead.}
 }
 \description{
-Performs distractor analysis for each item and optional number
-of groups.
+Performs distractor analysis for each item and
+optional number of groups.
 }
 \details{
 This function is an adapted version of the
 \code{\link[CTT:distractor.analysis]{CTT::distractor.analysis()}} function from \pkg{CTT} package. In
-case that no \code{criterion} is provided, the scores are calculated using the
-item \code{Data} and \code{key}. The respondents are by default split
-into the \code{num.groups}-quantiles and the number (or proportion) of
-respondents in each quantile is reported with respect to their answers. In
-case that \code{criterion} is discrete (\code{crit.discrete = TRUE}),
-\code{criterion} is split based on its unique levels. Other cut points
-can be specified via \code{cut.points} argument.
+case that no \code{criterion} is provided, the scores are calculated
+using the item \code{Data} and \code{key}. The respondents are by default
+split into the \code{num.groups}-quantiles and the number (or
+proportion) of respondents in each quantile is reported with
+respect to their answers. In case that \code{criterion} is discrete
+(\code{crit.discrete = TRUE}), \code{criterion} is split based on its
+unique levels. Other cut points can be specified via \code{cut.points}
+argument.
 }
 \examples{
 # loading 100-item medical admission test dataset
-data(dataMedicaltest, dataMedicalkey)
-data <- dataMedicaltest[, 1:100]
-dataBin <- dataMedical[, 1:100]
-key <- unlist(dataMedicalkey)
+data(dataMedicaltest, dataMedicalkey, dataMedical)
+Data <- dataMedicaltest[, 1:100]
+Databin <- dataMedical[, 1:100]
+key <- dataMedicalkey
 
-# distractor analysis for dataMedicaltest dataset
-DistractorAnalysis(data, key)
+# distractor analysis for all items
+DistractorAnalysis(Data, key)
+
+# distractor analysis for item 1
+DistractorAnalysis(Data, key, item = 1)
 \dontrun{
-# distractor analysis for dataMedicaltest dataset with proportions
-DistractorAnalysis(data, key, p.table = TRUE)
+# distractor analysis with proportions
+DistractorAnalysis(Data, key, p.table = TRUE)
 
-# distractor analysis for dataMedicaltest dataset for 6 groups
-DistractorAnalysis(data, key, num.group = 6)
+# distractor analysis for 6 groups
+DistractorAnalysis(Data, key, num.group = 6)
 
-# distractor analysis for dataMedicaltest using specified criterion
-criterion <- round(rowSums(databin), -1)
-DistractorAnalysis(data, key, criterion = criterion)
+# distractor analysis using specified criterion
+criterion <- round(rowSums(Databin), -1)
+DistractorAnalysis(Data, key, criterion = criterion)
 
-# distractor analysis for dataMedicaltest using discrete criterion
-DistractorAnalysis(data, key, criterion = criterion, crit.discrete = TRUE)
+# distractor analysis using discrete criterion
+DistractorAnalysis(Data, key, criterion = criterion, crit.discrete = TRUE)
 
-# distractor analysis for dataMedicaltest using groups specified by cut.points
-DistractorAnalysis(data, key, cut.points = seq(10, 100, 10))
+# distractor analysis using groups specified by cut.points
+DistractorAnalysis(Data, key, cut.points = seq(10, 96, 10))
 }
 
 }

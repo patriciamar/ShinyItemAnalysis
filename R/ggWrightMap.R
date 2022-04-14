@@ -1,11 +1,13 @@
-#' Plot Wright map using `ggplot2`
+#' Plot person-item map (Wright map) using `ggplot2`
 #'
 #' @aliases ggWrightMap
 #'
 #' @description This function allows to generate Wright map (also called
-#'   item-person map) using `ggplot()` function from the \pkg{ggplot2}
-#'   package. Wright map is used to display histogram of factor scores and the
-#'   item difficulty parameters estimated by the Rasch IRT model.
+#'   person-item map) using `ggplot()` function from the \pkg{ggplot2}
+#'   package. Wright map is used to jointly display histogram of abilities
+#'   (or other measured trait) and item difficulty parameters.
+#'   Function takes pre-estimated parameter estimates, such as those obtained
+#'   from an IRT model.
 #'
 #' @param theta numeric: vector of ability estimates.
 #' @param b numeric: vector of difficulty estimates.
