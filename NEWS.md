@@ -2,32 +2,54 @@
 
 ----------
 
-### Changes in version 1.4.1 (2022-03-)
+### Changes in version 1.4.1 (2022-04-14)
 #### BUG FIXING
-  * `gDiscrim()` function was fixed to assure indices are inside the defined bounds, also for small samples
+  * `gDiscrim()` function was fixed to assure indices are inside the defined 
+    bounds, also for small samples
   * `plotDistractorAnalysis()` function was fixed not to display double legends. 
     Thanks to Scarlett Escudero for reporting this issue.
   * Item difficulty/discrimination plot in Tradition item analysis tab in the app 
     was fixed to prevent error messages when Discrimination type is set to "none".
-  * Displayed item parameters were fixed and subsequently extended in the app for the Bock model (see major updates).
-  * The training sections for GRM IRT model was fixed to display category plots also for case of k = 6.
+  * Displayed item parameters were fixed and subsequently extended in the app for 
+    the Bock model (see major updates).
+  * The training sections for GRM IRT model was fixed to display category plots 
+    also for case of k = 6.
   
 #### MAJOR UPDATES
-  * The `ItemAnalysis()` has been refactored substantially; memory demands are lowered multiple times, as well as run times (most noticeable with large datasets). The changes include following:
-    - The function now returns `NA`s for "gULI" when `k`, `l`, and `u` arguments are not specified, as there are no sensible defaults. Previous defaults resulted in exactly the same values that ULI already provided on its own.
-    - The `Index.rel.drop` is not provided anymore, as it is not well defined (see Gulliksen, 1950, for more details on  reliability index (`Index.rel`)).
-    - The `bin` and `add.bin` arguments were removed, the analysis on binarized data can be conducted by simply providing the cutscore in the `cutscore` argument.
-    - The `criterion` argument now defaults to `NULL` instead of `"none"`, but behaves the same.
+  * The `ItemAnalysis()` has been refactored substantially; memory demands are 
+    lowered multiple times, as well as run times (most noticeable with large datasets). 
+    The changes include following:
+    - The function now returns `NA`s for "gULI" when `k`, `l`, and `u` arguments 
+      are not specified, as there are no sensible defaults. Previous defaults 
+      resulted in exactly the same values that ULI already provided on its own.
+    - The `Index.rel.drop` is not provided anymore, as it is not well defined 
+      (see Gulliksen, 1950, for more details on  reliability index (`Index.rel`)).
+    - The `bin` and `add.bin` arguments were removed, the analysis on binarized 
+      data can be conducted by simply providing the cutscore in the `cutscore` argument.
+    - The `criterion` argument now defaults to `NULL` instead of `"none"`, but 
+      behaves the same.
     - Deprecated arguments `data`, `y` are now defunct.
+  * The `DistractorAnalysis()` and  `plotDistractorAnalysis()` functions have been 
+    improved: argument items allows options `"all"` to apply for all items (default), 
+    or a vector of item names (column names of `Data`), or item  identifiers 
+    (integers specifying the column number).
   * The `Anxiety` dataset was added.
-  * Baseline Logit Slope-Intercept (BLIS) parametrization for Bock nominal response model is now available as a package function. Fitted model supports IRT reparametrization (to so-called BLIRT) using a standard `coef()` method as well.
-  * The app training sections for NRM IRT model now includes parameters in parametrizations and identification restrictions assumed by Bock (1972), Thissen et al. (2011), as well as BLIS and BLIRT parametrizations accounting for the correct option.
-    * The DIF section in the app was updated to work with the atest difNLR package version.
+  * Baseline Logit Slope-Intercept (BLIS) parametrization for Bock nominal 
+    response model is now available as a package function. Fitted model supports 
+    IRT reparametrization (to so-called BLIRT) using a standard `coef()` method as well.
+  * The app training sections for NRM IRT model now includes parameters in 
+    parametrizations and identification restrictions assumed by Bock (1972), 
+    Thissen et al. (2011), as well as BLIS and BLIRT parametrizations accounting 
+    for the correct option.
+  * The DIF section in the app was updated to work with the newest difNLR package version.
   
 #### MINOR UPDATES
-  * `gDiscrim()` newly issues a warning when item(s) range is zero and when there is no difficulty difference in either group
-  * In `gDiscrim()`, you can now change how the dataset is split by passing arguments to `findInterval()`.
-  * RStudio Addin was added to provide command-free app startup option, bindable to a keyboard shortcut.
+  * `gDiscrim()` newly issues a warning when item(s) range is zero and when there 
+    is no difficulty difference in either group
+  * In `gDiscrim()`, you can now change how the dataset is split by passing 
+    arguments to `findInterval()`.
+  * RStudio Addin was added to provide command-free app startup option, bindable 
+    to a keyboard shortcut.
   * The `HCI` data now includes total score variable.  
 ----------
 
