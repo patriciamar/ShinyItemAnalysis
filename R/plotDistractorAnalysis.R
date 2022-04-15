@@ -54,8 +54,7 @@
 #' Institute of Computer Science of the Czech Academy of Sciences \cr
 #' \email{martinkova@@cs.cas.cz}
 #'
-#' @seealso [DistractorAnalysis()],
-#'   [CTT::distractor.analysis()]
+#' @seealso [DistractorAnalysis()]
 #'
 #' @examples
 #' # loading 100-item medical admission test datasets
@@ -146,7 +145,7 @@ plotDistractorAnalysis <- function(Data, key, num.groups = 3, item = 1, item.nam
   m <- ncol(Data)
   nams <- colnames(Data)
 
-  if (class(item) == "character") {
+  if (inherits(item,"character")) {
     if (any(item != "all") & !all(item %in% nams)) {
       stop("Invalid value for 'item'. Item must be either character 'all', or
            numeric vector corresponding to column identifiers, or name of the item.",
@@ -159,7 +158,7 @@ plotDistractorAnalysis <- function(Data, key, num.groups = 3, item = 1, item.nam
       items <- which(nams %in% item)
     }
   } else {
-    if (class(item) != "integer" & class(item) != "numeric") {
+    if (!inherits(item,"integerer") & !inherits(item,"numeric")) {
       stop("Invalid value for 'item'. Item must be either character 'all', or
            numeric vector corresponding to column identifiers, or name of the item.",
            call. = FALSE

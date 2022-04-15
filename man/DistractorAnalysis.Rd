@@ -61,7 +61,7 @@ optional number of groups.
 }
 \details{
 This function is an adapted version of the
-\code{\link[CTT:distractor.analysis]{CTT::distractor.analysis()}} function from \pkg{CTT} package. In
+\code{distractor.analysis()} function from \pkg{CTT} package. In
 case that no \code{criterion} is provided, the scores are calculated
 using the item \code{Data} and \code{key}. The respondents are by default
 split into the \code{num.groups}-quantiles and the number (or

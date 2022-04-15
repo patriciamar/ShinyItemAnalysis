@@ -118,8 +118,7 @@ plotDistractorAnalysis(Data, key, item = 57, cut.points = seq(10, 96, 10))
 
 }
 \seealso{
-\code{\link[=DistractorAnalysis]{DistractorAnalysis()}},
-\code{\link[CTT:distractor.analysis]{CTT::distractor.analysis()}}
+\code{\link[=DistractorAnalysis]{DistractorAnalysis()}}
 }
 \author{
 Adela Hladka \cr

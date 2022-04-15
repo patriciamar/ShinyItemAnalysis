@@ -85,7 +85,7 @@ plotDIFirt <- function(parameters, test = "Lord", item = "all", item.name, same.
 
   m <- nrow(parameters) / 2
   nams <- rownames(parameters)[1:m]
-  if (class(item) == "character") {
+  if (inherits(item,"character")) {
     if (item != "all" & !item %in% nams) {
       stop("Invalid value for 'item'. Item must be either character 'all', or numeric vector corresponding to column identifiers, or name of the item.",
            call. = FALSE)
@@ -96,7 +96,7 @@ plotDIFirt <- function(parameters, test = "Lord", item = "all", item.name, same.
       items <- which(nams %in% item)
     }
   } else {
-    if (class(item) != "integer" & class(item) != "numeric") {
+    if (!inherits(item,"integer") & !inherits(item,"numeric")) {
       stop("Invalid value for 'item'. Item must be either character 'all', or numeric vector corresponding to column identifiers, or name of the item.",
            call. = FALSE)
     } else {

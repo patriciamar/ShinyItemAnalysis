@@ -32,7 +32,7 @@
 #'   instead.
 #'
 #' @details This function is an adapted version of the
-#'   [CTT::distractor.analysis()] function from \pkg{CTT} package. In
+#'   `distractor.analysis()` function from \pkg{CTT} package. In
 #'   case that no `criterion` is provided, the scores are calculated
 #'   using the item `Data` and `key`. The respondents are by default
 #'   split into the `num.groups`-quantiles and the number (or
@@ -109,7 +109,7 @@ DistractorAnalysis <- function(Data, key, item = "all", p.table = FALSE, num.gro
   m <- ncol(Data)
   nams <- colnames(Data)
 
-  if (class(item) == "character") {
+  if (inherits(item,"character")) {
     if (any(item != "all") & !all(item %in% nams)) {
       stop("Invalid value for 'item'. Item must be either character 'all', or
            numeric vector corresponding to column identifiers, or name of the item.",
@@ -122,7 +122,7 @@ DistractorAnalysis <- function(Data, key, item = "all", p.table = FALSE, num.gro
       items <- which(nams %in% item)
     }
   } else {
-    if (class(item) != "integer" & class(item) != "numeric") {
+    if (!inherits(item,"integer") & !inherits(item,"numeric")) {
       stop("Invalid value for 'item'. Item must be either character 'all', or
            numeric vector corresponding to column identifiers, or name of the item.",
            call. = FALSE
