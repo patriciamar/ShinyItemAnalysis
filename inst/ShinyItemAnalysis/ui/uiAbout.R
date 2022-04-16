@@ -122,7 +122,7 @@ uiAbout <- tabPanel("",
       p(
         "The current",
         a("CRAN", href = "https://CRAN.R-project.org/package=ShinyItemAnalysis", target = "_blank"),
-        "version is 1.4.0.",
+        "version is 1.4.1.",
         br(),
         "The version available",
         a("online", href = "https://shiny.cs.cas.cz/ShinyItemAnalysis/", target = "_blank"), "is 1.4.1.",
