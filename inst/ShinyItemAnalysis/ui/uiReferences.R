@@ -302,7 +302,7 @@ uiReferences <-
                 </li>
 
                 <li>Cattell, R. B. (1966). The scree test for the number of factors.
-                <i>Multivariate Behavioral Research, 1,</i> 245–276.
+                <i>Multivariate Behavioral Research, 1,</i> 245-276.
                 <a href = "http://dx.doi.org/10.1207/s15327906mbr0102_10",
                 target = "_blank">See online.</a>
                 </li>
@@ -344,11 +344,11 @@ uiReferences <-
                 </li>
 
                 <li>
-                Horn, J. L. (1965). A rationale and test for the number of factors in factor analysis. <i>Psychometrika, 30,</i> 179–185. <a href="http://dx.doi.org/10.1007/BF02289447", target="_blank">See online.</a>
+                Horn, J. L. (1965). A rationale and test for the number of factors in factor analysis. <i>Psychometrika, 30,</i> 179-185. <a href="http://dx.doi.org/10.1007/BF02289447", target="_blank">See online.</a>
                 </li>
 
                 <li>
-                Kaiser,  H.  F.  (1960).  The  application  of  electronic  computers  to  factor analysis. <i>Educational and Psychological Measurement, 20</i>, 141–151. <a href="http://dx.doi.org/10.1177/001316446002000116", target="_blank">See online.</a>
+                Kaiser,  H.  F.  (1960).  The  application  of  electronic  computers  to  factor analysis. <i>Educational and Psychological Measurement, 20</i>, 141-151. <a href="http://dx.doi.org/10.1177/001316446002000116", target="_blank">See online.</a>
                 </li>
 
                 <li>Li, H.-H., & Stout, W. (1996).
