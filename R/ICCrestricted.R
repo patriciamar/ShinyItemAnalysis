@@ -57,9 +57,6 @@
 #' reliability in evaluating grant peer review.
 #'
 #' @examples
-#' # loading AIBS dataset
-#' data(AIBS, package = "ShinyItemAnalysis")
-#'
 #' # ICC for the whole sample
 #' ICCrestricted(Data = AIBS, case = "ID", var = "Score", rank = "ScoreRankAdj")
 #'

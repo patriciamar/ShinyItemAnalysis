@@ -27,7 +27,6 @@
 #' [ItemAnalysis()]
 #'
 #' @examples
-#' data(HCI, package = "ShinyItemAnalysis")
 #' HCImissed <- HCI[, 1:20]
 #'
 #' # simulate skipped (missed) and not-reached items in HCI dataset

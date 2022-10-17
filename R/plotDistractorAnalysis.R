@@ -57,8 +57,6 @@
 #' @seealso [DistractorAnalysis()]
 #'
 #' @examples
-#' # loading 100-item medical admission test datasets
-#' data(dataMedical, dataMedicaltest, dataMedicalkey)
 #' Data <- dataMedicaltest[, 1:100]
 #' DataBin <- dataMedical[, 1:100]
 #' key <- dataMedicalkey
@@ -158,7 +156,7 @@ plotDistractorAnalysis <- function(Data, key, num.groups = 3, item = 1, item.nam
       items <- which(nams %in% item)
     }
   } else {
-    if (!inherits(item,"integerer") & !inherits(item,"numeric")) {
+    if (!inherits(item, c("integer", "numeric"))) {
       stop("Invalid value for 'item'. Item must be either character 'all', or
            numeric vector corresponding to column identifiers, or name of the item.",
            call. = FALSE
@@ -179,7 +177,7 @@ plotDistractorAnalysis <- function(Data, key, num.groups = 3, item = 1, item.nam
     # distractor analysis
     x <- DistractorAnalysis(
       Data = Data, key = key, item = i, p.table = TRUE, num.groups = num.groups, criterion = criterion,
-      crit.discrete = crit.discrete#, cut.points = cut.points
+      crit.discrete = crit.discrete, cut.points = cut.points
     )[[1]]
 
     # only rows where is positive proportion of correct answers

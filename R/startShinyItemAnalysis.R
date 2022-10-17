@@ -43,7 +43,7 @@ startShinyItemAnalysis <- function(background = TRUE, ...) {
   run_app_script <- '
   appDir <- system.file("ShinyItemAnalysis", package = "ShinyItemAnalysis")
   if (appDir == "") {
-    stop("Could not find example directory. Try re-installing `ShinyItemAnalysis`.", call. = FALSE)
+    stop("Could not find the app. Try re-installing `ShinyItemAnalysis`.", call. = FALSE)
   }
   shiny::runApp(appDir, display.mode = "normal", launch.browser = TRUE)
   '
@@ -68,9 +68,7 @@ startShinyItemAnalysis <- function(background = TRUE, ...) {
       error = function(e) {
         message(
           "There was an error running the app as a background job.\n",
-          "It is likely because of your username \"",
-          Sys.info()[["user"]],
-          "\" containing special characters.\n",
+          "The issue may be that your username contains special characters.\n",
           "Please use `startShinyItemAnalysis(background = FALSE)`."
         )
         return("fail")
@@ -109,36 +107,37 @@ run_app <- function(background = TRUE, ...) {
 #'
 #' @keywords internal
 #' @noRd
+#'
+#' @importFrom rlang check_installed
+#'
 check_app_deps <- function(...) {
-  suggests <- read.dcf(system.file("DESCRIPTION", package = "ShinyItemAnalysis"), fields = "Suggests")
-  suggests <- trimws(strsplit(suggests, c(",", "\\("))[[1]])
-  suggests <- sapply(strsplit(suggests, "\\("), function(x) trimws(x[[1]]))
+  # get Suggests info from the DESCRIPTION
+  suggests <- read.dcf(
+    system.file("DESCRIPTION", package = "ShinyItemAnalysis"),
+    fields = "Suggests"
+  )
 
+  # split the string to individual packages, trim whitespaces
+  suggests <- unlist(strsplit(suggests, ",[[:space:]]*"))
 
-  suggests_installed <- sapply(suggests, function(x) requireNamespace(x, quietly = TRUE))
+  # remove any newline chars that might confuse regex of rlang::check_installed
+  suggests <- gsub("\n", " ", suggests)
 
-  suggest_to_install <- suggests[!suggests_installed]
+  # check with the provided reason
+  check_installed(suggests, reason = "to run the app.")
 
-  n_pkg <- length(suggest_to_install)
-
-
-  if (n_pkg > 0) {
-    message(
-      "Following ", ifelse(n_pkg > 1, "packages are", "package is"),
-      " needed to run the app but ",
-      ifelse(n_pkg > 1, "are", "is"), " not installed:"
-    )
-    cat("", paste("-", suggest_to_install), "", sep = "\n")
-
-    out <- utils::menu(
-      choices = c("Yes", "No"),
-      title = message("Do you want to install ", ifelse(n_pkg > 1, "them", "it"), "?")
-    )
-
-    if (out == 1L) {
-      utils::install.packages(pkgs = suggest_to_install, ...)
-    } else {
-      stop("The interactive Shiny app could not be started because of missing dependencies.", call. = FALSE)
-    }
-  }
+  # TODO - nice to have -
+  # print some info based on the check (but it always return NULL)
+  #
+  # browser()
+  #   message(
+  #     "\n----------------------------------------------------------\n",
+  #     "All required packages should now be installed.\n",
+  #     "If you encounter an error, read the log above and restart R.\n",
+  #     "\n",
+  #     "The application will launch in a moment...\n",
+  #     "------------------------------------------------------------"
+  #   )
+  #
+  #   Sys.sleep(8)
 }

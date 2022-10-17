@@ -285,7 +285,7 @@ fa_parallel <- function(Data, cor = "pearson", n_obs = NULL,
 #' @examples
 #' \dontrun{
 #' fa_parallel_result <- BFI2[, 1:60] %>% fa_parallel(plot = FALSE) # without plot
-#' fa_parallel_result %>% plot # generate plot from "fitted" object
+#' fa_parallel_result %>% plot() # generate plot from "fitted" object
 #' fa_parallel_result %>% plot(show_kaiser = FALSE) # hide Kaiser boundaries
 #' }
 #'
@@ -318,7 +318,7 @@ plot.sia_parallel <- function(x, y, ...) {
       )
 
       list(
-        geom_hline(yintercept = positions, linetype = "dashed", alpha = .4),
+        geom_hline(yintercept = positions, linetype = "dashed", alpha = .4, size = .8),
         annotate("text",
           x = max_fact, y = positions, label = labels, hjust = 1, vjust = -.75,
           alpha = .4
@@ -332,8 +332,8 @@ plot.sia_parallel <- function(x, y, ...) {
       col = .data$method, alpha = .data$data_type
     )) +
     kaiser_boundary(method, ...) +
-    geom_line() +
-    geom_point() +
+    geom_line(size = .8) +
+    geom_point(size = 2) +
     scale_x_continuous(
       breaks = function(x) seq(1, x[2], 3),
       expand = expansion(add = .75)
@@ -342,12 +342,16 @@ plot.sia_parallel <- function(x, y, ...) {
       values = c("#00BFC4", "#F8766D"),
       guide = ifelse(method == "both", "legend", "none")
     ) +
-    scale_alpha_manual(values = c(1, .25)) +
+    scale_alpha_manual(
+      values = c(real = 1, simulated = .25),
+      labels = c(real = "Real", simulated = "Simulated")
+    ) +
     xlab(switch(method,
-      "fa" = "factor number",
-      "pca" = "component number",
-      "both" = "factor/component number"
+      "fa" = "Factor number",
+      "pca" = "Component number",
+      "both" = "Factor/component number"
     )) +
+    ylab("Eigenvalue") +
     coord_cartesian(ylim = c(NA, y_lim_max)) +
     theme_bw(
       base_size = 15, base_family = ""

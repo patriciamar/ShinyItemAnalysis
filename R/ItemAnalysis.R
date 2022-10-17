@@ -89,8 +89,6 @@
 #'
 #' @examples
 #' \dontrun{
-#' # loading 100-item medical admission test datasets
-#' data(dataMedical, dataMedicalgraded)
 #' # binary dataset
 #' dataBin <- dataMedical[, 1:100]
 #' # ordinal dataset

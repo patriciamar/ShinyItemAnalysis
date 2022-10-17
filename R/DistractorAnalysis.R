@@ -52,8 +52,6 @@
 #' \email{martinkova@@cs.cas.cz} \cr
 #'
 #' @examples
-#' # loading 100-item medical admission test dataset
-#' data(dataMedicaltest, dataMedicalkey, dataMedical)
 #' Data <- dataMedicaltest[, 1:100]
 #' Databin <- dataMedical[, 1:100]
 #' key <- dataMedicalkey
@@ -122,7 +120,7 @@ DistractorAnalysis <- function(Data, key, item = "all", p.table = FALSE, num.gro
       items <- which(nams %in% item)
     }
   } else {
-    if (!inherits(item,"integer") & !inherits(item,"numeric")) {
+    if (!inherits(item, c("integer", "numeric"))) {
       stop("Invalid value for 'item'. Item must be either character 'all', or
            numeric vector corresponding to column identifiers, or name of the item.",
            call. = FALSE
@@ -208,7 +206,7 @@ DistractorAnalysis <- function(Data, key, item = "all", p.table = FALSE, num.gro
         )
       }
       score.cut <- as.numeric(paste(cut.points))
-      score.cut <- c(min(scores, na.rm = T), max(scores, na.rm = T), score.cut)
+      score.cut <- c(min(scores, na.rm = TRUE), max(scores, na.rm = TRUE), score.cut)
       score.cut <- sort(unique(score.cut))
     }
     num.groups <- length(score.cut) - 1
