@@ -77,8 +77,6 @@ combinations are split into distractors and only these are then
 plotted with correct combination.
 }
 \examples{
-# loading 100-item medical admission test datasets
-data(dataMedical, dataMedicaltest, dataMedicalkey)
 Data <- dataMedicaltest[, 1:100]
 DataBin <- dataMedical[, 1:100]
 key <- dataMedicalkey

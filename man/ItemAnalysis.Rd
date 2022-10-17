@@ -85,8 +85,6 @@ values greater or equal to cut-score are set to \code{1}, other values are set t
 }
 \examples{
 \dontrun{
-# loading 100-item medical admission test datasets
-data(dataMedical, dataMedicalgraded)
 # binary dataset
 dataBin <- dataMedical[, 1:100]
 # ordinal dataset

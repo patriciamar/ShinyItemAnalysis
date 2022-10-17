@@ -41,7 +41,7 @@ refers to "not discussed")}
 }
 }
 \usage{
-data(NIH)
+NIH
 }
 \description{
 The \code{NIH} dataset (Erosheva et al., 2020a) was sampled from

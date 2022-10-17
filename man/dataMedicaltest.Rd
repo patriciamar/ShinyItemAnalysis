@@ -21,7 +21,7 @@ The use of test and item analysis for improvement of tests. Workshop held at
 conference MEFANET, 2016, Brno, Czech Republic.
 }
 \usage{
-data(dataMedicaltest)
+dataMedicaltest
 }
 \description{
 The \code{dataMedicaltest} dataset consists of the responses of

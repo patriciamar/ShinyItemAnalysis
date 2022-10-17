@@ -18,7 +18,7 @@ observations on the 44 variables.
 \item{major}{Identifier whether student plans to major in the life sciences. } }
 }
 \usage{
-data(HCItestretest)
+HCItestretest
 }
 \description{
 \code{HCItestretest} dataset consists of the responses of 45
@@ -36,12 +36,13 @@ of the homeostasis concept inventory. CBE-Life Sciences Education, 16(2),
 ar35. \doi{10.1187/cbe.16-10-0305}
 }
 \seealso{
-\code{\link[=HCIdata]{HCIdata()}} for HCI full dataset\cr
-\code{\link[=HCI]{HCI()}} for HCI dichotomous dataset\cr
-\code{\link[=HCItest]{HCItest()}} for HCI multiple-choice dataset\cr
-\code{\link[=HCIkey]{HCIkey()}} for key of correct answers for HCI\cr
-\code{\link[=HCIgrads]{HCIgrads()}}  for HCI dataset of graduate students\cr
-\code{\link[=HCIprepost]{HCIprepost()}} for HCI pretest and posttest scores
+\link{HCI} for HCI dichotomous dataset\cr
+\link{HCItest} for HCI multiple-choice dataset\cr
+\link{HCIkey} for key of correct answers for HCI\cr
+\link{HCIdata} for HCI full dataset\cr
+\link{HCIlong} for HCI in a long format\cr
+\link{HCIgrads}  for HCI dataset of graduate students\cr
+\link{HCIprepost} for HCI pretest and posttest scores\cr
 }
 \author{
 Jenny L. McFarland \cr Biology Department, Edmonds Community College

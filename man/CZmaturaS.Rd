@@ -19,7 +19,7 @@ observations on 75 variables.
 }
 }
 \usage{
-data(CZmaturaS)
+CZmaturaS
 }
 \description{
 The \code{CZmaturaS} dataset comes from a matura exam in

@@ -24,7 +24,7 @@
 }
 }
 \usage{
-data(MSclinical)
+MSclinical
 }
 \description{
 The \code{MSclinical} dataset contains clinical measures on multiple sclerosis patients.

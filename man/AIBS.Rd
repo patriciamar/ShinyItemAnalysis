@@ -36,7 +36,7 @@
 }
 }
 \usage{
-data(AIBS)
+AIBS
 }
 \description{
 The \code{AIBS} dataset (Gallo, 2020) comes from the scientific peer review

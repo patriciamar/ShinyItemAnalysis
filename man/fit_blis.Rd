@@ -267,6 +267,8 @@ control input)}
     Richardson extrapolation. Default is 1e-5}
   \item{parallel}{logical; use the parallel cluster defined by \code{\link[mirt]{mirtCluster}}?
     Default is TRUE}
+   \item{storeEMhistory}{logical; store the iteration history when using the EM algorithm?
+   Default is FALSE. When TRUE, use \code{\link[mirt]{extract.mirt}} to extract}
   \item{internal_constraints}{logical; include the internal constraints when using certain
     IRT models (e.g., 'grsm' itemtype). Disable this if you want to use special optimizers
     such as the solnp. Default is \code{TRUE}}

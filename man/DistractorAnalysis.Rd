@@ -72,8 +72,6 @@ unique levels. Other cut points can be specified via \code{cut.points}
 argument.
 }
 \examples{
-# loading 100-item medical admission test dataset
-data(dataMedicaltest, dataMedicalkey, dataMedical)
 Data <- dataMedicaltest[, 1:100]
 Databin <- dataMedical[, 1:100]
 key <- dataMedicalkey

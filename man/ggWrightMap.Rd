@@ -48,8 +48,6 @@ from an IRT model.
 \examples{
 library(mirt)
 
-data(HCI)
-
 # fit Rasch model with the mirt package
 fit <- mirt(HCI[, 1:20], model = 1, itemtype = "Rasch")
 # factor scores

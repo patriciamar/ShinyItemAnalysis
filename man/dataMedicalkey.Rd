@@ -15,7 +15,7 @@ The use of test and item analysis for improvement of tests. Workshop held at
 conference MEFANET, 2016, Brno, Czech Republic.
 }
 \usage{
-data(dataMedicalkey)
+dataMedicalkey
 }
 \description{
 The \code{dataMedicalkey} is a vector of factors representing

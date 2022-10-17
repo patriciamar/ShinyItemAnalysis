@@ -45,7 +45,7 @@ and English wording is provided below.
 }
 }
 \usage{
-data(HeightInventory)
+HeightInventory
 }
 \description{
 \code{HeightInventory} dataset consists of the responses of 4,885 respondents

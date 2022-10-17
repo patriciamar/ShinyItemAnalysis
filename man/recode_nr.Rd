@@ -24,7 +24,6 @@ responses, i.e., missing responses to items such that all subsequent
 items are missed as well by the respondent.
 }
 \examples{
-data(HCI, package = "ShinyItemAnalysis")
 HCImissed <- HCI[, 1:20]
 
 # simulate skipped (missed) and not-reached items in HCI dataset

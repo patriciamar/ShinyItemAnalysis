@@ -31,7 +31,7 @@ Some items were recoded so that all items are scored in the same direction, see 
 }
 }
 \usage{
-data(BFI2)
+BFI2
 }
 \description{
 \code{BFI2} dataset (Hřebíčková et al., 2020) consists of responses of
@@ -84,7 +84,6 @@ item (out of 60) from Consciousness domain and Organization facet.
 Thanks to Martina Hřebíčková for sharing this dataset.
 }
 \examples{
-data(BFI2)
 colnames(BFI2)[1:60] <- c("iEscb01", "iAcmp02", "iCorg03r", "iNanx04r", "iOaes05r", "iEasr06",
 "iArsp07", "iCprd08r", "iNdep09r", "iOint10", "iEenl11r", "iAtrs12r", "iCrsp13", "iNemt14",
 "iOcrt15", "iEscb16r", "iAcmp17r", "iCorg18", "iNanx19", "iOaes20", "iEasr21", "iArsp22r",

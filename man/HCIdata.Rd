@@ -27,7 +27,7 @@ baccalaureate college: arts and sciences focus, \code{"R1"} research
 university, \code{"MCU"} master's college and university. } }
 }
 \usage{
-data(HCIdata)
+HCIdata
 }
 \description{
 \code{HCIdata} dataset consists of the responses of 669 students
@@ -45,12 +45,13 @@ of the homeostasis concept inventory. CBE-Life Sciences Education, 16(2),
 ar35. \doi{10.1187/cbe.16-10-0305}
 }
 \seealso{
-\code{\link[=HCI]{HCI()}} for HCI dichotomous dataset\cr
-\code{\link[=HCItest]{HCItest()}} for HCI multiple-choice dataset\cr
-\code{\link[=HCIkey]{HCIkey()}} for key of correct answers for HCI\cr
-\code{\link[=HCIgrads]{HCIgrads()}}  for HCI dataset of graduate students\cr
-\code{\link[=HCIprepost]{HCIprepost()}} for HCI pretest and posttest scores\cr
-\code{\link[=HCItestretest]{HCItestretest()}} for HCI test-retest dataset
+\link{HCI} for HCI dichotomous dataset\cr
+\link{HCItest} for HCI multiple-choice dataset\cr
+\link{HCIkey} for key of correct answers for HCI\cr
+\link{HCIlong} for HCI in a long format\cr
+\link{HCIgrads}  for HCI dataset of graduate students\cr
+\link{HCIprepost} for HCI pretest and posttest scores\cr
+\link{HCItestretest} for HCI test-retest dataset\cr
 }
 \author{
 Jenny L. McFarland \cr Biology Department, Edmonds Community College

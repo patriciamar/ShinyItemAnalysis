@@ -100,8 +100,10 @@ individuals into \code{k} groups. The lower and upper group are determined by \c
 and \code{u} parameters, i.e.  l-th and u-th group where the ordering is defined
 by increasing total score.
 
-For ordinal data, difficulty is defined as a relative score:\preformatted{(achieved - minimal)/(maximal - minimal)
-}
+For ordinal data, difficulty is defined as a relative score:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{(achieved - minimal)/(maximal - minimal)
+}\if{html}{\out{</div>}}
 
 Minimal score can be specified by
 \code{minscore}, maximal score can be specified by \code{maxscore}. Average score of
@@ -112,8 +114,6 @@ Note that all correlations are estimated using Pearson correlation
 coefficient.
 }
 \examples{
-# loading 100-item medical admission test datasets
-data(dataMedical, dataMedicalgraded)
 # binary dataset
 dataBin <- dataMedical[, 1:100]
 # ordinal dataset

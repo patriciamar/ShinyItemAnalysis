@@ -19,7 +19,7 @@
 }
 }
 \usage{
-data(CZmatura)
+CZmatura
 }
 \description{
 The \code{CZmatura} dataset comes from matura exam in

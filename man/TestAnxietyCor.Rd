@@ -31,7 +31,7 @@ correlations for 20 items.
 }
 }
 \usage{
-data(TestAnxietyCor)
+TestAnxietyCor
 }
 \description{
 The \code{TestAnxietyCor} dataset contains between-item correlations for 20 items

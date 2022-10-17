@@ -65,9 +65,6 @@ Function estimating reliability with intra-class correlation for the complete
 or for the range-restricted sample.
 }
 \examples{
-# loading AIBS dataset
-data(AIBS, package = "ShinyItemAnalysis")
-
 # ICC for the whole sample
 ICCrestricted(Data = AIBS, case = "ID", var = "Score", rank = "ScoreRankAdj")
 
