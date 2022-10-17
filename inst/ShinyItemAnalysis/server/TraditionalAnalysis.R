@@ -398,15 +398,18 @@ output$distractor_text <- renderUI({
 distractor_plot <- reactive({
   i <- input$distractor_item_slider
 
-  plotDistractorAnalysis(
+  p_list <- plotDistractorAnalysis(
     Data = nominal(),
     key = key(),
-    num.group = input$distractor_group_slider,
+    num.groups = input$distractor_group_slider,
     item = i,
     item.name = item_names()[i],
     multiple.answers = input$distractor_type == "Combinations",
     criterion = total_score()
-  )[[1]] + xlab("Group by total score")
+  )
+
+  # overwrite default lab
+  p_list[[1]] + xlab("Group by total score")
 })
 
 # ** Output distractors plot ######

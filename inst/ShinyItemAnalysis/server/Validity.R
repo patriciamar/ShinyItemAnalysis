@@ -295,25 +295,46 @@ output$validity_factor_screeplot <- renderPlotly({
     plot() %>%
     ggplotly() %>%
     style(textposition = "left") %>%
-    layout(legend = list(x = .95, y = .95, xanchor = "right", orientation = "h")) %>%
+    layout(legend = list(
+      title = NA, # block legent titles from ggplot
+      x = .95, y = .95, xanchor = "right", orientation = "h",
+      groupclick = "toggleitem") # enable toggle per legend items, not legend groups
+      ) %>%
     config(displayModeBar = FALSE)
 
+  # now this mayhem rounds eigenvalues in tooltips to 3 places and reformats legend
+  # to be grouped per PCA and FA, legendgrouptitle is only to be defined per unique legend group
+  #
+  # TODO refactor this into a separate function....
+
+  # if FA OR PCA is displayed, edit layers 3 and 4 (stands for real and simulated datapoints)
   plt$x$data[[3]]$text <- plt$x$data[[3]]$text %>%
     str_replace("-?\\d{1}\\.\\d{5,}", function(x) round(as.numeric(x), 3))
-  plt$x$data[[3]]$name <- str_replace(plt$x$data[[3]]$name, ",", ", ")
+  plt$x$data[[3]]$legendgroup <- str_extract(plt$x$data[[3]]$legendgroup, "FA|PCA")
+  plt$x$data[[3]]$name <- str_to_sentence(str_extract(plt$x$data[[3]]$name, "simulated|real"))
+  plt$x$data[[3]]$legendgrouptitle$text <- plt$x$data[[3]]$legendgroup
 
   plt$x$data[[4]]$text <- plt$x$data[[4]]$text %>%
     str_replace("-?\\d{1}\\.\\d{5,}", function(x) round(as.numeric(x), 3))
-  plt$x$data[[4]]$name <- str_replace(plt$x$data[[4]]$name, ",", ", ")
+  plt$x$data[[4]]$legendgroup <- str_extract(plt$x$data[[4]]$legendgroup, "FA|PCA")
+  plt$x$data[[4]]$name <- str_to_sentence(str_extract(plt$x$data[[4]]$name, "simulated|real"))
 
+  # if there are TWO methods displayed, another 2 layers are created by ggplotly, so we have to edit them
+  # is a similar manner as we did for the layers 3 and 4, again legendgrouptitle is defined only once
+  # str_extract is used with the sole purpose - not to make a mistake and display wrong labels to wrong actual data
+  # (there is no assurance that layers 5 and 6 would end up with FA, e.g.)
+  # we have to use if clause because if we manipulate nonexistent layers, things go bad
   if (method == "both") {
     plt$x$data[[5]]$text <- plt$x$data[[5]]$text %>%
       str_replace("-?\\d{1}\\.\\d{5,}", function(x) round(as.numeric(x), 3))
-    plt$x$data[[5]]$name <- str_replace(plt$x$data[[5]]$name, ",", ", ")
+    plt$x$data[[5]]$legendgroup <- str_extract(plt$x$data[[5]]$legendgroup, "FA|PCA")
+    plt$x$data[[5]]$name <- str_to_sentence(str_extract(plt$x$data[[5]]$name, "simulated|real"))
+    plt$x$data[[5]]$legendgrouptitle$text <- plt$x$data[[5]]$legendgroup
 
     plt$x$data[[6]]$text <- plt$x$data[[6]]$text %>%
       str_replace("-?\\d{1}\\.\\d{5,}", function(x) round(as.numeric(x), 3))
-    plt$x$data[[6]]$name <- str_replace(plt$x$data[[6]]$name, ",", ", ")
+    plt$x$data[[6]]$legendgroup <- str_extract(plt$x$data[[6]]$legendgroup, "FA|PCA")
+    plt$x$data[[6]]$name <- str_to_sentence(str_extract(plt$x$data[[6]]$name, "simulated|real"))
   }
 
   plt$x$data[[1]][["hoverinfo"]] <- "none"
@@ -479,13 +500,12 @@ output$validity_factor_varex <- renderTable(
 
 output$validity_factor_efa_fit <- renderUI({
   r <- validity_factor_fa()
-    HTML(paste0(
-      "\\(\\chi^2\\)(", r$dof, ") = ", round(r$chi, 2), "; <em>p</em> = ", round(r$PVAL, 3), "<br><br>",
-      "RMSEA = ", round(r$RMSEA[1], 3),
-      ", 90% CI [", round(r$RMSEA[2], 3), ", ", round(r$RMSEA[3], 3), "]<br><br>",
-      "TLI = ", round(r$TLI, 3), "; BIC = ", round(r$BIC, 3)
-    ))
-
+  HTML(paste0(
+    "\\(\\chi^2\\)(", r$dof, ") = ", round(r$chi, 2), "; <em>p</em> = ", round(r$PVAL, 3), "<br><br>",
+    "RMSEA = ", round(r$RMSEA[1], 3),
+    ", 90% CI [", round(r$RMSEA[2], 3), ", ", round(r$RMSEA[3], 3), "]<br><br>",
+    "TLI = ", round(r$TLI, 3), "; BIC = ", round(r$BIC, 3)
+  ))
 })
 
 validity_factor_fscores <- reactive({
@@ -827,7 +847,7 @@ output$validity_groups_alert <- renderUI({
 validity_distractor_plot_Input <- reactive({
   i <- input$validitydistractorSlider
 
-  plotDistractorAnalysis(
+  p_list <- plotDistractorAnalysis(
     Data = nominal(),
     key = key(),
     num.groups = input$validity_group,
@@ -837,6 +857,9 @@ validity_distractor_plot_Input <- reactive({
     criterion = criterion(),
     crit.discrete = validity_change_cut_indicator$discrete
   )
+
+  # the function returns a list, pick the first (and only) one
+  p_list[[1]]
 })
 
 # ** Output validity distractors plot ####
