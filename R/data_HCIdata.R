@@ -8,8 +8,6 @@
 #'   membership, identifier whether English is the student's first language, and
 #'   type of school.
 #'
-#' @usage data(HCIdata)
-#'
 #' @author Jenny L. McFarland \cr Biology Department, Edmonds Community College
 #'
 #' @references McFarland, J. L., Price, R. M., Wenderoth, M. P., Martinkova, P.,
@@ -20,12 +18,13 @@
 #' @keywords datasets
 #'
 #' @seealso
-#' [HCI()] for HCI dichotomous dataset\cr
-#' [HCItest()] for HCI multiple-choice dataset\cr
-#' [HCIkey()] for key of correct answers for HCI\cr
-#' [HCIgrads()]  for HCI dataset of graduate students\cr
-#' [HCIprepost()] for HCI pretest and posttest scores\cr
-#' [HCItestretest()] for HCI test-retest dataset
+#' [HCI] for HCI dichotomous dataset\cr
+#' [HCItest] for HCI multiple-choice dataset\cr
+#' [HCIkey] for key of correct answers for HCI\cr
+#' [HCIlong] for HCI in a long format\cr
+#' [HCIgrads]  for HCI dataset of graduate students\cr
+#' [HCIprepost] for HCI pretest and posttest scores\cr
+#' [HCItestretest] for HCI test-retest dataset\cr
 #'
 #' @format `HCIdata` is a `data.frame` consisting of 669 observations
 #'   on the 47 variables.

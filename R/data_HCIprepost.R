@@ -5,8 +5,6 @@
 #'   Between the pre-test and post-test, the students received
 #'   instruction on homeostasis within a physiology course.
 #'
-#' @usage data(HCIprepost)
-#'
 #' @author Jenny L. McFarland \cr Biology Department, Edmonds Community College
 #'
 #' @references McFarland, J. L., Price, R. M., Wenderoth, M. P., Martinkova, P.,
@@ -17,12 +15,13 @@
 #' @keywords datasets
 #'
 #' @seealso
-#' [HCIdata()] for HCI full dataset\cr
-#' [HCI()] for HCI dichotomous dataset\cr
-#' [HCItest()] for HCI multiple-choice dataset\cr
-#' [HCIkey()] for key of correct answers for HCI\cr
-#' [HCIgrads()]  for HCI dataset of graduate students\cr
-#' [HCItestretest()] for HCI test-retest dataset
+#' [HCI] for HCI dichotomous dataset\cr
+#' [HCItest] for HCI multiple-choice dataset\cr
+#' [HCIkey] for key of correct answers for HCI\cr
+#' [HCIdata] for HCI full dataset\cr
+#' [HCIlong] for HCI in a long format\cr
+#' [HCIgrads]  for HCI dataset of graduate students\cr
+#' [HCItestretest] for HCI test-retest dataset\cr
 #'
 #' @format `HCIprepost` is a `data.frame` consisting of 16
 #'   observations on the 2 variables.

@@ -8,8 +8,6 @@
 #'   belongs to one student. Students took no courses on homeostasis between the
 #'   test and retest.
 #'
-#' @usage data(HCItestretest)
-#'
 #' @author Jenny L. McFarland \cr Biology Department, Edmonds Community College
 #'
 #' @references McFarland, J. L., Price, R. M., Wenderoth, M. P., Martinkova, P.,
@@ -20,12 +18,13 @@
 #' @keywords datasets
 #'
 #' @seealso
-#' [HCIdata()] for HCI full dataset\cr
-#' [HCI()] for HCI dichotomous dataset\cr
-#' [HCItest()] for HCI multiple-choice dataset\cr
-#' [HCIkey()] for key of correct answers for HCI\cr
-#' [HCIgrads()]  for HCI dataset of graduate students\cr
-#' [HCIprepost()] for HCI pretest and posttest scores
+#' [HCI] for HCI dichotomous dataset\cr
+#' [HCItest] for HCI multiple-choice dataset\cr
+#' [HCIkey] for key of correct answers for HCI\cr
+#' [HCIdata] for HCI full dataset\cr
+#' [HCIlong] for HCI in a long format\cr
+#' [HCIgrads]  for HCI dataset of graduate students\cr
+#' [HCIprepost] for HCI pretest and posttest scores\cr
 #'
 #' @format `HCItestretest` is a `data.frame` consisting of 90
 #'   observations on the 44 variables.

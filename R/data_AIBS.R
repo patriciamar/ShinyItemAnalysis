@@ -20,8 +20,6 @@
 #' (2021a) to demonstrate issues of inter-rater reliability in case of
 #' restricted samples. For details, see Erosheva et al. (2021b).
 #'
-#' @usage data(AIBS)
-#'
 #' @author Stephen Gallo \cr American Institute of Biological Sciences
 #'
 #' @references

@@ -40,6 +40,8 @@
 #'   \item{\code{R27}}{I felt uneasy}
 #'   \item{\code{R28}}{I felt tense}
 #'   \item{\code{R29}}{I had difficulty calming down}
+#'   \item{\code{score}}{Total score.}
+#'   \item{\code{zscore}}{Standardized total score.}
 #'   }
 #'
 #'
@@ -51,4 +53,4 @@
 #'
 #' @keywords datasets
 #'
-"anxiety"
+"Anxiety"

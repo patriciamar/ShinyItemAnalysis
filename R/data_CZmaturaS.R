@@ -6,8 +6,6 @@
 #'   total of 15,702. Original data available from
 #'   [https://cermat.cz/](https://cermat.cz/).
 #'
-#' @usage data(CZmaturaS)
-#'
 #' @keywords datasets
 #'
 #' @seealso [CZmatura()]

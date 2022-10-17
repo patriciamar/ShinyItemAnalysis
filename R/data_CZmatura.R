@@ -5,8 +5,6 @@
 #'   the end of their secondary education. Original data available from
 #'   [https://cermat.cz/](https://cermat.cz/).
 #'
-#' @usage data(CZmatura)
-#'
 #' @keywords datasets
 #'
 #' @seealso

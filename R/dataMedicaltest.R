@@ -6,8 +6,6 @@
 #'   contains 100 items, possible answers were A, B, C, D, while any combination
 #'   of these can be correct.
 #'
-#' @usage data(dataMedicaltest)
-#'
 #' @references Martinkova, P., & Drabinova, A. (2018). ShinyItemAnalysis for
 #' teaching psychometrics and to enforce routine analysis of educational tests.
 #' The R Journal, 10(2), 503--515, \doi{10.32614/RJ-2018-074}

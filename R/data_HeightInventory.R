@@ -6,8 +6,6 @@
 #' `"2"` disagree, `"3"` agree, `"4"` strongly agree, vector of self-reported
 #' heights (in centimeters), and vector of gender membership.
 #'
-#' @usage data(HeightInventory)
-#'
 #' @references Rečka, K. (2018). Height and Weight Inventory. Brno, Masaryk
 #'   University: Unpublished Master's thesis
 #'

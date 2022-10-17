@@ -26,8 +26,6 @@
 #'   score. In addition, the file includes a study group ID variable that refers
 #'   to the Matched and Random subsets used in the original study.
 #'
-#' @usage data(NIH)
-#'
 #' @references
 #' Erosheva, E. A., Grant, S., Chen, M.-C., Lindner, M. D., Nakamura, R. K., &
 #' Lee, C. J. (2020a). NIH peer review: Criterion scores completely account for

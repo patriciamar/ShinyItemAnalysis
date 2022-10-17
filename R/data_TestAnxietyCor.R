@@ -3,8 +3,6 @@
 #' The `TestAnxietyCor` dataset contains between-item correlations for 20 items
 #' of the Test Anxiety dataset.
 #'
-#' @usage data(TestAnxietyCor)
-#'
 #' @references Bartholomew, D. J., Steele, F., & Moustaki, I. (2008). Analysis
 #'   of multivariate social science data. CRC press.
 #'

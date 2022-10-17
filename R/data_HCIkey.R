@@ -3,8 +3,6 @@
 #' @description The `HCIkey` is a vector of factors representing correct
 #'   answers of `HCItest` dataset.
 #'
-#' @usage data(HCIkey)
-#'
 #' @author Jenny L. McFarland \cr Biology Department, Edmonds Community College
 #'
 #' @references McFarland, J. L., Price, R. M., Wenderoth, M. P., Martinkova, P.,
@@ -15,12 +13,13 @@
 #' @keywords datasets
 #'
 #' @seealso
-#' [HCItest()] for HCI multiple-choice dataset\cr
-#' [HCI()] for HCI dichotomous dataset\cr
-#' [HCIdata()] for HCI full dataset\cr
-#' [HCIgrads()]  for HCI dataset of graduate students\cr
-#' [HCIprepost()] for HCI pretest and posttest scores\cr
-#' [HCItestretest()] for HCI test-retest dataset
+#' [HCI] for HCI dichotomous dataset\cr
+#' [HCItest] for HCI multiple-choice dataset\cr
+#' [HCIdata] for HCI full dataset\cr
+#' [HCIlong] for HCI in a long format\cr
+#' [HCIgrads]  for HCI dataset of graduate students\cr
+#' [HCIprepost] for HCI pretest and posttest scores\cr
+#' [HCItestretest] for HCI test-retest dataset\cr
 #'
 #' @format A nominal vector with 20 values representing correct answers to items
 #'   of `HCItest` dataset. For more details see [HCItest()].

@@ -2,8 +2,6 @@
 #'
 #' @description The `MSclinical` dataset contains clinical measures on multiple sclerosis patients.
 #'
-#' @usage data(MSclinical)
-#'
 #' @references Rasova, K., Martinkova, P., Vyskotova, J., & Sedova, M. (2012).
 #' Assessment set for evaluation of clinical outcomes in multiple sclerosis: Psychometric properties.
 #' Patient related outcome measures, 3, 59. \doi{10.2147/PROM.S32241}
