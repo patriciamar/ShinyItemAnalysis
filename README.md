@@ -58,10 +58,10 @@ remotes::install_github("patriciamar/ShinyItemAnalysis")
 ```
 
 ## Version
-Current version available on [**CRAN**](https://CRAN.R-project.org/package=ShinyItemAnalysis) is 1.4.0. 
-The newest development version available on [**GitHub**](https://github.com/patriciamar/ShinyItemAnalysis) is 1.4.1.<br> 
-Version available online at [Czech Academy of Sciences](https://shiny.cs.cas.cz/ShinyItemAnalysis/) is 1.4.1. 
-Version available online at [shinyapps.io](https://cemp.shinyapps.io/ShinyItemAnalysis/) is 1.4.1. <br> 
+Current version available on [**CRAN**](https://CRAN.R-project.org/package=ShinyItemAnalysis) is 1.4.2. 
+The newest development version available on [**GitHub**](https://github.com/patriciamar/ShinyItemAnalysis) is 1.4.2.<br> 
+Version available online at [Czech Academy of Sciences](https://shiny.cs.cas.cz/ShinyItemAnalysis/) is 1.4.2. 
+Version available online at [shinyapps.io](https://cemp.shinyapps.io/ShinyItemAnalysis/) is 1.4.2. <br> 
 
 ## Usage
 It is very easy to run `ShinyItemAnalysis` in `R`:
