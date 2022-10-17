@@ -22,7 +22,7 @@ ui_DIF_logistic <- tabPanel(
       fluidRow(
         column(
           3,
-          
+
           radioButtons(
             inputId = "DIF_logistic_summary_type",
             label = "Type",
@@ -102,7 +102,7 @@ ui_DIF_logistic <- tabPanel(
       h4("Purification process"),
       textOutput("DIF_logistic_summary_purification_info"),
       br(),
-      tags$head(tags$style("#DIF_logistic_summary_purification_table  {white-space: nowrap;  }")),
+      # tags$head(tags$style("#DIF_logistic_summary_purification_table  {white-space: nowrap;  }")),
       fluidRow(column(12, align = "center", tableOutput("DIF_logistic_summary_purification_table"))),
       conditionalPanel(
         "input.DIF_logistic_summary_purification == 1",

@@ -79,78 +79,79 @@ uiPolyIRT <- tabPanel(
 
     tabPanel("Summary",
       value = "bock_mod",
-      div(
-        style = "margin-bottom: 25px;",
-        h4("Item characteristic curves"),
-        p(
-          "For item characteristic curves please see the", strong("Items"), "subtab.",
-          "(Plotting all items at once would result in a visual clutter.)"
+      fluidRow(
+        column(
+          12,
+          div(
+            style = "margin-bottom: 25px;",
+            h4("Item characteristic curves"),
+            p(
+              "For item characteristic curves please see the", strong("Items"), "subtab.",
+              "(Plotting all items at once would result in a visual clutter.)"
+            )
+          ),
+
+
+          # ICC plot ----------------------------------------------------------------
+          div(
+            style = "margin-bottom: 25px;",
+            h4("Item information curves"),
+            plotlyOutput("IRT_bock_summary_iic"),
+            downloadButton(
+              outputId = "IRT_bock_summary_iic_download",
+              label = "Download figure"
+            )
+          ),
+
+
+          # test information and SE -------------------------------------------------
+          div(
+            style = "margin-bottom: 25px;",
+            h4("Test information curve and SE"),
+            plotlyOutput("IRT_bock_summary_tic"),
+            downloadButton(
+              outputId = "IRT_bock_summary_tic_download",
+              label = "Download figure"
+            )
+          ),
+
+
+          # table of parameters -----------------------------------------------------
+          div(
+            style = "margin-bottom: 25px;",
+            h4("Table of parameters"),
+            tableOutput("IRT_bock_summary_coef"),
+            downloadButton(
+              outputId = "IRT_bock_summary_coef_download",
+              label = "Download table"
+            )
+          ),
+
+          # ability estimates -------------------------------------------------------
+          div(
+            style = "margin-bottom: 25px;",
+            h4("Ability estimates"),
+            p(
+              "This table shows the response score of only six respondents.",
+              "If you want to see scores for all respondents, click on the",
+              strong("Download abilities"), " button. "
+            ),
+            tableOutput("IRT_bock_summary_ability"),
+            downloadButton(
+              outputId = "IRT_bock_summary_ability_download",
+              label = "Download abilities",
+              style = "margin-bottom: 25px;"
+            ),
+            # correlation text
+            textOutput("IRT_bock_summary_ability_correlation_text"),
+            # z-scores -- f-scores scatterplot
+            plotlyOutput("IRT_bock_summary_ability_plot"),
+            downloadButton(
+              outputId = "IRT_bock_summary_ability_plot_download",
+              label = "Download figure"
+            ),
+          )
         )
-      ),
-
-
-      # ICC plot ----------------------------------------------------------------
-      div(
-        style = "margin-bottom: 25px;",
-        h4("Item information curves"),
-        plotlyOutput("IRT_bock_summary_iic"),
-        downloadButton(
-          outputId = "IRT_bock_summary_iic_download",
-          label = "Download figure"
-        )
-      ),
-
-
-      # test information and SE -------------------------------------------------
-      div(
-        style = "margin-bottom: 25px;",
-        h4("Test information curve and SE"),
-        plotlyOutput("IRT_bock_summary_tic"),
-        downloadButton(
-          outputId = "IRT_bock_summary_tic_download",
-          label = "Download figure"
-        )
-      ),
-
-
-      # table of parameters -----------------------------------------------------
-      div(
-        style = "margin-bottom: 25px;",
-        h4("Table of parameters"),
-        div(
-          # if content overflows the wievport, offer horizontal scrollbar _only_
-          style = "overflow-x: auto;",
-          tableOutput("IRT_bock_summary_coef")
-        ),
-        downloadButton(
-          outputId = "IRT_bock_summary_coef_download",
-          label = "Download table"
-        )
-      ),
-
-      # ability estimates -------------------------------------------------------
-      div(
-        style = "margin-bottom: 25px;",
-        h4("Ability estimates"),
-        p(
-          "This table shows the response score of only six respondents.",
-          "If you want to see scores for all respondents, click on the",
-          strong("Download abilities"), " button. "
-        ),
-        tableOutput("IRT_bock_summary_ability"),
-        downloadButton(
-          outputId = "IRT_bock_summary_ability_download",
-          label = "Download abilities",
-          style = "margin-bottom: 25px;"
-        ),
-        # correlation text
-        textOutput("IRT_bock_summary_ability_correlation_text"),
-        # z-scores -- f-scores scatterplot
-        plotlyOutput("IRT_bock_summary_ability_plot"),
-        downloadButton(
-          outputId = "IRT_bock_summary_ability_plot_download",
-          label = "Download figure"
-        ),
       )
     ),
 
@@ -159,46 +160,46 @@ uiPolyIRT <- tabPanel(
 
     tabPanel("Items",
       value = "bock_it",
+      fluidRow(
+        column(
+          12,
+          # item selector slider (to be updated in server part to suit the current data set)
+          sliderInput(
+            inputId = "IRT_bock_items",
+            label = "Item to draw the plot for",
+            min = 1, value = 1, max = 20,
+            step = 1, animate = TRUE
+          ),
 
-      # item selector slider (to be updated in server part to suit the current data set)
-      sliderInput(
-        inputId = "IRT_bock_items",
-        label = "Item to draw the plot for",
-        min = 1, value = 1, max = 20,
-        step = 1, animate = TRUE
-      ),
-
-      ### ICC plot ----------------------------------------------------------------
-      div(
-        style = "margin-bottom: 25px;",
-        h4("Item characteristic curves"),
-        plotlyOutput("IRT_bock_items_icc"),
-        downloadButton(
-          outputId = "IRT_bock_items_icc_download",
-          label = "Download figure"
-        )
-      ),
-
-
-      ### IIC plot -------------------------------------------------------------
-      div(
-        style = "margin-bottom: 25px;",
-        h4("Item information curves"),
-        plotlyOutput("IRT_bock_items_iic"),
-        downloadButton(
-          outputId = "IRT_bock_items_iic_download",
-          label = "Download figure"
-        )
-      ),
-      div(
-        style = "margin-bottom: 25px;",
-        # ** Estimated parameters ####
-        h4("Table of parameters"),
+          ### ICC plot ----------------------------------------------------------------
           div(
-            # if content overflows the wievport, offer horizontal scrollbar _only_
-            style = "overflow-x: auto;",
+            style = "margin-bottom: 25px;",
+            h4("Item characteristic curves"),
+            plotlyOutput("IRT_bock_items_icc"),
+            downloadButton(
+              outputId = "IRT_bock_items_icc_download",
+              label = "Download figure"
+            )
+          ),
+
+
+          ### IIC plot -------------------------------------------------------------
+          div(
+            style = "margin-bottom: 25px;",
+            h4("Item information curves"),
+            plotlyOutput("IRT_bock_items_iic"),
+            downloadButton(
+              outputId = "IRT_bock_items_iic_download",
+              label = "Download figure"
+            )
+          ),
+          div(
+            style = "margin-bottom: 25px;",
+            # ** Estimated parameters ####
+            h4("Table of parameters"),
             tableOutput("IRT_bock_items_coef")
           )
+        )
       )
     ),
 

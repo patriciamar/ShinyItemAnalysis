@@ -2,7 +2,7 @@ source("ui/uiDIF/logistic.R", local = TRUE)
 source("ui/uiDIF/cumulative.R", local = TRUE)
 source("ui/uiDIF/adjacent.R", local = TRUE)
 source("ui/uiDIF/multinomial.R", local = TRUE)
-source("ui/uiDIF/uiTDIF.R")
+source("ui/uiDIF/uiTDIF.R", local = TRUE)
 
 uiDIF <-
   navbarMenu(
@@ -192,7 +192,7 @@ uiDIF <-
       h4("Purification process"),
       textOutput("dp_puri_info"),
       br(),
-      tags$head(tags$style("#dp_puri_table  {white-space: nowrap;  }")),
+      # tags$head(tags$style("#dp_puri_table  {white-space: nowrap;  }")),
       fluidRow(column(12, align = "center", tableOutput("dp_puri_table"))),
       conditionalPanel("input.puri_DP == 1", downloadButton(outputId = "download_dp_puri", label = "Download table"), br(), br()),
       h4("Selected R code"),
@@ -256,7 +256,7 @@ uiDIF <-
           h4("Purification process"),
           textOutput("mh_puri_info"),
           br(),
-          tags$head(tags$style("#mh_puri_table  {white-space: nowrap;  }")),
+          # tags$head(tags$style("#mh_puri_table  {white-space: nowrap;  }")),
           fluidRow(column(12, align = "center", tableOutput("mh_puri_table"))),
           conditionalPanel("input.DIF_MH_summary_purification == 1", downloadButton(outputId = "download_mh_puri", label = "Download table"), br(), br()),
           br(),
@@ -365,7 +365,7 @@ uiDIF <-
       # verbatimTextOutput("DIF_SIBTEST_print"),
       strong(textOutput("sibtest_dif_items")),
       br(),
-      tags$head(tags$style("#coef_sibtest_dif  {white-space: nowrap;}")),
+      # tags$head(tags$style("#coef_sibtest_dif  {white-space: nowrap;}")),
       fluidRow(column(12, align = "left", tableOutput("coef_sibtest_dif"))),
       fluidRow(column(12, align = "left", uiOutput("note_sibtest"))),
       br(),
@@ -374,7 +374,7 @@ uiDIF <-
       h4("Purification process"),
       textOutput("dif_sibtest_puri_info"),
       br(),
-      tags$head(tags$style("#dif_sibtest_puri_table  {white-space: nowrap;}")),
+      # tags$head(tags$style("#dif_sibtest_puri_table  {white-space: nowrap;}")),
       fluidRow(column(12, align = "center", tableOutput("dif_sibtest_puri_table"))),
       conditionalPanel(
         "input.DIF_SIBTEST_purification == 1",
@@ -506,7 +506,7 @@ uiDIF <-
           uiOutput("DIF_NLR_na_alert"),
           strong(textOutput("nlr_dif_items")),
           br(),
-          tags$head(tags$style("#coef_nlr_dif  {white-space: nowrap;}")),
+          # tags$head(tags$style("#coef_nlr_dif  {white-space: nowrap;}")),
           fluidRow(column(12, align = "left", tableOutput("coef_nlr_dif"))),
           fluidRow(column(12, align = "left", uiOutput("note_nlr"))),
           br(),
@@ -515,7 +515,7 @@ uiDIF <-
           h4("Purification process"),
           textOutput("dif_nlr_puri_info"),
           br(),
-          tags$head(tags$style("#dif_nlr_puri_table  {white-space: nowrap;}")),
+          # tags$head(tags$style("#dif_nlr_puri_table  {white-space: nowrap;}")),
           fluidRow(column(12, align = "center", tableOutput("dif_nlr_puri_table"))),
           conditionalPanel(
             "input.DIF_NLR_purification_print == 1",
@@ -586,7 +586,7 @@ uiDIF <-
             ),
             column(
               1,
-              
+
               checkboxGroupInput(
                 inputId = "DIF_NLR_type_plot",
                 label = "Type",
@@ -728,7 +728,7 @@ uiDIF <-
           uiOutput("DIF_IRT_LORD_na_alert"),
           strong(textOutput("lord_dif_items")),
           br(),
-          tags$head(tags$style("#coef_lord_dif  {white-space: nowrap;}")),
+          # tags$head(tags$style("#coef_lord_dif  {white-space: nowrap;}")),
           fluidRow(column(12, align = "left", tableOutput("coef_lord_dif"))),
           fluidRow(column(12, align = "left", uiOutput("note_lord"))),
           br(),
@@ -737,7 +737,7 @@ uiDIF <-
           h4("Purification process"),
           textOutput("dif_lord_puri_info"),
           br(),
-          tags$head(tags$style("#dif_lord_puri_table  {white-space: nowrap;}")),
+          # tags$head(tags$style("#dif_lord_puri_table  {white-space: nowrap;}")),
           fluidRow(column(12, align = "center", tableOutput("dif_lord_puri_table"))),
           conditionalPanel(
             "input.puri_Lord == 1",
@@ -888,7 +888,7 @@ uiDIF <-
           uiOutput("DIF_IRT_Raju_na_alert"),
           strong(textOutput("raju_dif_items")),
           br(),
-          tags$head(tags$style("#coef_raju_dif  {white-space: nowrap;}")),
+          # tags$head(tags$style("#coef_raju_dif  {white-space: nowrap;}")),
           fluidRow(column(12, align = "left", tableOutput("coef_raju_dif"))),
           fluidRow(column(12, align = "left", uiOutput("note_raju"))),
           br(),
@@ -897,7 +897,7 @@ uiDIF <-
           h4("Purification process"),
           textOutput("dif_raju_puri_info"),
           br(),
-          tags$head(tags$style("#dif_raju_puri_table  {white-space: nowrap;}")),
+          # tags$head(tags$style("#dif_raju_puri_table  {white-space: nowrap;}")),
           fluidRow(column(12, align = "center", tableOutput("dif_raju_puri_table"))),
           conditionalPanel(
             "input.puri_Raju == 1",

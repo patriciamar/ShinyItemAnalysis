@@ -58,25 +58,25 @@ ui <- tagList(
     tags$meta(name = "twitter:creator", content = "@PMartinkova"),
     tags$meta(name = "twitter:title", content = "ShinyItemAnalysis"),
     tags$meta(name = "twitter:description", content = "Test and Item Analysis with Shiny"),
-    tags$meta(name = "twitter:image", content = "card.png"),
+    tags$meta(name = "twitter:image", content = "https://cdn.jsdelivr.net/gh/patriciamar/ShinyItemAnalysis/inst/ShinyItemAnalysis/www/card.png"),
 
     # math typesetting
     tags$link(
       rel = "stylesheet",
-      href = "https://cdn.jsdelivr.net/npm/katex@0.13.13/dist/katex.min.css",
-      integrity = "sha384-RZU/ijkSsFbcmivfdRBQDtwuwVqK7GMOw6IMvKyeWL2K5UAlyp6WonmB8m7Jd0Hn",
+      href = "https://cdn.jsdelivr.net/npm/katex@0.16.2/dist/katex.min.css",
+      integrity = "sha384-bYdxxUwYipFNohQlHt0bjN/LCpueqWz13HufFEV1SUatKs1cm4L6fFgCi1jT643X",
       crossorigin = "anonymous"
     ),
     tags$script(
       defer = "defer",
-      src = "https://cdn.jsdelivr.net/npm/katex@0.13.13/dist/katex.min.js",
-      integrity = "sha384-pK1WpvzWVBQiP0/GjnvRxV4mOb0oxFuyRxJlk6vVw146n3egcN5C925NCP7a7BY8",
+      src = "https://cdn.jsdelivr.net/npm/katex@0.16.2/dist/katex.min.js",
+      integrity = "sha384-Qsn9KnoKISj6dI8g7p1HBlNpVx0I8p1SvlwOldgi3IorMle61nQy4zEahWYtljaz",
       crossorigin = "anonymous"
     ),
     tags$script(
       defer = "defer",
-      src = "https://cdn.jsdelivr.net/npm/katex@0.13.13/dist/contrib/auto-render.min.js",
-      integrity = "sha384-vZTG03m+2yp6N6BNi5iM4rW4oIwk5DfcNdFfxkk9ZWpDriOkXX8voJBFrAO7MpVl",
+      src = "https://cdn.jsdelivr.net/npm/katex@0.16.2/dist/contrib/auto-render.min.js",
+      integrity = "sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05",
       crossorigin = "anonymous",
       onload = "renderMathInElement(document.body);"
     ),
@@ -92,6 +92,11 @@ ui <- tagList(
       rel = "stylesheet",
       type = "text/css",
       href = "navbar_right.css"
+    ),
+    tags$link(
+      rel = "stylesheet",
+      type = "text/css",
+      href = "tables_overflow.css"
     ),
     tags$link(
       rel = "stylesheet",
@@ -151,7 +156,7 @@ ui <- tagList(
            <div class = "panel-footer", style = "opacity: 1.00; z-index: 1000;">
               <p style = "margin:8px 0 0 0;">
                 <div class = "footer-title"> <img src = "sia_logo.svg" style="width: 57px; margin-right: 10px;"> ShinyItemAnalysis </div>
-                <div class = "footer-subtitle"> Test and item analysis via Shiny | Version 1.4.1 </div>
+                <div class = "footer-subtitle"> Test and item analysis via Shiny | Version 1.4.2 </div>
                 <span style = "float:right">
                   <a href = "http://shinyitemanalysis.org/" id = "tooltipweb" target="_blank"> <img src = "footer_web_icon.png", class = "footer-icons"> </a>
                   <a href = "https://github.com/patriciamar/ShinyItemAnalysis/" id = "tooltipgithub" target="_blank"> <img src = "footer_github_icon.png", class = "footer-icons"> </a>

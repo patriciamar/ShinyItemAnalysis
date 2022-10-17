@@ -1,7 +1,7 @@
 uiSetting <-
   tabPanel("",
     value = "settings",
-    icon = icon("fas fa-cog"),
+    icon = icon("gear"),
     h3("Settings"),
     h4("IRT models setting"),
     p("Set the number of cycles for IRT models in the ", strong("IRT models"), "section."),

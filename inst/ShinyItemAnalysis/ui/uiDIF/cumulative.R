@@ -90,7 +90,7 @@ ui_DIF_cumulative <- tabPanel(
       uiOutput("DIF_cumulative_summary_NA_warning"),
       strong(textOutput("DIF_cumulative_summary_dif_items")),
       br(),
-      tags$head(tags$style("#DIF_cumulative_summary_coef  {white-space: nowrap;}")),
+      # tags$head(tags$style("#DIF_cumulative_summary_coef  {white-space: nowrap;}")),
       fluidRow(column(12, align = "left", tableOutput("DIF_cumulative_summary_coef"))),
       fluidRow(column(12, align = "left", uiOutput("DIF_cumulative_summary_table_note"))),
       br(),
@@ -99,7 +99,7 @@ ui_DIF_cumulative <- tabPanel(
       h4("Purification process"),
       textOutput("DIF_cumulative_summary_purification_info"),
       br(),
-      tags$head(tags$style("#DIF_cumulative_summary_purification_table {white-space: nowrap;}")),
+      # tags$head(tags$style("#DIF_cumulative_summary_purification_table {white-space: nowrap;}")),
       fluidRow(column(12, align = "center", tableOutput("DIF_cumulative_summary_purification_table"))),
       conditionalPanel(
         "input.DIF_cumulative_summary_purification == 1",
