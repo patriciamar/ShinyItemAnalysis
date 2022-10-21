@@ -2,7 +2,7 @@ Type: Package
 Package: ShinyItemAnalysis
 Title: Test and Item Analysis via Shiny
 Version: 1.4.2
-Date: 2022-10-17
+Date: 2022-10-21
 Authors@R: 
     c(person(given = "Patricia",
              family = "Martinkova",

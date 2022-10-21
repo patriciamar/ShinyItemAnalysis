@@ -2,7 +2,7 @@
 
 ----------
 
-### Changes in version 1.4.2 (2022-10-17)
+### Changes in version 1.4.2 (2022-10-21)
 
 **_THIS IS A CRAN VERSION_**
 
@@ -10,8 +10,9 @@
   * Item criterion validity - Distractor plot was fixed in Item Analysis tab.
 
 #### MAJOR UPDATES
-  * New datasets `MSATB`, `GMAT`, `EPIA` added, 
-  *  `anxiety` dataset was renamed to `Anxiety` 
+  * New datasets `HCIlong`, `MSATB`, `GMAT`, `EPIA` added, 
+  *  `anxiety` dataset was renamed to `Anxiety`, variables `score` and
+     `zscore` were added 
   *  Variable `total` was added to datasets `HCI`, `HCItest`  
 
 #### MINOR UPDATES
