@@ -33,7 +33,7 @@ background process (in the 'RStudio')?}
     \item{\code{contriburl}}{
     URL(s) of the contrib sections of the repositories.  Use this
     argument if your repository mirror is incomplete, e.g., because
-    you burned only the \file{contrib} section on a CD, or only have
+    you mirrored only the \file{contrib} section, or only have
     binary packages.  Overrides argument \code{repos}.
     Incompatible with \code{type = "both"}.
   }
