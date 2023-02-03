@@ -2,6 +2,12 @@
 
 ----------
 
+### Changes in version 1.4.2-1 (2023-02-03)
+#### BUG FIXING
+  * Calculation of itemfit p values was fixed in the Table of estimated parameters in `IRT model/Dichotous models` section of the app (Thanks to Samsul Hadi for reporting this issue)
+  
+----------
+
 ### Changes in version 1.4.2 (2022-10-21)
 
 **_THIS IS A CRAN VERSION_**
@@ -68,6 +74,11 @@
 #### MINOR UPDATES
   * `gDiscrim()` newly issues a warning when item(s) range is zero and when there 
     is no difficulty difference in either group
+  * In `gDiscrim()`, the groups are newly defined using the `quantile()` function. 
+    In the case of ties, the respondents with the same total score are now in 
+    the same group, the groups sizes may thus differ, but are now exactly defined. 
+    The function may however provide different numerical results than in the previous 
+    version.
   * In `gDiscrim()`, you can now change how the dataset is split by passing 
     arguments to `findInterval()`.
   * RStudio Addin was added to provide command-free app startup option, bindable 

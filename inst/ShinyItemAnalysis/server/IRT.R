@@ -579,13 +579,17 @@ IRT_binary_summary_coef <- reactive({
     se_tab <- cbind(rep(NA, nrow(par_tab)), NA, NA, NA)
   }
 
+
   tab <- cbind(par_tab, se_tab)[, order(c(seq(ncol(par_tab)), seq(ncol(se_tab))))]
 
-  tab_fit <- itemfit(fit)[, 2:4]
-  if (!is.null(tryCatch(round(itemfit(fit)[, 2:4], 3), error = function(e) {
+  item_fit_cols <- c("S_X2", "df.S_X2", "p.S_X2")
+
+  tab_fit <- itemfit(fit)[, item_fit_cols]
+
+  if (!is.null(tryCatch(round(tab_fit, 3), error = function(e) {
     cat("ERROR : ", conditionMessage(e), "\n")
   }))) {
-    tab <- data.frame(tab, itemfit(fit)[, 2:4])
+    tab <- data.frame(tab, tab_fit)
     colnames(tab)[9:11] <- c("SX2-value", "df", "p-value")
   } else {
     tab <- data.frame(tab, cbind("-", "-", "-"))
