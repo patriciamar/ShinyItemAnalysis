@@ -39,8 +39,8 @@ cor.x <- cor(ts1, ts2)
 
 # minimum of 10,000 split-halves
 split <- psych::splitHalf(HCI[, 1:20], raw = TRUE)
-items1 <- which(split$minAB[, "A"] == 1)
-items2 <- which(split$minAB[, "B"] == 1)
+items1 <- split$minAB$A
+items2 <- split$minAB$B
 df1 <- HCI[, items1]
 df2 <- HCI[, items2]
 # total score calculation

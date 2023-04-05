@@ -1,4 +1,3 @@
-
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # * TRAINING ####
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1966,9 +1965,11 @@ irt_training_nrm_pars_list <- reactive({
   out <- params %>% map_dfr(unlist, .id = "Parametrization")
 
   nms <- c(irt_training_nrm_category_names[seq_len(n_cats) - 1L], "grey")
-  names(out) <- c(names(out[1L]), "\\(a^*\\)",
-                  paste0("\\({apar}_{", nms, "}\\)"),
-                  paste0("\\({bpar}_{", nms, "}\\)"))
+  names(out) <- c(
+    names(out[1L]), "\\(a^*\\)",
+    paste0("\\({apar}_{", nms, "}\\)"),
+    paste0("\\({bpar}_{", nms, "}\\)")
+  )
 
   out
 })

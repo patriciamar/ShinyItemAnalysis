@@ -162,7 +162,6 @@ dendrogram_plot_Input <- reactive({
     times <- length(label)
     cluster <- rep(paste("Cluster 1"), times)
   } else {
-    plot(hc)
     rhc <- rect.hclust(hc, k = numclust)
     order <- unlist(rhc)
     label <- if (!input$data_csvdata_keep_itemnames) item_names()[order] else names(order)
@@ -269,14 +268,15 @@ validity_factor_parallel_analysis <- reactive({
   ))
 
   # check for any exceptions and hand them to the user
-  validate(need(
-    !inherits(data_out, c("simpleError", "error", "condition")),
-    paste0(
-      "Error returned:\n",
-      data_out$message
-    )
-  ),
-  errorClass = "validation-error"
+  validate(
+    need(
+      !inherits(data_out, c("simpleError", "error", "condition")),
+      paste0(
+        "Error returned:\n",
+        data_out$message
+      )
+    ),
+    errorClass = "validation-error"
   )
 
   list(data = data_out, text = text_out)
@@ -295,11 +295,13 @@ output$validity_factor_screeplot <- renderPlotly({
     plot() %>%
     ggplotly() %>%
     style(textposition = "left") %>%
-    layout(legend = list(
-      title = NA, # block legent titles from ggplot
-      x = .95, y = .95, xanchor = "right", orientation = "h",
-      groupclick = "toggleitem") # enable toggle per legend items, not legend groups
-      ) %>%
+    layout(
+      legend = list(
+        title = NA, # block legend titles from ggplot
+        x = .95, y = .95, xanchor = "right", orientation = "h",
+        groupclick = "toggleitem"
+      ) # enable toggle per legend items, not legend groups
+    ) %>%
     config(displayModeBar = FALSE)
 
   # now this mayhem rounds eigenvalues in tooltips to 3 places and reformats legend
@@ -498,13 +500,38 @@ output$validity_factor_varex <- renderTable(
   rownames = TRUE
 )
 
+# interfactor correlations if oblique rotation
+output$validity_factor_corr <- renderTable(
+  {
+    r <- validity_factor_fa()
+
+    if (r$factors == 1L) {
+      validate("Interfactor correlation matrix is available for solutions with more than 1 factor.")
+    }
+
+    if (is.null(r$Phi)) {
+      validate("Interfactor correlation matrix is available for oblique rotations only.")
+    }
+
+    phi <- r$Phi
+
+    rownames(phi) <- paste0("F", seq_len(ncol(phi)))
+    colnames(phi) <- paste0("F", seq_len(ncol(phi)))
+
+    round(phi, 2)
+  },
+  rownames = TRUE
+)
+
+
 output$validity_factor_efa_fit <- renderUI({
   r <- validity_factor_fa()
+
   HTML(paste0(
-    "\\(\\chi^2\\)(", r$dof, ") = ", round(r$chi, 2), "; <em>p</em> = ", round(r$PVAL, 3), "<br><br>",
-    "RMSEA = ", round(r$RMSEA[1], 3),
-    ", 90% CI [", round(r$RMSEA[2], 3), ", ", round(r$RMSEA[3], 3), "]<br><br>",
-    "TLI = ", round(r$TLI, 3), "; BIC = ", round(r$BIC, 3)
+    "\\(\\chi^2\\)(", r$dof, ") = ", scales::number(r$chi, .01), "; <em>p</em> ", scales::label_pvalue(prefix = c("< ", "= ", "> "))(r$PVAL), "<br><br>",
+    "RMSEA = ", scales::number(r$RMSEA[1], .001),
+    ", 90% CI [", scales::number(r$RMSEA[2], .001), ", ", scales::number(r$RMSEA[3], .001), "]<br><br>",
+    "TLI = ", scales::number(r$TLI, .001), "; BIC = ", scales::number(r$BIC, .01)
   ))
 })
 

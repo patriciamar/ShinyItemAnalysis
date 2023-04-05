@@ -14,11 +14,11 @@ items.new <- 30
 # ratio of tests lengths
 m <- items.new / items.original
 # determining reliability
-SBrel(Nlength = m, rxx = rel.original)
+psychometric::SBrel(Nlength = m, rxx = rel.original)
 
 # desired reliability
 rel.new <- 0.8
 # determining test length
-(m.new <- SBlength(rxxp = rel.new, rxx = rel.original))
+(m.new <- psychometric::SBlength(rxxp = rel.new, rxx = rel.original))
 # number of required items
 m.new * items.original

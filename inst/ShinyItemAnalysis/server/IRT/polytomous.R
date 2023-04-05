@@ -1,4 +1,3 @@
-
 # DATA --------------------------------------------------------------------
 
 IRT_bock_data <- reactive({
@@ -95,7 +94,8 @@ IRT_bock_summary_coef <- reactive({
   coefs <- coefs %>%
     map_dfr(~ as_tibble(.x, rownames = "type"), .id = "item") %>%
     relocate(item, type, all_of(master_parnames)) %>% # order columns
-    pivot_wider(item,
+    pivot_wider(
+      id_cols = item,
       names_from = type, values_from = c(-item, -type),
       names_glue = "{if_else(type == 'par', '', type)}_{.value}" # if par, use empty string
     )

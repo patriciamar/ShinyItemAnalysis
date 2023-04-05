@@ -1,6 +1,7 @@
 uiReliability <-
   navbarMenu(
     "Reliability",
+    menuName = "Reliability",
     # "Description",
     ## * RELIABILITY ####
     # tabPanel("Reliability",
@@ -11,11 +12,11 @@ uiReliability <-
     #                    \\(X = T + e\\) and the error term is uncorrelated with the true score."),
     #  h4("Equation"),
     #  p("Reliability is defined as the squared correlation of the true and observed score"),
-    #  
+    #
     #  ("$$\\text{rel}(X) = \\text{cor}(T, X)^2$$"),
     #  p("Equivalently, reliability can be re-expressed as the ratio of the true score variance
     #                    to the total observed variance"),
-    #  
+    #
     #  ("$$\\text{rel}(X) = \\frac{\\sigma^2_T}{\\sigma^2_X}$$"),
     #  br()
     # ),
@@ -31,7 +32,6 @@ uiReliability <-
                         Then for a test consisting of
                         \\(I^*\\) such items,  that is for a test which is
                         \\(m = \\frac{I^*}{I}\\) times longer/shorter, the reliability would be"),
-      
       ("$$\\text{rel}(X^*) = \\frac{m\\cdot \\text{rel}(X)}{1 + (m - 1)\\cdot\\text{rel}(X)}.$$"),
       p("The Spearman-Brown formula can be used to determine reliability of a test with with a
                         different number of equally precise items measuring the same construct.
@@ -112,7 +112,6 @@ uiReliability <-
                         Let \\(X^*_1\\) and \\(X^*_2\\) be total scores calculated from items found only in the first
                         and second subsets. The estimate of reliability is then given by the Spearman-Brown formula (Spearman, 1910; Brown, 1910)
                         with \\(m = 2\\)."),
-      
       ("$$\\text{rel}(X) = \\frac{m\\cdot \\text{cor}(X^*_1, X^*_2)}{1 + (m - 1)\\cdot\\text{cor}(X^*_1, X^*_2)} =
                        \\frac{2\\cdot \\text{cor}(X^*_1, X^*_2)}{1 + \\text{cor}(X^*_1, X^*_2)}$$"),
       p(
@@ -129,7 +128,6 @@ uiReliability <-
       fluidRow(
         column(
           3,
-          
           selectInput(
             inputId = "reliability_splithalf_method",
             label = "Split half method",
@@ -188,7 +186,6 @@ uiReliability <-
       p("For a test with \\(I\\) items where \\(X = X_1 + ... + X_I\\) is a total score,
                         \\(\\sigma^2_X\\) its variance and \\(\\sigma^2_{X_i}\\) variances of items,
                         Cronbach's \\(\\alpha\\) is given by following equation"),
-      
       ("$$\\alpha = \\frac{I}{I-1}\\left(1 - \\frac{\\sum_{i = 1}^I \\sigma^2_{X_i}}{\\sigma^2_X}\\right)$$"),
       h4("Estimate with confidence interval"),
       p("A confidence interval is based on F distribution as proposed by Feldt et al. (1987)."),
@@ -210,90 +207,12 @@ uiReliability <-
     #   br()
     # ),
 
-    # * RANGE-RESTRICTED RELIABILITY ####
-    #tabPanel("Restricted range",
-    #  value = "rr_irr",
-    #  h3("Range-restricted reliability"),
-    #  p(
-    #    "This section illustrates the issue of range-restricted reliability and the difficulties with maximum
-    #    likelihood estimation, described in more detail in the context of inter-rater reliability in grant proposal review in
-    #    ",
-    #    a("(Erosheva, Martinkova, & Lee, 2021)",
-    #      href = "http://doi.org/10.1111/rssa.12681",
-    #      target = "_blank", .noWS = "outside"
-    #    ),
-    #    ". To replicate their examples, select the ", code("AIBS"), "toy dataset in the ", strong("Data"), "section."
-    #  ),
-    #  p(
-    #    "Below, you may select the ratio and type of range restriction given by the ", strong("proportion of rated subjects/objects."),
-    #    " It could be a grant proposal application in grant review (as is the case in the ", code("AIBS"), "dataset),
-    #    a student in educational assessment, a job application in hiring, a patient in a medical study, etc.
-    #    Further, you may select the ", strong("direction"), "of restriction (top or bottom).
-    #    The left plot illustrates the variability in ratings for the whole dataset outshading the data which would be lost
-    #    due to range-restriction. The right plot provides the estimates of the calculated inter-rater reliability estimates,
-    #    defined by intraclass corelation in the simplest model including the ratee effect only.
-    #    The estimates are accompanied by a bootstrapped 95% confidence interval; see the settings section for further details
-    #    on used number of bootstrapped samples."
-    #  ),
-    #  fluidRow(
-    #    column(
-    #      2,
-    #      sliderInput(
-    #        inputId = "reliability_restricted_proportion",
-    #        label = "Proportion",
-    #        min = 0,
-    #        max = 100,
-    #        step = 1,
-    #        value = 100, animate = animationOptions(2000), post = "%"
-    #      )
-    #    ),
-    #    column(
-    #      2,
-    #      selectInput(
-    #        inputId = "reliability_restricted_direction",
-    #        label = "Direction",
-    #        choices = c("top", "bottom"),
-    #        selected = "top"
-    #      )
-    #    ),
-    #    column(
-    #      2,
-    #      actionButton(
-    #        inputId = "reliability_restricted_clear",
-    #        label = "Clear everything",
-    #        icon = icon("eraser"),
-    #        style = "margin-top:25px"
-    #      )
-    #    )
-    #  ),
-    #  fluidRow(
-    #    column(6, plotlyOutput("reliability_restricted_caterpillarplot")),
-    #    column(6, plotlyOutput("reliability_restricted_iccplot")),
-    #    style = "
-    #padding-bottom: 15px;"
-    #  ),
-    #  fluidRow(
-    #    column(
-    #      6,
-    #      downloadButton("DB_reliability_restricted_caterpillarplot", label = "Download figure")
-    #    ),
-    #    column(
-    #      6,
-    #      downloadButton("DB_reliability_restricted_iccplot", label = "Download figure"),
-    #      downloadButton("DB_reliability_restricted_iccdata", label = "Download data")
-    #    )
-    #  ),
-    #  br(),
-    #  textOutput("icc_text"),
-    #  h4("Selected R code"),
-    #  code(includeText("sc/reliability/restr_range.R"))
-    #),
 
-    # IRR module
-    "---",
-    "Modules",
-    tabPanel(tags$a("Restricted-range Reliability",
-      href = "https://shiny.cs.cas.cz/ShinyItemAnalysis-module-IRRrestricted/",
-      target = "_blank", .noWS = "outside"
-    ))
+    # "---",
+    # "Modules",
+
+    # tabPanel(tags$a("Range-restricted Reliability",
+    #   href = "https://shiny.cs.cas.cz/ShinyItemAnalysis-module-IRRrestricted/",
+    #   target = "_blank", .noWS = "outside"
+    # ))
   )

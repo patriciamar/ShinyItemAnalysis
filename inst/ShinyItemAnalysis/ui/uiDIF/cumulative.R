@@ -9,9 +9,11 @@ ui_DIF_cumulative <- tabPanel(
         adding a group-membership variable (uniform DIF) and its interaction with observed score
         (non-uniform DIF) into a model for item \\(i\\) and by testing for their significance."),
       h4("Method specification"),
-      p("Here you can change the ", strong("type"), " of DIF to be tested, the ", strong("Observed score", .noWS = "outside"),
+      p(
+        "Here you can change the ", strong("type"), " of DIF to be tested, the ", strong("Observed score", .noWS = "outside"),
         ", and the ", strong("parametrization"), "- either the IRT or the classical intercept/slope. You can also
-        select a ", strong("correction method"), " for a multiple comparison and/or ", strong("item purification. ")),
+        select a ", strong("correction method"), " for a multiple comparison and/or ", strong("item purification. ")
+      ),
       fluidRow(
         column(
           3,
@@ -74,20 +76,24 @@ ui_DIF_cumulative <- tabPanel(
         )
       ),
       h4("Equation"),
-      p("The probability that respondent ", strong("\\(p\\)"), " with the observed score (e.g., standardized total
+      p(
+        "The probability that respondent ", strong("\\(p\\)"), " with the observed score (e.g., standardized total
         score) ", strong("\\(Z_p\\)"), " and the group membership variable ", strong("\\(G_p\\)"), " obtained at least ",
-        strong("\\(k\\)"), " points in item ", strong("\\(i\\)"), " is given by the following equation: "),
+        strong("\\(k\\)"), " points in item ", strong("\\(i\\)"), " is given by the following equation: "
+      ),
       fluidRow(column(12, align = "center", uiOutput("DIF_cumulative_summary_equation_cumulative"))),
-      p("The probability that respondent ", strong("\\(p\\)"), " with the observed score (e.g., standardized total
+      p(
+        "The probability that respondent ", strong("\\(p\\)"), " with the observed score (e.g., standardized total
         score) ", strong("\\(Z_p\\)"), " and group membership ", strong("\\(G_p\\)"), " obtained exactly ", strong("\\(k\\)"),
         " points in item ", strong("\\(i\\)"), " is then given as the difference between the probabilities of obtaining at least",
-        strong("\\(k\\)"), " and ", strong("\\(k + 1\\)"), "points: "),
+        strong("\\(k\\)"), " and ", strong("\\(k + 1\\)"), "points: "
+      ),
       fluidRow(column(12, align = "center", uiOutput("DIF_cumulative_summary_equation_category"))),
       h4("Summary table"),
       p("This summary table contains information about \\(\\chi^2\\)-statistics of the likelihood ratio test, corresponding
         \\(p\\)-values considering selected correction method, and significance codes. The table also provides estimated parameters
         for the best fitted model for each item. "),
-      uiOutput("DIF_cumulative_summary_NA_warning"),
+      uiOutput("DIF_cumulative_summary_na_alert"),
       strong(textOutput("DIF_cumulative_summary_dif_items")),
       br(),
       # tags$head(tags$style("#DIF_cumulative_summary_coef  {white-space: nowrap;}")),
@@ -118,9 +124,11 @@ ui_DIF_cumulative <- tabPanel(
         adding a group-membership variable (uniform DIF) and its interaction with observed score
         (non-uniform DIF) into a model for item \\(i\\) and by testing for their significance."),
       h4("Method specification"),
-      p("Here you can change the ", strong("type"), " of DIF to be tested, the ", strong("Observed score", .noWS = "outside"),
+      p(
+        "Here you can change the ", strong("type"), " of DIF to be tested, the ", strong("Observed score", .noWS = "outside"),
         ", and the ", strong("parametrization"), "- either the IRT or classical intercept/slope. You can also
-        select a ", strong("correction method"), " for a multiple comparison and/or ", strong("item purification. ")),
+        select a ", strong("correction method"), " for a multiple comparison and/or ", strong("item purification. ")
+      ),
       fluidRow(
         column(
           3,
@@ -194,7 +202,7 @@ ui_DIF_cumulative <- tabPanel(
           )
         )
       ),
-      uiOutput("DIF_cumulative_items_NA_warning"),
+      uiOutput("DIF_cumulative_items_na_alert"),
       h4("Plot with estimated DIF curves"),
       p("Points represent a proportion of the obtained score with respect to the observed score. Their size is determined
         by the count of respondents who achieved a given level of the observed score and who selected given option with

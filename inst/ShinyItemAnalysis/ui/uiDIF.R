@@ -7,6 +7,7 @@ source("ui/uiDIF/uiTDIF.R", local = TRUE)
 uiDIF <-
   navbarMenu(
     "DIF/Fairness",
+    menuName = "DIF/Fairness",
     # DESCRIPTION ####
     "Description",
     # * ABOUT DIF and DDF ####
@@ -95,10 +96,21 @@ uiDIF <-
         )
       ),
       h4("Summary of ", textOutput("DIF_total_matching_title1", inline = T), " for groups"),
+      p(
+        "The table below summarizes basic descriptive statistics for the observed scores per each group
+        including the total number of respondents \"n\", number of complete cases without any missing value",
+        HTML("\"n<sub>c</sub>\"", .noWS = "after"),
+        ", minimum and maximum,",
+        htmlOutput("DIF_total_matching_tooltip_mean", inline = TRUE), "median,",
+        htmlOutput("DIF_total_matching_tooltip_sd", inline = TRUE), "\\(\\textrm{SD}\\), ",
+        htmlOutput("DIF_total_matching_tooltip_skewness", inline = TRUE), "and",
+        htmlOutput("DIF_total_matching_tooltip_kurtosis", inline = TRUE),
+        "The skewness for normally distributed scores is near the value of 0 and the kurtosis is near the value of 3. "
+      ),
       tableOutput("DIF_total_table"),
       h4("Histograms of ", textOutput("DIF_total_matching_title2", inline = T), " for groups"),
-      plotlyOutput("DIF_total_hist"),
-      downloadButton("DB_DIF_total_hist", label = "Download figure"),
+      plotlyOutput("DIF_total_histogram"),
+      downloadButton("DIF_total_histogram_download", label = "Download figure"),
       br(),
       h4("Comparison of ", textOutput("DIF_total_matching_title3", inline = T)),
       tableOutput("DIF_total_ttest"),
@@ -141,7 +153,7 @@ uiDIF <-
         column(
           1,
           radioButtons(
-            inputId = "type_threshold",
+            inputId = "DIF_DP_threshold",
             label = "Threshold",
             choices = list("Fixed", "Normal")
           )
@@ -149,7 +161,7 @@ uiDIF <-
         column(
           2, br(),
           checkboxInput(
-            inputId = "puri_DP",
+            inputId = "DIF_DP_purification",
             label = "Item purification",
             value = FALSE
           )
@@ -157,9 +169,9 @@ uiDIF <-
         column(
           2,
           conditionalPanel(
-            condition = "input.puri_DP && input.type_threshold == 'Normal'",
+            condition = "input.DIF_DP_purification && input.DIF_DP_threshold == 'Normal'",
             selectInput(
-              inputId = "puri_DP_type",
+              inputId = "DIF_DP_purification_type",
               label = "Purification method",
               choices = c(
                 "IPP1" = "IPP1",
@@ -172,29 +184,32 @@ uiDIF <-
         )
       ),
       h4("Delta plot"),
-      plotlyOutput("deltaplot"),
-      downloadButton("DP_deltaplot", label = "Download figure"),
+      plotlyOutput("DIF_DP_plot"),
+      downloadButton("DIF_DP_plot_download", label = "Download figure"),
       br(), br(),
       h4("Summary table"),
-      p("A summary table contains information about the proportions of correct answers in the reference and the focal group together
-                        with their transformations into delta scores. It also includes the distances of delta scores from the main axis of the
-                        ellipsoid formed by delta scores. "),
-      strong(textOutput("dp_dif_items")),
+      p("A summary table contains information about number of complete cases without any missing value within items for the
+        reference and the focal group (", HTML("\"n<sub>c, ref</sub>\"", .noWS = "after"), "and", HTML("\"n<sub>c, foc</sub>\"",
+        .noWS = "after"
+      ), "), and the proportions of correct answers in the reference and the focal group together with their
+        transformations into delta scores. It also includes the distances of delta scores from the main axis of the ellipsoid
+        formed by delta scores. "),
+      strong(textOutput("DIF_DP_dif_items")),
       br(),
-      fluidRow(column(12, align = "left", tableOutput("coef_dp_table"))),
-      fluidRow(column(12, align = "left", uiOutput("note_dp"))),
+      fluidRow(column(12, align = "left", tableOutput("DIF_DP_coef"))),
+      fluidRow(column(12, align = "left", uiOutput("DIF_DP_table_note"))),
       br(),
       fluidRow(column(2, downloadButton(
-        outputId = "download_dp_table",
+        outputId = "DIF_DP_table_download",
         label = "Download table"
       ))),
       br(),
       h4("Purification process"),
-      textOutput("dp_puri_info"),
+      textOutput("DIF_DP_purification_info"),
       br(),
-      # tags$head(tags$style("#dp_puri_table  {white-space: nowrap;  }")),
-      fluidRow(column(12, align = "center", tableOutput("dp_puri_table"))),
-      conditionalPanel("input.puri_DP == 1", downloadButton(outputId = "download_dp_puri", label = "Download table"), br(), br()),
+      # tags$head(tags$style("#DIF_DP_purification_table  {white-space: nowrap;  }")),
+      fluidRow(column(12, align = "center", tableOutput("DIF_DP_purification_table"))),
+      conditionalPanel("input.DIF_DP_purification == 1", downloadButton(outputId = "DIF_DP_purification_table_download", label = "Download table"), br(), br()),
       h4("Selected R code"),
       code(includeText("sc/dif/delta_plt.R"))
     ),
@@ -211,7 +226,9 @@ uiDIF <-
           h4("Method specification"),
           p(
             "Here you can select a ", strong("correction method"), " for multiple comparison, and/or ",
-            strong("item purification.")
+            strong("item purification."), "You can also select whether apply them in simple (correction
+            applied after purification) or iterative (correction applied after each purification iteration)",
+            strong("combination.")
           ),
           fluidRow(
             column(
@@ -238,6 +255,17 @@ uiDIF <-
                 label = "Item purification",
                 value = FALSE
               )
+            ),
+            column(
+              2,
+              selectInput(
+                inputId = "DIF_MH_summary_combination",
+                label = "Combination",
+                choices = c(
+                  "not applied" = "simple"
+                ),
+                selected = "not applied"
+              )
             )
           ),
           h4("Summary table"),
@@ -246,19 +274,19 @@ uiDIF <-
                                    of Mantel-Haenszel estimates of the odds ratio \\(\\alpha_{\\mathrm{MH}}\\), which incorporate all levels of
                                    the total score, and their transformations into D-DIF indices \\(\\Delta_{\\mathrm{MH}} =
                                    -2.35 \\log(\\alpha_{\\mathrm{MH}})\\) to evaluate DIF effect size. "),
-          strong(textOutput("mh_dif_items")),
+          strong(textOutput("DIF_MH_dif_items")),
           br(),
-          fluidRow(column(12, align = "left", tableOutput("coef_mh_table"))),
-          fluidRow(column(12, align = "left", uiOutput("note_mh"))),
+          fluidRow(column(12, align = "left", tableOutput("DIF_MH_summary_coef"))),
+          fluidRow(column(12, align = "left", uiOutput("DIF_MH_summary_table_note"))),
           br(),
-          fluidRow(column(2, downloadButton(outputId = "download_mh_table", label = "Download table"))),
+          fluidRow(column(2, downloadButton(outputId = "DIF_MH_summary_table_download", label = "Download table"))),
           br(),
           h4("Purification process"),
-          textOutput("mh_puri_info"),
+          textOutput("DIF_MH_summary_purification_info"),
           br(),
-          # tags$head(tags$style("#mh_puri_table  {white-space: nowrap;  }")),
-          fluidRow(column(12, align = "center", tableOutput("mh_puri_table"))),
-          conditionalPanel("input.DIF_MH_summary_purification == 1", downloadButton(outputId = "download_mh_puri", label = "Download table"), br(), br()),
+          # tags$head(tags$style("#DIF_MH_summary_purification_table  {white-space: nowrap;  }")),
+          fluidRow(column(12, align = "center", tableOutput("DIF_MH_summary_purification_table"))),
+          conditionalPanel("input.DIF_MH_summary_purification == 1", downloadButton(outputId = "DIF_MH_summary_purification_table_download", label = "Download table"), br(), br()),
           br(),
           h4("Selected R code"),
           code(includeText("sc/dif/mh.R"))
@@ -316,8 +344,10 @@ uiDIF <-
                         focuses on detection of non-uniform DIF."),
       h4("Method specification"),
       p("Here you can choose the ", strong("type"), " of DIF to test. With uniform DIF, SIBTEST is applied, while with non-uniform DIF,
-                        the Crossing-SIBTEST method is used instead. You can also select the ", strong("correction method"), " for multiple comparisons
-                        or", strong("item purification.")),
+                        the Crossing-SIBTEST method is used instead. You can also select the ", strong("correction method"), " for
+                        multiple comparisons or", strong("item purification."), "You can also select whether apply them in simple
+                        (correction applied after purification) or iterative (correction applied after each purification iteration)",
+                        strong("combination.")),
       fluidRow(
         column(
           2,
@@ -355,6 +385,17 @@ uiDIF <-
             label = "Item purification",
             value = FALSE
           )
+        ),
+        column(
+          2,
+          selectInput(
+            inputId = "DIF_SIBTEST_combination",
+            label = "Combination",
+            choices = c(
+              "not applied" = "simple"
+            ),
+            selected = "not applied"
+          )
         )
       ),
       h4("Summary table"),
@@ -362,30 +403,29 @@ uiDIF <-
                       (only available when testing uniform DIF), corresponding \\(\\chi^2\\)-statistics
                         with \\(p\\)-values considering selected adjustement, and significance codes. "),
       uiOutput("DIF_SIBTEST_NA_alert"),
-      # verbatimTextOutput("DIF_SIBTEST_print"),
-      strong(textOutput("sibtest_dif_items")),
+      strong(textOutput("DIF_SIBTEST_dif_items")),
       br(),
-      # tags$head(tags$style("#coef_sibtest_dif  {white-space: nowrap;}")),
-      fluidRow(column(12, align = "left", tableOutput("coef_sibtest_dif"))),
-      fluidRow(column(12, align = "left", uiOutput("note_sibtest"))),
+      # tags$head(tags$style("#DIF_SIBTEST_table  {white-space: nowrap;}")),
+      fluidRow(column(12, align = "left", tableOutput("DIF_SIBTEST_coef"))),
+      fluidRow(column(12, align = "left", uiOutput("DIF_SIBTEST_table_note"))),
       br(),
-      fluidRow(column(2, downloadButton(outputId = "download_sibtest_dif", label = "Download table"))),
+      fluidRow(column(2, downloadButton(outputId = "DIF_SIBTEST_table_download", label = "Download table"))),
       br(),
       h4("Purification process"),
-      textOutput("dif_sibtest_puri_info"),
+      textOutput("DIF_SIBTEST_purification_info"),
       br(),
-      # tags$head(tags$style("#dif_sibtest_puri_table  {white-space: nowrap;}")),
-      fluidRow(column(12, align = "center", tableOutput("dif_sibtest_puri_table"))),
+      # tags$head(tags$style("#DIF_SIBTEST_purification_table  {white-space: nowrap;}")),
+      fluidRow(column(12, align = "center", tableOutput("DIF_SIBTEST_purification_table"))),
       conditionalPanel(
         "input.DIF_SIBTEST_purification == 1",
-        downloadButton(outputId = "download_sibtest_dif_puri", label = "Download table"), br(), br()
+        downloadButton(outputId = "DIF_SIBTEST_purification_table_download", label = "Download table"), br(), br()
       ),
       h4("Selected code"),
       code(includeText("sc/dif/sibtest.R"))
     ),
     # * LOGISTIC ####
     ui_DIF_logistic,
-    # * GENERALIZED LOGISTIC ####
+    # * NLR ####
     tabPanel(
       "Generalized logistic",
       tabsetPanel(
@@ -429,7 +469,7 @@ uiDIF <-
             column(
               2,
               selectInput(
-                inputId = "DIF_NLR_model_print",
+                inputId = "DIF_NLR_summary_model",
                 label = "Model",
                 choices = c(
                   "Rasch" = "Rasch",
@@ -450,7 +490,7 @@ uiDIF <-
             column(
               1,
               checkboxGroupInput(
-                inputId = "DIF_NLR_type_print",
+                inputId = "DIF_NLR_summary_type",
                 label = "Type",
                 choices = c(
                   "\\(a\\)" = "a",
@@ -464,7 +504,7 @@ uiDIF <-
             column(
               2,
               selectInput(
-                inputId = "DIF_NLR_correction_method_print",
+                inputId = "DIF_NLR_summary_correction",
                 label = "Correction method",
                 choices = c(
                   "Benjamini-Hochberg" = "BH",
@@ -478,7 +518,7 @@ uiDIF <-
                 selected = "none"
               ),
               checkboxInput(
-                inputId = "DIF_NLR_purification_print",
+                inputId = "DIF_NLR_summary_purification",
                 label = "Item purification",
                 value = FALSE
               )
@@ -495,7 +535,7 @@ uiDIF <-
           ),
           h4("Equation"),
           p("The displayed equation is based on the model selected below"),
-          fluidRow(column(12, align = "center", uiOutput("DIF_NLR_equation_print"))),
+          fluidRow(column(12, align = "center", uiOutput("DIF_NLR_summary_equation"))),
           h4("Summary table"),
           p("This summary table contains information about DIF test statistic \\(LR(\\chi^2)\\), corresponding \\(p\\)-values
                                    considering selected adjustement, and significance codes. This table also provides estimated parameters for
@@ -503,23 +543,23 @@ uiDIF <-
                                    above consists of a parameter for the reference group and a parameter for the difference between focal and reference
                                    groups, i.e., \\(a_{iG_p} = a_{i} + a_{iDif}G_{p}\\), where \\(G_{p} = 0\\) for the reference group and \\(G_{p} = 1\\)
                                    for the focal group, as stated in the table below. "),
-          uiOutput("DIF_NLR_na_alert"),
-          strong(textOutput("nlr_dif_items")),
+          uiOutput("DIF_NLR_summary_na_alert"),
+          strong(textOutput("DIF_NLR_summary_dif_items")),
           br(),
-          # tags$head(tags$style("#coef_nlr_dif  {white-space: nowrap;}")),
-          fluidRow(column(12, align = "left", tableOutput("coef_nlr_dif"))),
-          fluidRow(column(12, align = "left", uiOutput("note_nlr"))),
+          # tags$head(tags$style("#DIF_NLR_summary_coef  {white-space: nowrap;}")),
+          fluidRow(column(12, align = "left", tableOutput("DIF_NLR_summary_coef"))),
+          fluidRow(column(12, align = "left", uiOutput("DIF_NLR_summary_table_note"))),
           br(),
-          fluidRow(column(2, downloadButton(outputId = "download_nlr_dif", label = "Download table"))),
+          fluidRow(column(2, downloadButton(outputId = "DIF_NLR_summary_table_download", label = "Download table"))),
           br(),
           h4("Purification process"),
-          textOutput("dif_nlr_puri_info"),
+          textOutput("DIF_NLR_summary_purification_info"),
           br(),
-          # tags$head(tags$style("#dif_nlr_puri_table  {white-space: nowrap;}")),
-          fluidRow(column(12, align = "center", tableOutput("dif_nlr_puri_table"))),
+          # tags$head(tags$style("#DIF_NLR_summary_purification_table  {white-space: nowrap;}")),
+          fluidRow(column(12, align = "center", tableOutput("DIF_NLR_summary_purification_table"))),
           conditionalPanel(
-            "input.DIF_NLR_purification_print == 1",
-            downloadButton(outputId = "download_nlr_dif_puri", label = "Download table"), br(), br()
+            "input.DIF_NLR_summary_purification == 1",
+            downloadButton(outputId = "DIF_NLR_summary_purification_table_download", label = "Download table"), br(), br()
           ),
           br(),
           h4("Selected R code"),
@@ -566,7 +606,7 @@ uiDIF <-
             column(
               2,
               selectInput(
-                inputId = "DIF_NLR_model_plot",
+                inputId = "DIF_NLR_items_model",
                 label = "Model",
                 choices = c(
                   "Rasch" = "Rasch",
@@ -586,9 +626,8 @@ uiDIF <-
             ),
             column(
               1,
-
               checkboxGroupInput(
-                inputId = "DIF_NLR_type_plot",
+                inputId = "DIF_NLR_items_type",
                 label = "Type",
                 choices = c(
                   "\\(a\\)" = "a",
@@ -602,7 +641,7 @@ uiDIF <-
             column(
               2,
               selectInput(
-                inputId = "DIF_NLR_correction_method_plot",
+                inputId = "DIF_NLR_items_correction",
                 label = "Correction method",
                 choices = c(
                   "Benjamini-Hochberg" = "BH",
@@ -616,7 +655,7 @@ uiDIF <-
                 selected = "none"
               ),
               checkboxInput(
-                inputId = "DIF_NLR_purification_plot",
+                inputId = "DIF_NLR_items_purification",
                 label = "Item purification",
                 value = FALSE
               )
@@ -633,7 +672,7 @@ uiDIF <-
             column(
               2,
               sliderInput(
-                inputId = "DIF_NLR_item_plot",
+                inputId = "DIF_NLR_items_item",
                 label = "Item",
                 min = 1,
                 value = 1,
@@ -647,16 +686,17 @@ uiDIF <-
           p("Points represent a proportion of the correct answer (empirical probabilities) with respect to the observed score.
                                    Their size is determined by the count of respondents who achieved a given level of observed score with respect
                                    to the group membership."),
-          plotlyOutput("plot_DIF_NLR"),
-          downloadButton("DP_plot_DIF_NLR", label = "Download figure"),
+          uiOutput("DIF_NLR_items_na_alert"),
+          plotlyOutput("DIF_NLR_items_plot"),
+          downloadButton("DIF_NLR_items_plot_download", label = "Download figure"),
           h4("Equation"),
-          fluidRow(column(12, align = "center", uiOutput("DIF_NLR_equation_plot"))),
+          fluidRow(column(12, align = "center", uiOutput("DIF_NLR_items_equation"))),
           h4("Table of parameters"),
           p("This table summarizes estimated item parameters together with their standard errors. Note that \\(a_{iG_p}\\) (and also other
                                    parameters) from the equation above consists of a parameter for the reference group and a parameter for the difference between
                                    focal and reference groups, i.e., \\(a_{iG_p} = a_{i} + a_{iDif}G_{p}\\), where \\(G_{p} = 0\\) for the reference group and
                                    \\(G_{p} = 1\\) for the focal group, as stated in the table below. "),
-          fluidRow(column(12, align = "center", tableOutput("tab_coef_DIF_NLR"))),
+          fluidRow(column(12, align = "center", tableOutput("DIF_NLR_items_coef"))),
           br(),
           h4("Selected R code"),
           code(includeText("sc/dif/nlr_it.R"))
@@ -682,7 +722,7 @@ uiDIF <-
             column(
               1,
               radioButtons(
-                inputId = "type_print_DIF_IRT_lord",
+                inputId = "DIF_Lord_summary_model",
                 label = "Model",
                 choices = c(
                   "1PL" = "1PL",
@@ -695,7 +735,7 @@ uiDIF <-
             column(
               2,
               selectInput(
-                inputId = "correction_method_DIF_IRT_lordSummary",
+                inputId = "DIF_Lord_summary_correction",
                 label = "Correction method",
                 choices = c(
                   "Benjamini-Hochberg" = "BH",
@@ -709,15 +749,15 @@ uiDIF <-
                 selected = "none"
               ),
               checkboxInput(
-                inputId = "puri_Lord",
+                inputId = "DIF_Lord_summary_purification",
                 label = "Item purification",
                 value = FALSE
               )
             )
           ),
           h4("Equation"),
-          uiOutput("DIF_Lord_interpretation_summary"),
-          fluidRow(column(12, align = "center", uiOutput("DIF_Lord_equation_summary"))),
+          uiOutput("DIF_Lord_summary_interpretation"),
+          fluidRow(column(12, align = "center", uiOutput("DIF_Lord_summary_equation"))),
           h4("Summary table"),
           p("This summary table contains information about Lord's \\(\\chi^2\\)-statistics, corresponding \\(p\\)-values
                                    considering selected adjustment, and significance codes. The table also provides estimated parameters for
@@ -725,23 +765,23 @@ uiDIF <-
                                    fitted, however this difference is non-significant. Also note that under the 3PL model, the guessing parameter
                                    \\(c\\) is estimated from the whole dataset, and is considered fixed in the final models, thus no standard error
                                    is displayed."),
-          uiOutput("DIF_IRT_LORD_na_alert"),
-          strong(textOutput("lord_dif_items")),
+          uiOutput("DIF_Lord_summary_na_alert"),
+          strong(textOutput("DIF_Lord_summary_dif_items")),
           br(),
-          # tags$head(tags$style("#coef_lord_dif  {white-space: nowrap;}")),
-          fluidRow(column(12, align = "left", tableOutput("coef_lord_dif"))),
-          fluidRow(column(12, align = "left", uiOutput("note_lord"))),
+          # tags$head(tags$style("#DIF_Lord_summary_coef  {white-space: nowrap;}")),
+          fluidRow(column(12, align = "left", tableOutput("DIF_Lord_summary_coef"))),
+          fluidRow(column(12, align = "left", uiOutput("DIF_Lord_summary_table_note"))),
           br(),
-          fluidRow(column(2, downloadButton(outputId = "download_lord_dif", label = "Download table"))),
+          fluidRow(column(2, downloadButton(outputId = "DIF_Lord_summary_table_download", label = "Download table"))),
           br(),
           h4("Purification process"),
-          textOutput("dif_lord_puri_info"),
+          textOutput("DIF_Lord_summary_purification_info"),
           br(),
-          # tags$head(tags$style("#dif_lord_puri_table  {white-space: nowrap;}")),
-          fluidRow(column(12, align = "center", tableOutput("dif_lord_puri_table"))),
+          # tags$head(tags$style("#DIF_Lord_summary_purification_table  {white-space: nowrap;}")),
+          fluidRow(column(12, align = "center", tableOutput("DIF_Lord_summary_purification_table"))),
           conditionalPanel(
-            "input.puri_Lord == 1",
-            downloadButton(outputId = "download_lord_dif_puri", label = "Download table"), br(), br()
+            "input.DIF_Lord_summary_purification == 1",
+            downloadButton(outputId = "DIF_Lord_summary_purification_table_download", label = "Download table"), br(), br()
           ),
           h4("Selected R code"),
           code(includeText("sc/dif/lord.R"))
@@ -762,7 +802,7 @@ uiDIF <-
             column(
               1,
               radioButtons(
-                inputId = "type_plot_DIF_IRT_lord",
+                inputId = "DIF_Lord_items_model",
                 label = "Model",
                 choices = c(
                   "1PL" = "1PL",
@@ -775,7 +815,7 @@ uiDIF <-
             column(
               2,
               selectInput(
-                inputId = "correction_method_DIF_IRT_lordItems",
+                inputId = "DIF_Lord_items_correction",
                 label = "Correction method",
                 choices = c(
                   "Benjamini-Hochberg" = "BH",
@@ -788,12 +828,12 @@ uiDIF <-
                 ),
                 selected = "none"
               ),
-              checkboxInput("puri_Lord_plot", "Item purification", FALSE)
+              checkboxInput("DIF_Lord_items_purification", "Item purification", FALSE)
             ),
             column(
               2,
               sliderInput(
-                inputId = "difirt_lord_itemSlider",
+                inputId = "DIF_Lord_items_item",
                 label = "Item",
                 min = 1,
                 value = 1,
@@ -806,17 +846,18 @@ uiDIF <-
           h4("Plot with estimated DIF characteristic curve"),
           p("Note that plots might differ slightly even for non-DIF items as two seperate models are fitted, however this difference
                                    is non-significant. "),
-          plotlyOutput("plot_DIF_IRT_Lord"),
-          downloadButton("DP_plot_DIF_IRT_Lord", label = "Download figure"),
+          uiOutput("DIF_Lord_items_na_alert"),
+          plotlyOutput("DIF_Lord_items_plot"),
+          downloadButton("DIF_Lord_items_plot_download", label = "Download figure"),
           h4("Equation"),
-          uiOutput("irtint_lord"),
-          fluidRow(column(12, align = "center", uiOutput("irteq_lord"))),
+          uiOutput("DIF_Lord_items_interpretation"),
+          fluidRow(column(12, align = "center", uiOutput("DIF_Lord_items_equation"))),
           h4("Table of parameters"),
           p("The table summarizes estimated item parameters together with standard errors. Note that item parameters might differ slightly
                                  even for non-DIF items as two seperate models are fitted, however this difference is non-significant.
                                  Also note that under the 3PL model, the guessing parameter \\(c\\) is estimated from the whole dataset, and
                                  is considered fixed in the final models, thus no standard error is displayed."),
-          fluidRow(column(12, align = "center", tableOutput("tab_coef_DIF_IRT_Lord"))),
+          fluidRow(column(12, align = "center", tableOutput("DIF_Lord_items_coef"))),
           br(),
           h4("Selected R code"),
           code(includeText("sc/dif/lord_it.R"))
@@ -842,7 +883,7 @@ uiDIF <-
             column(
               1,
               radioButtons(
-                inputId = "type_print_DIF_IRT_raju",
+                inputId = "DIF_Raju_summary_model",
                 label = "Model",
                 choices = c(
                   "1PL" = "1PL",
@@ -855,7 +896,7 @@ uiDIF <-
             column(
               2,
               selectInput(
-                inputId = "correction_method_DIF_IRT_rajuSummary",
+                inputId = "DIF_Raju_summary_correction",
                 label = "Correction method",
                 choices = c(
                   "Benjamini-Hochberg" = "BH",
@@ -869,15 +910,15 @@ uiDIF <-
                 selected = "none"
               ),
               checkboxInput(
-                inputId = "puri_Raju",
+                inputId = "DIF_Raju_summary_purification",
                 label = "Item purification",
                 value = FALSE
               )
             )
           ),
           h4("Equation"),
-          uiOutput("DIF_Raju_interpretation_summary"),
-          fluidRow(column(12, align = "center", uiOutput("DIF_Raju_equation_summary"))),
+          uiOutput("DIF_Raju_summary_interpretation"),
+          fluidRow(column(12, align = "center", uiOutput("DIF_Raju_summary_equation"))),
           h4("Summary table"),
           p("This summary table contains information about Raju's \\(Z\\)-statistics, corresponding \\(p\\)-values
                                    considering selected adjustement, and significance codes. The table also provides estimated parameters for
@@ -885,23 +926,23 @@ uiDIF <-
                                    fitted, however this difference is non-significant. Also note that under the 3PL model, the guessing parameter \\(c\\) is estimated from the whole dataset, and
                                    is considered fixed in the final models, thus no standard error is displayed."),
           # verbatimTextOutput('print_DIF_IRT_Raju'),
-          uiOutput("DIF_IRT_Raju_na_alert"),
-          strong(textOutput("raju_dif_items")),
+          uiOutput("DIF_Raju_summary_na_alert"),
+          strong(textOutput("DIF_Raju_summary_dif_items")),
           br(),
-          # tags$head(tags$style("#coef_raju_dif  {white-space: nowrap;}")),
-          fluidRow(column(12, align = "left", tableOutput("coef_raju_dif"))),
-          fluidRow(column(12, align = "left", uiOutput("note_raju"))),
+          # tags$head(tags$style("#DIF_Raju_summary_coef  {white-space: nowrap;}")),
+          fluidRow(column(12, align = "left", tableOutput("DIF_Raju_summary_coef"))),
+          fluidRow(column(12, align = "left", uiOutput("DIF_Raju_summary_table_note"))),
           br(),
-          fluidRow(column(2, downloadButton(outputId = "download_raju_dif", label = "Download table"))),
+          fluidRow(column(2, downloadButton(outputId = "DIF_Raju_summary_table_download", label = "Download table"))),
           br(),
           h4("Purification process"),
-          textOutput("dif_raju_puri_info"),
+          textOutput("DIF_Raju_summary_purification_info"),
           br(),
-          # tags$head(tags$style("#dif_raju_puri_table  {white-space: nowrap;}")),
-          fluidRow(column(12, align = "center", tableOutput("dif_raju_puri_table"))),
+          # tags$head(tags$style("#DIF_Raju_summary_purification_table  {white-space: nowrap;}")),
+          fluidRow(column(12, align = "center", tableOutput("DIF_Raju_summary_purification_table"))),
           conditionalPanel(
-            "input.puri_Raju == 1",
-            downloadButton(outputId = "download_raju_dif_puri", label = "Download table"), br(), br()
+            "input.DIF_Raju_summary_purification == 1",
+            downloadButton(outputId = "DIF_Raju_summary_purification_table_download", label = "Download table"), br(), br()
           ),
           h4("Selected R code"),
           code(includeText("sc/dif/raju.R"))
@@ -922,7 +963,7 @@ uiDIF <-
             column(
               1,
               radioButtons(
-                inputId = "type_plot_DIF_IRT_raju",
+                inputId = "DIF_Raju_items_model",
                 label = "Model",
                 choices = c(
                   "1PL" = "1PL",
@@ -935,7 +976,7 @@ uiDIF <-
             column(
               2,
               selectInput(
-                inputId = "correction_method_DIF_IRT_rajuItems",
+                inputId = "DIF_Raju_items_correction",
                 label = "Correction method",
                 choices = c(
                   "Benjamini-Hochberg" = "BH",
@@ -949,7 +990,7 @@ uiDIF <-
                 selected = "none"
               ),
               checkboxInput(
-                inputId = "puri_Raju_plot",
+                inputId = "DIF_Raju_items_purification",
                 label = "Item purification",
                 value = FALSE
               )
@@ -957,7 +998,7 @@ uiDIF <-
             column(
               2,
               sliderInput(
-                inputId = "difirt_raju_itemSlider",
+                inputId = "DIF_Raju_items_item",
                 label = "Item",
                 min = 1,
                 value = 1,
@@ -970,17 +1011,18 @@ uiDIF <-
           h4("Plot with estimated DIF characteristic curve"),
           p("Note that plots might differ slightly even for non-DIF items as two seperate models are fitted, however this difference
                                    is non-significant. "),
-          plotlyOutput("plot_DIF_IRT_Raju"),
-          downloadButton("DP_plot_DIF_IRT_Raju", label = "Download figure"),
+          uiOutput("DIF_Raju_items_na_alert"),
+          plotlyOutput("DIF_Raju_items_plot"),
+          downloadButton("DIF_Raju_items_plot_download", label = "Download figure"),
           h4("Equation"),
-          uiOutput("irtint_raju"),
-          fluidRow(column(12, align = "center", uiOutput("irteq_raju"))),
+          uiOutput("DIF_Raju_items_interpretation"),
+          fluidRow(column(12, align = "center", uiOutput("DIF_Raju_items_equation"))),
           h4("Table of parameters"),
           p("This table summarizes the estimated item parameters together with the standard errors. Note that item parameters might differ slightly
                                     even for non-DIF items as two seperate models are fitted, however this difference is non-significant.
                                     Also note that under the 3PL model, the guessing parameter \\(c\\) is estimated from the whole dataset, and
                                     is considered fixed in the final models, thus no standard error is available."),
-          fluidRow(column(12, align = "center", tableOutput("tab_coef_DIF_IRT_Raju"))),
+          fluidRow(column(12, align = "center", tableOutput("DIF_Raju_items_coef"))),
           br(),
           h4("Selected R code"),
           code(includeText("sc/dif/raju_it.R"))
@@ -1012,45 +1054,45 @@ uiDIF <-
                         To see the complete setting of all analyses, please refer to the note below the table.
                         The last column shows how many methods detect a certain item as DIF.
                         The last row shows how many items are detected as DIF by a certain method. "),
-      tags$div(tags$style("#same_dmv {color:red; }")),
-      htmlOutput("same_dmv"),
-      tags$div(tags$style("#same_puri {color:orange; }")),
-      htmlOutput("same_puri"),
-      tags$div(tags$style("#same_corr {color:orange; }")),
-      htmlOutput("same_corr"),
-      conditionalPanel("output.unify_methods_condition == 1", br()),
+      tags$div(tags$style("#DIF_MC_same_matching {color:red; }")),
+      htmlOutput("DIF_MC_same_matching"),
+      tags$div(tags$style("#DIF_MC_same_purification {color:orange; }")),
+      htmlOutput("DIF_MC_same_purification"),
+      tags$div(tags$style("#DIF_MC_same_correction {color:orange; }")),
+      htmlOutput("DIF_MC_same_correction"),
+      conditionalPanel("output.DIF_MC_unify_setting_condition == 1", br()),
       fluidRow(
         column(
           2,
           selectInput(
-            "mc_dmv",
-            "Observed score",
-            c(
+            inputId = "DIF_MC_matching",
+            label = "Observed score",
+            choices = c(
               "as is" = "asis",
               "(standardized) total scores" = "score"
             ),
-            "asis"
+            selected = "asis"
           )
         ),
         column(
           2,
           selectInput(
-            "mc_puri",
-            "Item purification",
-            c(
+            inputId = "DIF_MC_purification",
+            label = "Item purification",
+            choices = c(
               "as is" = "asis",
               "yes" = "purify",
               "no" = "dontpurify"
             ),
-            "asis"
+            selected = "asis"
           )
         ),
         column(
           3,
           selectInput(
-            "mc_corr",
-            "Correction method",
-            c(
+            inputId = "DIF_MC_correction",
+            label = "Correction method",
+            choices = c(
               "as is" = "asis",
               "Benjamini-Hochberg" = "BH",
               "Benjamini-Yekutieli" = "BY",
@@ -1060,17 +1102,17 @@ uiDIF <-
               "Hommel" = "hommel",
               "none" = "none"
             ),
-            "asis"
+            selected = "asis"
           )
         ),
         column(
           1, br(),
-          actionButton("unify_button", "Apply setting")
+          actionButton(inputId = "DIF_MC_unify_setting", label = "Apply setting")
         )
       ),
       # br(),
-      fluidRow(column(12, align = "left", tableOutput("method_comparison_table"))),
-      fluidRow((column(12, align = "left", uiOutput("mc_settings"))))
+      fluidRow(column(12, align = "left", tableOutput("DIF_MC_table"))),
+      fluidRow((column(12, align = "left", uiOutput("DIF_MC_table_note"))))
     ),
     # POLYTOMOUS METHODS ####
     "----",
@@ -1084,13 +1126,5 @@ uiDIF <-
     "----",
     "Training",
     # * TRAINING  ####
-    uiTDIF,
-
-    # Modules
-    "---",
-    "Modules",
-    tabPanel(tags$a("DIF-C",
-                    href = "https://shiny.cs.cas.cz/ShinyItemAnalysis-module-DIF-C-ordinal/",
-                    target = "_blank", .noWS = "outside"
-    ))
+    uiTDIF
   )

@@ -41,49 +41,65 @@ uiAbout <- tabPanel("",
   # News ####
   #------------------------------------------------------------------------------------#
   h4("News"),
-  p(
-    "A new paper on range-restricted inter-rater reliability has been published in JRSS-A ",
-    a("(Erosheva, Martinkova, & Lee, 2021)",
-      href = "http://doi.org/10.1111/rssa.12681",
-      target = "_blank", .noWS = "outside"
+  fluidRow(
+    column(10,
+
+  tags$ul(
+    tags$li(
+      "A new book using ShinyItemAnalysis forthcoming! ", a("Martinkova & Hladka (2023).
+    Computational Aspects of Psychometric Methods: With R. (1st ed.). Chapman and Hall/CRC.",
+        href = "https://www.taylorfrancis.com/books/mono/10.1201/9781003054313",
+        target = "_blank", .noWS = "outside"
+      )
     ),
-    ".  To try examples interactively with the", code("AIBS"), "dataset,
+    tags$li(
+      "A new paper on range-restricted inter-rater reliability has been published in JRSS-A ",
+      a("(Erosheva, Martinkova, & Lee, 2021)",
+        href = "http://doi.org/10.1111/rssa.12681",
+        target = "_blank", .noWS = "outside"
+      ),
+      ".  To try examples interactively with the", code("AIBS"), "dataset,
+    go to the Restricted-range Reliability Module available from the ",
+      strong("Reliability"), "section. "
+    ),
+    tags$li(
+      "A new paper using DIF-C analysis has been published in Journal of Computer Assisted Learning ",
+      a("(Kolek, Sisler, Martinkova, & Brom, 2021)",
+        href = "https://doi.org/10.1111/jcal.12575",
+        target = "_blank", .noWS = "outside"
+      ),
+      ".  To try examples interactively with the", code("AttitudesExpulsion"), "dataset,
     go to the ",
-    a("Restricted-range Reliability Module",
-      href = "https://shiny.cs.cas.cz/ShinyItemAnalysis-module-IRRrestricted/",
-      target = "_blank", .noWS = "outside"
+      a("DIF-C Module",
+        href = "https://shiny.cs.cas.cz/ShinyItemAnalysis-module-DIF-C-ordinal/",
+        target = "_blank", .noWS = "outside"
+      ),
+      " available from the ",
+      strong("DIF"), "section. "
     ),
-    " available from the ",
-    strong("Reliability"), "section. ",
-    br(),
-    "A new paper using DIF-C analysis has been published in Journal of Computer Assisted Learning ",
-    a("(Kolek, Sisler, Martinkova, & Brom, 2021)",
-      href = "https://doi.org/10.1111/jcal.12575",
-      target = "_blank", .noWS = "outside"
-    ),
-    ".  To try examples interactively with the", code("AttitudesExpulsion"), "dataset,
-    go to the ",
-    a("DIF-C Module",
-      href = "https://shiny.cs.cas.cz/ShinyItemAnalysis-module-DIF-C-ordinal/",
-      target = "_blank", .noWS = "outside"
-    ),
-    " available from the ",
-    strong("DIF"), "section. ",
-    br(),
-    "New papers on differential item functioning have been published in Learning and Instruction ",
-    a("(Martinkova, Hladka, & Potuznikova, 2020)",
-      href = "https://doi.org/10.1016/j.learninstruc.2019.101286",
-      target = "_blank", .noWS = "outside"
-    ),
-    " and in The R Journal ",
-    a("(Hladka & Martinkova, 2020)",
-      href = "https://doi.org/10.32614/RJ-2020-014",
-      target = "_blank", .noWS = "outside"
-    ),
-    ". To try these examples interactively, set the", code("Learning to Learn 9"), "toy dataset in the ", strong("Data"), " section
+    tags$li(
+      "New papers on differential item functioning have been published in Learning and Instruction ",
+      a("(Martinkova, Hladka, & Potuznikova, 2020)",
+        href = "https://doi.org/10.1016/j.learninstruc.2019.101286",
+        target = "_blank", .noWS = "outside"
+      ),
+      " and in The R Journal ",
+      a("(Hladka & Martinkova, 2020)",
+        href = "https://doi.org/10.32614/RJ-2020-014",
+        target = "_blank", .noWS = "outside"
+      ),
+      ". To try these examples interactively, set the", code("Learning to Learn 9"), "toy dataset in the ", strong("Data"), " section
     by clicking on the menu in the upper left corner and go to the ",
-    strong("DIF/Fairness/Generalized logistic"), "section. ",
-    .noWS = "before-end"),
+      strong("DIF/Fairness/Generalized logistic"), "section. ",
+      .noWS = "before-end"
+    )
+           )
+  ),
+  column(
+    2,
+    tags$img(src="book_cover.png", class="img-responsive")
+  )
+  ),
   tags$hr(),
 
   #------------------------------------------------------------------------------------#
@@ -122,13 +138,13 @@ uiAbout <- tabPanel("",
       p(
         "The current",
         a("CRAN", href = "https://CRAN.R-project.org/package=ShinyItemAnalysis", target = "_blank"),
-        "version is 1.4.2.",
+        "version is 1.5.0.",
         br(),
         "The version available",
-        a("online", href = "https://shiny.cs.cas.cz/ShinyItemAnalysis/", target = "_blank"), "is 1.4.2-1.",
+        a("online", href = "https://shiny.cs.cas.cz/ShinyItemAnalysis/", target = "_blank"), "is 1.5.0.",
         br(),
         "The newest development version available on ",
-        a("GitHub", href = "https://github.com/patriciamar/ShinyItemAnalysis", target = "_blank"), "is 1.4.2.",
+        a("GitHub", href = "https://github.com/patriciamar/ShinyItemAnalysis", target = "_blank"), "is 1.5.0.",
       )
     )
   ),
@@ -177,7 +193,7 @@ uiAbout <- tabPanel("",
     class = "cite-box",
     "Martinkova, P., & Drabinova, A. (2018).", br(), "
                     ShinyItemAnalysis for teaching psychometrics and to enforce routine analysis of educational tests.", br(),
-                    em("The R Journal, 10", .noWS = "outside"), "(2), 503-515, doi:",
+    em("The R Journal, 10", .noWS = "outside"), "(2), 503-515, doi:",
     a("10.32614/RJ-2018-074",
       href = "https://doi.org/10.32614/RJ-2018-074",
       target = "_blank"

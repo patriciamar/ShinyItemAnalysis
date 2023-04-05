@@ -12,20 +12,6 @@ uiSetting <-
       min = 1,
       max = 999999
     ))),
-
-    h4("Range-restricted reliability settings"),
-    p("Set the number of bootstrap samples for the confidence interval calculation in the ", strong("Reliability / Restricted range"), "section."),
-    fluidPage(column(
-      2,
-      numericInput(
-        inputId = "reliability_restricted_bootsamples",
-        label = "Bootstrap samples",
-        value = 10,
-        min = 3,
-        max = 1000
-      )
-    )),
-
     h4("Figure downloads"),
     p("Here you can change setting for download of figures. "),
     fluidPage(
@@ -57,5 +43,13 @@ uiSetting <-
         min = 72,
         max = 600
       ))
+    ),
+    h4("Modules"),
+    p("You can add newly installed modules without restarting the app."),
+    fluidRow(
+      column(
+        2,
+        actionButton("rediscover_mods", "Rediscover modules", icon = icon("rotate"))
+      )
     )
   )

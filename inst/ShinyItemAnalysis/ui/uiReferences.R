@@ -29,7 +29,7 @@ uiReferences <-
                 </li>
 
                 <li><code>difNLR</code>
-                Hladka, A., Martinkova, P. (2020).
+                Hladka, A., & Martinkova, P. (2020).
                 difNLR: Generalized logistic regression models for DIF and DDF detection.
                 <i>The R Journal, 12</i>(1), 300-323.
                 <a href = "https://doi.org/10.32614/RJ-2020-014", target = "_blank">See online.</a>
@@ -281,7 +281,7 @@ uiReferences <-
 				        London: Chapman and Hall.
                 </li>
 
-                <li>Bartholomew, D. J, Steele, F., Moustaki, I. (Eds.) (2008).
+                <li>Bartholomew, D. J, Steele, F., & Moustaki, I. (Eds.) (2008).
                 <i>Analysis of Multivariate Social Science Data</i> (2nd ed.)
                 CRC Press.
                 </li>
@@ -410,13 +410,19 @@ uiReferences <-
                 target="_blank">See online.</a>
                 </li>
 
-                <li>Martinkova, P., Drabinova, A., & Potuznikova, E. (2020).
+                <li>Martinkova, P., Hladka, A., & Potuznikova, E. (2020).
                 Is academic tracking related to gains in learning competence?
                 Using propensity score matching and differential item change functioning analysis for better understanding
                 of tracking implications.
                 <i>Learning and Instruction 66</i>(April).
                 <a href = "https://doi.org/10.1016/j.learninstruc.2019.101286",
                 target = "_blank">See online</a>
+                </li>
+
+                <li>Martinkova, P., & Hladka, A. (2023).
+                <i>Computational Aspects of Psychometric Methods: With R.</i> (1st ed.). Chapman and Hall/CRC.
+                <a href = "https://www.taylorfrancis.com/books/mono/10.1201/9781003054313",
+                target = "_blank">See here</a>
                 </li>
 
                 <li>Masters, G. N. (1982).

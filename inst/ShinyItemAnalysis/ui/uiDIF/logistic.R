@@ -9,20 +9,22 @@ ui_DIF_logistic <- tabPanel(
         a group-membership variable (uniform DIF) and its interaction with a matching criterion (non-uniform DIF) into a model
         for item \\(i\\) and by testing for significance of their effect."),
       h4("Method specification"),
-      p("Here you can change ", strong("type"), " of DIF to be tested and ", strong("parametrization"), "- either based on IRT
+      p(
+        "Here you can change ", strong("type"), " of DIF to be tested and ", strong("parametrization"), "- either based on IRT
         models or classical intercept/slope. You can also select a ", strong("correction method"), " for multiple comparison and/or
-        ", strong("item purification. "), "Finally, you may also change the ", strong("Observed score."), " While matching
-        on the standardized total score is typical, the upload of other observed scores is possible in the ", strong("Data. "),
-        "section. Using a pre-test (standardized) total score as the observed score allows for testing a differential item functioning
-        in change (DIF-C) to provide proofs of instructional sensitivity ",
+        ", strong("item purification. "), "You can also select whether apply them in simple (correction applied after purification)
+        or iterative (correction applied after each purification iteration)", strong("combination."), "Finally, you may also change
+        the ", strong("Observed score."), " While matching on the standardized total score is typical, the upload of other observed
+        scores is possible in the ", strong("Data. "), "section. Using a pre-test (standardized) total score as the observed score
+        allows for testing a differential item functioning in change (DIF-C) to provide proofs of instructional sensitivity ",
         a("(Martinkova et al., 2020), ",
           href = "https://doi.org/10.1016/j.learninstruc.2019.101286",
           target = "_blank"
-        ), "also see", code("Learning To Learn 9"), " toy dataset."),
+        ), "also see", code("Learning To Learn 9"), " toy dataset."
+      ),
       fluidRow(
         column(
           3,
-
           radioButtons(
             inputId = "DIF_logistic_summary_type",
             label = "Type",
@@ -78,13 +80,23 @@ ui_DIF_logistic <- tabPanel(
             inputId = "DIF_logistic_summary_purification",
             label = "Item purification",
             value = FALSE
+          ),
+          selectInput(
+            inputId = "DIF_logistic_summary_combination",
+            label = "Combination",
+            choices = c(
+              "not applied" = "simple"
+            ),
+            selected = "not applied"
           )
         )
       ),
       h4("Equation"),
-      p("The probability that respondent ", strong("\\(p\\)"), " with the observed score ",
+      p(
+        "The probability that respondent ", strong("\\(p\\)"), " with the observed score ",
         uiOutput("DIF_logistic_summary_matching_text", inline = TRUE), " and the group membership variable ",
-        strong("\\(G_p\\)"), " answers correctly item \\(i\\) is given by the following equation: "),
+        strong("\\(G_p\\)"), " answers correctly item \\(i\\) is given by the following equation: "
+      ),
       fluidRow(column(12, align = "center", uiOutput("DIF_logistic_summary_equation"))),
       h4("Summary table"),
       p("The summary table contains information about DIF test statistics \\(LR(\\chi^2)\\) based on a likelihood ratio test,
@@ -121,17 +133,20 @@ ui_DIF_logistic <- tabPanel(
         a group-membership variable (uniform DIF) and its interaction with a matching criterion (non-uniform DIF) into a model
         for item \\(i\\) and by testing for significance of their effect."),
       h4("Method specification"),
-      p("Here you can change ", strong("type"), " of DIF to be tested and ", strong("parametrization"), "- either based on IRT
+      p(
+        "Here you can change ", strong("type"), " of DIF to be tested and ", strong("parametrization"), "- either based on IRT
         models or classical intercept/slope. You can also select a ", strong("correction method"), " for multiple comparison and/or
-        ", strong("item purification. "), "Finally, you may also change the ", strong("Observed score."), " While matching
-        on the standardized total score is typical, the upload of other observed scores is possible in the ", strong("Data "),
-        "section. Using a pre-test (standardized) total score as the observed score allows for testing a differential item functioning
-        in change (DIF-C) to provide proofs of instructional sensitivity ",
+        ", strong("item purification. "), "You can also select whether apply them in simple (correction applied after purification)
+        or iterative (correction applied after each purification iteration)", strong("combination."), "Finally, you may also change
+        the ", strong("Observed score."), " While matching on the standardized total score is typical, the upload of other observed
+        scores is possible in the ", strong("Data "), "section. Using a pre-test (standardized) total score as the observed score
+        allows for testing a differential item functioning in change (DIF-C) to provide proofs of instructional sensitivity ",
         a("(Martinkova et al., 2020), ",
           href = "https://doi.org/10.1016/j.learninstruc.2019.101286",
           target = "_blank"
         ), "also see", code("Learning To Learn 9"), " toy dataset. For a selected", strong("item"), "you can display a plot of its
-        characteristic curves and a table of its estimated parameters with standard errors. "),
+        characteristic curves and a table of its estimated parameters with standard errors. "
+      ),
       fluidRow(
         column(
           3,
@@ -190,6 +205,14 @@ ui_DIF_logistic <- tabPanel(
             inputId = "DIF_logistic_items_purification",
             label = "Item purification",
             value = FALSE
+          ),
+          selectInput(
+            inputId = "DIF_logistic_items_combination",
+            label = "Combination",
+            choices = c(
+              "not applied" = "simple"
+            ),
+            selected = "not applied"
           )
         ),
         column(
@@ -213,9 +236,11 @@ ui_DIF_logistic <- tabPanel(
       plotlyOutput("DIF_logistic_items_plot"),
       downloadButton("DIF_logistic_items_plot_download", label = "Download figure"),
       h4("Equation"),
-      p("The probability that respondent ", strong("\\(p\\)"), " with the observed score ",
+      p(
+        "The probability that respondent ", strong("\\(p\\)"), " with the observed score ",
         uiOutput("DIF_logistic_items_matching_text", inline = TRUE), " and the group membership variable ",
-        strong("\\(G_p\\)"), " answers correctly item \\(i\\) is given by the following equation: "),
+        strong("\\(G_p\\)"), " answers correctly item \\(i\\) is given by the following equation: "
+      ),
       fluidRow(column(12, align = "center", uiOutput("DIF_logistic_items_equation"))),
       h4("Table of parameters"),
       p("This table summarizes estimated item parameters and their standard errors. "),

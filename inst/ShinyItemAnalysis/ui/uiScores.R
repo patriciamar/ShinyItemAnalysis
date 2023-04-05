@@ -1,6 +1,7 @@
 uiSummary <-
   navbarMenu(
     "Scores",
+    menuName = "Scores",
     # * TOTAL SCORES ####
     tabPanel("Total scores",
       value = "tot_scores",
@@ -10,8 +11,12 @@ uiSummary <-
                       In binary correct/false items, the total score corresponds to the total number of correct answers."),
       h4("Summary table"),
       p(
-        "The table below summarizes basic descriptive statistics for the total scores including the number of respondents \\(n\\),
-                        minimum and maximum,", htmlOutput("totalscores_tooltip_mean", inline = TRUE), "median,",
+        "The table below summarizes basic descriptive statistics for the total scores
+        including the total number of respondents \"n\", number of complete cases without any missing value",
+        HTML("\"n<sub>c</sub>\"", .noWS = "after"),
+        ", minimum and maximum,",
+        htmlOutput("totalscores_tooltip_mean", inline = TRUE),
+        "median,",
         htmlOutput("totalscores_tooltip_sd", inline = TRUE), "\\(\\textrm{SD}\\), ",
         htmlOutput("totalscores_tooltip_skewness", inline = TRUE), "and",
         htmlOutput("totalscores_tooltip_kurtosis", inline = TRUE),
@@ -33,6 +38,7 @@ uiSummary <-
       p("For a selected cut-score, the blue part of the histogram shows respondents with a total score
                         above the cut-score, the grey column shows respondents with a total score equal
                         to the cut-score and the red part of the histogram shows respondents below the cut-score."),
+      uiOutput("totalscores_histogram_NA_warning"),
       plotlyOutput("totalscores_histogram"),
       downloadButton(outputId = "DB_totalscores_histogram", label = "Download figure"),
       br(),
@@ -56,6 +62,7 @@ uiSummary <-
         "The ", strong("T-score"), "is ", uiOutput("standardscores_tooltip_tscore", inline = TRUE), " with a mean of 50 and standard
                         deviation of 10. "
       ),
+      uiOutput("standardscores_NA_warning"),
       br(),
       h4("Table by score"),
       tableOutput("standardscores_table"),
@@ -68,6 +75,5 @@ uiSummary <-
       br(),
       h4("Selected R code"),
       code(includeText("sc/scores/standard.R"))
-
     )
   )

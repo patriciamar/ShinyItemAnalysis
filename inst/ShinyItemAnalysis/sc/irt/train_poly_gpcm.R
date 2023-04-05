@@ -33,8 +33,8 @@ ggplot(data = df1, aes(x = theta, y = value, col = variable)) +
   ) +
   ggtitle("Category probabilities") +
   scale_color_manual("",
-                     values = c("black", "red", "yellow", "green", "blue"),
-                     labels = paste0("P(Y = ", 0:4, ")")
+    values = c("black", "red", "yellow", "green", "blue"),
+    labels = paste0("P(Y = ", 0:4, ")")
   )
 
 # calculating expected item score

@@ -1,5 +1,3 @@
-library(psychometric)
-
 # loading data
 data(HCI, package = "ShinyItemAnalysis")
 data <- HCI[, 1:20]

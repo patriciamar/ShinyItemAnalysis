@@ -270,19 +270,19 @@ uiReports <-
             2,
             p(strong("Delta plot settings")),
             radioButtons(
-              inputId = "type_threshold_report",
+              inputId = "DIF_DP_threshold_report",
               label = "Threshold",
               choices = list("Fixed", "Normal")
             ),
             checkboxInput(
-              inputId = "puri_DP_report",
+              inputId = "DIF_DP_purification_report",
               label = "Item purification",
               value = FALSE
             ),
             conditionalPanel(
-              condition = "input.puri_DP_report",
+              condition = "input.DIF_DP_purification_report",
               selectInput(
-                inputId = "puri_DP_type_report",
+                inputId = "DIF_DP_purification_type_report",
                 label = "Purification method",
                 choices = c(
                   "IPP1" = "IPP1",
@@ -307,7 +307,7 @@ uiReports <-
             #             selected = "score",
             #             width = "85%"),
             selectInput(
-              inputId = "correction_method_MH_report",
+              inputId = "report_DIF_MH_correction_method",
               label = "Correction method",
               choices = c(
                 "Benjamini-Hochberg" = "BH",
@@ -322,7 +322,7 @@ uiReports <-
               width = "85%"
             ),
             checkboxInput(
-              inputId = "puri_MH_report",
+              inputId = "report_DIF_MH_purification",
               label = "Item purification",
               value = FALSE
             )
@@ -332,7 +332,6 @@ uiReports <-
           condition = "input.logregCheck",
           column(
             3, p(strong("Logistic regression settings")),
-
             radioButtons(
               inputId = "type_print_DIF_logistic_report",
               label = "Type",
@@ -376,7 +375,6 @@ uiReports <-
           condition = "input.multiCheck",
           column(
             3, p(strong("Multinomial regression settings")),
-
             radioButtons(
               inputId = "type_DDF_report",
               label = "Type",

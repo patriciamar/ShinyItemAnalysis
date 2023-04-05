@@ -1,0 +1,8 @@
+/*
+add scrollbar to every html widget that has child .table and overflows horizontally
+additionally, dont break lines at spaces
+*/
+.shiny-html-output:has(> .table) {
+  overflow-x: auto;
+  white-space: nowrap;
+}

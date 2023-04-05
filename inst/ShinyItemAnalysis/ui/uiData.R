@@ -28,6 +28,8 @@ uiData <- tabPanel(
             inputId = "data_toydata",
             label = "Select dataset",
             choices = c(
+              "Anxiety" = "Anxiety_ShinyItemAnalysis",
+              "CLoSE" = "CLoSE_ShinyItemAnalysis",
               "GMAT" = "GMAT_difNLR",
               # "GMAT2" = "GMAT2_difNLR",
               "HCI" = "HCI_ShinyItemAnalysis",
@@ -56,8 +58,8 @@ uiData <- tabPanel(
       p(
         "Here you can upload your own dataset. Select all necessary files and use the ", strong("Upload data"),
         " button on bottom of this page.  For sample .csv data and details on input format, check the Supplementary material  of the ",
-          HTML("<a href='https://doi.org/10.32614/RJ-2018-074' target='_blank'> Martinkova and Drabinova (2018)</a>"),
-          " article."
+        HTML("<a href='https://doi.org/10.32614/RJ-2018-074' target='_blank'> Martinkova and Drabinova (2018)</a>"),
+        " article."
       ),
       fluidRow(
         box(
@@ -81,11 +83,11 @@ uiData <- tabPanel(
             "The main ", strong("data"), " file should contain the responses of individual respondents (rows)
             to given items (columns). Data need to be either binary, nominal (e.g. in ABCD format), or ordinal
             (e.g. in Likert scale). The header may contain item names, however, no row names should be included.
-            In all data sets, the ", strong("header"), "should be either included or excluded. Columns of dataset
-            are by default renamed to the Item and number of a particular column. If you want to keep your own
-            names, check the box ", strong("Keep item names"), "below. Missing values in scored dataset are by
-            default evaluated as 0. If you want to keep them as missing, check the box", strong("Keep missing values"),
-            "below."
+            In all data sets, the ", strong("header"), "should be either included or excluded. If you want to
+            rename items to the Item and a number of a particular column, uncheck the box ", strong("Keep item names"),
+            "below. Missing values in scored dataset are by default evaluated as 0. If you want to keep them
+            as missing, uncheck the box", strong("Replace missing values by 0"), "below. In that case, total
+            scores for rows with any missing values are going to be NAs as well."
           )
         )
       ),
@@ -108,8 +110,10 @@ uiData <- tabPanel(
                 bsPopover(
                   id = "data_csvdata_data_type_info",
                   title = "Info",
-                  content = "Binary data are of 0-1 form, where 0 is incorrect answer and 1 is correct one. Nominal data
-                            may take, e.g., ABCD form. Ordinal data are, e.g., those on the Likert scale 1-2-3-4-5. ",
+                  content = paste0(
+                    "Binary data are of 0-1 form, where 0 is incorrect answer and 1 is correct one. Nominal data ",
+                    "may take, e.g., ABCD form. Ordinal data are, e.g., those on the Likert scale 1-2-3-4-5."
+                  ),
                   placement = "right",
                   trigger = "hover",
                   options = list(container = "body")
@@ -200,78 +204,78 @@ uiData <- tabPanel(
             3,
             strong("Missing values"),
             checkboxInput(
-              inputId = "data_csvdata_keep_missing",
+              inputId = "data_csvdata_replace_missing",
               label = list(
-                "Keep missing values",
+                "Replace missing values by 0",
                 bsButton(
-                  inputId = "data_csvdata_keep_missing_info",
+                  inputId = "data_csvdata_replace_missing_info",
                   label = "",
                   icon = icon("info"),
                   style = "info",
                   size = "extra-small"
                 ),
                 bsPopover(
-                  id = "data_csvdata_keep_missing_info",
+                  id = "data_csvdata_replace_missing_info",
                   title = "Info",
-                  content = "Should missing values be preserved?",
+                  content = "Should missing values be removed? If \"checked\", every missing value (blank string, empty cell, or NA) is going to be replaced by 0.",
                   placement = "right",
                   trigger = "hover",
                   options = list(container = "body")
                 )
               ),
-              value = FALSE
-            ),
-            conditionalPanel(
-              condition = "input.data_csvdata_keep_missing",
-              div(
-                id = "inline-left",
-                textInput(
-                  inputId = "data_csvdata_missing_coding",
-                  label = list(
-                    bsButton(
-                      inputId = "data_csvdata_missing_coding_info",
-                      label = "",
-                      icon = icon("info"),
-                      style = "info",
-                      size = "extra-small"
-                    ),
-                    bsPopover(
-                      id = "data_csvdata_missing_coding_info",
-                      title = "Info",
-                      content = "Enter encoding of missing values. Values should be seperated with comma, e.g., 9, 99, XXX. ",
-                      placement = "right",
-                      trigger = "hover",
-                      options = list(container = "body")
-                    )
-                  ),
-                  placeholder = "Missing values"
-                )
-              ),
-              div(
-                id = "inline-left",
-                disabled(textInput(
-                  inputId = "data_csvdata_notadministred_coding",
-                  label = list(
-                    bsButton(
-                      inputId = "data_csvdata_notadministred_coding_info",
-                      label = "",
-                      icon = icon("info"),
-                      style = "info",
-                      size = "extra-small"
-                    ),
-                    bsPopover(
-                      id = "data_csvdata_notadministred_coding_info",
-                      title = "Info",
-                      content = "Enter encoding of not administred values. Values should be seperated with comma, e.g., 9, 99, NA.",
-                      placement = "right",
-                      trigger = "hover",
-                      options = list(container = "body")
-                    )
-                  ),
-                  placeholder = "Not administred values"
-                ))
-              )
-            )
+              value = TRUE
+            ) # ,
+            # conditionalPanel(
+            #   condition = "input.data_csvdata_replace_missing",
+            #   div(
+            #     id = "inline-left",
+            #     textInput(
+            #       inputId = "data_csvdata_missing_coding",
+            #       label = list(
+            #         bsButton(
+            #           inputId = "data_csvdata_missing_coding_info",
+            #           label = "",
+            #           icon = icon("info"),
+            #           style = "info",
+            #           size = "extra-small"
+            #         ),
+            #         bsPopover(
+            #           id = "data_csvdata_missing_coding_info",
+            #           title = "Info",
+            #           content = "Enter encoding of missing values. Values should be seperated with comma, e.g., 9, 99, XXX. ",
+            #           placement = "right",
+            #           trigger = "hover",
+            #           options = list(container = "body")
+            #         )
+            #       ),
+            #       placeholder = "Missing values"
+            #     )
+            #   ),
+            #   div(
+            #     id = "inline-left",
+            #     disabled(textInput(
+            #       inputId = "data_csvdata_notadministred_coding",
+            #       label = list(
+            #         bsButton(
+            #           inputId = "data_csvdata_notadministred_coding_info",
+            #           label = "",
+            #           icon = icon("info"),
+            #           style = "info",
+            #           size = "extra-small"
+            #         ),
+            #         bsPopover(
+            #           id = "data_csvdata_notadministred_coding_info",
+            #           title = "Info",
+            #           content = "Enter encoding of not administred values. Values should be seperated with comma, e.g., 9, 99, NA.",
+            #           placement = "right",
+            #           trigger = "hover",
+            #           options = list(container = "body")
+            #         )
+            #       ),
+            #       placeholder = "Not administred values"
+            #     ))
+            #   )
+            # )
           )
         )
       ),
@@ -572,25 +576,70 @@ uiData <- tabPanel(
       # * Main dataset ####
       #------------------------------------------------------------------------------------#
       h4("Main dataset"),
-      DT::dataTableOutput("data_exploration_main"),
-      br(),
+      fluidRow(
+        column(12,
+          DT::dataTableOutput("data_exploration_main"),
+          downloadButton(
+            "data_exploration_main_db",
+            label = "Download main dataset"
+          ),
+          style = "margin-bottom: 40px;"
+        )
+      ),
       #------------------------------------------------------------------------------------#
       # * Key ####
       #------------------------------------------------------------------------------------#
       h4("Key (correct answers) / cut-score"),
-      DT::dataTableOutput("data_exploration_key"),
-      br(),
+      fluidRow(
+        column(12,
+          DT::dataTableOutput("data_exploration_key"),
+          downloadButton(
+            "data_exploration_key_db",
+            label = "Download key"
+          ),
+          style = "margin-bottom: 40px;"
+        )
+      ),
       #------------------------------------------------------------------------------------#
       # * Scored / binarized data ####
       #------------------------------------------------------------------------------------#
       h4("Scored / binarized data"),
-      DT::dataTableOutput("data_exploration_binary"),
-      br(),
+      fluidRow(
+        column(12,
+          DT::dataTableOutput("data_exploration_binary"),
+          downloadButton(
+            "data_exploration_binary_db",
+            label = "Download scored dataset"
+          ),
+          style = "margin-bottom: 40px;"
+        )
+      ),
       #------------------------------------------------------------------------------------#
       # * Other variables ####
       #------------------------------------------------------------------------------------#
       h4("Other variables"),
-      DT::dataTableOutput("data_exploration_variables")
+      DT::dataTableOutput("data_exploration_variables"),
+      fluidRow(
+        column(
+          12,
+          downloadButton(
+            "data_exploration_group_db",
+            label = "Download group"
+          ),
+          downloadButton(
+            "data_exploration_criterion_db",
+            label = "Download criterion"
+          ),
+          downloadButton(
+            "data_exploration_total_score_db",
+            label = "Download total score"
+          ),
+          downloadButton(
+            "data_exploration_observed_score_db",
+            label = "Download observed score"
+          )
+        )
+      )
     )
   )
 )

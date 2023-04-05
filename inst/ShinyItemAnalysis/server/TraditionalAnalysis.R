@@ -37,9 +37,17 @@ output$itemanalysis_DDplot_text <- renderUI({
     HTML(paste0(
       "Discrimination is defined as a difference in average (scaled) item score between the ",
       "<b>", range1, "</b>",
-      ifelse(range1 >= 4, "-th", switch(range1, "1" = "-st", "2" = "-nd", "3" = "-rd")),
+      ifelse(range1 >= 4, "-th", switch(range1,
+        "1" = "-st",
+        "2" = "-nd",
+        "3" = "-rd"
+      )),
       " and <b>", range2, "</b>",
-      ifelse(range2 >= 4, "-th", switch(range2, "1" = "-st", "2" = "-nd", "3" = "-rd")),
+      ifelse(range2 >= 4, "-th", switch(range2,
+        "1" = "-st",
+        "2" = "-nd",
+        "3" = "-rd"
+      )),
       " group out of total number of ",
       "<b>", input$itemanalysis_DDplot_groups_slider, "</b>",
       " groups. "
@@ -57,7 +65,8 @@ itemanalysis_DDplot <- reactive({
     ""
   ))
 
-  DDplot(Data = correct,
+  DDplot(
+    Data = correct,
     item.names = item_numbers(),
     k = input$itemanalysis_DDplot_groups_slider,
     l = input$itemanalysis_DDplot_range_slider[[1]],
@@ -78,7 +87,8 @@ report_itemanalysis_DDplot <- reactive({
   if (input$customizeCheck) {
     average.score <- (input$report_itemanalysis_DDplot_difficulty == "AVGS")
 
-    DDplot(Data = correct,
+    DDplot(
+      Data = correct,
       item.names = item_numbers(),
       k = input$report_itemanalysis_DDplot_groups_slider,
       l = input$report_itemanalysis_DDplot_range_slider[[1]],
@@ -192,9 +202,17 @@ output$itemanalysis_table_text <- renderUI({
       paste0(
         "<b>gULI</b>&nbsp;",
         "&ndash; generalized ULI, difference between the difficulty recorded in the ", range1,
-        ifelse(range1 >= 4, "-th", switch(range1, "1" = "-st", "2" = "-nd", "3" = "-rd")),
+        ifelse(range1 >= 4, "-th", switch(range1,
+          "1" = "-st",
+          "2" = "-nd",
+          "3" = "-rd"
+        )),
         " and ", range2,
-        ifelse(range2 >= 4, "-th", switch(range2, "1" = "-st", "2" = "-nd", "3" = "-rd")),
+        ifelse(range2 >= 4, "-th", switch(range2,
+          "1" = "-st",
+          "2" = "-nd",
+          "3" = "-rd"
+        )),
         " group out of total number of ", num.groups, " groups, "
       )
     },
@@ -311,7 +329,7 @@ output$itemanalysis_table_download <- downloadHandler(
     "Item_Analysis.csv"
   },
   content = function(file) {
-    data <- itemanalysis_table() #TODO strip KaTeX chars
+    data <- itemanalysis_table() # TODO strip KaTeX chars
     write.csv(data, file)
     write(
       paste0(

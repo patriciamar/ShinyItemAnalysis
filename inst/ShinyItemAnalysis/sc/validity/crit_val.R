@@ -11,8 +11,8 @@ criterionD <- round(criterion) # discrete criterion variable
 hist(criterionD)
 
 # number of respondents in each criterion level
-size <- as.factor(criterionD)
-levels(size) <- table(as.factor(criterionD))
+sizeD <- as.factor(criterionD)
+levels(sizeD) <- table(as.factor(criterionD))
 size <- as.numeric(paste(sizeD))
 df <- data.frame(score, criterionD, size)
 

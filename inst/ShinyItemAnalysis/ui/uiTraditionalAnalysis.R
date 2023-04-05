@@ -1,6 +1,6 @@
-
 uiTraditionalAnalysis <- navbarMenu(
   "Item analysis",
+  menuName = "Item analysis",
 
   # * TRADITIONAL ITEM ANALYSIS ####
   tabPanel(
@@ -97,7 +97,6 @@ uiTraditionalAnalysis <- navbarMenu(
     downloadButton("itemanalysis_DDplot_download", label = "Download figure"),
     br(), br(),
     h4("Traditional item analysis table"),
-
     uiOutput("itemanalysis_table_text"),
     br(),
     tags$head(tags$style("#itemanalysis_table_coef {white-space: nowrap; overflow: scroll;}")),
@@ -191,7 +190,6 @@ uiTraditionalAnalysis <- navbarMenu(
     p("This section requires a criterion variable (e.g. future study success or future GPA in case
                                    of admission tests) which should correlate with the measurement. A criterion variable
                                    can be uploaded in the ", strong("Data"), "section. Here you can explore how the the criterion correlates with individual items. "), br(),
-
     h4("Item difficulty / criterion validity plot"),
     p('The following plot intelligibly depicts the criterion validity of every individual item (blue) together with its difficulty (red).
                                    Items are ordered by difficulty. You can choose from two indices of criterion validity - item-criterion correlation and the so-called "item validity index".
@@ -257,7 +255,6 @@ uiTraditionalAnalysis <- navbarMenu(
     # download item analysis table button
     downloadButton("DB_DCplot", label = "Download figure"),
     br(), br(),
-
     h4("Distractor plot"),
     p("In a distractor analysis based on a criterion variable, we are interested in how test takers
                                    select the correct answer and the distractors (wrong answers) with respect to a group based

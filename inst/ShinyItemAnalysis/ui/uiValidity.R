@@ -1,6 +1,7 @@
 uiValidity <-
   navbarMenu(
     "Validity",
+    menuName = "Validity",
     # * PREDICTIVE VALIDITY ####
     # ** Summary ####
     tabPanel(
@@ -110,12 +111,10 @@ uiValidity <-
           HTML("<b>Pearson correlation coefficient</b>"),
           "describes the strength and direction of a linear relationship between two random variables \\(X\\) and \\(Y\\). It is given by formula"
         ),
-        
         (
           "$$\\rho = \\frac{cov(X,Y)}{\\sqrt{var(X)}\\sqrt{var(Y)}}.$$"
         ),
         p("Sample Pearson corelation coefficient may be calculated as"),
-        
         (
           "$$ r = \\frac{\\sum_{i = 1}^{n}(x_{i} - \\bar{x})(y_{i} - \\bar{y})}{\\sqrt{\\sum_{i = 1}^{n}(x_{i} - \\bar{x})^2}\\sqrt{\\sum_{i = 1}^{n}(y_{i} - \\bar{y})^2}}$$"
         ),
@@ -138,7 +137,6 @@ uiValidity <-
           HTML("<b>Spearman's rank correlation coefficient</b>"),
           "describes the strength and the direction of a monotonic relationship between random variables \\(X\\) and \\(Y\\), i.e. the dependence between the rankings of two variables. It is given by formula"
         ),
-        
         (
           "$$\\rho = \\frac{cov(rg_{X},rg_{Y})}{\\sqrt{var(rg_{X})}\\sqrt{var(rg_{Y})}},$$"
         ),
@@ -148,7 +146,6 @@ uiValidity <-
         p(
           "The sample Spearman correlation is calculated by converting \\(X\\) and \\(Y\\) to ranks (average ranks are used in case of ties) and by applying the sample Pearson correlation formula. If both the \\(X\\) and \\(Y\\) have \\(n\\) unique ranks, i.e. there are no ties, then the sample correlation coefficient is given by formula"
         ),
-        
         ("$$ r = 1 - \\frac{6\\sum_{i = 1}^{n}d_i^{2}}{n(n-1)}$$"),
         p(
           "where \\(d = rg_{X} - rg_{Y}\\) is the difference between two ranks and \\(n\\) is size of \\(X\\) and \\(Y\\). Spearman rank correlation coefficient has value between -1 and 1, where 1  means identity of ranks of the variables and -1 means reverse ranks of the two variables. In case of no repeated values, Spearman correlation of +1 or -1 means that all data points are lying exactly on some monotone line. If the Spearman coefficient is equal to 0, it means there is no tendency for \\(Y\\) to either increase or decrease with \\(X\\) increasing."
@@ -227,7 +224,7 @@ uiValidity <-
       textOutput("validity_factor_number"),
       br(),
       h4("Exploratory factor analysis"),
-      p("Once the optimal number of factors is found, the exploratory factor analysis (EFA) itself may be conducted. The number of factors found by the parallel analysis is offered as the default value. You can select the preffered factor rotation of the solution or hide the loadings outside interest. There is also an option to sort items by their importance on each factor. Below the loadings table, there is factor summary with proportion of variance each of the factor explains, as well as the list of common model fit indices."),
+      p("Once the optimal number of factors is found, the exploratory factor analysis (EFA) itself may be conducted. The number of factors found by the parallel analysis is offered as the default value. You can select the preferred factor rotation of the solution or hide the loadings outside interest. There is also an option to sort items by their importance on each factor. Below the loadings table, there is factor summary with proportion of variance each of the factor explains, as well as the list of common model fit indices."),
       fluidRow(
         column(
           2,
@@ -266,7 +263,7 @@ uiValidity <-
           2,
           numericInput("validity_factor_hide",
             "Hide loadings below",
-            value = .3,
+            value = .2,
             min = 0, max = 1, step = .1
           )
         ),
@@ -283,12 +280,12 @@ uiValidity <-
       br(), br(),
       h4("Factor summary"),
       tableOutput("validity_factor_varex"), br(),
+      h4("Correlations between factors"),
+      tableOutput("validity_factor_corr"), br(),
       h4("Model fit"),
       uiOutput("validity_factor_efa_fit"), br(),
-
       h4("Factor scores"),
       DTOutput("validity_factor_fscores"),
-
       downloadButton("DB_validity_factor_fscores", label = "Download table"),
       br(), br(),
       h4("Selected R code"),

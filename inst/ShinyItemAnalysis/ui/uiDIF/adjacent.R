@@ -9,9 +9,11 @@ ui_DIF_adjacent <- tabPanel(
         data by adding a group-membership variable (uniform DIF) and its interaction with observed score
         (non-uniform DIF) into a model for item \\(i\\) and by testing for their significance."),
       h4("Method specification"),
-      p("Here you can change the ", strong("type"), " of DIF to be tested, the ", strong("Observed score", .noWS = "outside"),
+      p(
+        "Here you can change the ", strong("type"), " of DIF to be tested, the ", strong("Observed score", .noWS = "outside"),
         ", and", strong("parametrization"), "- either based on IRT models or classical intercept/slope. You can also
-        select the ", strong("correction method"), " for multiple comparison and/or ", strong("item purification. ")),
+        select the ", strong("correction method"), " for multiple comparison and/or ", strong("item purification. ")
+      ),
       fluidRow(
         column(
           3,
@@ -74,15 +76,17 @@ ui_DIF_adjacent <- tabPanel(
         )
       ),
       h4("Equation"),
-      p("The probability that respondent ", strong("\\(p\\)"), " with the observed score (e.g., standardized total
+      p(
+        "The probability that respondent ", strong("\\(p\\)"), " with the observed score (e.g., standardized total
         score) ", strong("\\(Z_p\\)"), " and the group membership variable ", strong("\\(G_p\\)"), " obtained ",
-        strong("\\(k\\)"), " points in item ", strong("\\(i\\)"), " is given by the following equation: "),
+        strong("\\(k\\)"), " points in item ", strong("\\(i\\)"), " is given by the following equation: "
+      ),
       fluidRow(column(12, align = "center", uiOutput("DIF_adjacent_summary_equation"))),
       h4("Summary table"),
       p("Summary table contains information about \\(\\chi^2\\)-statistics of the likelihood ratio test, corresponding
         \\(p\\)-values considering selected correction method, and significance codes. Table also provides estimated parameters
         for the best fitted model for each item. "),
-      uiOutput("DIF_adjacent_summary_NA_warning"),
+      uiOutput("DIF_adjacent_summary_na_alert"),
       strong(textOutput("DIF_adjacent_summary_dif_items")),
       br(),
       # tags$head(tags$style("#DIF_adjacent_summary_coef  {white-space: nowrap;}")),
@@ -111,9 +115,11 @@ ui_DIF_adjacent <- tabPanel(
         data by adding a group-membership variable (uniform DIF) and its interaction with observed score
         (non-uniform DIF) into a model for item \\(i\\) and by testing for their significance."),
       h4("Method specification"),
-      p("Here you can change ", strong("type"), " of DIF to be tested, ", strong("Observed score", .noWS = "outside"),
+      p(
+        "Here you can change ", strong("type"), " of DIF to be tested, ", strong("Observed score", .noWS = "outside"),
         ", and", strong("parametrization"), "- either based on IRT models or classical intercept/slope. You can also
-        select ", strong("correction method"), " for multiple comparison and/or ", strong("item purification. ")),
+        select ", strong("correction method"), " for multiple comparison and/or ", strong("item purification. ")
+      ),
       fluidRow(
         column(
           3,
@@ -187,7 +193,7 @@ ui_DIF_adjacent <- tabPanel(
           )
         )
       ),
-      uiOutput("DIF_adjacent_items_NA_warning"),
+      uiOutput("DIF_adjacent_items_na_alert"),
       h4("Plot with estimated DIF curves"),
       p("Points represent proportion of obtained score with respect to the observed score. Their size is determined
         by count of respondents who achieved given level of the observed score and who selected given option with

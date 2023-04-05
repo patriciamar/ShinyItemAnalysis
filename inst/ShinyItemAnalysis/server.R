@@ -45,7 +45,6 @@ options(shiny.maxRequestSize = 30 * 1024^2)
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function(input, output, session) {
-
   # kills the session as the window closes
   session$onSessionEnded(function(x) {
     stopApp()
@@ -70,8 +69,7 @@ function(input, output, session) {
   output$counter <- renderText({
     if (!file.exists("counter.Rdata")) {
       counter <- 0
-    }
-    else {
+    } else {
       load(file = "counter.Rdata")
     }
     counter <- counter + 1
@@ -132,6 +130,12 @@ function(input, output, session) {
   # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
   source("server/Reports.R", local = TRUE)
+
+  # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  # MODULES ####
+  # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+  source("server/Modules.R", local = TRUE)
 
   # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   # SETTING ####

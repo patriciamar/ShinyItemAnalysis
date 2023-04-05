@@ -22,6 +22,7 @@ source("ui/uiRegression.R", local = T)
 source("ui/uiIRT.R", local = T)
 source("ui/uiDIF.R", local = T)
 source("ui/uiReports.R", local = T)
+source("ui/uiModules.R", local = T)
 source("ui/uiReferences.R", local = T, encoding = "UTF-8")
 source("ui/uiSetting.R", local = T)
 
@@ -139,7 +140,6 @@ ui <- tagList(
     p("Loading"),
     img(src = "busy_indicator.gif", height = 100, width = 100)
   ),
-
   shinyjs::useShinyjs(),
   tags$head(includeScript("google-analytics.js")),
   navbarPage(
@@ -147,6 +147,7 @@ ui <- tagList(
                     <div class="header-title"><img src="sia_logo_trans.svg"> ShinyItemAnalysis</div>
                     <div class="header-subtitle"> Test and item analysis</div>
                  </div>'),
+    id = "navbar",
     windowTitle = "ShinyItemAnalysis",
     position = "fixed-top",
     selected = "About",
@@ -156,7 +157,7 @@ ui <- tagList(
            <div class = "panel-footer", style = "opacity: 1.00; z-index: 1000;">
               <p style = "margin:8px 0 0 0;">
                 <div class = "footer-title"> <img src = "sia_logo.svg" style="width: 57px; margin-right: 10px;"> ShinyItemAnalysis </div>
-                <div class = "footer-subtitle"> Test and item analysis via Shiny | Version 1.4.2-1 </div>
+                <div class = "footer-subtitle"> Test and item analysis via Shiny | Version 1.5.0 </div>
                 <span style = "float:right">
                   <a href = "http://shinyitemanalysis.org/" id = "tooltipweb" target="_blank"> <img src = "footer_web_icon.png", class = "footer-icons"> </a>
                   <a href = "https://github.com/patriciamar/ShinyItemAnalysis/" id = "tooltipgithub" target="_blank"> <img src = "footer_github_icon.png", class = "footer-icons"> </a>
@@ -228,9 +229,9 @@ ui <- tagList(
     uiDIF,
 
     # %%%%%%%%%%%%%%%%%%%%%
-    # REPORTS ############
+    # MODULES ############
     # %%%%%%%%%%%%%%%%%%%%%
-    uiReports,
+    uiModules,
 
     # %%%%%%%%%%%%%%%%%%%%%
     # SETTING #########
@@ -240,6 +241,11 @@ ui <- tagList(
     # %%%%%%%%%%%%%%%%%%%%%
     # REFERENCES #########
     # %%%%%%%%%%%%%%%%%%%%%
-    uiReferences
+    uiReferences,
+
+    # %%%%%%%%%%%%%%%%%%%%%
+    # REPORTS ############
+    # %%%%%%%%%%%%%%%%%%%%%
+    uiReports
   )
 )

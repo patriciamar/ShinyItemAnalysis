@@ -8,12 +8,14 @@ data(Science, package = "mirt")
 # standardized total score calculation
 zscore <- scale(rowSums(Science))
 Science[, 1] <- factor(
-  Science[, 1], levels = sort(unique(Science[, 1])), ordered = TRUE
+  Science[, 1],
+  levels = sort(unique(Science[, 1])), ordered = TRUE
 )
 
 # adjacent category logit model for item 1
 fit <- vglm(Science[, 1] ~ zscore,
-            family = acat(reverse = FALSE, parallel = TRUE))
+  family = acat(reverse = FALSE, parallel = TRUE)
+)
 
 # coefficients under intercept/slope parametrization
 coef(fit) # estimates

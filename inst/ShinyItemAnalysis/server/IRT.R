@@ -96,7 +96,8 @@ observe({
 IRT_binary_model_rasch <- reactive({
   data <- binary()
   fit <- mirt(
-    data, model = 1, itemtype = "Rasch",
+    data,
+    model = 1, itemtype = "Rasch",
     SE = TRUE, verbose = FALSE
   )
   fit
@@ -111,7 +112,8 @@ IRT_binary_model_1pl <- reactive({
   )
   model <- mirt.model(s)
   fit <- mirt(
-    data, model = model, itemtype = "2PL",
+    data,
+    model = model, itemtype = "2PL",
     SE = TRUE, verbose = FALSE
   )
   fit
@@ -121,7 +123,8 @@ IRT_binary_model_1pl <- reactive({
 IRT_binary_model_2pl <- reactive({
   data <- binary()
   fit <- mirt(
-    data, model = 1, itemtype = "2PL",
+    data,
+    model = 1, itemtype = "2PL",
     SE = TRUE, verbose = FALSE
   )
   fit
@@ -131,7 +134,8 @@ IRT_binary_model_2pl <- reactive({
 IRT_binary_model_3pl <- reactive({
   data <- binary()
   fit <- mirt(
-    data, model = 1, itemtype = "3PL",
+    data,
+    model = 1, itemtype = "3PL",
     SE = TRUE, verbose = FALSE
   )
   fit
@@ -141,7 +145,8 @@ IRT_binary_model_3pl <- reactive({
 IRT_binary_model_4pl <- reactive({
   data <- binary()
   fit <- mirt(
-    data, model = 1, itemtype = "4PL",
+    data,
+    model = 1, itemtype = "4PL",
     SE = TRUE, verbose = FALSE
   )
   fit
@@ -584,7 +589,7 @@ IRT_binary_summary_coef <- reactive({
 
   item_fit_cols <- c("S_X2", "df.S_X2", "p.S_X2")
 
-  tab_fit <- itemfit(fit)[, item_fit_cols]
+  tab_fit <- itemfit(fit, na.rm = TRUE)[, item_fit_cols]
 
   if (!is.null(tryCatch(round(tab_fit, 3), error = function(e) {
     cat("ERROR : ", conditionMessage(e), "\n")
@@ -629,7 +634,6 @@ output$IRT_binary_summary_coef_download <- downloadHandler(
     "tab_IRT_binary_parameters.csv"
   },
   content = function(file) {
-
     tab <- IRT_binary_summary_coef()
 
     if (input$IRT_binary_summary_parametrization == "irt") {
@@ -694,10 +698,12 @@ IRT_binary_summary_ability_correlation <- reactive({
 })
 
 output$IRT_binary_summary_ability_correlation_text <- renderText({
-  paste0("This scatterplot shows the relationship between the standardized total
+  paste0(
+    "This scatterplot shows the relationship between the standardized total
          score (Z-score) and the factor score estimated by the IRT model. The
          Pearson correlation coefficient between these two scores is ",
-         sprintf("%.3f", IRT_binary_summary_ability_correlation()), ". ")
+    sprintf("%.3f", IRT_binary_summary_ability_correlation()), ". "
+  )
 })
 
 # ** Ability estimates plot ####
@@ -708,7 +714,7 @@ IRT_binary_summary_ability_plot <- reactive({
 
   df <- data.frame(fscore, zscore)
 
-  g <- ggplot(df, aes_string("zscore", "fscore")) +
+  g <- ggplot(df, aes(.data$zscore, .data$fscore)) +
     geom_point(size = 3) +
     labs(x = "Standardized total score", y = "Factor score") +
     theme_app()
@@ -827,8 +833,8 @@ output$IRT_binary_items_equation_interpretation <- renderUI({
 output$IRT_binary_items_model_converged <- renderUI({
   fit <- IRT_binary_model()
   txt <- ifelse(fit@OptimInfo$converged,
-                "",
-                "<font color = 'orange'> Estimation process terminated without convergence.
+    "",
+    "<font color = 'orange'> Estimation process terminated without convergence.
     Estimates are not reliable. Try to increase a number of iterations of the EM
     algorithm in Settings. </font>"
   )
@@ -844,8 +850,10 @@ IRT_binary_items_icc <- reactive({
 
   d <- tibble(
     Ability = IRT_thetas_for_plots(), # vector only
-    Probability = probtrace(extract.item(fit, item),
-                            IRT_thetas_for_plots())[, 2] # ascending probs
+    Probability = probtrace(
+      extract.item(fit, item),
+      IRT_thetas_for_plots()
+    )[, 2] # ascending probs
   )
 
   g <- d %>% ggplot(aes(x = Ability, y = Probability)) +
@@ -897,8 +905,10 @@ IRT_binary_items_iic <- reactive({
 
   d <- tibble(
     Ability = IRT_thetas_for_plots(), # vector only
-    Information = iteminfo(extract.item(fit, item),
-                           IRT_thetas_for_plots()) # ascending probs
+    Information = iteminfo(
+      extract.item(fit, item),
+      IRT_thetas_for_plots()
+    ) # ascending probs
   )
 
   g <- d %>% ggplot(aes(x = Ability, y = Information)) +
@@ -989,8 +999,9 @@ output$IRT_binary_comparison_model_converged <- renderUI({
   txt <- paste0(txt1, txt2, txt3, txt4)
   if (txt != "") {
     txt <- paste0(
-    "<font color = 'orange'>", txt, "Estimates are not reliable. Try to increase
-    a number of iterations of the EM algorithm in Settings. </font>" )
+      "<font color = 'orange'>", txt, "Estimates are not reliable. Try to increase
+    a number of iterations of the EM algorithm in Settings. </font>"
+    )
   }
   HTML(txt)
 })

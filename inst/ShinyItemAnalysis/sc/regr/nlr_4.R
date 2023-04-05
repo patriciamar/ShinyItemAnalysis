@@ -12,14 +12,14 @@ fun <- function(x, a, b, c, d) {
 }
 
 fit <- nls(data[, 1] ~ fun(zscore, a, b, c, d),
-           algorithm = "port",
-           start = startNLR(
-             data, GMAT[, "group"],
-             model = "4PLcgdg",
-             parameterization = "classic"
-           )[[1]][1:4],
-           lower = c(-Inf, -Inf, 0, 0),
-           upper = c(Inf, Inf, 1, 1)
+  algorithm = "port",
+  start = startNLR(
+    data, GMAT[, "group"],
+    model = "4PLcgdg",
+    parameterization = "classic"
+  )[[1]][1:4],
+  lower = c(-Inf, -Inf, 0, 0),
+  upper = c(Inf, Inf, 1, 1)
 )
 
 # coefficients
@@ -37,9 +37,9 @@ df <- data.frame(
 # plot of estimated curve
 ggplot(df, aes(x = x, y = y)) +
   geom_point(aes(size = size),
-             color = "darkblue",
-             fill = "darkblue",
-             shape = 21, alpha = 0.5
+    color = "darkblue",
+    fill = "darkblue",
+    shape = 21, alpha = 0.5
   ) +
   stat_function(
     fun = fun, geom = "line",

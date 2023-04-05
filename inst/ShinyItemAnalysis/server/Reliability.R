@@ -46,7 +46,7 @@ output$reliability_SBformula_reliability_text <- renderUI({
 
   m <- ite_new / ite_ori
 
-  rel_new <- psychometric::SBrel(Nlength = m, rxx = rel_ori)
+  rel_new <- SBrel_(Nlength = m, rxx = rel_ori)
 
   txt <- paste(
     "Reliability of a test with", ite_new,
@@ -65,7 +65,7 @@ output$reliability_SBformula_items_text <- renderText({
   rel_new <- input$reliability_SBformula_reliability_new
 
 
-  m <- psychometric::SBlength(rxxp = rel_new, rxx = rel_ori)
+  m <- SBlength_(rxxp = rel_new, rxx = rel_ori)
   ite_new <- ceiling(m * ite_ori)
 
   txt <- paste(
@@ -77,6 +77,15 @@ output$reliability_SBformula_items_text <- renderText({
   HTML(txt)
 })
 
+# SBrel_ definition (arg names to match psychometric pkg implementation)
+SBlength_ <- function(rxxp, rxx) {
+  rxxp * (1 - rxx)/(rxx * (1 - rxxp))
+}
+
+# SBrel_ definition
+SBrel_ <- function(Nlength, rxx) {
+  Nlength * rxx/(1 + (Nlength - 1) * rxx)
+}
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # * SPLIT-HALF ######
@@ -121,7 +130,9 @@ reliability_splithalf_items <- reactive({
       } else {
         if (method == "worst") {
           split <- reliability_splithalf_raw()
-          items1 <- which(split$minAB[, "A"] == 1)
+
+          # return the indices of item_names in the first set of items
+          items1 <- which(item_names() %in% split$minAB$A)
         } else {
           items1 <- NULL
         }
@@ -188,10 +199,11 @@ output$reliability_splithalf_allpossible_text <- renderUI({
 reliability_splithalf_raw <- reactive({
   data <- ordinal()
 
-  n.sample <- input$reliability_splithalf_number
-  split <- psych::splitHalf(data, raw = T, n.sample = n.sample)
+  # ensure the names matches those we want to display in the UI
+  # we want to align these for psych 2.1.9+ uses the names instead of indices
+  colnames(data) <- item_names()
 
-  split
+  psych::splitHalf(data, raw = TRUE, n.sample = input$reliability_splithalf_number)
 })
 
 # ** Split-half correlation and reliability calculation ######

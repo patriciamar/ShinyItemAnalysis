@@ -76,17 +76,19 @@ ui_DIF_multinomial <- tabPanel(
         )
       ),
       h4("Equation"),
-      p("For ", strong("\\(K_i\\)"), " possible item responses, the probability of the correct answer ",
+      p(
+        "For ", strong("\\(K_i\\)"), " possible item responses, the probability of the correct answer ",
         strong("\\(K_i\\)"), " for respondent ", strong("\\(p\\)"), " with a DIF matching variable
             (e.g., standardized total score) ", strong("\\(Z_p\\)"), " and a group membership ", strong("\\(G_p\\)"),
-        " in item ", strong("\\(i\\)"), "is given by the following equation: "),
+        " in item ", strong("\\(i\\)"), "is given by the following equation: "
+      ),
       fluidRow(column(12, align = "center", uiOutput("DIF_multinomial_summary_equation_correct"))),
       p("The probability of choosing distractor ", strong("\\(k\\)"), " is then given by: "),
       fluidRow(column(12, align = "center", uiOutput("DIF_multinomial_summary_equation_distractor"))),
       h4("Summary table"),
       p("This summary table contains information about \\(\\chi^2\\)-statistics of the likelihood ratio test, corresponding
         \\(p\\)-values considering selected correction method, and significance codes. "),
-      uiOutput("DIF_multinomial_summary_NA_warning"),
+      uiOutput("DIF_multinomial_summary_na_alert"),
       strong(textOutput("DIF_multinomial_summary_dif_items")),
       br(),
       # tags$head(tags$style("#DIF_multinomial_summary_coef  {white-space: nowrap;}")),
@@ -125,9 +127,11 @@ ui_DIF_multinomial <- tabPanel(
         have a different probability of selecting item responses in a multiple-choice item. DDF is examined here by multinomial
         log-linear regression model. "),
       h4("Method specification"),
-      p("Here you can change the ", strong("type"), " of DDF to be tested, the ", strong("Observed score", .noWS = "outside"),
+      p(
+        "Here you can change the ", strong("type"), " of DDF to be tested, the ", strong("Observed score", .noWS = "outside"),
         ", and the", strong("parametrization"), "- either IRT or intercept/slope. You can also
-        select the ", strong("correction method"), " for a multiple comparison and/or ", strong("item purification. ")),
+        select the ", strong("correction method"), " for a multiple comparison and/or ", strong("item purification. ")
+      ),
       fluidRow(
         column(
           3,
@@ -201,7 +205,7 @@ ui_DIF_multinomial <- tabPanel(
           )
         )
       ),
-      uiOutput("DIF_multinomial_items_NA_warning"),
+      uiOutput("DIF_multinomial_items_na_alert"),
       h4("Plot with estimated DDF curves"),
       p("Points represent a proportion of the response selection with respect to the observed score. Their size is determined
         by the count of respondents from a given group who achieved a given level of the observed score and who selected a given response option."),

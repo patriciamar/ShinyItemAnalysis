@@ -36,9 +36,9 @@ df <- data.frame(
 # plot of estimated curve
 ggplot(df, aes(x = x, y = y)) +
   geom_point(aes(size = size),
-             color = "darkblue",
-             fill = "darkblue",
-             shape = 21, alpha = 0.5
+    color = "darkblue",
+    fill = "darkblue",
+    shape = 21, alpha = 0.5
   ) +
   stat_function(
     fun = fun, geom = "line",

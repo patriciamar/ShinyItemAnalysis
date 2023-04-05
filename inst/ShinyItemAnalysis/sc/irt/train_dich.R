@@ -23,37 +23,40 @@ icc_irt <- function(theta, a, b, c, d) {
 
 # calculation of characteristic curves
 df <- data.frame(theta,
-                 "icc1" = icc_irt(theta, a1, b1, c1, d1),
-                 "icc2" = icc_irt(theta, a2, b2, c2, d2)
+  "icc1" = icc_irt(theta, a1, b1, c1, d1),
+  "icc2" = icc_irt(theta, a2, b2, c2, d2)
 )
 df <- melt(df, id.vars = "theta")
 
 # plot for characteristic curves
 ggplot(df, aes(x = theta, y = value, color = variable)) +
   geom_line() +
-  geom_segment(aes(
-    y = icc_irt(theta0, a = a1, b = b1, c = c1, d = d1),
-    yend = icc_irt(theta0, a = a1, b = b1, c = c1, d = d1),
-    x = -4, xend = theta0
-  ),
-  color = "gray", linetype = "dashed"
-  ) +
-  geom_segment(aes(
-    y = icc_irt(theta0, a = a2, b = b2, c = c2, d = d2),
-    yend = icc_irt(theta0, a = a2, b = b2, c = c2, d = d2),
-    x = -4, xend = theta0
-  ),
-  color = "gray", linetype = "dashed"
-  ) +
-  geom_segment(aes(
-    y = 0,
-    yend = max(
-      icc_irt(theta0, a = a1, b = b1, c = c1, d = d1),
-      icc_irt(theta0, a = a2, b = b2, c = c2, d = d2)
+  geom_segment(
+    aes(
+      y = icc_irt(theta0, a = a1, b = b1, c = c1, d = d1),
+      yend = icc_irt(theta0, a = a1, b = b1, c = c1, d = d1),
+      x = -4, xend = theta0
     ),
-    x = theta0, xend = theta0
-  ),
-  color = "gray", linetype = "dashed"
+    color = "gray", linetype = "dashed"
+  ) +
+  geom_segment(
+    aes(
+      y = icc_irt(theta0, a = a2, b = b2, c = c2, d = d2),
+      yend = icc_irt(theta0, a = a2, b = b2, c = c2, d = d2),
+      x = -4, xend = theta0
+    ),
+    color = "gray", linetype = "dashed"
+  ) +
+  geom_segment(
+    aes(
+      y = 0,
+      yend = max(
+        icc_irt(theta0, a = a1, b = b1, c = c1, d = d1),
+        icc_irt(theta0, a = a2, b = b2, c = c2, d = d2)
+      ),
+      x = theta0, xend = theta0
+    ),
+    color = "gray", linetype = "dashed"
   ) +
   xlim(-4, 4) +
   xlab("Ability") +
@@ -75,8 +78,8 @@ iic_irt <- function(theta, a, b, c, d) {
 
 # calculation of information curves
 df <- data.frame(theta,
-                 "iic1" = iic_irt(theta, a1, b1, c1, d1),
-                 "iic2" = iic_irt(theta, a2, b2, c2, d2)
+  "iic1" = iic_irt(theta, a1, b1, c1, d1),
+  "iic2" = iic_irt(theta, a2, b2, c2, d2)
 )
 df <- melt(df, id.vars = "theta")
 

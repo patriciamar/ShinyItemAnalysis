@@ -15,7 +15,7 @@ tab$kurtosis <- tab$kurtosis + 3
 tab
 
 # histogram
-ggplot(df, aes(score)) +
+ggplot(data, aes(score)) +
   geom_histogram(binwidth = 1, col = "black") +
   xlab("Total score") +
   ylab("Number of respondents") +
@@ -32,4 +32,3 @@ ggplot(df, aes(score)) +
   xlab("Total score") +
   ylab("Number of respondents") +
   theme_app()
-

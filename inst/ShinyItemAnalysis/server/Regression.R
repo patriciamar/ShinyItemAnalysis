@@ -114,7 +114,7 @@ output$regression_logistic_coef <- renderTable(
 output$regression_logistic_interpretation <- renderUI({
   b1 <- coef(regression_logistic_model())[2]
 
-  txt1 <- paste("<b>", "Interpretation:", "</b>")
+  txt1 <- "<b>Interpretation:</b> "
   txt0 <- ifelse(b1 < 0, "decrease", "increase")
   txt2 <- paste(
     "A one-unit increase in the total
@@ -123,7 +123,7 @@ output$regression_logistic_interpretation <- renderUI({
     vs. not correctly in the amount of"
   )
   b1 <- sprintf("%.2f", abs(b1))
-  txt3 <- paste("<b>", b1, "</b>")
+  txt3 <- paste("<b>", b1, "</b>.")
   HTML(paste(txt1, txt2, txt3))
 })
 
@@ -243,7 +243,7 @@ output$regression_logistic_Z_coef <- renderTable(
 output$regression_logistic_Z_interpretation <- renderUI({
   b1 <- summary(regression_logistic_Z_model())$coef[2, 1]
 
-  txt1 <- paste("<b>", "Interpretation:", "</b>")
+  txt1 <- "<b>Interpretation:</b> "
   txt0 <- ifelse(b1 < 0, "decrease", "increase")
   txt2 <-
     paste(
@@ -253,7 +253,7 @@ output$regression_logistic_Z_interpretation <- renderUI({
       vs. not correctly in the amount of"
     )
   b1 <- sprintf("%.2f", abs(b1))
-  txt3 <- paste("<b>", b1, "</b>")
+  txt3 <- paste("<b>", b1, "</b>.")
   HTML(paste(txt1, txt2, txt3))
 })
 
@@ -384,7 +384,7 @@ output$regression_logistic_IRT_coef <- renderTable(
 output$regression_logistic_IRT_interpretation <- renderUI({
   b1 <- summary(regression_logistic_IRT_model())$coef[2, 1]
 
-  txt1 <- paste("<b>", "Interpretation:", "</b>")
+  txt1 <- "<b>Interpretation:</b> "
   txt0 <- ifelse(b1 < 0, "decrease", "increase")
   txt2 <-
     paste(
@@ -393,7 +393,7 @@ output$regression_logistic_IRT_interpretation <- renderUI({
       the amount of"
     )
   b1 <- sprintf("%.2f", abs(b1))
-  txt3 <- paste("<b>", b1, "</b>")
+  txt3 <- paste("<b>", b1, "</b>.")
   HTML(paste(txt1, txt2, txt3))
 })
 
@@ -439,18 +439,21 @@ regression_3pl_model <- reactive({
     c + (1 - c) / (1 + exp(-a * (x - b)))
   }
 
-  fit <- tryCatch(nls(unlist(data[, item, with = FALSE]) ~ glr(zscore, a, b, c),
-    algorithm = "port", start = start[item, ],
-    lower = c(-Inf, -Inf, 0), upper = c(Inf, Inf, 1)
-  ),
-  error = function(e) e
+  fit <- tryCatch(
+    nls(unlist(data[, item, with = FALSE]) ~ glr(zscore, a, b, c),
+      algorithm = "port", start = start[item, ],
+      lower = c(-Inf, -Inf, 0), upper = c(Inf, Inf, 1)
+    ),
+    error = function(e) e
   )
 
-  validate(need(
-    class(fit) == "nls",
-    HTML(paste0("Error: Method cannot be fitted for item ", item, ". The error message returned: ", fit$message))
-  ),
-  errorClass = "validation-error")
+  validate(
+    need(
+      class(fit) == "nls",
+      HTML(paste0("Error: Method cannot be fitted for item ", item, ". The error message returned: ", fit$message))
+    ),
+    errorClass = "validation-error"
+  )
 
   fit
 })
@@ -550,7 +553,7 @@ output$regression_3pl_interpretation <- renderUI({
   a <- round(coef(fit)[1], 2)
   c <- sprintf("%.2f", coef(fit)[3])
 
-  txt0 <- paste0("<b>", "Interpretation:", "</b>")
+  txt0 <- "<b>Interpretation:</b> "
   txt1 <- paste0(
     "A one-unit increase in the Z-score (one SD increase in original scores) is associated with the ",
     ifelse(a < 0, "decrease", "increase"), " in the log odds of answering the item correctly vs.
@@ -603,18 +606,21 @@ regression_4pl_model <- reactive({
     c + (d - c) / (1 + exp(-a * (x - b)))
   }
 
-  fit <- tryCatch(nls(unlist(data[, item, with = FALSE]) ~ glr(zscore, a, b, c, d),
-    algorithm = "port", start = start[item, ],
-    lower = c(-Inf, -Inf, 0, 0), upper = c(Inf, Inf, 1, 1)
-  ),
-  error = function(e) e
+  fit <- tryCatch(
+    nls(unlist(data[, item, with = FALSE]) ~ glr(zscore, a, b, c, d),
+      algorithm = "port", start = start[item, ],
+      lower = c(-Inf, -Inf, 0, 0), upper = c(Inf, Inf, 1, 1)
+    ),
+    error = function(e) e
   )
 
-  validate(need(
-    class(fit) == "nls",
-    HTML(paste0("Error: Method cannot be fitted for item ", item, ". The error message returned: ", fit$message))
-  ),
-  errorClass = "validation-error")
+  validate(
+    need(
+      class(fit) == "nls",
+      HTML(paste0("Error: Method cannot be fitted for item ", item, ". The error message returned: ", fit$message))
+    ),
+    errorClass = "validation-error"
+  )
 
   fit
 })
@@ -717,7 +723,7 @@ output$regression_4pl_interpretation <- renderUI({
   c <- sprintf("%.2f", coef(fit)[3])
   d <- sprintf("%.2f", 1 - coef(fit)[4])
 
-  txt0 <- paste0("<b>", "Interpretation: ", "</b>")
+  txt0 <- "<b>Interpretation:</b> "
   txt1 <- paste0(
     "A one-unit increase in the Z-score (one SD increase in original scores) is associated with the ",
     ifelse(a < 0, "decrease", "increase"), " in the log odds of answering the item correctly
@@ -1409,19 +1415,23 @@ regression_multinomial_model <- reactive({
   item_cats <- unlist(dfhw[, 1])
   item_values <- unlist(dfhw[, 2])
 
-  fit <- tryCatch(multinom(relevel(as.factor(item_cats),
-    ref = paste(key[item])
-  ) ~ item_values,
-  trace = FALSE
-  ),
-  error = function(e) e
+  fit <- tryCatch(
+    multinom(
+      relevel(as.factor(item_cats),
+        ref = paste(key[item])
+      ) ~ item_values,
+      trace = FALSE
+    ),
+    error = function(e) e
   )
 
-  validate(need(
-    class(fit) == "nnet",
-    HTML(paste0("Error: Method cannot be fitted for item ", item, ". The error message returned: ", fit$message))
-  ),
-  errorClass = "validation-error")
+  validate(
+    need(
+      class(fit) == "nnet",
+      HTML(paste0("Error: Method cannot be fitted for item ", item, ". The error message returned: ", fit$message))
+    ),
+    errorClass = "validation-error"
+  )
 
   fit
 })
@@ -1500,10 +1510,11 @@ report_regression_multinomial_plot <- reactive({
     dfhw <- dfhw[complete.cases(dfhw), ]
     matching <- unlist(dfhw[, 2])
 
-    fitM <- multinom(relevel(as.factor(unlist(dfhw[, 1])),
-      ref = paste(key[item])
-    ) ~ unlist(dfhw[, 2]),
-    trace = FALSE
+    fitM <- multinom(
+      relevel(as.factor(unlist(dfhw[, 1])),
+        ref = paste(key[item])
+      ) ~ unlist(dfhw[, 2]),
+      trace = FALSE
     )
 
     test <- tryCatch(plotMultinomial(fitM, matching, matching.name = matching_name),
@@ -1590,7 +1601,6 @@ output$regression_multinomial_equation <- renderUI({
 # ** Table of estimated parameters of curves of multinomial regression ####
 output$regression_multinomial_coef <- renderTable(
   {
-
     fit <- regression_multinomial_model()
 
     key <- t(as.data.table(key()))

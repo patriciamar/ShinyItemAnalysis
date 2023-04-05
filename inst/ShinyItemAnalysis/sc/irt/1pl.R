@@ -7,13 +7,13 @@ library(ShinyItemAnalysis)
 data(GMAT, package = "difNLR")
 
 # obtaining details on values of model parameters
-mirt(GMAT[, 1:20], model = 1, itemtype = "2PL", pars = 'values')
+mirt(GMAT[, 1:20], model = 1, itemtype = "2PL", pars = "values")
 # a1 parameter numbers (parnum) are 1, 5, 9,...
 
 # fitting 1PL model as 2PL with slope a1 parameters constrained to be equal
 fit <- mirt(GMAT[, 1:20],
-            model = 1, itemtype = "2PL",
-            constrain = list((1:20) * 4 - 3), SE = TRUE
+  model = 1, itemtype = "2PL",
+  constrain = list((1:20) * 4 - 3), SE = TRUE
 )
 
 # item characteristic curves
@@ -40,13 +40,15 @@ coef(fit, IRTpars = TRUE, printSE = TRUE)$Item1 # including SE
 
 # delta method by hand for item 1
 coef_is <- coef(fit)[[1]][1, 1:2]
-vcov_is <- matrix(vcov(fit)[1:2, 1:2], ncol = 2, nrow = 2,
-                  dimnames = list(c("a1", "d"), c("a1", "d")))
+vcov_is <- matrix(vcov(fit)[1:2, 1:2],
+  ncol = 2, nrow = 2,
+  dimnames = list(c("a1", "d"), c("a1", "d"))
+)
 # estimates
 c(coef_is[1], -coef_is[2] / coef_is[1])
 # standard errors
 deltamethod(
-  list( ~ x1, ~ -x2/x1),
+  list(~x1, ~ -x2 / x1),
   mean = coef_is,
   cov = vcov_is,
   ses = TRUE

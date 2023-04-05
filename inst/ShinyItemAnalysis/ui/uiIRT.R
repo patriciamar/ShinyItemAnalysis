@@ -1,4 +1,3 @@
-
 # source subtabs ----------------------------------------------------------
 
 # source dichotomous IRT UI
@@ -15,6 +14,7 @@ source("ui/uiIRT/uiPolyTraining.R", local = T, encoding = "UTF-8")
 
 uiIRT <- navbarMenu(
   "IRT models",
+  menuName =  "IRT models",
   "Dichotomous models",
   # * DICHOTOMOUS MODELS ####
   tabPanel(

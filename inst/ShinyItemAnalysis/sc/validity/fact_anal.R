@@ -25,4 +25,3 @@ fa.diagram(FA3)
 
 # Higher order factor solution
 (om.h <- omega(data, sl = FALSE))
-

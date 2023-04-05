@@ -81,13 +81,15 @@ pdf.options(useDingbats = TRUE)
 opts_chunk$set(dpi = 300)
 
 add.to.row <- list(pos = list(0), command = NULL)
-command <- function(table){
-  paste0("\\midrule\\endhead\n",
-                  "\\midrule\n",
-                  "\\multicolumn{", dim(table)[2], "}{l}",
-                  "{\\footnotesize Continued on next page}\n",
-                  "\\endfoot\n",
-                  "\\endlastfoot\n")
+command <- function(table) {
+  paste0(
+    "\\midrule\\endhead\n",
+    "\\midrule\n",
+    "\\multicolumn{", dim(table)[2], "}{l}",
+    "{\\footnotesize Continued on next page}\n",
+    "\\endfoot\n",
+    "\\endlastfoot\n"
+  )
 }
 ```
 
@@ -140,17 +142,22 @@ The table below summarizes basic characteristics of total scores including numbe
 
 ```{r total-scores-table, echo = FALSE, results = 'asis'}
 library(xtable)
-table = params$totalscores_table
-colnames(table) = NULL
+table <- params$totalscores_table
 
-table = t(table)
+colnames(table) <- NULL
+rownames(table) <- str_replace(rownames(table), "n<sub>c</sub>", "n_c")
+
+table <- t(table)
 add.to.row$command <- command(table)
-print(xtable(table, 
-             digits = c(0, 0, 0, 0, 2, 2, 2, 2, 2), 
-             align = rep('c', 9)),
-      booktabs = TRUE, comment = FALSE, include.rownames = FALSE,
-      tabular.environment = "longtable", floating = FALSE, 
-      add.to.row = add.to.row, hline.after = c(-1, nrow(table)))
+print(
+  xtable(table,
+    digits = c(0, 0, 0, 0, 0, 2, 2, 2, 2, 2),
+    align = rep("c", 10)
+  ),
+  booktabs = TRUE, comment = FALSE, include.rownames = FALSE,
+  tabular.environment = "longtable", floating = FALSE,
+  add.to.row = add.to.row, hline.after = c(-1, nrow(table))
+)
 ```
 
 \vspace{1em}
@@ -159,10 +166,12 @@ print(xtable(table,
 For selected cut-score `r params$cutScore`, the blue part of a histogram shows respondents with a total score above the cut-score, the grey column shows respondents with a total score equal to the cut-score and the red part of a histogram shows respondents below the cut-score.
 
 ```{r total-scores-histogram, echo = FALSE, fig.height = 4.5, fig.width = 11}
-params$histogram_totalscores + 
-  ggtitle('Histogram of total scores') + 
-  theme(text = element_text(size = 16), 
-        plot.title = element_text(face = "bold")) + 
+params$histogram_totalscores +
+  ggtitle("Histogram of total scores") +
+  theme(
+    text = element_text(size = 16),
+    plot.title = element_text(face = "bold")
+  ) +
   ggtitle("")
 ```
 
@@ -176,14 +185,17 @@ The total score, also known as the raw score, is the total number of correct ans
 \vspace{1em}
 
 ```{r standard-scores-table, echo = FALSE, results = 'asis'}
-table = params$standardscores_table
+table <- params$standardscores_table
 add.to.row$command <- command(table)
-print(xtable(table, 
-             digits = c(0, 0, 2, 0, 2, 2), 
-             align = rep('c', 6)),
-      booktabs = T, comment = F, include.rownames = F,
-      tabular.environment = "longtable", floating = F, 
-      add.to.row = add.to.row, hline.after = c(-1, nrow(table)))
+print(
+  xtable(table,
+    digits = c(0, 0, 2, 0, 2, 2),
+    align = rep("c", 6)
+  ),
+  booktabs = T, comment = F, include.rownames = F,
+  tabular.environment = "longtable", floating = F,
+  add.to.row = add.to.row, hline.after = c(-1, nrow(table))
+)
 ```
 
 `r if (params$irt_model != "none") {"More complex estimates of ability are provided in the IRT section."}`
@@ -223,8 +235,12 @@ if (params$isCriterionPresent & params$validity_check) {
 
   inp <- params$validity_table
 
-  validity_table_results <- inp$txt %>% as.character %>% str_replace_all("<br>", "\\\\textbf{") %>% 
-    str_replace_all("</br>", "}") %>% str_replace_all("<em>", "\\\\textit{") %>% str_replace_all("</em>", "}")
+  validity_table_results <- inp$txt %>%
+    as.character() %>%
+    str_replace_all("<br>", "\\\\textbf{") %>%
+    str_replace_all("</br>", "}") %>%
+    str_replace_all("<em>", "\\\\textit{") %>%
+    str_replace_all("</em>", "}")
 
   pval <- inp$pval
   est <- inp$est
@@ -237,7 +253,6 @@ if (params$isCriterionPresent & params$validity_check) {
     )
   )
 }
-
 ```
 
 `r if(params$isCriterionPresent & params$validity_check){validity_table_intro}`
@@ -248,13 +263,15 @@ if (params$isCriterionPresent & params$validity_check) {
 
 ```{r validity-plot, echo = FALSE, results = "hide", fig.height = 4.5, fig.width = 11, message = FALSE}
 if (params$isCriterionPresent & params$validity_check) {
-  params$validity_plot + 
-    theme(text = element_text(size = 16), 
-          legend.box.just = "top",
-          legend.justification = c("left", "top"), 
-          legend.position = c(0, 1), 
-          legend.box = "horizontal", 
-          legend.box.margin = margin(3, 3, 3, 3))
+  params$validity_plot +
+    theme(
+      text = element_text(size = 16),
+      legend.box.just = "top",
+      legend.justification = c("left", "top"),
+      legend.position = c(0, 1),
+      legend.box = "horizontal",
+      legend.box.margin = margin(3, 3, 3, 3)
+    )
 }
 ```
   
@@ -274,21 +291,32 @@ range2 <- params$DDplotRange2
 numgroups <- params$DDplotNumGroups
 
 txt2 <- switch(params$DDplotDiscType,
-       "RIR" = "Discrimination (blue) is described by Pearson correlation between an item and the rest of the items.",
-       "RIT" = "Discrimination (blue) is described by Pearson correlation between an item and the total score.",
-       "none" = "",
-       "ULI" = if (any(range1 != 1, range2 != 3, numgroups != 3)) {
-         paste0("Discrimination (blue) is described by the difference of the percent correct in the ",
-                "<b>", range1, "</b>",
-                ifelse(range1 >= 4, "-th", switch(range1, "1" = "-st", "2" = "-nd", "3" = "-rd")),
-                " and <b>", range2, "</b>",
-                ifelse(range2 >= 4, "-th", switch(range2, "1" = "-st", "2" = "-nd", "3" = "-rd")),
-                " group of respondents out of a total number of ",
-                "<b>", numgroups, "</b>",
-                " groups. ")
-         } else {
-           "Discrimination (blue) is described by the difference of the percent correct in the upper and lower third of respondents (Upper-Lower Index, ULI). By a rule of thumb, it should not be lower than 0.2 (borderline in the plot), except for very easy or very difficult items."
-           })
+  "RIR" = "Discrimination (blue) is described by Pearson correlation between an item and the rest of the items.",
+  "RIT" = "Discrimination (blue) is described by Pearson correlation between an item and the total score.",
+  "none" = "",
+  "ULI" = if (any(range1 != 1, range2 != 3, numgroups != 3)) {
+    paste0(
+      "Discrimination (blue) is described by the difference of the percent correct in the ",
+      "<b>", range1, "</b>",
+      ifelse(range1 >= 4, "-th", switch(range1,
+        "1" = "-st",
+        "2" = "-nd",
+        "3" = "-rd"
+      )),
+      " and <b>", range2, "</b>",
+      ifelse(range2 >= 4, "-th", switch(range2,
+        "1" = "-st",
+        "2" = "-nd",
+        "3" = "-rd"
+      )),
+      " group of respondents out of a total number of ",
+      "<b>", numgroups, "</b>",
+      " groups. "
+    )
+  } else {
+    "Discrimination (blue) is described by the difference of the percent correct in the upper and lower third of respondents (Upper-Lower Index, ULI). By a rule of thumb, it should not be lower than 0.2 (borderline in the plot), except for very easy or very difficult items."
+  }
+)
 
 HTML(paste0(txt1, txt2))
 ```
@@ -296,9 +324,11 @@ HTML(paste0(txt1, txt2))
 \vspace{1em}
 
 ```{r DD-plot, echo = FALSE, fig.height = 4.5, fig.width = 11}
-params$DDplot + 
-  theme(text = element_text(size = 16), 
-        plot.title = element_text(face = "bold")) + 
+params$DDplot +
+  theme(
+    text = element_text(size = 16),
+    plot.title = element_text(face = "bold")
+  ) +
   ggtitle("")
 ```
 
@@ -309,19 +339,19 @@ params$DDplot +
 Cronbach's alpha is an estimate of internal consistency of a psychometric test. It is a function of the number of items in a test, the average covariance between item-pairs, and the variance of the total score (Cronbach, 1951).
 
 ```{r cronbachs-alpha, echo = FALSE, results = "asis"}
-table = params$cronbachs_alpha_table
-add.to.row$command = command(table)
+table <- params$cronbachs_alpha_table
+add.to.row$command <- command(table)
 
-print(xtable(table, digits = c(0, 3, 0), align = rep('c', 3)),
-      booktabs = T, comment = F, include.rownames = FALSE,
-      tabular.environment = "longtable", floating = F,
-      add.to.row = add.to.row, hline.after = c(-1, nrow(table)))
+print(xtable(table, digits = c(0, 3, 0), align = rep("c", 3)),
+  booktabs = T, comment = F, include.rownames = FALSE,
+  tabular.environment = "longtable", floating = F,
+  add.to.row = add.to.row, hline.after = c(-1, nrow(table))
+)
 ```
 
 ### Traditional item analysis table 
 
 ```{r item-table-text, echo = FALSE}
-
 range1 <- params$DDplotRange1
 range2 <- params$DDplotRange2
 numgroups <- params$DDplotNumGroups
@@ -331,14 +361,24 @@ txt1 <- "Diff. - difficulty of the item is estimated as its average score divide
 if (params$DDplotNumGroups == 3 & params$DDplotRange1 == 1 & params$DDplotRange2 == 3) {
   txt2 <- ". "
 } else {
-  txt2 <- paste0(", gULI - generalized ULI calculated as the difference between the difficulty recorded in the ", 
-                 "<b>", range1, "</b>",
-                 ifelse(range1 >= 4, "-th", switch(range1, "1" = "-st", "2" = "-nd", "3" = "-rd")),
-                 " and <b>", range2, "</b>",
-                 ifelse(range2 >= 4, "-th", switch(range2, "1" = "-st", "2" = "-nd", "3" = "-rd")),
-                 " group of respondents out of a total number of ",
-                 "<b>", numgroups, "</b>",
-                 " groups. ")
+  txt2 <- paste0(
+    ", gULI - generalized ULI calculated as the difference between the difficulty recorded in the ",
+    "<b>", range1, "</b>",
+    ifelse(range1 >= 4, "-th", switch(range1,
+      "1" = "-st",
+      "2" = "-nd",
+      "3" = "-rd"
+    )),
+    " and <b>", range2, "</b>",
+    ifelse(range2 >= 4, "-th", switch(range2,
+      "1" = "-st",
+      "2" = "-nd",
+      "3" = "-rd"
+    )),
+    " group of respondents out of a total number of ",
+    "<b>", numgroups, "</b>",
+    " groups. "
+  )
 }
 
 HTML(paste0(txt1, txt2))
@@ -347,32 +387,36 @@ HTML(paste0(txt1, txt2))
 \vspace{1em}
 
 ```{r item-table, echo = FALSE, results = "asis"}
-
 if (params$DDplotNumGroups == 3 & params$DDplotRange1 == 1 & params$DDplotRange2 == 3) {
-  table = params$itemexam
-  tab = format(round(table[, -1], 2), nsmall = 2)
-  table = data.frame(table[, 1], tab[, -8])
-  colnames(table) = c("Item", "Diff.", "Avg. score", "SD", "ULI", "RIT", "RIR", "Alpha Drop")
+  table <- params$itemexam
+  tab <- format(round(table[, -1], 2), nsmall = 2)
+  table <- data.frame(table[, 1], tab[, -8])
+  colnames(table) <- c("Item", "Diff.", "Avg. score", "SD", "ULI", "RIT", "RIR", "Alpha Drop")
   add.to.row$command <- command(table)
-  print(xtable(table, 
-              digits = c(0, 0, 2, 2, 2, 2, 2, 2, 2), 
-              align = rep('c', 9)),
-        booktabs = T, comment = F, include.rownames = FALSE,
-        tabular.environment = "longtable", floating = F, 
-        add.to.row = add.to.row, hline.after = c(-1, nrow(table)))  
+  print(
+    xtable(table,
+      digits = c(0, 0, 2, 2, 2, 2, 2, 2, 2),
+      align = rep("c", 9)
+    ),
+    booktabs = T, comment = F, include.rownames = FALSE,
+    tabular.environment = "longtable", floating = F,
+    add.to.row = add.to.row, hline.after = c(-1, nrow(table))
+  )
 } else {
-  table = params$itemexam
-  tab = format(round(table[, -1], 2), nsmall = 2)
-  table = data.frame(table[, 1], tab)
-  colnames(table) = c("Item", "Diff.", "Avg. score", "SD", "ULI", "RIT", "RIR", "Alpha Drop", "gULI")
+  table <- params$itemexam
+  tab <- format(round(table[, -1], 2), nsmall = 2)
+  table <- data.frame(table[, 1], tab)
+  colnames(table) <- c("Item", "Diff.", "Avg. score", "SD", "ULI", "RIT", "RIR", "Alpha Drop", "gULI")
   add.to.row$command <- command(table)
-  print(xtable(table, 
-              digits = c(0, 0, 2, 2, 2, 2, 2, 2, 2, 2), 
-              align = rep('c', 10)),
-        booktabs = T, comment = F, include.rownames = FALSE,
-        tabular.environment = "longtable", floating = F, 
-        add.to.row = add.to.row, hline.after = c(-1, nrow(table)))  
-  
+  print(
+    xtable(table,
+      digits = c(0, 0, 2, 2, 2, 2, 2, 2, 2, 2),
+      align = rep("c", 10)
+    ),
+    booktabs = T, comment = F, include.rownames = FALSE,
+    tabular.environment = "longtable", floating = F,
+    add.to.row = add.to.row, hline.after = c(-1, nrow(table))
+  )
 }
 ```
 
@@ -400,22 +444,30 @@ if (params$distractor_plot_legend_length <= 6) {
       g2 <- params$multiplot[[i]]
       if (is.null(g2)) {
         g2 <- textGrob("")
-        g1 <- g1 + theme(legend.position = c(0.14, 0.8),
-                         legend.margin = margin(0, 0, 0, 0, "cm"))
+        g1 <- g1 + theme(
+          legend.position = c(0.14, 0.8),
+          legend.margin = margin(0, 0, 0, 0, "cm")
+        )
       } else {
-        g2 <- g2 + theme(legend.position = c(0.04, 0.97),
-                         legend.margin = margin(0, 0, 0, 0, "cm"),
-                         legend.spacing.x = unit(0.25, "cm"))
+        g2 <- g2 + theme(
+          legend.position = c(0.04, 0.97),
+          legend.margin = margin(0, 0, 0, 0, "cm"),
+          legend.spacing.x = unit(0.25, "cm")
+        )
       }
       grid.arrange(g1, g2, ncol = 2)
     }
   } else {
     for (i in 1:length(params$distractor_plot)) {
-      g1 <- params$distractor_plot[[i]] + theme(legend.position = c(0.14, 0.8),
-                                                legend.margin = margin(0, 0, 0, 0, "cm"))
-      g2 <- params$multiplot[[i]] + theme(legend.position = c(0.04, 0.97),
-                                          legend.margin = margin(0, 0, 0, 0, "cm"),
-                                          legend.spacing.x = unit(0.25, "cm"))
+      g1 <- params$distractor_plot[[i]] + theme(
+        legend.position = c(0.14, 0.8),
+        legend.margin = margin(0, 0, 0, 0, "cm")
+      )
+      g2 <- params$multiplot[[i]] + theme(
+        legend.position = c(0.04, 0.97),
+        legend.margin = margin(0, 0, 0, 0, "cm"),
+        legend.spacing.x = unit(0.25, "cm")
+      )
       if (is.null(g2)) g2 <- textGrob("")
       grid.arrange(g1, g2, ncol = 2)
     }
@@ -428,19 +480,23 @@ if (params$distractor_plot_legend_length > 6) {
   if (params$type_distractor_plot == "Combinations") {
     for (i in 1:length(params$distractor_plot)) {
       g1 <- params$distractor_plot[[i]]
-      g2 <- params$multiplot[[i]] 
+      g2 <- params$multiplot[[i]]
       if (is.null(g2)) {
         g2 <- textGrob("")
-        tmp <- ggplotGrob(g1 + theme(legend.position = "right",
-                                     legend.text = element_text(size = 10),
-                                     legend.key.size = unit(0.8, 'lines')))$grobs
+        tmp <- ggplotGrob(g1 + theme(
+          legend.position = "right",
+          legend.text = element_text(size = 10),
+          legend.key.size = unit(0.8, "lines")
+        ))$grobs
         legend <- tmp[[which(sapply(tmp, function(x) x$name) == "guide-box")]]
       } else {
-        tmp <- ggplotGrob(g2 + theme(legend.position = "right", 
-                                     legend.box = "vertical",
-                                     legend.spacing = unit(-0.2, "cm"),
-                                     legend.text = element_text(size = 10),
-                                     legend.key.size = unit(0.8, 'lines')))$grobs
+        tmp <- ggplotGrob(g2 + theme(
+          legend.position = "right",
+          legend.box = "vertical",
+          legend.spacing = unit(-0.2, "cm"),
+          legend.text = element_text(size = 10),
+          legend.key.size = unit(0.8, "lines")
+        ))$grobs
         legend <- tmp[[which(sapply(tmp, function(x) x$name) == "guide-box")]]
         g2 <- g2 + theme(legend.position = "none")
       }
@@ -448,24 +504,28 @@ if (params$distractor_plot_legend_length > 6) {
     }
   } else {
     for (i in 1:length(params$distractor_plot)) {
-      g1 <- params$distractor_plot[[i]] + theme(legend.position = c(0.18, 0.75), 
-                                                legend.margin = margin(0, 0, 0, 0, "cm"))
-      g2 <- params$multiplot[[i]] 
-        
+      g1 <- params$distractor_plot[[i]] + theme(
+        legend.position = c(0.18, 0.75),
+        legend.margin = margin(0, 0, 0, 0, "cm")
+      )
+      g2 <- params$multiplot[[i]]
+
       if (is.null(g2)) {
         g2 <- textGrob("")
         legend <- textGrob("")
       } else {
-        tmp <- ggplotGrob(g2 + theme(legend.position = "right", 
-                                     legend.box = "vertical",
-                                     legend.spacing = unit(-0.2, "cm"),
-                                     legend.text = element_text(size = 10),
-                                     legend.key.size = unit(0.8, 'lines')))$grobs
+        tmp <- ggplotGrob(g2 + theme(
+          legend.position = "right",
+          legend.box = "vertical",
+          legend.spacing = unit(-0.2, "cm"),
+          legend.text = element_text(size = 10),
+          legend.key.size = unit(0.8, "lines")
+        ))$grobs
         legend <- tmp[[which(sapply(tmp, function(x) x$name) == "guide-box")]]
         g2 <- g2 + theme(legend.position = "none")
       }
       grid.arrange(g1, g2, legend, ncol = 3, widths = c(0.45, 0.45, 0.1))
-    }  
+    }
   }
 }
 ```
@@ -478,7 +538,7 @@ show_IRT <- (params$irt_model != "none")
 
 ```{r IRT-section, eval = show_IRT, echo = FALSE, results = "asis"}
 cat("
-\\pagebreak 
+\\pagebreak
 
 # IRT models
 
@@ -488,7 +548,7 @@ Item Response Theory (IRT) models are mixed-effect regression models in which th
 ```{r IRT-wright-map-text, echo = FALSE, results = "asis", eval = show_IRT}
 cat("
 ## Wright (item-person) map using 1PL IRT model
-    
+
 A Wright map, also called an item-person map, is a graphical tool to display person estimates and item parameters. The person side (left) represents a histogram of estimated knowledge of the  respondents. The item side (right) displays estimates of the difficulty of particular items.
 ")
 ```
@@ -499,50 +559,55 @@ grid::grid.draw(params$irt_wrightmap)
 
 ```{r IRT-selected-model, echo = FALSE, results = "hide", eval = show_IRT}
 IRT_selected_model <- switch(params$irt_model,
-                             "Rasch" = "Rasch IRT model",
-                             "1PL"   = "1PL IRT model",
-                             "2PL"   = "2PL IRT model",
-                             "3PL"   = "3PL IRT model",
-                             "4PL"   = "4PL IRT model")
+  "Rasch" = "Rasch IRT model",
+  "1PL"   = "1PL IRT model",
+  "2PL"   = "2PL IRT model",
+  "3PL"   = "3PL IRT model",
+  "4PL"   = "4PL IRT model"
+)
 ```
 
 ```{r IRT-equation-text, echo = FALSE, results = "asis", eval = show_IRT}
-txt <- ifelse(params$irt_model == "Rasch", 
-              "Model parameters are estimated using a marginal maximum likelihood method. Ability $\\theta$ is assumed to follow normal distribution with a freely estimated variance.",
-              "Model parameters are estimated using a marginal maximum likelihood method. Ability $\\theta$ is assumed to follow standard normal distribution." )
+txt <- ifelse(params$irt_model == "Rasch",
+  "Model parameters are estimated using a marginal maximum likelihood method. Ability $\\theta$ is assumed to follow normal distribution with a freely estimated variance.",
+  "Model parameters are estimated using a marginal maximum likelihood method. Ability $\\theta$ is assumed to follow standard normal distribution."
+)
 
-cat("
+cat(
+  "
 ## Equation \n\n",
-
-paste0("All subsequent analyses are based on the selected ", IRT_selected_model, ":"),
-params$irt_equation,
-txt
+  paste0("All subsequent analyses are based on the selected ", IRT_selected_model, ":"),
+  params$irt_equation,
+  txt
 )
 ```
 
 ```{r IRT-ability-estimates-text, echo = FALSE, results = "asis", eval = show_IRT}
-cat("
+cat(
+  "
 ## Ability estimates \n\n",
-
-paste0("Ability is estimated using an EAP algorithm and a ", IRT_selected_model, ". The relationship between ability estimates (factor scores, F-scores) and standardized total test scores (Z-scores) can be seen on the scatter plot below. A table with ability estimates for all respondents can be downloaded from the application. ")
+  paste0("Ability is estimated using an EAP algorithm and a ", IRT_selected_model, ". The relationship between ability estimates (factor scores, F-scores) and standardized total test scores (Z-scores) can be seen on the scatter plot below. A table with ability estimates for all respondents can be downloaded from the application. ")
 )
 ```
 
 ```{r IRT-ability-estimates-table, echo = FALSE, results = "asis", eval = show_IRT}
-table = params$irt_ability_table
+table <- params$irt_ability_table
 add.to.row$command <- command(table)
-  
-print(xtable(table, 
-             digits = 2, 
-             align = c('l', rep('c', 7))),
-      booktabs = T, comment = F, include.rownames = T,
-      tabular.environment = "longtable", floating = F, 
-      add.to.row = add.to.row, hline.after = c(-1, nrow(table)))
+
+print(
+  xtable(table,
+    digits = 2,
+    align = c("l", rep("c", 7))
+  ),
+  booktabs = T, comment = F, include.rownames = T,
+  tabular.environment = "longtable", floating = F,
+  add.to.row = add.to.row, hline.after = c(-1, nrow(table))
+)
 ```
 
 ```{r IRT-ability-scatterplot, echo = FALSE, results = "hide", fig.height = 4.5, fig.width = 11, eval = show_IRT}
-params$irt_ability_plot + 
-  ggtitle('') + 
+params$irt_ability_plot +
+  ggtitle("") +
   theme(text = element_text(size = 16))
 ```
 
@@ -554,73 +619,93 @@ cat("
 
 ```{r IRT-curves-plots-short, echo = FALSE, results = "hide", fig.height = 14.5, fig.width = 11, eval = show_IRT}
 if (ncol(params$a) < 50) {
-  g1 <- params$irt_icc + 
-    ggtitle("Item characteristic curves") + 
-    xlab(expression(theta)) + 
-    ylab(expression("P("*theta*")")) + 
-    guides(colour = guide_legend(ncol = max(ncol(params$a) %/% 30, 1))) + 
-    theme(legend.position = "right", 
-          legend.text = element_text(size = 10))
-  g2 <- params$irt_iic + 
-      ggtitle("Item information curves") + 
-      xlab(expression(theta)) + 
-      ylab(expression("I("*theta*")")) + 
-      guides(colour = guide_legend(ncol = max(ncol(params$a) %/% 30, 1))) + 
-      theme(legend.position = "right", 
-            legend.text = element_text(size = 10))
-  g3 <- params$irt_tic + 
-      ggtitle("Test information function") + 
-      xlab(expression(theta)) + 
-      ylab(expression("I("*theta*")")) + 
-      theme(legend.position = c(0.9, 0.8), 
-            legend.text = element_text(size = 10))
-  
+  g1 <- params$irt_icc +
+    ggtitle("Item characteristic curves") +
+    xlab(expression(theta)) +
+    ylab(expression("P(" * theta * ")")) +
+    guides(colour = guide_legend(ncol = max(ncol(params$a) %/% 30, 1))) +
+    theme(
+      legend.position = "right",
+      legend.text = element_text(size = 10)
+    )
+  g2 <- params$irt_iic +
+    ggtitle("Item information curves") +
+    xlab(expression(theta)) +
+    ylab(expression("I(" * theta * ")")) +
+    guides(colour = guide_legend(ncol = max(ncol(params$a) %/% 30, 1))) +
+    theme(
+      legend.position = "right",
+      legend.text = element_text(size = 10)
+    )
+  g3 <- params$irt_tic +
+    ggtitle("Test information function") +
+    xlab(expression(theta)) +
+    ylab(expression("I(" * theta * ")")) +
+    theme(
+      legend.position = c(0.9, 0.8),
+      legend.text = element_text(size = 10)
+    )
+
   tmp <- ggplotGrob(g1)$grobs
   legend <- tmp[[which(sapply(tmp, function(x) x$name) == "guide-box")]]
 
-  grid.arrange(arrangeGrob(arrangeGrob(g1 + theme(legend.position = "none"), 
-                                       g2 + theme(legend.position = "none"), ncol = 1), 
-                           legend, ncol = 2, widths = c(0.85, 0.15)), 
-               arrangeGrob(g3, textGrob(""), ncol = 2, widths = c(0.9, 0.1)), 
-               ncol = 1, heights = c(0.66, 0.33))
+  grid.arrange(
+    arrangeGrob(
+      arrangeGrob(g1 + theme(legend.position = "none"),
+        g2 + theme(legend.position = "none"),
+        ncol = 1
+      ),
+      legend,
+      ncol = 2, widths = c(0.85, 0.15)
+    ),
+    arrangeGrob(g3, textGrob(""), ncol = 2, widths = c(0.9, 0.1)),
+    ncol = 1, heights = c(0.66, 0.33)
+  )
 }
 ```
 
 ```{r IRT-curves-plots-long, echo = FALSE, results = "hide", fig.height = 16, fig.width = 11, eval = show_IRT}
 if (ncol(params$a) >= 50) {
-    g1 <- params$irt_icc + 
-      ggtitle("Item characteristic curves") + 
-      xlab(expression(theta)) + 
-      ylab(expression("P("*theta*")")) + 
-      guides(colour = guide_legend(nrow = max(ncol(params$a) %/% 12, 1))) + 
-      theme(legend.position = "bottom", 
-            plot.margin = unit(c(0, 0, 0, 0), "cm"),
-            legend.margin = margin(t = -5, unit = 'cm'),
-            legend.text = element_text(size = 10),
-            legend.key.size = unit(0.8, 'lines'))
-    g2 <- params$irt_iic + 
-      ggtitle("Item information curves") + 
-      xlab(expression(theta)) + 
-      ylab(expression("I("*theta*")")) + 
-      guides(colour = guide_legend(nrow = max(ncol(params$a) %/% 12, 1))) + 
-      theme(legend.position = "none", 
-            plot.margin = unit(c(0, 0, 0, 0), "cm"))
-    g3 <- params$irt_tic + 
-      ggtitle("Test information function") + 
-      xlab(expression(theta)) + 
-      ylab(expression("I("*theta*")")) + 
-      theme(legend.position = c(0.9, 0.8), 
-            legend.text = element_text(size = 10), 
-            plot.margin = unit(c(-4, 0, 4, 0), "cm"))
-    
-    tmp <- ggplotGrob(g1)$grobs
-    legend <- tmp[[which(sapply(tmp, function(x) x$name) == "guide-box")]]
+  g1 <- params$irt_icc +
+    ggtitle("Item characteristic curves") +
+    xlab(expression(theta)) +
+    ylab(expression("P(" * theta * ")")) +
+    guides(colour = guide_legend(nrow = max(ncol(params$a) %/% 12, 1))) +
+    theme(
+      legend.position = "bottom",
+      plot.margin = unit(c(0, 0, 0, 0), "cm"),
+      legend.margin = margin(t = -5, unit = "cm"),
+      legend.text = element_text(size = 10),
+      legend.key.size = unit(0.8, "lines")
+    )
+  g2 <- params$irt_iic +
+    ggtitle("Item information curves") +
+    xlab(expression(theta)) +
+    ylab(expression("I(" * theta * ")")) +
+    guides(colour = guide_legend(nrow = max(ncol(params$a) %/% 12, 1))) +
+    theme(
+      legend.position = "none",
+      plot.margin = unit(c(0, 0, 0, 0), "cm")
+    )
+  g3 <- params$irt_tic +
+    ggtitle("Test information function") +
+    xlab(expression(theta)) +
+    ylab(expression("I(" * theta * ")")) +
+    theme(
+      legend.position = c(0.9, 0.8),
+      legend.text = element_text(size = 10),
+      plot.margin = unit(c(-4, 0, 4, 0), "cm")
+    )
 
-    grid.arrange(g1 + theme(legend.position = "none"), 
-                 g2,
-                 legend,
-                 g3,
-                 ncol = 1)
+  tmp <- ggplotGrob(g1)$grobs
+  legend <- tmp[[which(sapply(tmp, function(x) x$name) == "guide-box")]]
+
+  grid.arrange(g1 + theme(legend.position = "none"),
+    g2,
+    legend,
+    g3,
+    ncol = 1
+  )
 }
 ```
 
@@ -635,20 +720,25 @@ Estimates of parameters are completed by their standard errors (SE) and by signe
 ```
 
 ```{r IRT-parameter-estimates-table, echo = FALSE, eval = show_IRT, results = "asis"}
-table = params$irt_coef
+table <- params$irt_coef
 if (params$irt_parametrization == "irt") {
-  colnames(table) = c("a", "SE(a)", "b", "SE(b)", "c", "SE(c)", "d", "SE(d)", "S-X2", "df", "p-value")
+  colnames(table) <- c("a", "SE(a)", "b", "SE(b)", "c", "SE(c)", "d", "SE(d)", "S-X2", "df", "p-value")
 } else {
-  colnames(table) = c("beta0", "SE(beta0)", "beta1", "SE(beta1)", "c", "SE(c)", "d", "SE(d)", "S-X2", "df", "p-value")
+  colnames(table) <- c("beta0", "SE(beta0)", "beta1", "SE(beta1)", "c", "SE(c)", "d", "SE(d)", "S-X2", "df", "p-value")
 }
 add.to.row$command <- command(table)
-  
-print(xtable(table, 
-             digits = c(0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 2), 
-             align = c('l', rep('c', 11))),
-      booktabs = T, comment = F, include.rownames = T, sanitize.text.function = function(x){x}, 
-      tabular.environment = "longtable", floating = F, add.to.row = add.to.row, 
-      hline.after = c(-1, nrow(table)))
+
+print(
+  xtable(table,
+    digits = c(0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 2),
+    align = c("l", rep("c", 11))
+  ),
+  booktabs = T, comment = F, include.rownames = T, sanitize.text.function = function(x) {
+    x
+  },
+  tabular.environment = "longtable", floating = F, add.to.row = add.to.row,
+  hline.after = c(-1, nrow(table))
+)
 ```
 
 <!-- DIF SECTION -->
@@ -663,12 +753,15 @@ cat("\\pagebreak")
 ```
 
 ```{r DIF-section, eval = show_DIF, echo = FALSE, results = 'asis'}
-txt <- ifelse(check_group, 
-              "No group vector is present. DIF and DDF analyses could have not been generated!",
-              "")
+txt <- ifelse(check_group,
+  "No group vector is present. DIF and DDF analyses could have not been generated!",
+  ""
+)
 
-cat(paste("# DIF/Fairness analysis \n", 
-          txt))
+cat(paste(
+  "# DIF/Fairness analysis \n",
+  txt
+))
 ```
 
 <!-- DIF SECTION - histograms -->
@@ -681,7 +774,7 @@ eval_histograms <- (params$histCheck & params$isGroupPresent)
 cat("
 ## Total scores by group
 DIF analysis may come to a different conclusion than test of group differences in total scores. Two groups may have the same distribution of total scores, yet, some items may function differently for the two groups. Also, one of the groups may have a signifficantly lower total score, yet, it may happen that there is no DIF item [(see Martinkova et al., 2017)](https://doi.org/10.1187/cbe.16-10-0307).
-\\vspace{-1.5em} 
+\\vspace{-1.5em}
 
 ### Summary table of total scores in a reference and focal group
 \\vspace{-0.5em}
@@ -689,34 +782,39 @@ DIF analysis may come to a different conclusion than test of group differences i
 ```
 
 ```{r DIF-section-histograms-table, echo = FALSE, results = "asis", eval = eval_histograms}
-table = params$DIF_total_table
+table <- params$DIF_total_table
 add.to.row$command <- command(table)
-print(xtable(table, 
-             digits = c(0, 0, 0, 0, 2, 2, 2, 2, 2), 
-             align = c('l', rep('c', 8))),
-      booktabs = T, comment = F,
-      tabular.environment = "longtable", floating = F, 
-      add.to.row = add.to.row, hline.after = c(-1, nrow(table)))
+print(
+  xtable(table,
+    digits = c(0, 0, 0, 0, 2, 2, 2, 2, 2),
+    align = c("l", rep("c", 8))
+  ),
+  booktabs = T, comment = F,
+  tabular.environment = "longtable", floating = F,
+  add.to.row = add.to.row, hline.after = c(-1, nrow(table))
+)
 ```
 
 ```{r DIF-section-histograms-part2, eval = eval_histograms, echo = FALSE, results = 'asis'}
 cat(paste("
-\\vspace{-1em} 
+\\vspace{-1em}
 
 ### Histograms of total scores by group \n \\vspace{-0.5em}"))
 ```
 
 ```{r DIF-section-histograms-plot, echo = FALSE, fig.height = 4.3, fig.width = 11, eval = eval_histograms}
-params$DIF_total_hist + 
-      theme(text = element_text(size = 16), 
-            plot.title = element_text(face = "bold"),
-            plot.margin = margin(0, 0, 0, 0, "cm"),
-            legend.position = c(0.1, 0.87)) 
+params$DIF_total_hist +
+  theme(
+    text = element_text(size = 16),
+    plot.title = element_text(face = "bold"),
+    plot.margin = margin(0, 0, 0, 0, "cm"),
+    legend.position = c(0.1, 0.87)
+  )
 ```
 
 ```{r DIF-section-histograms-part3, eval = eval_histograms, echo = FALSE, results = 'asis'}
 cat("
-\\vspace{-2em} 
+\\vspace{-2em}
 
 ### Comparison of total scores \n
 \\vspace{-0.5em}
@@ -725,14 +823,15 @@ Test for difference in total scores between reference and focal group is based o
 ```
 
 ```{r DIF-section-histograms-ttest, echo = FALSE, results = "asis", eval = eval_histograms}
-table = params$DIF_total_ttest
+table <- params$DIF_total_ttest
 add.to.row$command <- command(table)
-    
-print(xtable(table, align = rep('c', 5)), 
-      include.rownames = F,
-      booktabs = T, comment = F,
-      tabular.environment = "longtable", floating = F, 
-      add.to.row = add.to.row, hline.after = c(-1, nrow(table)))
+
+print(xtable(table, align = rep("c", 5)),
+  include.rownames = F,
+  booktabs = T, comment = F,
+  tabular.environment = "longtable", floating = F,
+  add.to.row = add.to.row, hline.after = c(-1, nrow(table))
+)
 ```
 
 ```{r DIF-section-histograms-part4, eval = eval_histograms, echo = FALSE, results = 'asis'}
@@ -747,22 +846,28 @@ if (eval_deltaplot) res_deltaplot <- params$DIF_deltaplot_text
 ```
 
 ```{r DIF-section-deltaplot-part1, eval = eval_deltaplot, echo = FALSE, results = 'asis'}
-txt1 <- ifelse(res_deltaplot$purify, 
-                     "Item purification was used.", 
-                     "Item purification was not applied.")
+txt1 <- ifelse(res_deltaplot$purify,
+  "Item purification was used.",
+  "Item purification was not applied."
+)
 txt2 <- paste0("The detection threshold is ", round(res_deltaplot$thr[length(res_deltaplot$thr)], 2), ". ")
-txt3 <- ifelse(any(res_deltaplot$DIFitems == "no DIF item detected"), 
-              "\\textbf{No DIF item was detected. }", 
-              paste0("\\textbf{Items detected as DIF: ", 
-                     paste(params$itemNames[res_deltaplot$DIFitems], collapse = ", "), ".} "))
+txt3 <- ifelse(any(res_deltaplot$DIFitems == "no DIF item detected"),
+  "\\textbf{No DIF item was detected. }",
+  paste0(
+    "\\textbf{Items detected as DIF: ",
+    paste(params$itemNames[res_deltaplot$DIFitems], collapse = ", "), ".} "
+  )
+)
 
-cat(paste("
+cat(paste(
+  "
 ## Delta plot method
 A delta plot compares the proportions of correct answers per item in the two groups. It displays non-linear transformation of these proportions using quantiles of standard normal distributions (so called delta scores) of each item for the two groups in a scatterplot called diagonal plot or delta plot. An item is under suspicion of DIF if the delta point departs considerably from the major axis. \n
 
-### Summary table \n", 
-txt1, txt2, "\n\n", 
-txt3, "\\vspace{1em}"))
+### Summary table \n",
+  txt1, txt2, "\n\n",
+  txt3, "\\vspace{1em}"
+))
 ```
 
 ```{r DIF-section-deltaplot-table, echo = FALSE, results = "asis", eval = eval_deltaplot}
@@ -770,31 +875,38 @@ tab <- cbind(res_deltaplot$Props, res_deltaplot$Deltas, res_deltaplot$Dist[, nco
 colnames(tab) <- c("Prop. Ref", "Prop. Foc", "Delta Ref", "Delta Foc", "Dist.")
 rownames(tab) <- params$itemNames
 add.to.row$command <- command(tab)
-    
-print(xtable(tab, 
-             digits = c(0, 3, 3, 3, 3, 3), 
-             align = c('l', rep('c', 5))), 
-      booktabs = T, comment = F,
-      tabular.environment = "longtable", floating = F, 
-      add.to.row = add.to.row, hline.after = c(-1, nrow(tab)))
+
+print(
+  xtable(tab,
+    digits = c(0, 3, 3, 3, 3, 3),
+    align = c("l", rep("c", 5))
+  ),
+  booktabs = T, comment = F,
+  tabular.environment = "longtable", floating = F,
+  add.to.row = add.to.row, hline.after = c(-1, nrow(tab))
+)
 ```
 
 ```{r DIF-section-deltaplot-part2, eval = eval_deltaplot, echo = FALSE, results = 'asis'}
 txt <- ifelse(ncol(tab) < 26, "\\pagebreak", "")
-cat(paste(txt,
-"
+cat(paste(
+  txt,
+  "
 
 ### Delta plot
 Points represents delta scores. Black solid is a major axis. Red dashed lines stand for detection threshold.
-"))
+"
+))
 ```
 
 ```{r DIF-section-deltaplot-plot, echo = FALSE, fig.height = 4.5, fig.width = 11, eval = eval_deltaplot}
 print(params$DIF_deltaplot +
-        geom_text(size = 0.1) +
-        theme(text = element_text(size = 16), 
-              plot.title = element_text(face = "bold")) + 
-      ggtitle(""))
+  geom_text(size = 0.1) +
+  theme(
+    text = element_text(size = 16),
+    plot.title = element_text(face = "bold")
+  ) +
+  ggtitle(""))
 ```
 
 ```{r DIF-section-deltaplot-part3, eval = eval_deltaplot, echo = FALSE, results = 'asis'}
@@ -809,91 +921,120 @@ if (eval_MH) res_MH <- params$DIF_MH_print
 ```
 
 ```{r DIF-section-MH-part1, eval = eval_MH, echo = FALSE, results = 'asis'}
-txt1 <- paste(ifelse(res_MH$purification, 
-                     "Item purification was used.", 
-                     "Item purification was not applied."),
-              ifelse(is.null(res_MH$p.adjust.method), 
-                     "No p-value adjustment for multiple comparisons was used.",
-                     paste(switch(res_MH$p.adjust.method, 
-                                  "holm" = "Holm's", 
-                                  "hochberg" = "Hochberg's", 
-                                  "hommel" = "Hommel's", 
-                                  "bonferroni" = "Bonferroni", 
-                                  "BH" = "Benjamini-Hochberg", 
-                                  "BY" = "Benjamini-Yekutieli", 
-                                  "fdr" = "Benjamini-Hochberg", 
-                                  "none" = "No"), 
-                           "p-value adjustment for multiple comparisons was used.")))
+txt1 <- paste(
+  ifelse(res_MH$purification,
+    "Item purification was used.",
+    "Item purification was not applied."
+  ),
+  ifelse(is.null(res_MH$p.adjust.method),
+    "No p-value adjustment for multiple comparisons was used.",
+    paste(
+      switch(res_MH$p.adjust.method,
+        "holm" = "Holm's",
+        "hochberg" = "Hochberg's",
+        "hommel" = "Hommel's",
+        "bonferroni" = "Bonferroni",
+        "BH" = "Benjamini-Hochberg",
+        "BY" = "Benjamini-Yekutieli",
+        "fdr" = "Benjamini-Hochberg",
+        "none" = "No"
+      ),
+      "p-value adjustment for multiple comparisons was used."
+    )
+  )
+)
 txt2 <- paste0("The detection threshold is ", round(res_MH$thr[length(res_MH$thr)], 2), ". ")
-txt3 <- ifelse(any(res_MH$DIFitems == "No DIF item detected"), 
-                      "\\textbf{No DIF item was detected. }  ", 
-                      paste0("\\textbf{Items detected as DIF: ", 
-                             paste(params$itemNames[res_MH$DIFitems], collapse = ", "), ".}  "))
+txt3 <- ifelse(any(res_MH$DIFitems == "No DIF item detected"),
+  "\\textbf{No DIF item was detected. }  ",
+  paste0(
+    "\\textbf{Items detected as DIF: ",
+    paste(params$itemNames[res_MH$DIFitems], collapse = ", "), ".}  "
+  )
+)
 
-cat(paste("
+cat(paste(
+  "
 ## Mantel-Haenszel test
  \n
 
-### Summary table \n", 
-txt1, txt2, "\n\n",
-txt3, "\\vspace{1em}"))
+### Summary table \n",
+  txt1, txt2, "\n\n",
+  txt3, "\\vspace{1em}"
+))
 ```
 
 ```{r DIF-section-MH-table, echo = FALSE, results = "asis", eval = eval_MH}
 if (res_MH$p.adjust.method == "none") {
-  star <- symnum(round(res_MH$p.value, 4), 
-               c(0, 0.001, 0.01, 0.05, 0.1, 1), 
-               symbols = c("***", "**", "*", ".", ""))
+  star <- symnum(round(res_MH$p.value, 4),
+    c(0, 0.001, 0.01, 0.05, 0.1, 1),
+    symbols = c("***", "**", "*", ".", "")
+  )
   pval <- paste0(sprintf("%.3f", res_MH$p.value), star)
 } else {
-  star <- symnum(round(res_MH$adjusted.p, 4), 
-               c(0, 0.001, 0.01, 0.05, 0.1, 1), 
-               symbols = c("***", "**", "*", ".", ""))
+  star <- symnum(round(res_MH$adjusted.p, 4),
+    c(0, 0.001, 0.01, 0.05, 0.1, 1),
+    symbols = c("***", "**", "*", ".", "")
+  )
   pval <- paste0(sprintf("%.3f", res_MH$adjusted.p), star)
-  pval <- cbind(sprintf("%.3f", res_MH$p.value),
-                paste0(sprintf("%.3f", res_MH$adjusted.p), star))
+  pval <- cbind(
+    sprintf("%.3f", res_MH$p.value),
+    paste0(sprintf("%.3f", res_MH$adjusted.p), star)
+  )
 }
 
 deltaMH <- round(-2.35 * log(res_MH$alphaMH), 4)
-esize <- symnum(abs(deltaMH), 
-                c(0, 1, 1.5, Inf), 
-                symbols = c("A", "B", "C"))  
+esize <- symnum(abs(deltaMH),
+  c(0, 1, 1.5, Inf),
+  symbols = c("A", "B", "C")
+)
 deltaMH <- paste(sprintf("%.3f", deltaMH), esize)
 
-        
-tab <- cbind(sprintf("%.3f", res_MH$MH), pval, 
-             sprintf("%.3f", res_MH$alphaMH), deltaMH)
+
+tab <- cbind(
+  sprintf("%.3f", res_MH$MH), pval,
+  sprintf("%.3f", res_MH$alphaMH), deltaMH
+)
 rownames(tab) <- params$itemNames
 
 if (dim(tab)[2] == 5) {
   colnames(tab) <- c("Stat.", "P-value", "Adj. p-value", "$\\alpha_{\\text{MH}}$", "$\\delta_{\\text{MH}}$")
-  print(xtable(tab, 
-               digits = c(0, 3, 3, 0, 0, 0), 
-               align = c('l', 'r', 'r', 'l', 'r', 'r')),
-        booktabs = T, comment = F, tabular.environment = "longtable", floating = F, 
-        sanitize.text.function = function(x){x}, add.to.row = add.to.row, hline.after = c(-1, nrow(tab)))
+  print(
+    xtable(tab,
+      digits = c(0, 3, 3, 0, 0, 0),
+      align = c("l", "r", "r", "l", "r", "r")
+    ),
+    booktabs = T, comment = F, tabular.environment = "longtable", floating = F,
+    sanitize.text.function = function(x) {
+      x
+    }, add.to.row = add.to.row, hline.after = c(-1, nrow(tab))
+  )
 } else {
   colnames(tab) <- c("Stat.", "P-value", "$\\alpha_{\\text{MH}}$", "$\\delta_{\\text{MH}}$")
-  print(xtable(tab, 
-               digits = c(0, 3, 0, 0, 0), 
-               align = c('l', 'r', 'l', 'r', 'r')),
-        booktabs = T, comment = F, tabular.environment = "longtable", floating = F, 
-        sanitize.text.function = function(x){x}, add.to.row = add.to.row, hline.after = c(-1, nrow(tab)))
+  print(
+    xtable(tab,
+      digits = c(0, 3, 0, 0, 0),
+      align = c("l", "r", "l", "r", "r")
+    ),
+    booktabs = T, comment = F, tabular.environment = "longtable", floating = F,
+    sanitize.text.function = function(x) {
+      x
+    }, add.to.row = add.to.row, hline.after = c(-1, nrow(tab))
+  )
 }
 ```
 
 ```{r DIF-section-MH-part2, eval = eval_MH, echo = FALSE, results = 'asis'}
-cat("Signif. codes: 0 '\\mbox{*}\\mbox{*}\\mbox{*}' 0.001 '\\mbox{*}\\mbox{*}' 0.01 '\\mbox{*}' 0.05 '.' 0.1 '&nbsp;' 1  
+cat("Signif. codes: 0 '\\mbox{*}\\mbox{*}\\mbox{*}' 0.001 '\\mbox{*}\\mbox{*}' 0.01 '\\mbox{*}' 0.05 '.' 0.1 '&nbsp;' 1
 
-Effect size (ETS Delta scale): 
+Effect size (ETS Delta scale):
 
- 'A': negligible effect 
- 
- 'B': moderate effect 
- 
- 'C': large effect  
+ 'A': negligible effect
 
-Effect size codes: 0 'A' 1.0 'B' 1.5 'C' (for absolute values of $\\delta_{\\text{MH}}$) 
+ 'B': moderate effect
+
+ 'C': large effect
+
+Effect size codes: 0 'A' 1.0 'B' 1.5 'C' (for absolute values of $\\delta_{\\text{MH}}$)
 ")
 ```
 
@@ -911,99 +1052,129 @@ if (eval_logistic) res_logistic <- params$DIF_logistic_print
 ```
 
 ```{r DIF-section-logistic-part1, eval = eval_logistic, echo = FALSE, results = 'asis'}
-
-txt1 <- switch(res_logistic$type, 
-               "both" = "Both types of DIF were tested.", 
-               "udif" = "Uniform DIF was tested only.", 
-               "nudif" = "Non-uniform DIF was tested only.")
-txt2 <- paste(ifelse(res_logistic$purification, 
-                     "Item purification was used.", 
-                     "Item purification was not applied."),
-              ifelse(is.null(res_logistic$p.adjust.method), 
-                     "No p-value adjustment for multiple comparisons was used.",
-                     paste(switch(res_logistic$p.adjust.method, 
-                                  "holm" = "Holm's", 
-                                  "hochberg" = "Hochberg's", 
-                                  "hommel" = "Hommel's", 
-                                  "bonferroni" = "Bonferroni", 
-                                  "BH" = "Benjamini-Hochberg", 
-                                  "BY" = "Benjamini-Yekutieli", 
-                                  "fdr" = "Benjamini-Hochberg", 
-                                  "none" = "No"), 
-                           "p-value adjustment for multiple comparisons was used.")))
+txt1 <- switch(res_logistic$type,
+  "both" = "Both types of DIF were tested.",
+  "udif" = "Uniform DIF was tested only.",
+  "nudif" = "Non-uniform DIF was tested only."
+)
+txt2 <- paste(
+  ifelse(res_logistic$purification,
+    "Item purification was used.",
+    "Item purification was not applied."
+  ),
+  ifelse(is.null(res_logistic$p.adjust.method),
+    "No p-value adjustment for multiple comparisons was used.",
+    paste(
+      switch(res_logistic$p.adjust.method,
+        "holm" = "Holm's",
+        "hochberg" = "Hochberg's",
+        "hommel" = "Hommel's",
+        "bonferroni" = "Bonferroni",
+        "BH" = "Benjamini-Hochberg",
+        "BY" = "Benjamini-Yekutieli",
+        "fdr" = "Benjamini-Hochberg",
+        "none" = "No"
+      ),
+      "p-value adjustment for multiple comparisons was used."
+    )
+  )
+)
 txt3 <- paste0("The detection threshold is ", round(res_logistic$thr[length(res_logistic$thr)], 2), ". ")
-txt4 <- ifelse(any(res_logistic$DIFitems == "No DIF item detected"), 
-                      "\\textbf{No DIF item was detected. }  ", 
-                      paste0("\\textbf{Items detected as DIF: ", 
-                             paste(params$itemNames[res_logistic$DIFitems], collapse = ", "), ".}  "))
+txt4 <- ifelse(any(res_logistic$DIFitems == "No DIF item detected"),
+  "\\textbf{No DIF item was detected. }  ",
+  paste0(
+    "\\textbf{Items detected as DIF: ",
+    paste(params$itemNames[res_logistic$DIFitems], collapse = ", "), ".}  "
+  )
+)
 
-cat(paste("
+cat(paste(
+  "
 ## Logistic regression method
 Logistic regression allows for detection of uniform and non-uniform DIF by adding a group specific intercept (uniform DIF) and group specific interaction (non-uniform DIF) into the model and by testing for their significance. \n
 
-### Summary table \n", 
-txt1, txt2, txt3, "\n\n",
-txt4, "\\vspace{1em}"))
+### Summary table \n",
+  txt1, txt2, txt3, "\n\n",
+  txt4, "\\vspace{1em}"
+))
 ```
 
 ```{r DIF-section-logistic-table, echo = FALSE, results = "asis", eval = eval_logistic}
 if (res_logistic$p.adjust.method == "none") {
-  star <- symnum(round(res_logistic$p.value, 4), 
-               c(0, 0.001, 0.01, 0.05, 0.1, 1), 
-               symbols = c("***", "**", "*", ".", ""))
+  star <- symnum(round(res_logistic$p.value, 4),
+    c(0, 0.001, 0.01, 0.05, 0.1, 1),
+    symbols = c("***", "**", "*", ".", "")
+  )
   pval <- paste0(sprintf("%.3f", res_logistic$p.value), star)
 } else {
   pval <- res_logistic$adjusted.p
-  star <- symnum(round(res_logistic$adjusted.p, 4), 
-               c(0, 0.001, 0.01, 0.05, 0.1, 1), 
-               symbols = c("***", "**", "*", ".", ""))
-  pval <- cbind(sprintf("%.3f", res_logistic$p.value),
-                paste0(sprintf("%.3f", res_logistic$adjusted.p), star))
+  star <- symnum(round(res_logistic$adjusted.p, 4),
+    c(0, 0.001, 0.01, 0.05, 0.1, 1),
+    symbols = c("***", "**", "*", ".", "")
+  )
+  pval <- cbind(
+    sprintf("%.3f", res_logistic$p.value),
+    paste0(sprintf("%.3f", res_logistic$adjusted.p), star)
+  )
 }
 
-ZT <- symnum(round(res_logistic$deltaR2, 4), 
-             c(0, 0.13, 0.26, 1), 
-             symbols = c("A", "B", "C"))
-JG <- symnum(res_logistic$deltaR2, 
-             c(0, 0.035, 0.07, 1), 
-             symbols = c("A","B", "C"))
-  
-tab <- cbind(sprintf("%.3f", res_logistic$Logistik), pval, 
-             sprintf("%.3f", res_logistic$deltaR2), ZT, JG)
+ZT <- symnum(round(res_logistic$deltaR2, 4),
+  c(0, 0.13, 0.26, 1),
+  symbols = c("A", "B", "C")
+)
+JG <- symnum(res_logistic$deltaR2,
+  c(0, 0.035, 0.07, 1),
+  symbols = c("A", "B", "C")
+)
+
+tab <- cbind(
+  sprintf("%.3f", res_logistic$Logistik), pval,
+  sprintf("%.3f", res_logistic$deltaR2), ZT, JG
+)
 rownames(tab) <- params$itemNames
 if (dim(tab)[2] == 6) {
   colnames(tab) <- c("Stat.", "P-value", "Adj. p-value", "$R^2$", "ZT", "JG")
   add.to.row$command <- command(tab)
 
-  print(xtable(tab, 
-               digits = c(0, 3, 3, 0, 0, 0, 0), 
-               align = c('l', 'r', 'r', 'l', 'c', 'c', 'c')),
-        booktabs = T, comment = F, tabular.environment = "longtable", floating = F, 
-        sanitize.text.function = function(x){x}, add.to.row = add.to.row, 
-        hline.after = c(-1, nrow(tab)))
+  print(
+    xtable(tab,
+      digits = c(0, 3, 3, 0, 0, 0, 0),
+      align = c("l", "r", "r", "l", "c", "c", "c")
+    ),
+    booktabs = T, comment = F, tabular.environment = "longtable", floating = F,
+    sanitize.text.function = function(x) {
+      x
+    }, add.to.row = add.to.row,
+    hline.after = c(-1, nrow(tab))
+  )
 } else {
   colnames(tab) <- c("Stat.", "P-value", "$R^2$", "ZT", "JG")
   add.to.row$command <- command(tab)
 
-  print(xtable(tab,
-               digits = c(0, 3, 0, 0, 0, 0),
-               align = c('l', 'r', 'l', 'c', 'c', 'c')),
-        booktabs = T, comment = F, tabular.environment = "longtable", floating = F,
-        sanitize.text.function = function(x){x}, add.to.row = add.to.row,
-        hline.after = c(-1, nrow(tab)))
+  print(
+    xtable(tab,
+      digits = c(0, 3, 0, 0, 0, 0),
+      align = c("l", "r", "l", "c", "c", "c")
+    ),
+    booktabs = T, comment = F, tabular.environment = "longtable", floating = F,
+    sanitize.text.function = function(x) {
+      x
+    }, add.to.row = add.to.row,
+    hline.after = c(-1, nrow(tab))
+  )
 }
 ```
 
 ```{r DIF-section-logistic-part2, eval = eval_logistic, echo = FALSE, results = 'asis'}
-cat("Signif. codes: 0 '\\mbox{*}\\mbox{*}\\mbox{*}' 0.001 '\\mbox{*}\\mbox{*}' 0.01 '\\mbox{*}' 0.05 '.' 0.1 '&nbsp;' 1 
+cat("Signif. codes: 0 '\\mbox{*}\\mbox{*}\\mbox{*}' 0.001 '\\mbox{*}\\mbox{*}' 0.01 '\\mbox{*}' 0.05 '.' 0.1 '&nbsp;' 1
 
-Effect size is based on Nagelkerke's R^2. 
+Effect size is based on Nagelkerke's R^2.
 
-'A' means negligible, 'B' moderate and 'C' large effect size 
+'A' means negligible, 'B' moderate and 'C' large effect size
 
-The thresholds are: 
+The thresholds are:
 
-Zumbo & Thomas (ZT): 0 'A' 0.13 'B' 0.26 'C' 1 
+Zumbo & Thomas (ZT): 0 'A' 0.13 'B' 0.26 'C' 1
 
 Jodoin & Gierl (JG): 0 'A' 0.035 'B' 0.07 'C' 1.
 ")
@@ -1020,14 +1191,18 @@ Points represent a proportion of a correct answer with respect to standardized t
 
 ```{r DIF-section-logistic-plot, echo = FALSE, fig.height = 4.1, fig.width = 11, eval = eval_logistic_plot}
 for (i in 1:length(params$DIF_logistic_print$DIFitems)) {
-  print(params$DIF_logistic_plot[[i]] + 
-              theme(text = element_text(size = 16), 
-                    plot.title = element_text(size = 16, face = "bold")) + 
-              theme(legend.box.just = "top",
-                    legend.justification = c("left", "top"), 
-                    legend.position = c(0, 1), 
-                    legend.box = "horizontal", 
-                    legend.box.margin = margin(3, 3, 3, 3)))
+  print(params$DIF_logistic_plot[[i]] +
+    theme(
+      text = element_text(size = 16),
+      plot.title = element_text(size = 16, face = "bold")
+    ) +
+    theme(
+      legend.box.just = "top",
+      legend.justification = c("left", "top"),
+      legend.position = c(0, 1),
+      legend.box = "horizontal",
+      legend.box.margin = margin(3, 3, 3, 3)
+    ))
 }
 ```
 
@@ -1045,101 +1220,121 @@ if (eval_DDF) res_DDF <- params$DIF_multinomial_print
 ```
 
 ```{r DIF-section-DDF-part1, eval = eval_DDF, echo = FALSE, results = 'asis'}
-txt1 <- switch(res_DDF$type, 
-               "both" = "Both types were of DDF tested.", 
-               "udif" = "Uniform DDF was tested only.", 
-               "nudif" = "Non-uniform DDF was tested only.")
-txt2 <- ifelse(res_DDF$purification, 
-                     "Item purification was used.", 
-                     "Item purification was not applied.")
-txt3 <- ifelse(is.null(res_DDF$p.adjust.method), 
-               "No p-value adjustment for multiple comparisons was used.", 
-               paste(switch(res_DDF$p.adjust.method, 
-                            "holm" = "Holm's", 
-                            "hochberg" = "Hochberg's", 
-                            "hommel" = "Hommel's", 
-                            "bonferroni" = "Bonferroni", 
-                            "BH" = "Benjamini-Hochberg", 
-                            "BY" = "Benjamini-Yekutieli", 
-                            "fdr" = "Benjamini-Hochberg", 
-                            "none" = "No"), 
-                     "p-value adjustment for multiple comparisons was used."))
-txt4 <- ifelse(any(res_DDF$DDFitems == "No DDF item detected"), 
-               "**No DDF item was detected. **  ", 
-               paste0("**Items detected as DDF: ", paste(params$itemNames[res_DDF$DDFitems], collapse = ", "), ". **  "))
+txt1 <- switch(res_DDF$type,
+  "both" = "Both types were of DDF tested.",
+  "udif" = "Uniform DDF was tested only.",
+  "nudif" = "Non-uniform DDF was tested only."
+)
+txt2 <- ifelse(res_DDF$purification,
+  "Item purification was used.",
+  "Item purification was not applied."
+)
+txt3 <- ifelse(is.null(res_DDF$p.adjust.method),
+  "No p-value adjustment for multiple comparisons was used.",
+  paste(
+    switch(res_DDF$p.adjust.method,
+      "holm" = "Holm's",
+      "hochberg" = "Hochberg's",
+      "hommel" = "Hommel's",
+      "bonferroni" = "Bonferroni",
+      "BH" = "Benjamini-Hochberg",
+      "BY" = "Benjamini-Yekutieli",
+      "fdr" = "Benjamini-Hochberg",
+      "none" = "No"
+    ),
+    "p-value adjustment for multiple comparisons was used."
+  )
+)
+txt4 <- ifelse(any(res_DDF$DDFitems == "No DDF item detected"),
+  "**No DDF item was detected. **  ",
+  paste0("**Items detected as DDF: ", paste(params$itemNames[res_DDF$DDFitems], collapse = ", "), ". **  ")
+)
 
-cat(paste("
+cat(paste(
+  "
 ## DDF detection using multinomial regression method
 
 Differential Distractor Functioning (DDF) occurs when respondents from different groups but with the same knowledge have a different probability of selecting at least one distractor choice. DDF is examined here by a  multinomial log-linear regression model with Z-score and group membership as covariates. \n
 
 ### Summary table \n",
-
-txt1, txt2, txt3, "\n\n",
-txt4, "\\vspace{1em}"))
+  txt1, txt2, txt3, "\n\n",
+  txt4, "\\vspace{1em}"
+))
 ```
 
 ```{r DIF-section-DDF-table, echo = FALSE, results = "asis", eval = eval_DDF}
 if (res_DDF$p.adjust.method == "none") {
-      pval <- res_DDF$pval
-      star <- ifelse(pval < 0.001, "***", 
-                 ifelse(pval < 0.01, "**",
-                        ifelse(pval < 0.05, "*",
-                               ifelse(pval < 0.1, ".", ""))))
-      pval <- paste(sprintf("%.3f", res_DDF$pval), star, sep = "")
-    } else {
-      star <- ifelse(res_DDF$adj.pval < 0.001, "***", 
-                 ifelse(res_DDF$adj.pval < 0.01, "**",
-                        ifelse(res_DDF$adj.pval < 0.05, "*",
-                               ifelse(res_DDF$adj.pval < 0.1, ".", ""))))
-      apval <- paste(sprintf("%.3f", res_DDF$adj.pval), star, sep = "")
-      pval <- cbind(sprintf("%.3f", res_DDF$pval), apval)
-    }
-    
+  pval <- res_DDF$pval
+  star <- ifelse(pval < 0.001, "***",
+    ifelse(pval < 0.01, "**",
+      ifelse(pval < 0.05, "*",
+        ifelse(pval < 0.1, ".", "")
+      )
+    )
+  )
+  pval <- paste(sprintf("%.3f", res_DDF$pval), star, sep = "")
+} else {
+  star <- ifelse(res_DDF$adj.pval < 0.001, "***",
+    ifelse(res_DDF$adj.pval < 0.01, "**",
+      ifelse(res_DDF$adj.pval < 0.05, "*",
+        ifelse(res_DDF$adj.pval < 0.1, ".", "")
+      )
+    )
+  )
+  apval <- paste(sprintf("%.3f", res_DDF$adj.pval), star, sep = "")
+  pval <- cbind(sprintf("%.3f", res_DDF$pval), apval)
+}
+
 tab <- cbind(sprintf("%.3f", res_DDF$Sval), pval)
 
 if (ncol(tab) == 2) {
-      colnames(tab) <- c("Stat.", "P-value")
-      rownames(tab) <- params$itemNames
-      add.to.row$command <- command(tab)
-      print(xtable(tab, align = c('l', 'c', 'l')),
-            booktabs = T, comment = F,
-            tabular.environment = "longtable", floating = F, 
-            add.to.row = add.to.row, hline.after = c(-1, nrow(tab)))
+  colnames(tab) <- c("Stat.", "P-value")
+  rownames(tab) <- params$itemNames
+  add.to.row$command <- command(tab)
+  print(xtable(tab, align = c("l", "c", "l")),
+    booktabs = T, comment = F,
+    tabular.environment = "longtable", floating = F,
+    add.to.row = add.to.row, hline.after = c(-1, nrow(tab))
+  )
 } else {
-      colnames(tab) <- c("Stat.", "P-value", "Adj. p-value")
-      rownames(tab) <- params$itemNames
-      add.to.row$command <- command(tab)
-      print(xtable(tab, align = c('l', 'c', 'c', 'l')),
-            booktabs = T, comment = F,
-            tabular.environment = "longtable", floating = F, 
-            add.to.row = add.to.row, hline.after = c(-1, nrow(tab)))
+  colnames(tab) <- c("Stat.", "P-value", "Adj. p-value")
+  rownames(tab) <- params$itemNames
+  add.to.row$command <- command(tab)
+  print(xtable(tab, align = c("l", "c", "c", "l")),
+    booktabs = T, comment = F,
+    tabular.environment = "longtable", floating = F,
+    add.to.row = add.to.row, hline.after = c(-1, nrow(tab))
+  )
 }
 ```
 
 ```{r DIF-section-DDF-part2, eval = eval_DDF, echo = FALSE, results = 'asis'}
 cat("
-Signif. codes: 0 '\\mbox{*}\\mbox{*}\\mbox{*}' 0.001 '\\mbox{*}\\mbox{*}' 0.01 '\\mbox{*}' 0.05 '.' 0.1 '&nbsp;' 1  
+Signif. codes: 0 '\\mbox{*}\\mbox{*}\\mbox{*}' 0.001 '\\mbox{*}\\mbox{*}' 0.01 '\\mbox{*}' 0.05 '.' 0.1 '&nbsp;' 1
 ")
 ```
 
 ```{r DIF-section-DDF-part3, eval = eval_DIF_plot, echo = FALSE, results = 'asis'}
 txt <- ifelse(ncol(tab) < 26, "\\pagebreak", "")
-cat(paste(txt,
-"
+cat(paste(
+  txt,
+  "
 
 ### Characteristic curves of DDF items
 
-Points represent a proportion of a selected answer with respect to standardized total score. Their size is determined by count of the respondents who achieved a given level of standardized total score and who selected a given option with respect to the group membership. 
-"))
+Points represent a proportion of a selected answer with respect to standardized total score. Their size is determined by count of the respondents who achieved a given level of standardized total score and who selected a given option with respect to the group membership.
+"
+))
 ```
 
 
 ```{r DIF-section-DDF-plot, echo = FALSE, fig.height = 4.1, fig.width = 11, eval = eval_DIF_plot}
 for (i in 1:length(params$DIF_multinomial_print$DDFitems)) {
-  print(params$DIF_multinomial_plot[[i]] + 
-              theme(text = element_text(size = 16), 
-                    plot.title = element_text(size = 16, face = "bold")))
+  print(params$DIF_multinomial_plot[[i]] +
+    theme(
+      text = element_text(size = 16),
+      plot.title = element_text(size = 16, face = "bold")
+    ))
 }
 ```
 
@@ -1150,7 +1345,7 @@ cat("\\pagebreak")
 <!-- SESSION INFO -->
 
 ```{r session-info-settings, echo = FALSE, results = 'asis'}
-show_sessioninfo <- (params$sessionInfo == 'yes')
+show_sessioninfo <- (params$sessionInfo == "yes")
 ```
 
 ```{r session-info-part1, echo = FALSE, results = 'asis', eval = show_sessioninfo}
@@ -1162,5 +1357,5 @@ Session info provides information about settings of the R console and used packa
 ```
 
 ```{r session-info-print, echo = FALSE, results = "markup", eval = show_sessioninfo}
-sessionInfo()  
+sessionInfo()
 ```

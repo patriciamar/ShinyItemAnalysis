@@ -49,31 +49,31 @@ report_IRT_binary_model <- reactive({
 report_IRT_binary_equation <- reactive({
   if (input$IRT_binary_summary_parametrization == "irt") {
     txt1 <- switch(input$report_IRT_binary_model,
-                   "none" = "",
-                   "Rasch" = "{(\\theta_p - b_i)}",
-                   "1PL" = "{a(\\theta_p - b_i)}",
-                   "2PL" = "{a_i(\\theta_p - b_i)}",
-                   "3PL" = "{a_i(\\theta_p - b_i)}",
-                   "4PL" = "{a_i(\\theta_p - b_i)}"
+      "none" = "",
+      "Rasch" = "{(\\theta_p - b_i)}",
+      "1PL" = "{a(\\theta_p - b_i)}",
+      "2PL" = "{a_i(\\theta_p - b_i)}",
+      "3PL" = "{a_i(\\theta_p - b_i)}",
+      "4PL" = "{a_i(\\theta_p - b_i)}"
     )
   } else {
     txt1 <- switch(input$report_IRT_binary_model,
-                   "none" = "",
-                   "Rasch" = "{\\beta_{i0} + \\theta_p}",
-                   "1PL" = "{\\beta_{i0} + \\beta_{1} \\theta_p}",
-                   "2PL" = "{\\beta_{i0} + \\beta_{i1} \\theta_p}",
-                   "3PL" = "{\\beta_{i0} + \\beta_{i1} \\theta_p}",
-                   "4PL" = "{\\beta_{i0} + \\beta_{i1} \\theta_p}"
+      "none" = "",
+      "Rasch" = "{\\beta_{i0} + \\theta_p}",
+      "1PL" = "{\\beta_{i0} + \\beta_{1} \\theta_p}",
+      "2PL" = "{\\beta_{i0} + \\beta_{i1} \\theta_p}",
+      "3PL" = "{\\beta_{i0} + \\beta_{i1} \\theta_p}",
+      "4PL" = "{\\beta_{i0} + \\beta_{i1} \\theta_p}"
     )
   }
 
   txt2 <- switch(input$report_IRT_binary_model,
-                 "none" = "",
-                 "Rasch" = "",
-                 "1PL" = "",
-                 "2PL" = "",
-                 "3PL" = "c_i + (1 - c_i)",
-                 "4PL" = "c_i + (d_i - c_i)"
+    "none" = "",
+    "Rasch" = "",
+    "1PL" = "",
+    "2PL" = "",
+    "3PL" = "c_i + (1 - c_i)",
+    "4PL" = "c_i + (d_i - c_i)"
   )
 
   if (input$report_IRT_binary_model == "none") {
@@ -212,7 +212,7 @@ report_IRT_binary_coef <- reactive({
 
     item_fit_cols <- c("S_X2", "df.S_X2", "p.S_X2")
 
-    tab_fit <- itemfit(fit)[, item_fit_cols]
+    tab_fit <- itemfit(fit, na.rm = TRUE)[, item_fit_cols]
 
     if (!is.null(tryCatch(round(tab_fit, 3), error = function(e) {
       cat("ERROR : ", conditionMessage(e), "\n")
@@ -257,7 +257,7 @@ report_IRT_binary_ability_plot <- reactive({
 
     df <- data.frame(fscore, zscore)
 
-    g <- ggplot(df, aes_string("zscore", "fscore")) +
+    g <- ggplot(df, aes(.data$zscore, .data$fscore)) +
       geom_point(size = 3) +
       labs(x = "Standardized total score", y = "Factor score") +
       theme_app() +
@@ -416,21 +416,21 @@ observeEvent(input$generate, {
       DIF_total_table = {
         if (groupPresent()) {
           if (input$histCheck) {
-            DIF_total_table_Input()
+            DIF_total_table()
           }
         }
       },
       DIF_total_hist = {
         if (groupPresent()) {
           if (input$histCheck) {
-            DIF_total_hist_Input()
+            DIF_total_histogram()
           }
         }
       },
       DIF_total_ttest = {
         if (groupPresent()) {
           if (input$histCheck) {
-            DIF_total_ttest_Input()
+            DIF_total_ttest()
           }
         }
       },
@@ -439,14 +439,14 @@ observeEvent(input$generate, {
       deltaplot = {
         if (groupPresent()) {
           if (input$deltaplotCheck) {
-            deltaplotInput_report()
+            report_DIF_DP_plot()
           }
         }
       },
       DP_text_normal = {
         if (groupPresent()) {
           if (input$deltaplotCheck) {
-            deltaGpurn_report()
+            report_DIF_DP()
           }
         }
       },
@@ -480,14 +480,14 @@ observeEvent(input$generate, {
       DIF_multinomial_print = {
         if (groupPresent()) {
           if (input$multiCheck) {
-            DIF_multinomial_model_report()
+            report_DIF_multinomial_method()
           }
         }
       },
       DIF_multinomial_plot = {
         if (groupPresent()) {
           if (input$multiCheck) {
-            DIF_multinomial_plot_report()
+            report_DIF_multinomial_plot()
           }
         }
       },
@@ -608,21 +608,21 @@ output$report <- downloadHandler(
       DIF_total_table = {
         if (groupPresent()) {
           if (input$histCheck) {
-            DIF_total_table_Input()
+            DIF_total_table()
           }
         }
       },
       DIF_total_hist = {
         if (groupPresent()) {
           if (input$histCheck) {
-            DIF_total_hist_Input()
+            DIF_total_histogram()
           }
         }
       },
       DIF_total_ttest = {
         if (groupPresent()) {
           if (input$histCheck) {
-            DIF_total_ttest_Input()
+            DIF_total_ttest()
           }
         }
       },
@@ -631,14 +631,14 @@ output$report <- downloadHandler(
       DIF_deltaplot = {
         if (groupPresent()) {
           if (input$deltaplotCheck) {
-            deltaplotInput_report()
+            report_DIF_DP_plot()
           }
         }
       },
       DIF_deltaplot_text = {
         if (groupPresent()) {
           if (input$deltaplotCheck) {
-            deltaGpurn_report()
+            report_DIF_DP()
           }
         }
       },
@@ -672,14 +672,14 @@ output$report <- downloadHandler(
       DIF_multinomial_print = {
         if (groupPresent()) {
           if (input$multiCheck) {
-            DIF_multinomial_model_report()
+            report_DIF_multinomial_method()
           }
         }
       },
       DIF_multinomial_plot = {
         if (groupPresent()) {
           if (input$multiCheck) {
-            DIF_multinomial_plot_report()
+            report_DIF_multinomial_plot()
           }
         }
       },

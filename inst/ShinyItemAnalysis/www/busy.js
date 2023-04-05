@@ -1,11 +1,11 @@
 setInterval(function(){
-  if ($('html').attr('class')=='shiny-busy') {
+  if ($('html').hasClass('shiny-busy')) {
     setTimeout(function() {
-      if ($('html').attr('class')=='shiny-busy') {
-        $('div.busy').show()
+      if ($('html').hasClass('shiny-busy')) {
+        $('div.busy').show();
       }
-    }, 2400)
+    }, 2400);
   } else {
-    $('div.busy').hide()
+    $('div.busy').hide();
   }
-}, 100)
+}, 100);

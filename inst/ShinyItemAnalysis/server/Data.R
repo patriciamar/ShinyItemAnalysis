@@ -34,7 +34,6 @@ dataset$key_upload_status <- "toy"
 # toy data is uploaded when user clicks on different toy dataset or in case that
 # user clicks on "Unload data" button
 observeEvent(c(input$data_toydata, data_csvdata_current_status$unloaded == 1), {
-
   toydata <- input$data_toydata
   toydata_name <- strsplit(toydata, split = "_")[[1]][1]
   toydata_package <- strsplit(toydata, split = "_")[[1]][2]
@@ -42,7 +41,26 @@ observeEvent(c(input$data_toydata, data_csvdata_current_status$unloaded == 1), {
 
   dataset$data_status <- "OK"
 
-  if (toydata_name == "LearningToLearn" & toydata_subset == "6") {
+  if (toydata_name == "CLoSE") {
+    # ** CLoSE ####
+    toydata_data_type <- "binary"
+
+    do.call(data, args = list(paste0(toydata_name), package = toydata_package))
+    toydata_binary <- get(paste0(toydata_name))[1:19]
+
+    toydata_ordinal <- toydata_binary
+    toydata_continuous <- toydata_ordinal
+    toydata_nominal <- toydata_ordinal
+
+    toydata_group <- get(paste0(toydata_name))[, "gender"]
+    toydata_criterion <- "missing"
+    toydata_DIFmatching <- "missing"
+
+    toydata_minimal <- NULL
+    toydata_maximal <- NULL
+
+    toydata_key <- rep(1, ncol(toydata_binary))
+  } else if (toydata_name == "LearningToLearn" & toydata_subset == "6") {
     # ** Learning to learn, grade 6 ####
     toydata_data_type <- "binary"
 
@@ -61,7 +79,6 @@ observeEvent(c(input$data_toydata, data_csvdata_current_status$unloaded == 1), {
     toydata_maximal <- NULL
 
     toydata_key <- rep(1, ncol(toydata_binary))
-
   } else if (toydata_name == "LearningToLearn" & toydata_subset == "9") {
     # ** Learning to learn, grade 9 ####
     toydata_data_type <- "binary"
@@ -82,7 +99,6 @@ observeEvent(c(input$data_toydata, data_csvdata_current_status$unloaded == 1), {
     toydata_maximal <- NULL
 
     toydata_key <- rep(1, ncol(toydata_binary))
-
   } else if (toydata_name == "dataMedicalgraded") {
     # ** Medical graded ####
     toydata_data_type <- "ordinal"
@@ -105,7 +121,6 @@ observeEvent(c(input$data_toydata, data_csvdata_current_status$unloaded == 1), {
     # key2binary is much more faster than the old approach, but it is
     # only usable when maximum score is considered as the key
     toydata_binary <- mirt::key2binary(toydata_ordinal, toydata_key)
-
   } else if (toydata_name == "Science") {
     # ** Science ####
     toydata_data_type <- "ordinal"
@@ -127,8 +142,30 @@ observeEvent(c(input$data_toydata, data_csvdata_current_status$unloaded == 1), {
     # key2binary is much more faster than the old approach, but it is
     # only usable when maximum score is considered as the key
     toydata_binary <- mirt::key2binary(toydata_ordinal, toydata_key)
+  } else if (toydata_name == "Anxiety") {
+    # ** Anxiety ####
+    toydata_data_type <- "ordinal"
 
-  } else if (toydata_name == "AIBS") {
+    do.call(data, args = list(paste0(toydata_name), package = toydata_package))
+
+    toydata_ordinal <- get(paste0(toydata_name))
+
+    toydata_group <- toydata_ordinal[, "gender"]
+    toydata_criterion <- "missing"
+    toydata_DIFmatching <- "missing"
+
+    toydata_ordinal <- toydata_ordinal[, paste0("R", 1:29)]
+    toydata_continuous <- toydata_ordinal
+    toydata_nominal <- toydata_ordinal
+
+    toydata_minimal <- sapply(toydata_ordinal, min, na.rm = TRUE)
+    toydata_maximal <- sapply(toydata_ordinal, max, na.rm = TRUE)
+
+    toydata_key <- rep(2, 29) # never vs. at least rarely
+    # key2binary is much more faster than the old approach, but it is
+    # only usable when maximum score is considered as the key
+    toydata_binary <- mirt::key2binary(toydata_ordinal, toydata_key)
+  } else if (toydata_name == "AIBS") { # not used
     # ** AIBS ####
     toydata_data_type <- "continuous"
 
@@ -147,7 +184,6 @@ observeEvent(c(input$data_toydata, data_csvdata_current_status$unloaded == 1), {
     toydata_maximal <- "missing"
 
     toydata_key <- "missing"
-
   } else {
     # ** Nominal datasets - GMAT, HCI, MSATB, Medical 100 ####
     toydata_data_type <- "nominal"
@@ -175,10 +211,20 @@ observeEvent(c(input$data_toydata, data_csvdata_current_status$unloaded == 1), {
     toydata_binary <- toydata_ordinal
   }
 
+  # TODO we don't perform any expensive operations on data frames,
+  # so data.table is a bit superfluous and can be dropped as a dependency
+  # instead, we should keep an eye on the classes (numeric takes more memory
+  # than integers etc.) and possibly replace read.csv with something faster ({vroom})
+  # especially for factors, data.table makes smaller objects than base R,
+  # but tibbles are at the same level and underliyng {vctrs} makes everything lightning-fast
+
   # ** Saving into reactiveValues ####
   dataset$nominal <- as.data.table(toydata_nominal)
   dataset$ordinal <- as.data.table(toydata_ordinal)
   dataset$binary <- as.data.table(toydata_binary)
+
+  # continuous is not supported and is a relic of AIBS introduction, which
+  # is now "solved" using SIA module
   dataset$continuous <- as.data.table(toydata_continuous)
 
   dataset$name <- toydata_name
@@ -198,7 +244,6 @@ observeEvent(c(input$data_toydata, data_csvdata_current_status$unloaded == 1), {
 
 # toy data is uploaded when user clicks on "Upload data" button
 observeEvent(input$data_upload, {
-
   csvdata_data <- NULL
   csvdata_key <- NULL
   csvdata_group <- NULL
@@ -233,9 +278,9 @@ observeEvent(input$data_upload, {
     dataset$data_status <- "OK"
     csvdata_data_name <- gsub(".csv", "", input$data_csvdata_main[[1]])
 
-    # assert data are truly numeric
+    # ensure data are truly binary (integers are faster than numeric)
     if (input$data_csvdata_data_type == "binary") {
-      csvdata_data <- modify(csvdata_data, as.numeric)
+      csvdata_data <- modify(csvdata_data, as.integer)
     }
 
     # ** Loading minimal/maximual values for ordinal data ####
@@ -509,9 +554,10 @@ nominal <- reactive({
 continuous <- reactive({
   data <- dataset$continuous
 
-  if (!input$data_csvdata_keep_missing) {
-    data[is.na(data)] <- 0
+  if (input$data_csvdata_replace_missing) {
+    data[is.na(data)] <- 0L
   }
+
   data
 })
 
@@ -527,8 +573,9 @@ ordinal <- reactive({
     errorClass = "validation-error"
   )
 
-  if (!input$data_csvdata_keep_missing) {
-    data[is.na(data)] <- 0
+
+  if (input$data_csvdata_replace_missing) {
+    data[is.na(data)] <- 0L
   }
   data
 })
@@ -545,8 +592,8 @@ binary <- reactive({
     errorClass = "validation-error"
   )
 
-  if (!input$data_csvdata_keep_missing) {
-    data[is.na(data)] <- 0
+  if (input$data_csvdata_replace_missing) {
+    data[is.na(data)] <- 0L
   }
   data
 })
@@ -564,11 +611,12 @@ key <- reactive({
     )
   } else {
     # incorrect dimension of key
-    validate(need(
-      ncol(nominal()) == length(dataset$key),
-      "The length of the key needs to be the same as the number of the items of the main dataset!"
-    ),
-    errorClass = "validation-error"
+    validate(
+      need(
+        ncol(nominal()) == length(dataset$key),
+        "The length of the key needs to be the same as the number of the items of the main dataset!"
+      ),
+      errorClass = "validation-error"
     )
   }
   dataset$key
@@ -578,11 +626,12 @@ key <- reactive({
 minimal <- reactive({
   if (!is.null(dataset$minimal)) {
     # incorrect dimension of minimal values
-    validate(need(
-      ncol(nominal()) == length(dataset$minimal),
-      "The length of minimal values needs to be the same as the number of items in the main dataset!"
-    ),
-    errorClass = "validation-error"
+    validate(
+      need(
+        ncol(nominal()) == length(dataset$minimal),
+        "The length of minimal values needs to be the same as the number of items in the main dataset!"
+      ),
+      errorClass = "validation-error"
     )
   }
   dataset$minimal
@@ -592,11 +641,12 @@ minimal <- reactive({
 maximal <- reactive({
   if (!is.null(dataset$minimal)) {
     # incorrect dimension of maximal values
-    validate(need(
-      ncol(nominal()) == length(dataset$maximal),
-      "The length of maximal values needs to be the same as the number of items in the main dataset!"
-    ),
-    errorClass = "validation-error"
+    validate(
+      need(
+        ncol(nominal()) == length(dataset$maximal),
+        "The length of maximal values needs to be the same as the number of items in the main dataset!"
+      ),
+      errorClass = "validation-error"
     )
   }
   dataset$maximal
@@ -604,21 +654,23 @@ maximal <- reactive({
 
 # ** Group ####
 group <- reactive({
-  if (length(dataset$group) == 1 & any(dataset$group == "missing")) {
+  if (length(dataset$group) == 1L & any(dataset$group == "missing")) {
     # missing group
-    validate(need(
-      dataset$group != "missing",
-      "The group variable is not provided in your data, the DIF and DDF analyses are not available."
-    ),
-    errorClass = "validation-warning"
+    validate(
+      need(
+        dataset$group != "missing",
+        "The group variable is not provided in your data, the DIF and DDF analyses are not available."
+      ),
+      errorClass = "validation-warning"
     )
   } else {
     # incorrect dimension of group variable
-    validate(need(
-      nrow(nominal()) == length(dataset$group),
-      "The length of the group variable needs to be the same as the number of observations in the main dataset!"
-    ),
-    errorClass = "validation-error"
+    validate(
+      need(
+        nrow(nominal()) == length(dataset$group),
+        "The length of the group variable needs to be the same as the number of observations in the main dataset!"
+      ),
+      errorClass = "validation-error"
     )
   }
   dataset$group
@@ -626,21 +678,23 @@ group <- reactive({
 
 # ** Criterion ####
 criterion <- reactive({
-  if (length(dataset$criterion) == 1 & any(dataset$criterion == "missing")) {
+  if (length(dataset$criterion) == 1L & any(dataset$criterion == "missing")) {
     # missing criterion
-    validate(need(
-      dataset$criterion != "missing",
-      "The criterion variable is not provided in your data, the criterion validity analysis is not available."
-    ),
-    errorClass = "validation-warning"
+    validate(
+      need(
+        dataset$criterion != "missing",
+        "The criterion variable is not provided in your data, the criterion validity analysis is not available."
+      ),
+      errorClass = "validation-warning"
     )
   } else {
     # incorrect dimension of criterion variable
-    validate(need(
-      nrow(nominal()) == length(dataset$criterion),
-      "The length of the criterion variable needs to be the same as the number of observations in the main dataset!"
-    ),
-    errorClass = "validation-error"
+    validate(
+      need(
+        nrow(nominal()) == length(dataset$criterion),
+        "The length of the criterion variable needs to be the same as the number of observations in the main dataset!"
+      ),
+      errorClass = "validation-error"
     )
   }
   dataset$criterion
@@ -655,19 +709,21 @@ crit_wo_val <- reactive({
 DIFmatching <- reactive({
   if (length(dataset$DIFmatching) == 1 & any(dataset$DIFmatching == "missing")) {
     # missing DIF matching variable
-    validate(need(
-      dataset$DIFmatching != "missing",
-      "The observed score variable is not provided in your data, the analyses will use the total scores."
-    ),
-    errorClass = "validation-warning"
+    validate(
+      need(
+        dataset$DIFmatching != "missing",
+        "The observed score variable is not provided in your data, the analyses will use the total scores."
+      ),
+      errorClass = "validation-warning"
     )
   } else {
     # incorrect dimension of DIF matching variable
-    validate(need(
-      nrow(nominal()) == length(dataset$DIFmatching), # changed to binary from nominal
-      "The length of the observed score variable needs to be the same as the number of observations in the main dataset!"
-    ),
-    errorClass = "validation-error"
+    validate(
+      need(
+        nrow(nominal()) == length(dataset$DIFmatching), # changed to binary from nominal
+        "The length of the observed score variable needs to be the same as the number of observations in the main dataset!"
+      ),
+      errorClass = "validation-error"
     )
   }
   dataset$DIFmatching
@@ -1076,6 +1132,17 @@ output$data_check_group_withNA_confirmation <- renderUI({
 data_description_Input <- reactive({
   data_name <- input$data_toydata
   txt <- switch(data_name,
+    Anxiety_ShinyItemAnalysis = "<code>Anxiety</code> is a real dataset originally from the <code>lordif</code> package.
+                This dataset contains responses of 766 respondents (369 males, coded as <code>'0'</code>, 397 females coded
+                as <code>'1'</code>) sampled from a general population to the PROMIS Anxiety scale on 29 Likert-scale items
+                with a common rating scale (<code>'1'</code> = Never, <code>'2'</code> = Rarely, <code>'3'</code> = Sometimes,
+                <code>'4'</code> = Often, and <code>'5'</code> = Always). For analyses where dichotomous items are necessary
+                (e.g., logistic models in Regression, IRT models, or DIF detection methods), data are binarized &ndash;
+                <code>'1'</code> means at least rarely on original scale, i.e., <code>'2'</code>-<code>'5'</code>; otherwise
+                the item is scored as <code>'0'</code>. ",
+    CLoSE_ShinyItemAnalysis = "<code>CLoSE</code> is a real dataset containing responses of 2,634 students (1,324 boys, coded
+                as <code>'0'</code>, 1,310 girls coded as <code>'1'</code>) on 19 dichotomously scored items in a test of
+                reading skills, version B, taken in the 6th grade (Hladka, Martinkova, & Magis, 2023). ",
     GMAT_difNLR = "<code>GMAT</code> <a href='https://doi.org/10.1187/cbe.16-10-0307' target='_blank'>(Martinkova et al., 2017)</a>
                 is a generated dataset based on the parameters of a real Graduate Management Admission Test (GMAT; Kingston et al., 1985)
                 from the <code>difNLR</code> package. This dataset represents the responses of 2,000 subjects (1,000 males coded as
@@ -1293,12 +1360,15 @@ output$data_DIFmatching_summary <- renderPrint({
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 # * Main dataset ####
+
+data_exploration_main_input <- reactive({
+  data_table <- nominal()
+  colnames(data_table) <- item_names()
+  data_table
+})
+
 output$data_exploration_main <- DT::renderDataTable(
-  {
-    data_table <- nominal()
-    colnames(data_table) <- item_names()
-    data_table
-  },
+  data_exploration_main_input(),
   rownames = FALSE,
   style = "bootstrap",
   options = list(
@@ -1309,6 +1379,16 @@ output$data_exploration_main <- DT::renderDataTable(
     dom = "tipr"
   )
 )
+
+output$data_exploration_main_db <- downloadHandler(
+  filename = function() "main_dataset.csv",
+  content = function(file) {
+    write.csv(data_exploration_main_input(), file,
+      row.names = FALSE, quote = FALSE
+    )
+  }
+)
+
 
 # * Key ####
 output$data_exploration_key <- DT::renderDataTable(
@@ -1328,13 +1408,24 @@ output$data_exploration_key <- DT::renderDataTable(
   )
 )
 
-# * Binary data with total score ####
+
+output$data_exploration_key_db <- downloadHandler(
+  filename = function() "key.csv",
+  content = function(file) {
+    data.frame(key = key()) %>%
+      write.csv(file = file, row.names = FALSE, quote = FALSE)
+  }
+)
+
+# * Binary data ####
+data_exploration_binary_input <- reactive({
+  data_table <- binary()
+  colnames(data_table) <- item_names()
+  data_table
+})
+
 output$data_exploration_binary <- DT::renderDataTable(
-  {
-    data_table <- binary()
-    colnames(data_table) <- item_names()
-    data_table
-  },
+  data_exploration_binary_input(),
   rownames = FALSE,
   style = "bootstrap",
   options = list(
@@ -1346,16 +1437,26 @@ output$data_exploration_binary <- DT::renderDataTable(
   )
 )
 
+output$data_exploration_binary_db <- downloadHandler(
+  filename = function() "scored_dataset.csv",
+  content = function(file) {
+    data_exploration_binary_input() %>%
+      write.csv(file = file, row.names = FALSE, quote = FALSE)
+  }
+)
+
 # all vector variables into one DT
+data_exploration_variables_input <- reactive({
+  tibble(
+    Group = ifelse(dataset$group != "missing", group(), "NA"),
+    Criterion = ifelse(dataset$criterion != "missing", criterion(), "NA"),
+    "Total score" = total_score(),
+    "Observed score vector" = ifelse(dataset$DIFmatching != "missing", DIFmatching(), "NA")
+  )
+})
+
 output$data_exploration_variables <- DT::renderDataTable(
-  {
-    tibble(
-      Group = ifelse(dataset$group != "missing", group(), "NA"),
-      Criterion = ifelse(dataset$criterion != "missing", criterion(), "NA"),
-      "Total score" = total_score(),
-      "Observed score vector" = ifelse(dataset$DIFmatching != "missing", DIFmatching(), "NA")
-    )
-  },
+  data_exploration_variables_input(),
   rownames = TRUE,
   style = "bootstrap",
   options = list(
@@ -1366,4 +1467,46 @@ output$data_exploration_variables <- DT::renderDataTable(
     scrollCollapse = TRUE,
     dom = "tipr"
   )
+)
+
+
+
+
+output$data_exploration_group_db <- downloadHandler(
+  filename = function() "group.csv",
+  content = function(file) {
+    data_exploration_variables_input() %>%
+      select(group = Group) %>%
+      write.csv(file = file, row.names = FALSE, quote = FALSE)
+  }
+)
+
+
+output$data_exploration_criterion_db <- downloadHandler(
+  filename = function() "criterion.csv",
+  content = function(file) {
+    data_exploration_variables_input() %>%
+      select(criterion = Criterion) %>%
+      write.csv(file = file, row.names = FALSE, quote = FALSE)
+  }
+)
+
+
+output$data_exploration_total_score_db <- downloadHandler(
+  filename = function() "total_score.csv",
+  content = function(file) {
+    data_exploration_variables_input() %>%
+      select(total_score = "Total score") %>%
+      write.csv(file = file, row.names = FALSE, quote = FALSE)
+  }
+)
+
+
+output$data_exploration_observed_score_db <- downloadHandler(
+  filename = function() "observed_score.csv",
+  content = function(file) {
+    data_exploration_variables_input() %>%
+      select(observed_score = "Observed score vector") %>%
+      write.csv(file = file, row.names = FALSE, quote = FALSE)
+  }
 )

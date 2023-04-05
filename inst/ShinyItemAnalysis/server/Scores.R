@@ -66,38 +66,42 @@ observe({
 
 # ** Total scores summary table ####
 totalscores_table_Input <- reactive({
-  sc <- total_score()
-  n <- length(sc)
-
-  tab <- data.table(rbind(c(
-    n,
-    min(sc, na.rm = TRUE),
-    max(sc, na.rm = TRUE),
-    mean(sc, na.rm = TRUE),
-    median(sc, na.rm = TRUE),
-    sd(sc, na.rm = TRUE),
-    ShinyItemAnalysis:::skewness(sc),
-    ShinyItemAnalysis:::kurtosis(sc)
-  )))
-  colnames(tab) <- c("n", "Min", "Max", "Mean", "Median", "SD", "Skewness", "Kurtosis")
-  tab$n <- as.integer(tab$n)
-  tab
+  tibble(ts = total_score()) %>%
+    summarise(
+      across(
+        ts,
+        list(
+          n = length,
+          `n<sub>c</sub>` = ~ sum(!is.na(.x)),
+          Min = ~ min(.x, na.rm = TRUE),
+          Max = ~ max(.x, na.rm = TRUE),
+          Mean = ~ mean(.x, na.rm = TRUE),
+          Median = ~ median(.x, na.rm = TRUE),
+          SD = ~ sd(.x, na.rm = TRUE),
+          Skewness = ~ ShinyItemAnalysis:::skewness(.x),
+          Kurtosis = ~ ShinyItemAnalysis:::kurtosis(.x)
+        ),
+        .names = "{.fn}"
+      )
+    )
 })
 
 # ** Output total scores summary table ####
 output$totalscores_table <- renderTable(
-  {
-    totalscores_table_Input()
-  },
+  totalscores_table_Input(),
   digits = 2,
-  include.rownames = FALSE,
-  include.colnames = TRUE
+  sanitize.colnames.function = function(x) x
 )
 
-# ** Histogram of total scores ####
-totalscores_histogram_Input <- reactive({
+# ** Warning for missing values ####
+output$totalscores_histogram_NA_warning <- renderUI({
+  HTML(na_score())
+})
+
+totalscores_histogram_data <- reactive({
   sc <- total_score()
-  bin <- as.numeric(input$slider_totalscores_histogram)
+  sc <- na.omit(sc)
+  bin <- input$slider_totalscores_histogram
 
   df <- data.frame(
     Score = sc,
@@ -107,11 +111,22 @@ totalscores_histogram_Input <- reactive({
   )
 
   binwidth <- min(abs(diff(unique(sc))))
+
   cols <- c("red", "gray", "blue")[c("red", "gray", "blue") %in% unique(df$Group)]
   df$Group <- factor(df$Group, cols)
 
+  list(df = df, cols = cols, binwidth = binwidth)
+})
+
+# ** Histogram of total scores ####
+totalscores_histogram_Input <- reactive({
+  hist_data <- totalscores_histogram_data()
+  df <- hist_data$df
+  cols <- hist_data$cols
+  binwidth <- hist_data$binwidth
+
   ggplot(df, aes(x = Score, fill = Group)) +
-    geom_histogram(aes(y = ..count.. / sum(..count..)), binwidth = binwidth, color = "black") +
+    geom_histogram(aes(y = after_stat(count / sum(count))), binwidth = binwidth, color = "black") +
     scale_fill_manual(values = cols) +
     labs(
       x = "Total score",
@@ -122,22 +137,12 @@ totalscores_histogram_Input <- reactive({
 
 # ** Output histogram of total scores ####
 output$totalscores_histogram <- renderPlotly({
-  sc <- total_score()
-  bin <- as.numeric(input$slider_totalscores_histogram)
+  df <- totalscores_histogram_data()$df
 
-  df <- data.frame(
-    Score = sc,
-    Group = ifelse(sc == bin, "gray",
-      ifelse(sc < bin, "red", "blue")
-    )
-  )
   dfCount <- data.frame(table(df$Score))
   colnames(dfCount) <- c("Score", "Count")
   df <- merge(df, dfCount)
 
-  binwidth <- min(abs(diff(unique(sc))))
-  cols <- c("red", "gray", "blue")[c("red", "gray", "blue") %in% unique(df$Group)]
-  df$Group <- factor(df$Group, cols)
 
   g <- totalscores_histogram_Input()
   p <- ggplotly(g)
@@ -214,9 +219,13 @@ output$standardscores_tooltip_tscore <- renderUI({
   )
 })
 
+output$standardscores_NA_warning <- renderUI({
+  HTML(na_score())
+})
+
 # ** Table for scores ####
 standardscores_table_Input <- reactive({
-  sc <- total_score()
+  sc <- na.omit(total_score())
   # k <- ifelse(is.character(key()), length(key()), sum(key()))
   sc_max <- max(sc, na.rm = TRUE)
 
