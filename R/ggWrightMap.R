@@ -104,7 +104,7 @@ ggWrightMap <- function(theta, b, binwidth = 0.5, color = "blue", size = 15,
 #'
 #' @keywords internal
 #'
-#' @importFrom ggplot2 unit aes_string geom_histogram xlim ylab coord_flip
+#' @importFrom ggplot2 unit geom_histogram xlim ylab coord_flip
 #'   scale_y_reverse geom_text scale_y_continuous
 #'
 #' @noRd
@@ -164,7 +164,7 @@ gg_wright_internal <- function(theta, b, binwidth = 0.5, color = "blue",
   lim.x.min <- min(c(theta, b), na.rm = TRUE) - binwidth
   lim.x.max <- max(c(theta, b), na.rm = TRUE) + binwidth
 
-  g1 <- ggplot(df.theta, aes_string(x = "theta")) +
+  g1 <- ggplot(df.theta, aes(x = .data$theta)) +
     geom_histogram(binwidth = binwidth, fill = color, col = "black", na.rm = TRUE) +
     xlim(lim.x.min, lim.x.max) +
     coord_flip() +
@@ -177,7 +177,7 @@ gg_wright_internal <- function(theta, b, binwidth = 0.5, color = "blue",
       axis.ticks.x = element_blank()
     )
 
-  g2 <- ggplot(df.b, aes_string(x = "x", y = "y", label = "item")) +
+  g2 <- ggplot(df.b, aes(x = .data$x, y = .data$y, label = .data$item)) +
     geom_text(hjust = 0, vjust = 0.5, na.rm = TRUE) +
     scale_y_continuous(position = "right", limits = c(lim.x.min, lim.x.max)) +
     scale_x_continuous(limits = c(min(df.b$x), max(df.b$x) + 0.75)) +

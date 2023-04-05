@@ -119,7 +119,6 @@
 ItemAnalysis <- function(Data, minscore = NULL, maxscore = NULL,
                          cutscore = NULL, criterion = NULL,
                          k = NULL, l = NULL, u = NULL, bin = "deprecated") {
-
   if (!missing(bin)) stop("Argument `bin` is deprecated, the dataset will be binarized according to `cutscore` whenewer it is provided.", call. = FALSE)
 
   # if there is any cutscore provided, binarize the dataset accordingly

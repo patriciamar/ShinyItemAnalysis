@@ -29,8 +29,7 @@ cronbach_alpha <- function(Data, ci = TRUE, ci_lvl = .95) {
   if (ci) {
     # assert ci_lvl
     if (ci_lvl < 0 || ci_lvl > 1) {
-      stop("`ci_lvl` must be numeric between 0 and 1.", call. = FALSE
-      )
+      stop("`ci_lvl` must be numeric between 0 and 1.", call. = FALSE)
     }
 
     # lower & upper CI bounds

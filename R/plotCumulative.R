@@ -51,7 +51,6 @@
 #'
 #' @export
 plotCumulative <- function(x, type = "cumulative", matching.name = "matching") {
-
   # extracting data from vglm object
   y <- x@y %*% as.numeric(paste(colnames(x@y))) # responses
   cat <- as.numeric(paste(colnames(x@y))) # all categories
@@ -150,17 +149,17 @@ plotCumulative <- function(x, type = "cumulative", matching.name = "matching") {
     g <- ggplot() +
       geom_point(
         data = df.emp.cum,
-        aes_string(
-          x = "Matching", y = "Probability",
-          size = "Count", colour = "Category", fill = "Category"
+        aes(
+          x = .data$Matching, y = .data$Probability,
+          size = .data$Count, colour = .data$Category, fill = .data$Category
         ),
         shape = 21, alpha = 0.5
       ) +
       geom_line(
         data = df.probs.cum,
-        aes_string(
-          x = "Matching", y = "Probability",
-          col = "Category", linetype = "Category"
+        aes(
+          x = .data$Matching, y = .data$Probability,
+          col = .data$Category, linetype = .data$Category
         ),
         size = 0.8
       ) +
@@ -192,17 +191,17 @@ plotCumulative <- function(x, type = "cumulative", matching.name = "matching") {
     g <- ggplot() +
       geom_point(
         data = df.emp.cat,
-        aes_string(
-          x = "Matching", y = "Probability",
-          size = "Count", col = "Category", fill = "Category"
+        aes(
+          x = .data$Matching, y = .data$Probability,
+          size = .data$Count, col = .data$Category, fill = .data$Category
         ),
         shape = 21, alpha = 0.5
       ) +
       geom_line(
         data = df.probs.cat,
-        aes_string(
-          x = "Matching", y = "Probability",
-          col = "Category", linetype = "Category"
+        aes(
+          x = .data$Matching, y = .data$Probability,
+          col = .data$Category, linetype = .data$Category
         ),
         size = 0.8
       ) +

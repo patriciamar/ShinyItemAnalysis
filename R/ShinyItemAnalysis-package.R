@@ -1,6 +1,6 @@
-#' ShinyItemAnalysis: Test and Item Analysis via shiny
+#' ShinyItemAnalysis: Test and Item Analysis via Shiny
 #'
-#' @description The `ShinyItemAnalysis` package contains an interactive shiny
+#' @description The `ShinyItemAnalysis` package contains an interactive Shiny
 #' application for the psychometric analysis of educational tests, psychological
 #' assessments, health-related and other types of multi-item measurements, or
 #' ratings from multiple raters, which can be accessed using function
@@ -19,7 +19,8 @@
 #' `ggWrightMap()`, or `plotDIFirt()`).
 #'
 #' Package also contains several demonstration datasets including the `HCI`
-#' dataset from the reference paper by Martinkova and Drabinova (2018).
+#' dataset from the book by Martinkova and Hladka (2023), and from paper
+#' by Martinkova and Drabinova (2018).
 #'
 #'
 #' @importFrom stats aggregate coef complete.cases cor deviance fitted glm
@@ -33,20 +34,21 @@
 #'   \item [DDplot()]
 #'   \item [DistractorAnalysis()]
 #'   \item [plotDistractorAnalysis()]
+#'   \item [fa_parallel()]
 #'   \item [gDiscrim()]
 #'   \item [ggWrightMap()]
+#'   \item [ICCrestricted()]
 #'   \item [ItemAnalysis()]
 #'   \item [plotAdjacent()], [plotCumulative()], [plotMultinomial()]
 #'   \item [plotDIFirt()], [plotDIFLogistic()]
 #'   \item [plot_corr()]
 #'   \item [recode_nr()]
-#'   \item [ICCrestricted()]
-#'   \item [fa_parallel()]
 #' }
 #'
 #' @section Datasets:
 #' \itemize{
 #'   \item [AIBS()]
+#'   \item [Anxiety()]
 #'   \item [AttitudesExpulsion()]
 #'   \item [BFI2()]
 #'   \item [CZmatura()]
@@ -59,11 +61,13 @@
 #'   \item [HCIdata()]
 #'   \item [HCIgrads()]
 #'   \item [HCIkey()]
+#'   \item [HCIlong()]
 #'   \item [HCIprepost()]
 #'   \item [HCItest()]
 #'   \item [HCItestretest()]
 #'   \item [HeightInventory()]
 #'   \item [LearningToLearn()]
+#'   \item [MSATB()]
 #'   \item [MSclinical()]
 #'   \item [NIH()]
 #'   \item [TestAnxietyCor()]
@@ -79,7 +83,10 @@
 #'   Jan Netik \cr Institute of Computer Science of the Czech Academy of
 #'   Sciences \cr
 #'
-#' @references Martinkova, P., & Drabinova, A. (2018). ShinyItemAnalysis for
+#' @references Martinkova, P., & Hladka, A. (2023). Computational Aspects of
+#'   Psychometric Methods: With R. Chapman and Hall/CRC. \doi{10.1201/9781003054313}
+#'
+#'   Martinkova, P., & Drabinova, A. (2018). ShinyItemAnalysis for
 #'   teaching psychometrics and to enforce routine analysis of educational
 #'   tests. The R Journal, 10(2), 503--515, \doi{10.32614/RJ-2018-074}
 #'

@@ -31,7 +31,11 @@
         m1p <- itemRescale(m0, m1, items = ANCHOR)
       }
       mod <- as.character(ncol(irtParam))
-      model <- switch(mod, `2` = "1PL", `5` = "2PL", `6` = "3PL")
+      model <- switch(mod,
+        `2` = "1PL",
+        `5` = "2PL",
+        `6` = "3PL"
+      )
       if (ncol(irtParam) != 6) {
         Guess <- NULL
       } else {
@@ -43,7 +47,7 @@
       itemParInit <- irtParam
       estPar <- FALSE
     } else {
-      if (length(group) == 1) {
+      if (length(group) == 1L) {
         if (is.numeric(group)) {
           gr <- Data[, group]
           DATA <- Data[, (1:ncol(Data)) != group]
@@ -57,7 +61,7 @@
         gr <- group
         DATA <- Data
       }
-      Group <- as.numeric(gr == focal.name)
+      Group <- gr == focal.name
       if (any(is.na(Group))) {
         warning("'group' contains missing values. Observations with missing values are discarded.",
           call. = FALSE
@@ -66,8 +70,12 @@
       DATA <- DATA[!is.na(Group), ]
       Group <- Group[!is.na(Group)]
 
-      d0 <- sapply(DATA[Group == 0, ], function(x) as.numeric(paste(x)))
-      d1 <- sapply(DATA[Group == 1, ], function(x) as.numeric(paste(x)))
+      d0 <- sapply(DATA[!Group, ], as.integer)
+      d1 <- sapply(DATA[Group, ], as.integer)
+
+      # check if complete observations in each group is sufficient
+      if (nrow(d0[complete.cases(d0), , drop = FALSE]) < 2L) stop("Not enough complete observations in the reference group.", call. = FALSE)
+      if (nrow(d1[complete.cases(d1), , drop = FALSE]) < 2L) stop("Not enough complete observations in the focal group.", call. = FALSE)
 
       Guess <- c
       if (is.null(Guess)) {

@@ -216,7 +216,7 @@ plotDIFLogistic <- function(x, item = 1, item.name, group.names = c("Reference",
       ### points
       geom_point(
         data = empirical,
-        aes_string(x = "Score", y = "Probability", colour = "Group", fill = "Group", size = "Count"),
+        aes(x = .data$Score, y = .data$Probability, colour = .data$Group, fill = .data$Group, size = .data$Count),
         alpha = alpha, shape = shape
       ) +
       guides(size = guide_legend(title = "Count", order = 1)) +

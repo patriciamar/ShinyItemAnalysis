@@ -1,8 +1,6 @@
 #' Plot item characteristic curve of DIF IRT model
 #'
-#' @aliases plotDIFirt
-#'
-#' @description Plots characteristic curve of IRT model.
+#' Plots characteristic curve of IRT model.
 #'
 #' @param parameters numeric: data matrix or data frame. See **Details**.
 #' @param test character: type of statistic to be shown. See **Details**.
@@ -85,10 +83,11 @@ plotDIFirt <- function(parameters, test = "Lord", item = "all", item.name, same.
 
   m <- nrow(parameters) / 2
   nams <- rownames(parameters)[1:m]
-  if (inherits(item,"character")) {
+  if (inherits(item, "character")) {
     if (item != "all" & !item %in% nams) {
       stop("Invalid value for 'item'. Item must be either character 'all', or numeric vector corresponding to column identifiers, or name of the item.",
-           call. = FALSE)
+        call. = FALSE
+      )
     }
     if (item[1] == "all") {
       items <- 1:m
@@ -96,9 +95,10 @@ plotDIFirt <- function(parameters, test = "Lord", item = "all", item.name, same.
       items <- which(nams %in% item)
     }
   } else {
-    if (!inherits(item,"integer") & !inherits(item,"numeric")) {
+    if (!inherits(item, "integer") & !inherits(item, "numeric")) {
       stop("Invalid value for 'item'. Item must be either character 'all', or numeric vector corresponding to column identifiers, or name of the item.",
-           call. = FALSE)
+        call. = FALSE
+      )
     } else {
       if (!all(item %in% 1:m)) {
         stop("Invalid number for 'item'.", call. = FALSE)
@@ -153,7 +153,7 @@ plotDIFirt <- function(parameters, test = "Lord", item = "all", item.name, same.
   df <- data.frame(x = c(-3, 3), y = c(0, 1))
   gg <- list()
   for (i in items) {
-    gg[[i]] <- ggplot(df, aes_string("x", "y")) +
+    gg[[i]] <- ggplot(df, aes(.data$x, .data$y)) +
       xlim(-3, 3) +
       ### lines
       stat_function(aes(colour = "Reference", linetype = "Reference"),
@@ -216,10 +216,10 @@ plotDIFirt <- function(parameters, test = "Lord", item = "all", item.name, same.
       # use the loess data to add the 'ribbon' to plot
       gg[[i]] <- gg[[i]] + geom_ribbon(
         data = df2,
-        aes_string(
-          x = "x",
-          ymin = "ymin",
-          ymax = "ymax"
+        aes(
+          x = .data$x,
+          ymin = .data$ymin,
+          ymax = .data$ymax
         ),
         fill = "grey",
         alpha = 0.4,

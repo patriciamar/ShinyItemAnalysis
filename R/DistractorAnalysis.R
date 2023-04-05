@@ -107,11 +107,11 @@ DistractorAnalysis <- function(Data, key, item = "all", p.table = FALSE, num.gro
   m <- ncol(Data)
   nams <- colnames(Data)
 
-  if (inherits(item,"character")) {
+  if (inherits(item, "character")) {
     if (any(item != "all") & !all(item %in% nams)) {
       stop("Invalid value for 'item'. Item must be either character 'all', or
            numeric vector corresponding to column identifiers, or name of the item.",
-           call. = FALSE
+        call. = FALSE
       )
     }
     if (any(item == "all")) {
@@ -123,12 +123,12 @@ DistractorAnalysis <- function(Data, key, item = "all", p.table = FALSE, num.gro
     if (!inherits(item, c("integer", "numeric"))) {
       stop("Invalid value for 'item'. Item must be either character 'all', or
            numeric vector corresponding to column identifiers, or name of the item.",
-           call. = FALSE
+        call. = FALSE
       )
     } else {
       if (!all(item %in% 1:m)) {
         stop("Invalid number for 'item'.",
-             call. = FALSE
+          call. = FALSE
         )
       } else {
         items <- item
@@ -192,11 +192,11 @@ DistractorAnalysis <- function(Data, key, item = "all", p.table = FALSE, num.gro
       if (any(range(scores)[1] > cut.points | cut.points > range(scores)[2])) {
         if (is.null(criterion)) {
           warning("Some of cut points provided in 'cut.points' are out of range of computed total scores.",
-                  call. = FALSE
+            call. = FALSE
           )
         } else {
           warning("Some of cut points provided in 'cut.points' are out of range of criterion.",
-                  call. = FALSE
+            call. = FALSE
           )
         }
       }

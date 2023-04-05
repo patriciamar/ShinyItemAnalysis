@@ -61,8 +61,10 @@
 #' ICCrestricted(Data = AIBS, case = "ID", var = "Score", rank = "ScoreRankAdj")
 #'
 #' # ICC for the range-restricted sample considering 80% of top ratees
-#' ICCrestricted(Data = AIBS, case = "ID", var = "Score", rank = "ScoreRankAdj",
-#'               sel = 0.8)
+#' ICCrestricted(
+#'   Data = AIBS, case = "ID", var = "Score", rank = "ScoreRankAdj",
+#'   sel = 0.8
+#' )
 #'
 #' @importFrom lme4 lmer VarCorr bootMer
 #' @importFrom stats sigma
@@ -79,7 +81,9 @@ ICCrestricted <- function(Data, case, var, rank = NULL,
   if (is.null(Data[[case]])) stop("Case variable '", case, "' not present in Data.", call. = FALSE)
   if (is.null(Data[[var]])) stop("Dependent variable '", var, "' not present in Data.", call. = FALSE)
 
-  sel_max <- Data[[case]] %>% unique() %>% length()
+  sel_max <- Data[[case]] %>%
+    unique() %>%
+    length()
 
   if (sel <= 1) {
     sel <- round(sel * sel_max)

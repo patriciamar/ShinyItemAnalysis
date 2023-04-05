@@ -1,4 +1,3 @@
-
 #' Fit Baseline-category Logit Intercept-Slope (BLIS) model on nominal data
 #'
 #' `blis` fits the IRT Nominal Response Model to data from multiple-choice tests,
@@ -43,7 +42,6 @@
 #' coef(fitted_blis, IRTpars = TRUE, CI = 0.90) # 90% CI instead of 95% CI
 #' coef(fitted_blis, IRTpars = TRUE, printSE = TRUE) # SE instead of CI
 fit_blis <- function(Data, key, ...) {
-
   # convert to integers, create original levels list with key stored
   int_data_lvls_key <- nominal_to_int(Data, key)
 
@@ -223,7 +221,6 @@ obtain_nrm_def <- function(data_with_key, ...) {
   sv <- mirt(data_with_key$Data, 1, "nominal", pars = "values", ...)
 
   sv_new <- data_with_key$orig_levels %>% map(~ {
-
     # get the original key, side-assign as est
     est <- key <- attr(.x, "key")
     k <- length(key)
@@ -367,7 +364,6 @@ setMethod(
   "coef", "BlisClass",
   function(object, ..., CI = .95, printSE = FALSE, IRTpars = FALSE,
            simplify = FALSE, labels = FALSE, mark_correct = labels) {
-
     # not-implemented args warnings
     if (!missing(simplify)) {
       warning(

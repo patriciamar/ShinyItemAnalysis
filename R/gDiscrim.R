@@ -81,23 +81,23 @@
 gDiscrim <- function(Data, k = 3, l = 1, u = 3, maxscore, minscore, x, ...) {
   # deprecated args handling
   if (!missing(x)) {
-    warning("Argument 'x' is deprecated; please use 'Data' instead.",
+    warning("Argument 'x' is deprecated; please use 'Data' instead. ",
       call. = FALSE
     )
     Data <- x
   }
 
   if (u > k) {
-    stop("'u' need to be lower or equal to 'k'", call. = FALSE)
+    stop("'u' need to be lower or equal to 'k'. ", call. = FALSE)
   }
   if (l > k) {
-    stop("'l' need to be lower than 'k'", call. = FALSE)
+    stop("'l' need to be lower than 'k'. ", call. = FALSE)
   }
   if (l <= 0) {
-    stop("'l' need to be greater than 0", call. = FALSE)
+    stop("'l' need to be greater than 0. ", call. = FALSE)
   }
   if (l >= u) {
-    stop("'l' should be lower than 'u'", call. = FALSE)
+    stop("'l' should be lower than 'u'. ", call. = FALSE)
   }
   if (missing(maxscore)) {
     maxscore <- sapply(Data, max, na.rm = TRUE)
@@ -108,7 +108,7 @@ gDiscrim <- function(Data, k = 3, l = 1, u = 3, maxscore, minscore, x, ...) {
   }
   obtainedmax <- sapply(Data, max, na.rm = TRUE)
   if (!all(maxscore >= obtainedmax)) {
-    warning("'maxscore' is lower than maximum score in the dataset for some item")
+    warning("'maxscore' is lower than maximum score in the dataset for some item. ")
   }
 
   if (missing(minscore)) {
@@ -120,10 +120,10 @@ gDiscrim <- function(Data, k = 3, l = 1, u = 3, maxscore, minscore, x, ...) {
   }
   obtainedmin <- sapply(Data, min, na.rm = TRUE)
   if (!all(minscore <= obtainedmin)) {
-    warning("'minscore' is higher than minimum score in the dataset for some item")
+    warning("'minscore' is higher than minimum score in the dataset for some item. ")
   }
   if (!all(minscore <= maxscore)) {
-    warning("'minscore' is higher than 'maxscore' for some item")
+    warning("'minscore' is higher than 'maxscore' for some item. ")
   }
 
   d <- na.exclude(Data)
@@ -131,12 +131,13 @@ gDiscrim <- function(Data, k = 3, l = 1, u = 3, maxscore, minscore, x, ...) {
   # total scores
   ts <- rowSums(d)
 
-
   # get quantiles (without p = 0 & p = 1) according to k
   breakpoints <- quantile(ts, seq(0, 1, length.out = k + 1)[-c(1, k + 1)], names = FALSE)
 
   # assert dataset is breakable
-  if (length(unique(breakpoints)) < k -1) stop("Dataset cannot be splitted, there are too few unique cutpoints.", call. = FALSE)
+  if (length(unique(breakpoints)) < k - 1) {
+    stop("Dataset cannot be splitted, there are too few unique cutpoints. ", call. = FALSE)
+  }
 
   # cut total scores into k groups
   grp <- findInterval(ts, breakpoints, ...)
@@ -159,7 +160,7 @@ gDiscrim <- function(Data, k = 3, l = 1, u = 3, maxscore, minscore, x, ...) {
     warning(
       "Both the groups' difficulty difference and item range are zero in item(s):\n",
       paste(names(which(avg_diff == 0 & rng == 0)), collapse = ", "), ".\n",
-      "Try to supply `minscore` and `maxscore` manually according to plausible range.",
+      "Try to supply 'minscore' and 'maxscore' manually according to plausible range. ",
       call. = FALSE
     )
   }

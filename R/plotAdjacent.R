@@ -106,17 +106,17 @@ plotAdjacent <- function(x, matching.name = "matching") {
   g <- ggplot() +
     geom_point(
       data = df.emp.cat,
-      aes_string(
-        x = "Matching", y = "Probability",
-        size = "Count", col = "Category", fill = "Category"
+      aes(
+        x = .data$Matching, y = .data$Probability,
+        size = .data$Count, col = .data$Category, fill = .data$Category
       ),
       shape = 21, alpha = 0.5
     ) +
     geom_line(
       data = df.probs.cat,
-      aes_string(
-        x = "Matching", y = "Probability",
-        col = "Category", linetype = "Category"
+      aes(
+        x = .data$Matching, y = .data$Probability,
+        col = .data$Category, linetype = .data$Category
       ),
       size = 0.8
     ) +

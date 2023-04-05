@@ -95,17 +95,17 @@ plotMultinomial <- function(x, matching, matching.name = "matching") {
   g <- ggplot() +
     geom_point(
       data = df.emp,
-      aes_string(
-        x = "Matching", y = "Probability",
-        colour = "Category", fill = "Category", size = "Count"
+      aes(
+        x = .data$Matching, y = .data$Probability,
+        colour = .data$Category, fill = .data$Category, size = .data$Count
       ),
       alpha = 0.5, shape = 21
     ) +
     geom_line(
       data = df.probs,
-      aes_string(
-        x = "Matching", y = "Probability",
-        colour = "Category", linetype = "Category"
+      aes(
+        x = .data$Matching, y = .data$Probability,
+        colour = .data$Category, linetype = .data$Category
       ),
       size = 0.8
     ) +

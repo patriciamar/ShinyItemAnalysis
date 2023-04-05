@@ -60,7 +60,6 @@
 #'   plotted using `plot()`.
 #'
 #' @examples
-#' data("TestAnxietyCor", package = "ShinyItemAnalysis")
 #' fa_parallel(TestAnxietyCor, n_obs = 335, method = "pca")
 #'
 #' \dontrun{
@@ -121,28 +120,32 @@ fa_parallel <- function(Data, cor = "pearson", n_obs = NULL,
       ), call. = FALSE)
     }
 
-    message("The input was recognized as a correlation matrix.\nAssuming ", n_obs, " observations in the original data.")
+    message(
+      "The input was recognized as a correlation matrix.\nAssuming ",
+      n_obs,
+      " observations in the original data."
+    )
 
     data_corr <- Data
 
     n_subj <- n_obs # needed for random-valued matrix simulation
   } else {
-
     # real data part
     data_corr <- switch(match.arg(cor, c("pearson", "tetrachoric", "polychoric")),
       "pearson" = cor(Data, use = use),
       "polychoric" = tryCatch(polychoric(Data, na.rm = TRUE, ...)$rho,
         error = function(e) {
-          stop(paste(
-            "Calculation of polychoric correlations returned an error:\n", e
-          ),
-          call. = FALSE
+          stop(
+            paste(
+              "Calculation of polychoric correlations returned an error:\n", e
+            ),
+            call. = FALSE
           )
         }
       ),
       "tetrachoric" = tryCatch(tetrachoric(Data, na.rm = TRUE, ...)$rho,
         error = function(e) {
-          if (max(Data, na.rm = TRUE) > 1) {
+          if (max(Data, na.rm = TRUE) > 1L) {
             stop("Tetrachoric correlation requires dichotomous data.", # typo in original psych error
               call. = FALSE
             )
@@ -184,11 +187,14 @@ fa_parallel <- function(Data, cor = "pearson", n_obs = NULL,
 
   #  get eigenvals function
   get_eigenvals <- function(sim_eigen_list, threshold, n_iter, p) {
-    sim_eigen_df <- t(matrix(unlist(sim_eigen_list), ncol = n_iter))
+    # turn the list of eigenvalues to a matrix
+    # we don't use byrow = TRUE nor t() because is slower
+    sim_eigen_df <- matrix(unlist(sim_eigen_list), ncol = n_iter)
 
+    # get a mean or percentile for every item (i.e., row)
     switch(match.arg(threshold, c("mean", "quantile")),
-      mean = apply(sim_eigen_df, 2, mean),
-      quantile = apply(sim_eigen_df, 2, function(x) quantile(x, p))
+      mean = apply(sim_eigen_df, 1, mean),
+      quantile = apply(sim_eigen_df, 1, function(x) quantile(x, p))
     )
   }
 
@@ -218,15 +224,15 @@ fa_parallel <- function(Data, cor = "pearson", n_obs = NULL,
 
 
   if ("fa" %in% method_vec) {
-    factors_below_thr <- which(!(data_eigen_fa > sim_eigen_fa))
-    n_factors <- max(factors_below_thr[1] - 1, 1)
+    factors_below_thr <- which(data_eigen_fa <= sim_eigen_fa)
+    n_factors <- max(factors_below_thr[1L] - 1L, 1L)
 
     kaiser_fa <- sum(data_eigen_fa >= 0)
   }
 
   if ("pca" %in% method_vec) {
-    comp_below_thr <- which(!(data_eigen_pca > sim_eigen_pca))
-    n_comp <- max(comp_below_thr[1] - 1, 1)
+    comp_below_thr <- which(data_eigen_pca <= sim_eigen_pca)
+    n_comp <- max(comp_below_thr[1L] - 1L, 1L)
 
     kaiser_pca <- sum(data_eigen_pca >= 1)
   }
@@ -247,17 +253,17 @@ fa_parallel <- function(Data, cor = "pearson", n_obs = NULL,
     ), "\nFollowing the Kaiser rule,",
     switch(method,
       "fa" = paste0(
-        kaiser_fa, ifelse(kaiser_fa > 1, " factors are", " factor is"),
+        kaiser_fa, ifelse(kaiser_fa > 1L, " factors are", " factor is"),
         " recommended."
       ),
       "pca" = paste0(
-        kaiser_pca, ifelse(kaiser_pca > 1, " components are", " component is"),
+        kaiser_pca, ifelse(kaiser_pca > 1L, " components are", " component is"),
         " recommended."
       ),
       "both" = paste0(
-        kaiser_fa, ifelse(kaiser_fa > 1, " factors", " factor"),
+        kaiser_fa, ifelse(kaiser_fa > 1L, " factors", " factor"),
         " and ",
-        kaiser_pca, ifelse(kaiser_pca > 1, " components are", " component is"),
+        kaiser_pca, ifelse(kaiser_pca > 1L, " components are", " component is"),
         " recommended."
       )
     )

@@ -180,8 +180,7 @@
                 if (sum(dif == dif2) == length(dif)) {
                   noLoop <- TRUE
                   break
-                }
-                else {
+                } else {
                   dif <- dif2
                 }
               }
@@ -330,8 +329,7 @@
                 if (sum(dif == dif2) == length(dif)) {
                   noLoop <- TRUE
                   break
-                }
-                else {
+                } else {
                   dif <- dif2
                 }
               }

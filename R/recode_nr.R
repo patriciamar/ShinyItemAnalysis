@@ -46,11 +46,10 @@
 #' summary(HCImissedNR)
 #' @export
 recode_nr <- function(Data, nr_code = 99, df) {
-
   # deprecated args handling
   if (!missing(df)) {
     warning("Argument 'df' is deprecated; please use 'Data' instead.",
-            call. = FALSE
+      call. = FALSE
     )
     Data <- df
   }
@@ -71,7 +70,7 @@ recode_nr <- function(Data, nr_code = 99, df) {
     out <- logical(i)
     while (i > 0 && vec[i]) { # don't let i == 0 (occurs when all values are NA)
       out[i] <- TRUE
-      i <- i-1
+      i <- i - 1
     }
     out
   }

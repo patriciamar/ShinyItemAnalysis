@@ -143,11 +143,11 @@ plotDistractorAnalysis <- function(Data, key, num.groups = 3, item = 1, item.nam
   m <- ncol(Data)
   nams <- colnames(Data)
 
-  if (inherits(item,"character")) {
+  if (inherits(item, "character")) {
     if (any(item != "all") & !all(item %in% nams)) {
       stop("Invalid value for 'item'. Item must be either character 'all', or
            numeric vector corresponding to column identifiers, or name of the item.",
-           call. = FALSE
+        call. = FALSE
       )
     }
     if (any(item == "all")) {
@@ -159,12 +159,12 @@ plotDistractorAnalysis <- function(Data, key, num.groups = 3, item = 1, item.nam
     if (!inherits(item, c("integer", "numeric"))) {
       stop("Invalid value for 'item'. Item must be either character 'all', or
            numeric vector corresponding to column identifiers, or name of the item.",
-           call. = FALSE
+        call. = FALSE
       )
     } else {
       if (!all(item %in% 1:m)) {
         stop("Invalid number for 'item'.",
-             call. = FALSE
+          call. = FALSE
         )
       } else {
         items <- item
@@ -227,7 +227,7 @@ plotDistractorAnalysis <- function(Data, key, num.groups = 3, item = 1, item.nam
     }
 
     # if (missing(item.name)) {
-      item.name <- nams[i]
+    item.name <- nams[i]
     # }
 
     # plot settings
