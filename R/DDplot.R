@@ -144,13 +144,12 @@
 #' data(GMAT, package = "difNLR")
 #' DDplot(GMAT[, 1:20], criterion = GMAT$criterion, val_type = "simple")
 #' }
-#' @importFrom ggplot2 geom_col ylab scale_y_continuous scale_fill_manual unit aes_string stat_summary scale_colour_manual
+#' @importFrom ggplot2 geom_col ylab scale_y_continuous scale_fill_manual unit stat_summary scale_colour_manual
 #' @export
 
 DDplot <- function(Data, item.names, discrim = "ULI", k = 3, l = 1, u = 3,
                    maxscore, minscore, bin = FALSE, cutscore, average.score = FALSE,
                    thr = 0.2, criterion = "none", val_type = "simple", data) {
-
   # deprecated args handling
   if (!missing(data)) {
     warning("Argument 'data' is deprecated; please use 'Data' instead.",
@@ -338,11 +337,11 @@ DDplot <- function(Data, item.names, discrim = "ULI", k = 3, l = 1, u = 3,
     item <- factor(item.names[order(difc)], levels = item.names[order(difc)])
     df <- data.frame(item, parameter, value)
     col <- c("red", "darkblue")
-    g <- ggplot(df, aes_string(
-      x = "item",
-      y = "value",
-      fill = "parameter",
-      color = "parameter"
+    g <- ggplot(df, aes(
+      x = .data$item,
+      y = .data$value,
+      fill = .data$parameter,
+      color = .data$parameter
     )) +
       stat_summary(
         fun = mean, position = "dodge", geom = "bar",
