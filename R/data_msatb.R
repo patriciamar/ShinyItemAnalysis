@@ -1,4 +1,3 @@
-
 #' Dichotomous dataset of Medical School Admission Test in Biology.
 #'
 #' The \code{MSATB} dataset consists of the responses of 1,407 subjects

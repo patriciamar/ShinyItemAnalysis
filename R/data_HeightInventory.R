@@ -4,7 +4,8 @@
 #' (1479 males, 3406 females) to a Height Inventory  (Rečka, 2018). It contains 26
 #' ordinal items of self-perceived height rated on a scale `"1"` strongly disagree,
 #' `"2"` disagree, `"3"` agree, `"4"` strongly agree, vector of self-reported
-#' heights (in centimeters), and vector of gender membership.
+#' heights (in centimeters), and vector of gender membership. Total score is included
+#' as the last variable, total score is NA for respondents who missed any item.
 #'
 #' @references Rečka, K. (2018). Height and Weight Inventory. Brno, Masaryk
 #'   University: Unpublished Master's thesis
@@ -18,7 +19,7 @@
 #'   on the 28 variables. First 26 variables are responses on scale `"1"`
 #'   strongly disagree, `"2"` disagree, `"3"` agree, `"4"` strongly agree.
 #'   Items 14 - 26 were reverse-coded, so that all items are scored in the same
-#'   direction. Names of these items start with `"Not"`. Original item number
+#'   direction. Names of these items start with `"R-"`. Original item number
 #'   and English wording is provided below.
 #'
 #'   \describe{
@@ -34,21 +35,22 @@
 #'   \item{CrowdViewComf}{10.	In a crowd of people, I still have a comfortable view.}
 #'   \item{ShortBlanket}{11.	Blankets and bedspreads rarely cover me completely.}
 #'   \item{BendToHug}{12.	When I want to hug someone, I usually need to bend over.}
-#'   \item{CarefullHead}{13.	I must often be careful to avoid bumping my head against a doorjamb or a low ceiling.}
-#'   \item{NotSmallerThanM}{14.	I am smaller than men of my age.}
-#'   \item{NotStoolNeeded}{15.	I often need a stool to reach something other people could reach without one.}
-#'   \item{NotPlayDwarf}{16.	I could play a dwarf.}
-#'   \item{NotSmallerThanW}{17.	I am smaller than women of my age.}
-#'   \item{NotNoticeSmall}{18.	One of the first things people notice about me is how small I am.}
-#'   \item{NotOnTipToes}{19.	I often need to stand on the tip of my toes to get a better view.}
-#'   \item{NotClothChildSize}{20.	When I buy clothes, children’s sizes often fit me well.}
-#'   \item{NotBusLegsEnoughSpace}{21.	I have enough room for my legs when traveling by bus.}
-#'   \item{NotFasterWalk}{22.	I often need to walk faster than I’m used to in order to keep pace with taller people.}
-#'   \item{NotAgeUnderestim}{23.	Because of my smaller stature, people underestimate my age.}
-#'   \item{NotWishLowerChair}{24.	It would be more comfortable for me if chairs were made lower.}
-#'   \item{NotUpwardLook}{25.	When talking to other adults, I have to look upwards if I want to meet their eyes.}
-#'   \item{NotMirrorTooHigh}{26.	Some mirrors are placed so high up that I have to crane my neck to use them.}
+#'   \item{CarefulHead}{13.	I must often be careful to avoid bumping my head against a doorjamb or a low ceiling.}
+#'   \item{R-SmallerThanM}{14.	I am smaller than men of my age. (reversed)}
+#'   \item{R-StoolNeeded}{15.	I often need a stool to reach something other people could reach without one. (reversed)}
+#'   \item{R-PlayDwarf}{16.	I could play a dwarf. (reversed)}
+#'   \item{R-SmallerThanW}{17.	I am smaller than women of my age. (reversed)}
+#'   \item{R-NoticeSmall}{18.	One of the first things people notice about me is how small I am. (reversed)}
+#'   \item{R-OnTipToes}{19.	I often need to stand on the tip of my toes to get a better view. (reversed)}
+#'   \item{R-ClothChildSize}{20.	When I buy clothes, children’s sizes often fit me well. (reversed)}
+#'   \item{R-BusLegsEnoughSpace}{21.	I have enough room for my legs when traveling by bus. (reversed)}
+#'   \item{R-FasterWalk}{22.	I often need to walk faster than I’m used to in order to keep pace with taller people. (reversed)}
+#'   \item{R-AgeUnderestim}{23.	Because of my smaller stature, people underestimate my age. (reversed)}
+#'   \item{R-WishLowerChair}{24.	It would be more comfortable for me if chairs were made lower. (reversed)}
+#'   \item{R-UpwardLook}{25.	When talking to other adults, I have to look upwards if I want to meet their eyes. (reversed)}
+#'   \item{R-MirrorTooHigh}{26.	Some mirrors are placed so high up that I have to crane my neck to use them. (reversed)}
 #'   \item{gender}{Gender membership, `"M"` males, `"F"` females.}
 #'   \item{HeightCM}{Self-reported height in centimeters.}
+#'   \item{total}{Total score.}
 #' }
 "HeightInventory"
