@@ -106,7 +106,6 @@ distribution was suggested as a more accurate threshold. This, more recent
 method is used by default in the function.
 }
 \examples{
-data("TestAnxietyCor", package = "ShinyItemAnalysis")
 fa_parallel(TestAnxietyCor, n_obs = 335, method = "pca")
 
 \dontrun{

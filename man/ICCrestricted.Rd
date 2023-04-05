@@ -69,8 +69,10 @@ or for the range-restricted sample.
 ICCrestricted(Data = AIBS, case = "ID", var = "Score", rank = "ScoreRankAdj")
 
 # ICC for the range-restricted sample considering 80\% of top ratees
-ICCrestricted(Data = AIBS, case = "ID", var = "Score", rank = "ScoreRankAdj",
-              sel = 0.8)
+ICCrestricted(
+  Data = AIBS, case = "ID", var = "Score", rank = "ScoreRankAdj",
+  sel = 0.8
+)
 
 }
 \references{

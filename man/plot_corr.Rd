@@ -6,10 +6,10 @@
 \usage{
 plot_corr(
   Data,
-  cor = "pearson",
+  cor = c("polychoric", "tetrachoric", "pearson", "spearman", "none"),
   clust_method = "none",
-  n_clust = 0,
-  shape = "circle",
+  n_clust = 0L,
+  shape = c("circle", "square"),
   labels = FALSE,
   labels_size = 3,
   line_size = 0.5,
@@ -26,20 +26,19 @@ plot_corr(
 or a correlation matrix.}
 
 \item{cor}{character: correlation "type" used to correlation matrix
-computation; available options are \code{"poly"}, \code{"tetra"},
-\code{"pearson"}, \code{"spearman"}, or \code{"none"} (in case you provide
-the correlation matrix directly instead). You can use an unambiguous
-abbreviation.}
+computation; available options are \code{polychoric}, \code{tetrachoric},
+\code{pearson}, \code{spearman}, or \code{none} (in case you provide
+the correlation matrix as \code{Data}).}
 
 \item{clust_method}{character: optional clustering method, available options
-are: \code{"ward.D"}, \code{"ward.D2"}, \code{"single"}, \code{"complete"},
-\code{"average"} (= UPGMA), \code{"mcquitty"} (= WPGMA), \code{"median"} (=
-WPGMC), \code{"centroid"} (= UPGMC) or \code{"none"} (clustering disabled).
+are: \code{ward.D}, \code{ward.D2}, \code{single}, \code{complete},
+\code{average} (= UPGMA), \code{mcquitty} (= WPGMA), \code{median} (=
+WPGMC), \code{centroid} (= UPGMC) or \code{none} (clustering disabled).
 See \code{\link[=hclust]{hclust()}} for a detailed description of available options.}
 
 \item{n_clust}{integer: the number of clusters you want to be outlined. When
-set to zero, clustering is disabled, ignoring the \code{clust_method}
-argument.}
+set to zero (the default), no cluster are outlined, but items still do get
+sorted according to \code{clust_method} (if not set to \code{none}).}
 
 \item{shape}{character: tile appearance; either \code{circle} (default) to
 map the correlation coefficient to circle size and color, or \code{square}
@@ -61,7 +60,7 @@ plotted onto tiles.}
 
 \item{fill}{character: the color used to fill the outlined clusters.}
 
-\item{fill_alpha}{numeric 0-1: the opacity of the fill color.}
+\item{fill_alpha}{numeric 0--1: the opacity of the fill color.}
 
 \item{...}{
   Arguments passed on to \code{\link[psych:tetrachor]{psych::polychoric}}
@@ -69,7 +68,6 @@ plotted onto tiles.}
     \item{\code{correct}}{Correction value to use to correct for continuity in the case of zero entry cell for tetrachoric, polychoric, polybi, and mixed.cor.  See the examples for the effect of correcting versus not correcting for continuity.}
     \item{\code{smooth}}{if TRUE and if the tetrachoric/polychoric matrix is not positive definite, then apply a simple smoothing algorithm using cor.smooth}
     \item{\code{global}}{When finding pairwise correlations, should we use the global values of the tau parameter (which is somewhat faster), or the local values (global=FALSE)?  The local option is equivalent to the polycor solution, or to doing one correlation at a time. global=TRUE borrows information for one item pair from the other pairs using those item's frequencies.   This will make a difference in the presence of lots of missing data. With very small sample sizes with global=FALSE and correct=TRUE, the function will fail (for as yet underdetermined reasons. }
-    \item{\code{polycor}}{A no longer used option, kept to stop other packages from breaking.}
     \item{\code{weight}}{A vector of length of the number of observations that specifies the weights to apply to each case.  The NULL case is equivalent of weights of 1 for all cases.  }
     \item{\code{std.err}}{std.err=FALSE does not report the standard errors (faster)  deprecated}
     \item{\code{progress}}{Show the progress bar (if  not doing multicores)}
@@ -82,21 +80,20 @@ plotted onto tiles.}
 An object of class \code{ggplot} and/or \code{gg}.
 }
 \description{
-Computes and visualizes an item correlation matrix (also known
-as a heatmap), offering several correlation "types" and optional clustering
-(with possible cluster outlining). The function relies on
-\code{\link[=ggplot2]{ggplot2()}} package, providing a high customisability using "the
-grammar of graphics" (see the examples below).
+Computes and visualizes an item correlation matrix (also known as a heatmap),
+offering several correlation "types" and optional clustering (with possible
+cluster outlining). The function relies on \code{\link[=ggplot2]{ggplot2()}} package, providing a
+high customisability using "the grammar of graphics" (see the examples
+below).
 }
 \details{
-Correlation heatmap displays selected type of correlations between
-items.The color of tiles indicates how much and in which way the items are
-correlated - red color means positive correlation and blue color means
-negative correlation. Correlation heatmap can be reordered using
-hierarchical clustering method specified with \code{clust_method} argument.
-When the desired number of clusters (argument \code{n_clust}) is not zero
-and some clustering is demanded, the rectangles outlining the found
-clusters are drawn.
+Correlation heatmap displays selected type of correlations between items. The
+color of tiles indicates how much and in which way the items are correlated
+-- red color means positive correlation and blue color means negative
+correlation. Correlation heatmap can be reordered using hierarchical
+clustering method specified with \code{clust_method} argument. When the desired
+number of clusters (argument \code{n_clust}) is not zero and some clustering is
+demanded, the rectangles outlining the found clusters are drawn.
 }
 \examples{
 # use first 20 columns from HCI dataset (the remainder are not items)
@@ -104,26 +101,28 @@ HCI <- HCI[, 1:20]
 
 # use Pearson product-moment correlation coefficient for matrix computation
 plot_corr(HCI, cor = "pearson")
+
 \dontrun{
 # use tetrachoric correlation and reorder the resulting heatmap
 # using Ward's method
-HCI \%>\% plot_corr(cor = "tetra", clust_method = "ward.D")
+HCI \%>\% plot_corr(cor = "tetrachoric", clust_method = "ward.D")
 
 # outline 3 Ward's clusters with bold yellow line and add labels
 HCI \%>\%
   plot_corr(
-    n_clust = 3, clust_method = "ward.D", line_col = "yellow",
+    n_clust = 3, clust_method = "ward.D2", line_col = "yellow",
     line_size = 1.5, labels = TRUE
   )
 
 # add title and position the legend below the plot
 library(ggplot2)
-HCI \%>\% plot_corr(n_clust = 3) +
+HCI \%>\%
+  plot_corr(n_clust = 3) +
   ggtitle("HCI heatmap") +
   theme(legend.position = "bottom")
 
 # mimic the look of corrplot package
-plot_corr(HCI, cor = "poly", clust_method = "complete", shape = "sq") +
+plot_corr(HCI, cor = "polychoric", clust_method = "complete", shape = "square") +
   scale_fill_gradient2(
     limits = c(-.1, 1),
     breaks = seq(-.1, 1, length.out = 12),
@@ -132,7 +131,8 @@ plot_corr(HCI, cor = "poly", clust_method = "complete", shape = "sq") +
       default.unit = "npc",
       title = NULL, frame.colour = "black", ticks.colour = "black"
     )
-  ) + theme(axis.text = element_text(colour = "red", size = 12))
+  ) +
+  theme(axis.text = element_text(colour = "red", size = 12))
 }
 
 }

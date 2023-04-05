@@ -4,9 +4,9 @@
 \name{ShinyItemAnalysis-package}
 \alias{ShinyItemAnalysis}
 \alias{ShinyItemAnalysis-package}
-\title{ShinyItemAnalysis: Test and Item Analysis via shiny}
+\title{ShinyItemAnalysis: Test and Item Analysis via Shiny}
 \description{
-The \code{ShinyItemAnalysis} package contains an interactive shiny
+The \code{ShinyItemAnalysis} package contains an interactive Shiny
 application for the psychometric analysis of educational tests, psychological
 assessments, health-related and other types of multi-item measurements, or
 ratings from multiple raters, which can be accessed using function
@@ -25,7 +25,8 @@ regression models (e.g., \code{plotCumulative()}, \code{plotAdjacent()},
 \code{ggWrightMap()}, or \code{plotDIFirt()}).
 
 Package also contains several demonstration datasets including the \code{HCI}
-dataset from the reference paper by Martinkova and Drabinova (2018).
+dataset from the book by Martinkova and Hladka (2023), and from paper
+by Martinkova and Drabinova (2018).
 }
 \section{Functions}{
 
@@ -34,15 +35,15 @@ dataset from the reference paper by Martinkova and Drabinova (2018).
 \item \code{\link[=DDplot]{DDplot()}}
 \item \code{\link[=DistractorAnalysis]{DistractorAnalysis()}}
 \item \code{\link[=plotDistractorAnalysis]{plotDistractorAnalysis()}}
+\item \code{\link[=fa_parallel]{fa_parallel()}}
 \item \code{\link[=gDiscrim]{gDiscrim()}}
 \item \code{\link[=ggWrightMap]{ggWrightMap()}}
+\item \code{\link[=ICCrestricted]{ICCrestricted()}}
 \item \code{\link[=ItemAnalysis]{ItemAnalysis()}}
 \item \code{\link[=plotAdjacent]{plotAdjacent()}}, \code{\link[=plotCumulative]{plotCumulative()}}, \code{\link[=plotMultinomial]{plotMultinomial()}}
 \item \code{\link[=plotDIFirt]{plotDIFirt()}}, \code{\link[=plotDIFLogistic]{plotDIFLogistic()}}
 \item \code{\link[=plot_corr]{plot_corr()}}
 \item \code{\link[=recode_nr]{recode_nr()}}
-\item \code{\link[=ICCrestricted]{ICCrestricted()}}
-\item \code{\link[=fa_parallel]{fa_parallel()}}
 }
 }
 
@@ -50,6 +51,7 @@ dataset from the reference paper by Martinkova and Drabinova (2018).
 
 \itemize{
 \item \code{\link[=AIBS]{AIBS()}}
+\item \code{\link[=Anxiety]{Anxiety()}}
 \item \code{\link[=AttitudesExpulsion]{AttitudesExpulsion()}}
 \item \code{\link[=BFI2]{BFI2()}}
 \item \code{\link[=CZmatura]{CZmatura()}}
@@ -62,11 +64,13 @@ dataset from the reference paper by Martinkova and Drabinova (2018).
 \item \code{\link[=HCIdata]{HCIdata()}}
 \item \code{\link[=HCIgrads]{HCIgrads()}}
 \item \code{\link[=HCIkey]{HCIkey()}}
+\item \code{\link[=HCIlong]{HCIlong()}}
 \item \code{\link[=HCIprepost]{HCIprepost()}}
 \item \code{\link[=HCItest]{HCItest()}}
 \item \code{\link[=HCItestretest]{HCItestretest()}}
 \item \code{\link[=HeightInventory]{HeightInventory()}}
 \item \code{\link[=LearningToLearn]{LearningToLearn()}}
+\item \code{\link[=MSATB]{MSATB()}}
 \item \code{\link[=MSclinical]{MSclinical()}}
 \item \code{\link[=NIH]{NIH()}}
 \item \code{\link[=TestAnxietyCor]{TestAnxietyCor()}}
@@ -74,6 +78,9 @@ dataset from the reference paper by Martinkova and Drabinova (2018).
 }
 
 \references{
+Martinkova, P., & Hladka, A. (2023). Computational Aspects of
+Psychometric Methods: With R. Chapman and Hall/CRC. \doi{10.1201/9781003054313}
+
 Martinkova, P., & Drabinova, A. (2018). ShinyItemAnalysis for
 teaching psychometrics and to enforce routine analysis of educational
 tests. The R Journal, 10(2), 503--515, \doi{10.32614/RJ-2018-074}

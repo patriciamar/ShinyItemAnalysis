@@ -15,6 +15,7 @@ variables.
 \item{major}{Identificator whether student plans to major in the life
 sciences.}
 \item{total}{Total score}
+\item{zscore}{Standardized total score (Z-score)}
 }
 }
 \usage{
