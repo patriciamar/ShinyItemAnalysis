@@ -1,10 +1,45 @@
 ## Changes and developments in the ShinyItemAnalysis package
 
-----------
+### Changes in version 1.5.0 (2023-04-05)
 
-### Changes in version 1.4.2-1 (2023-02-03)
+**_THIS IS A CRAN VERSION_**
+
 #### BUG FIXING
-  * Calculation of itemfit p values was fixed in the Table of estimated parameters in `IRT model/Dichotous models` section of the app (Thanks to Samsul Hadi for reporting this issue)
+  * Calculation of itemfit p values was fixed in the Table of estimated parameters 
+    in `IRT model/Dichotous models` section of the app (Thanks to Samsul Hadi for 
+    reporting this issue).
+  * Calculation of worst split-half coefficient was fixed to respond to updates 
+    in the psych package.
+  
+#### MAJOR UPDATES
+  * Additional modules can now be easily incorporated into the Shiny app! 
+    Shiny app discovers for installed modules and adds them in respective sections.
+    Modules can be kept in external packages. See SIAmodules R package for default
+    modules.
+  * New dataset `CLoSEreading6` was added and it is also offered as a toy dataset 
+    in the `Data/Data` section of the app.
+  * DIF analysis now offers combinations (simple and iterative) of purification 
+    and p-value adjustment in the `DIF/Fairness` section of the app.
+  
+#### MINOR UPDATES
+  * The `plot_corr()` function is now more verbose and handles errors in polychoric 
+    correlations estimation in a more user-friendly way; the partial matching of 
+    arguments is no longer supported
+  * Data upload and treatment of missing values was clarified and slightly updated 
+    in `Data/Data` section of the app. 
+  * All data are now downloadable in `Data/Data exploration` section of the app.
+  * Error messages caused by missing values were made more specific in `DIF` section of the app.
+  * Summary table of total scores was complemented by number of complete cases and explanations
+    in the `Scores/Total scores` and `DIF/Observed scores` section of the app.
+  * Cutscore for hiding loadings was lowered to 0.2 in `Validity/Factor analysis`
+    section of the app.
+  * Interfactor correlations were added for oblique rotation and n_factors > 1 in `Validity/Factor analysis`
+    section of the app (Thanks to Stanislav Ježek for suggesting this feature).
+  * `HCIlong` dataset now contains `zscore` variable.
+  * Some of the `HeightInventory` dataset variables were renamed, new variable 
+    `total` was added.
+  * Dependency on the `psychometric` package was removed.
+  * `Anxiety` dataset is now offered as a toy dataset in the `Data/Data` section of the app.
   
 ----------
 
@@ -16,7 +51,7 @@
   * Item criterion validity - Distractor plot was fixed in Item Analysis tab.
 
 #### MAJOR UPDATES
-  * New datasets `HCIlong`, `MSATB`, `GMAT`, `EPIA` added, 
+  * New datasets `HCIlong`, `MSATB`, `GMAT`, `EPIA` added 
   *  `anxiety` dataset was renamed to `Anxiety`, variables `score` and
      `zscore` were added 
   *  Variable `total` was added to datasets `HCI`, `HCItest`  
@@ -73,7 +108,7 @@
   
 #### MINOR UPDATES
   * `gDiscrim()` newly issues a warning when item(s) range is zero and when there 
-    is no difficulty difference in either group
+    is no difficulty difference in either group.
   * In `gDiscrim()`, the groups are newly defined using the `quantile()` function. 
     In the case of ties, the respondents with the same total score are now in 
     the same group, the groups sizes may thus differ, but are now exactly defined. 

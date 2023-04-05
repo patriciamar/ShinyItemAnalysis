@@ -1,8 +1,8 @@
 Type: Package
 Package: ShinyItemAnalysis
 Title: Test and Item Analysis via Shiny
-Version: 1.4.2
-Date: 2022-10-21
+Version: 1.5.0
+Date: 2023-03-22
 Authors@R: 
     c(person(given = "Patricia",
              family = "Martinkova",
@@ -42,13 +42,13 @@ Depends:
 Imports:
     difR (>= 5.0),
     dplyr,
-    ggplot2,
+    ggplot2 (>= 3.4.0),
     lme4,
     magrittr,
-    mirt (>= 1.24),
+    mirt (>= 1.28),
     nnet,
     purrr,
-    psych,
+    psych (>= 2.1.9),
     rlang,
     rstudioapi,
     tibble,
@@ -67,15 +67,16 @@ Suggests:
     ltm,
     plotly,
     rmarkdown,
-    shiny (>= 1.0.3),
+    shiny (>= 1.5.0),
     shinyBS,
     shinydashboard,
     shinyjs,
     stringr,
     VGAM,
-    xtable
+    xtable,
+    yaml
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.2.1
+RoxygenNote: 7.2.3
 Roxygen: list(markdown = TRUE)
 Config/testthat/edition: 3

@@ -2,6 +2,6 @@
 .Rhistory
 .RData
 .Ruserdata
-.Rbuildignore
-
-inst/shiny-examples/ShinyItemAnalysis/www/Thumbs.db
+renv.lock
+.DS_Store
+inst/ShinyItemAnalysis/www/Thumbs.db

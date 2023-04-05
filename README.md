@@ -4,7 +4,7 @@ Test and item analysis via shiny
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/patriciamar/ShinyItemAnalysis/workflows/R-CMD-check/badge.svg)](https://github.com/patriciamar/ShinyItemAnalysis/actions)
 ![GHversion](https://img.shields.io/github/release/patriciamar/ShinyItemAnalysis.svg)
-[![online](https://img.shields.io/badge/online-1.4.1-yellow.svg)](https://shiny.cs.cas.cz/ShinyItemAnalysis/)
+[![online](https://img.shields.io/badge/online-1.5.0-yellow.svg)](https://shiny.cs.cas.cz/ShinyItemAnalysis/)
 [![version](https://www.r-pkg.org/badges/version/ShinyItemAnalysis)](https://CRAN.R-project.org/package=ShinyItemAnalysis)
 ![cranlogs](https://cranlogs.r-pkg.org/badges/ShinyItemAnalysis)
   <!-- badges: end -->
@@ -21,6 +21,7 @@ Test and item analysis via shiny
  * Item analysis with regression models
  * Item analysis with IRT models
  * Detection of differential item functioning
+ * ... and more via add-on modules 
 
 <p float="center">
     <img src="https://cdn.jsdelivr.net/gh/patriciamar/ShinyItemAnalysis/.readme_assets/scrSIAintro.png" width="49%" />
@@ -58,10 +59,10 @@ remotes::install_github("patriciamar/ShinyItemAnalysis")
 ```
 
 ## Version
-Current version available on [**CRAN**](https://CRAN.R-project.org/package=ShinyItemAnalysis) is 1.4.2. 
-The newest development version available on [**GitHub**](https://github.com/patriciamar/ShinyItemAnalysis) is 1.4.2.<br> 
-Version available online at [Czech Academy of Sciences](https://shiny.cs.cas.cz/ShinyItemAnalysis/) is 1.4.2. 
-Version available online at [shinyapps.io](https://cemp.shinyapps.io/ShinyItemAnalysis/) is 1.4.2. <br> 
+Current version available on [**CRAN**](https://CRAN.R-project.org/package=ShinyItemAnalysis) is 1.5.0. 
+The newest development version available on [**GitHub**](https://github.com/patriciamar/ShinyItemAnalysis) is 1.5.0.<br> 
+Version available online at [Czech Academy of Sciences](https://shiny.cs.cas.cz/ShinyItemAnalysis/) is 1.5.0. 
+Version available online at [shinyapps.io](https://cemp.shinyapps.io/ShinyItemAnalysis/) is 1.5.0. <br> 
 
 ## Usage
 It is very easy to run `ShinyItemAnalysis` in `R`:
@@ -76,6 +77,8 @@ Or if you are an RStudio IDE user, simply click on `Run ShinyItemAnalysis` in [A
 
 ## References
 When using `ShinyItemAnalysis` software, we appreciate if you include a reference in your publications. To cite the software, please, use: 
+
+> Martinková P., & Hladká A. (2023) Computational Aspects of Psychometric Methods: With R. (1st ed.). Chapman and Hall/CRC. doi: 10.1201/9781003054313. ISBN 9781003054313.
 
 > Martinková P., & Drabinová A. (2018) ShinyItemAnalysis for teaching psychometrics and to enforce routine analysis of educational tests. The R Journal, 10(2), 503-515.
 > [doi: 10.32614/RJ-2018-074](https://doi.org/10.32614/RJ-2018-074).
