@@ -1,6 +1,6 @@
-#' Czech Longitudinal Study in Education (CLoSE) dataset
+#' Czech Longitudinal Study in Education (CLoSE) - reading in 6th grade
 #'
-#' `CLoSE` dataset consists of the dichotomously scored responses of 2,634 students
+#' `CLoSEread6` dataset consists of the dichotomously scored responses of 2,634 students
 #' (1,324 boys, 1,310 girls) on 19 multiple-choice items in a test of reading
 #' skills, version B, taken in the 6th grade. Item responses were dichotomized: 1
 #' point was awarded only if the answer was fully correct and 0 if it was not
@@ -24,14 +24,14 @@
 #' @source
 #' Hladká, A., Martinková, P., & Magis, D. (2023). Combining item purification and
 #'   multiple comparison adjustment methods in detection of differential item
-#'   functioning. *Multivariate Behavioral Research*, Accepted.
+#'   functioning. *Multivariate Behavioral Research*, In Press.
 #'
 #' @keywords datasets
 #'
-#' @format `CLoSE` is a `data.frame` consisting of 2,634 observations on
+#' @format `CLoSEread6` is a `data.frame` consisting of 2,634 observations on
 #'   the 20 variables.
 #'   \describe{
 #'   \item{Q6B_1-Q6B_19}{Dichotomously scored items of the test on reading skills. }
 #'   \item{gender}{Gender membership, `"0"` boys, `"1"` girls. }
 #' }
-"CLoSE"
+"CLoSEread6"
