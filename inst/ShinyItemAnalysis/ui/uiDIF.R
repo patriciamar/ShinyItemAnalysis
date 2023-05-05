@@ -228,7 +228,7 @@ uiDIF <-
             "Here you can select a ", strong("correction method"), " for multiple comparison, and/or ",
             strong("item purification."), "You can also select whether apply them in simple (correction
             applied after purification) or iterative (correction applied after each purification iteration)",
-            strong("combination.")
+            strong("combination"), "(Hladka, Martinkova, & Magis, 2023)."
           ),
           fluidRow(
             column(
@@ -347,7 +347,7 @@ uiDIF <-
                         the Crossing-SIBTEST method is used instead. You can also select the ", strong("correction method"), " for
                         multiple comparisons or", strong("item purification."), "You can also select whether apply them in simple
                         (correction applied after purification) or iterative (correction applied after each purification iteration)",
-                        strong("combination.")),
+                        strong("combination"), "(Hladka, Martinkova, & Magis, 2023)."),
       fluidRow(
         column(
           2,

@@ -97,8 +97,12 @@ uiAbout <- tabPanel("",
   ),
   column(
     2,
-    tags$img(src="book_cover.png", class="img-responsive")
-  )
+    tags$img(
+      src="book_cover.png",
+      class="img-responsive",
+      style = "max-width: 180px; margin-left: auto; margin-right: auto;"
+      )
+    )
   ),
   tags$hr(),
 

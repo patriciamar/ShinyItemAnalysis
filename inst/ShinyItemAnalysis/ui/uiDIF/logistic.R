@@ -13,10 +13,11 @@ ui_DIF_logistic <- tabPanel(
         "Here you can change ", strong("type"), " of DIF to be tested and ", strong("parametrization"), "- either based on IRT
         models or classical intercept/slope. You can also select a ", strong("correction method"), " for multiple comparison and/or
         ", strong("item purification. "), "You can also select whether apply them in simple (correction applied after purification)
-        or iterative (correction applied after each purification iteration)", strong("combination."), "Finally, you may also change
-        the ", strong("Observed score."), " While matching on the standardized total score is typical, the upload of other observed
-        scores is possible in the ", strong("Data. "), "section. Using a pre-test (standardized) total score as the observed score
-        allows for testing a differential item functioning in change (DIF-C) to provide proofs of instructional sensitivity ",
+        or iterative (correction applied after each purification iteration)", strong("combination"), "(Hladka, Martinkova, & Magis,
+        2023). Finally, you may also change the ", strong("Observed score."), " While matching on the standardized total score is
+        typical, the upload of other observed scores is possible in the ", strong("Data. "), "section. Using a pre-test (standardized)
+        total score as the observed score allows for testing a differential item functioning in change (DIF-C) to provide proofs of
+        instructional sensitivity ",
         a("(Martinkova et al., 2020), ",
           href = "https://doi.org/10.1016/j.learninstruc.2019.101286",
           target = "_blank"

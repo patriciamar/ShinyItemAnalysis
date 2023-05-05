@@ -14,9 +14,8 @@ uiModules <- navbarMenu("Modules",
       "they may come bundled with their own datasets, use compiled code, etc."
     ),
     p(
-      "Note that if you run the app locally, you are not expected to see any modules.",
-      "If you wish, you may install the", code("SIAmodules"), "package, which provides several of them.",
-      "These modules are preinstalled only for the online presentation hosted at Czech Academy of Sciences server."
+      "Several SIA modules are already provided for you in the, ", code("SIAmodules"),
+      "package, which is installed as you run this app for the first time."
     )
   )
 )

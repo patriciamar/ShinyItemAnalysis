@@ -29,7 +29,8 @@ uiData <- tabPanel(
             label = "Select dataset",
             choices = c(
               "Anxiety" = "Anxiety_ShinyItemAnalysis",
-              "CLoSE" = "CLoSE_ShinyItemAnalysis",
+              "CLoSEread6" = "CLoSEread6_ShinyItemAnalysis",
+              "CZmaturaS" = "CZmaturaS_ShinyItemAnalysis",
               "GMAT" = "GMAT_difNLR",
               # "GMAT2" = "GMAT2_difNLR",
               "HCI" = "HCI_ShinyItemAnalysis",

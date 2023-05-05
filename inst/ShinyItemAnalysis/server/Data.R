@@ -41,8 +41,8 @@ observeEvent(c(input$data_toydata, data_csvdata_current_status$unloaded == 1), {
 
   dataset$data_status <- "OK"
 
-  if (toydata_name == "CLoSE") {
-    # ** CLoSE ####
+  if (toydata_name == "CLoSEread6") {
+    # ** CLoSEread6 ####
     toydata_data_type <- "binary"
 
     do.call(data, args = list(paste0(toydata_name), package = toydata_package))
@@ -60,6 +60,28 @@ observeEvent(c(input$data_toydata, data_csvdata_current_status$unloaded == 1), {
     toydata_maximal <- NULL
 
     toydata_key <- rep(1, ncol(toydata_binary))
+  } else if (toydata_name == "CZmaturaS") {
+
+    toydata_data_type <- "ordinal"
+
+    # get the dataset directly from the package's namespace without changing the .GlobalEnv
+    toydata_raw <- get(toydata_name, envir = asNamespace(toydata_package))
+
+    # use already scored responses
+    toydata_ordinal <- toydata_raw %>% select(matches("b\\d+"))
+    toydata_continuous <- toydata_ordinal
+    toydata_nominal <- toydata_ordinal
+
+    toydata_group <- toydata_raw[, "SchTypeGY"]
+    toydata_criterion <- toydata_raw[, "SchTypeGY"]
+    # rounded T-scores because the plots demand discrete values
+    toydata_DIFmatching <- round((scale(toydata_raw[, "IRTscore"]) * 10) + 50)
+
+    toydata_minimal <- sapply(toydata_ordinal, min, na.rm = TRUE)
+    toydata_key <- toydata_maximal <- sapply(toydata_ordinal, max, na.rm = TRUE)
+
+    toydata_binary <- mirt::key2binary(toydata_ordinal, toydata_key)
+
   } else if (toydata_name == "LearningToLearn" & toydata_subset == "6") {
     # ** Learning to learn, grade 6 ####
     toydata_data_type <- "binary"
@@ -1140,9 +1162,14 @@ data_description_Input <- reactive({
                 (e.g., logistic models in Regression, IRT models, or DIF detection methods), data are binarized &ndash;
                 <code>'1'</code> means at least rarely on original scale, i.e., <code>'2'</code>-<code>'5'</code>; otherwise
                 the item is scored as <code>'0'</code>. ",
-    CLoSE_ShinyItemAnalysis = "<code>CLoSE</code> is a real dataset containing responses of 2,634 students (1,324 boys, coded
+    CLoSEread6_ShinyItemAnalysis = "<code>CLoSEread6</code> is a real dataset containing responses of 2,634 students (1,324 boys, coded
                 as <code>'0'</code>, 1,310 girls coded as <code>'1'</code>) on 19 dichotomously scored items in a test of
                 reading skills, version B, taken in the 6th grade (Hladka, Martinkova, & Magis, 2023). ",
+    CZmaturaS_ShinyItemAnalysis = "<code>CZmaturaS</code> is a real dataset containing responses of a random subset of 2,000 students in Grade 13 taking
+                a \"matura\" exam in mathematics. Students responded to a mixture of 26 dichotomous and polytomous items which we consider ordinal in the
+                app. For analyses that use binary data, the highest observed score in each item is scored as \"1\" and the rest as \"0\". In the Group and Criterion variable,
+                \"1\" denotes that the student attends an academic \"gymnasium\" school type. T-scores of factor scores estimated from the GPCM/2PL IRT model come
+                preloaded as an alternative observed score variable. ",
     GMAT_difNLR = "<code>GMAT</code> <a href='https://doi.org/10.1187/cbe.16-10-0307' target='_blank'>(Martinkova et al., 2017)</a>
                 is a generated dataset based on the parameters of a real Graduate Management Admission Test (GMAT; Kingston et al., 1985)
                 from the <code>difNLR</code> package. This dataset represents the responses of 2,000 subjects (1,000 males coded as

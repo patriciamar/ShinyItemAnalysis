@@ -343,6 +343,11 @@ uiReferences <-
                 target = "_blank">See online.</a>
                 </li>
 
+                <li>Hladka, A., Martinkova, P., & Magis, D. (2023).
+                Combining item purification and multiple comparison adjustment methods in detection of differential item functioning.
+                <i>Multivariate Behavioral Research</i>, Accepted.
+                </li>
+
                 <li>
                 Horn, J. L. (1965). A rationale and test for the number of factors in factor analysis. <i>Psychometrika, 30,</i> 179-185. <a href="http://dx.doi.org/10.1007/BF02289447", target="_blank">See online.</a>
                 </li>
