@@ -40,6 +40,7 @@ by Martinkova and Drabinova (2018).
 \item \code{\link[=ggWrightMap]{ggWrightMap()}}
 \item \code{\link[=ICCrestricted]{ICCrestricted()}}
 \item \code{\link[=ItemAnalysis]{ItemAnalysis()}}
+\item \code{\link[=blis]{blis()}}
 \item \code{\link[=plotAdjacent]{plotAdjacent()}}, \code{\link[=plotCumulative]{plotCumulative()}}, \code{\link[=plotMultinomial]{plotMultinomial()}}
 \item \code{\link[=plotDIFirt]{plotDIFirt()}}, \code{\link[=plotDIFLogistic]{plotDIFLogistic()}}
 \item \code{\link[=plot_corr]{plot_corr()}}
@@ -54,6 +55,7 @@ by Martinkova and Drabinova (2018).
 \item \code{\link[=Anxiety]{Anxiety()}}
 \item \code{\link[=AttitudesExpulsion]{AttitudesExpulsion()}}
 \item \code{\link[=BFI2]{BFI2()}}
+\item \code{\link[=CLoSEread6]{CLoSEread6()}}
 \item \code{\link[=CZmatura]{CZmatura()}}
 \item \code{\link[=CZmaturaS]{CZmaturaS()}}
 \item \code{\link[=dataMedical]{dataMedical()}}

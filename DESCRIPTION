@@ -2,33 +2,17 @@ Type: Package
 Package: ShinyItemAnalysis
 Title: Test and Item Analysis via Shiny
 Version: 1.5.0
-Date: 2023-03-22
-Authors@R: 
-    c(person(given = "Patricia",
-             family = "Martinkova",
-             role = c("aut", "cre"),
-             email = "martinkova@cs.cas.cz"),
-      person(given = "Adela",
-             family = "Hladka",
-             role = "aut"),
-      person(given = "Jan",
-             family = "Netik",
-             role = "aut"),
-      person(given = "Ondrej",
-             family = "Leder",
-             role = "ctb"),
-      person(given = "Jakub",
-             family = "Houdek",
-             role = "ctb"),
-      person(given = "Lubomir",
-             family = "Stepanek",
-             role = "ctb"),
-      person(given = "Tomas",
-             family = "Jurica",
-             role = "ctb"),
-      person(given = "Jana",
-             family = "Vorlickova",
-             role = "ctb"))
+Date: 2023-05-05
+Authors@R: c(
+    person("Patricia", "Martinkova", , "martinkova@cs.cas.cz", role = c("aut", "cre")),
+    person("Adela", "Hladka", role = "aut"),
+    person("Jan", "Netik", role = "aut"),
+    person("Ondrej", "Leder", role = "ctb"),
+    person("Jakub", "Houdek", role = "ctb"),
+    person("Lubomir", "Stepanek", role = "ctb"),
+    person("Tomas", "Jurica", role = "ctb"),
+    person("Jana", "Vorlickova", role = "ctb")
+  )
 Description: Package including functions and interactive shiny application
     for the psychometric analysis of educational tests, psychological
     assessments, health-related and other types of multi-item
@@ -45,20 +29,19 @@ Imports:
     ggplot2 (>= 3.4.0),
     lme4,
     magrittr,
+    methods,
     mirt (>= 1.28),
     nnet,
-    purrr,
     psych (>= 2.1.9),
+    purrr,
     rlang,
     rstudioapi,
     tibble,
-    tidyr,
-    methods
+    tidyr
 Suggests: 
     data.table,
     deltaPlotR,
     difNLR (>= 1.4.1),
-    testthat (>= 3.0.0),
     DT,
     ggdendro,
     gridExtra,
@@ -71,7 +54,9 @@ Suggests:
     shinyBS,
     shinydashboard,
     shinyjs,
+    SIAmodules,
     stringr,
+    testthat (>= 3.0.0),
     VGAM,
     xtable,
     yaml

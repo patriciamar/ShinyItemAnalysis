@@ -38,7 +38,7 @@
 #'
 #' @export
 startShinyItemAnalysis <- function(background = TRUE, ...) {
-  check_app_deps(...) # dots are for install.packages() options
+    check_app_deps(...) # dots are for install.packages() options
 
   run_app_script <- '
   appDir <- system.file("ShinyItemAnalysis", package = "ShinyItemAnalysis")
@@ -123,21 +123,9 @@ check_app_deps <- function(...) {
   # remove any newline chars that might confuse regex of rlang::check_installed
   suggests <- gsub("\n", " ", suggests)
 
+  # ignore testthat as it is not required to run the app
+  suggests <- suggests[!grepl("^testthat", suggests)]
+
   # check with the provided reason
   check_installed(suggests, reason = "to run the app.")
-
-  # TODO - nice to have -
-  # print some info based on the check (but it always return NULL)
-  #
-  # browser()
-  #   message(
-  #     "\n----------------------------------------------------------\n",
-  #     "All required packages should now be installed.\n",
-  #     "If you encounter an error, read the log above and restart R.\n",
-  #     "\n",
-  #     "The application will launch in a moment...\n",
-  #     "------------------------------------------------------------"
-  #   )
-  #
-  #   Sys.sleep(8)
 }
