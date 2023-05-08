@@ -14,7 +14,7 @@ uiModules <- navbarMenu("Modules",
       "they may come bundled with their own datasets, use compiled code, etc."
     ),
     p(
-      "Several SIA modules are already provided for you in the, ", code("SIAmodules"),
+      "Several SIA modules are already provided for you in the ", code("SIAmodules"),
       "package, which is installed as you run this app for the first time."
     )
   )

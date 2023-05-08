@@ -1,6 +1,6 @@
 ## Changes and developments in the ShinyItemAnalysis package
 
-### Changes in version 1.5.0 (2023-05-05)
+### Changes in version 1.5.0 (2023-05-08)
 
 **_THIS IS A CRAN VERSION_**
 

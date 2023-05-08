@@ -2,7 +2,7 @@ Type: Package
 Package: ShinyItemAnalysis
 Title: Test and Item Analysis via Shiny
 Version: 1.5.0
-Date: 2023-05-05
+Date: 2023-05-08
 Authors@R: c(
     person("Patricia", "Martinkova", , "martinkova@cs.cas.cz", role = c("aut", "cre")),
     person("Adela", "Hladka", role = "aut"),
