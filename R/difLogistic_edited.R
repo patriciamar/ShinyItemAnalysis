@@ -1,4 +1,11 @@
-#' @export
+#' Performs DIF detection using logistic regression method. (internal function)
+#'
+#' @description Internal function substituting the `difLogistik()` function of
+#' the `difR` package.
+#'
+#' @keywords internal
+#' @noRd
+
 .difLogistic_edited <- function(Data, group, focal.name, anchor = NULL, member.type = "group",
                                 match = "score", type = "both", criterion = "LRT",
                                 alpha = 0.05, all.cov = FALSE, purify = FALSE, nrIter = 10,

@@ -1,5 +1,12 @@
+#' Performs DIF detection using SIBTEST method. (internal function)
+#'
+#' @description Internal function substituting the `difSIBTEST()` function of
+#' the `difR` package.
+#'
+#' @keywords internal
+#' @noRd
+#'
 #' @importFrom difR sibTest
-#' @export
 .difSIBTEST_edited <- function(Data, group, focal.name, type = "udif", anchor = NULL,
                                alpha = 0.05, purify = FALSE, nrIter = 10, p.adjust.method = NULL,
                                puriadjType = "simple",

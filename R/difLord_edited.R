@@ -1,6 +1,12 @@
-#' @importFrom difR itemParEst itemRescale LordChi2
+#' Performs DIF detection using Lord's chi-squared (Wald-type) statistic. (internal function)
 #'
-#' @export
+#' @description Internal function substituting the `difLord()` function of
+#' the `difR` package.
+#'
+#' @keywords internal
+#' @noRd
+#'
+#' @importFrom difR itemParEst itemRescale LordChi2
 .difLord_edited <- function(Data, group, focal.name, model, c = NULL, engine = "ltm",
                             discr = 1, irtParam = NULL, same.scale = TRUE, anchor = NULL,
                             alpha = 0.05, purify = FALSE, nrIter = 10,

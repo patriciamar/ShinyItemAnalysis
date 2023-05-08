@@ -1,5 +1,12 @@
+#' Performs DIF detection using Raju area method. (internal function)
+#'
+#' @description Internal function substituting the `difRaju()` function of
+#' the `difR` package.
+#'
+#' @keywords internal
+#' @noRd
+#'
 #' @importFrom difR RajuZ
-#' @export
 .difRaju_edited <- function(Data, group, focal.name, model, c = NULL, engine = "ltm",
                             discr = 1, irtParam = NULL, same.scale = TRUE, anchor = NULL,
                             alpha = 0.05, signed = FALSE, purify = FALSE, nrIter = 10,
