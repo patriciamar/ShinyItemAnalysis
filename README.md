@@ -4,7 +4,7 @@ Test and item analysis via shiny
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/patriciamar/ShinyItemAnalysis/workflows/R-CMD-check/badge.svg)](https://github.com/patriciamar/ShinyItemAnalysis/actions)
 ![GHversion](https://img.shields.io/github/release/patriciamar/ShinyItemAnalysis.svg)
-[![online](https://img.shields.io/badge/online-1.5.0-yellow.svg)](https://shiny.cs.cas.cz/ShinyItemAnalysis/)
+[![online](https://img.shields.io/badge/online-1.5.1-yellow.svg)](https://shiny.cs.cas.cz/ShinyItemAnalysis/)
 [![version](https://www.r-pkg.org/badges/version/ShinyItemAnalysis)](https://CRAN.R-project.org/package=ShinyItemAnalysis)
 ![cranlogs](https://cranlogs.r-pkg.org/badges/ShinyItemAnalysis)
   <!-- badges: end -->
@@ -30,7 +30,7 @@ Test and item analysis via shiny
 
 Number of toy datasets is available, the interactive application also allows the users to upload and analyze their own data and to automatically generate PDF or HTML reports.
 
-`ShinyItemAnalysis` is available online at [Czech Academy of Sciences](https://shiny.cs.cas.cz/ShinyItemAnalysis/) and [shinyapps.io](https://cemp.shinyapps.io/ShinyItemAnalysis/). It can be also downloaded from [**CRAN**](https://CRAN.R-project.org/package=ShinyItemAnalysis). Visit our [**web page**](http://www.shinyitemanalysis.org/) about ShinyItemAnalysis to learn more!
+`ShinyItemAnalysis` is available online at [Czech Academy of Sciences](https://shiny.cs.cas.cz/ShinyItemAnalysis/) and [shinyapps.io](https://cemp.shinyapps.io/ShinyItemAnalysis/). It can be also downloaded from [**CRAN**](https://CRAN.R-project.org/package=ShinyItemAnalysis). Visit our [**web page**](https://www.shinyitemanalysis.org/) about ShinyItemAnalysis to learn more!
 
 ## Installation
 
@@ -59,10 +59,10 @@ remotes::install_github("patriciamar/ShinyItemAnalysis")
 ```
 
 ## Version
-Current version available on [**CRAN**](https://CRAN.R-project.org/package=ShinyItemAnalysis) is 1.5.0. 
-The newest development version available on [**GitHub**](https://github.com/patriciamar/ShinyItemAnalysis) is 1.5.0.<br> 
-Version available online at [Czech Academy of Sciences](https://shiny.cs.cas.cz/ShinyItemAnalysis/) is 1.5.0. 
-Version available online at [shinyapps.io](https://cemp.shinyapps.io/ShinyItemAnalysis/) is 1.5.0. <br> 
+Current version available on [**CRAN**](https://CRAN.R-project.org/package=ShinyItemAnalysis) is 1.5.1. 
+The newest development version available on [**GitHub**](https://github.com/patriciamar/ShinyItemAnalysis) is 1.5.1.<br> 
+Version available online at [Czech Academy of Sciences](https://shiny.cs.cas.cz/ShinyItemAnalysis/) is 1.5.1. 
+Version available online at [shinyapps.io](https://cemp.shinyapps.io/ShinyItemAnalysis/) is 1.5.1. <br> 
 
 ## Usage
 It is very easy to run `ShinyItemAnalysis` in `R`:
@@ -73,7 +73,7 @@ ShinyItemAnalysis::run_app()
 ShinyItemAnalysis::startShinyItemAnalysis()
 ```
 
-Or if you are an RStudio IDE user, simply click on `Run ShinyItemAnalysis` in [Addins](https://rstudio.github.io/rstudioaddins/) menu (located at the end of the toolbar). Last but not least, you can also try the app directly online at [Czech Academy of Sciences](https://shiny.cs.cas.cz/ShinyItemAnalysis/) or [shinyapps.io](https://cemp.shinyapps.io/ShinyItemAnalysis/)!
+Or if you are an RStudio IDE user, simply click on `Run ShinyItemAnalysis` in [Addins](https://docs.posit.co/ide/user/ide/guide/productivity/add-ins.html) menu (located at the end of the toolbar). Last but not least, you can also try the app directly online at [Czech Academy of Sciences](https://shiny.cs.cas.cz/ShinyItemAnalysis/) or [shinyapps.io](https://cemp.shinyapps.io/ShinyItemAnalysis/)!
 
 ## References
 When using `ShinyItemAnalysis` software, we appreciate if you include a reference in your publications. To cite the software, please, use: 

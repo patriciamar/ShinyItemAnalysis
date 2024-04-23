@@ -44,7 +44,8 @@ IRT_bock_fit_and_orig_levels <- reactive({
 
       fit <- mirt(
         d_int_plus_key[["Data"]], 1,
-        itemtype = "nominal", SE = TRUE, pars = pars, verbose = FALSE
+        itemtype = "nominal", SE = TRUE, pars = pars, verbose = FALSE,
+        technical = list(NCYCLES = input$ncycles)
       )
       orig_levels <- d_int_plus_key[["orig_levels"]]
 
@@ -292,6 +293,7 @@ IRT_bock_summary_fscores_zscores <- reactive({
   tab <- data.frame(
     `Total score` = total_score(),
     `Z-score` = z_score(),
+    `T-score` = t_score(),
     fscore_with_ses,
     check.names = F
   )

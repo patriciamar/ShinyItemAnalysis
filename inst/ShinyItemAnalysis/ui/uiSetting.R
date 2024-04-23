@@ -4,13 +4,13 @@ uiSetting <-
     icon = icon("gear"),
     h3("Settings"),
     h4("IRT models setting"),
-    p("Set the number of cycles for IRT models in the ", strong("IRT models"), "section."),
+    p("Set the number of iterations (EM cycles) for IRT models in the ", strong("IRT models"), "section."),
     fluidPage(column(2, numericInput(
       inputId = "ncycles",
-      label = "Number of cycles",
-      value = 2000,
-      min = 1,
-      max = 999999
+      label = "Number of iterations",
+      value = 500L, # the default for EM estim. in mirt
+      min = 10L,
+      max = 5000L # tried to set a reasonable upper limit for non-local sessions
     ))),
     h4("Figure downloads"),
     p("Here you can change setting for download of figures. "),

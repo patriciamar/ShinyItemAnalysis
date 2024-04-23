@@ -15,6 +15,10 @@ uiData <- tabPanel(
         " is used. While on this page, you may select one of several other toy datasets or you may upload your own
         dataset (see below). To return to the demonstration dataset, click on the ", strong("Unload data"), " button."
       ),
+
+      h4("Current data"),
+      uiOutput("curr_data"),
+
       tags$hr(),
       #------------------------------------------------------------------------------------#
       # * Training datasets ####

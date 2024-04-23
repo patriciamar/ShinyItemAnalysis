@@ -74,7 +74,7 @@ function(input, output, session) {
     }
     counter <- counter + 1
     save(counter, file = "counter.Rdata")
-    paste0("Hits:", counter)
+    paste("Hits:", counter)
   })
 
   # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -143,12 +143,11 @@ function(input, output, session) {
 
   source("server/Setting.R", local = TRUE)
 
-
   # url resolver
   observe({
     query <- parseQueryString(session$clientData$url_search)
-    if (!is.null(names(query)) && names(query) == "print_version") {
-      session$sendCustomMessage("sessinf", sessionInfo())
+    if (!is.null(names(query)) && names(query) == "session_info") {
+      session$sendCustomMessage("send_to_console", sessionInfo())
     }
   })
 }

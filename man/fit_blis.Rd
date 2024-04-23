@@ -120,7 +120,9 @@ will estimate the regression parameters for all latent traits by default}
       (e.g., \code{'Davidian-6'} will estimate 6 smoothing parameters). By default, the number of
       \code{quadpts} is increased to 121, and this method is only applicable for
       unidimensional models estimated with the EM algorithm
-   }}
+   }
+
+   Note that when \code{itemtype = 'ULL'} then a log-normal(0,1) density is used to support the unipolar scaling}
     \item{\code{constrain}}{a list of user declared equality constraints. To see how to define the
 parameters correctly use \code{pars = 'values'} initially to see how the parameters are
 labeled. To constrain parameters to be equal create a list with separate concatenated
@@ -216,7 +218,9 @@ control input)}
   \item{NCYCLES}{maximum number of EM or MH-RM cycles; defaults are 500 and 2000}
   \item{MAXQUAD}{maximum number of quadratures, which you can increase if you have more than
     4GB or RAM on your PC; default 20000}
-  \item{theta_lim}{range of integration grid for each dimension; default is \code{c(-6, 6)}}
+  \item{theta_lim}{range of integration grid for each dimension; default is \code{c(-6, 6)}. Note that
+    when \code{itemtype = 'ULL'} a log-normal distribution is used and the range is change to
+    \code{c(.01, and 6^2)}, where the second term is the square of the \code{theta_lim} input instead}
   \item{set.seed}{seed number used during estimation. Default is 12345}
   \item{SEtol}{standard error tolerance criteria for the S-EM and MHRM computation of the
     information matrix. Default is 1e-3}
@@ -249,6 +253,11 @@ control input)}
     positive or negative infinity. The default is \code{FALSE}}
   \item{customTheta}{a custom \code{Theta} grid, in matrix form, used for integration.
     If not defined, the grid is determined internally based on the number of \code{quadpts}}
+  \item{nconstrain}{same specification as the \code{constrain} list argument,
+    however imposes a negative equality constraint instead (e.g., \eqn{a12 = -a21}, which
+    is specified as \code{nconstrain = list(c(12, 21))}). Note that each specification
+    in the list must be of length 2, where the second element is taken to be -1 times the
+    first element}
   \item{delta}{the deviation term used in numerical estimates when computing the ACOV matrix
     with the 'forward' or 'central' numerical approaches, as well as Oakes' method with the
     Richardson extrapolation. Default is 1e-5}

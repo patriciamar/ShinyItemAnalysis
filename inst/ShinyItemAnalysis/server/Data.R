@@ -28,6 +28,33 @@ dataset$rank <- NULL
 dataset$data_status <- NULL
 dataset$key_upload_status <- "toy"
 
+# source of the data
+dataset$data_source <- NULL
+
+curr_data <- reactive({
+  # fallback
+  if (is.null(dataset$data_source)) {
+    src <- "cannot determine"
+  } else {
+    src <- dataset$data_source
+  }
+
+  if (src == "toy") {
+    src <- "training datasets"
+  }
+
+  HTML(
+    paste(
+      "Name:", dataset$name, "<br>",
+      "Source:", src
+    )
+  )
+})
+
+output$curr_data <- renderUI({
+  curr_data()
+})
+
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # * LOADING TOY DATA ####
 
@@ -35,6 +62,7 @@ dataset$key_upload_status <- "toy"
 # user clicks on "Unload data" button
 observeEvent(c(input$data_toydata, data_csvdata_current_status$unloaded == 1), {
   toydata <- input$data_toydata
+
   toydata_name <- strsplit(toydata, split = "_")[[1]][1]
   toydata_package <- strsplit(toydata, split = "_")[[1]][2]
   toydata_subset <- strsplit(toydata, split = "_")[[1]][3]
@@ -251,6 +279,7 @@ observeEvent(c(input$data_toydata, data_csvdata_current_status$unloaded == 1), {
 
   dataset$name <- toydata_name
   dataset$data_type <- toydata_data_type
+  dataset$data_source <- "toy"
 
   dataset$minimal <- toydata_minimal
   dataset$maximal <- toydata_maximal
@@ -399,59 +428,6 @@ observeEvent(input$data_upload, {
       csvdata_key <- as.character(unlist(csvdata_key))
     }
 
-    # data_csvdata_key_nominal is key of correct answers
-    # data_csvdata_cutscore_ordinal is cut-score to binarize data
-
-    # inpKey <- ifelse(input$data_csvdata_data_type == "nominal",
-    #   ifelse(is.null(input$data_csvdata_key_nominal), 0, input$data_csvdata_key_nominal),
-    #   ifelse(is.null(input$data_csvdata_cutscore_ordinal), 0, input$data_csvdata_cutscore_ordinal)
-    # )
-
-    # AH: this is a very messy part and I do not fully understand what is
-    # going on here. This is also caused by no comments and by naming of
-    # variables which is not intuitive.
-
-    # there also needs to be check of dimensions of the main dataset and
-    # the length of key
-    # if (inpKey[[1]] == 0 | dataset$key_upload_status == "reset") {
-    #   if (input$data_csvdata_cutscore_ordinal_global == "") {
-    #     if (input$data_csvdata_data_type == "binary") {
-    #       csvdata_key <- rep(1, ncol(csvdata_data))
-    #     } else {
-    #       if (input$data_csvdata_data_type == "ordinal") {
-    #         csvdata_key <- csvdata_maximal
-    #       } else {
-    #         # csvdata_key <- "missing"
-    #         csvdata_key <- read.csv(input$data_csvdata_key_nominal$datapath,
-    #           header = input$data_csvdata_header,
-    #           sep = input$data_csvdata_sep,
-    #           quote = input$data_csvdata_quote
-    #         )
-    #         csvdata_key <- as.character(unlist(csvdata_key))
-    #       }
-    #     }
-    #   } else {
-    #     csvdata_key <- rep(as.numeric(paste(input$data_csvdata_cutscore_ordinal_global)), ncol(csvdata_data))
-    #   }
-    # } else {
-    #   if (input$data_csvdata_data_type == "nominal") {
-    #     csvdata_key <- read.csv(input$data_csvdata_key_nominal$datapath,
-    #       header = input$data_csvdata_header,
-    #       sep = input$data_csvdata_sep,
-    #       quote = input$data_csvdata_quote
-    #     )
-    #     csvdata_key <- as.character(unlist(csvdata_key))
-    #   } else {
-    #     csvdata_key <- read.csv(input$data_csvdata_cutscore_ordinal$datapath,
-    #       header = input$data_csvdata_header,
-    #       sep = input$data_csvdata_sep,
-    #       quote = input$data_csvdata_quote
-    #     )
-    #     csvdata_key <- as.character(unlist(csvdata_key))
-    #   }
-    # }
-    # dataset$key <- csvdata_key
-
     # ** Loading group ####
     if (is.null(input$data_csvdata_group)) {
       # in case there is no group variable to upload, it is set to "missing"
@@ -504,6 +480,22 @@ observeEvent(input$data_upload, {
       # ordinal data created using nominal and key (i.e., the same as binary)
       # continuous data created using nominal and key (i.e., the same as binary)
       dataset$nominal <- csvdata_data
+
+      if (csvdata_key == "missing") {
+        showModal(
+          modalDialog(
+            title = "Key was not provided",
+            "Key is necessary for nominal data. Please provide a key.",
+            easyClose = TRUE,
+            size = "s"
+          )
+        )
+
+        # get out of the scope of the function, dont run into mirt::key2binary without the key
+        return()
+      }
+
+
       dataset$binary <- mirt::key2binary(dataset$nominal, csvdata_key)
       dataset$ordinal <- dataset$binary
       dataset$continuous <- dataset$binary
@@ -516,7 +508,7 @@ observeEvent(input$data_upload, {
       dataset$ordinal <- csvdata_data
       df.key <- sapply(csvdata_key, rep, each = nrow(dataset$ordinal))
       dataset$binary <- matrix(as.numeric(dataset$ordinal >= df.key),
-        ncol = ncol(dataset$ordinal), nrow = nrow(dataset$ordinal)
+                               ncol = ncol(dataset$ordinal), nrow = nrow(dataset$ordinal)
       )
       colnames(dataset$binary) <- colnames(dataset$ordinal)
       dataset$nominal <- dataset$ordinal
@@ -538,6 +530,7 @@ observeEvent(input$data_upload, {
 
     dataset$name <- csvdata_data_name
     dataset$data_type <- csvdata_data_type
+    dataset$data_source <- "CSV"
 
     # min/max values
     if (input$data_csvdata_data_type == "ordinal") {
@@ -629,7 +622,7 @@ data_type <- reactive({
 key <- reactive({
   if (length(dataset$key) == 1) {
     validate(need(dataset$key != "missing", "The key needs to be provided for nominal datasets!"),
-      errorClass = "validation-error"
+             errorClass = "validation-error"
     )
   } else {
     # incorrect dimension of key
@@ -765,6 +758,10 @@ total_score <- reactive({
 # ** Standardized total score ####
 z_score <- reactive({
   scale(total_score())
+})
+
+t_score <- reactive({
+  (z_score() * 10) + 50
 })
 
 # ** Warning, if total_score() or z_score() have NAs
@@ -919,10 +916,10 @@ output$data_unload_button <- renderUI({
 })
 
 observeEvent(input$key,
-  {
-    dataset$key_upload_status <- "uploaded"
-  },
-  priority = 1000
+             {
+               dataset$key_upload_status <- "uploaded"
+             },
+             priority = 1000
 )
 
 # ** Remove loaded data after click on "Unload data" button ####
@@ -1087,8 +1084,8 @@ data_check_group_withNA_text <- eventReactive(((input$data_upload)), {
       txt <- paste(
         sum(NAgroup),
         ifelse(sum(NAgroup) == 1,
-          "observation has",
-          "observations have"
+               "observation has",
+               "observations have"
         ),
         "missing group membership. <br>
                  Some analyses may not work properly. Consider removing such items.
@@ -1154,7 +1151,7 @@ output$data_check_group_withNA_confirmation <- renderUI({
 data_description_Input <- reactive({
   data_name <- input$data_toydata
   txt <- switch(data_name,
-    Anxiety_ShinyItemAnalysis = "<code>Anxiety</code> is a real dataset originally from the <code>lordif</code> package.
+                Anxiety_ShinyItemAnalysis = "<code>Anxiety</code> is a real dataset originally from the <code>lordif</code> package.
                 This dataset contains responses of 766 respondents (369 males, coded as <code>'0'</code>, 397 females coded
                 as <code>'1'</code>) sampled from a general population to the PROMIS Anxiety scale on 29 Likert-scale items
                 with a common rating scale (<code>'1'</code> = Never, <code>'2'</code> = Rarely, <code>'3'</code> = Sometimes,
@@ -1162,15 +1159,15 @@ data_description_Input <- reactive({
                 (e.g., logistic models in Regression, IRT models, or DIF detection methods), data are binarized &ndash;
                 <code>'1'</code> means at least rarely on original scale, i.e., <code>'2'</code>-<code>'5'</code>; otherwise
                 the item is scored as <code>'0'</code>. ",
-    CLoSEread6_ShinyItemAnalysis = "<code>CLoSEread6</code> is a real dataset containing responses of 2,634 students (1,324 boys, coded
+                CLoSEread6_ShinyItemAnalysis = "<code>CLoSEread6</code> is a real dataset containing responses of 2,634 students (1,324 boys, coded
                 as <code>'0'</code>, 1,310 girls coded as <code>'1'</code>) on 19 dichotomously scored items in a test of
                 reading skills, version B, taken in the 6th grade (Hladka, Martinkova, & Magis, 2023). ",
-    CZmaturaS_ShinyItemAnalysis = "<code>CZmaturaS</code> is a real dataset containing responses of a random subset of 2,000 students in Grade 13 taking
+                CZmaturaS_ShinyItemAnalysis = "<code>CZmaturaS</code> is a real dataset containing responses of a random subset of 2,000 students in Grade 13 taking
                 a \"matura\" exam in mathematics. Students responded to a mixture of 26 dichotomous and polytomous items which we consider ordinal in the
                 app. For analyses that use binary data, the highest observed score in each item is scored as \"1\" and the rest as \"0\". In the Group and Criterion variable,
                 \"1\" denotes that the student attends an academic \"gymnasium\" school type. T-scores of factor scores estimated from the GPCM/2PL IRT model come
                 preloaded as an alternative observed score variable. ",
-    GMAT_difNLR = "<code>GMAT</code> <a href='https://doi.org/10.1187/cbe.16-10-0307' target='_blank'>(Martinkova et al., 2017)</a>
+                GMAT_difNLR = "<code>GMAT</code> <a href='https://doi.org/10.1187/cbe.16-10-0307' target='_blank'>(Martinkova et al., 2017)</a>
                 is a generated dataset based on the parameters of a real Graduate Management Admission Test (GMAT; Kingston et al., 1985)
                 from the <code>difNLR</code> package. This dataset represents the responses of 2,000 subjects (1,000 males coded as
                 <code>'0'</code>, 1,000 females coded as <code>'1'</code>) to a multiple-choice test of 20 items. It also contains
@@ -1179,19 +1176,19 @@ data_description_Input <- reactive({
                 in order to provide an example of DIF items present even in the case of identical total score distributions. To replicate the
                 example provided in <a href='https://doi.org/10.1187/cbe.16-10-0307' target='_blank'> Martinkova et al. (2017)</a>,
                 select the <code>GMAT</code> dataset and go to <code>DIF/Fairness</code> section. ",
-    GMAT2_difNLR = "<code>GMAT2</code> <a href='https://doi.org/10.1111/jedm.12158' target='_blank'>(Drabinova & Martinkova, 2017)</a> is
+                GMAT2_difNLR = "<code>GMAT2</code> <a href='https://doi.org/10.1111/jedm.12158' target='_blank'>(Drabinova & Martinkova, 2017)</a> is
                 a simulated dataset based on the parameters of a real Graduate Management Admission Test (GMAT; Kingston et al., 1985) from the
                 <code>difNLR</code> package. First two items were simulated to function differently in the uniform and the non-uniform way respectively.
                 The dataset represents the responses of 1,000 subjects (500 males coded as <code>'0'</code>, 500 females coded as <code>'1'</code>)
                 to a multiple-choice test of 20 items. ",
-    MSATB_difNLR = "<code>MSAT-B</code> <a href='https://doi.org/10.1111/jedm.12158' target='_blank'>(Drabinova & Martinkova, 2017)</a> is
+                MSATB_difNLR = "<code>MSAT-B</code> <a href='https://doi.org/10.1111/jedm.12158' target='_blank'>(Drabinova & Martinkova, 2017)</a> is
                 a subset of a real Medical School Admission Test in Biology (MSAT-B) in the Czech Republic from the <code>difNLR</code> package.
                 The dataset represents the responses of 1,407 subjects (484 males coded as <code>'0'</code>, 923 females coded as <code>'1'</code>)
                 to a multiple-choice test of 20 items. The first item was previously detected as functioning differently. For more details
                 on the item selection, see <a href='https://doi.org/10.1111/jedm.12158' target='_blank'>Drabinova and Martinkova (2017)</a>.
                 To replicate the example provided in <a href='https://doi.org/10.1111/jedm.12158' target='_blank'> Drabinova and Martinkova
                 (2017)</a>, select the <code>MSAT-B</code> dataset and go to the <code>DIF/Fairness</code> section. ",
-    dataMedical_ShinyItemAnalysis = "<code>Medical 100</code> <a href='https://doi.org/10.5817/TF2017-9-129' target='_blank'>
+                dataMedical_ShinyItemAnalysis = "<code>Medical 100</code> <a href='https://doi.org/10.5817/TF2017-9-129' target='_blank'>
                 (Martinkova et al., 2017)</a> is a real <code>dataMedical</code> dataset of an admission test to a medical
                 school from the <code>ShinyItemAnalysis</code> package. The data set represents the responses of 2,392 subjects
                 (750 males coded as <code>'0'</code>, 1,633 females coded as <code>'1'</code>, and 9 subjects without gender
@@ -1199,7 +1196,7 @@ data_description_Input <- reactive({
                 variable &ndash; an indicator whether the student studied standardly or not. In <a href='https://doi.org/10.5817/TF2017-9-129'
                 target='_blank'> Martinkova et al. (2017)</a>, the dataset was used to demonstrate the earlier
                 version of the <code>ShinyItemAnalysis</code> interactive app. ",
-    dataMedicalgraded_ShinyItemAnalysis = "<code>Medical 100 Graded</code> is a real <code>dataMedicalgraded</code> dataset
+                dataMedicalgraded_ShinyItemAnalysis = "<code>Medical 100 Graded</code> is a real <code>dataMedicalgraded</code> dataset
                 of an admission test to a medical school from the <code>ShinyItemAnalysis</code> package. The dataset represents
                 the responses of 2,392 subjects (750 males coded as <code>'0'</code>, 1,633 females coded as <code>'1'</code>, and
                 9 subjects without gender specification coded as <code>'NA'</code>) to a multiple-choice test of 100 items. Each
@@ -1208,7 +1205,7 @@ data_description_Input <- reactive({
                 or not. For analyses where dichotomous items are necessary (e.g., logistic models in Regression, IRT models, or
                 DIF detection methods), data are binarized &ndash; <code>'1'</code> means that student gained maximum
                 number of points, i.e., 4; otherwise the item is scored as <code>'0'</code>. ",
-    HCI_ShinyItemAnalysis = "<code>HCI</code> <a href='http://dx.doi.org/10.1187/cbe.16-10-0305' target='_blank'>(McFarland et al.,
+                HCI_ShinyItemAnalysis = "<code>HCI</code> <a href='http://dx.doi.org/10.1187/cbe.16-10-0305' target='_blank'>(McFarland et al.,
                 2017)</a> is a real dataset of the Homeostasis Concept Inventory (HCI) from the <code>ShinyItemAnalysis</code> package.
                 The dataset represents the responses of 651 subjects (405 males coded as <code>'0'</code>, 246 females coded as
                 <code>'0'</code>) to a multiple-choice test of 20 items. The <code>HCI</code> dataset contains a criterion variable &ndash;
@@ -1217,7 +1214,7 @@ data_description_Input <- reactive({
                 assessment instrument. The dataset was also used for demonstrations of the <code>ShinyItemAnalysis</code> package
                 and an earlier version of this online app in The R Journal paper by <a href='https://doi.org/10.32614/RJ-2018-074'
                 target='_blank'> Martinkova and Drabinova (2018)</a>. ",
-    Science_mirt = "<code>Science</code> dataset comes from the <code>mirt/ltm</code> packages. It represents the responses of 392 subjects
+                Science_mirt = "<code>Science</code> dataset comes from the <code>mirt/ltm</code> packages. It represents the responses of 392 subjects
                 on a 4-item test describing attitude to science and technology. Selected items are <code>Comfort</code>, <code>Work</code>,
                 <code>Future</code>, and <code>Benefit</code>. All items are measured on the same scale with the response categories:
                 <code>'strongly disagree'</code>, <code>'disagree to some extent'</code>, <code>'agree to some extent'</code>, and
@@ -1225,7 +1222,7 @@ data_description_Input <- reactive({
                 are necessary (e.g., the logistic regression models in Regression, the IRT models, or the DIF detection methods),
                 data is binarized &ndash; <code>'1'</code> means that respondent <code>'strongly agrees'</code> with a given item; otherwise
                 the item is scored as <code>'0'</code>. ",
-    LearningToLearn_ShinyItemAnalysis_6 = "<code>Learning To Learn 6</code> <a href='https://doi.org/10.1016/j.learninstruc.2019.101286'
+                LearningToLearn_ShinyItemAnalysis_6 = "<code>Learning To Learn 6</code> <a href='https://doi.org/10.1016/j.learninstruc.2019.101286'
                 target='_blank'> (Martinkova et al., 2020)</a> is a subset of the longitudinal <code>LearningToLearn</code> dataset from the
                 <code>ShinyItemAnalysis</code> package. It consists of answers to the Learning to Learn test in Grade 6 only. The same
                 respondents were also tested in Grade 9 &ndash; respective data is available in the <code>Learning To Learn 9</code>
@@ -1234,7 +1231,7 @@ data_description_Input <- reactive({
                 consisting of 41 items within 7 subscales. This dataset was created using the propensity score matching algorithm to achieve
                 similar characteristics in both tracks. For further details, see <a href='https://doi.org/10.1016/j.learninstruc.2019.101286'
                 target='_blank'> Martinkova, Hladka, and Potuznikova (2020)</a>.",
-    LearningToLearn_ShinyItemAnalysis_9 = "<code>Learning To Learn 9</code> <a href='https://doi.org/10.1016/j.learninstruc.2019.101286'
+                LearningToLearn_ShinyItemAnalysis_9 = "<code>Learning To Learn 9</code> <a href='https://doi.org/10.1016/j.learninstruc.2019.101286'
                 target='_blank'> (Martinkova et al., 2020)</a> is a subset of the longitudinal <code>LearningToLearn</code> dataset from the
                 <code>ShinyItemAnalysis</code> package. It consists of answers to the Learning to Learn test in Grade 9 only. The same
                 respondents were also tested in Grade 6 &ndash; respective data is available in the <code>Learning To Learn 6</code> dataset.
@@ -1247,7 +1244,7 @@ data_description_Input <- reactive({
 				        DIF in change present in some of the items, while no significant difference in the change was present in the total scores.
 				        The dataset was also used for demonstration purposes in The R Journal paper on the <code>difNLR</code> package
                 <a href='https://doi.org/10.32614/RJ-2020-014' target='_blank'>(Hladka & Martinkova, 2020)</a>. ",
-    AIBS_ShinyItemAnalysis = "<code>AIBS Grant Peer Review Scoring</code> dataset <a href='https://doi.org/10.6084/m9.figshare.12728087'
+				        AIBS_ShinyItemAnalysis = "<code>AIBS Grant Peer Review Scoring</code> dataset <a href='https://doi.org/10.6084/m9.figshare.12728087'
                 target='_blank'> (Gallo, 2021)</a> comes from the scientific peer review of biomedical applications from an intramural collaborative
                 biomedical research funding program (2014-2017). The data presented in this app include anonymized proposal ID, reviewer ID,
                 and an overall score from three reviewers, scored on a scale from 1.0 (best) to 5.0 (worst) with a 0.1 gradation. The
@@ -1411,7 +1408,7 @@ output$data_exploration_main_db <- downloadHandler(
   filename = function() "main_dataset.csv",
   content = function(file) {
     write.csv(data_exploration_main_input(), file,
-      row.names = FALSE, quote = FALSE
+              row.names = FALSE, quote = FALSE
     )
   }
 )

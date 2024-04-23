@@ -90,8 +90,7 @@ tests. The R Journal, 10(2), 503--515, \doi{10.32614/RJ-2018-074}
 \seealso{
 Useful links:
 \itemize{
-  \item \url{http://www.ShinyItemAnalysis.org}
-  \item \url{https://CRAN.R-project.org/package=ShinyItemAnalysis}
+  \item \url{https://www.ShinyItemAnalysis.org}
   \item Report bugs at \url{https://github.com/patriciamar/ShinyItemAnalysis/issues}
 }
 

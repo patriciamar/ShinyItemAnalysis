@@ -343,9 +343,11 @@ uiReferences <-
                 target = "_blank">See online.</a>
                 </li>
 
-                <li>Hladka, A., Martinkova, P., & Magis, D. (2023).
+                <li>Hladka, A., Martinkova, P., & Magis, D. (2024).
                 Combining item purification and multiple comparison adjustment methods in detection of differential item functioning.
-                <i>Multivariate Behavioral Research</i>, Accepted.
+                <i>Multivariate Behavioral Research 59</i>(1), 46-61.
+                <a href = "https://doi.org/10.1080/00273171.2023.2205393",
+                target = "_blank">See online.</a>
                 </li>
 
                 <li>
@@ -427,7 +429,7 @@ uiReferences <-
                 <li>Martinkova, P., & Hladka, A. (2023).
                 <i>Computational Aspects of Psychometric Methods: With R.</i> (1st ed.). Chapman and Hall/CRC.
                 <a href = "https://www.taylorfrancis.com/books/mono/10.1201/9781003054313",
-                target = "_blank">See here</a>
+                target = "_blank">See online</a>
                 </li>
 
                 <li>Masters, G. N. (1982).
@@ -440,7 +442,7 @@ uiReferences <-
                 <li>McFarland, J. L., Price, R. M., Wenderoth, M. P., Martinkova, P., Cliff, W., Michael, J., ..., & Wright, A. (2017).
                 Development and validation of the homeostasis concept inventory.
                 <i>CBE-Life Sciences Education, 16</i>(2), ar35.
-                <a href = "http://dx.doi.org/10.1187/cbe.16-10-0305",
+                <a href = "https://doi.org/10.1187/cbe.16-10-0305",
                 target = "_blank">See online.</a>
                 </li>
 

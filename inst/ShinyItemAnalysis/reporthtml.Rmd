@@ -13,9 +13,7 @@ author: |
   
   `r ifelse(params$author == "", "", params$author)`
   
-  This report was created on `r format(Sys.Date(), "%d.%m.%Y")`
-
-  &copy; 2022 ShinyItemAnalysis: Test and item analysis, version `r packageVersion("ShinyItemAnalysis")`
+  This report was created on `r format(Sys.Date(), "%B %d %Y")` using ShinyItemAnalysis: Test and item analysis, version `r packageVersion("ShinyItemAnalysis")`
     
   **************
   
@@ -106,7 +104,7 @@ To cite ShinyItemAnalysis application in publications, please, use:
   [doi: 10.32614/RJ-2018-074](https://doi.org/10.32614/RJ-2018-074)
   
   
-This program is free software and you can redistribute it and or modify it under the terms of the GNU GPL 3 as published by the Free Software Foundation. This program is distributed in the hope that it will be useful, but without any warranty; without even the implied warranty of merchantability of fitness for a particular purpose. Visit [www.ShinyItemAnalysis.org](http://www.shinyitemanalysis.org/) to learn more!
+This program is free software and you can redistribute it and or modify it under the terms of the GNU GPL 3 as published by the Free Software Foundation. This program is distributed in the hope that it will be useful, but without any warranty; without even the implied warranty of merchantability of fitness for a particular purpose. Visit [ShinyItemAnalysis.org](https://www.shinyitemanalysis.org/) to learn more!
 
 **************
 
@@ -126,6 +124,7 @@ kable(t(table), digits = c(0, 0, 2, 2, 2, 2, 2), align = "c")
 ```
 
 ### Histogram of total scores
+
 For cut-score `r params$cutScore`, the blue part of a histogram shows respondents with a total score above the cut-score, the grey column shows respondents with a total score equal to the cut-score and the red part of a histogram shows respondents below the cut-score.
 
 ```{r total-scores-histogram, echo = FALSE, fig.width = 11, fig.height = 4, fig.align = 'center', dpi = 300}

@@ -2,6 +2,5 @@
 .Rhistory
 .RData
 .Ruserdata
-renv.lock
 .DS_Store
 inst/ShinyItemAnalysis/www/Thumbs.db

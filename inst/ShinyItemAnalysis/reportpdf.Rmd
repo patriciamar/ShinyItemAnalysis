@@ -111,7 +111,7 @@ author: `r ifelse(params$author == "", "", params$author)`
 
 # Introduction
 
-This report was created by R version `r getRversion()` and its package ShinyItemAnalysis version `r packageVersion("ShinyItemAnalysis")`. \break ShinyItemAnalysis provides test and item analysis and it is available on [CRAN](https://CRAN.R-project.org/package=ShinyItemAnalysis) and also [online](https://shiny.cs.cas.cz/ShinyItemAnalysis/). 
+This report was created by `R` version `r getRversion()` and its package `ShinyItemAnalysis` version `r packageVersion("ShinyItemAnalysis")`. \break ShinyItemAnalysis provides test and item analysis and it is available on [CRAN](https://CRAN.R-project.org/package=ShinyItemAnalysis) and also [online](https://shiny.cs.cas.cz/ShinyItemAnalysis/). 
 
 To cite ShinyItemAnalysis application in publications, please, use:
 
@@ -119,8 +119,7 @@ To cite ShinyItemAnalysis application in publications, please, use:
 \begin{thebibliography}{}
 
 \bibitem{martinkova2018}
-  Martinkov\'a P., \& Drabinov\'a A.
-  (2018)
+  Martinkov\'a P., \& Drabinov\'a A. (2018)
   ShinyItemAnalysis for teaching psychometrics and to enforce routine analysis of educational tests. 
   \textit{The R Journal, 10}(2), 503-515. \\
   https://doi.org/10.32614/RJ-2018-074
@@ -129,7 +128,7 @@ To cite ShinyItemAnalysis application in publications, please, use:
 
 \vspace{1.5em}
 
-ShinyItemAnalysis application is free software and you can redistribute it and or modify it under the terms of the GNU GPL 3 as published by the Free Software Foundation. This program is distributed in the hope that it will be useful, but without any warranty; without even the implied warranty of merchantability of fitness for a particular purpose. Visit [www.ShinyItemAnalysis.org](www.ShinyItemAnalysis.org) to learn more!
+ShinyItemAnalysis application is free software and you can redistribute it and or modify it under the terms of the GNU GPL 3 as published by the Free Software Foundation. This program is distributed in the hope that it will be useful, but without any warranty; without even the implied warranty of merchantability of fitness for a particular purpose. Visit [ShinyItemAnalysis.org](https://www.shinyitemanalysis.org/) to learn more!
 
 \pagebreak
 
@@ -145,7 +144,9 @@ library(xtable)
 table <- params$totalscores_table
 
 colnames(table) <- NULL
-rownames(table) <- str_replace(rownames(table), "n<sub>c</sub>", "n_c")
+
+# turn HTML sub tag into LaTeX
+rownames(table) <- str_replace(rownames(table), "<sub>(.*?)</sub>", "\\\\textsubscript{\\1}")
 
 table <- t(table)
 add.to.row$command <- command(table)
@@ -156,7 +157,8 @@ print(
   ),
   booktabs = TRUE, comment = FALSE, include.rownames = FALSE,
   tabular.environment = "longtable", floating = FALSE,
-  add.to.row = add.to.row, hline.after = c(-1, nrow(table))
+  add.to.row = add.to.row, hline.after = c(-1, nrow(table)),
+  sanitize.colnames.function = identity # prevent latex escaping in colnames
 )
 ```
 
@@ -784,14 +786,18 @@ DIF analysis may come to a different conclusion than test of group differences i
 ```{r DIF-section-histograms-table, echo = FALSE, results = "asis", eval = eval_histograms}
 table <- params$DIF_total_table
 add.to.row$command <- command(table)
+
+colnames(table) <- str_replace(colnames(table), "<sub>(.*?)</sub>", "\\\\textsubscript{\\1}")
+
 print(
   xtable(table,
-    digits = c(0, 0, 0, 0, 2, 2, 2, 2, 2),
-    align = c("l", rep("c", 8))
-  ),
+       digits = c(rep(0, 6), rep(2, 5)),
+       align = c("l", rep("c", 10))
+       ),
   booktabs = T, comment = F,
   tabular.environment = "longtable", floating = F,
-  add.to.row = add.to.row, hline.after = c(-1, nrow(table))
+  add.to.row = add.to.row, hline.after = c(-1, nrow(table)),
+  sanitize.colnames.function = identity
 )
 ```
 

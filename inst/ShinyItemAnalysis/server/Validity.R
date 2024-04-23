@@ -22,6 +22,9 @@ observe({
 corr_structure <- reactive({
   data <- ordinal()
 
+  # use item names
+  colnames(data) <- item_names()
+
   # calculate correlations depending on selected method
   if (input$type_of_corr == "spearman") {
     corP <- cor(data, method = "spearman", use = "pairwise.complete.obs")
@@ -144,9 +147,8 @@ output$corr_matrix <- downloadHandler(
 
 # ** Dendrogram ####
 dendrogram_plot_Input <- reactive({
-  corP <- corr_structure()
-  dist <- as.dist(1 - corP)
   clustmethod <- input$corr_plot_clustmethod
+
   if (clustmethod == "none") {
     return(ggplot() +
       geom_blank())
@@ -154,36 +156,23 @@ dendrogram_plot_Input <- reactive({
 
   numclust <- input$corr_plot_clust
 
+  corP <- corr_structure()
+  dist <- as.dist(1 - corP)
   hc <- hclust(dist, method = clustmethod)
 
-  if (numclust <= 1) {
-    order <- hc$order
-    label <- if (!input$data_csvdata_keep_itemnames) item_names()[hc$order] else hc$label[hc$order]
-    times <- length(label)
-    cluster <- rep(paste("Cluster 1"), times)
-  } else {
-    rhc <- rect.hclust(hc, k = numclust)
-    order <- unlist(rhc)
-    label <- if (!input$data_csvdata_keep_itemnames) item_names()[order] else names(order)
-    times <- sapply(rhc, length)
-    cluster <- rep(paste("Cluster", 1:numclust), times)
-  }
-
-  df <- data.frame(
-    label = label,
-    num = order,
-    cluster = cluster
-  )
   dendr <- dendro_data(hc, type = "rectangle")
-  if (!input$data_csvdata_keep_itemnames) {
-    dendr$labels$label <- label
-  }
 
-  dfd <- merge(dendr$labels, df, by = "label")
+  # add cluster labels
+  dendr$labels[, "cluster"] <- "Cluster 1"
+
+  # edit cluster labels when more clusters demanded
+  if (numclust > 1L) {
+    dendr$labels[, "cluster"] <- paste0("Cluster ", cutree(hc, k = numclust)[hc$order])
+  }
 
   ggplot() +
     geom_segment(aes(y, x, xend = yend, yend = xend), data = segment(dendr)) +
-    geom_text(aes(y, x, label = label, color = cluster), hjust = 0, data = dfd) +
+    geom_text(aes(y, x, label = label, color = cluster), hjust = 0, data = dendr$labels) +
     scale_x_reverse(expand = c(0, .05, 0, .15)) +
     ylab("Height") +
     theme_app() +

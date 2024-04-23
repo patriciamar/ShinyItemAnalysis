@@ -23,8 +23,10 @@ cronbach_alpha <- function(Data, ci = TRUE, ci_lvl = .95) {
 
   out <- list()
 
-  # compute alpha
-  out$estimate <- k / (k - 1) * (1 - sum(apply(x, 2, var)) / sum(var(x)))
+  var_covar <- var(x)
+
+  # calculate alpha on the variance-covariance matrix
+  out$estimate <- k / (k - 1L) * (1 - sum(diag(var_covar)) / sum(var_covar))
 
   if (ci) {
     # assert ci_lvl
@@ -37,11 +39,11 @@ cronbach_alpha <- function(Data, ci = TRUE, ci_lvl = .95) {
     ci <- c(1 - ci, ci)
 
     # F-statistics for CI bounds
-    Fdist <- qf(ci, n - 1, (k - 1) * (n - 1))
+    Fdist <- qf(ci, n - 1L, (k - 1L) * (n - 1L))
 
     # Feldt, Woodruff, & Salih, 1987, p. 95, formula 6
     out$ci <- 1 - (1 - out$estimate) * Fdist
   }
 
-  return(out)
+ return(out)
 }

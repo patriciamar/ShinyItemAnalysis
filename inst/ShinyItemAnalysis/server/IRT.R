@@ -98,7 +98,8 @@ IRT_binary_model_rasch <- reactive({
   fit <- mirt(
     data,
     model = 1, itemtype = "Rasch",
-    SE = TRUE, verbose = FALSE
+    SE = TRUE, verbose = FALSE,
+    technical = list(NCYCLES = input$ncycles)
   )
   fit
 })
@@ -114,7 +115,8 @@ IRT_binary_model_1pl <- reactive({
   fit <- mirt(
     data,
     model = model, itemtype = "2PL",
-    SE = TRUE, verbose = FALSE
+    SE = TRUE, verbose = FALSE,
+    technical = list(NCYCLES = input$ncycles)
   )
   fit
 })
@@ -125,7 +127,8 @@ IRT_binary_model_2pl <- reactive({
   fit <- mirt(
     data,
     model = 1, itemtype = "2PL",
-    SE = TRUE, verbose = FALSE
+    SE = TRUE, verbose = FALSE,
+    technical = list(NCYCLES = input$ncycles)
   )
   fit
 })
@@ -136,7 +139,8 @@ IRT_binary_model_3pl <- reactive({
   fit <- mirt(
     data,
     model = 1, itemtype = "3PL",
-    SE = TRUE, verbose = FALSE
+    SE = TRUE, verbose = FALSE,
+    technical = list(NCYCLES = input$ncycles)
   )
   fit
 })
@@ -147,7 +151,8 @@ IRT_binary_model_4pl <- reactive({
   fit <- mirt(
     data,
     model = 1, itemtype = "4PL",
-    SE = TRUE, verbose = FALSE
+    SE = TRUE, verbose = FALSE,
+    technical = list(NCYCLES = input$ncycles)
   )
   fit
 })
@@ -389,11 +394,13 @@ output$IRT_binary_summary_equation_interpretation <- renderUI({
 # ** Check whether model converged ####
 output$IRT_binary_summary_model_converged <- renderUI({
   fit <- IRT_binary_model()
-  txt <- ifelse(fit@OptimInfo$converged,
+  txt <- ifelse(extract.mirt(fit, "converged"),
     "",
-    "<font color = 'orange'> Estimation process terminated without convergence.
-    Estimates are not reliable. Try to increase a number of iterations of the EM
-    algorithm in Settings. </font>"
+    paste0(
+      "<font color = 'orange'> Estimation process terminated without convergence after ",
+      extract.mirt(fit, "iterations"), " iterations. Estimates are not reliable.
+      Try to increase a number of iterations of the EM algorithm in Settings. </font>"
+    )
   )
   HTML(txt)
 })
@@ -516,6 +523,9 @@ output$IRT_binary_summary_iic_download <- downloadHandler(
 # *** Plot of TIC ####
 IRT_binary_summary_tic <- reactive({
   fit <- IRT_binary_model()
+
+  # TODO: use testinfo and 1 / sqrt(info)
+  # FIXME: secondary axis in plotly
 
   plt <- plot(fit, type = "infoSE")
 
@@ -660,10 +670,11 @@ IRT_binary_summary_ability <- reactive({
 
   score <- as.vector(total_score())
   zscore <- as.vector(z_score())
+  tscore <- as.vector(t_score())
   fscore <- fscores(fit, full.scores.SE = TRUE)
 
-  tab <- data.frame(score, zscore, fscore)
-  colnames(tab) <- c("Total score", "Z-score", "F-score", "SE(F-score)")
+  tab <- data.frame(score, zscore, tscore, fscore)
+  colnames(tab) <- c("Total score", "Z-score", "T-score", "F-score", "SE(F-score)")
   rownames(tab) <- paste("Respondent", 1:nrow(tab))
 
   tab
@@ -755,8 +766,9 @@ IRT_binary_summary_wrightmap_args <- reactive({
 
   fscore <- as.vector(fscores(fit))
   b <- coef(fit, IRTpars = TRUE, simplify = TRUE)$items[, "b"]
+  item.names <- item_names()
 
-  list(fscore, b)
+  list(theta = fscore, b = b, item.names = item.names)
 })
 
 output$IRT_binary_summary_wrightmap <- renderPlotly({
@@ -777,11 +789,11 @@ output$IRT_binary_summary_wrightmap <- renderPlotly({
   txt <- paste0(txt, "<br />", thetas - binwidth, "< Theta <", thetas + binwidth)
   plt_left$x$data[[1]]$text <- txt
   plt_right <- (plts[[2]] +
-    geom_text(aes(text = paste0(
+    suppressWarnings(geom_text(aes(text = paste0(
       "Item: ",
       stringr::str_remove(item, "(\\|\\s)?0*"),
       "\n", "Difficulty: ", round(IRT_binary_summary_wrightmap_args()[[2]], 3)
-    )))) %>%
+    ))))) %>%
     ggplotly(tooltip = "text") %>%
     style(textposition = "right") %>%
     layout(yaxis = list(side = "right"))
@@ -832,11 +844,13 @@ output$IRT_binary_items_equation_interpretation <- renderUI({
 # ** Check whether model converged ####
 output$IRT_binary_items_model_converged <- renderUI({
   fit <- IRT_binary_model()
-  txt <- ifelse(fit@OptimInfo$converged,
+  txt <- ifelse(extract.mirt(fit, "converged"),
     "",
-    "<font color = 'orange'> Estimation process terminated without convergence.
-    Estimates are not reliable. Try to increase a number of iterations of the EM
-    algorithm in Settings. </font>"
+    paste0(
+      "<font color = 'orange'> Estimation process terminated without convergence after ",
+      extract.mirt(fit, "iterations"), " iterations. Estimates are not reliable.
+      Try to increase a number of iterations of the EM algorithm in Settings. </font>"
+    )
   )
   HTML(txt)
 })
@@ -845,7 +859,7 @@ output$IRT_binary_items_model_converged <- renderUI({
 IRT_binary_items_icc <- reactive({
   item <- input$IRT_binary_items
   fit <- IRT_binary_model()
-  n_items <- fit@Data$nitems
+  n_items <- extract.mirt(fit, "nitems")
   curve_col <- gg_color_hue(n_items)[item]
 
   d <- tibble(
@@ -860,6 +874,7 @@ IRT_binary_items_icc <- reactive({
     geom_line(color = curve_col) +
     ylab("Probability of correct answer") +
     ggtitle(item_names()[item]) +
+    ylim(0, 1) +
     theme_app()
   g
 })
@@ -980,19 +995,19 @@ output$IRT_binary_comparison_model_converged <- renderUI({
   fit3PL <- IRT_binary_model_3pl()
   fit4PL <- IRT_binary_model_4pl()
 
-  txt1 <- ifelse(fit1PL@OptimInfo$converged,
+  txt1 <- ifelse(extract.mirt(fit1PL, "converged"),
     "",
     "Estimation process in the <b>1PL IRT model</b> terminated without convergence. <br>"
   )
-  txt2 <- ifelse(fit2PL@OptimInfo$converged,
+  txt2 <- ifelse(extract.mirt(fit2PL, "converged"),
     "",
     "Estimation process in the <b>2PL IRT model</b> terminated without convergence. <br>"
   )
-  txt3 <- ifelse(fit3PL@OptimInfo$converged,
+  txt3 <- ifelse(extract.mirt(fit3PL, "converged"),
     "",
     "Estimation process in the <b>3PL IRT model</b> terminated without convergence. <br>"
   )
-  txt4 <- ifelse(fit4PL@OptimInfo$converged,
+  txt4 <- ifelse(extract.mirt(fit4PL, "converged"),
     "",
     "Estimation process in the <b>4PL IRT model</b> terminated without convergence. <br>"
   )

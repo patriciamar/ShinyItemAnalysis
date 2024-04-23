@@ -99,7 +99,7 @@ uiTraditionalAnalysis <- navbarMenu(
     h4("Traditional item analysis table"),
     uiOutput("itemanalysis_table_text"),
     br(),
-    tags$head(tags$style("#itemanalysis_table_coef {white-space: nowrap; overflow: scroll;}")),
+
     tableOutput("itemanalysis_table_coef"),
     uiOutput("itemanalysis_cronbach_note"), br(),
     # download item analysis table button

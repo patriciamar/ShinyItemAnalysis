@@ -38,7 +38,8 @@
 #'
 #' @export
 startShinyItemAnalysis <- function(background = TRUE, ...) {
-    check_app_deps(...) # dots are for install.packages() options
+  check_app_deps(...) # dots are for install.packages() options
+  offer_modules(...)
 
   run_app_script <- '
   appDir <- system.file("ShinyItemAnalysis", package = "ShinyItemAnalysis")
@@ -128,4 +129,70 @@ check_app_deps <- function(...) {
 
   # check with the provided reason
   check_installed(suggests, reason = "to run the app.")
+}
+
+
+# env to store the state of the module offer
+mod_offer_env <- new.env(parent = emptyenv())
+
+
+
+#' @importFrom rlang is_interactive inform
+#' @importFrom utils available.packages install.packages installed.packages menu
+#'
+offer_modules <- function(...) {
+  if (!is_interactive() || sm_disabled()) {
+    return()
+  }
+
+  # offer only once per session
+  already_offered <- !is.null(mod_offer_env[["offered"]])
+
+  if (already_offered) {
+    return()
+  } else {
+    mod_offer_env[["offered"]] <- TRUE
+  }
+
+  installation_repos <- c(
+    SIA = sm_repo(),
+    getOption("repos")
+  )
+
+  pkgs_on_repo <- available.packages(
+    repos = sm_repo(),
+    fields = "Config/ShinyItemAnalysis/module"
+  )
+
+  is_sm <- !is.na(pkgs_on_repo[, "Config/ShinyItemAnalysis/module"])
+
+  mods_on_repo <- pkgs_on_repo[is_sm, "Package"]
+
+  # drop already installed
+  mods_to_offer <- mods_on_repo[!mods_on_repo %in% installed.packages()[, "Package"]]
+
+  if (length(mods_to_offer) == 0L) {
+    return()
+  }
+
+  inform(
+    c("i" = "Additional SIA Modules are available! Do you want to install any of these?"),
+    footer = "\033[90mThis offer is displayed once per session.\033[39m"
+  )
+
+  resp <- menu(
+    choices = c(
+      "All",
+      "None",
+      mods_to_offer
+    )
+  )
+
+  if (resp == 1L) {
+    install.packages(mods_to_offer, repos = installation_repos, ...)
+  } else if (resp > 2L) {
+    install.packages(mods_to_offer[resp - 2L], repos = installation_repos, ...)
+  }
+
+  # TODO: check version of the installed package and offer to update, see {remotes}
 }

@@ -1,37 +1,43 @@
 # discover installed modules ----------------------------------------------
 
-# keep track of loaded and appended mods in particular session
-# (so every user gets modules tabs appended in his/her instance)
-# we manipulate this object with add_modules()
-mod_list <- reactiveValues(
-  # available mods are picked on every add_modules call by find_modules()
-  to_load = character(),
-  loaded = character()
-)
+if (!ShinyItemAnalysis:::sm_disabled()) {
 
-# keep track of the categories with modules
-used_categories <- reactiveVal()
-
-# list of reactive objects (not evaluated calls!) to expose to modules
-# maybe in the future we should make a curated list beside these raw reactives
-# find every single reactive in shiny's server environment and return it as a list
-# TODO only inputs are not coveyed to to modules - one way is to import the whole input object
-# or programmatically wrap the inputs in reactive(), as documented in shiny
-mod_server_exports <- rlang::current_env() %>%
-  as.list() %>%
-  purrr::keep(inherits, c("reactive", "reactiveVal", "reactivevalues"))
-
-
-# on mod_list change (and on btn click),
-# do the module discovery and load procedure
-observe({
-  add_modules(
-    mod_list,
-    server_dots = mod_server_exports,
-    ui_dots = list() # no use for now, maybe completely useless?
+  # keep track of loaded and appended mods in particular session
+  # (so every user gets modules tabs appended in his/her instance)
+  # we manipulate this object with add_modules()
+  mod_list <- reactiveValues(
+    # available mods are picked on every add_modules call by find_modules()
+    to_load = character(),
+    loaded = character()
   )
-}) %>%
-  bindEvent(mod_list, input$rediscover_mods)
+
+  # keep track of the categories with modules
+  used_categories <- reactiveVal()
+
+  # list of reactive objects (not evaluated calls!) to expose to modules
+  # maybe in the future we should make a curated list beside these raw reactives
+
+  # find every single reactive in shiny's server environment and return it as a list
+  mod_server_exports <- rlang::current_env() %>%
+    as.list() %>%
+    purrr::keep(inherits, c("reactive", "reactiveVal", "reactivevalues"))
+  # note that input object inherits "reactivevalues" so it is readily available for
+  # the modules as imports$input
+
+  # mark this object so we can have some trace in the modules
+  attr(mod_server_exports, "imported_by_sia") <- TRUE
+
+  # on mod_list change (and on btn click),
+  # do the module discovery and load procedure
+  observe({
+    add_modules(
+      mod_list,
+      server_dots = mod_server_exports,
+      ui_dots = list() # no use for now, maybe completely useless?
+    )
+  }) %>%
+    bindEvent(mod_list, input$rediscover_mods)
+}
 
 
 # functions ---------------------------------------------------------------
@@ -45,7 +51,7 @@ observe({
 #' discover anything (and it should), please refer to the `Note` below.
 #'
 #' @param desc_field *character*, name of the field to look for. Defaults to
-#'   "`SIAmodule`".
+#'   "`Config/ShinyItemAnalysis/module`".
 #' @param field_value *character*, value to detect. Defaults to "`true`".
 #' @inheritDotParams utils::installed.packages -fields
 #'
@@ -67,11 +73,24 @@ find_modules <- function(...,
     message("Looking for installed packages claiming they contain SIAmodule(s)...")
   }
 
-  names(
+ mod_pkgs <- names(
     which(
       utils::installed.packages(fields = desc_field, ...)[, desc_field] == field_value
     )
   )
+
+ # read list of modules we want to ignore
+ modignore_path <- file.path(getwd(), ".modignore")
+
+ to_ignore <- character()
+
+ if (file.exists(modignore_path)) {
+   to_ignore <- readLines(modignore_path)
+ }
+
+ # return only those not on blacklist
+ setdiff(mod_pkgs, to_ignore)
+
 }
 
 # library call usually raises an R CMD Check warning if the package is given as a symbol,
@@ -135,12 +154,6 @@ add_modules <- function(mod_list, server_dots = NULL, ui_dots = NULL) {
 #' @return todo
 #' @keywords internal
 load_and_append_mod <- function(mod_pkg, server_dots = NULL, ui_dots = NULL) {
-  # IDEA - maybe try calling module's functions via colon operator (::),
-  # so we don't have to deal with namespaces and environments
-  # see https://github.com/r-lib/pkgload/blob/f5c80f6d57c02a8101104879f41681974727e79a/R/load.R#L392-L402
-  # for inspiration
-
-
   # library() the pkg
   ns <- load_and_attach(mod_pkg)
 
@@ -212,7 +225,8 @@ load_and_append_mod <- function(mod_pkg, server_dots = NULL, ui_dots = NULL) {
   mod_yaml %>% iwalk(~ try(apply_mods(.x, .y)))
 }
 
-# available categories for modules
+# available categories for modules must match those of SIAtools::list_categories()
+# except Modules
 .sia_mod_categories <- c(
   "Scores", "Validity", "Reliability", "Item analysis",
   "Regression", "IRT models", "DIF/Fairness"
@@ -242,29 +256,29 @@ mod_debug_msg <- function(operation, mods, menuName = NULL) {
     return(invisible())
   }
   switch(operation,
-    available = message("Available: ", paste(mods, collapse = ", ")),
-    to_load = {
-      if (length(mods) != 0) {
-        message("To load: ", paste(mods, collapse = ", "))
-      } else {
-        message("All available modules are already loaded, exiting...")
-      }
-    },
-    loaded = message("Successfully loaded: ", paste(mods, collapse = ", ")),
-    call_server = message("Calling ", mods, "'s server function..."),
-    call_ui =
-      message(
-        "Calling ", mods, "'s UI function and appending its tab to ",
-        menuName, "..."
-      ),
-    load = {
-      if (!isNamespaceLoaded(mods)) {
-        message("Loading ", mods, "'s namespace")
-      } else {
-        message("Using ", mods, "'s already loaded namespace")
-      }
-    },
-    attach = message("Attaching ", mods, "'s namespace to search() path"),
-    insert_delimiter = message("Inserting delimiter to ", mods, " tab.")
+         available = message("Available: ", paste(mods, collapse = ", ")),
+         to_load = {
+           if (length(mods) != 0) {
+             message("To load: ", paste(mods, collapse = ", "))
+           } else {
+             message("All available modules are already loaded, exiting...")
+           }
+         },
+         loaded = message("Successfully loaded: ", paste(mods, collapse = ", ")),
+         call_server = message("Calling ", mods, "'s server function..."),
+         call_ui =
+           message(
+             "Calling ", mods, "'s UI function and appending its tab to ",
+             menuName, "..."
+           ),
+         load = {
+           if (!isNamespaceLoaded(mods)) {
+             message("Loading ", mods, "'s namespace")
+           } else {
+             message("Using ", mods, "'s already loaded namespace")
+           }
+         },
+         attach = message("Attaching ", mods, "'s namespace to search() path"),
+         insert_delimiter = message("Inserting delimiter to ", mods, " tab.")
   )
 }

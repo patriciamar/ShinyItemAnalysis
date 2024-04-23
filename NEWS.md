@@ -1,5 +1,24 @@
 ## Changes and developments in the ShinyItemAnalysis package
 
+### Changes in version 1.5.1 (2024-04-23)
+
+**_THIS IS A CRAN VERSION_**
+
+#### MAJOR UPDATES
+  * `run_app()` function discovers for add-on modules available in SIA repository which are not installed yet,
+     and offers their installation.
+  
+#### MINOR UPDATES
+  * There are now documented options and environment variables that are consulted by `ShinyItemAnalysis` package, see `?ShinyItemAnalysis_options`.
+  * In Data/Data tab, new section called Current data was added to explicitly track 
+    the current data used in the app and its source.
+  * 
+
+#### BUG FIXES
+  * The number of iterations (EM cycles) for IRT models provided in the Settings is now considered 
+    in the app again.
+  * The app won’t crash anymore when the user uploads nominal data without the key.
+
 ### Changes in version 1.5.0 (2023-05-08)
 
 **_THIS IS A CRAN VERSION_**

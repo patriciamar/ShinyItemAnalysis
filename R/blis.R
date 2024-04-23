@@ -237,7 +237,7 @@ obtain_nrm_def <- function(data_with_key, ...) {
     # for correct response, set k - 1
     value[key & est] <- k - 1
 
-    # for arbitrary low category (first disctractor), set 0
+    # for arbitrary low category (first distractor), set 0
     value[!key & est] <- 0
 
     # write resulting values vector as an attribute
