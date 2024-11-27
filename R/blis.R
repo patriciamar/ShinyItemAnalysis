@@ -321,7 +321,7 @@ get_orig_levels <- function(object) {
 #'
 #' Extracts item parameters from fitted BLIS model. For BLIRT parametrization,
 #' use `IRTpars = TRUE` in your function call. Contrary to
-#' [coef,SingleGroupClass-method], response category labels can be displayed in
+#' [mirt::coef,SingleGroupClass-method], response category labels can be displayed in
 #' the output using `labels = TRUE`. On top of that, as BLIS/BLIRT
 #' parametrizations utilize the information of correct response category, you
 #' can denote these in the output with `mark_correct = TRUE`.

@@ -82,7 +82,7 @@ An object of class \code{ggplot} and/or \code{gg}.
 \description{
 Computes and visualizes an item correlation matrix (also known as a heatmap),
 offering several correlation "types" and optional clustering (with possible
-cluster outlining). The function relies on \code{\link[=ggplot2]{ggplot2()}} package, providing a
+cluster outlining). The function relies on \code{\link[ggplot2:ggplot]{ggplot2::ggplot()}}, providing a
 high customisability using "the grammar of graphics" (see the examples
 below).
 }

@@ -49,7 +49,7 @@ coefficients stored in it.
 \description{
 Extracts item parameters from fitted BLIS model. For BLIRT parametrization,
 use \code{IRTpars = TRUE} in your function call. Contrary to
-\link{coef,SingleGroupClass-method}, response category labels can be displayed in
+\link[mirt:coef-method]{mirt::coef,SingleGroupClass-method}, response category labels can be displayed in
 the output using \code{labels = TRUE}. On top of that, as BLIS/BLIRT
 parametrizations utilize the information of correct response category, you
 can denote these in the output with \code{mark_correct = TRUE}.
