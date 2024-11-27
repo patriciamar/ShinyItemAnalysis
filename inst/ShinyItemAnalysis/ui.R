@@ -157,7 +157,7 @@ ui <- tagList(
            <div class = "panel-footer", style = "opacity: 1.00; z-index: 1000;">
               <p style = "margin:8px 0 0 0;">
                 <div class = "footer-title"> <img src = "sia_logo.svg" style="width: 57px; margin-right: 10px;"> ShinyItemAnalysis </div>
-                <div class = "footer-subtitle"> Test and item analysis via Shiny | Version 1.5.1 </div>
+                <div class = "footer-subtitle"> Test and item analysis via Shiny | Version 1.5.2 </div>
                 <span style = "float:right">
                   <a href = "https://www.shinyitemanalysis.org/" id = "tooltipweb" target="_blank"> <img src = "footer_web_icon.png", class = "footer-icons"> </a>
                   <a href = "https://github.com/patriciamar/ShinyItemAnalysis/" id = "tooltipgithub" target="_blank"> <img src = "footer_github_icon.png", class = "footer-icons"> </a>

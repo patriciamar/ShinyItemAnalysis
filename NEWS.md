@@ -1,5 +1,14 @@
 ## Changes and developments in the ShinyItemAnalysis package
 
+### Changes in version 1.5.2 (2024-11-20)
+
+**_THIS IS A CRAN VERSION_**
+
+#### BUG FIXES
+  * The starting values and estimation constraints structure in `fit_blis()` function 
+    were fixed to work with the new version of the `mirt` package (versions 1.43 onwards).
+  * Missing parts of the Logistic regression note in "DIF/Fairness -- Method comparison" tab of the app were fixed.
+
 ### Changes in version 1.5.1 (2024-04-23)
 
 **_THIS IS A CRAN VERSION_**
@@ -12,7 +21,6 @@
   * There are now documented options and environment variables that are consulted by `ShinyItemAnalysis` package, see `?ShinyItemAnalysis_options`.
   * In Data/Data tab, new section called Current data was added to explicitly track 
     the current data used in the app and its source.
-  * 
 
 #### BUG FIXES
   * The number of iterations (EM cycles) for IRT models provided in the Settings is now considered 

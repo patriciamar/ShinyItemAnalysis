@@ -118,6 +118,12 @@ To cite ShinyItemAnalysis application in publications, please, use:
 \vspace{-4em}
 \begin{thebibliography}{}
 
+\bibitem{martinkova2023}
+  Martinkov\'a P., \& Hladk\'a A. (2023)
+  \textit{Computational Aspects of Psychometric Methods. With R.} 
+  Chapman and Hall/CRC. \\
+  https://doi.org/10.1201/9781003054313
+
 \bibitem{martinkova2018}
   Martinkov\'a P., \& Drabinov\'a A. (2018)
   ShinyItemAnalysis for teaching psychometrics and to enforce routine analysis of educational tests. 

@@ -4,7 +4,7 @@ Test and item analysis via shiny
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/patriciamar/ShinyItemAnalysis/workflows/R-CMD-check/badge.svg)](https://github.com/patriciamar/ShinyItemAnalysis/actions)
 ![GHversion](https://img.shields.io/github/release/patriciamar/ShinyItemAnalysis.svg)
-[![online](https://img.shields.io/badge/online-1.5.1-yellow.svg)](https://shiny.cs.cas.cz/ShinyItemAnalysis/)
+[![online](https://img.shields.io/badge/online-1.5.2-yellow.svg)](https://shiny.cs.cas.cz/ShinyItemAnalysis/)
 [![version](https://www.r-pkg.org/badges/version/ShinyItemAnalysis)](https://CRAN.R-project.org/package=ShinyItemAnalysis)
 ![cranlogs](https://cranlogs.r-pkg.org/badges/ShinyItemAnalysis)
   <!-- badges: end -->
@@ -59,10 +59,10 @@ remotes::install_github("patriciamar/ShinyItemAnalysis")
 ```
 
 ## Version
-Current version available on [**CRAN**](https://CRAN.R-project.org/package=ShinyItemAnalysis) is 1.5.1. 
-The newest development version available on [**GitHub**](https://github.com/patriciamar/ShinyItemAnalysis) is 1.5.1.<br> 
-Version available online at [Czech Academy of Sciences](https://shiny.cs.cas.cz/ShinyItemAnalysis/) is 1.5.1. 
-Version available online at [shinyapps.io](https://cemp.shinyapps.io/ShinyItemAnalysis/) is 1.5.1. <br> 
+Current version available on [**CRAN**](https://CRAN.R-project.org/package=ShinyItemAnalysis) is 1.5.2. 
+The newest development version available on [**GitHub**](https://github.com/patriciamar/ShinyItemAnalysis) is 1.5.2.<br> 
+Version available online at [Czech Academy of Sciences](https://shiny.cs.cas.cz/ShinyItemAnalysis/) is 1.5.2. 
+Version available online at [shinyapps.io](https://cemp.shinyapps.io/ShinyItemAnalysis/) is 1.5.2. <br> 
 
 ## Usage
 It is very easy to run `ShinyItemAnalysis` in `R`:

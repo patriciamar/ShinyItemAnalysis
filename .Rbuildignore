@@ -6,3 +6,4 @@
 ^\.readme_assets$
 ^\.github$
 ^data-raw$
+^inst/ShinyItemAnalysis/server/shinyapps_io_dependencies\.R$

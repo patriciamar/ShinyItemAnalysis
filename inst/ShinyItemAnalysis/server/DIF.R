@@ -4603,11 +4603,11 @@ output$DIF_MC_table_note <- renderUI({
     ),
     paste(
       "<b>Logistic regression</b>",
-      DIF_logistic_summary_table_note()$dmv,
+      DIF_logistic_summary_table_note()$matching,
       DIF_logistic_summary_table_note()$type,
-      DIF_logistic_summary_table_note()$p_adj,
-      DIF_logistic_summary_table_note()$puri,
-      DIF_logistic_summary_table_note()$thr_rounded,
+      DIF_logistic_summary_table_note()$correction,
+      DIF_logistic_summary_table_note()$purification,
+      DIF_logistic_summary_table_note()$threshold,
       sep = "<br>"
     ),
     paste(

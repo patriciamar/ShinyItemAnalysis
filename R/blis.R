@@ -48,6 +48,24 @@ fit_blis <- function(Data, key, ...) {
   Data <- int_data_lvls_key[["Data"]]
   orig_levels <- int_data_lvls_key[["orig_levels"]]
 
+  pars <- make_starting_vals(Data, orig_levels)
+
+  # fit the model
+  fit <- mirt(Data, model = 1, itemtype = "nominal", pars = pars, ...)
+
+  # set our class to have a control of coef method
+  return(new("BlisClass", fit, orig_levels = orig_levels))
+}
+
+# just an alias for fit_blis:
+#' @rdname fit_blis
+#' @export
+blis <- function(Data, key, ...) {
+  fit_blis(Data = Data, key = key, ...)
+}
+
+
+make_starting_vals <- function(Data, orig_levels) {
   # create item pars to be forwarded to mirt (as pars arg)
   # set a* to 1 and turn of the estimation
   # turn estimation of correct response off and assign 0 as its value
@@ -68,8 +86,8 @@ fit_blis <- function(Data, key, ...) {
   # create entries for groups - we'll use only one
   group_pars <- tibble(
     group = "all", item = "GROUP", class = "GroupPars",
-    name = c("MEAN_1", "COV_11"), value = c(0, 1),
-    lbound = c(-Inf, 1e-04), ubound = Inf, est = FALSE,
+    name = c("MEAN_1", "COV_11"), value = c(0, 1), lbound = c(-Inf, 1e-04),
+    ubound = Inf, est = FALSE, const = "none", nconst = "none",
     prior.type = "none", prior_1 = NaN, prior_2 = NaN
   )
 
@@ -77,32 +95,23 @@ fit_blis <- function(Data, key, ...) {
   pars <- item_pars %>%
     mutate(
       class = "nominal",
-      group = "all", lbound = -Inf, ubound = Inf,
-      prior.type = "none", prior_1 = NaN, prior_2 = NaN
+      group = "all", lbound = -Inf, ubound = Inf, const = "none",
+      nconst = "none", prior.type = "none", prior_1 = NaN, prior_2 = NaN
     ) %>%
     add_row(group_pars) %>%
     mutate(parnum = row_number()) %>%
     relocate(
-      .data$group, .data$item, .data$class, .data$name, .data$parnum,
-      .data$value, .data$lbound, .data$ubound, .data$est,
-      .data$prior.type, .data$prior_1, .data$prior_2
+      "group", "item", "class", "name", "parnum", "value", "lbound", "ubound",
+      "est", "const", "nconst", "prior.type", "prior_1", "prior_2"
     ) %>%
     as.data.frame()
 
+  class(pars) <- c("mirt_df", class(pars))
+  attr(pars, "itemtype") <- "nominal"
 
-  # fit the model
-  fit <- mirt(Data, model = 1, itemtype = "nominal", pars = pars, ...)
-
-  # set our class to have a control of coef method
-  return(new("BlisClass", fit, orig_levels = orig_levels))
+  pars
 }
 
-# just an alias for fit_blis:
-#' @rdname fit_blis
-#' @export
-blis <- function(Data, key, ...) {
-  fit_blis(Data = Data, key = key, ...)
-}
 
 
 #' Turn nominal (factor) data to integers, keep original levels with a key of

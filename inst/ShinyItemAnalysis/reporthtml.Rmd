@@ -97,12 +97,16 @@ This report was created by R version `r getRversion()` and its package ShinyItem
 To cite ShinyItemAnalysis application in publications, please, use:
 
 
-  Martinkova P., \& Drabinova A.
+  Martinková P., \& Hladká A.
+  (2023)
+  Computational Aspects of Psychometric Methods: With R (1st ed.). Chapman and Hall/CRC. 
+  [doi: 10.1201/9781003054313](https://doi.org/10.1201/9781003054313)
+  
+  Martinková P., \& Drabinová A.
   (2018)
   ShinyItemAnalysis for teaching psychometrics and to enforce routine analysis of educational tests. 
   The R Journal, 10(2), 503-515.
   [doi: 10.32614/RJ-2018-074](https://doi.org/10.32614/RJ-2018-074)
-  
   
 This program is free software and you can redistribute it and or modify it under the terms of the GNU GPL 3 as published by the Free Software Foundation. This program is distributed in the hope that it will be useful, but without any warranty; without even the implied warranty of merchantability of fitness for a particular purpose. Visit [ShinyItemAnalysis.org](https://www.shinyitemanalysis.org/) to learn more!
 

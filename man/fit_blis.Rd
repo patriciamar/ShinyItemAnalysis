@@ -27,6 +27,20 @@ can be regressed using external covariates in \code{covdata}. If a named list
 of formulas is supplied (where the names correspond to the latent trait names in \code{model})
 then specific regression effects can be estimated for each factor. Supplying a single formula
 will estimate the regression parameters for all latent traits by default}
+    \item{\code{itemdesign}}{a \code{data.frame} with rows equal to the number of items and columns
+containing any item-design effects. If items should be included in the design structure
+(i.e., should be left in their canonical structure) then fewer rows can be used,
+however the \code{rownames} must be defined and matched with \code{colnames} in the \code{data}
+input. The item design matrix is constructed with the use of
+\code{item.formula}. Providing this input will fix the associated \code{'d'} intercepts
+to 0, where applicable}
+    \item{\code{item.formula}}{an R formula used to specify any intercept decomposition (e.g.,
+  the LLTM; Fischer, 1983). Note that only the right-hand side of the formula is required
+  for compensatory models.
+
+  For non-compensatory \code{itemtype}s (e.g., \code{'PC1PL'}) the formula must include
+  the name of the latent trait in the left hand side of the expression to indicate which
+  of the trait specification should have their intercepts decomposed (see MLTM; Embretson, 1984)}
     \item{\code{SE.type}}{type of estimation method to use for calculating the parameter information matrix
   for computing standard errors and \code{\link[mirt]{wald}} tests. Can be:
 
