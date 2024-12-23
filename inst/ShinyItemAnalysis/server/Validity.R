@@ -922,8 +922,8 @@ validity_table_item_Input <- reactive({
     "<em>r</em>(",
     ct$parameter,
     ") = ",
-    sub("^(-?)0.", "\\1.", sprintf("%.2f", ct$estimate)), ", <em>p</em> = ",
-    ifelse(ct$p.value < .001, "<.001", sub("^(-?)0.", "\\1.", sprintf("%.3f", ct$p.value))), ", 95% CI [",
+    sub("^(-?)0.", "\\1.", sprintf("%.2f", ct$estimate)), ", <em>p</em> ",
+    ifelse(ct$p.value < .001, "< .001", paste0("= ", sub("^(-?)0.", "\\1.", sprintf("%.3f", ct$p.value)))), ", 95% CI [",
     sub("^(-?)0.", "\\1.", sprintf("%.2f", ct$conf.int[1])),
     ", ", sub("^(-?)0.", "\\1.", sprintf("%.2f", ct$conf.int[2])),
     "]"

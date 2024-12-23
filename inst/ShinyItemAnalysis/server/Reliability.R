@@ -341,7 +341,7 @@ reliability_cronbachalpha_table_Input <- reactive({
 
   tab <- data.table(
     "Estimate" = sprintf("%.3f", a$estimate),
-    "Confidence interval" = paste0(
+    "95% Confidence interval" = paste0(
       "(", sprintf("%.3f", a$ci[1]), ", ",
       sprintf("%.3f", a$ci[2]), ")"
     )

@@ -1,4 +1,14 @@
+# ShinyItemAnalysis
+
 ## Changes and developments in the ShinyItemAnalysis package
+
+### Changes in version 1.5.3 (2024-12-23)
+
+**_THIS IS A CRAN VERSION_**
+
+#### MINOR UPDATES
+  * New methods are offered in  `Generalized logistic regression` in the `DIF/Fairness` section of the app. {difNLR} 
+    version 1.5.0 is now required for the DIF analysis.
 
 ### Changes in version 1.5.2 (2024-11-20)
 

@@ -54,6 +54,15 @@ uiAbout <- tabPanel("",
       " is available. Individual chapters of the book describe sections of the ShinyItemAnalysis. "
     ),
     tags$li(
+      "A manuscript on algorithms for estimation of item functioning and for the DIF detection is being published in JEBS ",
+      a("(Hladka, Martinkova, & Brabec, 2024)",
+        href = "https://doi.org/10.48550/arXiv.2302.12648",
+        target = "_blank", .noWS = "outside"
+      ),
+      ".  Estimation methods are available in the ",
+      strong("DIF/Fairness/Generalized logistics"), "section. "
+    ),
+    tags$li(
       "A new paper on relationship between the inter-rater reliability and false positive rate has been published in BJMSP ",
       a("(Bartos, & Martinkova, 2024)",
         href = "https://doi.org/10.1111/bmsp.12343",
@@ -189,10 +198,10 @@ uiAbout <- tabPanel("",
         "version is 1.5.2.",
         br(),
         "The version available",
-        a("online", href = "https://shiny.cs.cas.cz/ShinyItemAnalysis/", target = "_blank"), "is 1.5.2.",
+        a("online", href = "https://shiny.cs.cas.cz/ShinyItemAnalysis/", target = "_blank"), "is 1.5.1.",
         br(),
         "The newest development version available on ",
-        a("GitHub", href = "https://github.com/patriciamar/ShinyItemAnalysis", target = "_blank"), "is 1.5.2.",
+        a("GitHub", href = "https://github.com/patriciamar/ShinyItemAnalysis", target = "_blank"), "is 1.5.3.",
       )
     )
   ),

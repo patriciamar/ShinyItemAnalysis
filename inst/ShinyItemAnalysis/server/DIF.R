@@ -2120,7 +2120,8 @@ DIF_NLR <- reactiveValues(
   model = NULL,
   type = NULL,
   correction = NULL,
-  purification = NULL
+  purification = NULL,
+  method = NULL
 )
 
 # ** Updating model ####
@@ -2255,6 +2256,30 @@ observeEvent(DIF_NLR$matching, {
       session = session,
       inputId = "DIF_NLR_items_matching",
       value = DIF_NLR$matching
+    )
+  }
+})
+
+# ** Updating est. method ####
+observeEvent(input$DIF_NLR_summary_method, {
+  DIF_NLR$method <- input$DIF_NLR_summary_method
+})
+observeEvent(input$DIF_NLR_items_method, {
+  DIF_NLR$method <- input$DIF_NLR_items_method
+})
+observeEvent(DIF_NLR$method, {
+  if (DIF_NLR$method != input$DIF_NLR_summary_method) {
+    updateCheckboxInput(
+      session = session,
+      inputId = "DIF_NLR_summary_method",
+      value = DIF_NLR$method
+    )
+  }
+  if (DIF_NLR$method != input$DIF_NLR_items_method) {
+    updateCheckboxInput(
+      session = session,
+      inputId = "DIF_NLR_items_method",
+      value = DIF_NLR$method
     )
   }
 })
@@ -2408,6 +2433,7 @@ DIF_NLR_method <- reactive({
   type <- paste0(input$DIF_NLR_summary_type, collapse = "")
   adj.method <- input$DIF_NLR_summary_correction
   purify <- input$DIF_NLR_summary_purification
+  est_method <- input$DIF_NLR_summary_method
 
   # if (input$DIF_NLR_summary_matching == "zscore") {
   #   match <- z_score()
@@ -2423,21 +2449,27 @@ DIF_NLR_method <- reactive({
       Data = data, group = group, focal.name = 1, match = match,
       model = model, type = type,
       p.adjust.method = adj.method, purify = purify,
-      test = "LR"
+      test = "LR", method = est_method
     ),
     error = function(e) e
   )
 
   validate(
     need(
-      class(fit) == "difNLR",
+      inherits(fit, "difNLR"),
       paste0("This method cannot be used on this data. Error returned: ", fit$message)
     ),
     errorClass = "validation-error"
   )
 
   fit
-})
+}) %>%
+  bindEvent(
+    input$DIF_NLR_summary_run,
+    input$DIF_NLR_items_run,
+    ignoreNULL = FALSE # ignore BTN for the first time, but require press for any further eval.
+    )
+
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% ####
 # ** SUMMARY TAB ####
@@ -2521,26 +2553,36 @@ output$DIF_NLR_summary_dif_items <- renderPrint({
   HTML(txt)
 })
 
-# ** Names of parameters ####
-DIF_NLR_summary_parameter_names <- reactive({
+# ** Coefs ####
+DIF_NLR_summary_parameters <- reactive({
   model <- DIF_NLR_method()
-  res <- NULL
 
-  res$se <- do.call(rbind, model$nlrSE)
-  res$coeffs <- do.call(rbind, model$nlrPAR)
-  res
+  cfs <- coef(model, IRTpars = TRUE, SE = TRUE, CI = 0, simplify = TRUE)
+
+  cfs <- cfs %>%
+    as_tibble(rownames = ".item") %>%
+    separate_wider_delim(.item, delim = " ", names = c(".item", ".type")) %>%
+    filter(.type %in% c("estimate", "SE")) # so CIs cannot creep into the table
+
+  cfs %>%
+    pivot_wider(
+      names_from = .type, values_from = -c(.item, .type),
+      names_glue = "{.type}_{.value}"
+    ) %>%
+    select(-.item)
 })
-
 # ** Summary table ####
 DIF_NLR_summary_table <- reactive({
   model <- DIF_NLR_method()
   stat <- model$Sval
 
   # deal with only one pval base od model specs
-  pval <- if (model$p.adjust.method == "none") {
-    model$pval
+  if (model$p.adjust.method == "none") {
+    pval <- model$pval
+    pval_name <- "pval"
   } else {
-    model$adj.pval
+    pval <- model$adj.pval
+    pval_name <- "pval_adj"
   }
 
   pval_symb <- symnum(pval,
@@ -2549,46 +2591,42 @@ DIF_NLR_summary_table <- reactive({
   )
   pval_symb[pval_symb == "?"] <- ""
 
-  blank <- character(length(stat))
+  cfs <- DIF_NLR_summary_parameters()
 
-  coeffs <- DIF_NLR_summary_parameter_names()$coeffs
-  se <- DIF_NLR_summary_parameter_names()$se
-
-  colnames(coeffs) <- paste0("\\(\\mathit{", gsub("Dif", "_{DIF}", colnames(coeffs)), "}\\)")
-  colnames(se) <- paste0("SE(\\(\\mathit{", gsub("Dif", "_{DIF}", colnames(se)), "}\\))")
-
-  # zigzag
-  coeffs_se <- cbind(coeffs, se)[, order(c(seq(ncol(coeffs)), seq(ncol(se))))]
-
-  tab <- data.frame(
+  tibble(
     stat,
-    pval,
+    "{pval_name}" := pval,
     pval_symb,
-    blank,
-    coeffs_se
+    blank_col = "",
+    cfs
   )
-
-  colnames(tab) <-
-    c(
-      "LR (\\(\\mathit{\\chi^2}\\))",
-      ifelse(
-        model$p.adjust.method == "none",
-        "\\(\\mathit{p}\\)-value",
-        "adj. \\(\\mathit{p}\\)-value"
-      ),
-      "",
-      "",
-      colnames(coeffs_se)
-    )
-
-  rownames(tab) <- item_names()
-
-  tab
 })
 
 output$DIF_NLR_summary_coef <- renderTable(
   {
-    DIF_NLR_summary_table()
+    tbl <- DIF_NLR_summary_table()
+
+    rnm_vec <- c(
+      "LR (\\(\\mathit{\\chi^2}\\))" = "stat",
+      "\\(\\mathit{p}\\)-value" = "pval",
+      "adj. \\(\\mathit{p}\\)-value" = "pval_adj"
+    )
+
+    tbl <- tbl %>%
+      rename(any_of(rnm_vec)) %>% # use any_of to pick only existing columns (picking the right pval)
+      rename_with(~ str_replace(.x, "Dif", "_{DIF}")) %>%
+      rename_with(~ paste0(str_replace(.x, "estimate_", "\\\\(\\\\mathit{"), "}\\)"), .cols = starts_with("estimate_")) %>%
+      rename_with(~ paste0(str_replace(.x, "SE_", "SE(\\\\(\\\\mathit{"), "}\\))"), .cols = starts_with("SE_"))
+
+
+    tbl <- tbl %>%
+      mutate(rowname = item_names()) %>%
+      column_to_rownames()
+
+    # rm names, which is not legal in tibble
+    colnames(tbl)[colnames(tbl) %in% c("pval_symb", "blank_col")] <- ""
+
+    tbl
   },
   rownames = TRUE,
   colnames = TRUE
@@ -2673,32 +2711,30 @@ output$DIF_NLR_summary_table_download <- downloadHandler(
     "DIF_NLR_statistics.csv"
   },
   content = function(file) {
-    data <- DIF_NLR_summary_table()
-    data <- data[, -4]
+    tbl <- DIF_NLR_summary_table()
 
-    coef_names <- colnames(DIF_NLR_summary_parameter_names()$coeffs)
-    se_names <- paste0("SE(", colnames(DIF_NLR_summary_parameter_names()$se), ")")
+    rnm_vec <- c(
+      "LR (X^2)" = "stat",
+      "p-value" = "pval",
+      "adj. p-value" = "pval_adj",
+      "sig. symb." = "pval_symb"
+    )
 
-    par_names <- c(coef_names, se_names)[order(c(seq(coef_names), seq(se_names)))] %>%
-      str_replace("Dif", "_DIF")
+    tbl <- tbl %>%
+      select(-blank_col) %>%
+      rename(any_of(rnm_vec)) %>%
+      rename_with(~ str_replace(.x, "Dif", "_DIF")) %>%
+      rename_with(~ str_remove(.x, "estimate_"), .cols = starts_with("estimate_")) %>%
+      rename_with(~ paste0(str_replace(.x, "SE_", "SE("), ")"), .cols = starts_with("SE_"))
 
-    colnames(data) <-
-      c(
-        "LR (X^2)",
-        ifelse(
-          "\\(\\mathit{p}\\)-value" %in% colnames(data),
-          "p-value",
-          "adj. p-value"
-        ),
-        "sig. symb.",
-        par_names
-      )
 
-    rownames(data) <- item_names()
+    tbl <- tbl %>%
+      mutate(rowname = item_names()) %>%
+      column_to_rownames()
 
-    write.csv(data, file) # w/o blank col
+    write.csv(tbl, file) # w/o blank col
     write(paste(
-      "Note:",
+      "\nNote:",
       DIF_NLR_summary_table_note()$dmv,
       DIF_NLR_summary_table_note()$mod,
       gsub(",", "", DIF_NLR_summary_table_note()$type), # get rid of the comma - it separates col in CSV
@@ -2893,22 +2929,22 @@ output$DIF_NLR_items_equation <- renderUI({
   txt
 })
 
+
 # ** Table of item parameters ####
 output$DIF_NLR_items_coef <- renderTable(
   {
-    item <- input$DIF_NLR_items_item
-    fit <- DIF_NLR_method()
+    cfs <- DIF_NLR_summary_parameters()
+    item_cfs <- cfs[input$DIF_NLR_items_item, ]
 
-    tab_coef <- fit$nlrPAR[[item]]
-    tab_sd <- fit$nlrSE[[item]]
+    item_cfs <- item_cfs %>%
+      pivot_longer(everything(), names_sep = "_", names_to = c(".value", "par"))
 
-    tab <- t(rbind(tab_coef, tab_sd))
+    item_cfs <- item_cfs %>% column_to_rownames("par")
 
+    rownames(item_cfs) <- paste0("\\(\\mathit{", gsub("Dif", "_{Dif}", rownames(item_cfs)), "}\\)")
+    colnames(item_cfs) <- c("Estimate", "SE")
 
-    rownames(tab) <- paste0("\\(\\mathit{", gsub("Dif", "_{Dif}", rownames(tab)), "}\\)")
-    colnames(tab) <- c("Estimate", "SE")
-
-    tab
+    item_cfs
   },
   include.rownames = TRUE
 )

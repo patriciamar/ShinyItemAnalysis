@@ -457,13 +457,20 @@ uiDIF <-
             strong("item purification. ")
           ),
           p(
-            "Finally, you may change the ", strong("Observed score."), " While matching on the standardized total score is typical, the upload
+            "You may also change the ", strong("Observed score."), " While matching on the standardized total score is typical, the upload
                                    of other Observed scores is possible in the ", strong("Data "), "section. Using a pre-test (standardized) total score allows
                                    for testing differential item functioning in change (DIF-C) to provide proofs of instructional sensitivity ",
             a("(Martinkova et al., 2020),",
               href = "https://doi.org/10.1016/j.learninstruc.2019.101286",
               target = "_blank"
-            ), "also see", code("Learning To Learn 9"), " toy dataset."
+            ), "also see", code("Learning To Learn 9"), " toy dataset."),
+            p(
+              "Finally, you may change the ", strong("Estimation method."), " Four methods described in ",
+              a("(Hladka et al., 2024),",
+                href = "https://doi.org/10.48550/arXiv.2302.12648",
+                target = "_blank"
+              ), "are presented. The default method is the non-linear least squares method. Available is also the maximum likelihood (ML),
+              method, and the parametric link function (PLF ML) method. "
           ),
           fluidRow(
             column(
@@ -531,7 +538,31 @@ uiDIF <-
                 choices = c("Standardized total score" = "zscore"),
                 selected = "zscore"
               )
+            ),
+            column(
+              2,
+              selectInput(
+                inputId = "DIF_NLR_summary_method",
+                label = "Estimation method",
+                choices = c(
+                  "Non-linear least squares" = "nls",
+                  "ML" = "mle",
+                  "PLF ML" = "plf"
+                  ),
+                selected = "nls"
+              )
+            ),
+            column(
+              2,
+              actionButton(
+                inputId = "DIF_NLR_summary_run",
+                label = "Recalculate",
+                icon =  icon("play", style = "margin-right: 8px;"),
+                width = "200px",
+                style = "margin-top: 22px;",
+                class = "btn btn-primary"
             )
+          )
           ),
           h4("Equation"),
           p("The displayed equation is based on the model selected below"),
@@ -679,6 +710,30 @@ uiDIF <-
                 max = 10,
                 step = 1,
                 animate = animationOptions(interval = 1600)
+              )
+            ),
+            column(
+              2,
+              selectInput(
+                inputId = "DIF_NLR_items_method",
+                label = "Estimation method",
+                choices = c(
+                  "Non-linear least squares" = "nls",
+                  "ML" = "mle",
+                  "PLF ML" = "plf"
+                ),
+                selected = "nls"
+              )
+            ),
+            column(
+              2,
+              actionButton(
+                inputId = "DIF_NLR_items_run",
+                label = "Recalculate",
+                icon =  icon("play", style = "margin-right: 8px;"),
+                width = "200px",
+                style = "margin-top: 22px;",
+                class = "btn btn-primary"
               )
             )
           ),
