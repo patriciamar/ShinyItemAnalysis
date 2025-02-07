@@ -203,7 +203,7 @@ uiReliability <-
     #   p("More generally, Cronbach's \\(\\alpha\\) is equivalent to intraclass correlation under one of the ANOVA models."),
     #   tableOutput("reliability_icc_table"), # preview, under construction
     #   h4("Selected R code"),
-    #   div(code(HTML("library(psych)<br>library(tidyverse)<br><br>#&nbsp;loading&nbsp;and&nbsp;formatting&nbsp;data<br>data(AIBS,&nbsp;package&nbsp;=&nbsp;\"ShinyItemAnalysis\")<br>AIBSwide&nbsp;<-&nbsp;AIBS&nbsp;%>%<br>&nbsp;&nbsp;pivot_wider(ID,&nbsp;values_from&nbsp;=&nbsp;Score,&nbsp;names_from&nbsp;=&nbsp;RevCode)&nbsp;%>%<br>&nbsp;&nbsp;select(-ID)<br>head(AIBSwide)<br><br>ICC(AIBSwide)<br>"))),
+    #   div(code(HTML("library(psych)<br>library(tidyverse)<br><br>#&nbsp;loading&nbsp;and&nbsp;formatting&nbsp;data<br>data(AIBS,&nbsp;package&nbsp;=&nbsp;\"ShinyItemAnalysis\")<br>AIBSwide&nbsp;<-&nbsp;AIBS&nbsp;|><br>&nbsp;&nbsp;pivot_wider(ID,&nbsp;values_from&nbsp;=&nbsp;Score,&nbsp;names_from&nbsp;=&nbsp;RevCode)&nbsp;|><br>&nbsp;&nbsp;select(-ID)<br>head(AIBSwide)<br><br>ICC(AIBSwide)<br>"))),
     #   br()
     # ),
 

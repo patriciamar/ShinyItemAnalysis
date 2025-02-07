@@ -16,7 +16,7 @@
 #' uses to retrieve information about available module packages.
 #'
 #' - `sia.offer_modules`: If set to `TRUE` (the default), calling `run_app()`
-#' will check for the available SIA modules at the official repository and offer
+#' will check for the available SIA modules on the official repository and offer
 #' to install those module packages that are not installed yet.
 #'
 #' # Environment variables
@@ -27,15 +27,30 @@
 #'  - `SIA_MODULES_DEBUG`: Setting this to `TRUE` provides a verbose description
 #' of SIA modules-related processes. Useful only for debugging purposes.
 #'
+#'  - `SIA_MODULES_FORCE_GUI_INSTALLATION`: When the app is running on
+#' shiny-server, interactive module installation within the app is not allowed
+#' by default. Setting this variable to `TRUE` will override this restriction
+#' and enable module installation in the app.
+#'
 #' @name ShinyItemAnalysis_options
 NULL
-
 
 
 # wrappers around getOptions ----------------------------------------------
 
 sm_repo <- function() {
   getOption("sia.modules_repo", "https://applstat.github.io/SIArepo/")
+}
+
+# use this for repos arg in install.packages
+# wrap inside a function to always get the current `repos` R option
+sm_installation_repos <- function() {
+  unique(
+    c(
+      sm_repo(),
+      getOption("repos") # keep original user repos
+      )
+    )
 }
 
 sm_disabled <- function() {

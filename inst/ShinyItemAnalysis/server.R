@@ -62,20 +62,6 @@ function(input, output, session) {
   setting_figures$width <- 8
   setting_figures$dpi <- 600
 
-  # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  # COUNTER ####
-  # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-  output$counter <- renderText({
-    if (!file.exists("counter.Rdata")) {
-      counter <- 0
-    } else {
-      load(file = "counter.Rdata")
-    }
-    counter <- counter + 1
-    save(counter, file = "counter.Rdata")
-    paste("Hits:", counter)
-  })
 
   # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   # DATA PAGE ####
@@ -150,4 +136,13 @@ function(input, output, session) {
       session$sendCustomMessage("send_to_console", sessionInfo())
     }
   })
+
+  # visitor counter - dont use if not served by shiny-server that
+  # has the counter in the parent directory
+  if (file.exists("../visitor_counter.txt")) {
+  count <- as.integer(readLines("../visitor_counter.txt", n = 1L))
+  session$sendCustomMessage("updateCounter", format(count, big.mark = ","))
+  count <- count + 1L
+  writeLines(as.character(count), "../visitor_counter.txt")
+  }
 }

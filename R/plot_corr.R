@@ -78,7 +78,6 @@
 #' @importFrom tibble as_tibble
 #' @importFrom tidyr pivot_longer
 #' @importFrom dplyr mutate
-#' @importFrom magrittr %>%
 #' @importFrom purrr keep
 #' @importFrom rlang .data arg_match abort inform try_fetch
 #'
@@ -92,10 +91,10 @@
 #' \dontrun{
 #' # use tetrachoric correlation and reorder the resulting heatmap
 #' # using Ward's method
-#' HCI %>% plot_corr(cor = "tetrachoric", clust_method = "ward.D")
+#' HCI |> plot_corr(cor = "tetrachoric", clust_method = "ward.D")
 #'
 #' # outline 3 Ward's clusters with bold yellow line and add labels
-#' HCI %>%
+#' HCI |>
 #'   plot_corr(
 #'     n_clust = 3, clust_method = "ward.D2", line_col = "yellow",
 #'     line_size = 1.5, labels = TRUE
@@ -103,7 +102,7 @@
 #'
 #' # add title and position the legend below the plot
 #' library(ggplot2)
-#' HCI %>%
+#' HCI |>
 #'   plot_corr(n_clust = 3) +
 #'   ggtitle("HCI heatmap") +
 #'   theme(legend.position = "bottom")
@@ -230,10 +229,10 @@ plot_corr <- function(Data,
   }
 
   # .data is a pronoun for cormat in non-standard evaluation
-  plt <- cormat %>%
-    as_tibble(rownames = "x") %>%
-    pivot_longer(cols = -.data$x, names_to = "y", values_to = "r") %>%
-    mutate(corr. = gsub("0\\.", "\\.", round(.data$r, digits = 2L))) %>%
+  plt <- cormat |>
+    as_tibble(rownames = "x") |>
+    pivot_longer(cols = -.data$x, names_to = "y", values_to = "r") |>
+    mutate(corr. = gsub("0\\.", "\\.", round(.data$r, digits = 2L))) |>
     ggplot(aes(.data$x, .data$y, label = .data$corr.)) +
     scale_x_discrete(limits = new_ord, position = "top") +
     scale_y_discrete(limits = rev(new_ord)) + # make diagonal as usual

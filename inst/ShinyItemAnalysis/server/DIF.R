@@ -129,8 +129,8 @@ DIF_total_score_with_group <- reactive({
 DIF_total_table <- reactive({
   d <- DIF_total_score_with_group()
 
-  d %>%
-    group_by(Group) %>%
+  d |>
+    group_by(Group) |>
     summarise(
       across(
         total_matching,
@@ -165,7 +165,7 @@ DIF_total_histogram <- reactive({
 
   d <- DIF_total_score_with_group()
 
-  d %>%
+  d |>
     ggplot(aes(x = total_matching, fill = Group, col = Group)) +
     # text aes to be picked by ggplotly and used as a tooltip
     geom_histogram(
@@ -193,8 +193,8 @@ DIF_total_histogram <- reactive({
 })
 
 output$DIF_total_histogram <- renderPlotly({
-  DIF_total_histogram() %>%
-    ggplotly(tooltip = "text") %>%
+  DIF_total_histogram() |>
+    ggplotly(tooltip = "text") |>
     plotly::config(displayModeBar = FALSE)
 })
 
@@ -208,7 +208,8 @@ output$DIF_total_histogram_download <- downloadHandler(
       plot = DIF_total_histogram() +
         theme(
           text = element_text(size = setting_figures$text_size),
-          legend.position = c(0.15, 0.85)
+          legend.position = "inside",
+          legend.position.inside = c(0.15, 0.85)
         ),
       device = "png",
       height = setting_figures$height, width = setting_figures$width,
@@ -342,7 +343,7 @@ DIF_DP_plot <- reactive({
 })
 
 output$DIF_DP_plot <- renderPlotly({
-  g <- DIF_DP_plot() %>%
+  g <- DIF_DP_plot() |>
     style(textposition = "right")
   p <- ggplotly(g)
 
@@ -359,7 +360,7 @@ output$DIF_DP_plot <- renderPlotly({
   }
 
   p$elementId <- NULL
-  p %>% plotly::config(displayModeBar = FALSE)
+  p |> plotly::config(displayModeBar = FALSE)
 })
 
 # ** Download delta plot ####
@@ -920,8 +921,8 @@ DIF_MH_items_table <- reactive({
 
   df <- df[total == score, ]
 
-  tab <- xtabs(~ Group + Answer, data = df) %>%
-    addmargins(FUN = list(Total = sum), quiet = TRUE) %>%
+  tab <- xtabs(~ Group + Answer, data = df) |>
+    addmargins(FUN = list(Total = sum), quiet = TRUE) |>
     as.data.frame.matrix()
 
   tab
@@ -1070,14 +1071,14 @@ DIF_SIBTEST_model <- reactive({
   data <- data.frame(binary())
 
   data_group <- bind_cols(data, group = group)
-  group_counts <- data_group %>%
-    drop_na() %>%
+  group_counts <- data_group |>
+    drop_na() |>
     count(group)
-  sc0 <- group_counts %>%
-    filter(group == 0) %>%
+  sc0 <- group_counts |>
+    filter(group == 0) |>
     pull(n)
-  sc1 <- group_counts %>%
-    filter(group == 1) %>%
+  sc1 <- group_counts |>
+    filter(group == 1) |>
     pull(n)
 
   validate(
@@ -1851,11 +1852,11 @@ output$DIF_logistic_summary_table_download <- downloadHandler(
     table <- DIF_logistic_summary_coef()
 
     # some dirty patch
-    colnames(table) <- colnames(table) %>%
-      str_remove_all("\\\\\\(\\\\mathit\\{") %>%
-      str_remove_all("\\}\\\\\\)") %>%
-      str_replace("\\{\\\\text\\{DIF\\}\\}", "DIF") %>%
-      str_replace("\\\\chi", "X") %>%
+    colnames(table) <- colnames(table) |>
+      str_remove_all("\\\\\\(\\\\mathit\\{") |>
+      str_remove_all("\\}\\\\\\)") |>
+      str_replace("\\{\\\\text\\{DIF\\}\\}", "DIF") |>
+      str_replace("\\\\chi", "X") |>
       str_remove_all("[\\\\]")
 
     names(table)[3] <- "sig. symb."
@@ -2005,7 +2006,7 @@ output$DIF_logistic_items_plot <- renderPlotly({
   }
 
   p$elementId <- NULL
-  hide_legend(p) %>% plotly::config(displayModeBar = FALSE)
+  hide_legend(p) |> plotly::config(displayModeBar = FALSE)
 })
 
 # ** Download plot ####
@@ -2463,10 +2464,12 @@ DIF_NLR_method <- reactive({
   )
 
   fit
-}) %>%
+}) |>
   bindEvent(
     input$DIF_NLR_summary_run,
     input$DIF_NLR_items_run,
+    binary(),
+    group(),
     ignoreNULL = FALSE # ignore BTN for the first time, but require press for any further eval.
     )
 
@@ -2559,16 +2562,16 @@ DIF_NLR_summary_parameters <- reactive({
 
   cfs <- coef(model, IRTpars = TRUE, SE = TRUE, CI = 0, simplify = TRUE)
 
-  cfs <- cfs %>%
-    as_tibble(rownames = ".item") %>%
-    separate_wider_delim(.item, delim = " ", names = c(".item", ".type")) %>%
+  cfs <- cfs |>
+    as_tibble(rownames = ".item") |>
+    separate_wider_delim(.item, delim = " ", names = c(".item", ".type")) |>
     filter(.type %in% c("estimate", "SE")) # so CIs cannot creep into the table
 
-  cfs %>%
+  cfs |>
     pivot_wider(
       names_from = .type, values_from = -c(.item, .type),
       names_glue = "{.type}_{.value}"
-    ) %>%
+    ) |>
     select(-.item)
 })
 # ** Summary table ####
@@ -2612,15 +2615,15 @@ output$DIF_NLR_summary_coef <- renderTable(
       "adj. \\(\\mathit{p}\\)-value" = "pval_adj"
     )
 
-    tbl <- tbl %>%
-      rename(any_of(rnm_vec)) %>% # use any_of to pick only existing columns (picking the right pval)
-      rename_with(~ str_replace(.x, "Dif", "_{DIF}")) %>%
-      rename_with(~ paste0(str_replace(.x, "estimate_", "\\\\(\\\\mathit{"), "}\\)"), .cols = starts_with("estimate_")) %>%
+    tbl <- tbl |>
+      rename(any_of(rnm_vec)) |> # use any_of to pick only existing columns (picking the right pval)
+      rename_with(~ str_replace(.x, "Dif", "_{DIF}")) |>
+      rename_with(~ paste0(str_replace(.x, "estimate_", "\\\\(\\\\mathit{"), "}\\)"), .cols = starts_with("estimate_")) |>
       rename_with(~ paste0(str_replace(.x, "SE_", "SE(\\\\(\\\\mathit{"), "}\\))"), .cols = starts_with("SE_"))
 
 
-    tbl <- tbl %>%
-      mutate(rowname = item_names()) %>%
+    tbl <- tbl |>
+      mutate(rowname = item_names()) |>
       column_to_rownames()
 
     # rm names, which is not legal in tibble
@@ -2720,16 +2723,16 @@ output$DIF_NLR_summary_table_download <- downloadHandler(
       "sig. symb." = "pval_symb"
     )
 
-    tbl <- tbl %>%
-      select(-blank_col) %>%
-      rename(any_of(rnm_vec)) %>%
-      rename_with(~ str_replace(.x, "Dif", "_DIF")) %>%
-      rename_with(~ str_remove(.x, "estimate_"), .cols = starts_with("estimate_")) %>%
+    tbl <- tbl |>
+      select(-blank_col) |>
+      rename(any_of(rnm_vec)) |>
+      rename_with(~ str_replace(.x, "Dif", "_DIF")) |>
+      rename_with(~ str_remove(.x, "estimate_"), .cols = starts_with("estimate_")) |>
       rename_with(~ paste0(str_replace(.x, "SE_", "SE("), ")"), .cols = starts_with("SE_"))
 
 
-    tbl <- tbl %>%
-      mutate(rowname = item_names()) %>%
+    tbl <- tbl |>
+      mutate(rowname = item_names()) |>
       column_to_rownames()
 
     write.csv(tbl, file) # w/o blank col
@@ -2816,7 +2819,8 @@ DIF_NLR_items_plot <- reactive({
     theme_app() +
     theme(
       legend.box.just = "top",
-      legend.position = c(0.01, 0.98),
+      legend.position = "inside",
+      legend.position.inside = c(0.01, 0.98),
       legend.justification = c(0, 1),
       legend.key.width = unit(1, "cm"),
       legend.box = "horizontal"
@@ -2848,7 +2852,7 @@ output$DIF_NLR_items_plot <- renderPlotly({
   p$x$data[[4]]$text <- gsub("prob", "Empirical probability", p$x$data[[4]]$text)
 
   p$elementId <- NULL
-  hide_legend(p) %>% plotly::config(displayModeBar = FALSE)
+  hide_legend(p) |> plotly::config(displayModeBar = FALSE)
 })
 
 # ** Download plot ####
@@ -2936,10 +2940,10 @@ output$DIF_NLR_items_coef <- renderTable(
     cfs <- DIF_NLR_summary_parameters()
     item_cfs <- cfs[input$DIF_NLR_items_item, ]
 
-    item_cfs <- item_cfs %>%
+    item_cfs <- item_cfs |>
       pivot_longer(everything(), names_sep = "_", names_to = c(".value", "par"))
 
-    item_cfs <- item_cfs %>% column_to_rownames("par")
+    item_cfs <- item_cfs |> column_to_rownames("par")
 
     rownames(item_cfs) <- paste0("\\(\\mathit{", gsub("Dif", "_{Dif}", rownames(item_cfs)), "}\\)")
     colnames(item_cfs) <- c("Estimate", "SE")
@@ -3421,11 +3425,11 @@ output$DIF_Lord_summary_table_download <- downloadHandler(
     }
 
     # some dirty patch
-    colnames(data) <- colnames(data) %>%
-      str_remove_all("\\\\\\(\\\\mathit\\{") %>%
-      str_remove_all("\\}\\\\\\)") %>%
-      str_replace("\\}_\\{", "_") %>%
-      str_replace("\\\\chi", "X") %>%
+    colnames(data) <- colnames(data) |>
+      str_remove_all("\\\\\\(\\\\mathit\\{") |>
+      str_remove_all("\\}\\\\\\)") |>
+      str_replace("\\}_\\{", "_") |>
+      str_replace("\\\\chi", "X") |>
       str_remove_all("[\\\\]")
 
     names(data)[3] <- "sig. symb."
@@ -3548,7 +3552,7 @@ output$DIF_Lord_items_plot <- renderPlotly({
   )
 
   p$elementId <- NULL
-  hide_legend(p) %>% plotly::config(displayModeBar = FALSE)
+  hide_legend(p) |> plotly::config(displayModeBar = FALSE)
 })
 
 # ** Download plot ####
@@ -4153,11 +4157,11 @@ output$DIF_Raju_summary_table_download <- downloadHandler(
     }
 
     # some dirty patch
-    colnames(data) <- colnames(data) %>%
-      str_remove_all("\\\\\\(\\\\mathit\\{") %>%
-      str_remove_all("\\}\\\\\\)") %>%
-      str_replace("\\}_\\{", "_") %>%
-      str_replace("\\\\chi", "X") %>%
+    colnames(data) <- colnames(data) |>
+      str_remove_all("\\\\\\(\\\\mathit\\{") |>
+      str_remove_all("\\}\\\\\\)") |>
+      str_replace("\\}_\\{", "_") |>
+      str_replace("\\\\chi", "X") |>
       str_remove_all("[\\\\]")
 
     names(data)[3] <- "sig. symb."
@@ -4289,7 +4293,7 @@ output$DIF_Raju_items_plot <- renderPlotly({
   p$x$data[[1]]$text <- NULL
 
   p$elementId <- NULL
-  hide_legend(p) %>% plotly::config(displayModeBar = FALSE)
+  hide_legend(p) |> plotly::config(displayModeBar = FALSE)
 })
 
 output$DIF_Raju_items_plot_download <- downloadHandler(
@@ -4887,14 +4891,14 @@ DIF_cumulative_method <- reactive({
   group <- unlist(group(), use.names = FALSE)
 
   data_group <- bind_cols(data, group = group)
-  group_counts <- data_group %>%
-    drop_na() %>%
+  group_counts <- data_group |>
+    drop_na() |>
     count(group)
-  sc0 <- group_counts %>%
-    filter(group == 0) %>%
+  sc0 <- group_counts |>
+    filter(group == 0) |>
     pull(n)
-  sc1 <- group_counts %>%
-    filter(group == 1) %>%
+  sc1 <- group_counts |>
+    filter(group == 1) |>
     pull(n)
 
   validate(
@@ -4981,7 +4985,7 @@ output$DIF_cumulative_summary_dif_items <- renderPrint({
 # ** Function to get item parameters for cumulative and adjacent models ####
 get_tidy_coefs <- function(fit) {
   par <- vctrs::vec_rbind(!!!fit$ordPAR)
-  se <- vctrs::vec_rbind(!!!fit$ordSE) %>%
+  se <- vctrs::vec_rbind(!!!fit$ordSE) |>
     rename_with(~ paste0(.x, "_se"))
   res <- cbind(par, se)[, order(c(seq(ncol(par)), seq(ncol(se))))]
 
@@ -4994,7 +4998,7 @@ get_tidy_coefs <- function(fit) {
 # ** Function to style summary table for cumulative and adjacent models ####
 style_coef_names <- function(coef_tab, katex = TRUE) {
   # names ending with ".1" are duplicates, meaning they are SE
-  nms <- names(coef_tab) %>% str_replace("\\.1$", "_se")
+  nms <- names(coef_tab) |> str_replace("\\.1$", "_se")
   se <- str_detect(nms, "_se")
   idx <- str_extract(nms, "\\d+") # get one or more digits
   if (all(is.na(idx))) {
@@ -5256,7 +5260,8 @@ DIF_cumulative_items_plot_cumulative <- reactive({
     theme(
       legend.box.just = "top",
       legend.justification = c("right", "bottom"),
-      legend.position = c(0.98, 0.02),
+      legend.position = "inside",
+      legend.position.inside = c(0.98, 0.02),
       legend.box = "horizontal",
       legend.margin = margin(0, 0, 0, 0, unit = "cm")
     )
@@ -5284,7 +5289,7 @@ output$DIF_cumulative_items_plot_cumulative <- renderPlotly({
   }
 
   p$elementId <- NULL
-  hide_legend(p) %>% plotly::config(displayModeBar = FALSE)
+  hide_legend(p) |> plotly::config(displayModeBar = FALSE)
 })
 
 # ** Download plot - cumulative ####
@@ -5315,7 +5320,8 @@ DIF_cumulative_items_plot_category <- reactive({
     theme(
       legend.box.just = "top",
       legend.justification = c("left", "top"),
-      legend.position = c(0.02, 0.98),
+      legend.position = "inside",
+      legend.position.inside = c(0.02, 0.98),
       legend.box = "horizontal",
       legend.margin = margin(0, 0, 0, 0, unit = "cm")
     )
@@ -5343,7 +5349,7 @@ output$DIF_cumulative_items_plot_category <- renderPlotly({
   }
 
   p$elementId <- NULL
-  hide_legend(p) %>% plotly::config(displayModeBar = FALSE)
+  hide_legend(p) |> plotly::config(displayModeBar = FALSE)
 })
 
 # ** Download plot - category ####
@@ -5597,14 +5603,14 @@ DIF_adjacent_model <- reactive({
   group <- unlist(group(), use.names = FALSE)
 
   data_group <- bind_cols(data, group = group)
-  group_counts <- data_group %>%
-    drop_na() %>%
+  group_counts <- data_group |>
+    drop_na() |>
     count(group)
-  sc0 <- group_counts %>%
-    filter(group == 0) %>%
+  sc0 <- group_counts |>
+    filter(group == 0) |>
     pull(n)
-  sc1 <- group_counts %>%
-    filter(group == 1) %>%
+  sc1 <- group_counts |>
+    filter(group == 1) |>
     pull(n)
 
   validate(
@@ -5888,7 +5894,8 @@ DIF_adjacent_items_plot <- reactive({
     theme(
       legend.box.just = "top",
       legend.justification = c("left", "top"),
-      legend.position = c(0.02, 0.98),
+      legend.position = "inside",
+      legend.position.inside = c(0.02, 0.98),
       legend.box = "horizontal",
       legend.margin = margin(0, 0, 0, 0, unit = "cm")
     )
@@ -5916,7 +5923,7 @@ output$DIF_adjacent_items_plot <- renderPlotly({
   }
 
   p$elementId <- NULL
-  hide_legend(p) %>% plotly::config(displayModeBar = FALSE)
+  hide_legend(p) |> plotly::config(displayModeBar = FALSE)
 })
 
 # ** Plot download ####
@@ -6410,7 +6417,7 @@ DIF_multinomial_summary_coef_parameters <- reactive({
   # adding missing columns if necessary / ordering columns
   if (input$DIF_multinomial_summary_parametrization == "classic") {
     new_cols <- c(group = 0, "x:group" = 0)
-    coefs <- coefs %>% add_column(!!!new_cols[setdiff(names(new_cols), names(coefs))])
+    coefs <- coefs |> add_column(!!!new_cols[setdiff(names(new_cols), names(coefs))])
   } else {
     coefs <- coefs[, c(which(grepl("a", colnames(coefs))), which(!grepl("a", colnames(coefs))))]
   }
@@ -6472,10 +6479,10 @@ output$DIF_multinomial_summary_parameters_download <- downloadHandler(
     table <- DIF_multinomial_summary_coef_parameters()
 
     # remove math
-    names(table) <- names(table) %>%
-      str_remove_all("\\\\\\(\\\\mathit\\{") %>%
-      str_remove_all("\\\\mathrm\\{") %>%
-      str_remove_all("\\\\\\)") %>%
+    names(table) <- names(table) |>
+      str_remove_all("\\\\\\(\\\\mathit\\{") |>
+      str_remove_all("\\\\mathrm\\{") |>
+      str_remove_all("\\\\\\)") |>
       str_remove_all("[\\\\{}}]")
 
     note <- DIF_multinomial_summary_table_note()
@@ -6565,7 +6572,8 @@ DIF_multinomial_items_plot_all <- reactive({
       theme(
         legend.box.just = "top",
         legend.justification = c("left", "top"),
-        legend.position = c(0.02, 0.98),
+        legend.position = "inside",
+        legend.position.inside = c(0.02, 0.98),
         legend.box = "horizontal",
         legend.margin = margin(0, 0, 0, 0, unit = "cm")
       )
@@ -6604,7 +6612,7 @@ output$DIF_multinomial_items_plot <- renderPlotly({
   }
 
   p$elementId <- NULL
-  hide_legend(p) %>% plotly::config(displayModeBar = FALSE)
+  hide_legend(p) |> plotly::config(displayModeBar = FALSE)
 })
 
 # ** Download plot ####
@@ -6932,7 +6940,7 @@ output$DIF_training_plot <- renderPlotly({
 
   p$elementId <- NULL
 
-  p %>% plotly::config(displayModeBar = FALSE)
+  p |> plotly::config(displayModeBar = FALSE)
 })
 
 # ** Download plot ####
@@ -6944,7 +6952,8 @@ output$DIF_training_plot_download <- downloadHandler(
     ggsave(file,
       plot = DIF_training_plot() +
         theme(
-          legend.position = c(0.97, 0.03),
+          legend.position = "inside",
+          legend.position.inside = c(0.97, 0.03),
           legend.justification = c(0.97, 0.03)
         ) +
         theme(text = element_text(size = setting_figures$text_size)),

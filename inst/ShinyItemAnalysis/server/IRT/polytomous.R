@@ -2,7 +2,7 @@
 
 IRT_bock_data <- reactive({
   d <- nominal()
-  d %>% modify(as.factor) # not nominal data to nominal
+  d |> modify(as.factor) # not nominal data to nominal
 })
 
 IRT_bock_key <- reactive({
@@ -52,8 +52,8 @@ IRT_bock_fit_and_orig_levels <- reactive({
       list(fit = fit, orig_levels = orig_levels)
     }
   )
-}) %>% # cache on data and collapsed parametrization
-  bindCache(IRT_bock_data(), IRT_bock_parametrization()) %>% # possibly also key??
+}) |> # cache on data and collapsed parametrization
+  bindCache(IRT_bock_data(), IRT_bock_parametrization()) |> # possibly also key??
   bindEvent(IRT_bock_data(), IRT_bock_parametrization()) # invalidate only at nrm_mod() change
 
 
@@ -66,7 +66,7 @@ IRT_bock_fit_and_orig_levels <- reactive({
 IRT_bock_summary_coef <- reactive({
   is_irt <- input$IRT_bock_parametrization %in% c("blirt", "bock")
 
-  coefs <- IRT_bock_fit_and_orig_levels()[["fit"]] %>%
+  coefs <- IRT_bock_fit_and_orig_levels()[["fit"]] |>
     coef(printSE = TRUE, IRTpars = is_irt, labels = TRUE, mark_correct = FALSE)
 
   # get rid of non-item info
@@ -85,16 +85,16 @@ IRT_bock_summary_coef <- reactive({
   )
 
   # get item with maximum number of parameters
-  max_parnum_item <- coefs %>%
-    map(length) %>%
+  max_parnum_item <- coefs |>
+    map(length) |>
     which.max()
   # set master names to determine the order of columns below
   master_parnames <- colnames(coefs[[max_parnum_item]])
 
   # turn into tibble with par/SE in "zig-zag" pattern
-  coefs <- coefs %>%
-    map_dfr(~ as_tibble(.x, rownames = "type"), .id = "item") %>%
-    relocate(item, type, all_of(master_parnames)) %>% # order columns
+  coefs <- coefs |>
+    map_dfr(~ as_tibble(.x, rownames = "type"), .id = "item") |>
+    relocate(item, type, all_of(master_parnames)) |> # order columns
     pivot_wider(
       id_cols = item,
       names_from = type, values_from = c(-item, -type),
@@ -102,19 +102,19 @@ IRT_bock_summary_coef <- reactive({
     )
 
   # turn to data.frame with rownames
-  coefs <- coefs %>% column_to_rownames("item")
+  coefs <- coefs |> column_to_rownames("item")
 
   cf_nms <- colnames(coefs)
 
   # if slope/intercept, replace a and d with betas
   if (!is_irt) {
-    cf_nms <- cf_nms %>%
-      str_replace("a(?!\\*)", "\\\\beta_1") %>% # don't do anything with Thissen a*
+    cf_nms <- cf_nms |>
+      str_replace("a(?!\\*)", "\\\\beta_1") |> # don't do anything with Thissen a*
       str_replace("b_", "\\\\beta_0_")
   }
 
-  colnames(coefs) <- cf_nms %>%
-    str_split("_", n = 3) %>% # max to 3 if data levels use "_"
+  colnames(coefs) <- cf_nms |>
+    str_split("_", n = 3) |> # max to 3 if data levels use "_"
     map_chr(
       ~ paste0(
         .x[1L],
@@ -126,8 +126,8 @@ IRT_bock_summary_coef <- reactive({
     )
 
   coefs
-}) %>% # cache on raw parametrization user input and data
-  bindCache(IRT_bock_data(), input$IRT_bock_parametrization) %>% # possibly also key??
+}) |> # cache on raw parametrization user input and data
+  bindCache(IRT_bock_data(), input$IRT_bock_parametrization) |> # possibly also key??
   bindEvent(IRT_bock_data(), input$IRT_bock_parametrization)
 
 
@@ -140,7 +140,7 @@ IRT_bock_summary_iic <- reactive({
   fit <- IRT_bock_fit_and_orig_levels()[["fit"]]
 
   # names from model
-  mod_item_names <- fit@Data$data %>% colnames()
+  mod_item_names <- fit@Data$data |> colnames()
 
   d <- map2_dfr(
     mod_item_names,
@@ -153,20 +153,20 @@ IRT_bock_summary_iic <- reactive({
   )
 
   # plotly labels
-  d <- d %>% mutate(label = paste0(
+  d <- d |> mutate(label = paste0(
     "Ability = ", round(Ability, 3), "\n",
     "Information = ", round(Information, 3), "\n",
     "Item = ", Item
   ))
 
-  d %>% ggplot(aes(
+  d |> ggplot(aes(
     x = Ability, y = Information,
     color = Item, group = Item, text = label
   )) +
     geom_line() +
     theme_app()
-}) %>%
-  bindCache(IRT_bock_fit_and_orig_levels()) %>%
+}) |>
+  bindCache(IRT_bock_fit_and_orig_levels()) |>
   bindEvent(IRT_bock_fit_and_orig_levels())
 
 # cache also plotly conversion
@@ -175,9 +175,9 @@ IRT_bock_summary_iic_plotly <- reactive({
   p <- ggplotly(g, tooltip = "text")
 
   p$elementId <- NULL
-  p %>% plotly::config(displayModeBar = FALSE)
-}) %>%
-  bindCache(IRT_bock_fit_and_orig_levels()) %>%
+  p |> plotly::config(displayModeBar = FALSE)
+}) |>
+  bindCache(IRT_bock_fit_and_orig_levels()) |>
   bindEvent(IRT_bock_fit_and_orig_levels())
 
 output$IRT_bock_summary_iic <- renderPlotly({
@@ -217,8 +217,8 @@ IRT_bock_summary_tic <- reactive({
     scale_y_continuous("Information", sec.axis = sec_axis(~., name = "SE")) +
     theme(axis.title.y = element_text(color = "pink")) +
     theme_app()
-}) %>%
-  bindCache(IRT_bock_fit_and_orig_levels()) %>%
+}) |>
+  bindCache(IRT_bock_fit_and_orig_levels()) |>
   bindEvent(IRT_bock_fit_and_orig_levels())
 
 
@@ -230,9 +230,9 @@ IRT_bock_summary_tic_plotly <- reactive({
   p$x$data[[2]]$text <- gsub("<br />colour: se", "", p$x$data[[2]]$text)
 
   p$elementId <- NULL
-  p %>% plotly::config(displayModeBar = FALSE)
-}) %>%
-  bindCache(IRT_bock_fit_and_orig_levels()) %>%
+  p |> plotly::config(displayModeBar = FALSE)
+}) |>
+  bindCache(IRT_bock_fit_and_orig_levels()) |>
   bindEvent(IRT_bock_fit_and_orig_levels())
 
 output$IRT_bock_summary_tic <- renderPlotly({
@@ -273,9 +273,9 @@ output$IRT_bock_summary_coef_download <- downloadHandler(
     tab <- IRT_bock_summary_coef()
 
     # remove math
-    names(tab) <- names(tab) %>%
-      str_remove_all("\\\\\\(\\\\mathit\\{\\\\") %>%
-      str_remove_all("\\\\\\)") %>%
+    names(tab) <- names(tab) |>
+      str_remove_all("\\\\\\(\\\\mathit\\{\\\\") |>
+      str_remove_all("\\\\\\)") |>
       str_remove_all("[{}}]")
 
     write.csv(tab, file)
@@ -300,15 +300,15 @@ IRT_bock_summary_fscores_zscores <- reactive({
 
   rownames(tab) <- paste("Respondent", 1L:nrow(tab))
   tab
-}) %>%
-  bindCache(IRT_bock_fit_and_orig_levels()) %>%
+}) |>
+  bindCache(IRT_bock_fit_and_orig_levels()) |>
   bindEvent(IRT_bock_fit_and_orig_levels())
 
 # intermediate reactive to be used in a table, corr. text and plot
 IRT_bock_summary_ability <- reactive({
   IRT_bock_summary_fscores_zscores()
-}) %>%
-  bindCache(IRT_bock_fit_and_orig_levels()) %>%
+}) |>
+  bindCache(IRT_bock_fit_and_orig_levels()) |>
   bindEvent(IRT_bock_fit_and_orig_levels())
 
 # output table
@@ -335,8 +335,8 @@ IRT_bock_summary_ability_correlation <- reactive({
   tab <- IRT_bock_summary_fscores_zscores()
 
   cor(tab[["F-score"]], tab[["Z-score"]], use = "pairwise.complete.obs")
-}) %>%
-  bindCache(IRT_bock_fit_and_orig_levels()) %>%
+}) |>
+  bindCache(IRT_bock_fit_and_orig_levels()) |>
   bindEvent(IRT_bock_fit_and_orig_levels())
 
 # output corr. text with the estimate
@@ -357,8 +357,8 @@ IRT_bock_summary_ability_plot <- reactive({
     geom_point(size = 3) +
     labs(x = "Standardized total score", y = "Factor score") +
     theme_app()
-}) %>%
-  bindCache(IRT_bock_fit_and_orig_levels()) %>%
+}) |>
+  bindCache(IRT_bock_fit_and_orig_levels()) |>
   bindEvent(IRT_bock_fit_and_orig_levels())
 
 # intermediate plotly object (that can be cached, ggplot -> plotly is expensive)
@@ -370,9 +370,9 @@ IRT_bock_summary_ability_plotly <- reactive({
   p$x$data[[1]]$text <- gsub("fscore", "F-score", p$x$data[[1]]$text)
 
   p$elementId <- NULL
-  p %>% plotly::config(displayModeBar = FALSE)
-}) %>%
-  bindCache(IRT_bock_fit_and_orig_levels()) %>%
+  p |> plotly::config(displayModeBar = FALSE)
+}) |>
+  bindCache(IRT_bock_fit_and_orig_levels()) |>
   bindEvent(IRT_bock_fit_and_orig_levels())
 
 # output plotly
@@ -424,9 +424,9 @@ IRT_bock_items_icc <- reactive({
 
   names(probs) <- orig_levels
 
-  probs <- probs %>%
-    bind_cols(theta = thetas) %>%
-    pivot_longer(-theta, names_to = "key", values_to = "probs") %>%
+  probs <- probs |>
+    bind_cols(theta = thetas) |>
+    pivot_longer(-theta, names_to = "key", values_to = "probs") |>
     mutate(
       correct = key == item_key,
       label = paste0(
@@ -436,7 +436,7 @@ IRT_bock_items_icc <- reactive({
       )
     )
 
-  probs %>%
+  probs |>
     ggplot(aes(theta, probs, col = key, linetype = correct, group = key)) +
     geom_line(aes(text = label)) +
     labs(
@@ -453,7 +453,7 @@ output$IRT_bock_items_icc <- renderPlotly({
   p <- ggplotly(g, tooltip = "text")
 
   p$elementId <- NULL
-  p %>% plotly::config(displayModeBar = FALSE)
+  p |> plotly::config(displayModeBar = FALSE)
 })
 
 # ** Download plot of ICC for selected item ####
@@ -487,7 +487,7 @@ IRT_bock_items_iic <- reactive({
     Information = iteminfo(extract.item(fit, item), thetas)
   )
 
-  infos %>% ggplot(aes(Ability, Information)) +
+  infos |> ggplot(aes(Ability, Information)) +
     geom_line() +
     ggtitle(item_names()[item]) +
     theme_app()
@@ -498,7 +498,7 @@ output$IRT_bock_items_iic <- renderPlotly({
   p <- ggplotly(g)
 
   p$elementId <- NULL
-  p %>% plotly::config(displayModeBar = FALSE)
+  p |> plotly::config(displayModeBar = FALSE)
 })
 
 # ** Download plot of IIC for selected item ####

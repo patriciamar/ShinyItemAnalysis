@@ -105,10 +105,10 @@ plot_corr(HCI, cor = "pearson")
 \dontrun{
 # use tetrachoric correlation and reorder the resulting heatmap
 # using Ward's method
-HCI \%>\% plot_corr(cor = "tetrachoric", clust_method = "ward.D")
+HCI |> plot_corr(cor = "tetrachoric", clust_method = "ward.D")
 
 # outline 3 Ward's clusters with bold yellow line and add labels
-HCI \%>\%
+HCI |>
   plot_corr(
     n_clust = 3, clust_method = "ward.D2", line_col = "yellow",
     line_size = 1.5, labels = TRUE
@@ -116,7 +116,7 @@ HCI \%>\%
 
 # add title and position the legend below the plot
 library(ggplot2)
-HCI \%>\%
+HCI |>
   plot_corr(n_clust = 3) +
   ggtitle("HCI heatmap") +
   theme(legend.position = "bottom")

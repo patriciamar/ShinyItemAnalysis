@@ -10,30 +10,30 @@ uiAbout <- tabPanel("",
   p(
     "ShinyItemAnalysis is an interactive online application for the psychometric analysis of educational tests,
     psychological assessments, health-related and other types of multi-item measurements, or ratings from
-    multiple raters, built
-                    on ",
+    multiple raters, built on",
     a("R", href = "https://cran.r-project.org/", target = "_blank"),
     "and",
-    a("shiny. ", href = "http://www.rstudio.com/shiny/", target = "_blank"),
-    "You can easily start using the application with the default toy dataset. You may also select from a number of other
+    a("shiny", href = "http://www.rstudio.com/shiny/", target = "_blank", .noWS = "after"),
+    ". You can easily start using the application with the default toy dataset. You may also select from a number of other
     toy datasets or upload your own in the ", strong("Data"), " section. Offered methods include:"
   ),
   tags$ul(
-    tags$li("Exploration of total and standard scores in the ", strong("Summary"), "section"),
-    tags$li("Analysis of measurement error in the ", strong("Reliability"), "section"),
-    tags$li("Correlation structure and criterion validity analysis in the ", strong("Validity"), "section"),
-    tags$li("Item and distractor analysis in the ", strong("Item analysis"), "section"),
-    tags$li("Item analysis with regression models in the ", strong("Regression"), "section"),
-    tags$li("Item analysis by item response theory models in the ", strong("IRT models"), "section"),
-    tags$li("Detection of differential item functioning in the ", strong("DIF/Fairness"), "section"),
-    tags$li("Additional psychometric methods implemented via add-on modules in the ", strong("Modules"), "section")
+    tags$li("Exploration of total and standard scores in the", strong("Summary"), "section"),
+    tags$li("Analysis of measurement error in the", strong("Reliability"), "section"),
+    tags$li("Correlation structure and criterion validity analysis in the", strong("Validity"), "section"),
+    tags$li("Item and distractor analysis in the", strong("Item analysis"), "section"),
+    tags$li("Item analysis with regression models in the", strong("Regression"), "section"),
+    tags$li("Item analysis by item response theory models in the", strong("IRT models"), "section"),
+    tags$li("Detection of differential item functioning in the", strong("DIF/Fairness"), "section"),
+    tags$li("Additional psychometric methods implemented via add-on modules in the", strong("Modules"), "section")
   ),
-  p("All graphical outputs and selected tables can be downloaded via the download button. Moreover, you can automatically
-                    generate a HTML or PDF report in the ", strong("Reports"), "section. All offered analyses
-                    are complemented by selected R codes which are ready to be copied and pasted into your R console, therefore
-                    a similar analysis can be run and modified in R."),
-  p("Visit the ", a(strong("ShinyItemAnalysis.org"),
-    href = "https://www.shinyitemanalysis.org",
+  p(
+  "All graphical outputs and selected tables can be downloaded via the download button. Moreover, you can automatically
+   generate a HTML or PDF report in the", strong("Reports"), "section. All offered analyses
+   are complemented by selected R codes which are ready to be copied and pasted into your R console, therefore
+   a similar analysis can be run and modified in R."),
+  p(
+    "Visit the", a(strong("ShinyItemAnalysis.org"), href = "https://www.shinyitemanalysis.org",
     target = "_blank"
   ), "webpage to learn more about ShinyItemAnalysis!"),
   tags$hr(),
@@ -43,117 +43,117 @@ uiAbout <- tabPanel("",
   #------------------------------------------------------------------------------------#
   h4("News"),
   fluidRow(
-    column(10,
-
-  tags$ul(
-    tags$li(
-      "A new book on Computational Aspects of Psychometric Methods: With R ", a("(Martinkova & Hladka, 2023)",
-        href = "https://www.taylorfrancis.com/books/mono/10.1201/9781003054313",
-        target = "_blank", .noWS = "outside"
-      ),
-      " is available. Individual chapters of the book describe sections of the ShinyItemAnalysis. "
-    ),
-    tags$li(
-      "A manuscript on algorithms for estimation of item functioning and for the DIF detection is being published in JEBS ",
-      a("(Hladka, Martinkova, & Brabec, 2024)",
-        href = "https://doi.org/10.48550/arXiv.2302.12648",
-        target = "_blank", .noWS = "outside"
-      ),
-      ".  Estimation methods are available in the ",
-      strong("DIF/Fairness/Generalized logistics"), "section. "
-    ),
-    tags$li(
-      "A new paper on relationship between the inter-rater reliability and false positive rate has been published in BJMSP ",
-      a("(Bartos, & Martinkova, 2024)",
-        href = "https://doi.org/10.1111/bmsp.12343",
-        target = "_blank", .noWS = "outside"
-      ),
-      ".  To try examples interactively, go to the IRR2FPR Module of the IRR2FPR package, available from the ",
-      strong("Reliability"), "section. "
-    ),
-    tags$li(
-      "A new paper on combining item purification and multiple comparison adjustment methods in DIF detection has been published in MBR ",
-      a("(Hladka, Martinkova, & Magis, 2024)",
-        href = "https://doi.org/10.1080/00273171.2023.2205393",
-        target = "_blank", .noWS = "outside"
-      ),
-      ".  Methods are incorporated in  the ",
-      strong("DIF/Fairness"), "section. "
-    ),
-    tags$li(
-      "A new flexible method for assessing inter-rater reliability with heterogeneous variance components models, accounting for contextual variables
+    column(
+      10,
+      tags$ul(
+        tags$li(
+          "A new book on Computational Aspects of Psychometric Methods: With R ", a("(Martinkova & Hladka, 2023)",
+            href = "https://www.taylorfrancis.com/books/mono/10.1201/9781003054313",
+            target = "_blank", .noWS = "outside"
+          ),
+          " is available. Individual chapters of the book describe sections of the ShinyItemAnalysis. "
+        ),
+        tags$li(
+          "A manuscript on algorithms for estimation of item functioning and for the DIF detection is being published in JEBS ",
+          a("(Hladka, Martinkova, & Brabec, 2024)",
+            href = "https://doi.org/10.48550/arXiv.2302.12648",
+            target = "_blank", .noWS = "outside"
+          ),
+          ".  Estimation methods are available in the ",
+          strong("DIF/Fairness/Generalized logistics"), "section. "
+        ),
+        tags$li(
+          "A new paper on relationship between the inter-rater reliability and false positive rate has been published in BJMSP ",
+          a("(Bartos & Martinkova, 2024)",
+            href = "https://doi.org/10.1111/bmsp.12343",
+            target = "_blank", .noWS = "outside"
+          ),
+          ".  To try examples interactively, go to the IRR2FPR Module of the IRR2FPR package, available from the ",
+          strong("Reliability"), "section. "
+        ),
+        tags$li(
+          "A new paper on combining item purification and multiple comparison adjustment methods in DIF detection has been published in MBR ",
+          a("(Hladka, Martinkova, & Magis, 2024)",
+            href = "https://doi.org/10.1080/00273171.2023.2205393",
+            target = "_blank", .noWS = "outside"
+          ),
+          ".  Methods are incorporated in  the ",
+          strong("DIF/Fairness"), "section. "
+        ),
+        tags$li(
+          "A new flexible method for assessing inter-rater reliability with heterogeneous variance components models, accounting for contextual variables
       has been published in JEBS ",
-      a("(Martinkova, Bartos, & Brabec, 2023)",
-        href = "https://doi.org/10.3102/10769986221150517",
-        target = "_blank", .noWS = "outside"
-      ),
-      ".  The paper uses the NIH data available in the ShinyItemAnalysis package. "
-    ),
-    tags$li(
-      "A new paper on machine learning methods for prediction of item difficulty from item wording has been published in Mathematics ",
-      a("(Stepanek, Dlouha, & Martinkova, 2023)",
-        href = "https://doi.org/10.3390/math11194104",
-        target = "_blank", .noWS = "outside"
-      ),
-      ".  To try examples interactively,
+          a("(Martinkova, Bartos, & Brabec, 2023)",
+            href = "https://doi.org/10.3102/10769986221150517",
+            target = "_blank", .noWS = "outside"
+          ),
+          ".  The paper uses the NIH data available in the ShinyItemAnalysis package. "
+        ),
+        tags$li(
+          "A new paper on machine learning methods for prediction of item difficulty from item wording has been published in Mathematics ",
+          a("(Stepanek, Dlouha, & Martinkova, 2023)",
+            href = "https://doi.org/10.3390/math11194104",
+            target = "_blank", .noWS = "outside"
+          ),
+          ".  To try examples interactively,
     go to the Item Text Analysis Module of the EduTestTextAnalysis package, available from the ",
-      strong("Modules"), "section. "
-    ),
-    tags$li(
-      "A new paper on range-restricted inter-rater reliability has been published in JRSS-A ",
-      a("(Erosheva, Martinkova, & Lee, 2021)",
-        href = "https://doi.org/10.1111/rssa.12681",
-        target = "_blank", .noWS = "outside"
-      ),
-      ".  To try examples interactively with the", code("AIBS"), "dataset,
+          strong("Modules"), "section. "
+        ),
+        tags$li(
+          "A new paper on range-restricted inter-rater reliability has been published in JRSS-A ",
+          a("(Erosheva, Martinkova, & Lee, 2021)",
+            href = "https://doi.org/10.1111/rssa.12681",
+            target = "_blank", .noWS = "outside"
+          ),
+          ".  To try examples interactively with the", code("AIBS"), "dataset,
     go to the Restricted-range Reliability Module of the SIAmodules package, available from the ",
-      strong("Reliability"), "section. "
-    ),
-    tags$li(
-      "A new paper using DIF-C analysis has been published in JCAL ",
-      a("(Kolek, Sisler, Martinkova, & Brom, 2021)",
-        href = "https://doi.org/10.1111/jcal.12575",
-        target = "_blank", .noWS = "outside"
-      ),
-      ".  To try examples interactively with the", code("AttitudesExpulsion"), "dataset,
+          strong("Reliability"), "section. "
+        ),
+        tags$li(
+          "A new paper using DIF-C analysis has been published in JCAL ",
+          a("(Kolek, Sisler, Martinkova, & Brom, 2021)",
+            href = "https://doi.org/10.1111/jcal.12575",
+            target = "_blank", .noWS = "outside"
+          ),
+          ".  To try examples interactively with the", code("AttitudesExpulsion"), "dataset,
     go to the ",
-      a("DIF-C Module",
-        href = "https://shiny.cs.cas.cz/ShinyItemAnalysis-module-DIF-C-ordinal/",
-        target = "_blank", .noWS = "outside"
-      ),
-      " available from the ",
-      strong("DIF"), "section. Also see the follow-up paper ",
-      a("(Kolek, Martinkova, Varejkova, Sisler, & Brom, 2023)",
-        href = "https://doi.org/10.1111/jcal.12911",
-        target = "_blank", .noWS = "outside"
-      ),
-      ", published in the same journal. "
-    ),
-    tags$li(
-      "New papers on differential item functioning have been published in Learning and Instruction ",
-      a("(Martinkova, Hladka, & Potuznikova, 2020)",
-        href = "https://doi.org/10.1016/j.learninstruc.2019.101286",
-        target = "_blank", .noWS = "outside"
-      ),
-      " and in The R Journal ",
-      a("(Hladka & Martinkova, 2020)",
-        href = "https://doi.org/10.32614/RJ-2020-014",
-        target = "_blank", .noWS = "outside"
-      ),
-      ". To try these examples interactively, set the", code("Learning to Learn 9"), "toy dataset in the ", strong("Data"), " section
+          a("DIF-C Module",
+            href = "https://shiny.cs.cas.cz/ShinyItemAnalysis-module-DIF-C-ordinal/",
+            target = "_blank", .noWS = "outside"
+          ),
+          " available from the ",
+          strong("DIF"), "section. Also see the follow-up paper ",
+          a("(Kolek, Martinkova, Varejkova, Sisler, & Brom, 2023)",
+            href = "https://doi.org/10.1111/jcal.12911",
+            target = "_blank", .noWS = "outside"
+          ),
+          ", published in the same journal. "
+        ),
+        tags$li(
+          "New papers on differential item functioning have been published in Learning and Instruction ",
+          a("(Martinkova, Hladka, & Potuznikova, 2020)",
+            href = "https://doi.org/10.1016/j.learninstruc.2019.101286",
+            target = "_blank", .noWS = "outside"
+          ),
+          " and in The R Journal ",
+          a("(Hladka & Martinkova, 2020)",
+            href = "https://doi.org/10.32614/RJ-2020-014",
+            target = "_blank", .noWS = "outside"
+          ),
+          ". To try these examples interactively, set the", code("Learning to Learn 9"), "toy dataset in the ", strong("Data"), " section
     by clicking on the menu in the upper left corner and go to the ",
-      strong("DIF/Fairness/Generalized logistic"), "section. Or go to the DIF-C module of the SIAmodules package, available in the ",
-      strong("DIF/Fairness"), "section.",
-      .noWS = "before-end"
-    )
-           )
-  ),
-  column(
-    2,
-    tags$img(
-      src="book_cover.png",
-      class="img-responsive",
-      style = "max-width: 180px; margin-left: auto; margin-right: auto;"
+          strong("DIF/Fairness/Generalized logistic"), "section. Or go to the DIF-C module of the SIAmodules package, available in the ",
+          strong("DIF/Fairness"), "section.",
+          .noWS = "before-end"
+        )
+      )
+    ),
+    column(
+      2,
+      tags$img(
+        src = "book_cover.png",
+        class = "img-responsive",
+        style = "max-width: 180px; margin-left: auto; margin-right: auto;"
       )
     )
   ),
@@ -167,24 +167,30 @@ uiAbout <- tabPanel("",
       6,
       h4("Availability"),
       p(
-        "An application can be downloaded as an R package from ",
-        a("CRAN.", href = "https://CRAN.R-project.org/package=ShinyItemAnalysis", target = "_blank"),
+        "An application can be downloaded as an R package from",
+        a(
+          href = "https://CRAN.R-project.org/package=ShinyItemAnalysis",
+          "CRAN",
+          target = "_blank",
+          .noWS = "after"
+        ),
+        ".",
         br(),
-        "It is also available online at the ",
-        a("Czech Academy of Sciences ",
+        "It is also available online at the",
+        a(
           href = "https://shiny.cs.cas.cz/ShinyItemAnalysis/",
+          "Czech Academy of Sciences 🇨🇿",
           target = "_blank"
         ),
-        HTML("<a href = 'https://shiny.cs.cas.cz/ShinyItemAnalysis/' target = '_blank'>
-                         <img src = 'flag_CR.png' height = '16' border = '0' align = 'middle'></a>"),
         "and",
-        a("shinyapps.io",
+        a(
           href = "https://cemp.shinyapps.io/ShinyItemAnalysis/",
-          target = "_blank"
+          "shinyapps.io 🇺🇸",
+          target = "_blank",
+          .noWS = "after"
         ),
-        HTML("<a href = 'https://cemp.shinyapps.io/ShinyItemAnalysis/' target = '_blank'>
-                         <img src = 'flag_USA.png' height = '16' border = '0' align = 'middle'></a>.")
-      ),
+        "."
+      )
     ),
 
     #------------------------------------------------------------------------------------#
@@ -195,13 +201,13 @@ uiAbout <- tabPanel("",
       p(
         "The current",
         a("CRAN", href = "https://CRAN.R-project.org/package=ShinyItemAnalysis", target = "_blank"),
-        "version is 1.5.2.",
+        "version is 1.5.4.",
         br(),
         "The version available",
-        a("online", href = "https://shiny.cs.cas.cz/ShinyItemAnalysis/", target = "_blank"), "is 1.5.1.",
+        a("online", href = "https://shiny.cs.cas.cz/ShinyItemAnalysis/", target = "_blank"), "is 1.5.4.",
         br(),
         "The newest development version available on ",
-        a("GitHub", href = "https://github.com/patriciamar/ShinyItemAnalysis", target = "_blank"), "is 1.5.3.",
+        a("GitHub", href = "https://github.com/patriciamar/ShinyItemAnalysis", target = "_blank"), "is 1.5.4.",
       )
     )
   ),
@@ -237,8 +243,8 @@ uiAbout <- tabPanel("",
       target = "_blank"
     ),
     "as published by the Free Software Foundation. This program is distributed in the
-                    hope that it will be useful, but without any warranty; without even the implied
-                    warranty of merchantability of fitness for a particular purpose."
+     hope that it will be useful, but without any warranty; without even the implied
+     warranty of merchantability of fitness for a particular purpose."
   ),
 
   #------------------------------------------------------------------------------------#

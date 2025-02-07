@@ -14,7 +14,7 @@ fun <- function(x, a, b, c, d) {
 start <- startNLR(
   Data, GMAT[, "group"],
   model = "4PLcgdg",
-  parameterization = "classic"
+  parameterization = "irt"
 )[[1]][, 1:4]
 
 # 2PL model for item 1

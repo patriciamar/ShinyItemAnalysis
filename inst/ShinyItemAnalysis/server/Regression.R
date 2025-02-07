@@ -55,7 +55,7 @@ regression_logistic_plot <- reactive({
         b0 = coef(fit)[1],
         b1 = coef(fit)[2]
       ),
-      size = 0.8,
+      linewidth = 0.8,
       color = "darkblue"
     ) +
     xlab("Total score") +
@@ -63,7 +63,8 @@ regression_logistic_plot <- reactive({
     ylim(0, 1) +
     theme_app() +
     theme(
-      legend.position = c(0.01, 0.98),
+      legend.position = "inside",
+      legend.position.inside = c(0.01, 0.98),
       legend.justification = c(0, 1)
     ) +
     ggtitle(item_names()[item])
@@ -75,7 +76,7 @@ output$regression_logistic_plot <- renderPlotly({
   p <- ggplotly(g)
 
   p$elementId <- NULL
-  p %>% plotly::config(displayModeBar = FALSE)
+  p |> plotly::config(displayModeBar = FALSE)
 })
 
 # ** Download estimated logistic curve ####
@@ -184,7 +185,7 @@ regression_logistic_Z_plot <- reactive({
         b0 = coef(fit)[1],
         b1 = coef(fit)[2]
       ),
-      size = 0.8,
+      linewidth = 0.8,
       color = "darkblue"
     ) +
     xlab("Standardized total score (Z-score)") +
@@ -192,7 +193,8 @@ regression_logistic_Z_plot <- reactive({
     scale_y_continuous(limits = c(0, 1)) +
     theme_app() +
     theme(
-      legend.position = c(0.01, 0.98),
+      legend.position = "inside",
+      legend.position.inside = c(0.01, 0.98),
       legend.justification = c(0, 1)
     ) +
     ggtitle(item_names()[item])
@@ -204,7 +206,7 @@ output$regression_logistic_Z_plot <- renderPlotly({
   p <- ggplotly(g)
 
   p$elementId <- NULL
-  p %>% plotly::config(displayModeBar = FALSE)
+  p |> plotly::config(displayModeBar = FALSE)
 })
 
 # ** Download for plot of logistic regression on Z-scores ####
@@ -315,7 +317,7 @@ regression_logistic_IRT_plot <- reactive({
         b0 = coef(fit)[1],
         b1 = coef(fit)[2]
       ),
-      size = 0.8,
+      linewidth = 0.8,
       color = "darkblue"
     ) +
     xlab("Standardized total score (Z-score)") +
@@ -323,7 +325,8 @@ regression_logistic_IRT_plot <- reactive({
     scale_y_continuous(limits = c(0, 1)) +
     theme_app() +
     theme(
-      legend.position = c(0.01, 0.98),
+      legend.position = "inside",
+      legend.position.inside = c(0.01, 0.98),
       legend.justification = c(0, 1)
     ) +
     ggtitle(item_names()[item])
@@ -335,7 +338,7 @@ output$regression_logistic_IRT_plot <- renderPlotly({
   p <- ggplotly(g)
 
   p$elementId <- NULL
-  p %>% plotly::config(displayModeBar = FALSE)
+  p |> plotly::config(displayModeBar = FALSE)
 })
 
 # ** Download plot with estimated logistic curve on Z scores with IRT param. ####
@@ -432,7 +435,7 @@ regression_3pl_model <- reactive({
 
   start <- startNLR(data,
     group = c(rep(0, nrow(data) / 2), rep(1, nrow(data) / 2)),
-    model = "3PLcg", parameterization = "classic", simplify = TRUE
+    model = "3PLcg", parameterization = "irt", simplify = TRUE
   )[, 1:3]
 
   glr <- function(x, a, b, c) {
@@ -488,7 +491,7 @@ regression_3pl_plot <- reactive({
         b = coef(fit)[2],
         c = coef(fit)[3]
       ),
-      size = 0.8,
+      linewidth = 0.8,
       color = "darkblue"
     ) +
     xlab("Standardized total score (Z-score)") +
@@ -496,7 +499,8 @@ regression_3pl_plot <- reactive({
     scale_y_continuous(limits = c(0, 1)) +
     theme_app() +
     theme(
-      legend.position = c(0.01, 0.98),
+      legend.position = "inside",
+      legend.position.inside = c(0.01, 0.98),
       legend.justification = c(0, 1)
     ) +
     ggtitle(item_names()[item])
@@ -508,7 +512,7 @@ output$regression_3pl_plot <- renderPlotly({
   p <- ggplotly(g)
 
   p$elementId <- NULL
-  p %>% plotly::config(displayModeBar = FALSE)
+  p |> plotly::config(displayModeBar = FALSE)
 })
 
 # ** Download plot of estimated nonlinear curve ####
@@ -599,7 +603,7 @@ regression_4pl_model <- reactive({
 
   start <- startNLR(data,
     group = c(rep(0, nrow(data) / 2), rep(1, nrow(data) / 2)),
-    model = "4PLcgdg", parameterization = "classic", simplify = TRUE
+    model = "4PLcgdg", parameterization = "irt", simplify = TRUE
   )[, 1:4]
 
   glr <- function(x, a, b, c, d) {
@@ -655,7 +659,7 @@ regression_4pl_plot <- reactive({
         c = coef(fit)[3],
         d = coef(fit)[4]
       ),
-      size = 0.8,
+      linewidth = 0.8,
       color = "darkblue"
     ) +
     xlab("Standardized total score (Z-score)") +
@@ -663,7 +667,8 @@ regression_4pl_plot <- reactive({
     scale_y_continuous(limits = c(0, 1)) +
     theme_app() +
     theme(
-      legend.position = c(0.01, 0.98),
+      legend.position = "inside",
+      legend.position.inside = c(0.01, 0.98),
       legend.justification = c(0, 1)
     ) +
     ggtitle(item_names()[item])
@@ -675,7 +680,7 @@ output$regression_4pl_plot <- renderPlotly({
   p <- ggplotly(g)
 
   p$elementId <- NULL
-  p %>% plotly::config(displayModeBar = FALSE)
+  p |> plotly::config(displayModeBar = FALSE)
 })
 
 # ** Download plot of estimated nonlinear curve ####
@@ -770,7 +775,7 @@ output$regression_comparison_table <- DT::renderDataTable({
   start <- startNLR(data,
     group = c(rep(0, nrow(data) / 2), rep(1, nrow(data) / 2)),
     model = "4PLcgdg",
-    parameterization = "classic",
+    parameterization = "irt",
     simplify = TRUE
   )[, 1:4]
 
@@ -890,7 +895,7 @@ output$regression_comparison_table <- DT::renderDataTable({
       pageLength = 13,
       dom = "tr"
     )
-  ) %>%
+  ) |>
     formatStyle(0, target = "row", fontWeight = styleEqual(
       c("BEST AIC", "BEST BIC"), # "BEST LR"),
       c("bold", "bold") # , "bold")
@@ -986,7 +991,7 @@ output$regression_cumulative_plot_cumulative <- renderPlotly({
   }
 
   p$elementId <- NULL
-  hide_legend(p %>% plotly::config(displayModeBar = FALSE))
+  hide_legend(p |> plotly::config(displayModeBar = FALSE))
 })
 
 # ** Download plot with estimated curves of cumulative regression ####
@@ -1033,7 +1038,7 @@ output$regression_cumulative_plot_category <- renderPlotly({
   }
 
   p$elementId <- NULL
-  hide_legend(p %>% plotly::config(displayModeBar = FALSE))
+  hide_legend(p |> plotly::config(displayModeBar = FALSE))
 })
 
 # ** Download plot with estimated curves of cumulative regression ####
@@ -1237,7 +1242,7 @@ output$regression_adjacent_plot <- renderPlotly({
   }
 
   p$elementId <- NULL
-  hide_legend(p %>% plotly::config(displayModeBar = FALSE))
+  hide_legend(p |> plotly::config(displayModeBar = FALSE))
 })
 
 
@@ -1471,7 +1476,7 @@ output$regression_multinomial_plot <- renderPlotly({
   }
 
   p$elementId <- NULL
-  hide_legend(p %>% plotly::config(displayModeBar = FALSE))
+  hide_legend(p |> plotly::config(displayModeBar = FALSE))
 })
 
 # ** Download plot with estimated curves of multinomial regression ####

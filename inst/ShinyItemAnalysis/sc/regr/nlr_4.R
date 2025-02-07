@@ -16,7 +16,7 @@ fit <- nls(data[, 1] ~ fun(zscore, a, b, c, d),
   start = startNLR(
     data, GMAT[, "group"],
     model = "4PLcgdg",
-    parameterization = "classic"
+    parameterization = "irt"
   )[[1]][1:4],
   lower = c(-Inf, -Inf, 0, 0),
   upper = c(Inf, Inf, 1, 1)

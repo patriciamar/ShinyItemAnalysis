@@ -310,7 +310,7 @@ output$reliability_splithalf_histogram <- renderPlotly({
   }
 
   p$elementId <- NULL
-  p %>% plotly::config(displayModeBar = FALSE)
+  p |> plotly::config(displayModeBar = FALSE)
 })
 
 # ** DB for Split-halves histogram ######
@@ -368,10 +368,10 @@ output$reliability_cronbachalpha_table <- renderTable(
 # output$reliability_icc_table <- renderTable({
 #   # TODO: add select raters (items) input
 #   # ordinal()
-#   aibs_long() %>% # TODO general
-#     pivot_wider(ID, values_from = Score, names_from = RevCode) %>% # TODO general
-#     select(-ID) %>% # TODO general
-#     psych::ICC() %>%
+#   aibs_long() |> # TODO general
+#     pivot_wider(ID, values_from = Score, names_from = RevCode) |> # TODO general
+#     select(-ID) |> # TODO general
+#     psych::ICC() |>
 #     pluck("results")
 # })
 #
@@ -392,7 +392,7 @@ output$reliability_cronbachalpha_table <- renderTable(
 # })
 #
 # k_max <- reactive({
-#   aibs_long()$ScoreRankAdj %>% max(na.rm = TRUE) # TODO general
+#   aibs_long()$ScoreRankAdj |> max(na.rm = TRUE) # TODO general
 # })
 #
 # # transform percentage to Ks (check against Ks, not percents)
@@ -429,12 +429,12 @@ output$reliability_cronbachalpha_table <- renderTable(
 #
 # # ** Caterpillar plot input ######
 # reliability_restricted_caterpillarplot_input <- reactive({
-#   aibs_long() %>%
+#   aibs_long() |>
 #     mutate(hl = case_when(
 #       input$reliability_restricted_direction == "top" & ScoreRankAdj <= n_sel() ~ "sol",
 #       input$reliability_restricted_direction == "bottom" & ScoreRankAdj > (k_max() - n_sel()) ~ "sol",
 #       TRUE ~ "alp"
-#     ) %>% factor(levels = c("alp", "sol"))) %>%
+#     ) |> factor(levels = c("alp", "sol"))) |>
 #     ggplot(aes(x = ScoreRankAdj, y = Score, group = ID, alpha = hl)) +
 #     geom_line(col = "gray") +
 #     geom_point(aes(text = paste0(
@@ -454,8 +454,8 @@ output$reliability_cronbachalpha_table <- renderTable(
 #
 # # ** Plotly output for caterpillar plot ######
 # output$reliability_restricted_caterpillarplot <- renderPlotly({
-#   reliability_restricted_caterpillarplot_input() %>%
-#     ggplotly(tooltip = c("text")) %>%
+#   reliability_restricted_caterpillarplot_input() |>
+#     ggplotly(tooltip = c("text")) |>
 #     plotly::config(displayModeBar = FALSE)
 # })
 #
@@ -491,7 +491,7 @@ output$reliability_cronbachalpha_table <- renderTable(
 #     data <- aibs_long()
 #
 #     isolate({
-#       entries <- reliability_restricted_res$vals %>%
+#       entries <- reliability_restricted_res$vals |>
 #         names()
 #
 #       # propose a new entry
@@ -527,8 +527,8 @@ output$reliability_cronbachalpha_table <- renderTable(
 #
 # # ** ICC plot - current choice ######
 # reliability_restricted_iccplot_curr <- reactive({
-#   plt_data <- reliability_restricted_res$vals %>%
-#     bind_rows(.id = "name") %>%
+#   plt_data <- reliability_restricted_res$vals |>
+#     bind_rows(.id = "name") |>
 #     filter(str_detect(
 #       .data$name,
 #       paste0(
@@ -556,9 +556,9 @@ output$reliability_cronbachalpha_table <- renderTable(
 #     "_sel-", n_sel()
 #   )
 #
-#   reliability_restricted_iccplot_curr() %>%
-#     mutate(hl = if_else(name == curr_plt_name, "sol", "alp") %>%
-#       factor(levels = c("alp", "sol"))) %>%
+#   reliability_restricted_iccplot_curr() |>
+#     mutate(hl = if_else(name == curr_plt_name, "sol", "alp") |>
+#       factor(levels = c("alp", "sol"))) |>
 #     ggplot(aes(prop_sel, ICC1, ymin = ICC1_LCI, ymax = ICC1_UCI, alpha = hl)) + # TODO general
 #     geom_linerange() + # separate as plotly messes up otherwise
 #     geom_point(aes(text = paste0(
@@ -583,8 +583,8 @@ output$reliability_cronbachalpha_table <- renderTable(
 #
 # # ** Reliability plot render ######
 # output$reliability_restricted_iccplot <- renderPlotly({
-#   reliability_restricted_iccplot_input() %>%
-#     ggplotly(tooltip = "text") %>%
+#   reliability_restricted_iccplot_input() |>
+#     ggplotly(tooltip = "text") |>
 #     plotly::config(displayModeBar = FALSE)
 # })
 #
@@ -610,7 +610,7 @@ output$reliability_cronbachalpha_table <- renderTable(
 #     "range_restricted_reliability_data.csv"
 #   },
 #   content = function(file) {
-#     data <- reliability_restricted_iccplot_curr() %>% select(-name)
+#     data <- reliability_restricted_iccplot_curr() |> select(-name)
 #     write.csv(data, file, row.names = FALSE)
 #   }
 # )

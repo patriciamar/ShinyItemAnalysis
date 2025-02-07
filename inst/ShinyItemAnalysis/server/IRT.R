@@ -410,7 +410,7 @@ IRT_binary_summary_icc <- reactive({
   fit <- IRT_binary_model()
 
   # names from the model
-  mod_item_names <- fit@Data$data %>% colnames()
+  mod_item_names <- fit@Data$data |> colnames()
 
   d <- map2_dfr(
     mod_item_names,
@@ -423,7 +423,7 @@ IRT_binary_summary_icc <- reactive({
   )
   d$Item <- factor(d$Item, levels = item_names())
 
-  g <- d %>% ggplot(aes(x = Ability, y = Probability, color = Item)) +
+  g <- d |> ggplot(aes(x = Ability, y = Probability, color = Item)) +
     geom_line() +
     ylab("Probability of correct answer") +
     theme_app()
@@ -441,7 +441,7 @@ output$IRT_binary_summary_icc <- renderPlotly({
   }
 
   p$elementId <- NULL
-  p %>% plotly::config(displayModeBar = FALSE)
+  p |> plotly::config(displayModeBar = FALSE)
 })
 
 # ** Download plot of ICC ####
@@ -468,7 +468,7 @@ IRT_binary_summary_iic <- reactive({
   fit <- IRT_binary_model()
 
   # names from model
-  mod_item_names <- fit@Data$data %>% colnames()
+  mod_item_names <- fit@Data$data |> colnames()
 
   d <- map2_dfr(
     mod_item_names,
@@ -481,7 +481,7 @@ IRT_binary_summary_iic <- reactive({
   )
   d$Item <- factor(d$Item, levels = item_names())
 
-  g <- d %>% ggplot(aes(x = Ability, y = Information, color = Item)) +
+  g <- d |> ggplot(aes(x = Ability, y = Information, color = Item)) +
     geom_line() +
     theme_app()
   g
@@ -498,7 +498,7 @@ output$IRT_binary_summary_iic <- renderPlotly({
   }
 
   p$elementId <- NULL
-  p %>% plotly::config(displayModeBar = FALSE)
+  p |> plotly::config(displayModeBar = FALSE)
 })
 
 # *** Download plot of IIC ####
@@ -557,7 +557,7 @@ output$IRT_binary_summary_tic <- renderPlotly({
   p$x$data[[2]]$text <- gsub("<br />colour: se", "", p$x$data[[2]]$text)
 
   p$elementId <- NULL
-  p %>% plotly::config(displayModeBar = FALSE)
+  p |> plotly::config(displayModeBar = FALSE)
 })
 
 # *** Download plot of TIC ####
@@ -740,7 +740,7 @@ output$IRT_binary_summary_ability_plot <- renderPlotly({
   p$x$data[[1]]$text <- gsub("fscore", "F-score", p$x$data[[1]]$text)
 
   p$elementId <- NULL
-  p %>% plotly::config(displayModeBar = FALSE)
+  p |> plotly::config(displayModeBar = FALSE)
 })
 
 # *** Download factor scores plot ####
@@ -780,7 +780,7 @@ output$IRT_binary_summary_wrightmap <- renderPlotly({
   )
 
   # plotlify "facets", tweaking the presentation and tooltip of item-side "facet"
-  plt_left <- plts[[1]] %>%
+  plt_left <- plts[[1]] |>
     ggplotly()
   txt <- gsub("count", "Count", plt_left$x$data[[1]]$text)
   txt <- sapply(strsplit(txt, "<br />"), "[", 1)
@@ -793,13 +793,13 @@ output$IRT_binary_summary_wrightmap <- renderPlotly({
       "Item: ",
       stringr::str_remove(item, "(\\|\\s)?0*"),
       "\n", "Difficulty: ", round(IRT_binary_summary_wrightmap_args()[[2]], 3)
-    ))))) %>%
-    ggplotly(tooltip = "text") %>%
-    style(textposition = "right") %>%
+    ))))) |>
+    ggplotly(tooltip = "text") |>
+    style(textposition = "right") |>
     layout(yaxis = list(side = "right"))
 
   # merge into one output plotly plot
-  subplot(plt_left, plt_right, titleY = TRUE, margin = 0) %>%
+  subplot(plt_left, plt_right, titleY = TRUE, margin = 0) |>
     plotly::config(displayModeBar = FALSE)
 })
 
@@ -870,7 +870,7 @@ IRT_binary_items_icc <- reactive({
     )[, 2] # ascending probs
   )
 
-  g <- d %>% ggplot(aes(x = Ability, y = Probability)) +
+  g <- d |> ggplot(aes(x = Ability, y = Probability)) +
     geom_line(color = curve_col) +
     ylab("Probability of correct answer") +
     ggtitle(item_names()[item]) +
@@ -890,7 +890,7 @@ output$IRT_binary_items_icc <- renderPlotly({
   }
 
   p$elementId <- NULL
-  p %>% plotly::config(displayModeBar = FALSE)
+  p |> plotly::config(displayModeBar = FALSE)
 })
 
 # ** Download plot of ICC for selected item ####
@@ -926,7 +926,7 @@ IRT_binary_items_iic <- reactive({
     ) # ascending probs
   )
 
-  g <- d %>% ggplot(aes(x = Ability, y = Information)) +
+  g <- d |> ggplot(aes(x = Ability, y = Information)) +
     geom_line(color = curve_col) +
     ggtitle(item_names()[item]) +
     theme_app()
@@ -944,7 +944,7 @@ output$IRT_binary_items_iic <- renderPlotly({
   }
 
   p$elementId <- NULL
-  p %>% plotly::config(displayModeBar = FALSE)
+  p |> plotly::config(displayModeBar = FALSE)
 })
 
 # ** Download plot of IIC for selected item ####

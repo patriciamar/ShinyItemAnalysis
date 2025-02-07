@@ -2,9 +2,33 @@
 
 ## Changes and developments in the ShinyItemAnalysis package
 
-### Changes in version 1.5.3 (2024-12-23)
+### Changes in version 1.5.4 (2025-02-07)
 
 **_THIS IS A CRAN VERSION_**
+
+#### MAJOR UPDATES
+  * R >= 4.1.0 is now required.
+  * Modules installation is now provided in the application itself in the
+    `Modules` section. This feature is only enabled when the application is
+    run locally.
+
+#### MINOR UPDATES
+  * ShinyItemAnalysis does no longer reexport `%>%` operator from `magrittr`
+    package. The native pipe operator `|>` in used instead, internally.
+  * The confidence level for Cronbach's alpha in the `Reliability` section
+    is now stated.
+  * If the interactive application is run locally, the visitors counter is no
+    longer displayed.
+  * Wording in PDF/HTML reports was edited.
+    
+#### BUG FIXES
+  * Correlation test in `Item analysis / Item criterion validity` is now
+    properly formatted.
+  * Criterion type recognition in `Item analysis / Item criterion validity` is
+    now fixed (criterion with less than 7 unique levels is considered as
+    discrete variable).
+
+### Changes in version 1.5.3 (2024-12-23)
 
 #### MINOR UPDATES
   * New methods are offered in  `Generalized logistic regression` in the `DIF/Fairness` section of the app. {difNLR} 
@@ -24,7 +48,7 @@
 **_THIS IS A CRAN VERSION_**
 
 #### MAJOR UPDATES
-  * `run_app()` function discovers for add-on modules available in SIA repository which are not installed yet,
+  * `run_app()` function discovers for add-on modules available on SIA repository which are not installed yet,
      and offers their installation.
   
 #### MINOR UPDATES

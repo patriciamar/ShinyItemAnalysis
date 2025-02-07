@@ -38,7 +38,11 @@ ggplot(probs_long, aes(x = thetas, y = value, col = Response)) +
   labs(x = "Ability", y = "Category probability") +
   coord_cartesian(xlim = range(thetas), ylim = c(0, 1), expand = FALSE) +
   theme_minimal() +
-  theme(legend.position = c(1, .5), legend.justification = c(1, .5))
+  theme(
+    legend.position = "inside",
+    legend.position.inside = c(1, .5),
+    legend.justification = c(1, .5)
+    )
 
 # calculate expected item score
 item_score <- data.frame(score = as.matrix(probs) %*% 0:5, thetas)

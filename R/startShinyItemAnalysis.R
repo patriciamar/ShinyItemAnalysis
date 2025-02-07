@@ -137,11 +137,11 @@ mod_offer_env <- new.env(parent = emptyenv())
 
 
 
-#' @importFrom rlang is_interactive inform
-#' @importFrom utils available.packages install.packages installed.packages menu
+#' @importFrom rlang is_interactive
+#' @importFrom utils install.packages menu
 #'
 offer_modules <- function(...) {
-  if (!is_interactive() || sm_disabled()) {
+  if (!is_interactive() | sm_disabled() | !sm_offer()) {
     return()
   }
 
@@ -154,30 +154,19 @@ offer_modules <- function(...) {
     mod_offer_env[["offered"]] <- TRUE
   }
 
-  installation_repos <- c(
-    SIA = sm_repo(),
-    getOption("repos")
-  )
-
-  pkgs_on_repo <- available.packages(
-    repos = sm_repo(),
-    fields = "Config/ShinyItemAnalysis/module"
-  )
-
-  is_sm <- !is.na(pkgs_on_repo[, "Config/ShinyItemAnalysis/module"])
-
-  mods_on_repo <- pkgs_on_repo[is_sm, "Package"]
-
-  # drop already installed
-  mods_to_offer <- mods_on_repo[!mods_on_repo %in% installed.packages()[, "Package"]]
+  mods_to_offer <- sm_not_installed()
 
   if (length(mods_to_offer) == 0L) {
     return()
   }
 
-  inform(
-    c("i" = "Additional SIA Modules are available! Do you want to install any of these?"),
-    footer = "\033[90mThis offer is displayed once per session.\033[39m"
+  cat(
+    c(
+      "Additional SIA modules are available on the official SIA repository within the following packages.",
+      "Would you like to install any of them?",
+      "\033[90mThis message is displayed once per session. See `?ShinyItemAnalysis_options` for more control.\033[39m"
+    ),
+    sep = "\n"
   )
 
   resp <- menu(
@@ -189,10 +178,62 @@ offer_modules <- function(...) {
   )
 
   if (resp == 1L) {
-    install.packages(mods_to_offer, repos = installation_repos, ...)
+    install.packages(mods_to_offer, repos = sm_installation_repos(), ...)
   } else if (resp > 2L) {
-    install.packages(mods_to_offer[resp - 2L], repos = installation_repos, ...)
+    install.packages(mods_to_offer[resp - 2L], repos = sm_installation_repos(), ...)
   }
 
   # TODO: check version of the installed package and offer to update, see {remotes}
+  # but R itself doesn't carry any checks, that's up to the user - maybe stick with this practice
+  # for now, or offer some check_sia_modules() function
+
+  # we could use old.packages(repos = ShinyItemAnalysis:::sm_repo()) to check
+  # but then we need to check if the pkg is in use
+}
+
+
+#' @importFrom utils available.packages installed.packages
+#'
+sm_not_installed <- function() {
+  # TODO: all modules are now installable from source on all platforms, because
+  # no module needs compilation. After this changes, we need at least check for the field
+  # "NeedsCompilation" and warn the user that a toolchain such as rtools on Windows is needed
+  # (or better, build the binaries for SIA repo...).
+
+  # if offline, this returns empty matrix and the rest operates OK
+  pkgs_on_repo <- available.packages(
+    repos = sm_repo(),
+    fields = "Config/ShinyItemAnalysis/module"
+  )
+
+  is_sm <- !is.na(pkgs_on_repo[, "Config/ShinyItemAnalysis/module"])
+
+  mods_on_repo <- pkgs_on_repo[is_sm, "Package"]
+
+  # drop already installed
+  mods_on_repo[!mods_on_repo %in% installed.packages()[, "Package"]]
+
+}
+
+
+pkgs_attached <- function() {
+  # this strategy is used in install.packages(), but maybe it is safer to
+  # check the NS as well with loadedNamespaces()
+  search_path <- search()
+  sub("^package:", "", search_path[grep("^package:", search_path)])
+}
+
+
+#' @importFrom utils install.packages
+#' @importFrom rlang inform try_fetch
+#'
+sm_install_pkg <- function(pkg, ...) {
+  # the only situation that asks for user input is when the newer
+  # version of the package is available only as source, not binary
+  # so this effectively prohibits any asking in the console
+  # (so we can use that in Shiny)
+  orig_opt <- options(install.packages.compile.from.source = "never")
+  on.exit(options(orig_opt))
+
+  install.packages(pkg, repos = sm_installation_repos(), ...)
 }

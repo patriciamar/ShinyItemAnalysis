@@ -92,18 +92,18 @@ make_starting_vals <- function(Data, orig_levels) {
   )
 
   # bind group and item pars, set col order, append parnums
-  pars <- item_pars %>%
+  pars <- item_pars |>
     mutate(
       class = "nominal",
       group = "all", lbound = -Inf, ubound = Inf, const = "none",
       nconst = "none", prior.type = "none", prior_1 = NaN, prior_2 = NaN
-    ) %>%
-    add_row(group_pars) %>%
-    mutate(parnum = row_number()) %>%
+    ) |>
+    add_row(group_pars) |>
+    mutate(parnum = row_number()) |>
     relocate(
       "group", "item", "class", "name", "parnum", "value", "lbound", "ubound",
       "est", "const", "nconst", "prior.type", "prior_1", "prior_2"
-    ) %>%
+    ) |>
     as.data.frame()
 
   class(pars) <- c("mirt_df", class(pars))
@@ -229,7 +229,7 @@ nominal_to_int <- function(Data, key) {
 obtain_nrm_def <- function(data_with_key, ...) {
   sv <- mirt(data_with_key$Data, 1, "nominal", pars = "values", ...)
 
-  sv_new <- data_with_key$orig_levels %>% map(~ {
+  sv_new <- data_with_key$orig_levels |> map(~ {
     # get the original key, side-assign as est
     est <- key <- attr(.x, "key")
     k <- length(key)
@@ -256,12 +256,12 @@ obtain_nrm_def <- function(data_with_key, ...) {
   })
 
   # set est and values to our new constrains
-  sv$est[grepl("ak", sv$name)] <- sv_new %>%
-    map(attr, "est") %>%
+  sv$est[grepl("ak", sv$name)] <- sv_new |>
+    map(attr, "est") |>
     unlist(use.names = FALSE)
 
-  sv$value[grepl("ak", sv$name)] <- sv_new %>%
-    map(attr, "value") %>%
+  sv$value[grepl("ak", sv$name)] <- sv_new |>
+    map(attr, "value") |>
     unlist(use.names = FALSE)
 
   sv

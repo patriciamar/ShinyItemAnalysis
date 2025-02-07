@@ -81,8 +81,8 @@ ICCrestricted <- function(Data, case, var, rank = NULL,
   if (is.null(Data[[case]])) stop("Case variable '", case, "' not present in Data.", call. = FALSE)
   if (is.null(Data[[var]])) stop("Dependent variable '", var, "' not present in Data.", call. = FALSE)
 
-  sel_max <- Data[[case]] %>%
-    unique() %>%
+  sel_max <- Data[[case]] |>
+    unique() |>
     length()
 
   if (sel <= 1) {
@@ -99,13 +99,13 @@ ICCrestricted <- function(Data, case, var, rank = NULL,
 
   if (sel != sel_max) {
     if (is.null(rank)) {
-      Data <- Data %>%
-        group_by(.data[[case]]) %>%
-        mutate(.ms = mean(.data[[var]], na.rm = TRUE)) %>%
-        arrange(.data[[".ms"]]) %>%
-        nest() %>%
-        rowid_to_column(".rank") %>%
-        unnest(cols = .data$data) %>%
+      Data <- Data |>
+        group_by(.data[[case]]) |>
+        mutate(.ms = mean(.data[[var]], na.rm = TRUE)) |>
+        arrange(.data[[".ms"]]) |>
+        nest() |>
+        rowid_to_column(".rank") |>
+        unnest(cols = .data$data) |>
         ungroup()
 
       rank <- ".rank"

@@ -1,7 +1,6 @@
 # discover installed modules ----------------------------------------------
 
 if (!ShinyItemAnalysis:::sm_disabled()) {
-
   # keep track of loaded and appended mods in particular session
   # (so every user gets modules tabs appended in his/her instance)
   # we manipulate this object with add_modules()
@@ -18,8 +17,8 @@ if (!ShinyItemAnalysis:::sm_disabled()) {
   # maybe in the future we should make a curated list beside these raw reactives
 
   # find every single reactive in shiny's server environment and return it as a list
-  mod_server_exports <- rlang::current_env() %>%
-    as.list() %>%
+  mod_server_exports <- rlang::current_env() |>
+    as.list() |>
     purrr::keep(inherits, c("reactive", "reactiveVal", "reactivevalues"))
   # note that input object inherits "reactivevalues" so it is readily available for
   # the modules as imports$input
@@ -35,34 +34,113 @@ if (!ShinyItemAnalysis:::sm_disabled()) {
       server_dots = mod_server_exports,
       ui_dots = list() # no use for now, maybe completely useless?
     )
-  }) %>%
+  }) |>
     bindEvent(mod_list, input$rediscover_mods)
+
+
+  if (sm_allow_gui_installation()) {
+  # obtain available module packages from SIA repo
+  # available.packages are cached per R session
+  observe({
+    available <- ShinyItemAnalysis:::sm_not_installed()
+
+    if (length(available) == 0) {
+      available <- c("All available modules were installed" = "")
+    }
+    updateSelectizeInput(
+      inputId = "mods_in_repo",
+      choices = available
+    )
+  })
+
+  observe({
+    sel_mod <- input$mods_in_repo
+    req(sel_mod)
+
+    # validate input to be safe
+    pkgs_on_repo <- available.packages(
+      repos = ShinyItemAnalysis:::sm_repo(),
+      fields = "Config/ShinyItemAnalysis/module"
+    )
+
+    is_sm <- !is.na(pkgs_on_repo[, "Config/ShinyItemAnalysis/module"])
+
+    mods_on_repo <- pkgs_on_repo[is_sm, "Package"]
+
+    if (!(sel_mod %in% mods_on_repo)) {
+      showModal(
+        modalDialog(
+          title = "Module installation failed",
+          p(
+            "The module '", span(sel_mod, .noWS = c("before", "after")),
+            "' is not available on the repository at '", span(sm_repo(), .noWS = c("before", "after")),
+            "'. Please report the issue to the authors."
+          ),
+          easyClose = TRUE,
+          size = "m"
+        )
+      )
+      return()
+    }
+
+    # if (sel_mod %in% ShinyItemAnalysis:::pkgs_attached()) {
+    #   showModal(
+    #     modalDialog(
+    #       title = "Selected SIA module is in use",
+    #       "Please close the app and restart your R session.",
+    #       easyClose = TRUE,
+    #       size = "s"
+    #     )
+    #   )
+    # }
+
+    install_cond_handler <- function(cnd) {
+      showModal(
+        modalDialog(
+          title = "Module installation failed",
+          p(
+            "The module installation failed with the following message.",
+            "Please install the module manually in R console and report the error to the authors."
+          ),
+          p(cnd$message, style = "color:red;"),
+          easyClose = TRUE,
+          size = "m"
+        )
+      )
+    }
+
+    rlang::try_fetch(
+      {
+        ShinyItemAnalysis:::sm_install_pkg(sel_mod)
+      },
+      warning = install_cond_handler,
+      error = install_cond_handler
+    )
+
+    add_modules(
+      mod_list,
+      server_dots = mod_server_exports,
+      ui_dots = list() # no use for now, maybe completely useless?
+    )
+
+    available <- ShinyItemAnalysis:::sm_not_installed()
+
+    if (length(available) == 0L) {
+      available <- c("All available modules were installed" = "")
+    }
+    updateSelectizeInput(
+      inputId = "mods_in_repo",
+      choices = available
+    )
+  }) |>
+    bindEvent(input$install_mod)
+  }
 }
 
 
 # functions ---------------------------------------------------------------
 
 
-#' Find SIA Modules in a Library
-#'
-#' Discover packages that declares themselves as a SIA addin module with
-#' `SIAmodule: true` entry in their `DESCRIPTION`. By default, the function
-#' looks for all known library trees (see [.libPaths()]). If the function do not
-#' discover anything (and it should), please refer to the `Note` below.
-#'
-#' @param desc_field *character*, name of the field to look for. Defaults to
-#'   "`Config/ShinyItemAnalysis/module`".
-#' @param field_value *character*, value to detect. Defaults to "`true`".
-#' @inheritDotParams utils::installed.packages -fields
-#'
-#' @return *character vector* with package names.
-#'
-#' @note When `{ShinyItemAnalysis}` was installed inside `{renv}` project, provide
-#'   `lib.loc = renv::paths$library()` as an argument.
-#'
-#' @seealso [installed.packages()]
-#' @keywords internal
-#'
 find_modules <- function(...,
                          desc_field = "Config/ShinyItemAnalysis/module",
                          field_value = "true") {
@@ -73,24 +151,23 @@ find_modules <- function(...,
     message("Looking for installed packages claiming they contain SIAmodule(s)...")
   }
 
- mod_pkgs <- names(
+  mod_pkgs <- names(
     which(
       utils::installed.packages(fields = desc_field, ...)[, desc_field] == field_value
     )
   )
 
- # read list of modules we want to ignore
- modignore_path <- file.path(getwd(), ".modignore")
+  # read list of modules we want to ignore
+  modignore_path <- file.path(getwd(), ".modignore")
 
- to_ignore <- character()
+  to_ignore <- character()
 
- if (file.exists(modignore_path)) {
-   to_ignore <- readLines(modignore_path)
- }
+  if (file.exists(modignore_path)) {
+    to_ignore <- readLines(modignore_path)
+  }
 
- # return only those not on blacklist
- setdiff(mod_pkgs, to_ignore)
-
+  # return only those not on blacklist
+  setdiff(mod_pkgs, to_ignore)
 }
 
 # library call usually raises an R CMD Check warning if the package is given as a symbol,
@@ -105,15 +182,7 @@ load_and_attach <- function(pkg) {
 }
 
 #' Load and append modules
-#'
-#' @param mod_list  mutable reactiveValues?
-#' @param server_dots  todo
-#' @param ui_dots  todo
-#'
-#' @return called for side effects
-#'
 #' @importFrom purrr walk
-#' @keywords internal
 #'
 add_modules <- function(mod_list, server_dots = NULL, ui_dots = NULL) {
   # list and store all available modules in a permanent environment
@@ -130,7 +199,7 @@ add_modules <- function(mod_list, server_dots = NULL, ui_dots = NULL) {
   }
 
   # load modules to be loaded
-  mod_list$to_load %>%
+  mod_list$to_load |>
     walk(
       load_and_append_mod,
       server_dots = server_dots, ui_dots = ui_dots
@@ -147,18 +216,12 @@ add_modules <- function(mod_list, server_dots = NULL, ui_dots = NULL) {
 
 #' Load and append module in Shiny app
 #'
-#' @param mod todo
-#' @param server_dots todo
-#' @param ui_dots todo
-#'
-#' @return todo
-#' @keywords internal
 load_and_append_mod <- function(mod_pkg, server_dots = NULL, ui_dots = NULL) {
   # library() the pkg
   ns <- load_and_attach(mod_pkg)
 
   # read YAML with module(s) info, function bindings etc.
-  mod_yaml <- system.file("sia/modules.yml", package = mod_pkg) %>%
+  mod_yaml <- system.file("sia/modules.yml", package = mod_pkg) |>
     yaml::read_yaml()
 
   apply_mods <- function(mod_desc, mod_name) {
@@ -222,7 +285,7 @@ load_and_append_mod <- function(mod_pkg, server_dots = NULL, ui_dots = NULL) {
 
   # call each module's function and append their tab
   # enclose in try() so to handle corrupted YAML and other exceptions
-  mod_yaml %>% iwalk(~ try(apply_mods(.x, .y)))
+  mod_yaml |> iwalk(~ try(apply_mods(.x, .y)))
 }
 
 # available categories for modules must match those of SIAtools::list_categories()
@@ -234,51 +297,40 @@ load_and_append_mod <- function(mod_pkg, server_dots = NULL, ui_dots = NULL) {
 
 #' Check if to print module debugging messages
 #'
-#' @param default todo
-#'
-#' @return todo
-#' @keywords internal
 are_modules_debugged <- function() {
   as.logical(Sys.getenv("SIA_MODULES_DEBUG", unset = "FALSE"))
 }
 
 #' Issue a module debugging message
 #'
-#' @param operation todo
-#' @param mods todo
-#' @param menuName todo
-#'
-#' @return todo
-#' @keywords internal
-#'
 mod_debug_msg <- function(operation, mods, menuName = NULL) {
   if (!are_modules_debugged()) {
     return(invisible())
   }
   switch(operation,
-         available = message("Available: ", paste(mods, collapse = ", ")),
-         to_load = {
-           if (length(mods) != 0) {
-             message("To load: ", paste(mods, collapse = ", "))
-           } else {
-             message("All available modules are already loaded, exiting...")
-           }
-         },
-         loaded = message("Successfully loaded: ", paste(mods, collapse = ", ")),
-         call_server = message("Calling ", mods, "'s server function..."),
-         call_ui =
-           message(
-             "Calling ", mods, "'s UI function and appending its tab to ",
-             menuName, "..."
-           ),
-         load = {
-           if (!isNamespaceLoaded(mods)) {
-             message("Loading ", mods, "'s namespace")
-           } else {
-             message("Using ", mods, "'s already loaded namespace")
-           }
-         },
-         attach = message("Attaching ", mods, "'s namespace to search() path"),
-         insert_delimiter = message("Inserting delimiter to ", mods, " tab.")
+    available = message("Available: ", paste(mods, collapse = ", ")),
+    to_load = {
+      if (length(mods) != 0) {
+        message("To load: ", paste(mods, collapse = ", "))
+      } else {
+        message("All available modules are already loaded, exiting...")
+      }
+    },
+    loaded = message("Successfully loaded: ", paste(mods, collapse = ", ")),
+    call_server = message("Calling ", mods, "'s server function..."),
+    call_ui =
+      message(
+        "Calling ", mods, "'s UI function and appending its tab to ",
+        menuName, "..."
+      ),
+    load = {
+      if (!isNamespaceLoaded(mods)) {
+        message("Loading ", mods, "'s namespace")
+      } else {
+        message("Using ", mods, "'s already loaded namespace")
+      }
+    },
+    attach = message("Attaching ", mods, "'s namespace to search() path"),
+    insert_delimiter = message("Inserting delimiter to ", mods, " tab.")
   )
 }

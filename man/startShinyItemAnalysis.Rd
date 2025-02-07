@@ -113,7 +113,7 @@ background process (in the 'RStudio')?}
     install of more than one source package.  Values greater than one
     are supported if the \command{make} command specified by
     \code{Sys.getenv("MAKE", "make")} accepts argument
-    \code{-k -j \var{Ncpus}}.
+    \option{-k -j <Ncpus>}.
   }
     \item{\code{verbose}}{
     a logical indicating if some \dQuote{progress report} should be given.
@@ -134,7 +134,8 @@ background process (in the 'RStudio')?}
     \item{\code{keep_outputs}}{
     a logical: if true, keep the outputs from installing source packages
     in the current working directory, with the names of the output files
-    the package names with \file{.out} appended.  Alternatively, a
+    the package names with \file{.out} appended (overwriting existing
+    files, possibly from previous installation attempts).  Alternatively, a
     character string giving the directory in which to save the outputs.
     Ignored when installing from local files.
   }

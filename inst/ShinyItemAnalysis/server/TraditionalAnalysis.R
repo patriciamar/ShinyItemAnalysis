@@ -102,7 +102,7 @@ report_itemanalysis_DDplot <- reactive({
 
 # ** Output for DD plot with plotly ######
 output$itemanalysis_DDplot <- renderPlotly({
-  p <- itemanalysis_DDplot() %>%
+  p <- itemanalysis_DDplot() |>
     ggplotly(tooltip = c("item", "fill", "value", "yintercept"))
 
   # renaming/removing unnecessary text
@@ -127,7 +127,7 @@ output$itemanalysis_DDplot <- renderPlotly({
     }
   }
 
-  p %>% plotly::config(displayModeBar = FALSE)
+  p |> plotly::config(displayModeBar = FALSE)
 })
 
 # ** DB Difficulty/Discrimination plot ######
@@ -257,7 +257,7 @@ itemanalysis_table <- reactive({
       k = k, l = l, u = u # if standard ULI (see above), NAs are returned
     )
 
-  tab <- tab %>%
+  tab <- tab |>
     select(
       "Diff." = Difficulty,
       "Avg. score" = Mean,
@@ -276,7 +276,7 @@ itemanalysis_table <- reactive({
       "\\(\\alpha\\)-drop" = Alpha.drop,
       "Missed [%]" = Perc.miss,
       "Not-reached [%]" = Perc.nr
-    ) %>%
+    ) |>
     ShinyItemAnalysis:::remove_empty_cols()
 
   row.names(tab) <- item_names()
@@ -443,7 +443,7 @@ output$distractor_plot <- renderPlotly({
   }
 
   p$elementId <- NULL
-  p %>% plotly::config(displayModeBar = FALSE)
+  p |> plotly::config(displayModeBar = FALSE)
 })
 
 # ** DB distractors plot ######
@@ -472,10 +472,13 @@ distractor_table_counts <- reactive({
 
   DA <- DistractorAnalysis(Data = a, key = k, item = item, num.groups = num.group, criterion = sc)[[1]]
   # df <- dcast(as.data.frame(DA), response ~ score.level, sum, margins = T, value.var = "Freq")
-  df <- DA %>%
-    addmargins() %>%
-    as.data.frame.matrix() %>%
-    add_column(.before = 1, Response = as.factor(rownames(.)))
+
+  df <- DA |>
+    addmargins() |>
+    as.data.frame.matrix()
+
+  df_rownames <- rownames(df)
+  df <- df |> add_column(.before = 1, Response = as.factor(df_rownames))
   colnames(df) <- c("Response", paste("Group", 1:ifelse(num.group > (ncol(df) - 2), ncol(df) - 2, num.group)), "Total")
   levels(df$Response)[nrow(df)] <- "Total"
   rownames(df) <- NULL
@@ -500,9 +503,10 @@ distractor_table_proportions <- reactive({
 
   DA <- DistractorAnalysis(Data = a, key = k, item = item, num.groups = num.group, p.table = TRUE, criterion = sc)[[1]]
   # df <- dcast(as.data.frame(DA), response ~ score.level, sum, value.var = "Freq")
-  df <- DA %>%
-    as.data.frame.matrix() %>%
-    add_column(.before = 1, Response = as.factor(rownames(.)))
+
+  df <- DA |> as.data.frame.matrix()
+  df_rownames <- rownames(df)
+  df <- df |> add_column(.before = 1, Response = as.factor(df_rownames))
   colnames(df) <- c("Response", paste("Group", 1:ifelse(num.group > (ncol(df) - 1), ncol(df) - 1, num.group)))
   rownames(df) <- NULL
   df
@@ -523,9 +527,10 @@ distractor_barplot_item_response_patterns <- reactive({
 
   DA <- DistractorAnalysis(Data = a, key = k, item = item, num.groups = num.group, p.table = TRUE, criterion = sc)[[1]]
   # df <- dcast(as.data.frame(DA), response ~ score.level, sum, value.var = "Freq")
-  df <- DA %>%
-    as.data.frame.matrix() %>%
-    add_column(.before = 1, Response = as.factor(rownames(.)))
+
+  df <- DA |> as.data.frame.matrix()
+  df_rownames <- rownames(df)
+  df <- df |> add_column(.before = 1, Response = as.factor(df_rownames))
   colnames(df) <- c("Response", "Proportion")
   rownames(df) <- NULL
 
@@ -551,7 +556,7 @@ output$distractor_barplot_item_response_patterns <- renderPlotly({
   }
 
   p$elementId <- NULL
-  p %>% plotly::config(displayModeBar = FALSE)
+  p |> plotly::config(displayModeBar = FALSE)
 })
 
 # ** DB item response patterns barplot ######
@@ -619,7 +624,7 @@ output$distractor_histogram <- renderPlotly({
   }
 
   p$elementId <- NULL
-  p %>% plotly::config(displayModeBar = FALSE)
+  p |> plotly::config(displayModeBar = FALSE)
 })
 
 # ** DB distractors histograms by group ######

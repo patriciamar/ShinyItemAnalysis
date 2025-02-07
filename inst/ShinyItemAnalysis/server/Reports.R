@@ -110,7 +110,7 @@ report_IRT_binary_icc <- reactive({
   if (is.null(fit)) {
     g <- ""
   } else {
-    mod_item_names <- fit@Data$data %>% colnames()
+    mod_item_names <- fit@Data$data |> colnames()
 
     d <- map2_dfr(
       mod_item_names,
@@ -123,7 +123,7 @@ report_IRT_binary_icc <- reactive({
     )
     d$Item <- factor(d$Item, levels = item_names())
 
-    g <- d %>% ggplot(aes(x = Ability, y = Probability, color = Item)) +
+    g <- d |> ggplot(aes(x = Ability, y = Probability, color = Item)) +
       geom_line() +
       ylab("Probability of correct answer") +
       theme_app()
@@ -138,7 +138,7 @@ report_IRT_binary_iic <- reactive({
   if (is.null(fit)) {
     g <- ""
   } else {
-    mod_item_names <- fit@Data$data %>% colnames()
+    mod_item_names <- fit@Data$data |> colnames()
 
     d <- map2_dfr(
       mod_item_names,
@@ -151,7 +151,7 @@ report_IRT_binary_iic <- reactive({
     )
     d$Item <- factor(d$Item, levels = item_names())
 
-    g <- d %>% ggplot(aes(x = Ability, y = Information, color = Item)) +
+    g <- d |> ggplot(aes(x = Ability, y = Information, color = Item)) +
       geom_line() +
       theme_app()
   }
@@ -264,11 +264,12 @@ report_IRT_binary_ability_plot <- reactive({
       theme(
         legend.box.just = "left",
         legend.justification = c(1, 0),
-        legend.position = c(1, 0),
+        legend.position = "inside",
+        legend.position.inside = c(1, 0),
         legend.box = "vertical",
         legend.key.size = unit(1, "lines"),
-        legend.text.align = 0,
-        legend.title.align = 0
+        legend.text = element_text(hjust = 0),
+        legend.title = element_text(hjust = 0)
       )
   }
   g

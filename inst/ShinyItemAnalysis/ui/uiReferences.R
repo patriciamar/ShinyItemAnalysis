@@ -96,13 +96,6 @@ uiReferences <-
                 <a href = "http://www.jstatsoft.org/v17/i05/", target = "_blank">See online.</a>
                 </li>
 
-                <li><code>magrittr</code>
-                Bache, S. M., & Wickham, H. (2020).
-                magrittr: A forward-pipe operator for R.
-                R package version 2.0.1.
-                <a href = " https://CRAN.R-project.org/package=magrittr", target = "_blank">See online.</a>
-                </li>
-
                 <li><code>mirt</code>
                 Chalmers, R., & Chalmers, P. (2012).
                 mirt: A multidimensional item response theory package for the R environment.
@@ -183,13 +176,6 @@ uiReferences <-
                 shinyBS: Twitter bootstrap components for shiny.
                 R package version 0.61.
                 <a href = "https://CRAN.R-project.org/package=shinyBS", target = "_blank">See online.</a>
-                </li>
-
-                <li><code>shinydashboard</code>
-                Chang, W., & Borges Ribeiro, B. (2018).
-                shinydashboard: Create dashboards with "shiny".
-                R package version 0.7.1
-                <a href = "https://CRAN.R-project.org/package=shinydashboard", target = "_blank">See online.</a>
                 </li>
 
                 <li><code>ShinyItemAnalysis</code>
@@ -350,9 +336,9 @@ uiReferences <-
                 target = "_blank">See online.</a>
                 </li>
 
-                <li>Hladka, A., Martinkova, P., & Brabec, M. (2024).
+                <li>Hladka, A., Martinkova, P., & Brabec, M. (2025).
                 New iterative algorithms for estimation of item functioning.
-                <i>Journal of Educational and Behavioral Statistics,</i> Accepted.
+                <i>Journal of Educational and Behavioral Statistics,</i> In print.
                 <a href = "https://doi.org/10.48550/arXiv.2302.12648",
                 target = "_blank">See online.</a>
                 </li>
@@ -442,7 +428,7 @@ uiReferences <-
 
                 <li>Martinkova, P., & Hladka, A. (2023).
                 <i>Computational Aspects of Psychometric Methods: With R.</i> (1st ed.). Chapman and Hall/CRC.
-                <a href = "https://www.taylorfrancis.com/books/mono/10.1201/9781003054313",
+                <a href = "https://doi.org/10.1201/9781003054313",
                 target = "_blank">See online</a>
                 </li>
 

@@ -16,7 +16,7 @@ this to \code{TRUE}.
 \item \code{sia.modules_repo}: This is the URL for a CRAN-like repository that the app
 uses to retrieve information about available module packages.
 \item \code{sia.offer_modules}: If set to \code{TRUE} (the default), calling \code{run_app()}
-will check for the available SIA modules at the official repository and offer
+will check for the available SIA modules on the official repository and offer
 to install those module packages that are not installed yet.
 }
 }
@@ -27,6 +27,10 @@ file. For more details, please navigate to \link[=Startup]{the R documentation}.
 \itemize{
 \item \code{SIA_MODULES_DEBUG}: Setting this to \code{TRUE} provides a verbose description
 of SIA modules-related processes. Useful only for debugging purposes.
+\item \code{SIA_MODULES_FORCE_GUI_INSTALLATION}: When the app is running on
+shiny-server, interactive module installation within the app is not allowed
+by default. Setting this variable to \code{TRUE} will override this restriction
+and enable module installation in the app.
 }
 }
 

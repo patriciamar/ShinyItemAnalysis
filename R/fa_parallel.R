@@ -290,9 +290,9 @@ fa_parallel <- function(Data, cor = "pearson", n_obs = NULL,
 #'
 #' @examples
 #' \dontrun{
-#' fa_parallel_result <- BFI2[, 1:60] %>% fa_parallel(plot = FALSE) # without plot
-#' fa_parallel_result %>% plot() # generate plot from "fitted" object
-#' fa_parallel_result %>% plot(show_kaiser = FALSE) # hide Kaiser boundaries
+#' fa_parallel_result <- BFI2[, 1:60] |> fa_parallel(plot = FALSE) # without plot
+#' fa_parallel_result |> plot() # generate plot from "fitted" object
+#' fa_parallel_result |> plot(show_kaiser = FALSE) # hide Kaiser boundaries
 #' }
 #'
 #' @importFrom ggplot2 ggplot aes geom_line geom_point geom_hline annotate
@@ -333,7 +333,7 @@ plot.sia_parallel <- function(x, y, ...) {
     }
   }
 
-  x %>%
+  x |>
     ggplot(aes(.data$fact_or_comp, .data$eigenvalue,
       col = .data$method, alpha = .data$data_type
     )) +

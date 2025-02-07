@@ -1,8 +1,8 @@
 Type: Package
 Package: ShinyItemAnalysis
 Title: Test and Item Analysis via Shiny
-Version: 1.5.3
-Date: 2024-12-23
+Version: 1.5.4
+Date: 2025-02-07
 Authors@R: c(
     person("Patricia", "Martinkova", , "martinkova@cs.cas.cz", role = c("aut", "cre")),
     person("Adela", "Hladka", role = "aut"),
@@ -21,13 +21,12 @@ License: GPL-3
 URL: https://www.ShinyItemAnalysis.org
 BugReports: https://github.com/patriciamar/ShinyItemAnalysis/issues
 Depends:
-    R (>= 3.5.0)
+    R (>= 4.1.0)
 Imports:
     difR (>= 5.0),
     dplyr,
-    ggplot2 (>= 3.4.0),
+    ggplot2 (>= 3.5.0),
     lme4,
-    magrittr,
     methods,
     mirt (>= 1.43),
     nnet,
@@ -51,15 +50,14 @@ Suggests:
     rmarkdown,
     shiny (>= 1.6.0),
     shinyBS,
-    shinydashboard,
     shinyjs,
     stringr,
     testthat (>= 3.0.0),
     VGAM,
     xtable,
     yaml
+Config/testthat/edition: 3
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.3.2
 Roxygen: list(markdown = TRUE)
-Config/testthat/edition: 3
+RoxygenNote: 7.3.2

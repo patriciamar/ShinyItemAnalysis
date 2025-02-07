@@ -243,11 +243,11 @@ if (params$isCriterionPresent & params$validity_check) {
 
   inp <- params$validity_table
 
-  validity_table_results <- inp$txt %>%
-    as.character() %>%
-    str_replace_all("<br>", "\\\\textbf{") %>%
-    str_replace_all("</br>", "}") %>%
-    str_replace_all("<em>", "\\\\textit{") %>%
+  validity_table_results <- inp$txt |>
+    as.character() |>
+    str_replace_all("<br>", "\\\\textbf{") |>
+    str_replace_all("</br>", "}") |>
+    str_replace_all("<em>", "\\\\textit{") |>
     str_replace_all("</em>", "}")
 
   pval <- inp$pval
@@ -276,7 +276,8 @@ if (params$isCriterionPresent & params$validity_check) {
       text = element_text(size = 16),
       legend.box.just = "top",
       legend.justification = c("left", "top"),
-      legend.position = c(0, 1),
+      legend.position = "inside",
+      legend.position.inside = c(0, 1),
       legend.box = "horizontal",
       legend.box.margin = margin(3, 3, 3, 3)
     )
@@ -430,17 +431,17 @@ if (params$DDplotNumGroups == 3 & params$DDplotRange1 == 1 & params$DDplotRange2
 
 \pagebreak
 
-## Distractor analysis
+## Item response analysis
 
-### Distractor plot
+### Distractor plot / Empirical item response plot
 
-Respondents are divided into a selected number of groups by their total score. Subsequently, the percentage of respondents in each group who selected a given answer (correct answer or distractor) is displayed. The correct answer should be selected more often by the respondents with a higher total score than by those with a lower total score, i.e. the solid line should be increasing. The distractor should work in the opposite direction, i.e. the dotted lines should be decreasing.
+Respondents are divided into a selected number of groups by their total score. Subsequently, the percentage of respondents in each group who selected a given response is displayed. In case of multiple-choice items, the correct answer should be selected more often by the respondents with a higher total score than by those with a lower total score, i.e. the solid line should be increasing. The distractor should work in the opposite direction, i.e. the dotted lines should be decreasing.
 
 \vspace{-0.5em}
 
 ### Multionomial plot
 
-In the multinomial plot, points represent proportion of selected option with respect to total score. Their size is determined by count of respondents who achieved given level of total score and who selected given option.
+In the multinomial plot, points represent proportion of selected option with respect to total score. Their size is determined by count of respondents who achieved a given level of total score and who selected a given option.
 
 \vspace{0.5em}
 
@@ -453,12 +454,14 @@ if (params$distractor_plot_legend_length <= 6) {
       if (is.null(g2)) {
         g2 <- textGrob("")
         g1 <- g1 + theme(
-          legend.position = c(0.14, 0.8),
+          legend.position = "inside",
+          legend.position.inside = c(0.14, 0.8),
           legend.margin = margin(0, 0, 0, 0, "cm")
         )
       } else {
         g2 <- g2 + theme(
-          legend.position = c(0.04, 0.97),
+          legend.position = "inside",
+          legend.position.inside = c(0.04, 0.97),
           legend.margin = margin(0, 0, 0, 0, "cm"),
           legend.spacing.x = unit(0.25, "cm")
         )
@@ -468,11 +471,13 @@ if (params$distractor_plot_legend_length <= 6) {
   } else {
     for (i in 1:length(params$distractor_plot)) {
       g1 <- params$distractor_plot[[i]] + theme(
-        legend.position = c(0.14, 0.8),
+        legend.position = "inside",
+        legend.position.inside = c(0.14, 0.8),
         legend.margin = margin(0, 0, 0, 0, "cm")
       )
       g2 <- params$multiplot[[i]] + theme(
-        legend.position = c(0.04, 0.97),
+        legend.position = "inside",
+        legend.position.inside = c(0.04, 0.97),
         legend.margin = margin(0, 0, 0, 0, "cm"),
         legend.spacing.x = unit(0.25, "cm")
       )
@@ -513,7 +518,8 @@ if (params$distractor_plot_legend_length > 6) {
   } else {
     for (i in 1:length(params$distractor_plot)) {
       g1 <- params$distractor_plot[[i]] + theme(
-        legend.position = c(0.18, 0.75),
+        legend.position = "inside",
+        legend.position.inside = c(0.18, 0.75),
         legend.margin = margin(0, 0, 0, 0, "cm")
       )
       g2 <- params$multiplot[[i]]
@@ -650,7 +656,8 @@ if (ncol(params$a) < 50) {
     xlab(expression(theta)) +
     ylab(expression("I(" * theta * ")")) +
     theme(
-      legend.position = c(0.9, 0.8),
+      legend.position = "inside",
+      legend.position.inside = c(0.9, 0.8),
       legend.text = element_text(size = 10)
     )
 
@@ -700,7 +707,8 @@ if (ncol(params$a) >= 50) {
     xlab(expression(theta)) +
     ylab(expression("I(" * theta * ")")) +
     theme(
-      legend.position = c(0.9, 0.8),
+      legend.position = "inside",
+      legend.position.inside = c(0.9, 0.8),
       legend.text = element_text(size = 10),
       plot.margin = unit(c(-4, 0, 4, 0), "cm")
     )
@@ -820,7 +828,8 @@ params$DIF_total_hist +
     text = element_text(size = 16),
     plot.title = element_text(face = "bold"),
     plot.margin = margin(0, 0, 0, 0, "cm"),
-    legend.position = c(0.1, 0.87)
+    legend.position = "inside",
+    legend.position.inside = c(0.1, 0.87)
   )
 ```
 
@@ -1211,7 +1220,8 @@ for (i in 1:length(params$DIF_logistic_print$DIFitems)) {
     theme(
       legend.box.just = "top",
       legend.justification = c("left", "top"),
-      legend.position = c(0, 1),
+      legend.position = "inside",
+      legend.position.inside = c(0, 1),
       legend.box = "horizontal",
       legend.box.margin = margin(3, 3, 3, 3)
     ))

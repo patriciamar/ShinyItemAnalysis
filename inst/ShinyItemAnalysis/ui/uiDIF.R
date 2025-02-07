@@ -465,12 +465,12 @@ uiDIF <-
               target = "_blank"
             ), "also see", code("Learning To Learn 9"), " toy dataset."),
             p(
-              "Finally, you may change the ", strong("Estimation method."), " Four methods described in ",
-              a("(Hladka et al., 2024),",
+              "Finally, you may choose the ", strong("Estimation method"), " to estimate item parameters. Four methods were described by ",
+              a("Hladka et al. (2024).",
                 href = "https://doi.org/10.48550/arXiv.2302.12648",
                 target = "_blank"
-              ), "are presented. The default method is the non-linear least squares method. Available is also the maximum likelihood (ML),
-              method, and the parametric link function (PLF ML) method. "
+              ), "Available options here are the non-linear least squares (NLS, default), the maximum likelihood (ML),
+              method, and the algorithm based on parametric link function (PLF ML) for the ML estimation."
           ),
           fluidRow(
             column(
@@ -545,7 +545,7 @@ uiDIF <-
                 inputId = "DIF_NLR_summary_method",
                 label = "Estimation method",
                 choices = c(
-                  "Non-linear least squares" = "nls",
+                  "NLS" = "nls",
                   "ML" = "mle",
                   "PLF ML" = "plf"
                   ),
@@ -596,6 +596,7 @@ uiDIF <-
           h4("Selected R code"),
           code(includeText("sc/dif/nlr.R"))
         ),
+        # TODO: use the common part for Summary and Items as tabsetPanel(header = ...)
         # ** Items ####
         tabPanel("Items",
           value = "glr_it",
@@ -624,14 +625,20 @@ uiDIF <-
             strong("item purification. ")
           ),
           p(
-            "Finally, you may change the ", strong("Observed score."), " While matching on the standardized total score is typical, the upload
-                                   of other observed scores is possible in the ", strong("Data "), " section. Using a pre-test (standardized) total score allows
+            "You may also change the ", strong("Observed score."), " While matching on the standardized total score is typical, the upload
+                                   of other Observed scores is possible in the ", strong("Data "), "section. Using a pre-test (standardized) total score allows
                                    for testing differential item functioning in change (DIF-C) to provide proofs of instructional sensitivity ",
             a("(Martinkova et al., 2020),",
               href = "https://doi.org/10.1016/j.learninstruc.2019.101286",
               target = "_blank"
-            ), "also see", code("Learning To Learn 9"), " toy dataset. For selected", strong("item"),
-            "you can display plot of its characteristic curves and table of its estimated parameters with standard errors. "
+            ), "also see", code("Learning To Learn 9"), " toy dataset."),
+          p(
+            "Finally, you may change the ", strong("Estimation method."), " Four methods described in ",
+            a("(Hladka et al., 2024),",
+              href = "https://doi.org/10.48550/arXiv.2302.12648",
+              target = "_blank"
+            ), "are presented. The default method is the non-linear least squares method (NLS). Available is also the maximum likelihood (ML),
+              method, and the parametric link function (PLF ML) method."
           ),
           fluidRow(
             column(
@@ -702,23 +709,11 @@ uiDIF <-
             ),
             column(
               2,
-              sliderInput(
-                inputId = "DIF_NLR_items_item",
-                label = "Item",
-                min = 1,
-                value = 1,
-                max = 10,
-                step = 1,
-                animate = animationOptions(interval = 1600)
-              )
-            ),
-            column(
-              2,
               selectInput(
                 inputId = "DIF_NLR_items_method",
                 label = "Estimation method",
                 choices = c(
-                  "Non-linear least squares" = "nls",
+                  "NLS" = "nls",
                   "ML" = "mle",
                   "PLF ML" = "plf"
                 ),
@@ -727,14 +722,30 @@ uiDIF <-
             ),
             column(
               2,
+              sliderInput(
+                inputId = "DIF_NLR_items_item",
+                label = "Item",
+                min = 1,
+                value = 1,
+                max = 10,
+                step = 1,
+                animate = animationOptions(interval = 1600),
+                width = "100%"
+              )
+            )),
+            fluidRow(
+            column(
+              2,
               actionButton(
                 inputId = "DIF_NLR_items_run",
                 label = "Recalculate",
                 icon =  icon("play", style = "margin-right: 8px;"),
-                width = "200px",
-                style = "margin-top: 22px;",
+                width = "100%",
+                style = "margin-top: -50px;",
                 class = "btn btn-primary"
-              )
+              ),
+              offset = 9L,
+              class = "text-right"
             )
           ),
           h4("Plot with estimated DIF generalized logistic curve"),

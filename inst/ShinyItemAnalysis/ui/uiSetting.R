@@ -44,12 +44,16 @@ uiSetting <-
         max = 600
       ))
     ),
-    h4("Modules"),
-    p("You can add newly installed modules without restarting the app."),
-    fluidRow(
-      column(
-        2,
-        actionButton("rediscover_mods", "Rediscover modules", icon = icon("rotate"))
+    if (sm_allow_gui_installation() & !ShinyItemAnalysis:::sm_disabled()) {
+      tagList(
+        h4("Modules"),
+        p("You can add newly installed modules without restarting the app."),
+        fluidRow(
+          column(
+            2,
+            actionButton("rediscover_mods", "Rediscover modules", icon = icon("rotate"))
+          )
+        )
       )
-    )
+    }
   )

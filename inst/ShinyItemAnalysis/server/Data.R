@@ -96,7 +96,7 @@ observeEvent(c(input$data_toydata, data_csvdata_current_status$unloaded == 1), {
     toydata_raw <- get(toydata_name, envir = asNamespace(toydata_package))
 
     # use already scored responses
-    toydata_ordinal <- toydata_raw %>% select(matches("b\\d+"))
+    toydata_ordinal <- toydata_raw |> select(matches("b\\d+"))
     toydata_continuous <- toydata_ordinal
     toydata_nominal <- toydata_ordinal
 
@@ -1436,7 +1436,7 @@ output$data_exploration_key <- DT::renderDataTable(
 output$data_exploration_key_db <- downloadHandler(
   filename = function() "key.csv",
   content = function(file) {
-    data.frame(key = key()) %>%
+    data.frame(key = key()) |>
       write.csv(file = file, row.names = FALSE, quote = FALSE)
   }
 )
@@ -1464,7 +1464,7 @@ output$data_exploration_binary <- DT::renderDataTable(
 output$data_exploration_binary_db <- downloadHandler(
   filename = function() "scored_dataset.csv",
   content = function(file) {
-    data_exploration_binary_input() %>%
+    data_exploration_binary_input() |>
       write.csv(file = file, row.names = FALSE, quote = FALSE)
   }
 )
@@ -1499,8 +1499,8 @@ output$data_exploration_variables <- DT::renderDataTable(
 output$data_exploration_group_db <- downloadHandler(
   filename = function() "group.csv",
   content = function(file) {
-    data_exploration_variables_input() %>%
-      select(group = Group) %>%
+    data_exploration_variables_input() |>
+      select(group = Group) |>
       write.csv(file = file, row.names = FALSE, quote = FALSE)
   }
 )
@@ -1509,8 +1509,8 @@ output$data_exploration_group_db <- downloadHandler(
 output$data_exploration_criterion_db <- downloadHandler(
   filename = function() "criterion.csv",
   content = function(file) {
-    data_exploration_variables_input() %>%
-      select(criterion = Criterion) %>%
+    data_exploration_variables_input() |>
+      select(criterion = Criterion) |>
       write.csv(file = file, row.names = FALSE, quote = FALSE)
   }
 )
@@ -1519,8 +1519,8 @@ output$data_exploration_criterion_db <- downloadHandler(
 output$data_exploration_total_score_db <- downloadHandler(
   filename = function() "total_score.csv",
   content = function(file) {
-    data_exploration_variables_input() %>%
-      select(total_score = "Total score") %>%
+    data_exploration_variables_input() |>
+      select(total_score = "Total score") |>
       write.csv(file = file, row.names = FALSE, quote = FALSE)
   }
 )
@@ -1529,8 +1529,8 @@ output$data_exploration_total_score_db <- downloadHandler(
 output$data_exploration_observed_score_db <- downloadHandler(
   filename = function() "observed_score.csv",
   content = function(file) {
-    data_exploration_variables_input() %>%
-      select(observed_score = "Observed score vector") %>%
+    data_exploration_variables_input() |>
+      select(observed_score = "Observed score vector") |>
       write.csv(file = file, row.names = FALSE, quote = FALSE)
   }
 )

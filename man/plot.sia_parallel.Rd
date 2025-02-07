@@ -25,9 +25,9 @@ default.
 }
 \examples{
 \dontrun{
-fa_parallel_result <- BFI2[, 1:60] \%>\% fa_parallel(plot = FALSE) # without plot
-fa_parallel_result \%>\% plot() # generate plot from "fitted" object
-fa_parallel_result \%>\% plot(show_kaiser = FALSE) # hide Kaiser boundaries
+fa_parallel_result <- BFI2[, 1:60] |> fa_parallel(plot = FALSE) # without plot
+fa_parallel_result |> plot() # generate plot from "fitted" object
+fa_parallel_result |> plot(show_kaiser = FALSE) # hide Kaiser boundaries
 }
 
 }

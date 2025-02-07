@@ -66,7 +66,7 @@ observe({
 
 # ** Total scores summary table ####
 totalscores_table_Input <- reactive({
-  tibble(ts = total_score()) %>%
+  tibble(ts = total_score()) |>
     summarise(
       across(
         ts,
@@ -157,7 +157,7 @@ output$totalscores_histogram <- renderPlotly({
     )
   }
 
-  p %>% plotly::config(displayModeBar = FALSE)
+  p |> plotly::config(displayModeBar = FALSE)
 })
 
 # ** DB histogram of total scores ####

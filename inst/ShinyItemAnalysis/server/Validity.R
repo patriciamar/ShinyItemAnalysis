@@ -80,8 +80,8 @@ corr_plot_Input_report <- reactive({
 
 # ** Output correlation plot ####
 output$corr_plot <- renderPlotly({
-  plt <- corr_plot_Input() %>%
-    ggplotly(tooltip = c("x", "y", "label")) %>%
+  plt <- corr_plot_Input() |>
+    ggplotly(tooltip = c("x", "y", "label")) |>
     layout(
       xaxis = list(
         constrain = "domain",
@@ -93,7 +93,7 @@ output$corr_plot <- renderPlotly({
         # scaleanchor = 'x',
         scaleratio = 1
       )
-    ) %>%
+    ) |>
     plotly::config(displayModeBar = FALSE)
 
   # editing legend appearance
@@ -190,9 +190,9 @@ output$dendrogram_plot <- renderPlotly({
   p <- ggplotly(g, tooltip = c("label", "cluster"))
 
   p$elementId <- NULL
-  p %>%
-    plotly::config(displayModeBar = FALSE) %>%
-    style(textposition = "right") %>%
+  p |>
+    plotly::config(displayModeBar = FALSE) |>
+    style(textposition = "right") |>
     layout(showlegend = TRUE)
 })
 
@@ -280,17 +280,17 @@ output$validity_factor_screeplot <- renderPlotly({
     levels(sia_parallel_out[["method"]])
   }
 
-  plt <- sia_parallel_out %>%
-    plot() %>%
-    ggplotly() %>%
-    style(textposition = "left") %>%
+  plt <- sia_parallel_out |>
+    plot() |>
+    ggplotly() |>
+    style(textposition = "left") |>
     layout(
       legend = list(
         title = NA, # block legend titles from ggplot
         x = .95, y = .95, xanchor = "right", orientation = "h",
         groupclick = "toggleitem"
       ) # enable toggle per legend items, not legend groups
-    ) %>%
+    ) |>
     config(displayModeBar = FALSE)
 
   # now this mayhem rounds eigenvalues in tooltips to 3 places and reformats legend
@@ -299,13 +299,13 @@ output$validity_factor_screeplot <- renderPlotly({
   # TODO refactor this into a separate function....
 
   # if FA OR PCA is displayed, edit layers 3 and 4 (stands for real and simulated datapoints)
-  plt$x$data[[3]]$text <- plt$x$data[[3]]$text %>%
+  plt$x$data[[3]]$text <- plt$x$data[[3]]$text |>
     str_replace("-?\\d{1}\\.\\d{5,}", function(x) round(as.numeric(x), 3))
   plt$x$data[[3]]$legendgroup <- str_extract(plt$x$data[[3]]$legendgroup, "FA|PCA")
   plt$x$data[[3]]$name <- str_to_sentence(str_extract(plt$x$data[[3]]$name, "simulated|real"))
   plt$x$data[[3]]$legendgrouptitle$text <- plt$x$data[[3]]$legendgroup
 
-  plt$x$data[[4]]$text <- plt$x$data[[4]]$text %>%
+  plt$x$data[[4]]$text <- plt$x$data[[4]]$text |>
     str_replace("-?\\d{1}\\.\\d{5,}", function(x) round(as.numeric(x), 3))
   plt$x$data[[4]]$legendgroup <- str_extract(plt$x$data[[4]]$legendgroup, "FA|PCA")
   plt$x$data[[4]]$name <- str_to_sentence(str_extract(plt$x$data[[4]]$name, "simulated|real"))
@@ -316,13 +316,13 @@ output$validity_factor_screeplot <- renderPlotly({
   # (there is no assurance that layers 5 and 6 would end up with FA, e.g.)
   # we have to use if clause because if we manipulate nonexistent layers, things go bad
   if (method == "both") {
-    plt$x$data[[5]]$text <- plt$x$data[[5]]$text %>%
+    plt$x$data[[5]]$text <- plt$x$data[[5]]$text |>
       str_replace("-?\\d{1}\\.\\d{5,}", function(x) round(as.numeric(x), 3))
     plt$x$data[[5]]$legendgroup <- str_extract(plt$x$data[[5]]$legendgroup, "FA|PCA")
     plt$x$data[[5]]$name <- str_to_sentence(str_extract(plt$x$data[[5]]$name, "simulated|real"))
     plt$x$data[[5]]$legendgrouptitle$text <- plt$x$data[[5]]$legendgroup
 
-    plt$x$data[[6]]$text <- plt$x$data[[6]]$text %>%
+    plt$x$data[[6]]$text <- plt$x$data[[6]]$text |>
       str_replace("-?\\d{1}\\.\\d{5,}", function(x) round(as.numeric(x), 3))
     plt$x$data[[6]]$legendgroup <- str_extract(plt$x$data[[6]]$legendgroup, "FA|PCA")
     plt$x$data[[6]]$name <- str_to_sentence(str_extract(plt$x$data[[6]]$name, "simulated|real"))
@@ -349,7 +349,7 @@ output$DB_scree_plot <- downloadHandler(
   },
   content = function(file) {
     ggsave(file,
-      plot = validity_factor_parallel_analysis()[["data"]] %>% plot() +
+      plot = validity_factor_parallel_analysis()[["data"]] |> plot() +
         theme(text = element_text(size = setting_figures$text_size)),
       device = "png",
       height = setting_figures$height, width = setting_figures$width,
@@ -411,9 +411,9 @@ validity_factor_fa <- reactive({
 # unclassed loadings
 validity_factor_loadings_unclassed <- reactive({
   loadings <- validity_factor_fa()$loadings
-  loadings %>%
-    unclass() %>%
-    data.frame() %>%
+  loadings |>
+    unclass() |>
+    data.frame() |>
     setNames(paste0("F", seq_len(ncol(loadings))))
 })
 
@@ -527,14 +527,14 @@ output$validity_factor_efa_fit <- renderUI({
 validity_factor_fscores <- reactive({
   r <- validity_factor_fa()
   fscores <- psych::factor.scores(ordinal(), r, method = "Thurstone")$scores
-  fscores %>%
-    data.frame() %>%
+  fscores |>
+    data.frame() |>
     setNames(paste0("F", seq_len(ncol(fscores))))
 })
 
 output$validity_factor_fscores <- renderDT({
   fscores <- validity_factor_fscores()
-  fscores %>%
+  fscores |>
     datatable(options = list(
       scrollX = TRUE,
       autoWidth = TRUE,
@@ -543,7 +543,7 @@ output$validity_factor_fscores <- renderDT({
       server = TRUE,
       scrollCollapse = TRUE,
       dom = "tipr"
-    ), style = "bootstrap") %>%
+    ), style = "bootstrap") |>
     formatRound(columns = seq_len(ncol(fscores)), digits = 3)
 })
 
@@ -595,26 +595,26 @@ DCplot <- reactive({
 
 # ** Output for Diif/Disr. plot with plotly ####
 output$DCplot <- renderPlotly({
-  p <- DCplot() %>%
+  p <- DCplot() |>
     ggplotly(tooltip = c("item", "fill", "value", "yintercept"))
 
   # renaming/removing unnecessary text
   for (i in 1:2) {
     for (j in 1:length(p$x$data[[i]][["text"]])) {
-      p$x$data[[i]][["text"]][j] %<>%
-        str_remove_all(("parameter: |value: ")) %>%
-        str_replace("item", "Item") %>%
+      p$x$data[[i]][["text"]][j] <- p$x$data[[i]][["text"]][j] |>
+        str_remove_all(("parameter: |value: ")) |>
+        str_replace("item", "Item") |>
         str_remove("(?<=\\.\\d{3}).*")
     }
     if (input$DCplotThr_cb == TRUE) {
       for (j in 1:length(p$x$data[[3]][["text"]])) {
-        p$x$date[[3]][["text"]][j] %<>%
+        p$x$date[[3]][["text"]][j] <- p$x$date[[3]][["text"]][j] |>
           str_replace("yintercept", "Threshold")
       }
     }
   }
 
-  p %>% plotly::config(displayModeBar = F)
+  p |> plotly::config(displayModeBar = F)
 })
 
 #** DB DC plot ####
@@ -679,8 +679,9 @@ validity_plot_scatter_Input <- reactive({
     ylab("Criterion variable") +
     theme_app() +
     theme(
+      legend.position = "inside",
       legend.justification = c(0.99, 0.01),
-      legend.position = c(0.99, 0.01)
+      legend.position.inside = c(0.99, 0.01)
     )
   g
 })
@@ -689,9 +690,7 @@ validity_plot_scatter_Input <- reactive({
 validity_plot_Input <- reactive({
   cv <- criterion()
 
-  ## this is fixed value to recognize discrete variable
-  k <- 6
-  if (length(unique(cv)) <= length(cv) / k) {
+  if (length(unique(cv)) <= 6) {
     g <- validity_plot_boxplot_Input()
   } else {
     g <- validity_plot_scatter_Input()
@@ -715,7 +714,7 @@ output$validity_plot <- renderPlotly({
   }
 
   p$elementId <- NULL
-  p %>% plotly::config(displayModeBar = FALSE)
+  p |> plotly::config(displayModeBar = FALSE)
 })
 
 # ** DB validity descriptive plot ####
@@ -891,7 +890,7 @@ output$validity_distractor_plot <- renderPlotly({
   }
 
   p$elementId <- NULL
-  p %>% plotly::config(displayModeBar = FALSE)
+  p |> plotly::config(displayModeBar = FALSE)
 })
 
 # ** DB validity distractors plot ####

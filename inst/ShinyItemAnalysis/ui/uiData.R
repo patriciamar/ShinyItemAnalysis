@@ -15,10 +15,8 @@ uiData <- tabPanel(
         " is used. While on this page, you may select one of several other toy datasets or you may upload your own
         dataset (see below). To return to the demonstration dataset, click on the ", strong("Unload data"), " button."
       ),
-
       h4("Current data"),
       uiOutput("curr_data"),
-
       tags$hr(),
       #------------------------------------------------------------------------------------#
       # * Training datasets ####
@@ -67,18 +65,24 @@ uiData <- tabPanel(
         " article."
       ),
       fluidRow(
-        box(
+        column(
           width = 3,
-          fileInput(
-            inputId = "data_csvdata_main",
-            label = "Choose data (CSV file)",
-            accept = c(
-              "text/csv",
-              "text/comma-separated-values",
-              "text/tab-separated-values",
-              "text/plain",
-              ".csv",
-              ".tsv"
+          div(
+            class = "box",
+            div(
+              class = "box-body",
+              fileInput(
+                inputId = "data_csvdata_main",
+                label = "Choose data (CSV file)",
+                accept = c(
+                  "text/csv",
+                  "text/comma-separated-values",
+                  "text/tab-separated-values",
+                  "text/plain",
+                  ".csv",
+                  ".tsv"
+                )
+              )
             )
           )
         ),
@@ -97,213 +101,225 @@ uiData <- tabPanel(
         )
       ),
       fluidRow(
-        box(
+        column(
           width = 12,
-          column(
-            2,
-            radioButtons(
-              inputId = "data_csvdata_data_type",
-              label = list(
-                "Type of data",
-                bsButton(
-                  inputId = "data_csvdata_data_type_info",
-                  label = "",
-                  icon = icon("info"),
-                  style = "info",
-                  size = "extra-small"
-                ),
-                bsPopover(
-                  id = "data_csvdata_data_type_info",
-                  title = "Info",
-                  content = paste0(
-                    "Binary data are of 0-1 form, where 0 is incorrect answer and 1 is correct one. Nominal data ",
-                    "may take, e.g., ABCD form. Ordinal data are, e.g., those on the Likert scale 1-2-3-4-5."
+          div(
+            class = "box",
+            div(
+              class = "box-body",
+              column(
+                2,
+                radioButtons(
+                  inputId = "data_csvdata_data_type",
+                  label = list(
+                    "Type of data",
+                    bsButton(
+                      inputId = "data_csvdata_data_type_info",
+                      label = "",
+                      icon = icon("info"),
+                      style = "info",
+                      size = "extra-small"
+                    ),
+                    bsPopover(
+                      id = "data_csvdata_data_type_info",
+                      title = "Info",
+                      content = paste0(
+                        "Binary data are of 0-1 form, where 0 is incorrect answer and 1 is correct one. Nominal data ",
+                        "may take, e.g., ABCD form. Ordinal data are, e.g., those on the Likert scale 1-2-3-4-5."
+                      ),
+                      placement = "right",
+                      trigger = "hover",
+                      options = list(container = "body")
+                    )
                   ),
-                  placement = "right",
-                  trigger = "hover",
-                  options = list(container = "body")
+                  choices = c(
+                    "Binary" = "binary",
+                    "Nominal" = "nominal",
+                    "Ordinal" = "ordinal"
+                  ),
+                  selected = "nominal"
                 )
               ),
-              choices = c(
-                "Binary" = "binary",
-                "Nominal" = "nominal",
-                "Ordinal" = "ordinal"
+              column(
+                2,
+                radioButtons(
+                  inputId = "data_csvdata_sep",
+                  label = "Separator",
+                  choices = c(
+                    Comma = ",",
+                    Semicolon = ";",
+                    Tab = "\t"
+                  ),
+                  selected = ","
+                )
               ),
-              selected = "nominal"
-            )
-          ),
-          column(
-            2,
-            radioButtons(
-              inputId = "data_csvdata_sep",
-              label = "Separator",
-              choices = c(
-                Comma = ",",
-                Semicolon = ";",
-                Tab = "\t"
+              column(2,
+                radioButtons(
+                  inputId = "data_csvdata_quote",
+                  label = "Quote",
+                  choices = c(
+                    "None" = "",
+                    "Double Quote" = '"',
+                    "Single Quote" = "'"
+                  )
+                ),
+                selected = '"'
               ),
-              selected = ","
-            )
-          ),
-          column(2,
-            radioButtons(
-              inputId = "data_csvdata_quote",
-              label = "Quote",
-              choices = c(
-                "None" = "",
-                "Double Quote" = '"',
-                "Single Quote" = "'"
+              column(
+                3,
+                strong("Data specification"),
+                checkboxInput(
+                  inputId = "data_csvdata_header",
+                  label = list(
+                    "Header",
+                    bsButton(
+                      inputId = "data_csvdata_header_info",
+                      label = "",
+                      icon = icon("info"),
+                      style = "info",
+                      size = "extra-small"
+                    ),
+                    bsPopover(
+                      id = "data_csvdata_header_info",
+                      title = "Info",
+                      content = "Header including item names should be included/excluded in all datasets.",
+                      placement = "right",
+                      trigger = "hover",
+                      options = list(container = "body")
+                    )
+                  ),
+                  value = TRUE
+                ),
+                checkboxInput(
+                  inputId = "data_csvdata_keep_itemnames",
+                  label = list(
+                    "Keep item names",
+                    bsButton(
+                      inputId = "data_csvdata_keep_itemnames_info",
+                      label = "",
+                      icon = icon("info"),
+                      style = "info",
+                      size = "extra-small"
+                    ),
+                    bsPopover(
+                      id = "data_csvdata_keep_itemnames_info",
+                      title = "Info",
+                      content = "Should item names be preserved?",
+                      placement = "right",
+                      trigger = "hover",
+                      options = list(container = "body")
+                    )
+                  ),
+                  value = TRUE
+                )
+              ),
+              column(
+                3,
+                strong("Missing values"),
+                checkboxInput(
+                  inputId = "data_csvdata_replace_missing",
+                  label = list(
+                    "Replace missing values by 0",
+                    bsButton(
+                      inputId = "data_csvdata_replace_missing_info",
+                      label = "",
+                      icon = icon("info"),
+                      style = "info",
+                      size = "extra-small"
+                    ),
+                    bsPopover(
+                      id = "data_csvdata_replace_missing_info",
+                      title = "Info",
+                      content = "Should missing values be removed? If \"checked\", every missing value (blank string, empty cell, or NA) is going to be replaced by 0.",
+                      placement = "right",
+                      trigger = "hover",
+                      options = list(container = "body")
+                    )
+                  ),
+                  value = TRUE
+                ) # ,
+                # conditionalPanel(
+                #   condition = "input.data_csvdata_replace_missing",
+                #   div(
+                #     id = "inline-left",
+                #     textInput(
+                #       inputId = "data_csvdata_missing_coding",
+                #       label = list(
+                #         bsButton(
+                #           inputId = "data_csvdata_missing_coding_info",
+                #           label = "",
+                #           icon = icon("info"),
+                #           style = "info",
+                #           size = "extra-small"
+                #         ),
+                #         bsPopover(
+                #           id = "data_csvdata_missing_coding_info",
+                #           title = "Info",
+                #           content = "Enter encoding of missing values. Values should be seperated with comma, e.g., 9, 99, XXX. ",
+                #           placement = "right",
+                #           trigger = "hover",
+                #           options = list(container = "body")
+                #         )
+                #       ),
+                #       placeholder = "Missing values"
+                #     )
+                #   ),
+                #   div(
+                #     id = "inline-left",
+                #     disabled(textInput(
+                #       inputId = "data_csvdata_notadministred_coding",
+                #       label = list(
+                #         bsButton(
+                #           inputId = "data_csvdata_notadministred_coding_info",
+                #           label = "",
+                #           icon = icon("info"),
+                #           style = "info",
+                #           size = "extra-small"
+                #         ),
+                #         bsPopover(
+                #           id = "data_csvdata_notadministred_coding_info",
+                #           title = "Info",
+                #           content = "Enter encoding of not administred values. Values should be seperated with comma, e.g., 9, 99, NA.",
+                #           placement = "right",
+                #           trigger = "hover",
+                #           options = list(container = "body")
+                #         )
+                #       ),
+                #       placeholder = "Not administred values"
+                #     ))
+                #   )
+                # )
               )
-            ),
-            selected = '"'
-          ),
-          column(
-            3,
-            strong("Data specification"),
-            checkboxInput(
-              inputId = "data_csvdata_header",
-              label = list(
-                "Header",
-                bsButton(
-                  inputId = "data_csvdata_header_info",
-                  label = "",
-                  icon = icon("info"),
-                  style = "info",
-                  size = "extra-small"
-                ),
-                bsPopover(
-                  id = "data_csvdata_header_info",
-                  title = "Info",
-                  content = "Header including item names should be included/excluded in all datasets.",
-                  placement = "right",
-                  trigger = "hover",
-                  options = list(container = "body")
-                )
-              ),
-              value = TRUE
-            ),
-            checkboxInput(
-              inputId = "data_csvdata_keep_itemnames",
-              label = list(
-                "Keep item names",
-                bsButton(
-                  inputId = "data_csvdata_keep_itemnames_info",
-                  label = "",
-                  icon = icon("info"),
-                  style = "info",
-                  size = "extra-small"
-                ),
-                bsPopover(
-                  id = "data_csvdata_keep_itemnames_info",
-                  title = "Info",
-                  content = "Should item names be preserved?",
-                  placement = "right",
-                  trigger = "hover",
-                  options = list(container = "body")
-                )
-              ),
-              value = TRUE
             )
-          ),
-          column(
-            3,
-            strong("Missing values"),
-            checkboxInput(
-              inputId = "data_csvdata_replace_missing",
-              label = list(
-                "Replace missing values by 0",
-                bsButton(
-                  inputId = "data_csvdata_replace_missing_info",
-                  label = "",
-                  icon = icon("info"),
-                  style = "info",
-                  size = "extra-small"
-                ),
-                bsPopover(
-                  id = "data_csvdata_replace_missing_info",
-                  title = "Info",
-                  content = "Should missing values be removed? If \"checked\", every missing value (blank string, empty cell, or NA) is going to be replaced by 0.",
-                  placement = "right",
-                  trigger = "hover",
-                  options = list(container = "body")
-                )
-              ),
-              value = TRUE
-            ) # ,
-            # conditionalPanel(
-            #   condition = "input.data_csvdata_replace_missing",
-            #   div(
-            #     id = "inline-left",
-            #     textInput(
-            #       inputId = "data_csvdata_missing_coding",
-            #       label = list(
-            #         bsButton(
-            #           inputId = "data_csvdata_missing_coding_info",
-            #           label = "",
-            #           icon = icon("info"),
-            #           style = "info",
-            #           size = "extra-small"
-            #         ),
-            #         bsPopover(
-            #           id = "data_csvdata_missing_coding_info",
-            #           title = "Info",
-            #           content = "Enter encoding of missing values. Values should be seperated with comma, e.g., 9, 99, XXX. ",
-            #           placement = "right",
-            #           trigger = "hover",
-            #           options = list(container = "body")
-            #         )
-            #       ),
-            #       placeholder = "Missing values"
-            #     )
-            #   ),
-            #   div(
-            #     id = "inline-left",
-            #     disabled(textInput(
-            #       inputId = "data_csvdata_notadministred_coding",
-            #       label = list(
-            #         bsButton(
-            #           inputId = "data_csvdata_notadministred_coding_info",
-            #           label = "",
-            #           icon = icon("info"),
-            #           style = "info",
-            #           size = "extra-small"
-            #         ),
-            #         bsPopover(
-            #           id = "data_csvdata_notadministred_coding_info",
-            #           title = "Info",
-            #           content = "Enter encoding of not administred values. Values should be seperated with comma, e.g., 9, 99, NA.",
-            #           placement = "right",
-            #           trigger = "hover",
-            #           options = list(container = "body")
-            #         )
-            #       ),
-            #       placeholder = "Not administred values"
-            #     ))
-            #   )
-            # )
           )
         )
       ),
       conditionalPanel(
         condition = "input.data_csvdata_data_type == 'ordinal'",
         fluidRow(
-          box(
+          column(
             width = 3,
-            fileInput(
-              inputId = "data_csvdata_cutscore_ordinal",
-              label = "Choose cut-score (CSV file)",
-              accept = c(
-                "text/csv",
-                "text/comma-separated-values",
-                "text/tab-separated-values",
-                "text/plain",
-                ".csv",
-                ".tsv"
+            div(
+              class = "box",
+              div(
+                class = "box-body",
+                fileInput(
+                  inputId = "data_csvdata_cutscore_ordinal",
+                  label = "Choose cut-score (CSV file)",
+                  accept = c(
+                    "text/csv",
+                    "text/comma-separated-values",
+                    "text/tab-separated-values",
+                    "text/plain",
+                    ".csv",
+                    ".tsv"
+                  )
+                ),
+                textInput(
+                  inputId = "data_csvdata_cutscore_ordinal_global",
+                  label = "Dataset cut-score"
+                )
               )
-            ),
-            textInput(
-              inputId = "data_csvdata_cutscore_ordinal_global",
-              label = "Dataset cut-score"
             )
           ),
           column(
@@ -325,18 +341,24 @@ uiData <- tabPanel(
       conditionalPanel(
         condition = "input.data_csvdata_data_type == 'nominal'",
         fluidRow(
-          box(
+          column(
             width = 3,
-            fileInput(
-              inputId = "data_csvdata_key_nominal",
-              label = "Choose key (CSV file)",
-              accept = c(
-                "text/csv",
-                "text/comma-separated-values",
-                "text/tab-separated-values",
-                "text/plain",
-                ".csv",
-                ".tsv"
+            div(
+              class = "box",
+              div(
+                class = "box-body",
+                fileInput(
+                  inputId = "data_csvdata_key_nominal",
+                  label = "Choose key (CSV file)",
+                  accept = c(
+                    "text/csv",
+                    "text/comma-separated-values",
+                    "text/tab-separated-values",
+                    "text/plain",
+                    ".csv",
+                    ".tsv"
+                  )
+                )
               )
             )
           ),
@@ -359,45 +381,51 @@ uiData <- tabPanel(
       conditionalPanel(
         condition = "input.data_csvdata_data_type == 'ordinal'",
         fluidRow(
-          box(
+          column(
             width = 6,
-            fluidRow(
-              column(
-                6,
-                fileInput(
-                  inputId = "data_csvdata_minimal",
-                  label = "Choose minimal values",
-                  accept = c(
-                    "text/csv",
-                    "text/comma-separated-values",
-                    "text/tab-separated-values",
-                    "text/plain",
-                    ".csv",
-                    ".tsv"
+            div(
+              class = "box",
+              div(
+                class = "box-body",
+                fluidRow(
+                  column(
+                    6,
+                    fileInput(
+                      inputId = "data_csvdata_minimal",
+                      label = "Choose minimal values",
+                      accept = c(
+                        "text/csv",
+                        "text/comma-separated-values",
+                        "text/tab-separated-values",
+                        "text/plain",
+                        ".csv",
+                        ".tsv"
+                      )
+                    ),
+                    textInput(
+                      inputId = "data_csvdata_minimal_global",
+                      label = "Dataset minimal value"
+                    )
+                  ),
+                  column(
+                    6,
+                    fileInput(
+                      inputId = "data_csvdata_maximal",
+                      label = "Choose maximal values",
+                      accept = c(
+                        "text/csv",
+                        "text/comma-separated-values",
+                        "text/tab-separated-values",
+                        "text/plain",
+                        ".csv",
+                        ".tsv"
+                      )
+                    ),
+                    textInput(
+                      inputId = "data_csvdata_maximal_global",
+                      label = "Dataset maximal value"
+                    )
                   )
-                ),
-                textInput(
-                  inputId = "data_csvdata_minimal_global",
-                  label = "Dataset minimal value"
-                )
-              ),
-              column(
-                6,
-                fileInput(
-                  inputId = "data_csvdata_maximal",
-                  label = "Choose maximal values",
-                  accept = c(
-                    "text/csv",
-                    "text/comma-separated-values",
-                    "text/tab-separated-values",
-                    "text/plain",
-                    ".csv",
-                    ".tsv"
-                  )
-                ),
-                textInput(
-                  inputId = "data_csvdata_maximal_global",
-                  label = "Dataset maximal value"
                 )
               )
             )
@@ -412,18 +440,24 @@ uiData <- tabPanel(
         )
       ),
       fluidRow(
-        box(
+        column(
           width = 3,
-          fileInput(
-            inputId = "data_csvdata_group",
-            label = "Choose group (optional)",
-            accept = c(
-              "text/csv",
-              "text/comma-separated-values",
-              "text/tab-separated-values",
-              "text/plain",
-              ".csv",
-              ".tsv"
+          div(
+            class = "box",
+            div(
+              class = "box-body",
+              fileInput(
+                inputId = "data_csvdata_group",
+                label = "Choose group (optional)",
+                accept = c(
+                  "text/csv",
+                  "text/comma-separated-values",
+                  "text/tab-separated-values",
+                  "text/plain",
+                  ".csv",
+                  ".tsv"
+                )
+              )
             )
           )
         ),
@@ -438,18 +472,24 @@ uiData <- tabPanel(
         )
       ),
       fluidRow(
-        box(
+        column(
           width = 3,
-          fileInput(
-            inputId = "data_csvdata_criterion",
-            label = "Choose criterion (optional)",
-            accept = c(
-              "text/csv",
-              "text/comma-separated-values",
-              "text/tab-separated-values",
-              "text/plain",
-              ".csv",
-              ".tsv"
+          div(
+            class = "box",
+            div(
+              class = "box-body",
+              fileInput(
+                inputId = "data_csvdata_criterion",
+                label = "Choose criterion (optional)",
+                accept = c(
+                  "text/csv",
+                  "text/comma-separated-values",
+                  "text/tab-separated-values",
+                  "text/plain",
+                  ".csv",
+                  ".tsv"
+                )
+              )
             )
           )
         ),
@@ -465,18 +505,24 @@ uiData <- tabPanel(
         )
       ),
       fluidRow(
-        box(
+        column(
           width = 3,
-          fileInput(
-            inputId = "data_csvdata_DIFmatching",
-            label = "Choose observed score (optional)",
-            accept = c(
-              "text/csv",
-              "text/comma-separated-values",
-              "text/tab-separated-values",
-              "text/plain",
-              ".csv",
-              ".tsv"
+          div(
+            class = "box",
+            div(
+              class = "box-body",
+              fileInput(
+                inputId = "data_csvdata_DIFmatching",
+                label = "Choose observed score (optional)",
+                accept = c(
+                  "text/csv",
+                  "text/comma-separated-values",
+                  "text/tab-separated-values",
+                  "text/plain",
+                  ".csv",
+                  ".tsv"
+                )
+              )
             )
           )
         ),

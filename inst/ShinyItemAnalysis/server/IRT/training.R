@@ -92,7 +92,7 @@ ccIRT_plot_Input <- reactive({
     X2 = ccirt(seq(-4, 4, 0.01), a2, b2, c2, d2),
     theta = seq(-4, 4, 0.01)
   )
-  df <- tidyr::pivot_longer(df, -theta, names_to = "variable") %>%
+  df <- tidyr::pivot_longer(df, -theta, names_to = "variable") |>
     mutate(variable = as.factor(variable))
 
   ICC1 <- ccirt(theta0, a = a1, b = b1, c = c1, d = d1)
@@ -194,7 +194,7 @@ output$ccIRT_plot <- renderPlotly({
   p$x$data[[5]]$text <- text
 
   p$elementId <- NULL
-  p %>% plotly::config(displayModeBar = FALSE)
+  p |> plotly::config(displayModeBar = FALSE)
 })
 
 output$DB_ccIRT <- downloadHandler(
@@ -205,7 +205,8 @@ output$DB_ccIRT <- downloadHandler(
     ggsave(file,
       plot = ccIRT_plot_Input() +
         theme(
-          legend.position = c(0.97, 0.03),
+          legend.position = "inside",
+          legend.position.inside = c(0.97, 0.03),
           legend.justification = c(0.97, 0.03)
         ) +
         theme(text = element_text(size = setting_figures$text_size)),
@@ -240,7 +241,7 @@ iicIRT_plot_Input <- reactive({
     X2 = iicirt(seq(-4, 4, 0.01), a2, b2, c2, d2),
     theta = seq(-4, 4, 0.01)
   )
-  df <- tidyr::pivot_longer(df, -theta, names_to = "variable") %>%
+  df <- tidyr::pivot_longer(df, -theta, names_to = "variable") |>
     mutate(variable = as.factor(variable))
 
   IIC1 <- iicirt(theta0, a = a1, b = b1, c = c1, d = d1)
@@ -341,7 +342,7 @@ output$iicIRT_plot <- renderPlotly({
   p$x$data[[5]]$text <- text
 
   p$elementId <- NULL
-  p %>% plotly::config(displayModeBar = FALSE)
+  p |> plotly::config(displayModeBar = FALSE)
 })
 
 output$DB_iicIRT <- downloadHandler(
@@ -352,7 +353,8 @@ output$DB_iicIRT <- downloadHandler(
     ggsave(file,
       plot = iicIRT_plot_Input() +
         theme(
-          legend.position = c(0.97, 0.97),
+          legend.position = "inside",
+          legend.position.inside = c(0.97, 0.97),
           legend.justification = c(0.97, 0.97)
         ) +
         theme(text = element_text(size = setting_figures$text_size)),
@@ -860,7 +862,7 @@ irt_training_grm_plot_cumulative_Input <- reactive({
   }
 
   df <- data.frame(sapply(1:num, function(i) ccirt(theta, a, b[i])), theta)
-  df <- tidyr::pivot_longer(df, -theta, names_to = "variable") %>%
+  df <- tidyr::pivot_longer(df, -theta, names_to = "variable") |>
     mutate(variable = as.factor(variable))
 
   col <- c("red", "#e6b800", "#00b300", "blue", "#990099", "#ff6600")
@@ -893,7 +895,7 @@ output$irt_training_grm_plot_cumulative <- renderPlotly({
   }
 
   p$elementId <- NULL
-  p %>% plotly::config(displayModeBar = FALSE)
+  p |> plotly::config(displayModeBar = FALSE)
 })
 
 output$DB_irt_training_grm_plot_cumulative <- downloadHandler(
@@ -904,7 +906,8 @@ output$DB_irt_training_grm_plot_cumulative <- downloadHandler(
     ggsave(file,
       plot = irt_training_grm_plot_cumulative_Input() +
         theme(
-          legend.position = c(0.97, 0.7),
+          legend.position = "inside",
+          legend.position.inside = c(0.97, 0.7),
           legend.justification = c(0.97, 0.97)
         ) +
         theme(text = element_text(size = setting_figures$text_size)),
@@ -948,7 +951,7 @@ irt_training_grm_plot_category_Input <- reactive({
     X99 = df[, ncol(df)],
     theta
   )
-  df <- tidyr::pivot_longer(df, -theta, names_to = "variable") %>%
+  df <- tidyr::pivot_longer(df, -theta, names_to = "variable") |>
     mutate(variable = as.factor(variable))
 
   levels(df$variable) <- paste0("X", 0:(nlevels(df$variable) - 1))
@@ -983,7 +986,7 @@ output$irt_training_grm_plot_category <- renderPlotly({
   }
 
   p$elementId <- NULL
-  p %>% plotly::config(displayModeBar = FALSE)
+  p |> plotly::config(displayModeBar = FALSE)
 })
 
 output$DB_irt_training_grm_plot_category <- downloadHandler(
@@ -994,7 +997,8 @@ output$DB_irt_training_grm_plot_category <- downloadHandler(
     ggsave(file,
       plot = irt_training_grm_plot_category_Input() +
         theme(
-          legend.position = c(0.97, 0.7),
+          legend.position = "inside",
+          legend.position.inside = c(0.97, 0.7),
           legend.justification = c(0.97, 0.97)
         ) +
         theme(text = element_text(size = setting_figures$text_size)),
@@ -1066,7 +1070,7 @@ output$irt_training_grm_plot_expected <- renderPlotly({
   }
 
   p$elementId <- NULL
-  p %>% plotly::config(displayModeBar = FALSE)
+  p |> plotly::config(displayModeBar = FALSE)
 })
 
 output$DB_irt_training_grm_plot_expected <- downloadHandler(
@@ -1532,7 +1536,7 @@ irt_training_gpcm_plot_Input <- reactive({
   denom <- apply(pk, 1, sum)
 
   df <- data.frame(apply(pk, 2, function(x) x / denom), theta)
-  df <- tidyr::pivot_longer(df, -theta, names_to = "variable") %>%
+  df <- tidyr::pivot_longer(df, -theta, names_to = "variable") |>
     mutate(variable = as.factor(variable))
 
   col <- c("black", "red", "#e6b800", "#00b300", "blue", "#990099", "#ff6600")
@@ -1565,7 +1569,7 @@ output$irt_training_gpcm_plot <- renderPlotly({
   }
 
   p$elementId <- NULL
-  p %>% plotly::config(displayModeBar = FALSE)
+  p |> plotly::config(displayModeBar = FALSE)
 })
 
 output$DB_irt_training_gpcm_plot <- downloadHandler(
@@ -1576,7 +1580,8 @@ output$DB_irt_training_gpcm_plot <- downloadHandler(
     ggsave(file,
       plot = irt_training_gpcm_plot_Input() +
         theme(
-          legend.position = c(0.97, 0.7),
+          legend.position = "inside",
+          legend.position.inside = c(0.97, 0.7),
           legend.justification = c(0.97, 0.97)
         ) +
         theme(text = element_text(size = setting_figures$text_size)),
@@ -1654,7 +1659,7 @@ output$irt_training_gpcm_plot_expected <- renderPlotly({
   }
 
   p$elementId <- NULL
-  p %>% plotly::config(displayModeBar = FALSE)
+  p |> plotly::config(displayModeBar = FALSE)
 })
 
 output$DB_irt_training_gpcm_plot_expected <- downloadHandler(
@@ -1690,7 +1695,7 @@ irt_gpcm_answer <- reactive({
   denom <- apply(pk, 1, sum)
   df <- apply(pk, 2, function(x) x / denom)
 
-  df1 <- tidyr::pivot_longer(data.frame(df, theta), -theta, names_to = "variable") %>%
+  df1 <- tidyr::pivot_longer(data.frame(df, theta), -theta, names_to = "variable") |>
     mutate(variable = as.factor(variable))
 
 
@@ -1707,7 +1712,7 @@ irt_gpcm_answer <- reactive({
   pk <- exp(pk)
   denom <- apply(pk, 1, sum)
   df <- apply(pk, 2, function(x) x / denom)
-  df1 <- tidyr::pivot_longer(data.frame(df, theta), -theta, names_to = "variable") %>%
+  df1 <- tidyr::pivot_longer(data.frame(df, theta), -theta, names_to = "variable") |>
     mutate(variable = as.factor(variable))
 
   df2 <- data.frame(exp = as.matrix(df) %*% 0:2, theta)
@@ -1962,7 +1967,7 @@ irt_training_nrm_pars_list <- reactive({
   params <- irt_training_nrm_parametrizations()
   n_cats <- length(seq_along(params$BLIRT$a))
 
-  out <- params %>% map_dfr(unlist, .id = "Parametrization")
+  out <- params |> map_dfr(unlist, .id = "Parametrization")
 
   nms <- c(irt_training_nrm_category_names[seq_len(n_cats) - 1L], "grey")
   names(out) <- c(
@@ -1976,21 +1981,21 @@ irt_training_nrm_pars_list <- reactive({
 
 
 output$irt_training_nrm_irt_parameters <- renderTable({
-  out <- irt_training_nrm_pars_list() %>%
+  out <- irt_training_nrm_pars_list() |>
     filter(Parametrization %in% c("BLIRT", "Thissen et al. (IRT)", "Bock (IRT)"))
 
-  names(out) <- names(out) %>%
-    str_replace("apar", "a") %>%
+  names(out) <- names(out) |>
+    str_replace("apar", "a") |>
     str_replace("bpar", "b")
 
   out
 })
 output$irt_training_nrm_int_slope_parameters <- renderTable({
-  out <- irt_training_nrm_pars_list() %>%
+  out <- irt_training_nrm_pars_list() |>
     filter(Parametrization %in% c("BLIS", "Thissen et al.", "Bock"))
 
-  names(out) <- names(out) %>%
-    str_replace("apar", "\\\\beta_1") %>%
+  names(out) <- names(out) |>
+    str_replace("apar", "\\\\beta_1") |>
     str_replace("bpar", "\\\\beta_0")
 
   out
@@ -2011,8 +2016,8 @@ irt_training_nrm_cat_probs <- reactive({
   nms[length(nms)] <- "grey"
   colnames(out) <- nms
 
-  out %>%
-    as_tibble() %>%
+  out |>
+    as_tibble() |>
     mutate(theta = irt_training_nrm_thetas, .before = 1)
 })
 
@@ -2024,19 +2029,19 @@ irt_training_nrm_cat_probs_plot <- reactive({
 
   d <- irt_training_nrm_cat_probs()
 
-  d_long <- d %>%
+  d_long <- d |>
     pivot_longer(-theta, names_to = "cat")
 
-  d_long <- d_long %>% mutate(tooltip = paste0(
+  d_long <- d_long |> mutate(tooltip = paste0(
     str_to_title(cat), " category\n",
     "Category probability = ", round(value, 3), "\n",
     "Ability = ", theta
   ))
 
-  d_long %>%
+  d_long |>
     ggplot(aes(x = theta, y = value, col = cat, group = cat, text = tooltip)) +
     geom_vline(xintercept = vlines, col = "grey", linetype = "dashed") +
-    geom_line(size = .8) +
+    geom_line(linewidth = .8) +
     scale_color_identity() +
     scale_x_continuous(expand = expansion()) +
     labs(x = "Ability", y = "Category probability") +
@@ -2046,8 +2051,8 @@ irt_training_nrm_cat_probs_plot <- reactive({
 
 
 output$irt_training_nrm_cat_probs_plotly <- renderPlotly({
-  irt_training_nrm_cat_probs_plot() %>%
-    ggplotly(tooltip = "text") %>%
-    layout(showlegend = FALSE) %>%
+  irt_training_nrm_cat_probs_plot() |>
+    ggplotly(tooltip = "text") |>
+    layout(showlegend = FALSE) |>
     plotly::config(displayModeBar = FALSE)
 })
