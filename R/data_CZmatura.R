@@ -3,7 +3,7 @@
 #' @description The `CZmatura` dataset comes from matura exam in
 #'   mathematics. The exam was assigned in 2019 to students from Grade 13, at
 #'   the end of their secondary education. Original data available from
-#'   [https://cermat.cz/](https://cermat.cz/).
+#'   [https://cermat.gov.cz/](https://cermat.gov.cz/).
 #'
 #' @keywords datasets
 #'
