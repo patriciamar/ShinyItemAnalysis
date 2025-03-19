@@ -2,6 +2,11 @@
 
 ## Changes and developments in the ShinyItemAnalysis package
 
+### Changes in version 1.5.4-1 (2025-03-19)
+
+#### BUG FIXES
+  * Data upload was fixed.
+    
 ### Changes in version 1.5.4 (2025-02-07)
 
 **_THIS IS A CRAN VERSION_**

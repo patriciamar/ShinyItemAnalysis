@@ -480,8 +480,7 @@ observeEvent(input$data_upload, {
       # ordinal data created using nominal and key (i.e., the same as binary)
       # continuous data created using nominal and key (i.e., the same as binary)
       dataset$nominal <- csvdata_data
-
-      if (csvdata_key == "missing") {
+      if (csvdata_key[1L] == "missing") {
         showModal(
           modalDialog(
             title = "Key was not provided",

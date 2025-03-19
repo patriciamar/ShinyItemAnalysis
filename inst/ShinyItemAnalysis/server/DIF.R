@@ -2640,8 +2640,14 @@ DIF_NLR_summary_table_note <- reactive({
   res <- NULL
 
   model <- DIF_NLR_method()
-  thr <- if (length(unique(model$df)) == 1) {
-    unique(qchisq(1 - model$alpha, model$df))
+
+  df <- model$df
+  if (length(dim(df)) == 2L) {
+    df <- df[, 1L]
+  }
+
+  thr <- if (length(unique(df)) == 1) {
+    unique(qchisq(1 - model$alpha, df))
   } else {
     NULL
   }

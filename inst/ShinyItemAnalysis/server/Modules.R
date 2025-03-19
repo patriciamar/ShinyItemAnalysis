@@ -157,17 +157,19 @@ find_modules <- function(...,
     )
   )
 
-  # read list of modules we want to ignore
-  modignore_path <- file.path(getwd(), ".modignore")
 
-  to_ignore <- character()
+  # list of modules we want to allow
+  modallow_path <- file.path(getwd(), ".modallow")
 
-  if (file.exists(modignore_path)) {
-    to_ignore <- readLines(modignore_path)
+  # by default, allow all modules
+  to_allow <- mod_pkgs
+
+  # only if .modallow exists, read it and intersect with mod_pkgs
+  if (file.exists(modallow_path)) {
+    to_allow <- readLines(modallow_path)
   }
 
-  # return only those not on blacklist
-  setdiff(mod_pkgs, to_ignore)
+  intersect(mod_pkgs, to_allow)
 }
 
 # library call usually raises an R CMD Check warning if the package is given as a symbol,
