@@ -1226,7 +1226,7 @@ data_description_Input <- reactive({
                 <code>ShinyItemAnalysis</code> package. It consists of answers to the Learning to Learn test in Grade 6 only. The same
                 respondents were also tested in Grade 9 &ndash; respective data is available in the <code>Learning To Learn 9</code>
                 dataset. The dataset represents the binary-coded responses of 782 subjects (391 from basic school track, BS, coded here as
-                <code>'0'</code>; 391 from selecive academic track, AS, coded here as <code>'1'</code>) to the multiple-choice test
+                <code>'0'</code>; 391 from selective academic track, AS, coded here as <code>'1'</code>) to the multiple-choice test
                 consisting of 41 items within 7 subscales. This dataset was created using the propensity score matching algorithm to achieve
                 similar characteristics in both tracks. For further details, see <a href='https://doi.org/10.1016/j.learninstruc.2019.101286'
                 target='_blank'> Martinkova, Hladka, and Potuznikova (2020)</a>.",
@@ -1235,7 +1235,7 @@ data_description_Input <- reactive({
                 <code>ShinyItemAnalysis</code> package. It consists of answers to the Learning to Learn test in Grade 9 only. The same
                 respondents were also tested in Grade 6 &ndash; respective data is available in the <code>Learning To Learn 6</code> dataset.
 				        The dataset represents the binary-coded responses of 782 subjects (391 from basic school track, BS, coded here as <code>'0'</code>;
-				        391 from selecive academic track, AS, coded here as <code>'1'</code>) to the multiple-choice test consisting of 41
+				        391 from selective academic track, AS, coded here as <code>'1'</code>) to the multiple-choice test consisting of 41
 				        items within 7 subscales. The dataset was created using the propensity score matching algorithm to achieve similar
 				        characteristics in both tracks. The dataset also includes observed total score from Grade 6, which is offered in the Regression
 				        section and in the DIF/Fairness section as the matching variable. In their paper,

@@ -29,14 +29,14 @@ vector of the same length as \code{ncol(Data)}. In case it is not
 provided, \code{criterion} needs to be specified.}
 
 \item{num.groups}{numeric: number of groups to which are the
-respondents splitted.}
+respondents split.}
 
 \item{item}{numeric: the number of the item to be plotted.}
 
 \item{item.name}{character: the name of the item.}
 
 \item{multiple.answers}{logical: should be all combinations plotted
-(default) or should be answers splitted into distractors. See
+(default) or should be answers split into distractors. See
 \strong{Details}.}
 
 \item{criterion}{numeric: numeric vector. If not provided, total

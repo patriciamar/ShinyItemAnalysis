@@ -7,3 +7,6 @@
 ^\.github$
 ^data-raw$
 ^inst/ShinyItemAnalysis/server/shinyapps_io_dependencies\.R$
+^pkgdown$
+^_pkgdown\.yml$
+^docs$

@@ -12,11 +12,11 @@
 #'   vector of the same length as `ncol(Data)`. In case it is not
 #'   provided, `criterion` needs to be specified.
 #' @param num.groups numeric: number of groups to which are the
-#'   respondents splitted.
+#'   respondents split.
 #' @param item numeric: the number of the item to be plotted.
 #' @param item.name character: the name of the item.
 #' @param multiple.answers logical: should be all combinations plotted
-#'   (default) or should be answers splitted into distractors. See
+#'   (default) or should be answers split into distractors. See
 #'   **Details**.
 #' @param criterion numeric: numeric vector. If not provided, total
 #'   score is calculated and distractor analysis is performed based on

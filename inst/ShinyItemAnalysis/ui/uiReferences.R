@@ -339,7 +339,7 @@ uiReferences <-
                 <li>Hladka, A., Martinkova, P., & Brabec, M. (2025).
                 New iterative algorithms for estimation of item functioning.
                 <i>Journal of Educational and Behavioral Statistics,</i> In print.
-                <a href = "https://doi.org/10.48550/arXiv.2302.12648",
+                <a href = "https://doi.org/10.3102/10769986241312354",
                 target = "_blank">See online.</a>
                 </li>
 

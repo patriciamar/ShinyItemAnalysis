@@ -45,12 +45,22 @@ sm_repo <- function() {
 # use this for repos arg in install.packages
 # wrap inside a function to always get the current `repos` R option
 sm_installation_repos <- function() {
+  orig_repos <- getOption("repos")
+
+  # normal R session outside of RStudio have repos set to "@CRAN@"
+  # which enforces to choose the mirror interactively
+  # this cannot be done when SIA runs as a background jobs
+  # so we set the default CRAN mirror to the cloud one
+  if (orig_repos[1L] == "@CRAN@" || is.null(orig_repos)) {
+    orig_repos <- c(CRAN = "https://cloud.r-project.org/")
+  }
+
   unique(
     c(
       sm_repo(),
-      getOption("repos") # keep original user repos
-      )
+      orig_repos
     )
+  )
 }
 
 sm_disabled <- function() {

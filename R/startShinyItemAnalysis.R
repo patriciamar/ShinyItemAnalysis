@@ -212,7 +212,6 @@ sm_not_installed <- function() {
 
   # drop already installed
   mods_on_repo[!mods_on_repo %in% installed.packages()[, "Package"]]
-
 }
 
 
@@ -225,7 +224,7 @@ pkgs_attached <- function() {
 
 
 #' @importFrom utils install.packages
-#' @importFrom rlang inform try_fetch
+#' @importFrom rlang inform try_fetch abort cnd_muffle
 #'
 sm_install_pkg <- function(pkg, ...) {
   # the only situation that asks for user input is when the newer
@@ -235,5 +234,27 @@ sm_install_pkg <- function(pkg, ...) {
   orig_opt <- options(install.packages.compile.from.source = "never")
   on.exit(options(orig_opt))
 
-  install.packages(pkg, repos = sm_installation_repos(), ...)
+  repos <- sm_installation_repos()
+
+  # muffle all warnings that false positives and turn actual errors into proper
+  # errors
+  try_fetch(
+    install.packages(pkg, repos = repos, ...),
+    warning = function(cnd) {
+      catch <-
+        grepl("(download|installation) of package .* failed", cnd$message) ||
+          grepl("(dependenc|package).*(is|are) not available", cnd$message) ||
+          grepl("installation of package.*had non-zero exit status", cnd$message) ||
+          grepl("installation of .+ package(|s) failed", cnd$message)
+
+      if (catch) {
+        # Rethrow the warning as an error
+        abort(cnd$message, parent = cnd)
+      } else {
+        inform(cnd$message, parent = cnd)
+        # Muffle the warning
+        cnd_muffle(cnd)
+      }
+    }
+  )
 }

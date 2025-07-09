@@ -1,0 +1,47 @@
+url: https://applstat.github.io/ShinyItemAnalysis-Private/
+
+template:
+  bootstrap: 5
+  math-rendering: katex
+
+development:
+  mode: auto
+
+navbar:
+  structure:
+    left:  [reference, news]
+  components:
+    # intro:
+    #   text: Get started
+    #   href: articles/getting_started.html
+    # articles:
+    #   text: Articles
+    #   menu:
+    #   - text: Communicating with ShinyItemAnalysis app
+    #     href: articles/imports.html
+    reference:
+      text: Functions
+      href: reference/index.html
+    news:
+      text: News
+      href: news/index.html
+
+# reference:
+# - title: Module management
+#   contents:
+#   - has_concept("module_management")
+# - title: Project templates
+#   contents:
+#   - has_concept("project_templates")
+# - title: Linters
+#   contents:
+#   - has_concept("linters")
+# - title: Helpers
+#   contents:
+#   - lacks_concepts(c("module_management", "project_templates", "linters"))
+
+
+home:
+  links:
+  - text: ShinyItemAnalysis.org
+    href: https://shinyitemanalysis.org/

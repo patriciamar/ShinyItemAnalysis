@@ -1,23 +1,19 @@
-# ShinyItemAnalysis
+# ShinyItemAnalysis 1.5.5
 
-## Changes and developments in the ShinyItemAnalysis package
-
-### Changes in version 1.5.4-1 (2025-03-19)
-
-#### BUG FIXES
+## Bug fixes
   * Data upload was fixed.
+  * Installation of the modules from the app now works even in `R` sessions
+    without any CRAN mirror set.
     
-### Changes in version 1.5.4 (2025-02-07)
+# ShinyItemAnalysis 1.5.4 
 
-**_THIS IS A CRAN VERSION_**
-
-#### MAJOR UPDATES
+## Major updates
   * R >= 4.1.0 is now required.
   * Modules installation is now provided in the application itself in the
     `Modules` section. This feature is only enabled when the application is
     run locally.
 
-#### MINOR UPDATES
+## Minor updates
   * ShinyItemAnalysis does no longer reexport `%>%` operator from `magrittr`
     package. The native pipe operator `|>` in used instead, internally.
   * The confidence level for Cronbach's alpha in the `Reliability` section
@@ -26,58 +22,58 @@
     longer displayed.
   * Wording in PDF/HTML reports was edited.
     
-#### BUG FIXES
+## Bug fixes
   * Correlation test in `Item analysis / Item criterion validity` is now
     properly formatted.
   * Criterion type recognition in `Item analysis / Item criterion validity` is
     now fixed (criterion with less than 7 unique levels is considered as
     discrete variable).
 
-### Changes in version 1.5.3 (2024-12-23)
+# ShinyItemAnalysis 1.5.3 
 
-#### MINOR UPDATES
+## Minor updates
   * New methods are offered in  `Generalized logistic regression` in the `DIF/Fairness` section of the app. {difNLR} 
     version 1.5.0 is now required for the DIF analysis.
 
-### Changes in version 1.5.2 (2024-11-20)
+# ShinyItemAnalysis 1.5.2 
 
-**_THIS IS A CRAN VERSION_**
 
-#### BUG FIXES
+
+## Bug fixes
   * The starting values and estimation constraints structure in `fit_blis()` function 
     were fixed to work with the new version of the `mirt` package (versions 1.43 onwards).
   * Missing parts of the Logistic regression note in "DIF/Fairness -- Method comparison" tab of the app were fixed.
 
-### Changes in version 1.5.1 (2024-04-23)
+# ShinyItemAnalysis 1.5.1 
 
-**_THIS IS A CRAN VERSION_**
 
-#### MAJOR UPDATES
+
+## Major updates
   * `run_app()` function discovers for add-on modules available on SIA repository which are not installed yet,
      and offers their installation.
   
-#### MINOR UPDATES
+## Minor updates
   * There are now documented options and environment variables that are consulted by `ShinyItemAnalysis` package, see `?ShinyItemAnalysis_options`.
   * In Data/Data tab, new section called Current data was added to explicitly track 
     the current data used in the app and its source.
 
-#### BUG FIXES
+## Bug fixes
   * The number of iterations (EM cycles) for IRT models provided in the Settings is now considered 
     in the app again.
   * The app won’t crash anymore when the user uploads nominal data without the key.
 
-### Changes in version 1.5.0 (2023-05-08)
+# ShinyItemAnalysis 1.5.0 
 
-**_THIS IS A CRAN VERSION_**
 
-#### BUG FIXING
+
+## Bug fixes
   * Calculation of itemfit p values was fixed in the Table of estimated parameters 
     in `IRT model/Dichotous models` section of the app (Thanks to Samsul Hadi for 
     reporting this issue).
   * Calculation of worst split-half coefficient was fixed to respond to updates 
     in the psych package.
   
-#### MAJOR UPDATES
+## Major updates
   * Additional modules can now be easily incorporated into the Shiny app! 
     Shiny app discovers for installed modules and adds them in respective sections.
     Modules can be kept in external packages. See SIAmodules R package for default
@@ -87,7 +83,7 @@
   * DIF analysis now offers combinations (simple and iterative) of purification 
     and p-value adjustment in the `DIF/Fairness` section of the app.
   
-#### MINOR UPDATES
+## Minor updates
   * The `plot_corr()` function is now more verbose and handles errors in polychoric 
     correlations estimation in a more user-friendly way; the partial matching of 
     arguments is no longer supported
@@ -113,32 +109,32 @@
   * Dataset `CZmaturaS` is newly offered as a toy dataset in the `Data/Data` 
     section of the app.
   
-----------
 
-### Changes in version 1.4.2 (2022-10-21)
 
-**_THIS IS A CRAN VERSION_**
+# ShinyItemAnalysis 1.4.2 
 
-#### BUG FIXING
+
+
+## Bug fixes
   * Item criterion validity - Distractor plot was fixed in Item Analysis tab.
 
-#### MAJOR UPDATES
+## Major updates
   * New datasets `HCIlong`, `MSATB`, `GMAT`, `EPIA` added 
   *  `anxiety` dataset was renamed to `Anxiety`, variables `score` and
      `zscore` were added 
   *  Variable `total` was added to datasets `HCI`, `HCItest`  
 
-#### MINOR UPDATES
+## Minor updates
   * Parallel analysis plot has an improved legend in the `Validity / Factor analysis` 
     tab 
 
-----------
 
-### Changes in version 1.4.1 (2022-04-14)
 
-**_THIS IS A CRAN VERSION_**
+# ShinyItemAnalysis 1.4.1 
 
-#### BUG FIXING
+
+
+## Bug fixes
   * `gDiscrim()` function was fixed to assure indices are inside the defined 
     bounds, also for small samples
   * `plotDistractorAnalysis()` function was fixed not to display double legends. 
@@ -146,11 +142,11 @@
   * Item difficulty/discrimination plot in Tradition item analysis tab in the app 
     was fixed to prevent error messages when Discrimination type is set to "none".
   * Displayed item parameters were fixed and subsequently extended in the app for 
-    the Bock model (see major updates).
+    the Bock model (see Major updates).
   * The training sections for GRM IRT model was fixed to display category plots 
     also for case of k = 6.
   
-#### MAJOR UPDATES
+## Major updates
   * The `ItemAnalysis()` has been refactored substantially; memory demands are 
     lowered multiple times, as well as run times (most noticeable with large datasets). 
     The changes include following:
@@ -178,7 +174,7 @@
     for the correct option.
   * The DIF section in the app was updated to work with the newest difNLR package version.
   
-#### MINOR UPDATES
+## Minor updates
   * `gDiscrim()` newly issues a warning when item(s) range is zero and when there 
     is no difficulty difference in either group.
   * In `gDiscrim()`, the groups are newly defined using the `quantile()` function. 
@@ -191,19 +187,19 @@
   * RStudio Addin was added to provide command-free app startup option, bindable 
     to a keyboard shortcut.
   * The `HCI` data now includes total score variable.  
-----------
 
-### Changes in version 1.4.0 (2021-09-24)
 
-**_THIS IS A CRAN VERSION_**
+# ShinyItemAnalysis 1.4.0 
+
+
 
 *It includes version 1.3.8 and following further changes:*
 
-#### BUG FIXING
+## Bug fixes
   * Math in downloadable tables is now completely correctly transformed to human-readable
     (non-LaTeX) format everywhere (thanks to Larry Nelson for reporting this issue).
   
-#### MAJOR UPDATES
+## Major updates
   * The package dependencies that are used only in the interactive app *per se*
     were moved into `Suggests`, meaning you are now not obliged to install any
     of these dependencies if you plan to only use the package's "core" functions, 
@@ -213,20 +209,20 @@
     is not available.
   * New dataset `HeightInventory` was added.
 
-#### MINOR UPDATES
+## Minor updates
   * Manuals of R functions and data were updated
 
-----------    
+    
 
-### Changes in version 1.3.8 (2021-09-08)
-#### BUG FIXING
+# ShinyItemAnalysis 1.3.8 
+## Bug fixes
   * Better treatment of missing values in fa_parallel and in the 
     `Validity/Factor analysis` section of the app, preventing crashes of the app
     (Thanks to @koenderks for reporting this as issue #460)
   * Math in downloadable tables is now partly correctly transformed to human-readable
     (non-LaTeX) format, including the IRT tab.
   
-#### MAJOR UPDATES
+## Major updates
   * `startShinyItemAnalysis()` gained an alias `run_app()`.
   * New dataset `AttitudesExpulsion` was added.
   * `DIF-C` SIAmodule newly available from the `DIF/Fairness` section of the 
@@ -237,7 +233,7 @@
     reliable library. By eliminating MathJax, the app now loads faster and no
     math is left unrendered.
 
-#### MINOR UPDATES
+## Minor updates
   * Sample R code was added for the `Validity/Correlation structure` section.
   * Manuals of R functions and data were updated
   * The app now uses trivial Cronbach alpha internal function, lowering the 
@@ -247,19 +243,19 @@
   * README.md assets moved to .readme_assets folder
   * `inst` folder structure was simplified
   
-----------
 
-### Changes in version 1.3.7 (2021-05-28)
 
-**_THIS IS A CRAN VERSION_**
+# ShinyItemAnalysis 1.3.7 
 
-#### BUG FIXING
+
+
+## Bug fixes
   * Bug with reading ordinal data in the app was fixed. (Thanks to pukelevicius
     for reporting on GitHub)
   * Bug with uploading data with all correct/wrong answers in some items was 
     fixed (Thanks to Koen Derks for reporting the issue on GitHub)
     
-#### MAJOR UPDATES
+## Major updates
   * New datasets `MSclinical`, `BFI2`, and `TestAnxietyCor` were added, some 
     datasets and manuals were updated.
   * Functions `fa_parallel()` was updated, smaller changes were made in some 
@@ -268,16 +264,16 @@
   * In the `IRT` section of the app, tab for the Bock model was updated to offer
     parametrization closer to regression models.
   
-#### MINOR UPDATES
+## Minor updates
   * Sample R code was updated for the `IRT` section.
 
-----------
 
-### Changes in version 1.3.6 (2021-03-20)
 
-**_THIS IS A CRAN VERSION_**
+# ShinyItemAnalysis 1.3.6 
 
-#### BUG FIXING
+
+
+## Bug fixes
   * Function ItemAnalysis() updated to avoid error messages in case of datasets
     including 2 items only. (Thanks to Frederic Hilkenmeier for reporting this 
     issue.)
@@ -287,11 +283,11 @@
     to the name of the csv file. This fixed some of the bugs with the HTML
     report download.
 
-#### MAJOR UPDATES
+## Major updates
   * New function `fa_parallel()` was added offering fast paralel analysis for 
     deciding on number of factors in exploratory factor analysis.
   * New datasets `CZmatura` and `CZmaturaS` were added.
-  * Some ui code of the shiny app was reorganized into separte sections.
+  * Some UI code of the shiny app was reorganized into separate sections.
   * In the `Validity` section of the app, a new tab `Factor analysis` was 
     added offering exploratory factor analysis.
   * In the `IRT models` section of the app, the binary IRT models were
@@ -307,7 +303,7 @@
     ggplot2. 
   
   
-#### MINOR UPDATES
+## Minor updates
   * The sample R code snippets were moved to a separate directory.
   * In the `Criterion validity` and `Item criterion validity`, the Pearson 
     correlation is newly used as the default option.
@@ -328,13 +324,13 @@
     renamed to `Item response curves` to better reflect that empirical response
     curves are also available for binary and ordinal items.
 
-----------
 
-### Changes in version 1.3.5 (2021-02-02)
 
-**_THIS IS A CRAN VERSION_**
+# ShinyItemAnalysis 1.3.5 
 
-#### BUG FIXING
+
+
+## Bug fixes
   * Plots in the `DIF/About` section of the app were fixed (uniform vs. 
     nonuniform DDF is now correctly displayed).
   * Display of the discrimination index ULI was fixed for ordinal items.
@@ -348,7 +344,7 @@
   * In the `Regression` section of the app, missplaced `SE` for intercepts and 
     slopes were fixed.
 
-#### MAJOR UPDATES
+## Major updates
   * A new section `Reliability/Restricted range` was added to the app offering 
     interactive examples demonstrating issues with reliability estimates in 
     restricted-range samples.
@@ -379,7 +375,7 @@
   * The `Regression/Multinomial` section newly offers also the IRT 
     parametrization.  
   
-#### MINOR UPDATES
+## Minor updates
   * The intropage was updated, new News section was added.
   * Method ordering was updated in the `DIF/Fairness` section.
   * Toy data selection was updated.
@@ -393,13 +389,13 @@
   * `ggWright()` plot was updated to more general description.
   * References were updated wintin the app.
 
-----------
 
-### Changes in version 1.3.4 (2020-08-24)
 
-**_THIS IS A CRAN VERSION_**
+# ShinyItemAnalysis 1.3.4 
 
-#### BUG FIXING
+
+
+## Bug fixes
   * Display of Cronbach's alpha in PDF/HTML reports was corrected.
   * Item slider bug in ordinal regression models in the app was fixed.
   * DIF matching criterion was synchronized for the `Summary` and `Item` subtabs 
@@ -408,7 +404,7 @@
   * Bug in display of table in the `Regression/Model comparison` section was 
     fixed.
   
-#### MAJOR UPDATES
+## Major updates
   * `startShinyItemAnalysis()` function was updated to allow starting the 
     application as a background job in Rstudio (default setting). 
     This permits the user to work and try sample R code examples in the console.
@@ -429,21 +425,21 @@
   * Difficulty-validity plot is newly offered in the the 
     `Validity/Criterion_Validity/Items` section.
 
-#### MINOR UPDATES
+## Minor updates
   * Documentation of `DDplot()` was updated.
   * All datatable outputs now have proper bootstrap style/theme.
 
-----------
 
-### Changes in version 1.3.3 (2020-05-04)
 
-**_THIS IS A CRAN VERSION_**
+# ShinyItemAnalysis 1.3.3 
 
-#### BUG FIXING
+
+
+## Bug fixes
   * `plotDIFLogistic()` now correctly plots matching criterion when item 
      purification is applied.
   
-#### MAJOR UPDATES
+## Major updates
   * Use of DIF matching criterion other than Total score is now enabled in shiny 
     app in the `DIF/Fairness` sections.
   * Downloadable tables are newly provided in shiny app in the `DIF/Fairness` 
@@ -453,7 +449,7 @@
   * DIF method comparison table is provided in the `DIF/Fairness` section of the 
     shiny app.
 
-#### MINOR UPDATES
+## Minor updates
   * Help page for the `ShinyItemAnalysis` package was added.
   * NEWS file is now formatted using `markdown`.
   * On attach message was updated.
@@ -461,15 +457,15 @@
     `DIF/Fairness` sections, histogram of total scores now better compares the 
     groups.   
 
-----------
 
-### Changes in version 1.3.2. (2020-01-27)
 
-**_THIS IS A CRAN VERSION_**
+# ShinyItemAnalysis 1.3.2. 
+
+
 
 *It includes versions 1.3.1-1 - 1.3.1-8 and following changes:*
 
-#### BUG FIXING
+## Bug fixes
   * Mismatch in specification of H0 and H1 was corrected in `DIF/Fairness` 
     section and in the `Report` section.
   * `plotDIFLogistic()` now correctly plots matching criterion.
@@ -477,7 +473,7 @@
     fitting model when p.adjust.method is applied.
   * Logistic method in the `DIF/Fairness` section now excludes missing values.
 
-#### MAJOR UPDATES
+## Major updates
   * New dataset `LearningToLearn` was added to the package.
   * New toy datasets `LearningToLearn6` and `LearningToLearn9` were added to the 
     app.
@@ -492,7 +488,7 @@
   * Summary and Item inputs in DIF/Logistic are connected now. Model is now
     fitted only once.
 
-#### MINOR UPDATES
+## Minor updates
   * Citation and list of References were updated.
   * Authors' details were updated.
   * Due to changes in `difNLR`, function `ddfORD()`was renamed to `difORD()`.
@@ -515,27 +511,27 @@
   * Text in reports was updated.
   * Some examples were set to run to allow for automatic checks of the package.
 
-----------
 
-### Changes in version 1.3.1-8. (2019-11-02)
 
-#### BUG FIXING
+# ShinyItemAnalysis 1.3.1-8. 
+
+## Bug fixes
   * Typos in `plotAdjacent()`, `plotCumulative()` and `plotMultinomial()` were 
     fixed.
 
-----------
 
-### Changes in version 1.3.1-7. (2019-09-30)
 
-#### MAJOR UPDATES
+# ShinyItemAnalysis 1.3.1-7. 
+
+## Major updates
   * Functions `DistractorAnalysis()` and `plotDistractorAnalysis()`
     were updated to not requiring `key` input.
 
-----------
 
-### Changes in version 1.3.1-6. (2019-09-25)
 
-#### BUG FIXING
+# ShinyItemAnalysis 1.3.1-6. 
+
+## Bug fixes
   * Bug in key uploading was fixed. When nominal data was uploaded and
     then ordinal (without cut-score specified in file), key was kept
     from nominal data.
@@ -544,116 +540,116 @@
   * Some calculations with `NA` values were fixed.
   * Double file input `"key"` was unified.
 
-#### MINOR UPDATES
+## Minor updates
   * Item names for toy dataset `Science` were updated.
   * Basic summary table for ordinal data was updated.
 
-----------
 
-### Changes in version 1.3.1-5. (2019-08-26)
 
-#### BUG FIXING
+# ShinyItemAnalysis 1.3.1-5. 
+
+## Bug fixes
   * Table for MH in PDF reports was fixed.
   * Header of sections were fixed in PDF reports.
   * IRT parameter estimates table was fixed in PDF reports.
   * Bug in `plotMultinomial()` for data without NAs was fixed.
 
-#### MAJOR UPDATES
+## Major updates
   * DIF/DDF detection methods for ordinal data were added. DIF/Fairness
     section was updated.
 
-#### MINOR UPDATES
+## Minor updates
   * Tabs in Regression were renamed.
   * Warning when group vector is missing was added into Method comparison tab
     in `DIF/Fairness` section.
   * Method comparison tab for `DIF/Fairness` section was updated.
 
-----------
 
-### Changes in version 1.3.1-4. (2019-08-07)
 
-#### BUG FIXING
+# ShinyItemAnalysis 1.3.1-4. 
+
+## Bug fixes
   * In DIF section, Summary table for total scores now displays correct number
     of respondents in groups (N).
 
-----------
 
-### Changes in version 1.3.1-3. (2019-07-02)
 
-#### BUG FIXING
+# ShinyItemAnalysis 1.3.1-3. 
+
+## Bug fixes
   * Bug in Adjacent model in Regression tab was fixed. Matching criterion
     and parametrization inputs now have effect on model.
   * Bug in `plotMultinomial()` was fixed. Function now displays more than 12
     response patterns as linetype.
 
-#### MINOR UPDATES
+## Minor updates
   * Range for x-axes in `plotAdjacent()` and `plotCumulative()` were updated to
     avoid removing data.
   * Some typos were fixed.
 
-----------
 
-### Changes in version 1.3.1-2. (2019-07-01)
 
-#### MAJOR UPDATES
+# ShinyItemAnalysis 1.3.1-2. 
+
+## Major updates
   * Cronbach's alpha with CI was added into reports.
   * Bonferroni correction for multiple comparison was added as an option
     for correction methods in Regression, DIF and Reports tabs.
 
-#### MINOR UPDATES
+## Minor updates
   * Warning for table for parameters in Bock's IRT model was modified.
   * Wright map now considers item names when option Keep item names.
   * Some wording was updated.
   * Some typos were fixed.
 
-----------
 
-### Changes in version 1.3.1-1. (2019-06-28)
 
-#### BUG FIXING
+# ShinyItemAnalysis 1.3.1-1. 
+
+## Bug fixes
   * Minimal number of groups for gULI in DDplot was set to 2 in both Item
     analysis and Report tabs.
 
-#### MAJOR UPDATES
+## Major updates
   * Mantel-Haenszel test was added into reports.
 
-#### MINOR UPDATES
+## Minor updates
   * Error for DIF/Logistic was customized.
   * Text in reports in DIF section was updated.
   * Tables in DIF section now includes both p-values and adjusted p-values
     when correction method is applied.
   * Warning for fancyhdr latex package was solved.
 
-----------
 
-### Changes in version 1.3.1. (2019-06-26)
 
-**_THIS IS A CRAN VERSION_**
+# ShinyItemAnalysis 1.3.1. 
+
+
 
 *It includes versions 1.3.0-1 - 1.3.0-18 and following changes:*
 
-#### MINOR UPDATES
+## Minor updates
   * In `ItemAnalysis()` function, documentation for item reliability and
     item validity indices has been added (Reported by Lot Fonteyne).
 
-----------
 
-### Changes in version 1.3.0-18. (2019-06-25)
 
-#### BUG FIXING
+# ShinyItemAnalysis 1.3.0-18. 
+
+## Bug fixes
   * Bug in `plotDistractorAnalysis()` was fixed. X-ticks are now displayed
     even with discrete = T argument.
 
-#### MINOR UPDATES
+## Minor updates
   * Inputs in Validity/Correlation overlaped when window was narrow. Fixed.
   * Generate and Download buttons overlaped in Reports when window was narrow.
     Fixed.
 
-----------
 
-### Changes in version 1.3.0-17. (2019-06-24)
 
-#### BUG FIXING
+# ShinyItemAnalysis 1.3.0-17. 
+
+## Bug fixes
   * `DistractorAnalysis()` and `plotDistractorAnalysis()` now handle discrete
     matching and groups specified via argument cut.points.
   * Distractor plots in Validity/Items tab now properly handle discrete
@@ -662,34 +658,34 @@
   * Bug in Raju in `DIF/Fairness` tab was fixed. Plots for items are now
     displayed for dataBov dataset.
 
-#### MAJOR UPDATES
+## Major updates
   * Checking of unique cuts for distractor plots was added into Reports.
     Warning is displayed when cuts are not unique and slider is updated.
 
-#### MINOR UPDATES
+## Minor updates
   * Some typos were fixed.
 
-----------
 
-### Changes in version 1.3.0-16. (2019-06-21)
 
-#### BUG FIXING
+# ShinyItemAnalysis 1.3.0-16. 
+
+## Bug fixes
   * Bug in Bock's model for binary items was fixed in reports.
   * Histogram when some levels of total scores are missing were fixed
     in Summary and DIF tab.
 
-#### MAJOR UPDATES
+## Major updates
   * Legend was added into IRT plots when downloaded.
   * IRT models now respect ordering of items.
 
-#### MINOR UPDATES
+## Minor updates
   * Some typos in IRT models tab were fixed.
 
-----------
 
-### Changes in version 1.3.0-15. (2019-06-20)
 
-#### BUG FIXING
+# ShinyItemAnalysis 1.3.0-15. 
+
+## Bug fixes
   * DIF summary table bug was fixed. Table is disaplayed when
     some DIF methods cannot be fitted.
   * DDF parameter tables were fixed for data BOV and Czech Trivia.
@@ -699,16 +695,16 @@
   * Dendrogram now properly replaces item names when Keep item names
     is not selected in Data upload section.
 
-#### MINOR UPDATES
+## Minor updates
   * Authors' and contributors' details were updated.
   * Function `plotMultinomial()` was updated to return smooth curves
     for any matching criterion.
 
-----------
 
-### Changes in version 1.3.0-14. (2019-06-19)
 
-#### BUG FIXING
+# ShinyItemAnalysis 1.3.0-14. 
+
+## Bug fixes
   * Bug in Bock's nominal IRT model was fixed. ICCs are now properly
     displayed for all binary data. Error for non-displayable
     table of parameters was further improved. Tables for items are
@@ -719,23 +715,23 @@
   * In `DIF/Fairness` section, histograms of Total scores for groups
     are now properly displayed also for ordinal items.
 
-#### MAJOR UPDATES
+## Major updates
   * Legends for multinomial and distractor plots were improved.
 
-#### MINOR UPDATES
+## Minor updates
   * Authors' and contributors' details were updated.
 
-----------
 
-### Changes in version 1.3.0-13. (2019-06-18)
 
-#### BUG FIXING
+# ShinyItemAnalysis 1.3.0-13. 
+
+## Bug fixes
   * Bug in Bock's nominal IRT model was fixed. ICCs are now properly
     displayed for Czech Trivia dataset. Error for non-displayable
     table of parameters was improved.
   * Bug in `DistractorAnalysis()` was partially fixed, need to be revised.
 
-#### MAJOR UPDATES
+## Major updates
   * Reports:
       - long tables have now header on each new page
       - legend is now visible for IRT plots even when dataset consists
@@ -743,11 +739,11 @@
   * Matching criterion in `plotMultinomial()` was relaxed to decrease
     size of reports.
 
-----------
 
-### Changes in version 1.3.0-12. (2019-06-17)
 
-#### BUG FIXING
+# ShinyItemAnalysis 1.3.0-12. 
+
+## Bug fixes
   * Reports are now rendered even in case that multinomial model
     cannot be fitted for some items.
   * With option Keep item names, names of items are properly
@@ -759,13 +755,13 @@
   * Bug in `DistractorAnalysis()` was fixed. In case of possibly discrete
     matching, matching is cutted based on its factors.
 
-#### MAJOR UPDATES
+## Major updates
   * Uploaded data can be now unloaded without restarting app.
   * Distractor plot for validity analysis was updated to allow
     for lowering the number of categories in cases when cuts
     are not uniquely defined. Application was updated accordingly.
 
-#### MINOR UPDATES
+## Minor updates
   * Errors and warnings were customized.
   * In all dichotomous models the number of EM cycles can be
     increased in Settings.
@@ -775,15 +771,15 @@
     (Thanks to Katrin Leinweber)
   * Some typos were fixed in reports.
 
-----------
 
-### Changes in version 1.3.0-11. (2019-05-28)
 
-#### BUG FIXING
+# ShinyItemAnalysis 1.3.0-11. 
+
+## Bug fixes
   * Option for displaying session info in reports now functions properly.
   * Option to display average score in DDplot in reports fixed.
 
-#### MAJOR UPDATES
+## Major updates
   * New function `plotCumulative()` which plots category probabilities
     functions estimated by \code{multinom()} from `nnet` package
     was added. It is now used in application.
@@ -794,176 +790,176 @@
     functions estimated by \code{multinom()} from `nnet` package
     was added. It is now used in application.
 
-#### MINOR UPDATES
+## Minor updates
   * Selected R codes for cumulative, adjacent and multinomial models
     were updated.
   * Option for matching criterion (total vs Z-score) in multinomial
     model was added.
   * Equations in DIF section are now center-aligned.
 
-----------
 
-### Changes in version 1.3.0-10. (2019-05-17)
 
-#### MAJOR UPDATES
+# ShinyItemAnalysis 1.3.0-10. 
+
+## Major updates
   * Alerts for analysis where data with missing values are omitted
     were added.
   * `DDplot()` now can displayed average item score as estimate of
     difficulty for ordinal data. See argument average.score.
 
-#### MINOR UPDATES
+## Minor updates
   * Correlation structure now use pairwise complete observations
     for calculation of correlation.
 
-----------
 
-### Changes in version 1.3.0-9. (2019-05-08)
 
-#### MAJOR UPDATES
+# ShinyItemAnalysis 1.3.0-9. 
+
+## Major updates
   * `DistractorAnalysis()` and `plotDistractorAnalysis()` functions were
     updated to allow for lowering the number of categories in cases when
     cuts are not uniquely defined. Application was updated accordingly.
 
-#### MINOR UPDATES
+## Minor updates
   * Tables and equations of polytomous models in Regression section are
     now center-aligned.
 
-----------
 
-### Changes in version 1.3.0-8. (2019-05-07)
 
-#### BUG FIXING
+# ShinyItemAnalysis 1.3.0-8. 
+
+## Bug fixes
   * With option `Keep missing values` unfunctioning analyses were fixed
     (missing data removed, warning message added)
 
-#### MAJOR UPDATES
+## Major updates
   * Multinomial regression plot is now displayed using smooth function
 
-#### MINOR UPDATES
+## Minor updates
   * With option `Keep missing values` warning message is now displayed
     for those analyses for which missing values are omitted.
   * For ordinal data, Cronbach's alpha is now calculated from original
     ordinal (non-binarized) data both in Reliability and in Item analysis
     section.
 
-----------
 
-### Changes in version 1.3.0-7. (2019-04-19)
 
-#### BUG FIXING
+# ShinyItemAnalysis 1.3.0-7. 
+
+## Bug fixes
   * Busy indicator now properly displays above input tabs.
   * Bug when using matching in `DistractorAnalysis()` was fixed.
 
-#### MAJOR UPDATES
+## Major updates
   * New ordinal toy dataset SCIENCE was added.
 
-#### MINOR UPDATES
+## Minor updates
   * Each tab is now open at the top of the page.
 
-----------
 
-### Changes in version 1.3.0-6. (2019-04-18)
 
-#### MAJOR UPDATES
+# ShinyItemAnalysis 1.3.0-6. 
+
+## Major updates
   * Adjacent logistic regression model was implemented for ordinal data.
   * Both adjacent and cummulative regression models allow for selection
     of matching criterion (total score, standardized total score) and
     parametrization (classical slope/intercept and IRT parametrization).
 
-----------
 
-### Changes in version 1.3.0-5. (2019-04-03)
 
-#### BUG FIXING
+# ShinyItemAnalysis 1.3.0-5. 
+
+## Bug fixes
   * SD in Regression section was changed to SE.
   * Keep missing values button is now functioning and it is applied
     for ordinal and binary data.
 
-#### MAJOR UPDATES
+## Major updates
   * Cumulative logistic regression model was implemented for ordinal data.
   * Delta method is now applied for calculation of SE in IRT parametrization
     in cumulative logistic regression.
 
-----------
 
-### Changes in version 1.3.0-4. (2019-03-28)
 
-#### BUG FIXING
+# ShinyItemAnalysis 1.3.0-4. 
+
+## Bug fixes
   * Bug in slider in histogram of total scores was fixed. Range is now
     correctly displayed when NA values are present.
   * Fixing versions.
 
-#### MAJOR UPDATES
+## Major updates
   * Math mode is now stable in tables.
     (Thanks to Stéphane Laurent)
   * UI for polytomous models in Regression section was added.
   * Traditional item analysis table is done via ItemAnalysis() function.
     It now includes also average score.
 
-#### MINOR UPDATES
+## Minor updates
   * `startShinyItemAnalysis()` automatically launches default web browser.
   * Sample code and wording was updated for traditional item analysis table
     in app and also in reports.
 
-----------
 
-### Changes in version 1.3.0-3. (2019-03-26)
 
-#### MINOR UPDATES
+# ShinyItemAnalysis 1.3.0-3. 
+
+## Minor updates
   * `ggWrightMap()` now can display user-specified names of items
     (Reported by Matthew G R Courtney)
   * `plotDIFLogistic()` now can display user-specified names
     of reference and focal group.
   * Some typos were fixed.
 
-----------
 
-### Changes in version 1.3.0-2. (2019-03-15)
 
-#### MAJOR UPDATES
+# ShinyItemAnalysis 1.3.0-2. 
+
+## Major updates
   * Analysis for ordinal items has been added. This includes use of ordinal
     data in sections Summary (histogram of Total scores, success rate),
     Reliability, Validity (correlations, predictive validity),
 
-----------
 
-### Changes in version 1.3.0-1. (2019-03-08)
 
-#### BUG FIXING
+# ShinyItemAnalysis 1.3.0-1. 
+
+## Bug fixes
   * Equations for 3PL and 4PL regression models were fixed.
 
-#### MAJOR UPDATES
+## Major updates
   * Math symbols are now displayed using MathJax.
   * Exercises were added in IRT section / Polytomous Training.
   * DIF section now includes method comparison.
 
-#### MINOR UPDATES
+## Minor updates
   * Labeling of correction methods in DIF section was improved.
   * Ability parameters are now available also for Bock's model.
 
-----------
 
-### Changes in version 1.3.0. (2019-02-25)
 
-**_THIS IS A CRAN VERSION_**
+# ShinyItemAnalysis 1.3.0. 
+
+
 
 *It includes versions 1.2.9-1 - 1.2.9-3 and following changes:*
 
-#### MINOR UPDATES
+## Minor updates
   * Reference to a new paper on `ShinyItemAnalysis` in The R journal was added.
 
-----------
 
-### Changes in version 1.2.9-3. (2019-01-30)
 
-#### BUG FIXING
+# ShinyItemAnalysis 1.2.9-3. 
+
+## Bug fixes
   * Histograms for total scores now handle cut-scores out of range of
     observed values
   * Bug in reports when using delta plot with purification was fixed.
   * Cut-scores for histograms are properly displayed in reports.
   * Year in reports was updated.
 
-#### MAJOR UPDATES
+## Major updates
   * Sections About, References and Settings are displayed only with icon
     and are right-aligned.
   * Margins and padding were updated.
@@ -971,17 +967,17 @@
     into DIF section and into reports.
   * Histograms for total scores are now displayed in plotly mode.
 
-#### MINOR UPDATES
+## Minor updates
   * Some math mode was fixed in IRT section.
   * Some typos were fixed.
   * Selected R code was updated in DIF/Total scores.
   * Animate function for sliders was slowed down.
 
-----------
 
-### Changes in version 1.2.9-2. (2019-01-11)
 
-#### BUG FIXING
+# ShinyItemAnalysis 1.2.9-2. 
+
+## Bug fixes
   * Generalized ULI index is now correctly displayed in traditional
     item analysis table in reports.
   * Item names are now correctly displayed in reports.
@@ -989,29 +985,29 @@
   * Function `plotDIFLogistic()` now handles user-specified matching
     criterion.
 
-#### MINOR UPDATES
+## Minor updates
   * Legend of DDplot was modified.
 
-----------
 
-### Changes in version 1.2.9-1. (2018-12-10)
 
-#### MINOR UPDATES
+# ShinyItemAnalysis 1.2.9-1. 
+
+## Minor updates
   * Wording in PDF/HTML reports was edited.
 
-----------
 
-### Changes in version 1.2.9. (2018-12-06)
 
-#### BUG FIXING
+# ShinyItemAnalysis 1.2.9. 
+
+## Bug fixes
   * IRT/Training/Dichotomous models - plots are correctly plotted.
   * Download buttons in IRT/4PL works now.
 
-#### MAJOR UPDATES
+## Major updates
   * TIF were converted into plotly.
   * Section Validity/FA is not accessible for now.
 
-#### MINOR UPDATES
+## Minor updates
   * Selected R code for IRT/Bock's model was updated.
   * Wording in IRT models was updated.
   * Wording in Reports was updated.
@@ -1021,11 +1017,11 @@
   * Colours of IRT summary plots correspond to model for Items.
 
 
-----------
 
-### Changes in version 1.2.8-7. (2018-12-05)
 
-#### MAJOR UPDATES
+# ShinyItemAnalysis 1.2.8-7. 
+
+## Major updates
   * IRT section of shiny app was updated and now provides
     new and more shiny figures in plotly
   * PDF and HTML reports were updated and now allow
@@ -1033,30 +1029,30 @@
     - different types of discrimination indices in DDplots
     - summary table for ability estimates in IRT section
 
-----------
 
-### Changes in version 1.2.8-6. (2018-12-03)
 
-#### BUG FIXING
+# ShinyItemAnalysis 1.2.8-6. 
+
+## Bug fixes
   * Dendrogram is now correctly rendered.
 
-#### MAJOR UPDATES
+## Major updates
   * Function `ItemAnalysis()` was added.
   * IRT section now allows download of ability estimates
 
-#### MINOR UPDATES
+## Minor updates
   * Help pages for functions were updated.
 
-----------
 
-### Changes in version 1.2.8-5. (2018-11-29)
 
-#### BUG FIXING
+# ShinyItemAnalysis 1.2.8-5. 
+
+## Bug fixes
   * Key for ordinal data for binarization is now correctly used. Values
     greater or equal to value of the key are set to 1.
   * When NULL data is uploaded, default dataset GMAT is in use.
 
-#### MAJOR UPDATES
+## Major updates
   * Scree plot was moved into the new tab `Factor analysis`.
   * Dendrogram was added into `Correlation structure` tab.
   * Option for global cut-score for ordinal data was added.
@@ -1064,20 +1060,20 @@
   * Removal of items with only 0s or 1s now works.
   * Removal of observation with NA group now works.
 
-#### MINOR UPDATES
+## Minor updates
   * Text in Data section was updated.
   * List of references was updated.
   * Selected R code in `Correlation structure` tab was updated.
 
-----------
 
-### Changes in version 1.2.8-4. (2018-11-23)
 
-#### BUG FIXING
+# ShinyItemAnalysis 1.2.8-4. 
+
+## Bug fixes
   * Bug in IRT models/Training/Dichotomous models text of theta in
     plotly was fixed.
 
-#### MAJOR UPDATES
+## Major updates
   * Reorganization of data upload and renaming data variables.
       test_answers()> nominal()
       correct_answers()> binary()
@@ -1093,22 +1089,22 @@
       z_score() standardized total score, no need to use scale(total_score())
                   in each function
 
-#### MINOR UPDATES
+## Minor updates
   * Updating text in Data section.
   * Editing boxes for data upload in Data section.
 
-----------
 
-### Changes in version 1.2.8-3. (2018-11-20)
 
-#### BUG FIXING
+# ShinyItemAnalysis 1.2.8-3. 
+
+## Bug fixes
   * Bug in Regression/Nonlinear 4P IRT Z (rounding in interpretation)
     was fixed.
   * Bug in IRT models/Training/Dichotomous models text of theta in
     plotly was fixed.
   * Bug in IRT models/Training in plotly a ModeBar was fixed.
 
-#### MAJOR UPDATES
+## Major updates
   * Data upload now allows also ordinal data, min/max values can be
     specified.
   * Validity/Correlation structure now allows selection between
@@ -1120,23 +1116,23 @@
     standard scores, correlation matrix, traditional item analysis,
     and for parameter estimates in IRT models.
 
-#### MINOR UPDATES
+## Minor updates
   * Data upload now better points to "Upload data" button.
   * Precision was re-set for IRT models/Training tab. Now = 0.1.
 
-----------
 
-### Changes in version 1.2.8-2. (2018-11-05)
 
-#### MAJOR UPDATES
+# ShinyItemAnalysis 1.2.8-2. 
+
+## Major updates
   * `gDiscrim()` function has been extended to calculate Upper-Lower
     Index (ULI) also for ordinal items
 
-----------
 
-### Changes in version 1.2.8-1. (2018-10-01)
 
-#### BUG FIXING
+# ShinyItemAnalysis 1.2.8-1. 
+
+## Bug fixes
   * Bug in IRT dichotomous models comparison is fixed.
     (Reported by Jean-Luc Kop)
   * Bug in IRT dichotomous models (3PL and 4PL) was fixed.
@@ -1148,23 +1144,23 @@
   * Bug in `plotDIFirt()` function was fixed. Function now returns also
     item.name argument.
 
-#### MAJOR UPDATES
+## Major updates
   * Global setting for figure downloads was created. This can be changed
     in Setting section.
 
-----------
 
-### Changes in version 1.2.8 (2018-09-27)
 
-**_THIS IS A CRAN VERSION_**
+# ShinyItemAnalysis 1.2.8 
+
+
 
 *It includes versions 1.2.7-1 - 1.2.7-7*
 
-----------
 
-### Changes in version 1.2.7-7. (2018-09-27)
 
-#### MAJOR UPDATES
+# ShinyItemAnalysis 1.2.7-7. 
+
+## Major updates
   * Section Reliability was added.
     - Split-half methods including also Revelle's beta were added
     - Cronbach's alpha method with CI was moved to section Reliability.
@@ -1173,14 +1169,14 @@
   * Section IRT models
     - Selected R code for Rasch and 1PL models was updated.
 
-#### MINOR UPDATES
+## Minor updates
   * Reference list was updated.
 
-----------
 
-### Changes in version 1.2.7-6. (2018-08-29)
 
-#### MAJOR UPDATES
+# ShinyItemAnalysis 1.2.7-6. 
+
+## Major updates
   * Section DIF/Fairness
     - Subsection Logistic IRT Z is deprecated.
     - Subsection Nonlinear IRT Z is now called Generalized logistic.
@@ -1189,82 +1185,82 @@
     - Subsection SIBTEST was added, including SIBTEST method and
       Crossing-SIBTEST method.
 
-#### MINOR UPDATES
+## Minor updates
   * Reference list was updated.
 
-----------
 
-### Changes in version 1.2.7-5. (2018-08-22)
 
-#### MINOR UPDATES
+# ShinyItemAnalysis 1.2.7-5. 
+
+## Minor updates
   * Some wording was updated.
   * Selected R code was updated.
   * Function theme_shiny is deprecated.
     New function `theme_app()` was created and applied for all
     graphics, including R functions in package.
 
-----------
 
-### Changes in version 1.2.7-4. (2018-08-10)
 
-#### MINOR UPDATES
+# ShinyItemAnalysis 1.2.7-4. 
+
+## Minor updates
   * Paddings were adjusted.
   * Acknowledgments were updated.
 
-----------
 
-### Changes in version 1.2.7-3. (2018-07-27)
 
-#### BUG FIXING
+# ShinyItemAnalysis 1.2.7-3. 
+
+## Bug fixes
   * Crashing of the app when upload no data was fixed.
 
-#### MAJOR UPDATES
+## Major updates
   * Data page
     - Design of data page was changed.
     - User can now specify encoding of missing values.
     - Basic summary was added.
 
-----------
 
-### Changes in version 1.2.7-2. (2018-07-04)
 
-#### MAJOR UPDATES
+# ShinyItemAnalysis 1.2.7-2. 
+
+## Major updates
   * Phone version
     - collapsible menu closes when clicked
 
-----------
 
-### Changes in version 1.2.7-1. (2018-07-02)
 
-#### BUG FIXING
+# ShinyItemAnalysis 1.2.7-1. 
+
+## Bug fixes
   * Plotly files in IRT training section are now displayed with
     mode bar due a bug in plotly package.
 
-#### MINOR UPDATES
+## Minor updates
   * Some typos were fixed.
   * Link to google form for feedback was added into About section.
   * New R icon was added into footer.
 
-----------
 
-### Changes in version 1.2.7. (2018-05-03)
 
-**_THIS IS A CRAN VERSION_**
+# ShinyItemAnalysis 1.2.7. 
+
+
 
 *It includes versions 1.2.6-1 - 1.2.6-12*
 
-----------
 
-### Changes in version 1.2.6-12. (2018-04-26)
 
-#### MINOR UPDATES
+# ShinyItemAnalysis 1.2.6-12. 
+
+## Minor updates
   * Mirror at Charles University is no longer in use.
 
-----------
 
-### Changes in version 1.2.6-11. (2018-04-24)
 
-#### MAJOR UPDATES
+# ShinyItemAnalysis 1.2.6-11. 
+
+## Major updates
   * Function `DDplot()`
     - Limits for y-axis were adjusted when negative values of discrimination
       are detected.
@@ -1272,24 +1268,24 @@
   * Reports
     - Some unused parts of reports were excluded.
 
-----------
 
-### Changes in version 1.2.6-10. (2018-04-19)
 
-#### MAJOR UPDATES
+# ShinyItemAnalysis 1.2.6-10. 
+
+## Major updates
   * UI
-    - Some parts were splitted from main ui.R file
+    - Some parts were split from main ui.R file
   * IRT
     - Exercises in IRT training were extended.
   * Data
     - Bug in data upload was fixed. Now length of criterion variable
       is correctly checked.
 
-----------
 
-### Changes in version 1.2.6-9. (2018-04-16)
 
-#### MAJOR UPDATES
+# ShinyItemAnalysis 1.2.6-9. 
+
+## Major updates
   * Packages - shinyBS is now required.
   * Data
     - HCI dataset was added into package.
@@ -1300,24 +1296,24 @@
   * IRT
     - Helps for interactive exercises were added.
 
-#### MINOR UPDATES
+## Minor updates
   * Typos were fixed.
 
-----------
 
-### Changes in version 1.2.6-8. (2018-04-13)
 
-#### MAJOR UPDATES
+# ShinyItemAnalysis 1.2.6-8. 
+
+## Major updates
   * IRT
     - Expected item scores were removed from IRT training NRM.
     - Interactive exercises were added into  IRT training - dichotomous
       models.
 
-----------
 
-### Changes in version 1.2.6-7. (2018-04-12)
 
-#### MAJOR UPDATES
+# ShinyItemAnalysis 1.2.6-7. 
+
+## Major updates
   * Data
     - Graded data od Medical data set was added.
     - In all dataMedical data sets the criterion variable was renamed to
@@ -1326,19 +1322,19 @@
     - Expected item scores were added into polytomous models in IRT training.
     - Selected R code was updated in IRT training.
 
-#### MINOR UPDATES
+## Minor updates
   * IRT section
     - Colors of sliders and curves in IRT training section were adjusted.
 
-----------
 
-### Changes in version 1.2.6-6. (2018-04-10)
 
-#### MAJOR UPDATES
+# ShinyItemAnalysis 1.2.6-6. 
+
+## Major updates
   * Regression
     - NLR 4P model was added into model comparison.
 
-#### MINOR UPDATES
+## Minor updates
   * README file was updated. Typos were fixed.
   * Design of figures was unified.
   * Download button options were unified.
@@ -1347,11 +1343,11 @@
   * Selected R code was improved for first 4 sections.
   * Some wording was improved.
 
-----------
 
-### Changes in version 1.2.6-5. (2018-04-09)
 
-#### MAJOR UPDATES
+# ShinyItemAnalysis 1.2.6-5. 
+
+## Major updates
   * IRT section
     - Wording for IRT training was added and improved.
   * Selected R code syntax was improved in some sections. This can be
@@ -1363,16 +1359,16 @@
   * theme_shiny was created as a default theme for all figures.
     Now it is used only partionally.
 
-#### MINOR UPDATES
+## Minor updates
   * README file was updated. Typos were fixed. Links were added.
     Hexbin was added.
   * References were updated.
 
-----------
 
-### Changes in version 1.2.6-4. (2018-04-06)
 
-#### MAJOR UPDATES
+# ShinyItemAnalysis 1.2.6-4. 
+
+## Major updates
   * IRT section
     - Selected R code was added into polytomous models.
     - Equations were added into polytomous models.
@@ -1388,47 +1384,47 @@
     - IRT equation is generated based on selected model only.
   * Unnecessary files were deleted. Some cleaning of files was done.
 
-#### MINOR UPDATES
+## Minor updates
   * IRT section
     - Selected R code in model comparison was updated. Typos were fixed.
   * Regression section
     - Interpretation of NLR 3P model was extended.
     - Syntax for NLR 3P model was improved.
 
-----------
 
-### Changes in version 1.2.6-3. (2018-04-05)
 
-#### MAJOR UPDATES
+# ShinyItemAnalysis 1.2.6-3. 
+
+## Major updates
   * IRT section
     - IRT section is newly organized.
     - IRT training section was expanded by polytomous models.
       GRM, GPCM and NRM were added.
     - Syntax for IRT training was improved.
 
-#### MINOR UPDATES
+## Minor updates
   * IRT section
     - Sliders steps are now 0.01 in dichotomous models.
 
-----------
 
-### Changes in version 1.2.6-2. (2018-04-03)
 
-#### MINOR UPDATES
+# ShinyItemAnalysis 1.2.6-2. 
+
+## Minor updates
   * Numeric inputs were removed from IRT training section.
   * Selected R code was extended in IRT training section by item
     information function plot.
   * References were updated.
   * Mirror web link was updated.
 
-----------
 
-### Changes in version 1.2.6-1. (2018-03-15)
 
-#### BUG FIXING
+# ShinyItemAnalysis 1.2.6-1. 
+
+## Bug fixes
   * Reports with DDF but none DDF item are now correctly generated.
 
-#### MINOR UPDATES
+## Minor updates
   * Hexbin
     - was added into footer.
     - is now as shortcut icon.
@@ -1442,13 +1438,13 @@
     - Subsections characteristic curves is not visible when none DIF
       or DDF item is present.
     - Some typos were fixed.
-    - Some parameters were renamed. The unneecessary ones were removed.
+    - Some parameters were renamed. The unnecessary ones were removed.
 
-------
 
-### Changes in version 1.2.6 (2018-03-01)
 
-#### MAJOR UPDATES
+# ShinyItemAnalysis 1.2.6 
+
+## Major updates
   * UI for `DIF/Fairness` section was updated.
   * References were added into About page.
   * New design of reports is now available. Design of PDF reports was
@@ -1463,7 +1459,7 @@
       - Examples in `DIF/Fairness` IRT Lord and IRT Raju were fixed.
       - Function `plotDIFirt()` now can be also used for only one item.
 
-#### MINOR UPDATES
+## Minor updates
   * Reference list was updated.
   * CITATION file was modified.
   * In Summary page the description for summary table was added. The sample
@@ -1471,11 +1467,11 @@
   * Wording in summary statistics in Summary section was improved.
   * Description of Session info section in reports was added.
 
-------
 
-### Changes in version 1.2.5 (2017-11-14)
 
-#### MAJOR UPDATES
+# ShinyItemAnalysis 1.2.5 
+
+## Major updates
   * Correlation plots now offer reordering by hierarchical clustering.
     Several linkage methods are offered. This is also included in reports.
   * Confirmation of data upload was added. Also warnings and errors are
@@ -1489,7 +1485,7 @@
   * In multinomial regression bug when only two choices in data are present
     was fixed.
 
-#### MINOR UPDATES
+## Minor updates
   * Link for Adela's website was added.
   * Columns for BIC and its adjusted version were swapped in table for
     IRT models comparison. Text above table was also updated.
@@ -1499,11 +1495,11 @@
     a, b, c, d.
   * In IRT training equations were moved above interpretation.
 
-------
 
-### Changes in version 1.2.4 (2017-08-28)
 
-#### MINOR UPDATES
+# ShinyItemAnalysis 1.2.4 
+
+## Minor updates
 
   * Reports were mildly updated.
   * Resolution of figures in reports was increased (now 300ppi)
@@ -1516,13 +1512,13 @@
   * Bug in item names for `DDF` subsection of `Fairness/DIF` section
     was fixed.
 
-------
 
-### Changes in version 1.2.3 (2017-08-22)
 
-**_THIS IS A CRAN VERSION_**
+# ShinyItemAnalysis 1.2.3 
 
-#### MAJOR UPDATES
+
+
+## Major updates
   * Report's customized options were extended. Reports now include also
     dynamic description.
   * Author and dataset name can be now filled and add into reports.
@@ -1533,7 +1529,7 @@
   * Purification options was added `DDF` analysis in `Reports` section when customized
     setting is selected.
     
-#### MINOR UPDATES
+## Minor updates
 
   * Size of plots and font in plots was changed for reports.
   * Plots in HTML report are now centered.
@@ -1541,11 +1537,11 @@
   * References were updated in `Reference` section and also in README file.
   * Wording of Spearman test in `Validity` section was mildly updated.
 
-------
 
-### Changes in version 1.2.2 (2017-07-26)
 
-#### MAJOR UPDATES
+# ShinyItemAnalysis 1.2.2 
+
+## Major updates
   * Design of reports was edited.
   * Several bugs were fixed:
      - Bug when creating report for uploaded data was fixed.
@@ -1553,18 +1549,17 @@
        criterion or DIF group was fixed.
   * `ShinyItemAnalysis` now uses `plotly` package!
 
-#### MINOR UPDATES
+## Minor updates
   * Design and options of `Report` page were updated.
   * Layout of IRT curves training page was mildly changed. There are now
-    two curves in each plot. Also text area input was added and synchro-
-    nized with sliders. Colour of sliders now correspond to colour of
-    curve.
+    two curves in each plot. Also text area input was added and synchronized with sliders.
+    Colour of sliders now correspond to colour of curve.
 
-------
 
-### Changes in version 1.2.1 (2017-07-16)
 
-#### MAJOR UPDATES
+# ShinyItemAnalysis 1.2.1 
+
+## Major updates
   * Several bugs were fixed:
      - Interpretation of regression models was fixed.
      - Interpretation of text about correlation in Predictive validity
@@ -1589,7 +1584,7 @@
      - `IRT models` - IRT.R
      - `DIF/Fairness` - DIF.IRT
 
-#### MINOR UPDATES
+## Minor updates
   * Last three rows in regression comparison table are now bold.
   * Reference list was extended.
   * The subpage `Distractors` of `Item analysis` page was mildly edited.
@@ -1603,13 +1598,13 @@
      - Item analysis
      - Regression
 
-------
 
-### Changes in version 1.2.0 (2017-06-15)
 
-**_THIS IS A CRAN VERSION_**
+# ShinyItemAnalysis 1.2.0 
 
-#### MAJOR UPDATES
+
+
+## Major updates
   * `ShinyItemAnalysis` can now handle missing values. Newly there is
     an option to handle NA values as zeros in scored data.
   * Bug in WrightMap was fixed.
@@ -1659,7 +1654,7 @@
     - Diagram of custom discrimination - new version of DD plot - was
       added into Distractor subsection.
 
-#### MINOR UPDATES
+## Minor updates
   * CITATION file was added.
   * Maximum upload size was set to 30MB.
   * Item names were fixed and unified.
@@ -1678,14 +1673,13 @@
   * Reference list was expanded and links to online versions of articles
     were added.
 
-------
 
-### Changes in version 1.1.0 (2016-02-02)
 
-**_THIS IS A CRAN VERSION_**
+# ShinyItemAnalysis 1.1.0 
 
-#### MAJOR UPDATES
-  *  New overall appearence using shinythemes package.
+
+## Major updates
+  *  New overall appearance using shinythemes package.
   *  New datasets `dataMedical`, `dataMedicalkey`, `dataMedicaltest`
      were added into the package.
   *  New dataset is offered in example datasets inside the shiny app.
@@ -1705,7 +1699,7 @@
   *  Subsection regression model selection was added into Regression
      section.
 
-#### MINOR UPDATES
+## Minor updates
   *  Typos were fixed.
   *  Selected R code was updated.
   *  Description of data including uploading own data set was extended.
@@ -1719,13 +1713,10 @@
   *  Bug in DDF for datasets withou DIF items was fixed.
   *  Selected code was updated.
 
-------
 
-### Changes in version 1.0.0 (2016-11-25)
+# ShinyItemAnalysis 1.0.0 
 
-**_THIS IS A CRAN VERSION_**
-
-#### MAJOR UPDATES
+## Major updates
   *  New graphical representation via `ggplot2` package
   *  Cronbach's alpha was added
   *  Distractor analysis was extended

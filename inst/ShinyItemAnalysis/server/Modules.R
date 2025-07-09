@@ -39,101 +39,96 @@ if (!ShinyItemAnalysis:::sm_disabled()) {
 
 
   if (sm_allow_gui_installation()) {
-  # obtain available module packages from SIA repo
-  # available.packages are cached per R session
-  observe({
-    available <- ShinyItemAnalysis:::sm_not_installed()
+    # obtain available module packages from SIA repo
+    # available.packages are cached per R session
+    observe({
+      available <- ShinyItemAnalysis:::sm_not_installed()
 
-    if (length(available) == 0) {
-      available <- c("All available modules were installed" = "")
-    }
-    updateSelectizeInput(
-      inputId = "mods_in_repo",
-      choices = available
-    )
-  })
-
-  observe({
-    sel_mod <- input$mods_in_repo
-    req(sel_mod)
-
-    # validate input to be safe
-    pkgs_on_repo <- available.packages(
-      repos = ShinyItemAnalysis:::sm_repo(),
-      fields = "Config/ShinyItemAnalysis/module"
-    )
-
-    is_sm <- !is.na(pkgs_on_repo[, "Config/ShinyItemAnalysis/module"])
-
-    mods_on_repo <- pkgs_on_repo[is_sm, "Package"]
-
-    if (!(sel_mod %in% mods_on_repo)) {
-      showModal(
-        modalDialog(
-          title = "Module installation failed",
-          p(
-            "The module '", span(sel_mod, .noWS = c("before", "after")),
-            "' is not available on the repository at '", span(sm_repo(), .noWS = c("before", "after")),
-            "'. Please report the issue to the authors."
-          ),
-          easyClose = TRUE,
-          size = "m"
-        )
+      if (length(available) == 0) {
+        available <- c("All available modules were installed" = "")
+      }
+      updateSelectizeInput(
+        inputId = "mods_in_repo",
+        choices = available
       )
-      return()
-    }
+    })
 
-    # if (sel_mod %in% ShinyItemAnalysis:::pkgs_attached()) {
-    #   showModal(
-    #     modalDialog(
-    #       title = "Selected SIA module is in use",
-    #       "Please close the app and restart your R session.",
-    #       easyClose = TRUE,
-    #       size = "s"
-    #     )
-    #   )
-    # }
+    observe({
+      sel_mod <- input$mods_in_repo
+      req(sel_mod)
 
-    install_cond_handler <- function(cnd) {
-      showModal(
-        modalDialog(
-          title = "Module installation failed",
-          p(
-            "The module installation failed with the following message.",
-            "Please install the module manually in R console and report the error to the authors."
-          ),
-          p(cnd$message, style = "color:red;"),
-          easyClose = TRUE,
-          size = "m"
-        )
+      # validate input to be safe
+      pkgs_on_repo <- available.packages(
+        repos = ShinyItemAnalysis:::sm_repo(),
+        fields = "Config/ShinyItemAnalysis/module"
       )
-    }
 
-    rlang::try_fetch(
-      {
-        ShinyItemAnalysis:::sm_install_pkg(sel_mod)
-      },
-      warning = install_cond_handler,
-      error = install_cond_handler
-    )
+      is_sm <- !is.na(pkgs_on_repo[, "Config/ShinyItemAnalysis/module"])
 
-    add_modules(
-      mod_list,
-      server_dots = mod_server_exports,
-      ui_dots = list() # no use for now, maybe completely useless?
-    )
+      mods_on_repo <- pkgs_on_repo[is_sm, "Package"]
 
-    available <- ShinyItemAnalysis:::sm_not_installed()
+      if (!(sel_mod %in% mods_on_repo)) {
+        showModal(
+          modalDialog(
+            title = "Module installation failed",
+            p(
+              "The module '", span(sel_mod, .noWS = c("before", "after")),
+              "' is not available on the repository at '", span(sm_repo(), .noWS = c("before", "after")),
+              "'. Please report the issue to the authors."
+            ),
+            easyClose = TRUE,
+            size = "m"
+          )
+        )
+        return()
+      }
 
-    if (length(available) == 0L) {
-      available <- c("All available modules were installed" = "")
-    }
-    updateSelectizeInput(
-      inputId = "mods_in_repo",
-      choices = available
-    )
-  }) |>
-    bindEvent(input$install_mod)
+      # if (sel_mod %in% ShinyItemAnalysis:::pkgs_attached()) {
+      #   showModal(
+      #     modalDialog(
+      #       title = "Selected SIA module is in use",
+      #       "Please close the app and restart your R session.",
+      #       easyClose = TRUE,
+      #       size = "s"
+      #     )
+      #   )
+      # }
+
+      rlang::try_fetch(
+        ShinyItemAnalysis:::sm_install_pkg(sel_mod),
+        error = function(cnd) {
+          showModal(
+            modalDialog(
+              title = "Module installation failed",
+              p(
+                "The module installation failed with the following message.",
+                "Please install the module manually in R console and report the error to the authors (attach R console log)."
+              ),
+              p(cnd$message, style = "color:red;"),
+              easyClose = TRUE,
+              size = "m"
+            )
+          )
+        }
+      )
+
+      add_modules(
+        mod_list,
+        server_dots = mod_server_exports,
+        ui_dots = list() # no use for now, maybe completely useless?
+      )
+
+      available <- ShinyItemAnalysis:::sm_not_installed()
+
+      if (length(available) == 0L) {
+        available <- c("All available modules were installed" = "")
+      }
+      updateSelectizeInput(
+        inputId = "mods_in_repo",
+        choices = available
+      )
+    }) |>
+      bindEvent(input$install_mod)
   }
 }
 

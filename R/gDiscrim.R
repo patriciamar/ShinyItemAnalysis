@@ -136,7 +136,7 @@ gDiscrim <- function(Data, k = 3, l = 1, u = 3, maxscore, minscore, x, ...) {
 
   # assert dataset is breakable
   if (length(unique(breakpoints)) < k - 1) {
-    stop("Dataset cannot be splitted, there are too few unique cutpoints. ", call. = FALSE)
+    stop("Dataset cannot be split, there are too few unique cutpoints. ", call. = FALSE)
   }
 
   # cut total scores into k groups
