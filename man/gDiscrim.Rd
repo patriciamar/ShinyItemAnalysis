@@ -38,6 +38,13 @@ of obtained minimal scores is imputed. See \strong{Details}.}
     swapped with \eqn{<} (and \eqn{>} with \eqn{\ge}), and
     \code{rightmost.closed} means \sQuote{leftmost is closed}.  This may
     be useful, e.g., in survival analysis computations.}
+    \item{\code{checkSorted}}{logical indicating if \code{vec} should be checked,
+    i.e., \code{\link[base]{is.unsorted}(vec)} is asserted to be false.  Setting
+    this to \code{FALSE} skips the check gaining speed, but may return
+    nonsense results in case \code{vec} is not sorted.}
+    \item{\code{checkNA}}{logical indicating if each \code{x[i]} should be checked
+    as with \code{\link[base]{is.na}(.)}.  Setting this to \code{FALSE} in case
+    of \code{NA}'s in \code{x[]} may result in platform dependent nonsense.}
   }}
 }
 \description{

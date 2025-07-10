@@ -38,8 +38,7 @@ background process (in the 'RStudio')?}
     Incompatible with \code{type = "both"}.
   }
     \item{\code{method}}{
-    download method, see \code{\link[utils]{download.file}}.  Unused if
-    a non-\code{NULL} \code{available} is supplied.
+    download method, see \code{\link[utils]{download.file}}.
   }
     \item{\code{available}}{
     a matrix as returned by \code{\link[utils]{available.packages}}
@@ -121,7 +120,8 @@ background process (in the 'RStudio')?}
     \item{\code{INSTALL_opts}}{
     an optional character vector of additional option(s) to be passed to
     \command{R CMD INSTALL} for a source package install.  E.g.,
-    \code{c("--html", "--no-multiarch", "--no-test-load")}.
+    \code{c("--html", "--no-multiarch", "--no-test-load")} or, for
+    macOS, \code{"--dsym"}.
 
     Can also be a named list of character vectors to be used as
     additional options, with names the respective package names.
