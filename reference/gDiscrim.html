@@ -112,6 +112,17 @@ of obtained minimal scores is imputed. See <strong>Details</strong>.</p></dd>
     <code>rightmost.closed</code> means ‘leftmost is closed’.  This may
     be useful, e.g., in survival analysis computations.</p></dd>
 
+    <dt><code>checkSorted</code></dt>
+<dd><p>logical indicating if <code>vec</code> should be checked,
+    i.e., <code><a href="https://rdrr.io/r/base/is.unsorted.html" class="external-link">is.unsorted</a>(vec)</code> is asserted to be false.  Setting
+    this to <code>FALSE</code> skips the check gaining speed, but may return
+    nonsense results in case <code>vec</code> is not sorted.</p></dd>
+
+    <dt><code>checkNA</code></dt>
+<dd><p>logical indicating if each <code>x[i]</code> should be checked
+    as with <code><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a>(.)</code>.  Setting this to <code>FALSE</code> in case
+    of <code>NA</code>'s in <code>x[]</code> may result in platform dependent nonsense.</p></dd>
+
 
 </dl></dd>
 

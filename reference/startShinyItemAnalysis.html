@@ -86,8 +86,7 @@ background process (in the 'RStudio')?</p></dd>
     Incompatible with <code>type = "both"</code>.</p></dd>
 
     <dt><code>method</code></dt>
-<dd><p>download method, see <code><a href="https://rdrr.io/r/utils/download.file.html" class="external-link">download.file</a></code>.  Unused if
-    a non-<code>NULL</code> <code>available</code> is supplied.</p></dd>
+<dd><p>download method, see <code><a href="https://rdrr.io/r/utils/download.file.html" class="external-link">download.file</a></code>.</p></dd>
 
     <dt><code>available</code></dt>
 <dd><p>a matrix as returned by <code><a href="https://rdrr.io/r/utils/available.packages.html" class="external-link">available.packages</a></code>
@@ -168,7 +167,8 @@ background process (in the 'RStudio')?</p></dd>
     <dt><code>INSTALL_opts</code></dt>
 <dd><p>an optional character vector of additional option(s) to be passed to
     <code class="command">R CMD INSTALL</code> for a source package install.  E.g.,
-    <code>c("--html", "--no-multiarch", "--no-test-load")</code>.</p>
+    <code>c("--html", "--no-multiarch", "--no-test-load")</code> or, for
+    macOS, <code>"--dsym"</code>.</p>
 <p>Can also be a named list of character vectors to be used as
     additional options, with names the respective package names.</p></dd>
 
