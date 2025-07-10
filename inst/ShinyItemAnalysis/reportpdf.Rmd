@@ -134,7 +134,7 @@ To cite ShinyItemAnalysis application in publications, please, use:
 
 \vspace{1.5em}
 
-ShinyItemAnalysis application is free software and you can redistribute it and or modify it under the terms of the GNU GPL 3 as published by the Free Software Foundation. This program is distributed in the hope that it will be useful, but without any warranty; without even the implied warranty of merchantability of fitness for a particular purpose. Visit [ShinyItemAnalysis.org](https://www.shinyitemanalysis.org/) to learn more!
+ShinyItemAnalysis application is free software and you can redistribute it and or modify it under the terms of the GNU GPL 3 as published by the Free Software Foundation. This program is distributed in the hope that it will be useful, but without any warranty; without even the implied warranty of merchantability of fitness for a particular purpose. Visit [ShinyItemAnalysis.org](https://shinyitemanalysis.org/) to learn more!
 
 \pagebreak
 
