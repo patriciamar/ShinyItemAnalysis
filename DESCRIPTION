@@ -2,7 +2,7 @@ Type: Package
 Package: ShinyItemAnalysis
 Title: Test and Item Analysis via Shiny
 Version: 1.5.5
-Date: 2025-07-09
+Date: 2025-07-10
 Authors@R: c(
     person("Patricia", "Martinkova", , "martinkova@cs.cas.cz", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0003-4754-8543")),
@@ -21,7 +21,7 @@ Description: Package including functions and interactive shiny application
     assessments, health-related and other types of multi-item
     measurements, or ratings from multiple raters.
 License: GPL-3
-URL: https://www.ShinyItemAnalysis.org
+URL: https://shinyitemanalysis.org/
 BugReports: https://github.com/patriciamar/ShinyItemAnalysis/issues
 Depends:
     R (>= 4.1.0)
