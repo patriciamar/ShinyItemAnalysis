@@ -1,0 +1,163 @@
+# NIH grant peer review scoring dataset
+
+The `NIH` dataset (Erosheva et al., 2020a) was sampled from a full set
+of 54,740 R01 applications submitted by black and white principal
+investigators (PIs) and reviewed by Center for Scientific Review (CSR)
+of the National Institutes of Health (NIH) during council years
+2014–2016.
+
+It contains the original random sample of white applicants as generated
+by Erosheva et al. (2020b) and a sample of 46 black applicants generated
+to obtain the same ratio of white and black applicants as in the
+original sample (for details, see Erosheva et al., 2021a). The dataset
+was used by Erosheva et al. (2021b) to demonstrate issues of inter-rater
+reliability in case of restricted samples.
+
+The available variables include preliminary criterion scores on
+Significance, Investigator, Innovation, Approach, Environment and a
+preliminary Overall Impact Score. Each of these criteria and the overall
+score is scored on an integer scale from 1 (best) to 9 (worst). Besides
+the preliminary criteria and Overall Impact Scores, the data include
+applicant race, the structural covariates (PI ID, application ID,
+reviewer ID, administering institute, IRG, and SRG), the matching
+variables – gender, ethnicity (Hispanic/Latino or not), career stage,
+type of academic degree, institution prestige (as reflected by the NIH
+funding bin), area of science (as reflected by the IRG handling the
+application), application type (new or renewal) and status (amended or
+not) – as well as the final overall score. In addition, the file
+includes a study group ID variable that refers to the Matched and Random
+subsets used in the original study.
+
+## Usage
+
+``` r
+NIH
+```
+
+## Format
+
+`NIH` is a `data.frame` consisting of 5802 observations on 27 variables.
+
+- ID:
+
+  Proposal ID.
+
+- Score:
+
+  Preliminary Overall Impact score (1-9 integer scale, 1 best).
+
+- Significance, Investigator, Innovation, Approach, Environment :
+
+  Preliminary Criterion Scores (1-9 integer scale, 1 best).
+
+- PIRace:
+
+  Principal investigator's self-identified race; `"White"` or `"Black"`.
+
+- PIID:
+
+  Anonymized ID of principal investigator (PI).
+
+- PIGender:
+
+  PI's gender membership; `"Male"` or `"Female"`.
+
+- PIEthn:
+
+  PI's ethnicity; `"Hispanic/Latino"` or `"Non-Hispanic"`.
+
+- PICareerStage:
+
+  PI's career stage; `"ESI"` Early Stage Investigator, `"Experienced"`
+  Experienced Investigator, or `"Non-ES NI"` Non-Early Stage New
+  Investigator.
+
+- PIDegree:
+
+  PI's degree; `"PhD"`, `"MD"`, `"MD/PhD"`, or `"Others"`.
+
+- PIInst:
+
+  Lead PI's institution's FY 2014 total institution NIH funding; 5 bins
+  with 1 being most-funded.
+
+- GroupID:
+
+  Group ID.
+
+- RevID:
+
+  Reviewer's ID.
+
+- IRG:
+
+  IRG (Integrated Research Group) id.
+
+- AdminOrg:
+
+  Administering Organization id.
+
+- SRG:
+
+  SRG (Scientific Research Group) id.
+
+- PropType:
+
+  Application type, `"New"` or `"Renewal"`.
+
+- Ammend:
+
+  Ammend. Logical.
+
+- ScoreAvg:
+
+  Average of the three overall scores from different reviewers.
+
+- ScoreAvgAdj:
+
+  Average of the three overall scores from different reviewers,
+  increased by multiple of 0.001 of the worst score.
+
+- ScoreRank:
+
+  Project rank calculated based on `ScoreAvg`.
+
+- ScoreRankAdj:
+
+  Project rank calculated based on `ScoreAvgAdj`.
+
+- ScoreFinalChar:
+
+  Final Overall Impact score (1-9 integer scale, 1 best; `"ND"` refers
+  to "not discussed")
+
+- ScoreFinal:
+
+  Final Overall Impact score (1-9 integer scale, 1 best).
+
+## References
+
+Erosheva, E. A., Grant, S., Chen, M.-C., Lindner, M. D., Nakamura, R.
+K., & Lee, C. J. (2020a). NIH peer review: Criterion scores completely
+account for racial disparities in overall impact scores. Science
+Advances 6(23), eaaz4868,
+[doi:10.1126/sciadv.aaz4868](https://doi.org/10.1126/sciadv.aaz4868)
+
+Erosheva, E. A., Grant, S., Chen, M.-C., Lindner, M. D., Nakamura, R.
+K., & Lee, C. J. (2020b). Supplementary material: NIH peer review:
+Criterion scores completely account for racial disparities in overall
+impact scores. Science Advances 6(23), eaaz4868,
+[doi:10.17605/OSF.IO/4D6RX](https://doi.org/10.17605/OSF.IO/4D6RX)
+
+Erosheva, E., Martinkova, P., & Lee, C. J. (2021a). Supplementary
+material: When zero may not be zero: A cautionary note on the use of
+inter-rater reliability in evaluating grant peer review.
+
+Erosheva, E., Martinkova, P., & Lee, C. J. (2021b). When zero may not be
+zero: A cautionary note on the use of inter-rater reliability in
+evaluating grant peer review. Journal of the Royal Statistical Society –
+Series A. Accepted.
+
+## See also
+
+[`ICCrestricted()`](ICCrestricted.md)

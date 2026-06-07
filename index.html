@@ -12,8 +12,8 @@
 <link rel="icon" sizes="any" href="favicon.ico">
 <link rel="manifest" href="site.webmanifest">
 <script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Test and Item Analysis via Shiny">
 <meta name="description" content="Package including functions and interactive shiny application for the psychometric analysis of educational tests, psychological assessments, health-related and other types of multi-item measurements, or ratings from multiple raters.">
@@ -28,7 +28,7 @@
 
     <a class="navbar-brand me-2" href="index.html">ShinyItemAnalysis</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.5.5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.6.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -63,7 +63,7 @@
 <div class="section level2">
 <h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
 </h2>
-<p><code>ShinyItemAnalysis</code> is an R package including functions and interactive shiny application for the psychometric analysis of educational tests, psychological assessments, health-related and other types of multi-item measurements, or ratings from multiple raters. Offered methods include:</p>
+<p><strong>ShinyItemAnalysis</strong> is an R package including functions and interactive shiny application for the psychometric analysis of educational tests, psychological assessments, health-related and other types of multi-item measurements, or ratings from multiple raters. Offered methods include:</p>
 <ul>
 <li>Exploration of total and standard scores</li>
 <li>Analysis of correlation structure and validity</li>
@@ -77,18 +77,18 @@
 <p float="center">
 <img src="https://cdn.jsdelivr.net/gh/patriciamar/ShinyItemAnalysis/.readme_assets/scrSIAintro.png" width="49%"><img src="https://cdn.jsdelivr.net/gh/patriciamar/ShinyItemAnalysis/.readme_assets/scrSIAdif.png" width="49%"></p>
 <p>Number of toy datasets is available, the interactive application also allows the users to upload and analyze their own data and to automatically generate PDF or HTML reports.</p>
-<p><code>ShinyItemAnalysis</code> is available online at <a href="https://shiny.cs.cas.cz/ShinyItemAnalysis/" class="external-link">Czech Academy of Sciences</a> and <a href="https://cemp.shinyapps.io/ShinyItemAnalysis/" class="external-link">shinyapps.io</a>. It can be also downloaded from <a href="https://CRAN.R-project.org/package=ShinyItemAnalysis" class="external-link"><strong>CRAN</strong></a>. Visit our <a href="https://shinyitemanalysis.org/" class="external-link"><strong>web page</strong></a> about ShinyItemAnalysis to learn more!</p>
+<p><strong>ShinyItemAnalysis</strong> is available online at <a href="https://shiny.cs.cas.cz/ShinyItemAnalysis/" class="external-link">Czech Academy of Sciences</a> and <a href="https://cemp.shinyapps.io/ShinyItemAnalysis/" class="external-link">shinyapps.io</a>. It can be also downloaded from <a href="https://CRAN.R-project.org/package=ShinyItemAnalysis" class="external-link"><strong>CRAN</strong></a>. Visit our <a href="https://shinyitemanalysis.org/" class="external-link"><strong>web page</strong></a> about ShinyItemAnalysis to learn more!</p>
 </div>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<p>The easiest way to get <code>ShinyItemAnalysis</code> is to install it from CRAN:</p>
+<p>The easiest way to get <strong>ShinyItemAnalysis</strong> is to install it from CRAN:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"ShinyItemAnalysis"</span><span class="op">)</span></span></code></pre></div>
 <p>
 <details><summary><i>Click here for more information about installing versions 1.4.0+</i>
 </summary><p>
-From <code>ShinyItemAnalysis</code> version 1.4.0 on, only the most necessary package dependencies are installed out of the box. You may be prompted later on to install additional packages ensuring a smooth run of the interactive application. To install everything straight out, use rather:
+From <strong>ShinyItemAnalysis</strong> version 1.4.0 on, only the most necessary package dependencies are installed out of the box. You may be prompted later on to install additional packages ensuring a smooth run of the interactive application. To install everything straight out, use rather:
 </p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"ShinyItemAnalysis"</span>, dependencies <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
@@ -101,12 +101,41 @@ From <code>ShinyItemAnalysis</code> version 1.4.0 on, only the most necessary pa
 <div class="section level2">
 <h2 id="version">Version<a class="anchor" aria-label="anchor" href="#version"></a>
 </h2>
-<p>Current version available on <a href="https://CRAN.R-project.org/package=ShinyItemAnalysis" class="external-link"><strong>CRAN</strong></a> is 1.5.5. The newest development version available on <a href="https://github.com/patriciamar/ShinyItemAnalysis" class="external-link"><strong>GitHub</strong></a> is 1.5.5.<br> Version available online at <a href="https://shiny.cs.cas.cz/ShinyItemAnalysis/" class="external-link">Czech Academy of Sciences</a> is 1.5.5. Version available online at <a href="https://cemp.shinyapps.io/ShinyItemAnalysis/" class="external-link">shinyapps.io</a> is 1.5.5. <br></p>
+<p>The table below summarizes the currently available versions of <strong>ShinyItemAnalysis</strong> across different distribution sources, distinguishing between sources that provide both the R package and the Shiny application and those that provide the application only.</p>
+<table class="table">
+<thead><tr>
+<th align="left">Source</th>
+<th align="left">Type</th>
+<th align="left">Version</th>
+</tr></thead>
+<tbody>
+<tr>
+<td align="left"><a href="https://CRAN.R-project.org/package=ShinyItemAnalysis" class="external-link">CRAN</a></td>
+<td align="left">Package &amp; App</td>
+<td align="left">1.6.0</td>
+</tr>
+<tr>
+<td align="left"><a href="https://github.com/patriciamar/ShinyItemAnalysis" class="external-link">GitHub (development)</a></td>
+<td align="left">Package &amp; App</td>
+<td align="left">1.6.0</td>
+</tr>
+<tr>
+<td align="left"><a href="https://shiny.cs.cas.cz/ShinyItemAnalysis/" class="external-link">Czech Academy of Sciences</a></td>
+<td align="left">Online app only</td>
+<td align="left">1.6.0</td>
+</tr>
+<tr>
+<td align="left"><a href="https://cemp.shinyapps.io/ShinyItemAnalysis/" class="external-link">shinyapps.io</a></td>
+<td align="left">Online app only</td>
+<td align="left">1.6.0</td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="section level2">
 <h2 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a>
 </h2>
-<p>It is very easy to run <code>ShinyItemAnalysis</code> in <code>R</code>:</p>
+<p>It is very easy to run <strong>ShinyItemAnalysis</strong> in <code>R</code>:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">ShinyItemAnalysis</span><span class="fu">::</span><span class="fu"><a href="reference/startShinyItemAnalysis.html">run_app</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co"># or</span></span>
@@ -116,19 +145,22 @@ From <code>ShinyItemAnalysis</code> version 1.4.0 on, only the most necessary pa
 <div class="section level2">
 <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
-<p>When using <code>ShinyItemAnalysis</code> software, we appreciate if you include a reference in your publications. To cite the software, please, use:</p>
+<p>When using <strong>ShinyItemAnalysis</strong> software, we appreciate if you include a reference in your publications. To cite the software, please, use:</p>
 <blockquote>
-<p>Martinková P., &amp; Hladká A. (2023) Computational Aspects of Psychometric Methods: With R. (1st ed.). Chapman and Hall/CRC. doi: 10.1201/9781003054313. ISBN 9781003054313.</p>
+<p>Martinková P., &amp; Hladká A. (2023) Computational Aspects of Psychometric Methods: With R. (1st ed.). Chapman and Hall/CRC. <a href="https://doi.org/10.1201/9781003054313" class="external-link">doi: 10.1201/9781003054313</a>. ISBN 9781003054313.</p>
 </blockquote>
 <blockquote>
 <p>Martinková P., &amp; Drabinová A. (2018) ShinyItemAnalysis for teaching psychometrics and to enforce routine analysis of educational tests. The R Journal, 10(2), 503-515. <a href="https://doi.org/10.32614/RJ-2018-074" class="external-link">doi: 10.32614/RJ-2018-074</a>.</p>
 </blockquote>
-<p>Czech speakers can also refer to paper in journal <a href="https://doi.org/10.5817/TF2017-9-129" class="external-link">Testforum</a>.</p>
+<p>When using one of the <strong>SIA modules</strong>, please, cite:</p>
+<blockquote>
+<p>Martinková P., Netík J. &amp; Hladká A. (2026) Enhancing Psychometric Analysis with Interactive SIA Modules. Psychometrika, Online First, 1-29. <a href="https://doi.org/10.1017/psy.2026.10088" class="external-link">doi: 10.1017/psy.2026.10088</a>.</p>
+</blockquote>
 </div>
 <div class="section level2">
-<h2 id="getting-help-and-provide-feedback">Getting help and provide feedback<a class="anchor" aria-label="anchor" href="#getting-help-and-provide-feedback"></a>
+<h2 id="getting-help-and-providing-feedback">Getting help and providing feedback<a class="anchor" aria-label="anchor" href="#getting-help-and-providing-feedback"></a>
 </h2>
-<p>If you find any bug or just need help with <code>ShinyItemAnalysis</code> you can <a href="https://github.com/patriciamar/ShinyItemAnalysis/issues" class="external-link">leave your message as an GitHub issue</a> or directly contact us at <a href="mailto:martinkova@cs.cas.cz">martinkova@cs.cas.cz</a>. We warmly encourage you to provide your feedback using <a href="https://docs.google.com/forms/d/e/1FAIpQLSdbk2mkDacMlhGQmkFPa4A-Z4KcFMMG1IXugM8eSTzN7m4xnA/viewform" class="external-link">Google form</a>.</p>
+<p>If you meet any issue with <strong>ShinyItemAnalysis</strong> interactive application or its modules, contact us directly at <a href="mailto:sia-group@cs.cas.cz">sia-group@cs.cas.cz</a>. In case you meet any trouble with ShinyItemAnalysis R package, please report as an issue on <a href="https://github.com/patriciamar/ShinyItemAnalysis/issues" class="external-link">GitHub</a>. We warmly encourage you to provide your feedback using the <a href="https://forms.gle/b6KQLMxzjqebcRhq6" class="external-link">Google form</a>.</p>
 </div>
 <div class="section level2">
 <h2 id="license">License<a class="anchor" aria-label="anchor" href="#license"></a>
@@ -174,7 +206,7 @@ From <code>ShinyItemAnalysis</code> version 1.4.0 on, only the most necessary pa
 <h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
 <li><a href="https://github.com/patriciamar/ShinyItemAnalysis/actions" class="external-link"><img src="https://github.com/patriciamar/ShinyItemAnalysis/workflows/R-CMD-check/badge.svg" alt="R-CMD-check"></a></li>
-<li><a href="https://shiny.cs.cas.cz/ShinyItemAnalysis/" class="external-link"><img src="https://img.shields.io/badge/online-1.5.5-yellow.svg" alt="online"></a></li>
+<li><a href="https://shiny.cs.cas.cz/ShinyItemAnalysis/" class="external-link"><img src="https://img.shields.io/badge/online-1.6.0-yellow.svg" alt="online"></a></li>
 <li><a href="https://CRAN.R-project.org/package=ShinyItemAnalysis" class="external-link"><img src="https://www.r-pkg.org/badges/version/ShinyItemAnalysis" alt="version"></a></li>
 </ul>
 </div>
@@ -188,7 +220,7 @@ From <code>ShinyItemAnalysis</code> version 1.4.0 on, only the most necessary pa
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer>
