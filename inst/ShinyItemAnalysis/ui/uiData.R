@@ -1,19 +1,24 @@
 uiData <- tabPanel(
   "Data",
+  value = "data",
   tabsetPanel(
     #------------------------------------------------------------------------------------#
     # DATA ####
     #------------------------------------------------------------------------------------#
-    tabPanel("Data",
-      value = "data_data",
+    tabPanel(
+      "Data upload",
+      value = "data_upload",
       h3("Data"),
       #------------------------------------------------------------------------------------#
       # * Data ####
       #------------------------------------------------------------------------------------#
       p(
-        "For demonstration purposes, the 20-item dataset", code("GMAT"),
+        "For demonstration purposes, the 20-item dataset",
+        code("GMAT"),
         " is used. While on this page, you may select one of several other toy datasets or you may upload your own
-        dataset (see below). To return to the demonstration dataset, click on the ", strong("Unload data"), " button."
+        dataset (see below). To return to the demonstration dataset, click on the ",
+        strong("Unload data"),
+        " button."
       ),
       h4("Current data"),
       uiOutput("curr_data"),
@@ -59,9 +64,12 @@ uiData <- tabPanel(
       #------------------------------------------------------------------------------------#
       h4("Upload your own datasets"),
       p(
-        "Here you can upload your own dataset. Select all necessary files and use the ", strong("Upload data"),
+        "Here you can upload your own dataset. Select all necessary files and use the ",
+        strong("Upload data"),
         " button on bottom of this page.  For sample .csv data and details on input format, check the Supplementary material  of the ",
-        HTML("<a href='https://doi.org/10.32614/RJ-2018-074' target='_blank'> Martinkova and Drabinova (2018)</a>"),
+        HTML(
+          "<a href='https://doi.org/10.32614/RJ-2018-074' target='_blank'> Martinkova and Drabinova (2018)</a>"
+        ),
         " article."
       ),
       fluidRow(
@@ -89,13 +97,20 @@ uiData <- tabPanel(
         column(
           9,
           p(
-            "The main ", strong("data"), " file should contain the responses of individual respondents (rows)
+            "The main ",
+            strong("data"),
+            " file should contain the responses of individual respondents (rows)
             to given items (columns). Data need to be either binary, nominal (e.g. in ABCD format), or ordinal
             (e.g. in Likert scale). The header may contain item names, however, no row names should be included.
-            In all data sets, the ", strong("header"), "should be either included or excluded. If you want to
-            rename items to the Item and a number of a particular column, uncheck the box ", strong("Keep item names"),
+            In all data sets, the ",
+            strong("header"),
+            "should be either included or excluded. If you want to
+            rename items to the Item and a number of a particular column, uncheck the box ",
+            strong("Keep item names"),
             "below. Missing values in scored dataset are by default evaluated as 0. If you want to keep them
-            as missing, uncheck the box", strong("Replace missing values by 0"), "below. In that case, total
+            as missing, uncheck the box",
+            strong("Replace missing values by 0"),
+            "below. In that case, total
             scores for rows with any missing values are going to be NAs as well."
           )
         )
@@ -153,7 +168,8 @@ uiData <- tabPanel(
                   selected = ","
                 )
               ),
-              column(2,
+              column(
+                2,
                 radioButtons(
                   inputId = "data_csvdata_quote",
                   label = "Quote",
@@ -330,10 +346,17 @@ uiData <- tabPanel(
             # ),
             # conditionalPanel(
             # condition = "input.data_csvdata_data_type == 'ordinal'",
-            p("For ordinal data, you are advised to include vector containing", strong("cut-score"), "which is used for
+            p(
+              "For ordinal data, you are advised to include vector containing",
+              strong("cut-score"),
+              "which is used for
                 binarization of uploaded data, i.e., values greater or equal to provided cut-score are set to 1, otherwise
-                to 0. You can either upload dataset of item-specific values, or you can provide one value for whole dataset."),
-            p(strong("Note: "), "In case that cut-score is not provided, vector of maximal values is used. ")
+                to 0. You can either upload dataset of item-specific values, or you can provide one value for whole dataset."
+            ),
+            p(
+              strong("Note: "),
+              "In case that cut-score is not provided, vector of maximal values is used. "
+            )
             # )
           )
         )
@@ -366,7 +389,11 @@ uiData <- tabPanel(
             9,
             # conditionalPanel(
             # condition = "input.data_csvdata_data_type == 'nominal'",
-            p("For nominal data, it is necessary to upload ", strong("key"), "of correct answers.")
+            p(
+              "For nominal data, it is necessary to upload ",
+              strong("key"),
+              "of correct answers."
+            )
             # ),
             # conditionalPanel(
             #   condition = "input.data_csvdata_data_type == 'ordinal'",
@@ -432,10 +459,17 @@ uiData <- tabPanel(
           ),
           column(
             6,
-            p("For ordinal data, it is optional to upload ", strong("minimal and maximal"), "values of answers. You can
-              either upload datasets of item-specific values, or you can provide one value for whole dataset."),
-            p(strong("Note: "), "If no minimal or maximal values are provided, these values are set automatically based
-              on observed values.")
+            p(
+              "For ordinal data, it is optional to upload ",
+              strong("minimal and maximal"),
+              "values of answers. You can
+              either upload datasets of item-specific values, or you can provide one value for whole dataset."
+            ),
+            p(
+              strong("Note: "),
+              "If no minimal or maximal values are provided, these values are set automatically based
+              on observed values."
+            )
           )
         )
       ),
@@ -463,12 +497,20 @@ uiData <- tabPanel(
         ),
         column(
           9,
-          p(strong("Group"), " is a variable for DIF and DDF analyses. It should be a binary vector, where 0 represents the
+          p(
+            strong("Group"),
+            " is a variable for DIF and DDF analyses. It should be a binary vector, where 0 represents the
           reference group and 1 represents the focal group. Its length needs to be the same as the number of individual
           respondents in the main dataset. Missing values are not supported for the group variable and such cases/rows of
-          the data should be removed."),
-          p(strong("Note: "), "If no group variable is provided, the DIF and DDF analyses in the ", strong("DIF/Fairness"), "
-          section are not available. ")
+          the data should be removed."
+          ),
+          p(
+            strong("Note: "),
+            "If no group variable is provided, the DIF and DDF analyses in the ",
+            strong("DIF/Fairness"),
+            "
+          section are not available. "
+          )
         )
       ),
       fluidRow(
@@ -496,12 +538,20 @@ uiData <- tabPanel(
         column(
           9,
           p(
-            strong("Criterion"), " is either a discrete or continuous variable (e.g., future study success or future
+            strong("Criterion"),
+            " is either a discrete or continuous variable (e.g., future study success or future
             GPA in the case of admission tests) which should be predicted by the measurement. Its length needs to be the
             same as the number of individual respondents in the main dataset. "
           ),
-          p(strong("Note: "), "If no criterion variable is provided, it won't be possible to run a validity analysis in
-            the ", strong("Predictive validity"), " section on ", strong("Validity"), " page.")
+          p(
+            strong("Note: "),
+            "If no criterion variable is provided, it won't be possible to run a validity analysis in
+            the ",
+            strong("Predictive validity"),
+            " section on ",
+            strong("Validity"),
+            " page."
+          )
         )
       ),
       fluidRow(
@@ -529,13 +579,21 @@ uiData <- tabPanel(
         column(
           9,
           p(
-            strong("Observed score"), " is a variable describing observed ability or trait of respondents. If supplied,
-            it is offered in the ", strong("Regression"), " and in the ", strong("DIF/Fairness"), " sections for analyses
+            strong("Observed score"),
+            " is a variable describing observed ability or trait of respondents. If supplied,
+            it is offered in the ",
+            strong("Regression"),
+            " and in the ",
+            strong("DIF/Fairness"),
+            " sections for analyses
             with respect to this external variable. Its length needs to be the same as the number of individual respondents
             in the main dataset. "
           ),
-          p(strong("Note: "), "If no observed score is provided, the total scores or standardized total scores are used
-            instead. ")
+          p(
+            strong("Note: "),
+            "If no observed score is provided, the total scores or standardized total scores are used
+            instead. "
+          )
         )
       ),
       fluidRow(
@@ -588,13 +646,17 @@ uiData <- tabPanel(
       div(
         style = "vertical-align: top; float: right;",
         htmlOutput("data_check_group_withNA_confirmation")
-      )
+      ),
+      div(style = "clear: both;"),
+      h4("Selected R code"),
+      code(includeText("sc/data/data_upload.R"))
     ),
     #------------------------------------------------------------------------------------#
     # BASIC SUMMARY ####
     #------------------------------------------------------------------------------------#
     tabPanel(
       "Basic summary",
+      value = "data_summary",
       #------------------------------------------------------------------------------------#
       # * Data exploration ####
       #------------------------------------------------------------------------------------#
@@ -616,19 +678,22 @@ uiData <- tabPanel(
     #------------------------------------------------------------------------------------#
     tabPanel(
       "Data exploration",
-
+      value = "data_exploration",
       #------------------------------------------------------------------------------------#
       # * Data exploration ####
       #------------------------------------------------------------------------------------#
       h3("Data exploration"),
-      p("Here you can explore uploaded dataset. The rendering of tables can take some time."),
+      p(
+        "Here you can explore uploaded dataset. The rendering of tables can take some time."
+      ),
       br(),
       #------------------------------------------------------------------------------------#
       # * Main dataset ####
       #------------------------------------------------------------------------------------#
       h4("Main dataset"),
       fluidRow(
-        column(12,
+        column(
+          12,
           DT::dataTableOutput("data_exploration_main"),
           downloadButton(
             "data_exploration_main_db",
@@ -642,7 +707,8 @@ uiData <- tabPanel(
       #------------------------------------------------------------------------------------#
       h4("Key (correct answers) / cut-score"),
       fluidRow(
-        column(12,
+        column(
+          12,
           DT::dataTableOutput("data_exploration_key"),
           downloadButton(
             "data_exploration_key_db",
@@ -656,7 +722,8 @@ uiData <- tabPanel(
       #------------------------------------------------------------------------------------#
       h4("Scored / binarized data"),
       fluidRow(
-        column(12,
+        column(
+          12,
           DT::dataTableOutput("data_exploration_binary"),
           downloadButton(
             "data_exploration_binary_db",

@@ -5,14 +5,24 @@ ui_DIF_cumulative <- tabPanel(
     tabPanel(
       "Summary",
       h3("Cumulative logit model for DIF detection"),
-      p("Cumulative logit regression allows for detection of uniform and non-uniform DIF among ordinal data by
+      p(
+        "Cumulative logit regression allows for detection of uniform and non-uniform DIF among ordinal data by
         adding a group-membership variable (uniform DIF) and its interaction with observed score
-        (non-uniform DIF) into a model for item \\(i\\) and by testing for their significance."),
+        (non-uniform DIF) into a model for item \\(i\\) and by testing for their significance."
+      ),
       h4("Method specification"),
       p(
-        "Here you can change the ", strong("type"), " of DIF to be tested, the ", strong("Observed score", .noWS = "outside"),
-        ", and the ", strong("parametrization"), "- either the IRT or the classical intercept/slope. You can also
-        select a ", strong("correction method"), " for a multiple comparison and/or ", strong("item purification. ")
+        "Here you can change the ",
+        strong("type"),
+        " of DIF to be tested, the ",
+        strong("Observed score", .noWS = "outside"),
+        ", and the ",
+        strong("parametrization"),
+        "- either the IRT or the classical intercept/slope. You can also
+        select a ",
+        strong("correction method"),
+        " for a multiple comparison and/or ",
+        strong("item purification. ")
       ),
       fluidRow(
         column(
@@ -77,39 +87,91 @@ ui_DIF_cumulative <- tabPanel(
       ),
       h4("Equation"),
       p(
-        "The probability that respondent ", strong("\\(p\\)"), " with the observed score (e.g., standardized total
-        score) ", strong("\\(Z_p\\)"), " and the group membership variable ", strong("\\(G_p\\)"), " obtained at least ",
-        strong("\\(k\\)"), " points in item ", strong("\\(i\\)"), " is given by the following equation: "
+        "The probability that respondent ",
+        strong("\\(p\\)"),
+        " with the observed score (e.g., standardized total
+        score) ",
+        strong("\\(Z_p\\)"),
+        " and the group membership variable ",
+        strong("\\(G_p\\)"),
+        " obtained at least ",
+        strong("\\(k\\)"),
+        " points in item ",
+        strong("\\(i\\)"),
+        " is given by the following equation: "
       ),
-      fluidRow(column(12, align = "center", uiOutput("DIF_cumulative_summary_equation_cumulative"))),
+      fluidRow(column(
+        12,
+        align = "center",
+        uiOutput("DIF_cumulative_summary_equation_cumulative")
+      )),
       p(
-        "The probability that respondent ", strong("\\(p\\)"), " with the observed score (e.g., standardized total
-        score) ", strong("\\(Z_p\\)"), " and group membership ", strong("\\(G_p\\)"), " obtained exactly ", strong("\\(k\\)"),
-        " points in item ", strong("\\(i\\)"), " is then given as the difference between the probabilities of obtaining at least",
-        strong("\\(k\\)"), " and ", strong("\\(k + 1\\)"), "points: "
+        "The probability that respondent ",
+        strong("\\(p\\)"),
+        " with the observed score (e.g., standardized total
+        score) ",
+        strong("\\(Z_p\\)"),
+        " and group membership ",
+        strong("\\(G_p\\)"),
+        " obtained exactly ",
+        strong("\\(k\\)"),
+        " points in item ",
+        strong("\\(i\\)"),
+        " is then given as the difference between the probabilities of obtaining at least",
+        strong("\\(k\\)"),
+        " and ",
+        strong("\\(k + 1\\)"),
+        "points: "
       ),
-      fluidRow(column(12, align = "center", uiOutput("DIF_cumulative_summary_equation_category"))),
+      fluidRow(column(
+        12,
+        align = "center",
+        uiOutput("DIF_cumulative_summary_equation_category")
+      )),
       h4("Summary table"),
-      p("This summary table contains information about \\(\\chi^2\\)-statistics of the likelihood ratio test, corresponding
+      p(
+        "This summary table contains information about \\(\\chi^2\\)-statistics of the likelihood ratio test, corresponding
         \\(p\\)-values considering selected correction method, and significance codes. The table also provides estimated parameters
-        for the best fitted model for each item. "),
+        for the best fitted model for each item. "
+      ),
       uiOutput("DIF_cumulative_summary_na_alert"),
       strong(textOutput("DIF_cumulative_summary_dif_items")),
       br(),
       # tags$head(tags$style("#DIF_cumulative_summary_coef  {white-space: nowrap;}")),
-      fluidRow(column(12, align = "left", tableOutput("DIF_cumulative_summary_coef"))),
-      fluidRow(column(12, align = "left", uiOutput("DIF_cumulative_summary_table_note"))),
+      fluidRow(column(
+        12,
+        align = "left",
+        tableOutput("DIF_cumulative_summary_coef")
+      )),
+      fluidRow(column(
+        12,
+        align = "left",
+        uiOutput("DIF_cumulative_summary_table_note")
+      )),
       br(),
-      fluidRow(column(2, downloadButton(outputId = "DIF_cumulative_summary_table_download", label = "Download table"))),
+      fluidRow(column(
+        2,
+        downloadButton(
+          outputId = "DIF_cumulative_summary_table_download",
+          label = "Download table"
+        )
+      )),
       br(),
       h4("Purification process"),
       textOutput("DIF_cumulative_summary_purification_info"),
       br(),
       # tags$head(tags$style("#DIF_cumulative_summary_purification_table {white-space: nowrap;}")),
-      fluidRow(column(12, align = "center", tableOutput("DIF_cumulative_summary_purification_table"))),
+      fluidRow(column(
+        12,
+        align = "center",
+        tableOutput("DIF_cumulative_summary_purification_table")
+      )),
       conditionalPanel(
         "input.DIF_cumulative_summary_purification == 1",
-        downloadButton(outputId = "DIF_cumulative_summary_purification_table_download", label = "Download table"),
+        downloadButton(
+          outputId = "DIF_cumulative_summary_purification_table_download",
+          label = "Download table"
+        ),
         br(),
         br()
       ),
@@ -117,17 +179,28 @@ ui_DIF_cumulative <- tabPanel(
       code(includeText("sc/dif/cum.R"))
     ),
     # ** Items ####
-    tabPanel("Items",
+    tabPanel(
+      "Items",
       value = "cumulative_it",
       h3("Cumulative logit model for DIF detection"),
-      p("Cumulative logit regression allows for detection of uniform and non-uniform DIF among ordinal data by
+      p(
+        "Cumulative logit regression allows for detection of uniform and non-uniform DIF among ordinal data by
         adding a group-membership variable (uniform DIF) and its interaction with observed score
-        (non-uniform DIF) into a model for item \\(i\\) and by testing for their significance."),
+        (non-uniform DIF) into a model for item \\(i\\) and by testing for their significance."
+      ),
       h4("Method specification"),
       p(
-        "Here you can change the ", strong("type"), " of DIF to be tested, the ", strong("Observed score", .noWS = "outside"),
-        ", and the ", strong("parametrization"), "- either the IRT or classical intercept/slope. You can also
-        select a ", strong("correction method"), " for a multiple comparison and/or ", strong("item purification. ")
+        "Here you can change the ",
+        strong("type"),
+        " of DIF to be tested, the ",
+        strong("Observed score", .noWS = "outside"),
+        ", and the ",
+        strong("parametrization"),
+        "- either the IRT or classical intercept/slope. You can also
+        select a ",
+        strong("correction method"),
+        " for a multiple comparison and/or ",
+        strong("item purification. ")
       ),
       fluidRow(
         column(
@@ -204,9 +277,11 @@ ui_DIF_cumulative <- tabPanel(
       ),
       uiOutput("DIF_cumulative_items_na_alert"),
       h4("Plot with estimated DIF curves"),
-      p("Points represent a proportion of the obtained score with respect to the observed score. Their size is determined
+      p(
+        "Points represent a proportion of the obtained score with respect to the observed score. Their size is determined
         by the count of respondents who achieved a given level of the observed score and who selected given option with
-        respect to the group membership."),
+        respect to the group membership."
+      ),
       splitLayout(
         cellWidths = c("50%", "50%"),
         plotlyOutput("DIF_cumulative_items_plot_cumulative"),
@@ -214,15 +289,35 @@ ui_DIF_cumulative <- tabPanel(
       ),
       splitLayout(
         cellWidths = c("50%", "50%"),
-        downloadButton("DIF_cumulative_items_plot_cumulative_download", label = "Download figure"),
-        downloadButton("DIF_cumulative_items_plot_category_download", label = "Download figure")
+        downloadButton(
+          "DIF_cumulative_items_plot_cumulative_download",
+          label = "Download figure"
+        ),
+        downloadButton(
+          "DIF_cumulative_items_plot_category_download",
+          label = "Download figure"
+        )
       ),
       h4("Equation"),
-      fluidRow(column(12, align = "center", uiOutput("DIF_cumulative_items_equation_cumulative"))),
-      fluidRow(column(12, align = "center", uiOutput("DIF_cumulative_items_equation_category"))),
+      fluidRow(column(
+        12,
+        align = "center",
+        uiOutput("DIF_cumulative_items_equation_cumulative")
+      )),
+      fluidRow(column(
+        12,
+        align = "center",
+        uiOutput("DIF_cumulative_items_equation_category")
+      )),
       h4("Table of parameters"),
-      p("This table summarizes estimated item parameters together with the standard errors. "),
-      fluidRow(column(12, align = "center", tableOutput("DIF_cumulative_items_coef"))),
+      p(
+        "This table summarizes estimated item parameters together with the standard errors. "
+      ),
+      fluidRow(column(
+        12,
+        align = "center",
+        tableOutput("DIF_cumulative_items_coef")
+      )),
       br(),
       h4("Selected R code"),
       code(includeText("sc/dif/cum_it.R"))

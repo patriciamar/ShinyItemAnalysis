@@ -37,7 +37,6 @@ if (!ShinyItemAnalysis:::sm_disabled()) {
   }) |>
     bindEvent(mod_list, input$rediscover_mods)
 
-
   if (sm_allow_gui_installation()) {
     # obtain available module packages from SIA repo
     # available.packages are cached per R session
@@ -72,8 +71,10 @@ if (!ShinyItemAnalysis:::sm_disabled()) {
           modalDialog(
             title = "Module installation failed",
             p(
-              "The module '", span(sel_mod, .noWS = c("before", "after")),
-              "' is not available on the repository at '", span(sm_repo(), .noWS = c("before", "after")),
+              "The module '",
+              span(sel_mod, .noWS = c("before", "after")),
+              "' is not available on the repository at '",
+              span(sm_repo(), .noWS = c("before", "after")),
               "'. Please report the issue to the authors."
             ),
             easyClose = TRUE,
@@ -135,23 +136,26 @@ if (!ShinyItemAnalysis:::sm_disabled()) {
 
 # functions ---------------------------------------------------------------
 
-
-find_modules <- function(...,
-                         desc_field = "Config/ShinyItemAnalysis/module",
-                         field_value = "true") {
+find_modules <- function(
+  ...,
+  desc_field = "Config/ShinyItemAnalysis/module",
+  field_value = "true"
+) {
   # this approach may be somewhat slow when the library is big,
   # but gets cached for the field for the R session
 
   if (are_modules_debugged()) {
-    message("Looking for installed packages claiming they contain SIAmodule(s)...")
+    message(
+      "Looking for installed packages claiming they contain SIAmodule(s)..."
+    )
   }
 
   mod_pkgs <- names(
     which(
-      utils::installed.packages(fields = desc_field, ...)[, desc_field] == field_value
+      utils::installed.packages(fields = desc_field, ...)[, desc_field] ==
+        field_value
     )
   )
-
 
   # list of modules we want to allow
   modallow_path <- file.path(getwd(), ".modallow")
@@ -199,7 +203,8 @@ add_modules <- function(mod_list, server_dots = NULL, ui_dots = NULL) {
   mod_list$to_load |>
     walk(
       load_and_append_mod,
-      server_dots = server_dots, ui_dots = ui_dots
+      server_dots = server_dots,
+      ui_dots = ui_dots
     )
 
   # track loaded modules - for local use, this has to be session-based,
@@ -236,7 +241,6 @@ load_and_append_mod <- function(mod_pkg, server_dots = NULL, ui_dots = NULL) {
 
     do.call(ns[[mod_desc$binding$server]], list(id = mod_id, server_dots)) # positional arg matching, so the module's arg name does not matter
 
-
     # create module section in the very end of the tab's dropdown list
     # but only for the first time per category!!
     # trivial approach would be to create hidden delimiters and unhide them with every
@@ -250,7 +254,9 @@ load_and_append_mod <- function(mod_pkg, server_dots = NULL, ui_dots = NULL) {
       insertUI(
         # taken from shiny.js -- `shiny-insert-tab`
         selector = paste0(
-          "a.dropdown-toggle[data-value='", mod_desc$category, "'] + ul.dropdown-menu"
+          "a.dropdown-toggle[data-value='",
+          mod_desc$category,
+          "'] + ul.dropdown-menu"
         ),
         # after the last child of the selector element, so we don't have to li:last
         where = "beforeEnd",
@@ -273,7 +279,8 @@ load_and_append_mod <- function(mod_pkg, server_dots = NULL, ui_dots = NULL) {
       inputId = "navbar",
       menuName = mod_desc$category,
       tab = tabPanel(
-        title = mod_desc$title, value = mod_id,
+        title = mod_desc$title,
+        value = mod_id,
         # UI is constructed with the function call, ui_dots are not used ATM
         do.call(ns[[mod_desc$binding$ui]], list(id = mod_id, ui_dots))
       )
@@ -288,8 +295,13 @@ load_and_append_mod <- function(mod_pkg, server_dots = NULL, ui_dots = NULL) {
 # available categories for modules must match those of SIAtools::list_categories()
 # except Modules
 .sia_mod_categories <- c(
-  "Scores", "Validity", "Reliability", "Item analysis",
-  "Regression", "IRT models", "DIF/Fairness"
+  "Scores",
+  "Validity",
+  "Reliability",
+  "Item analysis",
+  "Regression",
+  "IRT models",
+  "DIF/Fairness"
 )
 
 #' Check if to print module debugging messages
@@ -304,7 +316,8 @@ mod_debug_msg <- function(operation, mods, menuName = NULL) {
   if (!are_modules_debugged()) {
     return(invisible())
   }
-  switch(operation,
+  switch(
+    operation,
     available = message("Available: ", paste(mods, collapse = ", ")),
     to_load = {
       if (length(mods) != 0) {
@@ -315,11 +328,13 @@ mod_debug_msg <- function(operation, mods, menuName = NULL) {
     },
     loaded = message("Successfully loaded: ", paste(mods, collapse = ", ")),
     call_server = message("Calling ", mods, "'s server function..."),
-    call_ui =
-      message(
-        "Calling ", mods, "'s UI function and appending its tab to ",
-        menuName, "..."
-      ),
+    call_ui = message(
+      "Calling ",
+      mods,
+      "'s UI function and appending its tab to ",
+      menuName,
+      "..."
+    ),
     load = {
       if (!isNamespaceLoaded(mods)) {
         message("Loading ", mods, "'s namespace")

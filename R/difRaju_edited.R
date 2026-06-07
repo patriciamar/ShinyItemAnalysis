@@ -7,11 +7,26 @@
 #' @noRd
 #'
 #' @importFrom difR RajuZ
-.difRaju_edited <- function(Data, group, focal.name, model, c = NULL, engine = "ltm",
-                            discr = 1, irtParam = NULL, same.scale = TRUE, anchor = NULL,
-                            alpha = 0.05, signed = FALSE, purify = FALSE, nrIter = 10,
-                            p.adjust.method = NULL, puriadjType = "simple",
-                            save.output = FALSE, output = c("out", "default")) {
+.difRaju_edited <- function(
+  Data,
+  group,
+  focal.name,
+  model,
+  c = NULL,
+  engine = "ltm",
+  discr = 1,
+  irtParam = NULL,
+  same.scale = TRUE,
+  anchor = NULL,
+  alpha = 0.05,
+  signed = FALSE,
+  purify = FALSE,
+  nrIter = 10,
+  p.adjust.method = NULL,
+  puriadjType = "simple",
+  save.output = FALSE,
+  output = c("out", "default")
+) {
   internalRaju <- function() {
     if (!is.null(irtParam)) {
       nrItems <- nrow(irtParam) / 2
@@ -38,11 +53,7 @@
         m1p <- itemRescale(m0, m1, items = ANCHOR)
       }
       mod <- as.character(ncol(irtParam))
-      model <- switch(mod,
-        `2` = "1PL",
-        `5` = "2PL",
-        `6` = "3PL"
-      )
+      model <- switch(mod, `2` = "1PL", `5` = "2PL", `6` = "3PL")
       if (ncol(irtParam) != 6) {
         Guess <- NULL
       } else {
@@ -70,7 +81,8 @@
       }
       Group <- gr == focal.name
       if (any(is.na(Group))) {
-        warning("'group' contains missing values. Observations with missing values are discarded.",
+        warning(
+          "'group' contains missing values. Observations with missing values are discarded.",
           call. = FALSE
         )
       }
@@ -81,16 +93,28 @@
       d1 <- sapply(DATA[Group, ], as.integer)
 
       # check if complete observations in each group is sufficient
-      if (nrow(d0[complete.cases(d0), , drop = FALSE]) < 2L) stop("Not enough complete observations in the reference group.", call. = FALSE)
-      if (nrow(d1[complete.cases(d1), , drop = FALSE]) < 2L) stop("Not enough complete observations in the focal group.", call. = FALSE)
+      if (nrow(d0[complete.cases(d0), , drop = FALSE]) < 2L) {
+        stop(
+          "Not enough complete observations in the reference group.",
+          call. = FALSE
+        )
+      }
+      if (nrow(d1[complete.cases(d1), , drop = FALSE]) < 2L) {
+        stop(
+          "Not enough complete observations in the focal group.",
+          call. = FALSE
+        )
+      }
 
       Guess <- c
       if (is.null(Guess)) {
-        m0 <- switch(model,
+        m0 <- switch(
+          model,
           `1PL` = itemParEst(d0, model = "1PL", engine = engine, discr = discr),
           `2PL` = itemParEst(d0, model = "2PL")
         )
-        m1 <- switch(model,
+        m1 <- switch(
+          model,
           `1PL` = itemParEst(d1, model = "1PL", engine = engine, discr = discr),
           `2PL` = itemParEst(d1, model = "2PL")
         )
@@ -142,8 +166,14 @@
       P.ADJUST <- p.adjust(PVAL, method = adj.method)
 
       if (is.null(Guess)) {
-        m_null <- switch(model,
-          `1PL` = itemParEst(DATA, model = "1PL", engine = engine, discr = discr),
+        m_null <- switch(
+          model,
+          `1PL` = itemParEst(
+            DATA,
+            model = "1PL",
+            engine = engine,
+            discr = discr
+          ),
           `2PL` = itemParEst(DATA, model = "2PL")
         )
       } else {
@@ -170,14 +200,25 @@
       }
 
       RES <- list(
-        RajuZ = STATS, p.value = PVAL, alpha = alpha,
-        thr = qnorm(1 - alpha / 2), DIFitems = DIFitems,
-        signed = signed, p.adjust.method = p.adjust.method,
-        adjusted.p = adjusted.p, purification = purify, model = model,
-        c = Guess, engine = engine, discr = discr,
+        RajuZ = STATS,
+        p.value = PVAL,
+        alpha = alpha,
+        thr = qnorm(1 - alpha / 2),
+        DIFitems = DIFitems,
+        signed = signed,
+        p.adjust.method = p.adjust.method,
+        adjusted.p = adjusted.p,
+        purification = purify,
+        model = model,
+        c = Guess,
+        engine = engine,
+        discr = discr,
         itemParInit = itemParInit, # itemParBest = itemParBest,
-        estPar = estPar, names = dataName, anchor.names = dif.anchor,
-        save.output = save.output, output = output
+        estPar = estPar,
+        names = dataName,
+        anchor.names = dif.anchor,
+        save.output = save.output,
+        output = output
       )
       if (!is.null(anchor) & (RES$estPar | (!RES$estPar & !same.scale))) {
         RES$RajuZ[ANCHOR] <- NA
@@ -216,16 +257,30 @@
         }
 
         RES <- list(
-          RajuZ = stats1, p.value = pval1, alpha = alpha,
-          thr = qnorm(1 - alpha / 2), DIFitems = DIFitems,
-          signed = signed, p.adjust.method = p.adjust.method,
-          adjusted.p = adjusted.p, purification = purify, nrPur = nrPur,
-          difPur = difPur, convergence = noLoop, model = model,
-          c = Guess, engine = engine, discr = discr,
-          itemParInit = itemParInit, itemParFinal = itemParFinal,
+          RajuZ = stats1,
+          p.value = pval1,
+          alpha = alpha,
+          thr = qnorm(1 - alpha / 2),
+          DIFitems = DIFitems,
+          signed = signed,
+          p.adjust.method = p.adjust.method,
+          adjusted.p = adjusted.p,
+          purification = purify,
+          nrPur = nrPur,
+          difPur = difPur,
+          convergence = noLoop,
+          model = model,
+          c = Guess,
+          engine = engine,
+          discr = discr,
+          itemParInit = itemParInit,
+          itemParFinal = itemParFinal,
           # itemParBest = itemParBest,
-          estPar = estPar, names = dataName, anchor.names = NULL,
-          save.output = save.output, output = output
+          estPar = estPar,
+          names = dataName,
+          anchor.names = NULL,
+          save.output = save.output,
+          output = output
         )
       } else {
         dif <- which(p.adjust1 < alpha)
@@ -245,7 +300,9 @@
             } else {
               nodif <- which(!1:nrItems %in% dif)
             }
-            stats2 <- RajuZ(m0, itemRescale(m0, m1, items = nodif),
+            stats2 <- RajuZ(
+              m0,
+              itemRescale(m0, m1, items = nodif),
               signed = signed
             )$res[, 3]
             pval2 <- 2 * (1 - pnorm(abs(stats2)))
@@ -313,16 +370,30 @@
           adjusted.p <- p.adjust1
         }
         RES <- list(
-          RajuZ = stats2, p.value = pval1, alpha = alpha,
-          thr = qnorm(1 - alpha / 2), DIFitems = DIFitems,
-          signed = signed, p.adjust.method = p.adjust.method,
-          adjusted.p = adjusted.p, purification = purify, nrPur = nrPur,
-          difPur = difPur, convergence = noLoop, model = model,
-          c = Guess, engine = engine, discr = discr,
-          itemParInit = itemParInit, itemParFinal = itemParFinal,
+          RajuZ = stats2,
+          p.value = pval1,
+          alpha = alpha,
+          thr = qnorm(1 - alpha / 2),
+          DIFitems = DIFitems,
+          signed = signed,
+          p.adjust.method = p.adjust.method,
+          adjusted.p = adjusted.p,
+          purification = purify,
+          nrPur = nrPur,
+          difPur = difPur,
+          convergence = noLoop,
+          model = model,
+          c = Guess,
+          engine = engine,
+          discr = discr,
+          itemParInit = itemParInit,
+          itemParFinal = itemParFinal,
           # itemParBest = itemParBest,
-          estPar = estPar, names = dataName, anchor.names = NULL,
-          save.output = save.output, output = output
+          estPar = estPar,
+          names = dataName,
+          anchor.names = NULL,
+          save.output = save.output,
+          output = output
         )
       }
     }

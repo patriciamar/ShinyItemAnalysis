@@ -6,7 +6,6 @@
 # * CORRELATION STRUCTURE ####
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-
 # ** Updating number of clusters slider ####
 observe({
   item_count <- ncol(ordinal())
@@ -39,9 +38,13 @@ corr_structure <- reactive({
 
 # ** Correlation plot ####
 corr_plot_Input <- reactive({
-  plot_corr(corr_structure(),
-    cor = "none", clust_method = input$corr_plot_clustmethod,
-    n_clust = input$corr_plot_clust, labels = input$show_corr, labels_size = input$corr_plot_labs_size
+  plot_corr(
+    corr_structure(),
+    cor = "none",
+    clust_method = input$corr_plot_clustmethod,
+    n_clust = input$corr_plot_clust,
+    labels = input$show_corr,
+    labels_size = input$corr_plot_labs_size
   )
 })
 
@@ -72,8 +75,10 @@ corr_plot_Input_report <- reactive({
     }
   }
 
-  plot_corr(corP,
-    cor = "none", clust_method = input$corr_plot_clustmethod_report,
+  plot_corr(
+    corP,
+    cor = "none",
+    clust_method = input$corr_plot_clustmethod_report,
     n_clust = input$corr_plot_clust_report
   )
 })
@@ -97,12 +102,18 @@ output$corr_plot <- renderPlotly({
     plotly::config(displayModeBar = FALSE)
 
   # editing legend appearance
-  colorbar_ind <- which(sapply(plt$x$data, function(x) any(grepl("marker", names(x)))))
-  colorbar_ind2 <- which(sapply(plt$x$data[colorbar_ind], function(x) any(grepl("colorbar", names(x$marker)))))
+  colorbar_ind <- which(sapply(plt$x$data, function(x) {
+    any(grepl("marker", names(x)))
+  }))
+  colorbar_ind2 <- which(sapply(plt$x$data[colorbar_ind], function(x) {
+    any(grepl("colorbar", names(x$marker)))
+  }))
   plt$x$data[[colorbar_ind[colorbar_ind2]]]$marker$colorbar$outlinewidth <- 0
 
   # disable hoverinfo on clusters
-  cluster_ind <- which(sapply(plt$x$data, function(x) any(grepl("fill", names(x)))))
+  cluster_ind <- which(sapply(plt$x$data, function(x) {
+    any(grepl("fill", names(x)))
+  }))
   if (length(cluster_ind)) {
     plt$x$data[[cluster_ind]]$hoverinfo <- "skip"
   }
@@ -116,7 +127,8 @@ output$DB_corr_plot <- downloadHandler(
     "fig_CorrelationPlot.png"
   },
   content = function(file) {
-    plt <- plot_corr(corr_structure(),
+    plt <- plot_corr(
+      corr_structure(),
       cor = "none",
       clust_method = input$corr_plot_clustmethod,
       n_clust = input$corr_plot_clust,
@@ -124,10 +136,12 @@ output$DB_corr_plot <- downloadHandler(
       labels_size = setting_figures$text_size * 0.25 # size in geom is in mm, settings is in pt
     ) +
       theme(text = element_text(size = setting_figures$text_size))
-    ggsave(file,
+    ggsave(
+      file,
       plot = plt,
       device = "png",
-      height = setting_figures$height, width = setting_figures$width,
+      height = setting_figures$height,
+      width = setting_figures$width,
       dpi = setting_figures$dpi
     )
   }
@@ -150,8 +164,10 @@ dendrogram_plot_Input <- reactive({
   clustmethod <- input$corr_plot_clustmethod
 
   if (clustmethod == "none") {
-    return(ggplot() +
-      geom_blank())
+    return(
+      ggplot() +
+        geom_blank()
+    )
   }
 
   numclust <- input$corr_plot_clust
@@ -167,12 +183,19 @@ dendrogram_plot_Input <- reactive({
 
   # edit cluster labels when more clusters demanded
   if (numclust > 1L) {
-    dendr$labels[, "cluster"] <- paste0("Cluster ", cutree(hc, k = numclust)[hc$order])
+    dendr$labels[, "cluster"] <- paste0(
+      "Cluster ",
+      cutree(hc, k = numclust)[hc$order]
+    )
   }
 
   ggplot() +
     geom_segment(aes(y, x, xend = yend, yend = xend), data = segment(dendr)) +
-    geom_text(aes(y, x, label = label, color = cluster), hjust = 0, data = dendr$labels) +
+    geom_text(
+      aes(y, x, label = label, color = cluster),
+      hjust = 0,
+      data = dendr$labels
+    ) +
     scale_x_reverse(expand = c(0, .05, 0, .15)) +
     ylab("Height") +
     theme_app() +
@@ -202,11 +225,13 @@ output$DB_dendrogram <- downloadHandler(
     paste("fig_Dendrogram.png", sep = "")
   },
   content = function(file) {
-    ggsave(file,
+    ggsave(
+      file,
       plot = dendrogram_plot_Input() +
         theme(text = element_text(size = setting_figures$text_size)),
       device = "png",
-      height = setting_figures$height, width = setting_figures$width,
+      height = setting_figures$height,
+      width = setting_figures$width,
       dpi = setting_figures$dpi
     )
   }
@@ -233,7 +258,8 @@ validity_factor_nonzero_vars_check <- reactive({
           "zero variance.",
           "\nParallel and factor analyses both require that all items have nonzero variances.",
           "\nYou can remove the problematic",
-          ifelse(single, "item", "items"), "in the Data tab."
+          ifelse(single, "item", "items"),
+          "in the Data tab."
         )
       }
     ),
@@ -245,16 +271,20 @@ validity_factor_nonzero_vars_check <- reactive({
 validity_factor_parallel_analysis <- reactive({
   validity_factor_nonzero_vars_check()
 
-  text_out <- capture.output(data_out <- tryCatch(
-    {
-      fa_parallel(ordinal(),
-        cor = input$validity_factor_pa_cor,
-        method = input$validity_factor_pa_method,
-        n_iter = 20, plot = FALSE
-      )
-    },
-    error = function(e) e
-  ))
+  text_out <- capture.output(
+    data_out <- tryCatch(
+      {
+        fa_parallel(
+          ordinal(),
+          cor = input$validity_factor_pa_cor,
+          method = input$validity_factor_pa_method,
+          n_iter = 20,
+          plot = FALSE
+        )
+      },
+      error = function(e) e
+    )
+  )
 
   # check for any exceptions and hand them to the user
   validate(
@@ -287,7 +317,10 @@ output$validity_factor_screeplot <- renderPlotly({
     layout(
       legend = list(
         title = NA, # block legend titles from ggplot
-        x = .95, y = .95, xanchor = "right", orientation = "h",
+        x = .95,
+        y = .95,
+        xanchor = "right",
+        orientation = "h",
         groupclick = "toggleitem"
       ) # enable toggle per legend items, not legend groups
     ) |>
@@ -301,14 +334,26 @@ output$validity_factor_screeplot <- renderPlotly({
   # if FA OR PCA is displayed, edit layers 3 and 4 (stands for real and simulated datapoints)
   plt$x$data[[3]]$text <- plt$x$data[[3]]$text |>
     str_replace("-?\\d{1}\\.\\d{5,}", function(x) round(as.numeric(x), 3))
-  plt$x$data[[3]]$legendgroup <- str_extract(plt$x$data[[3]]$legendgroup, "FA|PCA")
-  plt$x$data[[3]]$name <- str_to_sentence(str_extract(plt$x$data[[3]]$name, "simulated|real"))
+  plt$x$data[[3]]$legendgroup <- str_extract(
+    plt$x$data[[3]]$legendgroup,
+    "FA|PCA"
+  )
+  plt$x$data[[3]]$name <- str_to_sentence(str_extract(
+    plt$x$data[[3]]$name,
+    "simulated|real"
+  ))
   plt$x$data[[3]]$legendgrouptitle$text <- plt$x$data[[3]]$legendgroup
 
   plt$x$data[[4]]$text <- plt$x$data[[4]]$text |>
     str_replace("-?\\d{1}\\.\\d{5,}", function(x) round(as.numeric(x), 3))
-  plt$x$data[[4]]$legendgroup <- str_extract(plt$x$data[[4]]$legendgroup, "FA|PCA")
-  plt$x$data[[4]]$name <- str_to_sentence(str_extract(plt$x$data[[4]]$name, "simulated|real"))
+  plt$x$data[[4]]$legendgroup <- str_extract(
+    plt$x$data[[4]]$legendgroup,
+    "FA|PCA"
+  )
+  plt$x$data[[4]]$name <- str_to_sentence(str_extract(
+    plt$x$data[[4]]$name,
+    "simulated|real"
+  ))
 
   # if there are TWO methods displayed, another 2 layers are created by ggplotly, so we have to edit them
   # is a similar manner as we did for the layers 3 and 4, again legendgrouptitle is defined only once
@@ -318,18 +363,31 @@ output$validity_factor_screeplot <- renderPlotly({
   if (method == "both") {
     plt$x$data[[5]]$text <- plt$x$data[[5]]$text |>
       str_replace("-?\\d{1}\\.\\d{5,}", function(x) round(as.numeric(x), 3))
-    plt$x$data[[5]]$legendgroup <- str_extract(plt$x$data[[5]]$legendgroup, "FA|PCA")
-    plt$x$data[[5]]$name <- str_to_sentence(str_extract(plt$x$data[[5]]$name, "simulated|real"))
+    plt$x$data[[5]]$legendgroup <- str_extract(
+      plt$x$data[[5]]$legendgroup,
+      "FA|PCA"
+    )
+    plt$x$data[[5]]$name <- str_to_sentence(str_extract(
+      plt$x$data[[5]]$name,
+      "simulated|real"
+    ))
     plt$x$data[[5]]$legendgrouptitle$text <- plt$x$data[[5]]$legendgroup
 
     plt$x$data[[6]]$text <- plt$x$data[[6]]$text |>
       str_replace("-?\\d{1}\\.\\d{5,}", function(x) round(as.numeric(x), 3))
-    plt$x$data[[6]]$legendgroup <- str_extract(plt$x$data[[6]]$legendgroup, "FA|PCA")
-    plt$x$data[[6]]$name <- str_to_sentence(str_extract(plt$x$data[[6]]$name, "simulated|real"))
+    plt$x$data[[6]]$legendgroup <- str_extract(
+      plt$x$data[[6]]$legendgroup,
+      "FA|PCA"
+    )
+    plt$x$data[[6]]$name <- str_to_sentence(str_extract(
+      plt$x$data[[6]]$name,
+      "simulated|real"
+    ))
   }
 
   plt$x$data[[1]][["hoverinfo"]] <- "none"
-  plt$x$data[[2]][["text"]] <- switch(method,
+  plt$x$data[[2]][["text"]] <- switch(
+    method,
     "fa" = "Kaiser boundary<br><br>",
     "pca" = "Kaiser boundary<br><br>",
     "both" = c(
@@ -348,11 +406,14 @@ output$DB_scree_plot <- downloadHandler(
     paste("fig_ScreePlot.png", sep = "")
   },
   content = function(file) {
-    ggsave(file,
-      plot = validity_factor_parallel_analysis()[["data"]] |> plot() +
+    ggsave(
+      file,
+      plot = validity_factor_parallel_analysis()[["data"]] |>
+        plot() +
         theme(text = element_text(size = setting_figures$text_size)),
       device = "png",
-      height = setting_figures$height, width = setting_figures$width,
+      height = setting_figures$height,
+      width = setting_figures$width,
       dpi = setting_figures$dpi
     )
   }
@@ -361,7 +422,11 @@ output$DB_scree_plot <- downloadHandler(
 # number of factors - parallel analysis
 validity_factor_number_pa <- reactive({
   x <- validity_factor_parallel_analysis()[["data"]]
-  method <- ifelse(input$validity_factor_pa_method %in% c("fa", "both"), "fa", "pca")
+  method <- ifelse(
+    input$validity_factor_pa_method %in% c("fa", "both"),
+    "fa",
+    "pca"
+  )
 
   real_idx <- which(x$data_type == "real" & x$method == method)
   simulated_idx <- which(x$data_type == "simulated" & x$method == method)
@@ -381,18 +446,19 @@ output$validity_factor_number <- renderText({
 
 # update EFA corr. method - mimic the PA input
 observeEvent(input$validity_factor_pa_cor, {
-  sel <- switch(input$validity_factor_pa_cor,
+  sel <- switch(
+    input$validity_factor_pa_cor,
     "pearson" = "cor",
     "polychoric" = "poly"
   )
-  updateSelectInput(session, "validity_factor_cor_efa",
-    selected = sel
-  )
+  updateSelectInput(session, "validity_factor_cor_efa", selected = sel)
 })
 
 # update selected number of factors to extract from PA + max
 observe({
-  updateNumericInput(session, "validity_factor_nfactors",
+  updateNumericInput(
+    session,
+    "validity_factor_nfactors",
     value = validity_factor_number_pa(),
     max = ncol(ordinal())
   )
@@ -401,7 +467,8 @@ observe({
 # run FA
 validity_factor_fa <- reactive({
   validity_factor_nonzero_vars_check()
-  fa(ordinal(),
+  fa(
+    ordinal(),
     input$validity_factor_nfactors,
     rotate = input$validity_factor_rotation,
     cor = input$validity_factor_cor_efa
@@ -436,7 +503,10 @@ output$validity_factor_loadings <- renderTable(
 
     loadings[abs(loadings_num) < input$validity_factor_hide] <- ""
 
-    uniqueness <- format(round(validity_factor_fa()$uniquenesses, 2), trim = TRUE)
+    uniqueness <- format(
+      round(validity_factor_fa()$uniquenesses, 2),
+      trim = TRUE
+    )
 
     res <- data.frame(loadings, uniqueness)
 
@@ -459,7 +529,6 @@ output$DB_validity_factor_loadings <- downloadHandler(
     write.csv(data, file)
   }
 )
-
 
 
 # variance explained table, factor summary
@@ -495,11 +564,15 @@ output$validity_factor_corr <- renderTable(
     r <- validity_factor_fa()
 
     if (r$factors == 1L) {
-      validate("Interfactor correlation matrix is available for solutions with more than 1 factor.")
+      validate(
+        "Interfactor correlation matrix is available for solutions with more than 1 factor."
+      )
     }
 
     if (is.null(r$Phi)) {
-      validate("Interfactor correlation matrix is available for oblique rotations only.")
+      validate(
+        "Interfactor correlation matrix is available for oblique rotations only."
+      )
     }
 
     phi <- r$Phi
@@ -517,10 +590,24 @@ output$validity_factor_efa_fit <- renderUI({
   r <- validity_factor_fa()
 
   HTML(paste0(
-    "\\(\\chi^2\\)(", r$dof, ") = ", scales::number(r$chi, .01), "; <em>p</em> ", scales::label_pvalue(prefix = c("< ", "= ", "> "))(r$PVAL), "<br><br>",
-    "RMSEA = ", scales::number(r$RMSEA[1], .001),
-    ", 90% CI [", scales::number(r$RMSEA[2], .001), ", ", scales::number(r$RMSEA[3], .001), "]<br><br>",
-    "TLI = ", scales::number(r$TLI, .001), "; BIC = ", scales::number(r$BIC, .01)
+    "\\(\\chi^2\\)(",
+    r$dof,
+    ") = ",
+    scales::number(r$chi, .01),
+    "; <em>p</em> ",
+    scales::label_pvalue(prefix = c("< ", "= ", "> "))(r$PVAL),
+    "<br><br>",
+    "RMSEA = ",
+    scales::number(r$RMSEA[1], .001),
+    ", 90% CI [",
+    scales::number(r$RMSEA[2], .001),
+    ", ",
+    scales::number(r$RMSEA[3], .001),
+    "]<br><br>",
+    "TLI = ",
+    scales::number(r$TLI, .001),
+    "; BIC = ",
+    scales::number(r$BIC, .01)
   ))
 })
 
@@ -535,15 +622,18 @@ validity_factor_fscores <- reactive({
 output$validity_factor_fscores <- renderDT({
   fscores <- validity_factor_fscores()
   fscores |>
-    datatable(options = list(
-      scrollX = TRUE,
-      autoWidth = TRUE,
-      columnDefs = list(list(width = "50px", targets = "_all")),
-      pageLength = 10,
-      server = TRUE,
-      scrollCollapse = TRUE,
-      dom = "tipr"
-    ), style = "bootstrap") |>
+    datatable(
+      options = list(
+        scrollX = TRUE,
+        autoWidth = TRUE,
+        columnDefs = list(list(width = "50px", targets = "_all")),
+        pageLength = 10,
+        server = TRUE,
+        scrollCollapse = TRUE,
+        dom = "tipr"
+      ),
+      style = "bootstrap"
+    ) |>
     formatRound(columns = seq_len(ncol(fscores)), digits = 3)
 })
 
@@ -557,8 +647,6 @@ output$DB_validity_factor_fscores <- downloadHandler(
     write.csv(data, file)
   }
 )
-
-
 
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -582,13 +670,12 @@ DCplot <- reactive({
   difc_type <- input$DCplot_difficulty
   average.score <- (difc_type == "AVGS")
 
-  DDplot(correct,
+  DDplot(
+    correct,
     item.names = item_numbers(),
-    average.score = average.score, criterion = unlist(criterion()),
-    thr = switch(input$DCplotThr_cb,
-      "TRUE" = input$DCplotThr,
-      "FALSE" = NULL
-    ),
+    average.score = average.score,
+    criterion = unlist(criterion()),
+    thr = switch(input$DCplotThr_cb, "TRUE" = input$DCplotThr, "FALSE" = NULL),
     val_type = input$DCplot_validity
   )
 })
@@ -623,11 +710,13 @@ output$DB_DCplot <- downloadHandler(
     paste("fig_difficulty-validity_plot.png", sep = "")
   },
   content = function(file) {
-    ggsave(file,
+    ggsave(
+      file,
       plot = DCplot() +
         theme(text = element_text(size = setting_figures$text_size)),
       device = "png",
-      height = setting_figures$height, width = setting_figures$width,
+      height = setting_figures$height,
+      width = setting_figures$width,
       dpi = setting_figures$dpi
     )
   }
@@ -670,7 +759,8 @@ validity_plot_scatter_Input <- reactive({
   g <- ggplot(df, aes(y = cv, x = ts)) +
     geom_point(color = "black", aes(size = size)) +
     geom_smooth(
-      method = lm, formula = "y ~ x",
+      method = lm,
+      formula = "y ~ x",
       se = FALSE,
       color = "red",
       show.legend = FALSE
@@ -722,15 +812,21 @@ output$DB_validity_plot <- downloadHandler(
   filename = function() {
     cv <- criterion()
     k <- 6
-    type <- ifelse(length(unique(cv)) <= length(cv) / k, "boxplot", "scatterplot")
+    type <- ifelse(
+      length(unique(cv)) <= length(cv) / k,
+      "boxplot",
+      "scatterplot"
+    )
     paste("fig_CriterionVariable_", type, ".png", sep = "")
   },
   content = function(file) {
-    ggsave(file,
+    ggsave(
+      file,
       plot = validity_plot_Input() +
         theme(text = element_text(size = setting_figures$text_size)),
       device = "png",
-      height = setting_figures$height, width = setting_figures$width,
+      height = setting_figures$height,
+      width = setting_figures$width,
       dpi = setting_figures$dpi
     )
   }
@@ -747,10 +843,17 @@ validity_table_Input <- reactive({
     "<em>r</em>(",
     ct$parameter,
     ") = ",
-    sub("^(-?)0.", "\\1.", sprintf("%.2f", ct$estimate)), ", <em>p</em> = ",
-    ifelse(ct$p.value < .001, "<.001", sub("^(-?)0.", "\\1.", sprintf("%.3f", ct$p.value))), ", 95% CI [",
+    sub("^(-?)0.", "\\1.", sprintf("%.2f", ct$estimate)),
+    ", <em>p</em> = ",
+    ifelse(
+      ct$p.value < .001,
+      "<.001",
+      sub("^(-?)0.", "\\1.", sprintf("%.3f", ct$p.value))
+    ),
+    ", 95% CI [",
     sub("^(-?)0.", "\\1.", sprintf("%.2f", ct$conf.int[1])),
-    ", ", sub("^(-?)0.", "\\1.", sprintf("%.2f", ct$conf.int[2])),
+    ", ",
+    sub("^(-?)0.", "\\1.", sprintf("%.2f", ct$conf.int[2])),
     "]"
   ))
 
@@ -770,9 +873,14 @@ output$validity_table_interpretation <- renderUI({
 
   txt1 <- paste("<b>", "Interpretation:", "</b>")
   txt2 <- ifelse(est > 0, "positively", "negatively")
-  txt3 <- ifelse(pval < .05,
-    paste("The <em>p</em>-value is less than .05, thus we reject the null hypotheses.
-                       The total score and criterion variable are", txt2, "correlated."),
+  txt3 <- ifelse(
+    pval < .05,
+    paste(
+      "The <em>p</em>-value is less than .05, thus we reject the null hypotheses.
+                       The total score and criterion variable are",
+      txt2,
+      "correlated."
+    ),
     "The <em>p</em>-value is larger than .05, thus we don't reject the null hypotheses.
                  We cannot conclude that a significant correlation between the total score
                  and criterion variable exists."
@@ -793,14 +901,21 @@ output$validity_distractor_text <- renderUI({
   }
 
   txt1 <- paste("Respondents are divided into ")
-  txt2 <- ifelse((length(unique(cv)) <= length(cv) / k),
-    paste("<b>", num.group, "</b> groups as it seems that criterion variable is discrete. "),
+  txt2 <- ifelse(
+    (length(unique(cv)) <= length(cv) / k),
+    paste(
+      "<b>",
+      num.group,
+      "</b> groups as it seems that criterion variable is discrete. "
+    ),
     paste("<b>", num.group, "</b> groups by their criterion variable. ")
   )
-  txt3 <- paste("Subsequently, we display a percentage
+  txt3 <- paste(
+    "Subsequently, we display a percentage
                  of respondents in each group who selected a given answer (correct answer or distractor).
                  The correct answer should be more often selected by respondents with higher values of
-                 the criterion variable than by those with lower values, i.e.")
+                 the criterion variable than by those with lower values, i.e."
+  )
   txt4 <- paste("<b>", "solid line should be increasing.", "</b>")
   txt5 <- paste("The distractor should work in the opposite direction, i.e. ")
   txt6 <- paste("<b>", "dotted lines should be decreasing.", "<b>")
@@ -816,7 +931,9 @@ validity_admisible_groups <- reactive({
     groups <- length(levels(as.factor(cv)))
     validity_change_cut_indicator$discrete <- TRUE
   } else {
-    cv_quant <- lapply(1:5, function(i) quantile(cv, seq(0, 1, by = 1 / i), na.rm = TRUE))
+    cv_quant <- lapply(1:5, function(i) {
+      quantile(cv, seq(0, 1, by = 1 / i), na.rm = TRUE)
+    })
     cv_quant_unique <- sapply(cv_quant, function(i) !any(duplicated(i)))
     validity_change_cut_indicator$discrete <- FALSE
     groups <- c(1:5)[cv_quant_unique]
@@ -846,11 +963,16 @@ output$validity_groups_alert <- renderUI({
     if (validity_change_cut_indicator$discrete) {
       txt <- paste0(
         '<font color = "orange">The criterion seems to be discrete. The number of groups was set to ',
-        validity_admisible_groups(), ".</font>"
+        validity_admisible_groups(),
+        ".</font>"
       )
     } else {
-      txt <- paste0('<font color = "orange">The cut of criterion variable was not unique. The maximum number of
-                    groups, for which criterion variable is unique is ', max(validity_admisible_groups()), ".</font>")
+      txt <- paste0(
+        '<font color = "orange">The cut of criterion variable was not unique. The maximum number of
+                    groups, for which criterion variable is unique is ',
+        max(validity_admisible_groups()),
+        ".</font>"
+      )
     }
   } else {
     txt <- " "
@@ -868,7 +990,8 @@ validity_distractor_plot_Input <- reactive({
     num.groups = input$validity_group,
     item = i,
     item.name = item_names()[i],
-    multiple.answers = input$type_validity_combinations_distractor == "Combinations",
+    multiple.answers = input$type_validity_combinations_distractor ==
+      "Combinations",
     criterion = criterion(),
     crit.discrete = validity_change_cut_indicator$discrete
   )
@@ -899,11 +1022,13 @@ output$DB_validity_distractor_plot <- downloadHandler(
     paste("fig_DistractorsValidityPlot.png", sep = "")
   },
   content = function(file) {
-    ggsave(file,
+    ggsave(
+      file,
       plot = validity_distractor_plot_Input() +
         theme(text = element_text(size = setting_figures$text_size)),
       device = "png",
-      height = setting_figures$height, width = setting_figures$width,
+      height = setting_figures$height,
+      width = setting_figures$width,
       dpi = setting_figures$dpi
     )
   }
@@ -921,10 +1046,17 @@ validity_table_item_Input <- reactive({
     "<em>r</em>(",
     ct$parameter,
     ") = ",
-    sub("^(-?)0.", "\\1.", sprintf("%.2f", ct$estimate)), ", <em>p</em> ",
-    ifelse(ct$p.value < .001, "< .001", paste0("= ", sub("^(-?)0.", "\\1.", sprintf("%.3f", ct$p.value)))), ", 95% CI [",
+    sub("^(-?)0.", "\\1.", sprintf("%.2f", ct$estimate)),
+    ", <em>p</em> ",
+    ifelse(
+      ct$p.value < .001,
+      "< .001",
+      paste0("= ", sub("^(-?)0.", "\\1.", sprintf("%.3f", ct$p.value)))
+    ),
+    ", 95% CI [",
     sub("^(-?)0.", "\\1.", sprintf("%.2f", ct$conf.int[1])),
-    ", ", sub("^(-?)0.", "\\1.", sprintf("%.2f", ct$conf.int[2])),
+    ", ",
+    sub("^(-?)0.", "\\1.", sprintf("%.2f", ct$conf.int[2])),
     "]"
   ))
 
@@ -945,12 +1077,20 @@ output$validity_table_item_interpretation <- renderUI({
 
   txt1 <- paste("<b>", "Interpretation:", "</b>")
   txt2 <- ifelse(est > 0, "positively", "negatively")
-  txt3 <- ifelse(pval < .05,
-    paste("The <em>p</em>-value is less than .05, thus we reject the null hypotheses.
-                         Scored item", i, "and criterion variable are", txt2, "correlated."),
+  txt3 <- ifelse(
+    pval < .05,
+    paste(
+      "The <em>p</em>-value is less than .05, thus we reject the null hypotheses.
+                         Scored item",
+      i,
+      "and criterion variable are",
+      txt2,
+      "correlated."
+    ),
     paste(
       "The <em>p</em>-value is larger than .05, thus we don't reject the null hypotheses.
-                   We cannot conclude that a significant correlation between scored item", i,
+                   We cannot conclude that a significant correlation between scored item",
+      i,
       "and criterion variable exists."
     )
   )

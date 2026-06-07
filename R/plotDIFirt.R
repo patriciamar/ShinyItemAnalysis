@@ -60,32 +60,32 @@
 #' plotDIFirt(fitRaju$itemParInit, test = "Raju", item = 1)
 #'
 #' @importFrom difR itemRescale
-#' @importFrom ggplot2 stat_function scale_colour_manual scale_linetype_manual
-#'   ggtitle ggplot_build geom_ribbon
+#' @importFrom ggplot2 stat_function scale_colour_manual scale_linetype_manual ggtitle ggplot_build geom_ribbon
 #'
 #' @export
-plotDIFirt <- function(parameters, test = "Lord", item = "all", item.name, same.scale = FALSE) {
+plotDIFirt <- function(
+  parameters,
+  test = "Lord",
+  item = "all",
+  item.name,
+  same.scale = FALSE
+) {
   if (!(test %in% c("Lord", "Raju"))) {
-    stop("'test' must be either 'Lord' or 'Raju'",
-      call. = FALSE
-    )
+    stop("'test' must be either 'Lord' or 'Raju'", call. = FALSE)
   }
   if (!(ncol(parameters) %in% c(2, 5, 6, 9))) {
-    stop("Invalid dimension of 'parameters'",
-      call. = FALSE
-    )
+    stop("Invalid dimension of 'parameters'", call. = FALSE)
   }
   if ((nrow(parameters) %% 2) != 0) {
-    stop("Invalid dimension of 'parameters'",
-      call. = FALSE
-    )
+    stop("Invalid dimension of 'parameters'", call. = FALSE)
   }
 
   m <- nrow(parameters) / 2
   nams <- rownames(parameters)[1:m]
   if (inherits(item, "character")) {
     if (item != "all" & !item %in% nams) {
-      stop("Invalid value for 'item'. Item must be either character 'all', or numeric vector corresponding to column identifiers, or name of the item.",
+      stop(
+        "Invalid value for 'item'. Item must be either character 'all', or numeric vector corresponding to column identifiers, or name of the item.",
         call. = FALSE
       )
     }
@@ -96,7 +96,8 @@ plotDIFirt <- function(parameters, test = "Lord", item = "all", item.name, same.
     }
   } else {
     if (!inherits(item, "integer") & !inherits(item, "numeric")) {
-      stop("Invalid value for 'item'. Item must be either character 'all', or numeric vector corresponding to column identifiers, or name of the item.",
+      stop(
+        "Invalid value for 'item'. Item must be either character 'all', or numeric vector corresponding to column identifiers, or name of the item.",
         call. = FALSE
       )
     } else {
@@ -131,13 +132,15 @@ plotDIFirt <- function(parameters, test = "Lord", item = "all", item.name, same.
     return(c + (1 - c) / (1 + exp(-(a * (x - b)))))
   }
 
-  coefR <- switch(as.character(ncol(mR)),
+  coefR <- switch(
+    as.character(ncol(mR)),
     "2" = data.frame(a = 1, mR[, 1], c = 0),
     "5" = data.frame(mR[, 1:2], c = 0),
     "6" = mR[, c(1, 2, 6)],
     "9" = mR[, 1:3]
   )
-  coefF <- switch(as.character(ncol(mF)),
+  coefF <- switch(
+    as.character(ncol(mF)),
     "2" = data.frame(a = 1, mF[, 1], c = 0),
     "5" = data.frame(mF[, 1:2], c = 0),
     "6" = mF[, c(1, 2, 6)],
@@ -156,23 +159,27 @@ plotDIFirt <- function(parameters, test = "Lord", item = "all", item.name, same.
     gg[[i]] <- ggplot(df, aes(.data$x, .data$y)) +
       xlim(-3, 3) +
       ### lines
-      stat_function(aes(colour = "Reference", linetype = "Reference"),
+      stat_function(
+        aes(colour = "Reference", linetype = "Reference"),
         fun = CC_plot,
         args = list(
           a = coefR[i, 1],
           b = coefR[i, 2],
           c = coefR[i, 3]
         ),
-        size = size, geom = "line"
+        size = size,
+        geom = "line"
       ) +
-      stat_function(aes(colour = "Focal", linetype = "Focal"),
+      stat_function(
+        aes(colour = "Focal", linetype = "Focal"),
         fun = CC_plot,
         args = list(
           a = coefF[i, 1],
           b = coefF[i, 2],
           c = coefF[i, 3]
         ),
-        size = size, geom = "line"
+        size = size,
+        geom = "line"
       ) +
       ### style
       scale_colour_manual(
@@ -202,7 +209,6 @@ plotDIFirt <- function(parameters, test = "Lord", item = "all", item.name, same.
       ) +
       ggtitle(item.names[i])
 
-
     if (test == "Raju") {
       gg1 <- ggplot_build(gg[[i]])
 
@@ -214,17 +220,18 @@ plotDIFirt <- function(parameters, test = "Lord", item = "all", item.name, same.
       )
 
       # use the loess data to add the 'ribbon' to plot
-      gg[[i]] <- gg[[i]] + geom_ribbon(
-        data = df2,
-        aes(
-          x = .data$x,
-          ymin = .data$ymin,
-          ymax = .data$ymax
-        ),
-        fill = "grey",
-        alpha = 0.4,
-        inherit.aes = FALSE
-      )
+      gg[[i]] <- gg[[i]] +
+        geom_ribbon(
+          data = df2,
+          aes(
+            x = .data$x,
+            ymin = .data$ymin,
+            ymax = .data$ymax
+          ),
+          fill = "grey",
+          alpha = 0.4,
+          inherit.aes = FALSE
+        )
     }
   }
 

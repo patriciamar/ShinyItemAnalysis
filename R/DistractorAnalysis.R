@@ -81,23 +81,37 @@
 #'
 #' @importFrom mirt key2binary
 #' @export
-DistractorAnalysis <- function(Data, key, item = "all", p.table = FALSE, num.groups = 3, criterion = NULL,
-                               crit.discrete = FALSE, cut.points, data, matching, match.discrete) {
+DistractorAnalysis <- function(
+  Data,
+  key,
+  item = "all",
+  p.table = FALSE,
+  num.groups = 3,
+  criterion = NULL,
+  crit.discrete = FALSE,
+  cut.points,
+  data,
+  matching,
+  match.discrete
+) {
   # deprecated args handling
   if (!missing(data)) {
-    warning("Argument 'data' is deprecated; please use 'Data' instead.",
+    warning(
+      "Argument 'data' is deprecated; please use 'Data' instead.",
       call. = FALSE
     )
     Data <- data
   }
   if (!missing(matching)) {
-    warning("Argument 'matching' is deprecated; please use 'criterion' instead.",
+    warning(
+      "Argument 'matching' is deprecated; please use 'criterion' instead.",
       call. = FALSE
     )
     criterion <- matching
   }
   if (!missing(match.discrete)) {
-    warning("Argument 'match.discrete' is deprecated; please use 'crit.discrete' instead.",
+    warning(
+      "Argument 'match.discrete' is deprecated; please use 'crit.discrete' instead.",
       call. = FALSE
     )
     crit.discrete <- match.discrete
@@ -109,7 +123,8 @@ DistractorAnalysis <- function(Data, key, item = "all", p.table = FALSE, num.gro
 
   if (inherits(item, "character")) {
     if (any(item != "all") & !all(item %in% nams)) {
-      stop("Invalid value for 'item'. Item must be either character 'all', or
+      stop(
+        "Invalid value for 'item'. Item must be either character 'all', or
            numeric vector corresponding to column identifiers, or name of the item.",
         call. = FALSE
       )
@@ -121,15 +136,14 @@ DistractorAnalysis <- function(Data, key, item = "all", p.table = FALSE, num.gro
     }
   } else {
     if (!inherits(item, c("integer", "numeric"))) {
-      stop("Invalid value for 'item'. Item must be either character 'all', or
+      stop(
+        "Invalid value for 'item'. Item must be either character 'all', or
            numeric vector corresponding to column identifiers, or name of the item.",
         call. = FALSE
       )
     } else {
       if (!all(item %in% 1:m)) {
-        stop("Invalid number for 'item'.",
-          call. = FALSE
-        )
+        stop("Invalid number for 'item'.", call. = FALSE)
       } else {
         items <- item
       }
@@ -142,17 +156,24 @@ DistractorAnalysis <- function(Data, key, item = "all", p.table = FALSE, num.gro
 
   if (missing(key) | is.null(key)) {
     if (all(sapply(Data, is.numeric))) {
-      warning("Answer key is not provided. Maximum value is used as key.", call. = FALSE)
+      warning(
+        "Answer key is not provided. Maximum value is used as key.",
+        call. = FALSE
+      )
       key <- sapply(Data, max, na.rm = TRUE)
     } else if (missing(criterion)) {
-      stop("Answer key is not provided. Please, specify 'key' to be able to calculate total score or provide 'criterion'. ",
+      stop(
+        "Answer key is not provided. Please, specify 'key' to be able to calculate total score or provide 'criterion'. ",
         call. = FALSE
       )
     }
   } else {
     key <- unlist(key)
     if (!length(key) == ncol(Data)) {
-      warning("Answer key is not provided or some item keys are missing.", call. = FALSE)
+      warning(
+        "Answer key is not provided or some item keys are missing.",
+        call. = FALSE
+      )
     }
   }
 
@@ -171,7 +192,8 @@ DistractorAnalysis <- function(Data, key, item = "all", p.table = FALSE, num.gro
   if (crit.discrete) {
     score.cut <- sort(unique(scores))
     if (!missing(cut.points)) {
-      warning("Cut points specified in 'cut.points' are ignored. Used 'crit.discrete = FALSE' to use them.",
+      warning(
+        "Cut points specified in 'cut.points' are ignored. Used 'crit.discrete = FALSE' to use them.",
         call. = FALSE
       )
     }
@@ -179,38 +201,55 @@ DistractorAnalysis <- function(Data, key, item = "all", p.table = FALSE, num.gro
     score.level <- scores
   } else {
     if (missing(cut.points)) {
-      score.cut <- quantile(scores, seq(0, 1, by = 1 / num.groups), na.rm = TRUE)
+      score.cut <- quantile(
+        scores,
+        seq(0, 1, by = 1 / num.groups),
+        na.rm = TRUE
+      )
       if (any(duplicated(score.cut))) {
-        stop("Cut points based on quantiles are not unique. Consider smaller number of groups specified in 'num.groups'.",
+        stop(
+          "Cut points based on quantiles are not unique. Consider smaller number of groups specified in 'num.groups'.",
           call. = FALSE
         )
       }
     } else {
       if (any(duplicated(cut.points))) {
-        warning("Cut points provided in 'cut.points' argument are not unique.", call. = FALSE)
+        warning(
+          "Cut points provided in 'cut.points' argument are not unique.",
+          call. = FALSE
+        )
       }
       if (any(range(scores)[1] > cut.points | cut.points > range(scores)[2])) {
         if (is.null(criterion)) {
-          warning("Some of cut points provided in 'cut.points' are out of range of computed total scores.",
+          warning(
+            "Some of cut points provided in 'cut.points' are out of range of computed total scores.",
             call. = FALSE
           )
         } else {
-          warning("Some of cut points provided in 'cut.points' are out of range of criterion.",
+          warning(
+            "Some of cut points provided in 'cut.points' are out of range of criterion.",
             call. = FALSE
           )
         }
       }
       if (all(range(scores)[1] > cut.points | cut.points > range(scores)[2])) {
-        stop("All of cut points provided in cut.points are out of range of criterion.",
+        stop(
+          "All of cut points provided in cut.points are out of range of criterion.",
           call. = FALSE
         )
       }
       score.cut <- as.numeric(paste(cut.points))
-      score.cut <- c(min(scores, na.rm = TRUE), max(scores, na.rm = TRUE), score.cut)
+      score.cut <- c(
+        min(scores, na.rm = TRUE),
+        max(scores, na.rm = TRUE),
+        score.cut
+      )
       score.cut <- sort(unique(score.cut))
     }
     num.groups <- length(score.cut) - 1
-    score.level <- cut(scores, score.cut,
+    score.level <- cut(
+      scores,
+      score.cut,
       include.lowest = TRUE,
       labels = paste0("Group", 1:num.groups)
     )

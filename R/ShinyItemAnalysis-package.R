@@ -23,9 +23,7 @@
 #' by Martinkova and Drabinova (2018).
 #'
 #'
-#' @importFrom stats aggregate coef complete.cases cor deviance fitted glm
-#'   median na.exclude na.omit p.adjust pnorm pchisq qnorm qchisq quantile
-#'   relevel sd vcov xtabs
+#' @importFrom stats aggregate coef complete.cases cor deviance fitted glm median na.exclude na.omit p.adjust pnorm pchisq qnorm qchisq quantile relevel sd vcov xtabs
 #' @importFrom utils capture.output data head packageVersion read.csv
 #'
 #' @section Functions:

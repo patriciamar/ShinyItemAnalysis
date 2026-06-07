@@ -27,20 +27,27 @@ uiReliability <-
       "Spearman-Brown formula",
       h3("Spearman-Brown formula"),
       h4("Equation"),
-      p("Let \\(\\text{rel}(X)\\) be the reliability of the test composed of \\(I\\) equally precise
+      p(
+        "Let \\(\\text{rel}(X)\\) be the reliability of the test composed of \\(I\\) equally precise
                         items measuring the same construct, \\(X = X_1 + ... + X_I\\).
                         Then for a test consisting of
                         \\(I^*\\) such items,  that is for a test which is
-                        \\(m = \\frac{I^*}{I}\\) times longer/shorter, the reliability would be"),
+                        \\(m = \\frac{I^*}{I}\\) times longer/shorter, the reliability would be"
+      ),
       ("$$\\text{rel}(X^*) = \\frac{m\\cdot \\text{rel}(X)}{1 + (m - 1)\\cdot\\text{rel}(X)}.$$"),
-      p("The Spearman-Brown formula can be used to determine reliability of a test with with a
+      p(
+        "The Spearman-Brown formula can be used to determine reliability of a test with with a
                         different number of equally precise items measuring the same construct.
                         It can also be used to determine the necessary number of items to achieve
-                        desired reliability."),
+                        desired reliability."
+      ),
       p(
-        "In the calculations below, ", strong("reliability of original data"), "is by
+        "In the calculations below, ",
+        strong("reliability of original data"),
+        "is by
                         default set to the value of Cronbach's \\(\\alpha\\) for the dataset currently in use. The ",
-        strong("number of items in the original data"), "is
+        strong("number of items in the original data"),
+        "is
                         by default set to the number of items in the dataset currently in use. "
       ),
       fluidRow(
@@ -67,8 +74,10 @@ uiReliability <-
       ),
       # br(),
       h4("Estimate of reliability with different number of items"),
-      p("Here you can calculate an estimate of reliability for a test consisting of a different number of
-                        items. "),
+      p(
+        "Here you can calculate an estimate of reliability for a test consisting of a different number of
+                        items. "
+      ),
       fluidRow(column(
         3,
         numericInput(
@@ -82,8 +91,10 @@ uiReliability <-
       uiOutput("reliability_SBformula_reliability_text"),
       # br(),
       h4("Necessary number of items for required level of reliability"),
-      p("Here you can calculate the necessary number of items
-                        to gain the required level of reliability. "),
+      p(
+        "Here you can calculate the necessary number of items
+                        to gain the required level of reliability. "
+      ),
       fluidRow(column(
         3,
         numericInput(
@@ -103,24 +114,37 @@ uiReliability <-
     tabPanel(
       "Split-half method",
       h3("Split-half method"),
-      p("The split-half method uses the correlation between two subscores for an estimation of reliability.
+      p(
+        "The split-half method uses the correlation between two subscores for an estimation of reliability.
                         The underlying assumption is that the two halves of the test (or even all items on the test) are
                         equally precise and measure the same underlying construct. The Spearman-Brown formula is then used to
-                        correct the estimate for the number of items."),
+                        correct the estimate for the number of items."
+      ),
       h4("Equation"),
-      p("For a test with \\(I\\) items total score is calculated as \\(X = X_1 + ... + X_I\\).
+      p(
+        "For a test with \\(I\\) items total score is calculated as \\(X = X_1 + ... + X_I\\).
                         Let \\(X^*_1\\) and \\(X^*_2\\) be total scores calculated from items found only in the first
                         and second subsets. The estimate of reliability is then given by the Spearman-Brown formula (Spearman, 1910; Brown, 1910)
-                        with \\(m = 2\\)."),
+                        with \\(m = 2\\)."
+      ),
       ("$$\\text{rel}(X) = \\frac{m\\cdot \\text{cor}(X^*_1, X^*_2)}{1 + (m - 1)\\cdot\\text{cor}(X^*_1, X^*_2)} =
                        \\frac{2\\cdot \\text{cor}(X^*_1, X^*_2)}{1 + \\text{cor}(X^*_1, X^*_2)}$$"),
       p(
         "You can choose below from different split-half approaches. The ",
-        strong("First-last"), "method uses a correlation between the first half of items and the second
-                        half of items. The ", strong("Even-odd"), "method places even numbered items into the first subset and odd numbered items
-                        into the second one. The ", strong("Random"), "method performs a random split of items, thus the
+        strong("First-last"),
+        "method uses a correlation between the first half of items and the second
+                        half of items. The ",
+        strong("Even-odd"),
+        "method places even numbered items into the first subset and odd numbered items
+                        into the second one. The ",
+        strong("Random"),
+        "method performs a random split of items, thus the
                         resulting estimate may be different for each call. Out of a specified number of random splits (10,000 by default),
-                        the ", strong("Worst"), " method selects the lowest estimate and the ", strong("Average"), "method calculates the
+                        the ",
+        strong("Worst"),
+        " method selects the lowest estimate and the ",
+        strong("Average"),
+        "method calculates the
                         average. In the case of an odd number of items, the first subset contains one more item than the second one."
       ),
       uiOutput("reliability_splithalf_allpossible_text"),
@@ -159,16 +183,26 @@ uiReliability <-
       ),
       h4("Reliability estimate with confidence interval"),
       p(
-        "The estimate of reliability for ", strong("First-last"), ", ", strong("Even-odd"), ", ", strong("Random"), "and",
-        strong("Worst"), "is calculated using the Spearman-Brown formula. The confidence interval is based on a
-        confidence interval of correlation using the delta method. The estimate of reliability for the ", strong("Average"),
+        "The estimate of reliability for ",
+        strong("First-last"),
+        ", ",
+        strong("Even-odd"),
+        ", ",
+        strong("Random"),
+        "and",
+        strong("Worst"),
+        "is calculated using the Spearman-Brown formula. The confidence interval is based on a
+        confidence interval of correlation using the delta method. The estimate of reliability for the ",
+        strong("Average"),
         "method is a mean value of sampled reliabilities and the confidence interval is the confidence interval of this mean. "
       ),
       uiOutput("reliability_splithalf_table"),
       br(),
       h4("Histogram of reliability estimates"),
-      p("A histogram is based on a selected number of split halves estimates (10,000 by default).
-                        The current estimate is highlighted by a red colour."),
+      p(
+        "A histogram is based on a selected number of split halves estimates (10,000 by default).
+                        The current estimate is highlighted by a red colour."
+      ),
       plotlyOutput("reliability_splithalf_histogram"),
       downloadButton("DB_reliability_splithalf_histogram"),
       br(),
@@ -176,19 +210,26 @@ uiReliability <-
       code(includeText("sc/reliability/sh.R"))
     ),
     # * CRONBACH'S ALPHA ####
-    tabPanel("Cronbach's \\(\\alpha\\)",
+    tabPanel(
+      "Cronbach's \\(\\alpha\\)",
       value = "cronbach",
       h3("Cronbach's \\(\\alpha\\)"),
-      p("Cronbach's \\(\\alpha\\) is an estimate of the internal consistency of a psychometric test.
+      p(
+        "Cronbach's \\(\\alpha\\) is an estimate of the internal consistency of a psychometric test.
                         It is a function of the number of items in a test, the average covariance
-                        between item-pairs, and the variance of the total score (Cronbach, 1951)."),
+                        between item-pairs, and the variance of the total score (Cronbach, 1951)."
+      ),
       h4("Equation"),
-      p("For a test with \\(I\\) items where \\(X = X_1 + ... + X_I\\) is a total score,
+      p(
+        "For a test with \\(I\\) items where \\(X = X_1 + ... + X_I\\) is a total score,
                         \\(\\sigma^2_X\\) its variance and \\(\\sigma^2_{X_i}\\) variances of items,
-                        Cronbach's \\(\\alpha\\) is given by following equation"),
+                        Cronbach's \\(\\alpha\\) is given by following equation"
+      ),
       ("$$\\alpha = \\frac{I}{I-1}\\left(1 - \\frac{\\sum_{i = 1}^I \\sigma^2_{X_i}}{\\sigma^2_X}\\right)$$"),
       h4("Estimate with confidence interval"),
-      p("A confidence interval is based on F distribution as proposed by Feldt et al. (1987)."),
+      p(
+        "A confidence interval is based on F distribution as proposed by Feldt et al. (1987)."
+      ),
       tableOutput("reliability_cronbachalpha_table"),
       # h3("McDonald's \\(\\omega\\)"),
       # p(),
@@ -206,7 +247,6 @@ uiReliability <-
     #   div(code(HTML("library(psych)<br>library(tidyverse)<br><br>#&nbsp;loading&nbsp;and&nbsp;formatting&nbsp;data<br>data(AIBS,&nbsp;package&nbsp;=&nbsp;\"ShinyItemAnalysis\")<br>AIBSwide&nbsp;<-&nbsp;AIBS&nbsp;|><br>&nbsp;&nbsp;pivot_wider(ID,&nbsp;values_from&nbsp;=&nbsp;Score,&nbsp;names_from&nbsp;=&nbsp;RevCode)&nbsp;|><br>&nbsp;&nbsp;select(-ID)<br>head(AIBSwide)<br><br>ICC(AIBSwide)<br>"))),
     #   br()
     # ),
-
 
     # "---",
     # "Modules",

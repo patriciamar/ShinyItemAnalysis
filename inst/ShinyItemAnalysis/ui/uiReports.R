@@ -3,56 +3,86 @@ uiReports <-
     "Reports",
     h3("Download report"),
     p(
-      strong("NOTE: "), "When using the ShinyItemAnalysis app online, the report
+      strong("NOTE: "),
+      "When using the ShinyItemAnalysis app online, the report
       generation depends on current load of the shiny server, and it may fail
       especially with larger datasets. We recommend to first check sections of
       intended report contents. For example, if you wish to include a ",
-      strong("3PL IRT"), " model, you can first visit the ",
-      strong("Dichotomous models"), " subsection of the ", strong("IRT models"),
-      "section and try fitting the ", strong("3PL IRT"), " model."
+      strong("3PL IRT"),
+      " model, you can first visit the ",
+      strong("Dichotomous models"),
+      " subsection of the ",
+      strong("IRT models"),
+      "section and try fitting the ",
+      strong("3PL IRT"),
+      " model."
     ),
 
     # * GENERAL SETTINGS ####
     h4("Settings of report"),
     p(
-      code("ShinyItemAnalysis"), " offers an option to download a report in HTML or PDF format. PDF report
-             requires a TeX distribution, if you want to run the app locally on your computer. For", code("R"),
+      code("ShinyItemAnalysis"),
+      " offers an option to download a report in HTML or PDF format. PDF report
+             requires a TeX distribution, if you want to run the app locally on your computer. For",
+      code("R"),
       "users, we recommend a lightweight ",
-      a(href = "https://yihui.org/tinytex/", "TinyTeX distribution", target = "_blank", .noWS = "after"),
-      ", which is easy to install directly from", code("R"),
-      "console with", code("tinytex::install_tinytex()", .noWS = "after"),
+      a(
+        href = "https://yihui.org/tinytex/",
+        "TinyTeX distribution",
+        target = "_blank",
+        .noWS = "after"
+      ),
+      ", which is easy to install directly from",
+      code("R"),
+      "console with",
+      code("tinytex::install_tinytex()", .noWS = "after"),
       ". You can use HTML report without any additional utilities, though."
     ),
     p(
-      "There is also an option to use customized settings. When checking the", strong("Customize settings,"),
+      "There is also an option to use customized settings. When checking the",
+      strong("Customize settings,"),
       "local settings will be offered and used for each selected section of the report. Otherwise, the settings
              will be taken from sections made in the individual sections of the application.
              You may also include your name into the report, and change the name of the analyzed dataset. "
     ),
     fluidRow(
-      column(2, radioButtons(
-        inputId = "report_format",
-        label = "Format of report",
-        choices = c("HTML" = "html", "PDF" = "pdf")
-      )),
-      column(2, checkboxInput(
-        inputId = "customizeCheck",
-        label = "Customize settings",
-        value = FALSE
-      )),
-      column(2, textInput(
-        inputId = "reportAuthor",
-        label = "Author"
-      )),
-      column(2, textInput(
-        inputId = "reportDataName",
-        label = "Dataset"
-      ))
+      column(
+        2,
+        radioButtons(
+          inputId = "report_format",
+          label = "Format of report",
+          choices = c("HTML" = "html", "PDF" = "pdf")
+        )
+      ),
+      column(
+        2,
+        checkboxInput(
+          inputId = "customizeCheck",
+          label = "Customize settings",
+          value = FALSE
+        )
+      ),
+      column(
+        2,
+        textInput(
+          inputId = "reportAuthor",
+          label = "Author"
+        )
+      ),
+      column(
+        2,
+        textInput(
+          inputId = "reportDataName",
+          label = "Dataset"
+        )
+      )
     ),
     h4("Content of report"),
-    p("Reports by default contain a summary of total scores, table of standard scores, item analysis,
+    p(
+      "Reports by default contain a summary of total scores, table of standard scores, item analysis,
              distractor plots for each item and multinomial regression plots for each item. Other analyses
-             can be selected below. "),
+             can be selected below. "
+    ),
     tags$hr(),
     # * VALIDITY ####
     fluidRow(
@@ -331,7 +361,8 @@ uiReports <-
         conditionalPanel(
           condition = "input.logregCheck",
           column(
-            3, p(strong("Logistic regression settings")),
+            3,
+            p(strong("Logistic regression settings")),
             radioButtons(
               inputId = "type_print_DIF_logistic_report",
               label = "Type",
@@ -374,7 +405,8 @@ uiReports <-
         conditionalPanel(
           condition = "input.multiCheck",
           column(
-            3, p(strong("Multinomial regression settings")),
+            3,
+            p(strong("Multinomial regression settings")),
             radioButtons(
               inputId = "type_DDF_report",
               label = "Type",
@@ -429,12 +461,15 @@ uiReports <-
     # * DOWNLOAD ####
     uiOutput("report_na_alert"),
     br(),
-    div(style = "display:inline-block", actionButton(
-      inputId = "generate",
-      label = "Generate report",
-      class = "btn btn-primary",
-      icon = icon("chart-bar")
-    )),
+    div(
+      style = "display:inline-block",
+      actionButton(
+        inputId = "generate",
+        label = "Generate report",
+        class = "btn btn-primary",
+        icon = icon("chart-bar")
+      )
+    ),
     tags$style(HTML("#download_report_button { margin-left: 25px }")),
     div(style = "display:inline-block", uiOutput("download_report_button"))
   )

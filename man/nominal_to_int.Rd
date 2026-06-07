@@ -35,17 +35,17 @@ that, the same information is leveraged when fitting a \code{mirt} model that
 conserves the "directionality" of estimated latent ability (using a model
 definition from \code{\link[=obtain_nrm_def]{obtain_nrm_def()}}). In these cases, you are recommended to
 use \code{\link[=nominal_to_int]{nominal_to_int()}} (note that \code{\link[=fit_blis]{fit_blis()}} and \code{\link[=blis]{blis()}} does this
-internally). Note also that fitted BLIS model (of class \linkS4class{BlisClass}) stores
+internally). Note also that fitted BLIS model (of class \link[=BlisClass-class]{BlisClass}) stores
 the original levels with correct answer key in its \code{orig_levels} slot,
 accessible by a user via \code{\link[=get_orig_levels]{get_orig_levels()}}.
 }
 \seealso{
-Other BLIS/BLIRT related: 
+Other BLIS/BLIRT related:
 \code{\link{BlisClass-class}},
 \code{\link{coef,BlisClass-method}},
-\code{\link{fit_blis}()},
-\code{\link{get_orig_levels}()},
-\code{\link{obtain_nrm_def}()},
-\code{\link{print.blis_coefs}()}
+\code{\link[=fit_blis]{fit_blis()}},
+\code{\link[=get_orig_levels]{get_orig_levels()}},
+\code{\link[=obtain_nrm_def]{obtain_nrm_def()}},
+\code{\link[=print.blis_coefs]{print.blis_coefs()}}
 }
 \concept{BLIS/BLIRT related}

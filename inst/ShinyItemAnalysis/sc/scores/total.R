@@ -10,7 +10,16 @@ data <- GMAT[, 1:20]
 score <- rowSums(data)
 
 # summary of total score
-tab <- describe(score)[, c("n", "min", "max", "mean", "median", "sd", "skew", "kurtosis")]
+tab <- describe(score)[, c(
+  "n",
+  "min",
+  "max",
+  "mean",
+  "median",
+  "sd",
+  "skew",
+  "kurtosis"
+)]
 tab$kurtosis <- tab$kurtosis + 3
 tab
 

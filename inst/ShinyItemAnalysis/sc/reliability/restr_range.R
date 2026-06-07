@@ -10,8 +10,12 @@ ICCrestricted(Data = AIBS, case = "ID", var = "Score", rank = "ScoreRankAdj")
 
 # estimate range-restricted ICC
 ICCrestricted(
-  Data = AIBS, case = "ID", var = "Score", rank = "ScoreRankAdj",
-  sel = 0.90, dir = "top"
+  Data = AIBS,
+  case = "ID",
+  var = "Score",
+  rank = "ScoreRankAdj",
+  sel = 0.90,
+  dir = "top"
 )
 
 # caterpillar plot
@@ -20,8 +24,13 @@ AIBS |>
   geom_line(col = "gray") +
   geom_point(shape = 1, size = 1.5) +
   stat_summary(
-    fun = mean, fun.args = list(na.rm = TRUE), geom = "point",
-    col = "red", shape = 5, size = 2.5, stroke = .35
+    fun = mean,
+    fun.args = list(na.rm = TRUE),
+    geom = "point",
+    col = "red",
+    shape = 5,
+    size = 2.5,
+    stroke = .35
   ) +
   labs(x = "Ratee rank", y = "Rating (score)") +
   coord_cartesian(ylim = c(1, 5)) +
@@ -31,8 +40,12 @@ AIBS |>
 all_top_restricted <- map_dfr(
   2:72,
   ~ ICCrestricted(
-    Data = AIBS, case = "ID", var = "Score",
-    rank = "ScoreRankAdj", sel = .x, nsim = 10
+    Data = AIBS,
+    case = "ID",
+    var = "Score",
+    rank = "ScoreRankAdj",
+    sel = .x,
+    nsim = 10
   )
 )
 all_top_restricted
@@ -40,8 +53,12 @@ all_top_restricted
 # or alternatively, in base R:
 base_way <- lapply(2:72, function(x) {
   ICCrestricted(
-    Data = AIBS, case = "ID", var = "Score", rank = "ScoreRankAdj",
-    sel = x, nsim = 10
+    Data = AIBS,
+    case = "ID",
+    var = "Score",
+    rank = "ScoreRankAdj",
+    sel = x,
+    nsim = 10
   )
 })
 do.call(rbind.data.frame, base_way)

@@ -147,12 +147,27 @@
 #' @importFrom ggplot2 geom_col ylab scale_y_continuous scale_fill_manual unit stat_summary scale_colour_manual
 #' @export
 
-DDplot <- function(Data, item.names, discrim = "ULI", k = 3, l = 1, u = 3,
-                   maxscore, minscore, bin = FALSE, cutscore, average.score = FALSE,
-                   thr = 0.2, criterion = "none", val_type = "simple", data) {
+DDplot <- function(
+  Data,
+  item.names,
+  discrim = "ULI",
+  k = 3,
+  l = 1,
+  u = 3,
+  maxscore,
+  minscore,
+  bin = FALSE,
+  cutscore,
+  average.score = FALSE,
+  thr = 0.2,
+  criterion = "none",
+  val_type = "simple",
+  data
+) {
   # deprecated args handling
   if (!missing(data)) {
-    warning("Argument 'data' is deprecated; please use 'Data' instead.",
+    warning(
+      "Argument 'data' is deprecated; please use 'Data' instead.",
       call. = FALSE
     )
     Data <- data
@@ -165,7 +180,10 @@ DDplot <- function(Data, item.names, discrim = "ULI", k = 3, l = 1, u = 3,
     if (!is.null(dim(criterion))) {
       stop("'criterion' must be numeric or logical vector. ", call. = FALSE)
     } else if (length(criterion) != nrow(Data)) {
-      stop("'criterion' must be numeric or logical vector of the same length as a number of observations in 'data'. ", call. = FALSE)
+      stop(
+        "'criterion' must be numeric or logical vector of the same length as a number of observations in 'data'. ",
+        call. = FALSE
+      )
     }
   }
   if (missing(maxscore)) {
@@ -211,14 +229,21 @@ DDplot <- function(Data, item.names, discrim = "ULI", k = 3, l = 1, u = 3,
     if (!is.numeric(thr)) {
       stop("'thr' needs to be either NULL or numeric. ", call. = FALSE)
     } else if (thr < 0 | thr > 1) {
-      warning("'thr' needs value between 0 and 1. Current threshold is not displayed in the plot. ",
+      warning(
+        "'thr' needs value between 0 and 1. Current threshold is not displayed in the plot. ",
         call. = FALSE
       )
     }
   }
 
   diffName <- c("Difficulty", "Difficulty", "Average score")
-  discName <- c("Discrimination ULI", "Discrimination RIR", "Discrimination RIT", "Criterion validity", "Validity index")
+  discName <- c(
+    "Discrimination ULI",
+    "Discrimination RIR",
+    "Discrimination RIT",
+    "Criterion validity",
+    "Validity index"
+  )
   xlabel <- c(
     "Item (ordered by difficulty)",
     "Item (ordered by difficulty)",
@@ -226,9 +251,13 @@ DDplot <- function(Data, item.names, discrim = "ULI", k = 3, l = 1, u = 3,
   )
   average <- colMeans(Data, na.rm = TRUE)
   if (discrim == "ULI") {
-    disc <- as.numeric(gDiscrim(Data,
-      minscore = minscore, maxscore = maxscore,
-      k = k, l = l, u = u
+    disc <- as.numeric(gDiscrim(
+      Data,
+      minscore = minscore,
+      maxscore = maxscore,
+      k = k,
+      l = l,
+      u = u
     ))
     i <- 1
   }
@@ -285,7 +314,8 @@ DDplot <- function(Data, item.names, discrim = "ULI", k = 3, l = 1, u = 3,
   }
   if (discrim != "none" | any(criterion != "none", na.rm = TRUE)) {
     if (any(disc < 0)) {
-      ifelse(any(criterion != "none", na.rm = TRUE),
+      ifelse(
+        any(criterion != "none", na.rm = TRUE),
         warning("Item-criterion correlation is lower than 0. ", call. = FALSE),
         warning("Estimated discrimination is lower than 0. ", call. = FALSE)
       )
@@ -294,16 +324,15 @@ DDplot <- function(Data, item.names, discrim = "ULI", k = 3, l = 1, u = 3,
     value <- c(rbind(difc, disc)[, order(difc)])
     parameter <- rep(c(diffName[j], discName[i]), ncol(Data))
     parameter <- factor(parameter, levels = parameter[1:2])
-    item <- factor(rep(item.names[order(difc)], each = 2), levels = item.names[order(difc)])
+    item <- factor(
+      rep(item.names[order(difc)], each = 2),
+      levels = item.names[order(difc)]
+    )
     df <- data.frame(item, parameter, value)
     col <- c("red", "darkblue")
 
     g <-
-      ggplot(df, aes(item,
-        value,
-        fill = parameter,
-        color = parameter
-      )) +
+      ggplot(df, aes(item, value, fill = parameter, color = parameter)) +
       geom_col(
         position = "dodge",
         alpha = 0.7,
@@ -337,15 +366,21 @@ DDplot <- function(Data, item.names, discrim = "ULI", k = 3, l = 1, u = 3,
     item <- factor(item.names[order(difc)], levels = item.names[order(difc)])
     df <- data.frame(item, parameter, value)
     col <- c("red", "darkblue")
-    g <- ggplot(df, aes(
-      x = .data$item,
-      y = .data$value,
-      fill = .data$parameter,
-      color = .data$parameter
-    )) +
+    g <- ggplot(
+      df,
+      aes(
+        x = .data$item,
+        y = .data$value,
+        fill = .data$parameter,
+        color = .data$parameter
+      )
+    ) +
       stat_summary(
-        fun = mean, position = "dodge", geom = "bar",
-        alpha = 0.7, width = 0.8
+        fun = mean,
+        position = "dodge",
+        geom = "bar",
+        alpha = 0.7,
+        width = 0.8
       ) +
       xlab(xlabel[j]) +
       ylab(diffName[j]) +

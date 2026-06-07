@@ -1,6 +1,8 @@
 # source server logic for polytomous IRT models
-source("server/IRT/polytomous.R", local = T, encoding = "UTF-8")
-source("server/IRT/training.R", local = T, encoding = "UTF-8")
+source("server/IRT/polytomous.R", local = TRUE, encoding = "UTF-8")
+source("server/IRT/training.R", local = TRUE, encoding = "UTF-8")
+source("server/IRT/gpcm.R", local = TRUE, encoding = "UTF-8")
+source("server/IRT/grm.R", local = TRUE, encoding = "UTF-8")
 
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -97,8 +99,10 @@ IRT_binary_model_rasch <- reactive({
   data <- binary()
   fit <- mirt(
     data,
-    model = 1, itemtype = "Rasch",
-    SE = TRUE, verbose = FALSE,
+    model = 1,
+    itemtype = "Rasch",
+    SE = TRUE,
+    verbose = FALSE,
     technical = list(NCYCLES = input$ncycles)
   )
   fit
@@ -108,14 +112,20 @@ IRT_binary_model_rasch <- reactive({
 IRT_binary_model_1pl <- reactive({
   data <- binary()
   s <- paste(
-    "F = 1-", ncol(data), "\n",
-    "CONSTRAIN = (1-", ncol(data), ", a1)"
+    "F = 1-",
+    ncol(data),
+    "\n",
+    "CONSTRAIN = (1-",
+    ncol(data),
+    ", a1)"
   )
   model <- mirt.model(s)
   fit <- mirt(
     data,
-    model = model, itemtype = "2PL",
-    SE = TRUE, verbose = FALSE,
+    model = model,
+    itemtype = "2PL",
+    SE = TRUE,
+    verbose = FALSE,
     technical = list(NCYCLES = input$ncycles)
   )
   fit
@@ -126,8 +136,10 @@ IRT_binary_model_2pl <- reactive({
   data <- binary()
   fit <- mirt(
     data,
-    model = 1, itemtype = "2PL",
-    SE = TRUE, verbose = FALSE,
+    model = 1,
+    itemtype = "2PL",
+    SE = TRUE,
+    verbose = FALSE,
     technical = list(NCYCLES = input$ncycles)
   )
   fit
@@ -138,8 +150,10 @@ IRT_binary_model_3pl <- reactive({
   data <- binary()
   fit <- mirt(
     data,
-    model = 1, itemtype = "3PL",
-    SE = TRUE, verbose = FALSE,
+    model = 1,
+    itemtype = "3PL",
+    SE = TRUE,
+    verbose = FALSE,
     technical = list(NCYCLES = input$ncycles)
   )
   fit
@@ -150,8 +164,10 @@ IRT_binary_model_4pl <- reactive({
   data <- binary()
   fit <- mirt(
     data,
-    model = 1, itemtype = "4PL",
-    SE = TRUE, verbose = FALSE,
+    model = 1,
+    itemtype = "4PL",
+    SE = TRUE,
+    verbose = FALSE,
     technical = list(NCYCLES = input$ncycles)
   )
   fit
@@ -159,7 +175,8 @@ IRT_binary_model_4pl <- reactive({
 
 # ** Model ####
 IRT_binary_model <- reactive({
-  fit <- switch(input$IRT_binary_summary_model,
+  fit <- switch(
+    input$IRT_binary_summary_model,
     "Rasch" = IRT_binary_model_rasch(),
     "1PL" = IRT_binary_model_1pl(),
     "2PL" = IRT_binary_model_2pl(),
@@ -175,76 +192,88 @@ IRT_binary_model <- reactive({
 # ** Model description ####
 IRT_binary_summary_model_description <- reactive({
   if (input$IRT_binary_summary_parametrization == "irt") {
-    txt <- switch(input$IRT_binary_summary_model,
-      "Rasch" =
-        paste0("In the <b>Rasch model</b> (Rasch, 1960), the items may differ only in their difficulty parameters \\(b_i\\),
+    txt <- switch(
+      input$IRT_binary_summary_model,
+      "Rasch" = paste0(
+        "In the <b>Rasch model</b> (Rasch, 1960), the items may differ only in their difficulty parameters \\(b_i\\),
              which are represented by the locations of the item characteristic curve inflection points.
              All items are assumed to have the same discrimination of 1, represented by the slope in the inflection point.
              Model parameters are estimated using a marginal maximum likelihood method.
              The ability \\(\\theta_p\\) of respondent \\(p\\) is assumed to follow normal distribution
-             with freely estimated variance. "),
-      "1PL" =
-        paste0("In the <b>One Parameter Logistic (1PL) IRT model</b>, the items may differ only in their difficulty parameters \\(b_i\\),
+             with freely estimated variance. "
+      ),
+      "1PL" = paste0(
+        "In the <b>One Parameter Logistic (1PL) IRT model</b>, the items may differ only in their difficulty parameters \\(b_i\\),
              which are represented by the locations of the item characteristic curve inflection points.
              All items are assumed to have the same discrimination \\(a\\), represented by the slope in the inflection point.
              Its value corresponds to the standard deviation of ability estimates in the Rasch model.
              Model parameters are estimated using a marginal maximum likelihood method.
              The ability \\(\\theta_p\\) of respondent \\(p\\) is assumed to follow standard normal
-             distribution. "),
-      "2PL" =
-        paste0("The <b>Two Parameter Logistic (2PL) IRT model</b> allows for different difficulty parameters \\(b_i\\),
+             distribution. "
+      ),
+      "2PL" = paste0(
+        "The <b>Two Parameter Logistic (2PL) IRT model</b> allows for different difficulty parameters \\(b_i\\),
              which are represented by the locations of the item characteristic curve inflection points,
              and items can also differ in their discrimination parameters \\(a_i\\), represented by the slope in the inflection point.
              Model parameters are estimated using a marginal maximum likelihood method.
              The ability \\(\\theta_p\\) of respondent \\(p\\) is assumed to follow standard normal
-             distribution. "),
-      "3PL" =
-        paste0("The <b>Three Parameter Logistic (3PL) IRT model </b> allows for different item difficulties \\(b_i\\),
+             distribution. "
+      ),
+      "3PL" = paste0(
+        "The <b>Three Parameter Logistic (3PL) IRT model </b> allows for different item difficulties \\(b_i\\),
              different discriminations of items \\(a_i\\), and also for nonzero left asymptotes, the pseudo-guessing \\(c_i\\).
              Model parameters are estimated using a marginal maximum likelihood method.
-             The ability \\(\\theta_p\\) is assumed to  follow standard normal distribution. "),
-      "4PL" =
-        paste0("The <b>Four Parameter Logistic (4PL) IRT model </b> allows for different item difficulties \\(b_i\\),
+             The ability \\(\\theta_p\\) is assumed to  follow standard normal distribution. "
+      ),
+      "4PL" = paste0(
+        "The <b>Four Parameter Logistic (4PL) IRT model </b> allows for different item difficulties \\(b_i\\),
              different discriminations of items \\(a_i\\), nonzero left asymptotes, the pseudo-guessing \\(c_i\\),
              and also for upper asymptote lower than one, i.e, inattention parameters \\(d_i\\).
              Model parameters are estimated using a marginal maximum likelihood method.
-             The ability \\(\\theta_p\\) is assumed to follow standard normal distribution. ")
+             The ability \\(\\theta_p\\) is assumed to follow standard normal distribution. "
+      )
     )
   } else {
-    txt <- switch(input$IRT_binary_summary_model,
-      "Rasch" =
-        paste0("In the <b>Rasch model</b> (Rasch, 1960), the items may differ only in their difficulty parameters \\(b_i\\),
+    txt <- switch(
+      input$IRT_binary_summary_model,
+      "Rasch" = paste0(
+        "In the <b>Rasch model</b> (Rasch, 1960), the items may differ only in their difficulty parameters \\(b_i\\),
              which are represented by the locations of the item characteristic curve inflection points.
              All items are assumed to have the same discrimination of 1, represented by the slope in the inflection point.
              Model parameters are estimated using a marginal maximum likelihood method.
              The ability \\(\\theta_p\\) of respondent \\(p\\) is assumed to follow normal distribution
-             with freely estimated variance. "),
-      "1PL" =
-        paste0("In the <b>One Parameter Logistic (1PL) IRT model</b>, the items may differ only in their difficulty parameters \\(b_i\\),
+             with freely estimated variance. "
+      ),
+      "1PL" = paste0(
+        "In the <b>One Parameter Logistic (1PL) IRT model</b>, the items may differ only in their difficulty parameters \\(b_i\\),
              which are represented by the locations of the item characteristic curve inflection points.
              All items are assumed to have the same discrimination \\(a\\), represented by the slope in the inflection point.
              Its value corresponds to the standard deviation of ability estimates in the Rasch model.
              Model parameters are estimated using a marginal maximum likelihood method.
              The ability \\(\\theta_p\\) of respondent \\(p\\) is assumed to follow standard normal
-             distribution. "),
-      "2PL" =
-        paste0("The <b>Two Parameter Logistic (2PL) IRT model</b> allows for different difficulty parameters \\(b_i\\),
+             distribution. "
+      ),
+      "2PL" = paste0(
+        "The <b>Two Parameter Logistic (2PL) IRT model</b> allows for different difficulty parameters \\(b_i\\),
              which are represented by the locations of the item characteristic curve inflection points,
              and items can also differ in their discrimination parameters \\(a_i\\), represented by the slope in the inflection point.
              Model parameters are estimated using a marginal maximum likelihood method.
              The ability \\(\\theta_p\\) of respondent \\(p\\) is assumed to follow standard normal
-             distribution. "),
-      "3PL" =
-        paste0("The <b>Three Parameter Logistic (3PL) IRT model </b> allows for different item difficulties \\(b_i\\),
+             distribution. "
+      ),
+      "3PL" = paste0(
+        "The <b>Three Parameter Logistic (3PL) IRT model </b> allows for different item difficulties \\(b_i\\),
              different discriminations of items \\(a_i\\), and also for nonzero left asymptotes, the pseudo-guessing \\(c_i\\).
              Model parameters are estimated using a marginal maximum likelihood method.
-             The ability \\(\\theta_p\\) is assumed to  follow standard normal distribution. "),
-      "4PL" =
-        paste0("The <b>Four Parameter Logistic (4PL) IRT model </b> allows for different item difficulties \\(b_i\\),
+             The ability \\(\\theta_p\\) is assumed to  follow standard normal distribution. "
+      ),
+      "4PL" = paste0(
+        "The <b>Four Parameter Logistic (4PL) IRT model </b> allows for different item difficulties \\(b_i\\),
              different discriminations of items \\(a_i\\), nonzero left asymptotes, the pseudo-guessing \\(c_i\\),
              and also for upper asymptote lower than one, i.e, inattention parameters \\(d_i\\).
              Model parameters are estimated using a marginal maximum likelihood method.
-             The ability \\(\\theta_p\\) is assumed to follow standard normal distribution. ")
+             The ability \\(\\theta_p\\) is assumed to follow standard normal distribution. "
+      )
     )
   }
   txt
@@ -257,7 +286,8 @@ output$IRT_binary_summary_model_description <- renderText({
 # ** ICC equation ####
 IRT_binary_summary_icc_equation <- reactive({
   if (input$IRT_binary_summary_parametrization == "irt") {
-    txt1 <- switch(input$IRT_binary_summary_model,
+    txt1 <- switch(
+      input$IRT_binary_summary_model,
       "Rasch" = "{(\\theta_p - b_i)}",
       "1PL" = "{a(\\theta_p - b_i)}",
       "2PL" = "{a_i(\\theta_p - b_i)}",
@@ -265,7 +295,8 @@ IRT_binary_summary_icc_equation <- reactive({
       "4PL" = "{a_i(\\theta_p - b_i)}"
     )
   } else {
-    txt1 <- switch(input$IRT_binary_summary_model,
+    txt1 <- switch(
+      input$IRT_binary_summary_model,
       "Rasch" = "{\\beta_{i0} + \\theta_p}",
       "1PL" = "{\\beta_{i0} + \\beta_{1} \\theta_p}",
       "2PL" = "{\\beta_{i0} + \\beta_{i1} \\theta_p}",
@@ -274,7 +305,8 @@ IRT_binary_summary_icc_equation <- reactive({
     )
   }
 
-  txt2 <- switch(input$IRT_binary_summary_model,
+  txt2 <- switch(
+    input$IRT_binary_summary_model,
     "Rasch" = "",
     "1PL" = "",
     "2PL" = "",
@@ -283,8 +315,13 @@ IRT_binary_summary_icc_equation <- reactive({
   )
 
   txt <- paste0(
-    "$$\\mathrm{P}(Y_{pi} = 1|\\theta_p) = \\pi_{pi} = ", txt2,
-    "\\frac{e^", txt1, "}{1 + e^", txt1, "}$$"
+    "$$\\mathrm{P}(Y_{pi} = 1|\\theta_p) = \\pi_{pi} = ",
+    txt2,
+    "\\frac{e^",
+    txt1,
+    "}{1 + e^",
+    txt1,
+    "}$$"
   )
   txt
 })
@@ -296,7 +333,8 @@ output$IRT_binary_summary_icc_equation <- renderUI({
 # ** IIC equation ####
 IRT_binary_summary_iic_equation <- reactive({
   if (input$IRT_binary_summary_parametrization == "irt") {
-    txt1 <- switch(input$IRT_binary_summary_model,
+    txt1 <- switch(
+      input$IRT_binary_summary_model,
       "Rasch" = "\\pi_{pi} (1 - \\pi_{pi})",
       "1PL" = "a^2 \\pi_{pi} (1 - \\pi_{pi})",
       "2PL" = "a_i^2 \\pi_{pi} (1 - \\pi_{pi})",
@@ -304,7 +342,8 @@ IRT_binary_summary_iic_equation <- reactive({
       "4PL" = "\\frac{a_i^2 (\\pi_{pi} - c_i)^2 (d_i - \\pi_{pi})^2}{(d_i - c_i^2) \\pi_{pi} (1 - \\pi_{pi})}",
     )
   } else {
-    txt1 <- switch(input$IRT_binary_summary_model,
+    txt1 <- switch(
+      input$IRT_binary_summary_model,
       "Rasch" = "\\pi_{pi} (1 - \\pi_{pi})",
       "1PL" = "\\beta_{1}^2 \\pi_{pi} (1 - \\pi_{pi})",
       "2PL" = "\\beta_{i1}^2 \\pi_{pi} (1 - \\pi_{pi})",
@@ -313,7 +352,9 @@ IRT_binary_summary_iic_equation <- reactive({
     )
   }
   txt <- paste0(
-    "$$\\mathrm{I}(Y_{pi}) = ", txt1, "$$"
+    "$$\\mathrm{I}(Y_{pi}) = ",
+    txt1,
+    "$$"
   )
   txt
 })
@@ -325,30 +366,26 @@ output$IRT_binary_summary_iic_equation <- renderUI({
 # ** Equation interpretation ####
 IRT_binary_summary_equation_interpretation <- reactive({
   if (input$IRT_binary_summary_parametrization == "irt") {
-    txt <- switch(input$IRT_binary_summary_model,
-      "Rasch" =
-        "Parameter \\(b_i\\) is a location of the inflection points of the characteristic curve
+    txt <- switch(
+      input$IRT_binary_summary_model,
+      "Rasch" = "Parameter \\(b_i\\) is a location of the inflection points of the characteristic curve
         of item \\(i\\). It also gives the level of ability \\(\\theta_p\\) for which the probability
         of the correct answer is exactly 0.5. ",
-      "1PL" =
-        "Parameter \\(b_i\\) is a location of the inflection points of the characteristic curve
+      "1PL" = "Parameter \\(b_i\\) is a location of the inflection points of the characteristic curve
         of item \\(i\\). It also gives the level of ability \\(\\theta_p\\) for which the probability
         of the correct answer is exactly 0.5. Parameter \\(a\\) is a common discrimination for all items,
         i.e., common slope at infection points \\(b_i\\). ",
-      "2PL" =
-        "Parameter \\(b_i\\) is a location of the inflection points of the characteristic curve
+      "2PL" = "Parameter \\(b_i\\) is a location of the inflection points of the characteristic curve
         of item \\(i\\). It also gives the level of ability \\(\\theta_p\\) for which the probability
         of the correct answer is exactly 0.5. Parameter \\(a_i\\) is a discrimination for item \\(i\\),
         i.e., slope at infection point \\(b_i\\). ",
-      "3PL" =
-        "Parameter \\(b_i\\) is a location of the inflection point of the characteristic curve
+      "3PL" = "Parameter \\(b_i\\) is a location of the inflection point of the characteristic curve
         of item \\(i\\). It also gives the level of ability \\(\\theta_p\\) for which the probability
         of the correct answer is exactly 0.5. Parameter \\(a_i\\) is a discrimination for item \\(i\\),
         i.e., slope at infection point \\(b_i\\). Parameter \\(c_i\\) is a (pseudo)-guessing parameter,
         i.e., it gives the probability of correct answer when trait is not sufficient, represented by
         the lower asymptote of the item characteristic curve. ",
-      "4PL" =
-        "Parameter \\(b_i\\) is a location of the inflection points of the characteristic curve
+      "4PL" = "Parameter \\(b_i\\) is a location of the inflection points of the characteristic curve
         of item \\(i\\). It also gives the level of ability \\(\\theta_p\\) for which the probability
         of the correct answer is exactly 0.5. Parameter \\(a_i\\) is a discrimination for item \\(i\\),
         i.e., slope at infection points \\(b_i\\). Parameter \\(c_i\\) is a (pseudo)-guessing parameter,
@@ -358,16 +395,14 @@ IRT_binary_summary_equation_interpretation <- reactive({
         represented by the upper asymptote of the item characteristic curve. ",
     )
   } else {
-    txt <- switch(input$IRT_binary_summary_model,
-      "Rasch" =
-        "Parameter \\(\\beta_{i0}\\) is an intercept and it describes a location of the inflection
+    txt <- switch(
+      input$IRT_binary_summary_model,
+      "Rasch" = "Parameter \\(\\beta_{i0}\\) is an intercept and it describes a location of the inflection
         point of the characteristic function of item \\(i\\). ",
-      "1PL" =
-        "Parameter \\(\\beta_{i0}\\) is an intercept and it describes a location of the inflection
+      "1PL" = "Parameter \\(\\beta_{i0}\\) is an intercept and it describes a location of the inflection
         point of the characteristic function of item \\(i\\). Parameter \\(\\beta_{1}\\) describes
         common slope at all infection points. ",
-      "2PL" =
-        "Parameter \\(\\beta_{i0}\\) is an intercept and it describes a location of the inflection
+      "2PL" = "Parameter \\(\\beta_{i0}\\) is an intercept and it describes a location of the inflection
         point of the characteristic function of item \\(i\\). Parameter \\(\\beta_{i1}\\) describes
         slope at infection point. ",
       "3PL" = "Parameter \\(\\beta_{i0}\\) is an intercept and it describes a location of the inflection
@@ -394,11 +429,13 @@ output$IRT_binary_summary_equation_interpretation <- renderUI({
 # ** Check whether model converged ####
 output$IRT_binary_summary_model_converged <- renderUI({
   fit <- IRT_binary_model()
-  txt <- ifelse(extract.mirt(fit, "converged"),
+  txt <- ifelse(
+    extract.mirt(fit, "converged"),
     "",
     paste0(
       "<font color = 'orange'> Estimation process terminated without convergence after ",
-      extract.mirt(fit, "iterations"), " iterations. Estimates are not reliable.
+      extract.mirt(fit, "iterations"),
+      " iterations. Estimates are not reliable.
       Try to increase a number of iterations of the EM algorithm in Settings. </font>"
     )
   )
@@ -417,13 +454,16 @@ IRT_binary_summary_icc <- reactive({
     item_names(), # names from user
     ~ tibble(
       Ability = IRT_thetas_for_plots(), # vector only
-      Probability = probtrace(extract.item(fit, .x), IRT_thetas_for_plots())[, 2], # ascending probs
+      Probability = probtrace(extract.item(fit, .x), IRT_thetas_for_plots())[,
+        2
+      ], # ascending probs
       Item = .y,
     )
   )
   d$Item <- factor(d$Item, levels = item_names())
 
-  g <- d |> ggplot(aes(x = Ability, y = Probability, color = Item)) +
+  g <- d |>
+    ggplot(aes(x = Ability, y = Probability, color = Item)) +
     geom_line() +
     ylab("Probability of correct answer") +
     theme_app()
@@ -450,14 +490,17 @@ output$IRT_binary_summary_icc_download <- downloadHandler(
     "fig_IRT_binary_ICC.png"
   },
   content = function(file) {
-    ggsave(file,
+    ggsave(
+      file,
       plot = IRT_binary_summary_icc() +
         theme(
           text = element_text(size = setting_figures$text_size),
-          legend.position = "right", legend.key.size = unit(0.8, "lines")
+          legend.position = "right",
+          legend.key.size = unit(0.8, "lines")
         ),
       device = "png",
-      height = setting_figures$height, width = setting_figures$width,
+      height = setting_figures$height,
+      width = setting_figures$width,
       dpi = setting_figures$dpi
     )
   }
@@ -481,7 +524,8 @@ IRT_binary_summary_iic <- reactive({
   )
   d$Item <- factor(d$Item, levels = item_names())
 
-  g <- d |> ggplot(aes(x = Ability, y = Information, color = Item)) +
+  g <- d |>
+    ggplot(aes(x = Ability, y = Information, color = Item)) +
     geom_line() +
     theme_app()
   g
@@ -507,14 +551,17 @@ output$IRT_binary_summary_iic_download <- downloadHandler(
     "fig_IRT_binary_IIC.png"
   },
   content = function(file) {
-    ggsave(file,
+    ggsave(
+      file,
       plot = IRT_binary_summary_iic() +
         theme(
           text = element_text(size = setting_figures$text_size),
-          legend.position = "right", legend.key.size = unit(0.8, "lines")
+          legend.position = "right",
+          legend.key.size = unit(0.8, "lines")
         ),
       device = "png",
-      height = setting_figures$height, width = setting_figures$width,
+      height = setting_figures$height,
+      width = setting_figures$width,
       dpi = setting_figures$dpi
     )
   }
@@ -539,10 +586,12 @@ IRT_binary_summary_tic <- reactive({
   g <- ggplot(data = df, aes(x = Ability)) +
     geom_line(aes(y = Information, col = "info")) +
     geom_line(aes(y = SE, col = "se")) +
-    scale_color_manual("", values = c("blue", "pink"), labels = c("Information", "SE")) +
-    scale_y_continuous("Information",
-      sec.axis = sec_axis(~., name = "SE")
+    scale_color_manual(
+      "",
+      values = c("blue", "pink"),
+      labels = c("Information", "SE")
     ) +
+    scale_y_continuous("Information", sec.axis = sec_axis(~., name = "SE")) +
     theme(axis.title.y = element_text(color = "pink")) +
     theme_app()
   g
@@ -566,14 +615,17 @@ output$IRT_binary_summary_tic_download <- downloadHandler(
     "fig_IRT_binary_TIC.png"
   },
   content = function(file) {
-    ggsave(file,
+    ggsave(
+      file,
       plot = IRT_binary_summary_tic() +
         theme(
           text = element_text(size = setting_figures$text_size),
-          legend.position = "right", legend.key.size = unit(0.8, "lines")
+          legend.position = "right",
+          legend.key.size = unit(0.8, "lines")
         ),
       device = "png",
-      height = setting_figures$height, width = setting_figures$width,
+      height = setting_figures$height,
+      width = setting_figures$width,
       dpi = setting_figures$dpi
     )
   }
@@ -589,21 +641,28 @@ IRT_binary_summary_coef <- reactive({
   par_tab <- coef(fit, IRTpars = IRTpars, simplify = TRUE)$items
   if (dim(fit@vcov)[1] > 1) {
     se_list <- coef(fit, IRTpars = IRTpars, printSE = TRUE)
-    se_tab <- do.call(rbind, lapply(1:nrow(par_tab), function(i) se_list[[i]]["SE", ]))
+    se_tab <- do.call(
+      rbind,
+      lapply(1:nrow(par_tab), function(i) se_list[[i]]["SE", ])
+    )
   } else {
     se_tab <- cbind(rep(NA, nrow(par_tab)), NA, NA, NA)
   }
 
-
-  tab <- cbind(par_tab, se_tab)[, order(c(seq(ncol(par_tab)), seq(ncol(se_tab))))]
+  tab <- cbind(par_tab, se_tab)[, order(c(
+    seq(ncol(par_tab)),
+    seq(ncol(se_tab))
+  ))]
 
   item_fit_cols <- c("S_X2", "df.S_X2", "p.S_X2")
 
   tab_fit <- itemfit(fit, na.rm = TRUE)[, item_fit_cols]
 
-  if (!is.null(tryCatch(round(tab_fit, 3), error = function(e) {
-    cat("ERROR : ", conditionMessage(e), "\n")
-  }))) {
+  if (
+    !is.null(tryCatch(round(tab_fit, 3), error = function(e) {
+      cat("ERROR : ", conditionMessage(e), "\n")
+    }))
+  ) {
     tab <- data.frame(tab, tab_fit)
     colnames(tab)[9:11] <- c("SX2-value", "df", "p-value")
   } else {
@@ -620,7 +679,11 @@ IRT_binary_summary_coef <- reactive({
   } else {
     colnames(tab)[1:8] <- paste0(
       c("", "SE("),
-      paste0("\\(\\mathit{", rep(c("\\beta_{1}", "\\beta_{0}", "c", "d"), each = 2), "}\\)"),
+      paste0(
+        "\\(\\mathit{",
+        rep(c("\\beta_{1}", "\\beta_{0}", "c", "d"), each = 2),
+        "}\\)"
+      ),
       c("", ")")
     )
     tab <- tab[, c(3:4, 1:2, 5:8, 9:11)]
@@ -674,7 +737,13 @@ IRT_binary_summary_ability <- reactive({
   fscore <- fscores(fit, full.scores.SE = TRUE)
 
   tab <- data.frame(score, zscore, tscore, fscore)
-  colnames(tab) <- c("Total score", "Z-score", "T-score", "F-score", "SE(F-score)")
+  colnames(tab) <- c(
+    "Total score",
+    "Z-score",
+    "T-score",
+    "F-score",
+    "SE(F-score)"
+  )
   rownames(tab) <- paste("Respondent", 1:nrow(tab))
 
   tab
@@ -713,7 +782,8 @@ output$IRT_binary_summary_ability_correlation_text <- renderText({
     "This scatterplot shows the relationship between the standardized total
          score (Z-score) and the factor score estimated by the IRT model. The
          Pearson correlation coefficient between these two scores is ",
-    sprintf("%.3f", IRT_binary_summary_ability_correlation()), ". "
+    sprintf("%.3f", IRT_binary_summary_ability_correlation()),
+    ". "
   )
 })
 
@@ -749,11 +819,13 @@ output$IRT_binary_summary_ability_plot_download <- downloadHandler(
     "fig_IRT_binary_abilities.png"
   },
   content = function(file) {
-    ggsave(file,
+    ggsave(
+      file,
       plot = IRT_binary_summary_ability_plot() +
         theme(text = element_text(size = setting_figures$text_size)),
       device = "png",
-      height = setting_figures$height, width = setting_figures$width,
+      height = setting_figures$height,
+      width = setting_figures$width,
       dpi = setting_figures$dpi
     )
   }
@@ -784,16 +856,30 @@ output$IRT_binary_summary_wrightmap <- renderPlotly({
     ggplotly()
   txt <- gsub("count", "Count", plt_left$x$data[[1]]$text)
   txt <- sapply(strsplit(txt, "<br />"), "[", 1)
-  thetas <- as.numeric(paste(sapply(strsplit(plt_left$x$data[[1]]$text, "theta: "), "[", 2)))
+  thetas <- as.numeric(paste(sapply(
+    strsplit(plt_left$x$data[[1]]$text, "theta: "),
+    "[",
+    2
+  )))
   binwidth <- c(diff(thetas) / 2)[1]
-  txt <- paste0(txt, "<br />", thetas - binwidth, "< Theta <", thetas + binwidth)
+  txt <- paste0(
+    txt,
+    "<br />",
+    thetas - binwidth,
+    "< Theta <",
+    thetas + binwidth
+  )
   plt_left$x$data[[1]]$text <- txt
   plt_right <- (plts[[2]] +
-    suppressWarnings(geom_text(aes(text = paste0(
-      "Item: ",
-      stringr::str_remove(item, "(\\|\\s)?0*"),
-      "\n", "Difficulty: ", round(IRT_binary_summary_wrightmap_args()[[2]], 3)
-    ))))) |>
+    suppressWarnings(geom_text(aes(
+      text = paste0(
+        "Item: ",
+        stringr::str_remove(item, "(\\|\\s)?0*"),
+        "\n",
+        "Difficulty: ",
+        round(IRT_binary_summary_wrightmap_args()[[2]], 3)
+      )
+    )))) |>
     ggplotly(tooltip = "text") |>
     style(textposition = "right") |>
     layout(yaxis = list(side = "right"))
@@ -809,10 +895,12 @@ output$IRT_binary_summary_wrightmap_download <- downloadHandler(
     "fig_IRT_binary_WrightMap.png"
   },
   content = function(file) {
-    ggsave(file,
+    ggsave(
+      file,
       plot = do.call(ggWrightMap, IRT_binary_summary_wrightmap_args()), # apply fun args from list
       device = "png",
-      height = setting_figures$height, width = setting_figures$width,
+      height = setting_figures$height,
+      width = setting_figures$width,
       dpi = setting_figures$dpi
     )
   }
@@ -844,11 +932,13 @@ output$IRT_binary_items_equation_interpretation <- renderUI({
 # ** Check whether model converged ####
 output$IRT_binary_items_model_converged <- renderUI({
   fit <- IRT_binary_model()
-  txt <- ifelse(extract.mirt(fit, "converged"),
+  txt <- ifelse(
+    extract.mirt(fit, "converged"),
     "",
     paste0(
       "<font color = 'orange'> Estimation process terminated without convergence after ",
-      extract.mirt(fit, "iterations"), " iterations. Estimates are not reliable.
+      extract.mirt(fit, "iterations"),
+      " iterations. Estimates are not reliable.
       Try to increase a number of iterations of the EM algorithm in Settings. </font>"
     )
   )
@@ -870,7 +960,8 @@ IRT_binary_items_icc <- reactive({
     )[, 2] # ascending probs
   )
 
-  g <- d |> ggplot(aes(x = Ability, y = Probability)) +
+  g <- d |>
+    ggplot(aes(x = Ability, y = Probability)) +
     geom_line(color = curve_col) +
     ylab("Probability of correct answer") +
     ggtitle(item_names()[item]) +
@@ -900,11 +991,13 @@ output$IRT_binary_items_icc_download <- downloadHandler(
     paste0("fig_IRT_binary_ICC_", item_names()[item], ".png")
   },
   content = function(file) {
-    ggsave(file,
+    ggsave(
+      file,
       plot = IRT_binary_items_icc() +
         theme(text = element_text(size = setting_figures$text_size)),
       device = "png",
-      height = setting_figures$height, width = setting_figures$width,
+      height = setting_figures$height,
+      width = setting_figures$width,
       dpi = setting_figures$dpi
     )
   }
@@ -926,7 +1019,8 @@ IRT_binary_items_iic <- reactive({
     ) # ascending probs
   )
 
-  g <- d |> ggplot(aes(x = Ability, y = Information)) +
+  g <- d |>
+    ggplot(aes(x = Ability, y = Information)) +
     geom_line(color = curve_col) +
     ggtitle(item_names()[item]) +
     theme_app()
@@ -954,14 +1048,17 @@ output$IRT_binary_items_iic_download <- downloadHandler(
     paste0("fig_IRT_binary_IIC_", item_names()[item], ".png")
   },
   content = function(file) {
-    ggsave(file,
+    ggsave(
+      file,
       plot = IRT_binary_items_iic() +
         theme(
           text = element_text(size = setting_figures$text_size),
-          legend.position = "right", legend.key.size = unit(0.8, "lines")
+          legend.position = "right",
+          legend.key.size = unit(0.8, "lines")
         ),
       device = "png",
-      height = setting_figures$height, width = setting_figures$width,
+      height = setting_figures$height,
+      width = setting_figures$width,
       dpi = setting_figures$dpi
     )
   }
@@ -987,7 +1084,6 @@ output$IRT_binary_items_coef <- renderTable(
 # * COMPARISON OF DICHOTOMOUS MODELS ####
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-
 # ** Check whether model converged ####
 output$IRT_binary_comparison_model_converged <- renderUI({
   fit1PL <- IRT_binary_model_1pl()
@@ -995,26 +1091,32 @@ output$IRT_binary_comparison_model_converged <- renderUI({
   fit3PL <- IRT_binary_model_3pl()
   fit4PL <- IRT_binary_model_4pl()
 
-  txt1 <- ifelse(extract.mirt(fit1PL, "converged"),
+  txt1 <- ifelse(
+    extract.mirt(fit1PL, "converged"),
     "",
     "Estimation process in the <b>1PL IRT model</b> terminated without convergence. <br>"
   )
-  txt2 <- ifelse(extract.mirt(fit2PL, "converged"),
+  txt2 <- ifelse(
+    extract.mirt(fit2PL, "converged"),
     "",
     "Estimation process in the <b>2PL IRT model</b> terminated without convergence. <br>"
   )
-  txt3 <- ifelse(extract.mirt(fit3PL, "converged"),
+  txt3 <- ifelse(
+    extract.mirt(fit3PL, "converged"),
     "",
     "Estimation process in the <b>3PL IRT model</b> terminated without convergence. <br>"
   )
-  txt4 <- ifelse(extract.mirt(fit4PL, "converged"),
+  txt4 <- ifelse(
+    extract.mirt(fit4PL, "converged"),
     "",
     "Estimation process in the <b>4PL IRT model</b> terminated without convergence. <br>"
   )
   txt <- paste0(txt1, txt2, txt3, txt4)
   if (txt != "") {
     txt <- paste0(
-      "<font color = 'orange'>", txt, "Estimates are not reliable. Try to increase
+      "<font color = 'orange'>",
+      txt,
+      "Estimates are not reliable. Try to increase
     a number of iterations of the EM algorithm in Settings. </font>"
     )
   }
@@ -1037,7 +1139,12 @@ IRT_binary_comparison <- reactive({
 
   df <- rbind(
     df,
-    c(nam[sapply(1:2, function(i) which(df[, i] == min(df[, i], na.rm = TRUE)))], "")
+    c(
+      nam[sapply(1:2, function(i) {
+        which(df[, i] == min(df[, i], na.rm = TRUE))
+      })],
+      ""
+    )
   )
 
   rownames(df) <- c(nam, "BEST")

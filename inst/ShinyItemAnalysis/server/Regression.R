@@ -23,7 +23,10 @@ regression_logistic_model <- reactive({
   data <- binary()
   total_score <- total_score()
 
-  model <- glm(unlist(data[, item, with = FALSE]) ~ total_score, family = binomial)
+  model <- glm(
+    unlist(data[, item, with = FALSE]) ~ total_score,
+    family = binomial
+  )
 })
 
 # ** Plot with estimated logistic curve ####
@@ -44,13 +47,16 @@ regression_logistic_plot <- reactive({
   )
 
   ggplot(df, aes(x = Score, y = Probability)) +
-    geom_point(aes(size = Count),
+    geom_point(
+      aes(size = Count),
       color = "darkblue",
       fill = "darkblue",
-      shape = 21, alpha = 0.5
+      shape = 21,
+      alpha = 0.5
     ) +
     stat_function(
-      fun = fun, geom = "line",
+      fun = fun,
+      geom = "line",
       args = list(
         b0 = coef(fit)[1],
         b1 = coef(fit)[2]
@@ -82,14 +88,20 @@ output$regression_logistic_plot <- renderPlotly({
 # ** Download estimated logistic curve ####
 output$regression_logistic_plot_download <- downloadHandler(
   filename = function() {
-    paste0("fig_LogisticRegressionCurve_", item_names()[input$regression_logistic_item_slider], ".png")
+    paste0(
+      "fig_LogisticRegressionCurve_",
+      item_names()[input$regression_logistic_item_slider],
+      ".png"
+    )
   },
   content = function(file) {
-    ggsave(file,
+    ggsave(
+      file,
       plot = regression_logistic_plot() +
         theme(text = element_text(size = setting_figures$text_size)),
       device = "png",
-      height = setting_figures$height, width = setting_figures$width,
+      height = setting_figures$height,
+      width = setting_figures$width,
       dpi = setting_figures$dpi
     )
   }
@@ -119,7 +131,9 @@ output$regression_logistic_interpretation <- renderUI({
   txt0 <- ifelse(b1 < 0, "decrease", "increase")
   txt2 <- paste(
     "A one-unit increase in the total
-    score is associated with the", txt0, " in the log
+    score is associated with the",
+    txt0,
+    " in the log
     odds of answering the item correctly
     vs. not correctly in the amount of"
   )
@@ -174,13 +188,16 @@ regression_logistic_Z_plot <- reactive({
     Count = as.numeric(table(zscore))
   )
   ggplot(df, aes(x = Zscore, y = Probability)) +
-    geom_point(aes(size = Count),
+    geom_point(
+      aes(size = Count),
       color = "darkblue",
       fill = "darkblue",
-      shape = 21, alpha = 0.5
+      shape = 21,
+      alpha = 0.5
     ) +
     stat_function(
-      fun = fun, geom = "line",
+      fun = fun,
+      geom = "line",
       args = list(
         b0 = coef(fit)[1],
         b1 = coef(fit)[2]
@@ -212,14 +229,20 @@ output$regression_logistic_Z_plot <- renderPlotly({
 # ** Download for plot of logistic regression on Z-scores ####
 output$regression_logistic_Z_plot_download <- downloadHandler(
   filename = function() {
-    paste0("fig_LogisticRegressionCurve_Zscores_", item_names()[input$regression_logistic_Z_item_slider], ".png")
+    paste0(
+      "fig_LogisticRegressionCurve_Zscores_",
+      item_names()[input$regression_logistic_Z_item_slider],
+      ".png"
+    )
   },
   content = function(file) {
-    ggsave(file,
+    ggsave(
+      file,
       plot = regression_logistic_Z_plot() +
         theme(text = element_text(size = setting_figures$text_size)),
       device = "png",
-      height = setting_figures$height, width = setting_figures$width,
+      height = setting_figures$height,
+      width = setting_figures$width,
       dpi = setting_figures$dpi
     )
   }
@@ -250,7 +273,9 @@ output$regression_logistic_Z_interpretation <- renderUI({
   txt2 <-
     paste(
       "A one-unit increase in the Z-score (one SD increase in original
-      scores) is associated with the", txt0, " in the log
+      scores) is associated with the",
+      txt0,
+      " in the log
       odds of answering the item correctly
       vs. not correctly in the amount of"
     )
@@ -306,13 +331,16 @@ regression_logistic_IRT_plot <- reactive({
     Count = as.numeric(table(zscore))
   )
   ggplot(df, aes(x = Zscore, y = Probability)) +
-    geom_point(aes(size = Count),
+    geom_point(
+      aes(size = Count),
       color = "darkblue",
       fill = "darkblue",
-      shape = 21, alpha = 0.5
+      shape = 21,
+      alpha = 0.5
     ) +
     stat_function(
-      fun = fun, geom = "line",
+      fun = fun,
+      geom = "line",
       args = list(
         b0 = coef(fit)[1],
         b1 = coef(fit)[2]
@@ -344,14 +372,20 @@ output$regression_logistic_IRT_plot <- renderPlotly({
 # ** Download plot with estimated logistic curve on Z scores with IRT param. ####
 output$regression_logistic_IRT_plot_download <- downloadHandler(
   filename = function() {
-    paste0("fig_LogisticRegressionCurve_Zscores_IRT_", item_names()[input$regression_logistic_IRT_item_slider], ".png")
+    paste0(
+      "fig_LogisticRegressionCurve_Zscores_IRT_",
+      item_names()[input$regression_logistic_IRT_item_slider],
+      ".png"
+    )
   },
   content = function(file) {
-    ggsave(file,
+    ggsave(
+      file,
       plot = regression_logistic_IRT_plot() +
         theme(text = element_text(size = setting_figures$text_size)),
       device = "png",
-      height = setting_figures$height, width = setting_figures$width,
+      height = setting_figures$height,
+      width = setting_figures$width,
       dpi = setting_figures$dpi
     )
   }
@@ -392,7 +426,9 @@ output$regression_logistic_IRT_interpretation <- renderUI({
   txt2 <-
     paste(
       "A one-unit increase in the Z-score (one SD increase in original scores) is associated
-      with the", txt0, "in the log odds of answering the item correctly vs. not correctly in
+      with the",
+      txt0,
+      "in the log odds of answering the item correctly vs. not correctly in
       the amount of"
     )
   b1 <- sprintf("%.2f", abs(b1))
@@ -433,9 +469,12 @@ regression_3pl_model <- reactive({
     zscore <- na.omit(zscore)
   }
 
-  start <- startNLR(data,
+  start <- startNLR(
+    data,
     group = c(rep(0, nrow(data) / 2), rep(1, nrow(data) / 2)),
-    model = "3PLcg", parameterization = "irt", simplify = TRUE
+    model = "3PLcg",
+    parameterization = "irt",
+    simplify = TRUE
   )[, 1:3]
 
   glr <- function(x, a, b, c) {
@@ -443,9 +482,12 @@ regression_3pl_model <- reactive({
   }
 
   fit <- tryCatch(
-    nls(unlist(data[, item, with = FALSE]) ~ glr(zscore, a, b, c),
-      algorithm = "port", start = start[item, ],
-      lower = c(-Inf, -Inf, 0), upper = c(Inf, Inf, 1)
+    nls(
+      unlist(data[, item, with = FALSE]) ~ glr(zscore, a, b, c),
+      algorithm = "port",
+      start = start[item, ],
+      lower = c(-Inf, -Inf, 0),
+      upper = c(Inf, Inf, 1)
     ),
     error = function(e) e
   )
@@ -453,7 +495,12 @@ regression_3pl_model <- reactive({
   validate(
     need(
       class(fit) == "nls",
-      HTML(paste0("Error: Method cannot be fitted for item ", item, ". The error message returned: ", fit$message))
+      HTML(paste0(
+        "Error: Method cannot be fitted for item ",
+        item,
+        ". The error message returned: ",
+        fit$message
+      ))
     ),
     errorClass = "validation-error"
   )
@@ -479,13 +526,16 @@ regression_3pl_plot <- reactive({
     Count = as.numeric(table(zscore))
   )
   ggplot(df, aes(x = Zscore, y = Probability)) +
-    geom_point(aes(size = Count),
+    geom_point(
+      aes(size = Count),
       color = "darkblue",
       fill = "darkblue",
-      shape = 21, alpha = 0.5
+      shape = 21,
+      alpha = 0.5
     ) +
     stat_function(
-      fun = fun, geom = "line",
+      fun = fun,
+      geom = "line",
       args = list(
         a = coef(fit)[1],
         b = coef(fit)[2],
@@ -518,14 +568,20 @@ output$regression_3pl_plot <- renderPlotly({
 # ** Download plot of estimated nonlinear curve ####
 output$regression_3pl_plot_download <- downloadHandler(
   filename = function() {
-    paste0("fig_NLR_3P_", item_names()[input$regression_3pl_item_slider], ".png")
+    paste0(
+      "fig_NLR_3P_",
+      item_names()[input$regression_3pl_item_slider],
+      ".png"
+    )
   },
   content = function(file) {
-    ggsave(file,
+    ggsave(
+      file,
       plot = regression_3pl_plot() +
         theme(text = element_text(size = setting_figures$text_size)),
       device = "png",
-      height = setting_figures$height, width = setting_figures$width,
+      height = setting_figures$height,
+      width = setting_figures$width,
       dpi = setting_figures$dpi
     )
   }
@@ -560,8 +616,11 @@ output$regression_3pl_interpretation <- renderUI({
   txt0 <- "<b>Interpretation:</b> "
   txt1 <- paste0(
     "A one-unit increase in the Z-score (one SD increase in original scores) is associated with the ",
-    ifelse(a < 0, "decrease", "increase"), " in the log odds of answering the item correctly vs.
-    not correctly in the amount of <b>", sprintf("%.2f", abs(a)), "</b>. "
+    ifelse(a < 0, "decrease", "increase"),
+    " in the log odds of answering the item correctly vs.
+    not correctly in the amount of <b>",
+    sprintf("%.2f", abs(a)),
+    "</b>. "
   )
   txt2 <- paste0("Probability of guessing is <b>", c, "</b>. ")
 
@@ -601,9 +660,12 @@ regression_4pl_model <- reactive({
     zscore <- na.omit(zscore)
   }
 
-  start <- startNLR(data,
+  start <- startNLR(
+    data,
     group = c(rep(0, nrow(data) / 2), rep(1, nrow(data) / 2)),
-    model = "4PLcgdg", parameterization = "irt", simplify = TRUE
+    model = "4PLcgdg",
+    parameterization = "irt",
+    simplify = TRUE
   )[, 1:4]
 
   glr <- function(x, a, b, c, d) {
@@ -611,9 +673,12 @@ regression_4pl_model <- reactive({
   }
 
   fit <- tryCatch(
-    nls(unlist(data[, item, with = FALSE]) ~ glr(zscore, a, b, c, d),
-      algorithm = "port", start = start[item, ],
-      lower = c(-Inf, -Inf, 0, 0), upper = c(Inf, Inf, 1, 1)
+    nls(
+      unlist(data[, item, with = FALSE]) ~ glr(zscore, a, b, c, d),
+      algorithm = "port",
+      start = start[item, ],
+      lower = c(-Inf, -Inf, 0, 0),
+      upper = c(Inf, Inf, 1, 1)
     ),
     error = function(e) e
   )
@@ -621,7 +686,12 @@ regression_4pl_model <- reactive({
   validate(
     need(
       class(fit) == "nls",
-      HTML(paste0("Error: Method cannot be fitted for item ", item, ". The error message returned: ", fit$message))
+      HTML(paste0(
+        "Error: Method cannot be fitted for item ",
+        item,
+        ". The error message returned: ",
+        fit$message
+      ))
     ),
     errorClass = "validation-error"
   )
@@ -646,13 +716,16 @@ regression_4pl_plot <- reactive({
     Count = as.numeric(table(zscore))
   )
   ggplot(df, aes(x = Zscore, y = Probability)) +
-    geom_point(aes(size = Count),
+    geom_point(
+      aes(size = Count),
       color = "darkblue",
       fill = "darkblue",
-      shape = 21, alpha = 0.5
+      shape = 21,
+      alpha = 0.5
     ) +
     stat_function(
-      fun = fun, geom = "line",
+      fun = fun,
+      geom = "line",
       args = list(
         a = coef(fit)[1],
         b = coef(fit)[2],
@@ -689,11 +762,13 @@ output$regression_4pl_plot_download <- downloadHandler(
     paste0("fig_NLR_4P", item_names()[input$regression_4pl_item_slider], ".png")
   },
   content = function(file) {
-    ggsave(file,
+    ggsave(
+      file,
       plot = regression_4pl_plot() +
         theme(text = element_text(size = setting_figures$text_size)),
       device = "png",
-      height = setting_figures$height, width = setting_figures$width,
+      height = setting_figures$height,
+      width = setting_figures$width,
       dpi = setting_figures$dpi
     )
   }
@@ -731,8 +806,11 @@ output$regression_4pl_interpretation <- renderUI({
   txt0 <- "<b>Interpretation:</b> "
   txt1 <- paste0(
     "A one-unit increase in the Z-score (one SD increase in original scores) is associated with the ",
-    ifelse(a < 0, "decrease", "increase"), " in the log odds of answering the item correctly
-                  vs. not correctly in the amount of <b>", sprintf("%.2f", abs(a)), "</b>. "
+    ifelse(a < 0, "decrease", "increase"),
+    " in the log odds of answering the item correctly
+                  vs. not correctly in the amount of <b>",
+    sprintf("%.2f", abs(a)),
+    "</b>. "
   )
   txt2 <- paste0("Probability of guessing is <b>", c, "</b>. ")
   txt3 <- paste0("Probability of inattention is <b>", d, "</b>. ")
@@ -772,42 +850,57 @@ output$regression_comparison_table <- DT::renderDataTable({
     zscore <- na.omit(zscore)
   }
 
-  start <- startNLR(data,
+  start <- startNLR(
+    data,
     group = c(rep(0, nrow(data) / 2), rep(1, nrow(data) / 2)),
     model = "4PLcgdg",
     parameterization = "irt",
     simplify = TRUE
   )[, 1:4]
 
-
   fit2PL <- lapply(1:m, function(i) {
-    tryCatch(nls(unlist(data[, i, with = FALSE]) ~ glr(zscore, a, b, c = 0, d = 1),
-      algorithm = "port", start = start[i, 1:2],
-      lower = c(-Inf, -Inf),
-      upper = c(Inf, Inf)
-    ), error = function(e) {
-      cat("ERROR : ", conditionMessage(e), "\n")
-    })
+    tryCatch(
+      nls(
+        unlist(data[, i, with = FALSE]) ~ glr(zscore, a, b, c = 0, d = 1),
+        algorithm = "port",
+        start = start[i, 1:2],
+        lower = c(-Inf, -Inf),
+        upper = c(Inf, Inf)
+      ),
+      error = function(e) {
+        cat("ERROR : ", conditionMessage(e), "\n")
+      }
+    )
   })
 
   fit3PL <- lapply(1:m, function(i) {
-    tryCatch(nls(unlist(data[, i, with = FALSE]) ~ glr(zscore, a, b, c, d = 1),
-      algorithm = "port", start = start[i, 1:3],
-      lower = c(-Inf, -Inf, 0),
-      upper = c(Inf, Inf, 1)
-    ), error = function(e) {
-      cat("ERROR : ", conditionMessage(e), "\n")
-    })
+    tryCatch(
+      nls(
+        unlist(data[, i, with = FALSE]) ~ glr(zscore, a, b, c, d = 1),
+        algorithm = "port",
+        start = start[i, 1:3],
+        lower = c(-Inf, -Inf, 0),
+        upper = c(Inf, Inf, 1)
+      ),
+      error = function(e) {
+        cat("ERROR : ", conditionMessage(e), "\n")
+      }
+    )
   })
 
   fit4PL <- lapply(1:m, function(i) {
-    tryCatch(nls(unlist(data[, i, with = FALSE]) ~ glr(zscore, a, b, c, d),
-      algorithm = "port", start = start[i, 1:4],
-      lower = c(-Inf, -Inf, 0, 0),
-      upper = c(Inf, Inf, 1, 1)
-    ), error = function(e) {
-      cat("ERROR : ", conditionMessage(e), "\n")
-    })
+    tryCatch(
+      nls(
+        unlist(data[, i, with = FALSE]) ~ glr(zscore, a, b, c, d),
+        algorithm = "port",
+        start = start[i, 1:4],
+        lower = c(-Inf, -Inf, 0, 0),
+        upper = c(Inf, Inf, 1, 1)
+      ),
+      error = function(e) {
+        cat("ERROR : ", conditionMessage(e), "\n")
+      }
+    )
   })
 
   whok2PL <- !sapply(fit2PL, is.null)
@@ -872,14 +965,21 @@ output$regression_comparison_table <- DT::renderDataTable({
   tab <- as.data.table(tab)
   colnames(tab) <- item_names()
   rownames(tab) <- c(
-    "AIC 2PL", "AIC 3PL", "AIC 4PL", "BEST AIC",
-    "BIC 2PL", "BIC 3PL", "BIC 4PL", "BEST BIC"
+    "AIC 2PL",
+    "AIC 3PL",
+    "AIC 4PL",
+    "BEST AIC",
+    "BIC 2PL",
+    "BIC 3PL",
+    "BIC 4PL",
+    "BEST BIC"
     # "Chisq-value 2PL vs 3PL", "p-value 2PL vs 3PL",
     # "Chisq-value 3PL vs 4PL", "p-value 3PL vs 4PL",
     # "BEST LR"
   )
 
-  tab <- datatable(tab,
+  tab <- datatable(
+    tab,
     rownames = TRUE,
     style = "bootstrap",
     extensions = "FixedColumns",
@@ -896,10 +996,14 @@ output$regression_comparison_table <- DT::renderDataTable({
       dom = "tr"
     )
   ) |>
-    formatStyle(0, target = "row", fontWeight = styleEqual(
-      c("BEST AIC", "BEST BIC"), # "BEST LR"),
-      c("bold", "bold") # , "bold")
-    ))
+    formatStyle(
+      0,
+      target = "row",
+      fontWeight = styleEqual(
+        c("BEST AIC", "BEST BIC"), # "BEST LR"),
+        c("bold", "bold") # , "bold")
+      )
+    )
 
   tab
 })
@@ -954,7 +1058,8 @@ regression_cumulative_model <- reactive({
   fit <- sapply(
     data,
     function(x) {
-      VGAM::vglm(x ~ matching,
+      VGAM::vglm(
+        x ~ matching,
         family = cumulative(reverse = TRUE, parallel = TRUE)
       )
     }
@@ -972,7 +1077,11 @@ regression_cumulative_plot_cumulative <- reactive({
     "Standardized total score"
   )
 
-  g <- plotCumulative(fit[[item]], type = "cumulative", matching.name = matching.name) +
+  g <- plotCumulative(
+    fit[[item]],
+    type = "cumulative",
+    matching.name = matching.name
+  ) +
     ggtitle(item_names()[item])
 
   g
@@ -997,14 +1106,20 @@ output$regression_cumulative_plot_cumulative <- renderPlotly({
 # ** Download plot with estimated curves of cumulative regression ####
 output$regression_cumulative_plot_cumulative_download <- downloadHandler(
   filename = function() {
-    paste0("fig_CumulativeRegressionCurve_cumulative_", item_names()[input$regression_cumulative_item_slider], ".png")
+    paste0(
+      "fig_CumulativeRegressionCurve_cumulative_",
+      item_names()[input$regression_cumulative_item_slider],
+      ".png"
+    )
   },
   content = function(file) {
-    ggsave(file,
+    ggsave(
+      file,
       plot = regression_cumulative_plot_cumulative() +
         theme(text = element_text(size = setting_figures$text_size)),
       device = "png",
-      height = setting_figures$height, width = setting_figures$width,
+      height = setting_figures$height,
+      width = setting_figures$width,
       dpi = setting_figures$dpi
     )
   }
@@ -1020,7 +1135,11 @@ regression_cumulative_plot_category <- reactive({
     "Standardized total score"
   )
 
-  g <- plotCumulative(fit.cum[[item]], type = "category", matching.name = matching.name) +
+  g <- plotCumulative(
+    fit.cum[[item]],
+    type = "category",
+    matching.name = matching.name
+  ) +
     ggtitle(item_names()[item])
   g
 })
@@ -1044,14 +1163,20 @@ output$regression_cumulative_plot_category <- renderPlotly({
 # ** Download plot with estimated curves of cumulative regression ####
 output$regression_cumulative_plot_category_download <- downloadHandler(
   filename = function() {
-    paste0("fig_CumulativeRegressionCurve_category_", item_names()[input$regression_cumulative_item_slider], ".png")
+    paste0(
+      "fig_CumulativeRegressionCurve_category_",
+      item_names()[input$regression_cumulative_item_slider],
+      ".png"
+    )
   },
   content = function(file) {
-    ggsave(file,
+    ggsave(
+      file,
       plot = regression_cumulative_plot_category() +
         theme(text = element_text(size = setting_figures$text_size)),
       device = "png",
-      height = setting_figures$height, width = setting_figures$width,
+      height = setting_figures$height,
+      width = setting_figures$width,
       dpi = setting_figures$dpi
     )
   }
@@ -1066,8 +1191,20 @@ output$regression_cumulative_equation <- renderUI({
   } else {
     txt2 <- paste("a_i(", txt1, "- b_{ik})")
   }
-  txt3 <- paste("$$\\mathrm{P}(Y_{pi} \\geq k|", txt1, ") = \\pi_{pik} = \\frac{e^{", txt2, "}}{1 + e^{", txt2, "}}$$")
-  txt4 <- paste("$$\\mathrm{P}(Y_{pi} = k|", txt1, ") = \\pi_{pik} - \\pi_{pi(k + 1)}$$")
+  txt3 <- paste(
+    "$$\\mathrm{P}(Y_{pi} \\geq k|",
+    txt1,
+    ") = \\pi_{pik} = \\frac{e^{",
+    txt2,
+    "}}{1 + e^{",
+    txt2,
+    "}}$$"
+  )
+  txt4 <- paste(
+    "$$\\mathrm{P}(Y_{pi} = k|",
+    txt1,
+    ") = \\pi_{pik} - \\pi_{pi(k + 1)}$$"
+  )
 
   HTML(paste(txt3, txt4))
 })
@@ -1100,7 +1237,9 @@ output$regression_cumulative_interpretation <- renderUI({
                where %s is the number of obtained scores, parameter %s
                describes their common slope. Category probabilities are then calculated as
                differences between the two subsequent cumulative probabilities. ",
-    par[1], categories, par[2]
+    par[1],
+    categories,
+    par[2]
   )
   HTML(txt)
 })
@@ -1117,7 +1256,13 @@ regression_cumulative_coef <- reactive({
 
     tab <- data.frame(Estimate = tab_coef, SE = tab_se)
     rownames(tab) <- c(
-      paste0("\\(\\mathit{\\beta}_{", item, "0", sort(unique(data[, item]))[-1], "}\\)"),
+      paste0(
+        "\\(\\mathit{\\beta}_{",
+        item,
+        "0",
+        sort(unique(data[, item]))[-1],
+        "}\\)"
+      ),
       paste0("\\(\\mathit{\\beta}_{", item, "1}\\)")
     )
   } else {
@@ -1136,7 +1281,10 @@ regression_cumulative_coef <- reactive({
       mean = tab_coef_old,
       cov = vcov(fit[[item]])
     )
-    tab_coef <- c(tab_coef_old[num_par], -tab_coef_old[-num_par] / tab_coef_old[num_par])
+    tab_coef <- c(
+      tab_coef_old[num_par],
+      -tab_coef_old[-num_par] / tab_coef_old[num_par]
+    )
 
     tab <- data.frame(Estimate = tab_coef, SE = tab_se)
     rownames(tab) <- c(
@@ -1249,14 +1397,20 @@ output$regression_adjacent_plot <- renderPlotly({
 # ** Download plot with estimated curves of adjacent regression ####
 output$regression_adjacent_plot_download <- downloadHandler(
   filename = function() {
-    paste0("fig_AdjacentRegressionCurve_category_", item_names()[input$regression_adjacent_item_slider], ".png")
+    paste0(
+      "fig_AdjacentRegressionCurve_category_",
+      item_names()[input$regression_adjacent_item_slider],
+      ".png"
+    )
   },
   content = function(file) {
-    ggsave(file,
+    ggsave(
+      file,
       plot = regression_adjacent_plot() +
         theme(text = element_text(size = setting_figures$text_size)),
       device = "png",
-      height = setting_figures$height, width = setting_figures$width,
+      height = setting_figures$height,
+      width = setting_figures$width,
       dpi = setting_figures$dpi
     )
   }
@@ -1272,7 +1426,15 @@ output$regression_adjacent_equation <- renderUI({
     txt2 <- paste0("a_i(", txt1, " - b_{ik})")
   }
 
-  txt <- paste0("$$\\mathrm{P}(Y_{pi} = k|", txt1, ") = \\frac{e^{\\sum_{l = 0}^{k}", txt2, "}}{\\sum_{r = 0}^{K_i}e^{\\sum_{l = 0}^{r}", txt2, "}}$$")
+  txt <- paste0(
+    "$$\\mathrm{P}(Y_{pi} = k|",
+    txt1,
+    ") = \\frac{e^{\\sum_{l = 0}^{k}",
+    txt2,
+    "}}{\\sum_{r = 0}^{K_i}e^{\\sum_{l = 0}^{r}",
+    txt2,
+    "}}$$"
+  )
 
   HTML(txt)
 })
@@ -1304,14 +1466,18 @@ output$regression_adjacent_interpretation <- renderUI({
     txt <- sprintf(
       "Threshold parameters %s describe the horizontal position of the fitted curves for item \\(i\\),
                where %s is the number of obtained scores, parameter %s describes their common slope. ",
-      par[1], categories, par[2]
+      par[1],
+      categories,
+      par[2]
     )
   } else {
     txt <- sprintf(
       "Threshold parameters %s describe the horizontal position of the fitted curves for item \\(i\\)
               where %s is the number of obtained scores and they indicate intersections of the probability
               curves for two adjacent categories, parameter %s describes their common slope. ",
-      par[1], categories, par[2]
+      par[1],
+      categories,
+      par[2]
     )
   }
 
@@ -1331,7 +1497,13 @@ output$regression_adjacent_coef <- renderTable(
 
       tab <- data.frame(Estimate = tab_coef, SE = tab_se)
       rownames(tab) <- c(
-        paste0("\\(\\mathit{\\beta}_{", item, "0", sort(unique(data[, item]))[-1], "}\\)"),
+        paste0(
+          "\\(\\mathit{\\beta}_{",
+          item,
+          "0",
+          sort(unique(data[, item]))[-1],
+          "}\\)"
+        ),
         paste0("\\(\\mathit{\\beta}_{", item, "1}\\)")
       )
     } else {
@@ -1350,7 +1522,10 @@ output$regression_adjacent_coef <- renderTable(
         mean = tab_coef_old,
         cov = vcov(fit)
       )
-      tab_coef <- c(tab_coef_old[num_par], -tab_coef_old[-num_par] / tab_coef_old[num_par])
+      tab_coef <- c(
+        tab_coef_old[num_par],
+        -tab_coef_old[-num_par] / tab_coef_old[num_par]
+      )
 
       tab <- data.frame(Estimate = tab_coef, SE = tab_se)
       rownames(tab) <- c(
@@ -1422,9 +1597,7 @@ regression_multinomial_model <- reactive({
 
   fit <- tryCatch(
     multinom(
-      relevel(as.factor(item_cats),
-        ref = paste(key[item])
-      ) ~ item_values,
+      relevel(as.factor(item_cats), ref = paste(key[item])) ~ item_values,
       trace = FALSE
     ),
     error = function(e) e
@@ -1433,7 +1606,12 @@ regression_multinomial_model <- reactive({
   validate(
     need(
       class(fit) == "nnet",
-      HTML(paste0("Error: Method cannot be fitted for item ", item, ". The error message returned: ", fit$message))
+      HTML(paste0(
+        "Error: Method cannot be fitted for item ",
+        item,
+        ". The error message returned: ",
+        fit$message
+      ))
     ),
     errorClass = "validation-error"
   )
@@ -1482,14 +1660,20 @@ output$regression_multinomial_plot <- renderPlotly({
 # ** Download plot with estimated curves of multinomial regression ####
 output$regression_multinomial_plot_download <- downloadHandler(
   filename = function() {
-    paste0("fig_MultinomialRegressionCurve_", item_names()[input$regression_multinomial_item_slider], ".png")
+    paste0(
+      "fig_MultinomialRegressionCurve_",
+      item_names()[input$regression_multinomial_item_slider],
+      ".png"
+    )
   },
   content = function(file) {
-    ggsave(file,
+    ggsave(
+      file,
       plot = regression_multinomial_plot() +
         theme(text = element_text(size = setting_figures$text_size)),
       device = "png",
-      height = setting_figures$height, width = setting_figures$width,
+      height = setting_figures$height,
+      width = setting_figures$width,
       dpi = setting_figures$dpi
     )
   }
@@ -1507,7 +1691,9 @@ report_regression_multinomial_plot <- reactive({
     "Standardized total score"
   )
 
-  data <- sapply(1:ncol(data), function(i) as.factor(unlist(data[, i, with = FALSE])))
+  data <- sapply(1:ncol(data), function(i) {
+    as.factor(unlist(data[, i, with = FALSE]))
+  })
 
   error_measages <- c()
   for (item in 1:length(key)) {
@@ -1516,13 +1702,15 @@ report_regression_multinomial_plot <- reactive({
     matching <- unlist(dfhw[, 2])
 
     fitM <- multinom(
-      relevel(as.factor(unlist(dfhw[, 1])),
+      relevel(
+        as.factor(unlist(dfhw[, 1])),
         ref = paste(key[item])
       ) ~ unlist(dfhw[, 2]),
       trace = FALSE
     )
 
-    test <- tryCatch(plotMultinomial(fitM, matching, matching.name = matching_name),
+    test <- tryCatch(
+      plotMultinomial(fitM, matching, matching.name = matching_name),
       error = function(x) print(x)
     )
 
@@ -1546,7 +1734,10 @@ report_regression_multinomial_plot <- reactive({
 report_distractor_plot_legend_length <- reactive({
   data <- nominal()
 
-  legend_length <- max(sapply(data, function(x) length(unique(x))), na.rm = TRUE)
+  legend_length <- max(
+    sapply(data, function(x) length(unique(x))),
+    na.rm = TRUE
+  )
   legend_length
 })
 
@@ -1567,37 +1758,63 @@ output$regression_multinomial_equation <- renderUI({
   req(regression_multinomial_model()[[2]])
 
   item <- input$regression_multinomial_item_slider
-  match <- ifelse(input$regression_multinomial_matching == "total", "X_p", "Z_p")
+  match <- ifelse(
+    input$regression_multinomial_matching == "total",
+    "X_p",
+    "Z_p"
+  )
   correct_option <- key()[item]
 
   if (input$regression_multinomial_parametrization == "classic") {
     eq1 <- sprintf(
       "$$\\mathrm{P}(Y_{pi} = k|%s) = \\frac{e^{\\left(\\beta_{i0k} + \\beta_{i1k} %s\\right)}}{1 + \\sum_{l} e^{\\left(\\beta_{i0l} + \\beta_{i1l} %s\\right)}},$$",
-      match, match, match
+      match,
+      match,
+      match
     )
     eq2 <- sprintf(
       "$$\\mathrm{P}(Y_{pi} = %s|%s) = \\frac{1}{1 + \\sum_l e^{\\left(\\beta_{i0l} + \\beta_{i1l} %s\\right)}},$$",
-      correct_option, match, match
+      correct_option,
+      match,
+      match
     )
     txt <- sprintf(
       "where \\(k\\) is one of the wrong options (distractors) and \\(%s\\) is the correct one. Parameters \\(\\beta_{%s0k}\\) represent
                     locations of response probability curves for item %s and \\(\\beta_{%s1k}\\) are slopes of these curves. ",
-      correct_option, item, item, item
+      correct_option,
+      item,
+      item,
+      item
     )
   } else {
     eq1 <- sprintf(
       "$$\\mathrm{P}(Y_{pi} = k|%s) = \\frac{e^{a_{%sk}(%s - b_{%sk})}}{\\sum_{t = 0}^{K_%s} e^{a_{%st}(%s - b_{%st})}},$$",
-      match, item, match, item, item, item, match, item
+      match,
+      item,
+      match,
+      item,
+      item,
+      item,
+      match,
+      item
     )
     eq2 <- sprintf(
       "$$\\mathrm{P}(Y_{pi} = %s|%s) = \\frac{1}{\\sum_{t = 0}^{K_%s} e^{a_{%st}(%s - b_{%st})}},$$",
-      correct_option, match, item, item, match, item
+      correct_option,
+      match,
+      item,
+      item,
+      match,
+      item
     )
     txt <- sprintf(
       "where \\(k\\) is one of the wrong options (distractors) and \\(%s\\) is the correct one. Parameters \\(b_{%sk}\\) are
                     locations of response probability curve intersections with the curve of the correct answer for item %s, while \\(a_{%sk}\\)
                     are slopes of these curves. ",
-      correct_option, item, item, item
+      correct_option,
+      item,
+      item,
+      item
     )
   }
   HTML(paste(eq1, eq2, txt))
@@ -1619,7 +1836,10 @@ output$regression_multinomial_coef <- renderTable(
 
       coefs <- as.vector(coef(fit))
       ses <- sqrt(diag(vcov(fit)))
-      ses <- c(ses[grepl("Intercept", names(ses))], ses[!grepl("Intercept", names(ses))])
+      ses <- c(
+        ses[grepl("Intercept", names(ses))],
+        ses[!grepl("Intercept", names(ses))]
+      )
       tab <- cbind(coefs, ses)
       rnam <- rownames(coef(fit))
       if (is.null(dim(coef(fit))[1]) & !(all(levels(temp) %in% c("1", "0")))) {
@@ -1647,11 +1867,14 @@ output$regression_multinomial_coef <- renderTable(
       }
 
       se_tab <- if (is.null(dim(coef_si))) {
-        matrix(ShinyItemAnalysis:::delta_ses(
-          list(~ -x1 / x2, ~x2),
-          mean = unlist(coef_si),
-          cov = varcov
-        ), nrow = 1)
+        matrix(
+          ShinyItemAnalysis:::delta_ses(
+            list(~ -x1 / x2, ~x2),
+            mean = unlist(coef_si),
+            cov = varcov
+          ),
+          nrow = 1
+        )
       } else {
         t(sapply(
           rownames(coef_si),
@@ -1674,8 +1897,16 @@ output$regression_multinomial_coef <- renderTable(
       )
 
       colnames(tab) <- c(
-        paste0(c("", "SE("), rep(paste0("\\(\\mathit{b}_{", item, "}\\)"), 2), c("", ")")),
-        paste0(c("", "SE("), rep(paste0("\\(\\mathit{a}_{", item, "}\\)"), 2), c("", ")"))
+        paste0(
+          c("", "SE("),
+          rep(paste0("\\(\\mathit{b}_{", item, "}\\)"), 2),
+          c("", ")")
+        ),
+        paste0(
+          c("", "SE("),
+          rep(paste0("\\(\\mathit{a}_{", item, "}\\)"), 2),
+          c("", ")")
+        )
       )
       tab
     }
@@ -1688,7 +1919,8 @@ output$regression_multinomial_interpretation <- renderUI({
   if (input$regression_multinomial_parametrization == "classic") {
     koef <- summary(regression_multinomial_model())$coefficients
     txt <- c()
-    matching_name <- ifelse(input$regression_multinomial_matching == "total",
+    matching_name <- ifelse(
+      input$regression_multinomial_matching == "total",
       "total score",
       "Z-score (one SD increase in original scores)"
     )
@@ -1697,19 +1929,42 @@ output$regression_multinomial_interpretation <- renderUI({
       m <- length(koef)
       txt0 <- ifelse(koef[2] < 0, "decrease", "increase")
       txt <- paste(
-        "A one-unit increase in the", matching_name, "is associated with the ",
-        txt0, " in the log odds of answering the item ", "<b> 0 </b>", "vs.",
-        "<b> 1 </b>", " in the amount of ", "<b>", abs(round(koef[2], 2)), "</b>", "<br/>"
+        "A one-unit increase in the",
+        matching_name,
+        "is associated with the ",
+        txt0,
+        " in the log odds of answering the item ",
+        "<b> 0 </b>",
+        "vs.",
+        "<b> 1 </b>",
+        " in the amount of ",
+        "<b>",
+        abs(round(koef[2], 2)),
+        "</b>",
+        "<br/>"
       )
     } else {
       m <- nrow(koef)
       for (i in 1:m) {
         txt0 <- ifelse(koef[i, 2] < 0, "decrease", "increase")
         txt[i] <- paste(
-          "A one-unit increase in the", matching_name, "is associated with the ",
-          txt0, " in the log odds of answering the item ", "<b>", row.names(koef)[i],
-          "</b>", "vs.", "<b>", key()[input$regression_multinomial_item_slider], "</b>", "in the amount of ",
-          "<b>", abs(round(koef[i, 2], 2)), "</b>", "<br/>"
+          "A one-unit increase in the",
+          matching_name,
+          "is associated with the ",
+          txt0,
+          " in the log odds of answering the item ",
+          "<b>",
+          row.names(koef)[i],
+          "</b>",
+          "vs.",
+          "<b>",
+          key()[input$regression_multinomial_item_slider],
+          "</b>",
+          "in the amount of ",
+          "<b>",
+          abs(round(koef[i, 2], 2)),
+          "</b>",
+          "<br/>"
         )
       }
     }

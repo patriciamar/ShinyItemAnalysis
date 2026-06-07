@@ -46,8 +46,7 @@
 #' plotCumulative(fit, type = "category", matching.name = "Total score")
 #'
 #' @importFrom grDevices hcl
-#' @importFrom ggplot2 scale_colour_manual scale_linetype_manual ylim guides
-#'   guide_legend
+#' @importFrom ggplot2 scale_colour_manual scale_linetype_manual ylim guides guide_legend
 #'
 #' @export
 plotCumulative <- function(x, type = "cumulative", matching.name = "matching") {
@@ -57,7 +56,11 @@ plotCumulative <- function(x, type = "cumulative", matching.name = "matching") {
   num.cat <- length(cat) # number of all categories
   y <- factor(y, levels = cat) # releveling
   matching <- x@x[, 2] # matching
-  match <- seq(min(matching, na.rm = TRUE), max(matching, na.rm = TRUE), length.out = 1000)
+  match <- seq(
+    min(matching, na.rm = TRUE),
+    max(matching, na.rm = TRUE),
+    length.out = 1000
+  )
 
   coefs <- coef(x) # extracting coefficients
   cat.obs <- names(which(table(y) > 0)[-1]) # observed categories = categories with at least one observation
@@ -68,59 +71,99 @@ plotCumulative <- function(x, type = "cumulative", matching.name = "matching") {
   colnames(df.probs.cum) <- paste(cat)
 
   # calculation of cumulative probabilities based on formula P(Y >= k) = exp(b0 + b1*x)/(1 + exp(b0 + b1*x))
-  df.probs.cum[, cat.obs] <- sapply(1:num.cat.obs, function(i) exp(coefs[i] + coefs[num.cat.obs + 1] * match) / (1 + exp(coefs[i] + coefs[num.cat.obs + 1] * match)))
+  df.probs.cum[, cat.obs] <- sapply(1:num.cat.obs, function(i) {
+    exp(coefs[i] + coefs[num.cat.obs + 1] * match) /
+      (1 + exp(coefs[i] + coefs[num.cat.obs + 1] * match))
+  })
   # if column between non-ones valued columns consist of ones, it has to be changed to value on the left side
-  need.correction <- which(sapply(2:num.cat, function(i) (all(df.probs.cum[, i] == 1) & all(df.probs.cum[, i - 1] != 1))))
+  need.correction <- which(sapply(2:num.cat, function(i) {
+    (all(df.probs.cum[, i] == 1) & all(df.probs.cum[, i - 1] != 1))
+  }))
   df.probs.cum[, need.correction + 1] <- df.probs.cum[, need.correction]
 
   # category probabilities
   df.probs.cat <- data.frame(
-    sapply(1:(num.cat - 1), function(i) df.probs.cum[, i] - df.probs.cum[, i + 1]),
+    sapply(1:(num.cat - 1), function(i) {
+      df.probs.cum[, i] - df.probs.cum[, i + 1]
+    }),
     df.probs.cum[, num.cat]
   )
 
   # melting data
   df.probs.cum <- data.frame(match, df.probs.cum)
   colnames(df.probs.cum) <- c("matching", paste0("P(Y>=", cat, ")"))
-  df.probs.cum <- tidyr::pivot_longer(df.probs.cum, -matching, names_to = "Category", values_to = "Probability")
+  df.probs.cum <- tidyr::pivot_longer(
+    df.probs.cum,
+    -matching,
+    names_to = "Category",
+    values_to = "Probability"
+  )
   colnames(df.probs.cum)[1] <- "Matching"
 
   df.probs.cat <- data.frame(match, df.probs.cat)
   colnames(df.probs.cat) <- c("matching", paste0("P(Y=", cat, ")"))
-  df.probs.cat <- tidyr::pivot_longer(df.probs.cat, -matching, names_to = "Category", values_to = "Probability")
+  df.probs.cat <- tidyr::pivot_longer(
+    df.probs.cat,
+    -matching,
+    names_to = "Category",
+    values_to = "Probability"
+  )
   colnames(df.probs.cat)[1] <- "Matching"
 
   # empirical category values
-  df.emp.cat <- data.frame(table(y, matching),
+  df.emp.cat <- data.frame(
+    table(y, matching),
     y = prop.table(table(y, matching), 2)
   )[, c(1, 2, 3, 6)]
   df.emp.cat$matching <- as.numeric(paste(df.emp.cat$matching))
   colnames(df.emp.cat) <- c("Category", "Matching", "Count", "Probability")
   df.emp.cat$Category <- as.factor(df.emp.cat$Category)
-  levels(df.emp.cat$Category) <- paste0("P(Y=", levels(df.emp.cat$Category), ")")
+  levels(df.emp.cat$Category) <- paste0(
+    "P(Y=",
+    levels(df.emp.cat$Category),
+    ")"
+  )
 
   # empirical cumulative values
   df.emp.cum.count <- as.data.frame.matrix(table(matching, y))
-  df.emp.cum.count <- t(apply(df.emp.cum.count, 1, function(x) sum(x) - cumsum(x) + x))
+  df.emp.cum.count <- t(apply(df.emp.cum.count, 1, function(x) {
+    sum(x) - cumsum(x) + x
+  }))
   df.emp.cum.count <- data.frame(
     as.numeric(paste(rownames(df.emp.cum.count))),
     df.emp.cum.count
   )
   colnames(df.emp.cum.count) <- c("matching", paste0("P(Y>=", cat, ")"))
-  df.emp.cum.count <- tidyr::pivot_longer(df.emp.cum.count, -matching, names_to = "Category", values_to = "Count")
+  df.emp.cum.count <- tidyr::pivot_longer(
+    df.emp.cum.count,
+    -matching,
+    names_to = "Category",
+    values_to = "Count"
+  )
   colnames(df.emp.cum.count)[1] <- "Matching"
 
   df.emp.cum.prob <- as.data.frame.matrix(prop.table(table(matching, y), 1))
-  df.emp.cum.prob <- t(apply(df.emp.cum.prob, 1, function(x) sum(x) - cumsum(x) + x))
+  df.emp.cum.prob <- t(apply(df.emp.cum.prob, 1, function(x) {
+    sum(x) - cumsum(x) + x
+  }))
   df.emp.cum.prob <- data.frame(
     as.numeric(paste(rownames(df.emp.cum.prob))),
     df.emp.cum.prob
   )
   colnames(df.emp.cum.prob) <- c("matching", paste0("P(Y>=", cat, ")"))
-  df.emp.cum.prob <- tidyr::pivot_longer(df.emp.cum.prob, -matching, names_to = "Category", values_to = "Probability")
+  df.emp.cum.prob <- tidyr::pivot_longer(
+    df.emp.cum.prob,
+    -matching,
+    names_to = "Category",
+    values_to = "Probability"
+  )
   colnames(df.emp.cum.prob)[1] <- "Matching"
 
-  df.emp.cum <- merge(df.emp.cum.count, df.emp.cum.prob, by = c("Matching", "Category"))
+  df.emp.cum <- merge(
+    df.emp.cum.count,
+    df.emp.cum.prob,
+    by = c("Matching", "Category")
+  )
 
   # colours
   gg_color_hue <- function(n) {
@@ -143,23 +186,33 @@ plotCumulative <- function(x, type = "cumulative", matching.name = "matching") {
       cols <- cols[as.numeric(cat.obs)]
     }
 
-    df.emp.cum <- df.emp.cum[df.emp.cum$Category %in% paste0("P(Y>=", cat.obs, ")"), ]
-    df.probs.cum <- df.probs.cum[df.probs.cum$Category %in% paste0("P(Y>=", cat.obs, ")"), ]
+    df.emp.cum <- df.emp.cum[
+      df.emp.cum$Category %in% paste0("P(Y>=", cat.obs, ")"),
+    ]
+    df.probs.cum <- df.probs.cum[
+      df.probs.cum$Category %in% paste0("P(Y>=", cat.obs, ")"),
+    ]
 
     g <- ggplot() +
       geom_point(
         data = df.emp.cum,
         aes(
-          x = .data$Matching, y = .data$Probability,
-          size = .data$Count, colour = .data$Category, fill = .data$Category
+          x = .data$Matching,
+          y = .data$Probability,
+          size = .data$Count,
+          colour = .data$Category,
+          fill = .data$Category
         ),
-        shape = 21, alpha = 0.5
+        shape = 21,
+        alpha = 0.5
       ) +
       geom_line(
         data = df.probs.cum,
         aes(
-          x = .data$Matching, y = .data$Probability,
-          col = .data$Category, linetype = .data$Category
+          x = .data$Matching,
+          y = .data$Probability,
+          col = .data$Category,
+          linetype = .data$Category
         ),
         size = 0.8
       ) +
@@ -192,16 +245,22 @@ plotCumulative <- function(x, type = "cumulative", matching.name = "matching") {
       geom_point(
         data = df.emp.cat,
         aes(
-          x = .data$Matching, y = .data$Probability,
-          size = .data$Count, col = .data$Category, fill = .data$Category
+          x = .data$Matching,
+          y = .data$Probability,
+          size = .data$Count,
+          col = .data$Category,
+          fill = .data$Category
         ),
-        shape = 21, alpha = 0.5
+        shape = 21,
+        alpha = 0.5
       ) +
       geom_line(
         data = df.probs.cat,
         aes(
-          x = .data$Matching, y = .data$Probability,
-          col = .data$Category, linetype = .data$Category
+          x = .data$Matching,
+          y = .data$Probability,
+          col = .data$Category,
+          linetype = .data$Category
         ),
         size = 0.8
       ) +

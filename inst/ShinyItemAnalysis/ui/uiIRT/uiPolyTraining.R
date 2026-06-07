@@ -2,60 +2,94 @@ uiPolyTraining <- tabPanel(
   "Polytomous models",
   tabsetPanel(
     # *** Intro ####
-    tabPanel("Intro",
+    tabPanel(
+      "Intro",
       value = "polytom_intro",
       h3("Polytomous models"),
-      p("Polytomous models are used when a partial score is possible, or when items are graded
+      p(
+        "Polytomous models are used when a partial score is possible, or when items are graded
                                         on the Likert scale (e.g. from Totally disagree to Totally agree); some polytomous
                                         models can also be used when analyzing multiple-choice items.  In this section you
-                                        can explore item response functions for some polytomous models."),
+                                        can explore item response functions for some polytomous models."
+      ),
       br(),
       p("Two main classes of polytomous IRT models are considered:"),
-      p(strong("Difference models"), "are defined by setting the mathematical form to cumulative
-                                        probabilities, while category probabilities are calculated by their difference.
-                                        These models are sometimes called", strong("cumulative logit models"), "as they
-                                        set a linear form to cumulative logits."),
-      p("As an example, the ", strong("Graded Response Model"), "(GRM; Samejima, 1970) uses a 2PL
-                                        IRT model to describe cumulative probabilities (probabilities to obtain a score higher
-                                        than 1, 2, 3, etc.). Category probabilities are then described as the differences between two
-                                        subsequent cumulative probabilities. "), br(),
-      p("For the", strong("divide-by-total models,"), "response category probabilities are defined
-                                        as the ratio between category-related functions and their sum. "),
       p(
-        "In the", strong("Generalized Partial Credit Model"), "(GPCM; Muraki, 1992), probability
-                                        of the successful transition from one category score to the next category score is
-                                        modelled by the 2PL IRT model, while the ", strong("Partial Credit Model"), "(PCM; Masters, 1982)
-                                        uses the 1PL IRT model to describe this probability. In an even more restricted version, the",
-        strong("Rating Scale Model"), "(RSM; Andrich, 1978) assumes exactly the same K response
-                                        categories for each item and threshold parameters which can be split into a response-threshold
-                                        parameter and an item-specific location parameter. These models are sometimes called
-                                        ", strong("adjacent-category logit models"), "because they set linear form to adjacent logits."
+        strong("Difference models"),
+        "are defined by setting the mathematical form to cumulative
+                                        probabilities, while category probabilities are calculated by their difference.
+                                        These models are sometimes called",
+        strong("cumulative logit models"),
+        "as they
+                                        set a linear form to cumulative logits."
       ),
       p(
-        "To model distractor properties in multiple-choice items, the", strong("Nominal Response Model"),
+        "As an example, the ",
+        strong("Graded Response Model"),
+        "(GRM; Samejima, 1970) uses a 2PL
+                                        IRT model to describe cumulative probabilities (probabilities to obtain a score higher
+                                        than 1, 2, 3, etc.). Category probabilities are then described as the differences between two
+                                        subsequent cumulative probabilities. "
+      ),
+      br(),
+      p(
+        "For the",
+        strong("divide-by-total models,"),
+        "response category probabilities are defined
+                                        as the ratio between category-related functions and their sum. "
+      ),
+      p(
+        "In the",
+        strong("Generalized Partial Credit Model"),
+        "(GPCM; Muraki, 1992), probability
+                                        of the successful transition from one category score to the next category score is
+                                        modelled by the 2PL IRT model, while the ",
+        strong("Partial Credit Model"),
+        "(PCM; Masters, 1982)
+                                        uses the 1PL IRT model to describe this probability. In an even more restricted version, the",
+        strong("Rating Scale Model"),
+        "(RSM; Andrich, 1978) assumes exactly the same K response
+                                        categories for each item and threshold parameters which can be split into a response-threshold
+                                        parameter and an item-specific location parameter. These models are sometimes called
+                                        ",
+        strong("adjacent-category logit models"),
+        "because they set linear form to adjacent logits."
+      ),
+      p(
+        "To model distractor properties in multiple-choice items, the",
+        strong("Nominal Response Model"),
         "(NRM; Bock, 1972) can be used. NRM is an IRT analogy of a multinomial regression model. This
                                         model is also a generalization of GPCM/PCM/RSM ordinal models. NRM is sometimes called
-                                        a ", strong("baseline-category logit model"), "because it sets linear form to log of the odds of selecting a given category
+                                        a ",
+        strong("baseline-category logit model"),
+        "because it sets linear form to log of the odds of selecting a given category
                                         to the baseline category. The baseline can be chosen arbitrarily, although normally the correct
                                         answer is the first answer chosen."
       )
     ),
     # *** Graded response model ####
-    tabPanel("Graded response model",
+    tabPanel(
+      "Graded response model",
       value = "polytom_grm",
       h3("Graded response model"),
-      p("Graded response model (GRM; Samejima, 1970) uses the 2PL IRT model to describe cumulative probabilities
+      p(
+        "Graded response model (GRM; Samejima, 1970) uses the 2PL IRT model to describe cumulative probabilities
           (probabilities to obtain a score higher than 1, 2, 3, etc.). Category probabilities are then described
-          as the differences between two subsequent cumulative probabilities. "),
-      p("It belongs to a class of difference models, which are defined by setting mathematical form to cumulative
+          as the differences between two subsequent cumulative probabilities. "
+      ),
+      p(
+        "It belongs to a class of difference models, which are defined by setting mathematical form to cumulative
           probabilities, while category probabilities are calculated as their difference. These models are sometimes
-          called cumulative logit models, because they set linear form to cumulative logits."),
+          called cumulative logit models, because they set linear form to cumulative logits."
+      ),
       h4("Parameters"),
-      p("Select the number of responses by specifying the highest category,
+      p(
+        "Select the number of responses by specifying the highest category,
            specify the category locations (inflection points of cumulative probabilities) \\(b_k\\), and the common
           discrimination parameter (slopes at inflection points) \\(a\\). Cumulative probability \\(P(Y \\geq 0 \\vert \\theta)\\) is always equal
           to 1 and it is not displayed, the corresponding category probability \\(P(Y = 0 \\vert \\theta)\\) is
-          displayed with a black color."),
+          displayed with a black color."
+      ),
       div(
         style = "display: inline-block; vertical-align: middle; width: 18%;",
         numericInput(
@@ -94,143 +128,230 @@ uiPolyTraining <- tabPanel(
       ),
       splitLayout(
         cellWidths = c("33%", "33%", "33%"),
-        downloadButton("DB_irt_training_grm_plot_cumulative", label = "Download figure"),
-        downloadButton("DB_irt_training_grm_plot_category", label = "Download figure"),
-        downloadButton("DB_irt_training_grm_plot_expected", label = "Download figure")
+        downloadButton(
+          "DB_irt_training_grm_plot_cumulative",
+          label = "Download figure"
+        ),
+        downloadButton(
+          "DB_irt_training_grm_plot_category",
+          label = "Download figure"
+        ),
+        downloadButton(
+          "DB_irt_training_grm_plot_expected",
+          label = "Download figure"
+        )
       ),
       br(),
       #------------------------------------------------------------------------------------#
       # **** Exercise ####
       #------------------------------------------------------------------------------------#
       h4("Exercise "),
-      p("Consider an item following a graded response model rated \\(0-1-2-3\\), with discrimination \\(a = 1\\) and
-										 difficulties \\(b_{1} = -0.5\\), \\(b_{2} = 1\\) and \\(b_{3} = 1.5\\)."),
+      p(
+        "Consider an item following a graded response model rated \\(0-1-2-3\\), with discrimination \\(a = 1\\) and
+										 difficulties \\(b_{1} = -0.5\\), \\(b_{2} = 1\\) and \\(b_{3} = 1.5\\)."
+      ),
       tags$ul(
         tags$li(
           "Calculate the probabilities of obtaining \\(k\\) and more points for a specific level of ability \\(\\theta\\)",
           splitLayout(
-            cellWidths = c("7%", "7%", "4%", "7%", "4%", "7%", "4%", "7%", "4%", "7%", "4%", "38%"),
+            cellWidths = c(
+              "7%",
+              "7%",
+              "4%",
+              "7%",
+              "4%",
+              "7%",
+              "4%",
+              "7%",
+              "4%",
+              "7%",
+              "4%",
+              "38%"
+            ),
             strong("\\(k \\geq 0 \\)"),
             numericInput(
               inputId = "irt_training_grm_1_1a",
-              label = "\\(\\theta = -2\\)", value = 0
+              label = "\\(\\theta = -2\\)",
+              value = 0
             ),
             htmlOutput("irt_training_grm_1_1a_answer"),
             numericInput(
               inputId = "irt_training_grm_1_1b",
-              label = "\\(\\theta = -1\\)", value = 0
+              label = "\\(\\theta = -1\\)",
+              value = 0
             ),
             htmlOutput("irt_training_grm_1_1b_answer"),
             numericInput(
               inputId = "irt_training_grm_1_1c",
-              label = "\\(\\theta = 0\\)", value = 0
+              label = "\\(\\theta = 0\\)",
+              value = 0
             ),
             htmlOutput("irt_training_grm_1_1c_answer"),
             numericInput(
               inputId = "irt_training_grm_1_1d",
-              label = "\\(\\theta = 1\\)", value = 0
+              label = "\\(\\theta = 1\\)",
+              value = 0
             ),
             htmlOutput("irt_training_grm_1_1d_answer"),
             numericInput(
               inputId = "irt_training_grm_1_1e",
-              label = "\\(\\theta = 2\\)", value = 0
+              label = "\\(\\theta = 2\\)",
+              value = 0
             ),
-            htmlOutput("irt_training_grm_1_1e_answer"), ""
+            htmlOutput("irt_training_grm_1_1e_answer"),
+            ""
           ),
           splitLayout(
-            cellWidths = c("7%", "7%", "4%", "7%", "4%", "7%", "4%", "7%", "4%", "7%", "4%", "38%"),
+            cellWidths = c(
+              "7%",
+              "7%",
+              "4%",
+              "7%",
+              "4%",
+              "7%",
+              "4%",
+              "7%",
+              "4%",
+              "7%",
+              "4%",
+              "38%"
+            ),
             strong("\\(k \\geq 1 \\)"),
             numericInput(
               inputId = "irt_training_grm_1_2a",
-              label = "\\(\\theta = -2\\)", value = 0
+              label = "\\(\\theta = -2\\)",
+              value = 0
             ),
             htmlOutput("irt_training_grm_1_2a_answer"),
             numericInput(
               inputId = "irt_training_grm_1_2b",
-              label = "\\(\\theta = -1\\)", value = 0
+              label = "\\(\\theta = -1\\)",
+              value = 0
             ),
             htmlOutput("irt_training_grm_1_2b_answer"),
             numericInput(
               inputId = "irt_training_grm_1_2c",
-              label = "\\(\\theta = 0\\)", value = 0
+              label = "\\(\\theta = 0\\)",
+              value = 0
             ),
             htmlOutput("irt_training_grm_1_2c_answer"),
             numericInput(
               inputId = "irt_training_grm_1_2d",
-              label = "\\(\\theta = 1\\)", value = 0
+              label = "\\(\\theta = 1\\)",
+              value = 0
             ),
             htmlOutput("irt_training_grm_1_2d_answer"),
             numericInput(
               inputId = "irt_training_grm_1_2e",
-              label = "\\(\\theta = 2\\)", value = 0
+              label = "\\(\\theta = 2\\)",
+              value = 0
             ),
             htmlOutput("irt_training_grm_1_2e_answer")
           ),
           splitLayout(
-            cellWidths = c("7%", "7%", "4%", "7%", "4%", "7%", "4%", "7%", "4%", "7%", "4%", "38%"),
+            cellWidths = c(
+              "7%",
+              "7%",
+              "4%",
+              "7%",
+              "4%",
+              "7%",
+              "4%",
+              "7%",
+              "4%",
+              "7%",
+              "4%",
+              "38%"
+            ),
             strong("\\(k \\geq 2 \\)"),
             numericInput(
               inputId = "irt_training_grm_1_3a",
-              label = "\\(\\theta = -2\\)", value = 0
+              label = "\\(\\theta = -2\\)",
+              value = 0
             ),
             htmlOutput("irt_training_grm_1_3a_answer"),
             numericInput(
               inputId = "irt_training_grm_1_3b",
-              label = "\\(\\theta = -1\\)", value = 0
+              label = "\\(\\theta = -1\\)",
+              value = 0
             ),
             htmlOutput("irt_training_grm_1_3b_answer"),
             numericInput(
               inputId = "irt_training_grm_1_3c",
-              label = "\\(\\theta = 0\\)", value = 0
+              label = "\\(\\theta = 0\\)",
+              value = 0
             ),
             htmlOutput("irt_training_grm_1_3c_answer"),
             numericInput(
               inputId = "irt_training_grm_1_3d",
-              label = "\\(\\theta = 1\\)", value = 0
+              label = "\\(\\theta = 1\\)",
+              value = 0
             ),
             htmlOutput("irt_training_grm_1_3d_answer"),
             numericInput(
               inputId = "irt_training_grm_1_3e",
-              label = "\\(\\theta = 2\\)", value = 0
+              label = "\\(\\theta = 2\\)",
+              value = 0
             ),
             htmlOutput("irt_training_grm_1_3e_answer")
           ),
           splitLayout(
-            cellWidths = c("7%", "7%", "4%", "7%", "4%", "7%", "4%", "7%", "4%", "7%", "4%", "38%"),
+            cellWidths = c(
+              "7%",
+              "7%",
+              "4%",
+              "7%",
+              "4%",
+              "7%",
+              "4%",
+              "7%",
+              "4%",
+              "7%",
+              "4%",
+              "38%"
+            ),
             strong("\\(k \\geq 3 \\)"),
             numericInput(
               inputId = "irt_training_grm_1_4a",
-              label = "\\(\\theta = -2\\)", value = 0
+              label = "\\(\\theta = -2\\)",
+              value = 0
             ),
             htmlOutput("irt_training_grm_1_4a_answer"),
             numericInput(
               inputId = "irt_training_grm_1_4b",
-              label = "\\(\\theta = -1\\)", value = 0
+              label = "\\(\\theta = -1\\)",
+              value = 0
             ),
             htmlOutput("irt_training_grm_1_4b_answer"),
             numericInput(
               inputId = "irt_training_grm_1_4c",
-              label = "\\(\\theta = 0\\)", value = 0
+              label = "\\(\\theta = 0\\)",
+              value = 0
             ),
             htmlOutput("irt_training_grm_1_4c_answer"),
             numericInput(
               inputId = "irt_training_grm_1_4d",
-              label = "\\(\\theta = 1\\)", value = 0
+              label = "\\(\\theta = 1\\)",
+              value = 0
             ),
             htmlOutput("irt_training_grm_1_4d_answer"),
             numericInput(
               inputId = "irt_training_grm_1_4e",
-              label = "\\(\\theta = 2\\)", value = 0
+              label = "\\(\\theta = 2\\)",
+              value = 0
             ),
             htmlOutput("irt_training_grm_1_4e_answer")
-          ), ""
+          ),
+          ""
         ),
         tags$li(
           "Calculate the probabilities of obtaining  exactly \\(k\\) points for a specific level of ability \\(\\theta\\)",
           bsButton(
             inputId = "irt_training_grm_1_help",
-            label = "", icon = icon("question"),
-            style = "info", size = "extra-small"
+            label = "",
+            icon = icon("question"),
+            style = "info",
+            size = "extra-small"
           ),
           bsPopover(
             id = "irt_training_grm_1_help",
@@ -241,128 +362,203 @@ uiPolyTraining <- tabPanel(
             options = list(container = "body")
           ),
           splitLayout(
-            cellWidths = c("7%", "7%", "4%", "7%", "4%", "7%", "4%", "7%", "4%", "7%", "4%", "38%"),
+            cellWidths = c(
+              "7%",
+              "7%",
+              "4%",
+              "7%",
+              "4%",
+              "7%",
+              "4%",
+              "7%",
+              "4%",
+              "7%",
+              "4%",
+              "38%"
+            ),
             strong("\\(k = 0\\) "),
             numericInput(
               inputId = "irt_training_grm_2_1a",
-              label = "\\(\\theta = -2\\)", value = 0
+              label = "\\(\\theta = -2\\)",
+              value = 0
             ),
             htmlOutput("irt_training_grm_2_1a_answer"),
             numericInput(
               inputId = "irt_training_grm_2_1b",
-              label = "\\(\\theta = -1\\)", value = 0
+              label = "\\(\\theta = -1\\)",
+              value = 0
             ),
             htmlOutput("irt_training_grm_2_1b_answer"),
             numericInput(
               inputId = "irt_training_grm_2_1c",
-              label = "\\(\\theta = 0\\)", value = 0
+              label = "\\(\\theta = 0\\)",
+              value = 0
             ),
             htmlOutput("irt_training_grm_2_1c_answer"),
             numericInput(
               inputId = "irt_training_grm_2_1d",
-              label = "\\(\\theta = 1\\)", value = 0
+              label = "\\(\\theta = 1\\)",
+              value = 0
             ),
             htmlOutput("irt_training_grm_2_1d_answer"),
             numericInput(
               inputId = "irt_training_grm_2_1e",
-              label = "\\(\\theta = 2\\)", value = 0
+              label = "\\(\\theta = 2\\)",
+              value = 0
             ),
             htmlOutput("irt_training_grm_2_1e_answer")
           ),
           splitLayout(
-            cellWidths = c("7%", "7%", "4%", "7%", "4%", "7%", "4%", "7%", "4%", "7%", "4%", "38%"),
+            cellWidths = c(
+              "7%",
+              "7%",
+              "4%",
+              "7%",
+              "4%",
+              "7%",
+              "4%",
+              "7%",
+              "4%",
+              "7%",
+              "4%",
+              "38%"
+            ),
             strong("\\(k = 1\\) "),
             numericInput(
               inputId = "irt_training_grm_2_2a",
-              label = "\\(\\theta = -2\\)", value = 0
+              label = "\\(\\theta = -2\\)",
+              value = 0
             ),
             htmlOutput("irt_training_grm_2_2a_answer"),
             numericInput(
               inputId = "irt_training_grm_2_2b",
-              label = "\\(\\theta = -1\\)", value = 0
+              label = "\\(\\theta = -1\\)",
+              value = 0
             ),
             htmlOutput("irt_training_grm_2_2b_answer"),
             numericInput(
               inputId = "irt_training_grm_2_2c",
-              label = "\\(\\theta = 0\\)", value = 0
+              label = "\\(\\theta = 0\\)",
+              value = 0
             ),
             htmlOutput("irt_training_grm_2_2c_answer"),
             numericInput(
               inputId = "irt_training_grm_2_2d",
-              label = "\\(\\theta = 1\\)", value = 0
+              label = "\\(\\theta = 1\\)",
+              value = 0
             ),
             htmlOutput("irt_training_grm_2_2d_answer"),
             numericInput(
               inputId = "irt_training_grm_2_2e",
-              label = "\\(\\theta = 2\\)", value = 0
+              label = "\\(\\theta = 2\\)",
+              value = 0
             ),
             htmlOutput("irt_training_grm_2_2e_answer")
           ),
           splitLayout(
-            cellWidths = c("7%", "7%", "4%", "7%", "4%", "7%", "4%", "7%", "4%", "7%", "4%", "38%"),
+            cellWidths = c(
+              "7%",
+              "7%",
+              "4%",
+              "7%",
+              "4%",
+              "7%",
+              "4%",
+              "7%",
+              "4%",
+              "7%",
+              "4%",
+              "38%"
+            ),
             strong("\\(k = 2\\) "),
             numericInput(
               inputId = "irt_training_grm_2_3a",
-              label = "\\(\\theta = -2\\)", value = 0
+              label = "\\(\\theta = -2\\)",
+              value = 0
             ),
             htmlOutput("irt_training_grm_2_3a_answer"),
             numericInput(
               inputId = "irt_training_grm_2_3b",
-              label = "\\(\\theta = -1\\)", value = 0
+              label = "\\(\\theta = -1\\)",
+              value = 0
             ),
             htmlOutput("irt_training_grm_2_3b_answer"),
             numericInput(
               inputId = "irt_training_grm_2_3c",
-              label = "\\(\\theta = 0\\)", value = 0
+              label = "\\(\\theta = 0\\)",
+              value = 0
             ),
             htmlOutput("irt_training_grm_2_3c_answer"),
             numericInput(
               inputId = "irt_training_grm_2_3d",
-              label = "\\(\\theta = 1\\)", value = 0
+              label = "\\(\\theta = 1\\)",
+              value = 0
             ),
             htmlOutput("irt_training_grm_2_3d_answer"),
             numericInput(
               inputId = "irt_training_grm_2_3e",
-              label = "\\(\\theta = 2\\)", value = 0
+              label = "\\(\\theta = 2\\)",
+              value = 0
             ),
             htmlOutput("irt_training_grm_2_3e_answer")
           ),
           splitLayout(
-            cellWidths = c("7%", "7%", "4%", "7%", "4%", "7%", "4%", "7%", "4%", "7%", "4%", "38%"),
+            cellWidths = c(
+              "7%",
+              "7%",
+              "4%",
+              "7%",
+              "4%",
+              "7%",
+              "4%",
+              "7%",
+              "4%",
+              "7%",
+              "4%",
+              "38%"
+            ),
             strong("\\(k = 3\\) "),
             numericInput(
               inputId = "irt_training_grm_2_4a",
-              label = "\\(\\theta = -2\\)", value = 0
+              label = "\\(\\theta = -2\\)",
+              value = 0
             ),
             htmlOutput("irt_training_grm_2_4a_answer"),
             numericInput(
               inputId = "irt_training_grm_2_4b",
-              label = "\\(\\theta = -1\\)", value = 0
+              label = "\\(\\theta = -1\\)",
+              value = 0
             ),
             htmlOutput("irt_training_grm_2_4b_answer"),
             numericInput(
               inputId = "irt_training_grm_2_4c",
-              label = "\\(\\theta = 0\\)", value = 0
+              label = "\\(\\theta = 0\\)",
+              value = 0
             ),
             htmlOutput("irt_training_grm_2_4c_answer"),
             numericInput(
               inputId = "irt_training_grm_2_4d",
-              label = "\\(\\theta = 1\\)", value = 0
+              label = "\\(\\theta = 1\\)",
+              value = 0
             ),
             htmlOutput("irt_training_grm_2_4d_answer"),
             numericInput(
               inputId = "irt_training_grm_2_4e",
-              label = "\\(\\theta = 2\\)", value = 0
+              label = "\\(\\theta = 2\\)",
+              value = 0
             ),
             htmlOutput("irt_training_grm_2_4e_answer")
-          ), ""
+          ),
+          ""
         ),
         tags$li(
           "What is the expected item score for the specific level of ability \\(\\theta\\)?",
           bsButton(
             inputId = "irt_training_grm_2_help",
-            label = "", icon = icon("question"),
-            style = "info", size = "extra-small"
+            label = "",
+            icon = icon("question"),
+            style = "info",
+            size = "extra-small"
           ),
           bsPopover(
             id = "irt_training_grm_2_help",
@@ -427,9 +623,11 @@ uiPolyTraining <- tabPanel(
             htmlOutput("irt_training_grm_answer"),
             actionButton(
               inputId = "irt_training_grm_1_submit",
-              label = "Submit answers", width = "80%"
+              label = "Submit answers",
+              width = "80%"
             )
-          ), ""
+          ),
+          ""
         )
       ),
       br(),
@@ -437,26 +635,35 @@ uiPolyTraining <- tabPanel(
       code(includeText("sc/irt/train_poly_grm.R"))
     ),
     # *** Generalized partial credit model ####
-    tabPanel("Generalized partial credit model",
+    tabPanel(
+      "Generalized partial credit model",
       value = "polytom_gpcm",
       h3("Generalized partial credit model"),
-      p("In the Generalized Partial Credit Model (GPCM; Muraki, 1992), the probability of successful transition
+      p(
+        "In the Generalized Partial Credit Model (GPCM; Muraki, 1992), the probability of successful transition
           from one category to the next category is modelled by the 2PL IRT model. The response category
           probabilities are then ratios between category-related functions (cumulative sums of exponentials) and
-          their sum."),
-      p("Two simpler models can be derived from GPCM by restricting some parameters: The Partial Credit Model
+          their sum."
+      ),
+      p(
+        "Two simpler models can be derived from GPCM by restricting some parameters: The Partial Credit Model
           (PCM; Masters, 1982) uses the 1PL IRT model to describe this probability,
           thus the slope parameter is fixed to \\(a = 1\\).
           An even more restricted version, the Rating Scale Model (RSM; Andrich, 1978) assumes exactly the same
           \\(K\\) response categories for each item and threshold parameters which can be split into a response-threshold
-          parameter \\(\\lambda_k\\) and an item-specific location parameter \\(b_i\\)."),
-      p("These models are
-          sometimes called adjacent category logit models, as they set linear form to adjacent category logits. "),
+          parameter \\(\\lambda_k\\) and an item-specific location parameter \\(b_i\\)."
+      ),
+      p(
+        "These models are
+          sometimes called adjacent category logit models, as they set linear form to adjacent category logits. "
+      ),
       h4("Parameters"),
-      p("Select the number of responses by specifying the highest category score,
+      p(
+        "Select the number of responses by specifying the highest category score,
           specify the threshold parameters \\(b_k\\)  and the common discrimination parameter
           \\(a\\). With \\(a = 1\\) you get the PCM. Numerator of \\(\\pi_0 = P(Y = 0 \\vert \\theta)\\) is set to 1 and
-          \\(\\pi_0\\) is displayed with a black color."),
+          \\(\\pi_0\\) is displayed with a black color."
+      ),
       div(
         style = "display: inline-block; vertical-align: middle; width: 18%;",
         numericInput(
@@ -494,15 +701,20 @@ uiPolyTraining <- tabPanel(
       splitLayout(
         cellWidths = c("50%", "50%"),
         downloadButton("DB_irt_training_gpcm_plot", label = "Download figure"),
-        downloadButton("DB_irt_training_gpcm_plot_expected", label = "Download figure")
+        downloadButton(
+          "DB_irt_training_gpcm_plot_expected",
+          label = "Download figure"
+        )
       ),
       br(),
       #------------------------------------------------------------------------------------#
       # ***** Exercise ####
       #------------------------------------------------------------------------------------#
       h4("Exercise"),
-      p("Consider an item  following  the generalized  partial  credit  model  rated  \\(0-1-2\\),
-          with  a discrimination \\(a = 1\\)  and threshold parameters \\(b_{1} = \u2212 1\\) and \\(b_{2} = 1\\)."),
+      p(
+        "Consider an item  following  the generalized  partial  credit  model  rated  \\(0-1-2\\),
+          with  a discrimination \\(a = 1\\)  and threshold parameters \\(b_{1} = \u2212 1\\) and \\(b_{2} = 1\\)."
+      ),
       tags$ul(
         tags$li(
           "For what ability levels do the category probability curves cross?",
@@ -558,7 +770,8 @@ uiPolyTraining <- tabPanel(
               value = 0
             ),
             htmlOutput("irt_training_gpcm_2_3_answer")
-          ), ""
+          ),
+          ""
         ),
         tags$li(
           "Change the discrimination to \\(a = 2\\).  Do the category probability curves cross at the same ability
@@ -572,7 +785,8 @@ uiPolyTraining <- tabPanel(
               inline = TRUE
             ),
             uiOutput("irt_training_gpcm_3_answer")
-          ), ""
+          ),
+          ""
         ),
         tags$li(
           "What is the new expected item score for these ability levels? ",
@@ -611,16 +825,19 @@ uiPolyTraining <- tabPanel(
             htmlOutput("irt_training_gpcm_answer"),
             actionButton(
               inputId = "irt_training_gpcm_1_submit",
-              label = "Submit answers", width = "80%"
+              label = "Submit answers",
+              width = "80%"
             )
-          ), ""
+          ),
+          ""
         )
       ),
       h4("Selected R code"),
       code(includeText("sc/irt/train_poly_gpcm.R"))
     ),
     # *** Nominal response model ####
-    tabPanel("Nominal response model",
+    tabPanel(
+      "Nominal response model",
       value = "polytom_nrm",
       h3("Nominal response model"),
       p(
@@ -629,7 +846,8 @@ uiPolyTraining <- tabPanel(
         "the 2PL IRT model. This model is sometimes called the",
         "baseline-category logit  model, because it sets linear form to the log",
         "odds of selecting a given category to the baseline category.  The",
-        "baseline is often chosen arbitrarily (as in the case of ", code("mirt"),
+        "baseline is often chosen arbitrarily (as in the case of ",
+        code("mirt"),
         "package), but we may benefit from  constraining the model in the way",
         "that the correct response category is set as a baseline.",
         "Here we present 6 parametrizations:",
@@ -650,11 +868,21 @@ uiPolyTraining <- tabPanel(
             "respectively (where \\(K\\) is the number of categories);",
             "to generalize for multidimensional models, Thissen et al. \"factor out\" so-called overall slope \\(a^*\\)"
           ),
-          tags$li(strong("Thissen et al. IRT"), "which is a mere IRT reparametrization of Thissen's model (first threshold parameter is here constrained to zero)"),
-          tags$li(strong("Bock's"), "original model constrained in the way that both slope and intercept parameters have a sum of zero"),
-          tags$li(strong("Bock IRT"), "which is IRT reparametrization of Bock's model")
+          tags$li(
+            strong("Thissen et al. IRT"),
+            "which is a mere IRT reparametrization of Thissen's model (first threshold parameter is here constrained to zero)"
+          ),
+          tags$li(
+            strong("Bock's"),
+            "original model constrained in the way that both slope and intercept parameters have a sum of zero"
+          ),
+          tags$li(
+            strong("Bock IRT"),
+            "which is IRT reparametrization of Bock's model"
+          )
         )
-      ), br(),
+      ),
+      br(),
       h4("Parameters"),
       p(
         "Select the number of distractors, their threshold parameters \\(b_k\\), and discrimination parameters
@@ -685,7 +913,10 @@ uiPolyTraining <- tabPanel(
       ),
       fluidRow(
         style = "display: flex; flex-wrap: wrap;",
-        div(style = "margin-right: 20px", tableOutput("irt_training_nrm_irt_parameters")),
+        div(
+          style = "margin-right: 20px",
+          tableOutput("irt_training_nrm_irt_parameters")
+        ),
         div(tableOutput("irt_training_nrm_int_slope_parameters"))
       ),
       h4("Plot"),

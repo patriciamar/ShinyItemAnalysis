@@ -17,7 +17,8 @@ DIF_matching_presence <- reactive({
 # ** Matching variable selection ####
 # total scores or uploaded DIF matching variable
 DIF_total_matching <- reactive({
-  switch(input$DIF_total_matching,
+  switch(
+    input$DIF_total_matching,
     "score" = total_score(),
     # "zscore" = scale(apply(as.data.frame(total_score()), 1, sum)),
     "uploaded" = unlist(DIFmatching())
@@ -29,16 +30,17 @@ DIF_total_matching <- reactive({
 # one reactive output cannot be displayed more than once for some reason
 output$DIF_total_matching_title1 <-
   output$DIF_total_matching_title2 <-
-  output$DIF_total_matching_title3 <-
-  output$DIF_total_matching_title4 <-
-  output$DIF_total_matching_title5 <-
-  output$DIF_total_matching_title6 <-
-  renderText({
-    ifelse(input$DIF_total_matching == "uploaded",
-      "uploaded variable",
-      "total scores"
-    )
-  })
+    output$DIF_total_matching_title3 <-
+      output$DIF_total_matching_title4 <-
+        output$DIF_total_matching_title5 <-
+          output$DIF_total_matching_title6 <-
+            renderText({
+              ifelse(
+                input$DIF_total_matching == "uploaded",
+                "uploaded variable",
+                "total scores"
+              )
+            })
 
 # ** Updating options for DIF matching variable ####
 observe({
@@ -118,7 +120,11 @@ output$DIF_total_matching_tooltip_kurtosis <- renderUI({
 DIF_total_score_with_group <- reactive({
   tibble(
     total_matching = DIF_total_matching(),
-    Group = factor(group(), levels = c(0, 1), labels = c("Reference (0)", "Focal (1)"))
+    Group = factor(
+      group(),
+      levels = c(0, 1),
+      labels = c("Reference (0)", "Focal (1)")
+    )
   )
 })
 
@@ -158,7 +164,8 @@ output$DIF_total_table <- renderTable(
 
 # ** Histogram of total scores ####
 DIF_total_histogram <- reactive({
-  xlab <- switch(input$DIF_total_matching,
+  xlab <- switch(
+    input$DIF_total_matching,
     "score" = "Total score",
     "uploaded" = "Observed score"
   )
@@ -170,14 +177,21 @@ DIF_total_histogram <- reactive({
     # text aes to be picked by ggplotly and used as a tooltip
     geom_histogram(
       aes(
-        text =
-          paste0(
-            "Count: ", after_stat(count), "\n",
-            xlab, ": ", x, "\n",
-            "Group: ", fill
-          )
+        text = paste0(
+          "Count: ",
+          after_stat(count),
+          "\n",
+          xlab,
+          ": ",
+          x,
+          "\n",
+          "Group: ",
+          fill
+        )
       ),
-      binwidth = 1, position = "dodge2", alpha = 0.75
+      binwidth = 1,
+      position = "dodge2",
+      alpha = 0.75
     ) +
     xlab(xlab) +
     ylab("Number of respondents") +
@@ -204,7 +218,8 @@ output$DIF_total_histogram_download <- downloadHandler(
     "fig_HistogramGroups.png"
   },
   content = function(file) {
-    ggsave(file,
+    ggsave(
+      file,
       plot = DIF_total_histogram() +
         theme(
           text = element_text(size = setting_figures$text_size),
@@ -212,7 +227,8 @@ output$DIF_total_histogram_download <- downloadHandler(
           legend.position.inside = c(0.15, 0.85)
         ),
       device = "png",
-      height = setting_figures$height, width = setting_figures$width,
+      height = setting_figures$height,
+      width = setting_figures$width,
       dpi = setting_figures$dpi
     )
   }
@@ -224,8 +240,14 @@ DIF_total_ttest <- reactive({
   sc1 <- DIF_total_matching()[group() == 1]
 
   validate(
-    need(length(na.omit(sc0)) > 1L, "Not enough complete observations in the reference group."),
-    need(length(na.omit(sc1)) > 1L, "Not enough complete observations in the focal group."),
+    need(
+      length(na.omit(sc0)) > 1L,
+      "Not enough complete observations in the reference group."
+    ),
+    need(
+      length(na.omit(sc1)) > 1L,
+      "Not enough complete observations in the focal group."
+    ),
     errorClass = "validation-error"
   )
 
@@ -233,9 +255,12 @@ DIF_total_ttest <- reactive({
 
   tab <- c(
     paste0(
-      sprintf("%.2f", mean(sc0, na.rm = TRUE) - mean(sc1, na.rm = TRUE)), " (",
-      sprintf("%.2f", ttest$conf.int[1]), ", ",
-      sprintf("%.2f", ttest$conf.int[2]), ")"
+      sprintf("%.2f", mean(sc0, na.rm = TRUE) - mean(sc1, na.rm = TRUE)),
+      " (",
+      sprintf("%.2f", ttest$conf.int[1]),
+      ", ",
+      sprintf("%.2f", ttest$conf.int[2]),
+      ")"
     ),
     sprintf("%.2f", ttest$statistic),
     sprintf("%.2f", ttest$parameter),
@@ -260,8 +285,10 @@ output$DIF_total_ttest <- renderTable({
 # ** Delta plot calculations ####
 DIF_DP <- reactive({
   data <- data.frame(binary(), group = group())
-  switch(input$DIF_DP_threshold,
-    "Fixed" = deltaPlot(data,
+  switch(
+    input$DIF_DP_threshold,
+    "Fixed" = deltaPlot(
+      data,
       group = "group",
       focal.name = 1,
       thr = 1.5,
@@ -269,7 +296,8 @@ DIF_DP <- reactive({
       # purType = input$DIF_DP_purification_type
       # (only 1IPP is used, so no need to pass this arg)
     ),
-    "Normal" = deltaPlot(data,
+    "Normal" = deltaPlot(
+      data,
       group = "group",
       focal.name = 1,
       thr = "norm",
@@ -306,7 +334,8 @@ DIF_DP_plot <- reactive({
     geom_point() +
     geom_text(hjust = 0, nudge_x = 0.05, size = 6) +
     geom_abline(
-      intercept = par[1], slope = par[2],
+      intercept = par[1],
+      slope = par[2],
       linewidth = 1
     ) +
     geom_abline(
@@ -327,16 +356,25 @@ DIF_DP_plot <- reactive({
       x = "Reference group",
       y = "Focal group"
     ) +
-    xlim(min(dp$Deltas, na.rm = TRUE) - 0.5, max(dp$Deltas, na.rm = TRUE) + 0.5) +
-    ylim(min(dp$Deltas, na.rm = TRUE) - 0.5, max(dp$Deltas, na.rm = TRUE) + 0.5) +
+    xlim(
+      min(dp$Deltas, na.rm = TRUE) - 0.5,
+      max(dp$Deltas, na.rm = TRUE) + 0.5
+    ) +
+    ylim(
+      min(dp$Deltas, na.rm = TRUE) - 0.5,
+      max(dp$Deltas, na.rm = TRUE) + 0.5
+    ) +
     theme_app()
   if (is.numeric(dp$DIFitems)) {
     df2 <- df[dp$DIFitems, ]
-    p <- p + geom_point(
-      data = df2,
-      aes(x = X1, y = X2, label = nam),
-      size = 8, color = "black", shape = 1
-    )
+    p <- p +
+      geom_point(
+        data = df2,
+        aes(x = X1, y = X2, label = nam),
+        size = 8,
+        color = "black",
+        shape = 1
+      )
   }
   p <- p + ggtitle("Delta plot")
   p
@@ -350,8 +388,16 @@ output$DIF_DP_plot <- renderPlotly({
   p$x$data[[1]]$text <- gsub("X1", "Delta - reference", p$x$data[[1]]$text)
   p$x$data[[1]]$text <- gsub("X2", "Delta - focal", p$x$data[[1]]$text)
   p$x$data[[1]]$text <- gsub("nam:", "Item:", p$x$data[[1]]$text)
-  p$x$data[[2]]$hovertext <- gsub("X1", "Delta - reference", p$x$data[[2]]$hovertext)
-  p$x$data[[2]]$hovertext <- gsub("X2", "Delta - focal", p$x$data[[2]]$hovertext)
+  p$x$data[[2]]$hovertext <- gsub(
+    "X1",
+    "Delta - reference",
+    p$x$data[[2]]$hovertext
+  )
+  p$x$data[[2]]$hovertext <- gsub(
+    "X2",
+    "Delta - focal",
+    p$x$data[[2]]$hovertext
+  )
   p$x$data[[2]]$hovertext <- gsub("nam:", "Item:", p$x$data[[2]]$hovertext)
 
   for (i in 3:5) {
@@ -369,11 +415,13 @@ output$DIF_DP_plot_download <- downloadHandler(
     "fig_DIF_DP.png"
   },
   content = function(file) {
-    ggsave(file,
+    ggsave(
+      file,
       plot = DIF_DP_plot() +
         theme(text = element_text(size = setting_figures$text_size)),
       device = "png",
-      height = setting_figures$height, width = setting_figures$width,
+      height = setting_figures$height,
+      width = setting_figures$width,
       dpi = setting_figures$dpi
     )
   }
@@ -383,21 +431,38 @@ output$DIF_DP_plot_download <- downloadHandler(
 # output table for the LAST iteration
 DIF_DP_table <- reactive({
   res <- DIF_DP()
-  ncR <- formatC(colSums(!is.na(binary()[group() == 0])), digits = 0, format = "f")
-  ncF <- formatC(colSums(!is.na(binary()[group() == 1])), digits = 0, format = "f")
+  ncR <- formatC(
+    colSums(!is.na(binary()[group() == 0])),
+    digits = 0,
+    format = "f"
+  )
+  ncF <- formatC(
+    colSums(!is.na(binary()[group() == 1])),
+    digits = 0,
+    format = "f"
+  )
   # from print.deltaPlot:
-  tab <- data.frame(ncR, ncF, round(cbind(res$Props, res$Deltas, res$Dist[, ncol(res$Dist)]), 4))
-  symb <- symnum(abs(as.numeric(res$Dist[, ncol(res$Dist)])),
+  tab <- data.frame(
+    ncR,
+    ncF,
+    round(cbind(res$Props, res$Deltas, res$Dist[, ncol(res$Dist)]), 4)
+  )
+  symb <- symnum(
+    abs(as.numeric(res$Dist[, ncol(res$Dist)])),
     c(0, abs(res$thr[length(res$thr)]), Inf),
     symbols = c("", "***")
   )
   tab$symb <- symb
 
   colnames(tab) <- c(
-    "\\(\\mathit{n_{c, ref}}\\)", "\\(\\mathit{n_{c, foc}}\\)",
-    "Prop. correct \\(\\mathit{_{ref}}\\)", "Prop. correct \\(\\mathit{_{foc}}\\)",
-    "\\(\\mathit{\\Delta_{ref}}\\)", "\\(\\mathit{\\Delta_{foc}}\\)",
-    "Distance", ""
+    "\\(\\mathit{n_{c, ref}}\\)",
+    "\\(\\mathit{n_{c, foc}}\\)",
+    "Prop. correct \\(\\mathit{_{ref}}\\)",
+    "Prop. correct \\(\\mathit{_{foc}}\\)",
+    "\\(\\mathit{\\Delta_{ref}}\\)",
+    "\\(\\mathit{\\Delta_{foc}}\\)",
+    "Distance",
+    ""
   )
   rownames(tab) <- item_names()
   tab
@@ -419,7 +484,8 @@ output$DIF_DP_table_download <- downloadHandler(
   content = function(file) {
     data <- DIF_DP_table()
     colnames(data) <- c(
-      "n  (Ref.)", "n  (Foc.)",
+      "n  (Ref.)",
+      "n  (Foc.)",
       "Ref. prop. correct",
       "Foc. prop. correct",
       "Delta (Ref.)",
@@ -429,14 +495,18 @@ output$DIF_DP_table_download <- downloadHandler(
     )
 
     write.csv(data, file)
-    write(paste(
-      "Note:",
-      DIF_DP_table_note()$puri,
-      DIF_DP_table_note()$axes,
-      DIF_DP_table_note()$thr,
-      "Items detected as DIF are flagged with '***'",
-      sep = "\n"
-    ), file, append = TRUE)
+    write(
+      paste(
+        "Note:",
+        DIF_DP_table_note()$puri,
+        DIF_DP_table_note()$axes,
+        DIF_DP_table_note()$thr,
+        "Items detected as DIF are flagged with '***'",
+        sep = "\n"
+      ),
+      file,
+      append = TRUE
+    )
   }
 )
 
@@ -458,8 +528,16 @@ DIF_DP_table_note <- reactive({
     b <- axis[last, 2]
   }
 
-  res$axes <- paste0("Parameters of the major axis (last iteration): a = ", a, ", b = ", b)
-  res$puri <- paste("Item purification:", ifelse("purType" %in% names(model), model$purType, "unutilized"))
+  res$axes <- paste0(
+    "Parameters of the major axis (last iteration): a = ",
+    a,
+    ", b = ",
+    b
+  )
+  res$puri <- paste(
+    "Item purification:",
+    ifelse("purType" %in% names(model), model$purType, "unutilized")
+  )
 
   res$thr <-
     paste0(
@@ -490,7 +568,10 @@ output$DIF_DP_dif_items <- renderPrint({
   if (DIFitems[1] == "no DIF item detected") {
     txt <- "No item was detected as DIF."
   } else {
-    txt <- paste0("Items detected as DIF items: ", paste(item_names()[DIFitems], collapse = ", "))
+    txt <- paste0(
+      "Items detected as DIF items: ",
+      paste(item_names()[DIFitems], collapse = ", ")
+    )
   }
   HTML(txt)
 })
@@ -499,13 +580,18 @@ output$DIF_DP_dif_items <- renderPrint({
 output$DIF_DP_purification_info <- renderPrint({
   model <- DIF_DP()
   if (input$DIF_DP_purification & !is.null(DIF_DP()$difPur)) {
-    cat("The table below describes the purification process. The rows correspond to the purification iteration and the columns
+    cat(
+      "The table below describes the purification process. The rows correspond to the purification iteration and the columns
         correspond to items. Value of '1' in the i-th row means that an item was detected as DIF in (i-1)-th step, while the
         value of '0' means that the item was not detected as DIF. The first row corresponds to the initial classification of the items when all items
-        were used for calculation of the DIF matching criterion. ")
+        were used for calculation of the DIF matching criterion. "
+    )
     nrIter <- model$nrIter - 1
     cat(
-      "In this case, the convergence was", ifelse(model$convergence, "reached", "NOT reached even"), "after", nrIter,
+      "In this case, the convergence was",
+      ifelse(model$convergence, "reached", "NOT reached even"),
+      "after",
+      nrIter,
       ifelse(nrIter == 1, "iteration.", "iterations.")
     )
   } else if (input$DIF_DP_purification & is.null(DIF_DP()$difPur)) {
@@ -563,15 +649,18 @@ report_DIF_DP <- reactive({
     purType_report <- input$DIF_DP_purification_type_report
   }
 
-  switch(DIF_DP_threshold_report,
-    "Fixed" = deltaPlot(data,
+  switch(
+    DIF_DP_threshold_report,
+    "Fixed" = deltaPlot(
+      data,
       group = "group",
       focal.name = 1,
       thr = 1.5,
       purify = purify_report
       # purType = purType_report
     ),
-    "Normal" = deltaPlot(data,
+    "Normal" = deltaPlot(
+      data,
       group = "group",
       focal.name = 1,
       thr = "norm",
@@ -605,7 +694,8 @@ report_DIF_DP_plot <- reactive({
     geom_point() +
     geom_text(hjust = 0, nudge_x = 0.05) +
     geom_abline(
-      intercept = par[1], slope = par[2],
+      intercept = par[1],
+      slope = par[2],
       linewidth = 1
     ) +
     geom_abline(
@@ -626,17 +716,26 @@ report_DIF_DP_plot <- reactive({
       x = "Reference group",
       y = "Focal group"
     ) +
-    xlim(min(dp$Deltas, na.rm = TRUE) - 0.5, max(dp$Deltas, na.rm = TRUE) + 0.5) +
-    ylim(min(dp$Deltas, na.rm = TRUE) - 0.5, max(dp$Deltas, na.rm = TRUE) + 0.5) +
+    xlim(
+      min(dp$Deltas, na.rm = TRUE) - 0.5,
+      max(dp$Deltas, na.rm = TRUE) + 0.5
+    ) +
+    ylim(
+      min(dp$Deltas, na.rm = TRUE) - 0.5,
+      max(dp$Deltas, na.rm = TRUE) + 0.5
+    ) +
     theme_app()
 
   if (is.numeric(dp$DIFitems)) {
     df2 <- df[dp$DIFitems, ]
-    p <- p + geom_point(
-      data = df2,
-      aes(x = X1, y = X2, label = nam),
-      size = 6, color = "black", shape = 1
-    )
+    p <- p +
+      geom_point(
+        data = df2,
+        aes(x = X1, y = X2, label = nam),
+        size = 6,
+        color = "black",
+        shape = 1
+      )
   }
   p <- p + ggtitle("Delta plot")
   p
@@ -652,11 +751,11 @@ report_DIF_DP_plot <- reactive({
 
 # ** Enabling/disabling options for combination of purification and correction ####
 DIF_MH_combination_enable <- reactive(
-  (input$DIF_MH_summary_purification & input$DIF_MH_summary_correction != "none")
+  (input$DIF_MH_summary_purification &
+    input$DIF_MH_summary_correction != "none")
 )
 
 observeEvent(DIF_MH_combination_enable(), {
-
   options <- if (DIF_MH_combination_enable()) {
     c("simple" = "simple", "iterative" = "iterative")
   } else {
@@ -699,9 +798,12 @@ DIF_MH_model <- reactive({
   data <- data.frame(binary())
 
   fit <- ShinyItemAnalysis:::.difMH_edited(
-    Data = data, group = group, focal.name = 1,
+    Data = data,
+    group = group,
+    focal.name = 1,
     p.adjust.method = input$DIF_MH_summary_correction,
-    purify = input$DIF_MH_summary_purification, puriadjType = input$DIF_MH_summary_combination
+    purify = input$DIF_MH_summary_purification,
+    puriadjType = input$DIF_MH_summary_combination
   )
   fit
 })
@@ -715,7 +817,10 @@ output$DIF_MH_dif_items <- renderPrint({
   if (DIFitems[1] == "No DIF item detected") {
     txt <- "No item was detected as DIF."
   } else {
-    txt <- paste0("Items detected as DIF items: ", paste(item_names()[DIFitems], collapse = ", "))
+    txt <- paste0(
+      "Items detected as DIF items: ",
+      paste(item_names()[DIFitems], collapse = ", ")
+    )
   }
   HTML(txt)
 })
@@ -732,7 +837,8 @@ DIF_MH_summary_table <- reactive({
   } else {
     round(res$adjusted.p, 2)
   }
-  symb <- symnum(pval,
+  symb <- symnum(
+    pval,
     c(0, 0.001, 0.01, 0.05, 0.1, 1),
     symbols = c("***", "**", "*", ".", "")
   )
@@ -786,24 +892,42 @@ output$DIF_MH_summary_table_download <- downloadHandler(
     data <- data[, -4]
 
     if ("adj. \\(\\mathit{p}\\)-value" %in% colnames(data)) {
-      colnames(data) <- c("MH (X^2)", "adj. p-value", "sig. symb.", "MH alpha", "MH delta", "eff. size")
+      colnames(data) <- c(
+        "MH (X^2)",
+        "adj. p-value",
+        "sig. symb.",
+        "MH alpha",
+        "MH delta",
+        "eff. size"
+      )
     } else {
-      colnames(data) <- c("MH (X^2)", "p-value", "sig. symb.", "MH alpha", "MH delta", "eff. size")
+      colnames(data) <- c(
+        "MH (X^2)",
+        "p-value",
+        "sig. symb.",
+        "MH alpha",
+        "MH delta",
+        "eff. size"
+      )
     }
 
     write.csv(data, file)
-    write(paste(
-      "Note:",
-      DIF_MH_summary_table_note()$p_adj,
-      DIF_MH_summary_table_note()$puri,
-      DIF_MH_summary_table_note()$combination,
-      DIF_MH_summary_table_note()$thr_rounded,
-      "Signif. codes: 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1",
-      "DIF effect sizes (ETS Delta scale):
+    write(
+      paste(
+        "Note:",
+        DIF_MH_summary_table_note()$p_adj,
+        DIF_MH_summary_table_note()$puri,
+        DIF_MH_summary_table_note()$combination,
+        DIF_MH_summary_table_note()$thr_rounded,
+        "Signif. codes: 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1",
+        "DIF effect sizes (ETS Delta scale):
       A = negligible effect; B = moderate effect; C = large effect",
-      "Effect size codes (for absolute values of 'MH delta'): 0 'A' 1.0 'B' 1.5 'C'",
-      sep = "\n"
-    ), file, append = TRUE)
+        "Effect size codes (for absolute values of 'MH delta'): 0 'A' 1.0 'B' 1.5 'C'",
+        sep = "\n"
+      ),
+      file,
+      append = TRUE
+    )
   }
 )
 
@@ -814,19 +938,32 @@ DIF_MH_summary_table_note <- reactive({
   model <- DIF_MH_model()
   thr <- DIF_MH_model()$thr
 
-  res$p_adj <- paste("P-value correction method:", switch(model$p.adjust.method,
-    "BH" = "Benjamini-Hochberg",
-    "BY" = "Benjamini-Yekutieli",
-    "bonferroni" = "Bonferroni",
-    "holm" = "Holm",
-    "hochberg" = "Hochberg",
-    "hommel" = "Hommel",
-    "none" = "none"
-  ))
-  res$puri <- paste("Item purification:", ifelse(model$purification, "used", "unutilized"))
-  res$combination <- ifelse(model$purification & model$p.adjust.method != "none",
-                            paste("Item purification and p-value correction used in", input$DIF_MH_summary_combination, "combination"),
-                            "")
+  res$p_adj <- paste(
+    "P-value correction method:",
+    switch(
+      model$p.adjust.method,
+      "BH" = "Benjamini-Hochberg",
+      "BY" = "Benjamini-Yekutieli",
+      "bonferroni" = "Bonferroni",
+      "holm" = "Holm",
+      "hochberg" = "Hochberg",
+      "hommel" = "Hommel",
+      "none" = "none"
+    )
+  )
+  res$puri <- paste(
+    "Item purification:",
+    ifelse(model$purification, "used", "unutilized")
+  )
+  res$combination <- ifelse(
+    model$purification & model$p.adjust.method != "none",
+    paste(
+      "Item purification and p-value correction used in",
+      input$DIF_MH_summary_combination,
+      "combination"
+    ),
+    ""
+  )
   res$thr_rounded <- paste("Detection threshold:", round(thr[length(thr)], 3))
 
   res
@@ -853,16 +990,23 @@ output$DIF_MH_summary_table_note <- renderUI({
 output$DIF_MH_summary_purification_info <- renderPrint({
   model <- DIF_MH_model()
   if (input$DIF_MH_summary_purification & !is.null(DIF_MH_model()$difPur)) {
-    cat("The table below describes the purification process. The rows correspond to the purification iteration and the
+    cat(
+      "The table below describes the purification process. The rows correspond to the purification iteration and the
         columns correspond to items. Value of '1' in the i-th row means that an item was detected as DIF in (i-1)-th step,
         while the value of '0' means that the item was not detected as DIF. The first row corresponds to the initial
-        classification of the items when all items were used for calculation of the DIF matching criterion. ")
+        classification of the items when all items were used for calculation of the DIF matching criterion. "
+    )
     nrIter <- model$nrPur
     cat(
-      "In this case, the convergence was", ifelse(model$convergence, "reached", "NOT reached even"), "after", nrIter,
+      "In this case, the convergence was",
+      ifelse(model$convergence, "reached", "NOT reached even"),
+      "after",
+      nrIter,
       ifelse(nrIter == 1, "iteration.", "iterations.")
     )
-  } else if (input$DIF_MH_summary_purification & is.null(DIF_MH_model()$difPur)) {
+  } else if (
+    input$DIF_MH_summary_purification & is.null(DIF_MH_model()$difPur)
+  ) {
     cat("No DIF items were detected whatsoever, nothing to show.")
   } else {
     cat("Item purification was not requested, nothing to show.")
@@ -951,58 +1095,102 @@ output$DIF_MH_items_interpretation <- renderUI({
 
   alphaMH <- round(DIF_MH_model()$alphaMH[item], 2)
   deltaMH <- -2.35 * log(alphaMH)
-  effect_size <- symnum(abs(deltaMH), cutpoints = c(0, 1, 1.5, Inf), symbols = LETTERS[1:3])
+  effect_size <- symnum(
+    abs(deltaMH),
+    cutpoints = c(0, 1, 1.5, Inf),
+    symbols = LETTERS[1:3]
+  )
 
   validate(
     need(((b * c > 0) & (a * d > 0)), "Odds ratio cannot be calculated!"),
-    need((a > 0 & b > 0), "Not enough complete observations in the reference group."),
-    need((c > 0 & d > 0), "Not enough complete observations in the focal group."),
+    need(
+      (a > 0 & b > 0),
+      "Not enough complete observations in the reference group."
+    ),
+    need(
+      (c > 0 & d > 0),
+      "Not enough complete observations in the focal group."
+    ),
     errorClass = "validation-error"
   )
 
   txt <- paste0(
-    "For a respondent who reached the total score of ", score,
-    ", the odds of answering item ", item_numbers()[item],
+    "For a respondent who reached the total score of ",
+    score,
+    ", the odds of answering item ",
+    item_numbers()[item],
     " correctly is ",
-    ifelse(OR == 1, " the same for both groups. ",
-      ifelse(OR > 1,
-        paste0(OR, " times higher in the reference group than in the focal group."),
-        paste0(OR, " times lower in the reference group than in the focal group.")
+    ifelse(
+      OR == 1,
+      " the same for both groups. ",
+      ifelse(
+        OR > 1,
+        paste0(
+          OR,
+          " times higher in the reference group than in the focal group."
+        ),
+        paste0(
+          OR,
+          " times lower in the reference group than in the focal group."
+        )
       )
     )
   )
 
   txtMH <- paste0(
     "The Mantel-Haenszel estimate of the odds ratio accounting for all levels of the total score is equal to ",
-    alphaMH, ". The odds of answering item ", item_numbers()[item],
+    alphaMH,
+    ". The odds of answering item ",
+    item_numbers()[item],
     " correctly is ",
-    ifelse(alphaMH == 1, " the same for both groups. ",
-      ifelse(alphaMH > 1,
-        paste0(alphaMH, " times higher in the reference group than in the focal group."),
-        paste0(alphaMH, " times lower in the reference group than in the focal group.")
+    ifelse(
+      alphaMH == 1,
+      " the same for both groups. ",
+      ifelse(
+        alphaMH > 1,
+        paste0(
+          alphaMH,
+          " times higher in the reference group than in the focal group."
+        ),
+        paste0(
+          alphaMH,
+          " times lower in the reference group than in the focal group."
+        )
       )
     )
   )
   txtDelta <- paste0(
-    "Mantel-Haenszel D-DIF index is equal to ", round(deltaMH, 2), ". This indicates category ", effect_size,
+    "Mantel-Haenszel D-DIF index is equal to ",
+    round(deltaMH, 2),
+    ". This indicates category ",
+    effect_size,
     " DIF effect size - ",
-    switch(effect_size,
-      "A" = "negligible",
-      "B" = "moderate",
-      "C" = "large"
-    ), "."
+    switch(effect_size, "A" = "negligible", "B" = "moderate", "C" = "large"),
+    "."
   )
   HTML(paste(
     sprintf(
-      paste("$$\\mathrm{OR} = \\frac{%d \\cdot %d}{%d \\cdot %d} = %.2f$$", txt),
-      a, d, b, c, OR
-    ), "<br/><br/>",
+      paste(
+        "$$\\mathrm{OR} = \\frac{%d \\cdot %d}{%d \\cdot %d} = %.2f$$",
+        txt
+      ),
+      a,
+      d,
+      b,
+      c,
+      OR
+    ),
+    "<br/><br/>",
     sprintf(
       paste("$$\\alpha_{\\mathrm{MH}} = %.2f$$", txtMH),
       alphaMH
-    ), "<br/><br/>",
+    ),
+    "<br/><br/>",
     sprintf(
-      paste("$$\\Delta_{\\mathrm{MH}} = -2.35 \\cdot \\log(\\alpha_{\\mathrm{MH}}) = %.2f$$", txtDelta),
+      paste(
+        "$$\\Delta_{\\mathrm{MH}} = -2.35 \\cdot \\log(\\alpha_{\\mathrm{MH}}) = %.2f$$",
+        txtDelta
+      ),
       deltaMH
     )
   ))
@@ -1023,7 +1211,9 @@ report_DIF_MH_model <- reactive({
     purify_report <- input$report_DIF_MH_purification
 
     fit <- ShinyItemAnalysis:::.difMH_edited(
-      Data = data, group = group, focal.name = 1,
+      Data = data,
+      group = group,
+      focal.name = 1,
       p.adjust.method = p.adjust.method_report,
       purify = purify_report
     )
@@ -1044,7 +1234,6 @@ DIF_SIBTEST_combination_enable <- reactive(
 )
 
 observeEvent(DIF_SIBTEST_combination_enable(), {
-
   options <- if (DIF_SIBTEST_combination_enable()) {
     c("simple" = "simple", "iterative" = "iterative")
   } else {
@@ -1088,7 +1277,9 @@ DIF_SIBTEST_model <- reactive({
   )
 
   fit <- ShinyItemAnalysis:::.difSIBTEST_edited(
-    Data = data, group = group, focal.name = 1,
+    Data = data,
+    group = group,
+    focal.name = 1,
     type = input$DIF_SIBTEST_type,
     purify = input$DIF_SIBTEST_purification,
     p.adjust.method = input$DIF_SIBTEST_correction,
@@ -1112,7 +1303,10 @@ output$DIF_SIBTEST_dif_items <- renderPrint({
   if (DIFitems[1] == "No DIF item detected") {
     txt <- "No item was detected as DIF."
   } else {
-    txt <- paste0("Items detected as DIF items: ", paste(item_names()[DIFitems], collapse = ", "))
+    txt <- paste0(
+      "Items detected as DIF items: ",
+      paste(item_names()[DIFitems], collapse = ", ")
+    )
   }
   HTML(txt)
 })
@@ -1128,7 +1322,8 @@ DIF_SIBTEST_table <- reactive({
     res$adjusted.p
   }
 
-  pval_symb <- symnum(pval,
+  pval_symb <- symnum(
+    pval,
     c(0, 0.001, 0.01, 0.05, 0.1, 1),
     symbols = c("***", "**", "*", ".", "")
   )
@@ -1173,26 +1368,39 @@ DIF_SIBTEST_table_note <- reactive({
 
   model <- DIF_SIBTEST_model()
 
-  res$type <- paste0("Tested DIF type: ", switch(model$type,
-    "udif" = "uniform",
-    "nudif" = "non-uniform"
-  ))
+  res$type <- paste0(
+    "Tested DIF type: ",
+    switch(model$type, "udif" = "uniform", "nudif" = "non-uniform")
+  )
 
   res$p_adj <-
-    paste("P-value correction method:", switch(model$p.adjust.method,
-      bonferroni = "Bonferroni",
-      holm = "Holm",
-      hochberg = "Hochberg",
-      hommel = "Hommel",
-      BH = "Benjamini-Hochberg",
-      BY = "Benjamini-Yekutieli",
-      none = "none"
-    ))
+    paste(
+      "P-value correction method:",
+      switch(
+        model$p.adjust.method,
+        bonferroni = "Bonferroni",
+        holm = "Holm",
+        hochberg = "Hochberg",
+        hommel = "Hommel",
+        BH = "Benjamini-Hochberg",
+        BY = "Benjamini-Yekutieli",
+        none = "none"
+      )
+    )
 
-  res$puri <- paste("Item purification:", ifelse(model$purification, "used", "unutilized"))
-  res$combination <- ifelse(model$purification & model$p.adjust.method != "none",
-                            paste("Item purification and p-value correction used in", input$DIF_SIBTEST_combination, "combination"),
-                            "")
+  res$puri <- paste(
+    "Item purification:",
+    ifelse(model$purification, "used", "unutilized")
+  )
+  res$combination <- ifelse(
+    model$purification & model$p.adjust.method != "none",
+    paste(
+      "Item purification and p-value correction used in",
+      input$DIF_SIBTEST_combination,
+      "combination"
+    ),
+    ""
+  )
 
   thr <- qchisq(1 - model$alpha, model$df[1])
   res$thr <-
@@ -1246,16 +1454,20 @@ output$DIF_SIBTEST_table_download <- downloadHandler(
     rownames(data) <- item_names()
 
     write.csv(data, file)
-    write(paste(
-      "Notes:",
-      DIF_SIBTEST_table_note()$type,
-      DIF_SIBTEST_table_note()$p_adj,
-      DIF_SIBTEST_table_note()$puri,
-      DIF_SIBTEST_table_note()$combination,
-      DIF_SIBTEST_table_note()$thr,
-      "Signif. codes: 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1",
-      sep = "\n"
-    ), file, append = TRUE)
+    write(
+      paste(
+        "Notes:",
+        DIF_SIBTEST_table_note()$type,
+        DIF_SIBTEST_table_note()$p_adj,
+        DIF_SIBTEST_table_note()$puri,
+        DIF_SIBTEST_table_note()$combination,
+        DIF_SIBTEST_table_note()$thr,
+        "Signif. codes: 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1",
+        sep = "\n"
+      ),
+      file,
+      append = TRUE
+    )
   }
 )
 
@@ -1263,13 +1475,18 @@ output$DIF_SIBTEST_table_download <- downloadHandler(
 output$DIF_SIBTEST_purification_info <- renderPrint({
   model <- DIF_SIBTEST_model()
   if (input$DIF_SIBTEST_purification & !is.null(model$difPur)) {
-    cat("The table below describes the purification process. The rows correspond to the purification iteration and the
+    cat(
+      "The table below describes the purification process. The rows correspond to the purification iteration and the
         columns correspond to items. Value of '1' in the i-th row means that an item was detected as DIF in (i-1)-th step,
         while the value of '0' means that the item was not detected as DIF. The first row corresponds to the initial
-        classification of the items when all items were used for the calculation of the DIF matching criterion. ")
+        classification of the items when all items were used for the calculation of the DIF matching criterion. "
+    )
     nrIter <- model$nrPur
     cat(
-      "In this case, the convergence was", ifelse(model$convergence, "reached", "NOT reached even"), "after", nrIter,
+      "In this case, the convergence was",
+      ifelse(model$convergence, "reached", "NOT reached even"),
+      "after",
+      nrIter,
       ifelse(nrIter == 1, "iteration.", "iterations.")
     )
   } else if (input$DIF_SIBTEST_purification & is.null(model$difPur)) {
@@ -1316,8 +1533,14 @@ output$DIF_SIBTEST_purification_table_download <- downloadHandler(
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% ####
 # ** UPDATING INPUTS ####
 
-match_logistic <- c("DIF_logistic_summary_matching", "DIF_logistic_items_matching")
-puri_logistic <- c("DIF_logistic_summary_purification", "DIF_logistic_items_purification")
+match_logistic <- c(
+  "DIF_logistic_summary_matching",
+  "DIF_logistic_items_matching"
+)
+puri_logistic <- c(
+  "DIF_logistic_summary_purification",
+  "DIF_logistic_items_purification"
+)
 
 # ** Updating DIF matching & disable purification if DMV present ####
 observe({
@@ -1361,7 +1584,8 @@ mapply(
       }
     })
   },
-  match = match_logistic, puri = puri_logistic
+  match = match_logistic,
+  puri = puri_logistic
 )
 
 DIF_logistic <- reactiveValues(
@@ -1429,14 +1653,18 @@ observeEvent(input$DIF_logistic_items_parametrization, {
   DIF_logistic$parametrization <- input$DIF_logistic_items_parametrization
 })
 observeEvent(DIF_logistic$parametrization, {
-  if (DIF_logistic$parametrization != input$DIF_logistic_summary_parametrization) {
+  if (
+    DIF_logistic$parametrization != input$DIF_logistic_summary_parametrization
+  ) {
     updateCheckboxGroupInput(
       session = session,
       inputId = "DIF_logistic_summary_parametrization",
       selected = DIF_logistic$parametrization
     )
   }
-  if (DIF_logistic$parametrization != input$DIF_logistic_items_parametrization) {
+  if (
+    DIF_logistic$parametrization != input$DIF_logistic_items_parametrization
+  ) {
     updateCheckboxGroupInput(
       session = session,
       inputId = "DIF_logistic_items_parametrization",
@@ -1495,12 +1723,13 @@ observeEvent(DIF_logistic$purification, {
 
 # ** Enabling/disabling options for combination of purification and correction ####
 DIF_logistic_combination_enable <- reactive(
-  (input$DIF_logistic_summary_purification & input$DIF_logistic_summary_correction != "none") |
-    (input$DIF_logistic_items_purification & input$DIF_logistic_items_correction != "none")
+  (input$DIF_logistic_summary_purification &
+    input$DIF_logistic_summary_correction != "none") |
+    (input$DIF_logistic_items_purification &
+      input$DIF_logistic_items_correction != "none")
 )
 
 observeEvent(DIF_logistic_combination_enable(), {
-
   options <- if (DIF_logistic_combination_enable()) {
     c("simple" = "simple", "iterative" = "iterative")
   } else {
@@ -1578,7 +1807,10 @@ DIF_logistic_model <- reactive({
 
   fit <- tryCatch(
     ShinyItemAnalysis:::.difLogistic_edited(
-      Data = data, group = group, match = match, focal.name = 1,
+      Data = data,
+      group = group,
+      match = match,
+      focal.name = 1,
       type = input$DIF_logistic_summary_type,
       p.adjust.method = input$DIF_logistic_summary_correction,
       purify = input$DIF_logistic_summary_purification,
@@ -1591,7 +1823,10 @@ DIF_logistic_model <- reactive({
   validate(
     need(
       class(fit) == "Logistic",
-      paste0("This method cannot be used on this data. Error returned: ", fit$message)
+      paste0(
+        "This method cannot be used on this data. Error returned: ",
+        fit$message
+      )
     ),
     errorClass = "validation-error"
   )
@@ -1627,14 +1862,30 @@ DIF_logistic_summary_equation <- reactive({
   txt2 <- if (input$DIF_logistic_summary_parametrization == "irt") {
     paste0(
       "(a_{i} + a_{i\\text{DIF}} G_p)",
-      "(", txt1, " - b_{i} - b_{i\\text{DIF}} G_p)"
+      "(",
+      txt1,
+      " - b_{i} - b_{i\\text{DIF}} G_p)"
     )
   } else {
-    paste0("\\beta_{i0} + \\beta_{i1} ", txt1, " + \\beta_{i2} G_p + \\beta_{i3} ", txt1, ":G_p")
+    paste0(
+      "\\beta_{i0} + \\beta_{i1} ",
+      txt1,
+      " + \\beta_{i2} G_p + \\beta_{i3} ",
+      txt1,
+      ":G_p"
+    )
   }
   txt3 <- paste0(txt1, ", G_p")
 
-  txt <- paste0("$$\\mathrm{P}(Y_{pi} = 1|", txt3, ") = \\frac{e^{", txt2, "}}{1 + e^{", txt2, "}}$$")
+  txt <- paste0(
+    "$$\\mathrm{P}(Y_{pi} = 1|",
+    txt3,
+    ") = \\frac{e^{",
+    txt2,
+    "}}{1 + e^{",
+    txt2,
+    "}}$$"
+  )
   txt
 })
 
@@ -1654,7 +1905,10 @@ output$DIF_logistic_summary_dif_items <- renderPrint({
   if (DIFitems[1] == "No DIF item detected") {
     txt <- "No item was detected as DIF."
   } else {
-    txt <- paste0("Items detected as DIF items: ", paste(item_names()[DIFitems], collapse = ", "))
+    txt <- paste0(
+      "Items detected as DIF items: ",
+      paste(item_names()[DIFitems], collapse = ", ")
+    )
   }
   HTML(txt)
 })
@@ -1670,19 +1924,21 @@ DIF_logistic_summary_coef <- reactive({
     fit$adjusted.p
   }
 
-  pval_symb <- symnum(pval,
+  pval_symb <- symnum(
+    pval,
     c(0, 0.001, 0.01, 0.05, 0.1, 1),
     symbols = c("***", "**", "*", ".", "")
   )
   blank <- character(length(fit$names))
 
   r2 <- fit$deltaR2
-  zt <- symnum(r2, c(0, 0.13, 0.26, 1),
-    symbols = c("A", "B", "C")
-  )
-  jg <- symnum(r2, c(0, 0.035, 0.07, 1),
-    symbols = c("A", "B", "C")
-  )
+  zt  <- symnum(r2, c(0, 0.13, 0.26, 1), symbols = c("A", "B", "C"))
+  jg  <- symnum(r2, c(0, 0.035, 0.07, 1), symbols = c("A", "B", "C"))
+  chm <- if (input$DIF_logistic_summary_type == "nudif") {
+    symnum(r2, c(0, 0.002, 0.008, 1), symbols = c("A", "B", "C"))
+  } else {
+    symnum(r2, c(0, 0.01, 0.021, 1), symbols = c("A", "B", "C"))
+  }
 
   tab_coef <- fit$logitPar
   list_vcov <- fit$cov.M1
@@ -1695,14 +1951,16 @@ DIF_logistic_summary_coef <- reactive({
       a = tab_coef[, 2],
       b = -tab_coef[, 1] / tab_coef[, 2],
       aDIF = tab_coef[, 4],
-      bDIF = (tab_coef[, 1] * tab_coef[, 4] - tab_coef[, 2] * tab_coef[, 3]) / (tab_coef[, 2] * (tab_coef[, 2] + tab_coef[, 4]))
+      bDIF = (tab_coef[, 1] * tab_coef[, 4] - tab_coef[, 2] * tab_coef[, 3]) /
+        (tab_coef[, 2] * (tab_coef[, 2] + tab_coef[, 4]))
     )
     # SE using delta method
     list_vcov_irt <- lapply(1:nrow(tab_coef), function(i) {
       nams <- names(which(tab_coef[i, ] != 0))
       vcov_tmp <- matrix(
         0,
-        nrow = 4, ncol = 4,
+        nrow = 4,
+        ncol = 4,
         dimnames = list(
           colnames = names(tab_coef[i, ]),
           rownames = names(tab_coef[i, ])
@@ -1718,12 +1976,18 @@ DIF_logistic_summary_coef <- reactive({
     })
     tab_se_irt <- do.call(rbind, list_vcov_irt)
     tab_par <-
-      cbind(tab_coef_irt, tab_se_irt)[, order(c(seq(ncol(tab_coef_irt)), seq(ncol(tab_se_irt))))]
+      cbind(tab_coef_irt, tab_se_irt)[, order(c(
+        seq(ncol(tab_coef_irt)),
+        seq(ncol(tab_se_irt))
+      ))]
     tab_par <- tab_par[, c(1:2, 5:6, 3:4, 7:8)]
   } else {
     tab_se <- fit$logitSe
     tab_par <-
-      cbind(tab_coef, tab_se)[, order(c(seq(ncol(tab_coef)), seq(ncol(tab_se))))]
+      cbind(tab_coef, tab_se)[, order(c(
+        seq(ncol(tab_coef)),
+        seq(ncol(tab_se))
+      ))]
   }
 
   tab <- data.frame(
@@ -1735,11 +1999,14 @@ DIF_logistic_summary_coef <- reactive({
     formatC(r2, format = "f", digits = 3),
     zt,
     jg,
+    chm,
     blank,
     tab_par
   )
 
-  colnames(tab)[9:16] <- if (input$DIF_logistic_summary_parametrization == "irt") {
+  colnames(tab)[10:17] <- if (
+    input$DIF_logistic_summary_parametrization == "irt"
+  ) {
     c(
       "\\(\\mathit{a}\\)",
       "SE(\\(\\mathit{a}\\))",
@@ -1763,15 +2030,20 @@ DIF_logistic_summary_coef <- reactive({
     )
   }
 
-  colnames(tab)[1:8] <-
+  colnames(tab)[1:9] <-
     c(
       "LR (\\(\\mathit{\\chi^2}\\))",
-      ifelse(fit$p.adjust.method == "none", "\\(\\mathit{p}\\)-value", "adj. \\(\\mathit{p}\\)-value"),
+      ifelse(
+        fit$p.adjust.method == "none",
+        "\\(\\mathit{p}\\)-value",
+        "adj. \\(\\mathit{p}\\)-value"
+      ),
       "",
       "",
       "\\(\\mathit{R^2}\\)",
       "ZT",
       "JG",
+      "CHM",
       ""
     )
   rownames(tab) <- item_names()
@@ -1793,30 +2065,50 @@ DIF_logistic_summary_table_note <- reactive({
   fit <- DIF_logistic_model()
   thr <- DIF_logistic_model()$thr
 
-  res$matching <- paste("Observed score:", switch(fit$match,
-    "score" = "total score",
-    "zscore" = "standardized total score",
-    "matching variable" = "uploaded"
-  ))
-  res$type <- paste("DIF type tested:", switch(fit$type,
-    "both" = "any DIF ",
-    "udif" = "uniform DIF ",
-    "nudif" = "non-uniform DIF "
-  ))
-  res$correction <- paste("P-value correction method:", switch(fit$p.adjust.method,
-    "BH" = "Benjamini-Hochberg",
-    "BY" = "Benjamini-Yekutieli",
-    "bonferroni" = "Bonferroni",
-    "holm" = "Holm",
-    "hochberg" = "Hochberg",
-    "hommel" = "Hommel",
-    "none" = "none"
-  ))
-  res$purification <- paste("Item purification:", ifelse(fit$purification, "used", "unutilized"))
-  res$combination <- ifelse(fit$purification & fit$p.adjust.method != "none",
-                            paste("Item purification and p-value correction used in",
-                                  input$DIF_logistic_summary_combination, "combination"),
-                            "")
+  res$matching <- paste(
+    "Observed score:",
+    switch(
+      fit$match,
+      "score" = "total score",
+      "zscore" = "standardized total score",
+      "matching variable" = "uploaded"
+    )
+  )
+  res$type <- paste(
+    "DIF type tested:",
+    switch(
+      fit$type,
+      "both" = "any DIF ",
+      "udif" = "uniform DIF ",
+      "nudif" = "non-uniform DIF "
+    )
+  )
+  res$correction <- paste(
+    "P-value correction method:",
+    switch(
+      fit$p.adjust.method,
+      "BH" = "Benjamini-Hochberg",
+      "BY" = "Benjamini-Yekutieli",
+      "bonferroni" = "Bonferroni",
+      "holm" = "Holm",
+      "hochberg" = "Hochberg",
+      "hommel" = "Hommel",
+      "none" = "none"
+    )
+  )
+  res$purification <- paste(
+    "Item purification:",
+    ifelse(fit$purification, "used", "unutilized")
+  )
+  res$combination <- ifelse(
+    fit$purification & fit$p.adjust.method != "none",
+    paste(
+      "Item purification and p-value correction used in",
+      input$DIF_logistic_summary_combination,
+      "combination"
+    ),
+    ""
+  )
   res$threshold <- paste("Detection threshold:", round(thr[length(thr)], 3))
 
   res
@@ -1836,8 +2128,13 @@ output$DIF_logistic_summary_table_note <- renderUI({
       note$threshold,
       "Signif. codes: 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1",
       "DIF effect sizes (Nagelkerke's \\(R^2\\)): <i>A</i> = negligible effect, <i>B</i> = moderate effect, <i>C</i> = large effect",
-      "Thresholds by Zumbo & Thomas (ZT): 0 'A' 0.13 'B' 0.26 'C' 1",
-      "Thresholds by Jodoin & Gierl (JG): 0 'A' 0.035 'B' 0.07 'C' 1",
+      "Thresholds by Zumbo and Thomas (1996; ZT): 0 'A' 0.13 'B' 0.26 'C' 1",
+      "Thresholds by Jodoin and Gierl (2001; JG): 0 'A' 0.035 'B' 0.07 'C' 1",
+      if (input$DIF_logistic_summary_type == "nudif") {
+        "Thresholds by Cichrova, Hladka, and Martinkova (2026; CHM): 0 'A' 0.002 'B' 0.008 'C' 1"
+      } else {
+        "Thresholds by Cichrova, Hladka, and Martinkova (2026; CHM): 0 'A' 0.01 'B' 0.021 'C' 1"
+      },
       sep = "</br>"
     )
   )
@@ -1867,37 +2164,52 @@ output$DIF_logistic_summary_table_download <- downloadHandler(
     note <- DIF_logistic_summary_table_note()
 
     write.csv(table, file)
-    write(paste(
-      "Note:",
-      note$matching,
-      note$type,
-      note$correction,
-      note$purification,
-      note$combination,
-      note$threshold,
-      "Signif. codes: 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1",
-      "DIF effect sizes (Nagelkerke's R^2): A = negligible effect, B = moderate effect, C = large effect",
-      "Thresholds by Zumbo & Thomas (ZT): 0 'A' 0.13 'B' 0.26 'C' 1",
-      "Thresholds by Jodoin & Gierl (JG): 0 'A' 0.035 'B' 0.07 'C' 1",
-      sep = "\n"
-    ), file, append = TRUE)
+    write(
+      paste(
+        "Note:",
+        note$matching,
+        note$type,
+        note$correction,
+        note$purification,
+        note$combination,
+        note$threshold,
+        "Signif. codes: 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1",
+        "DIF effect sizes (Nagelkerke's R^2): A = negligible effect, B = moderate effect, C = large effect",
+        "Thresholds by Zumbo & Thomas (ZT): 0 'A' 0.13 'B' 0.26 'C' 1",
+        "Thresholds by Jodoin & Gierl (JG): 0 'A' 0.035 'B' 0.07 'C' 1",
+        sep = "\n"
+      ),
+      file,
+      append = TRUE
+    )
   }
 )
 
 # ** Purification info - number of iterations ####
 output$DIF_logistic_summary_purification_info <- renderPrint({
   model <- DIF_logistic_model()
-  if (input$DIF_logistic_summary_purification & !is.null(DIF_logistic_model()$difPur)) {
-    cat("The table below describes purification process. The rows correspond to the purification iteration and the columns
+  if (
+    input$DIF_logistic_summary_purification &
+      !is.null(DIF_logistic_model()$difPur)
+  ) {
+    cat(
+      "The table below describes purification process. The rows correspond to the purification iteration and the columns
         correspond to items. Value of '1' in the i-th row means that an item was detected as DIF in (i-1)-th step,
         while the value of '0' means that the item was not detected as DIF. The first row corresponds to the initial
-        classification of the items when all items were used for the calculation of the DIF matching criterion. ")
+        classification of the items when all items were used for the calculation of the DIF matching criterion. "
+    )
     nrIter <- model$nrPur
     cat(
-      "In this case, the convergence was", ifelse(model$convergence, "reached", "NOT reached even"), "after", nrIter,
+      "In this case, the convergence was",
+      ifelse(model$convergence, "reached", "NOT reached even"),
+      "after",
+      nrIter,
       ifelse(nrIter == 1, "iteration.", "iterations.")
     )
-  } else if (input$DIF_logistic_summary_purification & is.null(DIF_logistic_model()$difPur)) {
+  } else if (
+    input$DIF_logistic_summary_purification &
+      is.null(DIF_logistic_model()$difPur)
+  ) {
     cat("No DIF item was detected whatsoever, nothing to show.")
   } else {
     cat("Item purification not requested, nothing to show.")
@@ -1962,9 +2274,13 @@ DIF_logistic_items_plot <- reactive({
 
   fit <- DIF_logistic_model()
 
-  g <- plotDIFLogistic(fit,
-    item = item, match = match, item.name = item_names()[item],
-    Data = data, group = group
+  g <- plotDIFLogistic(
+    fit,
+    item = item,
+    match = match,
+    item.name = item_names()[item],
+    Data = data,
+    group = group
   )
   g
 })
@@ -1974,19 +2290,35 @@ output$DIF_logistic_items_plot <- renderPlotly({
   p <- ggplotly(g)
 
   p$x$data[[1]]$text <- paste0(
-    "Group: Reference", "<br />",
-    "Match: ", p$x$data[[1]]$x, "<br />",
-    "Probability: ", p$x$data[[1]]$y
+    "Group: Reference",
+    "<br />",
+    "Match: ",
+    p$x$data[[1]]$x,
+    "<br />",
+    "Probability: ",
+    p$x$data[[1]]$y
   )
   p$x$data[[2]]$text <- paste0(
-    "Group: Focal", "<br />",
-    "Match: ", p$x$data[[2]]$x, "<br />",
-    "Probability: ", p$x$data[[2]]$y
+    "Group: Focal",
+    "<br />",
+    "Match: ",
+    p$x$data[[2]]$x,
+    "<br />",
+    "Probability: ",
+    p$x$data[[2]]$y
   )
   p$x$data[[3]]$text <- gsub("gr1", "Reference", p$x$data[[3]]$text)
-  p$x$data[[3]]$text <- gsub("Probability", "Empirical probability", p$x$data[[3]]$text)
+  p$x$data[[3]]$text <- gsub(
+    "Probability",
+    "Empirical probability",
+    p$x$data[[3]]$text
+  )
   p$x$data[[4]]$text <- gsub("gr2", "Focal", p$x$data[[4]]$text)
-  p$x$data[[4]]$text <- gsub("Probability", "Empirical probability", p$x$data[[4]]$text)
+  p$x$data[[4]]$text <- gsub(
+    "Probability",
+    "Empirical probability",
+    p$x$data[[4]]$text
+  )
 
   if (input$DIF_logistic_items_matching == "uploaded") {
     match <- "Uploaded match"
@@ -2015,11 +2347,13 @@ output$DIF_logistic_items_plot_download <- downloadHandler(
     paste0("fig_DIF_logistic_", item_names()[input$DIF_logistic_items], ".png")
   },
   content = function(file) {
-    ggsave(file,
+    ggsave(
+      file,
       plot = DIF_logistic_items_plot() +
         theme(text = element_text(size = setting_figures$text_size)),
       device = "png",
-      height = setting_figures$height, width = setting_figures$width,
+      height = setting_figures$height,
+      width = setting_figures$width,
       dpi = setting_figures$dpi
     )
   }
@@ -2041,7 +2375,7 @@ output$DIF_logistic_items_coef <- renderTable(
     tab <- DIF_logistic_summary_coef()
     item <- input$DIF_logistic_items
 
-    tab <- tab[item, -c(1:8)]
+    tab <- tab[item, -c(1:9)]
     tab_coef <- unlist(tab[, seq(1, ncol(tab), 2)])
     tab_se <- unlist(tab[, seq(2, ncol(tab), 2)])
 
@@ -2071,7 +2405,9 @@ report_DIF_logistic_model <- reactive({
     purify_report <- input$puri_LR_report
 
     fit <- ShinyItemAnalysis:::.difLogistic_edited(
-      Data = data, group = group, focal.name = 1,
+      Data = data,
+      group = group,
+      focal.name = 1,
       type = type_report,
       p.adjust.method = correction_report,
       purify = purify_report
@@ -2091,12 +2427,15 @@ report_DIF_logistic_plot <- reactive({
     graflist <- vector("list", length = length(fit$DIFitems))
     i <- 1
     for (item in fit$DIFitems) {
-      g <- plotDIFLogistic(fit,
+      g <- plotDIFLogistic(
+        fit,
         item = item,
         item.name = item_names()[item],
-        Data = data, group = group
+        Data = data,
+        group = group
       )
-      g <- g + ggtitle(paste0("DIF logistic plot for ", item_names()[item])) +
+      g <- g +
+        ggtitle(paste0("DIF logistic plot for ", item_names()[item])) +
         theme(
           text = element_text(size = 12),
           plot.title = element_text(size = 12, face = "bold")
@@ -2329,7 +2668,8 @@ mapply(
       }
     })
   },
-  match = match_NLR, puri = puri_NLR
+  match = match_NLR,
+  puri = puri_NLR
 )
 
 # ** Updating item slider ####
@@ -2345,7 +2685,8 @@ observe({
 # ** Enabling/disabling options for type of DIF in summary tab ####
 observeEvent(input$DIF_NLR_summary_model, {
   # what parameters can be selected with choice of model
-  enaSelection <- switch(input$DIF_NLR_summary_model,
+  enaSelection <- switch(
+    input$DIF_NLR_summary_model,
     "Rasch" = c("b"),
     "1PL" = c("b"),
     "2PL" = c("a", "b"),
@@ -2385,7 +2726,8 @@ observeEvent(input$DIF_NLR_summary_model, {
 # ** Enabling/disabling options for type of DIF in items tab ####
 observeEvent(input$DIF_NLR_items_model, {
   # what parameters can be selected with choice of model
-  enaSelection <- switch(input$DIF_NLR_items_model,
+  enaSelection <- switch(
+    input$DIF_NLR_items_model,
     "Rasch" = c("b"),
     "1PL" = c("b"),
     "2PL" = c("a", "b"),
@@ -2447,10 +2789,16 @@ DIF_NLR_method <- reactive({
 
   fit <- tryCatch(
     difNLR(
-      Data = data, group = group, focal.name = 1, match = match,
-      model = model, type = type,
-      p.adjust.method = adj.method, purify = purify,
-      test = "LR", method = est_method
+      Data = data,
+      group = group,
+      focal.name = 1,
+      match = match,
+      model = model,
+      type = type,
+      p.adjust.method = adj.method,
+      purify = purify,
+      test = "LR",
+      method = est_method
     ),
     error = function(e) e
   )
@@ -2458,7 +2806,10 @@ DIF_NLR_method <- reactive({
   validate(
     need(
       inherits(fit, "difNLR"),
-      paste0("This method cannot be used on this data. Error returned: ", fit$message)
+      paste0(
+        "This method cannot be used on this data. Error returned: ",
+        fit$message
+      )
     ),
     errorClass = "validation-error"
   )
@@ -2471,7 +2822,7 @@ DIF_NLR_method <- reactive({
     binary(),
     group(),
     ignoreNULL = FALSE # ignore BTN for the first time, but require press for any further eval.
-    )
+  )
 
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% ####
@@ -2526,7 +2877,14 @@ output$DIF_NLR_summary_equation <- renderUI({
       if (txtc == "") {
         txt3 <- txtd
       } else {
-        txt3 <- paste0(txtc, " + \\left(", txtd, " - ", txtc, "\\right) \\cdot ")
+        txt3 <- paste0(
+          txtc,
+          " + \\left(",
+          txtd,
+          " - ",
+          txtc,
+          "\\right) \\cdot "
+        )
       }
     }
   }
@@ -2551,7 +2909,10 @@ output$DIF_NLR_summary_dif_items <- renderPrint({
   if (DIFitems[1] == "No DIF item detected") {
     txt <- "No item was detected as DIF."
   } else {
-    txt <- paste0("Items detected as DIF items: ", paste(item_names()[DIFitems], collapse = ", "))
+    txt <- paste0(
+      "Items detected as DIF items: ",
+      paste(item_names()[DIFitems], collapse = ", ")
+    )
   }
   HTML(txt)
 })
@@ -2569,7 +2930,8 @@ DIF_NLR_summary_parameters <- reactive({
 
   cfs |>
     pivot_wider(
-      names_from = .type, values_from = -c(.item, .type),
+      names_from = .type,
+      values_from = -c(.item, .type),
       names_glue = "{.type}_{.value}"
     ) |>
     select(-.item)
@@ -2588,7 +2950,8 @@ DIF_NLR_summary_table <- reactive({
     pval_name <- "pval_adj"
   }
 
-  pval_symb <- symnum(pval,
+  pval_symb <- symnum(
+    pval,
     c(0, 0.001, 0.01, 0.05, 0.1, 1),
     symbols = c("***", "**", "*", ".", "")
   )
@@ -2618,9 +2981,14 @@ output$DIF_NLR_summary_coef <- renderTable(
     tbl <- tbl |>
       rename(any_of(rnm_vec)) |> # use any_of to pick only existing columns (picking the right pval)
       rename_with(~ str_replace(.x, "Dif", "_{DIF}")) |>
-      rename_with(~ paste0(str_replace(.x, "estimate_", "\\\\(\\\\mathit{"), "}\\)"), .cols = starts_with("estimate_")) |>
-      rename_with(~ paste0(str_replace(.x, "SE_", "SE(\\\\(\\\\mathit{"), "}\\))"), .cols = starts_with("SE_"))
-
+      rename_with(
+        ~ paste0(str_replace(.x, "estimate_", "\\\\(\\\\mathit{"), "}\\)"),
+        .cols = starts_with("estimate_")
+      ) |>
+      rename_with(
+        ~ paste0(str_replace(.x, "SE_", "SE(\\\\(\\\\mathit{"), "}\\))"),
+        .cols = starts_with("SE_")
+      )
 
     tbl <- tbl |>
       mutate(rowname = item_names()) |>
@@ -2652,28 +3020,36 @@ DIF_NLR_summary_table_note <- reactive({
     NULL
   }
 
-  res$mod <- paste("Model:", switch(unique(model$model),
-    "Rasch" = "Rasch model",
-    "1PL" = "1PL model",
-    "2PL" = "2PL model",
-    "3PL" = "3PL model",
-    "3PLcg" = "3PL model with fixed guessing for groups",
-    "3PLdg" = "3PL model with fixed inattention parameter for groups",
-    "3PLc" = "3PL model",
-    "3PLd" = "3PL model with inattention parameter",
-    "4PLcgdg" = "4PL model with fixed guessing and inattention parameter for groups",
-    "4PLcgd" = "4PL model with fixed guessing for groups",
-    "4PLd" = "4PL model with fixed guessing for groups",
-    "4PLcdg" = "4PL model with fixed inattention parameter for groups",
-    "4PLc" = "4PL model with fixed inattention parameter for groups",
-    "4PL" = "4PL model"
-  ))
+  res$mod <- paste(
+    "Model:",
+    switch(
+      unique(model$model),
+      "Rasch" = "Rasch model",
+      "1PL" = "1PL model",
+      "2PL" = "2PL model",
+      "3PL" = "3PL model",
+      "3PLcg" = "3PL model with fixed guessing for groups",
+      "3PLdg" = "3PL model with fixed inattention parameter for groups",
+      "3PLc" = "3PL model",
+      "3PLd" = "3PL model with inattention parameter",
+      "4PLcgdg" = "4PL model with fixed guessing and inattention parameter for groups",
+      "4PLcgd" = "4PL model with fixed guessing for groups",
+      "4PLd" = "4PL model with fixed guessing for groups",
+      "4PLcdg" = "4PL model with fixed inattention parameter for groups",
+      "4PLc" = "4PL model with fixed inattention parameter for groups",
+      "4PL" = "4PL model"
+    )
+  )
 
-  res$dmv <- paste("Observed score:", switch(as.character(model$match[1]), # ensures number is recognize as unnamed element
-    "score" = "total score",
-    "zscore" = "standardized total score",
-    "uploaded"
-  ))
+  res$matching <- paste(
+    "Observed score:",
+    switch(input$DIF_NLR_summary_matching,
+           "uploaded" = "uploaded",
+           "standardized uploaded" = "standardized uploaded",
+           "zscore" = "standardized total score",
+           "score" = "total score"
+    )
+  )
 
   res$type <-
     paste0(
@@ -2681,18 +3057,25 @@ DIF_NLR_summary_table_note <- reactive({
       paste0(input$DIF_NLR_summary_type, collapse = ", ")
     )
 
-  res$p_adj <- paste("P-value correction method:", switch(model$p.adjust.method,
-    holm = "Holm",
-    hochberg = "Hochberg",
-    hommel = "Hommel",
-    bonferroni = "Bonferroni",
-    BH = "Benjamini-Hochberg",
-    BY = "Benjamini-Yekutieli",
-    fdr = "FDR",
-    none = "none"
-  ))
+  res$p_adj <- paste(
+    "P-value correction method:",
+    switch(
+      model$p.adjust.method,
+      holm = "Holm",
+      hochberg = "Hochberg",
+      hommel = "Hommel",
+      bonferroni = "Bonferroni",
+      BH = "Benjamini-Hochberg",
+      BY = "Benjamini-Yekutieli",
+      fdr = "FDR",
+      none = "none"
+    )
+  )
 
-  res$puri <- paste("Item purification:", ifelse(model$purification == T, "used", "unutilized"))
+  res$puri <- paste(
+    "Item purification:",
+    ifelse(model$purification == T, "used", "unutilized")
+  )
   res$thr_rounded <- paste("Detection threshold:", round(thr, 3))
 
   res
@@ -2702,7 +3085,7 @@ output$DIF_NLR_summary_table_note <- renderUI({
   HTML(
     paste(
       "Notes:",
-      DIF_NLR_summary_table_note()$dmv,
+      DIF_NLR_summary_table_note()$matching,
       DIF_NLR_summary_table_note()$mod,
       DIF_NLR_summary_table_note()$type,
       DIF_NLR_summary_table_note()$p_adj,
@@ -2733,26 +3116,35 @@ output$DIF_NLR_summary_table_download <- downloadHandler(
       select(-blank_col) |>
       rename(any_of(rnm_vec)) |>
       rename_with(~ str_replace(.x, "Dif", "_DIF")) |>
-      rename_with(~ str_remove(.x, "estimate_"), .cols = starts_with("estimate_")) |>
-      rename_with(~ paste0(str_replace(.x, "SE_", "SE("), ")"), .cols = starts_with("SE_"))
-
+      rename_with(
+        ~ str_remove(.x, "estimate_"),
+        .cols = starts_with("estimate_")
+      ) |>
+      rename_with(
+        ~ paste0(str_replace(.x, "SE_", "SE("), ")"),
+        .cols = starts_with("SE_")
+      )
 
     tbl <- tbl |>
       mutate(rowname = item_names()) |>
       column_to_rownames()
 
     write.csv(tbl, file) # w/o blank col
-    write(paste(
-      "\nNote:",
-      DIF_NLR_summary_table_note()$dmv,
-      DIF_NLR_summary_table_note()$mod,
-      gsub(",", "", DIF_NLR_summary_table_note()$type), # get rid of the comma - it separates col in CSV
-      DIF_NLR_summary_table_note()$p_adj,
-      DIF_NLR_summary_table_note()$puri,
-      DIF_NLR_summary_table_note()$thr_rounded,
-      "Signif. codes: 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1",
-      sep = "\n"
-    ), file, append = TRUE)
+    write(
+      paste(
+        "\nNote:",
+        DIF_NLR_summary_table_note()$dmv,
+        DIF_NLR_summary_table_note()$mod,
+        gsub(",", "", DIF_NLR_summary_table_note()$type), # get rid of the comma - it separates col in CSV
+        DIF_NLR_summary_table_note()$p_adj,
+        DIF_NLR_summary_table_note()$puri,
+        DIF_NLR_summary_table_note()$thr_rounded,
+        "Signif. codes: 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1",
+        sep = "\n"
+      ),
+      file,
+      append = TRUE
+    )
   }
 )
 
@@ -2760,16 +3152,23 @@ output$DIF_NLR_summary_table_download <- downloadHandler(
 output$DIF_NLR_summary_purification_info <- renderPrint({
   model <- DIF_NLR_method()
   if (input$DIF_NLR_summary_purification & !is.null(DIF_NLR_method()$difPur)) {
-    cat("The table below describes purification process. The rows correspond to the purification iteration and the columns
+    cat(
+      "The table below describes purification process. The rows correspond to the purification iteration and the columns
         correspond to items. Value of '1' in the i-th row means that an item was detected as DIF in (i-1)-th step,
         while the value of '0' means that the item was not detected as DIF. The first row corresponds to the initial
-        classification of the items when all items were used for the calculation of the DIF matching criterion. ")
+        classification of the items when all items were used for the calculation of the DIF matching criterion. "
+    )
     nrIter <- model$nrPur
     cat(
-      "In this case, the convergence was", ifelse(model$conv.puri, "reached", "NOT reached even"), "after", nrIter,
+      "In this case, the convergence was",
+      ifelse(model$conv.puri, "reached", "NOT reached even"),
+      "after",
+      nrIter,
       ifelse(nrIter == 1, "iteration.", "iterations.")
     )
-  } else if (input$DIF_NLR_summary_purification & is.null(DIF_NLR_method()$difPur)) {
+  } else if (
+    input$DIF_NLR_summary_purification & is.null(DIF_NLR_method()$difPur)
+  ) {
     cat("No DIF item was detected whatsoever, nothing to show.")
   } else {
     cat("Item purification was not requested, nothing to show.")
@@ -2840,22 +3239,46 @@ output$DIF_NLR_items_plot <- renderPlotly({
   p <- ggplotly(g)
 
   p$x$data[[1]]$text <- paste0(
-    "Group: Reference", "<br />",
-    "Match: ", p$x$data[[1]]$x, "<br />",
-    "Probability: ", p$x$data[[1]]$y
+    "Group: Reference",
+    "<br />",
+    "Match: ",
+    p$x$data[[1]]$x,
+    "<br />",
+    "Probability: ",
+    p$x$data[[1]]$y
   )
   p$x$data[[2]]$text <- paste0(
-    "Group: Focal", "<br />",
-    "Match: ", p$x$data[[2]]$x, "<br />",
-    "Probability: ", p$x$data[[2]]$y
+    "Group: Focal",
+    "<br />",
+    "Match: ",
+    p$x$data[[2]]$x,
+    "<br />",
+    "Probability: ",
+    p$x$data[[2]]$y
   )
 
-  p$x$data[[3]]$text <- gsub("size", "Group: Reference<br />Count", p$x$data[[3]]$text)
+  p$x$data[[3]]$text <- gsub(
+    "size",
+    "Group: Reference<br />Count",
+    p$x$data[[3]]$text
+  )
   p$x$data[[3]]$text <- gsub("match", "Z-score", p$x$data[[3]]$text)
-  p$x$data[[3]]$text <- gsub("prob", "Empirical probability", p$x$data[[3]]$text)
-  p$x$data[[4]]$text <- gsub("size", "Group: Focal<br />Count", p$x$data[[4]]$text)
+  p$x$data[[3]]$text <- gsub(
+    "prob",
+    "Empirical probability",
+    p$x$data[[3]]$text
+  )
+  p$x$data[[4]]$text <- gsub(
+    "size",
+    "Group: Focal<br />Count",
+    p$x$data[[4]]$text
+  )
   p$x$data[[4]]$text <- gsub("match", "Z-score", p$x$data[[4]]$text)
-  p$x$data[[4]]$text <- gsub("prob", "Empirical probability", p$x$data[[4]]$text)
+  p$x$data[[4]]$text <- gsub(
+    "prob",
+    "Empirical probability",
+    p$x$data[[4]]$text
+  )
 
   p$elementId <- NULL
   hide_legend(p) |> plotly::config(displayModeBar = FALSE)
@@ -2867,11 +3290,13 @@ output$DIF_NLR_items_plot_download <- downloadHandler(
     paste0("fig_DIFNonlinear_", item_names()[input$DIF_NLR_items_plot], ".png")
   },
   content = function(file) {
-    ggsave(file,
+    ggsave(
+      file,
       plot = DIF_NLR_items_plot() +
         theme(text = element_text(size = setting_figures$text_size)),
       device = "png",
-      height = setting_figures$height, width = setting_figures$width,
+      height = setting_figures$height,
+      width = setting_figures$width,
       dpi = setting_figures$dpi
     )
   }
@@ -2926,7 +3351,14 @@ output$DIF_NLR_items_equation <- renderUI({
       if (txtc == "") {
         txt3 <- txtd
       } else {
-        txt3 <- paste0(txtc, " + \\left(", txtd, " - ", txtc, "\\right) \\cdot ")
+        txt3 <- paste0(
+          txtc,
+          " + \\left(",
+          txtd,
+          " - ",
+          txtc,
+          "\\right) \\cdot "
+        )
       }
     }
   }
@@ -2951,7 +3383,11 @@ output$DIF_NLR_items_coef <- renderTable(
 
     item_cfs <- item_cfs |> column_to_rownames("par")
 
-    rownames(item_cfs) <- paste0("\\(\\mathit{", gsub("Dif", "_{Dif}", rownames(item_cfs)), "}\\)")
+    rownames(item_cfs) <- paste0(
+      "\\(\\mathit{",
+      gsub("Dif", "_{Dif}", rownames(item_cfs)),
+      "}\\)"
+    )
     colnames(item_cfs) <- c("Estimate", "SE")
 
     item_cfs
@@ -3067,22 +3503,30 @@ DIF_Lord_method <- reactive({
   }
 
   fit <- tryCatch(
-    switch(input$DIF_Lord_summary_model,
+    switch(
+      input$DIF_Lord_summary_model,
       "1PL" = ShinyItemAnalysis:::.difLord_edited(
-        Data = data, group = group, focal.name = 1,
+        Data = data,
+        group = group,
+        focal.name = 1,
         model = "1PL",
         p.adjust.method = input$DIF_Lord_summary_correction,
         purify = input$DIF_Lord_summary_purification
       ),
       "2PL" = ShinyItemAnalysis:::.difLord_edited(
-        Data = data, group = group, focal.name = 1,
+        Data = data,
+        group = group,
+        focal.name = 1,
         model = "2PL",
         p.adjust.method = input$DIF_Lord_summary_correction,
         purify = input$DIF_Lord_summary_purification
       ),
       "3PL" = ShinyItemAnalysis:::.difLord_edited(
-        Data = data, group = group, focal.name = 1,
-        model = "3PL", c = guess,
+        Data = data,
+        group = group,
+        focal.name = 1,
+        model = "3PL",
+        c = guess,
         p.adjust.method = input$DIF_Lord_summary_correction,
         purify = input$DIF_Lord_summary_purification
       )
@@ -3093,7 +3537,10 @@ DIF_Lord_method <- reactive({
   validate(
     need(
       class(fit) == "Lord",
-      paste0("This method cannot be used on this data. Error returned: ", fit$message)
+      paste0(
+        "This method cannot be used on this data. Error returned: ",
+        fit$message
+      )
     ),
     errorClass = "validation-error"
   )
@@ -3107,19 +3554,26 @@ DIF_Lord_method <- reactive({
 output$DIF_Lord_summary_interpretation <- renderUI({
   type <- input$DIF_Lord_items_model
 
-  txt <- switch(type,
-    "1PL" = paste("As the parameters are estimated separately for the two groups, there is one
+  txt <- switch(
+    type,
+    "1PL" = paste(
+      "As the parameters are estimated separately for the two groups, there is one
                              equation for each group. Parameters \\(b_{iR}\\) and \\(b_{iF}\\)
-                             are difficulties for the reference and the focal group for item \\(i\\). "),
-    "2PL" = paste("As the parameters are estimated separately for the two groups, there is one
+                             are difficulties for the reference and the focal group for item \\(i\\). "
+    ),
+    "2PL" = paste(
+      "As the parameters are estimated separately for the two groups, there is one
                              equation for each group. Parameters \\(a_{iR}\\) and \\(b_{iR}\\) are discrimination
                              and difficulty for the reference group for item \\(i\\). Parameters \\(a_{iF}\\) and \\(b_{iF}\\)
-                             are discrimination and difficulty for the focal group for item \\(i\\). "),
-    "3PL" = paste("As the parameters are estimated separately for the two groups, there is one
+                             are discrimination and difficulty for the focal group for item \\(i\\). "
+    ),
+    "3PL" = paste(
+      "As the parameters are estimated separately for the two groups, there is one
                              equation for each group. Parameters \\(a_{iR}\\) and \\(b_{iR}\\) are discrimination
                              and difficulty for the reference group for item \\(i\\). Parameters  \\(a_{iF}\\) and \\(b_{iF}\\)
                              are discrimination and difficulty for the focal group for item \\(i\\).
-                             Parameter \\(c_i\\) is a common guessing parameter for item \\(i\\). ")
+                             Parameter \\(c_i\\) is a common guessing parameter for item \\(i\\). "
+    )
   )
   HTML(txt)
 })
@@ -3127,30 +3581,44 @@ output$DIF_Lord_summary_interpretation <- renderUI({
 # ** Equation ####
 output$DIF_Lord_summary_equation <- renderUI({
   type <- input$DIF_Lord_items_model
-  eqR <- switch(type,
-    "1PL" = paste("$$\\mathrm{P}\\left(Y_{pi} = 1 | \\theta_p, G_p = 0\\right) =
+  eqR <- switch(
+    type,
+    "1PL" = paste(
+      "$$\\mathrm{P}\\left(Y_{pi} = 1 | \\theta_p, G_p = 0\\right) =
                               \\frac{e^{\\theta_p - b_{iR}}}
-                              {1 + e^{\\theta_p - b_{iR} }}$$"),
-    "2PL" = paste("$$\\mathrm{P}\\left(Y_{pi} = 1 | \\theta_p, G_p = 0\\right) =
+                              {1 + e^{\\theta_p - b_{iR} }}$$"
+    ),
+    "2PL" = paste(
+      "$$\\mathrm{P}\\left(Y_{pi} = 1 | \\theta_p, G_p = 0\\right) =
                               \\frac{e^{a_{iR} \\left(\\theta_p - b_{iR} \\right)}}
-                              {1 + e^{a_{iR} \\left(\\theta_p - b_{iR} \\right)}}$$"),
-    "3PL" = paste("$$\\mathrm{P}\\left(Y_{pi} = 1 | \\theta_p, G_p = 0\\right) =
+                              {1 + e^{a_{iR} \\left(\\theta_p - b_{iR} \\right)}}$$"
+    ),
+    "3PL" = paste(
+      "$$\\mathrm{P}\\left(Y_{pi} = 1 | \\theta_p, G_p = 0\\right) =
                               c_i + \\left(1 - c_i\\right) \\cdot \\frac{e^{a_{iR}
                               \\left(\\theta_p - b_{iR} \\right)}}
-                              {1 + e^{a_{iR} \\left(\\theta_p - b_{iR} \\right)}}$$")
+                              {1 + e^{a_{iR} \\left(\\theta_p - b_{iR} \\right)}}$$"
+    )
   )
 
-  eqF <- switch(type,
-    "1PL" = paste("$$\\mathrm{P}\\left(Y_{pi} = 1 | \\theta_p, G_p = 1\\right) =
+  eqF <- switch(
+    type,
+    "1PL" = paste(
+      "$$\\mathrm{P}\\left(Y_{pi} = 1 | \\theta_p, G_p = 1\\right) =
                               \\frac{e^{\\theta_p - b_{iF}}}
-                              {1 + e^{\\theta_p - b_{iF}}}$$"),
-    "2PL" = paste("$$\\mathrm{P}\\left(Y_{pi} = 1 | \\theta_p, G_p = 1\\right) =
+                              {1 + e^{\\theta_p - b_{iF}}}$$"
+    ),
+    "2PL" = paste(
+      "$$\\mathrm{P}\\left(Y_{pi} = 1 | \\theta_p, G_p = 1\\right) =
                               \\frac{e^{a_{iF} \\left(\\theta_p - b_{iF} \\right)}}
-                              {1 + e^{a_{iF} \\left(\\theta_p - b_{iF} \\right)}}$$"),
-    "3PL" = paste("$$\\mathrm{P}\\left(Y_{pi} = 1 | \\theta_p, G_p = 1\\right) =
+                              {1 + e^{a_{iF} \\left(\\theta_p - b_{iF} \\right)}}$$"
+    ),
+    "3PL" = paste(
+      "$$\\mathrm{P}\\left(Y_{pi} = 1 | \\theta_p, G_p = 1\\right) =
                               c_i + \\left(1 - c_i\\right) \\cdot \\frac{e^{a_{iF}
                               \\left(\\theta_p - b_{iF} \\right)}}
-                              {1 + e^{a_{iF} \\left(\\theta_p - b_{iF} \\right)}}$$")
+                              {1 + e^{a_{iF} \\left(\\theta_p - b_{iF} \\right)}}$$"
+    )
   )
   paste(eqR, eqF)
 })
@@ -3167,7 +3635,10 @@ output$DIF_Lord_summary_dif_items <- renderPrint({
   if (DIFitems[1] == "No DIF item detected") {
     txt <- "No item was detected as DIF."
   } else {
-    txt <- paste0("Items detected as DIF items: ", paste(item_names()[DIFitems], collapse = ", "))
+    txt <- paste0(
+      "Items detected as DIF items: ",
+      paste(item_names()[DIFitems], collapse = ", ")
+    )
   }
   HTML(txt)
 })
@@ -3183,7 +3654,8 @@ DIF_Lord_summary_table <- reactive({
     res$adjusted.p
   }
 
-  pval_symb <- symnum(pval,
+  pval_symb <- symnum(
+    pval,
     c(0, 0.001, 0.01, 0.05, 0.1, 1),
     symbols = c("***", "**", "*", ".", "")
   )
@@ -3206,16 +3678,8 @@ DIF_Lord_summary_table <- reactive({
 
   par <- rbind(mR, mF)
 
-  wh_coef <- switch(res$model,
-    "1PL" = 1,
-    "2PL" = 1:2,
-    "3PL" = c(1, 2)
-  )
-  wh_sd <- switch(res$model,
-    "1PL" = 2,
-    "2PL" = 3:4,
-    "3PL" = 3:4
-  )
+  wh_coef <- switch(res$model, "1PL" = 1, "2PL" = 1:2, "3PL" = c(1, 2))
+  wh_sd <- switch(res$model, "1PL" = 2, "2PL" = 3:4, "3PL" = 3:4)
 
   R_indices <- seq(1, m)
   F_indices <- seq(m + 1, 2 * m)
@@ -3258,8 +3722,8 @@ DIF_Lord_summary_table <- reactive({
     pars_zigzag <- cbind(pars_zigzag, guess_both)
   }
 
-
-  colnames(pars_zigzag) <- switch(res$model,
+  colnames(pars_zigzag) <- switch(
+    res$model,
     "1PL" = c(
       "\\(\\mathit{b}_{R}\\)",
       "SE(\\(\\mathit{b}_{R}\\))",
@@ -3374,23 +3838,31 @@ DIF_Lord_summary_table_note <- reactive({
   model <- DIF_Lord_method()
 
   res$mod <- paste0("Model: ", model$model)
-  res$p_adj <- paste("P-value correction method:", switch(model$p.adjust.method,
-    holm = "Holm",
-    hochberg = "Hochberg",
-    hommel = "Hommel",
-    bonferroni = "Bonferroni",
-    BH = "Benjamini-Hochberg",
-    BY = "Benjamini-Yekutieli",
-    none = "none"
-  ))
-  res$puri <- paste("Item purification:", ifelse(model$purification, "used", "unutilized"))
+  res$p_adj <- paste(
+    "P-value correction method:",
+    switch(
+      model$p.adjust.method,
+      holm = "Holm",
+      hochberg = "Hochberg",
+      hommel = "Hommel",
+      bonferroni = "Bonferroni",
+      BH = "Benjamini-Hochberg",
+      BY = "Benjamini-Yekutieli",
+      none = "none"
+    )
+  )
+  res$puri <- paste(
+    "Item purification:",
+    ifelse(model$purification, "used", "unutilized")
+  )
   res$thr <- paste0("Detection threshold: ", round(model$thr, 3))
 
   res
 })
 
 output$DIF_Lord_summary_table_note <- renderUI({
-  txt_effect <- ifelse(input$DIF_Lord_summary_model == "1PL",
+  txt_effect <- ifelse(
+    input$DIF_Lord_summary_model == "1PL",
     "Effect size codes: 'A': negligible effect; 'B': moderate effect; 'C': large effect </br>
                        Effect size codes: 0 'A' 1.0 'B' 1.5 'C' (for absolute values of 'deltaLord')",
     ""
@@ -3448,8 +3920,8 @@ output$DIF_Lord_summary_table_download <- downloadHandler(
 
     write.csv(data, file)
 
-
-    txt_effect <- ifelse(input$DIF_Lord_summary_model == "1PL",
+    txt_effect <- ifelse(
+      input$DIF_Lord_summary_model == "1PL",
       c(
         "Effect size codes: 'A': negligible effect; 'B': moderate effect; 'C': large effect",
         "Effect size codes: 0 'A' 1.0 'B' 1.5 'C' (for absolute values of 'deltaLord')"
@@ -3457,33 +3929,46 @@ output$DIF_Lord_summary_table_download <- downloadHandler(
       ""
     )
 
-    write(paste(
-      "Notes:",
-      DIF_Lord_summary_table_note()$mod,
-      DIF_Lord_summary_table_note()$p_adj,
-      DIF_Lord_summary_table_note()$puri,
-      DIF_Lord_summary_table_note()$thr,
-      "Signif. codes: 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1",
-      txt_effect,
-      sep = "\n"
-    ), file, append = TRUE)
+    write(
+      paste(
+        "Notes:",
+        DIF_Lord_summary_table_note()$mod,
+        DIF_Lord_summary_table_note()$p_adj,
+        DIF_Lord_summary_table_note()$puri,
+        DIF_Lord_summary_table_note()$thr,
+        "Signif. codes: 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1",
+        txt_effect,
+        sep = "\n"
+      ),
+      file,
+      append = TRUE
+    )
   }
 )
 
 # ** Purification info - number of iterations ####
 output$DIF_Lord_summary_purification_info <- renderPrint({
   model <- DIF_Lord_method()
-  if (input$DIF_Lord_summary_purification & !is.null(DIF_Lord_method()$difPur)) {
-    cat("The table below describes purification process. The rows correspond to the purification iteration and the columns
+  if (
+    input$DIF_Lord_summary_purification & !is.null(DIF_Lord_method()$difPur)
+  ) {
+    cat(
+      "The table below describes purification process. The rows correspond to the purification iteration and the columns
         correspond to items. Value of '1' in the i-th row means that an item was detected as DIF in (i-1)-th step,
         while the value of '0' means that the item was not detected as DIF. The first row corresponds to the initial
-        classification of the items when all items were used for the calculation of the DIF matching criterion. ")
+        classification of the items when all items were used for the calculation of the DIF matching criterion. "
+    )
     nrIter <- model$nrPur
     cat(
-      "In this case, the convergence was", ifelse(model$convergence, "reached", "NOT reached even"), "after", nrIter,
+      "In this case, the convergence was",
+      ifelse(model$convergence, "reached", "NOT reached even"),
+      "after",
+      nrIter,
       ifelse(nrIter == 1, "iteration.", "iterations.")
     )
-  } else if (input$DIF_Lord_summary_purification & is.null(DIF_Lord_method()$difPur)) {
+  } else if (
+    input$DIF_Lord_summary_purification & is.null(DIF_Lord_method()$difPur)
+  ) {
     cat("No DIF item was detected whatsoever, nothing to show.")
   } else {
     cat("Item purification was not requested, nothing to show.")
@@ -3547,14 +4032,22 @@ output$DIF_Lord_items_plot <- renderPlotly({
   p <- ggplotly(g)
 
   p$x$data[[1]]$text <- paste0(
-    "Group: Reference", "<br />",
-    "Ability: ", p$x$data[[1]]$x, "<br />",
-    "Probability: ", p$x$data[[1]]$y
+    "Group: Reference",
+    "<br />",
+    "Ability: ",
+    p$x$data[[1]]$x,
+    "<br />",
+    "Probability: ",
+    p$x$data[[1]]$y
   )
   p$x$data[[2]]$text <- paste0(
-    "Group: Focal", "<br />",
-    "Ability: ", p$x$data[[2]]$x, "<br />",
-    "Probability: ", p$x$data[[2]]$y
+    "Group: Focal",
+    "<br />",
+    "Ability: ",
+    p$x$data[[2]]$x,
+    "<br />",
+    "Probability: ",
+    p$x$data[[2]]$y
   )
 
   p$elementId <- NULL
@@ -3567,11 +4060,13 @@ output$DIF_Lord_items_plot_download <- downloadHandler(
     paste0("fig_DIFIRTLord_", item_names()[input$DIF_Lord_items_item], ".png")
   },
   content = function(file) {
-    ggsave(file,
+    ggsave(
+      file,
       plot = DIF_Lord_items_plot() +
         theme(text = element_text(size = setting_figures$text_size)),
       device = "png",
-      height = setting_figures$height, width = setting_figures$width,
+      height = setting_figures$height,
+      width = setting_figures$width,
       dpi = setting_figures$dpi
     )
   }
@@ -3581,19 +4076,26 @@ output$DIF_Lord_items_plot_download <- downloadHandler(
 output$DIF_Lord_items_interpretation <- renderUI({
   type <- input$DIF_Lord_items_model
 
-  txt <- switch(type,
-    "1PL" = paste("As the parameters are estimated separately for the two groups, there is one
+  txt <- switch(
+    type,
+    "1PL" = paste(
+      "As the parameters are estimated separately for the two groups, there is one
                              equation for each group. Parameters \\(b_{iR}\\) and \\(b_{iF}\\)
-                             are difficulties for the reference and the focal group for item \\(i\\). "),
-    "2PL" = paste("As the parameters are estimated separately for the two groups, there is one
+                             are difficulties for the reference and the focal group for item \\(i\\). "
+    ),
+    "2PL" = paste(
+      "As the parameters are estimated separately for the two groups, there is one
                              equation for each group. Parameters \\(a_{iR}\\) and \\(b_{iR}\\) are discrimination
                              and difficulty for the reference group for item \\(i\\). Parameters \\(a_{iF}\\) and \\(b_{iF}\\)
-                             are discrimination and difficulty for the focal group for item \\(i\\). "),
-    "3PL" = paste("As the parameters are estimated separately for the two groups, there is one
+                             are discrimination and difficulty for the focal group for item \\(i\\). "
+    ),
+    "3PL" = paste(
+      "As the parameters are estimated separately for the two groups, there is one
                              equation for each group. Parameters \\(a_{iR}\\) and \\(b_{iR}\\) are discrimination
                              and difficulty for the reference group for item \\(i\\). Parameters  \\(a_{iF}\\) and \\(b_{iF}\\)
                              are discrimination and difficulty for the focal group for item \\(i\\).
-                             Parameter \\(c_i\\) is a common guessing parameter for item \\(i\\). ")
+                             Parameter \\(c_i\\) is a common guessing parameter for item \\(i\\). "
+    )
   )
   HTML(txt)
 })
@@ -3601,30 +4103,44 @@ output$DIF_Lord_items_interpretation <- renderUI({
 # ** Equation ####
 output$DIF_Lord_items_equation <- renderUI({
   type <- input$DIF_Lord_items_model
-  eqR <- switch(type,
-    "1PL" = paste("$$\\mathrm{P}\\left(Y_{pi} = 1 | \\theta_p, G_p = 0\\right) =
+  eqR <- switch(
+    type,
+    "1PL" = paste(
+      "$$\\mathrm{P}\\left(Y_{pi} = 1 | \\theta_p, G_p = 0\\right) =
                               \\frac{e^{\\theta_p - b_{iR}}}
-                              {1 + e^{\\theta_p - b_{iR} }}$$"),
-    "2PL" = paste("$$\\mathrm{P}\\left(Y_{pi} = 1 | \\theta_p, G_p = 0\\right) =
+                              {1 + e^{\\theta_p - b_{iR} }}$$"
+    ),
+    "2PL" = paste(
+      "$$\\mathrm{P}\\left(Y_{pi} = 1 | \\theta_p, G_p = 0\\right) =
                               \\frac{e^{a_{iR} \\left(\\theta_p - b_{iR} \\right)}}
-                              {1 + e^{a_{iR} \\left(\\theta_p - b_{iR} \\right)}}$$"),
-    "3PL" = paste("$$\\mathrm{P}\\left(Y_{pi} = 1 | \\theta_p, G_p = 0\\right) =
+                              {1 + e^{a_{iR} \\left(\\theta_p - b_{iR} \\right)}}$$"
+    ),
+    "3PL" = paste(
+      "$$\\mathrm{P}\\left(Y_{pi} = 1 | \\theta_p, G_p = 0\\right) =
                               c_i + \\left(1 - c_i\\right) \\cdot \\frac{e^{a_{iR}
                               \\left(\\theta_p - b_{iR} \\right)}}
-                              {1 + e^{a_{iR} \\left(\\theta_p - b_{iR} \\right)}}$$")
+                              {1 + e^{a_{iR} \\left(\\theta_p - b_{iR} \\right)}}$$"
+    )
   )
 
-  eqF <- switch(type,
-    "1PL" = paste("$$\\mathrm{P}\\left(Y_{pi} = 1 | \\theta_p, G_p = 1\\right) =
+  eqF <- switch(
+    type,
+    "1PL" = paste(
+      "$$\\mathrm{P}\\left(Y_{pi} = 1 | \\theta_p, G_p = 1\\right) =
                               \\frac{e^{\\theta_p - b_{iF}}}
-                              {1 + e^{\\theta_p - b_{iF}}}$$"),
-    "2PL" = paste("$$\\mathrm{P}\\left(Y_{pi} = 1 | \\theta_p, G_p = 1\\right) =
+                              {1 + e^{\\theta_p - b_{iF}}}$$"
+    ),
+    "2PL" = paste(
+      "$$\\mathrm{P}\\left(Y_{pi} = 1 | \\theta_p, G_p = 1\\right) =
                               \\frac{e^{a_{iF} \\left(\\theta_p - b_{iF} \\right)}}
-                              {1 + e^{a_{iF} \\left(\\theta_p - b_{iF} \\right)}}$$"),
-    "3PL" = paste("$$\\mathrm{P}\\left(Y_{pi} = 1 | \\theta_p, G_p = 1\\right) =
+                              {1 + e^{a_{iF} \\left(\\theta_p - b_{iF} \\right)}}$$"
+    ),
+    "3PL" = paste(
+      "$$\\mathrm{P}\\left(Y_{pi} = 1 | \\theta_p, G_p = 1\\right) =
                               c_i + \\left(1 - c_i\\right) \\cdot \\frac{e^{a_{iF}
                               \\left(\\theta_p - b_{iF} \\right)}}
-                              {1 + e^{a_{iF} \\left(\\theta_p - b_{iF} \\right)}}$$")
+                              {1 + e^{a_{iF} \\left(\\theta_p - b_{iF} \\right)}}$$"
+    )
   )
   paste(eqR, eqF)
 })
@@ -3646,12 +4162,14 @@ DIF_Lord_items_coef <- reactive({
 
   par <- rbind(mR, mF)
 
-  wh_coef <- switch(input$DIF_Lord_items_model,
+  wh_coef <- switch(
+    input$DIF_Lord_items_model,
     "1PL" = 1,
     "2PL" = 1:2,
     "3PL" = c(1, 2, 6)
   )
-  wh_sd <- switch(input$DIF_Lord_items_model,
+  wh_sd <- switch(
+    input$DIF_Lord_items_model,
     "1PL" = 2,
     "2PL" = 3:4,
     "3PL" = 3:4
@@ -3670,10 +4188,22 @@ DIF_Lord_items_coef <- reactive({
   }
 
   tab <- data.frame(tab_coef, tab_sd)
-  rownames(tab) <- switch(input$DIF_Lord_items_model,
+  rownames(tab) <- switch(
+    input$DIF_Lord_items_model,
     "1PL" = c("\\(\\mathit{b}_{R}\\)", "\\(\\mathit{b}_{F}\\)"),
-    "2PL" = c("\\(\\mathit{a}_{R}\\)", "\\(\\mathit{a}_{F}\\)", "\\(\\mathit{b}_{R}\\)", "\\(\\mathit{b}_{F}\\)"),
-    "3PL" = c("\\(\\mathit{a}_{R}\\)", "\\(\\mathit{a}_{F}\\)", "\\(\\mathit{b}_{R}\\)", "\\(\\mathit{b}_{F}\\)", "\\(\\mathit{c}\\)")
+    "2PL" = c(
+      "\\(\\mathit{a}_{R}\\)",
+      "\\(\\mathit{a}_{F}\\)",
+      "\\(\\mathit{b}_{R}\\)",
+      "\\(\\mathit{b}_{F}\\)"
+    ),
+    "3PL" = c(
+      "\\(\\mathit{a}_{R}\\)",
+      "\\(\\mathit{a}_{F}\\)",
+      "\\(\\mathit{b}_{R}\\)",
+      "\\(\\mathit{b}_{F}\\)",
+      "\\(\\mathit{c}\\)"
+    )
   )
   colnames(tab) <- c("Estimate", "SE")
 
@@ -3796,22 +4326,30 @@ DIF_Raju_method <- reactive({
   }
 
   fit <- tryCatch(
-    switch(input$DIF_Raju_summary_model,
+    switch(
+      input$DIF_Raju_summary_model,
       "1PL" = ShinyItemAnalysis:::.difRaju_edited(
-        Data = data, group = group, focal.name = 1,
+        Data = data,
+        group = group,
+        focal.name = 1,
         model = "1PL",
         p.adjust.method = input$DIF_Raju_summary_correction,
         purify = input$DIF_Raju_summary_purification
       ),
       "2PL" = ShinyItemAnalysis:::.difRaju_edited(
-        Data = data, group = group, focal.name = 1,
+        Data = data,
+        group = group,
+        focal.name = 1,
         model = "2PL",
         p.adjust.method = input$DIF_Raju_summary_correction,
         purify = input$DIF_Raju_summary_purification
       ),
       "3PL" = ShinyItemAnalysis:::.difRaju_edited(
-        Data = data, group = group, focal.name = 1,
-        model = "3PL", c = guess,
+        Data = data,
+        group = group,
+        focal.name = 1,
+        model = "3PL",
+        c = guess,
         p.adjust.method = input$DIF_Raju_summary_correction,
         purify = input$DIF_Raju_summary_purification
       )
@@ -3822,7 +4360,10 @@ DIF_Raju_method <- reactive({
   validate(
     need(
       class(fit) == "Raj",
-      paste0("This method cannot be used on this data. Error returned: ", fit$message)
+      paste0(
+        "This method cannot be used on this data. Error returned: ",
+        fit$message
+      )
     ),
     errorClass = "validation-error"
   )
@@ -3836,19 +4377,26 @@ DIF_Raju_method <- reactive({
 output$DIF_Raju_summary_interpretation <- renderUI({
   type <- input$DIF_Raju_items_model
 
-  txt <- switch(type,
-    "1PL" = paste("As the parameters are estimated separately for the two groups, there is one
+  txt <- switch(
+    type,
+    "1PL" = paste(
+      "As the parameters are estimated separately for the two groups, there is one
                              equation for each group. Parameters \\(b_{iR}\\) and \\(b_{iF}\\)
-                             are difficulties for the reference and the focal group for item \\(i\\). "),
-    "2PL" = paste("As the parameters are estimated separately for the two groups, there is one
+                             are difficulties for the reference and the focal group for item \\(i\\). "
+    ),
+    "2PL" = paste(
+      "As the parameters are estimated separately for the two groups, there is one
                              equation for each group. Parameters \\(a_{iR}\\) and \\(b_{iR}\\) are discrimination
                              and difficulty for the reference group for item \\(i\\). Parameters \\(a_{iF}\\) and \\(b_{iF}\\)
-                             are discrimination and difficulty for the focal group for item \\(i\\). "),
-    "3PL" = paste("As the parameters are estimated separately for the two groups, there is one
+                             are discrimination and difficulty for the focal group for item \\(i\\). "
+    ),
+    "3PL" = paste(
+      "As the parameters are estimated separately for the two groups, there is one
                              equation for each group. Parameters \\(a_{iR}\\) and \\(b_{iR}\\) are discrimination
                              and difficulty for the reference group for item \\(i\\). Parameters  \\(a_{iF}\\) and \\(b_{iF}\\)
                              are discrimination and difficulty for the focal group for item \\(i\\).
-                             Parameter \\(c_i\\) is a common guessing parameter for item \\(i\\). ")
+                             Parameter \\(c_i\\) is a common guessing parameter for item \\(i\\). "
+    )
   )
   HTML(txt)
 })
@@ -3856,29 +4404,43 @@ output$DIF_Raju_summary_interpretation <- renderUI({
 # ** Equation ####
 output$DIF_Raju_summary_equation <- renderUI({
   type <- input$DIF_Raju_items_model
-  eqR <- switch(type,
-    "1PL" = paste("$$\\mathrm{P}\\left(Y_{pi} = 1 | \\theta_p, G_p = 0\\right) =
+  eqR <- switch(
+    type,
+    "1PL" = paste(
+      "$$\\mathrm{P}\\left(Y_{pi} = 1 | \\theta_p, G_p = 0\\right) =
                               \\frac{e^{\\theta_p - b_{iR}}}
-                              {1 + e^{\\theta_p - b_{iR} }}$$"),
-    "2PL" = paste("$$\\mathrm{P}\\left(Y_{pi} = 1 | \\theta_p, G_p = 0\\right) =
+                              {1 + e^{\\theta_p - b_{iR} }}$$"
+    ),
+    "2PL" = paste(
+      "$$\\mathrm{P}\\left(Y_{pi} = 1 | \\theta_p, G_p = 0\\right) =
                               \\frac{e^{a_{iR} \\left(\\theta_p - b_{iR} \\right)}}
-                              {1 + e^{a_{iR} \\left(\\theta_p - b_{iR} \\right)}}$$"),
-    "3PL" = paste("$$\\mathrm{P}\\left(Y_{pi} = 1 | \\theta_p, G_p = 0\\right) =
+                              {1 + e^{a_{iR} \\left(\\theta_p - b_{iR} \\right)}}$$"
+    ),
+    "3PL" = paste(
+      "$$\\mathrm{P}\\left(Y_{pi} = 1 | \\theta_p, G_p = 0\\right) =
                               c_i + \\left(1 - c_i\\right) \\cdot \\frac{e^{a_{iR}
                               \\left(\\theta_p - b_{iR} \\right)}}
-                              {1 + e^{a_{iR} \\left(\\theta_p - b_{iR} \\right)}}$$")
+                              {1 + e^{a_{iR} \\left(\\theta_p - b_{iR} \\right)}}$$"
+    )
   )
-  eqF <- switch(type,
-    "1PL" = paste("$$\\mathrm{P}\\left(Y_{pi} = 1 | \\theta_p, G_p = 1\\right) =
+  eqF <- switch(
+    type,
+    "1PL" = paste(
+      "$$\\mathrm{P}\\left(Y_{pi} = 1 | \\theta_p, G_p = 1\\right) =
                               \\frac{e^{\\theta_p - b_{iF}}}
-                              {1 + e^{\\theta_p - b_{iF}}}$$"),
-    "2PL" = paste("$$\\mathrm{P}\\left(Y_{pi} = 1 | \\theta_p, G_p = 1\\right) =
+                              {1 + e^{\\theta_p - b_{iF}}}$$"
+    ),
+    "2PL" = paste(
+      "$$\\mathrm{P}\\left(Y_{pi} = 1 | \\theta_p, G_p = 1\\right) =
                               \\frac{e^{a_{iF} \\left(\\theta_p - b_{iF} \\right)}}
-                              {1 + e^{a_{iF} \\left(\\theta_p - b_{iF} \\right)}}$$"),
-    "3PL" = paste("$$\\mathrm{P}\\left(Y_{pi} = 1 | \\theta_p, G_p = 1\\right) =
+                              {1 + e^{a_{iF} \\left(\\theta_p - b_{iF} \\right)}}$$"
+    ),
+    "3PL" = paste(
+      "$$\\mathrm{P}\\left(Y_{pi} = 1 | \\theta_p, G_p = 1\\right) =
                               c_i + \\left(1 - c_i\\right) \\cdot \\frac{e^{a_{iF}
                               \\left(\\theta_p - b_{iF} \\right)}}
-                              {1 + e^{a_{iF} \\left(\\theta_p - b_{iF} \\right)}}$$")
+                              {1 + e^{a_{iF} \\left(\\theta_p - b_{iF} \\right)}}$$"
+    )
   )
   paste(eqR, eqF)
 })
@@ -3895,7 +4457,10 @@ output$DIF_Raju_summary_dif_items <- renderPrint({
   if (DIFitems[1] == "No DIF item detected") {
     txt <- "No item was detected as DIF."
   } else {
-    txt <- paste0("Items detected as DIF items: ", paste(item_names()[DIFitems], collapse = ", "))
+    txt <- paste0(
+      "Items detected as DIF items: ",
+      paste(item_names()[DIFitems], collapse = ", ")
+    )
   }
   HTML(txt)
 })
@@ -3911,7 +4476,8 @@ DIF_Raju_summary_table <- reactive({
     model$adjusted.p
   }
 
-  pval_symb <- symnum(pval,
+  pval_symb <- symnum(
+    pval,
     c(0, 0.001, 0.01, 0.05, 0.1, 1, Inf),
     symbols = c("***", "**", "*", ".", "", "?!")
   )
@@ -3934,16 +4500,8 @@ DIF_Raju_summary_table <- reactive({
   }
   par <- rbind(mR, mF)
 
-  wh_coef <- switch(model$model,
-    "1PL" = 1,
-    "2PL" = 1:2,
-    "3PL" = c(1, 2)
-  )
-  wh_sd <- switch(model$model,
-    "1PL" = 2,
-    "2PL" = 3:4,
-    "3PL" = 3:4
-  )
+  wh_coef <- switch(model$model, "1PL" = 1, "2PL" = 1:2, "3PL" = c(1, 2))
+  wh_sd <- switch(model$model, "1PL" = 2, "2PL" = 3:4, "3PL" = 3:4)
 
   R_indices <- seq(1, m)
   F_indices <- seq(m + 1, 2 * m)
@@ -3986,7 +4544,8 @@ DIF_Raju_summary_table <- reactive({
     pars_zigzag <- cbind(pars_zigzag, guess_both)
   }
 
-  colnames(pars_zigzag) <- switch(model$model,
+  colnames(pars_zigzag) <- switch(
+    model$model,
     "1PL" = c(
       "\\(\\mathit{b}_{R}\\)",
       "SE(\\(\\mathit{b}_{R}\\))",
@@ -4106,20 +4665,31 @@ DIF_Raju_summary_table_note <- reactive({
   res <- NULL
 
   res$mod <- paste0("Model: ", model$model)
-  res$p_adj <- paste("P-value correction method:", switch(model$p.adjust.method,
-    holm = "Holm",
-    hochberg = "Hochberg",
-    hommel = "Hommel",
-    bonferroni = "Bonferroni",
-    BH = "Benjamini-Hochberg",
-    BY = "Benjamini-Yekutieli",
-    none = "none"
-  ))
-  res$puri <- paste("Item purification:", ifelse(model$purification, "used", "unutilized"))
+  res$p_adj <- paste(
+    "P-value correction method:",
+    switch(
+      model$p.adjust.method,
+      holm = "Holm",
+      hochberg = "Hochberg",
+      hommel = "Hommel",
+      bonferroni = "Bonferroni",
+      BH = "Benjamini-Hochberg",
+      BY = "Benjamini-Yekutieli",
+      none = "none"
+    )
+  )
+  res$puri <- paste(
+    "Item purification:",
+    ifelse(model$purification, "used", "unutilized")
+  )
   res$thr <- paste0(
-    "Detection threshold: ", -round(model$thr, 4),
-    " and ", round(model$thr, 4), " (significance level: ",
-    model$alpha, ")"
+    "Detection threshold: ",
+    -round(model$thr, 4),
+    " and ",
+    round(model$thr, 4),
+    " (significance level: ",
+    model$alpha,
+    ")"
   )
   res$signed <- paste0(
     "Type of Raju's Z statistic: ",
@@ -4129,7 +4699,8 @@ DIF_Raju_summary_table_note <- reactive({
 })
 
 output$DIF_Raju_summary_table_note <- renderUI({
-  txt_effect <- ifelse(input$DIF_Lord_summary_model == "1PL",
+  txt_effect <- ifelse(
+    input$DIF_Lord_summary_model == "1PL",
     "Effect size codes: 'A': negligible effect; 'B': moderate effect; 'C': large effect </br>
                        Effect size codes: 0 'A' 1.0 'B' 1.5 'C' (for absolute values of 'deltaRaju')",
     ""
@@ -4180,7 +4751,8 @@ output$DIF_Raju_summary_table_download <- downloadHandler(
 
     write.csv(data, file)
 
-    txt_effect <- ifelse(input$DIF_Raju_summary_model == "1PL",
+    txt_effect <- ifelse(
+      input$DIF_Raju_summary_model == "1PL",
       c(
         "Effect size codes: 'A': negligible effect; 'B': moderate effect; 'C': large effect",
         "Effect size codes: 0 'A' 1.0 'B' 1.5 'C' (for absolute values of 'deltaRaju')"
@@ -4188,34 +4760,47 @@ output$DIF_Raju_summary_table_download <- downloadHandler(
       ""
     )
 
-    write(paste(
-      "Notes:",
-      DIF_Raju_summary_table_note()$mod,
-      DIF_Raju_summary_table_note()$p_adj,
-      DIF_Raju_summary_table_note()$puri,
-      DIF_Raju_summary_table_note()$thr,
-      DIF_Raju_summary_table_note()$signed,
-      "Signif. codes: 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1",
-      txt_effect,
-      sep = "\n"
-    ), file, append = TRUE)
+    write(
+      paste(
+        "Notes:",
+        DIF_Raju_summary_table_note()$mod,
+        DIF_Raju_summary_table_note()$p_adj,
+        DIF_Raju_summary_table_note()$puri,
+        DIF_Raju_summary_table_note()$thr,
+        DIF_Raju_summary_table_note()$signed,
+        "Signif. codes: 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1",
+        txt_effect,
+        sep = "\n"
+      ),
+      file,
+      append = TRUE
+    )
   }
 )
 
 # ** Purification info - number of iterations ####
 output$DIF_Raju_summary_purification_info <- renderPrint({
   model <- DIF_Raju_method()
-  if (input$DIF_Raju_summary_purification & !is.null(DIF_Raju_method()$difPur)) {
-    cat("The table below describes purification process. The rows correspond to the purification iteration and the columns
+  if (
+    input$DIF_Raju_summary_purification & !is.null(DIF_Raju_method()$difPur)
+  ) {
+    cat(
+      "The table below describes purification process. The rows correspond to the purification iteration and the columns
         correspond to items. Value of '1' in the i-th row means that an item was detected as DIF in (i-1)-th step,
         while the value of '0' means that the item was not detected as DIF. The first row corresponds to the initial
-        classification of the items when all items were used for the calculation of the DIF matching criterion. ")
+        classification of the items when all items were used for the calculation of the DIF matching criterion. "
+    )
     nrIter <- model$nrPur
     cat(
-      "In this case, the convergence was", ifelse(model$convergence, "reached", "NOT reached even"), "after", nrIter,
+      "In this case, the convergence was",
+      ifelse(model$convergence, "reached", "NOT reached even"),
+      "after",
+      nrIter,
       ifelse(nrIter == 1, "iteration.", "iterations.")
     )
-  } else if (input$DIF_Raju_summary_purification & is.null(DIF_Raju_method()$difPur)) {
+  } else if (
+    input$DIF_Raju_summary_purification & is.null(DIF_Raju_method()$difPur)
+  ) {
     cat("No DIF item was detected whatsoever, nothing to show.")
   } else {
     cat("Item purification was not requested, nothing to show.")
@@ -4268,8 +4853,10 @@ DIF_Raju_items_plot <- reactive({
   item <- input$DIF_Raju_items_item
 
   g <- plotDIFirt(
-    parameters = fitRaju$itemParInit, test = "Raju",
-    item = item, item.name = item_names()[item]
+    parameters = fitRaju$itemParInit,
+    test = "Raju",
+    item = item,
+    item.name = item_names()[item]
   )[[item]]
   g
 })
@@ -4287,14 +4874,22 @@ output$DIF_Raju_items_plot <- renderPlotly({
   p <- ggplotly(g)
 
   p$x$data[[2]]$text <- paste0(
-    "Group: Reference", "<br />",
-    "Ability: ", p$x$data[[2]]$x, "<br />",
-    "Probability: ", p$x$data[[2]]$y
+    "Group: Reference",
+    "<br />",
+    "Ability: ",
+    p$x$data[[2]]$x,
+    "<br />",
+    "Probability: ",
+    p$x$data[[2]]$y
   )
   p$x$data[[3]]$text <- paste0(
-    "Group: Focal", "<br />",
-    "Ability: ", p$x$data[[3]]$x, "<br />",
-    "Probability: ", p$x$data[[3]]$y
+    "Group: Focal",
+    "<br />",
+    "Ability: ",
+    p$x$data[[3]]$x,
+    "<br />",
+    "Probability: ",
+    p$x$data[[3]]$y
   )
   p$x$data[[1]]$text <- NULL
 
@@ -4307,11 +4902,13 @@ output$DIF_Raju_items_plot_download <- downloadHandler(
     paste0("fig_DIFIRTRaju_", item_names()[input$DIF_Raju_items_item], ".png")
   },
   content = function(file) {
-    ggsave(file,
+    ggsave(
+      file,
       plot = DIF_Raju_items_plot() +
         theme(text = element_text(size = setting_figures$text_size)),
       device = "png",
-      height = setting_figures$height, width = setting_figures$width,
+      height = setting_figures$height,
+      width = setting_figures$width,
       dpi = setting_figures$dpi
     )
   }
@@ -4321,19 +4918,26 @@ output$DIF_Raju_items_plot_download <- downloadHandler(
 output$DIF_Raju_items_interpretation <- renderUI({
   type <- input$DIF_Raju_items_model
 
-  txt <- switch(type,
-    "1PL" = paste("As the parameters are estimated separately for the two groups, there is one
+  txt <- switch(
+    type,
+    "1PL" = paste(
+      "As the parameters are estimated separately for the two groups, there is one
                              equation for each group. Parameters \\(b_{iR}\\) and \\(b_{iF}\\)
-                             are difficulties for the reference and the focal group for item \\(i\\). "),
-    "2PL" = paste("As the parameters are estimated separately for the two groups, there is one
+                             are difficulties for the reference and the focal group for item \\(i\\). "
+    ),
+    "2PL" = paste(
+      "As the parameters are estimated separately for the two groups, there is one
                              equation for each group. Parameters \\(a_{iR}\\) and \\(b_{iR}\\) are discrimination
                              and difficulty for the reference group for item \\(i\\). Parameters \\(a_{iF}\\) and \\(b_{iF}\\)
-                             are discrimination and difficulty for the focal group for item \\(i\\). "),
-    "3PL" = paste("As the parameters are estimated separately for the two groups, there is one
+                             are discrimination and difficulty for the focal group for item \\(i\\). "
+    ),
+    "3PL" = paste(
+      "As the parameters are estimated separately for the two groups, there is one
                              equation for each group. Parameters \\(a_{iR}\\) and \\(b_{iR}\\) are discrimination
                              and difficulty for the reference group for item \\(i\\). Parameters  \\(a_{iF}\\) and \\(b_{iF}\\)
                              are discrimination and difficulty for the focal group for item \\(i\\).
-                             Parameter \\(c_i\\) is a common guessing parameter for item \\(i\\). ")
+                             Parameter \\(c_i\\) is a common guessing parameter for item \\(i\\). "
+    )
   )
   HTML(txt)
 })
@@ -4341,29 +4945,43 @@ output$DIF_Raju_items_interpretation <- renderUI({
 # ** Equation ####
 output$DIF_Raju_items_equation <- renderUI({
   type <- input$DIF_Raju_items_model
-  eqR <- switch(type,
-    "1PL" = paste("$$\\mathrm{P}\\left(Y_{pi} = 1 | \\theta_p, G_p = 0\\right) =
+  eqR <- switch(
+    type,
+    "1PL" = paste(
+      "$$\\mathrm{P}\\left(Y_{pi} = 1 | \\theta_p, G_p = 0\\right) =
                               \\frac{e^{\\theta_p - b_{iR}}}
-                              {1 + e^{\\theta_p - b_{iR} }}$$"),
-    "2PL" = paste("$$\\mathrm{P}\\left(Y_{pi} = 1 | \\theta_p, G_p = 0\\right) =
+                              {1 + e^{\\theta_p - b_{iR} }}$$"
+    ),
+    "2PL" = paste(
+      "$$\\mathrm{P}\\left(Y_{pi} = 1 | \\theta_p, G_p = 0\\right) =
                               \\frac{e^{a_{iR} \\left(\\theta_p - b_{iR} \\right)}}
-                              {1 + e^{a_{iR} \\left(\\theta_p - b_{iR} \\right)}}$$"),
-    "3PL" = paste("$$\\mathrm{P}\\left(Y_{pi} = 1 | \\theta_p, G_p = 0\\right) =
+                              {1 + e^{a_{iR} \\left(\\theta_p - b_{iR} \\right)}}$$"
+    ),
+    "3PL" = paste(
+      "$$\\mathrm{P}\\left(Y_{pi} = 1 | \\theta_p, G_p = 0\\right) =
                               c_i + \\left(1 - c_i\\right) \\cdot \\frac{e^{a_{iR}
                               \\left(\\theta_p - b_{iR} \\right)}}
-                              {1 + e^{a_{iR} \\left(\\theta_p - b_{iR} \\right)}}$$")
+                              {1 + e^{a_{iR} \\left(\\theta_p - b_{iR} \\right)}}$$"
+    )
   )
-  eqF <- switch(type,
-    "1PL" = paste("$$\\mathrm{P}\\left(Y_{pi} = 1 | \\theta_p, G_p = 1\\right) =
+  eqF <- switch(
+    type,
+    "1PL" = paste(
+      "$$\\mathrm{P}\\left(Y_{pi} = 1 | \\theta_p, G_p = 1\\right) =
                               \\frac{e^{\\theta_p - b_{iF}}}
-                              {1 + e^{\\theta_p - b_{iF}}}$$"),
-    "2PL" = paste("$$\\mathrm{P}\\left(Y_{pi} = 1 | \\theta_p, G_p = 1\\right) =
+                              {1 + e^{\\theta_p - b_{iF}}}$$"
+    ),
+    "2PL" = paste(
+      "$$\\mathrm{P}\\left(Y_{pi} = 1 | \\theta_p, G_p = 1\\right) =
                               \\frac{e^{a_{iF} \\left(\\theta_p - b_{iF} \\right)}}
-                              {1 + e^{a_{iF} \\left(\\theta_p - b_{iF} \\right)}}$$"),
-    "3PL" = paste("$$\\mathrm{P}\\left(Y_{pi} = 1 | \\theta_p, G_p = 1\\right) =
+                              {1 + e^{a_{iF} \\left(\\theta_p - b_{iF} \\right)}}$$"
+    ),
+    "3PL" = paste(
+      "$$\\mathrm{P}\\left(Y_{pi} = 1 | \\theta_p, G_p = 1\\right) =
                               c_i + \\left(1 - c_i\\right) \\cdot \\frac{e^{a_{iF}
                               \\left(\\theta_p - b_{iF} \\right)}}
-                              {1 + e^{a_{iF} \\left(\\theta_p - b_{iF} \\right)}}$$")
+                              {1 + e^{a_{iF} \\left(\\theta_p - b_{iF} \\right)}}$$"
+    )
   )
   paste(eqR, eqF)
 })
@@ -4383,12 +5001,14 @@ DIF_Raju_items_coef <- reactive({
   }
   par <- rbind(mR, mF)
 
-  wh_coef <- switch(input$DIF_Raju_items_model,
+  wh_coef <- switch(
+    input$DIF_Raju_items_model,
     "1PL" = 1,
     "2PL" = 1:2,
     "3PL" = c(1, 2, 6)
   )
-  wh_sd <- switch(input$DIF_Raju_items_model,
+  wh_sd <- switch(
+    input$DIF_Raju_items_model,
     "1PL" = 2,
     "2PL" = 3:4,
     "3PL" = 3:4
@@ -4407,10 +5027,22 @@ DIF_Raju_items_coef <- reactive({
   }
 
   tab <- data.frame(tab_coef, tab_sd)
-  rownames(tab) <- switch(input$DIF_Raju_items_model,
+  rownames(tab) <- switch(
+    input$DIF_Raju_items_model,
     "1PL" = c("\\(\\mathit{b}_{R}\\)", "\\(\\mathit{b}_{F}\\)"),
-    "2PL" = c("\\(\\mathit{a}_{R}\\)", "\\(\\mathit{a}_{F}\\)", "\\(\\mathit{b}_{R}\\)", "\\(\\mathit{b}_{F}\\)"),
-    "3PL" = c("\\(\\mathit{a}_{R}\\)", "\\(\\mathit{a}_{F}\\)", "\\(\\mathit{b}_{R}\\)", "\\(\\mathit{b}_{F}\\)", "\\(\\mathit{c}\\)")
+    "2PL" = c(
+      "\\(\\mathit{a}_{R}\\)",
+      "\\(\\mathit{a}_{F}\\)",
+      "\\(\\mathit{b}_{R}\\)",
+      "\\(\\mathit{b}_{F}\\)"
+    ),
+    "3PL" = c(
+      "\\(\\mathit{a}_{R}\\)",
+      "\\(\\mathit{a}_{F}\\)",
+      "\\(\\mathit{b}_{R}\\)",
+      "\\(\\mathit{b}_{F}\\)",
+      "\\(\\mathit{c}\\)"
+    )
   )
   colnames(tab) <- c("Estimate", "SE")
   tab
@@ -4436,14 +5068,16 @@ observeEvent(input$DIF_MC_unify_setting, {
     # ** Updating matching ####
     # change DMV only if custom DMV is used
     if (input$DIF_logistic_summary_matching %in% c("uploaded", "zuploaded")) {
-      updateSelectInput(session,
+      updateSelectInput(
+        session,
         inputId = "DIF_logistic_summary_matching",
         selected = "zscore"
       )
     }
 
     if (input$DIF_NLR_summary_matching %in% c("uploaded", "zuploaded")) {
-      updateSelectInput(session,
+      updateSelectInput(
+        session,
         inputId = "DIF_NLR_summary_matching",
         selected = "zscore"
       )
@@ -4455,82 +5089,94 @@ observeEvent(input$DIF_MC_unify_setting, {
   # (when value of reactive remains the same, no additional computation is required)
   # TODO: use mapply and don't repeat the code...
   if (input$DIF_MC_purification == "purify") {
-    lapply(c(
-      "DIF_DP_purification",
-      "DIF_MH_summary_purification",
-      "DIF_logistic_summary_purification",
-      "DIF_NLR_summary_purification",
-      "DIF_Lord_items_purification",
-      "DIF_Raju_summary_purification",
-      "DIF_SIBTEST_purification"
-    ), function(x) {
-      updateCheckboxInput(session,
-        inputId = x,
-        value = TRUE
-      )
-    })
+    lapply(
+      c(
+        "DIF_DP_purification",
+        "DIF_MH_summary_purification",
+        "DIF_logistic_summary_purification",
+        "DIF_NLR_summary_purification",
+        "DIF_Lord_items_purification",
+        "DIF_Raju_summary_purification",
+        "DIF_SIBTEST_purification"
+      ),
+      function(x) {
+        updateCheckboxInput(session, inputId = x, value = TRUE)
+      }
+    )
   } else if (input$DIF_MC_purification == "dontpurify") {
-    lapply(c(
-      "DIF_DP_purification",
-      "DIF_MH_summary_purification",
-      "DIF_logistic_summary_purification",
-      "DIF_NLR_summary_purification",
-      "DIF_Lord_items_purification",
-      "DIF_Raju_summary_purification",
-      "DIF_SIBTEST_purification"
-    ), function(x) {
-      updateCheckboxInput(session,
-        inputId = x,
-        value = FALSE
-      )
-    })
+    lapply(
+      c(
+        "DIF_DP_purification",
+        "DIF_MH_summary_purification",
+        "DIF_logistic_summary_purification",
+        "DIF_NLR_summary_purification",
+        "DIF_Lord_items_purification",
+        "DIF_Raju_summary_purification",
+        "DIF_SIBTEST_purification"
+      ),
+      function(x) {
+        updateCheckboxInput(session, inputId = x, value = FALSE)
+      }
+    )
   }
 
   # ** Updating correction ####
   # note that there is no correction method in deltaPlot
   if (input$DIF_MC_correction != "asis") {
-    lapply(c(
-      "DIF_MH_summary_correction",
-      "DIF_logistic_summary_correction",
-      "DIF_NLR_summary_correction",
-      "DIF_Lord_summary_correction",
-      "DIF_Raju_summary_correction",
-      "DIF_SIBTEST_correction"
-    ), function(x) {
-      updateSelectInput(session,
-        inputId = x,
-        selected = input$DIF_MC_correction
-      )
-    })
+    lapply(
+      c(
+        "DIF_MH_summary_correction",
+        "DIF_logistic_summary_correction",
+        "DIF_NLR_summary_correction",
+        "DIF_Lord_summary_correction",
+        "DIF_Raju_summary_correction",
+        "DIF_SIBTEST_correction"
+      ),
+      function(x) {
+        updateSelectInput(
+          session,
+          inputId = x,
+          selected = input$DIF_MC_correction
+        )
+      }
+    )
   }
 })
 
 # output to be detected by conditionalPanel which in hand shows the button
 output$DIF_MC_unify_setting_condition <- reactive({
   length(DIF_MC_same_purification()) != 0 |
-    length(DIF_MC_same_correction()) != 0 | length(DIF_MC_same_matching()) != 0
+    length(DIF_MC_same_correction()) != 0 |
+    length(DIF_MC_same_matching()) != 0
 })
 
 # in order to evaluate the condition above, it have to be rendered in UI
 # we don't want to render any element, but we can pseudo-render it by setting:
-outputOptions(output, "DIF_MC_unify_setting_condition", suspendWhenHidden = FALSE)
+outputOptions(
+  output,
+  "DIF_MC_unify_setting_condition",
+  suspendWhenHidden = FALSE
+)
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% ####
 # ** MAIN TAB ####
 
 # ** Checking purification across methods ####
 DIF_MC_same_purification <- reactive({
-  if (length(unique(
-    list(
-      input$DIF_DP_purification,
-      input$DIF_MH_summary_purification,
-      input$DIF_logistic_summary_purification,
-      input$DIF_NLR_summary_purification,
-      input$DIF_Lord_items_purification,
-      input$DIF_Raju_summary_purification,
-      input$DIF_SIBTEST_purification
-    )
-  )) != 1) {
+  if (
+    length(unique(
+      list(
+        input$DIF_DP_purification,
+        input$DIF_MH_summary_purification,
+        input$DIF_logistic_summary_purification,
+        input$DIF_NLR_summary_purification,
+        input$DIF_Lord_items_purification,
+        input$DIF_Raju_summary_purification,
+        input$DIF_SIBTEST_purification
+      )
+    )) !=
+      1
+  ) {
     HTML("Warning: Purification differs across the methods.")
   }
 })
@@ -4541,16 +5187,19 @@ output$DIF_MC_same_purification <- renderPrint({
 
 # ** Checking correction across methods ####
 DIF_MC_same_correction <- reactive({
-  if (length(unique(
-    list(
-      input$DIF_MH_summary_correction,
-      input$DIF_logistic_summary_correction,
-      input$DIF_NLR_summary_correction,
-      input$DIF_Lord_summary_correction,
-      input$DIF_Raju_summary_correction,
-      input$DIF_SIBTEST_correction
-    )
-  )) != 1) {
+  if (
+    length(unique(
+      list(
+        input$DIF_MH_summary_correction,
+        input$DIF_logistic_summary_correction,
+        input$DIF_NLR_summary_correction,
+        input$DIF_Lord_summary_correction,
+        input$DIF_Raju_summary_correction,
+        input$DIF_SIBTEST_correction
+      )
+    )) !=
+      1
+  ) {
     HTML("Warning: Correction method varies across the methods.")
   }
 })
@@ -4561,8 +5210,11 @@ output$DIF_MC_same_correction <- renderPrint({
 
 # ** Checking matching across methods ####
 DIF_MC_same_matching <- reactive({
-  if (input$DIF_logistic_summary_matching %in% c("uploaded", "zuploaded") |
-    input$DIF_NLR_summary_matching %in% c("uploaded", "zuploaded")) {
+  if (
+    input$DIF_logistic_summary_matching %in%
+      c("uploaded", "zuploaded") |
+      input$DIF_NLR_summary_matching %in% c("uploaded", "zuploaded")
+  ) {
     HTML("Warning: Observed score should be unified across the methods!")
   }
 })
@@ -4596,12 +5248,16 @@ output$DIF_MC_table <- renderTable(
     # there is need to handle Delta method and DDF differently
     for (j in idx) {
       if (names(l_methods)[j] == "Delta") {
-        if (all(l_methods[[j]] != "no DIF item detected")) v[as.numeric(paste(l_methods[[j]])), j] <- 1
+        if (all(l_methods[[j]] != "no DIF item detected")) {
+          v[as.numeric(paste(l_methods[[j]])), j] <- 1
+        }
       } else {
         # if (names(l_methods)[j] == "DDF"){
         #   if (all(l_methods[[j]] != 'No DDF item detected')) v[as.numeric(paste(l_methods[[j]])), j] <- 1
         # } else {
-        if (all(l_methods[[j]] != "No DIF item detected")) v[as.numeric(paste(l_methods[[j]])), j] <- 1
+        if (all(l_methods[[j]] != "No DIF item detected")) {
+          v[as.numeric(paste(l_methods[[j]])), j] <- 1
+        }
         # }
       }
     }
@@ -4702,8 +5358,14 @@ output$DIF_MC_table_note <- renderUI({
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% ####
 # ** UPDATING INPUTS ####
 
-match_cumulative <- c("DIF_cumulative_summary_matching", "DIF_cumulative_items_matching")
-puri_cumulative <- c("DIF_cumulative_summary_purification", "DIF_cumulative_items_purification")
+match_cumulative <- c(
+  "DIF_cumulative_summary_matching",
+  "DIF_cumulative_items_matching"
+)
+puri_cumulative <- c(
+  "DIF_cumulative_summary_purification",
+  "DIF_cumulative_items_purification"
+)
 
 # ** Updating DIF matching & disable purification if DMV present ####
 observe({
@@ -4747,7 +5409,8 @@ mapply(
       }
     })
   },
-  match = match_cumulative, puri = puri_cumulative
+  match = match_cumulative,
+  puri = puri_cumulative
 )
 
 DIF_cumulative <- reactiveValues(
@@ -4814,14 +5477,19 @@ observeEvent(input$DIF_cumulative_items_parametrization, {
   DIF_cumulative$parametrization <- input$DIF_cumulative_items_parametrization
 })
 observeEvent(DIF_cumulative$parametrization, {
-  if (DIF_cumulative$parametrization != input$DIF_cumulative_summary_parametrization) {
+  if (
+    DIF_cumulative$parametrization !=
+      input$DIF_cumulative_summary_parametrization
+  ) {
     updateCheckboxGroupInput(
       session = session,
       inputId = "DIF_cumulative_summary_parametrization",
       selected = DIF_cumulative$parametrization
     )
   }
-  if (DIF_cumulative$parametrization != input$DIF_cumulative_items_parametrization) {
+  if (
+    DIF_cumulative$parametrization != input$DIF_cumulative_items_parametrization
+  ) {
     updateCheckboxGroupInput(
       session = session,
       inputId = "DIF_cumulative_items_parametrization",
@@ -4862,7 +5530,9 @@ observeEvent(input$DIF_cumulative_items_purification, {
   DIF_cumulative$purification <- input$DIF_cumulative_items_purification
 })
 observeEvent(DIF_cumulative$purification, {
-  if (DIF_cumulative$purification != input$DIF_cumulative_summary_purification) {
+  if (
+    DIF_cumulative$purification != input$DIF_cumulative_summary_purification
+  ) {
     updateCheckboxInput(
       session = session,
       inputId = "DIF_cumulative_summary_purification",
@@ -4927,9 +5597,14 @@ DIF_cumulative_method <- reactive({
   }
 
   fit <- difNLR::difORD(
-    Data = data, group = group,
-    focal.name = 1, model = "cumulative", match = match,
-    type = type, purify = puri, p.adjust.method = corr
+    Data = data,
+    group = group,
+    focal.name = 1,
+    model = "cumulative",
+    match = match,
+    type = type,
+    purify = puri,
+    p.adjust.method = corr
   )
   fit
 })
@@ -4943,14 +5618,30 @@ DIF_cumulative_summary_equation_cumulative <- reactive({
   txt2 <- if (input$DIF_cumulative_summary_parametrization == "irt") {
     paste0(
       "(a_{i} + a_{i\\text{DIF}} G_p)",
-      "(", txt1, " - b_{ik} - b_{ik\\text{DIF}} G_p)"
+      "(",
+      txt1,
+      " - b_{ik} - b_{ik\\text{DIF}} G_p)"
     )
   } else {
-    paste0("\\beta_{i0k} + \\beta_{i1} ", txt1, " + \\beta_{i2} G_p + \\beta_{i3} ", txt1, ":G_p")
+    paste0(
+      "\\beta_{i0k} + \\beta_{i1} ",
+      txt1,
+      " + \\beta_{i2} G_p + \\beta_{i3} ",
+      txt1,
+      ":G_p"
+    )
   }
   txt3 <- "Z_p, G_p"
 
-  txt <- paste0("$$\\mathrm{P}(Y_{pi} \\geq k|", txt3, ") = \\frac{e^{", txt2, "}}{1 + e^{", txt2, "}}$$")
+  txt <- paste0(
+    "$$\\mathrm{P}(Y_{pi} \\geq k|",
+    txt3,
+    ") = \\frac{e^{",
+    txt2,
+    "}}{1 + e^{",
+    txt2,
+    "}}$$"
+  )
   txt
 })
 
@@ -4963,7 +5654,15 @@ DIF_cumulative_summary_equation_category <- reactive({
   txt1 <- "Z_p"
   txt3 <- "Z_p, G_p"
 
-  txt <- paste0("$$\\mathrm{P}(Y_{pi} = k|", txt3, ") = \\mathrm{P}(Y_{pi} \\geq k|", txt3, ") - \\mathrm{P}(Y_{pi} \\geq k + 1|", txt3, ")$$")
+  txt <- paste0(
+    "$$\\mathrm{P}(Y_{pi} = k|",
+    txt3,
+    ") = \\mathrm{P}(Y_{pi} \\geq k|",
+    txt3,
+    ") - \\mathrm{P}(Y_{pi} \\geq k + 1|",
+    txt3,
+    ")$$"
+  )
   txt
 })
 
@@ -4983,7 +5682,10 @@ output$DIF_cumulative_summary_dif_items <- renderPrint({
   if (DIFitems[1] == "No DIF item detected") {
     txt <- "No item was detected as DIF."
   } else {
-    txt <- paste0("Items detected as DIF items: ", paste(item_names()[DIFitems], collapse = ", "))
+    txt <- paste0(
+      "Items detected as DIF items: ",
+      paste(item_names()[DIFitems], collapse = ", ")
+    )
   }
   HTML(txt)
 })
@@ -5025,12 +5727,20 @@ style_coef_names <- function(coef_tab, katex = TRUE) {
       )
       paste0("\\(\\mathit{", inner, "}\\)")
     } else {
-      paste0(par, ifelse(!is.na(idx), paste0("_", idx), ""), ifelse(dif, "_DIF", ""))
+      paste0(
+        par,
+        ifelse(!is.na(idx), paste0("_", idx), ""),
+        ifelse(dif, "_DIF", "")
+      )
     }
   } else {
     nms <- if (katex) {
       tmp <- gsub("_se", "", nms)
-      tmp <- gsub("x", "\\\\beta_1", gsub("group", "\\\\beta_2", gsub("x:group", "\\\\beta_3", tmp)))
+      tmp <- gsub(
+        "x",
+        "\\\\beta_1",
+        gsub("group", "\\\\beta_2", gsub("x:group", "\\\\beta_3", tmp))
+      )
       tmp <- c(
         paste0("\\beta_{0", idx[!is.na(idx)], "}"),
         tmp[-c(1:length(idx))]
@@ -5038,7 +5748,11 @@ style_coef_names <- function(coef_tab, katex = TRUE) {
       paste0("\\(\\mathit{", tmp, "}\\)")
     } else {
       tmp <- gsub("_se", "", nms)
-      tmp <- gsub("x", "beta_1", gsub("group", "beta_2", gsub("x:group", "beta_3", tmp)))
+      tmp <- gsub(
+        "x",
+        "beta_1",
+        gsub("group", "beta_2", gsub("x:group", "beta_3", tmp))
+      )
       tmp <- c(
         paste0("beta_{0", idx[!is.na(idx)], "}"),
         tmp[-c(1:length(idx))]
@@ -5062,7 +5776,8 @@ DIF_cumulative_summary_stats <- reactive({
     fit$adj.pval
   }
 
-  pval_symb <- symnum(pval,
+  pval_symb <- symnum(
+    pval,
     c(0, 0.001, 0.01, 0.05, 0.1, 1),
     symbols = c("***", "**", "*", ".", "")
   )
@@ -5073,7 +5788,11 @@ DIF_cumulative_summary_stats <- reactive({
     `sig. symb.` = pval_symb,
     check.names = FALSE
   )
-  names(out)[names(out) == "pval"] <- if (fit$p.adjust.method != "none") "adj. p-value" else "p-value"
+  names(out)[names(out) == "pval"] <- if (fit$p.adjust.method != "none") {
+    "adj. p-value"
+  } else {
+    "p-value"
+  }
 
   out
 })
@@ -5081,9 +5800,12 @@ DIF_cumulative_summary_stats <- reactive({
 # ** Summary table - item parameters ####
 DIF_cumulative_summary_params <- reactive({
   fit <- DIF_cumulative_method()
-  coefs <- coef(fit,
-    SE = TRUE, IRTpars = (input$DIF_cumulative_summary_parametrization == "irt"),
-    simplify = TRUE, CI = 0
+  coefs <- coef(
+    fit,
+    SE = TRUE,
+    IRTpars = (input$DIF_cumulative_summary_parametrization == "irt"),
+    simplify = TRUE,
+    CI = 0
   )
 
   estims <- coefs[c(TRUE, FALSE), ]
@@ -5103,13 +5825,20 @@ output$DIF_cumulative_summary_coef <- renderTable(
         "p-value" %in% names(stats),
         "\\(\\mathit{p}\\)-value",
         "adj. \\(\\mathit{p}\\)-value"
-      ), ""
+      ),
+      ""
     )
 
     params <- DIF_cumulative_summary_params()
     params <- style_coef_names(params)
 
-    out <- data.frame(stats, "", params, check.names = FALSE, fix.empty.names = FALSE)
+    out <- data.frame(
+      stats,
+      "",
+      params,
+      check.names = FALSE,
+      fix.empty.names = FALSE
+    )
     rownames(out) <- item_names()
     out
   },
@@ -5124,33 +5853,42 @@ DIF_cumulative_summary_table_note <- reactive({
 
   res$matching <- paste(
     "Observed score:",
-    if (fit$match[1] == "score") {
-      "total score"
-    } else if (fit$match[1] == "zscore") {
-      "standardized total score"
-    } else {
-      "standardized uploaded"
-    }
+    switch(input$DIF_cumulative_summary_matching,
+           "uploaded" = "uploaded",
+           "standardized uploaded" = "standardized uploaded",
+           "zscore" = "standardized total score",
+           "score" = "total score"
+    )
   )
-  res$type <- paste("DIF type tested:", switch(fit$type,
-    "both" = "any DIF ",
-    "udif" = "uniform DIF ",
-    "nudif" = "non-uniform DIF "
-  ))
-  res$correction <- paste("P-value correction method:", switch(fit$p.adjust.method,
-    "BH" = "Benjamini-Hochberg",
-    "BY" = "Benjamini-Yekutieli",
-    "bonferroni" = "Bonferroni",
-    "holm" = "Holm",
-    "hochberg" = "Hochberg",
-    "hommel" = "Hommel",
-    "none" = "none"
-  ))
+
+  res$type <- paste(
+    "DIF type tested:",
+    switch(
+      fit$type,
+      "both" = "any DIF ",
+      "udif" = "uniform DIF ",
+      "nudif" = "non-uniform DIF "
+    )
+  )
+  res$correction <- paste(
+    "P-value correction method:",
+    switch(
+      fit$p.adjust.method,
+      "BH" = "Benjamini-Hochberg",
+      "BY" = "Benjamini-Yekutieli",
+      "bonferroni" = "Bonferroni",
+      "holm" = "Holm",
+      "hochberg" = "Hochberg",
+      "hommel" = "Hommel",
+      "none" = "none"
+    )
+  )
 
   res
 })
 
 output$DIF_cumulative_summary_table_note <- renderUI({
+
   note <- DIF_cumulative_summary_table_note()
 
   HTML(
@@ -5177,38 +5915,56 @@ output$DIF_cumulative_summary_table_download <- downloadHandler(
     params <- style_coef_names(params, katex = FALSE)
 
     tab <- data.frame(
-      item = item_names(), stats, params,
-      check.names = FALSE, fix.empty.names = FALSE
+      item = item_names(),
+      stats,
+      params,
+      check.names = FALSE,
+      fix.empty.names = FALSE
     )
     note <- DIF_cumulative_summary_table_note()
 
     write.csv(tab, file)
-    write(paste(
-      "Note:",
-      note$matching,
-      note$type,
-      note$correction,
-      note$purification,
-      "Signif. codes: 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1",
-      sep = "\n"
-    ), file, append = TRUE)
+    write(
+      paste(
+        "Note:",
+        note$matching,
+        note$type,
+        note$correction,
+        note$purification,
+        "Signif. codes: 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1",
+        sep = "\n"
+      ),
+      file,
+      append = TRUE
+    )
   }
 )
 
 # ** Purification info - number of iterations ####
 output$DIF_cumulative_summary_purification_info <- renderPrint({
   fit <- DIF_cumulative_method()
-  if (input$DIF_cumulative_summary_purification & !is.null(DIF_cumulative_method()$difPur)) {
-    cat("The table below describes purification process. The rows correspond to the purification iteration and the columns
+  if (
+    input$DIF_cumulative_summary_purification &
+      !is.null(DIF_cumulative_method()$difPur)
+  ) {
+    cat(
+      "The table below describes purification process. The rows correspond to the purification iteration and the columns
         correspond to items. Value of '1' in the i-th row means that an item was detected as DIF in (i-1)-th step,
         while the value of '0' means that the item was not detected as DIF. The first row corresponds to the initial
-        classification of the items when all items were used for the calculation of the DIF matching criterion. ")
+        classification of the items when all items were used for the calculation of the DIF matching criterion. "
+    )
     nrIter <- fit$nrPur
     cat(
-      "In this case, the convergence was", ifelse(fit$conv.puri, "reached", "NOT reached even"), "after", nrIter,
+      "In this case, the convergence was",
+      ifelse(fit$conv.puri, "reached", "NOT reached even"),
+      "after",
+      nrIter,
       ifelse(nrIter == 1, "iteration.", "iterations.")
     )
-  } else if (input$DIF_cumulative_summary_purification & is.null(DIF_cumulative_method()$difPur)) {
+  } else if (
+    input$DIF_cumulative_summary_purification &
+      is.null(DIF_cumulative_method()$difPur)
+  ) {
     cat("No DIF item was detected whatsoever, nothing to show.")
   } else {
     cat("Item purification was not requested, nothing to show.")
@@ -5301,10 +6057,15 @@ output$DIF_cumulative_items_plot_cumulative <- renderPlotly({
 # ** Download plot - cumulative ####
 output$DIF_cumulative_items_plot_cumulative_download <- downloadHandler(
   filename = function() {
-    paste0("fig_DIF_cumulative_cumulative_", item_names()[input$DIF_cumulative_items], ".png")
+    paste0(
+      "fig_DIF_cumulative_cumulative_",
+      item_names()[input$DIF_cumulative_items],
+      ".png"
+    )
   },
   content = function(file) {
-    ggsave(file,
+    ggsave(
+      file,
       plot = DIF_cumulative_items_plot_cumulative() +
         theme(text = element_text(size = setting_figures$text_size)),
       device = "png",
@@ -5361,10 +6122,15 @@ output$DIF_cumulative_items_plot_category <- renderPlotly({
 # ** Download plot - category ####
 output$DIF_cumulative_items_plot_category_download <- downloadHandler(
   filename = function() {
-    paste0("fig_DIF_cumulative_category_", item_names()[input$DIF_cumulative_items], ".png")
+    paste0(
+      "fig_DIF_cumulative_category_",
+      item_names()[input$DIF_cumulative_items],
+      ".png"
+    )
   },
   content = function(file) {
-    ggsave(file,
+    ggsave(
+      file,
       plot = DIF_cumulative_items_plot_category() +
         theme(text = element_text(size = setting_figures$text_size)),
       device = "png",
@@ -5393,7 +6159,10 @@ DIF_cumulative_items_coef <- reactive({
   item <- input$DIF_cumulative_items
 
   tab <- t(tab[item, ])
-  tab <- data.frame(tab[!grepl("SE", rownames(tab)), ], tab[grepl("SE", rownames(tab)), ])
+  tab <- data.frame(
+    tab[!grepl("SE", rownames(tab)), ],
+    tab[grepl("SE", rownames(tab)), ]
+  )
   colnames(tab) <- c("Estimate", "SE")
 
   tab
@@ -5414,8 +6183,14 @@ output$DIF_cumulative_items_coef <- renderTable(
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% ####
 # ** UPDATING INPUTS ####
 
-match_adjacent <- c("DIF_adjacent_summary_matching", "DIF_adjacent_items_matching")
-puri_adjacent <- c("DIF_adjacent_summary_purification", "DIF_adjacent_items_purification")
+match_adjacent <- c(
+  "DIF_adjacent_summary_matching",
+  "DIF_adjacent_items_matching"
+)
+puri_adjacent <- c(
+  "DIF_adjacent_summary_purification",
+  "DIF_adjacent_items_purification"
+)
 
 # ** Updating DIF matching & disable purification if DMV present ####
 observe({
@@ -5459,7 +6234,8 @@ mapply(
       }
     })
   },
-  match = match_adjacent, puri = puri_adjacent
+  match = match_adjacent,
+  puri = puri_adjacent
 )
 
 DIF_adjacent <- reactiveValues(
@@ -5526,14 +6302,18 @@ observeEvent(input$DIF_adjacent_items_parametrization, {
   DIF_adjacent$parametrization <- input$DIF_adjacent_items_parametrization
 })
 observeEvent(DIF_adjacent$parametrization, {
-  if (DIF_adjacent$parametrization != input$DIF_adjacent_summary_parametrization) {
+  if (
+    DIF_adjacent$parametrization != input$DIF_adjacent_summary_parametrization
+  ) {
     updateCheckboxInput(
       session = session,
       inputId = "DIF_adjacent_summary_parametrization",
       value = DIF_adjacent$parametrization
     )
   }
-  if (DIF_adjacent$parametrization != input$DIF_adjacent_items_parametrization) {
+  if (
+    DIF_adjacent$parametrization != input$DIF_adjacent_items_parametrization
+  ) {
     updateCheckboxInput(
       session = session,
       inputId = "DIF_adjacent_items_parametrization",
@@ -5639,9 +6419,14 @@ DIF_adjacent_model <- reactive({
   }
 
   fit <- difNLR::difORD(
-    Data = data, group = group,
-    focal.name = 1, model = "adjacent", match = match,
-    type = type, purify = puri, p.adjust.method = corr
+    Data = data,
+    group = group,
+    focal.name = 1,
+    model = "adjacent",
+    match = match,
+    type = type,
+    purify = puri,
+    p.adjust.method = corr
   )
   fit
 })
@@ -5655,14 +6440,30 @@ DIF_adjacent_summary_equation <- reactive({
   txt2 <- if (input$DIF_adjacent_summary_parametrization == "irt") {
     paste0(
       "(a_{i} + a_{i\\text{DIF}} G_p)",
-      "(", txt1, " - b_{il} - b_{il\\text{DIF}} G_p)"
+      "(",
+      txt1,
+      " - b_{il} - b_{il\\text{DIF}} G_p)"
     )
   } else {
-    paste0("\\beta_{i0l} + \\beta_{i1} ", txt1, " + \\beta_{i2} G_p + \\beta_{i3} ", txt1, ":G_p")
+    paste0(
+      "\\beta_{i0l} + \\beta_{i1} ",
+      txt1,
+      " + \\beta_{i2} G_p + \\beta_{i3} ",
+      txt1,
+      ":G_p"
+    )
   }
   txt3 <- "Z_p, G_p"
 
-  txt <- paste0("$$\\mathrm{P}(Y_{pi} = k|", txt3, ") = \\frac{e^{\\sum_{l = 0}^{k}", txt2, "}}{\\sum_{j = 0}^{K_i}e^{\\sum_{l = 0}^{j}", txt2, "}}$$")
+  txt <- paste0(
+    "$$\\mathrm{P}(Y_{pi} = k|",
+    txt3,
+    ") = \\frac{e^{\\sum_{l = 0}^{k}",
+    txt2,
+    "}}{\\sum_{j = 0}^{K_i}e^{\\sum_{l = 0}^{j}",
+    txt2,
+    "}}$$"
+  )
   txt
 })
 
@@ -5682,7 +6483,10 @@ output$DIF_adjacent_summary_dif_items <- renderPrint({
   if (DIFitems[1] == "No DIF item detected") {
     txt <- "No item was detected as DIF."
   } else {
-    txt <- paste0("Items detected as DIF items: ", paste(item_names()[DIFitems], collapse = ", "))
+    txt <- paste0(
+      "Items detected as DIF items: ",
+      paste(item_names()[DIFitems], collapse = ", ")
+    )
   }
   HTML(txt)
 })
@@ -5697,7 +6501,8 @@ DIF_adjacent_summary_stats <- reactive({
     fit$adj.pval
   }
 
-  pval_symb <- symnum(pval,
+  pval_symb <- symnum(
+    pval,
     c(0, 0.001, 0.01, 0.05, 0.1, 1),
     symbols = c("***", "**", "*", ".", "")
   )
@@ -5708,7 +6513,11 @@ DIF_adjacent_summary_stats <- reactive({
     `sig. symb.` = pval_symb,
     check.names = FALSE
   )
-  names(out)[names(out) == "pval"] <- if (fit$p.adjust.method != "none") "adj. p-value" else "p-value"
+  names(out)[names(out) == "pval"] <- if (fit$p.adjust.method != "none") {
+    "adj. p-value"
+  } else {
+    "p-value"
+  }
 
   out
 })
@@ -5716,9 +6525,12 @@ DIF_adjacent_summary_stats <- reactive({
 # ** Summary table - item parameters ####
 DIF_adjacent_summary_params <- reactive({
   fit <- DIF_adjacent_model()
-  coefs <- coef(fit,
-    SE = TRUE, IRTpars = (input$DIF_adjacent_summary_parametrization == "irt"),
-    simplify = TRUE, CI = 0
+  coefs <- coef(
+    fit,
+    SE = TRUE,
+    IRTpars = (input$DIF_adjacent_summary_parametrization == "irt"),
+    simplify = TRUE,
+    CI = 0
   )
 
   estims <- coefs[c(TRUE, FALSE), ]
@@ -5738,13 +6550,20 @@ output$DIF_adjacent_summary_coef <- renderTable(
         "p-value" %in% names(stats),
         "\\(\\mathit{p}\\)-value",
         "adj. \\(\\mathit{p}\\)-value"
-      ), ""
+      ),
+      ""
     )
 
     params <- DIF_adjacent_summary_params()
     params <- style_coef_names(params)
 
-    out <- data.frame(stats, "", params, check.names = FALSE, fix.empty.names = FALSE)
+    out <- data.frame(
+      stats,
+      "",
+      params,
+      check.names = FALSE,
+      fix.empty.names = FALSE
+    )
     rownames(out) <- item_names()
     out
   },
@@ -5759,30 +6578,41 @@ DIF_adjacent_summary_table_note <- reactive({
 
   res$matching <- paste(
     "Observed score:",
-    if (fit$match[1] == "score") {
-      "total score"
-    } else if (fit$match[1] == "zscore") {
-      "standardized total score"
-    } else {
-      "standardized uploaded"
-    }
+    switch(input$DIF_adjacent_summary_matching,
+           "uploaded" = "uploaded",
+           "standardized uploaded" = "standardized uploaded",
+           "zscore" = "standardized total score",
+           "score" = "total score"
+    )
   )
-  res$type <- paste("DIF type tested:", switch(fit$type,
-    "both" = "any DIF ",
-    "udif" = "uniform DIF ",
-    "nudif" = "non-uniform DIF "
-  ))
-  res$correction <- paste("P-value correction method:", switch(fit$p.adjust.method,
-    "BH" = "Benjamini-Hochberg",
-    "BY" = "Benjamini-Yekutieli",
-    "bonferroni" = "Bonferroni",
-    "holm" = "Holm",
-    "hochberg" = "Hochberg",
-    "hommel" = "Hommel",
-    "none" = "none"
-  ))
 
-  res$purification <- paste("Item purification:", ifelse(fit$purification, "used", "unutilized"))
+  res$type <- paste(
+    "DIF type tested:",
+    switch(
+      fit$type,
+      "both" = "any DIF ",
+      "udif" = "uniform DIF ",
+      "nudif" = "non-uniform DIF "
+    )
+  )
+  res$correction <- paste(
+    "P-value correction method:",
+    switch(
+      fit$p.adjust.method,
+      "BH" = "Benjamini-Hochberg",
+      "BY" = "Benjamini-Yekutieli",
+      "bonferroni" = "Bonferroni",
+      "holm" = "Holm",
+      "hochberg" = "Hochberg",
+      "hommel" = "Hommel",
+      "none" = "none"
+    )
+  )
+
+  res$purification <- paste(
+    "Item purification:",
+    ifelse(fit$purification, "used", "unutilized")
+  )
   res
 })
 
@@ -5812,37 +6642,58 @@ output$DIF_adjacent_summary_table_download <- downloadHandler(
     params <- DIF_adjacent_summary_params()
     params <- style_coef_names(params, katex = FALSE)
 
-    tab <- data.frame(item = item_names(), stats, params, check.names = FALSE, fix.empty.names = FALSE)
+    tab <- data.frame(
+      item = item_names(),
+      stats,
+      params,
+      check.names = FALSE,
+      fix.empty.names = FALSE
+    )
     note <- DIF_adjacent_summary_table_note()
 
     write.csv(tab, file)
 
-    write(paste(
-      "Note:",
-      note$matching,
-      note$type,
-      note$correction,
-      note$purification,
-      "Signif. codes: 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1",
-      sep = "\n"
-    ), file, append = TRUE)
+    write(
+      paste(
+        "Note:",
+        note$matching,
+        note$type,
+        note$correction,
+        note$purification,
+        "Signif. codes: 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1",
+        sep = "\n"
+      ),
+      file,
+      append = TRUE
+    )
   }
 )
 
 # ** Purification info - number of iterations ####
 output$DIF_adjacent_summary_purification_info <- renderPrint({
   model <- DIF_adjacent_model()
-  if (input$DIF_adjacent_summary_purification & !is.null(DIF_adjacent_model()$difPur)) {
-    cat("The table below describes the purification process. The rows correspond to the purification iteration and the columns
+  if (
+    input$DIF_adjacent_summary_purification &
+      !is.null(DIF_adjacent_model()$difPur)
+  ) {
+    cat(
+      "The table below describes the purification process. The rows correspond to the purification iteration and the columns
         correspond to items. Value of '1' in the i-th row means that an item was detected as DIF in (i-1)-th step, while the
         value of '0' means that the item was not detected as DIF. The first row corresponds to the initial classification of the items when all items
-        were used for calculation of the DIF matching criterion. ")
+        were used for calculation of the DIF matching criterion. "
+    )
     nrIter <- model$nrPur
     cat(
-      "In this case, the convergence was", ifelse(model$conv.puri, "reached", "NOT reached even"), "after", nrIter,
+      "In this case, the convergence was",
+      ifelse(model$conv.puri, "reached", "NOT reached even"),
+      "after",
+      nrIter,
       ifelse(nrIter == 1, "iteration.", "iterations.")
     )
-  } else if (input$DIF_adjacent_summary_purification & is.null(DIF_adjacent_model()$difPur)) {
+  } else if (
+    input$DIF_adjacent_summary_purification &
+      is.null(DIF_adjacent_model()$difPur)
+  ) {
     cat("No DIF items detected whatsoever, nothing to show.")
   } else {
     cat("Item purification not requested! Nothing to show.")
@@ -5938,7 +6789,8 @@ output$DIF_adjacent_items_plot_download <- downloadHandler(
     paste0("fig_DIF_adjacent_", item_names()[input$DIF_adjacent_items], ".png")
   },
   content = function(file) {
-    ggsave(file,
+    ggsave(
+      file,
       plot = DIF_adjacent_items_plot() +
         theme(text = element_text(size = setting_figures$text_size)),
       device = "png",
@@ -5962,7 +6814,10 @@ DIF_adjacent_items_coef <- reactive({
   item <- input$DIF_adjacent_items
 
   tab <- t(tab[item, ])
-  tab <- data.frame(tab[!grepl("SE", rownames(tab)), ], tab[grepl("SE", rownames(tab)), ])
+  tab <- data.frame(
+    tab[!grepl("SE", rownames(tab)), ],
+    tab[grepl("SE", rownames(tab)), ]
+  )
   colnames(tab) <- c("Estimate", "SE")
 
   tab
@@ -5983,8 +6838,14 @@ output$DIF_adjacent_items_coef <- renderTable(
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% ####
 # ** UPDATING INPUTS ####
 
-match_multinomial <- c("DIF_multinomial_summary_matching", "DIF_multinomial_items_matching")
-puri_multinomial <- c("DIF_multinomial_summary_purification", "DIF_multinomial_items_purification")
+match_multinomial <- c(
+  "DIF_multinomial_summary_matching",
+  "DIF_multinomial_items_matching"
+)
+puri_multinomial <- c(
+  "DIF_multinomial_summary_purification",
+  "DIF_multinomial_items_purification"
+)
 
 # ** Updating DIF matching & disable purification if DMV present ####
 observe({
@@ -6028,7 +6889,8 @@ mapply(
       }
     })
   },
-  match = match_multinomial, puri = puri_multinomial
+  match = match_multinomial,
+  puri = puri_multinomial
 )
 
 DIF_multinomial <- reactiveValues(
@@ -6095,14 +6957,20 @@ observeEvent(input$DIF_multinomial_items_parametrization, {
   DIF_multinomial$parametrization <- input$DIF_multinomial_items_parametrization
 })
 observeEvent(DIF_multinomial$parametrization, {
-  if (DIF_multinomial$parametrization != input$DIF_multinomial_summary_parametrization) {
+  if (
+    DIF_multinomial$parametrization !=
+      input$DIF_multinomial_summary_parametrization
+  ) {
     updateCheckboxInput(
       session = session,
       inputId = "DIF_multinomial_summary_parametrization",
       value = DIF_multinomial$parametrization
     )
   }
-  if (DIF_multinomial$parametrization != input$DIF_multinomial_items_parametrization) {
+  if (
+    DIF_multinomial$parametrization !=
+      input$DIF_multinomial_items_parametrization
+  ) {
     updateCheckboxInput(
       session = session,
       inputId = "DIF_multinomial_items_parametrization",
@@ -6143,14 +7011,18 @@ observeEvent(input$DIF_multinomial_items_purification, {
   DIF_multinomial$purification <- input$DIF_multinomial_items_purification
 })
 observeEvent(DIF_multinomial$purification, {
-  if (DIF_multinomial$purification != input$DIF_multinomial_summary_purification) {
+  if (
+    DIF_multinomial$purification != input$DIF_multinomial_summary_purification
+  ) {
     updateCheckboxInput(
       session = session,
       inputId = "DIF_multinomial_summary_purification",
       value = DIF_multinomial$purification
     )
   }
-  if (DIF_multinomial$purification != input$DIF_multinomial_items_purification) {
+  if (
+    DIF_multinomial$purification != input$DIF_multinomial_items_purification
+  ) {
     updateCheckboxInput(
       session = session,
       inputId = "DIF_multinomial_items_purification",
@@ -6194,9 +7066,14 @@ DIF_multinomial_method <- reactive({
 
   fit <- tryCatch(
     ddfMLR(
-      Data = data, group = group, focal.name = 1, match = match,
-      key = key, p.adjust.method = corr,
-      type = type, purify = puri
+      Data = data,
+      group = group,
+      focal.name = 1,
+      match = match,
+      key = key,
+      p.adjust.method = corr,
+      type = type,
+      purify = puri
     ),
     error = function(e) e
   )
@@ -6204,7 +7081,10 @@ DIF_multinomial_method <- reactive({
   validate(
     need(
       class(fit) == "ddfMLR",
-      paste0("This method cannot be used on this data. Error returned: ", fit$message)
+      paste0(
+        "This method cannot be used on this data. Error returned: ",
+        fit$message
+      )
     ),
     errorClass = "validation-error"
   )
@@ -6221,14 +7101,28 @@ DIF_multinomial_summary_equation_correct <- reactive({
   txt2 <- if (input$DIF_multinomial_summary_parametrization == "irt") {
     paste0(
       "(a_{il} + a_{il\\text{DIF}} G_p)",
-      "(", txt1, " - b_{il} - b_{il\\text{DIF}} G_p)"
+      "(",
+      txt1,
+      " - b_{il} - b_{il\\text{DIF}} G_p)"
     )
   } else {
-    paste0("\\beta_{i0l} + \\beta_{i1l} ", txt1, " + \\beta_{i2l} G_p + \\beta_{i3l} ", txt1, ":G_p")
+    paste0(
+      "\\beta_{i0l} + \\beta_{i1l} ",
+      txt1,
+      " + \\beta_{i2l} G_p + \\beta_{i3l} ",
+      txt1,
+      ":G_p"
+    )
   }
   txt3 <- "Z_p, G_p"
 
-  txt <- paste0("$$\\mathrm{P}(Y_{pi} = K_i|", txt3, ") = \\frac{1}{\\sum_{l} e^{", txt2, "}}$$")
+  txt <- paste0(
+    "$$\\mathrm{P}(Y_{pi} = K_i|",
+    txt3,
+    ") = \\frac{1}{\\sum_{l} e^{",
+    txt2,
+    "}}$$"
+  )
   txt
 })
 
@@ -6242,22 +7136,46 @@ DIF_multinomial_summary_equation_distractor <- reactive({
   txt2 <- if (input$DIF_multinomial_summary_parametrization == "irt") {
     paste0(
       "(a_{ik} + a_{ik\\text{DIF}} G_p)",
-      "(", txt1, " - b_{ik} - b_{ik\\text{DIF}} G_p)"
+      "(",
+      txt1,
+      " - b_{ik} - b_{ik\\text{DIF}} G_p)"
     )
   } else {
-    paste0("\\beta_{i0k} + \\beta_{i1k} ", txt1, " + \\beta_{i2k} G_p + \\beta_{i3k} ", txt1, ":G_p")
+    paste0(
+      "\\beta_{i0k} + \\beta_{i1k} ",
+      txt1,
+      " + \\beta_{i2k} G_p + \\beta_{i3k} ",
+      txt1,
+      ":G_p"
+    )
   }
   txt3 <- if (input$DIF_multinomial_summary_parametrization == "irt") {
     paste0(
       "(a_{il} + a_{il\\text{DIF}} G_p)",
-      "(", txt1, " - b_{il} - b_{il\\text{DIF}} G_p)"
+      "(",
+      txt1,
+      " - b_{il} - b_{il\\text{DIF}} G_p)"
     )
   } else {
-    paste0("\\beta_{i0l} + \\beta_{i1l} ", txt1, " + \\beta_{i2l} G_p + \\beta_{i3l} ", txt1, ":G_p")
+    paste0(
+      "\\beta_{i0l} + \\beta_{i1l} ",
+      txt1,
+      " + \\beta_{i2l} G_p + \\beta_{i3l} ",
+      txt1,
+      ":G_p"
+    )
   }
   txt4 <- "Z_p, G_p"
 
-  txt <- paste0("$$\\mathrm{P}(Y_{pi} = k|", txt4, ") = \\frac{e^{", txt2, "}}{\\sum_{l} e^{", txt3, "}}$$")
+  txt <- paste0(
+    "$$\\mathrm{P}(Y_{pi} = k|",
+    txt4,
+    ") = \\frac{e^{",
+    txt2,
+    "}}{\\sum_{l} e^{",
+    txt3,
+    "}}$$"
+  )
   txt
 })
 
@@ -6277,7 +7195,10 @@ output$DIF_multinomial_summary_dif_items <- renderPrint({
   if (DDFitems[1] == "No DDF item detected") {
     txt <- "No item was detected as DDF."
   } else {
-    txt <- paste0("Items detected as DDF items: ", paste(item_names()[DDFitems], collapse = ", "))
+    txt <- paste0(
+      "Items detected as DDF items: ",
+      paste(item_names()[DDFitems], collapse = ", ")
+    )
   }
   HTML(txt)
 })
@@ -6293,7 +7214,8 @@ DIF_multinomial_summary_coef <- reactive({
     fit$adj.pval
   }
 
-  pval_symb <- symnum(pval,
+  pval_symb <- symnum(
+    pval,
     c(0, 0.001, 0.01, 0.05, 0.1, 1),
     symbols = c("***", "**", "*", ".", "")
   )
@@ -6337,30 +7259,41 @@ DIF_multinomial_summary_table_note <- reactive({
   fit <- DIF_multinomial_method()
 
   res$matching <- paste(
-    "DDF matching variable:",
-    if (fit$match[1] == "score") {
-      "total score"
-    } else if (fit$match[1] == "zscore") {
-      "standardized total score"
-    } else {
-      "standardized uploaded"
-    }
+    "Observed score:",
+    switch(input$DIF_multinomial_summary_matching,
+           "uploaded" = "uploaded",
+           "standardized uploaded" = "standardized uploaded",
+           "zscore" = "standardized total score",
+           "score" = "total score"
+    )
   )
-  res$type <- paste("DDF type tested:", switch(fit$type,
-    "both" = "any DDF ",
-    "udif" = "uniform DDF ",
-    "nudif" = "non-uniform DDF "
-  ))
-  res$correction <- paste("P-value correction method:", switch(fit$p.adjust.method,
-    "BH" = "Benjamini-Hochberg",
-    "BY" = "Benjamini-Yekutieli",
-    "bonferroni" = "Bonferroni",
-    "holm" = "Holm",
-    "hochberg" = "Hochberg",
-    "hommel" = "Hommel",
-    "none" = "none"
-  ))
-  res$purification <- paste("Item purification:", ifelse(fit$purification, "used", "unutilized"))
+
+  res$type <- paste(
+    "DDF type tested:",
+    switch(
+      fit$type,
+      "both" = "any DDF ",
+      "udif" = "uniform DDF ",
+      "nudif" = "non-uniform DDF "
+    )
+  )
+  res$correction <- paste(
+    "P-value correction method:",
+    switch(
+      fit$p.adjust.method,
+      "BH" = "Benjamini-Hochberg",
+      "BY" = "Benjamini-Yekutieli",
+      "bonferroni" = "Bonferroni",
+      "holm" = "Holm",
+      "hochberg" = "Hochberg",
+      "hommel" = "Hommel",
+      "none" = "none"
+    )
+  )
+  res$purification <- paste(
+    "Item purification:",
+    ifelse(fit$purification, "used", "unutilized")
+  )
   res
 })
 
@@ -6401,15 +7334,19 @@ output$DIF_multinomial_summary_table_download <- downloadHandler(
     note <- DIF_multinomial_summary_table_note()
 
     write.csv(table, file)
-    write(paste(
-      "Note:",
-      note$matching,
-      note$type,
-      note$correction,
-      note$purification,
-      "Signif. codes: 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1",
-      sep = "\n"
-    ), file, append = TRUE)
+    write(
+      paste(
+        "Note:",
+        note$matching,
+        note$type,
+        note$correction,
+        note$purification,
+        "Signif. codes: 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1",
+        sep = "\n"
+      ),
+      file,
+      append = TRUE
+    )
   }
 )
 
@@ -6418,14 +7355,24 @@ DIF_multinomial_summary_coef_parameters <- reactive({
   fit <- DIF_multinomial_method()
 
   # estimated coefficients for all items with standard errors
-  coefs <- coef(fit, SE = TRUE, IRTpars = (input$DIF_multinomial_summary_parametrization == "irt"), simplify = TRUE, CI = 0)
+  coefs <- coef(
+    fit,
+    SE = TRUE,
+    IRTpars = (input$DIF_multinomial_summary_parametrization == "irt"),
+    simplify = TRUE,
+    CI = 0
+  )
 
   # adding missing columns if necessary / ordering columns
   if (input$DIF_multinomial_summary_parametrization == "classic") {
     new_cols <- c(group = 0, "x:group" = 0)
-    coefs <- coefs |> add_column(!!!new_cols[setdiff(names(new_cols), names(coefs))])
+    coefs <- coefs |>
+      add_column(!!!new_cols[setdiff(names(new_cols), names(coefs))])
   } else {
-    coefs <- coefs[, c(which(grepl("a", colnames(coefs))), which(!grepl("a", colnames(coefs))))]
+    coefs <- coefs[, c(
+      which(grepl("a", colnames(coefs))),
+      which(!grepl("a", colnames(coefs)))
+    )]
   }
   estims <- coefs[grepl("estimate", rownames(coefs)), ]
   ses <- coefs[!grepl("estimate", rownames(coefs)), ]
@@ -6435,7 +7382,8 @@ DIF_multinomial_summary_coef_parameters <- reactive({
   if (input$DIF_multinomial_summary_parametrization == "irt") {
     est_pars <- c("a", "a_{\\mathrm{DIF}}", "b", "b_{\\mathrm{DIF}}")
     n_est_pars <- ncol(pars) / 2
-    which_est_pars <- switch(paste(n_est_pars),
+    which_est_pars <- switch(
+      paste(n_est_pars),
       "2" = c(1, 3),
       "3" = c(1, 3, 4),
       "4" = 1:4
@@ -6450,11 +7398,7 @@ DIF_multinomial_summary_coef_parameters <- reactive({
   } else {
     est_pars <- c("\\beta_0", "\\beta_1", "\\beta_2", "\\beta_3")
     n_est_pars <- ncol(pars) / 2
-    which_est_pars <- switch(paste(n_est_pars),
-      "2" = 1:2,
-      "3" = 1:3,
-      "4" = 1:4
-    )
+    which_est_pars <- switch(paste(n_est_pars), "2" = 1:2, "3" = 1:3, "4" = 1:4)
     est_pars <- est_pars[which_est_pars]
 
     colnames(pars) <- paste0(
@@ -6494,32 +7438,47 @@ output$DIF_multinomial_summary_parameters_download <- downloadHandler(
     note <- DIF_multinomial_summary_table_note()
 
     write.csv(table, file)
-    write(paste(
-      "Note:",
-      note$matching,
-      note$type,
-      note$correction,
-      note$purification,
-      "Signif. codes: 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1",
-      sep = "\n"
-    ), file, append = TRUE)
+    write(
+      paste(
+        "Note:",
+        note$matching,
+        note$type,
+        note$correction,
+        note$purification,
+        "Signif. codes: 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1",
+        sep = "\n"
+      ),
+      file,
+      append = TRUE
+    )
   }
 )
 
 # ** Purification info - number of iterations ####
 output$DIF_multinomial_summary_purification_info <- renderPrint({
   fit <- DIF_multinomial_method()
-  if (input$DIF_multinomial_summary_purification & !is.null(DIF_multinomial_method()$ddfPur)) {
-    cat("The table below describes the purification process. The rows correspond to the purification iteration and the columns
+  if (
+    input$DIF_multinomial_summary_purification &
+      !is.null(DIF_multinomial_method()$ddfPur)
+  ) {
+    cat(
+      "The table below describes the purification process. The rows correspond to the purification iteration and the columns
         correspond to items. Value of '1' in the i-th row means that an item was detected as DDF in (i-1)-th step, while the
         value of '0' means that the item was not detected as DDF. The first row corresponds to the initial classification of the items when all items
-        were used for calculation of the DIF matching criterion. ")
+        were used for calculation of the DIF matching criterion. "
+    )
     nrIter <- fit$nrPur
     cat(
-      "In this case, the convergence was", ifelse(fit$conv.puri, "reached", "NOT reached even"), "after", nrIter,
+      "In this case, the convergence was",
+      ifelse(fit$conv.puri, "reached", "NOT reached even"),
+      "after",
+      nrIter,
       ifelse(nrIter == 1, "iteration.", "iterations.")
     )
-  } else if (input$DIF_multinomial_summary_purification & is.null(DIF_multinomial_method()$ddfPur)) {
+  } else if (
+    input$DIF_multinomial_summary_purification &
+      is.null(DIF_multinomial_method()$ddfPur)
+  ) {
     cat("No DDF items detected whatsoever, nothing to show.")
   } else {
     cat("Item purification not requested! Nothing to show.")
@@ -6624,10 +7583,15 @@ output$DIF_multinomial_items_plot <- renderPlotly({
 # ** Download plot ####
 output$DIF_multinomial_items_plot_download <- downloadHandler(
   filename = function() {
-    paste0("fig_DIF_multinomial_", item_names()[input$DIF_multinomial_items], ".png")
+    paste0(
+      "fig_DIF_multinomial_",
+      item_names()[input$DIF_multinomial_items],
+      ".png"
+    )
   },
   content = function(file) {
-    ggsave(file,
+    ggsave(
+      file,
       plot = DIF_multinomial_items_plot() +
         theme(text = element_text(size = setting_figures$text_size)),
       device = "png",
@@ -6653,7 +7617,8 @@ output$DIF_multinomial_items_plot_download_all <- downloadHandler(
     for (i in 1:ncol(ordinal())) {
       # write each sheet to a csv file, save the name
       fileName <- paste0("fig_DIF_multinomial_", item_names()[i], ".png")
-      ggsave(fileName,
+      ggsave(
+        fileName,
         plot = DIF_multinomial_items_plot_all()[[i]] +
           theme(text = element_text(size = setting_figures$text_size)),
         device = "png",
@@ -6677,29 +7642,58 @@ output$DIF_multinomial_items_equation <- renderUI({
   txt2 <- if (input$DIF_multinomial_items_parametrization == "irt") {
     paste0(
       "(a_{ik} + a_{ik\\text{DIF}} G_p)",
-      "(", txt1, " - b_{ik} - b_{ik\\text{DIF}} G_p)"
+      "(",
+      txt1,
+      " - b_{ik} - b_{ik\\text{DIF}} G_p)"
     )
   } else {
-    paste0("\\beta_{i0k} + \\beta_{i1k} ", txt1, " + \\beta_{i2k} G_p + \\beta_{i3k} ", txt1, ":G_p")
+    paste0(
+      "\\beta_{i0k} + \\beta_{i1k} ",
+      txt1,
+      " + \\beta_{i2k} G_p + \\beta_{i3k} ",
+      txt1,
+      ":G_p"
+    )
   }
   txt3 <- if (input$DIF_multinomial_summary_parametrization == "irt") {
     paste0(
       "(a_{il} + a_{il\\text{DIF}} G_p)",
-      "(", txt1, " - b_{il} - b_{il\\text{DIF}} G_p)"
+      "(",
+      txt1,
+      " - b_{il} - b_{il\\text{DIF}} G_p)"
     )
   } else {
-    paste0("\\beta_{i0l} + \\beta_{i1l} ", txt1, " + \\beta_{i2l} G_p + \\beta_{i3l} ", txt1, ":G_p")
+    paste0(
+      "\\beta_{i0l} + \\beta_{i1l} ",
+      txt1,
+      " + \\beta_{i2l} G_p + \\beta_{i3l} ",
+      txt1,
+      ":G_p"
+    )
   }
   txt4 <- "Z_p, G_p"
 
-
   cor_option <- key[item]
   HTML(paste(sprintf(
-    paste("For item %s, corresponding equations for the multinomial model are given by:
-      $$\\mathrm{P}(Y_{pi} = %s|", txt4, ") = \\frac{1}{\\sum_{l} e^{", txt3, "}}, $$,
-      $$\\mathrm{P}(Y_{pi} = k|", txt4, ") = \\frac{e^{", txt2, "}}{\\sum_{l} e^{", txt3, "}}, $$
-      where \\(%s\\) is the correct answer and \\(k\\) is one of the wrong options (distractors). "),
-    item, cor_option, cor_option
+    paste(
+      "For item %s, corresponding equations for the multinomial model are given by:
+      $$\\mathrm{P}(Y_{pi} = %s|",
+      txt4,
+      ") = \\frac{1}{\\sum_{l} e^{",
+      txt3,
+      "}}, $$,
+      $$\\mathrm{P}(Y_{pi} = k|",
+      txt4,
+      ") = \\frac{e^{",
+      txt2,
+      "}}{\\sum_{l} e^{",
+      txt3,
+      "}}, $$
+      where \\(%s\\) is the correct answer and \\(k\\) is one of the wrong options (distractors). "
+    ),
+    item,
+    cor_option,
+    cor_option
   )))
 })
 
@@ -6736,9 +7730,14 @@ report_DIF_multinomial_method <- reactive({
 
     fit <- tryCatch(
       ddfMLR(
-        Data = data, group = group, focal.name = 1, # match = match,
-        key = key, p.adjust.method = corr,
-        type = type, purify = puri, parametrization = "classic"
+        Data = data,
+        group = group,
+        focal.name = 1, # match = match,
+        key = key,
+        p.adjust.method = corr,
+        type = type,
+        purify = puri,
+        parametrization = "classic"
       ),
       error = function(e) e
     )
@@ -6746,7 +7745,10 @@ report_DIF_multinomial_method <- reactive({
     validate(
       need(
         class(fit) == "ddfMLR",
-        paste0("This method cannot be used on this data. Error returned: ", fit$message)
+        paste0(
+          "This method cannot be used on this data. Error returned: ",
+          fit$message
+        )
       ),
       errorClass = "validation-error"
     )
@@ -6767,7 +7769,10 @@ report_DIF_multinomial_plot <- reactive({
           text = element_text(size = 12),
           plot.title = element_text(size = 12, face = "bold", vjust = 1.5)
         ) +
-        ggtitle(paste("\nDDF multinomial plot for item ", item_numbers()[fit$DDFitems[i]]))
+        ggtitle(paste(
+          "\nDDF multinomial plot for item ",
+          item_numbers()[fit$DDFitems[i]]
+        ))
       graflist[[i]] <- g
     }
   } else {
@@ -6809,22 +7814,32 @@ output$DIF_training_interpretation <- renderUI({
     the ability ",
     paste0("\\(\\theta= ", theta0, "\\)"),
     " has the probability of the correct answer to an item with parameters ",
-    paste0("\\(a = ", aR, "\\),"), " ",
-    paste0("\\(b = ", bR, "\\),"), " ",
-    paste0("\\(c = ", cR, "\\),"), " and ",
+    paste0("\\(a = ", aR, "\\),"),
+    " ",
+    paste0("\\(b = ", bR, "\\),"),
+    " ",
+    paste0("\\(c = ", cR, "\\),"),
+    " and ",
     paste0("\\(d = ", dR, "\\)"),
-    " equal to <b>", sprintf("%.2f", probR), "</b>. "
+    " equal to <b>",
+    sprintf("%.2f", probR),
+    "</b>. "
   )
   txt2 <- paste0(
     "In the <font color='#e6b800'><b>focal</b></font> group, a respondent with
     the ability ",
     paste0("\\(\\theta= ", theta0, "\\)"),
     "has the probability of the correct answer  to an item with parameters ",
-    paste0("\\(a = ", aF, "\\),"), " ",
-    paste0("\\(b = ", bF, "\\),"), " ",
-    paste0("\\(c = ", cF, "\\),"), " and ",
+    paste0("\\(a = ", aF, "\\),"),
+    " ",
+    paste0("\\(b = ", bF, "\\),"),
+    " ",
+    paste0("\\(c = ", cF, "\\),"),
+    " and ",
     paste0("\\(d = ", dF, "\\)"),
-    " equal to <b>", sprintf("%.2f", probF), "</b>. "
+    " equal to <b>",
+    sprintf("%.2f", probF),
+    "</b>. "
   )
 
   txt <- paste0("<b>Interpretation: </b>", txt1, txt2)
@@ -6858,32 +7873,48 @@ DIF_training_plot <- reactive({
     Ability = seq(-4, 4, 0.01)
   )
 
-  df <- tidyr::pivot_longer(df, -Ability, names_to = "Group", values_to = "Probability")
+  df <- tidyr::pivot_longer(
+    df,
+    -Ability,
+    names_to = "Group",
+    values_to = "Probability"
+  )
   df$Group <- factor(df$Group, levels = c("Reference", "Focal"))
 
-  g <- ggplot(data = df, aes(x = Ability, y = Probability, col = Group, linetype = Group)) +
+  g <- ggplot(
+    data = df,
+    aes(x = Ability, y = Probability, col = Group, linetype = Group)
+  ) +
     geom_line(size = 0.8) +
     geom_segment(
       aes(
-        y = probR, yend = probR,
-        x = -4, xend = theta0
+        y = probR,
+        yend = probR,
+        x = -4,
+        xend = theta0
       ),
-      color = "gray", linetype = "dotdash"
+      color = "gray",
+      linetype = "dotdash"
     ) +
     geom_segment(
       aes(
-        y = probF, yend = probF,
-        x = -4, xend = theta0
+        y = probF,
+        yend = probF,
+        x = -4,
+        xend = theta0
       ),
-      color = "gray", linetype = "dotdash"
+      color = "gray",
+      linetype = "dotdash"
     ) +
     geom_segment(
       aes(
         y = 0,
         yend = max(probR, probF),
-        x = theta0, xend = theta0
+        x = theta0,
+        xend = theta0
       ),
-      color = "gray", linetype = "dotdash"
+      color = "gray",
+      linetype = "dotdash"
     ) +
     xlim(-4, 4) +
     xlab("Ability") +
@@ -6893,24 +7924,16 @@ DIF_training_plot <- reactive({
       name = "",
       values = c("blue", "#e6b800"),
       labels = c(
-        paste(paste(letters[1:2], "=", c(aR, bR)),
-          collapse = ", "
-        ),
-        paste(paste(paste(letters[1:2], "=", c(aF, bF))),
-          collapse = ", "
-        )
+        paste(paste(letters[1:2], "=", c(aR, bR)), collapse = ", "),
+        paste(paste(paste(letters[1:2], "=", c(aF, bF))), collapse = ", ")
       )
     ) +
     scale_linetype_manual(
       name = "",
       values = c("solid", "dashed"),
       labels = c(
-        paste(paste(letters[1:2], "=", c(aR, bR)),
-          collapse = ", "
-        ),
-        paste(paste(paste(letters[1:2], "=", c(aF, bF))),
-          collapse = ", "
-        )
+        paste(paste(letters[1:2], "=", c(aR, bR)), collapse = ", "),
+        paste(paste(paste(letters[1:2], "=", c(aF, bF))), collapse = ", ")
       )
     ) +
     theme_app()
@@ -6922,25 +7945,42 @@ output$DIF_training_plot <- renderPlotly({
   p <- ggplotly(g)
 
   # Reference group, probabilities
-  text <- gsub("Group: Reference<br />Group: Reference", "Group: Reference", p$x$data[[1]]$text)
+  text <- gsub(
+    "Group: Reference<br />Group: Reference",
+    "Group: Reference",
+    p$x$data[[1]]$text
+  )
   p$x$data[[1]]$text <- text
 
   # Focal group, probabilities
-  text <- gsub("Group: Focal<br />Group: Focal", "Group: Focal", p$x$data[[2]]$text)
+  text <- gsub(
+    "Group: Focal<br />Group: Focal",
+    "Group: Focal",
+    p$x$data[[2]]$text
+  )
   p$x$data[[2]]$text <- text
 
   # Reference group, selected theta
-  text <- paste(strsplit(p$x$data[[3]]$text, "<br />")[[1]][-c(1:4)], collapse = "<br />")
+  text <- paste(
+    strsplit(p$x$data[[3]]$text, "<br />")[[1]][-c(1:4)],
+    collapse = "<br />"
+  )
   text <- gsub("Group: gray<br />Group: dotdash", "Group: Reference", text)
   p$x$data[[3]]$text <- text
 
   # Focal group, selected theta
-  text <- paste(strsplit(p$x$data[[4]]$text, "<br />")[[1]][-c(1:4)], collapse = "<br />")
+  text <- paste(
+    strsplit(p$x$data[[4]]$text, "<br />")[[1]][-c(1:4)],
+    collapse = "<br />"
+  )
   text <- gsub("Group: gray<br />Group: dotdash", "Group: Focal", text)
   p$x$data[[4]]$text <- text
 
   # Selected theta
-  text <- paste(strsplit(p$x$data[[5]]$text, "<br />")[[1]][5], collapse = "<br />")
+  text <- paste(
+    strsplit(p$x$data[[5]]$text, "<br />")[[1]][5],
+    collapse = "<br />"
+  )
   text <- paste(text, "<br />Group: Reference<br />Group: Focal")
   p$x$data[[5]]$text <- text
 
@@ -6955,7 +7995,8 @@ output$DIF_training_plot_download <- downloadHandler(
     "fig_DIFtraining.png"
   },
   content = function(file) {
-    ggsave(file,
+    ggsave(
+      file,
       plot = DIF_training_plot() +
         theme(
           legend.position = "inside",
@@ -7020,14 +8061,24 @@ DIF_training_answers_check_1 <- eventReactive(input$DIF_training_1_submit, {
   parR <- c(aR, bR)
   parF <- c(aF, bF)
 
-  check1_1 <- c(all(abs(parR - correct_answers[["Ex1_1"]]$parR) <= 0.05) &
-    all(abs(parF - correct_answers[["Ex1_1"]]$parF) <= 0.05))
+  check1_1 <- c(
+    all(abs(parR - correct_answers[["Ex1_1"]]$parR) <= 0.05) &
+      all(abs(parF - correct_answers[["Ex1_1"]]$parF) <= 0.05)
+  )
   # Exercise 1.2
   check1_2 <- input$DIF_training_1_2 == correct_answers[["Ex1_2"]]
 
   # Exercise 1.3
-  probR <- c(input$DIF_training_1_3_1R, input$DIF_training_1_3_2R, input$DIF_training_1_3_3R)
-  probF <- c(input$DIF_training_1_3_1F, input$DIF_training_1_3_2F, input$DIF_training_1_3_3F)
+  probR <- c(
+    input$DIF_training_1_3_1R,
+    input$DIF_training_1_3_2R,
+    input$DIF_training_1_3_3R
+  )
+  probF <- c(
+    input$DIF_training_1_3_1F,
+    input$DIF_training_1_3_2F,
+    input$DIF_training_1_3_3F
+  )
   check1_3R <- abs(probR - correct_answers[["Ex1_3"]]$probR) <= 0.05
   check1_3F <- abs(probF - correct_answers[["Ex1_3"]]$probF) <= 0.05
 
@@ -7043,9 +8094,11 @@ DIF_training_answers_check_1 <- eventReactive(input$DIF_training_1_submit, {
   )
   res <- sum(sapply(check, sum)) / sum(sapply(check, length))
   ans <- lapply(check, function(x) {
-    ifelse(is.na(x),
+    ifelse(
+      is.na(x),
       "<b><font color = 'red'>!</font></b>",
-      ifelse(x,
+      ifelse(
+        x,
         "<font color='green'>&#10004;</font>",
         "<font color='red'>&#10006;</font>"
       )
@@ -7085,11 +8138,17 @@ output$DIF_training_1_4_answer <- renderUI({
 })
 output$DIF_training_1_answer <- renderUI({
   res <- DIF_training_answers_check_1()[["total"]]
-  HTML(ifelse(is.na(res),
+  HTML(ifelse(
+    is.na(res),
     "<font color = 'red'>Check the format</font>",
-    ifelse(res == 1,
+    ifelse(
+      res == 1,
       "<font color='green'>Everything correct! Well done!</font>",
-      paste0("<font color='red'>", round(100 * res), "% correct. Try again.</font>")
+      paste0(
+        "<font color='red'>",
+        round(100 * res),
+        "% correct. Try again.</font>"
+      )
     )
   ))
 })
@@ -7143,14 +8202,24 @@ DIF_training_answers_check_2 <- eventReactive(input$DIF_training_2_submit, {
   parR <- c(aR, bR)
   parF <- c(aF, bF)
 
-  check2_1 <- c(all(abs(parR - correct_answers[["Ex2_1"]]$parR) <= 0.05) &
-    all(abs(parF - correct_answers[["Ex2_1"]]$parF) <= 0.05))
+  check2_1 <- c(
+    all(abs(parR - correct_answers[["Ex2_1"]]$parR) <= 0.05) &
+      all(abs(parF - correct_answers[["Ex2_1"]]$parF) <= 0.05)
+  )
   # Exercise 2.2
   check2_2 <- input$DIF_training_2_2 == correct_answers[["Ex2_2"]]
 
   # Exercise 2.3
-  probR <- c(input$DIF_training_2_3_1R, input$DIF_training_2_3_2R, input$DIF_training_2_3_3R)
-  probF <- c(input$DIF_training_2_3_1F, input$DIF_training_2_3_2F, input$DIF_training_2_3_3F)
+  probR <- c(
+    input$DIF_training_2_3_1R,
+    input$DIF_training_2_3_2R,
+    input$DIF_training_2_3_3R
+  )
+  probF <- c(
+    input$DIF_training_2_3_1F,
+    input$DIF_training_2_3_2F,
+    input$DIF_training_2_3_3F
+  )
   check2_3R <- abs(probR - correct_answers[["Ex2_3"]]$probR) <= 0.05
   check2_3F <- abs(probF - correct_answers[["Ex2_3"]]$probF) <= 0.05
 
@@ -7166,9 +8235,11 @@ DIF_training_answers_check_2 <- eventReactive(input$DIF_training_2_submit, {
   )
   res <- sum(sapply(check, sum)) / sum(sapply(check, length))
   ans <- lapply(check, function(x) {
-    ifelse(is.na(x),
+    ifelse(
+      is.na(x),
       "<b><font color = 'red'>!</font></b>",
-      ifelse(x,
+      ifelse(
+        x,
         "<font color='green'>&#10004;</font>",
         "<font color='red'>&#10006;</font>"
       )
@@ -7208,11 +8279,17 @@ output$DIF_training_2_4_answer <- renderUI({
 })
 output$DIF_training_2_answer <- renderUI({
   res <- DIF_training_answers_check_2()[["total"]]
-  HTML(ifelse(is.na(res),
+  HTML(ifelse(
+    is.na(res),
     "<font color = 'red'>Check the format</font>",
-    ifelse(res == 1,
+    ifelse(
+      res == 1,
       "<font color='green'>Everything correct! Well done!</font>",
-      paste0("<font color='red'>", round(100 * res), "% correct. Try again.</font>")
+      paste0(
+        "<font color='red'>",
+        round(100 * res),
+        "% correct. Try again.</font>"
+      )
     )
   ))
 })

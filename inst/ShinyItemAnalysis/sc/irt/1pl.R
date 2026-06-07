@@ -11,9 +11,12 @@ mirt(GMAT[, 1:20], model = 1, itemtype = "2PL", pars = "values")
 # a1 parameter numbers (parnum) are 1, 5, 9,...
 
 # fitting 1PL model as 2PL with slope a1 parameters constrained to be equal
-fit <- mirt(GMAT[, 1:20],
-  model = 1, itemtype = "2PL",
-  constrain = list((1:20) * 4 - 3), SE = TRUE
+fit <- mirt(
+  GMAT[, 1:20],
+  model = 1,
+  itemtype = "2PL",
+  constrain = list((1:20) * 4 - 3),
+  SE = TRUE
 )
 
 # item characteristic curves
@@ -40,8 +43,10 @@ coef(fit, IRTpars = TRUE, printSE = TRUE)$Item1 # including SE
 
 # delta method by hand for item 1
 coef_is <- coef(fit)[[1]][1, 1:2]
-vcov_is <- matrix(vcov(fit)[1:2, 1:2],
-  ncol = 2, nrow = 2,
+vcov_is <- matrix(
+  vcov(fit)[1:2, 1:2],
+  ncol = 2,
+  nrow = 2,
   dimnames = list(c("a1", "d"), c("a1", "d"))
 )
 # estimates
@@ -90,5 +95,10 @@ df2 <- df1
 df2$Obs <- df2$Exp <- df2$z1 <- df2$se.z1 <- NULL
 STS <- as.vector(scale(rowSums(df2[, 1:20])))
 df <- data.frame(FS, STS)
-plot(FS ~ STS, data = df, xlab = "Standardized total score", ylab = "Factor score")
+plot(
+  FS ~ STS,
+  data = df,
+  xlab = "Standardized total score",
+  ylab = "Factor score"
+)
 cor(FS, STS)

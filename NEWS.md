@@ -1,3 +1,19 @@
+# ShinyItemAnalysis 1.6.0
+
+## Major updates
+  * Ordinal IRT models were implemented including GPCM, PCM, RSM, and GRM. 
+    Comparison of nested models (GPCM, PCM vs. RSM) is available. 
+
+## Minor updates
+  * Data upload logic improved.
+  * Data not uploaded to global environment.
+
+## Bug fixes
+  * Fixed misplaced legend in the DD plot (in the interactive app).
+  * `plot_corr()` no longer warns about unknown labels.
+  * Reports work now even when Correlation structure is requested.
+  * Item names with special characters should be now properly handled in PDF report.
+    
 # ShinyItemAnalysis 1.5.5
 
 ## Bug fixes

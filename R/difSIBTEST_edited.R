@@ -7,10 +7,20 @@
 #' @noRd
 #'
 #' @importFrom difR sibTest
-.difSIBTEST_edited <- function(Data, group, focal.name, type = "udif", anchor = NULL,
-                               alpha = 0.05, purify = FALSE, nrIter = 10, p.adjust.method = NULL,
-                               puriadjType = "simple",
-                               save.output = FALSE, output = c("out", "default")) {
+.difSIBTEST_edited <- function(
+  Data,
+  group,
+  focal.name,
+  type = "udif",
+  anchor = NULL,
+  alpha = 0.05,
+  purify = FALSE,
+  nrIter = 10,
+  p.adjust.method = NULL,
+  puriadjType = "simple",
+  save.output = FALSE,
+  output = c("out", "default")
+) {
   internalSIBTEST <- function() {
     if (length(group) == 1) {
       if (is.numeric(group)) {
@@ -30,12 +40,14 @@
 
     df <- data.frame(DATA, Group, check.names = F)
     if (any(is.na(DATA))) {
-      warning("'Data' contains missing values. Observations with missing values are discarded.",
+      warning(
+        "'Data' contains missing values. Observations with missing values are discarded.",
         call. = FALSE
       )
     }
     if (any(is.na(Group))) {
-      warning("'group' contains missing values. Observations with missing values are discarded.",
+      warning(
+        "'group' contains missing values. Observations with missing values are discarded.",
         call. = FALSE
       )
     }
@@ -91,11 +103,20 @@
       }
 
       RES <- list(
-        Beta = PROV$Beta, SE = PROV$SE, X2 = PROV$X2,
-        df = PROV$df, p.value = PROV$p.value, type = type,
-        alpha = alpha, DIFitems = DIFitems, p.adjust.method = p.adjust.method,
-        adjusted.p = adjusted.p, purification = purify, names = colnames(DATA),
-        anchor.names = anchor.names, save.output = save.output,
+        Beta = PROV$Beta,
+        SE = PROV$SE,
+        X2 = PROV$X2,
+        df = PROV$df,
+        p.value = PROV$p.value,
+        type = type,
+        alpha = alpha,
+        DIFitems = DIFitems,
+        p.adjust.method = p.adjust.method,
+        adjusted.p = adjusted.p,
+        purification = purify,
+        names = colnames(DATA),
+        anchor.names = anchor.names,
+        save.output = save.output,
         output = output
       )
 
@@ -132,10 +153,7 @@
             } else {
               nodif <- which(!1:ncol(DATA) %in% dif)
             }
-            prov2 <- sibTest(DATA, Group,
-              type = type,
-              anchor = nodif
-            )
+            prov2 <- sibTest(DATA, Group, type = type, anchor = nodif)
             pval2 <- prov2$p.value
             p.adjust2 <- p.adjust(pval2, method = puri.adj.method)
 
@@ -181,12 +199,24 @@
       }
 
       RES <- list(
-        Beta = prov1$Beta, SE = prov1$SE, X2 = prov1$X2,
-        df = prov1$df, p.value = pval1, type = type,
-        alpha = alpha, DIFitems = DIFitems, p.adjust.method = p.adjust.method,
-        adjusted.p = adjusted.p, puriadjType = puriadjType, purification = purify, nrPur = nrPur,
-        difPur = difPur, convergence = noLoop, names = colnames(DATA),
-        anchor.names = NULL, save.output = save.output,
+        Beta = prov1$Beta,
+        SE = prov1$SE,
+        X2 = prov1$X2,
+        df = prov1$df,
+        p.value = pval1,
+        type = type,
+        alpha = alpha,
+        DIFitems = DIFitems,
+        p.adjust.method = p.adjust.method,
+        adjusted.p = adjusted.p,
+        puriadjType = puriadjType,
+        purification = purify,
+        nrPur = nrPur,
+        difPur = difPur,
+        convergence = noLoop,
+        names = colnames(DATA),
+        anchor.names = NULL,
+        save.output = save.output,
         output = output
       )
     }

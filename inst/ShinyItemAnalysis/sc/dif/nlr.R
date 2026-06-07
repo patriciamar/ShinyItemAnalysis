@@ -8,8 +8,14 @@ group <- GMAT[, "group"]
 # generalized logistic regression DIF method
 # using 3PL model with the same guessing parameter for both groups
 (fit <- difNLR(
-  Data = data, group = group, focal.name = 1, model = "3PLcg",
-  match = "zscore", type = "all", p.adjust.method = "none", purify = FALSE
+  Data = data,
+  group = group,
+  focal.name = 1,
+  model = "3PLcg",
+  match = "zscore",
+  type = "all",
+  p.adjust.method = "none",
+  purify = FALSE
 ))
 
 # loading data
@@ -23,6 +29,12 @@ match <- scale(LearningToLearn$score_6) # standardized test score from Grade 6
 # with the same guessing parameter for both groups
 # and standardized total score from Grade 6 as the matching criterion
 (fit <- difNLR(
-  Data = data, group = group, focal.name = "AS", model = "3PLcg",
-  match = match, type = "all", p.adjust.method = "none", purify = FALSE
+  Data = data,
+  group = group,
+  focal.name = "AS",
+  model = "3PLcg",
+  match = match,
+  type = "all",
+  p.adjust.method = "none",
+  purify = FALSE
 ))

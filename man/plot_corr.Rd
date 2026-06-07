@@ -63,17 +63,22 @@ plotted onto tiles.}
 \item{fill_alpha}{numeric 0--1: the opacity of the fill color.}
 
 \item{...}{
-  Arguments passed on to \code{\link[psych:tetrachor]{psych::polychoric}}
+  Arguments passed on to \code{\link[psych:polychoric]{psych::polychoric}}
   \describe{
     \item{\code{correct}}{Correction value to use to correct for continuity in the case of zero entry cell for tetrachoric, polychoric, polybi, and mixed.cor.  See the examples for the effect of correcting versus not correcting for continuity.}
     \item{\code{smooth}}{if TRUE and if the tetrachoric/polychoric matrix is not positive definite, then apply a simple smoothing algorithm using cor.smooth}
     \item{\code{global}}{When finding pairwise correlations, should we use the global values of the tau parameter (which is somewhat faster), or the local values (global=FALSE)?  The local option is equivalent to the polycor solution, or to doing one correlation at a time. global=TRUE borrows information for one item pair from the other pairs using those item's frequencies.   This will make a difference in the presence of lots of missing data. With very small sample sizes with global=FALSE and correct=TRUE, the function will fail (for as yet underdetermined reasons. }
     \item{\code{weight}}{A vector of length of the number of observations that specifies the weights to apply to each case.  The NULL case is equivalent of weights of 1 for all cases.  }
+    \item{\code{short}}{ short=TRUE, just show the correlations, short=FALSE give the full hetcor output from John Fox's hetcor function if installed and if doing polychoric  Deprecated}
     \item{\code{std.err}}{std.err=FALSE does not report the standard errors (faster)  deprecated}
     \item{\code{progress}}{Show the progress bar (if  not doing multicores)}
     \item{\code{ML}}{ ML=FALSE  do a quick two step procedure, ML=TRUE, do longer maximum likelihood --- very slow! Deprecated}
     \item{\code{delete}}{Cases with no variance are deleted with a warning before proceeding.}
     \item{\code{max.cat}}{The maximum number of categories to bother with for polychoric.  }
+    \item{\code{p}}{The polytomous input to polydi}
+    \item{\code{d}}{The dichotomous input to polydi}
+    \item{\code{taup}}{The tau values for the polytomous variables -- if global=TRUE}
+    \item{\code{taud}}{The tau values for the dichotomous variables -- if globabl = TRUE}
   }}
 }
 \value{

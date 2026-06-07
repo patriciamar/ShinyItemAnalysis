@@ -62,14 +62,22 @@
 #' plotDIFLogistic(x, item = 1, draw.empirical = FALSE)
 #' @seealso [difR::difLogistic()], [ggplot2::ggplot()]
 #'
-#' @importFrom ggplot2 stat_function scale_colour_manual scale_linetype_manual
-#'   guides guide_legend ggtitle
+#' @importFrom ggplot2 stat_function scale_colour_manual scale_linetype_manual guides guide_legend ggtitle
 #'
 #' @export
-plotDIFLogistic <- function(x, item = 1, item.name, group.names = c("Reference", "Focal"),
-                            Data, group, match, draw.empirical = TRUE) {
+plotDIFLogistic <- function(
+  x,
+  item = 1,
+  item.name,
+  group.names = c("Reference", "Focal"),
+  Data,
+  group,
+  match,
+  draw.empirical = TRUE
+) {
   res <- x
-  i <- ifelse(is.character(item) | is.factor(item),
+  i <- ifelse(
+    is.character(item) | is.factor(item),
     (1:length(res$names))[res$names == item],
     item
   )
@@ -82,9 +90,7 @@ plotDIFLogistic <- function(x, item = 1, item.name, group.names = c("Reference",
   }
 
   if (any(is.na(res$logitPar[i, ]))) {
-    stop("Selected item is an anchor item!",
-      call. = FALSE
-    )
+    stop("Selected item is an anchor item!", call. = FALSE)
   }
   coef <- res$logitPar[i, ]
 
@@ -120,7 +126,10 @@ plotDIFLogistic <- function(x, item = 1, item.name, group.names = c("Reference",
       MATCHCRIT <- c(0, nrow(res$logitPar))
     }
   } else if (length(match) != nrow(Data)) {
-    stop("'match' needs to be either 'score', 'zscore' or numeric vector of the same length as number of observations in 'Data'. ", .call = FALSE)
+    stop(
+      "'match' needs to be either 'score', 'zscore' or numeric vector of the same length as number of observations in 'Data'. ",
+      .call = FALSE
+    )
   } else {
     MATCHCRIT <- match
     xlab <- "Observed score"
@@ -162,7 +171,8 @@ plotDIFLogistic <- function(x, item = 1, item.name, group.names = c("Reference",
   g <- ggplot() +
     ### lines
     xlim(min_score, max_score) +
-    stat_function(aes(colour = "gr1", linetype = "gr1"),
+    stat_function(
+      aes(colour = "gr1", linetype = "gr1"),
       fun = LR_plot,
       args = list(
         group = 0,
@@ -171,9 +181,11 @@ plotDIFLogistic <- function(x, item = 1, item.name, group.names = c("Reference",
         b2 = coef[3],
         b3 = coef[4]
       ),
-      size = size, geom = "line"
+      size = size,
+      geom = "line"
     ) +
-    stat_function(aes(colour = "gr2", linetype = "gr2"),
+    stat_function(
+      aes(colour = "gr2", linetype = "gr2"),
       fun = LR_plot,
       args = list(
         group = 1,
@@ -182,7 +194,8 @@ plotDIFLogistic <- function(x, item = 1, item.name, group.names = c("Reference",
         b2 = coef[3],
         b3 = coef[4]
       ),
-      size = size, geom = "line"
+      size = size,
+      geom = "line"
     ) +
     ### style
     scale_colour_manual(
@@ -216,8 +229,15 @@ plotDIFLogistic <- function(x, item = 1, item.name, group.names = c("Reference",
       ### points
       geom_point(
         data = empirical,
-        aes(x = .data$Score, y = .data$Probability, colour = .data$Group, fill = .data$Group, size = .data$Count),
-        alpha = alpha, shape = shape
+        aes(
+          x = .data$Score,
+          y = .data$Probability,
+          colour = .data$Group,
+          fill = .data$Group,
+          size = .data$Count
+        ),
+        alpha = alpha,
+        shape = shape
       ) +
       guides(size = guide_legend(title = "Count", order = 1)) +
       scale_fill_manual(

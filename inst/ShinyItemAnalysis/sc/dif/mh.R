@@ -7,6 +7,10 @@ group <- GMAT[, "group"]
 
 # Mantel-Haenszel test
 (fit <- difMH(
-  Data = data, group = group, focal.name = 1, match = "score",
-  p.adjust.method = "none", purify = FALSE
+  Data = data,
+  group = group,
+  focal.name = 1,
+  match = "score",
+  p.adjust.method = "none",
+  purify = FALSE
 ))

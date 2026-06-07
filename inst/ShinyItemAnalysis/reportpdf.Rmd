@@ -143,7 +143,7 @@ ShinyItemAnalysis application is free software and you can redistribute it and o
 ## Total scores
 
 ### Summary table of total scores
-The table below summarizes basic characteristics of total scores including number of respondents, minimum and maximum values, mean, median, standard deviation, skewness, and kurtosis. The skewness for normally distributed scores is near the value of 0 and the kurtosis is near the value of 3.
+The table below summarizes basic characteristics of total scores including number of respondents, number of complete cases without any missing value, minimum and maximum values, mean, median, standard deviation, skewness, and kurtosis. The skewness for normally distributed scores is near the value of 0 and the kurtosis is near the value of 3.
 
 ```{r total-scores-table, echo = FALSE, results = 'asis'}
 library(xtable)
@@ -208,30 +208,30 @@ print(
 
 `r if (params$irt_model != "none") {"More complex estimates of ability are provided in the IRT section."}`
 
-`r if (any(params$corr_plot != "") | params$validity_check) {"\\pagebreak"}`
+`r if (!is.null(params$corr_plot) | params$validity_check) {"\\pagebreak"}`
 
-`r if (any(params$corr_plot != "") | params$validity_check) {"# Validity"}`
+`r if (!is.null(params$corr_plot) | params$validity_check) {"# Validity"}`
 
-`r if (any(params$corr_plot != "")) {"## Correlation structure"}`
+`r if (!is.null(params$corr_plot)) {"## Correlation structure"}`
 
-`r if (any(params$corr_plot != "")) {"### Correlation heat map "}`
-`r if (any(params$corr_plot != "")) {if (params$corr_type == "pearson") {"A correlation heat map displays Pearson correlations of items. Pearson correlation coefficient describes linear correlation between two random variables X and Y."}}`
+`r if (!is.null(params$corr_plot)) {"### Correlation heat map "}`
+`r if (!is.null(params$corr_plot)) {if (params$corr_type == "pearson") {"A correlation heat map displays Pearson correlations of items. Pearson correlation coefficient describes linear correlation between two random variables X and Y."}}`
 
-`r if (any(params$corr_plot != "")) {if (params$corr_type == "polychoric") {"A correlation heat map displays polychoric correlations of items. Polychoric/tetrachoric correlation between two ordinal/binary variables is calculated from their contingency table, under the assumption that the ordinal variables dissect continuous latent variables that are bivariate normal."}}`
+`r if (!is.null(params$corr_plot)) {if (params$corr_type == "polychoric") {"A correlation heat map displays polychoric correlations of items. Polychoric/tetrachoric correlation between two ordinal/binary variables is calculated from their contingency table, under the assumption that the ordinal variables dissect continuous latent variables that are bivariate normal."}}`
 
-`r if (any(params$corr_plot != "")) {if (params$corr_type == "spearman") {"A correlation heat map displays Polychoric correlations of items. Spearman's rank correlation coefficient describes strength and direction of monotonic relationship between random variables X and Y, i.e. dependence between the rankings of two variables."}}`
+`r if (!is.null(params$corr_plot)) {if (params$corr_type == "spearman") {"A correlation heat map displays Polychoric correlations of items. Spearman's rank correlation coefficient describes strength and direction of monotonic relationship between random variables X and Y, i.e. dependence between the rankings of two variables."}}`
 
 `r clustmethod_names <- c("None" = "none", "Ward's"  = "ward.D", "Ward's n. 2" = "ward.D2", "single" = "single", "complete" = "complete", "average" = "average", "McQuitty" = "mcquitty", "median" = "median", "centroid" = "centroid")`
                           
-`r if (any(params$corr_plot != "") & params$corr_plot_clustmethod != "none") {paste0("A correlation heat map is reordered using hierarchical clustering with ", names(clustmethod_names)[clustmethod_names == params$corr_plot_clustmethod], " linkage method. The number of highlighted clusters is ", params$corr_plot_numclust, ". ")}`
+`r if (!is.null(params$corr_plot) & params$corr_plot_clustmethod != "none") {paste0("A correlation heat map is reordered using hierarchical clustering with ", names(clustmethod_names)[clustmethod_names == params$corr_plot_clustmethod], " linkage method. The number of highlighted clusters is ", params$corr_plot_numclust, ". ")}`
 
-`r if (any(params$corr_plot != "") & params$corr_plot_clustmethod != "none") {"\\vspace{2em}"}`
+`r if (!is.null(params$corr_plot) & params$corr_plot_clustmethod != "none") {"\\vspace{2em}"}`
 
-```{r corr-plot, fig.align = 'center', echo = FALSE, include = any(nzchar(params$corr_plot)), fig.height = 5}
+```{r corr-plot, fig.align = 'center', echo = FALSE, include = !is.null(params$corr_plot), fig.height = 5}
 params$corr_plot
 ```
 
-`r if (any(params$corr_plot != "")) {"\\pagebreak"}` 
+`r if (!is.null(params$corr_plot)) {"\\pagebreak"}` 
 
 `r if (params$validity_check) {"## Predictive validity"}`
 
@@ -257,7 +257,7 @@ if (params$isCriterionPresent & params$validity_check) {
     "\\textbf{Interpretation:}\\linebreak",
     ifelse(pval < .05,
       paste("The \\textit{p}-value is less than .05, thus we reject the null hypotheses. The total score and criterion variable are", ifelse(est > 0, "positively", "negatively"), "correlated."),
-      "The <em>p</em>-value is larger than .05, thus we don't reject the null hypotheses. We cannot conclude that a significant correlation between the total score and criterion variable exists."
+      "The \\textit{p}-value is larger than .05, thus we don't reject the null hypotheses. We cannot conclude that a significant correlation between the total score and criterion variable exists."
     )
   )
 }
@@ -439,7 +439,7 @@ Respondents are divided into a selected number of groups by their total score. S
 
 \vspace{-0.5em}
 
-### Multionomial plot
+### Multinomial plot
 
 In the multinomial plot, points represent proportion of selected option with respect to total score. Their size is determined by count of respondents who achieved a given level of total score and who selected a given option.
 
@@ -749,9 +749,7 @@ print(
     digits = c(0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 2),
     align = c("l", rep("c", 11))
   ),
-  booktabs = T, comment = F, include.rownames = T, sanitize.text.function = function(x) {
-    x
-  },
+  booktabs = T, comment = F, include.rownames = T, sanitize.colnames.function = identity,
   tabular.environment = "longtable", floating = F, add.to.row = add.to.row,
   hline.after = c(-1, nrow(table))
 )
@@ -1025,9 +1023,9 @@ if (dim(tab)[2] == 5) {
       align = c("l", "r", "r", "l", "r", "r")
     ),
     booktabs = T, comment = F, tabular.environment = "longtable", floating = F,
-    sanitize.text.function = function(x) {
-      x
-    }, add.to.row = add.to.row, hline.after = c(-1, nrow(tab))
+    sanitize.text.function = identity, # do not sanitize colnames and the content
+    sanitize.rownames.function = NULL, # sanitize item names
+    add.to.row = add.to.row, hline.after = c(-1, nrow(tab))
   )
 } else {
   colnames(tab) <- c("Stat.", "P-value", "$\\alpha_{\\text{MH}}$", "$\\delta_{\\text{MH}}$")
@@ -1037,9 +1035,9 @@ if (dim(tab)[2] == 5) {
       align = c("l", "r", "l", "r", "r")
     ),
     booktabs = T, comment = F, tabular.environment = "longtable", floating = F,
-    sanitize.text.function = function(x) {
-      x
-    }, add.to.row = add.to.row, hline.after = c(-1, nrow(tab))
+    sanitize.text.function = identity, # do not sanitize colnames and the content
+    sanitize.rownames.function = NULL, # sanitize item names
+    add.to.row = add.to.row, hline.after = c(-1, nrow(tab))
   )
 }
 ```
@@ -1178,9 +1176,9 @@ if (dim(tab)[2] == 6) {
       align = c("l", "r", "l", "c", "c", "c")
     ),
     booktabs = T, comment = F, tabular.environment = "longtable", floating = F,
-    sanitize.text.function = function(x) {
-      x
-    }, add.to.row = add.to.row,
+    sanitize.text.function = identity, 
+    sanitize.rownames.function = NULL,
+    add.to.row = add.to.row,
     hline.after = c(-1, nrow(tab))
   )
 }

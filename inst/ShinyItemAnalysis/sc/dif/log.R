@@ -7,8 +7,13 @@ group <- GMAT[, "group"]
 
 # logistic regression DIF detection method
 (fit <- difLogistic(
-  Data = data, group = group, focal.name = 1, match = "score",
-  type = "both", p.adjust.method = "none", purify = FALSE
+  Data = data,
+  group = group,
+  focal.name = 1,
+  match = "score",
+  type = "both",
+  p.adjust.method = "none",
+  purify = FALSE
 ))
 
 # loading data
@@ -21,6 +26,11 @@ match <- scale(LearningToLearn$score_6) # standardized test score from Grade 6
 # the logistic regression DIF detection method
 # and standardized total score from Grade 6 as the matching criterion
 (fit <- difLogistic(
-  Data = data, group = group, focal.name = "AS", match = match,
-  type = "both", p.adjust.method = "none", purify = FALSE
+  Data = data,
+  group = group,
+  focal.name = "AS",
+  match = match,
+  type = "both",
+  p.adjust.method = "none",
+  purify = FALSE
 ))

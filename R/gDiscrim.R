@@ -81,7 +81,8 @@
 gDiscrim <- function(Data, k = 3, l = 1, u = 3, maxscore, minscore, x, ...) {
   # deprecated args handling
   if (!missing(x)) {
-    warning("Argument 'x' is deprecated; please use 'Data' instead. ",
+    warning(
+      "Argument 'x' is deprecated; please use 'Data' instead. ",
       call. = FALSE
     )
     Data <- x
@@ -108,7 +109,9 @@ gDiscrim <- function(Data, k = 3, l = 1, u = 3, maxscore, minscore, x, ...) {
   }
   obtainedmax <- sapply(Data, max, na.rm = TRUE)
   if (!all(maxscore >= obtainedmax)) {
-    warning("'maxscore' is lower than maximum score in the dataset for some item. ")
+    warning(
+      "'maxscore' is lower than maximum score in the dataset for some item. "
+    )
   }
 
   if (missing(minscore)) {
@@ -120,7 +123,9 @@ gDiscrim <- function(Data, k = 3, l = 1, u = 3, maxscore, minscore, x, ...) {
   }
   obtainedmin <- sapply(Data, min, na.rm = TRUE)
   if (!all(minscore <= obtainedmin)) {
-    warning("'minscore' is higher than minimum score in the dataset for some item. ")
+    warning(
+      "'minscore' is higher than minimum score in the dataset for some item. "
+    )
   }
   if (!all(minscore <= maxscore)) {
     warning("'minscore' is higher than 'maxscore' for some item. ")
@@ -132,11 +137,18 @@ gDiscrim <- function(Data, k = 3, l = 1, u = 3, maxscore, minscore, x, ...) {
   ts <- rowSums(d)
 
   # get quantiles (without p = 0 & p = 1) according to k
-  breakpoints <- quantile(ts, seq(0, 1, length.out = k + 1)[-c(1, k + 1)], names = FALSE)
+  breakpoints <- quantile(
+    ts,
+    seq(0, 1, length.out = k + 1)[-c(1, k + 1)],
+    names = FALSE
+  )
 
   # assert dataset is breakable
   if (length(unique(breakpoints)) < k - 1) {
-    stop("Dataset cannot be split, there are too few unique cutpoints. ", call. = FALSE)
+    stop(
+      "Dataset cannot be split, there are too few unique cutpoints. ",
+      call. = FALSE
+    )
   }
 
   # cut total scores into k groups
@@ -159,7 +171,8 @@ gDiscrim <- function(Data, k = 3, l = 1, u = 3, maxscore, minscore, x, ...) {
   if (any(avg_diff == 0 & rng == 0)) {
     warning(
       "Both the groups' difficulty difference and item range are zero in item(s):\n",
-      paste(names(which(avg_diff == 0 & rng == 0)), collapse = ", "), ".\n",
+      paste(names(which(avg_diff == 0 & rng == 0)), collapse = ", "),
+      ".\n",
       "Try to supply 'minscore' and 'maxscore' manually according to plausible range. ",
       call. = FALSE
     )

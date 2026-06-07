@@ -32,7 +32,8 @@ ggplot(data = df1, aes(x = theta, y = value, col = variable)) +
     panel.grid.minor = element_blank()
   ) +
   ggtitle("Category probabilities") +
-  scale_color_manual("",
+  scale_color_manual(
+    "",
     values = c("black", "red", "yellow", "green", "blue"),
     labels = paste0("P(Y = ", 0:4, ")")
   )

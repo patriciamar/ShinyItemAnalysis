@@ -7,13 +7,26 @@
 #' @noRd
 #'
 #' @importFrom difR mantelHaenszel
-.difMH_edited <- function(Data, group, focal.name, anchor = NULL, match = "score",
-                          MHstat = "MHChisq", correct = TRUE, exact = FALSE,
-                          alpha = 0.05, purify = FALSE, nrIter = 10, p.adjust.method = NULL,
-                          puriadjType = "simple",
-                          save.output = FALSE, output = c("out", "default")) {
+.difMH_edited <- function(
+  Data,
+  group,
+  focal.name,
+  anchor = NULL,
+  match = "score",
+  MHstat = "MHChisq",
+  correct = TRUE,
+  exact = FALSE,
+  alpha = 0.05,
+  purify = FALSE,
+  nrIter = 10,
+  p.adjust.method = NULL,
+  puriadjType = "simple",
+  save.output = FALSE,
+  output = c("out", "default")
+) {
   if (purify & match[1] != "score") {
-    stop("purification not allowed when matching variable is not 'score'",
+    stop(
+      "purification not allowed when matching variable is not 'score'",
       call. = FALSE
     )
   }
@@ -42,12 +55,14 @@
       df <- data.frame(DATA, Group, check.names = F)
     }
     if (any(is.na(DATA))) {
-      warning("'Data' contains missing values. Observations with missing values are discarded.",
+      warning(
+        "'Data' contains missing values. Observations with missing values are discarded.",
         call. = FALSE
       )
     }
     if (any(is.na(Group))) {
-      warning("'group' contains missing values. Observations with missing values are discarded.",
+      warning(
+        "'group' contains missing values. Observations with missing values are discarded.",
         call. = FALSE
       )
     }
@@ -57,13 +72,15 @@
     colnames(DATA) <- colnames(df)[!(colnames(df) %in% c("Group", "match"))]
     if (length(match) > 1) {
       if (any(is.na(match))) {
-        warning("'match' contains missing values. Observations with missing values are discarded.",
+        warning(
+          "'match' contains missing values. Observations with missing values are discarded.",
           call. = FALSE
         )
       }
       match <- df[, "match"]
     }
-    Q <- switch(MHstat,
+    Q <- switch(
+      MHstat,
       MHChisq = qchisq(1 - alpha, 1),
       logOR = qnorm(1 - alpha / 2)
     )
@@ -102,9 +119,13 @@
 
     if (exact) {
       if (!purify | match[1] != "score" | !is.null(anchor)) {
-        PROV <- mantelHaenszel(DATA, Group,
+        PROV <- mantelHaenszel(
+          DATA,
+          Group,
           match = match,
-          correct = correct, exact = exact, anchor = ANCHOR
+          correct = correct,
+          exact = exact,
+          anchor = ANCHOR
         )
         STATS <- PROV$resMH
         PVAL <- PROV$Pval
@@ -123,11 +144,19 @@
         }
 
         RES <- list(
-          MH = STATS, p.value = PROV$Pval,
-          alpha = alpha, DIFitems = DIFitems, correct = correct,
-          exact = exact, match = PROV$match, p.adjust.method = p.adjust.method,
-          adjusted.p = adjusted.p, purification = purify, names = colnames(DATA),
-          anchor.names = dif.anchor, save.output = save.output,
+          MH = STATS,
+          p.value = PROV$Pval,
+          alpha = alpha,
+          DIFitems = DIFitems,
+          correct = correct,
+          exact = exact,
+          match = PROV$match,
+          p.adjust.method = p.adjust.method,
+          adjusted.p = adjusted.p,
+          purification = purify,
+          names = colnames(DATA),
+          anchor.names = dif.anchor,
+          save.output = save.output,
           output = output
         )
 
@@ -140,9 +169,12 @@
         nrPur <- 0
         difPur <- NULL
         noLoop <- FALSE
-        prov1 <- mantelHaenszel(DATA, Group,
+        prov1 <- mantelHaenszel(
+          DATA,
+          Group,
           match = match,
-          correct = correct, exact = exact
+          correct = correct,
+          exact = exact
         )
         stats1 <- prov1$resMH
         pval1 <- prov1$Pval
@@ -165,9 +197,13 @@
               } else {
                 nodif <- which(!1:ncol(DATA) %in% dif)
               }
-              prov2 <- mantelHaenszel(DATA, Group,
+              prov2 <- mantelHaenszel(
+                DATA,
+                Group,
                 correct = correct,
-                match = match, anchor = nodif, exact = exact
+                match = match,
+                anchor = nodif,
+                exact = exact
               )
               stats2 <- prov2$resMH
               pval2 <- prov2$Pval
@@ -215,23 +251,37 @@
         }
 
         RES <- list(
-          MH = stats1, p.value = prov1$Pval,
-          alpha = alpha, DIFitems = DIFitems, correct = correct,
-          exact = exact, match = prov1$match, p.adjust.method = p.adjust.method,
+          MH = stats1,
+          p.value = prov1$Pval,
+          alpha = alpha,
+          DIFitems = DIFitems,
+          correct = correct,
+          exact = exact,
+          match = prov1$match,
+          p.adjust.method = p.adjust.method,
           adjusted.p = adjusted.p,
           puriadjType = puriadjType,
-          purification = purify, nrPur = nrPur,
-          difPur = difPur, puri.adj.method = puri.adj.method, puriadjType = puriadjType,
-          convergence = noLoop, names = colnames(DATA),
-          anchor.names = NULL, save.output = save.output,
+          purification = purify,
+          nrPur = nrPur,
+          difPur = difPur,
+          puri.adj.method = puri.adj.method,
+          puriadjType = puriadjType,
+          convergence = noLoop,
+          names = colnames(DATA),
+          anchor.names = NULL,
+          save.output = save.output,
           output = output
         )
       }
     } else {
       if (!purify | match[1] != "score" | !is.null(anchor)) {
-        PROV <- mantelHaenszel(DATA, Group,
+        PROV <- mantelHaenszel(
+          DATA,
+          Group,
           match = match,
-          correct = correct, exact = exact, anchor = ANCHOR
+          correct = correct,
+          exact = exact,
+          anchor = ANCHOR
         )
         if (MHstat == "MHChisq") {
           STATS <- PROV$resMH
@@ -254,13 +304,23 @@
         }
 
         RES <- list(
-          MH = STATS, p.value = PVAL, alphaMH = PROV$resAlpha,
-          varLambda = PROV$varLambda, MHstat = MHstat,
-          alpha = alpha, thr = Q, DIFitems = DIFitems,
-          correct = correct, exact = exact, match = PROV$match,
-          p.adjust.method = p.adjust.method, adjusted.p = adjusted.p,
-          purification = purify, names = colnames(DATA),
-          anchor.names = dif.anchor, save.output = save.output,
+          MH = STATS,
+          p.value = PVAL,
+          alphaMH = PROV$resAlpha,
+          varLambda = PROV$varLambda,
+          MHstat = MHstat,
+          alpha = alpha,
+          thr = Q,
+          DIFitems = DIFitems,
+          correct = correct,
+          exact = exact,
+          match = PROV$match,
+          p.adjust.method = p.adjust.method,
+          adjusted.p = adjusted.p,
+          purification = purify,
+          names = colnames(DATA),
+          anchor.names = dif.anchor,
+          save.output = save.output,
           output = output
         )
 
@@ -274,9 +334,12 @@
         nrPur <- 0
         difPur <- NULL
         noLoop <- FALSE
-        prov1 <- mantelHaenszel(DATA, Group,
+        prov1 <- mantelHaenszel(
+          DATA,
+          Group,
           match = match,
-          correct = correct, exact = exact
+          correct = correct,
+          exact = exact
         )
 
         if (MHstat == "MHChisq") {
@@ -307,9 +370,13 @@
                 nodif <- which(!1:ncol(DATA) %in% dif)
               }
 
-              prov2 <- mantelHaenszel(DATA, Group,
+              prov2 <- mantelHaenszel(
+                DATA,
+                Group,
                 match = match,
-                correct = correct, anchor = nodif, exact = exact
+                correct = correct,
+                anchor = nodif,
+                exact = exact
               )
               if (MHstat == "MHChisq") {
                 stats2 <- prov2$resMH
@@ -363,18 +430,28 @@
           adjusted.p <- p.adjust1
         }
 
-
         RES <- list(
-          MH = stats1, p.value = pval1, alphaMH = prov1$resAlpha,
-          varLambda = prov1$varLambda, MHstat = MHstat,
-          alpha = alpha, thr = Q, DIFitems = DIFitems,
-          correct = correct, exact = exact, match = prov1$match,
+          MH = stats1,
+          p.value = pval1,
+          alphaMH = prov1$resAlpha,
+          varLambda = prov1$varLambda,
+          MHstat = MHstat,
+          alpha = alpha,
+          thr = Q,
+          DIFitems = DIFitems,
+          correct = correct,
+          exact = exact,
+          match = prov1$match,
           p.adjust.method = p.adjust.method,
-          adjusted.p = adjusted.p, puriadjType = puriadjType,
-          purification = purify, nrPur = nrPur,
+          adjusted.p = adjusted.p,
+          puriadjType = puriadjType,
+          purification = purify,
+          nrPur = nrPur,
           difPur = difPur,
-          convergence = noLoop, names = colnames(DATA),
-          anchor.names = NULL, save.output = save.output,
+          convergence = noLoop,
+          names = colnames(DATA),
+          anchor.names = NULL,
+          save.output = save.output,
           output = output
         )
       }

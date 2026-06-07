@@ -105,14 +105,14 @@ totalscores_histogram_data <- reactive({
 
   df <- data.frame(
     Score = sc,
-    Group = ifelse(sc == bin, "gray",
-      ifelse(sc < bin, "red", "blue")
-    )
+    Group = ifelse(sc == bin, "gray", ifelse(sc < bin, "red", "blue"))
   )
 
   binwidth <- min(abs(diff(unique(sc))))
 
-  cols <- c("red", "gray", "blue")[c("red", "gray", "blue") %in% unique(df$Group)]
+  cols <- c("red", "gray", "blue")[
+    c("red", "gray", "blue") %in% unique(df$Group)
+  ]
   df$Group <- factor(df$Group, cols)
 
   list(df = df, cols = cols, binwidth = binwidth)
@@ -126,7 +126,11 @@ totalscores_histogram_Input <- reactive({
   binwidth <- hist_data$binwidth
 
   ggplot(df, aes(x = Score, fill = Group)) +
-    geom_histogram(aes(y = after_stat(count / sum(count))), binwidth = binwidth, color = "black") +
+    geom_histogram(
+      aes(y = after_stat(count / sum(count))),
+      binwidth = binwidth,
+      color = "black"
+    ) +
     scale_fill_manual(values = cols) +
     labs(
       x = "Total score",
@@ -143,7 +147,6 @@ output$totalscores_histogram <- renderPlotly({
   colnames(dfCount) <- c("Score", "Count")
   df <- merge(df, dfCount)
 
-
   g <- totalscores_histogram_Input()
   p <- ggplotly(g)
 
@@ -151,9 +154,14 @@ output$totalscores_histogram <- renderPlotly({
     p$x$data[[i]]$x <- p$x$data[[i]]$x[p$x$data[[i]]$y > 0]
     p$x$data[[i]]$y <- round(p$x$data[[i]]$y[p$x$data[[i]]$y > 0], 3)
     p$x$data[[i]]$text <- paste0(
-      "Score: ", p$x$data[[i]]$x, "<br />",
-      "Proportion: ", p$x$data[[i]]$y, "<br />",
-      "Count: ", unique(df[df$Group == p$x$data[[i]]$name, ])$Count
+      "Score: ",
+      p$x$data[[i]]$x,
+      "<br />",
+      "Proportion: ",
+      p$x$data[[i]]$y,
+      "<br />",
+      "Count: ",
+      unique(df[df$Group == p$x$data[[i]]$name, ])$Count
     )
   }
 
@@ -166,11 +174,13 @@ output$DB_totalscores_histogram <- downloadHandler(
     paste("fig_TotalScores_histogram.png", sep = "")
   },
   content = function(file) {
-    ggsave(file,
+    ggsave(
+      file,
       plot = totalscores_histogram_Input() +
         theme(text = element_text(size = setting_figures$text_size)),
       device = "png",
-      height = setting_figures$height, width = setting_figures$width,
+      height = setting_figures$height,
+      width = setting_figures$width,
       dpi = setting_figures$dpi
     )
   }
@@ -241,7 +251,13 @@ standardscores_table_Input <- reactive({
   tsco <- 50 + 10 * zsco
 
   tab <- round(data.table(tosc, perc, sura, zsco, tsco), 2)
-  colnames(tab) <- c("Total score", "Percentile", "Success rate", "Z-score", "T-score")
+  colnames(tab) <- c(
+    "Total score",
+    "Percentile",
+    "Success rate",
+    "Z-score",
+    "T-score"
+  )
 
   tab
 })

@@ -8,9 +8,14 @@ key <- GMATkey
 
 # DDF with multinomial regression model
 (fit <- ddfMLR(
-  Data = data, group = group, focal.name = 1, key,
-  type = "both", match = "zscore",
-  p.adjust.method = "none", purify = FALSE
+  Data = data,
+  group = group,
+  focal.name = 1,
+  key,
+  type = "both",
+  match = "zscore",
+  p.adjust.method = "none",
+  purify = FALSE
 ))
 
 # plot of characteristic curves for item 1

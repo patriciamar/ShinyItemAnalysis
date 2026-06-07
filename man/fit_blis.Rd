@@ -212,7 +212,8 @@ equality constraints, inequality constraints, etc}
     \item{\code{nloptr_args}}{a list of arguments to be passed to the \code{nloptr::nloptr()}
 function for equality constraints, inequality constraints, etc}
     \item{\code{spline_args}}{a named list of lists containing information to be passed to the \code{\link{bs}} (default)
-  and \code{\link{ns}} for each spline itemtype. Each element must refer to the name of the itemtype with the
+  \code{\link{ns}}, and \code{\link[splines2]{iSpline}} for each spline/monospline itemtype.
+  Each element must refer to the name of the itemtype with the
   spline, while the internal list names refer to the arguments which are passed. For example, if item 2 were called
   'read2', and item 5 were called 'read5', both of which were of itemtype 'spline' but item 5 should use the
   \code{\link{ns}} form, then a modified list for each input might be of the form:
@@ -230,7 +231,7 @@ control input)}
     \item{\code{technical}}{a list containing lower level technical parameters for estimation. May be:
 \describe{
   \item{NCYCLES}{maximum number of EM or MH-RM cycles; defaults are 500 and 2000}
-  \item{MAXQUAD}{maximum number of quadratures, which you can increase if you have more than
+  \item{MAXQUAD}{maximum number of quadrature, which you can increase if you have more than
     4GB or RAM on your PC; default 20000}
   \item{theta_lim}{range of integration grid for each dimension; default is \code{c(-6, 6)}. Note that
     when \code{itemtype = 'ULL'} a log-normal distribution is used and the range is change to
@@ -267,6 +268,10 @@ control input)}
     positive or negative infinity. The default is \code{FALSE}}
   \item{customTheta}{a custom \code{Theta} grid, in matrix form, used for integration.
     If not defined, the grid is determined internally based on the number of \code{quadpts}}
+  \item{fixedTheta}{a \code{matrix} of latent trait values taken to be fixed and known. This
+    will perform a single M-step optimization to obtain item parameter estimates, holding constant
+    the elements in \code{fixedTheta}, using the \code{'MHRM'} engine with the BFGS/L-BFGS-B
+    algorithm. Matrix input must have as many rows as there are rows in \code{data}}
   \item{nconstrain}{same specification as the \code{constrain} list argument,
     however imposes a negative equality constraint instead (e.g., \eqn{a12 = -a21}, which
     is specified as \code{nconstrain = list(c(12, 21))}). Note that each specification
@@ -310,7 +315,7 @@ control input)}
   }}
 }
 \value{
-Fitted model of class \linkS4class{BlisClass} (extending standard \code{mirt}'s
+Fitted model of class \link[=BlisClass-class]{BlisClass} (extending standard \code{mirt}'s
 \code{SingleGroupClass}).
 }
 \description{
@@ -321,7 +326,7 @@ BLIS can be converted to IRT (difficulty-discrimination) parametrization (BLIRT)
 }
 \details{
 For the details on \code{coef} method dispatched for fitted BLIS model, see
-\link{coef,BlisClass-method}. To get more on the class, see \linkS4class{BlisClass}.
+\link{coef,BlisClass-method}. To get more on the class, see \link[=BlisClass-class]{BlisClass}.
 }
 \examples{
 fitted_blis <- fit_blis(HCItest[, 1:20], HCIkey, SE = TRUE)
@@ -332,13 +337,13 @@ coef(fitted_blis, IRTpars = TRUE, CI = 0.90) # 90\% CI instead of 95\% CI
 coef(fitted_blis, IRTpars = TRUE, printSE = TRUE) # SE instead of CI
 }
 \seealso{
-Other BLIS/BLIRT related: 
+Other BLIS/BLIRT related:
 \code{\link{BlisClass-class}},
 \code{\link{coef,BlisClass-method}},
-\code{\link{get_orig_levels}()},
-\code{\link{nominal_to_int}()},
-\code{\link{obtain_nrm_def}()},
-\code{\link{print.blis_coefs}()}
+\code{\link[=get_orig_levels]{get_orig_levels()}},
+\code{\link[=nominal_to_int]{nominal_to_int()}},
+\code{\link[=obtain_nrm_def]{obtain_nrm_def()}},
+\code{\link[=print.blis_coefs]{print.blis_coefs()}}
 }
 \author{
 Jan Netik \cr Institute of Computer Science of the Czech Academy of

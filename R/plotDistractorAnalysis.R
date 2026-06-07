@@ -95,27 +95,41 @@
 #' }
 #'
 #' @importFrom grDevices rainbow
-#' @importFrom ggplot2 scale_linetype_manual scale_shape_manual ggtitle guides
-#'   guide_legend margin
+#' @importFrom ggplot2 scale_linetype_manual scale_shape_manual ggtitle guides guide_legend margin
 #'
 #' @export
-plotDistractorAnalysis <- function(Data, key, num.groups = 3, item = 1, item.name, multiple.answers = TRUE,
-                                   criterion = NULL, crit.discrete = FALSE, cut.points, data, matching, match.discrete) {
+plotDistractorAnalysis <- function(
+  Data,
+  key,
+  num.groups = 3,
+  item = 1,
+  item.name,
+  multiple.answers = TRUE,
+  criterion = NULL,
+  crit.discrete = FALSE,
+  cut.points,
+  data,
+  matching,
+  match.discrete
+) {
   # deprecated args handling
   if (!missing(data)) {
-    warning("Argument 'data' is deprecated; please use 'Data' instead.",
+    warning(
+      "Argument 'data' is deprecated; please use 'Data' instead.",
       call. = FALSE
     )
     Data <- data
   }
   if (!missing(matching)) {
-    warning("Argument 'matching' is deprecated; please use 'criterion' instead.",
+    warning(
+      "Argument 'matching' is deprecated; please use 'criterion' instead.",
       call. = FALSE
     )
     criterion <- matching
   }
   if (!missing(match.discrete)) {
-    warning("Argument 'match.discrete' is deprecated; please use 'crit.discrete' instead.",
+    warning(
+      "Argument 'match.discrete' is deprecated; please use 'crit.discrete' instead.",
       call. = FALSE
     )
     crit.discrete <- match.discrete
@@ -123,10 +137,14 @@ plotDistractorAnalysis <- function(Data, key, num.groups = 3, item = 1, item.nam
 
   if (missing(key)) {
     if (all(sapply(Data, is.numeric))) {
-      warning("Answer key is not provided. Maximum value is used as 'key'.", call. = FALSE)
+      warning(
+        "Answer key is not provided. Maximum value is used as 'key'.",
+        call. = FALSE
+      )
       key <- sapply(Data, max, na.rm = TRUE)
     } else if (missing(criterion)) {
-      stop("Answer key is not provided. Please, specify 'key' to be able to calculate total score or provide 'criterion'. ",
+      stop(
+        "Answer key is not provided. Please, specify 'key' to be able to calculate total score or provide 'criterion'. ",
         call. = FALSE
       )
     } else {
@@ -135,7 +153,10 @@ plotDistractorAnalysis <- function(Data, key, num.groups = 3, item = 1, item.nam
   } else {
     key <- unlist(key)
     if (!length(key) == ncol(Data)) {
-      stop("Answer key is not provided or some item keys are missing.", call. = FALSE)
+      stop(
+        "Answer key is not provided or some item keys are missing.",
+        call. = FALSE
+      )
     }
   }
 
@@ -145,7 +166,8 @@ plotDistractorAnalysis <- function(Data, key, num.groups = 3, item = 1, item.nam
 
   if (inherits(item, "character")) {
     if (any(item != "all") & !all(item %in% nams)) {
-      stop("Invalid value for 'item'. Item must be either character 'all', or
+      stop(
+        "Invalid value for 'item'. Item must be either character 'all', or
            numeric vector corresponding to column identifiers, or name of the item.",
         call. = FALSE
       )
@@ -157,15 +179,14 @@ plotDistractorAnalysis <- function(Data, key, num.groups = 3, item = 1, item.nam
     }
   } else {
     if (!inherits(item, c("integer", "numeric"))) {
-      stop("Invalid value for 'item'. Item must be either character 'all', or
+      stop(
+        "Invalid value for 'item'. Item must be either character 'all', or
            numeric vector corresponding to column identifiers, or name of the item.",
         call. = FALSE
       )
     } else {
       if (!all(item %in% 1:m)) {
-        stop("Invalid number for 'item'.",
-          call. = FALSE
-        )
+        stop("Invalid number for 'item'.", call. = FALSE)
       } else {
         items <- item
       }
@@ -176,8 +197,14 @@ plotDistractorAnalysis <- function(Data, key, num.groups = 3, item = 1, item.nam
   for (i in items) {
     # distractor analysis
     x <- DistractorAnalysis(
-      Data = Data, key = key, item = i, p.table = TRUE, num.groups = num.groups, criterion = criterion,
-      crit.discrete = crit.discrete, cut.points = cut.points
+      Data = Data,
+      key = key,
+      item = i,
+      p.table = TRUE,
+      num.groups = num.groups,
+      criterion = criterion,
+      crit.discrete = crit.discrete,
+      cut.points = cut.points
     )[[1]]
 
     # only rows where is positive proportion of correct answers
@@ -243,7 +270,11 @@ plotDistractorAnalysis <- function(Data, key, num.groups = 3, item = 1, item.nam
       shape[CAall] <- 19
     }
 
-    xlab <- ifelse(is.null(criterion), "Group by total score", "Group by criterion variable")
+    xlab <- ifelse(
+      is.null(criterion),
+      "Group by total score",
+      "Group by criterion variable"
+    )
 
     df$score.level <- as.factor(df$score.level)
     num.groups <- length(unique(df$score.level))
@@ -251,14 +282,17 @@ plotDistractorAnalysis <- function(Data, key, num.groups = 3, item = 1, item.nam
     levels(df$Group) <- 1:length(levels(df$Group))
 
     # plot
-    g <- ggplot(df, aes(
-      x = .data$Group,
-      y = .data$Proportion,
-      group = .data$Response,
-      colour = .data$Response,
-      linetype = .data$Response,
-      shape = .data$Response
-    )) +
+    g <- ggplot(
+      df,
+      aes(
+        x = .data$Group,
+        y = .data$Proportion,
+        group = .data$Response,
+        colour = .data$Response,
+        linetype = .data$Response,
+        shape = .data$Response
+      )
+    ) +
       geom_line(size = 0.8) +
       geom_point(size = 3) +
       xlab(xlab) +
@@ -281,11 +315,12 @@ plotDistractorAnalysis <- function(Data, key, num.groups = 3, item = 1, item.nam
       ggtitle(item.name)
 
     if (length(col) > 11) {
-      g <- g + guides(
-        linetype = guide_legend(ncol = 2),
-        shape = guide_legend(ncol = 2),
-        color = guide_legend(ncol = 2)
-      )
+      g <- g +
+        guides(
+          linetype = guide_legend(ncol = 2),
+          shape = guide_legend(ncol = 2),
+          color = guide_legend(ncol = 2)
+        )
     }
     plots[[i]] <- g
   }

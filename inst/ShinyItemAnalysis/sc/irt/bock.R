@@ -39,8 +39,10 @@ factor_scores <- fscores(fitted_blis_blirt)
 standard_scores <- scale(rowSums(data_scored))
 
 # show both scores in a scatterplot
-plot(factor_scores ~ standard_scores,
-  xlab = "Standardized total score", ylab = "Factor score"
+plot(
+  factor_scores ~ standard_scores,
+  xlab = "Standardized total score",
+  ylab = "Factor score"
 )
 
 # Pearson correlation of both scores
@@ -49,8 +51,11 @@ cor(factor_scores, standard_scores)
 
 # Bock and Thissen et al. parametrizations --------------------------------
 
-fitted_bock_thissen <- mirt(data_nominal_numeric,
-  model = 1, itemtype = "nominal", SE = TRUE
+fitted_bock_thissen <- mirt(
+  data_nominal_numeric,
+  model = 1,
+  itemtype = "nominal",
+  SE = TRUE
 )
 
 # item response curves
@@ -73,8 +78,10 @@ coef(fitted_bock_thissen, printSE = TRUE, IRTpars = TRUE)
 factor_scores <- fscores(fitted_bock_thissen)
 
 # show both scores in a scatterplot
-plot(factor_scores ~ standard_scores,
-  xlab = "Standardized total score", ylab = "Factor score"
+plot(
+  factor_scores ~ standard_scores,
+  xlab = "Standardized total score",
+  ylab = "Factor score"
 )
 
 # Pearson correlation of both scores

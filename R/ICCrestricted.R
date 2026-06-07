@@ -76,10 +76,23 @@
 #'
 #' @export
 #'
-ICCrestricted <- function(Data, case, var, rank = NULL,
-                          dir = "top", sel = 1, nsim = 100, ci = .95, seed = NULL) {
-  if (is.null(Data[[case]])) stop("Case variable '", case, "' not present in Data.", call. = FALSE)
-  if (is.null(Data[[var]])) stop("Dependent variable '", var, "' not present in Data.", call. = FALSE)
+ICCrestricted <- function(
+  Data,
+  case,
+  var,
+  rank = NULL,
+  dir = "top",
+  sel = 1,
+  nsim = 100,
+  ci = .95,
+  seed = NULL
+) {
+  if (is.null(Data[[case]])) {
+    stop("Case variable '", case, "' not present in Data.", call. = FALSE)
+  }
+  if (is.null(Data[[var]])) {
+    stop("Dependent variable '", var, "' not present in Data.", call. = FALSE)
+  }
 
   sel_max <- Data[[case]] |>
     unique() |>
@@ -91,7 +104,9 @@ ICCrestricted <- function(Data, case, var, rank = NULL,
       sel <- 2
       warning(
         "There must be at least 2 cases in the subset.\n",
-        "A minimum proportion, i.e., ", round(2 / sel_max, 3), " was used.",
+        "A minimum proportion, i.e., ",
+        round(2 / sel_max, 3),
+        " was used.",
         call. = FALSE
       )
     }
@@ -111,11 +126,14 @@ ICCrestricted <- function(Data, case, var, rank = NULL,
       rank <- ".rank"
     }
 
-    if (is.null(Data[[rank]])) stop("Rank variable '", rank, "' not present in Data.", call. = FALSE)
+    if (is.null(Data[[rank]])) {
+      stop("Rank variable '", rank, "' not present in Data.", call. = FALSE)
+    }
 
     dir <- match.arg(dir, c("top", "bottom"))
 
-    Data <- switch(dir,
+    Data <- switch(
+      dir,
       top = Data[Data[[rank]] <= sel, ],
       bottom = Data[Data[[rank]] > sel_max - sel, ]
     )
@@ -136,7 +154,9 @@ ICCrestricted <- function(Data, case, var, rank = NULL,
     model,
     function(mm) {
       c(as.numeric(VarCorr(mm)), sigma(mm)^2)
-    }, nsim, seed
+    },
+    nsim,
+    seed
   )$t
 
   probs <- c(1 - ci, 1 + ci) / 2

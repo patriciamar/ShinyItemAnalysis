@@ -8,8 +8,14 @@ group <- GMAT[, "group"]
 # generalized logistic regression DIF method
 # using 3PL model with the same guessing parameter for both groups
 (fit <- difNLR(
-  Data = data, group = group, focal.name = 1, model = "3PLcg",
-  match = "zscore", type = "all", p.adjust.method = "none", purify = FALSE
+  Data = data,
+  group = group,
+  focal.name = 1,
+  model = "3PLcg",
+  match = "zscore",
+  type = "all",
+  p.adjust.method = "none",
+  purify = FALSE
 ))
 
 # plot of characteristic curve of item 1

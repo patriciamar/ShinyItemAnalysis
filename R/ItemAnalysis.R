@@ -116,10 +116,23 @@
 #' @importFrom tidyr drop_na
 #'
 #' @export
-ItemAnalysis <- function(Data, minscore = NULL, maxscore = NULL,
-                         cutscore = NULL, criterion = NULL,
-                         k = NULL, l = NULL, u = NULL, bin = "deprecated") {
-  if (!missing(bin)) stop("Argument `bin` is deprecated, the dataset will be binarized according to `cutscore` whenewer it is provided.", call. = FALSE)
+ItemAnalysis <- function(
+  Data,
+  minscore = NULL,
+  maxscore = NULL,
+  cutscore = NULL,
+  criterion = NULL,
+  k = NULL,
+  l = NULL,
+  u = NULL,
+  bin = "deprecated"
+) {
+  if (!missing(bin)) {
+    stop(
+      "Argument `bin` is deprecated, the dataset will be binarized according to `cutscore` whenewer it is provided.",
+      call. = FALSE
+    )
+  }
 
   # if there is any cutscore provided, binarize the dataset accordingly
   if (!is.null(cutscore)) {
@@ -173,8 +186,12 @@ ItemAnalysis <- function(Data, minscore = NULL, maxscore = NULL,
   guli <- NA # allocate object for data.frame
   if (!any(is.null(k), is.null(l), is.null(u))) {
     guli <- gDiscrim(
-      Data = Data, k = k, l = l, u = u,
-      maxscore = maxscore, minscore = minscore
+      Data = Data,
+      k = k,
+      l = l,
+      u = u,
+      maxscore = maxscore,
+      minscore = minscore
     ) # more efficient variant for this concrete case?
   }
 
@@ -204,11 +221,11 @@ ItemAnalysis <- function(Data, minscore = NULL, maxscore = NULL,
   alpha_drop <- sapply(
     seq_len(n_items),
     function(x) {
-      (n_items - 1) / (n_items - 2) *
+      (n_items - 1) /
+        (n_items - 2) *
         (1 - sum(items_var[-x]) / sum(data_var[-x, -x]))
     }
   )
-
 
   # use hard-to-type-hard-to-read legacy names (despite that sentence case with
   # "." delimiter was superseded decades (!) ago in S/R because of S3 class

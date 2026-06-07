@@ -136,7 +136,6 @@ check_app_deps <- function(...) {
 mod_offer_env <- new.env(parent = emptyenv())
 
 
-
 #' @importFrom rlang is_interactive
 #' @importFrom utils install.packages menu
 #'
@@ -180,7 +179,11 @@ offer_modules <- function(...) {
   if (resp == 1L) {
     install.packages(mods_to_offer, repos = sm_installation_repos(), ...)
   } else if (resp > 2L) {
-    install.packages(mods_to_offer[resp - 2L], repos = sm_installation_repos(), ...)
+    install.packages(
+      mods_to_offer[resp - 2L],
+      repos = sm_installation_repos(),
+      ...
+    )
   }
 
   # TODO: check version of the installed package and offer to update, see {remotes}
@@ -243,9 +246,12 @@ sm_install_pkg <- function(pkg, ...) {
     warning = function(cnd) {
       catch <-
         grepl("(download|installation) of package .* failed", cnd$message) ||
-          grepl("(dependenc|package).*(is|are) not available", cnd$message) ||
-          grepl("installation of package.*had non-zero exit status", cnd$message) ||
-          grepl("installation of .+ package(|s) failed", cnd$message)
+        grepl("(dependenc|package).*(is|are) not available", cnd$message) ||
+        grepl(
+          "installation of package.*had non-zero exit status",
+          cnd$message
+        ) ||
+        grepl("installation of .+ package(|s) failed", cnd$message)
 
       if (catch) {
         # Rethrow the warning as an error

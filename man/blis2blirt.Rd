@@ -7,7 +7,7 @@
 blis2blirt(fitted_model)
 }
 \arguments{
-\item{fitted_model}{fitted BLIS model (object of class \linkS4class{BlisClass})}
+\item{fitted_model}{fitted BLIS model (object of class \link[=BlisClass-class]{BlisClass})}
 }
 \value{
 IRT parametrization of BLIS model

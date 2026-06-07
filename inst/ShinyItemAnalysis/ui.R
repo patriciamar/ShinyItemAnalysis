@@ -58,8 +58,14 @@ ui <- tagList(
     tags$meta(name = "twitter:site", content = "@PMartinkova"),
     tags$meta(name = "twitter:creator", content = "@PMartinkova"),
     tags$meta(name = "twitter:title", content = "ShinyItemAnalysis"),
-    tags$meta(name = "twitter:description", content = "Test and Item Analysis with Shiny"),
-    tags$meta(name = "twitter:image", content = "https://cdn.jsdelivr.net/gh/patriciamar/ShinyItemAnalysis/inst/ShinyItemAnalysis/www/card.png"),
+    tags$meta(
+      name = "twitter:description",
+      content = "Test and Item Analysis with Shiny"
+    ),
+    tags$meta(
+      name = "twitter:image",
+      content = "https://cdn.jsdelivr.net/gh/patriciamar/ShinyItemAnalysis/inst/ShinyItemAnalysis/www/card.png"
+    ),
 
     # math typesetting
     includeHTML("www/katex.html"),
@@ -118,21 +124,24 @@ ui <- tagList(
   shinyjs::useShinyjs(),
   tags$head(insert_ga_tag()),
   navbarPage(
-    title = HTML('<div style="margin-top: -10px;">
+    title = HTML(
+      '<div style="margin-top: -10px;">
                     <div class="header-title"><img src="sia_logo_trans.svg"> ShinyItemAnalysis</div>
                     <div class="header-subtitle"> Test and item analysis</div>
-                 </div>'),
+                 </div>'
+    ),
     id = "navbar",
     windowTitle = "ShinyItemAnalysis",
     position = "fixed-top",
     selected = "About",
     collapsible = TRUE,
     footer = list(
-      HTML('<div style = "clear: both; height: 50px;"></div>
+      HTML(
+        '<div style = "clear: both; height: 50px;"></div>
            <div class = "panel-footer", style = "opacity: 1.00; z-index: 1000;">
               <p style = "margin:8px 0 0 0;">
                 <div class = "footer-title"> <img src = "sia_logo.svg" style="width: 57px; margin-right: 10px;"> ShinyItemAnalysis </div>
-                <div class = "footer-subtitle"> Test and item analysis via Shiny | Version 1.5.5 </div>
+                <div class = "footer-subtitle"> Test and item analysis via Shiny | Version 1.6.0 </div>
                 <span style = "float:right">
                   <a href = "https://shinyitemanalysis.org/" id = "tooltipweb" target="_blank"> <img src = "footer_web_icon.png", class = "footer-icons"> </a>
                   <a href = "https://github.com/patriciamar/ShinyItemAnalysis/" id = "tooltipgithub" target="_blank"> <img src = "footer_github_icon.png", class = "footer-icons"> </a>
@@ -147,7 +156,8 @@ ui <- tagList(
               <br>
               <div class = "footer-copyright">
                 &copy; <script>document.write(new Date().getFullYear())</script> ShinyItemAnalysis
-              </div>'),
+              </div>'
+      ),
       HTML('<div class="footer-counter">'),
       insert_visitor_counter(),
       HTML('</div>'),

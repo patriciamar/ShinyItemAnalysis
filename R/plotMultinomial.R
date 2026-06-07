@@ -65,26 +65,45 @@ plotMultinomial <- function(x, matching, matching.name = "matching") {
     matching <- matching[-as.vector(x$na.action)]
   }
 
-  match <- seq(min(matching, na.rm = TRUE), max(matching, na.rm = TRUE), length.out = 1000) # matching for curves
+  match <- seq(
+    min(matching, na.rm = TRUE),
+    max(matching, na.rm = TRUE),
+    length.out = 1000
+  ) # matching for curves
   coefs <- matrix(coef(x), ncol = 2)
 
   # calculation of fitted curves
-  df.probs <- data.frame(1, apply(coefs, 1, function(x) exp(x[1] + x[2] * match)))
+  df.probs <- data.frame(
+    1,
+    apply(coefs, 1, function(x) exp(x[1] + x[2] * match))
+  )
   df.probs <- df.probs / rowSums(df.probs)
   df.probs <- data.frame(match, df.probs)
   colnames(df.probs) <- c("matching", paste0("P(Y=", cat, ")"))
-  df.probs <- tidyr::pivot_longer(df.probs, -matching, names_to = "Category", values_to = "Probability")
-  df.probs$Category <- relevel(as.factor(df.probs$Category), paste0("P(Y=", cat[1], ")"))
+  df.probs <- tidyr::pivot_longer(
+    df.probs,
+    -matching,
+    names_to = "Category",
+    values_to = "Probability"
+  )
+  df.probs$Category <- relevel(
+    as.factor(df.probs$Category),
+    paste0("P(Y=", cat[1], ")")
+  )
   colnames(df.probs)[1] <- "Matching"
 
   # calculation of empirical values
-  df.emp <- data.frame(table(y, matching),
+  df.emp <- data.frame(
+    table(y, matching),
     y = prop.table(table(y, matching), 2)
   )[, c(1, 2, 3, 6)]
   df.emp$matching <- as.numeric(paste(df.emp$matching))
   colnames(df.emp) <- c("Category", "Matching", "Count", "Probability")
   df.emp$Category <- paste0("P(Y=", df.emp$Category, ")")
-  df.emp$Category <- relevel(as.factor(df.emp$Category), paste0("P(Y=", cat[1], ")"))
+  df.emp$Category <- relevel(
+    as.factor(df.emp$Category),
+    paste0("P(Y=", cat[1], ")")
+  )
 
   num.cat <- length(levels(df.probs$Category))
   k1 <- num.cat %/% 12
@@ -96,16 +115,22 @@ plotMultinomial <- function(x, matching, matching.name = "matching") {
     geom_point(
       data = df.emp,
       aes(
-        x = .data$Matching, y = .data$Probability,
-        colour = .data$Category, fill = .data$Category, size = .data$Count
+        x = .data$Matching,
+        y = .data$Probability,
+        colour = .data$Category,
+        fill = .data$Category,
+        size = .data$Count
       ),
-      alpha = 0.5, shape = 21
+      alpha = 0.5,
+      shape = 21
     ) +
     geom_line(
       data = df.probs,
       aes(
-        x = .data$Matching, y = .data$Probability,
-        colour = .data$Category, linetype = .data$Category
+        x = .data$Matching,
+        y = .data$Probability,
+        colour = .data$Category,
+        linetype = .data$Category
       ),
       size = 0.8
     ) +

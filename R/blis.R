@@ -70,39 +70,72 @@ make_starting_vals <- function(Data, orig_levels) {
   # set a* to 1 and turn of the estimation
   # turn estimation of correct response off and assign 0 as its value
   # set initial values of distractors' slopes to -0.5 (have to be less than correct resp. value)
-  item_pars <- map_dfr(orig_levels, ~ {
-    lvls_int <- seq_along(.x) - 1L # get resp. indices
-    key_int <- which(attr(.x, "key", exact = TRUE)) - 1L # get index of correct resp.
+  item_pars <- map_dfr(
+    orig_levels,
+    ~ {
+      lvls_int <- seq_along(.x) - 1L # get resp. indices
+      key_int <- which(attr(.x, "key", exact = TRUE)) - 1L # get index of correct resp.
 
-    list(
-      name = c("a1", paste0("ak", lvls_int), paste0("d", lvls_int)),
-      value = c(1, c(0, -.5)[(lvls_int != key_int) + 1L], rep(0, length(lvls_int))),
-      est = c(FALSE, rep(lvls_int != key_int, 2L))
-    )
-  },
-  .id = "item" # append item name to the result
+      list(
+        name = c("a1", paste0("ak", lvls_int), paste0("d", lvls_int)),
+        value = c(
+          1,
+          c(0, -.5)[(lvls_int != key_int) + 1L],
+          rep(0, length(lvls_int))
+        ),
+        est = c(FALSE, rep(lvls_int != key_int, 2L))
+      )
+    },
+    .id = "item" # append item name to the result
   )
 
   # create entries for groups - we'll use only one
   group_pars <- tibble(
-    group = "all", item = "GROUP", class = "GroupPars",
-    name = c("MEAN_1", "COV_11"), value = c(0, 1), lbound = c(-Inf, 1e-04),
-    ubound = Inf, est = FALSE, const = "none", nconst = "none",
-    prior.type = "none", prior_1 = NaN, prior_2 = NaN
+    group = "all",
+    item = "GROUP",
+    class = "GroupPars",
+    name = c("MEAN_1", "COV_11"),
+    value = c(0, 1),
+    lbound = c(-Inf, 1e-04),
+    ubound = Inf,
+    est = FALSE,
+    const = "none",
+    nconst = "none",
+    prior.type = "none",
+    prior_1 = NaN,
+    prior_2 = NaN
   )
 
   # bind group and item pars, set col order, append parnums
   pars <- item_pars |>
     mutate(
       class = "nominal",
-      group = "all", lbound = -Inf, ubound = Inf, const = "none",
-      nconst = "none", prior.type = "none", prior_1 = NaN, prior_2 = NaN
+      group = "all",
+      lbound = -Inf,
+      ubound = Inf,
+      const = "none",
+      nconst = "none",
+      prior.type = "none",
+      prior_1 = NaN,
+      prior_2 = NaN
     ) |>
     add_row(group_pars) |>
     mutate(parnum = row_number()) |>
     relocate(
-      "group", "item", "class", "name", "parnum", "value", "lbound", "ubound",
-      "est", "const", "nconst", "prior.type", "prior_1", "prior_2"
+      "group",
+      "item",
+      "class",
+      "name",
+      "parnum",
+      "value",
+      "lbound",
+      "ubound",
+      "est",
+      "const",
+      "nconst",
+      "prior.type",
+      "prior_1",
+      "prior_2"
     ) |>
     as.data.frame()
 
@@ -111,7 +144,6 @@ make_starting_vals <- function(Data, orig_levels) {
 
   pars
 }
-
 
 
 #' Turn nominal (factor) data to integers, keep original levels with a key of
@@ -165,7 +197,6 @@ nominal_to_int <- function(Data, key) {
     stop("The key and data dimensions have to be compatible.", call. = FALSE)
   }
 
-
   # drop unused levels in case Data have been modified in some way
   # -- prevent mismatch of level-int
   Data <- droplevels(Data)
@@ -177,11 +208,15 @@ nominal_to_int <- function(Data, key) {
   key <- unlist(key)
 
   # store original levels and key (+ this will be used for item pars creation)
-  orig_levels <- map2(Data, key, ~ {
-    lvls <- levels(.x)
-    attr(lvls, "key") <- levels(.x) == .y
-    lvls
-  })
+  orig_levels <- map2(
+    Data,
+    key,
+    ~ {
+      lvls <- levels(.x)
+      attr(lvls, "key") <- levels(.x) == .y
+      lvls
+    }
+  )
 
   list(Data = Data, orig_levels = orig_levels)
 }
@@ -229,31 +264,34 @@ nominal_to_int <- function(Data, key) {
 obtain_nrm_def <- function(data_with_key, ...) {
   sv <- mirt(data_with_key$Data, 1, "nominal", pars = "values", ...)
 
-  sv_new <- data_with_key$orig_levels |> map(~ {
-    # get the original key, side-assign as est
-    est <- key <- attr(.x, "key")
-    k <- length(key)
+  sv_new <- data_with_key$orig_levels |>
+    map(
+      ~ {
+        # get the original key, side-assign as est
+        est <- key <- attr(.x, "key")
+        k <- length(key)
 
-    # set TRUE to first non-correct response (this will be "lowest" category)
-    est[!est][1L] <- TRUE
+        # set TRUE to first non-correct response (this will be "lowest" category)
+        est[!est][1L] <- TRUE
 
-    # write as est attribute, this we'll use as est in starting values
-    attr(.x, "est") <- !est
+        # write as est attribute, this we'll use as est in starting values
+        attr(.x, "est") <- !est
 
-    # allocate vector for values with .5 for all
-    value <- rep_len(.5, k)
+        # allocate vector for values with .5 for all
+        value <- rep_len(.5, k)
 
-    # for correct response, set k - 1
-    value[key & est] <- k - 1
+        # for correct response, set k - 1
+        value[key & est] <- k - 1
 
-    # for arbitrary low category (first distractor), set 0
-    value[!key & est] <- 0
+        # for arbitrary low category (first distractor), set 0
+        value[!key & est] <- 0
 
-    # write resulting values vector as an attribute
-    attr(.x, "value") <- value
+        # write resulting values vector as an attribute
+        attr(.x, "value") <- value
 
-    .x
-  })
+        .x
+      }
+    )
 
   # set est and values to our new constrains
   sv$est[grepl("ak", sv$name)] <- sv_new |>
@@ -266,7 +304,6 @@ obtain_nrm_def <- function(data_with_key, ...) {
 
   sv
 }
-
 
 
 #' BLIS S4 class
@@ -288,7 +325,8 @@ obtain_nrm_def <- function(data_with_key, ...) {
 #' @family BLIS/BLIRT related
 #'
 #' @export
-setClass("BlisClass",
+setClass(
+  "BlisClass",
   contains = "SingleGroupClass",
   slots = c(orig_levels = "list")
 )
@@ -313,7 +351,9 @@ setClass("BlisClass",
 #' fit <- fit_blis(HCItest[, 1:20], HCIkey)
 #' get_orig_levels(fit)
 get_orig_levels <- function(object) {
-  if (!is(object, "BlisClass")) stop("Object provided is not of class [BlisClass-class].")
+  if (!is(object, "BlisClass")) {
+    stop("Object provided is not of class [BlisClass-class].")
+  }
   object@orig_levels
 }
 
@@ -370,9 +410,18 @@ get_orig_levels <- function(object) {
 #'
 #' @export
 setMethod(
-  "coef", "BlisClass",
-  function(object, ..., CI = .95, printSE = FALSE, IRTpars = FALSE,
-           simplify = FALSE, labels = FALSE, mark_correct = labels) {
+  "coef",
+  "BlisClass",
+  function(
+    object,
+    ...,
+    CI = .95,
+    printSE = FALSE,
+    IRTpars = FALSE,
+    simplify = FALSE,
+    labels = FALSE,
+    mark_correct = labels
+  ) {
     # not-implemented args warnings
     if (!missing(simplify)) {
       warning(
@@ -388,13 +437,16 @@ setMethod(
 
     # friendly message
     if (!labels && mark_correct) {
-      warning("You have to opt for labels printing to `mark_correct` take any effect.",
+      warning(
+        "You have to opt for labels printing to `mark_correct` take any effect.",
         call. = FALSE
       )
     }
 
     # reparametrize fitted BLIS if IRT parametrization is requested
-    if (IRTpars) object <- blis2blirt(object)
+    if (IRTpars) {
+      object <- blis2blirt(object)
+    }
 
     item_names <- colnames(object@Data$data)
     pars <- object@ParObjects$pars[seq_along(item_names)] # parameters list from fitted object
@@ -411,7 +463,8 @@ setMethod(
           pars,
           ~ matrix(
             c(.x@par[-1L], .x@SEpar[-1L]), # [-1L] strips out the overall slope parameter a*
-            ncol = length(.x@par[-1L]), byrow = TRUE,
+            ncol = length(.x@par[-1L]),
+            byrow = TRUE,
             dimnames = list(nms, .x@parnames[-1L])
           )
         )
@@ -431,7 +484,8 @@ setMethod(
                 .x@par[-1L] + z * .x@SEpar[-1L]
               )
             ),
-            ncol = length(.x@par[-1L]), byrow = TRUE,
+            ncol = length(.x@par[-1L]),
+            byrow = TRUE,
             dimnames = list(nms, .x@parnames[-1L])
           )
         )
@@ -442,7 +496,8 @@ setMethod(
         pars,
         ~ matrix(
           .x@par[-1L],
-          nrow = 1, byrow = TRUE,
+          nrow = 1,
+          byrow = TRUE,
           dimnames = list(nms, .x@parnames[-1L])
         )
       )
@@ -452,7 +507,8 @@ setMethod(
 
     if (labels) {
       out <- map2(
-        out, object@orig_levels,
+        out,
+        object@orig_levels,
         ~ {
           if (mark_correct) {
             corr_resp <- attr(.y, "key", exact = TRUE)
@@ -506,10 +562,13 @@ print.blis_coefs <- function(x, digits = 3, ...) {
 #'
 blis2blirt <- function(fitted_model) {
   has_ses <- length(fitted_model@ParObjects$pars[[1L]]@SEpar) # evaluates to TRUE if SEs are available
-  if (has_ses) vcov <- fitted_model@vcov
+  if (has_ses) {
+    vcov <- fitted_model@vcov
+  }
 
   fitted_model@ParObjects$pars <- modify_if(
-    fitted_model@ParObjects$pars, ~ inherits(.x, "nominal"),
+    fitted_model@ParObjects$pars,
+    ~ inherits(.x, "nominal"),
     function(it) {
       if (has_ses) {
         # get pars that were actually estimated (estimated == present in vcov matrix)
@@ -524,28 +583,35 @@ blis2blirt <- function(fitted_model) {
 
         first_half_idx <- seq_len(it@ncat - 1) # indices for first half of the par vector
 
-        grads <- map(first_half_idx, ~ {
-          # get intercept and slope for each response
-          int_slope <- est_pars[c(.x + it@ncat - 1, .x)]
-          # get partial derivatives / gradients
-          matrix(
-            c(
-              -(1 / int_slope[2L]),
-              int_slope[1L] / int_slope[2L]^2
-            ),
-            nrow = 1
-          )
-        })
+        grads <- map(
+          first_half_idx,
+          ~ {
+            # get intercept and slope for each response
+            int_slope <- est_pars[c(.x + it@ncat - 1, .x)]
+            # get partial derivatives / gradients
+            matrix(
+              c(
+                -(1 / int_slope[2L]),
+                int_slope[1L] / int_slope[2L]^2
+              ),
+              nrow = 1
+            )
+          }
+        )
 
         # get vcov subsets for each response
-        vcov_subs <- map(first_half_idx, ~ {
-          idx <- vcov_nms[c(.x + it@ncat - 1, .x)]
-          vcov[idx, idx]
-        })
+        vcov_subs <- map(
+          first_half_idx,
+          ~ {
+            idx <- vcov_nms[c(.x + it@ncat - 1, .x)]
+            vcov[idx, idx]
+          }
+        )
 
         # compute new SEs
         new_ses <- map2_dbl(
-          grads, vcov_subs,
+          grads,
+          vcov_subs,
           ~ sqrt(diag(.x %*% .y %*% t(.x)))
         )
 
@@ -560,7 +626,10 @@ blis2blirt <- function(fitted_model) {
       }
 
       # transform intercepts to IRT
-      it@par[1 + (it@ncat + 1):(2 * it@ncat)] <- -it@par[1 + (it@ncat + 1):(2 * it@ncat)] / it@par[1:it@ncat + 1]
+      it@par[1 + (it@ncat + 1):(2 * it@ncat)] <- -it@par[
+        1 + (it@ncat + 1):(2 * it@ncat)
+      ] /
+        it@par[1:it@ncat + 1]
 
       # replace NaN introduced by zero division with 0
       it@par[is.nan(it@par)] <- 0
@@ -568,7 +637,8 @@ blis2blirt <- function(fitted_model) {
       # use IRT nomenclature
       it@parnames <- c(
         "a*",
-        paste0("a", seq_len(it@ncat)), paste0("b", seq_len(it@ncat))
+        paste0("a", seq_len(it@ncat)),
+        paste0("b", seq_len(it@ncat))
       )
 
       return(it)

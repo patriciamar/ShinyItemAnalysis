@@ -14,7 +14,9 @@ delta_ses <- function(formula, mean, cov) {
   formula <- as.list(formula)
 
   syms <- paste0("x", seq_along(mean))
-  for (i in seq_along(mean)) assign(syms[i], mean[i])
+  for (i in seq_along(mean)) {
+    assign(syms[i], mean[i])
+  }
 
   gdashmu <- t(sapply(formula, function(x) {
     as.numeric(attr(eval(deriv(x, syms)), "gradient"))

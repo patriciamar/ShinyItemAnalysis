@@ -45,5 +45,5 @@ cronbach_alpha <- function(Data, ci = TRUE, ci_lvl = .95) {
     out$ci <- 1 - (1 - out$estimate) * Fdist
   }
 
- return(out)
+  return(out)
 }

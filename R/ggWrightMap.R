@@ -65,11 +65,27 @@
 #' )
 #' @export
 
-ggWrightMap <- function(theta, b, binwidth = 0.5, color = "blue", size = 15,
-                        item.names, ylab.theta = "Respondent latent trait",
-                        ylab.b = "Item difficulty", rel_widths = c(1, 1)) {
+ggWrightMap <- function(
+  theta,
+  b,
+  binwidth = 0.5,
+  color = "blue",
+  size = 15,
+  item.names,
+  ylab.theta = "Respondent latent trait",
+  ylab.b = "Item difficulty",
+  rel_widths = c(1, 1)
+) {
   plts <- gg_wright_internal(
-    theta, b, binwidth, color, size, item.names, ylab.theta, ylab.b, rel_widths
+    theta,
+    b,
+    binwidth,
+    color,
+    size,
+    item.names,
+    ylab.theta,
+    ylab.b,
+    rel_widths
   )
 
   # arrange plots using bare grid
@@ -89,9 +105,16 @@ ggWrightMap <- function(theta, b, binwidth = 0.5, color = "blue", size = 15,
 
   # make gtable
   g <- gTree(
-    grobs = grobs, layout = new_layout, widths = unit(rel_widths, "null"),
-    heights = unit(1, "null"), respect = FALSE, name = "arrange", rownames = NULL,
-    colnames = NULL, vp = NULL, cl = "gtable"
+    grobs = grobs,
+    layout = new_layout,
+    widths = unit(rel_widths, "null"),
+    heights = unit(1, "null"),
+    respect = FALSE,
+    name = "arrange",
+    rownames = NULL,
+    colnames = NULL,
+    vp = NULL,
+    cl = "gtable"
   )
 
   grid.draw(g)
@@ -99,20 +122,24 @@ ggWrightMap <- function(theta, b, binwidth = 0.5, color = "blue", size = 15,
 }
 
 
-
 #' ggWrightMap internals
 #'
 #' @keywords internal
 #'
-#' @importFrom ggplot2 unit geom_histogram xlim ylab coord_flip
-#'   scale_y_reverse geom_text scale_y_continuous
+#' @importFrom ggplot2 unit geom_histogram xlim ylab coord_flip scale_y_reverse geom_text scale_y_continuous
 #'
 #' @noRd
-gg_wright_internal <- function(theta, b, binwidth = 0.5, color = "blue",
-                               size = 15, item.names,
-                               ylab.theta = "Respondent latent trait",
-                               ylab.b = "Item difficulty",
-                               rel_widths = c(1, 1)) {
+gg_wright_internal <- function(
+  theta,
+  b,
+  binwidth = 0.5,
+  color = "blue",
+  size = 15,
+  item.names,
+  ylab.theta = "Respondent latent trait",
+  ylab.b = "Item difficulty",
+  rel_widths = c(1, 1)
+) {
   if (missing(theta)) {
     stop("'theta' needs to be specified", call. = FALSE)
   }
@@ -120,7 +147,10 @@ gg_wright_internal <- function(theta, b, binwidth = 0.5, color = "blue",
     stop("'theta' needs to be specified", call. = FALSE)
   }
   if (length(rel_widths) != 2) {
-    stop("'rel_widths' needs to be a numeric vector of length 2, e.g., 'c(1, 2)'.", call. = FALSE)
+    stop(
+      "'rel_widths' needs to be a numeric vector of length 2, e.g., 'c(1, 2)'.",
+      call. = FALSE
+    )
   }
   if (missing(item.names)) {
     ITEM.NAMES <- 1:length(b)
@@ -132,10 +162,12 @@ gg_wright_internal <- function(theta, b, binwidth = 0.5, color = "blue",
 
   theta.cut.points <- seq(
     min(c(theta, b), na.rm = TRUE) - binwidth / 2,
-    max(c(theta, b), na.rm = TRUE) + binwidth / 2, binwidth / 2
+    max(c(theta, b), na.rm = TRUE) + binwidth / 2,
+    binwidth / 2
   )
   b.cut.points <- cut(b, theta.cut.points, include.lowest = TRUE)
-  levels(b.cut.points) <- theta.cut.points[-length(theta.cut.points)] + diff(theta.cut.points) / 2
+  levels(b.cut.points) <- theta.cut.points[-length(theta.cut.points)] +
+    diff(theta.cut.points) / 2
   b.cut.points <- as.numeric(paste(b.cut.points))
 
   df.b <- data.frame(item = as.character(ITEM.NAMES), b = b, y = b.cut.points)
@@ -150,12 +182,20 @@ gg_wright_internal <- function(theta, b, binwidth = 0.5, color = "blue",
 
   if (missing(item.names)) {
     while (any(nchar(df.b$item) < maxn)) {
-      df.b$item <- ifelse(nchar(df.b$item) < maxn, paste0("0", df.b$item), df.b$item)
+      df.b$item <- ifelse(
+        nchar(df.b$item) < maxn,
+        paste0("0", df.b$item),
+        df.b$item
+      )
     }
   } else {
     df.b$item <- as.character(df.b$item)
     while (any(nchar(df.b$item) < maxn)) {
-      df.b$item <- ifelse(nchar(df.b$item) < maxn, paste0(df.b$item, " "), df.b$item)
+      df.b$item <- ifelse(
+        nchar(df.b$item) < maxn,
+        paste0(df.b$item, " "),
+        df.b$item
+      )
     }
   }
 
@@ -165,7 +205,12 @@ gg_wright_internal <- function(theta, b, binwidth = 0.5, color = "blue",
   lim.x.max <- max(c(theta, b), na.rm = TRUE) + binwidth
 
   g1 <- ggplot(df.theta, aes(x = .data$theta)) +
-    geom_histogram(binwidth = binwidth, fill = color, col = "black", na.rm = TRUE) +
+    geom_histogram(
+      binwidth = binwidth,
+      fill = color,
+      col = "black",
+      na.rm = TRUE
+    ) +
     xlim(lim.x.min, lim.x.max) +
     coord_flip() +
     scale_y_reverse() +

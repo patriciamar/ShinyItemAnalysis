@@ -66,5 +66,10 @@ df2 <- df1
 df2$Obs <- df2$Exp <- df2$z1 <- df2$se.z1 <- NULL
 STS <- as.vector(scale(rowSums(df2[, 1:20])))
 df <- data.frame(FS, STS)
-plot(FS ~ STS, data = df, xlab = "Standardized total score", ylab = "Factor score")
+plot(
+  FS ~ STS,
+  data = df,
+  xlab = "Standardized total score",
+  ylab = "Factor score"
+)
 cor(FS, STS)

@@ -14,7 +14,6 @@ observe({
   items1 <- ncol(binary())
   items2 <- items1 + 10
 
-
   updateNumericInput(
     session = session,
     inputId = "reliability_SBformula_reliability_original",
@@ -49,10 +48,12 @@ output$reliability_SBformula_reliability_text <- renderUI({
   rel_new <- SBrel_(Nlength = m, rxx = rel_ori)
 
   txt <- paste(
-    "Reliability of a test with", ite_new,
+    "Reliability of a test with",
+    ite_new,
     ifelse(ite_new == 1, "item", "items"),
     "would be <b>",
-    round(rel_new, 3), "</b>"
+    round(rel_new, 3),
+    "</b>"
   )
   HTML(txt)
 })
@@ -64,12 +65,12 @@ output$reliability_SBformula_items_text <- renderText({
 
   rel_new <- input$reliability_SBformula_reliability_new
 
-
   m <- SBlength_(rxxp = rel_new, rxx = rel_ori)
   ite_new <- ceiling(m * ite_ori)
 
   txt <- paste(
-    "It is necessary to have <b>", ite_new,
+    "It is necessary to have <b>",
+    ite_new,
     ifelse(ite_new == 1, "item", "items"),
     "</b> to gain reliability of",
     round(rel_new, 3)
@@ -79,18 +80,17 @@ output$reliability_SBformula_items_text <- renderText({
 
 # SBrel_ definition (arg names to match psychometric pkg implementation)
 SBlength_ <- function(rxxp, rxx) {
-  rxxp * (1 - rxx)/(rxx * (1 - rxxp))
+  rxxp * (1 - rxx) / (rxx * (1 - rxxp))
 }
 
 # SBrel_ definition
 SBrel_ <- function(Nlength, rxx) {
-  Nlength * rxx/(1 + (Nlength - 1) * rxx)
+  Nlength * rxx / (1 + (Nlength - 1) * rxx)
 }
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # * SPLIT-HALF ######
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # * BETA ######
@@ -157,9 +157,11 @@ output$reliability_splithalf_text <- renderUI({
   } else {
     txt <- paste(
       "The first subset contains: <b>",
-      paste(item_names()[items1], collapse = ", "), "</b> <br>",
+      paste(item_names()[items1], collapse = ", "),
+      "</b> <br>",
       "The second subset contains: <b>",
-      paste(item_names()[items2], collapse = ", "), "</b> <br>"
+      paste(item_names()[items2], collapse = ", "),
+      "</b> <br>"
     )
   }
 
@@ -189,8 +191,14 @@ output$reliability_splithalf_allpossible_text <- renderUI({
   k <- ceiling(n / 2)
   num <- ifelse(k == n / 2, choose(n, k) / 2, choose(n, k))
 
-  txt <- paste("<b>Note:</b> For a dataset with <b>", n, "items</b>,
-               there are <b>", num, "</b> possible split-halves")
+  txt <- paste(
+    "<b>Note:</b> For a dataset with <b>",
+    n,
+    "items</b>,
+               there are <b>",
+    num,
+    "</b> possible split-halves"
+  )
 
   HTML(txt)
 })
@@ -203,7 +211,11 @@ reliability_splithalf_raw <- reactive({
   # we want to align these for psych 2.1.9+ uses the names instead of indices
   colnames(data) <- item_names()
 
-  psych::splitHalf(data, raw = TRUE, n.sample = input$reliability_splithalf_number)
+  psych::splitHalf(
+    data,
+    raw = TRUE,
+    n.sample = input$reliability_splithalf_number
+  )
 })
 
 # ** Split-half correlation and reliability calculation ######
@@ -239,7 +251,6 @@ reliability_splithalf_estimate <- reactive({
     z.low <- z.r - 1.96 * sqrt(1 / (n - 3))
     z.upp <- z.r + 1.96 * sqrt(1 / (n - 3))
 
-
     cor.low <- (exp(2 * z.low) - 1) / (exp(2 * z.low) + 1)
     cor.upp <- (exp(2 * z.upp) - 1) / (exp(2 * z.upp) + 1)
 
@@ -264,8 +275,11 @@ output$reliability_splithalf_table <- renderTable(
     tab <- data.table(
       "Estimate" = tab[1],
       "Confidence interval" = paste0(
-        "(", sprintf("%.3f", tab[2]), ", ",
-        sprintf("%.3f", tab[3]), ")"
+        "(",
+        sprintf("%.3f", tab[2]),
+        ", ",
+        sprintf("%.3f", tab[3]),
+        ")"
       )
     )
 
@@ -319,11 +333,13 @@ output$DB_reliability_splithalf_histogram <- downloadHandler(
     "fig_reliability_splithalf.png"
   },
   content = function(file) {
-    ggsave(file,
+    ggsave(
+      file,
       plot = reliability_splithalf_histogram_Input() +
         theme(text = element_text(size = setting_figures$text_size)),
       device = "png",
-      height = setting_figures$height, width = setting_figures$width,
+      height = setting_figures$height,
+      width = setting_figures$width,
       dpi = setting_figures$dpi
     )
   }
@@ -342,8 +358,11 @@ reliability_cronbachalpha_table_Input <- reactive({
   tab <- data.table(
     "Estimate" = sprintf("%.3f", a$estimate),
     "95% Confidence interval" = paste0(
-      "(", sprintf("%.3f", a$ci[1]), ", ",
-      sprintf("%.3f", a$ci[2]), ")"
+      "(",
+      sprintf("%.3f", a$ci[1]),
+      ", ",
+      sprintf("%.3f", a$ci[2]),
+      ")"
     )
   )
 

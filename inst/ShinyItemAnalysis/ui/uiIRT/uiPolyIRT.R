@@ -2,8 +2,6 @@ uiPolyIRT <- tabPanel(
   "Nominal response model",
   value = "bock",
   tabsetPanel(
-
-
     # common header -----------------------------------------------------------
     header = tagList(
       h3("Nominal response model"),
@@ -36,10 +34,16 @@ uiPolyIRT <- tabPanel(
       # equation commentary text and the equation itself
       h4("Equation"),
       p(
-        "For ", strong("\\(K_i\\)"),
+        "For ",
+        strong("\\(K_i\\)"),
         " possible test choices, the probability of selecting distractor ",
-        strong("\\(k\\)"), " by person ", strong("\\(p\\)"), " with latent trait",
-        strong("\\(\\theta_p\\)"), " in item ", strong("\\(i\\)"),
+        strong("\\(k\\)"),
+        " by person ",
+        strong("\\(p\\)"),
+        " with latent trait",
+        strong("\\(\\theta_p\\)"),
+        " in item ",
+        strong("\\(i\\)"),
         "is given by the following equation: "
       ),
       div(
@@ -50,34 +54,58 @@ uiPolyIRT <- tabPanel(
         # BLIS
         conditionalPanel(
           "input.IRT_bock_parametrization == \"blis\"",
-          p("$$\\pi_{pik} = \\mathrm{P}(Y_{pi} = k|\\theta_p) = \\frac{e^{ {\\beta_0}_{ik} +  {\\beta_1}_{ik}\\theta_p  }}{\\sum_{l=0}^{K_i} e^{ {\\beta_0}_{il} +  {\\beta_1}_{il}\\theta_p }}$$"),
-          p("with constrains", "\\({\\beta_1}_{i0} = 0\\)", "and", "\\({\\beta_0}_{i0} = 0\\).")
+          p(
+            "$$\\pi_{pik} = \\mathrm{P}(Y_{pi} = k|\\theta_p) = \\frac{e^{ {\\beta_0}_{ik} +  {\\beta_1}_{ik}\\theta_p  }}{\\sum_{l=0}^{K_i} e^{ {\\beta_0}_{il} +  {\\beta_1}_{il}\\theta_p }}$$"
+          ),
+          p(
+            "with constrains",
+            "\\({\\beta_1}_{i0} = 0\\)",
+            "and",
+            "\\({\\beta_0}_{i0} = 0\\)."
+          )
         ),
         # BLIRT
         conditionalPanel(
           "input.IRT_bock_parametrization == \"blirt\"",
-          p("$$ \\pi_{pik} = \\mathrm{P}(Y_{pi} = k|\\theta_p) = \\frac{e^{ a_{ik}( \\theta_p - b_{ik} ) }} {\\sum_{l=0}^{K_i} e^{ a_{il}( \\theta_p - b_{il} ) }}$$"),
+          p(
+            "$$ \\pi_{pik} = \\mathrm{P}(Y_{pi} = k|\\theta_p) = \\frac{e^{ a_{ik}( \\theta_p - b_{ik} ) }} {\\sum_{l=0}^{K_i} e^{ a_{il}( \\theta_p - b_{il} ) }}$$"
+          ),
           p("with constrains", "\\(a_{i0} = 0\\)", "and", "\\(b_{i0} = 0\\).")
         ),
         # Bock
         conditionalPanel(
           "input.IRT_bock_parametrization == \"bock\"",
-          p("$$\\pi_{pik} = \\mathrm{P}(Y_{pi} = k|\\theta_p) = \\frac{e^{ \\alpha_{ik}\\theta_p +c_{ik} }}{\\sum_{l=0}^{K_i} e^{\\alpha_{il}\\theta_p +c_{il}}}$$"),
-          p("with constrains", "\\(\\sum_{k=0}^{K_i}a_k = 0\\)", "and", "\\(\\sum_{k=0}^{K_i}c_k = 0\\).")
+          p(
+            "$$\\pi_{pik} = \\mathrm{P}(Y_{pi} = k|\\theta_p) = \\frac{e^{ \\alpha_{ik}\\theta_p +c_{ik} }}{\\sum_{l=0}^{K_i} e^{\\alpha_{il}\\theta_p +c_{il}}}$$"
+          ),
+          p(
+            "with constrains",
+            "\\(\\sum_{k=0}^{K_i}a_k = 0\\)",
+            "and",
+            "\\(\\sum_{k=0}^{K_i}c_k = 0\\)."
+          )
         ),
         # Thissen et al.
         conditionalPanel(
           "input.IRT_bock_parametrization == \"thissen\"",
-          p("$$ \\pi_{pik} = \\mathrm{P}(Y_{pi} = k|\\theta_p) = \\frac{e^{ a^*_i a_{ik}^s \\theta_p + c_{ik} }}{\\sum_{l=0}^{K_i} e^{ a^*_i a_{il}^s \\theta_p + c_{il}  }}$$"),
-          p("with constrains", "\\(a_{i0}^s = 0\\),", "\\(a_{iK}^s = K\\)", "and", "\\(d_{i0} = 0\\), where \\(a_{i}^*\\) is \"the overall slope\" parameter for item \\(i\\) and \\(a_{ik}^s\\) is \"the scoring function\" for response \\(k\\) (Thissen et al., 2010).")
+          p(
+            "$$ \\pi_{pik} = \\mathrm{P}(Y_{pi} = k|\\theta_p) = \\frac{e^{ a^*_i a_{ik}^s \\theta_p + c_{ik} }}{\\sum_{l=0}^{K_i} e^{ a^*_i a_{il}^s \\theta_p + c_{il}  }}$$"
+          ),
+          p(
+            "with constrains",
+            "\\(a_{i0}^s = 0\\),",
+            "\\(a_{iK}^s = K\\)",
+            "and",
+            "\\(d_{i0} = 0\\), where \\(a_{i}^*\\) is \"the overall slope\" parameter for item \\(i\\) and \\(a_{ik}^s\\) is \"the scoring function\" for response \\(k\\) (Thissen et al., 2010)."
+          )
         ),
       )
     ),
 
-
     ## summary tab -------------------------------------------------------------
 
-    tabPanel("Summary",
+    tabPanel(
+      "Summary",
       value = "bock_mod",
       fluidRow(
         column(
@@ -86,11 +114,12 @@ uiPolyIRT <- tabPanel(
             style = "margin-bottom: 25px;",
             h4("Item characteristic curves"),
             p(
-              "For item characteristic curves please see the", strong("Items"), "subtab.",
+              "For item characteristic curves please see the",
+              strong("Items"),
+              "subtab.",
               "(Plotting all items at once would result in a visual clutter.)"
             )
           ),
-
 
           # ICC plot ----------------------------------------------------------------
           div(
@@ -103,7 +132,6 @@ uiPolyIRT <- tabPanel(
             )
           ),
 
-
           # test information and SE -------------------------------------------------
           div(
             style = "margin-bottom: 25px;",
@@ -114,7 +142,6 @@ uiPolyIRT <- tabPanel(
               label = "Download figure"
             )
           ),
-
 
           # table of parameters -----------------------------------------------------
           div(
@@ -134,7 +161,8 @@ uiPolyIRT <- tabPanel(
             p(
               "This table shows the response score of only six respondents.",
               "If you want to see scores for all respondents, click on the",
-              strong("Download abilities"), " button. "
+              strong("Download abilities"),
+              " button. "
             ),
             tableOutput("IRT_bock_summary_ability"),
             downloadButton(
@@ -155,10 +183,10 @@ uiPolyIRT <- tabPanel(
       )
     ),
 
-
     ## items tab ---------------------------------------------------------------
 
-    tabPanel("Items",
+    tabPanel(
+      "Items",
       value = "bock_it",
       fluidRow(
         column(
@@ -167,8 +195,11 @@ uiPolyIRT <- tabPanel(
           sliderInput(
             inputId = "IRT_bock_items",
             label = "Item to draw the plot for",
-            min = 1, value = 1, max = 20,
-            step = 1, animate = TRUE
+            min = 1,
+            value = 1,
+            max = 20,
+            step = 1,
+            animate = TRUE
           ),
 
           ### ICC plot ----------------------------------------------------------------
@@ -181,7 +212,6 @@ uiPolyIRT <- tabPanel(
               label = "Download figure"
             )
           ),
-
 
           ### IIC plot -------------------------------------------------------------
           div(
@@ -202,7 +232,6 @@ uiPolyIRT <- tabPanel(
         )
       )
     ),
-
 
     # common footer -----------------------------------------------------------
 

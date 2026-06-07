@@ -7,7 +7,7 @@
 get_orig_levels(object)
 }
 \arguments{
-\item{object}{\emph{object of class \linkS4class{BlisClass}}, model fitted via \code{fit_blis()} or
+\item{object}{\emph{object of class \link[=BlisClass-class]{BlisClass}}, model fitted via \code{fit_blis()} or
 \code{blis()}.}
 }
 \value{
@@ -23,12 +23,12 @@ fit <- fit_blis(HCItest[, 1:20], HCIkey)
 get_orig_levels(fit)
 }
 \seealso{
-Other BLIS/BLIRT related: 
+Other BLIS/BLIRT related:
 \code{\link{BlisClass-class}},
 \code{\link{coef,BlisClass-method}},
-\code{\link{fit_blis}()},
-\code{\link{nominal_to_int}()},
-\code{\link{obtain_nrm_def}()},
-\code{\link{print.blis_coefs}()}
+\code{\link[=fit_blis]{fit_blis()}},
+\code{\link[=nominal_to_int]{nominal_to_int()}},
+\code{\link[=obtain_nrm_def]{obtain_nrm_def()}},
+\code{\link[=print.blis_coefs]{print.blis_coefs()}}
 }
 \concept{BLIS/BLIRT related}

@@ -53,7 +53,11 @@ plotAdjacent <- function(x, matching.name = "matching") {
   num.cat <- length(cat) # number of all categories
   y <- factor(y, levels = cat) # releveling
   matching <- x@x[, 2] # matching
-  match <- seq(min(matching, na.rm = TRUE), max(matching, na.rm = TRUE), length.out = 1000)
+  match <- seq(
+    min(matching, na.rm = TRUE),
+    max(matching, na.rm = TRUE),
+    length.out = 1000
+  )
 
   coefs <- coef(x) # extracting coefficients
   cat.obs <- names(which(table(y) > 0)[-1]) # observed categories = categories with at least one observation
@@ -64,7 +68,9 @@ plotAdjacent <- function(x, matching.name = "matching") {
   colnames(df.probs.cat) <- paste(cat)
 
   # calculation probabilities on formula exp(\sum_{t = 0}^{k} b_{0t} + b1X)/(\sum_{r = 0}^{K}exp(\sum_{t=0}^{r}b_{0t} + b1X))
-  df.probs.cat[, cat.obs] <- sapply(1:num.cat.obs, function(i) coefs[i] + coefs[num.cat.obs + 1] * match)
+  df.probs.cat[, cat.obs] <- sapply(1:num.cat.obs, function(i) {
+    coefs[i] + coefs[num.cat.obs + 1] * match
+  })
   # cumulative sum
   df.probs.cat <- t(apply(df.probs.cat, 1, cumsum))
   # exponential
@@ -75,18 +81,28 @@ plotAdjacent <- function(x, matching.name = "matching") {
   # reshaping data
   df.probs.cat <- data.frame(match, df.probs.cat)
   colnames(df.probs.cat) <- c("matching", paste0("P(Y=", cat, ")"))
-  df.probs.cat <- tidyr::pivot_longer(df.probs.cat, -matching, names_to = "Category", values_to = "Probability")
+  df.probs.cat <- tidyr::pivot_longer(
+    df.probs.cat,
+    -matching,
+    names_to = "Category",
+    values_to = "Probability"
+  )
   df.probs.cat$Category <- as.factor(df.probs.cat$Category)
   colnames(df.probs.cat)[1] <- "Matching"
 
   # empirical category values
-  df.emp.cat <- data.frame(table(y, matching),
+  df.emp.cat <- data.frame(
+    table(y, matching),
     y = prop.table(table(y, matching), 2)
   )[, c(1, 2, 3, 6)]
   df.emp.cat$matching <- as.numeric(paste(df.emp.cat$matching))
   colnames(df.emp.cat) <- c("Category", "Matching", "Count", "Probability")
   df.emp.cat$Category <- as.factor(df.emp.cat$Category)
-  levels(df.emp.cat$Category) <- paste0("P(Y=", levels(df.emp.cat$Category), ")")
+  levels(df.emp.cat$Category) <- paste0(
+    "P(Y=",
+    levels(df.emp.cat$Category),
+    ")"
+  )
 
   # colours
   gg_color_hue <- function(n) {
@@ -96,7 +112,9 @@ plotAdjacent <- function(x, matching.name = "matching") {
   cols <- c("black", gg_color_hue(num.cat - 1))
 
   df.emp.cat <- df.emp.cat[df.emp.cat$Category %in% paste0("P(Y=", cat, ")"), ]
-  df.probs.cat <- df.probs.cat[df.probs.cat$Category %in% paste0("P(Y=", cat, ")"), ]
+  df.probs.cat <- df.probs.cat[
+    df.probs.cat$Category %in% paste0("P(Y=", cat, ")"),
+  ]
 
   rangex <- c(
     min(c(df.emp.cat$Matching, df.probs.cat$Matching)),
@@ -107,16 +125,22 @@ plotAdjacent <- function(x, matching.name = "matching") {
     geom_point(
       data = df.emp.cat,
       aes(
-        x = .data$Matching, y = .data$Probability,
-        size = .data$Count, col = .data$Category, fill = .data$Category
+        x = .data$Matching,
+        y = .data$Probability,
+        size = .data$Count,
+        col = .data$Category,
+        fill = .data$Category
       ),
-      shape = 21, alpha = 0.5
+      shape = 21,
+      alpha = 0.5
     ) +
     geom_line(
       data = df.probs.cat,
       aes(
-        x = .data$Matching, y = .data$Probability,
-        col = .data$Category, linetype = .data$Category
+        x = .data$Matching,
+        y = .data$Probability,
+        col = .data$Category,
+        linetype = .data$Category
       ),
       size = 0.8
     ) +

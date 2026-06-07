@@ -6,7 +6,7 @@
 \title{BLIS S4 class}
 \description{
 Extends \code{mirt}'s \code{SingleGroupClass} directly (meaning all \code{mirt} methods that
-work with that class will work with \linkS4class{BlisClass} too; make sure \code{mirt} is
+work with that class will work with \link[=BlisClass-class]{BlisClass} too; make sure \code{mirt} is
 loaded).
 }
 \details{
@@ -23,12 +23,12 @@ as correct. Note that levels not used in the original data are dropped.}
 }}
 
 \seealso{
-Other BLIS/BLIRT related: 
+Other BLIS/BLIRT related:
 \code{\link{coef,BlisClass-method}},
-\code{\link{fit_blis}()},
-\code{\link{get_orig_levels}()},
-\code{\link{nominal_to_int}()},
-\code{\link{obtain_nrm_def}()},
-\code{\link{print.blis_coefs}()}
+\code{\link[=fit_blis]{fit_blis()}},
+\code{\link[=get_orig_levels]{get_orig_levels()}},
+\code{\link[=nominal_to_int]{nominal_to_int()}},
+\code{\link[=obtain_nrm_def]{obtain_nrm_def()}},
+\code{\link[=print.blis_coefs]{print.blis_coefs()}}
 }
 \concept{BLIS/BLIRT related}

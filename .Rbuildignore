@@ -10,3 +10,8 @@
 ^pkgdown$
 ^_pkgdown\.yml$
 ^docs$
+^[.]?air[.]toml$
+^\.positai$
+^\.claude$
+^\.vscode$
+^CLAUDE.md

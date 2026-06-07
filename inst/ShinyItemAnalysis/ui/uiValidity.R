@@ -9,7 +9,9 @@ uiValidity <-
       value = "val_summary",
       h3("Criterion validity"),
       p(
-        "Depending on the criterion variable, different types of criterion validity may be examined. As an example, a correlation between the test score and the future study success or future GPA may be  used as a proof of predictive validity in the case of admission tests. A criterion variable may be uploaded in the ", strong("Data"), "section."
+        "Depending on the criterion variable, different types of criterion validity may be examined. As an example, a correlation between the test score and the future study success or future GPA may be  used as a proof of predictive validity in the case of admission tests. A criterion variable may be uploaded in the ",
+        strong("Data"),
+        "section."
       ),
       h4("Descriptive plots of criterion variable on total score"),
       p(
@@ -19,7 +21,9 @@ uiValidity <-
       downloadButton(outputId = "DB_validity_plot", label = "Download figure"),
       h4("Correlation of criterion variable and total score"),
       p(
-        "An association between the total score and the criterion variable can be estimated using Pearson product-moment correlation coefficient ", em("r"), ". The null hypothesis being tested states that correlation is exactly 0. "
+        "An association between the total score and the criterion variable can be estimated using Pearson product-moment correlation coefficient ",
+        em("r"),
+        ". The null hypothesis being tested states that correlation is exactly 0. "
       ),
       uiOutput("validity_table"),
       br(),
@@ -88,7 +92,8 @@ uiValidity <-
         column(
           2,
           br(),
-          checkboxInput("show_corr",
+          checkboxInput(
+            "show_corr",
             label = "Display correlation values",
             value = FALSE
           )
@@ -111,13 +116,9 @@ uiValidity <-
           HTML("<b>Pearson correlation coefficient</b>"),
           "describes the strength and direction of a linear relationship between two random variables \\(X\\) and \\(Y\\). It is given by formula"
         ),
-        (
-          "$$\\rho = \\frac{cov(X,Y)}{\\sqrt{var(X)}\\sqrt{var(Y)}}.$$"
-        ),
+        ("$$\\rho = \\frac{cov(X,Y)}{\\sqrt{var(X)}\\sqrt{var(Y)}}.$$"),
         p("Sample Pearson corelation coefficient may be calculated as"),
-        (
-          "$$ r = \\frac{\\sum_{i = 1}^{n}(x_{i} - \\bar{x})(y_{i} - \\bar{y})}{\\sqrt{\\sum_{i = 1}^{n}(x_{i} - \\bar{x})^2}\\sqrt{\\sum_{i = 1}^{n}(y_{i} - \\bar{y})^2}}$$"
-        ),
+        ("$$ r = \\frac{\\sum_{i = 1}^{n}(x_{i} - \\bar{x})(y_{i} - \\bar{y})}{\\sqrt{\\sum_{i = 1}^{n}(x_{i} - \\bar{x})^2}\\sqrt{\\sum_{i = 1}^{n}(y_{i} - \\bar{y})^2}}$$"),
         p(
           "Pearson correlation coefficient has a value between -1 and +1. Sample correlation of -1 and +1 correspond to all data points lying exactly on a line (decreasing in case of negative linear correlation -1 and increasing for +1). If the coefficient is equal to 0, it means there is no linear relationship between the two variables."
         )
@@ -137,9 +138,7 @@ uiValidity <-
           HTML("<b>Spearman's rank correlation coefficient</b>"),
           "describes the strength and the direction of a monotonic relationship between random variables \\(X\\) and \\(Y\\), i.e. the dependence between the rankings of two variables. It is given by formula"
         ),
-        (
-          "$$\\rho = \\frac{cov(rg_{X},rg_{Y})}{\\sqrt{var(rg_{X})}\\sqrt{var(rg_{Y})}},$$"
-        ),
+        ("$$\\rho = \\frac{cov(rg_{X},rg_{Y})}{\\sqrt{var(rg_{X})}\\sqrt{var(rg_{Y})}},$$"),
         p(
           "where \\(rg_{X}\\) and \\(rg_{Y}\\) are the transformed random variables \\(X\\) and \\(Y\\) into ranks, i.e, the  Spearman correlation coefficient is the Pearson correlation coefficient between the ranked variables."
         ),
@@ -159,7 +158,8 @@ uiValidity <-
       br(),
       fluidRow(column(
         8,
-        offset = 2, plotlyOutput("corr_plot", height = "700px")
+        offset = 2,
+        plotlyOutput("corr_plot", height = "700px")
       )),
       br(),
       downloadButton(outputId = "DB_corr_plot", label = "Download figure"),
@@ -173,7 +173,8 @@ uiValidity <-
         plotlyOutput("dendrogram_plot"),
         downloadButton(outputId = "DB_dendrogram", label = "Download figure")
       ),
-      br(), br(),
+      br(),
+      br(),
       h4("Selected R code"),
       code(includeText("sc/validity/cor_struct.R"))
     ),
@@ -184,7 +185,9 @@ uiValidity <-
       h3("Factor analysis"),
       h4("Finding the optimal number of factors/components"),
       p(
-        "A scree plot below displays two sets of the eigenvalues associated with the factors/components in descending order. Location of a bend (an elbow) of", span("the \"real\" part", style = "font-weight: bold; color: red;"), "can be considered indicative to the suitable number of factors (Catell, 1966). Another rule, as proposed by Kaiser (1960), discards all factors or components with the eigenvalue less than or equal to 0 or 1, respectively (the information of a single average item)."
+        "A scree plot below displays two sets of the eigenvalues associated with the factors/components in descending order. Location of a bend (an elbow) of",
+        span("the \"real\" part", style = "font-weight: bold; color: red;"),
+        "can be considered indicative to the suitable number of factors (Catell, 1966). Another rule, as proposed by Kaiser (1960), discards all factors or components with the eigenvalue less than or equal to 0 or 1, respectively (the information of a single average item)."
       ),
       p(
         "A more complex approach called a parallel analysis (Horn, 1965) compares the eigenvalues of the real data correlation matrix with the eigenvalues (or more precisely, 95th percentiles of their sampling distributions) obtained from simulated zero-factor random matrices. The number of factors/components with the eigenvalue bigger than the eigenvalue at the first (leftmost) curves crossing is then the optimal number to extract in factor or principal component analysis. According to Bartholomew et al. (2011), the number of components is a good guide to the number of factors given the relationship between the PCA and FA."
@@ -203,17 +206,24 @@ uiValidity <-
             selected = "pca"
           )
         ),
-        column(2, selectInput("validity_factor_pa_cor",
-          "Correlation method",
-          choices = c(
-            "Pearson" = "pearson",
-            # "Tetrachoric" = "tetrachoric",
-            "Polychoric" = "polychoric"
-          )
-        )),
         column(
-          7, br(),
-          helpText("Method used to compute the correlation matrix. For ordinal datasets with only a few categories, polychoric option is recommended. The choice is automatically forwarded to the EFA below.")
+          2,
+          selectInput(
+            "validity_factor_pa_cor",
+            "Correlation method",
+            choices = c(
+              "Pearson" = "pearson",
+              # "Tetrachoric" = "tetrachoric",
+              "Polychoric" = "polychoric"
+            )
+          )
+        ),
+        column(
+          7,
+          br(),
+          helpText(
+            "Method used to compute the correlation matrix. For ordinal datasets with only a few categories, polychoric option is recommended. The choice is automatically forwarded to the EFA below."
+          )
         )
       ),
       plotlyOutput("validity_factor_screeplot"),
@@ -224,30 +234,37 @@ uiValidity <-
       textOutput("validity_factor_number"),
       br(),
       h4("Exploratory factor analysis"),
-      p("Once the optimal number of factors is found, the exploratory factor analysis (EFA) itself may be conducted. The number of factors found by the parallel analysis is offered as the default value. You can select the preferred factor rotation of the solution or hide the loadings outside interest. There is also an option to sort items by their importance on each factor. Below the loadings table, there is factor summary with proportion of variance each of the factor explains, as well as the list of common model fit indices."),
+      p(
+        "Once the optimal number of factors is found, the exploratory factor analysis (EFA) itself may be conducted. The number of factors found by the parallel analysis is offered as the default value. You can select the preferred factor rotation of the solution or hide the loadings outside interest. There is also an option to sort items by their importance on each factor. Below the loadings table, there is factor summary with proportion of variance each of the factor explains, as well as the list of common model fit indices."
+      ),
       fluidRow(
         column(
           2,
-          selectInput("validity_factor_cor_efa",
+          selectInput(
+            "validity_factor_cor_efa",
             "Correlation method",
             choices = c(
               "Pearson" = "cor",
               # "Tetrachoric" = "tetrachoric",
               "Polychoric" = "poly"
-            ), multiple = FALSE
+            ),
+            multiple = FALSE
           )
         ),
         column(
           2,
-          numericInput("validity_factor_nfactors",
+          numericInput(
+            "validity_factor_nfactors",
             "Number of factors to extract",
             value = 1,
-            min = 1, step = 1
+            min = 1,
+            step = 1
           )
         ),
         column(
           2,
-          selectInput("validity_factor_rotation",
+          selectInput(
+            "validity_factor_rotation",
             "Rotation",
             choices = c(
               "None" = "none",
@@ -256,38 +273,49 @@ uiValidity <-
               "Promax" = "promax",
               "Oblimin" = "oblimin",
               "Simplimax" = "simplimax"
-            ), selected = "oblimin"
+            ),
+            selected = "oblimin"
           )
         ),
         column(
           2,
-          numericInput("validity_factor_hide",
+          numericInput(
+            "validity_factor_hide",
             "Hide loadings below",
             value = .2,
-            min = 0, max = 1, step = .1
+            min = 0,
+            max = 1,
+            step = .1
           )
         ),
         column(
-          2, br(),
+          2,
+          br(),
           checkboxInput(
             "validity_factor_sort",
-            "Sort items", FALSE
+            "Sort items",
+            FALSE
           )
         ),
       ),
       tableOutput("validity_factor_loadings"),
       downloadButton("DB_validity_factor_loadings", label = "Download table"),
-      br(), br(),
+      br(),
+      br(),
       h4("Factor summary"),
-      tableOutput("validity_factor_varex"), br(),
+      tableOutput("validity_factor_varex"),
+      br(),
       h4("Correlations between factors"),
-      tableOutput("validity_factor_corr"), br(),
+      tableOutput("validity_factor_corr"),
+      br(),
       h4("Model fit"),
-      uiOutput("validity_factor_efa_fit"), br(),
+      uiOutput("validity_factor_efa_fit"),
+      br(),
       h4("Factor scores"),
       DTOutput("validity_factor_fscores"),
       downloadButton("DB_validity_factor_fscores", label = "Download table"),
-      br(), br(),
+      br(),
+      br(),
       h4("Selected R code"),
       code(includeText("sc/validity/fact_anal.R"))
     )

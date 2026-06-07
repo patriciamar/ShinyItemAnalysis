@@ -18,7 +18,10 @@ df <- data.frame(score, criterionD, size)
 
 # descriptive plots
 ### boxplot, for discrete criterion
-ggplot(df, aes(y = score, x = as.factor(criterionD), fill = as.factor(criterionD))) +
+ggplot(
+  df,
+  aes(y = score, x = as.factor(criterionD), fill = as.factor(criterionD))
+) +
   geom_boxplot() +
   geom_jitter(shape = 16, position = position_jitter(0.2)) +
   scale_fill_brewer(palette = "Blues") +

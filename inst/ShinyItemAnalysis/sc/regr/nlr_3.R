@@ -11,10 +11,12 @@ fun <- function(x, a, b, c) {
   c + (1 - c) * exp(a * (x - b)) / (1 + exp(a * (x - b)))
 }
 
-fit <- nls(data[, 1] ~ fun(zscore, a, b, c),
+fit <- nls(
+  data[, 1] ~ fun(zscore, a, b, c),
   algorithm = "port",
   start = startNLR(
-    data, GMAT[, "group"],
+    data,
+    GMAT[, "group"],
     model = "3PLcg",
     parameterization = "irt"
   )[[1]][1:3],
@@ -35,13 +37,16 @@ df <- data.frame(
 
 # plot of estimated curve
 ggplot(df, aes(x = x, y = y)) +
-  geom_point(aes(size = size),
+  geom_point(
+    aes(size = size),
     color = "darkblue",
     fill = "darkblue",
-    shape = 21, alpha = 0.5
+    shape = 21,
+    alpha = 0.5
   ) +
   stat_function(
-    fun = fun, geom = "line",
+    fun = fun,
+    geom = "line",
     args = list(
       a = coef(fit)[1],
       b = coef(fit)[2],

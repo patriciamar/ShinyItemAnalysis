@@ -36,33 +36,47 @@ output$ccIRT_interpretation <- renderUI({
     "The probability of the correct answer with the latent ability ",
     paste0("\\(\\theta= ", theta0, "\\)"),
     " in the <font color='red'>red</font> item with parameters ",
-    paste0("\\(a = ", a1, "\\)"), ", ",
-    paste0("\\(b = ", b1, "\\)"), ", ",
-    paste0("\\(c = ", c1, "\\)"), ", and ",
+    paste0("\\(a = ", a1, "\\)"),
+    ", ",
+    paste0("\\(b = ", b1, "\\)"),
+    ", ",
+    paste0("\\(c = ", c1, "\\)"),
+    ", and ",
     paste0("\\(d = ", d1, "\\)"),
-    " is equal to <b>", sprintf("%.2f", ICC1), "</b>. "
+    " is equal to <b>",
+    sprintf("%.2f", ICC1),
+    "</b>. "
   )
   txt2 <- paste0(
     "The probability of the correct answer with the latent ability ",
     paste0("\\(\\theta= ", theta0, "\\)"),
     " in the <font color='blue'>blue</font> item with parameters ",
-    paste0("\\(a = ", a2, "\\)"), ", ",
-    paste0("\\(b = ", b2, "\\)"), ", ",
-    paste0("\\(c = ", c2, "\\)"), ", and ",
+    paste0("\\(a = ", a2, "\\)"),
+    ", ",
+    paste0("\\(b = ", b2, "\\)"),
+    ", ",
+    paste0("\\(c = ", c2, "\\)"),
+    ", and ",
     paste0("\\(d = ", d2, "\\)"),
-    " is equal to <b>", sprintf("%.2f", ICC2), "</b>. "
+    " is equal to <b>",
+    sprintf("%.2f", ICC2),
+    "</b>. "
   )
   txt3 <- paste0(
     "The information for the latent ability ",
     paste0("\\(\\theta= ", theta0, "\\)"),
     " in the <font color='red'>red</font> item ",
-    " is equal to <b>", sprintf("%.2f", IIC1), "</b>. "
+    " is equal to <b>",
+    sprintf("%.2f", IIC1),
+    "</b>. "
   )
   txt4 <- paste0(
     "The information for the latent ability ",
     paste0("\\(\\theta= ", theta0, "\\)"),
     " in the <font color='blue'>blue</font> item ",
-    " is equal to <b>", sprintf("%.2f", IIC2), "</b>. "
+    " is equal to <b>",
+    sprintf("%.2f", IIC2),
+    "</b>. "
   )
   txt <- paste0("<b>Interpretation: </b>", txt1, txt3, txt2, txt4)
   HTML(txt)
@@ -86,7 +100,6 @@ ccIRT_plot_Input <- reactive({
     return(c + (d - c) / (1 + exp(-a * (theta - b))))
   }
 
-
   df <- data.frame(
     X1 = ccirt(seq(-4, 4, 0.01), a1, b1, c1, d1),
     X2 = ccirt(seq(-4, 4, 0.01), a2, b2, c2, d2),
@@ -101,18 +114,36 @@ ccIRT_plot_Input <- reactive({
 
   g <- ggplot(data = df, aes(x = theta, y = value, col = variable)) +
     geom_line() +
-    geom_segment(aes(
-      y = ICC1, yend = ICC1,
-      x = -4, xend = theta0
-    ), color = "gray", linetype = "dashed") +
-    geom_segment(aes(
-      y = ICC2, yend = ICC2,
-      x = -4, xend = theta0
-    ), color = "gray", linetype = "dashed") +
-    geom_segment(aes(
-      y = 0, yend = ICC,
-      x = theta0, xend = theta0
-    ), color = "gray", linetype = "dashed") +
+    geom_segment(
+      aes(
+        y = ICC1,
+        yend = ICC1,
+        x = -4,
+        xend = theta0
+      ),
+      color = "gray",
+      linetype = "dashed"
+    ) +
+    geom_segment(
+      aes(
+        y = ICC2,
+        yend = ICC2,
+        x = -4,
+        xend = theta0
+      ),
+      color = "gray",
+      linetype = "dashed"
+    ) +
+    geom_segment(
+      aes(
+        y = 0,
+        yend = ICC,
+        x = theta0,
+        xend = theta0
+      ),
+      color = "gray",
+      linetype = "dashed"
+    ) +
     xlim(-4, 4) +
     xlab("Ability") +
     ylab("Probability of correct answer") +
@@ -121,10 +152,9 @@ ccIRT_plot_Input <- reactive({
       name = "",
       values = c("red", "blue"),
       labels = c(
-        paste(paste(letters[1:4], "=", c(a1, b1, c1, d1)),
-          collapse = ", "
-        ),
-        paste(paste(paste(letters[1:4], "=", c(a2, b2, c2, d2))),
+        paste(paste(letters[1:4], "=", c(a1, b1, c1, d1)), collapse = ", "),
+        paste(
+          paste(paste(letters[1:4], "=", c(a2, b2, c2, d2))),
           collapse = ", "
         )
       )
@@ -202,7 +232,8 @@ output$DB_ccIRT <- downloadHandler(
     paste("fig_CustomItemCharacteristicCurve.png", sep = "")
   },
   content = function(file) {
-    ggsave(file,
+    ggsave(
+      file,
       plot = ccIRT_plot_Input() +
         theme(
           legend.position = "inside",
@@ -211,7 +242,8 @@ output$DB_ccIRT <- downloadHandler(
         ) +
         theme(text = element_text(size = setting_figures$text_size)),
       device = "png",
-      height = setting_figures$height, width = setting_figures$width,
+      height = setting_figures$height,
+      width = setting_figures$width,
       dpi = setting_figures$dpi
     )
   }
@@ -250,18 +282,36 @@ iicIRT_plot_Input <- reactive({
 
   g <- ggplot(data = df, aes(x = theta, y = value, col = variable)) +
     geom_line() +
-    geom_segment(aes(
-      y = IIC1, yend = IIC1,
-      x = -4, xend = theta0
-    ), color = "gray", linetype = "dashed") +
-    geom_segment(aes(
-      y = IIC2, yend = IIC2,
-      x = -4, xend = theta0
-    ), color = "gray", linetype = "dashed") +
-    geom_segment(aes(
-      y = 0, yend = IIC,
-      x = theta0, xend = theta0
-    ), color = "gray", linetype = "dashed") +
+    geom_segment(
+      aes(
+        y = IIC1,
+        yend = IIC1,
+        x = -4,
+        xend = theta0
+      ),
+      color = "gray",
+      linetype = "dashed"
+    ) +
+    geom_segment(
+      aes(
+        y = IIC2,
+        yend = IIC2,
+        x = -4,
+        xend = theta0
+      ),
+      color = "gray",
+      linetype = "dashed"
+    ) +
+    geom_segment(
+      aes(
+        y = 0,
+        yend = IIC,
+        x = theta0,
+        xend = theta0
+      ),
+      color = "gray",
+      linetype = "dashed"
+    ) +
     xlim(-4, 4) +
     ylim(0, 4) +
     xlab("Ability") +
@@ -271,10 +321,9 @@ iicIRT_plot_Input <- reactive({
       breaks = c("X1", "X2"),
       values = c("red", "blue"),
       labels = c(
-        paste(paste(letters[1:4], "=", c(a1, b1, c1, d1)),
-          collapse = ", "
-        ),
-        paste(paste(paste(letters[1:4], "=", c(a2, b2, c2, d2))),
+        paste(paste(letters[1:4], "=", c(a1, b1, c1, d1)), collapse = ", "),
+        paste(
+          paste(paste(letters[1:4], "=", c(a2, b2, c2, d2))),
           collapse = ", "
         )
       )
@@ -350,7 +399,8 @@ output$DB_iicIRT <- downloadHandler(
     paste("fig_CustomItemInformationCurve.png", sep = "")
   },
   content = function(file) {
-    ggsave(file,
+    ggsave(
+      file,
       plot = iicIRT_plot_Input() +
         theme(
           legend.position = "inside",
@@ -359,7 +409,8 @@ output$DB_iicIRT <- downloadHandler(
         ) +
         theme(text = element_text(size = setting_figures$text_size)),
       device = "png",
-      height = setting_figures$height, width = setting_figures$width,
+      height = setting_figures$height,
+      width = setting_figures$width,
       dpi = setting_figures$dpi
     )
   }
@@ -435,20 +486,28 @@ irt_training_dich1_check <- eventReactive(input$irt_training_dich1_submit, {
   par1input <- c(a1, b1, c1, d1)
   par2input <- c(a2, b2, c2, d2)
 
-  ans1 <- c(all(abs(par1 - par1input) <= 0.05) & all(abs(par2 - par2input) <= 0.05))
+  ans1 <- c(
+    all(abs(par1 - par1input) <= 0.05) & all(abs(par2 - par2input) <= 0.05)
+  )
 
   # answers 2, item 1
   cci1 <- answers[[3]]
   cci1input <- c(
-    input$irt_training_dich1_1_2a, input$irt_training_dich1_1_2b, input$irt_training_dich1_1_2c,
-    input$irt_training_dich1_1_2d, input$irt_training_dich1_1_2e
+    input$irt_training_dich1_1_2a,
+    input$irt_training_dich1_1_2b,
+    input$irt_training_dich1_1_2c,
+    input$irt_training_dich1_1_2d,
+    input$irt_training_dich1_1_2e
   )
   ans2_1 <- c(abs(cci1 - cci1input) <= 0.05)
   # answers 2, item 1
   cci2 <- answers[[4]]
   cci2input <- c(
-    input$irt_training_dich1_2_2a, input$irt_training_dich1_2_2b, input$irt_training_dich1_2_2c,
-    input$irt_training_dich1_2_2d, input$irt_training_dich1_2_2e
+    input$irt_training_dich1_2_2a,
+    input$irt_training_dich1_2_2b,
+    input$irt_training_dich1_2_2c,
+    input$irt_training_dich1_2_2d,
+    input$irt_training_dich1_2_2e
   )
   ans2_2 <- c(abs(cci2 - cci2input) <= 0.05)
 
@@ -456,8 +515,14 @@ irt_training_dich1_check <- eventReactive(input$irt_training_dich1_submit, {
   ans3 <- c(abs(answers[[5]] - input$irt_training_dich1_3) <= 0.05)
 
   # answer 4
-  ans4 <- c(answers[["iic"]] == c(input$irt_training_dich1_4a, input$irt_training_dich1_4b, input$irt_training_dich1_4c))
-
+  ans4 <- c(
+    answers[["iic"]] ==
+      c(
+        input$irt_training_dich1_4a,
+        input$irt_training_dich1_4b,
+        input$irt_training_dich1_4c
+      )
+  )
 
   ans <- list(
     ans1 = ans1,
@@ -468,9 +533,11 @@ irt_training_dich1_check <- eventReactive(input$irt_training_dich1_submit, {
   )
   res <- sum(sapply(ans, sum)) / sum(sapply(ans, length))
   ans <- lapply(ans, function(x) {
-    ifelse(is.na(x),
+    ifelse(
+      is.na(x),
       "<b><font color = 'red'>!</font></b>",
-      ifelse(x,
+      ifelse(
+        x,
         "<font color='green'>&#10004;</font>",
         "<font color='red'>&#10006;</font>"
       )
@@ -542,11 +609,17 @@ output$irt_training_dich1_4c_answer <- renderUI({
 
 output$irt_training_dich1_answer <- renderUI({
   res <- irt_training_dich1_check()[["ans"]]
-  HTML(ifelse(is.na(res),
+  HTML(ifelse(
+    is.na(res),
     "<font color = 'red'>Check the format</font>",
-    ifelse(res == 1,
+    ifelse(
+      res == 1,
       "<font color='green'>Everything correct! Well done!</font>",
-      paste0("<font color='red'>", round(100 * res), "% correct. Try again.</font>")
+      paste0(
+        "<font color='red'>",
+        round(100 * res),
+        "% correct. Try again.</font>"
+      )
     )
   ))
 })
@@ -612,9 +685,11 @@ irt_training_dich2_check <- eventReactive(input$irt_training_dich2_submit, {
   )
   res <- sum(sapply(ans, sum)) / sum(sapply(ans, length))
   ans <- lapply(ans, function(x) {
-    ifelse(is.na(x),
+    ifelse(
+      is.na(x),
       "<b><font color = 'red'>!</font></b>",
-      ifelse(x,
+      ifelse(
+        x,
         "<font color='green'>&#10004;</font>",
         "<font color='red'>&#10006;</font>"
       )
@@ -646,11 +721,17 @@ output$irt_training_dich2_3_answer <- renderUI({
 
 output$irt_training_dich2_answer <- renderUI({
   res <- irt_training_dich2_check()[["ans"]]
-  HTML(ifelse(is.na(res),
+  HTML(ifelse(
+    is.na(res),
     "<font color = 'red'>Check the format</font>",
-    ifelse(res == 1,
+    ifelse(
+      res == 1,
       "<font color='green'>Everything correct! Well done!</font>",
-      paste0("<font color='red'>", round(100 * res), "% correct. Try again.</font>")
+      paste0(
+        "<font color='red'>",
+        round(100 * res),
+        "% correct. Try again.</font>"
+      )
     )
   ))
 })
@@ -716,9 +797,11 @@ irt_training_dich3_check <- eventReactive(input$irt_training_dich3_submit, {
   )
   res <- sum(sapply(ans, sum)) / sum(sapply(ans, length))
   ans <- lapply(ans, function(x) {
-    ifelse(is.na(x),
+    ifelse(
+      is.na(x),
       "<b><font color = 'red'>!</font></b>",
-      ifelse(x,
+      ifelse(
+        x,
         "<font color='green'>&#10004;</font>",
         "<font color='red'>&#10006;</font>"
       )
@@ -750,11 +833,17 @@ output$irt_training_dich3_3_answer <- renderUI({
 
 output$irt_training_dich3_answer <- renderUI({
   res <- irt_training_dich3_check()[["ans"]]
-  HTML(ifelse(is.na(res),
+  HTML(ifelse(
+    is.na(res),
     "<font color = 'red'>Check the format</font>",
-    ifelse(res == 1,
+    ifelse(
+      res == 1,
       "<font color='green'>Everything correct! Well done!</font>",
-      paste0("<font color='red'>", round(100 * res), "% correct. Try again.</font>")
+      paste0(
+        "<font color='red'>",
+        round(100 * res),
+        "% correct. Try again.</font>"
+      )
     )
   ))
 })
@@ -766,7 +855,11 @@ output$irt_training_dich3_answer <- renderUI({
 # *** GRADED RESPONSE MODEL ####
 
 output$irt_training_grm_sliders <- renderUI({
-  req(input$irt_training_grm_numresp, input$irt_training_grm_numresp >= 2, input$irt_training_grm_numresp <= 6)
+  req(
+    input$irt_training_grm_numresp,
+    input$irt_training_grm_numresp >= 2,
+    input$irt_training_grm_numresp <= 6
+  )
 
   num <- input$irt_training_grm_numresp
 
@@ -774,57 +867,99 @@ output$irt_training_grm_sliders <- renderUI({
     tags$div(
       class = "js-irs-red",
       style = "display: inline-block; vertical-align: middle; width: 18%;",
-      sliderInput("irt_training_grm_b1",
+      sliderInput(
+        "irt_training_grm_b1",
         label = "\\(b_1\\) - difficulty",
-        value = -2.5, min = -4, max = 4, step = 0.1
+        value = -2.5,
+        min = -4,
+        max = 4,
+        step = 0.1
       )
     ),
-    div(style = "display: inline-block; vertical-align: middle; width: 2.6%;", ""),
+    div(
+      style = "display: inline-block; vertical-align: middle; width: 2.6%;",
+      ""
+    ),
     tags$div(
       class = "js-irs-yellow",
       style = "display: inline-block; vertical-align: middle; width: 18%;",
-      sliderInput("irt_training_grm_b2",
+      sliderInput(
+        "irt_training_grm_b2",
         label = "\\(b_2\\) - difficulty",
-        value = -1.5, min = -4, max = 4, step = 0.1
+        value = -1.5,
+        min = -4,
+        max = 4,
+        step = 0.1
       )
     ),
-    div(style = "display: inline-block; vertical-align: middle; width: 2.6%;", ""),
+    div(
+      style = "display: inline-block; vertical-align: middle; width: 2.6%;",
+      ""
+    ),
     tags$div(
       class = "js-irs-green",
       style = "display: inline-block; vertical-align: middle; width: 18%;",
-      sliderInput("irt_training_grm_b3",
+      sliderInput(
+        "irt_training_grm_b3",
         label = "\\(b_3\\) - difficulty",
-        value = -0.5, min = -4, max = 4, step = 0.1
+        value = -0.5,
+        min = -4,
+        max = 4,
+        step = 0.1
       )
     ),
-    div(style = "display: inline-block; vertical-align: middle; width: 2.6%;", ""),
+    div(
+      style = "display: inline-block; vertical-align: middle; width: 2.6%;",
+      ""
+    ),
     tags$div(
       class = "js-irs-blue",
       style = "display: inline-block; vertical-align: middle; width: 18%;",
-      sliderInput("irt_training_grm_b4",
+      sliderInput(
+        "irt_training_grm_b4",
         label = "\\(b_4\\) - difficulty",
-        value = 0.5, min = -4, max = 4, step = 0.1
+        value = 0.5,
+        min = -4,
+        max = 4,
+        step = 0.1
       )
     ),
-    div(style = "display: inline-block; vertical-align: middle; width: 2.6%;", ""),
+    div(
+      style = "display: inline-block; vertical-align: middle; width: 2.6%;",
+      ""
+    ),
     tags$div(
       class = "js-irs-purple",
       style = "display: inline-block; vertical-align: middle; width: 18%;",
-      sliderInput("irt_training_grm_b5",
+      sliderInput(
+        "irt_training_grm_b5",
         label = "\\(b_5\\) - difficulty",
-        value = 1.5, min = -4, max = 4, step = 0.1
+        value = 1.5,
+        min = -4,
+        max = 4,
+        step = 0.1
       )
     ),
-    div(style = "display: inline-block; vertical-align: middle; width: 2.6%;", ""),
+    div(
+      style = "display: inline-block; vertical-align: middle; width: 2.6%;",
+      ""
+    ),
     tags$div(
       class = "js-irs-orange",
       style = "display: inline-block; vertical-align: middle; width: 18%;",
-      sliderInput("irt_training_grm_b6",
+      sliderInput(
+        "irt_training_grm_b6",
         label = "\\(b_6\\) - difficulty",
-        value = 2.5, min = -4, max = 4, step = 0.1
+        value = 2.5,
+        min = -4,
+        max = 4,
+        step = 0.1
       )
     ),
-    div(style = "display: inline-block; vertical-align: middle; width: 2.6%;", "")
+    div(
+      style = "display: inline-block; vertical-align: middle; width: 2.6%;",
+      ""
+    )
   )
 
   sliders <- sliders[1:(2 * num)]
@@ -833,7 +968,11 @@ output$irt_training_grm_sliders <- renderUI({
 })
 # *** Cumulative ####
 irt_training_grm_plot_cumulative_Input <- reactive({
-  req(input$irt_training_grm_numresp, input$irt_training_grm_numresp >= 2, input$irt_training_grm_numresp <= 6)
+  req(
+    input$irt_training_grm_numresp,
+    input$irt_training_grm_numresp >= 2,
+    input$irt_training_grm_numresp <= 6
+  )
 
   input$irt_training_grm_numresp
 
@@ -846,12 +985,24 @@ irt_training_grm_plot_cumulative_Input <- reactive({
     b <- b[1:num]
   } else {
     b <- c(input$irt_training_grm_b1, input$irt_training_grm_b2)
-    b <- switch(paste(num),
+    b <- switch(
+      paste(num),
       "2" = b,
       "3" = c(b, input$irt_training_grm_b3),
       "4" = c(b, input$irt_training_grm_b3, input$irt_training_grm_b4),
-      "5" = c(b, input$irt_training_grm_b3, input$irt_training_grm_b4, input$irt_training_grm_b5),
-      "6" = c(b, input$irt_training_grm_b3, input$irt_training_grm_b4, input$irt_training_grm_b5, input$irt_training_grm_b6)
+      "5" = c(
+        b,
+        input$irt_training_grm_b3,
+        input$irt_training_grm_b4,
+        input$irt_training_grm_b5
+      ),
+      "6" = c(
+        b,
+        input$irt_training_grm_b3,
+        input$irt_training_grm_b4,
+        input$irt_training_grm_b5,
+        input$irt_training_grm_b6
+      )
     )
   }
 
@@ -874,7 +1025,11 @@ irt_training_grm_plot_cumulative_Input <- reactive({
     ylab("Cumulative probability") +
     xlim(-4, 4) +
     ylim(0, 1) +
-    scale_color_manual("", values = col, labels = paste0("P(Y >= ", 1:length(col), ")")) +
+    scale_color_manual(
+      "",
+      values = col,
+      labels = paste0("P(Y >= ", 1:length(col), ")")
+    ) +
     theme_app() +
     ggtitle("Cumulative probabilities")
 
@@ -903,7 +1058,8 @@ output$DB_irt_training_grm_plot_cumulative <- downloadHandler(
     paste("fig_GRM_cumulative.png", sep = "")
   },
   content = function(file) {
-    ggsave(file,
+    ggsave(
+      file,
       plot = irt_training_grm_plot_cumulative_Input() +
         theme(
           legend.position = "inside",
@@ -912,7 +1068,8 @@ output$DB_irt_training_grm_plot_cumulative <- downloadHandler(
         ) +
         theme(text = element_text(size = setting_figures$text_size)),
       device = "png",
-      height = setting_figures$height, width = setting_figures$width,
+      height = setting_figures$height,
+      width = setting_figures$width,
       dpi = setting_figures$dpi
     )
   }
@@ -920,7 +1077,11 @@ output$DB_irt_training_grm_plot_cumulative <- downloadHandler(
 
 # *** Category probabilities ####
 irt_training_grm_plot_category_Input <- reactive({
-  req(input$irt_training_grm_numresp, input$irt_training_grm_numresp >= 2, input$irt_training_grm_numresp <= 6)
+  req(
+    input$irt_training_grm_numresp,
+    input$irt_training_grm_numresp >= 2,
+    input$irt_training_grm_numresp <= 6
+  )
 
   num <- input$irt_training_grm_numresp
 
@@ -931,12 +1092,24 @@ irt_training_grm_plot_category_Input <- reactive({
     b <- b[1:num]
   } else {
     b <- c(input$irt_training_grm_b1, input$irt_training_grm_b2)
-    b <- switch(paste(num),
+    b <- switch(
+      paste(num),
       "2" = b,
       "3" = c(b, input$irt_training_grm_b3),
       "4" = c(b, input$irt_training_grm_b3, input$irt_training_grm_b4),
-      "5" = c(b, input$irt_training_grm_b3, input$irt_training_grm_b4, input$irt_training_grm_b5),
-      "6" = c(b, input$irt_training_grm_b3, input$irt_training_grm_b4, input$irt_training_grm_b5, input$irt_training_grm_b6)
+      "5" = c(
+        b,
+        input$irt_training_grm_b3,
+        input$irt_training_grm_b4,
+        input$irt_training_grm_b5
+      ),
+      "6" = c(
+        b,
+        input$irt_training_grm_b3,
+        input$irt_training_grm_b4,
+        input$irt_training_grm_b5,
+        input$irt_training_grm_b6
+      )
     )
   }
 
@@ -946,8 +1119,12 @@ irt_training_grm_plot_category_Input <- reactive({
     return(1 / (1 + exp(-a * (theta - b))))
   }
 
-  df <- data.frame(X0 = 1, sapply(1:length(b), function(i) ccirt(theta, a, b[i])))
-  df <- data.frame(sapply(1:(ncol(df) - 1), function(i) df[, i] - df[, i + 1]),
+  df <- data.frame(
+    X0 = 1,
+    sapply(1:length(b), function(i) ccirt(theta, a, b[i]))
+  )
+  df <- data.frame(
+    sapply(1:(ncol(df) - 1), function(i) df[, i] - df[, i + 1]),
     X99 = df[, ncol(df)],
     theta
   )
@@ -965,7 +1142,11 @@ irt_training_grm_plot_category_Input <- reactive({
     ylab("Category probability") +
     xlim(-4, 4) +
     ylim(0, 1) +
-    scale_color_manual("", values = col, labels = paste0("P(Y >= ", 0:(length(col) - 1), ")")) +
+    scale_color_manual(
+      "",
+      values = col,
+      labels = paste0("P(Y >= ", 0:(length(col) - 1), ")")
+    ) +
     theme_app() +
     ggtitle("Category probabilities")
 
@@ -981,7 +1162,11 @@ output$irt_training_grm_plot_category <- renderPlotly({
     text <- gsub("~", "", p$x$data[[i]]$text)
     text <- gsub("value", "Category probability", text)
     text <- gsub("theta", "Ability", text)
-    text <- gsub(paste0("variable: X", i - 1), paste0("P(Y = ", i - 1, ")"), text)
+    text <- gsub(
+      paste0("variable: X", i - 1),
+      paste0("P(Y = ", i - 1, ")"),
+      text
+    )
     p$x$data[[i]]$text <- text
   }
 
@@ -994,7 +1179,8 @@ output$DB_irt_training_grm_plot_category <- downloadHandler(
     paste("fig_GRM_category.png", sep = "")
   },
   content = function(file) {
-    ggsave(file,
+    ggsave(
+      file,
       plot = irt_training_grm_plot_category_Input() +
         theme(
           legend.position = "inside",
@@ -1003,7 +1189,8 @@ output$DB_irt_training_grm_plot_category <- downloadHandler(
         ) +
         theme(text = element_text(size = setting_figures$text_size)),
       device = "png",
-      height = setting_figures$height, width = setting_figures$width,
+      height = setting_figures$height,
+      width = setting_figures$width,
       dpi = setting_figures$dpi
     )
   }
@@ -1011,7 +1198,11 @@ output$DB_irt_training_grm_plot_category <- downloadHandler(
 
 # *** Expected item score ####
 irt_training_grm_plot_expected_Input <- reactive({
-  req(input$irt_training_grm_numresp, input$irt_training_grm_numresp >= 2, input$irt_training_grm_numresp <= 6)
+  req(
+    input$irt_training_grm_numresp,
+    input$irt_training_grm_numresp >= 2,
+    input$irt_training_grm_numresp <= 6
+  )
 
   num <- input$irt_training_grm_numresp
 
@@ -1022,12 +1213,24 @@ irt_training_grm_plot_expected_Input <- reactive({
     b <- b[1:num]
   } else {
     b <- c(input$irt_training_grm_b1, input$irt_training_grm_b2)
-    b <- switch(paste(num),
+    b <- switch(
+      paste(num),
       "2" = b,
       "3" = c(b, input$irt_training_grm_b3),
       "4" = c(b, input$irt_training_grm_b3, input$irt_training_grm_b4),
-      "5" = c(b, input$irt_training_grm_b3, input$irt_training_grm_b4, input$irt_training_grm_b5),
-      "6" = c(b, input$irt_training_grm_b3, input$irt_training_grm_b4, input$irt_training_grm_b5, input$irt_training_grm_b6)
+      "5" = c(
+        b,
+        input$irt_training_grm_b3,
+        input$irt_training_grm_b4,
+        input$irt_training_grm_b5
+      ),
+      "6" = c(
+        b,
+        input$irt_training_grm_b3,
+        input$irt_training_grm_b4,
+        input$irt_training_grm_b5,
+        input$irt_training_grm_b6
+      )
     )
   }
 
@@ -1078,11 +1281,13 @@ output$DB_irt_training_grm_plot_expected <- downloadHandler(
     paste("fig_GRM_expected.png", sep = "")
   },
   content = function(file) {
-    ggsave(file,
+    ggsave(
+      file,
       plot = irt_training_grm_plot_expected_Input() +
         theme(text = element_text(size = setting_figures$text_size)),
       device = "png",
-      height = setting_figures$height, width = setting_figures$width,
+      height = setting_figures$height,
+      width = setting_figures$width,
       dpi = setting_figures$dpi
     )
   }
@@ -1113,9 +1318,15 @@ irt_training_grm_answer <- reactive({
   prob_k0 <- c(1 - ck1)
   prob_k1 <- c(ck1 - ck2)
   prob_k2 <- c(ck2 - ck3)
-  prob_k3 <- as.numeric(apply(as.data.frame(rbind(prob_k0, prob_k1, prob_k2)), 2, function(x) 1 - sum(x)))
+  prob_k3 <- as.numeric(apply(
+    as.data.frame(rbind(prob_k0, prob_k1, prob_k2)),
+    2,
+    function(x) 1 - sum(x)
+  ))
 
-  exp_v <- as.numeric(as.matrix(cbind(prob_k0, prob_k1, prob_k2, prob_k3)) %*% 0:3)
+  exp_v <- as.numeric(
+    as.matrix(cbind(prob_k0, prob_k1, prob_k2, prob_k3)) %*% 0:3
+  )
   bb <- input$irt_training_grm_numresp
 
   answers <- list(
@@ -1137,77 +1348,93 @@ irt_training_grm_check <- eventReactive(input$irt_training_grm_1_submit, {
 
   # answ 1_1
   cdf_k1_input <- c(
-    input$irt_training_grm_1_1a, input$irt_training_grm_1_1b,
-    input$irt_training_grm_1_1c, input$irt_training_grm_1_1d,
+    input$irt_training_grm_1_1a,
+    input$irt_training_grm_1_1b,
+    input$irt_training_grm_1_1c,
+    input$irt_training_grm_1_1d,
     input$irt_training_grm_1_1e
   )
   ans1_1 <- c(abs(answers[[1]] - cdf_k1_input) <= 0.05)
 
-
   # answ 1_2
   cdf_k2_input <- c(
-    input$irt_training_grm_1_2a, input$irt_training_grm_1_2b,
-    input$irt_training_grm_1_2c, input$irt_training_grm_1_2d,
+    input$irt_training_grm_1_2a,
+    input$irt_training_grm_1_2b,
+    input$irt_training_grm_1_2c,
+    input$irt_training_grm_1_2d,
     input$irt_training_grm_1_2e
   )
   ans1_2 <- c(abs(answers[[2]] - cdf_k2_input) <= 0.05)
 
   # answ 1_3
   cdf_k3_input <- c(
-    input$irt_training_grm_1_3a, input$irt_training_grm_1_3b,
-    input$irt_training_grm_1_3c, input$irt_training_grm_1_3d,
+    input$irt_training_grm_1_3a,
+    input$irt_training_grm_1_3b,
+    input$irt_training_grm_1_3c,
+    input$irt_training_grm_1_3d,
     input$irt_training_grm_1_3e
   )
   ans1_3 <- c(abs(answers[[3]] - cdf_k3_input) <= 0.05)
 
   # answ 1_4
   cdf_k4_input <- c(
-    input$irt_training_grm_1_4a, input$irt_training_grm_1_4b,
-    input$irt_training_grm_1_4c, input$irt_training_grm_1_4d,
+    input$irt_training_grm_1_4a,
+    input$irt_training_grm_1_4b,
+    input$irt_training_grm_1_4c,
+    input$irt_training_grm_1_4d,
     input$irt_training_grm_1_4e
   )
   ans1_4 <- c(abs(answers[[4]] - cdf_k4_input) <= 0.05)
 
   # answ 2_1
   prob_k0_input <- c(
-    input$irt_training_grm_2_1a, input$irt_training_grm_2_1b,
-    input$irt_training_grm_2_1c, input$irt_training_grm_2_1d,
+    input$irt_training_grm_2_1a,
+    input$irt_training_grm_2_1b,
+    input$irt_training_grm_2_1c,
+    input$irt_training_grm_2_1d,
     input$irt_training_grm_2_1e
   )
   ans2_1 <- c(abs(answers[[5]] - prob_k0_input) <= 0.05)
 
   # answ 2_2
   prob_k1_input <- c(
-    input$irt_training_grm_2_2a, input$irt_training_grm_2_2b,
-    input$irt_training_grm_2_2c, input$irt_training_grm_2_2d,
+    input$irt_training_grm_2_2a,
+    input$irt_training_grm_2_2b,
+    input$irt_training_grm_2_2c,
+    input$irt_training_grm_2_2d,
     input$irt_training_grm_2_2e
   )
   ans2_2 <- c(abs(answers[[6]] - prob_k1_input) <= 0.05)
 
   # answ 2_3
   prob_k2_input <- c(
-    input$irt_training_grm_2_3a, input$irt_training_grm_2_3b,
-    input$irt_training_grm_2_3c, input$irt_training_grm_2_3d,
+    input$irt_training_grm_2_3a,
+    input$irt_training_grm_2_3b,
+    input$irt_training_grm_2_3c,
+    input$irt_training_grm_2_3d,
     input$irt_training_grm_2_3e
   )
   ans2_3 <- c(abs(answers[[7]] - prob_k2_input) <= 0.05)
 
   # answ 2_4
   prob_k3_input <- c(
-    input$irt_training_grm_2_4a, input$irt_training_grm_2_4b,
-    input$irt_training_grm_2_4c, input$irt_training_grm_2_4d,
+    input$irt_training_grm_2_4a,
+    input$irt_training_grm_2_4b,
+    input$irt_training_grm_2_4c,
+    input$irt_training_grm_2_4d,
     input$irt_training_grm_2_4e
   )
   ans2_4 <- c(abs(answers[[8]] - prob_k3_input) <= 0.05)
 
   # answ 3
   exp_v_input <- c(
-    input$irt_training_grm_3_1a, input$irt_training_grm_3_2a,
-    input$irt_training_grm_3_3a, input$irt_training_grm_3_4a,
+    input$irt_training_grm_3_1a,
+    input$irt_training_grm_3_2a,
+    input$irt_training_grm_3_3a,
+    input$irt_training_grm_3_4a,
     input$irt_training_grm_3_5a
   )
   ans3 <- c(abs(answers[[9]] - exp_v_input) <= 0.05)
-
 
   ans <- list(
     ans1 = ans1_1,
@@ -1223,9 +1450,11 @@ irt_training_grm_check <- eventReactive(input$irt_training_grm_1_submit, {
 
   res <- sum(sapply(ans, sum)) / sum(sapply(ans, length))
   ans <- lapply(ans, function(x) {
-    ifelse(is.na(x),
+    ifelse(
+      is.na(x),
       "<b><font color = 'red'>!</font></b>",
-      ifelse(x,
+      ifelse(
+        x,
         "<font color='green'>&#10004;</font>",
         "<font color='red'>&#10006;</font>"
       )
@@ -1416,14 +1645,19 @@ output$irt_training_grm_3_5a_answer <- renderUI({
 })
 
 
-
 output$irt_training_grm_answer <- renderUI({
   res <- irt_training_grm_check()[["ans"]]
-  HTML(ifelse(is.na(res),
+  HTML(ifelse(
+    is.na(res),
     "<font color = 'red'>Check the format</font>",
-    ifelse(res == 1,
+    ifelse(
+      res == 1,
       "<font color='green'>Everything correct! Well done!</font>",
-      paste0("<font color='red'>", round(100 * res), "% correct. Try again.</font>")
+      paste0(
+        "<font color='red'>",
+        round(100 * res),
+        "% correct. Try again.</font>"
+      )
     )
   ))
 })
@@ -1432,7 +1666,11 @@ output$irt_training_grm_answer <- renderUI({
 # *** GENERALIZED PARTIAL CREDIT MODEL ####
 
 output$irt_training_gpcm_sliders <- renderUI({
-  req(input$irt_training_gpcm_numresp, input$irt_training_gpcm_numresp >= 2, input$irt_training_gpcm_numresp <= 6)
+  req(
+    input$irt_training_gpcm_numresp,
+    input$irt_training_gpcm_numresp >= 2,
+    input$irt_training_gpcm_numresp <= 6
+  )
 
   num <- input$irt_training_gpcm_numresp
 
@@ -1440,57 +1678,99 @@ output$irt_training_gpcm_sliders <- renderUI({
     tags$div(
       class = "js-irs-red",
       style = "display: inline-block; vertical-align: middle; width: 18%;",
-      sliderInput("irt_training_gpcm_d1",
+      sliderInput(
+        "irt_training_gpcm_d1",
         label = "\\(b_1\\) - threshold",
-        value = -1.5, min = -4, max = 4, step = 0.1
+        value = -1.5,
+        min = -4,
+        max = 4,
+        step = 0.1
       )
     ),
-    div(style = "display: inline-block; vertical-align: middle; width: 2.6%;", ""),
+    div(
+      style = "display: inline-block; vertical-align: middle; width: 2.6%;",
+      ""
+    ),
     tags$div(
       class = "js-irs-yellow",
       style = "display: inline-block; vertical-align: middle; width: 18%;",
-      sliderInput("irt_training_gpcm_d2",
+      sliderInput(
+        "irt_training_gpcm_d2",
         label = "\\(b_2\\) - threshold",
-        value = -1, min = -4, max = 4, step = 0.1
+        value = -1,
+        min = -4,
+        max = 4,
+        step = 0.1
       )
     ),
-    div(style = "display: inline-block; vertical-align: middle; width: 2.6%;", ""),
+    div(
+      style = "display: inline-block; vertical-align: middle; width: 2.6%;",
+      ""
+    ),
     tags$div(
       class = "js-irs-green",
       style = "display: inline-block; vertical-align: middle; width: 18%;",
-      sliderInput("irt_training_gpcm_d3",
+      sliderInput(
+        "irt_training_gpcm_d3",
         label = "\\(b_3\\) - threshold",
-        value = -0.5, min = -4, max = 4, step = 0.1
+        value = -0.5,
+        min = -4,
+        max = 4,
+        step = 0.1
       )
     ),
-    div(style = "display: inline-block; vertical-align: middle; width: 2.6%;", ""),
+    div(
+      style = "display: inline-block; vertical-align: middle; width: 2.6%;",
+      ""
+    ),
     tags$div(
       class = "js-irs-blue",
       style = "display: inline-block; vertical-align: middle; width: 18%;",
-      sliderInput("irt_training_gpcm_d4",
+      sliderInput(
+        "irt_training_gpcm_d4",
         label = "\\(b_4\\) - threshold",
-        value = 0, min = -4, max = 4, step = 0.1
+        value = 0,
+        min = -4,
+        max = 4,
+        step = 0.1
       )
     ),
-    div(style = "display: inline-block; vertical-align: middle; width: 2.6%;", ""),
+    div(
+      style = "display: inline-block; vertical-align: middle; width: 2.6%;",
+      ""
+    ),
     tags$div(
       class = "js-irs-purple",
       style = "display: inline-block; vertical-align: middle; width: 18%;",
-      sliderInput("irt_training_gpcm_d5",
+      sliderInput(
+        "irt_training_gpcm_d5",
         label = "\\(b_5\\) - threshold",
-        value = 0.5, min = -4, max = 4, step = 0.1
+        value = 0.5,
+        min = -4,
+        max = 4,
+        step = 0.1
       )
     ),
-    div(style = "display: inline-block; vertical-align: middle; width: 2.6%;", ""),
+    div(
+      style = "display: inline-block; vertical-align: middle; width: 2.6%;",
+      ""
+    ),
     tags$div(
       class = "js-irs-orange",
       style = "display: inline-block; vertical-align: middle; width: 18%;",
-      sliderInput("irt_training_gpcm_d6",
+      sliderInput(
+        "irt_training_gpcm_d6",
         label = "\\(b_6\\) - threshold",
-        value = 1, min = -4, max = 4, step = 0.1
+        value = 1,
+        min = -4,
+        max = 4,
+        step = 0.1
       )
     ),
-    div(style = "display: inline-block; vertical-align: middle; width: 2.6%;", "")
+    div(
+      style = "display: inline-block; vertical-align: middle; width: 2.6%;",
+      ""
+    )
   )
 
   sliders <- sliders[1:(2 * num)]
@@ -1500,7 +1780,11 @@ output$irt_training_gpcm_sliders <- renderUI({
 
 # *** Category probabilities ####
 irt_training_gpcm_plot_Input <- reactive({
-  req(input$irt_training_gpcm_numresp, input$irt_training_gpcm_numresp >= 2, input$irt_training_gpcm_numresp <= 6)
+  req(
+    input$irt_training_gpcm_numresp,
+    input$irt_training_gpcm_numresp >= 2,
+    input$irt_training_gpcm_numresp <= 6
+  )
 
   num <- input$irt_training_gpcm_numresp
 
@@ -1511,12 +1795,24 @@ irt_training_gpcm_plot_Input <- reactive({
     d <- d[1:num]
   } else {
     d <- c(input$irt_training_gpcm_d1, input$irt_training_gpcm_d2)
-    d <- switch(paste(num),
+    d <- switch(
+      paste(num),
       "2" = d,
       "3" = c(d, input$irt_training_gpcm_d3),
       "4" = c(d, input$irt_training_gpcm_d3, input$irt_training_gpcm_d4),
-      "5" = c(d, input$irt_training_gpcm_d3, input$irt_training_gpcm_d4, input$irt_training_gpcm_d5),
-      "6" = c(d, input$irt_training_gpcm_d3, input$irt_training_gpcm_d4, input$irt_training_gpcm_d5, input$irt_training_gpcm_d6)
+      "5" = c(
+        d,
+        input$irt_training_gpcm_d3,
+        input$irt_training_gpcm_d4,
+        input$irt_training_gpcm_d5
+      ),
+      "6" = c(
+        d,
+        input$irt_training_gpcm_d3,
+        input$irt_training_gpcm_d4,
+        input$irt_training_gpcm_d5,
+        input$irt_training_gpcm_d6
+      )
     )
   }
 
@@ -1548,7 +1844,11 @@ irt_training_gpcm_plot_Input <- reactive({
     ylab("Category probability") +
     xlim(-4, 4) +
     ylim(0, 1) +
-    scale_color_manual("", values = col, labels = paste0("P(Y = ", 0:(length(col) - 1), ")")) +
+    scale_color_manual(
+      "",
+      values = col,
+      labels = paste0("P(Y = ", 0:(length(col) - 1), ")")
+    ) +
     theme_app() +
     ggtitle("Category probabilities")
 
@@ -1577,7 +1877,8 @@ output$DB_irt_training_gpcm_plot <- downloadHandler(
     paste("fig_GPCM_category.png", sep = "")
   },
   content = function(file) {
-    ggsave(file,
+    ggsave(
+      file,
       plot = irt_training_gpcm_plot_Input() +
         theme(
           legend.position = "inside",
@@ -1586,7 +1887,8 @@ output$DB_irt_training_gpcm_plot <- downloadHandler(
         ) +
         theme(text = element_text(size = setting_figures$text_size)),
       device = "png",
-      height = setting_figures$height, width = setting_figures$width,
+      height = setting_figures$height,
+      width = setting_figures$width,
       dpi = setting_figures$dpi
     )
   }
@@ -1595,7 +1897,11 @@ output$DB_irt_training_gpcm_plot <- downloadHandler(
 
 # *** Expected item score ####
 irt_training_gpcm_plot_expected_Input <- reactive({
-  req(input$irt_training_gpcm_numresp, input$irt_training_gpcm_numresp >= 2, input$irt_training_gpcm_numresp <= 6)
+  req(
+    input$irt_training_gpcm_numresp,
+    input$irt_training_gpcm_numresp >= 2,
+    input$irt_training_gpcm_numresp <= 6
+  )
 
   num <- input$irt_training_gpcm_numresp
 
@@ -1606,12 +1912,24 @@ irt_training_gpcm_plot_expected_Input <- reactive({
     d <- d[1:num]
   } else {
     d <- c(input$irt_training_gpcm_d1, input$irt_training_gpcm_d2)
-    d <- switch(paste(num),
+    d <- switch(
+      paste(num),
       "2" = d,
       "3" = c(d, input$irt_training_gpcm_d3),
       "4" = c(d, input$irt_training_gpcm_d3, input$irt_training_gpcm_d4),
-      "5" = c(d, input$irt_training_gpcm_d3, input$irt_training_gpcm_d4, input$irt_training_gpcm_d5),
-      "6" = c(d, input$irt_training_gpcm_d3, input$irt_training_gpcm_d4, input$irt_training_gpcm_d5, input$irt_training_gpcm_d6)
+      "5" = c(
+        d,
+        input$irt_training_gpcm_d3,
+        input$irt_training_gpcm_d4,
+        input$irt_training_gpcm_d5
+      ),
+      "6" = c(
+        d,
+        input$irt_training_gpcm_d3,
+        input$irt_training_gpcm_d4,
+        input$irt_training_gpcm_d5,
+        input$irt_training_gpcm_d6
+      )
     )
   }
 
@@ -1667,11 +1985,13 @@ output$DB_irt_training_gpcm_plot_expected <- downloadHandler(
     paste("fig_GPCM_expected.png", sep = "")
   },
   content = function(file) {
-    ggsave(file,
+    ggsave(
+      file,
       plot = irt_training_gpcm_plot_expected_Input() +
         theme(text = element_text(size = setting_figures$text_size)),
       device = "png",
-      height = setting_figures$height, width = setting_figures$width,
+      height = setting_figures$height,
+      width = setting_figures$width,
       dpi = setting_figures$dpi
     )
   }
@@ -1695,9 +2015,12 @@ irt_gpcm_answer <- reactive({
   denom <- apply(pk, 1, sum)
   df <- apply(pk, 2, function(x) x / denom)
 
-  df1 <- tidyr::pivot_longer(data.frame(df, theta), -theta, names_to = "variable") |>
+  df1 <- tidyr::pivot_longer(
+    data.frame(df, theta),
+    -theta,
+    names_to = "variable"
+  ) |>
     mutate(variable = as.factor(variable))
-
 
   df2 <- data.frame(exp = as.matrix(df) %*% 0:2, theta)
 
@@ -1712,7 +2035,11 @@ irt_gpcm_answer <- reactive({
   pk <- exp(pk)
   denom <- apply(pk, 1, sum)
   df <- apply(pk, 2, function(x) x / denom)
-  df1 <- tidyr::pivot_longer(data.frame(df, theta), -theta, names_to = "variable") |>
+  df1 <- tidyr::pivot_longer(
+    data.frame(df, theta),
+    -theta,
+    names_to = "variable"
+  ) |>
     mutate(variable = as.factor(variable))
 
   df2 <- data.frame(exp = as.matrix(df) %*% 0:2, theta)
@@ -1738,13 +2065,21 @@ irt_gpcm_check <- eventReactive(input$irt_training_gpcm_1_submit, {
   theta_input[idx] <- "Yes"
   ans1 <- all(theta_input == answers[[1]])
 
-  exp_theta_input_1 <- c(input$irt_training_gpcm_2_1, input$irt_training_gpcm_2_2, input$irt_training_gpcm_2_3)
+  exp_theta_input_1 <- c(
+    input$irt_training_gpcm_2_1,
+    input$irt_training_gpcm_2_2,
+    input$irt_training_gpcm_2_3
+  )
 
   ans2 <- c(abs(answers[[2]] - exp_theta_input_1) <= 0.05)
 
   ans3 <- input$irt_training_gpcm_3 == answers[[3]]
 
-  exp_theta_input_2 <- c(input$irt_training_gpcm_4_1, input$irt_training_gpcm_4_2, input$irt_training_gpcm_4_3)
+  exp_theta_input_2 <- c(
+    input$irt_training_gpcm_4_1,
+    input$irt_training_gpcm_4_2,
+    input$irt_training_gpcm_4_3
+  )
 
   ans4 <- c(abs(answers[[4]] - exp_theta_input_2) <= 0.05)
 
@@ -1757,9 +2092,11 @@ irt_gpcm_check <- eventReactive(input$irt_training_gpcm_1_submit, {
 
   res <- sum(sapply(ans, sum)) / sum(sapply(ans, length))
   ans <- lapply(ans, function(x) {
-    ifelse(is.na(x),
+    ifelse(
+      is.na(x),
       "<b><font color = 'red'>!</font></b>",
-      ifelse(x,
+      ifelse(
+        x,
         "<font color='green'>&#10004;</font>",
         "<font color='red'>&#10006;</font>"
       )
@@ -1804,15 +2141,20 @@ output$irt_training_gpcm_4_3_answer <- renderUI({
 
 output$irt_training_gpcm_answer <- renderUI({
   res <- irt_gpcm_check()[["ans"]]
-  HTML(ifelse(is.na(res),
+  HTML(ifelse(
+    is.na(res),
     "<font color = 'red'>Check the format</font>",
-    ifelse(res == 1,
+    ifelse(
+      res == 1,
       "<font color='green'>Everything correct! Well done!</font>",
-      paste0("<font color='red'>", round(100 * res), "% correct. Try again.</font>")
+      paste0(
+        "<font color='red'>",
+        round(100 * res),
+        "% correct. Try again.</font>"
+      )
     )
   ))
 })
-
 
 
 # *** NOMINAL RESPONSE MODEL ####
@@ -1845,10 +2187,17 @@ output$irt_training_nrm_sliders <- renderUI({
   )
 
   slider_names <- list(
-    a = paste0("\\(a_{", c(irt_training_nrm_category_names[seq_len(n_cats) - 1L], "grey"), "}\\) (discrimination)"),
-    b = paste0("\\(b_{", c(irt_training_nrm_category_names[seq_len(n_cats) - 1L], "grey"), "}\\) (threshold)")
+    a = paste0(
+      "\\(a_{",
+      c(irt_training_nrm_category_names[seq_len(n_cats) - 1L], "grey"),
+      "}\\) (discrimination)"
+    ),
+    b = paste0(
+      "\\(b_{",
+      c(irt_training_nrm_category_names[seq_len(n_cats) - 1L], "grey"),
+      "}\\) (threshold)"
+    )
   )
-
 
   # when changing number of categories, there is is a point when new sliders
   # are generated with their initial values, but those are immediately passed
@@ -1857,15 +2206,30 @@ output$irt_training_nrm_sliders <- renderUI({
   # of invalidation of dependent reactives or outputs
   freezeReactiveValue(input, pars$a[1])
 
-
   a_sliders <- pmap(
     list(pars$a, slider_names$a, init_values$a),
-    ~ sliderInput(..1, ..2, min = -3, max = 0, value = ..3, step = .1, width = "100%")
+    ~ sliderInput(
+      ..1,
+      ..2,
+      min = -3,
+      max = 0,
+      value = ..3,
+      step = .1,
+      width = "100%"
+    )
   )
 
   b_sliders <- pmap(
     list(pars$b, slider_names$b, init_values$b),
-    ~ sliderInput(..1, ..2, min = -5, max = 5, value = ..3, step = .1, width = "100%")
+    ~ sliderInput(
+      ..1,
+      ..2,
+      min = -5,
+      max = 5,
+      value = ..3,
+      step = .1,
+      width = "100%"
+    )
   )
 
   # fix last category sliders to zero
@@ -1876,9 +2240,15 @@ output$irt_training_nrm_sliders <- renderUI({
 
   slider_classes <- c(
     c(
-      "js-irs-red", "js-irs-yellow", "js-irs-green", "js-irs-blue",
-      "js-irs-purple", "js-irs-orange", "js-irs-brown"
-    )[seq_len(n_cats - 1)], "js-irs-grey"
+      "js-irs-red",
+      "js-irs-yellow",
+      "js-irs-green",
+      "js-irs-blue",
+      "js-irs-purple",
+      "js-irs-orange",
+      "js-irs-brown"
+    )[seq_len(n_cats - 1)],
+    "js-irs-grey"
   )
 
   fluidRow(
@@ -1953,14 +2323,15 @@ irt_training_nrm_parametrizations <- reactive({
   )
   # TODO when a is zero, what is the result??
 
-
   list(
-    BLIS = blis, BLIRT = blirt,
-    `Thissen et al.` = thissen, `Thissen et al. (IRT)` = irt_thissen,
-    Bock = bock, `Bock (IRT)` = irt_bock
+    BLIS = blis,
+    BLIRT = blirt,
+    `Thissen et al.` = thissen,
+    `Thissen et al. (IRT)` = irt_thissen,
+    Bock = bock,
+    `Bock (IRT)` = irt_bock
   )
 })
-
 
 
 irt_training_nrm_pars_list <- reactive({
@@ -1971,7 +2342,8 @@ irt_training_nrm_pars_list <- reactive({
 
   nms <- c(irt_training_nrm_category_names[seq_len(n_cats) - 1L], "grey")
   names(out) <- c(
-    names(out[1L]), "\\(a^*\\)",
+    names(out[1L]),
+    "\\(a^*\\)",
     paste0("\\({apar}_{", nms, "}\\)"),
     paste0("\\({bpar}_{", nms, "}\\)")
   )
@@ -1982,7 +2354,9 @@ irt_training_nrm_pars_list <- reactive({
 
 output$irt_training_nrm_irt_parameters <- renderTable({
   out <- irt_training_nrm_pars_list() |>
-    filter(Parametrization %in% c("BLIRT", "Thissen et al. (IRT)", "Bock (IRT)"))
+    filter(
+      Parametrization %in% c("BLIRT", "Thissen et al. (IRT)", "Bock (IRT)")
+    )
 
   names(out) <- names(out) |>
     str_replace("apar", "a") |>
@@ -2032,11 +2406,18 @@ irt_training_nrm_cat_probs_plot <- reactive({
   d_long <- d |>
     pivot_longer(-theta, names_to = "cat")
 
-  d_long <- d_long |> mutate(tooltip = paste0(
-    str_to_title(cat), " category\n",
-    "Category probability = ", round(value, 3), "\n",
-    "Ability = ", theta
-  ))
+  d_long <- d_long |>
+    mutate(
+      tooltip = paste0(
+        str_to_title(cat),
+        " category\n",
+        "Category probability = ",
+        round(value, 3),
+        "\n",
+        "Ability = ",
+        theta
+      )
+    )
 
   d_long |>
     ggplot(aes(x = theta, y = value, col = cat, group = cat, text = tooltip)) +

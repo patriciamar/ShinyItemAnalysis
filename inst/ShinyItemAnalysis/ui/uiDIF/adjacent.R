@@ -5,14 +5,24 @@ ui_DIF_adjacent <- tabPanel(
     tabPanel(
       "Summary",
       h3("Adjacent category logit model for DIF detection"),
-      p("An adjacent category logit regression allows for detection of uniform and non-uniform DIF among ordinal
+      p(
+        "An adjacent category logit regression allows for detection of uniform and non-uniform DIF among ordinal
         data by adding a group-membership variable (uniform DIF) and its interaction with observed score
-        (non-uniform DIF) into a model for item \\(i\\) and by testing for their significance."),
+        (non-uniform DIF) into a model for item \\(i\\) and by testing for their significance."
+      ),
       h4("Method specification"),
       p(
-        "Here you can change the ", strong("type"), " of DIF to be tested, the ", strong("Observed score", .noWS = "outside"),
-        ", and", strong("parametrization"), "- either based on IRT models or classical intercept/slope. You can also
-        select the ", strong("correction method"), " for multiple comparison and/or ", strong("item purification. ")
+        "Here you can change the ",
+        strong("type"),
+        " of DIF to be tested, the ",
+        strong("Observed score", .noWS = "outside"),
+        ", and",
+        strong("parametrization"),
+        "- either based on IRT models or classical intercept/slope. You can also
+        select the ",
+        strong("correction method"),
+        " for multiple comparison and/or ",
+        strong("item purification. ")
       ),
       fluidRow(
         column(
@@ -77,48 +87,97 @@ ui_DIF_adjacent <- tabPanel(
       ),
       h4("Equation"),
       p(
-        "The probability that respondent ", strong("\\(p\\)"), " with the observed score (e.g., standardized total
-        score) ", strong("\\(Z_p\\)"), " and the group membership variable ", strong("\\(G_p\\)"), " obtained ",
-        strong("\\(k\\)"), " points in item ", strong("\\(i\\)"), " is given by the following equation: "
+        "The probability that respondent ",
+        strong("\\(p\\)"),
+        " with the observed score (e.g., standardized total
+        score) ",
+        strong("\\(Z_p\\)"),
+        " and the group membership variable ",
+        strong("\\(G_p\\)"),
+        " obtained ",
+        strong("\\(k\\)"),
+        " points in item ",
+        strong("\\(i\\)"),
+        " is given by the following equation: "
       ),
-      fluidRow(column(12, align = "center", uiOutput("DIF_adjacent_summary_equation"))),
+      fluidRow(column(
+        12,
+        align = "center",
+        uiOutput("DIF_adjacent_summary_equation")
+      )),
       h4("Summary table"),
-      p("Summary table contains information about \\(\\chi^2\\)-statistics of the likelihood ratio test, corresponding
+      p(
+        "Summary table contains information about \\(\\chi^2\\)-statistics of the likelihood ratio test, corresponding
         \\(p\\)-values considering selected correction method, and significance codes. Table also provides estimated parameters
-        for the best fitted model for each item. "),
+        for the best fitted model for each item. "
+      ),
       uiOutput("DIF_adjacent_summary_na_alert"),
       strong(textOutput("DIF_adjacent_summary_dif_items")),
       br(),
       # tags$head(tags$style("#DIF_adjacent_summary_coef  {white-space: nowrap;}")),
-      fluidRow(column(12, align = "left", tableOutput("DIF_adjacent_summary_coef"))),
-      fluidRow(column(12, align = "left", uiOutput("DIF_adjacent_summary_table_note"))),
+      fluidRow(column(
+        12,
+        align = "left",
+        tableOutput("DIF_adjacent_summary_coef")
+      )),
+      fluidRow(column(
+        12,
+        align = "left",
+        uiOutput("DIF_adjacent_summary_table_note")
+      )),
       br(),
-      fluidRow(column(2, downloadButton(outputId = "DIF_adjacent_summary_table_download", label = "Download table"))),
+      fluidRow(column(
+        2,
+        downloadButton(
+          outputId = "DIF_adjacent_summary_table_download",
+          label = "Download table"
+        )
+      )),
       br(),
       h4("Purification process"),
       textOutput("DIF_adjacent_summary_purification_info"),
       br(),
       # tags$head(tags$style("#DIF_adjacent_summary_purification_table  {white-space: nowrap;}")),
-      fluidRow(column(12, align = "center", tableOutput("DIF_adjacent_summary_purification_table"))),
+      fluidRow(column(
+        12,
+        align = "center",
+        tableOutput("DIF_adjacent_summary_purification_table")
+      )),
       conditionalPanel(
         "input.DIF_adjacent_summary_purification == 1",
-        downloadButton(outputId = "DIF_adjacent_summary_purification_table_download", label = "Download table"), br(), br()
+        downloadButton(
+          outputId = "DIF_adjacent_summary_purification_table_download",
+          label = "Download table"
+        ),
+        br(),
+        br()
       ),
       h4("Selected R code"),
       code(includeText("sc/dif/adj.R"))
     ),
     # ** Items ####
-    tabPanel("Items",
+    tabPanel(
+      "Items",
       value = "acl_it",
       h3("Adjacent category logit model for DIF detection"),
-      p("An adjacent category logit regression allows for detection of uniform and non-uniform DIF among ordinal
+      p(
+        "An adjacent category logit regression allows for detection of uniform and non-uniform DIF among ordinal
         data by adding a group-membership variable (uniform DIF) and its interaction with observed score
-        (non-uniform DIF) into a model for item \\(i\\) and by testing for their significance."),
+        (non-uniform DIF) into a model for item \\(i\\) and by testing for their significance."
+      ),
       h4("Method specification"),
       p(
-        "Here you can change ", strong("type"), " of DIF to be tested, ", strong("Observed score", .noWS = "outside"),
-        ", and", strong("parametrization"), "- either based on IRT models or classical intercept/slope. You can also
-        select ", strong("correction method"), " for multiple comparison and/or ", strong("item purification. ")
+        "Here you can change ",
+        strong("type"),
+        " of DIF to be tested, ",
+        strong("Observed score", .noWS = "outside"),
+        ", and",
+        strong("parametrization"),
+        "- either based on IRT models or classical intercept/slope. You can also
+        select ",
+        strong("correction method"),
+        " for multiple comparison and/or ",
+        strong("item purification. ")
       ),
       fluidRow(
         column(
@@ -195,16 +254,31 @@ ui_DIF_adjacent <- tabPanel(
       ),
       uiOutput("DIF_adjacent_items_na_alert"),
       h4("Plot with estimated DIF curves"),
-      p("Points represent proportion of obtained score with respect to the observed score. Their size is determined
+      p(
+        "Points represent proportion of obtained score with respect to the observed score. Their size is determined
         by count of respondents who achieved given level of the observed score and who selected given option with
-        respect to the group membership."),
+        respect to the group membership."
+      ),
       plotlyOutput("DIF_adjacent_items_plot"),
-      downloadButton("DIF_adjacent_items_plot_download", label = "Download figure"),
+      downloadButton(
+        "DIF_adjacent_items_plot_download",
+        label = "Download figure"
+      ),
       h4("Equation"),
-      fluidRow(column(12, align = "center", uiOutput("DIF_adjacent_items_equation"))),
+      fluidRow(column(
+        12,
+        align = "center",
+        uiOutput("DIF_adjacent_items_equation")
+      )),
       h4("Table of parameters"),
-      p("Table summarizes estimated item parameters together with standard errors. "),
-      fluidRow(column(12, align = "center", tableOutput("DIF_adjacent_items_coef"))),
+      p(
+        "Table summarizes estimated item parameters together with standard errors. "
+      ),
+      fluidRow(column(
+        12,
+        align = "center",
+        tableOutput("DIF_adjacent_items_coef")
+      )),
       br(),
       h4("Selected R code"),
       code(includeText("sc/dif/adj_it.R"))

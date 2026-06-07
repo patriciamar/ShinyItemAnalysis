@@ -29,8 +29,12 @@ insert_visitor_counter <- function() {
 
 
 sm_allow_gui_installation <- function() {
- is_shiny_server <- !is.na(Sys.getenv("SHINY_SERVER_VERSION", unset = NA))
- is_gui_installation_forced <- tolower(Sys.getenv("SIA_MODULES_FORCE_GUI_INSTALLATION", unset = "false")) == "true"
+  is_shiny_server <- !is.na(Sys.getenv("SHINY_SERVER_VERSION", unset = NA))
+  is_gui_installation_forced <- tolower(Sys.getenv(
+    "SIA_MODULES_FORCE_GUI_INSTALLATION",
+    unset = "false"
+  )) ==
+    "true"
 
- !is_shiny_server | is_gui_installation_forced
+  !is_shiny_server | is_gui_installation_forced
 }

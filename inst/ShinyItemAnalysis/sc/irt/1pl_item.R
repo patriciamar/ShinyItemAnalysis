@@ -10,9 +10,12 @@ mirt(GMAT[, 1:20], model = 1, itemtype = "2PL", pars = "values")
 # a1 parameter numbers (parnum) are 1, 5, 9,...
 
 # fitting 1PL model as 2PL with slope a1 parameters constrained to be equal
-fit <- mirt(GMAT[, 1:20],
-  model = 1, itemtype = "2PL",
-  constrain = list((1:20) * 4 - 3), SE = TRUE
+fit <- mirt(
+  GMAT[, 1:20],
+  model = 1,
+  itemtype = "2PL",
+  constrain = list((1:20) * 4 - 3),
+  SE = TRUE
 )
 
 # item response curves for item 1

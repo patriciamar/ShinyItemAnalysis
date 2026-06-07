@@ -19,12 +19,12 @@ printed object are still an original list, which does not round any value
 Print method for BLIS coefficients
 }
 \seealso{
-Other BLIS/BLIRT related: 
+Other BLIS/BLIRT related:
 \code{\link{BlisClass-class}},
 \code{\link{coef,BlisClass-method}},
-\code{\link{fit_blis}()},
-\code{\link{get_orig_levels}()},
-\code{\link{nominal_to_int}()},
-\code{\link{obtain_nrm_def}()}
+\code{\link[=fit_blis]{fit_blis()}},
+\code{\link[=get_orig_levels]{get_orig_levels()}},
+\code{\link[=nominal_to_int]{nominal_to_int()}},
+\code{\link[=obtain_nrm_def]{obtain_nrm_def()}}
 }
 \concept{BLIS/BLIRT related}

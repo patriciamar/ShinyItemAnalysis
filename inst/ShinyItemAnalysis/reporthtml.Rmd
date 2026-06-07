@@ -117,7 +117,7 @@ This program is free software and you can redistribute it and or modify it under
 ## Total scores
 
 ### Summary table of total scores
-The table below summarizes basic characteristics of total scores including number of respondents, minimum and maximum values, mean, median, standard deviation, skewness, and kurtosis. The skewness for normally distributed scores is near the value of 0 and the kurtosis is near the value of 3.
+The table below summarizes basic characteristics of total scores including number of respondents, number of complete cases without any missing value, minimum and maximum values, mean, median, standard deviation, skewness, and kurtosis. The skewness for normally distributed scores is near the value of 0 and the kurtosis is near the value of 3.
 
 ```{r total-scores-table, echo = FALSE}
 library(knitr)
@@ -155,18 +155,18 @@ kable(table, align = "c")
 
 `r if (params$irt_model != "none") {"More complex estimates of ability are provided in the IRT section."}`
 
-`r if (any(params$corr_plot != "") | params$validity_check) {"**************"}`
+`r if (!is.null(params$corr_plot) | params$validity_check) {"**************"}`
 
-`r if (any(params$corr_plot != "") | params$validity_check) {"# Validity"}`
+`r if (!is.null(params$corr_plot) | params$validity_check) {"# Validity"}`
 
-`r if (any(params$corr_plot != "")) {"## Correlation structure"}`
+`r if (!is.null(params$corr_plot)) {"## Correlation structure"}`
 
-`r if (any(params$corr_plot != "")) {"### Correlation heat map "}`
-`r if (any(params$corr_plot != "")) {if (params$corr_type == "pearson") {"A correlation heat map displays Pearson correlations of items. Pearson correlation coefficient describes linear correlation between two random variables X and Y."}}`
+`r if (!is.null(params$corr_plot)) {"### Correlation heat map "}`
+`r if (!is.null(params$corr_plot)) {if (params$corr_type == "pearson") {"A correlation heat map displays Pearson correlations of items. Pearson correlation coefficient describes linear correlation between two random variables X and Y."}}`
 
-`r if (any(params$corr_plot != "")) {if (params$corr_type == "polychoric") {"A correlation heat map displays polychoric correlations of items. Polychoric/tetrachoric correlation between two ordinal/binary variables is calculated from their contingency table, under the assumption that the ordinal variables dissect continuous latent variables that are bivariate normal."}}`
+`r if (!is.null(params$corr_plot)) {if (params$corr_type == "polychoric") {"A correlation heat map displays polychoric correlations of items. Polychoric/tetrachoric correlation between two ordinal/binary variables is calculated from their contingency table, under the assumption that the ordinal variables dissect continuous latent variables that are bivariate normal."}}`
 
-`r if (any(params$corr_plot != "")) {if (params$corr_type == "spearman") {"A correlation heat map displays Spearman correlations of items. Spearman's rank correlation coefficient describes strength and direction of monotonic relationship between random variables X and Y, i.e. dependence between the rankings of two variables."}}`
+`r if (!is.null(params$corr_plot)) {if (params$corr_type == "spearman") {"A correlation heat map displays Spearman correlations of items. Spearman's rank correlation coefficient describes strength and direction of monotonic relationship between random variables X and Y, i.e. dependence between the rankings of two variables."}}`
 
 `r clustmethod_names <- c("None" = "none",
                           "Ward's"  = "ward.D",
@@ -178,9 +178,9 @@ kable(table, align = "c")
                           "median" = "median",
                           "centroid" = "centroid")`
                           
-`r if (any(params$corr_plot != "") & params$corr_plot_clustmethod != "none") {paste0("A correlation heat map is reordered using hierarchical clustering with ", names(clustmethod_names)[clustmethod_names == params$corr_plot_clustmethod], " linkage method. The number of highlighted clusters is ", params$corr_plot_numclust, ". ")}`
+`r if (!is.null(params$corr_plot) & params$corr_plot_clustmethod != "none") {paste0("A correlation heat map is reordered using hierarchical clustering with ", names(clustmethod_names)[clustmethod_names == params$corr_plot_clustmethod], " linkage method. The number of highlighted clusters is ", params$corr_plot_numclust, ". ")}`
 
-```{r corr-plot, echo = FALSE, include = any(nzchar(params$corr_plot)), fig.height = 4, fig.align = 'center', dpi = 300}
+```{r corr-plot, echo = FALSE, include = !is.null(params$corr_plot), fig.height = 4, fig.align = 'center', dpi = 300}
 params$corr_plot
 ```
 

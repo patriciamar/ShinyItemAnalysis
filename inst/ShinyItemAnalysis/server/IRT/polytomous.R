@@ -15,7 +15,8 @@ IRT_bock_key <- reactive({
 # collapse "models"
 # (those pairs are identical, the reparametrization occurs at coef)
 IRT_bock_parametrization <- reactive({
-  switch(input$IRT_bock_parametrization,
+  switch(
+    input$IRT_bock_parametrization,
     blis = "blis",
     blirt = "blis",
     thissen = "thissen",
@@ -29,7 +30,8 @@ IRT_bock_parametrization <- reactive({
 # so when one model is fitted, the second model of each pair is not refitted
 # unnecessarily
 IRT_bock_fit_and_orig_levels <- reactive({
-  switch(IRT_bock_parametrization(),
+  switch(
+    IRT_bock_parametrization(),
     blis = {
       fit <- fit_blis(IRT_bock_data(), IRT_bock_key(), SE = TRUE)
       orig_levels <- fit@orig_levels # extract already constructed orig_levels
@@ -38,13 +40,18 @@ IRT_bock_fit_and_orig_levels <- reactive({
     thissen = {
       # convert to integer and store orig_levels
       d_int_plus_key <- nominal_to_int(
-        IRT_bock_data(), IRT_bock_key()
+        IRT_bock_data(),
+        IRT_bock_key()
       )
       pars <- obtain_nrm_def(d_int_plus_key)
 
       fit <- mirt(
-        d_int_plus_key[["Data"]], 1,
-        itemtype = "nominal", SE = TRUE, pars = pars, verbose = FALSE,
+        d_int_plus_key[["Data"]],
+        1,
+        itemtype = "nominal",
+        SE = TRUE,
+        pars = pars,
+        verbose = FALSE,
         technical = list(NCYCLES = input$ncycles)
       )
       orig_levels <- d_int_plus_key[["orig_levels"]]
@@ -60,7 +67,6 @@ IRT_bock_fit_and_orig_levels <- reactive({
 # NOTE orig_levels is the same for the particular data,
 # but we compute it twice (at most) here; not so expensive, though
 
-
 # COEFF. TABLE ------------------------------------------------------------
 
 IRT_bock_summary_coef <- reactive({
@@ -73,12 +79,14 @@ IRT_bock_summary_coef <- reactive({
   coefs[["GroupPars"]] <- NULL
 
   coefs <- map2(
-    coefs, IRT_bock_fit_and_orig_levels()[["orig_levels"]],
+    coefs,
+    IRT_bock_fit_and_orig_levels()[["orig_levels"]],
     ~ {
       colnames(.x) <- c(
         # if thissen param, paste overall slope on top
         if (input$IRT_bock_parametrization == "thissen") "a*_",
-        paste0("a_", .y), paste0("b_", .y) # use "b" parname
+        paste0("a_", .y),
+        paste0("b_", .y) # use "b" parname
       )
       .x
     }
@@ -97,7 +105,8 @@ IRT_bock_summary_coef <- reactive({
     relocate(item, type, all_of(master_parnames)) |> # order columns
     pivot_wider(
       id_cols = item,
-      names_from = type, values_from = c(-item, -type),
+      names_from = type,
+      values_from = c(-item, -type),
       names_glue = "{if_else(type == 'par', '', type)}_{.value}" # if par, use empty string
     )
 
@@ -119,8 +128,11 @@ IRT_bock_summary_coef <- reactive({
       ~ paste0(
         .x[1L],
         if (.x[1L] == "SE") "(", # if SE, add "("
-        "\\(\\mathit{", .x[2L], # parameter
-        "_{", .x[3L], "}}\\)", # index
+        "\\(\\mathit{",
+        .x[2L], # parameter
+        "_{",
+        .x[3L],
+        "}}\\)", # index
         if (.x[1L] == "SE") ")" # if SE, enclose with ")"
       )
     )
@@ -129,8 +141,6 @@ IRT_bock_summary_coef <- reactive({
 }) |> # cache on raw parametrization user input and data
   bindCache(IRT_bock_data(), input$IRT_bock_parametrization) |> # possibly also key??
   bindEvent(IRT_bock_data(), input$IRT_bock_parametrization)
-
-
 
 
 # IIC plot for summary ---------------------------------------------------------
@@ -153,17 +163,28 @@ IRT_bock_summary_iic <- reactive({
   )
 
   # plotly labels
-  d <- d |> mutate(label = paste0(
-    "Ability = ", round(Ability, 3), "\n",
-    "Information = ", round(Information, 3), "\n",
-    "Item = ", Item
-  ))
+  d <- d |>
+    mutate(
+      label = paste0(
+        "Ability = ",
+        round(Ability, 3),
+        "\n",
+        "Information = ",
+        round(Information, 3),
+        "\n",
+        "Item = ",
+        Item
+      )
+    )
 
-  d |> ggplot(aes(
-    x = Ability, y = Information,
-    color = Item, group = Item, text = label
-  )) +
-    geom_line() +
+  d |>
+    ggplot(aes(
+      x = Ability,
+      y = Information,
+      color = Item,
+      group = Item
+    )) +
+    suppressWarnings(geom_line(aes(text = label))) +
     theme_app()
 }) |>
   bindCache(IRT_bock_fit_and_orig_levels()) |>
@@ -190,14 +211,17 @@ output$IRT_bock_summary_iic_download <- downloadHandler(
     "fig_IRT_bock_IIC.png"
   },
   content = function(file) {
-    ggsave(file,
+    ggsave(
+      file,
       plot = IRT_bock_summary_iic() +
         theme(
           text = element_text(size = setting_figures$text_size),
-          legend.position = "right", legend.key.size = unit(0.8, "lines")
+          legend.position = "right",
+          legend.key.size = unit(0.8, "lines")
         ),
       device = "png",
-      height = setting_figures$height, width = setting_figures$width,
+      height = setting_figures$height,
+      width = setting_figures$width,
       dpi = setting_figures$dpi
     )
   }
@@ -208,12 +232,19 @@ IRT_bock_summary_tic <- reactive({
   fit <- IRT_bock_fit_and_orig_levels()[["fit"]]
   thetas <- IRT_thetas_for_plots()
 
-  test_info_se <- tibble(Ability = thetas, Information = testinfo(fit, thetas), SE = 1 / sqrt(Information))
+  test_info_se <- tibble(
+    Ability = thetas,
+    Information = testinfo(fit, thetas),
+    SE = 1 / sqrt(Information)
+  )
 
   ggplot(test_info_se, aes(x = Ability)) +
     geom_line(aes(y = Information, col = "info")) +
     geom_line(aes(y = SE, col = "se")) +
-    scale_color_manual(values = c("blue", "pink"), labels = c("Information", "SE")) +
+    scale_color_manual(
+      values = c("blue", "pink"),
+      labels = c("Information", "SE")
+    ) +
     scale_y_continuous("Information", sec.axis = sec_axis(~., name = "SE")) +
     theme(axis.title.y = element_text(color = "pink")) +
     theme_app()
@@ -245,14 +276,17 @@ output$IRT_bock_summary_tic_download <- downloadHandler(
     "fig_IRT_bock_TIC.png"
   },
   content = function(file) {
-    ggsave(file,
+    ggsave(
+      file,
       plot = IRT_bock_summary_tic() +
         theme(
           text = element_text(size = setting_figures$text_size),
-          legend.position = "right", legend.key.size = unit(0.8, "lines")
+          legend.position = "right",
+          legend.key.size = unit(0.8, "lines")
         ),
       device = "png",
-      height = setting_figures$height, width = setting_figures$width,
+      height = setting_figures$height,
+      width = setting_figures$width,
       dpi = setting_figures$dpi
     )
   }
@@ -261,7 +295,9 @@ output$IRT_bock_summary_tic_download <- downloadHandler(
 # ** Table of parameters ####
 output$IRT_bock_summary_coef <- renderTable(
   IRT_bock_summary_coef(),
-  rownames = TRUE, striped = TRUE, na = ""
+  rownames = TRUE,
+  striped = TRUE,
+  na = ""
 )
 
 # ** Download of coef tab ####
@@ -345,7 +381,8 @@ output$IRT_bock_summary_ability_correlation_text <- renderText({
     "This scatterplot shows the relationship between the standardized total
          score (Z-score) and the factor score estimated by the IRT model. The
          Pearson correlation coefficient between these two scores is ",
-    sprintf("%.3f", IRT_bock_summary_ability_correlation()), ". "
+    sprintf("%.3f", IRT_bock_summary_ability_correlation()),
+    ". "
   )
 })
 
@@ -386,11 +423,13 @@ output$IRT_bock_summary_ability_plot_download <- downloadHandler(
     "fig_IRT_bock_abilities.png"
   },
   content = function(file) {
-    ggsave(file,
+    ggsave(
+      file,
       plot = IRT_bock_summary_ability_plot() +
         theme(text = element_text(size = setting_figures$text_size)),
       device = "png",
-      height = setting_figures$height, width = setting_figures$width,
+      height = setting_figures$height,
+      width = setting_figures$width,
       dpi = setting_figures$dpi
     )
   }
@@ -430,18 +469,27 @@ IRT_bock_items_icc <- reactive({
     mutate(
       correct = key == item_key,
       label = paste0(
-        "Ability = ", round(theta, 3), "\n",
-        "Probability = ", round(probs, 3), "\n",
-        "Response = ", key, if_else(correct, " (correct)", " (distractor)")
+        "Ability = ",
+        round(theta, 3),
+        "\n",
+        "Probability = ",
+        round(probs, 3),
+        "\n",
+        "Response = ",
+        key,
+        if_else(correct, " (correct)", " (distractor)")
       )
     )
 
   probs |>
     ggplot(aes(theta, probs, col = key, linetype = correct, group = key)) +
-    geom_line(aes(text = label)) +
+    suppressWarnings(geom_line(aes(text = label))) +
     labs(
-      x = "Ability", y = "Category probability",
-      title = item_names()[item], col = "Resp.", linetype = "Corr. resp."
+      x = "Ability",
+      y = "Category probability",
+      title = item_names()[item],
+      col = "Resp.",
+      linetype = "Corr. resp."
     ) +
     scale_linetype_manual(values = c(`FALSE` = "dashed", `TRUE` = "solid")) +
     coord_cartesian(ylim = c(0, 1)) +
@@ -463,14 +511,17 @@ output$IRT_bock_items_icc_download <- downloadHandler(
     paste0("fig_IRT_bock_ICC, ", item_names()[item], ".png")
   },
   content = function(file) {
-    ggsave(file,
+    ggsave(
+      file,
       plot = IRT_bock_items_icc() +
         theme(
           text = element_text(size = setting_figures$text_size),
-          legend.position = "right", legend.key.size = unit(0.8, "lines")
+          legend.position = "right",
+          legend.key.size = unit(0.8, "lines")
         ),
       device = "png",
-      height = setting_figures$height, width = setting_figures$width,
+      height = setting_figures$height,
+      width = setting_figures$width,
       dpi = setting_figures$dpi
     )
   }
@@ -487,7 +538,8 @@ IRT_bock_items_iic <- reactive({
     Information = iteminfo(extract.item(fit, item), thetas)
   )
 
-  infos |> ggplot(aes(Ability, Information)) +
+  infos |>
+    ggplot(aes(Ability, Information)) +
     geom_line() +
     ggtitle(item_names()[item]) +
     theme_app()
@@ -508,14 +560,17 @@ output$IRT_bock_items_iic_download <- downloadHandler(
     paste0("fig_IRT_bock_IIC_", item_names()[item], ".png")
   },
   content = function(file) {
-    ggsave(file,
+    ggsave(
+      file,
       plot = IRT_bock_items_iic() +
         theme(
           text = element_text(size = setting_figures$text_size),
-          legend.position = "right", legend.key.size = unit(0.8, "lines")
+          legend.position = "right",
+          legend.key.size = unit(0.8, "lines")
         ),
       device = "png",
-      height = setting_figures$height, width = setting_figures$width,
+      height = setting_figures$height,
+      width = setting_figures$width,
       dpi = setting_figures$dpi
     )
   }

@@ -35,13 +35,16 @@ df <- data.frame(
 
 # plot of estimated curve
 ggplot(df, aes(x = x, y = y)) +
-  geom_point(aes(size = size),
+  geom_point(
+    aes(size = size),
     color = "darkblue",
     fill = "darkblue",
-    shape = 21, alpha = 0.5
+    shape = 21,
+    alpha = 0.5
   ) +
   stat_function(
-    fun = fun, geom = "line",
+    fun = fun,
+    geom = "line",
     args = list(
       a = coef[1],
       b = coef[2]

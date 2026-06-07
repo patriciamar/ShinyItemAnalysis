@@ -6,18 +6,30 @@
 #' @keywords internal
 #' @noRd
 
-.difLogistic_edited <- function(Data, group, focal.name, anchor = NULL, member.type = "group",
-                                match = "score", type = "both", criterion = "LRT",
-                                alpha = 0.05, all.cov = FALSE, purify = FALSE, nrIter = 10,
-                                p.adjust.method = NULL, puriadjType = "simple",
-                                save.output = FALSE, output = c("out", "default")) {
+.difLogistic_edited <- function(
+  Data,
+  group,
+  focal.name,
+  anchor = NULL,
+  member.type = "group",
+  match = "score",
+  type = "both",
+  criterion = "LRT",
+  alpha = 0.05,
+  all.cov = FALSE,
+  purify = FALSE,
+  nrIter = 10,
+  p.adjust.method = NULL,
+  puriadjType = "simple",
+  save.output = FALSE,
+  output = c("out", "default")
+) {
   if (member.type != "group" & member.type != "cont") {
-    stop("'member.type' must be either 'group' or 'cont'",
-      call. = FALSE
-    )
+    stop("'member.type' must be either 'group' or 'cont'", call. = FALSE)
   }
   if (purify & !(match[1] %in% c("score", "zscore"))) {
-    stop("purification not allowed when matching variable is not 'score' or 'zscore'.",
+    stop(
+      "purification not allowed when matching variable is not 'score' or 'zscore'.",
       call. = FALSE
     )
   }
@@ -48,12 +60,14 @@
       df <- data.frame(DATA, Group, check.names = F)
     }
     if (any(is.na(DATA))) {
-      warning("'Data' contains missing values. Observations with missing values are discarded.",
+      warning(
+        "'Data' contains missing values. Observations with missing values are discarded.",
         call. = FALSE
       )
     }
     if (any(is.na(Group))) {
-      warning("'group' contains missing values. Observations with missing values are discarded.",
+      warning(
+        "'group' contains missing values. Observations with missing values are discarded.",
         call. = FALSE
       )
     }
@@ -63,14 +77,16 @@
     colnames(DATA) <- colnames(df)[!(colnames(df) %in% c("Group", "match"))]
     if (length(match) > 1) {
       if (any(is.na(match))) {
-        warning("'match' contains missing values. Observations with missing values are discarded.",
+        warning(
+          "'match' contains missing values. Observations with missing values are discarded.",
           call. = FALSE
         )
       }
       match <- df[, "match"]
     }
 
-    Q <- switch(type,
+    Q <- switch(
+      type,
       both = qchisq(1 - alpha, 2),
       udif = qchisq(1 - alpha, 1),
       nudif = qchisq(1 - alpha, 1)
@@ -108,10 +124,15 @@
     DDF <- ifelse(type == "both", 2, 1)
 
     if (!purify | !match[1] %in% c("score", "zscore") | !is.null(anchor)) {
-      PROV <- .Logistik_edited(DATA, Group,
+      PROV <- .Logistik_edited(
+        DATA,
+        Group,
         member.type = member.type,
-        match = match, type = type, criterion = criterion, # there goes "zscore" string
-        anchor = ANCHOR, all.cov = all.cov
+        match = match,
+        type = type,
+        criterion = criterion, # there goes "zscore" string
+        anchor = ANCHOR,
+        all.cov = all.cov
       )
       STATS <- PROV$stat
       PVAL <- 1 - pchisq(STATS, DDF)
@@ -135,32 +156,52 @@
         adjusted.p <- P.ADJUST
       }
       RES <- list(
-        Logistik = STATS, p.value = PVAL, logitPar = logitPar,
-        logitSe = logitSe, parM0 = PROV$parM0, seM0 = PROV$seM0,
-        cov.M0 = PROV$cov.M0, cov.M1 = PROV$cov.M1, deltaR2 = deltaR2,
-        alpha = alpha, thr = Q, DIFitems = DIFitems,
-        member.type = member.type, match = PROV$match, # from PROV, string
-        type = type, p.adjust.method = p.adjust.method,
+        Logistik = STATS,
+        p.value = PVAL,
+        logitPar = logitPar,
+        logitSe = logitSe,
+        parM0 = PROV$parM0,
+        seM0 = PROV$seM0,
+        cov.M0 = PROV$cov.M0,
+        cov.M1 = PROV$cov.M1,
+        deltaR2 = deltaR2,
+        alpha = alpha,
+        thr = Q,
+        DIFitems = DIFitems,
+        member.type = member.type,
+        match = PROV$match, # from PROV, string
+        type = type,
+        p.adjust.method = p.adjust.method,
         adjusted.p = adjusted.p,
-        purification = purify, names = colnames(DATA),
-        anchor.names = dif.anchor, criterion = criterion,
-        save.output = save.output, output = output,
-        Data = DATA, group = Group
+        purification = purify,
+        names = colnames(DATA),
+        anchor.names = dif.anchor,
+        criterion = criterion,
+        save.output = save.output,
+        output = output,
+        Data = DATA,
+        group = Group
       )
-      if (!is.null(anchor) & match[1] == "score") { # match is "score"
+      if (!is.null(anchor) & match[1] == "score") {
+        # match is "score"
         RES$Logistik[ANCHOR] <- NA
         RES$logitPar[ANCHOR, ] <- NA
         RES$parM0[ANCHOR, ] <- NA
         RES$deltaR2[ANCHOR] <- NA
         RES$DIFitems <- RES$DIFitems[!RES$DIFitems %in% ANCHOR]
       }
-    } else { # match is zscore or specified
+    } else {
+      # match is zscore or specified
       nrPur <- 0
       difPur <- NULL
       noLoop <- FALSE
-      prov1 <- .Logistik_edited(DATA, Group, # the same as PROV
+      prov1 <- .Logistik_edited(
+        DATA,
+        Group, # the same as PROV
         member.type = member.type,
-        match = match, type = type, criterion = criterion, # match as string "score"
+        match = match,
+        type = type,
+        criterion = criterion, # match as string "score"
         all.cov = all.cov
       )
       stats1 <- prov1$stat
@@ -186,10 +227,15 @@
             } else {
               nodif <- which(!1:ncol(DATA) %in% dif)
             }
-            prov2 <- .Logistik_edited(DATA, Group,
+            prov2 <- .Logistik_edited(
+              DATA,
+              Group,
               anchor = nodif,
-              member.type = member.type, match = match, # pur iter match - wants vector?
-              type = type, criterion = criterion, all.cov = all.cov
+              member.type = member.type,
+              match = match, # pur iter match - wants vector?
+              type = type,
+              criterion = criterion,
+              all.cov = all.cov
             )
             stats2 <- prov2$stat
             pval2 <- 1 - pchisq(stats2, DDF)
@@ -246,19 +292,35 @@
       }
 
       RES <- list(
-        Logistik = stats1, p.value = pval1, logitPar = logitPar,
-        logitSe = logitSe, parM0 = prov1$parM0, seM0 = prov1$seM0,
-        cov.M0 = prov1$cov.M0, cov.M1 = prov1$cov.M1,
-        deltaR2 = deltaR2, alpha = alpha, thr = Q, DIFitems = DIFitems,
-        member.type = member.type, match = prov1$match,
-        type = type, p.adjust.method = p.adjust.method,
+        Logistik = stats1,
+        p.value = pval1,
+        logitPar = logitPar,
+        logitSe = logitSe,
+        parM0 = prov1$parM0,
+        seM0 = prov1$seM0,
+        cov.M0 = prov1$cov.M0,
+        cov.M1 = prov1$cov.M1,
+        deltaR2 = deltaR2,
+        alpha = alpha,
+        thr = Q,
+        DIFitems = DIFitems,
+        member.type = member.type,
+        match = prov1$match,
+        type = type,
+        p.adjust.method = p.adjust.method,
         adjusted.p = adjusted.p,
         puriadjType = puriadjType,
-        purification = purify, nrPur = nrPur,
-        difPur = difPur, convergence = noLoop, names = colnames(DATA),
-        anchor.names = NULL, criterion = criterion, save.output = save.output,
+        purification = purify,
+        nrPur = nrPur,
+        difPur = difPur,
+        convergence = noLoop,
+        names = colnames(DATA),
+        anchor.names = NULL,
+        criterion = criterion,
+        save.output = save.output,
         output = output,
-        Data = DATA, group = Group
+        Data = DATA,
+        group = Group
       )
     }
     class(RES) <- "Logistic"

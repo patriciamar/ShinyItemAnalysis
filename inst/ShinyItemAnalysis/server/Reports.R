@@ -33,7 +33,8 @@ report_IRT_binary_model <- reactive({
   if (input$report_IRT_binary_model == "none") {
     fit <- NULL
   } else {
-    fit <- switch(input$report_IRT_binary_model,
+    fit <- switch(
+      input$report_IRT_binary_model,
       "Rasch" = IRT_binary_model_rasch(),
       "1PL" = IRT_binary_model_1pl(),
       "2PL" = IRT_binary_model_2pl(),
@@ -48,7 +49,8 @@ report_IRT_binary_model <- reactive({
 # so far it takes parametrization setting from the IRT section
 report_IRT_binary_equation <- reactive({
   if (input$IRT_binary_summary_parametrization == "irt") {
-    txt1 <- switch(input$report_IRT_binary_model,
+    txt1 <- switch(
+      input$report_IRT_binary_model,
       "none" = "",
       "Rasch" = "{(\\theta_p - b_i)}",
       "1PL" = "{a(\\theta_p - b_i)}",
@@ -57,7 +59,8 @@ report_IRT_binary_equation <- reactive({
       "4PL" = "{a_i(\\theta_p - b_i)}"
     )
   } else {
-    txt1 <- switch(input$report_IRT_binary_model,
+    txt1 <- switch(
+      input$report_IRT_binary_model,
       "none" = "",
       "Rasch" = "{\\beta_{i0} + \\theta_p}",
       "1PL" = "{\\beta_{i0} + \\beta_{1} \\theta_p}",
@@ -67,7 +70,8 @@ report_IRT_binary_equation <- reactive({
     )
   }
 
-  txt2 <- switch(input$report_IRT_binary_model,
+  txt2 <- switch(
+    input$report_IRT_binary_model,
     "none" = "",
     "Rasch" = "",
     "1PL" = "",
@@ -80,8 +84,13 @@ report_IRT_binary_equation <- reactive({
     txt <- ""
   } else {
     txt <- paste0(
-      "$$\\mathrm{P}(Y_{pi} = 1|\\theta_p) = \\pi_{pi} = ", txt2,
-      "\\frac{e^", txt1, "}{1 + e^", txt1, "}$$"
+      "$$\\mathrm{P}(Y_{pi} = 1|\\theta_p) = \\pi_{pi} = ",
+      txt2,
+      "\\frac{e^",
+      txt1,
+      "}{1 + e^",
+      txt1,
+      "}$$"
     )
   }
   txt
@@ -117,13 +126,16 @@ report_IRT_binary_icc <- reactive({
       item_names(), # names from user
       ~ tibble(
         Ability = IRT_thetas_for_plots(), # vector only
-        Probability = probtrace(extract.item(fit, .x), IRT_thetas_for_plots())[, 2], # ascending probs
+        Probability = probtrace(extract.item(fit, .x), IRT_thetas_for_plots())[,
+          2
+        ], # ascending probs
         Item = .y,
       )
     )
     d$Item <- factor(d$Item, levels = item_names())
 
-    g <- d |> ggplot(aes(x = Ability, y = Probability, color = Item)) +
+    g <- d |>
+      ggplot(aes(x = Ability, y = Probability, color = Item)) +
       geom_line() +
       ylab("Probability of correct answer") +
       theme_app()
@@ -151,7 +163,8 @@ report_IRT_binary_iic <- reactive({
     )
     d$Item <- factor(d$Item, levels = item_names())
 
-    g <- d |> ggplot(aes(x = Ability, y = Information, color = Item)) +
+    g <- d |>
+      ggplot(aes(x = Ability, y = Information, color = Item)) +
       geom_line() +
       theme_app()
   }
@@ -177,10 +190,12 @@ report_IRT_binary_tic <- reactive({
     g <- ggplot(data = df, aes(x = Ability)) +
       geom_line(aes(y = Information, col = "info")) +
       geom_line(aes(y = SE, col = "se")) +
-      scale_color_manual("", values = c("blue", "pink"), labels = c("Information", "SE")) +
-      scale_y_continuous("Information",
-        sec.axis = sec_axis(~., name = "SE")
+      scale_color_manual(
+        "",
+        values = c("blue", "pink"),
+        labels = c("Information", "SE")
       ) +
+      scale_y_continuous("Information", sec.axis = sec_axis(~., name = "SE")) +
       theme(axis.title.y = element_text(color = "pink")) +
       theme_app()
   }
@@ -202,21 +217,28 @@ report_IRT_binary_coef <- reactive({
     par_tab <- coef(fit, IRTpars = IRTpars, simplify = TRUE)$items
     if (dim(fit@vcov)[1] > 1) {
       se_list <- coef(fit, IRTpars = IRTpars, printSE = TRUE)
-      se_tab <- do.call(rbind, lapply(1:nrow(par_tab), function(i) se_list[[i]]["SE", ]))
+      se_tab <- do.call(
+        rbind,
+        lapply(1:nrow(par_tab), function(i) se_list[[i]]["SE", ])
+      )
     } else {
       se_tab <- cbind(rep(NA, nrow(par_tab)), NA, NA, NA)
     }
 
-    tab <- cbind(par_tab, se_tab)[, order(c(seq(ncol(par_tab)), seq(ncol(se_tab))))]
-
+    tab <- cbind(par_tab, se_tab)[, order(c(
+      seq(ncol(par_tab)),
+      seq(ncol(se_tab))
+    ))]
 
     item_fit_cols <- c("S_X2", "df.S_X2", "p.S_X2")
 
     tab_fit <- itemfit(fit, na.rm = TRUE)[, item_fit_cols]
 
-    if (!is.null(tryCatch(round(tab_fit, 3), error = function(e) {
-      cat("ERROR : ", conditionMessage(e), "\n")
-    }))) {
+    if (
+      !is.null(tryCatch(round(tab_fit, 3), error = function(e) {
+        cat("ERROR : ", conditionMessage(e), "\n")
+      }))
+    ) {
       tab <- data.frame(tab, tab_fit)
       colnames(tab)[9:11] <- c("SX2-value", "df", "p-value")
     } else {
@@ -233,7 +255,11 @@ report_IRT_binary_coef <- reactive({
     } else {
       colnames(tab)[1:8] <- paste0(
         c("", "SE("),
-        paste0("\\(\\mathit{", rep(c("\\beta_{1}", "\\beta_{0}", "c", "d"), each = 2), "}\\)"),
+        paste0(
+          "\\(\\mathit{",
+          rep(c("\\beta_{1}", "\\beta_{0}", "c", "d"), each = 2),
+          "}\\)"
+        ),
         c("", ")")
       )
       tab <- tab[, c(3:4, 1:2, 5:8, 9:11)]
@@ -321,182 +347,216 @@ DIFmatchingPresent <- reactive({
 
 # * Progress bar ####
 observeEvent(input$generate, {
-  withProgress(message = "Creating content", value = 0, style = "notification", {
-    list( # header
-      author = input$reportAuthor,
-      dataset = input$reportDataName,
-      # datasets
-      a = nominal(),
-      k = key(),
-      itemNames = item_names(),
-      # total scores
-      incProgress(0.05),
-      results = t(totalscores_table_Input()),
-      histogram_totalscores = totalscores_histogram_Input(),
-      cutScore = input$slider_totalscores_histogram,
-      # standard scores
-      standardscores_table = standardscores_table_Input(),
-      incProgress(0.05),
-      # validity section
-      corr_plot = {
-        if (input$corr_report) {
-          if (input$customizeCheck) {
-            corr_plot_Input_report()
-          } else {
-            corr_plot_Input()
-          }
-        } else {
-          ""
-        }
-      },
-      corr_plot_numclust = ifelse(input$customizeCheck, input$corr_plot_clust_report, input$corr_plot_clust),
-      corr_plot_clustmethod = ifelse(input$customizeCheck, input$corr_plot_clustmethod_report, input$corr_plot_clustmethod),
-      corr_type = ifelse(input$customizeCheck, input$corr_plot_type_of_corr_report, input$type_of_corr),
-      # scree_plot = {
-      #   if (input$corr_report) {
-      #     scree_plot_Input()
-      #   } else {
-      #     ""
-      #   }
-      # },
-      isCriterionPresent = criterionPresent(),
-      validity_check = input$predict_report,
-      validity_plot = {
-        if (input$predict_report) {
-          if (criterionPresent()) {
-            validity_plot_Input()
+  withProgress(
+    message = "Creating content",
+    value = 0,
+    style = "notification",
+    {
+      list(
+        # header
+        author = input$reportAuthor,
+        dataset = input$reportDataName,
+        # datasets
+        a = nominal(),
+        k = key(),
+        itemNames = item_names(),
+        # total scores
+        incProgress(0.05),
+        results = t(totalscores_table_Input()),
+        histogram_totalscores = totalscores_histogram_Input(),
+        cutScore = input$slider_totalscores_histogram,
+        # standard scores
+        standardscores_table = standardscores_table_Input(),
+        incProgress(0.05),
+        # validity section
+        corr_plot = {
+          if (input$corr_report) {
+            if (input$customizeCheck) {
+              corr_plot_Input_report()
+            } else {
+              corr_plot_Input()
+            }
           } else {
             ""
           }
-        }
-      },
-      validity_table = {
-        if (input$predict_report) {
-          if (criterionPresent()) {
-            validity_table_Input()
-          } else {
-            ""
+        },
+        corr_plot_numclust = ifelse(
+          input$customizeCheck,
+          input$corr_plot_clust_report,
+          input$corr_plot_clust
+        ),
+        corr_plot_clustmethod = ifelse(
+          input$customizeCheck,
+          input$corr_plot_clustmethod_report,
+          input$corr_plot_clustmethod
+        ),
+        corr_type = ifelse(
+          input$customizeCheck,
+          input$corr_plot_type_of_corr_report,
+          input$type_of_corr
+        ),
+        # scree_plot = {
+        #   if (input$corr_report) {
+        #     scree_plot_Input()
+        #   } else {
+        #     ""
+        #   }
+        # },
+        isCriterionPresent = criterionPresent(),
+        validity_check = input$predict_report,
+        validity_plot = {
+          if (input$predict_report) {
+            if (criterionPresent()) {
+              validity_plot_Input()
+            } else {
+              ""
+            }
           }
-        }
-      },
-      incProgress(0.05),
-      # item analysis
-      DDplot = report_itemanalysis_DDplot(),
-      DDplotRange1 = ifelse(input$customizeCheck, input$report_itemanalysis_DDplot_range_slider[[1]], input$itemanalysis_DDplot_range_slider[[1]]),
-      DDplotRange2 = ifelse(input$customizeCheck, input$report_itemanalysis_DDplot_range_slider[[2]], input$itemanalysis_DDplot_range_slider[[2]]),
-      DDplotNumGroups = ifelse(input$customizeCheck, input$report_itemanalysis_DDplot_groups_slider, input$itemanalysis_DDplot_groups_slider),
-      DDplotDiscType = ifelse(input$customizeCheck, input$report_itemanalysis_DDplot_discrimination, input$itemanalysis_DDplot_discrimination),
-      itemexam = report_itemanalysis_table(),
-      cronbachs_alpha_table = reliability_cronbachalpha_table_Input(),
-      incProgress(0.05),
-      # distractors
-      distractor_plot = report_distractor_plot(),
-      type_distractor_plot = input$report_distractor_type,
-      distractor_plot_legend_length = report_distractor_plot_legend_length(),
-      incProgress(0.25),
-      # regression
-      multiplot = report_regression_multinomial_plot(),
-      incProgress(0.05),
-      # irt
-      irt_wrightmap = report_IRT_binary_wrightmap(),
-      irt_equation = report_IRT_binary_equation(),
-      irt_model = input$report_IRT_binary_model,
-      irt_parametrization = input$IRT_binary_summary_parametrization,
-      irt_icc = report_IRT_binary_icc(),
-      irt_iic = report_IRT_binary_iic(),
-      irt_tic = report_IRT_binary_tic(),
-      irt_coef = report_IRT_binary_coef(),
-      irt_ability_plot = report_IRT_binary_ability_plot(),
-      irt_ability_table = report_IRT_binary_ability_table(),
-      incProgress(0.25),
-      # DIF
-      ### presence of group vector
-      isGroupPresent = groupPresent(),
-      ### histograms by group
-      histCheck = input$histCheck,
-      DIF_total_table = {
-        if (groupPresent()) {
-          if (input$histCheck) {
-            DIF_total_table()
+        },
+        validity_table = {
+          if (input$predict_report) {
+            if (criterionPresent()) {
+              validity_table_Input()
+            } else {
+              ""
+            }
           }
-        }
-      },
-      DIF_total_hist = {
-        if (groupPresent()) {
-          if (input$histCheck) {
-            DIF_total_histogram()
+        },
+        incProgress(0.05),
+        # item analysis
+        DDplot = report_itemanalysis_DDplot(),
+        DDplotRange1 = ifelse(
+          input$customizeCheck,
+          input$report_itemanalysis_DDplot_range_slider[[1]],
+          input$itemanalysis_DDplot_range_slider[[1]]
+        ),
+        DDplotRange2 = ifelse(
+          input$customizeCheck,
+          input$report_itemanalysis_DDplot_range_slider[[2]],
+          input$itemanalysis_DDplot_range_slider[[2]]
+        ),
+        DDplotNumGroups = ifelse(
+          input$customizeCheck,
+          input$report_itemanalysis_DDplot_groups_slider,
+          input$itemanalysis_DDplot_groups_slider
+        ),
+        DDplotDiscType = ifelse(
+          input$customizeCheck,
+          input$report_itemanalysis_DDplot_discrimination,
+          input$itemanalysis_DDplot_discrimination
+        ),
+        itemexam = report_itemanalysis_table(),
+        cronbachs_alpha_table = reliability_cronbachalpha_table_Input(),
+        incProgress(0.05),
+        # distractors
+        distractor_plot = report_distractor_plot(),
+        type_distractor_plot = input$report_distractor_type,
+        distractor_plot_legend_length = report_distractor_plot_legend_length(),
+        incProgress(0.25),
+        # regression
+        multiplot = report_regression_multinomial_plot(),
+        incProgress(0.05),
+        # irt
+        irt_wrightmap = report_IRT_binary_wrightmap(),
+        irt_equation = report_IRT_binary_equation(),
+        irt_model = input$report_IRT_binary_model,
+        irt_parametrization = input$IRT_binary_summary_parametrization,
+        irt_icc = report_IRT_binary_icc(),
+        irt_iic = report_IRT_binary_iic(),
+        irt_tic = report_IRT_binary_tic(),
+        irt_coef = report_IRT_binary_coef(),
+        irt_ability_plot = report_IRT_binary_ability_plot(),
+        irt_ability_table = report_IRT_binary_ability_table(),
+        incProgress(0.25),
+        # DIF
+        ### presence of group vector
+        isGroupPresent = groupPresent(),
+        ### histograms by group
+        histCheck = input$histCheck,
+        DIF_total_table = {
+          if (groupPresent()) {
+            if (input$histCheck) {
+              DIF_total_table()
+            }
           }
-        }
-      },
-      DIF_total_ttest = {
-        if (groupPresent()) {
-          if (input$histCheck) {
-            DIF_total_ttest()
+        },
+        DIF_total_hist = {
+          if (groupPresent()) {
+            if (input$histCheck) {
+              DIF_total_histogram()
+            }
           }
-        }
-      },
-      ### delta plot
-      deltaplotCheck = input$deltaplotCheck,
-      deltaplot = {
-        if (groupPresent()) {
-          if (input$deltaplotCheck) {
-            report_DIF_DP_plot()
+        },
+        DIF_total_ttest = {
+          if (groupPresent()) {
+            if (input$histCheck) {
+              DIF_total_ttest()
+            }
           }
-        }
-      },
-      DP_text_normal = {
-        if (groupPresent()) {
-          if (input$deltaplotCheck) {
-            report_DIF_DP()
+        },
+        ### delta plot
+        deltaplotCheck = input$deltaplotCheck,
+        deltaplot = {
+          if (groupPresent()) {
+            if (input$deltaplotCheck) {
+              report_DIF_DP_plot()
+            }
           }
-        }
-      },
-      ### Mantel-Haenszel
-      MHCheck = input$MHCheck,
-      DIF_MH_print = {
-        if (groupPresent()) {
-          if (input$MHCheck) {
-            report_DIF_MH_model()
+        },
+        DP_text_normal = {
+          if (groupPresent()) {
+            if (input$deltaplotCheck) {
+              report_DIF_DP()
+            }
           }
-        }
-      },
-      ### logistic regression
-      logregCheck = input$logregCheck,
-      DIF_logistic_plot = {
-        if (groupPresent()) {
-          if (input$logregCheck) {
-            report_DIF_logistic_plot()
+        },
+        ### Mantel-Haenszel
+        MHCheck = input$MHCheck,
+        DIF_MH_print = {
+          if (groupPresent()) {
+            if (input$MHCheck) {
+              report_DIF_MH_model()
+            }
           }
-        }
-      },
-      DIF_logistic_print = {
-        if (groupPresent()) {
-          if (input$logregCheck) {
-            report_DIF_logistic_model()
+        },
+        ### logistic regression
+        logregCheck = input$logregCheck,
+        DIF_logistic_plot = {
+          if (groupPresent()) {
+            if (input$logregCheck) {
+              report_DIF_logistic_plot()
+            }
           }
-        }
-      },
-      ### DDF multinomial
-      multiCheck = input$multiCheck,
-      DIF_multinomial_print = {
-        if (groupPresent()) {
-          if (input$multiCheck) {
-            report_DIF_multinomial_method()
+        },
+        DIF_logistic_print = {
+          if (groupPresent()) {
+            if (input$logregCheck) {
+              report_DIF_logistic_model()
+            }
           }
-        }
-      },
-      DIF_multinomial_plot = {
-        if (groupPresent()) {
-          if (input$multiCheck) {
-            report_DIF_multinomial_plot()
+        },
+        ### DDF multinomial
+        multiCheck = input$multiCheck,
+        DIF_multinomial_print = {
+          if (groupPresent()) {
+            if (input$multiCheck) {
+              report_DIF_multinomial_method()
+            }
           }
-        }
-      },
-      incProgress(0.25),
-      ### sessionInfo
-      sessionInfo = input$include_session
-    )
-  })
+        },
+        DIF_multinomial_plot = {
+          if (groupPresent()) {
+            if (input$multiCheck) {
+              report_DIF_multinomial_plot()
+            }
+          }
+        },
+        incProgress(0.25),
+        ### sessionInfo
+        sessionInfo = input$include_session
+      )
+    }
+  )
 
   output$download_report_button <- renderUI({
     if (is.null(input$generate)) {
@@ -520,8 +580,12 @@ output$report <- downloadHandler(
     paste0("report.", input$report_format)
   }),
   content = function(file) {
-    reportPath <- file.path(getwd(), paste0("report", input$report_format, ".Rmd"))
-    parameters <- list( # header
+    reportPath <- file.path(
+      getwd(),
+      paste0("report", input$report_format, ".Rmd")
+    )
+    parameters <- list(
+      # header
       author = input$reportAuthor,
       dataset = input$reportDataName,
       # datasets
@@ -543,12 +607,24 @@ output$report <- downloadHandler(
             corr_plot_Input()
           }
         } else {
-          ""
+          NULL
         }
       },
-      corr_plot_numclust = ifelse(input$customizeCheck, input$corr_plot_clust_report, input$corr_plot_clust),
-      corr_plot_clustmethod = ifelse(input$customizeCheck, input$corr_plot_clustmethod_report, input$corr_plot_clustmethod),
-      corr_type = ifelse(input$customizeCheck, input$corr_plot_type_of_corr_report, input$type_of_corr),
+      corr_plot_numclust = ifelse(
+        input$customizeCheck,
+        input$corr_plot_clust_report,
+        input$corr_plot_clust
+      ),
+      corr_plot_clustmethod = ifelse(
+        input$customizeCheck,
+        input$corr_plot_clustmethod_report,
+        input$corr_plot_clustmethod
+      ),
+      corr_type = ifelse(
+        input$customizeCheck,
+        input$corr_plot_type_of_corr_report,
+        input$type_of_corr
+      ),
       # scree_plot = {
       #   if (input$corr_report) {
       #     scree_plot_Input()
@@ -578,10 +654,26 @@ output$report <- downloadHandler(
       },
       # item analysis
       DDplot = report_itemanalysis_DDplot(),
-      DDplotRange1 = ifelse(input$customizeCheck, input$report_itemanalysis_DDplot_range_slider[[1]], input$itemanalysis_DDplot_range_slider[[1]]),
-      DDplotRange2 = ifelse(input$customizeCheck, input$report_itemanalysis_DDplot_range_slider[[2]], input$itemanalysis_DDplot_range_slider[[2]]),
-      DDplotNumGroups = ifelse(input$customizeCheck, input$report_itemanalysis_DDplot_groups_slider, input$itemanalysis_DDplot_groups_slider),
-      DDplotDiscType = ifelse(input$customizeCheck, input$report_itemanalysis_DDplot_discrimination, input$itemanalysis_DDplot_discrimination),
+      DDplotRange1 = ifelse(
+        input$customizeCheck,
+        input$report_itemanalysis_DDplot_range_slider[[1]],
+        input$itemanalysis_DDplot_range_slider[[1]]
+      ),
+      DDplotRange2 = ifelse(
+        input$customizeCheck,
+        input$report_itemanalysis_DDplot_range_slider[[2]],
+        input$itemanalysis_DDplot_range_slider[[2]]
+      ),
+      DDplotNumGroups = ifelse(
+        input$customizeCheck,
+        input$report_itemanalysis_DDplot_groups_slider,
+        input$itemanalysis_DDplot_groups_slider
+      ),
+      DDplotDiscType = ifelse(
+        input$customizeCheck,
+        input$report_itemanalysis_DDplot_discrimination,
+        input$itemanalysis_DDplot_discrimination
+      ),
       itemexam = report_itemanalysis_table(),
       cronbachs_alpha_table = reliability_cronbachalpha_table_Input(),
       # distractors
@@ -687,9 +779,11 @@ output$report <- downloadHandler(
       ### sessionInfo
       sessionInfo = input$include_session
     )
-    rmarkdown::render(reportPath,
+    rmarkdown::render(
+      reportPath,
       output_file = file,
-      params = parameters, envir = new.env(parent = globalenv())
+      params = parameters,
+      envir = new.env(parent = globalenv())
     )
   }
 )

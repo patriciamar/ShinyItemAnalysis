@@ -48,14 +48,17 @@
 recode_nr <- function(Data, nr_code = 99, df) {
   # deprecated args handling
   if (!missing(df)) {
-    warning("Argument 'df' is deprecated; please use 'Data' instead.",
+    warning(
+      "Argument 'df' is deprecated; please use 'Data' instead.",
       call. = FALSE
     )
     Data <- df
   }
 
   # coerce to data.frame (tibble cannot be subset by a matrix)
-  if (inherits(Data, "tbl_df")) Data <- as.data.frame(Data)
+  if (inherits(Data, "tbl_df")) {
+    Data <- as.data.frame(Data)
+  }
 
   if (any(sapply(Data, is.factor))) {
     for (i in 1:ncol(Data)) {
@@ -65,10 +68,10 @@ recode_nr <- function(Data, nr_code = 99, df) {
     }
   }
 
-
   mask_nr <- function(vec, i) {
     out <- logical(i)
-    while (i > 0 && vec[i]) { # don't let i == 0 (occurs when all values are NA)
+    while (i > 0 && vec[i]) {
+      # don't let i == 0 (occurs when all values are NA)
       out[i] <- TRUE
       i <- i - 1
     }

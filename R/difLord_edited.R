@@ -7,11 +7,25 @@
 #' @noRd
 #'
 #' @importFrom difR itemParEst itemRescale LordChi2
-.difLord_edited <- function(Data, group, focal.name, model, c = NULL, engine = "ltm",
-                            discr = 1, irtParam = NULL, same.scale = TRUE, anchor = NULL,
-                            alpha = 0.05, purify = FALSE, nrIter = 10,
-                            p.adjust.method = NULL, puriadjType = "simple",
-                            save.output = FALSE, output = c("out", "default")) {
+.difLord_edited <- function(
+  Data,
+  group,
+  focal.name,
+  model,
+  c = NULL,
+  engine = "ltm",
+  discr = 1,
+  irtParam = NULL,
+  same.scale = TRUE,
+  anchor = NULL,
+  alpha = 0.05,
+  purify = FALSE,
+  nrIter = 10,
+  p.adjust.method = NULL,
+  puriadjType = "simple",
+  save.output = FALSE,
+  output = c("out", "default")
+) {
   internalLord <- function() {
     if (!is.null(irtParam)) {
       nrItems <- nrow(irtParam) / 2
@@ -38,18 +52,8 @@
         m1p <- itemRescale(m0, m1, items = ANCHOR)
       }
       mod <- as.character(ncol(irtParam))
-      model <- switch(mod,
-        `2` = "1PL",
-        `5` = "2PL",
-        `6` = "3PL",
-        `9` = "3PL"
-      )
-      DF <- switch(mod,
-        `2` = 1,
-        `5` = 2,
-        `6` = 2,
-        `9` = 3
-      )
+      model <- switch(mod, `2` = "1PL", `5` = "2PL", `6` = "3PL", `9` = "3PL")
+      DF <- switch(mod, `2` = 1, `5` = 2, `6` = 2, `9` = 3)
       if (ncol(irtParam) != 6L) {
         Guess <- NULL
       } else {
@@ -59,7 +63,8 @@
         }
       }
       if (is.null(Guess)) {
-        Q <- switch(model,
+        Q <- switch(
+          model,
           `1PL` = qchisq(1 - alpha, 1),
           `2PL` = qchisq(1 - alpha, 2),
           `3PL` = qchisq(1 - alpha, 3)
@@ -86,7 +91,8 @@
       }
       Group <- gr == focal.name
       if (any(is.na(Group))) {
-        warning("'group' contains missing values. Observations with missing values are discarded.",
+        warning(
+          "'group' contains missing values. Observations with missing values are discarded.",
           call. = FALSE
         )
       }
@@ -97,27 +103,36 @@
       d1 <- sapply(DATA[Group, ], as.integer)
 
       # check if complete observations in each group is sufficient
-      if (nrow(d0[complete.cases(d0), , drop = FALSE]) < 2L) stop("Not enough complete observations in the reference group.", call. = FALSE)
-      if (nrow(d1[complete.cases(d1), , drop = FALSE]) < 2L) stop("Not enough complete observations in the focal group.", call. = FALSE)
+      if (nrow(d0[complete.cases(d0), , drop = FALSE]) < 2L) {
+        stop(
+          "Not enough complete observations in the reference group.",
+          call. = FALSE
+        )
+      }
+      if (nrow(d1[complete.cases(d1), , drop = FALSE]) < 2L) {
+        stop(
+          "Not enough complete observations in the focal group.",
+          call. = FALSE
+        )
+      }
 
       Guess <- c
       if (is.null(Guess)) {
-        Q <- switch(model,
+        Q <- switch(
+          model,
           `1PL` = qchisq(1 - alpha, 1),
           `2PL` = qchisq(1 - alpha, 2),
           `3PL` = qchisq(1 - alpha, 3)
         )
-        DF <- switch(model,
-          `1PL` = 1,
-          `2PL` = 2,
-          `3PL` = 3
-        )
-        m0 <- switch(model,
+        DF <- switch(model, `1PL` = 1, `2PL` = 2, `3PL` = 3)
+        m0 <- switch(
+          model,
           `1PL` = itemParEst(d0, model = "1PL", engine = engine, discr = discr),
           `2PL` = itemParEst(d0, model = "2PL"),
           `3PL` = itemParEst(d0, model = "3PL")
         )
-        m1 <- switch(model,
+        m1 <- switch(
+          model,
           `1PL` = itemParEst(d1, model = "1PL", engine = engine, discr = discr),
           `2PL` = itemParEst(d1, model = "2PL"),
           `3PL` = itemParEst(d1, model = "3PL")
@@ -174,8 +189,14 @@
       P.ADJUST <- p.adjust(PVAL, method = adj.method)
 
       if (is.null(Guess)) {
-        m_null <- switch(model,
-          `1PL` = itemParEst(DATA, model = "1PL", engine = engine, discr = discr),
+        m_null <- switch(
+          model,
+          `1PL` = itemParEst(
+            DATA,
+            model = "1PL",
+            engine = engine,
+            discr = discr
+          ),
           `2PL` = itemParEst(DATA, model = "2PL"),
           `3PL` = itemParEst(DATA, model = "3PL")
         )
@@ -202,17 +223,31 @@
       }
 
       RES <- list(
-        LordChi = STATS, p.value = PVAL, alpha = alpha,
-        thr = Q, DIFitems = DIFitems, purification = purify,
-        model = model, c = Guess, engine = engine, discr = discr,
-        p.adjust.method = p.adjust.method, adjusted.p = adjusted.p,
+        LordChi = STATS,
+        p.value = PVAL,
+        alpha = alpha,
+        thr = Q,
+        DIFitems = DIFitems,
+        purification = purify,
+        model = model,
+        c = Guess,
+        engine = engine,
+        discr = discr,
+        p.adjust.method = p.adjust.method,
+        adjusted.p = adjusted.p,
         itemParInit = itemParInit, # itemParBest = itemParBest,
         estPar = estPar,
-        names = dataName, anchor.names = dif.anchor, save.output = save.output,
+        names = dataName,
+        anchor.names = dif.anchor,
+        save.output = save.output,
         output = output
       )
-      if (!is.null(anchor) & (RES$estPar | (!RES$estPar &
-        !same.scale))) {
+      if (
+        !is.null(anchor) &
+          (RES$estPar |
+            (!RES$estPar &
+              !same.scale))
+      ) {
         RES$LordChi[ANCHOR] <- NA
         for (i in 1:length(RES$DIFitems)) {
           if (sum(RES$DIFitems[i] == ANCHOR) == 1) {
@@ -250,15 +285,27 @@
         }
 
         RES <- list(
-          LordChi = stats1, p.value = pval1,
-          alpha = alpha, thr = Q, DIFitems = DIFitems,
-          purification = purify, nrPur = nrPur, difPur = difPur,
-          convergence = noLoop, model = model, c = Guess,
-          engine = engine, discr = discr, p.adjust.method = p.adjust.method,
-          adjusted.p = adjusted.p, itemParInit = itemParInit,
+          LordChi = stats1,
+          p.value = pval1,
+          alpha = alpha,
+          thr = Q,
+          DIFitems = DIFitems,
+          purification = purify,
+          nrPur = nrPur,
+          difPur = difPur,
+          convergence = noLoop,
+          model = model,
+          c = Guess,
+          engine = engine,
+          discr = discr,
+          p.adjust.method = p.adjust.method,
+          adjusted.p = adjusted.p,
+          itemParInit = itemParInit,
           itemParFinal = itemParFinal, # itemParBest = itemParBest,
           estPar = estPar,
-          names = dataName, anchor.names = NULL, save.output = save.output,
+          names = dataName,
+          anchor.names = NULL,
+          save.output = save.output,
           output = output
         )
       } else {
@@ -348,15 +395,27 @@
           adjusted.p <- p.adjust1
         }
         RES <- list(
-          LordChi = stats1, p.value = pval1,
-          alpha = alpha, thr = Q, DIFitems = DIFitems, purification = purify,
-          nrPur = nrPur, difPur = difPur, convergence = noLoop,
-          model = model, c = Guess, engine = engine,
-          discr = discr, p.adjust.method = p.adjust.method,
-          adjusted.p = adjusted.p, itemParInit = itemParInit,
+          LordChi = stats1,
+          p.value = pval1,
+          alpha = alpha,
+          thr = Q,
+          DIFitems = DIFitems,
+          purification = purify,
+          nrPur = nrPur,
+          difPur = difPur,
+          convergence = noLoop,
+          model = model,
+          c = Guess,
+          engine = engine,
+          discr = discr,
+          p.adjust.method = p.adjust.method,
+          adjusted.p = adjusted.p,
+          itemParInit = itemParInit,
           itemParFinal = itemParFinal, # itemParBest = itemParBest,
           estPar = estPar,
-          names = dataName, anchor.names = NULL, save.output = save.output,
+          names = dataName,
+          anchor.names = NULL,
+          save.output = save.output,
           output = output
         )
       }

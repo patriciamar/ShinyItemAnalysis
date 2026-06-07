@@ -27,20 +27,28 @@ ggplot(data = df1, aes(x = theta, y = value, col = variable)) +
     panel.grid.minor = element_blank()
   ) +
   ggtitle("Cumulative probabilities") +
-  scale_color_manual("",
+  scale_color_manual(
+    "",
     values = c("red", "yellow", "green", "blue"),
     labels = paste0("P(Y >= ", 1:4, ")")
   )
 
 # calculating category probabilities
-df2 <- data.frame(1, sapply(
-  1:length(b),
-  function(i) ccirt(theta, a, b[i])
-))
-df2 <- data.frame(sapply(
-  1:length(b),
-  function(i) df2[, i] - df2[, i + 1]
-), df2[, ncol(df2)], theta)
+df2 <- data.frame(
+  1,
+  sapply(
+    1:length(b),
+    function(i) ccirt(theta, a, b[i])
+  )
+)
+df2 <- data.frame(
+  sapply(
+    1:length(b),
+    function(i) df2[, i] - df2[, i + 1]
+  ),
+  df2[, ncol(df2)],
+  theta
+)
 df2 <- melt(df2, id.vars = "theta")
 
 # plotting category probabilities
@@ -57,20 +65,27 @@ ggplot(data = df2, aes(x = theta, y = value, col = variable)) +
     panel.grid.minor = element_blank()
   ) +
   ggtitle("Category probabilities") +
-  scale_color_manual("",
+  scale_color_manual(
+    "",
     values = c("black", "red", "yellow", "green", "blue"),
     labels = paste0("P(Y >= ", 0:4, ")")
   )
 
 # calculating expected item score
-df3 <- data.frame(1, sapply(
-  1:length(b),
-  function(i) ccirt(theta, a, b[i])
-))
-df3 <- data.frame(sapply(
-  1:length(b),
-  function(i) df3[, i] - df3[, i + 1]
-), df3[, ncol(df3)])
+df3 <- data.frame(
+  1,
+  sapply(
+    1:length(b),
+    function(i) ccirt(theta, a, b[i])
+  )
+)
+df3 <- data.frame(
+  sapply(
+    1:length(b),
+    function(i) df3[, i] - df3[, i + 1]
+  ),
+  df3[, ncol(df3)]
+)
 df3 <- data.frame(exp = as.matrix(df3) %*% 0:4, theta)
 
 # plotting category probabilities

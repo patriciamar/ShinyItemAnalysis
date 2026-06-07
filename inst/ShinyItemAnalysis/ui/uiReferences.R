@@ -1,12 +1,14 @@
 uiReferences <-
-  tabPanel("",
+  tabPanel(
+    "",
     value = "references",
     icon = icon("fas fa-book"),
     #------------------------------------------------------------------------------------#
     # Packages ####
     #------------------------------------------------------------------------------------#
     h3("R packages"),
-    HTML('<ul class = "biblio">
+    HTML(
+      '<ul class = "biblio">
                 <li><code>cowplot</code>
                 Wilke, C.O. (2020).
                 cowplot: Streamlined plot theme and plot annotations for "ggplot2".
@@ -226,12 +228,14 @@ uiReferences <-
                 R package version 1.8-4.
                 <a href = "https://CRAN.R-project.org/package=xtable", target = "_blank">See online.</a>
                 </li>
-                </ul>'),
+                </ul>'
+    ),
     #------------------------------------------------------------------------------------#
     # References ####
     #------------------------------------------------------------------------------------#
     h3("References"),
-    HTML('<ul class = "biblio">
+    HTML(
+      '<ul class = "biblio">
                 <li>Akaike, H. (1974).
                 A new look at the statistical model identification.
                 <i>IEEE Transactions on Automatic Control, 19</i>(6), 716-723.
@@ -307,6 +311,11 @@ uiReferences <-
                 target = "_blank">See online.</a>
                 </li>
 
+                <li>Cichrova, M., Hladka, A., & Martinkova, P. (2026).
+                Refining effect-size measures and classification for differential item functioning: Toward unified guidelines across methods
+                <i>British Journal of Mathematical and Statistical Psychology</i>. Accepted.
+                </li>
+
                 <li>Cronbach, L. J. (1951).
                 Coefficient alpha and the internal structure of tests.
                 <i>Psychometrika, 16</i>(3), 297-334.
@@ -331,31 +340,39 @@ uiReferences <-
 
                 <li> Feldt, L. S., Woodruff, D. J., & Salih, F. A. (1987).
                 Statistical inference for coefficient alpha.
-                <i>Applied Psychological Measurement 11</i>(1), 93-103.
+                <i>Applied Psychological Measurement, 11</i>(1), 93-103.
                 <a href = "http://journals.sagepub.com/doi/abs/10.1177/014662168701100107",
                 target = "_blank">See online.</a>
                 </li>
 
-                <li>Hladka, A., Martinkova, P., & Brabec, M. (2025).
+                <li>Hladka, A., Martinkova, P., & Brabec, M. (2026).
                 New iterative algorithms for estimation of item functioning.
-                <i>Journal of Educational and Behavioral Statistics,</i> In print.
+                <i>Journal of Educational and Behavioral Statistics, 51</i>(1), 175-205.
                 <a href = "https://doi.org/10.3102/10769986241312354",
                 target = "_blank">See online.</a>
                 </li>
 
                 <li>Hladka, A., Martinkova, P., & Magis, D. (2024).
                 Combining item purification and multiple comparison adjustment methods in detection of differential item functioning.
-                <i>Multivariate Behavioral Research 59</i>(1), 46-61.
+                <i>Multivariate Behavioral Research, 59</i>(1), 46-61.
                 <a href = "https://doi.org/10.1080/00273171.2023.2205393",
                 target = "_blank">See online.</a>
                 </li>
 
                 <li>
-                Horn, J. L. (1965). A rationale and test for the number of factors in factor analysis. <i>Psychometrika, 30,</i> 179-185. <a href="http://dx.doi.org/10.1007/BF02289447", target="_blank">See online.</a>
+                Horn, J. L. (1965).
+                A rationale and test for the number of factors in factor analysis.
+                <i>Psychometrika, 30,</i> 179-185.
+                <a href="http://dx.doi.org/10.1007/BF02289447",
+                target="_blank">See online.</a>
                 </li>
 
                 <li>
-                Kaiser,  H.  F.  (1960).  The  application  of  electronic  computers  to  factor analysis. <i>Educational and Psychological Measurement, 20</i>, 141-151. <a href="http://dx.doi.org/10.1177/001316446002000116", target="_blank">See online.</a>
+                Kaiser,  H.  F.  (1960).
+                The  application  of  electronic  computers  to  factor analysis.
+                <i>Educational and Psychological Measurement, 20</i>, 141-151.
+                <a href="http://dx.doi.org/10.1177/001316446002000116",
+                target="_blank">See online.</a>
                 </li>
 
                 <li>Li, H.-H., & Stout, W. (1996).
@@ -437,6 +454,13 @@ uiReferences <-
                 <i>Journal of Educational and Behavioral Statistics, 48</i>(3), 349–383.
                 <a href = "https://doi.org/10.3102/10769986221150517",
                 target = "_blank">See online.</a>
+                </li>
+
+                <li>Martinkova, P., Netik, J., & Hladka, A. (2026).
+                Enhancing Psychometric Analysis with Interactive SIA Modules.
+                <i>Psychometrika</i>(Online First).
+                <a href = "https://doi.org/10.1017/psy.2026.10088",
+                target = "_blank">See online</a>
                 </li>
 
                 <li>Masters, G. N. (1982).
@@ -539,5 +563,6 @@ uiReferences <-
                 Best test design.
                 Chicago: Mesa Press.
                 </li>
-                </ul>')
+                </ul>'
+    )
   )

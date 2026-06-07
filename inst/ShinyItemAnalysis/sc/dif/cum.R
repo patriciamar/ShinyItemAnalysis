@@ -7,8 +7,14 @@ group <- dataMedicalgraded[, 101]
 
 # DIF with cumulative logit regression model
 (fit <- difORD(
-  Data = data, group = group, focal.name = 1, model = "cumulative",
-  type = "both", match = "zscore", p.adjust.method = "none", purify = FALSE
+  Data = data,
+  group = group,
+  focal.name = 1,
+  model = "cumulative",
+  type = "both",
+  match = "zscore",
+  p.adjust.method = "none",
+  purify = FALSE
 ))
 
 # estimated parameters in IRT parametrization

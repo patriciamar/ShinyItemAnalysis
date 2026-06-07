@@ -16,7 +16,7 @@
 )
 }
 \arguments{
-\item{object}{\emph{object of class \linkS4class{BlisClass}}, model fitted via
+\item{object}{\emph{object of class \link[=BlisClass-class]{BlisClass}}, model fitted via
 \code{fit_blis}() or \code{blis()}.}
 
 \item{...}{Additional arguments. Not utilized at the moment.}
@@ -49,7 +49,7 @@ coefficients stored in it.
 \description{
 Extracts item parameters from fitted BLIS model. For BLIRT parametrization,
 use \code{IRTpars = TRUE} in your function call. Contrary to
-\link[mirt:coef-method]{mirt::coef,SingleGroupClass-method}, response category labels can be displayed in
+\link[mirt:coef,SingleGroupClass-method]{mirt::coef,SingleGroupClass-method}, response category labels can be displayed in
 the output using \code{labels = TRUE}. On top of that, as BLIS/BLIRT
 parametrizations utilize the information of correct response category, you
 can denote these in the output with \code{mark_correct = TRUE}.
@@ -71,12 +71,12 @@ print(blis_coefs, digits = 2)
 
 }
 \seealso{
-Other BLIS/BLIRT related: 
+Other BLIS/BLIRT related:
 \code{\link{BlisClass-class}},
-\code{\link{fit_blis}()},
-\code{\link{get_orig_levels}()},
-\code{\link{nominal_to_int}()},
-\code{\link{obtain_nrm_def}()},
-\code{\link{print.blis_coefs}()}
+\code{\link[=fit_blis]{fit_blis()}},
+\code{\link[=get_orig_levels]{get_orig_levels()}},
+\code{\link[=nominal_to_int]{nominal_to_int()}},
+\code{\link[=obtain_nrm_def]{obtain_nrm_def()}},
+\code{\link[=print.blis_coefs]{print.blis_coefs()}}
 }
 \concept{BLIS/BLIRT related}

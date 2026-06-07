@@ -4,9 +4,11 @@ library(mirt)
 data(GMAT, package = "difNLR")
 
 # 1PL IRT model
-fit1PL <- mirt(GMAT[, 1:20],
+fit1PL <- mirt(
+  GMAT[, 1:20],
   model = 1,
-  constrain = list((1:20) + seq(0, (20 - 1) * 3, 3)), itemtype = "2PL"
+  constrain = list((1:20) + seq(0, (20 - 1) * 3, 3)),
+  itemtype = "2PL"
 )
 # 2PL IRT model
 fit2PL <- mirt(GMAT[, 1:20], model = 1, itemtype = "2PL")

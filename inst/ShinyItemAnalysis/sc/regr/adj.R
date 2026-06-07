@@ -9,11 +9,13 @@ data(Science, package = "mirt")
 zscore <- scale(rowSums(Science))
 Science[, 1] <- factor(
   Science[, 1],
-  levels = sort(unique(Science[, 1])), ordered = TRUE
+  levels = sort(unique(Science[, 1])),
+  ordered = TRUE
 )
 
 # adjacent category logit model for item 1
-fit <- vglm(Science[, 1] ~ zscore,
+fit <- vglm(
+  Science[, 1] ~ zscore,
   family = acat(reverse = FALSE, parallel = TRUE)
 )
 

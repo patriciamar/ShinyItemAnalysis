@@ -70,9 +70,7 @@
 #' Institute of Computer Science of the Czech Academy of Sciences \cr
 #' \email{martinkova@@cs.cas.cz}
 #'
-#' @importFrom ggplot2 ggplot aes geom_tile labs scale_x_discrete
-#'   scale_y_discrete scale_fill_gradient2 coord_fixed theme_minimal theme
-#'   element_text element_blank annotate scale_size_area scale_color_gradient2
+#' @importFrom ggplot2 ggplot aes geom_tile labs scale_x_discrete scale_y_discrete scale_fill_gradient2 coord_fixed theme_minimal theme element_text element_blank annotate scale_size_area scale_color_gradient2 update_labels
 #' @importFrom stats hclust as.dist cutree
 #' @importFrom psych polychoric tetrachoric alpha
 #' @importFrom tibble as_tibble
@@ -122,16 +120,26 @@
 #' }
 #'
 #' @export
-plot_corr <- function(Data,
-                      cor = c("polychoric", "tetrachoric", "pearson", "spearman", "none"),
-                      clust_method = "none", n_clust = 0L,
-                      shape = c("circle", "square"),
-                      labels = FALSE, labels_size = 3,
-                      line_size = .5, line_col = "black", line_alpha = 1,
-                      fill = NA, fill_alpha = NA, ...) {
+plot_corr <- function(
+  Data,
+  cor = c("polychoric", "tetrachoric", "pearson", "spearman", "none"),
+  clust_method = "none",
+  n_clust = 0L,
+  shape = c("circle", "square"),
+  labels = FALSE,
+  labels_size = 3,
+  line_size = .5,
+  line_col = "black",
+  line_alpha = 1,
+  fill = NA,
+  fill_alpha = NA,
+  ...
+) {
   # first, detect if Data is corr. matrix, so we can set cor = none as early as possible
   if (is_corr(Data)) {
-    inform(c("i" = "The input was recognized as a correlation matrix. Setting `cor = \"none\"`."))
+    inform(c(
+      "i" = "The input was recognized as a correlation matrix. Setting `cor = \"none\"`."
+    ))
     cor <- "none"
   }
 
@@ -140,11 +148,14 @@ plot_corr <- function(Data,
   shape <- arg_match(shape)
 
   # compute corr. matrix
-  cormat <- switch(cor,
+  cormat <- switch(
+    cor,
     "polychoric" = try_fetch(
       polychoric(Data, na.rm = TRUE, ...)$rho,
       error = function(cnd) {
-        affected_items <- names(keep(Data, function(x) max(x, na.rm = TRUE) > 8))
+        affected_items <- names(keep(Data, function(x) {
+          max(x, na.rm = TRUE) > 8
+        }))
         abort(
           c(
             "Polychoric correlations were not estimated. Please inspect the error message below.",
@@ -155,7 +166,8 @@ plot_corr <- function(Data,
             ),
             "i" = paste0(
               "Another common cause is that you have included wrong items, check the following ones: ",
-              paste(affected_items, collapse = ", "), "."
+              paste(affected_items, collapse = ", "),
+              "."
             )
           ),
           parent = cnd
@@ -165,13 +177,16 @@ plot_corr <- function(Data,
     "tetrachoric" = try_fetch(
       tetrachoric(Data, na.rm = TRUE, ...)$rho,
       error = function(cnd) {
-        affected_items <- names(keep(Data, function(x) max(x, na.rm = TRUE) > 1))
+        affected_items <- names(keep(Data, function(x) {
+          max(x, na.rm = TRUE) > 1
+        }))
         abort(
           c(
             "Tetrachoric correlations were not estimated. Please inspect the error message below.",
             "i" = paste0(
               "A common cause is that you have included wrong items, check the following ones: ",
-              paste(affected_items, collapse = ", "), "."
+              paste(affected_items, collapse = ", "),
+              "."
             )
           ),
           parent = cnd
@@ -186,7 +201,9 @@ plot_corr <- function(Data,
   n <- nrow(cormat)
 
   if (is.null(dimnames(cormat))) {
-    inform(c("i" = "Estimated correlation matrix has no names, using integers instead."))
+    inform(c(
+      "i" = "Estimated correlation matrix has no names, using integers instead."
+    ))
 
     nms <- seq_len(n)
     # set both row- and col-names
@@ -195,7 +212,13 @@ plot_corr <- function(Data,
 
   if (n_clust > n) {
     abort(
-      paste0("There are only ", n, " items available, cannot display ", n_clust, " clusters.")
+      paste0(
+        "There are only ",
+        n,
+        " items available, cannot display ",
+        n_clust,
+        " clusters."
+      )
     )
   }
 
@@ -203,7 +226,9 @@ plot_corr <- function(Data,
   if (clust_method == "none") {
     # inform the user if he/she set nonzero value, so it is is clear what has happened
     if (n_clust != 0L) {
-      inform(c("i" = "Overwriting `n_clust` with `0`, because `clust_method = \"none\"`. Nothing will be outlined."))
+      inform(c(
+        "i" = "Overwriting `n_clust` with `0`, because `clust_method = \"none\"`. Nothing will be outlined."
+      ))
       n_clust <- 0L
     }
 
@@ -221,7 +246,11 @@ plot_corr <- function(Data,
       # just inform what is gonna happen
       inform(
         c(
-          "i" = paste0("`n_clust = 0`, but the items will still be sorted according to `", clust_method, "` method."),
+          "i" = paste0(
+            "`n_clust = 0`, but the items will still be sorted according to `",
+            clust_method,
+            "` method."
+          ),
           "*" = "Set `clust_method = \"none\"` to keep the original order."
         )
       )
@@ -237,7 +266,6 @@ plot_corr <- function(Data,
     scale_x_discrete(limits = new_ord, position = "top") +
     scale_y_discrete(limits = rev(new_ord)) + # make diagonal as usual
     scale_size_area(guide = "none") +
-    labs(col = "corr.", fill = "corr.") +
     coord_fixed() +
     theme_minimal() +
     theme(
@@ -252,6 +280,7 @@ plot_corr <- function(Data,
         midpoint = 0,
         limit = c(-1, 1)
       )
+    plt <- update_labels(plt, list(col = "corr."))
   } else {
     plt <- plt +
       geom_tile(aes(fill = .data$r)) +
@@ -259,6 +288,7 @@ plot_corr <- function(Data,
         midpoint = 0,
         limit = c(-1, 1)
       )
+    plt <- update_labels(plt, list(fill = "corr."))
   }
 
   # outline the clusters if the number of clusters is not zero
@@ -269,7 +299,8 @@ plot_corr <- function(Data,
     cu <- c(0, cumsum(clustab))
 
     plt <- plt +
-      annotate("rect",
+      annotate(
+        "rect",
         fill = ggplot2::alpha(fill, fill_alpha), # cannot use alpha in NAMESPACE due to psych conflict
         col = ggplot2::alpha(line_col, line_alpha),
         size = line_size,
