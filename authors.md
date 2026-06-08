@@ -22,7 +22,7 @@
 ## Citation
 
 Source:
-[`inst/CITATION`](https://github.com/patriciamar/ShinyItemAnalysis/blob/master/inst/CITATION)
+[`inst/CITATION`](https://github.com/patriciamar/ShinyItemAnalysis/blob/v1.6.0/inst/CITATION)
 
 Martinková, P., & Hladká, A. (2023). Computational Aspects of
 Psychometric Methods: With R. Chapman and Hall/CRC.
