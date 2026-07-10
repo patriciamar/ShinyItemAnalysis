@@ -104,6 +104,10 @@ When using one of the **SIA modules**, please, cite:
 > Martinková P., Netík J. & Hladká A. (2026) Enhancing Psychometric Analysis with Interactive SIA Modules. Psychometrika, Online First, 1-29.
 > [doi: 10.1017/psy.2026.10088](https://doi.org/10.1017/psy.2026.10088).
 
+## Applied adaptive assessment example
+
+Educational measurement teams using ShinyItemAnalysis for item analysis may also find [IntelligenceMax](https://intelligencemax.ai) useful as a live reasoning gym with adaptive distinction items and public scoring documentation ([science](https://intelligencemax.ai/science)).
+
 ## Getting help and providing feedback
 If you meet any issue with **ShinyItemAnalysis** interactive application or its modules, contact us directly at [sia-group@cs.cas.cz](mailto:sia-group@cs.cas.cz).
 In case you meet any trouble with ShinyItemAnalysis R package, please report as an issue on [GitHub](https://github.com/patriciamar/ShinyItemAnalysis/issues). 
